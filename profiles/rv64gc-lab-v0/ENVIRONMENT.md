@@ -129,3 +129,10 @@ Earlier progress sections are preserved byte-verbatim in
 [profile history](docs/tasks/archive/P4-SYSTEM-8.md#profile-progress), with their
 source context and hashes. Historical self-descriptions do not override the
 current contract, report or executable registry.
+
+The integer chapter also covers load/store extension: scope-mem's pattern and
+bound-ext/dir-ext-matrix's signed edges and wider read-backs distinguish correct
+load extension and low-bit stores from seventeen isolated wrong alternatives.
+All earlier inputs and frozen declarations remain exact; GS derives the updated
+realization count. Source review uses the authenticated local snapshot; the
+separate fetched-page identity refusal is owned by P4-SYSTEM.13 c18c.

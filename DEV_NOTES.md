@@ -1,5 +1,42 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — realize load extension and low-bit stores (P4-SYSTEM.13 c18b)
+
+Bind LOAD-EXT POS scope-mem, NEG bound-ext/dir-ext-matrix, all eleven forms and
+111 boundaries/222 parcels. Literal sign-edge arithmetic pins 8/16/32 widths on
+both sides and unsigned partners; zero LB visibly overwrites -1. Wider reads
+observe narrow stores leaving higher lanes zero, full SD/LD preserves the pattern,
+and cross-width high lanes use the read width's sign. Non-clamping source values
+distinguish truncation from saturation.
+
+Before credit, seventeen isolated author copies fail committed observations:
+signed LB/LH/LW zero-extension at scope-mem steps 12/14/16; unsigned LBU/LHU/LWU
+sign-extension at steps 13/15/17; LD low-word18; SB/SH/SW high-bit selection at
+bound-ext steps 23/28/33, overwide writes at scope-mem steps 22/24/26, saturation at
+bound-ext steps 42/44 and scope-mem step 28; SD low-word at scope-mem step 17. Public registry gate
+first fails the missing LOAD-EXT entry (rc=101), then both bindings run. Normal
+full independent replay is 167/5365/10524 exact; Rust 167/17/203 passes make check.
+Only registry/tests, review docs and derived GS change; every prior 82 entry and
+112 base/348 GC canonical+guest inputs, production core/author, generated data and
+frozen definitions remain exact. Effective 82/114, registry 84, sixteen pairs/freeze
+remain. NEG is a legal semantic counterexample, not an invented trap.
+
+Source review found fetched RV32I/RV64I bytes differ from ledger digests, with
+same lengths. Exact diff is one Antora UI-version meta value per page; the local
+snapshot matches both pinned hashes, and its full relevant sections supplied this
+review. check_citations._work_dir prefers any fetched directory; published reads
+without digest checks, and quote reader uses the route directly. Owned priority
+c18c repairs both evidence paths immediately after this commit, before further
+runtime pairs. No architecture-body or processor mismatch; no repin or silent
+fallback authorized. Details/reproduction and repair schedule are in the task.
+
+Focused identity/reports/freeze/schema/bounds/counts and main+five model books
+pass (rc=0). Required hooks precede c18c. The first hook refused the combined
+acceptance box; split ROOT CAUSE/ADDRESSED/NO REGRESSION into distinct ticked
+boxes with their own actual tool results, then rerun the required hook.
+LIVE_STATUS unchanged: 649 arms/47 chapters/P4 12/18. .14 retains status/experiment work.
+promotion: declined (worked matrix and finite controls live in the integer book; the separate identity defect is owned with immediate repair in the task).
+
 ## _(2026-10-10)_ — bound live history and correct current summary pointers (P4-SYSTEM.13 c18a)
 
 Move eight oldest whole DEV entries through shard_history into shard-0223; old

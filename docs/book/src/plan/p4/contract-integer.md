@@ -357,3 +357,67 @@ frozen records and all prior 80 bindings remain exact. Registry entries become
 boundary and one direct-execution pairs. Seventeen runtime pairs and freeze
 remain. Negative fixtures are legal semantic counterexamples, with no invented
 target traps. Standing finite-evidence/reference/platform limits remain.
+
+## Load extension follows the read width; stores keep the low source bits
+
+At c18b, CHK-LOAD-EXT-POS runs scope-mem (29 boundaries/58 parcels), and NEG
+runs bound-ext (47/94) plus dir-ext-matrix (35/70). Together their 111/222
+observations exercise LB/LH/LW, LBU/LHU/LWU, LD and SB/SH/SW/SD. RV64I 3.1.3
+requires sign extension for the first three loads, zero extension for their
+unsigned counterparts, and a full 64-bit LD result. Each store writes only the
+low 8/16/32/64 bits of rs2. The authenticated local snapshot matches the source
+ledger's exact RV64I/RV32I hashes; RV32I 1.1.6 supplies the inherited rules.
+
+The read width determines the sign bit, independently of the earlier store's
+width. For example, storing the byte 0x80 into an explicitly zeroed eight-byte
+cell gives LB=0xffffffffffffff80, but LH/LW/LD=0x80. Storing 0x8000 gives
+LB at byte offset 1 the negative byte result, LH=0xffffffffffff8000 and
+LW/LD=0x8000. The matrix repeats this reasoning through the high halfword of
+0x80000000 and high word of 0x8000000000000000. All accesses are naturally
+aligned, and the cell is explicitly cleared between widths.
+
+Selected zero-based bound-ext steps pin both sides of each sign edge:
+
+| Width | Positive signed load | Negative signed load | Unsigned load of the same sign edge |
+| --- | --- | --- | --- |
+| 8 | step 23: 0x7f | step 24: 0xffffffffffffff80 | step 25: 0x80 |
+| 16 | step 28: 0x7fff | step 29: 0xffffffffffff8000 | step 30: 0x8000 |
+| 32 | step 33: 0x7fffffff | step 34: 0xffffffff80000000 | step 35: 0x80000000 |
+
+Each width also reads all ones through signed/unsigned forms. At steps 39/40,
+a pre-write of -1 makes the subsequent zero-byte LB observable. Store truncation
+is checked by wider read-back: scope-mem's narrow stores of -1 yield LD results
+0xff, 0xffff and 0xffffffff at steps 22/24/26, leaving the higher lanes zero.
+Its SW of 0x80fff7f080fff7f0 yields LD=0x80fff7f0 at step 28, while the full
+SD/LD pair preserves 0x80fff7f080fff7f0 at step 18. Non-clamping inputs
+in bound-ext distinguish truncation from saturation: SB of 0x180 yields 0x80;
+SH/SW of 0xffffffffffff8000 yield 0x8000/0xffff8000.
+
+Seventeen isolated spec-side copies are deliberately wrong; each fails a named
+committed observation before registry credit:
+
+| Wrong rule | First discriminating observation |
+| --- | --- |
+| Zero extension for LB/LH/LW | scope-mem steps 12/14/16 |
+| Sign extension for LBU/LHU/LWU | scope-mem steps 13/15/17 |
+| LD truncated to low 32 bits | scope-mem step 18 |
+| SB/SH/SW choose high source bits | bound-ext steps 23/28/33 |
+| SB/SH/SW write eight bytes | scope-mem LD steps 22/24/26 |
+| SB/SH/SW saturate instead of truncating | bound-ext steps 42/44; scope-mem step 28 |
+| SD truncated to low 32 source bits | scope-mem LWU step 17 |
+
+The declaration test first fails with CHK-LOAD-EXT-POS missing, then passes when
+both exact bindings are registered. Normal independent replay matches the entire
+167-program corpus, 5,365 boundaries/10,524 parcels. All earlier 82 bindings,
+canonical and guest inputs, generated data, production rules/author and frozen
+records remain exact. Registry entries become 84, effective G-CONTRACT **82/114**:
+thirteen scope, twenty-one guest, six boundary and one direct-execution pairs.
+Sixteen runtime pairs and freeze remain. These finite, legal counterexamples do
+not require target traps and do not establish untested memory-system behavior.
+Address faults, x0 side effects and the selected endian policy retain their own
+contract obligations.
+
+Source review also exposed a separate evidence-reader defect: the fetched HTML
+copies differ only in Antora metadata, but citation readers do not currently
+refuse their mismatched pins. The authenticated snapshot was used here. Owned
+priority-next c18c repairs identity refusal before further runtime bindings.

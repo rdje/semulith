@@ -293,6 +293,57 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c18b — independently realize load extension and store truncation (`2026-10-10`, `SEMULITH-P4-0141`)
+
+Owned before edits on clean 6726658 after c18a hooks/brief/actual job census.
+Reviewed ROADMAP P4, CPU_ENVIRONMENT, frozen OB-LOAD-EXT and owner/mirror
+REQ-D-LOAD-EXT (all eleven associated forms), pinned RV64I 3.1.3/RV32I 1.1.6,
+semantic load/store definitions, generic evaluator/environment access contracts,
+existing core tests, GC runner/registry and scope-mem/bound-ext/dir-ext-matrix
+sources/expectations. Integer/v2 book is the review surface. Current 80/114.
+
+Before credit, derive selected whole-program observations independently and
+prove the seven load/four store forms, signed edges, zero/ones and cross-width
+lanes. POS scope-mem, NEG bound-ext plus dir-ext-matrix if their measured matrix
+supports every clause. NEG means legal semantic counterexamples, not target traps.
+Use isolated author copies for each signed/unsigned extension reversal, LD low-word
+truncation, each narrow store's high-bit selection/overwide write/saturation and
+SD low-word truncation. Each must fail a named committed observation; investigate
+any survivor through full corpus and public interface before classification or
+credit. Preserve all existing inputs, production rules, author and frozen records.
+
+Only after discrimination, append the two registry bindings, extend declaration
+coverage/count to 84, and observe the gate's missing-entry RED before registration.
+Run make check, full independent 167-program comparison, exact prior 82 bindings/
+112 base+348 GC inputs/production/generated/frozen identity, focused reports/freeze/
+schema/counts/bounds/books and hooks. Update effective 82/114 (sixteen pairs/freeze
+remain) only after actual evidence passes; .14 retains statuses/experiments.
+Commit/brief/clean/actual census before priority-next c18c source identity repair,
+then c19 LOAD-X0 or the next bounded runtime pair.
+
+### `.13` c18c — source identity refusal on fetched citation route (priority next)
+
+Owned at discovery during c18b, before any repair. Reproduction: sha256sum on
+`target/sources/riscv-v20260120/{rv32,rv64}.html` differs from sources.sexp,
+while `.materials/riscv/pinned-v20260120/unpriv/` matches exact pins. Byte diff
+isolates a single Antora UI-version meta value on each page (same byte lengths);
+architectural bodies unchanged. This explains the local mismatch but does not
+make the fetched copies pinned artifacts. c18b must review the authenticated
+cache copy before signoff and cannot claim the working copies match.
+
+Actual defect: check_citations._work_dir prefers any existing fetched directory,
+and published reads headings without checking source sha256. The quote checker
+also resolves that route directly. Thus altered fetched pages can supply green
+citation evidence under an exact-source ledger. Reproduce through public checks
+and isolate both locator/quote readers before patching. Priority: immediately after
+c18b commit, before the next runtime pair. Add discriminating altered-byte controls
+and exact pin checks to shared routing/reader ownership as appropriate; refuse
+mismatch clearly without repinning, bypass or silent fallback. Preserve cache and
+frozen definitions, restore only provably project-owned fetched source copies from
+verified local snapshot after comparing the full declared source set. Validate
+locators/quotes, both route choices/refusals, focused doctrine counts and books.
+This is evidence-reader integrity, not an architectural body or processor defect.
+
 ### `.13` c18a — bound live history and correct its current pointer (`2026-10-10`, `SEMULITH-P4-0140`)
 
 Owned before edits on clean d5519fb after c17f hooks/brief/actual job census.
@@ -472,6 +523,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c18b — **ROOT CAUSE**: frozen LOAD-EXT's eleven instruction
+  associations were declared but unbound. Reviewed authenticated RV64I 3.1.3 /
+  RV32I 1.1.6, definitions/evaluator, runner and existing memory matrix. Literal
+  8/16/32 sign-edge arithmetic and zero overwrite agree with committed values.
+  Missing-entry reproduction: `cargo test -p semulith-verify every_check_bound_through_the_scope_slice_is_realized`,
+  rc=101, OB-LOAD-EXT declares CHK-LOAD-EXT-POS with no registry entry.
+
+- [x] `.13` c18b — **ADDRESSED**: POS scope-mem, NEG bound-ext/dir-ext-matrix, 111 boundaries/
+  222 parcels and all eleven forms. Seventeen isolated author copies reject six
+  extension reversals, LD/SD low-word truncation, three high-bit selections, three
+  overwide stores and three saturating stores at named book observations.
+  `python3 target/p4-system-13/c18b/probe.py` rc=0. Declaration gate first
+  missing-entry RED (`cargo test -p semulith-verify every_check_bound_through_the_scope_slice_is_realized`,
+  rc=101); registered exact two bindings, make check rc=0 (Rust 167/17/203).
+
+- [x] `.13` c18b — **NO REGRESSION**: independent full 167/5365/10524 replay exact, all prior
+  82 bindings and 112 base/348 GC input files/production/generated/frozen bytes
+  exact (`python3 target/p4-system-13/c18b/identity.py`, rc=0). Registry 84,
+  effective 82/114; sixteen runtime pairs/freeze remain. Focused gates/books and
+  hooks precede priority-next c18c. Focused gates rc=0: 225 frozen rows, 37 route
+  caps, 33 frontiers, five derived counts, three contract versions/zero findings,
+  five fresh reports, 270 schema inputs/two skips, main+five model books.
+  Source-pin mismatch root isolated to Antora
+  metadata; authenticated cache hashes match and supplied review, reader defect
+  owned immediately next. LIVE_STATUS unchanged (649 arms, 47 chapters, P4 12/18).
+  promotion: declined (worked matrix/controls retained in integer book; separate evidence-reader integrity repair owned in c18c).
+
 - [x] `.13` c18a — **ROOT CAUSE**: five completed task-history classes and eight
   whole DEV entries approached fixed caps; profile progress duplicated stale live
   claims (11 members/76 checks/v1 STIP) and book introduction said 64 checks.
@@ -513,6 +591,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c18b | 17 isolated countermodels; literal edges; declaration RED then Rust 167/17/203; author 167/5365/10524; prior bytes exact; focused gates/books | registry 84, effective 82/114; c18c source identity next |
 | `2026-10-10` | `.13` c18a | six payloads and two inverse partitions exact; 112/348 input identity; shard/bounds/frontier/counts/freeze/reports/books | focused gates rc=0; effective 80/114 unchanged; hooks before c18b |
 | `2026-10-10` | `.13` c7b | literal reset/view/image; 128 violations + disabled auditor; private cold fields; Rust 161/17/198; prior bytes exact; schema/freeze/gate 17/17 | make ci all five legs green; 58/114, boundary pairs complete |
 | `2026-10-09` | `.13` c7a | public before/after; 3 Rust view controls / 192 CPU steps; author 42 exact; Rust 160/17/197; GUEST-GEN 135/0 | final make ci all five legs green; delegation/owner repaired; 56/112 unchanged |
@@ -539,6 +618,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c18b | `SEMULITH-P4-0141 (leaf P4-SYSTEM.13): realize load extension and low-bit stores` | priority c18c citation source identity, then c19 LOAD-X0 |
 | `.13` c18a | `SEMULITH-P4-0140 (leaf P4-SYSTEM.13): retain bounded history and derive current contract summaries` | c18b OB-LOAD-EXT, then remaining runtime pairs |
 | `.13` c7b | `SEMULITH-P4-0119 (leaf P4-SYSTEM.13): realize full cold reset with independent startup witnesses` | c8 OB-PRIV-MODES, then remaining runtime pairs |
 | `.13` c7a | `SEMULITH-P4-0118 (leaf P4-SYSTEM.13): enforce delegation in supervisor interrupt CSR views` | c7b full cold reset, then 28 runtime pairs |
@@ -560,6 +640,12 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c18b (SEMULITH-P4-0141): bind all eleven load/store
+  extension forms over 111/222, with seventeen isolated countermodels rejected
+  before credit. Exact prior registry/inputs/production/frozen identity; 82/114.
+  Authenticated source cache supplied review; fetched-page identity refusal owned
+  as priority-next c18c before the remaining runtime pairs.
 
 - `2026-10-10`: `.13` c18a (SEMULITH-P4-0140): losslessly partition task/DEV/
   profile history under unchanged fixed caps; correct stale current membership/

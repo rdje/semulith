@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0141 (leaf P4-SYSTEM.13 c18b) — realize load extension and low-bit stores
+
+- Bind all eleven forms across scope-mem/bound-ext/dir-ext-matrix, 111/222.
+  Seventeen isolated extension, wrong-source, overwide and saturating alternatives
+  fail before credit; the declaration gate first fails the missing binding.
+- Rust 167/17/203 and full independent 167/5365/10524 pass. All prior 82 bindings,
+  canonical/guest/production/generated/frozen bytes exact; effective 82/114,
+  registry 84, sixteen runtime pairs/freeze remain. Book has values/controls/limits.
+- Own fetched-page source-identity refusal as priority c18c; authenticated local
+  snapshot supplied this review. LIVE_STATUS 649 arms/47 chapters/P4 12/18 unchanged.
+
 ## SEMULITH-P4-0140 (leaf P4-SYSTEM.13 c18a) — retain bounded history and derive current contract summaries
 
 - Preserve completed c17 task receipts and 22,982 B of profile progress in archive
