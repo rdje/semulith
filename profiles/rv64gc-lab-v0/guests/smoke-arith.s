@@ -1,9 +1,9 @@
 # smoke-arith.s — the arithmetic half of the P0-PROFILE.6 matched-profile experiment.
 #
-# Every instruction here targets a decision `profile.toml` records, so a disagreement with a
-# reference model lands on a decision rather than on "something differs". Only R/I/I-shift/S
-# formats are used: the B and J immediate layouts live in specification FIGURES this project
-# cannot read, and `scripts/riscv_asm.py` refuses to guess them (owner: P0-PROFILE.8).
+# Every instruction here targets a decision in profile.sexp, so a disagreement with a
+# reference model lands on a decision rather than on an unexplained value difference.
+# This arithmetic fixture uses R/I/I-shift/S/U formats; B/J control transfers are covered
+# by the other guests and supported by scripts/riscv_asm.py.
 #
 # Registers are written x1 upward and never re-read after being checked, so a trace can be read
 # top to bottom. x10 holds the main-memory base and is built arithmetically, because LUI cannot

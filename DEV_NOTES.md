@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — U-immediate sign and instruction PC (P4-SYSTEM.13 c16)
+
+Read/rehashed RV64I 3.1.2.1 (49,246 B, 6eadb316…f13abd), canonical U rows and
+shared width/PC/wrapping lowering. POS scope-alu/dir-chase, NEG bound-arith:
+79 boundaries / 158 parcels independently exact. LUI 0x80000 gives
+0xffffffff80000000; LUI 0x7ffff gives 0x7ffff000. AUIPC at 0x80000074 with
+0x80000 wraps to 0x74; the positive edge at 0x80000078 gives 0xfffff078.
+Zero offsets return each actual instruction PC, including chase offsets 0/16/28.
+Seven wrong alternatives fail intended steps: LUI zero extension/no shift at
+scope 3; AUIPC zero extension/no shift/saturation at bound 29; next-PC or
+sign-extended base at chase 0. NEG is a legal semantic counterexample witness.
+
+Own/fix encountered stale smoke headers in both profiles: original b8d09f5
+pre-B/J comment, copied unchanged at 133e722, also still named profile.toml.
+Comments now describe profile.sexp and implemented B/J support. Both old/new
+images are exactly twelve instructions / 48 bytes. Generated data bodies
+stay exact; only source fingerprint comments regenerate. GC's other 347
+canonical/guest files, author/core and all 76 prior entries remain exact.
+Independent integer probe retains 22 arithmetic/10 branch cases, 17 gaps/471
+steps and 42 owned records exact. Registry 78, effective 76/114: thirteen scope,
+eighteen guest, six direct assumption and one execution pair. Initial commit hook
+correctly refused PLATFORM-GEN: the base comment changed its dossier digest while
+the board retained f24ca76d…8a74e. Own and rederive pin 9f7cecb3…d784 through the
+shared digest owner; regenerate board/platform and model-book materials. Independent
+parsed-data comparison retains all board semantics except the digest pin; map and
+four material bodies retain all other content. BOARD-GEN, PLATFORM-GEN/11 controls,
+MATERIALS-BILL (five units), refreshed reports and schema pass before retry.
+make check passes Rust 167/17/201; GUEST-GEN fixtures/mirror and 142 controls
+pass, schema 270/two skips, freeze three/zero findings, five reports/20 controls
+and all book builds pass. Next OB-SHAMT;
+nineteen runtime pairs/freeze remain.
+promotion: declined (canonical rules, exact observations and worked runtime book retain the evidence and header correction).
+
+
 ## _(2026-10-10)_ — register ALU wrapping and operand overlap (P4-SYSTEM.13 c15)
 
 Read pinned RV32I 1.1.4.2, seven semantic rows and shared lowering/GPR discipline.

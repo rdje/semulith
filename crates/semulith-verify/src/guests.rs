@@ -97,7 +97,7 @@
 //!   `profiles/rv64i-lab-v0/guests/scope-mem.expected.sexp`  `f2ea5a85940c9b779a15dd755136af75a4f5e8c4a34ae786a962a85bc28689de`
 //!   `profiles/rv64i-lab-v0/guests/scope-mem.s`  `e30e3b0f9464a75e79fba148d6185acab64613b0a7ceffa3d7aa7fa4b56a6321`
 //!   `profiles/rv64i-lab-v0/guests/smoke-arith.expected.sexp`  `d0c5b96125992bc58fb403173f8ff9839d827264a2cc39c70b87ac05b3f43f72`
-//!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `5bd4d210483ed8c7815e40acb1c113fadf815359a73dae5c3e944d34208760f9`
+//!   `profiles/rv64i-lab-v0/guests/smoke-arith.s`  `00e86c26cf8a113499fc2c3f3abaf96953347efb620a031771147001018fd84b`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.expected.sexp`  `081ed9427c790df38822107188dd91b03847e92bcb0a722f420eb7e89a289e35`
 //!   `profiles/rv64i-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
 //! Generator: `scripts/gen_guests.py` (sha256 `cd5ab265f1f20eca0579bcf30dd0d44f325ac343396d82b8124d8cbe1df78e7d`)

@@ -18,14 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c16 — realize OB-LUI-AUIPC from existing
-  guests with independently discriminating sign-extension and PC witnesses.
-  c15 register ALU binds three programs: 99 boundaries / 198 parcels exact;
-  eight wrong alternatives refuse. Current 74/114, 20 runtime pairs and freeze
-  remain. Prior 74 bindings, 348 canonical/guest inputs, four author/generated
-  files and core exact. Registry 76, gate controls 20/0. Worked values/controls
-  in task and runtime book. Preserve frozen records/reference limits;
-  .14 owns statuses/experiments. CPU-SYSTEM remains open.
+- next_action: `P4-SYSTEM.13` c17 — realize OB-SHAMT from existing shift
+  guests with independently discriminating XLEN/W masks and sign-fill controls.
+  c16 U-immediates binds three programs: 79 boundaries / 158 parcels exact;
+  seven alternatives refuse. Current 76/114, 19 runtime pairs and freeze remain.
+  Prior 76 bindings, canonical/expected/author/core data exact; two smoke source
+  headers corrected with twelve instructions / 48 bytes each and generated data
+  exact. Dependent board pin/platform/materials refreshed; semantic identity and
+  their gates pass. Registry 78, gate controls 20/0. Values/controls in runtime book.
+  Preserve frozen records/reference limits; .14 owns statuses/experiments.
+  CPU-SYSTEM remains open.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

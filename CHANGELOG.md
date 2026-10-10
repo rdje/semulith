@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0133 (leaf P4-SYSTEM.13 c16) — realize U-immediate guarantees
+
+- Bind three existing programs after independent 79-boundary/158-parcel replay;
+  seven wrong sign/shift/PC/wrap alternatives fail intended observations.
+- Correct both obsolete smoke headers; twelve instructions / 48 bytes each
+  and generated data stay exact. Refresh its dependent board dossier pin and
+  regenerate board/platform/model-book provenance; semantic data stays exact.
+  Preserve frozen records, core and 76 bindings.
+- Effective 76/114; nineteen runtime pairs/freeze remain. Synchronize worked
+  book, current profile evidence and resume pointer. Rust 167/17/201, generated
+  fixtures/mirror, schema/freeze/report and book checks pass.
+
+
 ## SEMULITH-P4-0132 (leaf P4-SYSTEM.13 c15) — realize register ALU guarantees
 
 - Bind three existing guests; independently match 99 boundaries / 198 parcels.

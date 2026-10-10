@@ -68,7 +68,7 @@ instruction EPC before effects. Both issue 101 requests, at 52 versus 51 boundar
 The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, including thirteen scope pairs and the
-six direct assumption pairs and one direct execution pair, 74 checks are realized in the effective contract;
+six direct assumption pairs and one direct execution pair, 76 checks are realized in the effective contract;
 the remaining declared checks keep G-CONTRACT incomplete. Frozen v0/v1 text and
 pins are unchanged. V2 stays open until `.13` completes and freezes it.
 
@@ -347,6 +347,8 @@ legal setup and both legal/refused cells; POS/NEG identify the witness focus.
 | OB-ALU-IMM NEG | bound-arith |
 | OB-ALU-REG POS | scope-alu, bound-arith |
 | OB-ALU-REG NEG | bound-alias |
+| OB-LUI-AUIPC POS | scope-alu, dir-chase |
+| OB-LUI-AUIPC NEG | bound-arith |
 
 The privilege matrix spans 483 boundaries; Sv39 spans 1,417 boundaries / 2,832
 parcels; Svade spans 434 / 868; IALIGN-16 spans 165 / 319; Zicntr spans 101 / 202. Independent author replay agrees exactly.
@@ -361,8 +363,8 @@ fails at step 90. The whole-image core test also verifies preservation.
 
 The [runtime book](docs/book/src/plan/p4/contract-runtime.md) retains all worked
 observations, examples, comparison limits and control receipts. Current census:
-57 effective obligations / 114 checks, 74 realized: thirteen scope pairs,
-seventeen guest pairs, six direct assumption pairs and one direct execution pair. Twenty runtime pairs
+57 effective obligations / 114 checks, 76 realized: thirteen scope pairs,
+eighteen guest pairs, six direct assumption pairs and one direct execution pair. Nineteen runtime pairs
 and final freeze keep v2 open. This table remains current; slice history stays
 in the task tree, development notes and changelog.
 
@@ -403,3 +405,9 @@ Seven forms cover wrap, signed/unsigned comparison, bitwise distinctions and
 pre-state operand overlap. Eight wrong alternatives fail exact observations;
 all 74 prior bindings and inputs stay exact. The runtime book retains values and
 finite scope; no architectural trap is invented for these legal counterexamples.
+
+U-immediate bindings span 79 boundaries / 158 parcels across scope-alu,
+dir-chase and bound-arith. Seven incorrect sign/shift/PC/wrap alternatives fail
+named observations. The runtime book shows both signed edges, exact PC values
+and limits. No instruction, expectation, author or core changes; both smoke
+headers were corrected and their twelve instructions / 48 bytes kept exact.

@@ -448,7 +448,47 @@ authority. NEG rejects these semantic alternatives, not a required trap for
 valid register arithmetic. All 74 earlier registry entries and every old input
 remain exact; no processor or production-author semantics changes.
 
-Current G-CONTRACT is **74/114**: thirteen scope pairs, seventeen guest pairs,
+At c15, G-CONTRACT reached **74/114**: thirteen scope pairs, seventeen guest pairs,
 six direct assumption pairs and one direct execution pair. The registry keeps 76
 entries, including two superseded historical checks. Twenty runtime pairs and
+final freeze remain; CPU-SYSTEM stays open.
+
+## U-immediates use a signed offset and the instruction address
+
+CHK-LUI-AUIPC-POS runs scope-alu and dir-chase; NEG runs bound-arith. These
+legal programs distinguish the exact RV64I 3.1.2.1 rules: LUI forms a 32-bit
+value with twelve low zero bits, then sign-extends it to 64 bits. AUIPC forms
+that same signed offset and adds it to its own instruction address, wrapping
+the address sum at 64 bits. It does not sign-extend the instruction address.
+The pinned 49,246-byte RV64I chapter was rehashed and read before registration.
+
+Independent replay matches all 79 boundaries / 158 parcels and observations.
+Selected zero-based steps show why truncating or advancing the PC is observable:
+
+| Guest/step | Computation | Result |
+| --- | --- | --- |
+| scope-alu, 3 | LUI 0x80000 | x4=0xffffffff80000000 |
+| bound-arith, 28 | LUI 0x7ffff | x22=0x7ffff000 |
+| bound-arith, 29 | AUIPC at 0x80000074, signed offset 0xffffffff80000000 | x23=0x74 |
+| bound-arith, 30 | AUIPC at 0x80000078, offset 0x7ffff000 | x24=0xfffff078 |
+| dir-chase, 0/4/7 | AUIPC offset zero | x1=0x80000000, x2=0x80000010, x3=0x8000001c |
+
+Seven in-memory wrong author copies fail intended observations: LUI zero
+extension or missing shift at scope step 3; AUIPC zero extension, missing shift
+or unsigned saturation at bound step 29; next-PC or sign-extended base-PC at
+chase step 0. The whole programs and their intermediate observations matter.
+NEG rejects wrong legal arithmetic, not a required architectural exception.
+The existing independent integer probe remains green; no production rule or
+expected value changes. Both smoke-arith headers now name profile.sexp and the
+assembler's implemented B/J support; each still assembles to the same twelve
+instructions / 48 bytes. Generated guest data is exact, with only those source
+fingerprint comments regenerated. That base-profile comment also changes the dossier
+digest: the commit hook refused the stale board processor pin. The pin was deliberately
+rederived through the shared digest owner, then board/platform artifacts and model-book
+materials regenerated. Their semantic data, map and text stay exact except that identity
+pin and provenance fingerprints. Frozen records and all 76 earlier entries stay exact.
+
+Current G-CONTRACT is **76/114**: thirteen scope pairs, eighteen guest pairs,
+six direct assumption pairs and one direct execution pair. There are 78 registry
+entries including two superseded historical checks. Nineteen runtime pairs and
 final freeze remain; CPU-SYSTEM stays open.

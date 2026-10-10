@@ -460,6 +460,41 @@ ordered inverse reconstruction, link both blocks and prior archives, keep fixed
 part/family caps and finite archive descriptors unchanged. Historical receipts
 stay intact, and every ticked acceptance retains its original command/output.
 
+### `.13` c16 — U-immediate sign extension and instruction PC (`2026-10-10`, `SEMULITH-P4-0133`)
+
+Owned before edits on clean 8ef8419 after c15 hooks, brief clearing and actual
+job census. Read OB-LUI-AUIPC/REQ-D-LUI-AUIPC/D-LUI-AUIPC and rehash/read
+RVI-RV64I 3.1.2.1 (49,246 B, SHA256 6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd).
+Review two canonical semantics rows, 20-bit/shifted widths, sign extension,
+constant instruction PC and wrapping-add lowering, independent word author,
+selected scope-alu/dir-chase/bound-arith source/expectations and current book.
+POS uses scope-alu plus dir-chase; NEG bound-arith's signed/unsigned U-offset
+edges. Independently replay all observations and demonstrate zero extension,
+wrong shift, next-PC/extended-base-PC and nonwrapping addition alternatives
+fail named steps. Whole legal programs; NEG is not a trap requirement.
+Preserve all old registry/frozen/core/expectation/author data and assembled bytes;
+require 78 registry entries, effective 76/114 (18 guest pairs), nineteen runtime
+pairs/freeze. Focused make check, author/identity, schema/freeze/report/book gates.
+
+Small encountered documentation defect owned here: both smoke-arith source
+headers still name profile.toml and claim the assembler cannot read B/J formats.
+Reproduce by reading lines 3–6 in both profiles; the active data is profile.sexp
+and the assembler now supports B/J. History identifies b8d09f5 as the original
+pre-completion comment and 133e722 as the unchanged GC copy. Correct only these
+headers now; compare assembled old/new images and expected observations exactly.
+No guest instruction or historical receipt is rewritten. Record the correction
+in the worked book. Next OB-SHAMT after this bounded unit commits.
+
+Hook dependency correction owned before dependent edits: PLATFORM-GEN refused
+because the base smoke comment changes the rv64i dossier digest. Reproduction:
+scripts/check_platform_gen.sh --self-test rc=1 names stale pin f24ca76d…8a74e
+versus live 9f7cecb3…d784. This is the required pin propagation, not a changed
+CPU or board capability. Deliberately rederive the pin through the shared digest
+owner, then regenerate board artifacts, platform export and model-book materials.
+Check that all generated semantic data are unchanged apart from the dossier pin
+and provenance fingerprints. Re-run board/platform/material/report/schema gates
+before the same c16 commit; do not pivot or bypass the hook.
+
 ### `.13` c15 — register ALU guarantees (`2026-10-10`, `SEMULITH-P4-0132`)
 
 Owned before changes on clean 4beadff, after committed c14b checks/hooks and
@@ -961,6 +996,33 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c16) (`2026-10-10`, `SEMULITH-P4-0133`):
+
+- [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c16/probe.py
+  rc=0: three guests / 79 boundaries / 158 parcels exact; seven wrong alternatives
+  fail intended scope step 3, bound step 29 or chase step 0. Integer author probe
+  rc=0: 22 arithmetic/10 branch cases, 17 gaps/471 steps, 42 owned records exact.
+- [x] **IDENTITY / RUST** — python3 target/p4-system-13/c16/identity.py rc=0:
+  all 76 prior entries, author/core/frozen records exact; GC's other 347 inputs
+  exact. Both corrected smoke headers preserve twelve instructions / 48 bytes;
+  generated data bodies exact, only two source fingerprints regenerate.
+  make check rc=0: Rust 167/17/201, fmt/clippy clean. Registry 78, effective 76/114.
+- [x] **SCHEMA / REPORT / BOOK** — scripts/check_contract_freeze.sh rc=0:
+  three versions/zero findings; scripts/check_dossier_schema.sh rc=0: 270/two
+  named skips. scripts/check_gate_report.sh rc=0: five reports in sync;
+  python3 scripts/gate_report.py --self-test rc=0: 20/0. make book rc=0:
+  main/model books build; git diff --check rc=0. Nineteen runtime pairs/freeze
+  remain, OB-SHAMT next. scripts/check_guest_gen.sh rc=0: both generated
+  fixtures and governed mirror match, all 142 controls pass.
+- [x] **DEPENDENT PIN CLOSURE** — scripts/check_platform_gen.sh --self-test
+  initially rc=1 with named stale f24ca76d…8a74e pin. After shared-digest re-pin,
+  scripts/check_platform_gen.sh rc=0 and --self-test 11/0; scripts/check_board_gen.sh
+  rc=0: one board/seven outputs byte-exact. scripts/check_materials_bill.sh rc=0:
+  all five books match. python3 target/p4-system-13/c16/board-identity.py rc=0:
+  eight S-expression documents exact except dossier pin, map and four fragment
+  bodies exact except displayed pin. Refreshed schema/report checks pass again.
+  promotion: declined (canonical rules, counterexamples and worked runtime book retain the realization and header correction).
+
 `P4-SYSTEM.13` slice (c15) (`2026-10-10`, `SEMULITH-P4-0132`):
 
 - [x] **INDEPENDENT / CONTROLS** — python3 target/p4-system-13/c15/probe.py
@@ -1307,6 +1369,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c16 | independent 79/158; seven mutants; smoke images 12/48 each; generated data exact; prior 76 bindings; Rust 167/17/201; report 20/0; schema/freeze/books; board pin/semantic identity/platform 11/0 | 76/114; OB-SHAMT next |
 | `2026-10-10` | `.13` c15 | independent 99/198; eight countermodels; integer 22+10/471/42; identity 348+4+74; Rust 167/17/201; oracle 20/0; schema/freeze/books | 74/114; OB-LUI-AUIPC next |
 | `2026-10-10` | `.13` c14b | independent62/124; five countermodels; integer22+10/471/42; identity348+4+72; Rust167/17/201; oracle20/0 | 72/114; OB-ALU-REG next |
 | `2026-10-10` | `.13` c14a | original ALU-bound17/18 RED; corrected20/0; duplicate-credit mutant19/20; production AST/input identity | 70/114 unchanged; c14b OB-ALU-IMM next |
@@ -1343,6 +1406,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c16 | `SEMULITH-P4-0133 (leaf P4-SYSTEM.13): realize signed U-immediates and instruction-address addition` | c17 OB-SHAMT |
 | `.13` c15 | `SEMULITH-P4-0132 (leaf P4-SYSTEM.13): realize register ALU wrapping and operand overlap` | c16 OB-LUI-AUIPC |
 | `.13` c14b | `SEMULITH-P4-0131 (leaf P4-SYSTEM.13): realize immediate ALU guarantees through boundary guests` | c15 OB-ALU-REG |
 | `.13` c14a | `SEMULITH-P4-0130 (leaf P4-SYSTEM.13): remove missing-id assumptions from contract-count controls` | c14b OB-ALU-IMM |
@@ -1376,6 +1440,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c16 (SEMULITH-P4-0133): U-immediates bind exact
+  79/158 with seven sign/shift/PC/wrap alternatives caught. Correct stale smoke
+  headers with exact assembled images; focused checks pass, 76/114 open.
 
 - `2026-10-10`: `.13` c15 (SEMULITH-P4-0132): register ALU pair binds
   exact 99/198 with eight wrong alternatives caught, including overlapping sources.
