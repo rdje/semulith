@@ -31,7 +31,17 @@ LEDGER="docs/push-approvals.md"
 die() { echo "approved-push: REFUSED — $1" >&2; exit "${2:-1}"; }
 
 self_test() {
-  local pass=0 fail=0 tmp; tmp="$(mktemp -d)"
+  local owner_root
+  owner_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local test_temp_root="$owner_root/target/push-selftest"
+  mkdir -p "$test_temp_root"
+  export TMPDIR="$test_temp_root" # Nested git/toolchain scratch stays on this volume too.
+  local pass=0 fail=0 tmp; tmp="$(mktemp -d "$test_temp_root/act.XXXXXX")"
+  case "$tmp" in
+    "$owner_root/target/push-selftest/"*)
+      echo "  ok    GREEN scratch stays below the owning repository"; pass=$((pass+1)) ;;
+    *) echo "  FAIL  scratch escaped the owning repository's test directory"; fail=$((fail+1)) ;;
+  esac
 
   arm() { # arm <label> <expected-rc> <needle> — runs $BODY
     local label="$1" want="$2" needle="$3" out rc
@@ -51,7 +61,18 @@ self_test() {
   git -C "$tmp" clone -q "$tmp/up.git" work
   git -C "$tmp/work" config user.email t@t; git -C "$tmp/work" config user.name t
   mkdir -p "$tmp/work/docs"
-  cp "$HERE/../../$LEDGER" "$tmp/work/$LEDGER" 2>/dev/null || cp "$(git rev-parse --show-toplevel)/$LEDGER" "$tmp/work/$LEDGER"
+  # A literal prior approval tests a nonempty ledger without borrowing real history.
+  cat > "$tmp/work/$LEDGER" <<'FIXTURE'
+# Push approvals — synthetic self-test history
+
+## SEMULITH-PUSH-0001 — 2026-09-29T00:00:00+0000
+
+- **Approved by:** the fixture director
+- **Reason:** synthetic prior approval
+- **Range:** origin/main..0000000000000000000000000000000000000000 — 0 commit(s)
+- **Suite:** synthetic prior green run
+FIXTURE
+  cp "$tmp/work/$LEDGER" "$tmp/ledger-before"
   printf 'ci:\n\t@echo stub-ci green\n' > "$tmp/work/Makefile"
   git -C "$tmp/work" add -A; git -C "$tmp/work" commit -q -m "base"
   git -C "$tmp/work" push -q --no-verify -u origin HEAD:refs/heads/main >/dev/null 2>&1 || \
@@ -70,10 +91,10 @@ self_test() {
 
   BODY="cd '$tmp/work' && printf 'ci:\n\t@false # the deliberately broken check\n' > Makefile && bash '$AP' 'the reason'"
   arm "RED   a red suite refuses and writes NOTHING" 1 "the full local suite is red"
-  if [ -f "$tmp/work/$LEDGER" ] && grep -q "^## SEMULITH-PUSH-" "$tmp/work/$LEDGER"; then
-    echo "  FAIL  a red suite left a ledger entry"; fail=$((fail+1))
+  if cmp -s "$tmp/ledger-before" "$tmp/work/$LEDGER"; then
+    echo "  ok    RED   a red suite preserves prior approval bytes"; pass=$((pass+1))
   else
-    echo "  ok    RED   a red suite left no ledger entry"; pass=$((pass+1))
+    echo "  FAIL  a red suite changed the prior approval bytes"; fail=$((fail+1))
   fi
   [ "$(git -C "$tmp/work" rev-list --count @{u}..HEAD)" = "1" ] && {
     echo "  ok    RED   and made no commit"; pass=$((pass+1)); } || {

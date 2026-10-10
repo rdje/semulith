@@ -317,25 +317,48 @@ MEM/DEV/CHANGELOG/book/index; verify archive/new-file bounds, inverse, prior98
 bindings/canonical/core/generated/frozen identity, focused gates/all six books/
 hooks, commit/empty brief/clean actual census before c26b below.
 
-### `.13` c26b — correct stale exceptional-push guidance (owned next, `SEMULITH-P4-0155`)
+### `.13` c26b — align push guidance and local self-tests (completed, `SEMULITH-P4-0155`)
 
-OPEN, priority immediately after c26a, before remaining runtime pairs. Reproduce
-with bash scripts/check_push_cadence.sh --status (rc=1): refusal recommends
-SEMULITH_PUSH_APPROVED='<reason>' git push. Actual pre_push.sh lines62–69 refuse
-an approval path without a tracked record and explicitly name approved_push.sh;
-COMMIT.md likewise requires that approved act. Relevant history:13266aa introduced
-the variable-only guidance; ac07ff8 added recorded-act enforcement without updating
-cadence help. Impact: misleading recovery instructions; actual boundary enforcement
-is correct. Owner repo-local workflow/P4-SYSTEM.13; no director decision needed.
+Owned on clean f5739ec after workflow/census. Reproduced cadence help rc=1:
+variable-only command contradicts actual pre-push record requirement. 13266aa
+introduced guidance; ac07ff8 hardened enforcement without updating it. Fix only
+recovery text to name director-approved approved_push.sh and explain variable
+alone insufficient; never fabricate approval or push the project remote.
+The live How-to-apply alias in decision_push-cadence still calls the CI exception
+current. Primary fulfillment record says all three passed on76882c8 and approval
+expired2026-10-08 (observed2026-10-09); correct that live pointer only.
 
-Repair help to name scripts/approved_push.sh after explicit director approval,
-state variable alone is insufficient, preserve all cadence/enforcement behavior.
-Own finite behavioral controls requiring the act and rejecting obsolete command
-text; demonstrate RED against old output before fix. Review public self-test/temp
-routing, pre-push/approval tests, book and doctrine count before changes. No real
-push or approval fabrication. Focused synthetic local controls and existing
-boundary tests; update all derived doctrine/live/book counts only if arms grow.
-Commit clean before next CPU pair. Finalize exact scope after c26a handoff.
+Scoped public-tool review found two additional concrete defects, owned now:
+(i) cadence/pre-push/approved-push --self-test use plain mktemp -d, so inherit
+host TMPDIR (observed /var/folders/... outside repository volume). Baseline
+runs are explicitly redirected to target/p4-system-13/c26b/caller-temp; no
+outside data is created/deleted. Fix all three test-only allocators to derive
+owner repo/target/push-selftest and ignore caller TMPDIR. Add path controls first
+and see RED with a safe on-volume hostile caller temp; preserve success cleanup.
+(ii) approved-push baseline is6 pass/1 fail: copied real ledger already has two
+legitimate entries; "red suite left a ledger entry" falsely blames pre-existing
+history. Real ledger unchanged. Replace borrowed ledger with a literal synthetic
+prior approval and compare exact baseline bytes across the deliberately red
+suite. Exercise a nonempty fixture and preserve append/record-push tests.
+Baseline cadence11/0 and boundary14/0; all scratch cleaned under caller-temp.
+
+Finite changes: three self-test scratch allocators/guards, cadence help + three
+behavioral guidance controls, deterministic synthetic prior ledger and exact red-
+suite no-write comparison, fulfilled-decision pointer, book/live/task receipts.
+First guidance/path controls must fail old implementation; then repair and rerun
+all three public self-tests without redirected host temp. Baseline production
+cadence distance/verdict and complete normal pre_push/approved_push paths must
+stay byte-exact. All CPU/registry/canonical/frozen/archive data and real approval
+ledger unchanged. Preserve existing pending-reset/privilege/release ownership.
+
+These three helper self-tests are not project-doctrine registry members; rg
+census finds no CI/Makefile driver calls. Their local control totals may grow,
+while DERIVED-COUNTS' registered total652 stays unchanged; do not invent credit.
+Focused explicit tool tests, PUSH-RECORD, derived counts/bounds/frontier/reports/
+freeze/schema/book/shards and all six books, hooks, commit/empty brief/clean
+actual census. No Rust changes or real full-suite/push invocation required by
+this help/test-only repair. Next c27 ATOMIC-MISALIGN, reviewed only after clean
+commit; .14 retains statuses/experiments. Final scope is bounded to these fixes.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -478,6 +501,24 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c26b — **ROOT CAUSE**: baseline help rc=1 advertises obsolete
+  variable-only command (13266aa vs ac07ff8 recorded act). Three allocators
+  inherit host temp; controls on safe on-volume caller temp rc=1: cadence11/4,
+  boundary14/1, act6/2. Baseline act6/1 misclassifies legitimate prior ledger
+  entries as a new red-suite write. Live decision alias calls expired exception
+  current; primary fulfillment says all three green on76882c8/expired Oct8.
+- [x] `.13` c26b — **ADDRESSED**: explicit owner-derived test temp/nested
+  TMPDIR, three guidance controls, recorded-act help, corrected live alias,
+  synthetic prior ledger and exact no-write comparison. Hostile caller and
+  direct alternate-cwd helpers15/0,15/0,8/0 rc=0; no fixture directories left.
+- [x] `.13` c26b — **NO REGRESSION**: verify.py rc=0; normal pre-push/act
+  exact and cadence production exact except declared help. Real approval ledger/
+  fulfillment, CPU/canonical/98 registry/frozen/archive bytes exact; effective
+  96/114 unchanged. Helper tests are unregistered; LIVE652 arms/49 chapters/
+  P4 12/18 unchanged. Focused gates/all six books rc=0; hooks next. No real
+  project push or exceptional approval.
+  promotion: declined (established policy; public tests and provenance book retain the diagnosis and verification limits).
+
 - [x] `.13` c26a — **ROOT CAUSE**: fixed task ceiling131072 B; current123960
   leaves7112 B. Census rc=0: six completed spans81532 B, archive8 already59436 B;
   combined140968 cannot fit even without wrappers. Original5eaef2a SHA256
@@ -510,6 +551,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c26b | helper controls RED rc=1; hostile/direct15/0,15/0,8/0 rc=0; normal paths/real ledger/CPU/registry/frozen exact | effective96/114 and registered652 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26a | six payloads81532 B; exact source inverse123960 B/SHA; earlier parts/code/input/registry/frozen exact; explicit caps/new-file census | effective96/114 unchanged; focused/all six books rc=0; hooks next |
 
 ## Commit Log
@@ -518,9 +560,16 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c26b | `SEMULITH-P4-0155 (leaf P4-SYSTEM.13): align push guidance and local self-tests` | c27 ATOMIC-MISALIGN, remaining runtime pairs/freeze |
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c26b (SEMULITH-P4-0155): recorded-act refusal help,
+  fulfilled-exception pointer, on-volume helper fixtures and literal nonempty
+  approval history with exact red-suite no-write control. Helpers15/0,15/0,8/0;
+  real ledger/enforcement/CPU/registry/frozen exact, effective96/114 unchanged.
+  Next c27 ATOMIC-MISALIGN after clean workflow/census.
 
 - `2026-10-10`: `.13` c26a (SEMULITH-P4-0154): move six whole completed
   receipt spans81532 B to archive9; extract/authenticate and reconstruct exact

@@ -50,9 +50,10 @@ written here so it remains a decision someone made rather than an oversight nobo
   through `scripts/approved_push.sh '<their reason>'` per COMMIT.md: full local CI,
   committed approval ledger, then the guarded push. The original variable-only mechanism
   described above has since been hardened; the variable alone is insufficient.
-- **Current recovery exception:** [[decision_ci-recovery-push-approval]] records the
-  director's approval for the pushes needed to repair the current GitHub CI failures.
-  Do not ask again within that scope; ordinary cadence resumes after all three workflows pass.
+- **Completed recovery exception:** [[decision_ci-recovery-push-approval]] records
+  fulfillment observed on 2026-10-09: all three hosted workflows passed on 76882c8.
+  The approval expired when the last workflow passed on 2026-10-08. Ordinary
+  cadence applies; that completed exception grants no authority for later pushes.
 - **The number lives in `scripts/check_push_cadence.sh` and nowhere else.** `COMMIT.md` restates it
   and that script's self-test checks the two agree — the same no-duplicated-fact rule the canonical
   definition uses.

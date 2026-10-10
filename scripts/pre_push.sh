@@ -116,7 +116,17 @@ EOF
 }
 
 self_test() {
-  local pass=0 fail=0 tmp; tmp="$(mktemp -d)"
+  local owner_root
+  owner_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local test_temp_root="$owner_root/target/push-selftest"
+  mkdir -p "$test_temp_root"
+  export TMPDIR="$test_temp_root" # Nested git/toolchain scratch stays on this volume too.
+  local pass=0 fail=0 tmp; tmp="$(mktemp -d "$test_temp_root/boundary.XXXXXX")"
+  case "$tmp" in
+    "$owner_root/target/push-selftest/"*)
+      echo "  ok    GREEN scratch stays below the owning repository"; pass=$((pass+1)) ;;
+    *) echo "  FAIL  scratch escaped the owning repository's test directory"; fail=$((fail+1)) ;;
+  esac
 
   arm() { # arm <label> <expected-rc> <needle> — runs $BODY in $tmp/work
     local label="$1" want="$2" needle="$3" out rc

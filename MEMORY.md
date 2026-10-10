@@ -18,13 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c26b (SEMULITH-P4-0155) — repair stale
-  exceptional-push refusal guidance; actual recorded-act enforcement is correct.
-  c26a preserves six completed task payloads/81532 B in archive9, authenticates
-  every part and reconstructs committed5eaef2a123960 B exactly. Fixed caps stay.
-  All prior98 bindings/code/input/author/generated/frozen/archive bytes exact;
-  effective96/114 unchanged; nine runtime pairs/freeze. GUEST-GEN147, doctrine652
-  arms,book49 chapters. .14 retains statuses/structured experiments/registration.
+- next_action: `P4-SYSTEM.13` c27 (SEMULITH-P4-0156) — review and realize
+  ATOMIC-MISALIGN's runtime pair before the remaining eight runtime pairs/freeze.
+  c26b repairs recorded-act help, fulfilled-exception alias, all three helper
+  temp paths and nonempty-ledger red-suite assertion; helpers15/0,15/0,8/0.
+  Real ledger/enforcement/CPU/inputs/registry/frozen/archives exact, effective
+  96/114 unchanged. GUEST-GEN147, registered doctrine652,book49 chapters.
+  .14 retains requirement statuses/structured experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

@@ -85,9 +85,10 @@ main() {
             echo
             echo "  Two ways forward, and only two:"
             echo "    1. Wait. The cadence is $CADENCE commits; this is $n."
-            echo "    2. Ask the director. If they approve, THEY say so, and the approval is passed"
-            echo "       through explicitly with the reason they gave:"
-            echo "          $APPROVAL_VAR='<the director's reason>' git push"
+            echo "    2. Ask the director. Only after explicit approval, run the recorded act:"
+            echo "          scripts/approved_push.sh '<the director's reason>'"
+            echo "       It runs full local CI, commits the approval record, then pushes."
+            echo "       $APPROVAL_VAR alone no longer suffices; pre-push requires that record."
             echo
             echo "  ⛔ An agent may not supply this on its own judgement. The exception is the"
             echo "     director's to grant; the variable only carries it."
@@ -103,7 +104,17 @@ main() {
 # distance-from-upstream cannot be tested without one.
 # ---------------------------------------------------------------------------------------
 selftest() {
-  local pass=0 fail=0 tmp; tmp="$(mktemp -d)"
+  local owner_root
+  owner_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  local test_temp_root="$owner_root/target/push-selftest"
+  mkdir -p "$test_temp_root"
+  export TMPDIR="$test_temp_root" # Nested git/toolchain scratch stays on this volume too.
+  local pass=0 fail=0 tmp; tmp="$(mktemp -d "$test_temp_root/cadence.XXXXXX")"
+  case "$tmp" in
+    "$owner_root/target/push-selftest/"*)
+      echo "  ok    GREEN scratch stays below the owning repository"; pass=$((pass+1)) ;;
+    *) echo "  FAIL  scratch escaped the owning repository's test directory"; fail=$((fail+1)) ;;
+  esac
 
   arm() { # arm <label> <expected-rc> <needle> -- runs $BODY in $tmp/work
     local label="$1" want="$2" needle="$3" out rc
@@ -135,6 +146,15 @@ selftest() {
   arm "RED   the refusal names BOTH ways forward" 1 "Ask the director"
   arm "RED   the refusal names the approval variable" 1 "SEMULITH_PUSH_APPROVED"
   arm "RED   the refusal forbids an agent supplying approval itself" 1 "may not supply this on its own"
+  arm "RED   the refusal names the recorded approval act" 1 "scripts/approved_push.sh"
+  arm "RED   the refusal explains that the variable alone is insufficient" 1 "alone no longer suffices"
+  local refusal rc
+  set +e; refusal="$(cd "$tmp/work" && bash "$SC" --gate 2>&1)"; rc=$?; set -e
+  if [ "$rc" -eq 1 ] && ! grep -qE 'SEMULITH_PUSH_APPROVED=.*git push' <<<"$refusal"; then
+    echo "  ok    GREEN refusal has no obsolete variable-only push command"; pass=$((pass+1))
+  else
+    echo "  FAIL  refusal retains an obsolete variable-only push command or wrong verdict"; fail=$((fail+1))
+  fi
 
   BODY="SEMULITH_PUSH_APPROVED='shipping the review copy' bash '$SC' --gate"
   arm "GREEN an approved push is permitted" 0 "exceptional push approved"

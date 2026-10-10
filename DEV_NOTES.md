@@ -1,5 +1,32 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — align push guidance and local self-tests (P4-SYSTEM.13 c26b)
+
+Cadence guidance from13266aa still advertised a variable-only push after
+ac07ff8 required a committed approval. Enforcement was correct; change only
+refusal help to name the director-approved recorded act. The decision's live
+alias also called the fulfilled CI exception current; point to its completed
+record/expiration, leaving that record and the real approval ledger exact.
+
+All three helper self-tests used plain mktemp -d and inherited off-volume host
+TMPDIR. Baselines were safely redirected on-volume; new path/help controls first
+reject old code: cadence11/4, boundary14/1, act6/2 (each rc=1). Approval-act
+baseline6/1 revealed a separate fixture defect: its borrowed real ledger already
+had legitimate approvals, so the red-suite assertion falsely blamed old entries.
+Use a literal nonempty synthetic ledger and compare its exact baseline bytes.
+
+Derive owner-root/target/push-selftest for explicit allocators and nested Git/
+toolchain TMPDIR. All three pass with a hostile on-volume caller temp and direct
+from another working directory under the original environment:15/0,15/0,8/0,
+rc=0. No synthetic directory residue. Local toolchain cache files stay on-volume.
+verify.py rc=0: normal pre-push/approval-act paths and cadence distance/verdict/
+dispatch exact except help; real ledger/fulfillment, CPU/inputs/registry/frozen/
+archives exact; effective96/114 unchanged. The helper tests are not registered
+CI/doctrine members; registered652 arms/49 chapters/P4 12/18 unchanged. No real
+project push/approval act. Focused gates/all six books rc=0; hooks next.
+promotion: declined (established push policy; repaired public tests and book
+provenance example retain the failure mechanism and verified limits).
+
 ## _(2026-10-10)_ — preserve completed task receipts under fixed caps (P4-SYSTEM.13 c26a)
 
 P4 tree123960/131072 B leaves7112 B. Six completed spans total81532 B; archive8

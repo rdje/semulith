@@ -48,3 +48,42 @@ re-derivation a Rust deliverable, and the P1 checker lane owns it.
 
 Cite it, label it, do not count it. A claim with a named gap is usable; a claim with a hidden
 gap is the defect.
+
+## Exceptional push records and local self-tests
+
+An exceptional push below the commit cadence needs the director's explicit
+approval. After that approval, use the recorded act described in `COMMIT.md`:
+
+```bash
+scripts/approved_push.sh '<the director’s reason, verbatim>'
+```
+
+The act first runs full local CI, then appends and commits the approval in
+`docs/push-approvals.md`, then pushes through the boundary. Setting the approval
+variable alone does not supply that record. The cadence refusal names this act;
+it does not grant approval. The CI recovery exception recorded in
+`docs/decisions/decision_ci-recovery-push-approval.md` was fulfilled on `76882c8`
+and expired when all three hosted workflows had passed on 2026-10-08. Ordinary
+cadence applies afterward.
+
+The three helper tests can be run independently:
+
+```bash
+bash scripts/check_push_cadence.sh --self-test
+bash scripts/pre_push.sh --self-test
+bash scripts/approved_push.sh --self-test
+```
+
+Each derives `target/push-selftest/` from its owning repository, including nested
+Git/toolchain temporary storage, rather than accepting the caller's temp path.
+Successful tests remove their synthetic fixture directories. Their Git pushes
+use local throwaway upstreams and stub suites; they neither push this project
+nor establish a real full-CI result or exceptional-push authorization. These
+helper tests are not registered doctrine arms, so their local totals do not add
+to the registered doctrine census.
+
+The approval-act test starts with a literal synthetic prior approval. When its
+stub suite fails, the entire ledger must remain byte-for-byte equal to that
+baseline, and no commit may be added. Merely finding an entry is insufficient:
+that entry might have existed before the failed attempt. A separate successful
+case checks that the new approval commit reaches the local synthetic upstream.
