@@ -1,5 +1,28 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — keep memory witnesses in a bounded book chapter (P4-SYSTEM.13 c21a)
+
+The integer chapter reached 32,287 B against fixed 32,768 B per-part ceiling,
+leaving 481 B for future runtime work. Book family has 49 tracked files, not its
+80-file cap, and 448,559 B against 524,288 B. Move LOAD-EXT/LOAD-X0/ENDIAN as an
+ordered suffix into contract-memory.md, preserving every section and separator.
+The suffix is 10504 B, SHA256 098a50b7a66bd45c39c91dbf5a73025e75f7720c16a2397a00ef61db9d241109.
+Remove only the new navigation line and chapter header to reconstruct the exact
+32,287 B original, SHA256 37589ade3b38e2065f8399cb7f475d74b0c2209636b33e836aa69a6629f64c28.
+Integer/memory chapters now 21,872/10,782 B; caps unchanged. SUMMARY, index,
+profile pointers/GS report and current runtime summary follow the split.
+
+`python3 target/p4-system-13/c21a/verify.py` rc=0 verifies inverse and all prior
+88 registry/core/author/generated/frozen bytes plus 112 base/348 GC canonical/
+guest inputs. Effective 86/114 unchanged; no Rust code changed. LIVE_STATUS
+changes only book chapters 47→48, doctrine arms 650/P4 12/18 unchanged. Focused
+gates and main+five model books rc=0, including six derived claims and 40 index
+rows. Explicit new-file census: 50 files/449,248 B, fixed caps hold. Hooks then
+c21b NO-DELAY-SLOTS.
+promotion: declined (lossless partition under existing fixed containment policy;
+source/suffix/inverse hashes retained in this entry and owning task).
+
+
 ## _(2026-10-10)_ — discriminate the selected little-endian byte lanes (P4-SYSTEM.13 c20)
 
 OB-ENDIAN was declared but unbound. Authenticated RV32I 1.1.6 delegates the

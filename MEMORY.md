@@ -18,15 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c21a — partition the integer witness chapter
-  under its fixed cap before c21b NO-DELAY-SLOTS; preserve sections byte-exactly
-  and update book navigation/derived counts. c20 binds ENDIAN over 64/128,
-  with nine isolated author and nine public provider reversals rejected by the
-  cross-width NEG matrix; 256 byte values remain invariant. Registry 88,
-  effective 86/114; fourteen runtime pairs/freeze remain. All prior 86 bindings,
-  112 base/348 GC inputs/core/author/generated/frozen exact. Corpus
-  167/5365/10524; GUEST-GEN 145, doctrine 650 arms, book 47 chapters.
-  .14 owns statuses/structured experiments/registration.
+- next_action: `P4-SYSTEM.13` c21b — review NO-DELAY-SLOTS control-flow
+  observations and independent wrong-rule discrimination before binding its pair.
+  c21a partitions memory witnesses byte-exactly from the nearly full integer
+  chapter, preserving ordered inverse hash/length and fixed bounds. Book now
+  48 chapters; arithmetic/system/memory chapters retain all examples and controls.
+  Registry 88/effective 86/114 unchanged; fourteen runtime pairs/freeze remain.
+  All canonical/guest/core/author/generated/frozen/registry bytes exact. Corpus
+  167/5365/10524; GUEST-GEN 145, doctrine 650 arms. .14 owns statuses/structured
+  experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

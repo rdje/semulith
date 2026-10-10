@@ -67,7 +67,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 6a33e11f008b0c50f342d4c72de38cad46babbabcf3b2ca087a4381a733fb7e8`
+  `sha256 5a8f99efe173c7c30f6d2668c47e1605e94576f132396dde3f1df98e94d3ac8e`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

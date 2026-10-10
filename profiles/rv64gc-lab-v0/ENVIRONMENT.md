@@ -20,7 +20,7 @@ OB-LOAD-X0 uses direct request and trap-state witnesses for all seven load forms
 the legacy GC register/fetch comparison alone cannot distinguish a skipped x0
 load. OB-ENDIAN binds cross-width byte-lane observations that discriminate even
 paired read/write reversal, while byte accesses remain invariant. Worked cases
-and mutation controls: `docs/book/src/plan/p4/contract-integer.md`.
+and mutation controls: `docs/book/src/plan/p4/contract-memory.md`.
 
 ## The versions
 
@@ -128,7 +128,8 @@ The canonical membership is `profiles/rv64gc-lab-v0/contract.sexp`; the executab
 registry is `crates/semulith-verify/src/contract_checks_rv64gc.rs`.
 [GS-REPORT.md](GS-REPORT.md) derives effective coverage from those inputs.
 The [runtime](docs/book/src/plan/p4/contract-runtime.md) and
-[integer](docs/book/src/plan/p4/contract-integer.md) chapters retain examples,
+[integer](docs/book/src/plan/p4/contract-integer.md) and
+[memory](docs/book/src/plan/p4/contract-memory.md) chapters retain examples,
 controls and finite comparison limits.
 
 Earlier progress sections are preserved byte-verbatim in

@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0145 (leaf P4-SYSTEM.13 c21a) — preserve memory witnesses in a bounded book chapter
+
+- Move LOAD-EXT, LOAD-X0 and ENDIAN sections byte-exactly into a dedicated
+  memory runtime chapter; ordered inverse reconstructs all 32,287 original bytes.
+  Fixed per-part/family caps unchanged; arithmetic/memory chapters 21,872/10,782 B.
+- Update navigation, derived index, profile pointer/report and resume. Prior
+  88 bindings/canonical/guest/core/author/generated/frozen bytes exact; 86/114 unchanged.
+- LIVE_STATUS chapters 47→48; 650 arms and P4 12/18 unchanged. Focused gates
+  and all books precede hooks. Next c21b NO-DELAY-SLOTS.
+
 ## SEMULITH-P4-0144 (leaf P4-SYSTEM.13 c20) — realize little-endian byte-lane observations
 
 - Bind ENDIAN through scope-mem/dir-ext-matrix, 64 boundaries/128 parcels.

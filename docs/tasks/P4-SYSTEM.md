@@ -293,6 +293,25 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c21a — retain memory witnesses in a bounded chapter (`2026-10-10`, `SEMULITH-P4-0145`)
+
+Owned on clean 2f45c52 after hooks/empty brief/actual job census. The integer
+chapter is 32,287 B under a fixed 32,768 B per-part cap (481 B headroom); the
+book family is 49 tracked files/448,559 B under 80 files/524,288 B, not a file-count
+blocker. Review readme route, containment policy, SUMMARY/index generator,
+integer/runtime/v2 book sections, profile pointers and live count derivation.
+
+Move exactly the LOAD-EXT, LOAD-X0 and ENDIAN section suffix into a memory
+runtime chapter. Preserve every section byte and ordered reconstruction of the
+committed original; add only chapter title/navigation and current summary links.
+Keep caps fixed. Update SUMMARY, generated index, profile pointer/report, live
+chapter count and resume/task/notes. All canonical/guest/core/author/registry/
+frozen data must stay byte-exact and effective 86/114 unchanged. Verify inverse
+SHA256/length, prior 88 bindings/112 base+348 GC inputs, shards/bounds/frontier/
+counts/freeze/reports/schema/main+five model books and hooks. No Rust changes;
+focused document verification suffices. Commit/brief/clean/actual census before
+c21b NO-DELAY-SLOTS. .14 retains requirement statuses/experiments.
+
 ### `.13` c20 — little-endian byte lanes (`2026-10-10`, `SEMULITH-P4-0144`)
 
 Owned on clean 6ea2f6b after hooks/empty brief/actual job census. Review ROADMAP
@@ -622,6 +641,31 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c21a — **ROOT CAUSE**: measured integer book 32,287 B under
+  fixed 32,768 B part cap (481 B room). Family 49 tracked files/448,559 B under
+  80/524,288, so a bounded split is available. Existing examples must remain
+  reviewable before further feature work. Source hash/length verified with
+  `python3 target/p4-system-13/c21a/verify.py`, rc=0.
+
+- [x] `.13` c21a — **ADDRESSED**: move ordered LOAD-EXT/LOAD-X0/ENDIAN
+  suffix, 10504 B SHA256 098a50b7a66bd45c39c91dbf5a73025e75f7720c16a2397a00ef61db9d241109,
+  with section bytes/separator intact. Removing only new header/navigation
+  reconstructs original 32,287 B SHA256 37589ade3b38e2065f8399cb7f475d74b0c2209636b33e836aa69a6629f64c28.
+  Inverse proof rc=0 (`target/p4-system-13/c21a/verify.py`); chapter sizes
+  21,872/10,782 B. SUMMARY/index/v2/profile links and live count follow; caps fixed.
+
+- [x] `.13` c21a — **NO REGRESSION**: all prior 88 registry entries,
+  core/author/generated/frozen/schema/doctrine bytes and 112 base/348 GC canonical/
+  guest inputs exact; effective 86/114 unchanged (same verification rc=0).
+  New file included in explicit cap census: 50 files/449,248 B under fixed
+  80/524,288, each part ≤32,768 B. No Rust changes. Focused gates/books rc=0:
+  225 frozen rows, 37 fixed route caps, 33 frontiers, six derived claims, index
+  40 rows, three contract versions/zero findings, five fresh reports, 270 schema
+  inputs/two named skips, main+five model books; whitespace rc=0. Hooks precede
+  c21b NO-DELAY-SLOTS. LIVE_STATUS chapters 47→48; arms 650/P4 12/18 unchanged. .14 retains statuses/
+  experiments. promotion: declined (exact preservation proof retained here/DEV;
+  existing fixed containment policy governs the split).
+
 - [x] `.13` c20 — **ROOT CAUSE**: ENDIAN remained declared/unbound. Gate
   observed missing CHK-ENDIAN-POS (`cargo test -p semulith-verify
   every_check_bound_through_the_scope_slice_is_realized`, rc=101). Authenticated
@@ -780,6 +824,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c21a | ordered suffix/inverse hashes exact; all prior registry/input/core/frozen bytes exact; navigation/counts; focused gates/books | effective 86/114 unchanged; book 48 chapters; hooks before c21b |
 | `2026-10-10` | `.13` c20 | 9 author/9 public provider controls, 256 byte values; declaration RED; Rust 167/17/206; full corpus/prior bytes exact | registry 88; effective 86/114; focused gates/books rc=0; hooks before c21a |
 | `2026-10-10` | `.13` c19 | 26 direct cases, 14 bad tables, all 19 erased fault cases; disabled observer RED; public full-corpus gap; Rust 167/17/206; prior bytes exact | registry 86; effective 84/114; focused gates/books rc=0; hooks before c20 |
 | `2026-10-10` | `.13` c18c | new controls RED then21/15/8 green; actual hash refusals; seven routes;72-file snapshot/three-file restore; prior input/registry identity | make ci all five legs green; effective 82/114 unchanged; arms 650 |
@@ -810,6 +855,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c21a | `SEMULITH-P4-0145 (leaf P4-SYSTEM.13): preserve memory witnesses in a bounded book chapter` | c21b NO-DELAY-SLOTS, then remaining runtime pairs/freeze |
 | `.13` c20 | `SEMULITH-P4-0144 (leaf P4-SYSTEM.13): realize little-endian byte-lane observations` | c21a book partition, then c21b NO-DELAY-SLOTS |
 | `.13` c19 | `SEMULITH-P4-0143 (leaf P4-SYSTEM.13): realize discarded-load requests and faults` | c20 ENDIAN, then remaining runtime pairs/freeze |
 | `.13` c18c | `SEMULITH-P4-0142 (leaf P4-SYSTEM.13): authenticate citation source bytes before judging text` | c19 LOAD-X0, then remaining runtime pairs/freeze |
@@ -835,6 +881,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c21a (SEMULITH-P4-0145): exact ordered suffix
+  and inverse preserve all memory witness bytes in a bounded chapter; caps fixed.
+  Current navigation/derived reports follow; chapters 48, effective 86/114 unchanged.
+  c21b NO-DELAY-SLOTS follows hooks/brief/clean actual census.
 
 - `2026-10-10`: `.13` c20 (SEMULITH-P4-0144): bind ENDIAN cross-width
   witnesses over 64/128 after nine author/nine public reversal controls; byte
