@@ -127,6 +127,37 @@ EOF
   out="$(check_tree "$t" fs 2>&1)"; rc=$?
   arm "GREEN a document with no same-named schema is skipped BY NAME" "$rc" 0 "$out" "__SKIPPED__ 1 (baseline.sexp)"
 
+  # The real references schema and single mapper, with memory-only synthetic data.
+  verification_case() { python3 "$ROOT/scripts/probe_experiment_verification.py" --case "$1"; }
+  out="$(verification_case complete 2>&1)"; rc=$?
+  arm "GREEN complete structured verification" "$rc" 0 "$out" "VERIFICATION complete: ok"
+  out="$(verification_case roundtrip 2>&1)"; rc=$?
+  arm "GREEN nested verification roundtrip preserves every record and argv" "$rc" 0 "$out" "VERIFICATION roundtrip: ok"
+  out="$(verification_case legacy 2>&1)"; rc=$?
+  arm "GREEN legacy references retain their dictionary shape" "$rc" 0 "$out" "VERIFICATION legacy: ok"
+  out="$(verification_case unknown 2>&1)"; rc=$?
+  arm "RED verification unknown fields at every depth" "$rc" 0 "$out" "VERIFICATION unknown: ok"
+  out="$(verification_case type 2>&1)"; rc=$?
+  arm "RED verification wrong scalar types at every depth" "$rc" 0 "$out" "VERIFICATION type: ok"
+  out="$(verification_case arity 2>&1)"; rc=$?
+  arm "RED verification wrong scalar arity at every depth" "$rc" 0 "$out" "VERIFICATION arity: ok"
+  out="$(verification_case duplicate 2>&1)"; rc=$?
+  arm "RED verification duplicate singular fields at every depth" "$rc" 0 "$out" "VERIFICATION duplicate: ok"
+  out="$(verification_case missing 2>&1)"; rc=$?
+  arm "RED verification missing required fields at every depth" "$rc" 0 "$out" "VERIFICATION missing: ok"
+  out="$(verification_case collection 2>&1)"; rc=$?
+  arm "RED verification empty required collections" "$rc" 0 "$out" "VERIFICATION collection: ok"
+  out="$(verification_case digest 2>&1)"; rc=$?
+  arm "RED verification malformed input and observation digests" "$rc" 0 "$out" "VERIFICATION digest: ok"
+  out="$(verification_case version 2>&1)"; rc=$?
+  arm "RED verification unsupported method version" "$rc" 0 "$out" "VERIFICATION version: ok"
+  out="$(verification_case unique 2>&1)"; rc=$?
+  arm "RED verification repeated identity-list entries" "$rc" 0 "$out" "VERIFICATION unique: ok"
+  out="$(verification_case vocabulary 2>&1)"; rc=$?
+  arm "RED verification unsupported closed vocabularies" "$rc" 0 "$out" "VERIFICATION vocabulary: ok"
+  out="$(verification_case mapper-refusal 2>&1)"; rc=$?
+  arm "RED mapper unknown nested fields and duplicate blocks" "$rc" 0 "$out" "VERIFICATION mapper-refusal: ok"
+
   rm -rf "$t"
   printf 'DOSSIER-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

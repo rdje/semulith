@@ -46,9 +46,10 @@ establish adequate evidence, observed controls, current artifacts or independenc
 Structured GC runs and policy-derived requirement status remain P4.14 work; the
 generated gate report above remains the acceptance authority.
 
-## Prospective qualification contract
+## Qualification contract and structured syntax
 
 The complete declaration below is included from its authoritative decision.
-Its implementation status is explicit; the current gate report is unchanged.
+Grammar/mapping are implemented; qualification remains closed pending the evaluator.
+The current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}

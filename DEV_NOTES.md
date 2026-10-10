@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — implement matched-GPR grammar without premature credit (P4-SYSTEM.14 a13)
+
+The a12 prospective block is now an optional experiment child in the existing
+reference schema and single mapper. Repeated property/input/producer/observation/
+run/control/pair records survive; argv preserves order, repetitions and empty
+arguments. Runs name producers and repeat_of explicitly. Structure checks cover
+types/arity/cardinality/facets, not artifact identity or evidence adequacy.
+PROFILE-CONSISTENCY therefore refuses every new block pending its evaluator.
+
+Predecessor6afe055 refuses the block and loses it on writing; the new roundtrip
+matches independently constructed data. All243 current dossier dictionaries,
+including three reference dossiers, remain exact against that predecessor.
+Every old schema construct/field survives unchanged. Seven deliberate writer/
+reader child-family omissions each fail; removing version/digest/uniqueness facets
+exposes their controls. Removing only the qualification guard gives50pass/1fail
+for its intended reason. Current schema17/0 and consistency51/0, focused13 and
+seven books pass. Complete illustrative book record and printed fixture validate;
+neither represents execution. Full five-leg shared-mapping CI passes, including
+Rust173/17/253, every doctrine, browser build/smoke and seven books.
+
+No canonical data/runtime/frozen/archive change, no cap expansion or CPU credit.
+Evidence target/p4-system-14/a13. Next relationship/pin/artifact evaluator, then
+bounded retention and fresh captures. promotion: the existing matched-experiment
+decision owns the implemented vocabulary, examples and explicit pending boundary.
+
 
 ## _(2026-10-10)_ — declare prospective matched-GPR capture contract (P4-SYSTEM.14 a12)
 

@@ -289,12 +289,37 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | qualified experiment schema/mapping/records, then policy/status checks and mirror reconciliation |
+| 1 | `P4-SYSTEM.14` | `active` | qualification relationship/artifact evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a13 — structured verification grammar and mapping (completed, SEMULITH-P4-0204)
+
+Owned on clean6afe055, brief0/untracked and actual process census OK, before edits.
+Implement the declared optional matched-gpr-v1 block in references.sexp and the
+single dossier mapper. Preserve every legacy dictionary and generated consumer.
+Add discriminating nested schema and roundtrip controls. Keep PROFILE-CONSISTENCY
+closed on any new block until relationship/artifact evaluation is implemented;
+syntax support alone earns no qualification. No canonical capture, runtime change,
+status advance, retention store or cap raise. Review the contract and GC evidence
+book, map all child fields once, exercise loss/unknown/type/cardinality controls,
+then focused gates/full CI/seven books and protected scope before committing.
+Evidence target/p4-system-14/a13; all scratch stays on the repository volume.
+Next relationship/pin/artifact evaluator, then bounded retention and fresh capture.
+
+Grammar/mapping and the fail-closed consistency guard are implemented. Schema17/0,
+consistency51/0, focused13 and seven books pass. Predecessor6afe055 refuses/drops
+the new block; all243 old dictionaries/three reference dossiers and old schema
+constructs/fields are exact. Seven lost-family controls, three removed facets and
+qualification-guard removal50/1 expose their intended failures. Complete book
+example/CLI validate as syntax only. Full five-leg shared-mapping CI passes:
+Rust173/17/253, all doctrines, browser build/smoke and seven books. Protected
+runtime/canonical/profile/frozen/archive populations and fixed caps stay exact.
+Derive39doctrines/747named arms/38routes. No CPU credit; evaluator next.
+promotion: decision_qualified-matched-experiment-contract.md owns vocabulary and limits.
 
 ### `.14` a12 — declare the qualified experiment contract (completed, SEMULITH-P4-0203)
 
@@ -977,6 +1002,15 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a13 — **ROOT CAUSE**: prove.py rc=0: old6afe055 schema/mapper
+  refuse verification; old writer loses nested data; new grammar needed by a12.
+- [x] `.14` a13 — **ADDRESSED**: schema/profile self-tests rc=0 (17/0 and51/0):
+  nested records/argv exact; seven lost-child/three facet controls refuse;
+  deleting qualification guard gives50/1 for intended reason, no premature credit.
+- [x] `.14` a13 — **NO REGRESSION**: focused13/make book/prove.py rc=0:
+  seven books, complete example,243 dictionaries/old schema exact; make ci rc=0,
+  Rust173/17/253/all five legs green, protected data/archive and caps unchanged.
+
 - [x] `.14` a12 — **ROOT CAUSE**: actual mapper probe rc=0 confirms
   EXPERIMENT-CONTRACT-CURRENT: undeclared verification field refuses; existing
   flat metadata does not implement the prospective pinned-capture contract.
@@ -1119,6 +1153,11 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a13: schema17/0, consistency51/0, predecessor/inverse/lost-child/facet/guard controls,
+focused13/seven books/complete illustrative syntax/full five-leg CI rc=0;
+Rust173/17/253. First SEAM check caught a missing rc signature in the new acceptance
+line; correct that line to name the actual tool result, leaving gate rules intact.
+
 a12: focused9/seven books/full rendered contract/actual undeclared-field refusal/
 protected scope rc=0; declaration only, no implementation or acceptance credit.
 
@@ -1151,6 +1190,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a13 | `SEMULITH-P4-0204 (leaf P4-SYSTEM.14): carry structured experiment verification` | relationship/pin/artifact evaluator, bounded retention, first fresh capture |
 | `.14` a12 | `SEMULITH-P4-0203 (leaf P4-SYSTEM.14): declare the qualified matched-experiment contract` | shared schema/mapping/validator, bounded retention, first fresh capture |
 | `.14` a11 | `SEMULITH-P4-0202 (leaf P4-SYSTEM.14): reject invalid experiment identities` | structured GC experiments/controls/producers, policy/status derivation and mirrors |
 | `.14` a10 | `SEMULITH-P4-0201 (leaf P4-SYSTEM.14): register RV64GC and enforce every required category` | containment prototype/review under LIVE-CONTAINMENT.4, then .14 experiments/policy/status/mirrors |

@@ -255,6 +255,10 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
                     findings.append(
                         f"DUPLICATE EXPERIMENT ID {name}/{xid}: identity appears twice")
                 experiment_ids.add(xid)
+                if "verification" in x:
+                    findings.append(
+                        f"UNQUALIFIED EXPERIMENT VERIFICATION {name}/{xid}: "
+                        "relationship/artifact evaluator pending; syntax gives no qualification")
                 models = x.get("models") or []
                 if len(models) != len(set(models)):
                     findings.append(
@@ -519,6 +523,10 @@ EOF
               (resolution \"normalized\")
   )"
   refs "$EXP)";                                                 arm "GREEN a complete experiment record" 0 "__CHECKED__ 1"
+  # A schema-conforming block must not receive legacy consistency credit while
+  # the relationship/artifact evaluator is still unimplemented.
+  VERIFIED_EXP="$(python3 "$ROOT/scripts/probe_experiment_verification.py" --emit-experiment)"
+  refs "$BASE$VERIFIED_EXP)";                                   arm "RED   new verification remains closed pending evaluator" 1 "UNQUALIFIED EXPERIMENT VERIFICATION"
   refs "$(printf '%s' "$EXP" | grep -v 'control'))";            arm "RED   agreement with no control" 1 "NO CONTROL"
   refs "$(printf '%s' "$EXP" | grep -v 'reproduced'))";        arm "RED   an experiment that never reproduced" 1 "THIN EXPERIMENT"
   refs "$(printf '%s' "$EXP" | grep -v 'observed'))";          arm "RED   a difference with nothing observed" 1 "THIN DIFFERENCE"

@@ -675,6 +675,51 @@ _EXPERIMENT_SPEC = [("id", "str"), ("program", "str"), ("instructions", "int"),
                     ("elf_sha256", "str"), ("verdict", "str"), ("expectations", "str"),
                     ("reproduced", "str"), ("exercises", "str"), ("control", "str")]
 
+# The optional capture graph has one mapping owner, just like the legacy record.
+# Schema facets and evidence adequacy are separate checks, not parser side effects.
+_VERIFICATION_SPEC = [("format_version", "str"), ("comparison_rule", "str"),
+                      ("limitations", "strs")]
+_VERIFICATION_PARTS = (
+    ("property", [("id", "str"), ("requirement_id", "str"),
+                  ("obligation_ids", "strs"), ("observation_kinds", "strs"),
+                  ("statement", "str")]),
+    ("input", [("id", "str"), ("role", "str"), ("path", "str"), ("sha256", "str")]),
+    ("producer", [("id", "str"), ("role", "str"), ("version", "str"),
+                  ("candidate_id", "str"), ("input_ids", "strs"),
+                  ("shared_input_ids", "strs")]),
+    ("observation", [("id", "str"), ("role", "str"), ("path", "str"),
+                     ("byte_size", "int"), ("sha256", "str")]),
+    ("run", [("id", "str"), ("kind", "str"), ("argv", "strs"),
+             ("input_ids", "strs"), ("producer_ids", "strs"), ("repeat_of", "str"),
+             ("process_exit", "int"), ("verdict", "str"), ("observation_ids", "strs")]),
+    ("control_run", [("id", "str"), ("run_id", "str"), ("mutation_input_ids", "strs"),
+                     ("property_ids", "strs"), ("expected_verdict", "str"),
+                     ("observed_verdict", "str"), ("reason", "str")]),
+    ("producer_pair", [("id", "str"), ("left", "str"), ("right", "str"),
+                       ("subsystem", "str"), ("assessment", "str"),
+                       ("shared_input_ids", "strs"), ("evidence", "str"),
+                       ("consequence", "str")]),
+)
+
+
+def _verification_to_form(doc: dict) -> list:
+    form = [S.Symbol("verification"), *_emit_flat(_VERIFICATION_SPEC, doc)]
+    for head, spec in _VERIFICATION_PARTS:
+        for rec in doc.get(head, []):
+            form.append([S.Symbol(head), *_emit_flat(spec, rec)])
+    return form
+
+
+def _verification_to_doc(form) -> dict:
+    d = _read_flat(_VERIFICATION_SPEC, form, "verification",
+                   skip=tuple(head for head, _ in _VERIFICATION_PARTS))
+    for head, spec in _VERIFICATION_PARTS:
+        records = [_read_flat(spec, c, f"verification/{head}")
+                   for c in _children_in(form, head)]
+        if records:
+            d[head] = records
+    return d
+
 _DIFFERENCE_SPEC = [("id", "str"), ("kind", "str"), ("observed", "str"), ("resolution", "str")]
 
 _INDEPENDENCE_SPEC = [("subsystem", "str"), ("pair", "strs"), ("verdict", "str"),
@@ -703,6 +748,8 @@ def references_to_form(doc: dict) -> list:
                             ("encoding_source", "encoding_source", _ENCODING_SOURCE_SPEC)):
         for rec in doc.get(key, []):
             form = [S.Symbol(head), *_emit_flat(spec, rec)]
+            if key == "experiment" and "verification" in rec:
+                form.append(_verification_to_form(rec["verification"]))
             if key == "encoding_source":
                 for f in rec.get("file", []):
                     form.append([S.Symbol("file"), *_emit_flat(_ENC_FILE_SPEC, f)])
@@ -720,14 +767,18 @@ def references_to_doc(form) -> dict:
         d["host"] = _read_flat(_HOST_SPEC, host, "host")
     for key, spec, extra in (("candidate", _CANDIDATE_SPEC, None),
                              ("attempt", _ATTEMPT_SPEC, None),
-                             ("experiment", _EXPERIMENT_SPEC, None),
+                             ("experiment", _EXPERIMENT_SPEC, "verification"),
                              ("difference", _DIFFERENCE_SPEC, None),
                              ("independence", _INDEPENDENCE_SPEC, None),
                              ("encoding_source", _ENCODING_SOURCE_SPEC, "file")):
         recs = []
         for c in _children_in(form, key):
             rec = _read_flat(spec, c, key, skip=(extra,) if extra else ())
-            if extra:
+            if key == "experiment":
+                verification = _opt_child(c, "verification")
+                if verification is not None:
+                    rec["verification"] = _verification_to_doc(verification)
+            elif extra:
                 rec[extra] = [_read_flat(_ENC_FILE_SPEC, f, extra)
                               for f in _children_in(c, extra)]
             recs.append(rec)

@@ -2,23 +2,24 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — prospective contract; implementation pending
-- **Owner / source:** `P4-SYSTEM.14` a12, `SEMULITH-P4-0203`; existing GC verification policy and evidence-graph requirements
-- answers: What must a new GC matched experiment carry before it can receive qualification credit?
+- **Status:** `active` — grammar/mapping implemented; qualification and retention pending
+- **Owner / source:** `P4-SYSTEM.14` a12–a13, `SEMULITH-P4-0203`/`0204`; existing GC verification policy and evidence-graph requirements
+answers: What must a new GC matched experiment carry, what syntax is implemented, and why does qualification remain closed?
 
 ## The fact / decision
 
 <!-- ANCHOR: contract -->
 Extend the existing `references.sexp` experiment with an optional, versioned
 `verification` block for `matched-gpr-v1`. Keep legacy experiment fields and
-records intact. The block will carry typed identities and relationships for
+records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Current implementation:** the existing grammar and checker carry the legacy
-flat metadata and enforce experiment/model/pair identities. The block specified
-here, its mapping, artifact verifier and qualification evaluator are not yet
-implemented. No GC record is qualified by this declaration. This contract applies
+**Current implementation:** a13 implements the optional block in the existing
+reference schema and single dossier mapper. DOSSIER-SCHEMA checks its shape;
+PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
+while the relationship/artifact evaluator is pending. Legacy flat metadata and
+experiment/model/pair checks remain intact. No GC record is qualified. This contract applies
 prospectively, before the forthcoming fresh qualification runs, without backdating
 the historical experiments or weakening `profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md`.
 
@@ -40,8 +41,8 @@ It cannot establish unrecorded FP registers, memory, CSRs, request counts or ful
 architectural equivalence. Other observation methods need their own explicit
 versioned contract before they receive credit.
 
-The future block has the following required information. These are contract
-fields for the forthcoming schema, not currently accepted syntax or commands.
+The block has the following required information. Syntax is implemented; matching
+relationships and authenticated execution evidence remain separate requirements.
 
 | Information | Required content and relationship |
 | --- | --- |
@@ -93,7 +94,7 @@ under this method until explicitly requalified.
 
 ### Implementation and retention sequence
 
-1. Extend `schema/references.sexp` and the single mapping owner
+1. Implemented at a13: extend `schema/references.sexp` and the single mapping owner
    `scripts/dossier_sexp.py`; prove all existing dossier dictionaries and generated
    consumers remain exact, and exercise the new nested fields with positive and
    malformed/lost-child controls.
@@ -116,7 +117,98 @@ under this method until explicitly requalified.
    gate/policy criteria are actually met. Preserve old records and explicit successor
    edges; do not rewrite a historical capture to appear freshly executed.
 
-Retention layout and schema implementation are the next owned slices. This decision
+Relationship/artifact evaluation and retention layout are the next owned slices. This decision
 does not create an artifact store, change a cap, retire a source, run a reference,
 change a requirement status or close a CPU-SYSTEM axis.
+
+### Implemented syntax and review commands
+
+The optional block is a direct child of `experiment`. Its scalar fields are
+`format_version`, `comparison_rule` and repeated nonempty `limitations`. Its
+repeated children are `property`, `input`, `producer`, `observation`, `run`,
+`control_run` and `producer_pair`. Each record has an `id`. At least two producers
+and three observations/runs are required structurally; every other collection
+must be nonempty. Those counts do not prove baseline/repeat/control coverage.
+
+| Child | Other fields; brackets mean optional |
+| --- | --- |
+| `property` | `requirement_id`, repeated `obligation_ids`, repeated `observation_kinds` (`gpr-change`, `witnessed-delivery`), `statement` |
+| `input` | `role`, `path`, `sha256` |
+| `producer` | `role` (`reference`, `expected`), `version`, [`candidate_id`], repeated `input_ids`, [repeated `shared_input_ids`] |
+| `observation` | `role`, `path`, integer `byte_size`, `sha256` |
+| `run` | `kind`, repeated ordered `argv`, repeated `input_ids`, repeated `producer_ids`, [`repeat_of`], integer `process_exit`, `verdict`, repeated `observation_ids` |
+| `control_run` | `run_id`, repeated `mutation_input_ids`, repeated `property_ids`, `expected_verdict`, `observed_verdict`, `reason` |
+| `producer_pair` | `left`, `right`, `subsystem`, `assessment`, [repeated `shared_input_ids`], `evidence`, `consequence` |
+
+Identity lists must be nonempty and unique when required. `argv` preserves order,
+repeated arguments and empty arguments. An optional absent list stays absent in
+the mapped dictionary. Digests are 64 lowercase hexadecimal characters. Verdicts
+are `AGREE`, `DIVERGE`, `REFUSED`; an expected control verdict is `DIVERGE` or
+`REFUSED`. Assessments use the existing four values: `shared`, `not-shared`,
+`no-evidence-of-sharing`, `not-examined`. A failed control may honestly record
+`observed_verdict "AGREE"`; syntax cannot turn that into adequate evidence.
+
+This complete illustrative experiment passes the **shape** contract. Its dummy
+pins and paths are not artifacts or a qualified capture. Adding it to an otherwise
+consistent dossier causes the pending-evaluator refusal described above.
+
+```lisp
+(experiment (id "example-v1") (program "example.s") (instructions 1)
+  (models "sail-riscv") (verdict "AGREE") (reproduced "illustration only")
+  (control "illustration only")
+  (verification (format_version "matched-gpr-v1")
+    (comparison_rule "example-rule") (limitations "synthetic; no execution evidence")
+    (property (id "quotient") (requirement_id "REQ-example")
+      (obligation_ids "OBL-example") (observation_kinds "gpr-change")
+      (statement "quotient at the declared boundary"))
+    (input (id "guest") (role "guest") (path "target/example/guest.elf")
+      (sha256 "0000000000000000000000000000000000000000000000000000000000000000"))
+    (input (id "wrong") (role "mutated-expectation") (path "target/example/wrong.sexp")
+      (sha256 "1111111111111111111111111111111111111111111111111111111111111111"))
+    (producer (id "reference") (role "reference") (version "example")
+      (candidate_id "sail-riscv") (input_ids "guest"))
+    (producer (id "expected") (role "expected") (version "example") (input_ids "guest"))
+    (observation (id "base-trace") (role "raw-gpr") (path "target/example/base.trace")
+      (byte_size 1) (sha256 "2222222222222222222222222222222222222222222222222222222222222222"))
+    (observation (id "repeat-trace") (role "raw-gpr") (path "target/example/repeat.trace")
+      (byte_size 1) (sha256 "2222222222222222222222222222222222222222222222222222222222222222"))
+    (observation (id "control-trace") (role "raw-gpr") (path "target/example/control.trace")
+      (byte_size 1) (sha256 "2222222222222222222222222222222222222222222222222222222222222222"))
+    (run (id "base") (kind "baseline") (argv "example-runner") (input_ids "guest")
+      (producer_ids "reference") (producer_ids "expected")
+      (process_exit 0) (verdict "AGREE") (observation_ids "base-trace"))
+    (run (id "repeat") (kind "repeat") (repeat_of "base") (argv "example-runner")
+      (input_ids "guest") (producer_ids "reference") (producer_ids "expected")
+      (process_exit 0) (verdict "AGREE") (observation_ids "repeat-trace"))
+    (run (id "control") (kind "control") (argv "example-runner")
+      (input_ids "guest") (input_ids "wrong")
+      (producer_ids "reference") (producer_ids "expected")
+      (process_exit 0) (verdict "DIVERGE") (observation_ids "control-trace"))
+    (control_run (id "wrong-quotient") (run_id "control")
+      (mutation_input_ids "wrong") (property_ids "quotient")
+      (expected_verdict "DIVERGE") (observed_verdict "DIVERGE")
+      (reason "illustrative wrong quotient; no run executed"))
+    (producer_pair (id "numeric-pair") (left "reference") (right "expected")
+      (subsystem "quotient") (assessment "not-examined")
+      (shared_input_ids "guest") (evidence "ancestry unknown")
+      (consequence "no independence credit"))))
+```
+
+From the repository root, inspect a synthetic complete record and run the controls:
+
+```bash
+python3 scripts/probe_experiment_verification.py --emit-experiment
+python3 scripts/probe_experiment_verification.py --case roundtrip
+bash scripts/check_dossier_schema.sh --self-test
+bash scripts/check_profile_consistency.sh --self-test
+```
+
+The first command prints to stdout and creates no capture. The controls exercise
+unknown fields at every nested depth, wrong types/arity, duplicated singular
+fields, missing fields/collections, malformed pins, unsupported versions/vocabularies
+and repeated identity-list entries. The mapping proof retains multiple records
+of every child family and ordered repeated/empty arguments. They establish shape
+and losslessness only; canonical paths, numeric bounds, identity resolution,
+actual processes, artifact availability/currentness and adequacy still await the
+next evaluator. No stored flag can assert qualification on its own.
 <!-- ANCHOR_END: contract -->
