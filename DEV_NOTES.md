@@ -1,6 +1,26 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — declare prospective matched-GPR capture contract (P4-SYSTEM.14 a12)
+
+The existing flat experiment fields do not carry the typed capture graph required
+by the prospective GC policy. Declare one versioned verification extension to the
+existing S-expression document/mapping, without a parallel source format. Require
+input/producer/observation/run/control identities, exact pins, property scope,
+comparison limits, repeats and producer assessments. Distinguish a recorded capture
+from computed currentness/adequacy; absent artifacts and unknown ancestry earn no
+success/independence credit. Declare the bounded retention/budget review before
+any first fresh canonical capture; this creates no store or cap expansion.
+
+The full decision is included live in the GC book. Focused9/seven builds/rendered
+field matrix/worked control/first-last limits/pending-status checks pass. Actual
+mapper rejects a synthetic verification field as undeclared, confirming no grammar
+or implementation was silently added. Protected code/schema/runtime/profile/frozen/
+history/archive/LIVE populations remain byte-exact. No CPU axis closes; P4 13/18.
+Next shared schema/mapping/validator, then bounded retention and fresh qualification.
+Evidence target/p4-system-14/a12; all scratch on the repository volume.
+promotion: decision_qualified-matched-experiment-contract.md owns the complete declaration.
+
 ## _(2026-10-10)_ — enforce experiment identity edges (P4-SYSTEM.14 a11)
 
 Before adding GC records, four controls against the byte-identical production

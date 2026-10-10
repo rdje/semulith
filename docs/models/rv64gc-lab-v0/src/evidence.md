@@ -45,3 +45,10 @@ A legal `not-examined` row records uncertainty. Metadata validation does not
 establish adequate evidence, observed controls, current artifacts or independence.
 Structured GC runs and policy-derived requirement status remain P4.14 work; the
 generated gate report above remains the acceptance authority.
+
+## Prospective qualification contract
+
+The complete declaration below is included from its authoritative decision.
+Its implementation status is explicit; the current gate report is unchanged.
+
+{{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}

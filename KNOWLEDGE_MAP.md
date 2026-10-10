@@ -117,6 +117,7 @@
 - [`decision_profiles-family-two-units.md`](docs/decisions/decision_profiles-family-two-units.md)
 - [`decision_public-repository-no-confidential-content.md`](docs/decisions/decision_public-repository-no-confidential-content.md)
 - [`decision_push-cadence.md`](docs/decisions/decision_push-cadence.md)
+- [`decision_qualified-matched-experiment-contract.md`](docs/decisions/decision_qualified-matched-experiment-contract.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)

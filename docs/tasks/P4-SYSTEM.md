@@ -289,12 +289,41 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | experiment identity controls, then structured experiments, policy/status checks and mirror reconciliation |
+| 1 | `P4-SYSTEM.14` | `active` | qualified experiment schema/mapping/records, then policy/status checks and mirror reconciliation |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a12 — declare the qualified experiment contract (completed, SEMULITH-P4-0203)
+
+Owned on clean8fcc277, brief0/untracked and actual process census OK, before edits.
+The existing experiment grammar carries flat historical metadata; .14/policy needs
+pinned inputs, actual observations/repeats/controls, property scope and producer
+relationships before fresh qualification. Declare the prospective matched-GPR v1
+contract in one decision record, include it directly in the GC review book, and
+specify the schema/mapping/validator/runner/retention work as explicit next slices.
+Use the existing references.sexp experiment as the parent, not a parallel format.
+Preserve legacy records and distinguish recorded captures from computed adequacy.
+No grammar, gate, input data, ceiling or CPU acceptance change in this declaration.
+
+Read existing reference schema/mapping, public GC adapter, policy and EVIDENCE_AND_GATES;
+record exact type/identity/currentness/negative-control/independence obligations and
+finite scope. A declaration alone cannot qualify a record. Resolve artifact retention
+and measured family budgets before any fresh capture becomes a canonical input;
+no unbounded log sink or silent absent-artifact credit. Verify book inclusion, all
+seven builds, INDEX/map/caps/live gates and protected byte scope, then commit.
+Evidence target/p4-system-14/a12, on the repository volume. Status: complete.
+Decision docs/decisions/decision_qualified-matched-experiment-contract.md owns the
+prospective contract and explicit implementation/retention sequence. Nine focused
+gates and seven books pass; the complete field matrix, worked control example,
+first/last limits and pending-implementation status render. An in-memory probe of
+the actual mapper refuses the undeclared verification field, confirming this is
+only a declaration. All code/schema/runtime/profile/frozen/history/archive/LIVE
+bytes remain exact; no ceiling or gate changes. Next implement the shared schema/
+mapping and relationship/artifact verifier, then retention and first fresh capture.
+promotion: decision_qualified-matched-experiment-contract.md retains the declaration.
 
 ### `.14` a11 — experiment identity edges (completed, SEMULITH-P4-0202)
 
@@ -948,6 +977,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a12 — **ROOT CAUSE**: actual mapper probe rc=0 confirms
+  EXPERIMENT-CONTRACT-CURRENT: undeclared verification field refuses; existing
+  flat metadata does not implement the prospective pinned-capture contract.
+- [x] `.14` a12 — **ADDRESSED**: EXPERIMENT-CONTRACT-BOOK rc=0: full required
+  matrix, worked control protocol and pending-implementation status rendered.
+  The decision declares future validation/retention without new qualification credit.
+- [x] `.14` a12 — **NO REGRESSION**: focused9/make book/protected scope rc=0:
+  seven books; all code/schema/runtime/canonical/profile/frozen/history/archive/
+  LIVE exact. No caps/grammar/gates/statuses changed; P4 remains13/18.
+  promotion: decision_qualified-matched-experiment-contract.md.
+
 - [x] `.14` a11 — **ROOT CAUSE**: checker-prefix equality and published controls
   rc=1: PROFILE-CONSISTENCY46pass/4fail; each invalid fixture returned0/__CHECKED__1.
   Scoped git -S pins b8d09f5/147de76. IDs/membership/distinctness were not judged.
@@ -1079,6 +1119,9 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a12: focused9/seven books/full rendered contract/actual undeclared-field refusal/
+protected scope rc=0; declaration only, no implementation or acceptance credit.
+
 a11: original46/4, repaired50/0/current5 dossiers, four independent predicate
 controls49/1, focused13/seven books/protected scope/schema AST rc=0; no CPU credit.
 First commit gate caught a misplaced row/date cell from an unanchored cell match;
@@ -1108,6 +1151,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a12 | `SEMULITH-P4-0203 (leaf P4-SYSTEM.14): declare the qualified matched-experiment contract` | shared schema/mapping/validator, bounded retention, first fresh capture |
 | `.14` a11 | `SEMULITH-P4-0202 (leaf P4-SYSTEM.14): reject invalid experiment identities` | structured GC experiments/controls/producers, policy/status derivation and mirrors |
 | `.14` a10 | `SEMULITH-P4-0201 (leaf P4-SYSTEM.14): register RV64GC and enforce every required category` | containment prototype/review under LIVE-CONTAINMENT.4, then .14 experiments/policy/status/mirrors |
 | `.14` a9 | `SEMULITH-P4-0200 (leaf P4-SYSTEM.14): correct BREADTH evidence attribution` | a10/0201 sixth-unit registration/materials/book and family contract review |
