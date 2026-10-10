@@ -1,5 +1,40 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — realize signed word results and ignored overflow (P4-SYSTEM.13 c17f)
+
+Bind WSUFFIX POS scope-alu/bound-arith, NEG bound-shiftw: all nine RV64I forms
+in REQ-D-WSUFFIX over 122 boundaries/244 parcels. M's five word forms retain
+separate existing M evidence. Sixteen isolated author copies fail named
+observations before credit: nine zero-extended results, four full-width right
+sources, three signed-32 saturating add/subtracts. Zero-extension first fails
+ADDIW bound-arith 17; SLLIW bound-shiftw 41; SRLIW 34; SRAIW scope-alu 29;
+ADDW scope-alu 23; SUBW bound-arith 20; SLLW bound-shiftw 53; SRLW 51;
+SRAW scope-alu 27. Source-width errors first fail SRLIW scope-alu 28, SRAIW
+bound-shiftw 59, SRLW scope-alu 26, SRAW bound-shiftw 58. Saturation fails
+ADDIW bound-arith 17, ADDW 19 and SUBW scope-alu 24. Shared finishes condition
+only the named mnemonic; every other expression stays unchanged.
+
+ADDIW on 0xdeadb7ef7fffffff plus one ignores the upper word and wraps to
+0xffffffff80000000; zero-extension gives positive 0x80000000, saturation
+0x7fffffff. SUBW on INT32_MIN minus 1620 wraps to positive 0x7ffff9ac, whereas
+saturation stays INT32_MIN. Right-shift source width matters; for add/subtract
+and left shift, pre-truncation commutes with a correct final low32 truncation,
+so equivalent rewrites are not misclassified as faulty countermodels.
+
+Registry 82, effective 80/114: thirteen scope/twenty guest/six boundary/one
+execution pairs, seventeen runtime pairs/freeze remain. Make check passes
+fmt/clippy and Rust 167/17/203; normal selected/full corpus exact 167/5365/10524.
+Identity preserves all 112 base/348 GC canonical/guest files and prior 80 entries,
+production/core/author/definitions/generated/frozen bytes. Integer probe retains
+23 arithmetic/10 branches, 17 gaps/476 steps, 42 owned records; guest generators
+49/167 fresh, mirror 49 with 42 count migrations/7 explicit re-derivations.
+Five reports/count claims, three frozen versions/zero findings, schema 270/two
+named skips, 37 bounded routes and main/model books pass. LIVE_STATUS unchanged
+649 arms/47 chapters/P4 12/18. No live reference rerun for unchanged inputs/rules.
+Next c18a losslessly contains near-ceiling DEV/profile history, then c18b loads.
+promotion: declined (canonical independent witnesses, executable registry pair and integer runtime chapter retain the signed-word guarantee).
+
+
 ## _(2026-10-10)_ — complete SHAMT requirement associations (P4-SYSTEM.13 c17e)
 
 The original base associations (1abba2e) omitted SLLW/SRLW/SRAW; GC copied the

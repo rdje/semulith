@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0139 (leaf P4-SYSTEM.13 c17f) — realize signed word results and ignored overflow
+
+- Reject sixteen isolated zero-extension/source-width/saturation alternatives
+  before WSUFFIX binding; nine RV64I forms, 122 boundaries/244 parcels.
+- Registry 82, effective 80/114; seventeen runtime pairs/freeze remain. Preserve
+  all prior entries and canonical/guest/generated/core/frozen data exact.
+  Rust 167/17/203, full author corpus and focused gates/books pass.
+- Retain finite limits and unchanged LIVE_STATUS 649 arms/47 chapters/P4 12/18.
+  Next c18a bounds live history losslessly, then c18b load extension.
+
+
 ## SEMULITH-P4-0138 (leaf P4-SYSTEM.13 c17e) — complete SHAMT requirement associations
 
 - Observe owner/mirror closure assertions RED on nine forms, append only missing

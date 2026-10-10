@@ -36,6 +36,16 @@ pub struct ContractCheck {
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
     ContractCheck {
+        id: "CHK-WSUFFIX-POS",
+        obligation: "OB-WSUFFIX",
+        evidence: Evidence::Guests(&["scope-alu", "bound-arith"]),
+    },
+    ContractCheck {
+        id: "CHK-WSUFFIX-NEG",
+        obligation: "OB-WSUFFIX",
+        evidence: Evidence::Guests(&["bound-shiftw"]),
+    },
+    ContractCheck {
         id: "CHK-SHAMT-POS",
         obligation: "OB-SHAMT",
         evidence: Evidence::Guests(&["scope-alu"]),

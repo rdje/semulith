@@ -299,3 +299,61 @@ instruction or observation and changes no runtime behavior. All guest data,
 production rules, frozen records and 80 registry entries stay exact; effective
 G-CONTRACT remains 78/114. c17f now reviews all nine word-result forms before
 binding WSUFFIX. Eighteen runtime pairs and final freeze remain.
+
+## Signed word results: truncation, extension and wrapping
+
+c17f binds WSUFFIX POS to scope-alu plus bound-arith, NEG to bound-shiftw.
+Together the fixtures cover all nine RV64I forms named by REQ-D-WSUFFIX:
+ADDIW, SLLIW, SRLIW, SRAIW, ADDW, SUBW, SLLW, SRLW and SRAW. The unique
+footprint is 122 boundaries / 244 parcels. M's five word forms retain their
+separate existing M witnesses. The source-width repairs above are prerequisites
+to this registration, and every observation remains unchanged.
+
+The selected rule operates on the low word, retains its low 32-bit result and
+sign-extends bit 31 to 64 bits. Overflow is ignored. For example:
+
+| Witness | Required result | What the wrong rule would do |
+| --- | --- | --- |
+| ADDIW on x10=0xdeadb7ef7fffffff, immediate 1 (bound-arith 17) | x12=0xffffffff80000000 | Zero-extension gives 0x0000000080000000; saturation gives 0x000000007fffffff |
+| ADDW on the same low-word overflow (bound-arith 19) | x14=0xffffffff80000000 | Signed saturation clamps to 0x7fffffff |
+| SUBW at signed INT32_MIN minus 1620 (scope-alu 24) | x23=0x000000007ffff9ac | Signed saturation instead gives 0xffffffff80000000 |
+| SRLIW by zero on low32 0x80000001 (bound-shiftw 34) | x20=0xffffffff80000001 | Word result still needs sign extension, even for a logical shift by zero |
+| SRAW/SRAIW on zero-extended 0x80000001 by one (bound-shiftw 58/59) | 0xffffffffc0000000 | A full-width source read gives 0x40000000 |
+
+Sixteen isolated author copies fail named observations before credit. Nine
+copies zero-extend only one named word result; four read the full 64-bit source
+before right shift; three saturate only the named signed 32-bit add/subtract.
+Shared result finishes keep every other mnemonic's expression unchanged.
+
+| Deliberately wrong rule | First mismatch |
+| --- | --- |
+| ADDIW zero result extension | bound-arith 17 |
+| SLLIW zero result extension | bound-shiftw 41 |
+| SRLIW zero result extension | bound-shiftw 34 |
+| SRAIW zero result extension | scope-alu 29 |
+| ADDW zero result extension | scope-alu 23 |
+| SUBW zero result extension | bound-arith 20 |
+| SLLW zero result extension | bound-shiftw 53 |
+| SRLW zero result extension | bound-shiftw 51 |
+| SRAW zero result extension | scope-alu 27 |
+| SRLIW full-width source | scope-alu 28 |
+| SRAIW full-width source | bound-shiftw 59 |
+| SRLW full-width source | scope-alu 26 |
+| SRAW full-width source | bound-shiftw 58 |
+| ADDIW signed saturation | bound-arith 17 |
+| ADDW signed saturation | bound-arith 19 |
+| SUBW signed saturation | scope-alu 24 |
+
+The right-shift source width matters because upper bits can enter the retained
+word or change arithmetic fill. For addition/subtraction and left shift, reading
+upper bits before an otherwise correct final low32 truncation is observationally
+equivalent: those operations' low 32 result bits depend only on the low input
+bits. Such equivalent rewrites are not classified as faulty countermodels.
+
+The normal author/core matches all selected observations and the full
+167 / 5,365 / 10,524 corpus. Canonical inputs, generated data, production rules,
+frozen records and all prior 80 bindings remain exact. Registry entries become
+82; effective G-CONTRACT becomes **80/114**: thirteen scope, twenty guest, six
+boundary and one direct-execution pairs. Seventeen runtime pairs and freeze
+remain. Negative fixtures are legal semantic counterexamples, with no invented
+target traps. Standing finite-evidence/reference/platform limits remain.

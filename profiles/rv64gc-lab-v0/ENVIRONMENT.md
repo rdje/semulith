@@ -450,3 +450,14 @@ and pass after only those additions; extraction/mirror validation retains the
 declared closure. Every other requirement field/frozen record, all guest data,
 production rules and 80 bindings stay exact. Dependent board metadata/pins and
 reports are rederived. Effective 78/114 unchanged; c17f WSUFFIX next.
+
+c17f binds WSUFFIX POS to scope-alu/bound-arith, NEG to bound-shiftw: all nine
+RV64I word forms over 122 boundaries/244 parcels. Sixteen isolated zero-extension,
+full-width right-source and saturation copies fail named observations before
+credit. Repaired arithmetic-W witnesses stay exact. Production/core/author,
+canonical inputs/generated data/frozen records and prior 80 bindings unchanged.
+Registry 82, effective 80/114: thirteen scope/twenty guest/six boundary/one
+execution pairs; seventeen runtime pairs/freeze remain. M's word forms keep
+their existing M pair. The integer book explains signed wrapping, zero-shift
+extension, source width and equivalent low-word rewrites. Next contain live
+history within fixed bounds, then review the load-extension matrix.

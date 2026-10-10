@@ -169,6 +169,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
             || l.starts_with("(obligation (id \"OB-ALU-REG\")")
             || l.starts_with("(obligation (id \"OB-LUI-AUIPC\")")
             || l.starts_with("(obligation (id \"OB-SHAMT\")")
+            || l.starts_with("(obligation (id \"OB-WSUFFIX\")")
             || l.starts_with("(obligation (id \"OB-CSR-SET\")")
             || l.starts_with("(obligation (id \"OB-NO-PMP\")")
             || l.starts_with("(obligation (id \"OB-NO-H\")")
@@ -180,8 +181,8 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        80,
-        "v1/v2 bindings, partial progress, selection/correction records, privilege modes, translation/alignment/counters, direct Sstc and immediate/register ALU, U-immediates and shifts, POS + NEG"
+        82,
+        "v1/v2 bindings, partial progress, selection/correction records, privilege modes, translation/alignment/counters, direct Sstc and immediate/register ALU, U-immediates, shifts and word results, POS + NEG"
     );
     for (ob, chk) in declared {
         let realized = CHECKS.iter().find(|c| c.id == chk);

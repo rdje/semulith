@@ -293,6 +293,35 @@ Completed b1 through c7 design/ownership receipts are preserved verbatim in
 Completed c8–c16 designs are preserved byte-verbatim in
 [`archive/P4-SYSTEM-7.md`](archive/P4-SYSTEM-7.md#runtime-designs).
 
+### `.13` c17f — realize signed word results (`2026-10-10`, `SEMULITH-P4-0139`)
+
+Owned before edits on clean 33c1b04 after c17e hooks/brief/actual job census.
+Reviewed ROADMAP P4, frozen OB-WSUFFIX/REQ-D-WSUFFIX and its nine RV64I forms,
+pinned RV64I 3.1.2/3.1.2.1–2, all nine canonical rows and width evaluator,
+independent author's common word finishes, registry/closure tests, scope-alu,
+bound-arith/bound-shiftw and every word observation, integer/v2 book and repaired
+source-width receipts. M's five word forms retain their separate existing M pair.
+POS binds scope-alu plus bound-arith; NEG binds bound-shiftw. Together all nine
+RV64I forms appear over 122 boundaries/244 parcels. Legal counterexamples
+distinguish wrong semantics; no target trap is invented.
+
+Before credit, verify nine isolated zero-extended word-result copies, four
+wrong full-width right-shift sources (SRLIW/SRAIW/SRLW/SRAW), and three signed
+32-bit saturating ADDIW/ADDW/SUBW copies against unchanged selected expectations.
+Shared finish guards may be copied at both opcode branches, but only the named
+mnemonic's result changes; all other paths retain their exact expression. Each
+copy must fail a named boundary. Left-shift/addition source truncation commutes
+with final low32 truncation, so do not call those equivalent rewrites defects.
+Normal full corpus and selected observations must match.
+
+Add only CHK-WSUFFIX-POS/NEG and declared-check closure. Preserve all 80 prior
+entries, canonical/guest/generated/core/author/frozen bytes. Expected registry
+82/effective 80/114: thirteen scope/twenty guest/six boundary/one execution pairs;
+seventeen runtime pairs/freeze remain. Update book/profile/resume/task notes and
+GS, run make check plus integer/generator/freeze/schema/reports/counts/bounds/
+books and hooks. Then c18 reviews load extension and its full width/sign matrix;
+perform bounded document containment before growth threatens fixed ceilings.
+
 ### `.13` c17d — realize shift-count domains (`2026-10-10`, `SEMULITH-P4-0137`)
 
 Owned before edits on clean 2e0a6cf after c17c hooks, brief clearing and actual
@@ -635,6 +664,38 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c17f) (`2026-10-10`, `SEMULITH-P4-0139`):
+
+- [x] **ROOT CAUSE / REQUIREMENT** — python3 target/p4-system-13/c17f/probe.py
+  rc=0: all nine selected RV64I W forms, 122 boundaries/244 parcels exact.
+  Sixteen isolated copies rejected before credit: zero-result extensions first
+  ADDIW bound-arith 17, SLLIW bound-shiftw 41, SRLIW 34, SRAIW scope-alu 29,
+  ADDW scope-alu 23, SUBW bound-arith 20, SLLW bound-shiftw 53, SRLW 51,
+  SRAW scope-alu 27; full-width sources SRLIW scope-alu 28, SRAIW bound-shiftw
+  59, SRLW scope-alu 26, SRAW bound-shiftw 58; signed saturation ADDIW
+  bound-arith 17, ADDW 19, SUBW scope-alu 24. Other mnemonic expressions unchanged.
+  Equivalent arithmetic/left-shift pre-truncation rewrites are not defects.
+- [x] **ADDRESSED** — make check rc=0: fmt/clippy, Rust 167/17/203, including
+  new registry execution and closure. WSUFFIX POS scope-alu/bound-arith, NEG
+  bound-shiftw; registry 82, shared contract_measure returns 80/114. Thirteen
+  scope/twenty guest/six boundary/one execution pairs, seventeen runtime pairs/
+  freeze remain. Integer book includes all sixteen refusals, signed overflow,
+  zero-shift sign extension and repaired noncanonical-source examples; M's
+  five word forms retain their separate existing M pair.
+- [x] **NO REGRESSION** — python3 target/p4-system-13/c17f/identity.py rc=0:
+  all 112 base/348 GC canonical/guest files exact, inverse of the two new blocks
+  reproduces prior 80 entries byte-exact; production/core/definitions/generated/
+  frozen data exact. Normal full corpus 167/5365/10524, integer probe rc=0:
+  23 arithmetic/10 branches, 17 gaps/476 steps, 42 owned records exact.
+  Both guest generators --check rc=0 (49/167); GC mirror rc=0 49 programs,
+  42 count-adjusted/7 explicit re-derivations. Reports rc=0 five fresh; freeze
+  rc=0 three versions/zero findings; schema rc=0 270/two named skips; counts
+  rc=0 five claims; routes rc=0 37 fixed ceilings; make book rc=0 main/model books.
+- [x] **COMMIT SIGNOFF** — git diff --check rc=0; staged acceptance/ownership
+  and hooks precede brief clearing, clean/actual job census. LIVE_STATUS unchanged
+  649 arms/47 chapters/P4 12/18. c18a lossless containment, then c18b LOAD-EXT.
+  promotion: declined (canonical independent witnesses, executable registry pair and integer runtime chapter retain the signed-word guarantees).
+
 `P4-SYSTEM.13` slice (c17e) (`2026-10-10`, `SEMULITH-P4-0138`):
 
 - [x] **ROOT CAUSE** — cargo test -p semulith-verify
@@ -806,6 +867,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c17f | sixteen isolated word-result/source/saturation REDs; all nine forms/122/244; full 167/5365/10524; prior 80/canonical/generated/core exact; Rust 167/17/203; generator/mirror/freeze/schema/reports/counts/bounds/books | WSUFFIX bound, 80/114; containment then loads |
 | `2026-10-10` | `.13` c17e | owner/mirror tests 0/2 RED then 2/0 GREEN; only three associations; all other fields/runtime/frozen/registry exact; board allowed-delta proof; Rust 167/17/203; records/extraction/freshness/freeze/schema/counts/bounds/books | association defect closed; 78/114 unchanged |
 | `2026-10-10` | `.13` c17d | twelve isolated count REDs; 180/360 selected; full 167/5365/10524; exact prior entries/all canonical/generated/core; Rust 167/17/201; freeze/schema/reports/counts/bounds/books | SHAMT bound, 78/114; association repair next |
 | `2026-10-10` | `.13` c17c | old 56 exact; pre-derived noncanonical source; isolated author/public 58/59 RED; full 167/5365/10524; Sail 60 repeated/base live both references; Rust 167/17/201; input/board identity; freshness/freeze/schema/counts/books | source-width witness defects closed; 76/114 unchanged |
@@ -834,6 +896,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c17f | `SEMULITH-P4-0139 (leaf P4-SYSTEM.13): realize signed word results and ignored overflow` | c18a containment, c18b LOAD-EXT |
 | `.13` c17e | `SEMULITH-P4-0138 (leaf P4-SYSTEM.13): complete SHAMT requirement associations in owner and mirror` | c17f WSUFFIX |
 | `.13` c17d | `SEMULITH-P4-0137 (leaf P4-SYSTEM.13): realize all twelve shift-count domains` | c17e requirement associations, c17f WSUFFIX |
 | `.13` c17c | `SEMULITH-P4-0136 (leaf P4-SYSTEM.13): distinguish arithmetic-W source width with derived witnesses` | c17d SHAMT |
@@ -860,6 +923,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-10`: `.13` c17f (SEMULITH-P4-0139): sixteen isolated zero-extension,
+  source-width and saturation errors rejected before nine-form WSUFFIX binding;
+  122/244 footprint, all prior inputs/bindings exact. Effective 80/114, seventeen
+  runtime pairs/freeze remain. Contain live history next, then load matrix.
 - `2026-10-10`: `.13` c17e (SEMULITH-P4-0138): observe both focused association
   assertions RED on nine forms, append SLLW/SRLW/SRAW only, then both GREEN.
   Propagate board metadata/provenance through owners; all other record/runtime
