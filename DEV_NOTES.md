@@ -1,6 +1,33 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — ground atomic rationale in public evidence (P4-SYSTEM.13 c29a)
+
+Scoped history:1c554fc introduced reservation.rs internal Err/cancellation-site
+claims;495b4b8 ported the SC evaluator commentary. Replace those explanations
+and the reset-site aside with ISA/declared profile choices. Book no longer calls
+trap preservation a universal specification invalidation rule. Clarify failed
+SC explicit Load/Store exclusion separately from prior WalkAccess reads.
+Only standalone Rust comments change, with exact declared text deltas and all
+non-comment lines byte-identical. No semantic-source/generator changes needed.
+
+Public.py rc=0: all12 original A guests fresh, pinned binary/unchanged override;
+11AGREE/290boundaries in two identical traces each. Known a-lrsc-mustfail width
+policy divergence at22 repeats in two identical traces; not agreement. Wrong
+surviving-SC expected code1 gives DIVERGE39 in a fresh a-lrsc-fault run (actual
+code0), retaining the subsequent read42 observation. No universal reference
+reservation assertion or internal-source inspection. Historical raw quotes in
+P4-SYSTEM-designs/P4-SYSTEM-2 stay byte-exact with a live annotation in the tree.
+
+Entire dossiers/guests/reports, core code, author, generators, registry104 and
+frozen/archive/knowledge/ledger bytes exact. Independent full167/5365/10524
+corpus and effective102/114 unchanged. make check rc=0 Rust167/17/223; focused
+checks/all six books in tree. Scoped review also encountered two FP internal
+rationales, owned by priority-next c29b before GC-COUNTERS. Evidence in
+target/p4-system-13/c29a and worked atomics book.
+promotion: declined (established published-interface boundary; the public result/control and historical annotation retain the diagnosis and limits).
+
+
 ## _(2026-10-10)_ — discriminate atomic execution and faults (P4-SYSTEM.13 c29)
 
 Missing-binding control selects GC-ATOMICS/count104 and fails rc101 for

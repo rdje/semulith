@@ -845,12 +845,14 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                // The deterministic policy (decision 3), judged before ANY memory
-                // operation — a failed SC "does not give rise to any memory
-                // operations" (RVWMO §17.1.1.1). The reservation clears on the
+                // The deterministic policy (decision 3) precedes explicit Load/Store
+                // requests; translation may already have issued WalkAccess reads.
+                // A failed SC "does not give rise to any memory operations"
+                // (RVWMO §17.1.1.1). The reservation clears on the
                 // COMPLETED path either way (§12.1.2's own sentence); the trap paths
-                // clear nothing (a trap does not invalidate — Sail 0.14 cancels on
-                // the completed path only).
+                // preserve the reservation under the declared trap-retention policy.
+                // The public a-lrsc-fault experiment observes the later aligned SC
+                // succeeding after a trapped misaligned SC (P4.13 c29a).
                 if !self.state.reservation().matches(pa, (w / 8) as u8) {
                     self.state.reservation().clear();
                     return (1, 64);

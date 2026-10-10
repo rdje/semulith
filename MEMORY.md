@@ -18,12 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c29a — replace obsolete atomic internal-reference
-  commentary using public LR/SC observations and declared ISA/profile policies;
-  see its priority-next plan in the tree, then six remaining runtime pairs/freeze.
-  c29 binds GC-ATOMICS: direct12168/24336/45840 requests, pair12366/24732;
-  independent12024 plus planned144 physical faults, nine wrong tables/14 captures,
-  request/permission mutations RED/restored. Registry104/effective102/114.
+- next_action: `P4-SYSTEM.13` c29b — replace two FP internal-reference
+  rationales using pinned ISA/profile/public evidence; see its priority-next
+  plan, then GC-COUNTERS and six remaining runtime pairs/freeze.
+  c29a qualifies atomic rationale: public11/290 AGREE pairs, one unchanged
+  width-policy difference repeated; wrong surviving-SC code DIVERGE39.
+  Rust comments only/non-comment lines exact; entire dossiers/author/registry/
+  generated/frozen/archives exact. Registry104/effective102/114 unchanged.
   Rust167/17/223, GUEST147/doctrine652/49 chapters unchanged;
   .14 owns statuses/structured experiment records.
 - in_flight_uncommitted: none at commit.

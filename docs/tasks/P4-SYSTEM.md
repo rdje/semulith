@@ -619,7 +619,7 @@ corrected to scalar API before runtime RED credit. Registry104/effective102/114;
 six remaining pairs/freeze. Core/author/frozen/old102 registry/archives exact.
 Next c29a dependency-rationale replacement, then GC-COUNTERS. .14 retains records.
 
-### `.13` c29a — replace obsolete atomic dependency assumptions (queued, priority next)
+### `.13` c29a — replace obsolete atomic dependency assumptions (completed, `SEMULITH-P4-0163`)
 
 Encountered in c29 interface review: reservation.rs names zalrsc_insts.sail's
 internal cancellation/error sites; exec_rv64gc.rs SC commentary and atomics
@@ -629,6 +629,46 @@ then replace maintained explanatory assumptions and annotate relevant old
 receipts without rewriting history. Never inspect dependency implementation.
 Own source-comment/provenance effects and exact behavior verification separately
 after c29 is clean. Local ISA/profile policy, not those assertions, grounds c29.
+
+Activated on clean0bbfc64 after actual census rc=0/brief0. Relevant history:
+1c554fc introduced the reservation commentary;495b4b8 ported the SC arm.
+Read the declared reservation/deterministic policies, source-auth receipt and
+current public adapter. Fresh-run all12 original A guests: require11 AGREE
+pairs and separately repeat the known width-policy divergence; a wrong
+surviving-SC result must DIVERGE through the same public interface. Replace
+only comments/book rationale, including the over-broad specification-only
+wording with explicit selected-profile policy. Annotate historical internal
+quotations in a live route without editing sealed archive payloads. Prove
+all non-comment Rust lines and entire profile/author/registry/frozen/generated/
+archives byte-exact, run make check/focused/books/commit/brief0/actual census.
+No new contract/status/experiment credit. c29b below follows before GC-COUNTERS.
+
+Evidence-boundary annotation (`2026-10-10`, c29a): the preserved internal
+reservation quotations in docs/tasks/archive/P4-SYSTEM-designs.md (A precondition7
+and decision4) and docs/tasks/archive/P4-SYSTEM-2.md (.4 slice-c receipt/verification) are
+historical observations, not maintained dependency assumptions. Current claims
+use declared profile policy and public11/290 paired agreement, named width
+DIVERGE22 and wrong surviving-SC DIVERGE39. Archived bytes remain exact.
+
+Result: public.py rc=0; fresh11AGREE/290 pairs plus repeated named divergence,
+wrong surviving-SC control rejects. Exact comment-deltas/non-comment Rust lines;
+all entire dossiers/reports, generated/author/registry104/frozen/archives exact.
+Independent167/5365/10524 unchanged. make check rc=0 Rust167/17/223; focused/
+all six books rc=0, hooks next. Effective102/114 and LIVE652/49/P4 12/18 unchanged.
+Commit/brief0/actual census, then c29b before GC-COUNTERS; .14 retains records.
+
+### `.13` c29b — replace FP internal-reference rationale (queued, priority next)
+
+Encountered in the same scoped exec_rv64gc.rs review: FS-Off commentary names
+fdext_control.sail:19 and register-write commentary cites Sail's internal wF.
+These are maintained internal dependency assumptions under user §20. Own a
+bounded comment/public-evidence repair after c29a is clean: read the relevant
+FP-state ISA/profile/book contracts, exercise published FP interfaces and an
+adversarial marker, replace those rationales, annotate related historical
+receipts without modifying sealed payloads and prove behavior unchanged.
+No dependency implementation inspection or pin changes. Priority next, then
+GC-COUNTERS and remaining runtime pairs/freeze.
+
 
 ### `.13` c28e — remove the obsolete internal-reference rationale (completed, `SEMULITH-P4-0161`)
 
@@ -805,6 +845,23 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29a — **ROOT CAUSE**: scoped history/text census rc=0 identifies
+  1c554fc/495b4b8 internal reservation/error/reset rationales and the current
+  atomics book repetition. Public.py rc=0:11AGREE/290 repeated, named width
+  DIVERGE22 repeated, wrong surviving-SC expected1 DIVERGE39. Local policy,
+  not dependency implementation assumptions, supports retained behavior.
+- [x] `.13` c29a — **ADDRESSED**: exact declared comment replacements in
+  reservation.rs/exec_rv64gc.rs and book; non-comment lines exact (verify.py
+  rc=0). Historical internal quotations annotated through live routes, sealed
+  payloads preserved. Failed-SC comment distinguishes explicit data from walk
+  requests. No semantic-source/generator delta or new behavior.
+- [x] `.13` c29a — **NO REGRESSION**: verify.py rc=0: entire profile/guest/
+  report, author/generated/registry104/frozen/archive/knowledge bytes exact;
+  independent167/5365/10524 corpus unchanged. make check rc=0 Rust167/17/223;
+  focused/all six books rc=0. Effective102/114 and LIVE652/49/P4 12/18 unchanged.
+  Next c29b FP rationale, then GC-COUNTERS. .14 owns statuses/experiments.
+  promotion: declined (established public-boundary policy; worked atomics book retains the control and finite evidence limits).
 
 - [x] `.13` c29 — **ROOT CAUSE**: completeness control rc=101 names missing
   CHK-GC-ATOMICS-POS. Authenticated A56889B/SHAafbd8def and Sv39186455B/
@@ -993,6 +1050,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29a | public11/290 repeated; named width difference repeated; wrong SC DIVERGE39; exact comment/non-comment/dossier identity and full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29 | independent12024/992 words; nine wrong tables/14 captures; request/permission/missing-binding RED101 restored; old102/core/inputs exact; full167 corpus | direct12168/24336/45840 requests, pair12366/24732; effective102/114; Rust167/17/223; focused/all six books rc0; hooks next |
 | `2026-10-10` | `.13` c28e | public6/29 repeated, wrong marker DIVERGE1; semantic forms exact; provenance RED1 then two-SHA-only regeneration; profile/core/registry identity | effective100/114 unchanged; Rust167/17/220; DEF-GEN/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28d | independent61440/36;11 bad tables/16 captures; request/wait/missing-binding RED101 restored; prior100/core/inputs exact; full167 corpus | direct61620/123222, pair61637/123256; effective100/114; Rust167/17/220; focused/all six books rc=0; hooks next |
@@ -1009,6 +1067,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29a | `SEMULITH-P4-0163 (leaf P4-SYSTEM.13): ground atomic rationale in public evidence` | c29b FP rationale, then GC-COUNTERS/six pairs/freeze |
 | `.13` c29 | `SEMULITH-P4-0162 (leaf P4-SYSTEM.13): discriminate atomic execution and faults` | c29a public atomic rationale, then six runtime pairs/freeze |
 | `.13` c28e | `SEMULITH-P4-0161 (leaf P4-SYSTEM.13): ground fence reference claims in public evidence` | c29 GC-ATOMICS, remaining runtime pairs/freeze |
 | `.13` c28d | `SEMULITH-P4-0160 (leaf P4-SYSTEM.13): observe FENCE.I visibility and ignored fields` | c28e obsolete dependency rationale, then seven runtime pairs/freeze |
@@ -1020,6 +1079,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29a (SEMULITH-P4-0163): replace internal
+  atomic source rationales with ISA/profile/public evidence.11AGREE/290 pairs,
+  named width DIVERGE22 repeated; wrong SC code DIVERGE39. Comments only,
+  non-comment code/dossiers/registry/frozen/archive bytes exact.102/114 unchanged;
+  c29b owns encountered FP rationales before GC-COUNTERS.
 
 - `2026-10-10`: `.13` c29 (SEMULITH-P4-0162): bind GC-ATOMICS with
   direct12168/24336/45840, pair12366/24732; literal arithmetic/aliases/LRSC,

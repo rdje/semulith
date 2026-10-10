@@ -38,9 +38,11 @@ compiles standalone.
 
 Slice (c): the reservation is hart state now — `reservation.rs` owns (physical
 address, width, valid), the minimal conformant set, physical-keyed, with exactly
-the spec's one-hart invalidation set: any LR replaces; any completed SC clears; a
-trap clears nothing (measured on Sail 0.14: its cancellation fires on the completed
-SC path only). The deterministic SC policy rides as data in `state.sexp` beside the
+the selected one-hart invalidation policy: a completed LR replaces, a completed
+SC clears, and a trap preserves the prior reservation. The trap-retention choice
+is declared profile policy. The public a-lrsc-fault guest observes an aligned SC
+succeeding after a misaligned SC traps; no internal cancellation-site assumption
+is needed. The deterministic SC policy rides as data in `state.sexp` beside the
 census candidate, and gen_state's census gate is generalised to refuse any carried
 hart state the census does not declare. The evaluator arms exist and are proven in
 scratch — 16/16 over the LR/SC pair and every must-fail cell, the AMO nine × `.W`/`.D`
@@ -190,3 +192,37 @@ The arith/minmax W/D, LR/SC pair, must-fail and Sv39 companion guests add
 198 boundaries/396 parcels: the registered pair totals **12,366/24,732**.
 The request pair witnesses this single-hart, side-effect-free-memory contract;
 it proves no multicore indivisibility, weak-memory ordering or device behavior.
+
+
+## Public evidence for the reservation policy
+
+P4.13 c29a replaces old explanatory claims about the reference's internal
+cancellation/error sites. The laboratory's reservation set, exact physical/width
+matching, completed-SC invalidation and preservation on traps are selected
+profile policies. Source comments now distinguish those choices from the ISA's
+requirements. The failed-SC data-request rule does not erase translation reads:
+WalkAccess requests may already have occurred before the reservation match.
+
+All twelve original A guests run fresh through the pinned public binary and
+unchanged validated override. Eleven guests agree over 290 boundaries, each
+with two byte-identical traces. The twelfth, a-lrsc-mustfail, repeats its named
+step-22 width-policy divergence: the reference succeeds on the .D SC after the
+.W LR, whereas this profile requires equal widths. Two fresh divergence traces
+are byte-identical too. Neither result licenses an inference about internal
+reference functions or every possible reservation history.
+
+The a-lrsc-fault guest is a concrete trap-retention witness: it reserves the
+aligned word, attempts a misaligned SC, resumes through the handler, then
+successfully stores42 with an aligned SC at boundary39 and reads42 at40.
+Changing only the expected SC code to1 makes the fresh public comparison
+DIVERGE at39. This control distinguishes the observed success from a comparator
+that would accept either outcome. Existing unchanged must-fail/pair/loop guests
+supply completed success/failure and constrained-loop observations; the declared
+policy remains the authority for behavior outside these finite cells.
+
+Historical internal-source quotations remain preserved as receipts in the task
+archives, with a live evidence-boundary annotation in P4-SYSTEM.13 c29a. Current
+matching claims use the public observations above. No dependency implementation
+is inspected, and no instruction semantics, canonical guest, pin, frozen contract
+or registry binding changes. G-CONTRACT stays102/114; structured experiment
+registration remains P4-SYSTEM.14's work.

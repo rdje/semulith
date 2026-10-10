@@ -11,17 +11,16 @@
 //! exact-physical-match point (laboratory authority, decision 2), so a different virtual
 //! address mapping the same physical address pairs, and nothing else does.
 //!
-//! Invalidation is exactly the set the specification states at one hart (decision 4):
+//! The selected one-hart invalidation policy (decision 4) is:
 //!
-//! - **any LR REPLACES** the reservation (a faulting LR establishes nothing — RVI-A
-//!   §12.1.2 registers a reservation on the LOAD, and Sail 0.14's `Err(e) => e` path
-//!   matches: no completed load, no reservation);
+//! - **any completed LR REPLACES** the reservation (RVI-A §12.1.2 registers a
+//!   reservation on the load); a faulting LR preserves the prior reservation
+//!   under the declared trap-retention policy;
 //! - **any completed SC CLEARS** it — "Regardless of success or failure, executing an
 //!   SC.W instruction invalidates any reservation held by this hart" (§12.1.2); an SC
-//!   that TRAPS (a page or access fault) is neither a success nor a failure and clears
-//!   nothing (a trap does NOT invalidate — the spec gives no such rule, and Sail 0.14
-//!   cancels on the completed path only, `zalrsc_insts.sail`'s two sites being the
-//!   completed SC and reset);
+//!   that TRAPS preserves it under the declared trap-retention policy. The public
+//!   a-lrsc-fault experiment observes a later aligned SC succeeding after a trapped
+//!   misaligned SC; this supports the named cell, not reference implementation details;
 //! - **nothing else touches it** — the context-switch scratch-SC guidance is software's
 //!   duty, not machinery, and the external invalidation event (another hart's store, a
 //!   device write) cannot arise at harts=1 with no devices — `rv64gc-lab-env-v1`'s
@@ -47,8 +46,7 @@ pub struct Reservation {
 
 impl Reservation {
     /// Cold state: NO reservation (RVP's reset rule — "For implementations with the 'A'
-    /// standard extension, there is no valid load reservation" at reset, the sentence
-    /// Sail 0.14 quotes at its own reset cancellation site).
+    /// standard extension, there is no valid load reservation" at reset).
     #[must_use]
     pub const fn new() -> Self {
         Self {
