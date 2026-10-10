@@ -1,6 +1,26 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — withdraw maintained internal ancestry assertions (P4-SYSTEM.14 a6)
+
+Roots147de764/95f1c5c7 retained internal-source census/lineage conclusions and
+clone/read-internals advice in maintained reference/card/closed-task summaries.
+Preserve all three complete old files, .7 card and exact .1 note in16309B
+archive/SHA2564e8117ae923453984269714de47a53af6eb0434a3cdd66bd5b6e478a75caa510; five payloads and
+full57117B source-task inverse exact. Three damaged byte/marker/payload controls
+reject. Previous frozen archives remain byte-exact.
+
+Correct ancestry/FP acceptance records and INDEX, search lesson, .7/.1 current-use
+routes and FP book. Governed230vectors/3168fixtures remain current inputs; old
+63752-case corpus,24Sail agreements/927steps and host cost remain dated receipts,
+without a fresh replay or implementation-ancestry claim. Knowledge measured-again
+suffix exact; Map/book index regeneration unchanged. Current realized runner1/1,
+focused12/six books/verify rc=0; runtime/producers/profiles/canonical/frozen/
+registry/fixtures/prior history/LIVE exact,114/114 frozen, fixed caps. No new
+independence/conformance/requirement-status credit. Evidence target/p4-system-14/a6.
+Next canonical rv64i six-pair and GC candidate references and generated consequences.
+promotion: declined (existing retrievable references/card corrected in place with preserved source history).
+
 ## _(2026-10-10)_ — correct canonical state source citations (P4-SYSTEM.14 a5)
 
 Both remaining canonical encoding-header assertions originate at133e7229.

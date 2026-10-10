@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0197 (leaf P4-SYSTEM.14) — withdraw maintained internal ancestry assertions
+
+- Preserve three complete historical records, the closed FP card and profile note with exact payload/full-task inverses; reject three damaged archive controls.
+- Correct maintained ancestry/FP acceptance/search advice/INDEX/task/book scope around public observations and explicit lineage limits. Realized runner1/1, focused12/six books/invariants pass; runtime/producers/profiles/frozen/registry/history/LIVE remain exact,114/114 frozen.
+
 ## SEMULITH-P4-0196 (leaf P4-SYSTEM.14) — correct canonical state source citations
 
 - Replace state header/mstatus encoding-header assertions with public chapter layouts and RV64 Figure7; preserve full two-span source inverse and all field/reset/policy/census bytes.

@@ -94,6 +94,12 @@ inverse map reconstructs this entire source chapter at the named commit.
 The executable semantic example, all links and the current public FP-state,
 F witness and numeric D sections remain in this chapter.
 
+The maintained qualification/reference records distinguish dated public
+input/output results from the withdrawn internal-source ancestry census.
+`docs/tasks/archive/P4-SYSTEM-reference-a6.md` preserves the complete earlier
+records and task card. Agreement alone establishes no implementation lineage;
+the current expectation producers and their shared sources remain explicit.
+
 ## Public FP-state observations
 
 P4.13 c29b replaces internal-reference explanations with authenticated
