@@ -24,12 +24,12 @@ and mutation controls: `docs/book/src/plan/p4/contract-memory.md`.
 
 NO-DELAY-SLOTS binds skipped-write and fall-through observations for all eight
 base branch/jump forms, with mixed-length C integration. Worked controls:
-`docs/book/src/plan/p4/contract-integer.md`.
+`docs/book/src/plan/p4/contract-control.md`.
 
 JALR-LSB binds literal target/link/request witnesses, including signed-immediate
 addition, bit-1 retention, RV64 wrap, aliases and next-boundary target faults.
 The old register/fetch corpus comparison alone admits bit-1 erasure; direct PC
-observation rejects it. Worked matrix: `docs/book/src/plan/p4/contract-integer.md`.
+observation rejects it. Worked matrix: `docs/book/src/plan/p4/contract-control.md`.
 
 ## The versions
 
@@ -138,6 +138,7 @@ registry is `crates/semulith-verify/src/contract_checks_rv64gc.rs`.
 [GS-REPORT.md](GS-REPORT.md) derives effective coverage from those inputs.
 The [runtime](docs/book/src/plan/p4/contract-runtime.md) and
 [integer](docs/book/src/plan/p4/contract-integer.md) and
+[control transfer](docs/book/src/plan/p4/contract-control.md) and
 [memory](docs/book/src/plan/p4/contract-memory.md) chapters retain examples,
 controls and finite comparison limits.
 

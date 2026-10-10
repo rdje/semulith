@@ -34,6 +34,7 @@
         - [P4.13 — Completing the environment contract](plan/p4/contract-v2.md)
             - [Runtime contract witnesses](plan/p4/contract-runtime.md)
             - [Integer runtime witnesses](plan/p4/contract-integer.md)
+            - [Control transfer witnesses](plan/p4/contract-control.md)
             - [Memory runtime witnesses](plan/p4/contract-memory.md)
     - [P5–P7 — board, Linux, computer](plan/p5-p7.md)
     - [Multicore and optimization](plan/multicore.md)

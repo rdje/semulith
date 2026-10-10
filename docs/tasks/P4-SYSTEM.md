@@ -392,6 +392,21 @@ transfers and both JALR sections from the 31,694 B integer chapter (1,074 B
 remaining under 32,768 B cap) to a control-transfer chapter. Keep every witness
 byte, inverse/hash proof, navigation/SUMMARY/index/GS pointers and chapter-count
 mirror synchronized; no cap or runtime credit changes. Commit clean before
+Execution owned on clean 167a196 after empty brief/actual census. Review SUMMARY,
+index generator, profile ENV/GS fingerprints, runtime summary and fixed book
+family caps. Original integer chapter 31,694 B SHA256
+9beabe26eafc6b026ab8310cddf25f3ca97919ce5787e89536725a62149c7a7b;
+control suffix 9,822 B SHA256
+d1da14f93bf6f352739edd2a2e784cabd4f782481fb729bc67c2b1fc05b819c0.
+Whitespace check first refused a blank separator at the retained EOF (rc=2).
+Move that separator with the suffix; final inverse remains exact.
+Use new plan/p4/contract-control.md, preserve the leading separator and every
+suffix byte. Remove only new navigation/header for exact ordered inverse.
+Include new file in explicit cap census; existing 50 files/460,097 B under fixed
+80/524,288/32,768. Preserve all runtime, canonical and frozen bytes; 90/114
+unchanged. Update LIVE chapter count48→49, regenerate index/GS, focused gates/
+all books/hooks, commit/brief/clean actual census before c23b.
+
 c23b (`SEMULITH-P4-0151`) scoped review/realization of OB-XLEN: literal 64-bit
 register/address observations plus wrong-width controls, preserving the finite
 Sv39 laboratory scope. Remaining runtime pairs and final freeze then follow.
@@ -793,6 +808,28 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c23a — **ROOT CAUSE**: integer book is 31,694/32,768 B,
+  leaving 1,074 B before XLEN and remaining runtime receipts. Ordered suffix
+  census 9,822 B covers immediate transfers and both JALR sections; source hash
+  9beabe26eafc6b026ab8310cddf25f3ca97919ce5787e89536725a62149c7a7b.
+  verify.py rc=0 confirms source reconstruction and fixed caps; no cap increase.
+
+- [x] `.13` c23a — **ADDRESSED**: exact suffix moved to contract-control.md,
+  9,822 B SHA256 d1da14f93bf6f352739edd2a2e784cabd4f782481fb729bc67c2b1fc05b819c0.
+  Remove only new link/header and concatenate prefix+suffix to restore all 31,694 B
+  with original hash (verify.py rc=0). Integer/control 21,969/10,013 B. SUMMARY,
+  index, v2 runtime summary, profile ENV/GS and resume follow the move.
+
+- [x] `.13` c23a — **NO REGRESSION**: verify.py rc=0 proves all 92 registry/
+  core/author/generated/schema/doctrine/frozen bytes and 112 base/348 GC canonical/
+  guest inputs exact; effective 90/114 unchanged. Explicit new-file census 51
+  under 80/524,288/32,768 fixed caps (51 files/460,743 B). No Rust code changed.
+  Focused gates rc=0 (226 frozen rows, fixed routes, 33 frontiers, six derived
+  claims, 40 index rows, frozen contracts/five fresh reports); all six books
+  rc=0. Whitespace rc=0. Hooks precede c23b XLEN. LIVE_STATUS changes only chapters 48→49;
+  doctrine 652 arms/P4 12/18 unchanged. .14 retains statuses/experiments.
+  promotion: declined (existing bounded suffix protocol; exact evidence retained).
+
 - [x] `.13` c22b2 — **ROOT CAUSE**: old all-167 GC observations admit
   base-JALR bit-1 erasure (c22b1 public reproduction rc=0). Declaration coverage
   now selects OB-JALR-LSB and refuses the missing binding, cargo test rc=101
@@ -1090,6 +1127,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-verificat
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c23a | 9,822 B suffix/inverse hashes exact; all runtime/input/frozen bytes exact; new-file cap census51 | registry92/effective90/114 unchanged; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b2 | 15 literal cases/17 boundaries/32 parcels; eight incorrect effects; reordered GREEN; disabled-PC and missing-binding RED; prior90/input/core bytes exact; independent full167; Rust167/17/208 | registry92/effective90/114; twelve pairs/freeze; focused gates/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c22b1 | literal normal states; public base-JALR bit1 survivor across all 167; six annotation repairs; pinned image-identical source governor and two bypass REDs; executable arrays/prior bytes exact; Rust 167/17/206; full CI five legs green | effective 88/114 unchanged; direct c22b2 target witness next |
 | `2026-10-10` | `.13` c22a | 20=13+7 ordered inverse/hash exact; old manifest/sealed bytes exact; one appended row; no-op; prior inputs/runtime exact; focused gates/books | effective 88/114 unchanged; 226 frozen rows; hooks before c22b |
@@ -1125,6 +1163,7 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c23a | `SEMULITH-P4-0150 (leaf P4-SYSTEM.13): retain control-transfer witnesses in a bounded chapter` | c23b XLEN, then remaining pairs/freeze |
 | `.13` c22b2 | `SEMULITH-P4-0149 (leaf P4-SYSTEM.13): observe JALR targets and links directly` | c23a bounded control-transfer book, then c23b XLEN |
 | `.13` c22b1 | `SEMULITH-P4-0148 (leaf P4-SYSTEM.13): correct inherited GC alignment evidence and own target checks` | priority c22b2 direct JALR target-state pair |
 | `.13` c22a | `SEMULITH-P4-0147 (leaf P4-SYSTEM.13): retain whole development receipts under fixed bounds` | c22b JALR-LSB, then remaining runtime pairs/freeze |
@@ -1155,6 +1194,11 @@ c17a–f receipts: [archive/P4-SYSTEM-8.md](archive/P4-SYSTEM-8.md#c17-commits).
 Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
+
+- `2026-10-10`: `.13` c23a (SEMULITH-P4-0150): move whole control-transfer
+  suffix with exact inverse; all runtime/input/frozen bytes unchanged. Integer/
+  control21,969/10,013 B, fixed caps unchanged. Book48→49, effective90/114.
+  c23b XLEN follows hooks/brief/clean actual census.
 
 - `2026-10-10`: `.13` c22b2 (SEMULITH-P4-0149): close direct JALR target
   witness gap with literal state/request cases and eight bad effects, including

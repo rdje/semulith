@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0150 (leaf P4-SYSTEM.13 c23a) — retain control-transfer witnesses in a bounded chapter
+
+- Move the 9,822 B control-transfer suffix into contract-control.md, retaining
+  every byte and separator. Ordered inverse restores the original 31,694 B.
+  Integer/control chapters now 21,969/10,013 B; fixed book caps unchanged.
+- Synchronize navigation/index/profile/report/resume. All runtime/canonical/
+  generated/frozen bytes exact; registry 92/effective 90/114 unchanged.
+- LIVE_STATUS changes only book chapters 48→49, doctrine 652 arms/P4 12/18 unchanged.
+  Focused gates/all six books rc=0; hooks precede then c23b XLEN.
+
 ## SEMULITH-P4-0149 (leaf P4-SYSTEM.13 c22b2) — observe JALR targets and links directly
 
 - Bind JALR-LSB through 15 literal cases/17 boundaries/32 parcels and unchanged

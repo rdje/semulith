@@ -1,5 +1,24 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — preserve control-transfer witnesses in a bounded chapter (P4-SYSTEM.13 c23a)
+
+Integer runtime chapter reached 31,694/32,768 B (1,074 B room). Move its whole
+ordered suffix (immediate transfers, JALR diagnosis and realization) into
+contract-control.md, preserving the leading separator and all 9,822 B:
+SHA256 d1da14f93bf6f352739edd2a2e784cabd4f782481fb729bc67c2b1fc05b819c0.
+Remove only the new navigation/header to reconstruct the original 31,694 B:
+SHA256 9beabe26eafc6b026ab8310cddf25f3ca97919ce5787e89536725a62149c7a7b.
+Integer/control now 21,969/10,013 B. SUMMARY/index/profile ENV/GS/runtime summary
+follow the move; book count 48→49, fixed caps unchanged.
+
+verify.py rc=0 proves inverse, all 92 registry/core/author/generated/frozen bytes
+and 112 base/348 GC canonical/guest inputs exact. Explicit new-file census 51
+under 80 files/524,288 family bytes/32,768 part caps. Effective90/114 unchanged;
+no Rust code changed. LIVE_STATUS changes only book chapters 48→49, doctrine 652
+arms/P4 12/18 unchanged. Focused gates/all six books rc=0; hooks precede then c23b
+XLEN and remaining runtime pairs/freeze. promotion: declined (existing bounded
+suffix-move protocol; exact inverse and ownership retained in tree/book navigation).
+
 ## _(2026-10-10)_ — observe JALR targets and links directly (P4-SYSTEM.13 c22b2)
 
 The old GC comparison admits base-JALR bit-1 erasure across all 167 guests.
