@@ -289,12 +289,54 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | comparison/qualification evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a18 duplicate-write mapping repair, comparison/qualification, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a18 — reject duplicate expectation writes (scheduled next, SEMULITH-P4-0209)
+
+Priority high; own the shared expectation-mapping defect discovered during a17
+comparison-interface review. Reproduce through public functions: one step has
+(write (reg "x1") (value "0x2")) followed by the same register with value0x1.
+The expectation schema reports no findings, expectations_to_doc collapses it to
+{x1:0x1}, and the public Sail comparator reports AGREE on an x1=1 trace. Impact:
+a conflicting input can appear self-consistent after information loss. Fix at
+the single mapping boundary before qualifying comparisons; reject duplicate
+registers even when their values match. Own permanent loader/mapping controls,
+meaningful removal proof, all existing dossier/mapping consumers and book limits.
+No canonical duplicate is asserted; census existing expectations and preserve
+all valid dictionaries. Execute after a17's clean COMMIT workflow, before the
+comparison evaluator. Evidence target/p4-system-14/a18; no new tree pivot.
+
+### `.14` a17 — bounded authenticated comparison snapshots (completed, SEMULITH-P4-0208)
+
+Owned on cleane0ed462, brief0/untracked and actual process census OK, before edits.
+Comparison must consume the bytes that passed pin authentication: reopening a
+validated filename can observe a later replacement. Extend the single anchored
+reader with an immutable snapshot result and a required explicit nonnegative
+byte limit. Keep the existing streaming pin-only API/results unchanged. Refuse
+oversized snapshots before payload reading; return data only after SHA/size/path/
+volume/stability checks and close callbacks succeed. No data on any refusal,
+mismatch or unavailable result; no unsafe second open, cache or new store.
+Read the reader/control/public comparison contracts and GC book; own positive,
+limit, partial-I/O, close/race, immutable-result and no-reopen controls, including
+optimization and independent predicate omissions. Keep PROFILE qualification
+closed and canonical records/retention/caps unchanged. Publish the API, example,
+working-memory and check-time limits in the GC book; focused consumers, all old
+pin controls, protected byte scope, seven books and COMMIT workflow before next.
+Evidence target/p4-system-14/a17, all project scratch on this volume. Snapshot
+limits are caller bounds, not a retention decision or authentication of execution.
+
+Verified: snapshot24/0/optimized24/0 and five independent mutations detected in
+normal/optimized runs. Pin39/0 on predecessor/current, all twelve old pin predicate
+controls still discriminate; profile54/0. The actual book helper's success and
+mismatch paths pass. Focused13/seven books/rendered snapshot contract and protected
+scope are verified before commit. No production v1 qualification or canonical/
+runtime/generated/archive/cap changes. Derive752outer arms; CPU/P4/P5 unchanged.
+promotion: matched-experiment decision and GC book own snapshots and limits.
 
 ### `.14` a16 — refuse observations beyond the declared Sail budget (completed, SEMULITH-P4-0207)
 
@@ -1096,6 +1138,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a17 — **ROOT CAUSE**: gap.py rc=0 demonstrates pin metadata
+  followed by a later path read can observe different bytes; prior pin39/0 passes.
+- [x] `.14` a17 — **ADDRESSED**: snapshots24/0/optimized24/0/proof.py rc=0:
+  five independent mutants expose their controls, no failure data/reopen, explicit
+  bounds and immutable bytes; actual book helper success/mismatch paths pass.
+- [x] `.14` a17 — **NO REGRESSION**: focused13/profile54/0/seven books rc=0;
+  old pin39/0 and twelve predicate removals still discriminate; scope.py rc=0
+  proves other tracked populations exact; no canonical qualification/CPU credit.
+
+
 - [x] `.14` a16 — **ROOT CAUSE**: before.log rc=0 reproduces three false
   agreements on surplus rows/interrupt/fetch deliveries in predecessor11ee6d4.
 - [x] `.14` a16 — **ADDRESSED**: proof.log rc=0: five tails/three positives,
@@ -1275,6 +1327,12 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a17: snapshot24/0/optimized24/0, five mutants normal/optimized, pin39/0 before/
+after plus twelve predicate removals, actual book helper, profile54/0/focused13/
+seven books/rendered API/protected scope rc=0. No Rust changes; qualification closed.
+New duplicate-write mapping defect reproduced/owned as high-priority a18 next.
+
+
 a16: false-AGREE reproduction, budget5tails/3positive, two independent omissions
 normal/optimized, GUEST-GEN152/0, focused13/sharder12/0/seven books/rendered budget,
 334cached-trace exact outcome pairs, live public atomic/timer, protected scope and
@@ -1326,6 +1384,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a17 | `SEMULITH-P4-0208 (leaf P4-SYSTEM.14): return bounded authenticated snapshots` | a18 duplicate expectation writes, comparison/qualification, retention and first canonical capture |
 | `.14` a16 | `SEMULITH-P4-0207 (leaf P4-SYSTEM.14): refuse surplus Sail observations` | authenticated bounded snapshots, comparison/qualification, retention and fresh canonical capture |
 | `.14` a15 | `SEMULITH-P4-0206 (leaf P4-SYSTEM.14): authenticate experiment file pins` | comparison/qualification evaluator, bounded retention, first fresh capture |
 | `.14` a14 | `SEMULITH-P4-0205 (leaf P4-SYSTEM.14): validate capture identities and declared edges` | artifact/pin/comparison evaluator, bounded retention, first fresh capture |

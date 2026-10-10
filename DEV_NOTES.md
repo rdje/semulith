@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — bounded authenticated snapshots (P4-SYSTEM.14 a17)
+
+PinResult intentionally carries metadata. Reopening after its check can observe
+a different file. Share the existing anchored traversal with read_snapshot,
+requiring an explicit nonnegative/nonboolean byte bound; oversized files refuse
+before payload reading. Return immutable bytes/result only after all pin/path/
+stability checks and close callbacks succeed; failure has no data. Pin-only API
+and39controls retain their behavior; snapshot memory is proportional to the bound,
+not an exact process-memory ceiling, and multiple snapshots need an aggregate budget.
+
+Snapshot24/0 (also optimized), five independent mutations and twelve old pin
+predicate removals pass. Cases cover partial I/O/close errors, races, no reopen,
+immutability and real multi-chunk bytes, with tracked descriptor/fixture cleanup.
+No canonical capture, store, retention decision, cap or CPU acceptance change.
+Focused13/profile54/0/seven books/rendered API and actual book helper pass;
+protected scope checked before commit. Comparison review reproduces a conflicting
+duplicate x1 write collapsed by the mapper, allowing AGREE; own priority-high a18
+next, before qualification. No claim that current canonical records contain it.
+Evidence target/p4-system-14/a17. promotion: matched-experiment decision and GC book
+own the API, examples, memory bounds and remaining qualification boundary.
+
 ## _(2026-10-11)_ — reject surplus Sail observations (P4-SYSTEM.14 a16)
 
 Predecessor11ee6d4 compares one expected NOP as AGREE even with an extra row/x1

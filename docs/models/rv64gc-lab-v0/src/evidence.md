@@ -227,3 +227,65 @@ The comparison vocabulary remains limited: PC/word, FP registers, direct CSR
 state, memory and requests are uncredited except where read into the declared GPR
 changes. Validating a trace budget does not authenticate execution or qualify a
 structured experiment. No canonical capture or requirement status changes here.
+
+## Taking bounded snapshots for comparison
+
+A pin-only result describes a file during its check. Reopening that filename later
+can read different bytes. `read_snapshot` instead returns `Snapshot(pin, data)`
+from the same descriptor-anchored, authenticated read. `pin` has the four
+previously documented dispositions. `data` is immutable `bytes` only on success;
+it is `None` on mismatch, refusal or unavailable I/O, including a close failure
+after bytes have been collected. The result record itself is also immutable.
+
+The caller must provide keyword `max_bytes`, a nonnegative integer; booleans,
+negative values and other types refuse without opening a path. Omitting the
+argument raises the ordinary Python `TypeError`. A file larger than that bound
+refuses before payload reading. An empty file with a matching pin and zero bound
+returns `b""`, which is distinct from failure's `None`. It remains inadequate as
+a complete required trace.
+
+For example, this helper accepts an already schema/graph-validated observation
+record. Run with `scripts` on Python's module path, from the repository root:
+
+```python
+from pathlib import Path
+from experiment_artifacts import read_snapshot
+
+
+def bytes_for_comparison(record):
+    snapshot = read_snapshot(Path.cwd(), "observation", record,
+                             max_bytes=4 * 1024 * 1024)
+    if snapshot.data is None:
+        raise ValueError(snapshot.pin.disposition + ": " + snapshot.pin.reason)
+    return snapshot.data
+```
+
+The 4 MiB value is an illustrative caller bound, not an approved retention or
+method budget. The future comparison method must declare both its per-file and
+aggregate working-set bounds. Holding many snapshots can exceed a single file's
+bound. Snapshot assembly uses memory proportional to the bound: collected chunks
+and their joined immutable bytes can coexist, so the bound is **not** a promise
+of exactly that many bytes of process memory. The underlying read chunk remains
+at most 1 MiB, and all existing stability, volume, Git-boundary and cleanup rules
+apply. The pin-only API still streams without retaining payload bytes.
+
+```bash
+python3 scripts/probe_experiment_snapshots.py
+python3 -O scripts/probe_experiment_snapshots.py
+bash scripts/check_profile_consistency.sh --self-test
+```
+
+Twenty-four controls cover exact/zero/oversized/invalid bounds, digest and size
+mismatch, missing/unsafe paths, symlinks, partial I/O, close failure, concurrent
+rewrite, one traversal without reopening, immutable results and a real multi-chunk
+snapshot. Open/close tracking observes descriptor cleanup; the owned on-volume
+fixture is removed. Five deliberate mutations exercise the bound, required
+argument, no-reopen rule, withheld failure data and immutable result. They also
+fail under optimization. All 39 original pin controls remain applicable.
+
+A later filename replacement leaves returned bytes intact; it can make the
+workspace cease to match that capture. Snapshots provide check-time bytes, not
+process authentication, currentness for an entire dependency graph, execution of
+a control, evidence adequacy or retention. Production still refuses every v1
+block pending comparison/qualification evaluation; no canonical capture or CPU
+acceptance credit follows from this API.

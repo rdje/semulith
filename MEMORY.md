@@ -18,12 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: after a16's completed Sail trace-budget repair, implement `P4-SYSTEM.14`
-  bounded authenticated snapshots for comparison, then comparison/qualification
-  evaluation under the matched-experiment decision.
-  Grammar/mapping, declared edges and file pins exist; PROFILE-CONSISTENCY
-  refuses v1 blocks pending comparison/qualification evaluation.
-  Resolve bounded retention before any fresh
-  canonical capture; policy/status/mirrors follow. No canonical v1 block exists yet.
+- next_action: `P4-SYSTEM.14` a18/0209: reject duplicate expectation writes at
+  the shared mapping boundary (reproduced/owned in the task). Then implement
+  comparison/qualification using the completed bounded snapshot API.
+  Grammar/mapping, declared edges, file pins and snapshots exist; production v1
+  qualification remains refused. Resolve retention before fresh canonical captures;
+  policy/status/mirrors follow. No canonical v1 block exists yet.
 - in_flight_uncommitted: none after this commit.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

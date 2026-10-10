@@ -21,7 +21,7 @@ def record(path="artifact", payload=PAYLOAD):
             "sha256": hashlib.sha256(payload).hexdigest(), "byte_size": len(payload)}
 
 
-def checked(root, kind, pin, *, close_error=False):
+def checked(root, kind, pin, *, close_error=False, reader=None):
     """Observe actual opens/closes, including all failure and early-return paths."""
     original_open, original_close = os.open, os.close
     live = set()
@@ -45,7 +45,7 @@ def checked(root, kind, pin, *, close_error=False):
             raise OSError(errno.EIO, "injected close failure")
 
     with patch.object(A.os, "open", opening), patch.object(A.os, "close", closing):
-        result = A.read_pinned(root, kind, pin)
+        result = (reader or A.read_pinned)(root, kind, pin)
     if live:
         for descriptor in live:
             original_close(descriptor)

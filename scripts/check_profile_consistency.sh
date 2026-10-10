@@ -672,6 +672,8 @@ EOF
   score "GREEN structured verification identity and edge controls" "$rc" 0 "$out" "EXPERIMENT-GRAPH: 63 pass / 0 fail"
   out="$(python3 "$ROOT/scripts/probe_experiment_artifacts.py" 2>&1)"; rc=$?
   score "GREEN structured artifact pin controls" "$rc" 0 "$out" "EXPERIMENT-ARTIFACTS: 39 pass / 0 fail; descriptors/fixture cleaned"
+  out="$(python3 "$ROOT/scripts/probe_experiment_snapshots.py" 2>&1)"; rc=$?
+  score "GREEN bounded authenticated snapshot controls" "$rc" 0 "$out" "EXPERIMENT-SNAPSHOTS: 24 pass / 0 fail; descriptors/fixture cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
