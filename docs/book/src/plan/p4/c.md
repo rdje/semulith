@@ -47,8 +47,7 @@ that also match its bits. A permanent probe checks all 37 forms and the immediat
 compiles the generated Rust and checks the mappings, effects and eight decoder cases. Giving a
 compact register the wrong offset, or reversing the table's order, makes the checks fail.
 
-The session crashed during slice (b); the task-tree and surviving files recovered its exact
-frontier. PNT resumed on October 8. Slice (c1) adds an exact two-byte instruction request to
+Slice (c1) adds an exact two-byte instruction request to
 the environment boundary. The old request always read four bytes, even when the processor
 kept only the first two; it could not fetch a compressed instruction at the end of a two-byte
 memory region. The new request succeeds there, keeps the same alignment and code-visibility
@@ -57,8 +56,7 @@ rules, and lets fault injection distinguish the requested parcel from its neighb
 For C-enabled execution, the processor requests one parcel first and requests another
 only when the instruction needs it. This replaces the earlier coalescing plan: a four-byte
 request cannot distinguish a failure in an unnecessary upper half from a failure in the
-instruction itself. Fetch counts will therefore count parcels when C binds, and the next
-environment-contract version will state that extent.
+instruction itself. Fetch counts measure physical parcels.
 
 Slice (c2) executes each expansion's ordinary rule after evaluating its operand mappings
 against the original compressed fields. The mapped values keep their signed widths; otherwise
@@ -90,16 +88,13 @@ fixture keeps its word API for replay and reduction. A generated 14-byte mixed p
 on the temporary C composition, checking the actual loaded bytes, a four-byte instruction at
 a two-byte offset, a jump over an illegal parcel and a trailing halfword. Its five executed
 steps request six parcels. Padding the image or moving the loader's offset makes the checks
-fail. All 139 existing rv64gc images and observations remain unchanged in this slice.
+fail.
 
-Slice (d3a) promotes the expectation author into tracked code. It computes values from
-spec-side rules and offers non-writing checks. Its 42 declared historical records re-derive
-byte-for-byte. The broader census caught reserved upper bits being interpreted as ordinary
-operations, and missing SUM/MXR/U permissions in its data walk; both are fixed. The affected
-permission guest now matches all 169 committed step observations. Direct permission fixtures
-and six mutations guard the repairs, without using the instruction engine as an oracle.
-The author still has a bounded vocabulary. C expansion and instruction-fetch
-translation follow below. Existing records keep their original provenance.
+The independent expectation author computes spec-side values and offers
+non-writing checks. Reserved upper bits interpreted as ordinary operations and missing
+SUM/MXR/U permissions in its data walk were repaired. Direct permission fixtures and deliberate mutations guard
+these repairs without using the instruction engine as an oracle. Historical
+records retain their original provenance.
 
 Slice (d3b) tracks the Sail runner and repairs that comparator. Every ordinary expected
 instruction needs a row, including instructions that change no register. A declared
@@ -107,13 +102,6 @@ interrupt or fetch-fault step instead needs a matching trace event. Failed proce
 stale output and malformed traces refuse. Two executions must reproduce the same trace.
 The runner builds exact byte images with the tracked ELF writer, checks the binary pin,
 and derives the matched configuration from its source.
-
-The audit inspected 95 cached corpus traces. All 79 from previously agreeing cells pass
-the stricter comparison; their gaps are nine declared interrupt deliveries and one fetch
-page fault, each witnessed by an event. The sixteen known not-matches keep their named
-limitations. Cached process statuses were not retained. A fresh run of all four M programs
-checks successful status and agrees on 99 steps, with identical repeat traces. A temporary
-mixed C image also agrees on its five hand-derived addresses, words and writes.
 
 Slice (d3c) adds independent C component rules. A separate spec-side decoder reconstructs
 all 37 RV64+D forms from the pinned chapter and its instruction diagrams. It reads neither
@@ -123,12 +111,11 @@ C.JALR computes its target from the old register before returning a pc+2 link, e
 both registers are x1. Word arithmetic truncates to 32 bits and sign-extends. Reserved
 parcels and floating-point state faults retain the original sixteen bits in the trap value.
 
-The permanent probe checks every form and its effect, immediate extremes, 79 individual
-scattered bits, hints and reserved cases. A permutation of two immediate bits can pass an
-all-ones limit, so those individual-bit checks matter. Six deliberate mutations fail,
-including a wrong two-byte link and reporting the expanded word as the trap value. The
-42 owned records and all 91 previously emitted texts stay exact. The guest author still
-uses its earlier word fetch route; C component execution is ready for parcel fetch/budgets.
+The permanent probe checks every form and its effect, immediate extremes,
+79 individual scattered bits, hints and reserved cases. A permutation of two
+immediate bits can pass an all-ones limit, so individual-bit checks matter.
+Mutations include a wrong two-byte link and reporting the expanded word as
+the trap value.
 
 While deriving the independent fetch path, slice (d3d0) found a mistake in the evaluator's
 handling of unsupported longer instructions. It stopped after one parcel when the low five
@@ -152,9 +139,7 @@ of page-faulting, and MPRV did not select effective data privilege. These are re
 including reserved non-leaf U/A/D bits and effective SUM/U permissions. Odd instruction
 addresses exposed a fifth defect in the author: saved exception and interrupt PCs retained
 bit zero. Both M and S delivery now clear that bit while preserving bit one. Nine deliberate
-mutations fail on these guards and fetch schedules. All 97 earlier emitted texts, including
-the 42 owned records, remain byte-identical; this component still leaves the older guest
-execution route in place until the next slice explicitly adds byte execution and budgets.
+mutations fail on these guards and fetch schedules.
 
 Slice (d3d2) integrates those components into an explicit byte guest route. The caller
 declares a boundary budget. Leaving the source, entering a handler, delivering an
@@ -173,20 +158,15 @@ mutations fail on byte annotations, padding, source termination, counts, retirem
 interrupt ordering, code visibility and unknown-valid refusal. The historical word route
 still reproduces all 97 earlier texts, including its 42 owned records.
 
-At slice (d3d2), the production profile still declared C unbound. The staged
-specification-derived corpus and count derivation preceded the C bind at (e2c),
-with the matched Sail experiment next. These probes
-are finite component evidence. The [assembler chapter](../../annex/assembler.md) documents
-the explicit authoring command and its budget semantics.
+These are finite component observations. The
+[assembler chapter](../../annex/assembler.md) documents the explicit authoring
+command and its budget semantics.
 
-The full pre-bind census exposed prerequisites in that independent author: fixed `misa`
-fields, privileged legality, a bounded base vocabulary and the declared translation cache.
-Slice (e1a) repairs the fields and permission guards; five mode-matrix guests now match
-140 committed architectural steps and nine mutations fail. The census reaches 118 exact
-of 139 historical traces, with twenty named vocabulary refusals and one owned cache-policy
-disagreement. Each prerequisite is scheduled before staging can adopt parcel counts.
+The pre-bind census identified prerequisites in the independent author:
+fixed `misa` fields, privileged legality, base vocabulary and the selected
+translation cache. These were repaired before staging adopted parcel counts.
 
-Slice (e1b1) adds the base integer vocabulary that seventeen of those refusals named:
+Slice (e1b1) adds the base integer vocabulary:
 comparisons and XORI, XLEN and word shifts, signed/unsigned branches, and narrow memory
 stock derivations. Word shifts use five count bits and sign-extend their 32-bit result;
 XLEN shifts use six. A named reserved-word outcome lets parcel execution deliver the
@@ -194,24 +174,19 @@ declared diagnostic before effects, keeping the full raw word and no retirement.
 Unknown valid vocabulary continues to refuse. Its permanent controls now use an
 unmodeled real CSR because XORI and byte loads have become supported operations.
 
-Twenty-two hand arithmetic/alias/x0 cases, ten branch cases, narrow memory and reserved
-fixtures pass. Eight mutations fail, and all seventeen formerly refused guests match
-471 committed architectural steps. The census now reaches 135 exact traces, with three
-remaining CSR/directive refusals and the owned cache disagreement. All 105 earlier word
-texts and 42 owned records remain byte-identical. No production fixture or count has
-been adopted during these prerequisite repairs.
+Hand arithmetic/alias/x0, branch, narrow-memory and reserved fixtures guard
+the base vocabulary, with deliberate mutations. Historical production records
+were preserved during prerequisite repairs.
 
-Slice (e1b2) resolves the last three vocabulary refusals. The independent author now
+Slice (e1b2) completes the CSR/directive vocabulary. The independent author now
 registers and legalizes the selected counter-enable and STCE fields. Supervisor timer
 compare access needs both enable gates before effects, while machine mode bypasses
 them. Source annotations can contain quotes and backslashes; every emitted literal
 field uses the canonical renderer and round-trips through the reader and schema.
 
-Thirty mode-gate cases, mask/alias and literal-text fixtures pass; eight deliberate
-mutations fail. Three formerly refused guests match 117 architectural steps, and all
-121 prior word texts and 42 owned records remain byte-identical. The parcel census
-reaches 138 exact traces with no vocabulary refusals. The remaining guest exercises
-the declared translation cache, which must be modeled independently before count adoption.
+Mode-gate, mask/alias and literal-text fixtures guard the CSR/directive
+vocabulary, with deliberate mutations. The translation cache was the final
+prerequisite before count adoption.
 
 Reviewing that cache prerequisite exposed an older production fence defect (e1c0).
 The fence used operand values to choose broad scope, confusing a nonzero register
@@ -219,8 +194,6 @@ holding zero with register x0. The semantic effect now carries register-identity
 selectors separately from the address and ASID. Three parent-failing regressions pass,
 including page/ASID zero and masked ASID bits; the earlier fence fixture is corrected
 and armed with an occupied cache. The [Sv39 chapter](sv39.md) explains the four cases.
-This repair precedes the independent cache author; no evaluator output supplies its
-expected values and the staged C bind remains ahead.
 
 Slice (e1c1) completes the independent translation-cache prerequisite. The author
 now retains four FIFO translations keyed by 4 KiB page and the selected 16-bit ASID.
@@ -230,14 +203,11 @@ from non-leaf PTEs, and ASID-selective fences preserve those entries. The four s
 use register identity, including a nonzero register holding zero. Failed translations
 install nothing; Bare and machine-mode accesses bypass the cache.
 
-Hand page-table fixtures check replacement order, permissions, roots, ASIDs, globals,
-zero selections and illegal/invalid fences. Thirteen deliberate mutations fail, and
-the uncached parent fails the stale-mapping fixture. All 139 historical parcel runs
-now reproduce their committed architectural observations, with a cold repeat of the
-cache guest's request schedule. All 42 owned records remain byte-identical. The known
-incorrect cache guest is the only changed text among 121 earlier word-route outputs;
-no production record is overwritten. Staging can now derive C observations and actual
-parcel counts independently, after resolving the documentation archive's owned pressure.
+Hand page-table fixtures check replacement order, permissions, roots, ASIDs,
+globals, zero selections and illegal/invalid fences. Deliberate mutations and
+the uncached parent fail the stale-mapping fixture. Historical parcel
+observations and a cold repeat of the cache request schedule agree; no
+production record was overwritten during staging.
 
 Before staging the C corpus, slice (e1d0) repairs the author's provenance headers.
 New derivations name the tracked spec-side author and the route actually executed:
@@ -324,21 +294,18 @@ With C unbound, the historical check keeps its original byte-exact route. A defa
 word-route write to a canonical C-composed record refuses before any output changes;
 new authoring requires explicit `--parcels --steps N`, which records that route.
 
+The production composition contains 197 instruction rules plus three counter
+pseudos, with all 200 spellings exercised. The 28 new C programs brought the
+corpus to 167. Binding migrated the 139 older records from 4,888 word requests
+to 9,770 parcels across 4,913 boundaries, preserving every other record byte
+and the old engine PC/mode/register-write traces. Five public-CLI C controls
+distinguish the unbound parent from the bound model.
 
-Slice (e2c) binds C in production as one coherent change. The composition is complete:
-197 instruction rules plus three counter pseudos, with all 200 spellings exercised.
-The 28 staged C programs and their specification-derived records land byte-exact;
-the directed corpus grows from 139 to 167. The old records change only their direct
-fetch counts, from 4,888 word requests to 9,770 parcels across 4,913 boundaries.
-Every other byte and every historical source stays exact. All 139 historical engine
-PC/mode/register-write traces also remain byte-identical to the unbound parent;
-five public-CLI C controls distinguish that parent from the bound model.
-
-The open v2 contract now includes C's guarantee and exact two-byte physical fetch
-supply. Their four positive/negative check IDs are realized, bringing the registry
-to 20 checks. Frozen v0/v1 records and pins remain unchanged. All new guests join
-the seven-axis matrix; compressed faults and interrupt return replace the earlier
-boundary/restart degeneracy. Two other declared degeneracies remain.
+Open v2 includes C's guarantee and exact two-byte physical fetch supply,
+with their four positive/negative check IDs realized. Frozen v0/v1 records and
+pins remain unchanged. The seven-axis matrix includes compressed faults and
+interrupt return in place of the earlier boundary/restart degeneracy; two
+other declared degeneracies remain.
 
 Integration exposed two checker gaps and a scope grammar omission. The profile
 grammar, its loader and the consistency part-sum now agree on the C family;
@@ -383,23 +350,20 @@ The experiment also exposed an adapter defect: it recognized the historical auth
 interrupt description but not the parcel author’s numeric-cause description. Both
 exact spellings now require the matching trace event. Missing/wrong events and an
 instruction row at that delivery boundary fail; disabling the new spelling fails the
-permanent control. GUEST-GEN passes 128 controls.
+permanent control.
 
 These comparisons judge declared GPR changes and witnessed delivery gaps. They do
 not independently compare unrecorded PCs, words, FP registers, memory, CSRs or physical
 request counts. The trap CSR values read back into GPRs are within the comparison.
 The ninth experiment is recorded in the reference dossier; structured experiment and
-independence records remain `.14`'s work. Full CI and leaf acceptance follow at (e2e).
+independence records remain `.14`'s work.
 
-
-Slice (e2e) closes the C leaf after the named full local suite passes: Rust format,
-strict Clippy, all tests (153 core, 17 DSP, 193 verification), every doctrine,
-the wasm bench, headless bench smoke and all books. The source expansion citations,
-compiled mappings/decoder, complete scope/corpus, precise parcel-fault behavior and
-public reference results meet the leaf's acceptance. The timer-platform limit remains
-explicit. P4 is now 12/18; CPU-SYSTEM remains incomplete, with contract v2 completion
-and realization next at `.13`. Closed planning and detailed receipts remain verbatim
-in the task-tree archives; this chapter is the current review narrative.
+The C leaf closed after full local CI: Rust format, strict Clippy and all
+tests, every doctrine, wasm bench, headless bench smoke and all books. Its
+expansion citations, compiled mappings/decoder, complete scope/corpus, parcel
+faults and qualified public reference observations meet its acceptance. The
+timer-platform limit remains explicit. P4 is 12/18 and CPU-SYSTEM remains
+incomplete; contract v2 completion is P4.13's work.
 
 P4.13 c13a1 later re-derives c-irq after explicit STCE setup: its budget is now
 19 boundaries / 32 parcels; the timer delivery is at boundary 11. The historical
@@ -467,3 +431,10 @@ FP registers, direct CSR state, memory and requests remain outside this adapter'
 comparison except where read back into declared GPR changes. Requirement statuses,
 structured experiment records and independent evidence classification remain
 P4.14's work. Contract realization stays 98/114.
+
+## Historical verification receipts
+
+Dated progress counts, pre-bind identity checks and exact provenance receipts
+are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `c`.
+That record authenticates the original chapter and every removed span; all
+current feature examples and commands remain here.

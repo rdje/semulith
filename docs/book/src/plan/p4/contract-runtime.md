@@ -27,10 +27,6 @@ observed through instructions and handler reads; this does not introduce a
 direct comparison of trace PC/mode fields. Finite matrix evidence does not
 prove every possible mode-dependent execution or Linux capability.
 
-At c8 the census was 60/114 realized: thirteen scope pairs, twelve guest
-pairs and five typed boundary pairs. At that slice, twenty-seven runtime pairs
-and final freeze remained. All previous bindings and frozen declarations are unchanged.
-
 
 ## Sv39 prerequisite: inherited global translations
 
@@ -43,7 +39,7 @@ no-G controls and all four actual fence scopes discriminate the repair.
 
 The independent expectation author already inherited G correctly and remains
 unchanged. This fixes the declared retention policy rather than broadening the
-ISA claim. At c9a G-CONTRACT remained 60/114 until the runtime pairs themselves bind.
+ISA claim.
 
 
 ## Sv39 runtime checks
@@ -66,8 +62,7 @@ The matrix spans 1,417 execution boundaries and 2,832 physical parcel
 requests. Re-executing the independent parcel author reproduces every
 committed register-change sequence and fetch count exactly. Neither the
 programs nor their expectations changed. This is finite translation evidence,
-not universal Sv39 or Linux acceptance. At c9b the registry realized
-62/114 checks; twenty-six runtime pairs and final freeze remained.
+not universal Sv39 or Linux acceptance.
 
 
 ## Svade: fault delivery and unchanged PTEs
@@ -93,8 +88,7 @@ at the first load. The normal independent author agrees with all four programs,
 byte image across both faults. Guest inputs and production behavior are unchanged.
 
 These witnesses retain the existing ISA observation vocabulary and finite scope.
-The selected policy faults instead of updating A/D; Svadu is excluded. At c10,
-G-CONTRACT was 64/114, with twenty-five runtime pairs and final freeze remaining.
+The selected policy faults instead of updating A/D; Svadu is excluded.
 
 
 ## IALIGN-16: legal halfwords and required parcels
@@ -128,9 +122,6 @@ failed parcel's trap value (straddle step 46). No source or expectation changes.
 The existing comparison also checks never-written registers; direct trace PC/mode
 comparison is not added. This is finite evidence for the selected contract.
 
-At c11, G-CONTRACT was 66/114: thirteen scope pairs, fifteen guest pairs and five
-typed boundary pairs. Twenty-four runtime pairs and final freeze remained.
-
 
 ## Zicntr: included counters and read-only refusals
 
@@ -161,9 +152,6 @@ clobbers x5 with 9 instead of preserving its sentinel 7, and fails. No guest,
 expectation or author source is rewritten. This pair is finite inclusion/refusal
 evidence; OB-GC-COUNTERS remains a separate later binding. Firmware and Linux
 acceptance are still open.
-
-At c12, G-CONTRACT reached 68/114: thirteen scope pairs, sixteen guest pairs
-and five typed boundary pairs. Twenty-three runtime pairs and final freeze remain.
 
 
 ## Explicit comparator setup before fallback repair
@@ -221,8 +209,7 @@ and cannot alone establish a reference cause. Public configuration validation
 still rejects Zicntr without a time source and
 CLINT without a mapped region. These are qualified reference-platform limits;
 failed processes are never counted as agreement. Structured experiments remain
-P4-SYSTEM.14's work. The full independent corpus now spans 5,360 boundaries and
-10,514 parcel requests over the same 167 programs; the contract stays 68/114.
+P4-SYSTEM.14's work.
 
 ## Sstc prerequisites: two discovered defects
 
@@ -301,8 +288,8 @@ guest observations and 42 owned records remain exact. The original public CSR
 reproduction changes from rc101 to rc0; the corrected public Sail diagnostic
 still reports its qualified comparator-platform difference with STCE verified.
 
-At c13a2, G-CONTRACT stayed 68/114 with v2 open. Direct S-mode witnesses below
-then earn the SSTC pair; neither slice establishes firmware/Linux capability.
+The direct S-mode witnesses below earn the SSTC pair; neither prerequisite
+repair nor this pair establishes firmware/Linux capability.
 
 
 ## Observable S-mode timer programming and refusals
@@ -364,20 +351,11 @@ unexpected traps when either permission gate is cleared, and reject a NEG case
 when its gate is opened and the write succeeds. The original observation rule is
 preserved; additional direct evidence closes the coverage hole.
 
-At c13b, G-CONTRACT reached **70/114**: thirteen scope pairs, fifteen guest pairs,
-six direct assumption pairs and one direct execution pair. The registry keeps
-72 entries, including the two superseded historical source checks. Twenty-two
-runtime pairs and final freeze then remained; v2 and CPU-SYSTEM stayed open.
-
-Before ALU-immediate binding, c14a repairs a gate self-test that assumed its
-example check was still unregistered. That assumption failed under a simulated
-valid binding even though production coverage stayed correct. The test now adds
-a synthetic declaration only in scratch data and measures its own registration.
-Duplicate registration cannot add credit; the controls also fill every effective
-check and then add a new declaration, distinguishing full coverage from a newly
-missing check. All twenty controls pass, including the previously failing ALU
-binding. A duplicate-counting mutant fails. Production measure and reports stay
-exact; this repair grants no CPU credit.
+The registry self-test creates its synthetic declaration only in scratch
+data and measures its own registration, so real ALU registration cannot break
+its assumptions. Controls reject duplicate credit and distinguish full
+effective coverage from a newly missing check. A duplicate-counting mutant
+fails. This gate repair grants no CPU credit.
 
 
 ## Integer runtime witnesses
@@ -480,3 +458,10 @@ checks those separately. These finite cases do not exhaust page-table shapes,
 permissions, ASIDs, cache eviction, speculative alternatives or all access-fault
 kinds. They verify the selected laboratory's concrete request contract and
 same-page cache behavior without changing Sv39 or its frozen declarations.
+
+## Historical verification receipts
+
+Dated progress counts, pre-bind identity checks and exact provenance receipts
+are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `contract-runtime`.
+That record authenticates the original chapter and every removed span; all
+current feature examples and commands remain here.

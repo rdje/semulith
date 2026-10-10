@@ -1,6 +1,32 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — retain book verification history under fixed caps (P4-SYSTEM.13 c29d)
+
+Actual tracked book family starts51files/511554B (source-only census511245B
+omits book.toml309B). Four chapter sources total106679B. Select45 exact
+historical count/identity/provenance spans; preserve technical behavior when a
+paragraph mixes it with a receipt. Current code/commands/tables/links/headings
+remain exact; no include or relocated rendered content bypasses the cap.
+
+Source-specific replacements save6703B. New finite task archive51848B, SHA
+945d134ef00c5b60e9be115992fc51fe43bd7d96d013f73aa0e306e0be9d85ca,
+contains original span bytes/separators and inverse map. Decode the tracked
+map, remove exact footer, undo descending replacement offsets: every full
+source returns byte/order/SHA-exact against6addc98. One-byte corruption, wrong
+offset and omitted-span controls all reject without source mutation.
+
+Book family504796B after derived index55B reduction; task family77files
+including
+new archive, below unchanged caps. All other books/code/author/canonical/frozen/
+registry104/old archives/history/knowledge/LIVE exact, effective102/114 unchanged.
+No Rust change; prior167/17/223 applies. Focused/all six books rc=0; evidence
+target/p4-system-13/c29d. C29d1 owns generator stdout reporting characters
+as bytes (len(content),23612 vs24064 actual); all cap/inverse measures above
+use encoded/stat bytes. C29e owns encountered P0 internal-ancestry rationale
+(root147de76) before GC-COUNTERS and remaining runtime pairs/freeze.
+promotion: declined (established byte-preserving containment protocol; inverse map and exact payloads remain in the routed finite task archive).
+
 ## _(2026-10-10)_ — align state-source rationale and FP policy detail (P4-SYSTEM.13 c29c)
 
 Fresh public24 FP pairs/927 boundaries and identical-write12 reproduce c29b

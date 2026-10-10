@@ -834,7 +834,7 @@ instruction behavior/guest inputs/frozen obligations. No reference implementatio
 inspection or pin change. Priority-next before remaining runtime pairs; current
 c28d derivation excludes these assertions and uses authenticated ISA/local provider.
 
-### `.13` c29d — contain book execution history before further feature witnesses (queued)
+### `.13` c29d — contain book execution history before further feature witnesses (completed, `SEMULITH-P4-0167`)
 
 Current book family approaches fixed524288B total; six runtime pairs need new
 worked feature examples. After c29c, census actual chapter/total bytes and
@@ -846,6 +846,64 @@ historical verification detail with precise routes/bounded summaries, keeping
 all feature documentation complete. Own a bounded source-specific design before
 edits, preserve fixed chapter/family caps and gate counts, verify all six books
 and exact inverses, commit clean before GC-COUNTERS. No broad rewrite or cap rise.
+
+Activated on clean6addc98 after brief0/actual census rc=0. Source-specific
+scope: C, floating-point, contract-v2 and contract-runtime chapters. Census
+their actual paragraphs and select only dated execution/count/provenance
+receipts; retain all current feature descriptions, worked inputs/results,
+interfaces, user commands, limits and controls. If a historical paragraph mixes
+receipt and behavior, retain the latter explicitly before removing the receipt.
+Capture source bytes/SHA and exact old/new spans before changes. Put removed
+payloads unchanged in one bounded task archive with source offsets, replacement
+offsets, hashes and direct chapter routes. Reconstruct each full original from
+the new chapter plus archived spans and authenticate byte/order/SHA equality.
+No includes or relocated rendered content to bypass the book budget.
+C29e below owns the separately encountered P0 ancestry rationale after this
+containment commit is clean. Measure
+the actual tracked book/task families including the new archive, keep all caps
+fixed, regenerate the book index, run focused gates/all six books and complete
+the commit/brief0/actual census workflow before selecting another slice.
+
+Completed: prepare/apply/verify rc=0,45 exact spans across C20/FP4/v2 11/
+runtime10. Chapter106679B→99976B; derived index saves55B more. Actual tracked
+book51files/504796B, fixed524288B cap. Finite archive51848B SHA
+945d134ef00c5b60e9be115992fc51fe43bd7d96d013f73aa0e306e0be9d85ca.
+Its map/unchanged payloads reconstruct every source byte/order/SHA against6addc98;
+corrupted payload, wrong offset and omitted-span controls reject. Every old
+fenced example/command, table, link and heading retained; only new history
+routes added. Other books/code/author/inputs/frozen/registry104/prior archives/
+knowledge/LIVE exact; effective102/114 unchanged. Focused/all six books rc=0;
+prior Rust167/17/223 applies. Evidence target/p4-system-13/c29d. Hooks next,
+then c29d1 stdout byte-count fix, c29e public-evidence repair, GC-COUNTERS.
+
+### `.13` c29d1 — report generated index bytes accurately (queued)
+
+Actual c29d regeneration prints23612 "bytes" while index.md contains24064
+UTF-8 bytes. Root gen_book_index.py:178 uses len(content), a character count;
+the written content and drift check are correct. Own a bounded stdout-only
+repair after c29d is clean: read the generator/checker and book instructions,
+measure actual output bytes in a same-volume scratch run, require the old
+receipt to fail that assertion, then correct the byte count. Keep generated
+index bytes/terms and check-mode behavior exact, use focused BOOK-INDEX and
+normal docs/books/commit workflow. No new doctrine arm needed. Priority next,
+then c29e and GC-COUNTERS; all c29d cap measurements use stat/encoded bytes.
+
+### `.13` c29e — retire internal-ancestry assumptions in the early overview (queued)
+
+Scoped c29d navigation encounters plan/p0.md's "Three models" section and
+LIVE_STATUS's independence-inventory row. Root147de76 records source-tree
+inspection, file counts and backend/encoding ancestry conclusions. These are
+historical measurements, not a permitted current dependency basis under §20.
+Own a bounded public-evidence repair after c29d is clean. Read the current
+independence record consumers/contracts and public smoke/FP observations before
+changing the live overview. Preserve historical raw bytes/records, identify
+historical results explicitly and remove maintained internal-implementation
+assumptions. Do not infer independence from agreement or modify submodules/pins.
+Keep the existing per-pair/subsystem discipline and distinguish measured public
+observations from independent expected values. .14 retains structured evidence/
+status alignment; log any canonical-record conflict rather than grant new credit.
+Update book/live receipts with focused checks/all six books and clean workflow.
+Priority next, then GC-COUNTERS; a scoped repair, not a repository-wide audit claim.
 
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
@@ -988,6 +1046,24 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29d — **ROOT CAUSE**: census.py/prepare.py rc=0:
+  actual tracked book51files/511554B against524288B; four sources106679B.
+  Source-specific review identifies45 historical receipt spans; source bytes/
+  SHA and exact proposed changes captured before mutation. No feature cap rise.
+- [x] `.13` c29d — **ADDRESSED**: archive-and-apply.py/verify.py rc=0:
+  C32593→29216, FP14661→13909, v2 31527→30251, runtime27898→26600B;
+  net6703B saved plus derived index55B. Finite51848B archive preserves all
+  original spans/separators; four full source inverses authenticate byte/order/
+  SHA. Corruption/wrong-offset/omitted-span controls refuse. Every old fenced
+  example/command/table/link/heading remains; exact historical routes added.
+- [x] `.13` c29d — **NO REGRESSION**: verify.py rc=0: all other
+  books/code/author/canonical/frozen/registry104/prior archives/history/knowledge/
+  LIVE exact, effective102/114 unchanged. Actual book51files/504796B and task
+  family including new archive stay below unchanged caps. Focused/all six books
+  rc=0; previous Rust167/17/223 applicable. Owned next c29d1 (false byte label),
+  c29e (old internal ancestry), then remaining six runtime pairs/freeze.
+  promotion: declined (established exact-payload containment; inverse map and byte-authenticated spans remain in the finite routed archive).
 
 - [x] `.13` c29c — **ROOT CAUSE**: prepare.py rc=0 authenticates
   statement/frozen mirror and repeats public24/927 plus identical-write12
@@ -1243,6 +1319,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29d |45 exact spans/four full source inverses; corruption/offset/omission refused; all original code/commands/tables/links/headings retained; fixed family caps | book504796B; registry104/effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29c | public24/927 plus identical-write12 exact; provenance RED1; exact five prose/one detail/three hashes/two metadata strings; full corpus and protected bytes | effective102/114 unchanged; Rust167/17/223; generators/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b1 | sharder12/0; two exact source inverses/order/SHA; prior17live/210sealed history exact; fixed new-file census/core/input identity | logical229 rows; effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b | independent/direct/public12; wrong Clean DIVERGE10; public24/927 repeated; exact comments/non-comment/input identity; full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
@@ -1263,6 +1340,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29d | `SEMULITH-P4-0167 (leaf P4-SYSTEM.13): retain book verification history under fixed caps` | c29d1 byte-count receipt, c29e public ancestry basis, then GC-COUNTERS |
 | `.13` c29c | `SEMULITH-P4-0166 (leaf P4-SYSTEM.13): align state-source rationale and FP policy detail` | c29d book containment, then GC-COUNTERS |
 | `.13` c29b1 | `SEMULITH-P4-0165 (leaf P4-SYSTEM.13): retain exact history under fixed caps` | c29c source prose/F detail, then c29d book containment |
 | `.13` c29b | `SEMULITH-P4-0164 (leaf P4-SYSTEM.13): ground FP-state claims in public evidence` | c29b1 DEV containment, c29c prose/provenance, c29d book containment |
@@ -1278,6 +1356,11 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29d (SEMULITH-P4-0167): contain45 historical
+  book receipt spans with exact full source inverses; all current code/commands/
+  tables/links/headings retained. Finite51848B archive, book504796B under fixed
+  caps,102/114 unchanged. Next owned c29d1 reporting fix and c29e ancestry repair.
 
 - `2026-10-10`: `.13` c29c (SEMULITH-P4-0166): exact state prose/F
   detail repair, frozen statement preserved; provenance RED1 then published

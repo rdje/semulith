@@ -124,17 +124,11 @@ Probed directly, the backend does raise the flag; every one of the 24 recorded c
 the reference oracle, which has no notion of a signaling NaN at all. The qualification record
 now carries that correction: the backend has two genuine flag deviations, not three.
 
-The fourth checkpoint wrote the double-precision test programs — eleven of them, each
-expected value derived from the specification by the authoring model before any engine ran.
-On an engine staged outside the tracked tree, all 125 programs pass; the 114 that existed
-before run byte-for-byte unchanged, and every new one fails on the previous engine.
+Eleven double-precision programs were authored from the specification
+before any processor-engine run.
 
-The fifth checkpoint is **the bind** for double precision: the profile composes D, and its
-32 instructions execute in the tracked engine. The instruction census grows from 118 to 150,
-matching the pinned upstream tables exactly, and all 125 test programs pass — the 114 that
-existed before unchanged. Both floating-point extensions now run; what remains of this leaf is
-broader numeric evidence, the structural comparison against the Sail reference, and the
-leaf's own acceptance.
+The profile composes D, and all 32 double-precision forms execute in the
+tracked engine alongside F. Both extensions are part of the processor.
 
 Slice (e) gathers the leaf's closing evidence. Its first checkpoint ran all 24 floating-point
 test programs on the Sail reference model: every one agrees with its specification-derived
@@ -191,24 +185,26 @@ identical traces. They include FS-Off, fcsr views, flag dirtiness and the numeri
 families. These are finite observations of the published interface, without a
 claim about the reference's internal functions or arithmetic backend.
 
-The machine chapter is authenticated at271851 bytes/SHA-256
-`b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea`;
-the F/D pages are authenticated through their existing dossier pins too.
-Instruction behavior, generated sources, canonical guests, frozen contracts and
-registry bindings remain exact. G-CONTRACT stays102/114. C29c corrects the
+The Machine/F/D pages are authenticated through their dossier source pins.
+C29c corrects the
 state descriptor and F requirement detail to state the same selected policy;
 the current requirement statement and frozen obligation remain identical. The
 statement promises Dirty whenever values change, without excluding unchanged
 writes. Numerical contract realization and structured experiment registration
 remain separate work.
 
-The descriptor is also an inspection source. Published regeneration changes
-its source hash from `6f94e9cf…85a094c` to `882483e0…695d8e3`; the generated
-state module additionally carries the corrected reservation and FP census
-explanations. Exactly those two read-only strings and one hash change there;
-exactly two hashes change in the generated instruction definition. State layout,
-CSR owners, resets, accessors and instruction definitions remain byte-identical.
-Both stale-provenance checks refuse before regeneration. Fresh public FP
-observations repeat the24/927 pairs and identical-write12 witness byte-for-byte.
-Full source identities and exact replacement proofs are in
-`docs/tasks/P4-SYSTEM.md` (c29c).
+The descriptor also supplies read-only census explanations in generated
+inspection metadata. A prose change therefore requires published regeneration
+and exact provenance/metadata checks. C29c changed one source hash and two
+explanations in the state module, and two hashes in the definition; state
+layout, CSR owners, resets, accessors and instructions stayed byte-identical.
+Its stale-provenance refusals and complete source identities are retained
+with the historical receipts below.
+
+
+## Historical verification receipts
+
+Dated progress counts, pre-bind identity checks and exact provenance receipts
+are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `floating-point`.
+That record authenticates the original chapter and every removed span; all
+current feature examples and commands remain here.

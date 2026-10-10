@@ -60,12 +60,10 @@ Cold reset constructs all owners anew. Exact continuation must also preserve
 the current TLB replacement position, reservation and wait state: cold reset is
 not a substitute for restoring them.
 
-The initial inventory correction changes the declared inventory and its generated metadata.
-The definition module also records the updated state-source hash in its
-provenance manifest. Storage, reset values, accessors and execution remain
-byte-identical. Snapshot
-and replay serialization still belong to P4.16; this inventory does not claim
-that those features are implemented.
+The inventory correction updates generated inspection metadata and source
+provenance without changing storage, reset values, accessors or execution.
+Snapshot and replay serialization belong to P4.16; the inventory does not
+claim those features are implemented.
 
 ## Supervisor interrupt views before cold reset
 
@@ -103,10 +101,8 @@ fragment, or mark the composition partial. Each copy must fail for its specific
 reason. Further controls deliberately disable each predicate family; the negative
 check must then fail. Unknown check ids are refused. All copies stay in memory.
 
-This adds two real checks without running an unrelated program as evidence of
-selection. All twenty earlier guest bindings stay unchanged. The effective
-contract reached 22 of 106 checks at that slice. The following structured
-scope checks raise it to 34; version 2 remains open.
+Selection evidence comes from these explicit predicates, rather than an
+unrelated passing program. Version 2 remains open.
 
 ## Structured scope and identity
 
@@ -126,11 +122,9 @@ A different well-formed digest fails. The two public pages were rehashed when
 these expectations were recorded; the ordinary scope check needs no artifact
 cache and makes no fresh artifact-byte verification claim.
 
-At b3, seven scope pairs plus the twenty existing guest checks realized 34 of
-106 checks. These are selection and consistency checks. CSR field behavior and
-instruction semantics retain their execution evidence; firmware is still future
-work. Older notes and changelog entries were archived verbatim with exact
-reconstruction, so their history remains available within the fixed size limits.
+These are selection and consistency checks. CSR field behavior and
+instruction semantics retain their execution evidence; firmware is future work.
+Dated progress and containment receipts remain available below.
 
 ## Enforcing the guest toolchain
 
@@ -159,8 +153,8 @@ checks, and firmware implementation remains later work.
 
 ## ABI, firmware, ordering and privileged scope
 
-Four further pairs bring the effective contract to 42 of 106 realized checks.
-They check selections, with a positive predicate and specific violating copies:
+Four pairs check ABI, firmware, ordering and privileged selections, each
+with a positive predicate and specific violating copies:
 
 | Selection | What must hold | Example violation |
 | --- | --- | --- |
@@ -204,9 +198,6 @@ records; numeric behavior retains its independent vectors and guest observations
 The generated-definition check calls the existing generators, so it verifies
 fresh mirrors without implementing another generation rule.
 
-Those six checks brought the effective census to 48 of 104 checks at c1. The
-address-unit pair below brings it to 50 of 106. Version 2 stays open.
-
 ## Keeping the catalog bounded without rewriting history
 
 The catalog reached 63,014 bytes against its fixed 65,536-byte authored-part cap.
@@ -219,11 +210,9 @@ parts, in version order:
 ```
 
 Paths start at the repository root, so moving the checkout keeps them valid.
-The v0 and v1 parts contain their original contiguous record bytes. At c2, expansion
-reproduced all 63,014 pre-split bytes exactly, including order and blank lines;
-all 58 record mappings and frozen pins were unchanged. At that split the root was
-9,003 bytes, the v0 part 47,168 and the v1 part 7,009. No size ceiling was raised and no duplicate
-materialized catalog is maintained.
+The frozen parts contain their original contiguous record bytes. Expansion at
+the split reproduced the original 63,014 bytes, order, 58 mappings and frozen
+pins exactly. No ceiling was raised or duplicate materialized catalog added.
 
 `scripts/record_catalog.py` is the one expansion owner. The record loader, freeze
 checker, conversion tools and Rust registry declaration test all use it. Only real
@@ -279,11 +268,9 @@ legal access-failure response still delivers instruction access-fault cause 1,
 with the guest VA in mepc/mtval. This distinguishes a broken provider from a
 target exception.
 
-The registry now has explicit `Evidence::Boundary` entries. Its normal tests run
-both fixtures and retain the rule that every post-v0 declaration is born realized.
-Frozen records and all earlier registry entries are unchanged. Four boundary
-assumptions and the remaining execution pairs still need work; these finite
-fixtures do not prove correctness for every possible address or environment.
+The registry has explicit `Evidence::Boundary` entries. Its normal tests
+run both fixtures; every post-v0 declaration is born realized. These finite
+cases do not prove correctness for every possible address or environment.
 
 ## Checking success responses before consuming them
 
@@ -320,9 +307,7 @@ untouched. The legitimate access-fault control still delivers load cause 5.
 
 Four permanent core tests exercise all 25 request/response-kind combinations,
 narrow-width edges, full-width values, unchanged target failures and existing
-violations, and actual GC/scalar/translation paths. Normal guest observations
-still pass. At c4a this repair added no contract-check credit: the census stayed
-50 of 106 realized, with four boundary assumptions still to declare and realize.
+violations, and actual GC/scalar/translation paths.
 
 ## Data widths and physical memory attributes
 
@@ -459,10 +444,6 @@ is delivered. Disabling value auditing loses each negative fixture. The
 discarded-store control stops at its first bad load so a later AMO request check
 cannot mask the value-auditor bypass.
 
-All earlier registry entries and frozen records remain exact. The effective
-census reached 56 obligations, 112 declared checks and 56 realized checks at c6.
-Full cold reset follows below; remaining instruction checks keep version 2 open.
-
 ## Full cold reset
 
 Before the first fetch, the laboratory reconstructs every state owner. The reset
@@ -506,10 +487,7 @@ equality witnesses cannot merely agree with a wrong constructor. Disabling the
 auditor loses every negative case.
 
 Only cold reset is supported. Snapshot restoration and warm/retained-state
-ordering need their own implementation and contract. The pair brings the
-c7b census to 57 effective obligations, 114 declared checks and 58 realized
-checks: thirteen scope pairs, eleven guest pairs and five direct boundary pairs.
-At c7b, 28 runtime pairs remained before version 2 could freeze.
+ordering need their own implementation and contract.
 
 
 ## Runtime guarantee witnesses
@@ -529,8 +507,8 @@ FENCE field/no-effect and atomic pre-translation alignment observations.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
 102/114; six runtime pairs and final freeze remain. The
 [instruction-visibility chapter](fence-i.md#direct-contract-observations) adds
-ignored-field and patched-parcel FENCE.I witnesses. The [atomics chapter](atomics.md#direct-contract-observations) adds literal A-operation, alias, reservation-effect and translated-fault witnesses. The split retains
-all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
+ignored-field and patched-parcel FENCE.I witnesses. The [atomics chapter](atomics.md#direct-contract-observations) adds literal A-operation, alias, reservation-effect and translated-fault witnesses. The earlier runtime split preserved every section byte-for-byte; dated
+verification receipts are now routed below.
 
 The profile's live environment document now keeps its effective interface and
 derived-report pointers. Its earlier progress sections and completed c17 task
@@ -547,3 +525,10 @@ Frozen v0/v1 records and pins stay exact. Sstc now binds a direct Execution pair
 31 boundaries / 62 parcels, S programming/read-back and handler-visible refusals,
 plus original timer guests. [Worked values and controls](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
 close the terminal-zero witness hole; v2 remains open.
+
+## Historical verification receipts
+
+Dated progress counts, pre-bind identity checks and exact provenance receipts
+are preserved in `docs/tasks/archive/P4-SYSTEM-book-c29d.md`, section `contract-v2`.
+That record authenticates the original chapter and every removed span; all
+current feature examples and commands remain here.
