@@ -704,13 +704,41 @@ receipt) is retained history, not a current dependency assumption. make check
 rc=0 Rust167/17/223; focused/all six books rc=0, hooks next. Effective102/114
 unchanged. Next c29b1 containment, c29c source prose, c29d book containment.
 
-### `.13` c29b1 — keep development receipts below the fixed ceiling (queued, priority next)
+### `.13` c29b1 — keep development receipts below the fixed ceiling (completed, `SEMULITH-P4-0165`)
 
 C29b receipt approaches the fixed49152B DEV ceiling. Before further units,
 measure committed source/whole-entry suffix, use published shard_history.py
 with existing target/caps, preserve old sealed rows and exact inverse bytes/
 SHA, record a bounded receipt and worked provenance example. No cap increase
 or feature deletion. Full focused/book/commit workflow, then c29c.
+
+Activated on cleance3a53b after actual census rc=0/brief0. Read published
+shard_history.py interface/partition contract, routes registry and the worked
+task-tree book. Measured DEV46505/49152B and CHANGELOG56022/65536B; own
+both heads' exact whole-entry suffix partitions (targets30000 and40000B)
+before c29c's receipts. Capture committed source/hash/entry census and all
+existing shard/manifest/archive hashes; require sharder self-test and dry runs,
+then sequential published mutations and exact inverses/order. Append only
+new manifest rows, retain all17 prior live rows/210 sealed shards. New head
+receipts/navigation must be removable to reconstruct each source exactly.
+
+Encountered book c28a paragraph still presents its then-next AMO question as
+live; own a past-tense correction and route to the already completed public
+qualification, plus the new measured two-head example. Preserve prior feature
+examples and fixed caps. No source/code/profile/frozen/registry/history-payload
+changes. Verify focused gates/all six books, commit/brief0/actual census before
+c29c; c29d book containment remains queued before runtime features.
+
+
+Result: prepare.py/partition.py rc=0; self-test12/0, dry-run identities exact.
+DEV24=15+9, suffix17800B/shard022618033B; CHANGELOG97=59+38,
+suffix16152B/shard022716389B. Inverses reconstruct committed ce3a53b source
+DEV46505B/SHA92b5766fb8f41f3e563647aace6e20893e40bb8c02639e728dd1f841e84ca1f5
+and CHANGELOG56022B/SHAb451f91d5f4ebb1cbb498fd3dc0166b3044c4af09031a8a23537aaaf967feb93.
+Prior17 live rows/210sealed shards exact, append two rows; logical229. Fixed
+caps and all core/author/canonical/generated/frozen/registry104 exact; effective
+102/114 unchanged. Book AMO historical next question corrected/routed. Focused/
+all six books rc=0; hooks next, then c29c after clean workflow/actual census.
 
 ### `.13` c29c — qualify state-source rationale and FP policy detail (queued, priority next)
 
@@ -918,6 +946,22 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29b1 — **ROOT CAUSE**: prepare.py rc=0 measures committed
+  DEV46505/49152B and CHANGELOG56022/65536B; exact source SHA and24/97
+  entries captured. Dry runs preserve heads/history; sharder self-test12/0
+  rc=0. Current book's c28a AMO-next question is already resolved by c28b.
+- [x] `.13` c29b1 — **ADDRESSED**: partition.py/verify.py rc=0:
+  DEV15kept+9moved17800B, CHANGELOG59kept+38moved16152B; shards0226/
+  0227 preserve whole payloads. Removing new receipts/navigation reconstructs
+  both exact source bytes/order/SHA. Book worked inverse and past-tense repair.
+- [x] `.13` c29b1 — **NO REGRESSION**: verify.py rc=0: prior17manifest
+  rows/210sealed shards exact; exactly two appended rows, logical229. Explicit
+  new-file census stays below fixed caps. Code/author/canonical/generated/
+  frozen/registry104 exact; effective102/114 unchanged, previous Rust167/17/223
+  applicable. Focused/all six books rc=0. LIVE652/49/P4 12/18 unchanged;
+  next c29c source prose and F policy detail, then c29d book containment.
+  promotion: declined (established exact-history partition protocol; source identities and inverse worked example remain in task-tree book).
 
 - [x] `.13` c29b — **ROOT CAUSE**: diagnose.py rc=0 independently derives
   identical-value write, direct probe confirms Dirty/read-only Clean and restores
@@ -1139,6 +1183,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29b1 | sharder12/0; two exact source inverses/order/SHA; prior17live/210sealed history exact; fixed new-file census/core/input identity | logical229 rows; effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29b | independent/direct/public12; wrong Clean DIVERGE10; public24/927 repeated; exact comments/non-comment/input identity; full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29a | public11/290 repeated; named width difference repeated; wrong SC DIVERGE39; exact comment/non-comment/dossier identity and full167 corpus | effective102/114 unchanged; Rust167/17/223; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29 | independent12024/992 words; nine wrong tables/14 captures; request/permission/missing-binding RED101 restored; old102/core/inputs exact; full167 corpus | direct12168/24336/45840 requests, pair12366/24732; effective102/114; Rust167/17/223; focused/all six books rc0; hooks next |
@@ -1157,6 +1202,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29b1 | `SEMULITH-P4-0165 (leaf P4-SYSTEM.13): retain exact history under fixed caps` | c29c source prose/F detail, then c29d book containment |
 | `.13` c29b | `SEMULITH-P4-0164 (leaf P4-SYSTEM.13): ground FP-state claims in public evidence` | c29b1 DEV containment, c29c prose/provenance, c29d book containment |
 | `.13` c29a | `SEMULITH-P4-0163 (leaf P4-SYSTEM.13): ground atomic rationale in public evidence` | c29b FP rationale, then GC-COUNTERS/six pairs/freeze |
 | `.13` c29 | `SEMULITH-P4-0162 (leaf P4-SYSTEM.13): discriminate atomic execution and faults` | c29a public atomic rationale, then six runtime pairs/freeze |
@@ -1170,6 +1216,11 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29b1 (SEMULITH-P4-0165): whole DEV9 and
+  CHANGELOG38 entry suffixes to frozen0226/0227; exact source inverses/order/
+  SHA, old history preserved. Logical229, caps and102/114 unchanged. Book
+  historical AMO question corrected and current c29c/c29d next actions retained.
 
 - `2026-10-10`: `.13` c29b (SEMULITH-P4-0164): replace FP internal
   rationale and correct stale book dirty rule via independent/direct/public12,

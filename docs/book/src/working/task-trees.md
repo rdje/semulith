@@ -103,8 +103,38 @@ footer and concatenate the retained prefix and archived suffix to reconstruct
 the source, SHA256
 `6d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3`.
 The earlier manifest rows and sealed history stay byte-exact, and no bound grows.
-The task keeps the next evidence question live: qualify the public Sail override's
-contained-versus-crossing AMO granule behavior before the next runtime binding.
+At that checkpoint the next evidence question was the public Sail override's
+contained-versus-crossing AMO granule behavior. C28b subsequently qualified it;
+the [memory chapter](../plan/p4/contract-memory.md) retains that result and its
+wrong-granule control.
+
+
+
+P4.13 c29b1 partitions two committed append-history heads from ce3a53b:
+
+| Head | Source bytes/entries | Retained entries/bytes | Moved entries/payload bytes | New shard |
+| --- | --- | --- | --- | --- |
+| DEV_NOTES.md | 46,505 /24 | 15 /28,705 | 9 /17,800 | 0226 (18,033 bytes) |
+| CHANGELOG.md | 56,022 /97 | 59 /39,870 | 38 /16,152 | 0227 (16,389 bytes) |
+
+The published sharder targets30,000 and40,000 bytes respectively. Both dry runs
+preserve the heads, manifest and prior history; the12-control self-test passes.
+Actual mutations run sequentially, so numbering advances from0226 to0227.
+Removing each new receipt/footer and concatenating its retained prefix with the
+shard's payload reconstructs its exact original bytes and entry order:
+
+- DEV source SHA256:
+  `92b5766fb8f41f3e563647aace6e20893e40bb8c02639e728dd1f841e84ca1f5`.
+- CHANGELOG source SHA256:
+  `b451f91d5f4ebb1cbb498fd3dc0166b3044c4af09031a8a23537aaaf967feb93`.
+
+The manifest gains only two rows. Its earlier17 rows and the210 sealed shards
+remain exact, giving229 logical rows (19live+210sealed). Each new shard names
+its source head and is frozen. Live/per-part/family ceilings stay fixed; current
+feature examples remain in their own chapters. Code, profile inputs, frozen
+contracts and registry bindings are unchanged. C29c's next policy/source-prose
+repair and c29d's book containment remain live in the task tree.
+
 
 ## Why this shape
 
