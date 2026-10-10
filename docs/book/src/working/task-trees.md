@@ -77,6 +77,23 @@ lengths. The frozen manifest gains one row; earlier rows and sealed history rema
 unchanged. The 48 KiB live ceiling stays fixed, and the book retains the worked
 feature examples independently of the session notes.
 
+P4.13 c26a applies the same discipline to the task tree itself. At 123,960 bytes,
+the live tree had 7,112 bytes of room under its fixed 131,072-byte part ceiling.
+Six completed spans totaled 81,532 bytes; archive 8 already held 59,436, so those
+payloads could not fit there. [Archive 9](../../../tasks/archive/P4-SYSTEM-9.md)
+retains all six payloads in source order with individual byte lengths and SHA256
+markers, including older log rows in their original context. It is 83,418 bytes
+with wrappers; the live partition is 45,205 bytes before the new receipt.
+
+The verification extracts each marked payload, removes only new live routing,
+ownership and receipt text, and reconstructs the committed source from 5eaef2a:
+123,960 bytes, SHA256
+`efd367b86309c45a53ddf736352135e18ea56171f1669d43c43941626c7fb4ac`.
+Earlier archive parts and all retained source segments are byte-exact. The
+frontier, census and next action stay live; feature examples remain in their
+book chapters. Neither the task-family nor per-part cap grows, and this move
+adds no CPU-contract credit.
+
 ## Why this shape
 
 A session can be lost at any moment: a crash, a context reset, a change of tool, a change of

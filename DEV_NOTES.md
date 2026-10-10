@@ -1,5 +1,25 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — preserve completed task receipts under fixed caps (P4-SYSTEM.13 c26a)
+
+P4 tree123960/131072 B leaves7112 B. Six completed spans total81532 B; archive8
+already59436 B, combined140968 cannot fit. Archive9 retains all payload bytes/
+order/SHA markers in83418 B; live partition45205 B before new receipt. Inverse
+extracts exact payloads, removes only new routes/ownership/receipts, restores
+committed5eaef2a source123960 B SHA256
+ efd367b86309c45a53ddf736352135e18ea56171f1669d43c43941626c7fb4ac.
+
+partition.py/verify.py rc=0: all prior code/canonical/author/98 registry/generated/
+frozen/archive bytes exact, effective96/114 unchanged; explicit new-file/cap
+census and all kept segments exact. No Rust changes. Focused gates/all six books rc=0;
+hooks next. LIVE unchanged652 arms/49 chapters/P4 12/18. promotion: declined
+(established exact inverse; retained in archive9/tree and worked book example).
+
+Own next c26b: cadence refusal still recommends approval-variable-only git push,
+but pre-push correctly requires approved_push.sh's record (13266aa guidance vs
+ac07ff8 recorded-act enforcement). Reproduced rc=1/contradictory public recovery
+text. Fix guidance/behavioral controls next; no real push or approval fabrication.
+
 ## _(2026-10-10)_ — observe FENCE fields and preservation (P4-SYSTEM.13 c25)
 
 Authenticated RV32I1.1.7 requires reserved-config acceptance and ignored rs1/rd.

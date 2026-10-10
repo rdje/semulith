@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0154 (leaf P4-SYSTEM.13 c26a) — preserve completed task receipts under fixed caps
+
+- Retain six whole completed payloads/81532 B in authenticated archive9; inverse
+  restores exact committed source123960 B/SHA. Archive9 is83418 B; live partition
+  45205 B before new receipt. Earlier parts/kept bytes and all runtime inputs exact.
+- Registry98/effective96/114 unchanged; fixed caps stay. No Rust changes. LIVE
+  unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next.
+- Own stale exceptional-push recovery guidance as next c26b; actual enforcement
+  already requires the recorded approved_push.sh act. No push is performed.
+
 ## SEMULITH-P4-0153 (leaf P4-SYSTEM.13 c25) — observe FENCE fields and preservation
 
 - Bind FENCE with61440 field/mode cases and six reservation/cache programs;
