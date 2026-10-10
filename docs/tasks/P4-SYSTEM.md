@@ -705,6 +705,77 @@ supersession+binding, SC/full CI/freeze and priority .14 sweep; book has569B
 room before final receipts. No new G-CONTRACT or reference-lineage credit.
 promotion: declined (the existing boundary/full-state method owns this defect, repair and discriminating controls; no new knowledge card needed).
 
+### `.13` c34b1 — contain C chronology and append-history heads (completed, SEMULITH-P4-0187)
+
+Owned on clean c538c6e, brief0, actual handoff census rc=0. Read roadmap P4
+acceptance dependency, current C chapter in full, assembler byte-image/budget
+interfaces, own C definition and .13/full-state/request book context, bounded
+archive and append-history policies. Scope is review documentation; current
+Rust173/17/253 and full CI green at c538c6e apply. No implementation change.
+Book51/523719B has569B remaining; DEV35639B approaches36864B health and
+CHANGELOG54373B exceeds49152B health. Fixed caps must remain unchanged.
+
+Replace the completed C implementation chronology with a stable, thorough
+current feature guide:37selected forms, operand expansion/specificity, exact
+parcels/ILEN/fault precedence, hints/reserved/FS rules, sized assembler and
+worked mixed-length values, independent author/finite controls and current
+167guest/200spelling scope. Preserve the complete original chapter byte-verbatim
+in a finite tracked task archive with source SHA/length and exact inverse.
+Keep public reference commands, results and limits live. Rootd8925716's old
+present-tense98/114 tail becomes an explicit current-report route; archive it
+as historical evidence, never silently substitute a new reference result.
+
+Use the public sharder to move only oldest whole DEV/CHANGELOG entries to
+new0232/0233 shards, below health with working room. Prove old head = new
+head+payload, entry/order equality and unchanged predecessor manifest/history;
+corrupt/missing capture and lost payload controls must refuse. Do not alter
+sealed archives, registry caps, frozen contracts, canonical code/data or LIVE.
+Verify all37canonical C spellings and independently author the worked mixed
+program before documentation credit; full prior corpus must remain exact.
+Run focused docs gates and six books, update live pointers/receipts, clean
+commit before qualified reservation supersession+binding, SC/full CI/freeze.
+Evidence target/p4-system-13/c34b1. No new contract or reference-lineage credit.
+
+Result:
+
+C chapter29216→12173B, saves17043B. Preserve full29216B source
+SHA9b5a2b0e9de88eebc917e745d5d0ac755fd0edf737cd058d83100ea1c9254fcc in finite
+30513B archive SHA18718b7a601326fefeba105c5e0ba70f0bebba7b721dee2abba6caf9147b21a2.
+Original25253B chronology prefix becomes8133B stable current guide, retaining
+all37selected forms, mappings, decoder specificity, hints/reserved/FS rules,
+parcel/ILEN/fault behavior, sized APIs, independent author/controls and current
+scope. Receipt helper first stopped before writes on an absent heading guard,
+then on a row prefix shared by verification/commit tables. Remove the unused
+heading and anchor the actual commit row at line start; rerun with set-e.
+Public reference section remains exact except rootd8925716's old98/114
+present-tense sentence now routes to the current contract summary. No changed
+reference result or lineage claim. Complete inverse reconstructs the committed
+source; corrupt capture, absent marker and omitted payload refuse.
+Worked c.li/c.addi/ADDI/c.mv image0d447d14930444002685:10bytes,
+4boundaries/5parcels at offsets0/2/4/6/8, final x8/x9/x10=2/6/6 and PCentry+10.
+Literal encodings, all37hand words/21operand refusals and independent author
+verify the example; full167/5365/10524 prior corpus remains exact.
+DEV6whole entries→0232, 35639→23836B before this receipt;
+shard12036B SHA976cb0212d13a554200163da6100e4892e5a6552891a6f3b0a320a5203eed6f7; original head
+SHAaf5074ac049dcac141d37d4a31aed563547e5861e2aa7a6acb69becee90f1c1a. CHANGELOG23whole entries→0233,
+54373→40882B; shard13728B
+SHA546cfd2f71aff48f99a83d09d65dbc73f2d343a3917178c41a99cca830c82d86; original head
+SHAbd280482e0080eb57f26a710efb148d5838ff13d165ac7a0081f690345f49534. Both exact byte/order inverses; two lost-payload
+controls refuse. Prior23manifest rows exact, now25live+210sealed=235logical.
+All prior code/data/canonical/frozen/contracts/registry112/effective110/114/
+archives/sealed history/LIVE/caps exact. Derived book index follows current
+headings/terms. Focused8docs gates and six books rc=0. Governed book51/
+506676B leaves17612B room; tasks85/2995432B before final receipts, max130981B.
+DEV25532B and CHANGELOG41562B stay below health; fixed caps unchanged.
+Optional git diff --check rc=2 names only retained DEV/CHANGELOG entry
+separators newly at EOF. Direct source comparison confirms those exact newline
+bytes predate this slice; retain them to preserve the whole-entry inverse.
+All other changed files pass whitespace checking. No whitespace/source repair
+is inferred from moving the unchanged boundary of a historical entry.
+Then qualified reservation supersession+binding c34b/0188, SC/full CI/freeze
+and owned priority .14 sweep. Evidence target/p4-system-13/c34b1.
+promotion: declined (existing finite inverse, current-book and append-history controls own this containment and count correction; no new knowledge card).
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -845,6 +916,17 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c34b1 — **ROOT CAUSE**: verify.py rc=0: committed book
+  523719B leaves569B; full C chapter29216B authenticates source9b5a2b0e;
+  current tail's98/114 rootd8925716 conflicts with measured effective110/114.
+- [x] `.13` c34b1 — **ADDRESSED**: verify.py/derive.py rc=0: full source
+  inverse exact, five damaged controls refuse; chapter saves17043B, all37forms,
+  worked4boundaries/5parcels and current report route; DEV6+CHANGELOG23 whole
+  entries byte/order exact, prior manifest prefix retained, heads below health.
+- [x] `.13` c34b1 — **NO REGRESSION**: focused8docs/make book rc=0:
+  six books; prior167/5365/10524 exact; code/data/canonical/frozen/archives/
+  history/LIVE/registry112/effective110/114/caps exact; Rust173/17/253 and
+  full CI green from unchanged c538c6e apply, no additional Rust check needed.
 - [x] `.13` c34b0 — **ROOT CAUSE**: defect-red.log cargo test rc=101:
  cold unmapped SC changes rd rather than traps; prior public core/author/Sail/
  Spike diagnosis pins root495b4b86. expectation-diagnostic rc=0 identifies
@@ -921,6 +1003,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c34b1 | full C source capture/inverse, five damaged controls;37hand words/21refusals/mixed4/5/full167corpus; DEV6+CHANGELOG23 whole entries | verify/derive/focused8docs/six books rc=0; fixed caps, prior code/data/frozen/history/LIVE/registry exact |
 | `2026-10-10` | `.13` c34b0 | defect RED101→1625new full-state cells/1536author cells/32words;6new+23prior actual controls RED-restored; bound v2 request fixtures | Rust173/17/253/focused/full CI/six books rc=0; all canonical guest data/frozen/history/LIVE/prior registry/effective110/114 exact; contain book/DEV before binding |
 | `2026-10-10` | `.13` c34a |60640prebuilt full-state boundaries/205canonical words/prior corpus;16wrong/16capture/23actual guards RED-restored; public permission diagnosis | Rust173/17/246/focused/six books rc=0; registry112/effective110/114/core/data/frozen/history/LIVE exact; immediate c34b0 permission repair before binding |
 | `2026-10-10` | `.13` c33d | whole7179B intro/440B checkpoint/full14853B source inverse; damaged controls refuse; canonical88words/independent worked example | archive8886B/save4084chapter B; prior history/core/data/frozen/LIVE/registry112/effective110/114 exact; focused/six books rc=0; prior Rust173/17/242 applies; hooks next |
@@ -933,6 +1016,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c34b1 | `SEMULITH-P4-0187 (leaf P4-SYSTEM.13): contain C chronology and append histories` | qualified reservation supersession+binding c34b/0188, then SC/full CI/freeze and priority .14 sweep |
+
 | `.13` c34b0 | `SEMULITH-P4-0186 (leaf P4-SYSTEM.13): check physical permission on failed SC` | own c34b1/0187 bounded book/development containment, then qualified reservation/SC bindings/full CI/freeze |
 | `.13` c34a | `SEMULITH-P4-0185 (leaf P4-SYSTEM.13): witness reservation histories before binding` | own c34b0/0186 physical SC permission repair before qualified reservation/SC bindings/full CI/freeze |
 | `.13` c33d | `SEMULITH-P4-0184 (leaf P4-SYSTEM.13): contain atomics timeline before final pairs` | own c34/0185 reservation witnesses before SC/full CI/freeze; .14 sweep owned |
@@ -941,6 +1026,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 ## Changelog
 
+- `2026-10-10`: `.13` c34b1 (SEMULITH-P4-0187): preserve full C source/inverse, current mixed-length guide and report route; whole DEV/CHANGELOG partition; verify/derive/focused8docs/six books rc=0.
 - `2026-10-10`: `.13` c34b0 (SEMULITH-P4-0186): nonmatching SC checks
  side-effect-free physical permission before retirement; denied/malformed
  answers preserve target/provider distinction.1625newcells/1536authorcells,
