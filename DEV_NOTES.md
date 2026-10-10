@@ -1,6 +1,34 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — refuse false scalar-reference credit (P4-SYSTEM.13 c29e0)
+
+Root run_smoke.py ignores subprocess return codes and retains old output. It
+also never authenticates its existing candidate pins. Diagnose.py rc=0 first
+authenticates both actual binaries, then runs arithmetic with3successful calls.
+Three exit7 stubs reuse those unchanged traces: the real experiment prints all
+PASS and records no failure. Exact before source and trace hashes retained.
+
+Add shared fresh-output/status guard and authenticate existing SHA pins before
+comparison. Lifecycle refusal exits2; a compared discrepancy remains1. Budgets,
+parsers, expected inputs, disabled comparison policy and successful bytes stay
+exact. Offline probe RED1 on old runner; GREEN0 on repaired runner,16 controls
+and3defective modes rejected. First mutant run hit an earlier cleanup assertion;
+reorder fixtures so the stale-success mutant tests its intended credit path.
+One new GUEST-GEN arm; derived count653 (38 doctrines/49 chapters/37 routes).
+
+Public.py rc=0: four programs/34boundaries,12successful processes, four Sail
+repeat pairs. Arithmetic raw traces equal the authenticated baseline. Temporary
+wrong x1 expectation exits1. Initial scratch literal was not unique (x8 shares
+it); select the full x1 write before credit. Final probe against exact old source
+still RED1. Canonical inputs/frozen/registry104/effective102/114 unchanged.
+Compare-old.py/verify.py rc=0: all12 raw files/full stdout equal isolated exact
+old source; command args/constants/budgets/parsers/core/canonical/history exact.
+GUEST148/0, focused/final BOOK-INDEX/all six books rc=0. LIVE only652→653,
+6135B unchanged. No Rust change; prior167/17/223 applies. Evidence
+target/p4-system-13/c29e0; c29e1 containment then c29e, broader sweep at .14.
+promotion: declined (existing fresh-evidence/public-boundary discipline; permanent offline controls, real false-credit reproduction and book retain the repair).
+
 ## _(2026-10-10)_ — report generated index bytes accurately (P4-SYSTEM.13 c29d1)
 
 Real CLI snapshot:23612 reported bytes vs24064 actual UTF-8 bytes,40 terms.

@@ -277,6 +277,8 @@ PYCODE
   arm "RED a missing U-mode permission gate is caught" "$rc" 1 "$out" "U mode cannot read an S page"
 
   # d3b: absent ordinary rows/process output must never become reference agreement.
+  out="$(python3 scripts/probe_smoke_runner.py 2>&1)"; rc=$?
+  arm "GREEN scalar reference processes, fresh output and binary pins" "$rc" 0 "$out" "16 process/output/pin controls; three defective lifecycles rejected"
   out="$(python3 scripts/probe_gc_sail.py 2>&1)"; rc=$?
   arm "GREEN strict Sail rows and witnessed delivery gaps" "$rc" 0 "$out" "failed processes and stale traces passed"
   out="$(python3 scripts/probe_gc_sail.py --mutation permit-missing 2>&1)"; rc=$?

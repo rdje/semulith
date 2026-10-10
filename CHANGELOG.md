@@ -1,6 +1,18 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0169 (leaf P4-SYSTEM.13 c29e0) — refuse false scalar-reference credit
+
+- Reproduce arithmetic PASS from three exit7 processes reusing valid old traces.
+  Authenticate existing binary pins, require successful processes and fresh
+  nonempty outputs; lifecycle refusal exits2, compared disagreement remains1.
+- New offline probe rejects old runner;16 controls and3defective modes discriminate.
+  One GUEST-GEN arm, derived653 total; runtime/registry/effective102/114 unchanged.
+- Fresh public4/34 with12 successful calls and four Sail repeat pairs; arithmetic
+  all12 raw outputs/full stdout equal exact old source; wrong x1 expectation1.
+  GUEST148/0, focused/final BOOK-INDEX/all six books rc=0. Book/live sync;
+  c29e1 receipt containment then c29e overview repair.
+
 ## SEMULITH-P4-0168 (leaf P4-SYSTEM.13 c29d1) — report generated index bytes accurately
 
 - Correct index-generator success reporting from character count to actual

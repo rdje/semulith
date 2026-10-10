@@ -49,6 +49,10 @@ SPIKE_RESET_STEPS = 5
 failures: list[str] = []
 
 
+class ReferenceRefusal(Exception):
+    """The selected reference did not provide authenticated fresh evidence."""
+
+
 def say(ok: bool, label: str, detail: str = "") -> None:
     print(f"  {'PASS' if ok else 'FAIL'}  {label}{('  ' + detail) if detail else ''}")
     if not ok:
@@ -57,6 +61,27 @@ def say(ok: bool, label: str, detail: str = "") -> None:
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def verify_reference(label: str, binary: Path) -> None:
+    refs = D.load_references(ROOT / "profiles" / PROFILE / "references.sexp")
+    candidate = next((c for c in refs.get("candidate", []) if c["id"] == label), None)
+    expected = candidate.get("binary_sha256") if candidate else None
+    if not expected:
+        raise ReferenceRefusal(f"{label}: no declared binary SHA-256 pin")
+    if sha256(binary) != expected:
+        raise ReferenceRefusal(f"{label}: binary SHA-256 differs from its declared pin")
+
+
+def run_reference(label: str, command: list[str], out: Path) -> None:
+    out.unlink(missing_ok=True)
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    if result.returncode != 0:
+        detail = result.stderr.strip()[:400]
+        raise ReferenceRefusal(f"{label}: process exited {result.returncode}"
+                               f"{': ' + detail if detail else ''}")
+    if not out.is_file() or out.stat().st_size == 0:
+        raise ReferenceRefusal(f"{label}: successful process produced no nonempty trace")
 
 
 def build(name: str) -> tuple[Path, int]:
@@ -74,19 +99,19 @@ def config() -> Path:
 
 
 def run_sail(elf: Path, limit: int, out: Path) -> None:
-    subprocess.run(
+    run_reference("sail-riscv",
         [str(SAIL), "--config-override", str(config()), "--inst-limit", str(limit),
          "--trace-instr", "--trace-gpr", "--trace-exception",
          "--trace-output", str(out), str(elf)],
-        capture_output=True, text=True, check=False)
+        out)
 
 
 def run_spike(elf: Path, limit: int, out: Path) -> None:
     # Both log modes: `--log-commits` carries register writes, `-l` carries exceptions.
-    subprocess.run(
+    run_reference("spike",
         [str(SPIKE), "--isa=rv64i", "--priv=m", "-l", "--log-commits",
          f"--log={out}", f"--instructions={limit + SPIKE_RESET_STEPS}", str(elf)],
-        capture_output=True, text=True, check=False)
+        out)
 
 
 def check_expected(name: str, trace: Path) -> None:
@@ -184,9 +209,15 @@ def main() -> int:
                   f"is absent (the override is tracked; binaries come from "
                   f"scripts/fetch_references.sh)", file=sys.stderr)
             return 2
-    print(f"matched-profile experiment for {PROFILE}")
-    for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device"):
-        experiment(name)
+    try:
+        verify_reference("sail-riscv", SAIL)
+        verify_reference("spike", SPIKE)
+        print(f"matched-profile experiment for {PROFILE}")
+        for name in ("smoke-arith", "guest-control", "smoke-trap", "guest-no-device"):
+            experiment(name)
+    except (ReferenceRefusal, CompareError, OSError) as exc:
+        print(f"run_smoke: REFUSED — {exc}", file=sys.stderr)
+        return 2
     print()
     if failures:
         print(f"run_smoke: FAILED ({len(failures)} check(s)): {', '.join(failures)}",

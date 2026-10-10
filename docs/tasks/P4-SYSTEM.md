@@ -230,6 +230,14 @@ This gate authorises the planned next engineering stage: board implementation.
   every registry/book consequence before evidence signoff (owned e2c finding).
   Sweep maintained knowledge/plans for dependency assumptions based on submodule
   internals; replace them with public-contract evidence (owned e2d finding).
+  C29e prerequisite census names active reference_softfloat-shared-ancestry
+  decision/INDEX, zero-hits-absence-or-blindness card and canonical rv64i
+  six-pair reference rows plus GC candidate lineage. Address these first in
+  the .14 sweep; P0/P4 overview and LIVE repair remains c29e. Schema/consistency
+  check only require declared pair/evidence/consequence and legal verdict;
+  gate_report renders verdicts without authenticating implementation ancestry.
+  Preserve historical bytes and withdraw unsupported current-use assumptions,
+  with public-contract evidence; no independence inferred from agreement.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -909,6 +917,56 @@ BOOK-INDEX/all six books rc=0 after prose spacing; previous Rust167/17/223
 applies. Actual book51files/505485B, fixed caps unchanged. Evidence
  target/p4-system-13/c29d1. Hooks next; c29e after clean workflow/actual census.
 
+### `.13` c29e0 — refuse failed or unauthenticated legacy reference runs (completed, `SEMULITH-P4-0169`)
+
+Encountered in c29e prerequisite reading, after clean7e961c8/brief0/actual
+census rc=0: run_smoke.py ignores both process return codes and does not remove
+previous trace files. It also checks binary presence without authenticating the
+existing candidate SHA pins. Own a bounded public-run lifecycle repair before
+using this helper as fresh evidence. Read full runner, comparator protocol,
+base expectation/config/candidate pins and existing guest-generation probe
+integration. Reproduce the failed-process/stale-output false credit through
+the real experiment with project-local stubs and cached valid public traces
+before editing. No dependency implementation inspection or pin changes.
+
+Require each published run to remove only its prior output, exit successfully
+and produce a new nonempty trace; authenticate the two existing binary pins
+before the command's comparisons. Refusal is exit2, distinct from a compared
+disagreement (exit1). Preserve budgets, trace parsing, expectations, disabled
+comparison rules and successful output bytes. Add meaningful offline stub
+controls through one new GUEST-GEN arm, after the probe fails on the old
+runner. Derive the actual arm total and synchronize LIVE rather than assuming
+it. Fresh normal four-guest public smoke, repeated trace
+identity and wrong-expectation control; focused/all six books and exact input/
+registry/frozen identity. Update live/book receipts and commit clean before
+c29e. The .14 knowledge/structured-record sweep already owns the broader
+ancestry basis; record scoped routes there rather than duplicate that activity.
+
+Completed: diagnosis.py rc=0 authenticates the actual binaries and proves
+three exit7 processes reuse unchanged valid arithmetic traces while every check
+prints PASS. Offline probe RED rc=1 on exact old source before repair and with
+final controls. New runner requires existing pins, fresh nonempty output and
+successful status; probe GREEN rc=0,16 controls/three defective modes rejected.
+Public.py/compare-old.py/verify.py rc=0: four programs/34 boundaries,12successful
+processes, four Sail repeats; all12 raw outputs and full stdout byte-identical
+to isolated exact old source. Temporary wrong x1 expectation returns1, all12
+processes successful. No input/pin/budget/parser/core/frozen/registry change;
+effective102/114. GUEST148/0, derived653, focused/final BOOK-INDEX/all six books
+rc=0; previous Rust167/17/223 applies. LIVE only652→653,6135B unchanged.
+Evidence target/p4-system-13/c29e0. Commit then c29e1 containment before c29e.
+
+### `.13` c29e1 — contain completed task and development receipts (queued, `SEMULITH-P4-0170`)
+
+C29e0 final receipts approach the fixed task131072B limit; DEV36731B before
+finalization approaches its36864B health target. Own exact whole completed
+receipt-span transfer to new finite archive/P4-SYSTEM-10.md and whole oldest
+DEV entry suffix via the published history sharder. Design the source-specific
+partition only after clean c29e0. Retain open plans/frontier/decisions, stable
+routes and every historical byte in order; authenticate full inverses/SHA and
+prior immutable history. Keep all caps fixed, check new-file family census,
+code/canonical/frozen/registry/effective102/114 identity, focused gates/all six
+books. Update book containment receipt; commit clean before c29e overview repair.
+
 ### `.13` c29e — retire internal-ancestry assumptions in the early overview (queued)
 
 Scoped c29d navigation encounters plan/p0.md's "Three models" section and
@@ -1067,6 +1125,23 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c29e0 — **ROOT CAUSE**: diagnosis.py rc=0 authenticates
+  binary pins and records three actual exit7 calls with old traces unchanged;
+  real arithmetic experiment prints all PASS. Runner ignored status, retained
+  output and never authenticated pins. Exact old source captured/SHA checked.
+- [x] `.13` c29e0 — **ADDRESSED**: offline old-runner RED rc=1 before
+  repair and final probe against exact old source; GREEN rc=0 after guard/pin
+  repair.16 controls plus ignored-status/stale-output/ignored-pin mutants reject.
+  Lifecycle refusal2 distinct from compared failure1; book explains fresh credit.
+- [x] `.13` c29e0 — **NO REGRESSION**: public.py/compare-old.py/verify.py
+  rc=0: four guests/34 boundaries,12successful calls/four repeats; all12 raw
+  files and full stdout equal isolated old source. Wrong x1 expectation rc=1
+  with12successful calls. Exact command args/budgets/parser/core/canonical/frozen/
+  history, registry104/effective102/114 unchanged. GUEST148/0, derived653;
+  focused/final BOOK-INDEX/all six books rc=0; previous Rust167/17/223 applies.
+  LIVE count only652→653,6135B under6144; fixed caps unchanged. C29e1 then c29e.
+  promotion: declined (existing fresh-evidence discipline; permanent controls, real false-credit reproduction and book retain the repair).
 
 - [x] `.13` c29d1 — **ROOT CAUSE**: probe.py before RED rc=1:
   reported23612=Python characters, actual UTF-8 file24064 bytes/40 terms.
@@ -1358,6 +1433,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c29e0 | real stale-trace false PASS; offline RED1→GREEN0/16 controls/three bad lifecycles; public4/34/all12 old-source raw/stdout exact; wrong expected1; protected inputs/caps | effective102/114 unchanged; GUEST148/0/derived653; focused/final BOOK-INDEX/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29d1 | real CLI reporting RED1→GREEN0; exact single-expression delta; output SHA/40 terms/quiet check exact; protected inputs/caps | effective102/114 unchanged; focused/final BOOK-INDEX/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29d |45 exact spans/four full source inverses; corruption/offset/omission refused; all original code/commands/tables/links/headings retained; fixed family caps | book504796B; registry104/effective102/114 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29c | public24/927 plus identical-write12 exact; provenance RED1; exact five prose/one detail/three hashes/two metadata strings; full corpus and protected bytes | effective102/114 unchanged; Rust167/17/223; generators/SEMANTICS/focused/all six books rc=0; hooks next |
@@ -1380,6 +1456,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c29e0 | `SEMULITH-P4-0169 (leaf P4-SYSTEM.13): refuse false scalar-reference credit` | c29e1 containment, c29e overview repair, then GC-COUNTERS |
 | `.13` c29d1 | `SEMULITH-P4-0168 (leaf P4-SYSTEM.13): report generated index bytes accurately` | c29e public ancestry basis, then GC-COUNTERS |
 | `.13` c29d | `SEMULITH-P4-0167 (leaf P4-SYSTEM.13): retain book verification history under fixed caps` | c29d1 byte-count receipt, c29e public ancestry basis, then GC-COUNTERS |
 | `.13` c29c | `SEMULITH-P4-0166 (leaf P4-SYSTEM.13): align state-source rationale and FP policy detail` | c29d book containment, then GC-COUNTERS |
@@ -1397,6 +1474,11 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c29e0 (SEMULITH-P4-0169): reject failed/stale/
+  unauthenticated scalar reference evidence; real false PASS reproduced then
+  offline16/three bad lifecycles discriminate. Public4/34/all12 raw/stdout exact,
+  wrong expectation1; effective102/114 unchanged. Own c29e1 containment then c29e.
 
 - `2026-10-10`: `.13` c29d1 (SEMULITH-P4-0168): written-file stat
   replaces character count in generator stdout; real Unicode RED1→GREEN0,
