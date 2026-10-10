@@ -1,6 +1,6 @@
 # P4.13 — Completing the environment contract
 
-**Status:** State inventory, scope pairs, three corrections and six direct assumption pairs and direct execution witnesses landed; remaining runtime checks keep v2 open.
+**Status:** Every effective check is bound and exercised; full CI and the final membership freeze keep v2 open.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract still contains declarations inherited from earlier
@@ -498,7 +498,7 @@ FENCE field/no-effect and atomic pre-translation alignment observations.
 The [satp prerequisite](sv39.md#unsupported-satp-mode-ignores-the-whole-write)
 repairs unsupported MODE whole-write suppression before CSR-access binding.
 These chapters preserve independent controls and finite evidence limits. Current G-CONTRACT is
-112/114; the deterministic SC pair and final freeze remain. The [complete finite F witnesses](floating-point.md#complete-finite-f-contract-witnesses) now bind all30forms, including numeric, transfer/sign/boxing and refusal observations. The [complete finite D witnesses](floating-point.md#complete-finite-d-contract-witnesses) now bind all32forms, retaining the numeric prerequisite and adding raw transfers, mixed-format rules and refusals. GC-COUNTERS now adds
+114/114; full CI and the final freeze remain. The [complete finite F witnesses](floating-point.md#complete-finite-f-contract-witnesses) now bind all30forms, including numeric, transfer/sign/boxing and refusal observations. The [complete finite D witnesses](floating-point.md#complete-finite-d-contract-witnesses) now bind all32forms, retaining the numeric prerequisite and adding raw transfers, mixed-format rules and refusals. GC-COUNTERS now adds
 [all-mode, all-enable-mask direct observations](contract-runtime.md#counter-reads-all-privilege-and-enable-mask-combinations).
 GC-CSR-ACCESS adds [all-form privilege, gate and suppression observations](privilege.md#direct-csr-access-contract-observations), including the separately qualified no-read table check.
 Its prerequisite c30a repairs explicit counter writes replacing their own increment;
@@ -513,7 +513,10 @@ The [qualified reservation guarantee](atomics.md#qualified-reservation-guarantee
 now supersedes the frozen policy wording and binds both checks. Its live profile
 and requirement mirrors distinguish laboratory choices from ISA requirements.
 The pair checks 62,176 direct boundaries, including physical permission before
-failed-SC completion. V2 has 13 members; frozen v0/v1 remain byte-exact.
+failed-SC completion. The [qualified deterministic SC policy](atomics.md#qualified-deterministic-sc-policy)
+now binds both SC checks to those shared direct inputs plus unchanged companions,
+with explicit completed-outcome prerequisites. Registry116 realizes all114effective
+checks; v2 has14members and remains open. Frozen v0/v1 remain byte-exact.
 
 The profile's live environment document now keeps its effective interface and
 derived-report pointers. Its earlier progress sections and completed c17 task

@@ -98,7 +98,7 @@ negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
 | Translation | **in scope** | `OB-GC-ENV-TRANSLATION-INPUTS` (v1); `OB-SV39`, `OB-SVADE`, `OB-WALK-IMPLICIT` (v0) |
 | Interrupts | **in scope — no external source** | `OB-GC-ENV-INTERRUPT-SOURCES-V2` (v2): no CLINT/PLIC; STCE=0 selects software STIP, STCE=1 the hart's comparator; raw software pending is retained behind that view |
 | Counter input | **in scope** | `OB-GC-ENV-VIRTUAL-TIME` (v1): the time supply is the virtual-time domain |
-| Reservations | **in scope — no external event** | `OB-GC-ENV-RESERVATION-EVENTS` (v1); `OB-RESERVATION`, `OB-SC-DETERMINISTIC` (v0) |
+| Reservations | **in scope — no external event** | `OB-GC-ENV-RESERVATION-EVENTS` (v1); qualified `OB-GC-RESERVATION-V2`, `OB-GC-SC-DETERMINISTIC-V2` (v2) |
 | Waiting | **in scope** | `OB-GC-PRIV-INSNS-V1` (v1): a legal wfi enters the wait; the wake needs no retirement |
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
@@ -270,6 +270,24 @@ newly bound permission cells add1536checks and1152walks. Cold failed SC to
 unmapped0 traps7 before retirement, matching the named fresh public observation.
 A failed SC obtains StorePermitted after translation without a data access;
 malformed answers remain typed provider violations. Current realization comes
-from GS-REPORT; the reservation pair raises its checkpoint to112/114 with
-registry114 and13open-v2 members. Frozen v0/v1 remain exact. The deterministic
-SC pair and final freeze follow; no conformance or reference-lineage credit.
+from GS-REPORT; at the reservation binding its checkpoint was112/114 with
+registry114 and13open-v2 members. The SC pair below completes effective coverage;
+frozen v0/v1 remain exact, with no conformance or reference-lineage credit.
+
+### Qualified deterministic SC
+
+OB-GC-SC-DETERMINISTIC-V2 replaces the frozen whole-outcome wording with
+permission-checked completed outcomes: exact physical/width match stores the
+original source and returns0, nonmatch returns1 without a data Load/Store, both
+clear validity; target faults preserve destination/reservation. Exact-width,
+physical-alias and no-spurious choices retain laboratory authority. The profile
+and requirement mirror that same statement; state inspection wording regenerates
+without changing storage, reset, legalization or CPU semantic expressions.
+
+Two new Execution entries explicitly reuse62176direct boundaries/194688requests;
+that is overlapping coverage with the reservation pair, not new unique cells.
+Pair+loop and mustfail+fault companions add96boundaries/192parcels. The atomics
+chapter gives the worked alias history,35actual guard/route controls and finite
+author/reference limits. Registry116 realizes all114effective checks under57
+obligations; latest v2 has14members and stays open for full CI and membership
+freeze. GS-REPORT owns the current measure and CPU-SYSTEM verdict.

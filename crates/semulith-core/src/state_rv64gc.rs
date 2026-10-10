@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `e917c4464e1c4f61d2d61d48e9189e8720af6a4096fd1bd46dadeb947d74e87d`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `e8366fe1a614df7b802699bab0a71a68d73c43f6d8ede0471b8460604e7aac52`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
@@ -1749,7 +1749,7 @@ pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
         HiddenStateCandidate {
             candidate: "reservation set (LR/SC)",
             present: true,
-            why: "answered by P4-SYSTEM.4 slice (c): one reservation — (physical address, width, valid) of the most recent LR, the minimal conformant reservation set (exactly the accessed word's/doubleword's bytes, RVI-A §12.1.2), keyed on the PHYSICAL address (the aliasing latitude resolved to exact physical match, authority laboratory). The selected one-hart invalidation policy: a completed LR replaces; a completed SC — success or failure, any address — clears; a trap preserves the prior reservation (the SC trap included — neither success nor failure). The deterministic SC policy (authority laboratory, decision 3): SC succeeds iff the reservation is valid ∧ physical address equal ∧ width equal, writing rs2's value and rd←0; otherwise it fails with rd←1 (the 'unspecified failure' code), writing nothing; it NEVER spuriously fails — one legal point of the architectural nondeterminism, chosen so exact-value expectations stay derivable (EVD-05). Misaligned atomics take the access-fault family by kind (5 for LR, 7 for SC/AMO — decision 6, reference-matched to the override's declared PMAs, the exception table's kind mapping). The reservation is a pure function of the hart's own history — invalid at reset, changed only by the hart's own LR/SC — so cold-reset re-execution stays trace-identical and a cold-restored (invalid) reservation is always a legal state",
+            why: "The selected single-hart reservation is (physical address, byte width, valid) for the most recent completed LR. A completed LR replaces it; a completed SC clears validity on success or failure, retaining address/width; target traps preserve it. After alignment, Store translation and physical permission pass, SC succeeds without spurious failure exactly when valid and both physical address and byte width match. Success stores the source's low-width bytes and returns 0; a nonmatching completed SC obtains side-effect-free StorePermission, stores nothing and returns 1. Target faults preserve the prior destination and reservation. Exact-width and physical-alias matching, failure code 1 and trap retention are laboratory choices under A12.1.2/12.1.3, not the architecture's only permitted behavior. Ordinary same-hart instructions preserve the reservation; there are no other-hart or device invalidations here. Selected pre-translation misalignment causes remain 5 for LR and 7 for SC/AMO. Cold reset reconstructs (0, 0, false); the same restored hart history retains deterministic behavior. This state inventory adds no multicore state or snapshot/replay implementation.",
         },
         HiddenStateCandidate {
             candidate: "floating-point registers f0-f31 and the fcsr behaviour",

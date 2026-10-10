@@ -924,6 +924,79 @@ measured doctrine arms669. Only that LIVE count changes, every milestone exact.
 Focused9docs/records, six books and final invariant verifier rc=0. Book51/511940B leaves12348B, largest32746B; fixed caps. Prior journal payload/order exact; no Rust change, prior173/17/253 applies.
 
 
+### `.13` c35 — qualify and bind deterministic SC (completed, SEMULITH-P4-0190)
+
+Owned on clean64461b9/brief0/actual handoff census rc=0. Read roadmap P4/.13,
+D-SC-DETERMINISTIC/REQ-D-SC-DETERMINISTIC/frozen OB-SC-DETERMINISTIC, pinned
+A12.1.2/12.1.3, public reservation and SC execution, complete history/permission
+fixtures, registry/completeness selector and atomics/v2/environment book sections.
+The live SC wording and hidden-state reservation explanation omit alignment,
+Store translation and physical permission as prerequisites to completed outcomes.
+Qualify the selected no-spurious, exact-physical/exact-width success policy and
+0/1 results versus traps; retain laboratory authority and architecture latitude.
+The most recent completed LR and no intervening completed SC are represented by
+the reservation's history, not an independent success license. No runtime semantic
+change: update two live mirrors and reservation census explanation only, regenerate
+inspection text/input fingerprints through public generators, preserve storage,
+reset/legalization/definitions/guest data and all frozen bytes/pins.
+
+Add OB-GC-SC-DETERMINISTIC-V2 with explicit requirement_id, superseding frozen
+OB-SC-DETERMINISTIC and reusing CHK-SC-DETERMINISTIC-POS/NEG. V2 member14 and
+both Execution bindings land together. Selector unchanged; measured selected
+census114→116 must first fail specifically for missing binding. Expected registry
+116/effective114/114; derive before credit. Both new Execution variants call the
+existing full-state reservation/permission fixtures:62176direct boundaries and
+194688requests are shared coverage, not additional unique cells or independence.
+Positive companions pair+loop add25boundaries/50parcels; negative mustfail+fault
+add71/142. Existing wrong effects/captures and31actual Rust guards must discriminate;
+add2new SC registered-route propagation controls, restore exact source bytes.
+Fresh registered SC census and independent prior167guest corpus, strict Rust,
+focused15including RECORD-SCHEMA, six books, current policy/worked SC examples/
+limits and ENV/derived GS/live docs. Protect every prior114registry row, all current
+fixture inputs, canonical semantics, frozen/history/milestones and fixed caps.
+Current book511940B leaves12348B, contract-v2 part31264B; put detail in atomics,
+keep the main current count owner bounded. Any failed integration is owned here.
+Then full CI and freeze in a separate signed unit; priority .14 sweep remains owned.
+Evidence target/p4-system-13/c35; no new conformance/reference-lineage claim.
+
+Result:
+Root495b4b86 SC policy mirrors and reservation inspection explanation (current
+source root6addc986) omit completed-outcome prerequisites. Authenticated pinned
+A56889B/SHAafbd8def requires SC permission before retirement and permits wider
+reservation sets/physical alias latitude/spurious outcomes. Qualify both live
+statements; explicit requirement mirror OB-GC-SC-DETERMINISTIC-V2 supersedes
+frozen OB-SC-DETERMINISTIC. V2 has14members. State explanation and exactly3input
+SHA occurrences regenerate through gen_state/gen_definition; only one inspection
+string changes, all storage/reset/legalization and instruction semantics exact.
+Completeness census116 with identical selector first fails RED101 naming missing
+CHK-SC-DETERMINISTIC-POS. Two new Execution routes then bind shared immutable
+reservation/permission inputs and unchanged companions; prior114registry rows
+exact. Registry116/effective114/114,57obligations; latest v2 still open.
+Strict Rust173/17/253 rc=0. Existing16wrong effects/16bad captures remain passing
+rejection tests.29underlying guards+2shared witness errors+2reservation routes+
+2new SC routes each
+RED101 and byte-restored; normal full registry GREEN0. Fresh isolated SC census
+prints4audited families and1152/384permission cases through new Execution arms,
+then restores3persisted source backups byte-exact:62176boundaries/124352parcels/
+35680data/12384walks/22272permissionchecks=194688requests. Those overlap the
+reservation pair fully; no new unique direct case or independence claimed.
+Positive pair+loop25/50 and negative mustfail+fault71/142 companions unchanged.
+Fresh independent167/5365/10524 corpus exact; earlier60640/205word and1536/32word
+architectural derivations apply to identical expected inputs, not freshly
+re-derived all62176cases. The author still omits explicit data requests and
+invalid retained fields; direct observer owns them. Public mixed-width divergence
+and reference lineage untouched. Independently hand-coded/canonical/author
+worked alias history words1003332f/18a5352f/18a5b2af exact: LR replacesx6 with
+old data; SC uses originalx10 as both address/source then setsx10=0; repeat
+returnsx5=1, memory1080 and PC100c. Registered history3/width8/order0/(6,10)/
+vector7/source10 exercises these fields/values. Atomics/v2/ENV/derived GS/index
+sync; current policy distinguishes success/failure from traps. Focused15/six books/final verifier rc=0. Book51/516123B leaves8165B;
+profiles521/3129663B and tasks85 stay within fixed caps. Prior CPU semantic expressions/canonical data/
+frozen/history/LIVE/caps exact; inspection text/fingerprints only in core.
+Next c36/0191 full CI and v2 freeze, then priority .14 provenance/note sweep.
+promotion: declined (the current policy example, shared full-state witnesses, exact regeneration inverse and discriminating registered routes retain this finite binding without a new lineage claim).
+
+
 ### `.13` census and dispositions (slice a)
 
 Reproduction uses the existing single owner, not another effective-contract parser:
@@ -1064,6 +1137,20 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c35 — **ROOT CAUSE**: source-auth/metadata/blame rc=0:
+  root495b4b86 SC statements/current6addc986 inspection omit completed-path
+  prerequisites; pinned A requires permission before retirement. Missing-binding
+  cargo test RED101 names CHK-SC-DETERMINISTIC-POS before registration.
+- [x] `.13` c35 — **ADDRESSED**: make check/census/example/verify.py rc=0:
+  qualified live mirrors/new14thv2 member+2Execution rows, registry116/effective
+  114/114; shared62176boundaries/194688requests;35actual controls RED101/restored,
+  new SC route errors propagate, exact hand/canonical/author alias-history example.
+- [x] `.13` c35 — **NO REGRESSION**: focused15/make book/verify.py rc=0:
+  Rust173/17/253, six books and fresh167/5365/10524 corpus; all earlier fixture
+  inputs/registry/frozen/history/LIVE/caps exact. Core inverse permits only one
+  inspection string/3input hashes; storage/reset/legalization/semantics exact.
+  Earlier205/32word derivations still apply; no unique-case/lineage credit.
+
 - [x] `.13` c34c — **ROOT CAUSE**: defect-red.log self-test rc=1:
   architectural replacement's false acceptance actual0 instead of expected1;
   blame rootd3fecbf3's obligation_ids route misses explicit replacement mirrors.
@@ -1176,6 +1263,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c35 | missing-binding RED→2Execution rows; isolated shared62176census/194688requests;35restored controls; fresh167corpus/alias example | Rust173/17/253/focused15/six books/verify rc=0; registry116/effective114/114 open; frozen/storage/semantics/old inputs/history/LIVE exact |
 | `2026-10-10` | `.13` c34c | false-acceptance RED1→62/0; disabled predicate RED1; exact guard inverse and protected census | record gate/focused9/six books/verify rc=0; CPU/data/frozen/history/milestones exact; arms669 |
 | `2026-10-10` | `.13` c34b | missing-binding RED→2Execution rows;62176direct boundaries/194688requests;31Rust+3schema guards;13new version controls | Rust173/17/253/record-schema61/0/focused15/six books rc=0; registry114/effective112/114; frozen/selector/CPU/data/history/milestones exact; arms668 |
 | `2026-10-10` | `.13` c34b1 | full C source capture/inverse, five damaged controls;37hand words/21refusals/mixed4/5/full167corpus; DEV6+CHANGELOG23 whole entries | verify/derive/focused8docs/six books rc=0; fixed caps, prior code/data/frozen/history/LIVE/registry exact |
@@ -1191,6 +1279,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c35 | `SEMULITH-P4-0190 (leaf P4-SYSTEM.13): qualify and bind deterministic SC` | c36/0191 full CI and v2 freeze, then priority .14 sweep |
 | `.13` c34c | `SEMULITH-P4-0189 (leaf P4-SYSTEM.13): preserve authority in versioned requirement mirrors` | deterministic SC c35/0190, full CI/freeze, priority .14 |
 | `.13` c34b | `SEMULITH-P4-0188 (leaf P4-SYSTEM.13): qualify and bind reservation guarantees` | deterministic SC qualification/pair, full CI/freeze, then priority .14 sweep |
 
@@ -1203,6 +1292,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 
 ## Changelog
+
+- `2026-10-10`: `.13` c35 (SEMULITH-P4-0190): qualified SC prerequisite mirrors/inspection text, v2 supersession+2Execution bindings;35controls, shared62176census and fresh167corpus green; registry116/effective114/114, final CI/freeze next.
 
 - `2026-10-10`: `.13` c34c (SEMULITH-P4-0189): close false acceptance of laboratory-authority replacement for architectural requirement;62/0/disabled-predicate RED1/focused9/six books green, fixed caps and protected CPU/frozen data.
 

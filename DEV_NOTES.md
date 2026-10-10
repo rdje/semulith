@@ -1,6 +1,36 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — qualify and bind deterministic SC (P4-SYSTEM.13 c35)
+
+Root495b4b86's live SC wording and the reservation inspection explanation omit
+alignment/Store-translation/physical-permission prerequisites. Qualify two live
+mirrors plus that explanation; new explicit requirement mirror OB-GC-SC-
+DETERMINISTIC-V2 supersedes the frozen statement. Regenerate one inspection string
+and3input SHA occurrences; storage/reset/legalization/instruction semantics and
+all frozen records/pins exact. V2 member14 and two Execution rows land together.
+Selector unchanged, measured116 first RED101 for missing SC binding; then
+registry116/effective114/114 under57obligations, latest v2 still open.
+
+SC routes reuse62176direct boundaries/194688requests: overlapping coverage with
+reservation, no new unique cases or independence. Positive companions25/50 and
+negative71/142 unchanged. Existing16wrong/16capture tests pass;29underlying,
+2shared witness,2reservation and2new SC route controls RED101/restored, normal registry
+GREEN0. Fresh isolated registered census restores3persisted source backups exactly.
+Prior60640/205word+1536/32word derivations apply to identical expectations; fresh
+167/5365/10524 corpus agrees, without re-deriving all62176cases again. Author
+omits explicit data requests/invalid retained fields; direct observer covers them.
+
+Worked alias history hand words1003332f/18a5352f/18a5b2af match canonical assembly
+and independent author: LR-rd=base, SC-rd=address=source uses pre-state, repeat
+fails with1; final memory1080 and PC100c. Registered history3/width8/order0/
+(6,10)/vector7/source10 covers the exact fields/values. Public mixed-width
+divergence/lineage unchanged. Rust173/17/253 rc=0; focused15/six books/final
+verifier rc=0. Atomics/v2/ENV/derived GS/index/current docs sync; prior
+CPU semantic/canonical/guest/frozen/history/LIVE data and fixed caps exact.
+Next full CI and freeze c36/0191, then priority .14 sweep. Evidence target/p4-system-13/c35.
+promotion: declined (shared finite witnesses, current policy/example and actual route controls retain this binding; no new independent evidence ancestry).
+
 ## _(2026-10-10)_ — preserve authority in versioned requirement mirrors (P4-SYSTEM.13 c34c)
 
 A synthetic active replacement repeats its architectural requirement exactly

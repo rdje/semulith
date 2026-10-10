@@ -79,6 +79,8 @@
   (member (id "OB-GC-ENV-RESET"))
   (member (id "OB-GC-ENV-INTERRUPT-SOURCES-V2"))
   (member (id "OB-GC-RESERVATION-V2"))
+  (member (id "OB-GC-SC-DETERMINISTIC-V2"))
+  (supersede (record "OB-SC-DETERMINISTIC") (by "OB-GC-SC-DETERMINISTIC-V2") (why "P4-SYSTEM.13 c35 qualifies deterministic completed SC outcomes and permission/trap prerequisites without rewriting frozen v0"))
   (supersede (record "OB-RESERVATION") (by "OB-GC-RESERVATION-V2") (why "P4-SYSTEM.13 c34b qualifies selected reservation/alias/width/trap policy and completed permission-checked SC paths without rewriting frozen v0"))
   (supersede (record "OB-GC-ENV-INTERRUPT-SOURCES") (by "OB-GC-ENV-INTERRUPT-SOURCES-V2") (why "P4-SYSTEM.13 c13a2 corrects v1's unconditional comparator assumption to architectural STCE-dependent software/comparator pending"))
   (supersede (record "OB-FP-DEFER") (by "OB-GC-FP-QUALIFIED-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee"))

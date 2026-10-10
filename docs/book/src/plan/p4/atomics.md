@@ -97,8 +97,8 @@ returns zero and clears the reservation. Another 960 direct SC cells start with
 a valid reservation at a different address: they return one, clear it and issue
 no data Load/Store or memory write; each now makes a StorePermission request. The unchanged a-lrsc-mustfail guest also retains
 its no-LR, width/address mismatch, replacement and intervening-SC history cases.
-The dedicated reservation pair covers the histories below; deterministic SC
-policy binding remains separate work.
+The dedicated reservation and deterministic SC pairs both reuse the histories
+below, with their overlap stated explicitly.
 
 The translated AMO fixture runs M-mode instruction fetch with MPRV/MPP=S data
 access. VA 0x10000 maps to PA 0x5000 through these literal PTEs:
@@ -206,7 +206,7 @@ The independent author checks every planned boundary and205 canonical words;
 it does not observe explicit data requests or invalid retained reservation fields.
 The qualified v2 replacement now binds both reservation checks. The
 [current contract summary](contract-v2.md#runtime-guarantee-witnesses) owns
-the realization measure; the dedicated SC policy pair still follows.
+the realization measure; both qualified guarantees now bind these shared histories.
 
 ## Failed SC still checks physical permission
 
@@ -241,8 +241,8 @@ environment pairs cover their declared boundary rules; these add no extra credit
 The frozen `OB-RESERVATION` said invalidation was exactly the specification's
 one-hart set. That wording overstated the authority of the selected policy.
 `OB-GC-RESERVATION-V2` supersedes it without changing frozen v0/v1. The live
-profile decision and requirement use the same qualified statement. V2 has
-13 members; the replacement and its two executable bindings land together.
+profile decision and requirement use the same qualified statement. This was
+v2's thirteenth member; its two executable bindings landed together.
 
 This laboratory chooses an exact physical address, byte width and validity bit.
 Virtual aliases can pair when their physical address and width agree. Exact-width
@@ -282,9 +282,71 @@ reservation witness; the registry test rejects both, confirming propagation.
 Every source is restored before normal checks. The completeness test first
 rejects the missing binding by name; its non-v0 selector is unchanged.
 
-No CPU semantics, guest data or reference lineage changes here. The remaining
-deterministic SC pair and final freeze keep the contract open; CPU acceptance
-retains its separate evidence gates.
+That reservation binding changed no CPU semantics, guest data or reference
+lineage. The SC pair below shares its observations; final freeze and the
+remaining CPU evidence gates still follow.
+
+## Qualified deterministic SC policy
+
+`OB-GC-SC-DETERMINISTIC-V2` supersedes the frozen statement that described the
+reservation match as the whole SC outcome. Its decision and requirement now
+state the same qualified laboratory policy. Alignment, Store translation and
+physical permission come before a completed success or failure. A valid exact
+physical-address/byte-width match then succeeds without spurious failure, stores
+the original source's low-width bytes and returns 0; a nonmatch returns 1 without
+a data Load/Store. Both completed paths clear validity and retain address/width.
+A target fault preserves the prior destination and reservation instead.
+Translation reads or TLB fills may already have occurred; Svade changes no PTE.
+
+| Starting reservation and target | Completed result |
+| --- | --- |
+| Valid at A, width 8; SC.D at A | Store eight source bytes, result 0 |
+| Valid at A, width 8; SC.W at A | Result 1, no data write: exact width is selected policy |
+| Invalid, or valid at a different physical address | Result 1, no data write |
+| Different virtual alias of the same physical A and width | Store and result 0 under this profile's alias choice |
+| Any reservation; target access denied | A target trap, with no completed result or reservation clearing |
+
+Each row starts independently. Physical permission is required even for the
+nonmatching case: it obtains a side-effect-free StorePermission response.
+Other implementations may make different permitted width/alias/failure choices;
+these examples establish this laboratory policy, not every architectural outcome.
+
+For a concrete alias history, start x6=x10=x11=0x1080 and the doubleword there
+at `0x1122334480000001`:
+
+```asm
+lr.d x6, (x6)
+sc.d x10, x10, (x10)
+sc.d x5, x10, (x11)
+```
+
+LR places the old doubleword in x6 while reserving physical 0x1080, width 8.
+The first SC uses x10's original 0x1080 as both address and source: memory becomes
+0x1080, then x10 becomes 0. The second SC returns x5=1 and leaves memory 0x1080;
+its reservation is already invalid. With entry 0x1000 the final PC is 0x100c.
+Hand words `1003332f`, `18a5352f`, `18a5b2af` match the canonical assembler and
+the independent author. The registered history 3 cell (8-byte width, no aq/rl, LR destination x6,
+SC destination/source x10 and vector 7) exercises these exact fields and values.
+
+The two SC Execution entries reuse the reservation pair's **62,176 direct
+boundaries and 194,688 requests**. They add no unique direct cells or independence.
+Positive companions pair+loop add 25 boundaries/50 parcels; negative mustfail+fault
+add 71/142. Every direct boundary still compares full state, memory, requests,
+retirement and retained invalid fields. Existing 16 wrong effects/16 corrupt captures
+remain; 29 underlying guards, 2 shared-witness errors, 2 reservation routes and
+2 new SC routes fail when mutated, then restore byte-for-byte. The missing-binding control rejects the
+new SC id before registration; its selector remains unchanged. A fresh isolated
+SC census confirms the reused totals, and the prior 167-guest author corpus agrees.
+The earlier 205/32-word architectural derivations still apply to unchanged fixture
+inputs; this bind does not claim a fresh re-derivation of all 62,176 cases.
+
+The author omits explicit data requests and invalid retained reservation fields;
+those stay direct-observer evidence. Public Sail's named mixed-width divergence
+remains a permitted selected-policy difference, with no new reference result or
+lineage credit. Only inspection wording and source fingerprints regenerate in
+core state/definition mirrors; storage, reset, legalization and instruction
+semantics stay unchanged. The [current contract summary](contract-v2.md#runtime-guarantee-witnesses)
+owns the effective count; full CI and frozen v2 membership still follow.
 
 ## Historical introduction and checkpoint receipt
 

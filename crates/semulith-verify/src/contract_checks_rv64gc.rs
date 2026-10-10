@@ -36,6 +36,20 @@ pub struct ContractCheck {
 /// remaining records stay uncredited.
 pub static CHECKS: &[ContractCheck] = &[
     ContractCheck {
+        id: "CHK-SC-DETERMINISTIC-POS",
+        obligation: "OB-GC-SC-DETERMINISTIC-V2",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::ScDeterministicPositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-SC-DETERMINISTIC-NEG",
+        obligation: "OB-GC-SC-DETERMINISTIC-V2",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::ScDeterministicNegative,
+        ),
+    },
+    ContractCheck {
         id: "CHK-RESERVATION-POS",
         obligation: "OB-GC-RESERVATION-V2",
         evidence: Evidence::Execution(

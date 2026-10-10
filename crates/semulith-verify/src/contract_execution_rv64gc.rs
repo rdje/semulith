@@ -30,6 +30,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Selected SC success/failure codes, byte stores and reservation histories.
+    ScDeterministicPositive,
+    /// SC traps and physical permission precede completed deterministic outcomes.
+    ScDeterministicNegative,
     /// Selected LR replacement, completed SC clearing and physical-alias histories.
     ReservationPositive,
     /// Traps preserve prior reservations; failed SC still checks physical permission.
@@ -93,6 +97,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::ScDeterministicPositive => &["a-lrsc-pair", "a-lrsc-loop"],
+            Self::ScDeterministicNegative => &["a-lrsc-mustfail", "a-lrsc-fault"],
             Self::ReservationPositive => &["a-lrsc-pair"],
             Self::ReservationNegative => &["a-lrsc-mustfail", "a-lrsc-fault"],
             Self::DPositive => &[
@@ -155,6 +161,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::ScDeterministicPositive => atomics::reservation_positive(),
+            Self::ScDeterministicNegative => atomics::reservation_negative(),
             Self::ReservationPositive => atomics::reservation_positive(),
             Self::ReservationNegative => atomics::reservation_negative(),
             Self::DPositive => floating::double_positive(),
