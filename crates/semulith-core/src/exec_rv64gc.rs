@@ -239,6 +239,7 @@ pub fn step_over(
         pre_fregs: [0; 32],
         pc_written: false,
         trapped: false,
+        counter_writes: timekeeping::CounterWrites::default(),
         failed: None,
     };
     for i in 0..32 {
@@ -280,8 +281,9 @@ pub fn step_over(
     }
     // P4-SYSTEM.5 decision 1: the declared virtual-time domain ticks at every step
     // boundary; minstret counts GENUINELY — a trap-delivering instruction's step
-    // retires nothing (a completed one, `!frame.trapped`, retires one)
-    timekeeping::advance(frame.state, !frame.trapped);
+    // retires nothing (a completed one, `!frame.trapped`, retires one).
+    // Successful explicit counter writes replace their own implicit updates.
+    timekeeping::advance_after_instruction(frame.state, !frame.trapped, frame.counter_writes);
     StepRv64gc::Executed
 }
 
@@ -391,6 +393,7 @@ struct Frame<'a> {
     pre_fregs: [u64; 32],
     pc_written: bool,
     trapped: bool,
+    counter_writes: timekeeping::CounterWrites,
     failed: Option<ModelError>,
 }
 
@@ -685,6 +688,8 @@ impl Frame<'_> {
                 if privilege::csr_write(self.state, addr as u16, v).is_err() {
                     let word = u64::from(self.word);
                     self.deliver(2, word);
+                } else {
+                    self.counter_writes.record(addr as u16);
                 }
                 (0, 64)
             }
@@ -706,6 +711,7 @@ impl Frame<'_> {
                     self.deliver(2, word);
                     return (0, 64);
                 }
+                self.counter_writes.record(addr as u16);
                 (old, 64)
             }
             Sem::TrapDeliver(cause, tval) => {
@@ -1382,3 +1388,6 @@ fn extract(insn: &InsnDef, word: u32) -> Vec<(&'static str, u64, u32)> {
     }
     out
 }
+
+#[cfg(test)]
+mod counter_writes;

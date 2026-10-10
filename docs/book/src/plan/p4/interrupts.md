@@ -5,8 +5,9 @@
 The design brief (a declared virtual-time domain, pending evaluation at the step
 head, a real halt with WFI's spec wake)
 executes in four checkpoints. Slice (a): time moves. The laboratory's virtual-time
-domain advances one tick per step boundary, retired or halted — a pure function of
-the step index, so determinism holds by construction. The
+domain advances one tick per step boundary, retired or halted, with explicit
+instruction counter writes taking precedence over their own implicit update.
+Progress is deterministic from initial state and instruction/boundary history. The
 storage is ONE domain: `mcycle` holds it, `time` views it, and `minstret`
 counts genuinely — a trapped, reserved or halted step never increments. The
 rate and the count rule are data in the state document. The moving counters
@@ -90,3 +91,9 @@ Direct S-mode compare programming/read-back and handler-visible refusal cases
 now close the contract witness hole. [Worked values](contract-runtime.md#observable-s-mode-timer-programming-and-refusals)
 show the 31-boundary pair, trap controls and finite scope. G-CONTRACT is 70/114;
 no firmware/Linux acceptance follows.
+
+Explicit writes to mcycle/minstret replace their own instruction's update,
+including unchanged writes; refused writes retain the ordinary nonretiring trap
+boundary. P4.13 c30a repaired the former extra increment after a guest write.
+[Worked write/read-back values and reference limits](contract-runtime.md#writable-counters-explicit-writes-replace-their-own-increment)
+distinguish those instructions from out-of-band fixture initialization.

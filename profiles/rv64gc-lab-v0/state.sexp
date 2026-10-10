@@ -391,12 +391,12 @@
   (csr (id "mcycle") (address 2816) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.10; RVI-ZICNTR §6.1.1")
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.10; §2.1.4 (UNSPECIFIED)")
-              (statement "The cycle counter, writable in M; the laboratory resets it to 0. It IS the declared virtual-time domain's storage (P4-SYSTEM.5 decision 1, authority laboratory): the domain advances ONE TICK PER STEP BOUNDARY, retired or halted — the declared rate as data, a pure function of the step index (the Zicntr §6.1 rate latitude; determinism by construction). cycle and time view it read-only.")))
+              (statement "The cycle counter, writable in M; the laboratory resets it to 0. It IS the declared virtual-time domain's storage (P4-SYSTEM.5 decision 1, authority laboratory): the domain advances ONE TICK PER STEP BOUNDARY, retired or halted (the Zicntr §6.1 rate latitude). An explicit instruction write replaces its own boundary increment and re-bases the domain (RVI-ZICSR §5.1.1, RVP-MACHINE §2.1.1.10). Progress is deterministic from the initial state and instruction/boundary history. cycle and time view it read-only.")))
 
   (csr (id "minstret") (address 2818) (width_bits 64) (authority architecture)
        (source "RVP-MACHINE §2.1.1.10; RVI-ZICNTR §6.1.1")
        (reset (value "0") (authority laboratory) (source "RVP-MACHINE §2.1.1.10; §2.1.4 (UNSPECIFIED)")
-              (statement "The instructions-retired counter, writable in M; the laboratory resets it to 0. It counts GENUINELY (P4-SYSTEM.5 decision 1): +1 per retired instruction — a step that delivers a trap, decodes reserved (no instruction), or halts does not increment; time advances regardless.")))
+              (statement "The instructions-retired counter, writable in M; the laboratory resets it to 0. It counts GENUINELY (P4-SYSTEM.5 decision 1): +1 per retired instruction — a step that delivers a trap, decodes reserved (no instruction), or halts does not increment. An explicit instruction write replaces its own retirement increment, including an unchanged write (RVI-ZICSR §5.1.1, RVP-MACHINE §2.1.1.10); the other counter follows its ordinary boundary rule.")))
 
   ;; ---- supervisor level ----------------------------------------------------------------------
   (csr (id "sstatus") (address 256) (width_bits 64) (view_of "mstatus") (authority architecture)

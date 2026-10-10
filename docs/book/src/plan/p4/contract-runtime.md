@@ -154,6 +154,61 @@ evidence; OB-GC-COUNTERS remains a separate later binding. Firmware and Linux
 acceptance are still open.
 
 
+## Writable counters: explicit writes replace their own increment
+
+The selected counters are 64-bit. Ordinary boundaries advance `mcycle` once;
+retired instructions advance `minstret` once. RVI-ZICSR 5.1.1 and RVP-MACHINE
+2.1.1.10 require an exception to that implicit update: **an explicit instruction
+write takes precedence**, including a write that leaves the stored value
+unchanged. The following read observes the written value before its own update.
+
+For example, starting from the reset retirement count:
+
+```text
+addi     x6, x0, 41       # retires: minstret becomes 1
+csrrw    x0, minstret, x6 # explicit write commits 41, replacing this increment
+rdinstret x7             # x7 = 41; after retirement minstret becomes 42
+rdinstret x8             # x8 = 42; after retirement minstret becomes 43
+```
+
+Writing `mcycle` similarly re-bases the shared cycle/time domain. The other
+counter follows its ordinary rule: a successful `mcycle` write still retires,
+and a successful `minstret` write still advances cycle/time. This remains
+deterministic from the initial state and instruction/boundary history; the step
+index alone cannot determine a domain that guest software can re-base.
+
+CSRRS/CSRRC and their immediate forms suppress a write only when their source
+**field** is zero. A nonzero register source containing zero still performs an
+explicit write and therefore replaces the increment, even if no bit changes.
+CSRRW/CSRRWI always write, including zero sources and `rd=x0`. Refused writes
+perform no counter write: the trap boundary advances cycle/time and retires
+nothing.
+
+P4.13 c30a reproduced the old defect through the public engine: writing zero
+to either owner left one after the same instruction. The repair records only
+successful explicit writes in the current execution frame and suppresses that
+owner's implicit update. These flags are discarded at the end of the boundary;
+there is no new architectural state or snapshot requirement. Fixture setup
+outside an instruction still precedes the next ordinary boundary increment.
+
+Three suites cover both owners and all six CSR forms, zero/nonzero source
+fields, unchanged/zero/high/wrapping values, destination suppression and aliases,
+full GPR preservation, the next read and exact parcel requests. They include
+1,776 cases /3,504 boundaries /7,008 parcels; 48 cases are refused S/U writes.
+Both owner suites fail on the old engine and with the actual write recorder
+disabled, then pass after restoration. The independent corpus author continues
+to refuse writable-counter rebasing explicitly; these literal tests do not
+silently extend its supported scope.
+
+An authenticated public Spike run with explicit `rv64gc_zicntr` observes x7=41
+and x8=42 in the four-instruction example twice, with identical raw logs. That
+is a finite M-mode observation, not a full-profile match or independence claim.
+The tracked Sail configuration explicitly disables Zicntr: it traps on the
+owner write. Enabling only Zicntr in a temporary override is refused by its
+public validator because no time source is configured. Those platform limits
+remain explicit; the comparator is not weakened to turn the refusal into
+agreement. This prerequisite repair adds no GC-COUNTERS registry credit.
+
 ## Explicit comparator setup before fallback repair
 
 The nine timer-source programs now enable menvcfg.STCE in M before relying on

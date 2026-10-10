@@ -1,6 +1,44 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — honor explicit counter-write precedence (P4-SYSTEM.13 c30a)
+
+C30 prerequisite review encounters write-then-increment in timekeeping, root
+e37e664. Authenticated Machine2.1.1.10/Zicsr5.1.1 say explicit writes replace
+instruction-side updates. Real public-step tests RED rc=101: writing0 to either
+owner leaves1; refusal control holds. Track/own before production repair.
+
+Successful explicit CSR writes record per-frame counter flags. Boundary advance
+skips only that owner's update, including unchanged writes; zero-source reads
+still progress, refused writes never suppress the normal nonretiring trap step.
+No persistent state added. Three suites GREEN rc=0:1776cases/3504boundaries/
+7008parcels,48refused S/U writes, all six forms, source-field vs source-value,
+full GPRs/aliases/read-back and exact requests. Actual no-op recorder RED101,
+restored. First make check flags manual_is_multiple_of in fixture; corrected.
+Final Rust170/17/223 with strict lint rc=0.
+
+Two explanatory state strings qualify rebasing/history-based determinism;
+STATE/DEF provenance RED1, published generation0, exactly three hashes only.
+StateSHA cf460b3bfbfa31a2b95c748e70dd49badde1daa8e8fb815aa327823301419ac3.
+Bounded author keeps refusing rebasing, only rationale corrected; independent
+167/5365/10524 exact. GS digest only after environment sync; book worked example.
+
+Public Sail's recorded Zicntr-disabled scope traps on owner write; initial4-step
+probe hits duplicate deliveries after the trap, correctly refused. Bounded2
+isolates that refusal. Temporary one-Boolean enable is publicly refused without
+time source; no config/parser change. Spike initially lacks Zicntr under rv64gc;
+explicit rv64gc_zicntr gives repeated4-step x7=41/x8=42, wrong42 discriminates.
+This is a finite M observation, no full-profile or independence claim. Corrected
+a scratch ELF IALIGN argument (bits16) before credit. Raw attempts retained.
+
+Verify.py rc=0: frozen/guest/requirements/registry104/numerical state/history/
+LIVE exact, effective102/114 unchanged; no binding credit. GUEST148/0, STATE/
+DEF/SEMANTICS/focused/all six books rc=0. Scratch heading assertion/checker127
+have no success credit; final published check names and book verified. Book
+513368B/runtime29842B under fixed caps. Evidence target/p4-system-13/c30a.
+Next c30 GC-COUNTERS; contain book/DEV before subsequent additions breach caps.
+promotion: declined (architectural CSR precedence is already normative; permanent public-step controls and worked book example retain the diagnosed repair).
+
 ## _(2026-10-10)_ — ground reference overview in public evidence (P4-SYSTEM.13 c29e)
 
 Root147de76 introduced source-tree counts/ancestry inferences into P0/P4/LIVE.

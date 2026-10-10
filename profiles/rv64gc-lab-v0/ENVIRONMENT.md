@@ -59,6 +59,13 @@ state/request effects. Three-level translated AMOs and page/physical failures
 retain their store/AMO fault kinds. Worked values, paths and finite limits:
 `docs/book/src/plan/p4/atomics.md#direct-contract-observations`.
 
+Explicit instruction writes to mcycle/minstret replace their own implicit
+boundary update, including unchanged writes (RVI-ZICSR5.1.1/RVP-MACHINE2.1.1.10).
+The other counter follows its ordinary rule; refused writes retire nothing and
+advance cycle/time. Writing mcycle re-bases the domain, so determinism is from
+initial state and instruction/boundary history. Worked values/reference limits:
+`docs/book/src/plan/p4/contract-runtime.md#writable-counters-explicit-writes-replace-their-own-increment`.
+
 The selected FP dirtiness policy marks Dirty on every legal f-register or
 explicit fflags/frm/fcsr write, including unchanged values. Flag accrual marks
 Dirty when stored flag bits change. RVP-MACHINE 2.1.1.6.7 permits the unchanged-

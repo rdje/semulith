@@ -240,6 +240,11 @@ This gate authorises the planned next engineering stage: board implementation.
   gate_report renders verdicts without authenticating implementation ancestry.
   Preserve historical bytes and withdraw unsupported current-use assumptions,
   with public-contract evidence; no independence inferred from agreement.
+  C30 prerequisite review additionally encounters state.sexp's HART_WAITING
+  internal precedent and privilege.rs's FP/counter/mstatus implementation-source
+  comments. Own these in the same priority-first .14 provenance sweep before
+  evidence signoff; current counter witnesses derive from authenticated ISA and
+  selected laboratory policies, not those rationales.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -381,6 +386,66 @@ only owned exact-source replacements, shorten and authenticate final6131B
 (old6135). All statuses/counts/core/canonical/frozen/registry104/history exact,
 effective102/114 unchanged. Focused/all six books rc=0; previous Rust167/17/223
 applies. Evidence target/p4-system-13/c29e. Commit/brief0/actual census then c30.
+
+### `.13` c30a — diagnose and repair writable-counter ordering (completed, `SEMULITH-P4-0172`)
+
+Encountered during c30's read-only prerequisite review on clean6f2d885/brief0/
+actual census rc=0. Authenticated RVP-MACHINE2.1.1.10 source bytes state that
+counter writes take effect after the writing instruction has otherwise completed.
+Current exec/timekeeping applies writes then advances both counters; the core
+helper test expects a write41 then tick42, without executing a guest write.
+Suspect actual guest rebasing counts its own instruction on top of the written
+value. Own this before new GC-COUNTERS credit. Reproduce literal CSRRW counter
+writes/read-back through the public step interface before classification/change;
+review all six CSR write forms, zero-source suppression and fault paths.
+If confirmed, preserve the explicit write's value at this boundary while advancing
+other counters; never suppress progression for a read or a refused write. Verify
+high/wrapping/unchanged writes, aliases and rd=x0; distinguish transient execution
+bookkeeping from persistent architectural state. Add independent literal controls
+before production repair, confirm full old corpus/input identity, Rust/focused/
+public checks, synchronize source policy/book/live docs, commit clean before c30.
+No credit for counter bindings from this prerequisite alone; .14 statuses remain.
+Confirmed public-step RED rc=101 for both owners, write0→observed1; refusal
+control passes. Root e37e664 timekeeping always increments after guest effects.
+Own two explanatory state strings clarifying write precedence and history-based
+(not step-index-only) determinism; regenerate through published state/definition
+owners, authenticate exact three-hash-only metadata changes. Correct the bounded
+independent author's refusal rationale, retaining its explicit no-rebasing scope.
+Public Sail attempt meets its already-declared Zicntr-disabled limitation; a
+one-Boolean trial is rejected by its public validator without a time source.
+Do not modify matched config or weaken parser. Authenticated public Spike with
+explicit rv64gc_zicntr observes the independent four-step41/42 sequence twice;
+base rv64gc lacked Zicntr and trapped. These are finite observations, no full-
+profile match or semantic-independence claim. Record raw failed/probe attempts.
+
+Completed: authenticated Machine2.1.1.10/Zicsr5.1.1 require explicit writes
+replacing instruction-side updates. Root e37e664 always increments after writes.
+Public-step suites RED rc=101 for both owners (write0→1), refusal control passes.
+Transient successful-write flags in Frame now suppress only that owner's own
+increment. Final three suites GREEN rc=0:1776cases/3504boundaries/7008parcels,
+including48refused S/U writes; all six forms, source-field suppression, unchanged/
+zero/high/wrapping values and destination aliases. Actual no-op recorder RED
+rc=101, restored. No added architectural/snapshot state or binding credit.
+
+Two explanatory state strings correct precedence/history-based determinism;
+STATE/DEF provenance RED rc=1, published generators rc=0. Only three generated
+source hashes change, no executable/descriptive values. StateSHA now
+cf460b3bfbfa31a2b95c748e70dd49badde1daa8e8fb815aa327823301419ac3.
+Independent author still refuses rebasing; only its misleading rationale changes.
+Public Spike explicit rv64gc_zicntr: two identical4-step raw logs, x7=41/x8=42;
+wrong42 expectation discriminates. Sail's existing Zicntr-disabled matched scope
+traps; enabling only Zicntr is publicly refused without time source. Initial
+4-boundary post-trap probe is rejected for duplicate delivery; bounded2 isolates
+write refusal. No parser/config change or whole-profile/independence claim.
+
+Verify.py rc=0: independent167/5365/10524 corpus exact; frozen/registry104/
+canonical numerical values/prior history/LIVE unchanged, effective102/114.
+GS digest only after environment sync; book gives worked transitions and limits.
+Make check rc=0:170core/17DSP/223verify after fixing test-fixture lint. Focused
+GUEST148/0, STATE/DEF, SEMANTICS and remaining gates/all six books rc=0;
+initial checker-name127 and scratch heading assertion earn no credit. Fixed caps,
+book513368B/runtime29842B. Evidence target/p4-system-13/c30a. Hooks then c30
+on clean workflow/census; contain book/DEV before subsequent additions exceed caps.
 
 ### `.13` c30 — realize GC-COUNTERS execution checks (queued)
 
@@ -538,6 +603,25 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c30a — **ROOT CAUSE**: four normative artifacts authenticated
+ rc=0; Machine2.1.1.10/Zicsr5.1.1 require explicit-write precedence. Root
+ e37e664 timekeeping unconditionally increments after guest writes. Public-step
+ tests RED rc=101: both owners write0→observed1; refused-write suite passes.
+- [x] `.13` c30a — **ADDRESSED**: focused suites GREEN rc=0:1776cases/
+ 3504boundaries/7008parcels, all six CSR forms and48refused S/U writes. Successful
+ explicit-write flags are per-frame only; unchanged writes replace their update,
+ zero source fields remain reads, other counter progresses. Actual no-op recorder
+ RED rc=101 then restored. State two prose strings only, provenance RED rc=1→
+ published generation rc=0, exactly three hashes; bounded author still refuses.
+- [x] `.13` c30a — **NO REGRESSION**: verify.py/make check rc=0:
+ independent167/5365/10524 exact, Rust170/17/223; prior registry104/frozen/guest/
+ canonical numerical values/LIVE/history exact, effective102/114 unchanged.
+ Public Spike4-step41/42 twice byte-identical, wrong42 control discriminates;
+ existing Sail scope trap/validator refusal recorded, no config/parser weakening.
+ GS digest only, environment/book synchronized. GUEST148/0, STATE/DEF/SEMANTICS/
+ focused/all six books rc=0; fixed caps/book513368B, no binding credit. C30 next.
+ promotion: declined (architectural CSR precedence is already normative; permanent public-step controls and worked book example retain the diagnosed repair).
+
 - [x] `.13` c29e — **ROOT CAUSE**: root147de76 history plus schema/
  consistency/report consumer census identify internal-source ancestry claims in
  P0/P4/LIVE, while consumers check declaration presence/legal values only.
@@ -591,6 +675,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
 
+| `2026-10-10` | `.13` c30a | authenticated ISA/root history; initial/no-op recorder RED101→restored1776/3504/7008; exact two prose/three hashes; independent167 corpus; Spike4/41/42 repeated, Sail limits | Rust170/17/223; effective102/114/LIVE unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e | root history/consumer census; nine preserved spans/three exact source inverses; corrupt/marker/omission refuse; fresh scalar4/34/FP24/927 exact; FP230+3168/hardware2131 | registry104/effective102/114 and LIVE statuses/counts unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c29e1 | five whole payloads/full task inverse; damaged payload controls refuse; sharder12/0/dry-run; four whole DEV entries/full inverse; prior history/protected inputs/fixed caps | registry104/effective102/114 and LIVE unchanged; focused/all six books rc=0; hooks next |
 
@@ -601,10 +686,17 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | Leaf | Subject | Next |
 | --- | --- | --- |
 
+| `.13` c30a | `SEMULITH-P4-0172 (leaf P4-SYSTEM.13): honor explicit counter-write precedence` | c30 GC-COUNTERS, remaining pairs/freeze; contain docs before fixed caps |
 | `.13` c29e | `SEMULITH-P4-0171 (leaf P4-SYSTEM.13): ground reference overview in public evidence` | c30 GC-COUNTERS, remaining runtime pairs/freeze |
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c30a (SEMULITH-P4-0172): fix actual explicit
+ counter-write extra increment; old/no-op recorder RED101, restored1776cases/
+ 3504boundaries/7008parcels. State prose/three provenance hashes only; independent
+ corpus and Spike41/42 repeated, Sail declared limits preserved. Rust170/17/223,
+ focused/all six books rc=0; effective102/114 unchanged. C30 binding next.
 
 - `2026-10-10`: `.13` c29e (SEMULITH-P4-0171): withdraw internal-ancestry
  basis from current P0/P4/LIVE overview; preserve6177B in exact finite archive.

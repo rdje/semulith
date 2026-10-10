@@ -532,9 +532,9 @@ def csr_write_value(h, name, v):
         h.csr["frm"] = (h.csr["frm"] & ~0x7) | ((v >> 5) & 0x7)
         _dirty_fp(h)
     elif name in ("mcycle", "minstret"):
-        raise Refusal(f"csr {name} write: the .5 tool's domain is a pure function of the "
-                      f"step index — a write re-bases it; model the storage if a guest "
-                      f"needs it (the wake corpus never does)")
+        raise Refusal(f"csr {name} write: writable counter rebasing is outside this "
+                      f"bounded author's scope; model its explicit-write precedence "
+                      f"before authoring a guest that needs it")
     else:
         h.csr[name] = v
 

@@ -3,9 +3,11 @@
 //!
 //! The laboratory's time advances **one tick per step boundary, retired or halted** —
 //! the Zicntr latitude ("the rate at which the cycle counter increments will depend on
-//! the implementation and operating environment", §6.1) answered as a pure function of
-//! the step index, so cold-reset re-execution and EVD-05's exact values hold by
-//! construction (the brief's pre-condition 8). The domain IS the environment's time
+//! the implementation and operating environment", §6.1) answered deterministically
+//! from initial state and instruction/boundary history. Explicit counter writes
+//! replace their own instruction's implicit increment (Zicsr 5.1.1); writing
+//! mcycle re-bases the domain. Cold-reset re-execution remains deterministic.
+//! The domain IS the environment's time
 //! supply (`rv64gc-lab-env-v1`'s `OB-GC-ENV-VIRTUAL-TIME`, P4-SYSTEM.9); the domain's
 //! storage is `mcycle` ("cycle count might represent a valid implementation of
 //! RDTIME", §6.1), and `time` views it read-only.
@@ -27,17 +29,47 @@ pub const MCOUNTEREN_ADDRESS: u16 = 0x306;
 /// `scounteren`'s architectural address (the U-mode counter-ACCESS gates).
 pub const SCOUNTEREN_ADDRESS: u16 = 0x106;
 
+/// Successful explicit counter writes made by the current instruction.
+/// This is transient bookkeeping, not an additional architectural state owner.
+#[derive(Default)]
+pub(crate) struct CounterWrites {
+    cycle: bool,
+    instret: bool,
+}
+
+impl CounterWrites {
+    pub(crate) fn record(&mut self, address: u16) {
+        match address {
+            MCYCLE_ADDRESS => self.cycle = true,
+            MINSTRET_ADDRESS => self.instret = true,
+            _ => {}
+        }
+    }
+}
+
 /// Advance the time domain one tick at a step boundary. `retired` is exactly "an
 /// instruction completed this step without a delivered trap" — the evaluator's
 /// `!frame.trapped` — so a trap-delivering, reserved-decoding or halted step moves
 /// time and nothing else. The domain storage wraps naturally (the counter is 64-bit).
 pub fn advance<H: PrivilegedHart>(hart: &mut H, retired: bool) {
-    let mcycle = hart
-        .csr_index(MCYCLE_ADDRESS)
-        .expect("the time domain's storage (mcycle) is declared in the state document");
-    let now = hart.csr_raw(mcycle);
-    hart.csr_write_raw(mcycle, now.wrapping_add(1));
-    if retired {
+    advance_after_instruction(hart, retired, CounterWrites::default());
+}
+
+/// RVI-ZICSR 5.1.1 and RVP-MACHINE 2.1.1.10: an explicit counter write
+/// takes precedence over this instruction's implicit update, even if unchanged.
+pub(crate) fn advance_after_instruction<H: PrivilegedHart>(
+    hart: &mut H,
+    retired: bool,
+    writes: CounterWrites,
+) {
+    if !writes.cycle {
+        let mcycle = hart
+            .csr_index(MCYCLE_ADDRESS)
+            .expect("the time domain's storage (mcycle) is declared in the state document");
+        let now = hart.csr_raw(mcycle);
+        hart.csr_write_raw(mcycle, now.wrapping_add(1));
+    }
+    if retired && !writes.instret {
         let instret = hart
             .csr_index(MINSTRET_ADDRESS)
             .expect("minstret is declared in the state document");
@@ -156,9 +188,10 @@ mod tests {
     }
 
     #[test]
-    fn m_mode_writes_to_the_domain_survive_the_tick() {
+    fn out_of_band_counter_initialization_precedes_the_next_tick() {
         let mut h = hart();
-        // mcycle is writable in M: software's write is the new base, the tick adds on top
+        // Fixture initialization precedes the next boundary. Actual CSR instructions
+        // use advance_after_instruction so their writes replace their own tick.
         let idx = h.csr_index(MCYCLE_ADDRESS).unwrap();
         h.write_csr(idx, 41);
         advance(&mut h, true);
