@@ -4,25 +4,56 @@ use super::{Evidence, CHECKS};
 use crate::guests_rv64gc::GUESTS;
 use crate::run_rv64gc::assert_guest_observations;
 
+fn catalog(profile: &str, file: &str) -> String {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let path = format!("profiles/{profile}/{file}");
+    let result = std::process::Command::new("python3")
+        .current_dir(root)
+        .args(["scripts/record_catalog.py", &path, "--stdout"])
+        .output()
+        .expect("the catalog expansion owner must run");
+    assert!(
+        result.status.success(),
+        "catalog expansion failed: {result:?}"
+    );
+    String::from_utf8(result.stdout).expect("canonical catalogs are UTF-8")
+}
+
 fn obligations() -> &'static str {
     static TEXT: std::sync::OnceLock<String> = std::sync::OnceLock::new();
-    TEXT.get_or_init(|| {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
-        let result = std::process::Command::new("python3")
-            .current_dir(root)
-            .args([
-                "scripts/record_catalog.py",
-                "profiles/rv64gc-lab-v0/contract-obligations.sexp",
-                "--stdout",
-            ])
-            .output()
-            .expect("the catalog expansion owner must run");
-        assert!(
-            result.status.success(),
-            "catalog expansion failed: {result:?}"
-        );
-        String::from_utf8(result.stdout).expect("canonical catalogs are UTF-8")
-    })
+    TEXT.get_or_init(|| catalog("rv64gc-lab-v0", "contract-obligations.sexp"))
+}
+
+fn assert_shift_requirement_associations(profile: &str) {
+    let text = catalog(profile, "requirements.sexp");
+    let requirement = text
+        .lines()
+        .find(|line| line.starts_with("(requirement (id \"REQ-D-SHAMT\")"))
+        .expect("the shift-count requirement must exist");
+    let mut actual: Vec<_> = requirement
+        .split("(insns \"")
+        .skip(1)
+        .map(|field| field.split('"').next().expect("an instruction field"))
+        .collect();
+    // RV64I 3.1.2.1–2 and the requirement's statement name all twelve forms.
+    // Aggregate coverage through WSUFFIX must not hide a missing SHAMT edge.
+    let mut expected = vec![
+        "slli", "srli", "srai", "sll", "srl", "sra", "slliw", "srliw", "sraiw", "sllw", "srlw",
+        "sraw",
+    ];
+    actual.sort_unstable();
+    expected.sort_unstable();
+    assert_eq!(actual, expected, "{profile}: complete SHAMT associations");
+}
+
+#[test]
+fn rv64i_shift_requirement_covers_all_twelve_forms() {
+    assert_shift_requirement_associations("rv64i-lab-v0");
+}
+
+#[test]
+fn rv64gc_shift_requirement_covers_all_twelve_forms() {
+    assert_shift_requirement_associations("rv64gc-lab-v0");
 }
 
 #[test]

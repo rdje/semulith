@@ -123,3 +123,10 @@ contract's job at that line is to state what the CPU **assumes**, so a board can
 against it (`docs/CPU_ENVIRONMENT.md` §5). Every device named anywhere in this profile appears in
 exactly one role: something a reference brings that we exclude. None is modelled here, and none
 should be.
+
+REQ-D-SHAMT's instruction associations now include all twelve forms named by
+its statement, including SLLW/SRLW/SRAW (P4-SYSTEM.13 c17e). The original metadata
+listed nine; a focused closure assertion was observed failing before the three
+missing associations were added, and now passes for both this owner and its GC
+mirror. No requirement statement, instruction behavior or guest observation
+changes. The composed board metadata and its dossier provenance are regenerated.

@@ -31,7 +31,7 @@ for what this artifact IS. This report reads the decision, never exceeds it.
 - profile `rv64i-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64i-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 267e8e23a291a6042a63a8ca5ffcc41321cb903b36a596898d5e0011a580a55f`
+  `sha256 f924656163cef1ecd735292b25d05aca29113deb35400ed8f2291bbe95d1a8dc`
 - regenerate: `scripts/gate_report.py rv64i-lab-v0 --gate GC`
 
 ## Capability limits (explicit)

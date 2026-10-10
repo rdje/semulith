@@ -443,3 +443,10 @@ its separate insns metadata omits the three register-W forms in both owner and
 mirror. c17e owns that metadata repair next; c17f WSUFFIX follows. .14 retains
 statuses/structured experiments/registration. See the integer book for examples,
 countermodel table and finite evidence limits.
+
+c17e repairs REQ-D-SHAMT's missing SLLW/SRLW/SRAW associations in both base and
+GC catalogs. Two focused owner/mirror assertions fail on the old nine-form data
+and pass after only those additions; extraction/mirror validation retains the
+declared closure. Every other requirement field/frozen record, all guest data,
+production rules and 80 bindings stay exact. Dependent board metadata/pins and
+reports are rederived. Effective 78/114 unchanged; c17f WSUFFIX next.

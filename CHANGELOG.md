@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0138 (leaf P4-SYSTEM.13 c17e) — complete SHAMT requirement associations
+
+- Observe owner/mirror closure assertions RED on nine forms, append only missing
+  SLLW/SRLW/SRAW associations, then both GREEN. Every other record field remains
+  exact; the composed board receives the repaired metadata and dossier pin.
+- Preserve all runtime/guest/core/generated/frozen data and 80 bindings. Rust
+  167/17/203, records/extraction/freshness/freeze/schema/counts/bounds/books pass.
+  Effective 78/114 and LIVE_STATUS 649 arms/47 chapters/P4 12/18 unchanged.
+- Close the history-traced association defect; c17f WSUFFIX review/binding next.
+
+
 ## SEMULITH-P4-0137 (leaf P4-SYSTEM.13 c17d) — realize all twelve shift-count domains
 
 - Reject twelve isolated wrong count expressions before SHAMT POS/NEG binding;

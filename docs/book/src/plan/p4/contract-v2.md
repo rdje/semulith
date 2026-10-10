@@ -515,8 +515,8 @@ The [runtime contract chapter](contract-runtime.md)
 contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr and Sstc evidence.
 The [integer runtime chapter](contract-integer.md) retains immediate/register ALU,
 U-immediate and twelve-form shift bindings, worked values and verified SRAW/SRAIW
-count-mask/source-width witness repairs. It also owns the remaining SHAMT
-requirement-association omission and its next repair. Both chapters retain
+count-mask/source-width witness repairs and the verified SHAMT requirement-
+association correction. Both chapters retain
 independent controls and finite evidence limits. Current G-CONTRACT is
 78/114; eighteen runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.

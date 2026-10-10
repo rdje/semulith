@@ -282,6 +282,20 @@ SLLW/SRLW/SRAW. The original base association commit added nine, and GC copied
 that list. The aggregate extraction gate still sees the three forms through
 WSUFFIX; it does not establish each requirement's association completeness.
 The frozen statement and the twelve-form execution evidence above are correct.
-This metadata defect is OPEN and owned priority-next by c17e, before c17f
-word-result registration: repair both catalogs with a refusing closure test and
-refresh all dependent artifacts. Implementation-status/experiment work stays .14.
+At c17d this metadata defect was OPEN and owned priority-next by c17e, before
+word-result registration. Implementation-status/experiment work stays .14.
+
+c17e closes it by appending only SLLW/SRLW/SRAW associations in both requirement
+catalogs. Every other requirement field, record and frozen obligation remains
+exact. Two focused assertions query the canonical catalog owner and require
+the complete twelve-form list, independently for the base and GC profiles.
+Both were observed RED against the old nine-form catalogs, then GREEN after
+the three additions; ordering is immaterial and duplicate associations are refused.
+The aggregate extraction and mirror checks also pass with the repaired catalogs.
+
+The change propagates through the base dossier pin into the composed board's
+requirement metadata, platform provenance and model/report outputs. It adds no
+instruction or observation and changes no runtime behavior. All guest data,
+production rules, frozen records and 80 registry entries stay exact; effective
+G-CONTRACT remains 78/114. c17f now reviews all nine word-result forms before
+binding WSUFFIX. Eighteen runtime pairs and final freeze remain.

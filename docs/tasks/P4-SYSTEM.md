@@ -325,7 +325,7 @@ instruction or expectation changes belong to this binding slice.
 
 ### `.13` c17e — own missing SHAMT requirement associations (`2026-10-10`, `SEMULITH-P4-0138`)
 
-OPEN, priority immediately after bounded c17d binding, before W registration.
+At discovery: OPEN, priority immediately after bounded c17d binding, before W registration.
 During scoped requirement review, REQ-D-SHAMT's statement names all twelve forms,
 but both owner and GC mirror's insns fields list only nine, omitting SLLW/SRLW/
 SRAW. Reproduce: records_sexp.load requirements, select REQ-D-SHAMT, compare its
@@ -343,6 +343,21 @@ prove all other record fields/frozen records/execution data exact, and propagate
 the changed base dossier/board/model/report artifacts through their owners.
 Keep this metadata repair separate from c17d's unchanged-input binding proof;
 implement it next, then c17f OB-WSUFFIX. No director decision/access is needed.
+
+c17e execution owned on clean 0b8d0f4 after c17d hooks/brief/actual job census.
+Reviewed extraction/record schema, mirror closure, original/copy diffs, public
+record-catalog client and registry tests, canonical requirements/board composition,
+integer/v2 book and exact prior-entry receipts. Add two focused tests (owner and
+mirror) through a shared twelve-form assertion, querying the canonical catalog
+owner. Observe both RED with missing associations before changing data. Append
+only sllw/srlw/sraw insns fields to REQ-D-SHAMT in both canonical records; retain
+every other field/record and frozen bytes. Propagate base digest/board metadata
+and generated model/report consequences; prove only those associations and
+provenance/pin change. Run make check plus focused records/extraction/freshness/
+freeze/counts/bounds/books and commit hooks. No instruction/expectation/production
+or contract-credit changes; c17f WSUFFIX follows the clean committed repair.
+Verified c17e receipts below close the association defect in owner, mirror and
+composed board; the cross-record assertions retain the complete twelve-form rule.
 
 ### `.13` c17c — discriminate arithmetic-W source width (`2026-10-10`, `SEMULITH-P4-0136`)
 
@@ -620,6 +635,35 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+`P4-SYSTEM.13` slice (c17e) (`2026-10-10`, `SEMULITH-P4-0138`):
+
+- [x] **ROOT CAUSE** — cargo test -p semulith-verify
+  shift_requirement_covers_all_twelve_forms observed rc=101: 0 passed / 2 failed,
+  both assertions print nine actual forms vs twelve required, missing SLLW/SRLW/
+  SRAW. Record probes agree; git log -S and git show trace original incomplete
+  metadata at 1abba2e and its GC copy b95af58. WSUFFIX supplies aggregate coverage,
+  which does not prove this requirement's associations complete.
+- [x] **ADDRESSED** — same focused cargo test rc=0: 2 passed / 0 failed after
+  appending only three insns fields to REQ-D-SHAMT in both canonical catalogs.
+  Shared assertion requires all twelve independently in owner/mirror, ignoring
+  order and rejecting duplicates. RECORD-SCHEMA rc=0: 20 files validate and
+  agree with profiles, Rust graph accepts examples. EXTRACTION rc=0: five units
+  sufficient; derived board requirement carries the same corrected associations.
+- [x] **NO REGRESSION** — make check rc=0: fmt/clippy, Rust 167/17/203.
+  python3 target/p4-system-13/c17e/identity.py rc=0: every other requirement field/
+  record and 111 other base/347 other GC canonical/guest files exact; production/
+  core/generated/definitions/frozen/80 registry entries exact. Eight board data
+  documents exact except shared pin and the three associations in one requirement;
+  map/four material bodies exact except display pin/provenance. Pin 267e8e23…a55f
+  → f9246561…a8dc. Reports rc=0 five fresh, freeze rc=0 three versions/zero
+  findings, schema rc=0 270/two named skips, materials rc=0 five units, counts
+  rc=0 five claims, routes rc=0 37 within fixed caps, main/model books rc=0.
+  Effective 78/114 unchanged; LIVE_STATUS unchanged 649/47/P4 12/18.
+- [x] **COMMIT SIGNOFF** — git diff --check rc=0; staged acceptance/ownership
+  and hooks precede brief clearing, clean/actual job census. Both metadata defects
+  close; c17f WSUFFIX next, eighteen runtime pairs/freeze remain.
+  promotion: declined (two refusing cross-record assertions and integer runtime book retain the repaired associations and history root).
+
 `P4-SYSTEM.13` slice (c17d) (`2026-10-10`, `SEMULITH-P4-0137`):
 
 - [x] **ROOT CAUSE / REQUIREMENT** — python3 target/p4-system-13/c17d/probe.py
@@ -762,6 +806,7 @@ preserved in [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md) (earlier parts l
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c17e | owner/mirror tests 0/2 RED then 2/0 GREEN; only three associations; all other fields/runtime/frozen/registry exact; board allowed-delta proof; Rust 167/17/203; records/extraction/freshness/freeze/schema/counts/bounds/books | association defect closed; 78/114 unchanged |
 | `2026-10-10` | `.13` c17d | twelve isolated count REDs; 180/360 selected; full 167/5365/10524; exact prior entries/all canonical/generated/core; Rust 167/17/201; freeze/schema/reports/counts/bounds/books | SHAMT bound, 78/114; association repair next |
 | `2026-10-10` | `.13` c17c | old 56 exact; pre-derived noncanonical source; isolated author/public 58/59 RED; full 167/5365/10524; Sail 60 repeated/base live both references; Rust 167/17/201; input/board identity; freshness/freeze/schema/counts/books | source-width witness defects closed; 76/114 unchanged |
 | `2026-10-10` | `.13` c17b | literal append/old 55 exact; isolated author/public RED only step 55; independent 167/5361/10516; Sail 56 repeated; base live Sail/Spike; all other data exact; Rust 167/17/201; final make ci five legs | count-mask defect closed; width holes OPEN c17c; 76/114 unchanged |
@@ -789,6 +834,7 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c17e | `SEMULITH-P4-0138 (leaf P4-SYSTEM.13): complete SHAMT requirement associations in owner and mirror` | c17f WSUFFIX |
 | `.13` c17d | `SEMULITH-P4-0137 (leaf P4-SYSTEM.13): realize all twelve shift-count domains` | c17e requirement associations, c17f WSUFFIX |
 | `.13` c17c | `SEMULITH-P4-0136 (leaf P4-SYSTEM.13): distinguish arithmetic-W source width with derived witnesses` | c17d SHAMT |
 | `.13` c17b | `SEMULITH-P4-0135 (leaf P4-SYSTEM.13): close SRAW count-mask discrimination with a derived boundary` | c17c source-width repair, c17d SHAMT |
@@ -814,6 +860,10 @@ Closed detailed rows: [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
 ## Changelog
 
+- `2026-10-10`: `.13` c17e (SEMULITH-P4-0138): observe both focused association
+  assertions RED on nine forms, append SLLW/SRLW/SRAW only, then both GREEN.
+  Propagate board metadata/provenance through owners; all other record/runtime
+  data exact. Focused records/extraction/Rust/books green, 78/114 unchanged.
 - `2026-10-10`: `.13` c17d (SEMULITH-P4-0137): twelve isolated count copies
   rejected before SHAMT POS/NEG registration; 180/360 selected observations.
   All inputs/prior entries exact; effective 78/114. Own history-traced missing

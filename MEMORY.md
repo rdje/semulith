@@ -18,16 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c17e — repair missing SLLW/SRLW/SRAW associations
-  in both REQ-D-SHAMT catalogs with a cross-record closure test first observed RED;
-  propagate dossier/board/material/report consequences. Root history/impact and
-  owned plan in task/book. c17f then binds OB-WSUFFIX after nine-form review.
-  SHAMT now bound: POS scope-alu, NEG bound-shift/bound-shiftw, 180/360; twelve
-  isolated count countermodels all fail named observations before credit.
-  Prior 78 bindings and all canonical/guest/core/author/generated/frozen data
-  exact. Registry 80, effective 78/114, eighteen runtime pairs/freeze remain.
-  Source-width/count-mask witnesses retain all observations, full independent
-  corpus 167/5365/10524. GUEST-GEN 145, doctrine arms 649, 47 book chapters.
+- next_action: `P4-SYSTEM.13` c17f — realize OB-WSUFFIX after all nine W forms
+  and independent signed-result/overflow/source-width counterexamples are reviewed.
+  SHAMT's missing requirement associations are repaired in owner and GC mirror;
+  two focused assertions first RED on nine-form lists, then GREEN on all twelve.
+  Every other record field/frozen record and all runtime/guest data stay exact;
+  composed board metadata/provenance and reports regenerated. Registry 80,
+  effective 78/114 unchanged; eighteen runtime pairs/freeze remain. SHAMT is
+  bound with twelve isolated countermodels; count-mask/source-width witnesses
+  remain exact. Full independent corpus 167/5365/10524. GUEST-GEN 145,
+  doctrine arms 649, 47 book chapters.
   .14 owns statuses/structured experiments/registration.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

@@ -1,5 +1,37 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — complete SHAMT requirement associations (P4-SYSTEM.13 c17e)
+
+The original base associations (1abba2e) omitted SLLW/SRLW/SRAW; GC copied the
+nine-form list at b95af58. The statement already names all twelve. Aggregate
+extraction still covers the omitted forms through WSUFFIX, hiding the individual
+requirement's missing associations. Two focused owner/mirror assertions query
+canonical catalogs and compare the complete twelve-form list; observe cargo test
+rc101 / 0 passed / 2 failed BEFORE data repair. Both diagnostics print nine
+actual names against twelve expected. Add only the three insns fields to
+REQ-D-SHAMT in both catalogs; then the same command passes 2/0. Order does not
+matter; duplicates fail. Shared catalog client preserves the old obligation
+query/caching behavior while serving the two flat requirement catalogs.
+
+No statement/status/obligation/instruction/expectation change. Identity proves
+every other requirement field/record and 111 other base/347 other GC inputs exact;
+production/core/definitions/generated/frozen/80 registry entries exact. Re-pin
+base dossier 267e8e23…a55f → f9246561…a8dc after profile documentation; regenerate
+board/platform/model/report owners. Eight board data documents retain all other
+values, with only shared pin and the three associations in its composed requirement
+changed; map/four model material bodies retain all but display pin/provenance.
+
+Make check passes fmt/clippy and Rust 167/17/203. RECORD-SCHEMA validates 20 files
+and the Rust graph examples, EXTRACTION five units sufficient, five reports
+fresh, freeze three versions/zero findings, dossier schema 270/two named skips,
+materials five units, derived counts five claims, bounded routes 37 and main/model
+books pass. LIVE_STATUS unchanged at 649 arms/47 chapters/P4 12/18; effective
+78/114 unchanged. The association defect is closed, c17f word-result review next;
+.14 retains statuses/experiment/registration work. No reference rerun is needed
+for metadata-only changes: all execution inputs and rules remain byte-exact.
+promotion: declined (two refusing cross-record assertions and integer runtime chapter retain the association repair and history root).
+
+
 ## _(2026-10-10)_ — realize all twelve shift-count domains (P4-SYSTEM.13 c17d)
 
 Bind SHAMT POS to scope-alu and NEG to bound-shift/bound-shiftw: 180 boundaries /
