@@ -154,6 +154,8 @@ def main():
         'word-count': ('shamt = x[rs2] & 31', 'shamt = x[rs2] & 63'),
         'word-sign': ('sext(u(x[rs1], 32), 32) >> shamt, "sraw"', 'u(x[rs1], 32) >> shamt, "sraw"'),
         'sraw-count': ('sext(u(x[rs1], 32), 32) >> shamt, "sraw"', 'sext(u(x[rs1], 32), 32) >> (x[rs2] & 63), "sraw"'),
+        'sraw-width': ('sext(u(x[rs1], 32), 32) >> shamt, "sraw"', 'sext(x[rs1], 64) >> shamt, "sraw"'),
+        'sraiw-width': ('sext(u(x[rs1], 32), 32) >> shamt, "sraiw"', 'sext(x[rs1], 64) >> shamt, "sraiw"'),
         'branch-sign': ('4: sext(x[rs1], 64) < sext(x[rs2], 64)', '4: x[rs1] < x[rs2]'),
         'load-sign': ('mn in ("lb", "lh", "lw")', 'mn in ("lh", "lw")'),
         'store-width': ('widths = {0: (1, "sb")', 'widths = {0: (2, "sb")'),

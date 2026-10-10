@@ -10,8 +10,8 @@
 //!   `profiles/rv64i-lab-v0/guests/bound-ext.s`  `7b33b6b517f5fb25e7c2aec9caa6899c3e7a4aef4cba28660c0fffa99e48dec6`
 //!   `profiles/rv64i-lab-v0/guests/bound-shift.expected.sexp`  `3009550a91ff679e40603764396ca9c96c55af2843911d68ba6df523dbc0d838`
 //!   `profiles/rv64i-lab-v0/guests/bound-shift.s`  `d0502bfd2fb3fc2cffc62a357514de1bf2e1db1bd0bd83808348bcc7b73c13f6`
-//!   `profiles/rv64i-lab-v0/guests/bound-shiftw.expected.sexp`  `c6c2d93a163f4fdca1d54f2474aaf3c7dff886fc1a71c2449642d90c1efebac1`
-//!   `profiles/rv64i-lab-v0/guests/bound-shiftw.s`  `bc4983b206dfef833422ae637deb3bf229de237dd226dc59c108624da981cfbf`
+//!   `profiles/rv64i-lab-v0/guests/bound-shiftw.expected.sexp`  `830b41a7ce7e65806c7cb2ca81e30e8c8afe591e44e310b1e18b423cd6c48445`
+//!   `profiles/rv64i-lab-v0/guests/bound-shiftw.s`  `7921dd98e4048c47b3349d6e0d2960d093d384016d9c36968ad30518c9b9c636`
 //!   `profiles/rv64i-lab-v0/guests/dir-chain.expected.sexp`  `8a788e5f401295627a922acd987912e305bf71fc61dca39af251a274c2c59e8e`
 //!   `profiles/rv64i-lab-v0/guests/dir-chain.s`  `39eca25dc00031aaa41295ef74fb17878ad40f45c33de29b5d141b5867396164`
 //!   `profiles/rv64i-lab-v0/guests/dir-chase.expected.sexp`  `300545aff8d0c6fe0e4f7adfae677207ed3fe4dcec65cb49a39255551968fa00`
@@ -669,6 +669,10 @@ static WORDS_BOUND_SHIFTW: &[u32] = &[
     0x00D4173B,
     0x40D457BB,
     0x40A4583B,
+    0x00C478B3,
+    0x00100913,
+    0x4128D9BB,
+    0x4018DA1B,
 ];
 #[rustfmt::skip]
 static EXPECTED_BOUND_SHIFTW: &[Expectation] = &[
@@ -728,6 +732,10 @@ static EXPECTED_BOUND_SHIFTW: &[Expectation] = &[
     Expectation { step: 53, writes: &[(14, 0xFFFFFFFF80000000)] },
     Expectation { step: 54, writes: &[(15, 0xFFFFFFFFFFFFFFFF)] },
     Expectation { step: 55, writes: &[(16, 0xFFFFFFFF80000001)] },
+    Expectation { step: 56, writes: &[(17, 0x0000000080000001)] },
+    Expectation { step: 57, writes: &[(18, 0x0000000000000001)] },
+    Expectation { step: 58, writes: &[(19, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 59, writes: &[(20, 0xFFFFFFFFC0000000)] },
 ];
 
 #[rustfmt::skip]
@@ -1933,8 +1941,8 @@ pub static GUESTS: &[Guest] = &[
         name: "bound-shiftw",
         entry: 0x0000000080000000,
         words: WORDS_BOUND_SHIFTW,
-        executed_steps: 56,
-        expected_fetches: 56,
+        executed_steps: 60,
+        expected_fetches: 60,
         expected: EXPECTED_BOUND_SHIFTW,
         never_written: &[],
         refusals: &[],

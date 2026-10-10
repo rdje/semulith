@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0136 (leaf P4-SYSTEM.13 c17c) — distinguish arithmetic-W source width
+
+- Append four pre-derived instructions to both boundary programs; preserve all 56
+  prior positions/observations. Isolated full-width SRAW/SRAIW authors and public
+  bad tables now fail exactly new boundaries 58/59. Both witness defects close.
+- Observe two isolated controls RED before registration; GUEST-GEN 145, total
+  arms 649. Independent corpus 167/5365/10524; fresh Sail 60 rows/repeat exact,
+  base live smoke both references; Rust 167/17/201, focused gates/books pass.
+- Preserve production/core/frozen records/78 bindings and other generated data;
+  refresh every dependent artifact and base counts. Effective 76/114 unchanged;
+  c17d SHAMT binding next.
+
+
 ## SEMULITH-P4-0135 (leaf P4-SYSTEM.13 c17b) — close SRAW mask discrimination
 
 - Append pre-derived count-96 SRAW to both boundary programs; all 55 old positions

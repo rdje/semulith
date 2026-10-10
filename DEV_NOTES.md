@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — distinguish arithmetic-W source width (P4-SYSTEM.13 c17c)
+
+The separate width diagnosis showed both isolated full-width arithmetic-W authors
+survived every old corpus observation: all 38 source occurrences already were
+canonical signed words. Both public literal forms on zero-extended 0x80000001 by
+one distinguish correct 0xffffffffc0000000 from bad positive 0x40000000.
+
+Append four pre-derived instructions to both bound-shiftw programs: AND obtains
+x17=0x0000000080000001 from x8/x12; ADDI sets x18=1; SRAW x19,x17,x18 and SRAIW
+x20,x17,1 each require 0xffffffffc0000000. Literal words are 00c478b3, 00100913,
+4128d9bb and 4018da1b at 0x800000e0/e4/e8/ec, recorded before models execute.
+All 56 old instruction positions/bytes/observations stay exact; budgets become
+60 steps, base 60 word requests / GC 120 parcels. Each isolated wrong author now
+fails only its new boundary (58/59); public wrong tables first fail there too.
+
+Existing hand-encoded garbage-upper-word cases already discriminate both rules.
+Add isolated sraw-width/sraiw-width mutation routes, observe each rc1 with its
+named arithmetic-word reason before arm registration, then register two controls.
+Normal probe retains 23 arithmetic/10 branch cases and 42 owned records exact;
+17 gaps now have 476 steps. Derived doctrine total becomes 649 (GUEST-GEN 145).
+The independent full corpus matches 167/5365/10524; make check passes Rust
+167/17/201, fmt/clippy. Fresh pinned Sail agrees on all 60 declared rows/change
+observations and repeats byte-identically. Base live smoke passes all enabled
+comparisons/reproductions, including the changed program against Sail and Spike.
+
+Identity proves 110 other base/346 other GC inputs, production/core/definitions,
+frozen records/78 entries and all other generated guest data exact. Re-pin shared
+base dossier df48b3a6…f38a → 267e8e23…a55f through the declared board definition;
+eight board S-expression data documents retain every other value; map/four
+material bodies change only display pin/provenance. Derive all five reports and
+both model-book units, including base expected-step total 644→648. Freshness,
+freeze (three versions/zero findings), schema (270/two named skips), counts (five
+claims), main/five model books pass. Both source-width evidence defects close;
+core rules stay correct and unchanged, effective credit stays 76/114. c17d SHAMT
+binding follows isolated mask controls. Finite reference/platform limits remain.
+promotion: declined (durable isolated controls, derived guest boundaries and integer runtime book retain the verified repair).
+
+
 ## _(2026-10-10)_ — close SRAW mask discrimination with a pre-derived boundary (P4-SYSTEM.13 c17b)
 
 Append SRAW x16,x8,x10 = 0x40a4583b at 0x800000dc to both bound-shiftw profiles.

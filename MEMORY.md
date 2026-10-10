@@ -18,18 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c17c — repair confirmed SRAW/SRAIW source-width
-  witness gaps before c17d SHAMT binding. Both isolated full-width authors still
-  match 167/5361/10516; public wrong tables match 105 boundaries. All 38 sources
-  are canonical signed words. Literal zero-extended 0x80000001/count-one
-  distinguishes both; diagnosis/priority and repair plan live in the task tree.
-  Completed count-mask repair: both bound-shiftw profiles append count-96 SRAW;
-  all 55 old positions/values exact. The previously surviving isolated author
-  and public bad table now fail only new boundary 55. Durable SRAW control first
-  RED, then registered: GUEST-GEN 143, doctrine arms 647. Correct core unchanged.
-  Full independent corpus 167/5361/10516; fresh Sail 56 rows/repeat exact.
-  SRLW explanatory arithmetic corrected. Generated data and dependent board
-  pins refreshed; 78 bindings/frozen records exact, current 76/114 unchanged.
+- next_action: `P4-SYSTEM.13` c17d — bind OB-SHAMT with isolated controls for
+  all twelve forms after committed count-mask/source-width witness repairs.
+  Both bound-shiftw programs now have 60 steps; old 56 positions/values exact.
+  SRAW/SRAIW noncanonical-source witnesses discriminate the formerly surviving
+  isolated authors/public bad tables only at new boundaries 58/59. Two durable
+  width controls first RED, then registered: GUEST-GEN 145, doctrine arms 649.
+  Correct core unchanged. Full independent corpus 167/5365/10524; fresh Sail
+  60 rows/repeat exact; live base Sail/Spike comparisons pass. Generated data
+  and dependent board pins refreshed; 78 bindings/frozen records exact,
+  current 76/114 unchanged. The count-mask boundary and SRLW correction remain.
   19 runtime pairs/freeze remain, 47 book chapters. .14 owns statuses/experiments.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).

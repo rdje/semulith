@@ -27,7 +27,7 @@ has no code path that would produce it while that is true.
 | `requirements.sexp` | 28 requirements |
 | `contract-obligations.sexp` | 36 obligations, 72 declared checks |
 | `references.sexp` | 4 candidates, 2 experiments, 6 independence records, 8 recorded differences |
-| `guests/*.expected.sexp` | 49 programs, 644 expected steps, 22 negative observations |
+| `guests/*.expected.sexp` | 49 programs, 648 expected steps, 22 negative observations |
 
 ## Criterion 1 — foundational semantics are resolved
 

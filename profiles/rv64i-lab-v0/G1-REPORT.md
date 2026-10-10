@@ -88,7 +88,7 @@ mechanism is pinned to the counted truth by the bench suite (`P1-LAB.13`).
 `guests/` holds **49 assembly guests** and **1 C guests**.
 The 49 assembled guests retire under first-divergence comparison
 against TWO pinned references (sail-riscv and spike,
-644/644 aligned steps), and the C guest (`c-scope.c`) —
+648/648 aligned steps), and the C guest (`c-scope.c`) —
 compiled from C by the pinned toolchain (`scripts/build_c_guest.sh`; the pin is
 `decision_c-guest-routing-and-toolchain`), not hand-encoded — retires under the
 same three-way comparison. The toolchain probes and

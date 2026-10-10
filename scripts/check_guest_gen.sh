@@ -381,7 +381,7 @@ PYCODE
 
   # e1b1: hand-encoded integer controls precede the expanded corpus derivation.
   out="$(python3 scripts/probe_gc_integer_author.py 2>&1)"; rc=$?
-  arm "GREEN base integer author vocabulary" "$rc" 0 "$out" "17 corpus gaps / 472 steps"
+  arm "GREEN base integer author vocabulary" "$rc" 0 "$out" "17 corpus gaps / 476 steps"
   out="$(python3 scripts/probe_gc_integer_author.py --mutation sltiu-sign 2>&1)"; rc=$?
   arm "RED SLTIU extends before unsigned comparison" "$rc" 1 "$out" "SLTIU sign extension"
   out="$(python3 scripts/probe_gc_integer_author.py --mutation xlen-count 2>&1)"; rc=$?
@@ -392,6 +392,10 @@ PYCODE
   arm "RED SRAW preserves the word sign" "$rc" 1 "$out" "word arithmetic shift"
   out="$(python3 scripts/probe_gc_integer_author.py --mutation sraw-count 2>&1)"; rc=$?
   arm "RED SRAW independently masks its register count" "$rc" 1 "$out" "SRAW five-bit count"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation sraw-width 2>&1)"; rc=$?
+  arm "RED SRAW truncates its source before arithmetic shift" "$rc" 1 "$out" "word arithmetic shift"
+  out="$(python3 scripts/probe_gc_integer_author.py --mutation sraiw-width 2>&1)"; rc=$?
+  arm "RED SRAIW truncates its source before arithmetic shift" "$rc" 1 "$out" "immediate word arithmetic shift"
   out="$(python3 scripts/probe_gc_integer_author.py --mutation branch-sign 2>&1)"; rc=$?
   arm "RED signed branches compare signed operands" "$rc" 1 "$out" "branch signed/unsigned decision"
   out="$(python3 scripts/probe_gc_integer_author.py --mutation load-sign 2>&1)"; rc=$?

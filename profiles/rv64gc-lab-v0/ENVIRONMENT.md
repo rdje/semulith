@@ -413,7 +413,7 @@ named observations. The runtime book shows both signed edges, exact PC values
 and limits. No instruction, expectation, author or core changes; both smoke
 headers were corrected and their twelve instructions / 48 bytes kept exact.
 
-c17b repairs SRAW count-mask discrimination before shift registration. Both
+At c17b, SRAW count-mask discrimination was repaired before shift registration. Both
 bound-shiftw profiles append a pre-derived count-96 SRAW, keeping all 55 old
 instruction positions and observed values. GC now has 56 boundaries / 112 parcels;
 the isolated six-bit author and public bad table fail only the new boundary.
@@ -421,3 +421,13 @@ SRLW's explanatory countermodel is corrected without changing its expected value
 The full independent corpus is 167 / 5361 / 10516; pinned Sail agrees on 56 rows,
 two traces exact. Production core/author and 78 bindings stay exact; 76/114
 credit remains. Worked values and finite limits are in the integer runtime book.
+
+c17c closes separately confirmed SRAW/SRAIW source-width witness gaps. Four
+pre-derived instructions append a zero-extended negative low word and count one;
+both arithmetic-W forms require 0xffffffffc0000000, while a wrong 64-bit source
+gives 0x40000000. Isolated authors and public bad tables now fail only their new
+58/59 boundaries. All 56 prior positions/observations stay exact; both programs
+have 60 steps, GC 120 parcels. Independent corpus 167/5365/10524, fresh Sail
+60 rows/repeat exact, base live Sail/Spike comparisons pass. Two durable controls
+first RED, then registered; production rules, frozen records and 78 bindings
+stay exact. G-CONTRACT remains 76/114; c17d SHAMT binding follows.

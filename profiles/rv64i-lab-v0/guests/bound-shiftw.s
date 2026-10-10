@@ -73,3 +73,9 @@
 
       # ---- SRAW independently pins the five-bit mask: 96 reads as zero ----
       sraw x16, x8, x10             # identity of low32, sign-extended; six-bit count 32 gives all sign
+
+      # ---- arithmetic-W ignores noncanonical upper bits BEFORE shifting ----
+      and x17, x8, x12             # zero-extend low32: positive XLEN input, negative signed word
+      addi x18, x0, 1
+      sraw x19, x17, x18           # signed low word >> 1 = 0xFFFFFFFFC0000000
+      sraiw x20, x17, 1            # immediate form independently truncates its source first

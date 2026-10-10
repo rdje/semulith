@@ -34,8 +34,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/bound-ext.s`  `7b33b6b517f5fb25e7c2aec9caa6899c3e7a4aef4cba28660c0fffa99e48dec6`
 //!   `profiles/rv64gc-lab-v0/guests/bound-shift.expected.sexp`  `467ffc1373e5b62148742cfc3e827183b16475b505b4529e3972140aed1b70e2`
 //!   `profiles/rv64gc-lab-v0/guests/bound-shift.s`  `d0502bfd2fb3fc2cffc62a357514de1bf2e1db1bd0bd83808348bcc7b73c13f6`
-//!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.expected.sexp`  `c22b11cedf1e31867349b480c4fc81f4265d4405a24d9d9a0402bcf5f70677b2`
-//!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.s`  `bc4983b206dfef833422ae637deb3bf229de237dd226dc59c108624da981cfbf`
+//!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.expected.sexp`  `414140f320b495515e558569e6a799db829c2b562fc2d2477c5658f2e71ac2f9`
+//!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.s`  `7921dd98e4048c47b3349d6e0d2960d093d384016d9c36968ad30518c9b9c636`
 //!   `profiles/rv64gc-lab-v0/guests/c-alu.expected.sexp`  `5e587c1c446b7aa50e2ad67b93724bc46ed653e29979590493d8639c49df925a`
 //!   `profiles/rv64gc-lab-v0/guests/c-alu.s`  `0cc1f27c60a7874b2d233f7b023cc2f35f58d042e8415e387fb11281595aaa95`
 //!   `profiles/rv64gc-lab-v0/guests/c-backward.expected.sexp`  `13c0db79af4b4e14cf076d84bec7d1aa55be23b21fcec374960361e8854c5349`
@@ -709,6 +709,7 @@ static IMAGE_BOUND_SHIFTW: &[u8] = &[
     0x9B, 0x1A, 0x44, 0x00, 0x9B, 0x1A, 0x84, 0x00, 0x9B, 0x1A, 0x04, 0x01, 0x9B, 0x1A, 0xF4, 0x01,
     0x13, 0x05, 0x00, 0x06, 0x33, 0x56, 0xA4, 0x00, 0x93, 0x05, 0x10, 0x00, 0xBB, 0x55, 0xA4, 0x00,
     0x93, 0x06, 0xF0, 0xFF, 0x3B, 0x17, 0xD4, 0x00, 0xBB, 0x57, 0xD4, 0x40, 0x3B, 0x58, 0xA4, 0x40,
+    0xB3, 0x78, 0xC4, 0x00, 0x13, 0x09, 0x10, 0x00, 0xBB, 0xD9, 0x28, 0x41, 0x1B, 0xDA, 0x18, 0x40,
 ];
 #[rustfmt::skip]
 static EXPECTED_BOUND_SHIFTW: &[Expectation] = &[
@@ -768,6 +769,10 @@ static EXPECTED_BOUND_SHIFTW: &[Expectation] = &[
     Expectation { step: 53, writes: &[(14, 0xFFFFFFFF80000000)] },
     Expectation { step: 54, writes: &[(15, 0xFFFFFFFFFFFFFFFF)] },
     Expectation { step: 55, writes: &[(16, 0xFFFFFFFF80000001)] },
+    Expectation { step: 56, writes: &[(17, 0x0000000080000001)] },
+    Expectation { step: 57, writes: &[(18, 0x0000000000000001)] },
+    Expectation { step: 58, writes: &[(19, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 59, writes: &[(20, 0xFFFFFFFFC0000000)] },
 ];
 
 #[rustfmt::skip]
@@ -12664,8 +12669,8 @@ pub static GUESTS: &[Guest] = &[
         name: "bound-shiftw",
         entry: 0x0000000080000000,
         image: IMAGE_BOUND_SHIFTW,
-        executed_steps: 56,
-        expected_fetches: 112,
+        executed_steps: 60,
+        expected_fetches: 120,
         expected: EXPECTED_BOUND_SHIFTW,
         never_written: &[],
         refusals: &[],

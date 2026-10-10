@@ -177,7 +177,9 @@ all other generated guest/board semantics and all 78 registry entries stay exact
 The SRAW count-mask coverage and SRLW explanation defects are closed. Contract
 credit stays 76/114; nineteen runtime pairs and freeze remain.
 
-## Open evidence gap: arithmetic-W source width
+<a id="open-evidence-gap-arithmetic-w-source-width"></a>
+
+## Arithmetic-W source width: diagnosis and repair
 
 The adjacent c17b review found a separate missing discriminator. Replacing only
 SRAW's or SRAIW's pre-shift 32-bit source truncation with a 64-bit read still
@@ -193,7 +195,39 @@ count zero, so it does not exercise this distinction either.
 | x8=0x0000000080000001; SRAIW x16,x8,1 (0x4014581b) | x16=0xffffffffc0000000 | x16=0x0000000040000000 |
 
 Both public literal experiments confirm these outcomes. The production rules
-already truncate correctly. This corpus evidence defect remains OPEN and owned
-priority-next by c17c: add pre-derived noncanonical-source witnesses to both
-profiles and durable isolated author controls, then verify the engine and fresh
-reference. c17d SHAMT and subsequent word-result registration wait for that repair.
+already truncate correctly. At c17b this corpus evidence defect remained OPEN,
+owned priority-next by c17c before shift/word-result registration. Its verified
+repair follows.
+
+c17c appends four instructions after the current 56, in both profiles. The
+expected words and values were recorded before either engine executed:
+
+| Boundary / address | Instruction / word | Derived write |
+| --- | --- | --- |
+| 56 / 0x800000e0 | AND x17,x8,x12 / 0x00c478b3 | x17=0x0000000080000001; x12's zero upper word clears x8's sign extension |
+| 57 / 0x800000e4 | ADDI x18,x0,1 / 0x00100913 | x18=1 |
+| 58 / 0x800000e8 | SRAW x19,x17,x18 / 0x4128d9bb | x19=0xffffffffc0000000 |
+| 59 / 0x800000ec | SRAIW x20,x17,1 / 0x4018da1b | x20=0xffffffffc0000000 |
+
+The arithmetic low word is -2147483647. Shifting it right by one rounds down to
+-1073741824, whose word is 0xc0000000; sign extension supplies the required
+64-bit value. The wrong full-width read instead sees positive 2147483649 and
+yields 0x40000000. Each isolated bad author now disagrees only at its new boundary
+(58 for SRAW, 59 for SRAIW); public engine bad tables first fail at those same
+boundaries. All 56 prior positions, bytes, expectations and observations stay exact.
+
+The durable probe's existing garbage-upper-word hand cases also distinguish both
+rules. New sraw-width and sraiw-width controls were observed RED with their named
+arithmetic-word reasons before registration. The probe retains 23 arithmetic/10
+branch cases and 42 owned records, with 17 corpus gaps / 476 steps. GUEST-GEN
+now has 145 controls, and the doctrine total becomes 649.
+
+The correct engine passes the full corpus. The independent author matches all
+167 guests / 5,365 boundaries / 10,524 parcels. Pinned Sail agrees on the changed
+60-step program's declared rows/change observations and repeats byte-identically;
+the base live smoke also compares it against both Sail and Spike. The base budget
+is 60 word requests, the GC budget 120 parcels. These source-width evidence defects
+are closed; production rules and all 78 registry entries remain unchanged.
+G-CONTRACT stays 76/114 with nineteen runtime pairs and freeze remaining. c17d
+may now register SHAMT after its independent mask controls. The finite-reference
+and platform limits above continue to apply.
