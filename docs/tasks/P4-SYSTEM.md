@@ -951,7 +951,7 @@ routes/results and actual disabled D-format/boxing/rounding/observer controls
 must fail then byte-restore. Independent author/assembler rederives every
 new boundary; prior F216684/prior167corpus, core/data/canonical/frozen/history/
 registry110/effective108/114/LIVE remain exact. Rust/FP/focused/six books,
-mdBook examples/pointers and clean commit before c33b. Current book room3525B:
+mdBook examples/pointers and clean commit before c33b. Current governed book room3216B (corrected by c33b0; the initial Markdown-only census omitted309B book.toml):
 keep this prerequisite narrative concise and own containment before complete
 D examples if needed; no cap increase or omitted current feature examples.
 
@@ -991,6 +991,64 @@ reserved-mode/FS-Off/fault/directed witnesses and final2bindings. Own book/DEV
 containment prerequisite before these larger receipts if measured room requires.
 promotion: declined (shared permanent witnesses, governed independent data and worked D examples retain this prerequisite without a duplicate knowledge card).
 
+
+### `.13` c33b0 — contain FP timeline and development receipts (completed, SEMULITH-P4-0181)
+
+Owned on clean07e14ae/brief0/actual census rc=0 before any containment mutation.
+Measure governed families through tracked members, not Markdown-only globs:
+book51files/523133B of524288 leaves1155B; DEV31448B of36864health.
+C33a's scratch Markdown census omitted docs/book/book.toml (309B), making its
+recorded room3525B too high by309B. Own this small documentation defect here:
+reproduce git-ls-files family versus rglob('*.md'), explicitly correct the
+c33a planning measurement to3216B at its then-source revision and preserve
+this root-cause receipt. The production routing guard counted all tracked
+members correctly and stayed green; no cap/gate behavior defect or extra room.
+
+Before complete D examples, retain FP's historical10576B introduction as a
+finite immutable archive/full24259B source inverse at07e14ae. Replace with
+accurate current feature/backend/model/format/cost overview, retaining the
+original code fence byte-exact and all links/headings/current public FP-state/
+F/D witness sections. Verify every current feature against maintained contracts
+and published own interfaces; no submodule implementation access. Corrupt,
+missing-marker and omitted-payload controls refuse; exact old chapter inverse.
+Shard whole oldest DEV entries via published12/0 sharder, target25000B;
+full original DEV inverse and sealed prior history identity before receipt.
+Update worked inverse book/index/pointers and own receipt, no core/numeric data/
+canonical/frozen/registry110/effective108/114/LIVE changes. Focused/six books,
+clean per-slice commit, then refine/implement c33b. No cap increases.
+
+C33b0 result:
+
+Governed book51tracked members/523133B leaves1155B, DEV31448B leaves5416B
+under36864health. Owned on clean07e14ae/brief0/actual census rc=0 before changes.
+Scratch Markdown-only census omitted309B docs/book/book.toml: then-source
+at a23e2e7 is521072B/3216Broom, not3525. Corrected owning c33a planning prose;
+production routing guard already counts every tracked family member. The
+book's worked census now names this distinction. No cap/gate defect or rise.
+
+Original FP introduction10576B preserved byte-verbatim in finite17321B archive
+SHAf0a4904bbbe20a4cc44e9af1adde15d7c3d1a0a8108112e94d5d5789c505a448.
+Complete source24259B SHAef2fd2d2d8395dbbf848d6b6a37b914c3b6d4499b60812d98db507edd8ad0db1
+inverse/order exact; corrupt/missing-marker/omitted payloads refuse. Chapter
+24259→19145B saves5114B. Current backend/pinning/on-volume dependency route,
+FP state/CSR/FS/frm/Dirty rules, generated F/D composition and assembler,
+boxing/conversions, canonical/minmax/compare/class/saturation/FMA/sqrt model,
+exact overflow/underflow, corrected signaling-NaN oracle record, governed
+vectors/public observations/shared lineage and measured cost remain described.
+Original semantic fence, headings/tables/links and all current public FP-state,
+F/D witness sections stay byte-exact. Historical staged counts/receipts retain
+complete source context in archive, with no internal-reference inference.
+
+Sharder12/0, dry/apply exact: DEV16entries/31448B→11/23167B; five whole oldest
+entries8281B→0231/8514B SHA7107a5d475716bb7b5a2f62f03c6a0530fb23ca9966c85cb8f86bf096cbb9475.
+FullDEVsource SHA7d8221cc1eef547aac9e4bc3da661eaf3697c02e01d92d44d13e2093776bca79 inverse exact;
+prior22manifest rows/210sealed exact;233logical=23live+210sealed. Own receipt/
+retrieval footer added after partition. No sealed edits. Core/data/canonical/
+frozen/registry110/effective108/114/LIVE exact; prior Rust173/17/239 applies.
+Book inverse/index/live pointers sync; focused/six books rc=0, fixed caps.
+Evidence target/p4-system-13/c33b0; c33b/0182 completes D next, then reservation/
+SC/freeze and .14 evidence/provenance sweep.
+promotion: declined (existing exact-byte containment, finite archive and worked full-family census/inverse retain this application and its corrected measurement).
 
 ### `.13` c33b — complete D transfers, format rules and refusals (queued)
 
@@ -1146,6 +1204,21 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c33b0 — **ROOT CAUSE**: census/partition.py rc=0:
+ full51-member book523133B/1155room; Markdown-only scratch omits309B book.toml.
+ Correct then-source c33a room3216B, production guard already accurate.
+ FP10576B intro selected before mutation, full24259B source authenticated.
+- [x] `.13` c33b0 — **ADDRESSED**: verifier rc=0:17321B finite archive,
+ full24259B source inverse/SHA exact; corrupt/marker/omission refuse; save5114B.
+ Semantic fence/headings/tables/links/current public FP-state/F/D sections exact;
+ current feature/model/qualification/cost overview retained. Sharder12/0,
+ five whole DEV entries8281B→0231/8514B, full31448B source inverse/order exact.
+- [x] `.13` c33b0 — **NO REGRESSION**: verifier/focused/six books rc=0:
+ prior22live/210sealed exact,233logical. Core/data/canonical/frozen/history/
+ registry110/effective108/114/LIVE exact; prior Rust173/17/239 applies.
+ Book worked census/inverse/index/live pointers sync, fixed caps; D next.
+ promotion: declined (finite archive and worked full-family census/inverse retain this existing containment application).
 
 - [x] `.13` c33a — **ROOT CAUSE**: source/verify.py rc=0 authenticates
  D32forms/25numeric, exact governed1664rows/explicit source/result formats;
@@ -1338,6 +1411,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c33b0 | full24259B FP inverse/damaged controls/current-feature preservation; full31448B DEV inverse/sharder12/0; full-family census correction309B | save5114chapter B; history/core/data/canonical/frozen/LIVE/registry110/effective108/114 exact; focused/six books rc=0; prior Rust173/17/239 applies; hooks next |
 | `2026-10-10` | `.13` c33a | independent123264/25Dforms/all F matrices/full167corpus;16wrong D routes/9disabled controls RED101→restored | Rust173/17/239; core/data/canonical/frozen/history/LIVE/registry110/effective108/114 exact; FP/focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c32b | all30F/216684boundaries; independent new104940+prior111744/full167corpus;12new wrong effects/16bad captures/16disabled controls+missing binding RED101→restored | Rust173/17/237; prior108bindings/core/data/canonical/frozen/history/LIVE exact; registry110/effective108/114; FP/focused/six books rc=0; hooks next |
 
@@ -1363,6 +1437,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c33b0 | `SEMULITH-P4-0181 (leaf P4-SYSTEM.13): contain FP timeline and development receipts` | c33b/0182 complete D witnesses/bindings, then reservation/SC/freeze |
 | `.13` c33a | `SEMULITH-P4-0180 (leaf P4-SYSTEM.13): witness numeric D instructions before binding` | remaining D controls/bindings, then reservation/SC/freeze; measure containment first |
 | `.13` c32b | `SEMULITH-P4-0179 (leaf P4-SYSTEM.13): complete and bind finite F witnesses` | GC-D before reservation/SC/freeze; .14 evidence sweep scheduled |
 
@@ -1377,6 +1452,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c33b0 (SEMULITH-P4-0181): finite FP intro/full
+ source inverse, current features/example retained, save5114B; five whole DEV
+ entries→0231/full inverse, prior history exact. Correct Markdown-only omitted
+ book.toml census. Focused/six books; prior Rust173/17/239 applies. D next,
+ registry110/effective108/114/core/data/frozen/history/LIVE exact, no cap change.
 
 - `2026-10-10`: `.13` c33a (SEMULITH-P4-0180): numeric D25forms/
  123264full-state boundaries; shared fixture preserves all F matrices;

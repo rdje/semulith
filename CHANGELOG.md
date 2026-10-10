@@ -1,6 +1,15 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0181 (leaf P4-SYSTEM.13 c33b0) — contain FP timeline and development receipts
+
+- Preserve10576B original FP introduction/full24259B source inverse in finite
+  archive; damaged controls refuse, semantic example/current features remain.
+- Save5114chapter B and shard five whole DEV entries→0231/full31448B inverse;
+  prior history exact. Correct Markdown-only census's omitted309B book.toml.
+- Core/data/frozen/history/registry110/effective108/114/LIVE unchanged; prior
+  Rust173/17/239 applies, focused/six books green. Complete D next under fixed caps.
+
 ## SEMULITH-P4-0180 (leaf P4-SYSTEM.13 c33a) — witness numeric D instructions before binding
 
 - Drive25numeric D forms/123264full-state boundaries/246528parcels from unchanged

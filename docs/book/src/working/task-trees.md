@@ -214,3 +214,21 @@ the recorded byte offset with the marked original 8,436-byte payload, then
 verify the entire restored source against that commit. Corruption, a missing
 marker or an omitted payload must refuse. Current features and CSR examples
 stay in the book; historical checkpoint counts stay in the immutable archive.
+
+The FP timeline provides another full-source inverse:
+`docs/tasks/archive/P4-SYSTEM-book-c33b0.md` authenticates source `07e14ae`,
+24,259 bytes, SHA-256
+`ef2fd2d2d8395dbbf848d6b6a37b914c3b6d4499b60812d98db507edd8ad0db1`.
+Verify proposed chapter bytes/SHA, replace the mapped span with the marked
+10,576-byte original introduction, then verify the entire restored chapter
+against Git. Its semantic code fence and current feature/witness sections
+remain in the book. Damaged payloads or missing markers cannot receive credit.
+
+Containment measurements count every tracked family member, including
+`docs/book/book.toml`. A Markdown-only scratch census omitted its309bytes and
+reported extra room that the production routing guard did not grant. At the
+measured revision the full51-member book was523133bytes, leaving1155 under
+524288. Use `git ls-files` plus explicitly owned untracked additions for the
+same-volume byte census; keep file count, aggregate bytes and per-part caps
+as separate checks. The corrected planning receipt and inverse retain the
+measurement's source and scope.
