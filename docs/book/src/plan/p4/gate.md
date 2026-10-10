@@ -49,3 +49,12 @@ the repository that holds none of the downloaded reference tools or build output
 out identical to the tracked file, byte for byte. That is what "reproducible from pinned
 inputs" means here. The gate itself is not passed: the report is now the scoreboard the next
 eight leaves work against, and each of them closes the axes it owns.
+
+## Verification policy — P4.14
+
+The following policy is declared after the existing implementation and before
+its forthcoming evidence requalification. It does not change the dated P4.10
+receipts above. The included canonical document states every class, risk rule,
+observation limit and status boundary; its presence earns no release credit.
+
+{{#include ../../../../../profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md:policy}}

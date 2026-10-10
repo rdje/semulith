@@ -18,18 +18,20 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` — predeclared evidence policy (EVD-03), then
-  structured matched experiment/control records and tracked runners, mechanically
-  derived requirement status, sixth-unit registration/book/category dispositions.
-  Read current policy/schema/gate contracts before choosing the next bounded slice.
-  A7/0198 corrects canonical rv64i six-pair/GC candidate and summary rationale,
-  G0 emitted prose and twelve materials-book groups. Capture31spans/35880B,
-  four full-source inverses/three damaged controls; all report/board/model-table
-  consequences regenerated with exact inverse. Focused15/six books/verify green.
-  Other canonical/pins/experiments, runtime/frozen/registry/fixtures/history/LIVE
-  exact;114/114 frozen14, CPU incomplete7axes/P4 13/18/arms669. No independence,
-  conformance or status credit. CleanupAC0062 last run2026-10-10,204caches removed,
-  retained6261inputs/evidence hashes exact. No push below cadence.
+- next_action: `P4-SYSTEM.14` a9/0200 — register the already-owned sixth
+  modelled unit (rv64gc), required-category dispositions and dedicated generated
+  materials book. Review expanded registration contract/standing family arithmetic
+  before experiment growth: profiles have8197B room; task/book budgets also near.
+  Re-measure and use existing containment routes; never raise ceilings to land text.
+  Then structured experiment/control records, mechanical policy/status checks and
+  historical/mirrored requirement reconciliation. A8/0199 declares prospective GC
+  requalification policy after current implementation, before future qualification;
+  full policy included in book, no backdating or status credit. Scalar policy,
+  presence label and manifest prose corrected; four captured spans10402B/three
+  source inverses/three damaged controls,20derived inverses,focused15/six books/
+  rendered policy/verify green. All48GC/28scalar statuses, requirements/decisions,
+  runtime/frozen114/114/registry/fixtures/history/LIVE exact, CPU incomplete7axes,
+  P4 13/18/arms669. CleanupAC0062 last2026-10-10. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

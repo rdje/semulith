@@ -1,6 +1,11 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0199 (leaf P4-SYSTEM.14) — declare prospective evidence requalification policy
+
+- Declare GC's forthcoming qualification policy after the existing implementation, without backdating; include the full policy and examples in the book, leaving all requirement statuses unchanged.
+- Repair scalar policy/presence label/resolved manifest prose with exact historical, AST and derived inverses; damaged/stale controls, focused15/six books/rendered policy pass. Runtime/frozen114/114/registry/fixtures/history/LIVE remain exact.
+
 ## SEMULITH-P4-0198 (leaf P4-SYSTEM.14) — correct canonical reference evidence and derived claims
 
 - Preserve31 historical spans with four full-source inverses; reject three damaged controls and authenticate the pinned HTML inputs.

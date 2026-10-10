@@ -22,12 +22,10 @@
 
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
-(open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
-  (statement "P4-SYSTEM.13 owns realization of the remaining effective runtime pairs and the final v2 freeze. The G-CONTRACT criterion derives coverage from the executable registry; the active task tree and runtime book chapters retain completed witnesses and the next slice. Version 2 stays open until every effective check passes and its membership is frozen. P4-SYSTEM.14 retains requirement-status mirrors and structured experiment records."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
   (statement "The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")
-  (statement "Every requirement reads planned; no predeclared verification policy exists for this unit; REQ-D-ECALL-EBREAK (an rv64i mirror) is partial on OQ-5."))
+  (statement "Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5."))
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
   (statement "No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite."))
 (open (axis G-REPLAY) (owner "P4-SYSTEM.16")

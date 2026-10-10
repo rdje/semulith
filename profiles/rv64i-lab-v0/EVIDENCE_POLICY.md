@@ -1,10 +1,11 @@
 # Evidence policy for `rv64i-lab-v0` — what each obligation class must be shown by
 
-- **Declared:** `2026-09-14`, by `P0-PROFILE.9`, **before** any model implementation exists.
-- **Rule:** `EVD-03` — the kind of evidence an obligation requires is declared in advance,
-  because an implementation that chooses its own evidence afterwards chooses whatever it can most
-  easily produce. `crates/` still holds the scaffold's placeholder `main.rs`; nothing here has
-  been shaped by what a model can currently do, because there is no model.
+- **Original declaration:** `2026-09-14`, by `P0-PROFILE.9`, before the model existed.
+  At that declaration, `crates/` held the scaffold placeholder; this is historical
+  timing, not a description of the current implementation.
+- **Rule:** `EVD-03` and `docs/EVIDENCE_AND_GATES.md` require declared dispositions
+  and actual evidence. Retain the original class requirements below; adding or
+  repairing prose does not credit an implementation or backdate a new disposition.
 
 ## The classes, and what closes each
 
@@ -24,11 +25,11 @@ walked into by the person documenting it. Counts belong in the **generated** rep
 text, **plus** differential agreement with at least one reference model on those fixtures.
 
 ⛔ **Model agreement is not sufficient on its own, and never becomes sufficient by adding models.**
-Where two comparators share the relevant semantic code, their agreement is one opinion — the
-independence inventory records which pairs those are, and for floating point the answer is
-already *shared* (184 of 199 files byte-identical). For an integer obligation in this profile no
-sharing has been found, which is recorded as `no-evidence-of-sharing` and is deliberately weaker
-than `not-shared`.
+Shared expected-result producers are counted once. The former internal-source
+FP census and negative integer-text searches are withdrawn as current ancestry
+evidence (`docs/decisions/reference_softfloat-shared-ancestry.md`). The canonical
+inventory now marks those implementation relationships `not-examined`. Finite
+public agreement supplies observations, without authenticating independence.
 
 **Not accepted:** a model's own output as the expected value; agreement between a model and a test
 suite that derives its expectations from that model.
@@ -89,8 +90,7 @@ registers it expects to change cannot see it. The negative observation caught ex
 
 ## The honest shape of this policy today
 
-⛔ **66 checks are declared and 0 are implemented.** That is not a flaw in the policy; it is the
-policy working. The declaration exists so that `P1-LAB` and `P2-SCALAR` build fixtures against a
-standard fixed before them, rather than discovering after the fact that the available evidence
-happens to be the required evidence. Until those fixtures exist, gate `G0` cannot read `passed`
-and the report says so in its verdict rather than in a footnote.
+Current declared/realized check counts and verdicts belong to the generated
+`G0-REPORT.md` and `GC-REPORT.md`, which derive them from tracked inputs. The
+original declaration set a standard before P1/P2 implementation; it is not itself
+a passing check. Missing required evidence keeps the applicable gate incomplete.

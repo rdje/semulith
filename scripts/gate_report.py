@@ -885,7 +885,7 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
                              + ", ".join(f"{n} `{s}`" for s, n in sorted(by_status.items()))
                              + f"; {len(unresolved)} not resolved"
                              + (f" ({', '.join(f'`{u}`' for u in unresolved)})" if unresolved else "")
-                             + f"; predeclared policy (`EVIDENCE_POLICY.md`): {'present' if policy else 'absent'}",
+                             + f"; policy document (`EVIDENCE_POLICY.md`): {'present' if policy else 'absent'}",
                              bool(reqs) and not unresolved and open_reqs == 0 and policy)
 
     # G-INTERACTIONS — every declared cell carries a resolving disposition.

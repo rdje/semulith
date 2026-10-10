@@ -1,6 +1,35 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — prospective evidence requalification policy (P4-SYSTEM.14 a8)
+
+GC policy9230B instantiates the existing evidence/claim standards before the
+forthcoming .14 qualification, explicitly after current implementation. Do not
+backdate it or grandfather old observations. Cumulative category/risk/feature
+rules specify producers, exact observations, controls, repeats/currentness,
+lineage limits, prospective checked status/supersession and release boundaries.
+Existing gate book includes the full canonical policy; rendered anchor/content
+verified. All48GC/28scalar requirement statuses remain unchanged.
+
+Rootbf71f9c5 scalar policy retains withdrawn ancestry and live66-check assertions;
+f8567fb GS output labels a file-presence check predeclared. Preserve old complete
+policy plus label/two gate-open spans in10402B archive/SHA256
+072a661729355267bcff4bd0f638e03b37e67304b9c7cfe083e05749b9c595d2;
+four payloads/three complete97409B original inverses, three damaged controls.
+Correct only scalar affected prose, one emitted presence label, resolved contract
+open item and obligations policy statement. All other AST/evidence/kind/measurement
+logic exact. Four stale controls RED1/platform stale pin RED2; regeneration GREEN0.
+Twenty derived artifact inverses permit only measured SHA bindings and GS policy
+measurement/open prose; verdicts/counts/other observations exact.
+
+Focused15/six books/verify rc=0; runtime/requirements/decisions/frozen114/114/
+registry/fixtures/history/LIVE exact, CPU incomplete7axes/P4 13/18. Profiles have
+8197B room under existing ceiling; next .14 slice is actual sixth-unit registration,
+its category/materials/book obligations and reviewed standing family arithmetic,
+before more experiment data. Recheck task/book budgets; no ceiling-for-content
+raise. Evidence target/p4-system-14/a8, full task/journal inverses.
+promotion: declined (canonical policy and existing evidence standards retain the normative rules and transition).
+
 ## _(2026-10-10)_ — correct canonical reference evidence and derived claims (P4-SYSTEM.14 a7)
 
 The six rv64i pair rows and GC candidate rationales retained unsupported ancestry

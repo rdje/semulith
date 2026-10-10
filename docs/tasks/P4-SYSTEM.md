@@ -296,6 +296,76 @@ This gate authorises the planned next engineering stage: board implementation.
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
 
+### `.14` a8 — declare evidence requalification policy (completed, SEMULITH-P4-0199)
+
+Owned on cleane3a5a72, brief0/actual census rc=0 after a7 workflow. Read EVD-03,
+EVIDENCE_AND_GATES, ROADMAP P4/.14, current requirement/category/risk schemas and
+catalogue, scalar policy, GS policy-presence measure/manifest, P4/gate book and
+published report/board/model generators before edits. Declare GC's policy before
+forthcoming .14 qualification runs, explicitly after existing implementation;
+never backdate it or grandfather past passing observations. Cover source-semantic
+classes, risk/feature-specific obligations, exact observation/producer/lineage
+limits, controls/replay/freshness and prospective status/supersession rules.
+No status/ancestry/release credit from the declaration itself. Preserve all runtime,
+requirements, decisions, frozen contracts, registry, fixture and historical bytes.
+
+Own two current policy defects: scalar EVIDENCE_POLICY's live184/199/shared and
+integer negative-search ancestry assertions plus "66 checks ... today" are stale;
+-S history pins both tobf71f9c5. Preserve complete old policy and exact full-source
+inverse, repair only affected prose, retain the original2026-09-14 declaration
+as explicitly historical. GS producerf8567fb labels a tracked-file presence check
+"predeclared policy"; make the output say policy-document presence, without
+changing its algorithm or claiming authenticated timing/adequacy. Policy
+mechanical adequacy/status derivation remains owned by .14's next slices.
+Gate manifest's G-CONTRACT open statement still says final freeze remains open
+although G-CONTRACT derives green114/114 frozen; remove that resolved open item
+and update only the G-OBLIGATIONS policy prose, preserving all evidence/kind rules.
+Capture withdrawn old spans, no dependency implementation read or pin change.
+
+Retained profile D-RESOLUTION-ROUTE/D-ROUTE-FLIP/D-FP-DEFER explicitly identify
+historical/superseded statements in their notes. Preserve them; next .14 status
+mapping must validate replacement authority/effective scope, never count old FP
+ancestry as current evidence or silently drop an included requirement.
+Synchronize existing gate/P4 book with the complete policy, every report/dossier/
+board/model consequence, live records and resume. Exact source/AST/derived and
+historical inverses; stale controls plus focused15/six books. make check only if
+Rust changes. No new tests for documentation/literal labels. Evidence
+ target/p4-system-14/a8; fixed caps/on-volume scratch. Next structured experiments,
+policy/status gates, mirror reconciliation and sixth-unit registration.
+
+Result: GC EVIDENCE_POLICY.md9230B declares future requalification after existing
+implementation, without backdating or grandfathering old passing observations.
+Category/risk/feature rules are cumulative; require exact expected/observed
+producers, subsystem lineage limits, adversarial controls, repeated/current runs,
+checked status/supersession and all remaining release axes. Full canonical policy
+is included in the existing gate book; rendered content and overview anchor pass.
+All48GC/28scalar statuses, runtime, requirements/decisions,114/114 frozen14,
+registry/fixtures/prior history/LIVE remain byte-exact; CPU incomplete7axes.
+Preserve complete old scalar policy plus old label/two gate-open spans in10402B
+archive `docs/tasks/archive/P4-SYSTEM-policy-a8.md`, SHA256
+ 072a661729355267bcff4bd0f638e03b37e67304b9c7cfe083e05749b9c595d2.
+Four spans/three original sources97409B reconstruct exactly; three damaged
+byte/marker/payload controls reject. Scalar class requirements/original dated
+declaration retained, withdrawn ancestry/live count corrected. Producer AST
+differs only in one f-string literal: report now measures policy-document
+presence, without authenticating timing or adequacy. Remove resolved contract
+open item/update obligations policy prose; all evidence/kind/verdict rules exact.
+Four stale-output controls RED1 and stale platform pin RED2; documented
+regeneration/current GREEN0. Twenty derived artifact inverses permit actual SHA
+bindings plus GS's policy-document measurement and one open-item statement;
+all verdicts, counts and other report measurements exact. Other board wiring/
+contracts/canonical inputs untouched. Focused15/six books/verify.py rc=0.
+Fixed-family census before final receipts: book519914B (4374room),
+tasks3126194B (19534room), profiles3137531B (8197room), knowledge94704B.
+Next a9/0200 is the already-owned sixth-unit registration/materials/book before
+adding experiment data; review actual expanded registration contract and standing
+family arithmetic, never raise ceilings merely to land content. Re-measure task/
+book budgets before edits and perform existing containment work when required.
+Then structured experiments, mechanical policy/status checks and mirror
+reconciliation. No independence/conformance/requirement-status/release credit.
+Evidence target/p4-system-14/a8; complete task/journal inverses retain history.
+promotion: declined (canonical policy and existing evidence/claim standards retain the normative disposition; captured old sources preserve the transition).
+
 ### `.14` a7 — correct canonical reference lineage and derived claims (completed, SEMULITH-P4-0198)
 
 Owned on clean4fe4c01, brief0/actual census rc=0 after recurring cleanup.
@@ -656,6 +726,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a8 — **ROOT CAUSE**: scoped -S history/repair.py rc=0:
+ bf71f9c5 scalar ancestry/live-count assertions and f8567fb presence label;
+ GC policy absent and resolved G-CONTRACT open prose still retained.
+- [x] `.14` a8 — **ADDRESSED**: repair.py/archive.py/verify.py rc=0:
+ prospective policy included in book, scalar policy corrected with four captured
+ spans/three full-source inverses and three damaged controls; producer one-literal
+ AST delta, manifest/every derived output inverse exact, stale controls reject.
+- [x] `.14` a8 — **NO REGRESSION**: focused15/make book/verify.py rc=0:
+ six books/rendered policy/anchor, all48GC/28scalar statuses and requirements,
+ runtime/frozen/registry/fixtures/previous history/LIVE exact, fixed caps;
+ CPU incomplete7axes,114/114 frozen; no policy-presence acceptance credit.
+
 - [x] `.14` a7 — **ROOT CAUSE**: canonical.py/archive.py/scoped history rc=0:
  canonical inventory, reporterbf71f9c5 and GC summary190d16b retain unsupported
  ancestry/text-search assertions; authenticated HTML contains31/11images.
@@ -745,6 +827,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.14` a8 | prospective policy; four captured spans/three source inverses; three damaged controls; one-literal AST/manifest/20-output inverses; stale controls | focused15/six books/rendered policy/verify rc=0; all statuses/runtime/frozen/history/LIVE exact |
 | `2026-10-10` | `.14` a7 | 31 historical spans/four full-source inverses; three damaged controls; authenticated HTML; canonical/report/board/book drift controls | focused15/six books/verify rc=0; other data/runtime/frozen/prior history/LIVE exact,114/114 frozen |
 | `2026-10-10` | `.14` a6 | five exact historical payloads/full task inverse; three damaged controls; corrected maintained reference/card/.7/.1/book scope | realized1/1/focused12/six books/verify rc=0; all code/producer/profile/frozen/prior history/LIVE exact;114/114 frozen |
 | `2026-10-10` | `.14` a5 | root133e7229/public chapter+diagram auth; canonical two-span/generated three-SHA/report fingerprint inverse; three stale RED1→GREEN0 controls | Rust173/17/253/focused15/six books/verify rc=0; fields/runtime/frozen/fixtures/history/LIVE exact;114/114 frozen |
@@ -761,6 +844,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a8 | `SEMULITH-P4-0199 (leaf P4-SYSTEM.14): declare prospective evidence requalification policy` | a9/0200 sixth-unit registration/materials/book and measured family contract; then experiment/policy/status gates |
 | `.14` a7 | `SEMULITH-P4-0198 (leaf P4-SYSTEM.14): correct canonical reference evidence and derived claims` | predeclared policy, structured experiment/control records, status derivation and sixth-unit registration |
 | `.14` a6 | `SEMULITH-P4-0197 (leaf P4-SYSTEM.14): withdraw maintained internal ancestry assertions` | a7/0198 canonical reference rows and all generated consequences |
 | `.14` a5 | `SEMULITH-P4-0196 (leaf P4-SYSTEM.14): correct canonical state source citations` | a6/0197 maintained reference/decision/knowledge and .7 current-use rationale; then canonical references |
@@ -772,6 +856,8 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-10`: `.14` a8 (SEMULITH-P4-0199): declare GC requalification policy without backdating, repair scalar policy/presence label/manifest, preserve exact historical and derived inverses; stale/damaged controls, focused15/six books/rendered policy green, statuses unchanged.
 
 - `2026-10-10`: `.14` a7 (SEMULITH-P4-0198): preserve31 historical spans/full-source inverses, correct canonical/report/materials evidence scope and regenerate all consequences; damaged/stale controls, focused15/six books/invariants green.
 
