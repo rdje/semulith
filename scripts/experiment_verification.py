@@ -53,7 +53,7 @@ def _schema():
     return K.load_schema(ROOT / "schema/references.sexp")
 
 
-def _canonical_path(raw: str) -> bool:
+def is_canonical_path(raw: str) -> bool:
     path = PurePosixPath(raw)
     return (bool(raw) and not path.is_absolute() and path.as_posix() == raw
             and raw != "." and ".." not in path.parts and "\\" not in raw
@@ -112,7 +112,7 @@ def check_experiment(form: list, scope: Scope) -> list[str]:
     for family in ("input", "observation"):
         for record in indexes[family].values():
             raw = record["path"]
-            if not _canonical_path(raw):
+            if not is_canonical_path(raw):
                 issue("PATH", f"{family}/{record['id']}: noncanonical relative path {raw!r}")
             if raw in paths:
                 issue("PATH ALIAS", f"{family}/{record['id']} and {paths[raw]}: {raw}")

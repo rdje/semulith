@@ -49,7 +49,8 @@ generated gate report above remains the acceptance authority.
 ## Qualification contract and structured syntax
 
 The complete declaration below is included from its authoritative decision.
-Grammar/mapping and declared-edge checks exist; qualification remains closed.
+Grammar/mapping, declared-edge checks and file-pin authentication exist;
+qualification remains closed.
 The current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
@@ -95,8 +96,8 @@ Paths must use canonical lexical repository-relative POSIX form. Absolute paths,
 parent traversal, repeated separators, dot components, backslashes, drive syntax
 and control characters are refused. Inputs and observations cannot alias one
 declared path, and observation sizes cannot be negative. Filesystem resolution,
-symlinks, volume identity, file existence, hashes and actual sizes remain the next
-artifact verifier's responsibility.
+symlinks, volume identity, file existence, hashes and actual sizes belong to the
+file-pin reader described below.
 
 For an otherwise complete record, these changes have distinct diagnostics:
 
@@ -123,7 +124,74 @@ when another rule also refuses the same record.
 
 An empty issue list from `check_experiment` means these declared relationships
 are consistent. The blanket `UNQUALIFIED EXPERIMENT VERIFICATION` refusal remains
-in production pending artifact/comparison evaluation. This unit does not verify
+in production pending comparison/qualification evaluation. Relationship checks do not verify
 executed mutations, successful processes, invocation equivalence, complete traces,
 byte-identical repeats, correct results or sufficient coverage. No CPU requirement
 status, gate axis, artifact budget or retention layout changes.
+
+## Authenticating input and observation files
+
+`scripts/experiment_artifacts.py` checks each declared input and observation pin
+after raw shape and graph validation. It receives the trusted repository root at
+runtime; persisted file paths stay relative. It reads existing files without Git,
+extraction or a cache, and creates no artifact store. The pin checker does not run
+the reference or execute any command stored in a record.
+
+| Result | Meaning |
+| --- | --- |
+| `matched` | A stable regular file beneath the repository root matches its SHA256 and, for an observation, its declared byte size. |
+| `mismatch` | The existing file's hash or observation size differs. It supplies no successful pin match. |
+| `unavailable` | A required file/parent is absent or an I/O operation cannot complete, including a descriptor-close failure. No successful match is inferred. |
+| `refused` | The path or file violates the safe-reader contract, or changes during the check. |
+
+For example, replacing a declared observation with a different value of the same
+length gives `mismatch: SHA256 differs`; a shorter observation gives
+`mismatch: observation byte size differs`. A missing input gives `unavailable`.
+These dispositions differ from a comparison's `DIVERGE` or a target trap. The
+production diagnostic begins `VERIFICATION ARTIFACT` and names the profile,
+experiment, record kind and record ID.
+
+The reader anchors traversal with directory descriptors and refuses symlinks in
+any component. Every opened directory/file must be on the repository root's
+volume. Nested Git boundary markers are refused before their files are opened;
+Git metadata paths, including case variants, are not capture artifacts. Only
+regular files can be hashed. A FIFO is opened nonblocking and rejected by type,
+so a missing writer cannot hang verification. Missing safe traversal support
+refuses rather than falling back to an unsafe path walk.
+
+Hashing uses at most a 1 MiB read chunk and stops at the file's initial size plus
+one byte. The reader compares descriptor identity before/after reading, binds the
+filename back to that descriptor, rechecks parent identity and Git boundaries,
+and rejects concurrent rewrites, growth, shrinkage or replacement. Every acquired
+descriptor receives a close callback; remaining callbacks run after an early
+return or an I/O/close error, and a close failure yields no successful pin match.
+These checks describe
+the file during verification; they cannot prevent a later workspace change.
+
+Run the on-volume controls from the repository root:
+
+```bash
+python3 scripts/probe_experiment_artifacts.py
+python3 -O scripts/probe_experiment_artifacts.py
+bash scripts/check_profile_consistency.sh --self-test
+```
+
+The pin suite exercises 39 cases with actual owned files, directories, symlinks,
+FIFO and streamed reads. Foreign-device controls change only the observed device
+metadata; they never write to another volume. Nested-Git cases use marker-only
+fixtures, without initializing or amending another repository. Timed mutations
+exercise file/parent replacement and a Git boundary appearing during reading.
+A filename is also replaced after the final descriptor check, specifically to
+test the separate pathname-binding predicate. Open/close tracking checks for
+leaks on every branch; the close-error injection follows an actual successful close
+and verifies the remaining callbacks and unavailable result. One temporary-directory
+lifetime removes the owned fixture.
+The suite also runs under Python optimization.
+
+Matching pins do not authenticate successful processes, exact replay invocations,
+complete traces, equivalent repeated runs, executed negative controls or correct
+results. A genuinely empty file can match its empty-file pin; it still cannot
+stand in for a required complete trace. Full dependency currentness, producer
+adequacy and policy-derived coverage remain pending. Even when every declared
+file matches, production still reports `UNQUALIFIED EXPERIMENT VERIFICATION`.
+No fresh canonical capture or CPU acceptance credit is created by these checks.

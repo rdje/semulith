@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — authenticate file pins (P4-SYSTEM.14 a15)
+
+experiment_artifacts.py reuses is_canonical_path. Descriptor-anchored traversal
+refuses symlinks, special files, nested Git markers and foreign devices. Regular
+files stream in1MiB chunks, bounded by initial size plus one. Descriptor, filename,
+parent and renewed Git-boundary checks refuse replacement. ExitStack attempts all
+close callbacks; callback failure cannot yield a match.
+
+Pin39/0 (also optimized), graph63/0/profile53/0 and focused13 pass. Real on-volume
+fixtures exercise streaming, timed replacement and descriptor cleanup; foreign
+devices and I/O/close errors are injected. Marker-only fixtures never initialize
+another repository. Twelve independent predicate omissions expose intended
+controls, with cleanup even for mutants. Actual checker integration diagnoses bad
+hashes/missing files; matching files still receive the pending comparison refusal.
+
+Pins establish check-time bytes, not execution, comparison, currentness or adequacy.
+No capture/store/canonical/runtime/generated/archive/cap/acceptance change. Seven
+books and rendered examples pass. The final route check caught live-note overflow;
+this entry was tightened without raising its ceiling. Evidence target/p4-system-14/a15.
+promotion: matched-experiment decision and GC book own the contract and limits.
+
 ## _(2026-10-10)_ — check declared capture edges before artifact qualification (P4-SYSTEM.14 a14)
 
 Add experiment_verification.py with one raw-form entrypoint: schema validation

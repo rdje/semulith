@@ -61,6 +61,7 @@ import sys, pathlib
 sys.path.insert(0, "scripts")
 import dossier_sexp as D
 import experiment_verification as V
+import experiment_artifacts as A
 import records_sexp as R
 import sexp as S
 
@@ -275,12 +276,17 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
                 experiment_ids.add(xid)
                 if "verification" in x:
                     if verification_scope is not None:
-                        findings.extend(f"{name}/{xid}: {finding}" for finding in
-                                        V.check_experiment(raw_experiments[experiment_index],
-                                                           verification_scope))
+                        graph_findings = V.check_experiment(raw_experiments[experiment_index],
+                                                            verification_scope)
+                        findings.extend(f"{name}/{xid}: {finding}" for finding in graph_findings)
+                        if not graph_findings:
+                            for pin in A.check_files(pathlib.Path.cwd(), x["verification"]):
+                                if pin.disposition != "matched":
+                                    findings.append(f"VERIFICATION ARTIFACT {name}/{xid}/"
+                                        f"{pin.record_kind}/{pin.record_id}: {pin.disposition}: {pin.reason}")
                     findings.append(
                         f"UNQUALIFIED EXPERIMENT VERIFICATION {name}/{xid}: "
-                        "artifact/comparison evaluator pending; relationships give no qualification")
+                        "comparison evaluator pending; matching pins give no qualification")
                 models = x.get("models") or []
                 if len(models) != len(set(models)):
                     findings.append(
@@ -664,6 +670,8 @@ EOF
   rm -rf "$t"
   out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" 2>&1)"; rc=$?
   score "GREEN structured verification identity and edge controls" "$rc" 0 "$out" "EXPERIMENT-GRAPH: 63 pass / 0 fail"
+  out="$(python3 "$ROOT/scripts/probe_experiment_artifacts.py" 2>&1)"; rc=$?
+  score "GREEN structured artifact pin controls" "$rc" 0 "$out" "EXPERIMENT-ARTIFACTS: 39 pass / 0 fail; descriptors/fixture cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

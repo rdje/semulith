@@ -289,12 +289,43 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | artifact/pin/comparison evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | comparison/qualification evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a15 — authenticate declared input and observation files (completed, SEMULITH-P4-0206)
+
+Owned on clean9b14365, brief0/untracked and actual process census OK, before edits.
+Implement a repository-root-derived, read-only pin checker for existing v1 input/
+observation records. Reuse the lexical path rule; verify regular files, same-volume
+directory traversal, SHA256 and recorded observation sizes. Refuse symlinks,
+nested Git repositories, special files and concurrent replacement; keep missing
+or unreadable files explicitly unavailable. Stream within the initial file size,
+with bounded working memory and descriptor cleanup. No Git/extraction dependency,
+new artifact store, cap raise, external implementation inspection or fresh capture.
+Read the existing adapter boundary, evidence policy/contract and locality controls.
+Own positive/adversarial pin, path, unavailable, race and resource-lifetime controls.
+Keep qualification closed pending comparison/policy evaluation. Integrate the pin
+diagnostics without changing legacy records; verify scoped consumers and books,
+then the ordinary COMMIT workflow. Evidence target/p4-system-14/a15, all on-volume.
+Next comparison evaluation, then measured bounded retention and the first capture.
+
+Pin39/0 (also optimized), graph63/0/profile53/0 and twelve independent predicate
+omissions pass. Actual2MiB-plus files exercise production chunk sizes. Timed file/
+parent/Git-marker changes refuse; the final filename is replaced after fstat to
+isolate pathname binding. Every normal/error branch observes descriptor cleanup;
+injected close failure occurs after a real close and verifies remaining callbacks
+and unavailable result. One owned on-volume fixture lifetime cleans all files;
+mocked device changes make no foreign write; marker-only cases create no Git repo.
+Actual prefix integration: predecessor9b14365 only pending guard, current bad-hash/
+missing-file cases get pin diagnostics, matching graph/files remain unqualified.
+Focused13/seven books/full rendered reader semantics and examples pass; protected
+other code/schema/mapping/canonical/runtime/generated/archive populations and caps
+remain exact. Derive39doctrines/749named outer arms/38routes; CPU/P4/P5 unchanged.
+promotion: matched-experiment decision plus live GC book retain pin semantics/limits.
 
 ### `.14` a14 — validate capture identities and declared edges (completed, SEMULITH-P4-0205)
 
@@ -1031,6 +1062,15 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a15 — **ROOT CAUSE**: integration.py rc=0: predecessor9b14365
+  lacks pin diagnostics; matching metadata alone cannot authenticate file bytes.
+- [x] `.14` a15 — **ADDRESSED**: EXPERIMENT-ARTIFACTS39/0/optimized39/0 rc=0:
+  twelve predicate removals expose intended failures; actual anchored reads,
+  race controls, bounded chunks and descriptor/fixture cleanup discriminate.
+- [x] `.14` a15 — **NO REGRESSION**: focused13 rc=0, graph63/0/profile53/0:
+  make book/rendered reader/scope proof rc=0: seven books, all other tracked
+  populations/caps exact; qualification closed, no CPU acceptance change.
+
 - [x] `.14` a14 — **ROOT CAUSE**: integration.py/C1 probe rc=0: predecessor
   reports only pending guard; initial path predicate accepts U+0085 incorrectly.
 - [x] `.14` a14 — **ADDRESSED**: EXPERIMENT-GRAPH63/0 (also optimized),
@@ -1191,6 +1231,10 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a15: pin39/0/optimized39/0, graph63/0, profile53/0, twelve predicate removals,
+actual checker before/after, focused13/seven books/full rendered reader/protected
+scope rc=0. No Rust changes; comparison/policy qualification remains pending.
+
 a14: graph63/0/optimized63/0, profile52/0, schema17/0, nine predicate removals,
 actual checker before/after and C1 false-GREEN repair, focused13/seven books/
 rendered explanation/protected scope rc=0. No Rust changes; qualification pending.
@@ -1232,6 +1276,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a15 | `SEMULITH-P4-0206 (leaf P4-SYSTEM.14): authenticate experiment file pins` | comparison/qualification evaluator, bounded retention, first fresh capture |
 | `.14` a14 | `SEMULITH-P4-0205 (leaf P4-SYSTEM.14): validate capture identities and declared edges` | artifact/pin/comparison evaluator, bounded retention, first fresh capture |
 | `.14` a13 | `SEMULITH-P4-0204 (leaf P4-SYSTEM.14): carry structured experiment verification` | relationship/pin/artifact evaluator, bounded retention, first fresh capture |
 | `.14` a12 | `SEMULITH-P4-0203 (leaf P4-SYSTEM.14): declare the qualified matched-experiment contract` | shared schema/mapping/validator, bounded retention, first fresh capture |
