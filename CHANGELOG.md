@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0156 (leaf P4-SYSTEM.13 c27) — observe atomic alignment before translation
+
+- Bind both widths/all22 forms/four ordering settings across aligned pairs and
+  8800 misaligned cases. Observe full state/reservation/requests; seven wrong
+  effects/thirteen capture controls and actual auditor/LR mutations reject.
+- Direct8896/17792, pair8959/17918. Independent words/state/corpus exact; prior98
+  bindings/core/author/generated/frozen unchanged. Correct only stale gate-owner
+  prose (old23/SSTC pending) to derived-coverage pointer; other inputs exact.
+- Registry100/effective98/114; Rust167/17/217. LIVE652 arms/49 chapters/P4 12/18
+  unchanged. Focused gates/all six books rc=0; hooks next. c28a bounds DEV before
+  c28b GC-FENCEI; eight runtime pairs/freeze remain.
+
 ## SEMULITH-P4-0155 (leaf P4-SYSTEM.13 c26b) — align push guidance and local self-tests
 
 - Refusal names the director-approved recorded act; live decision points to the

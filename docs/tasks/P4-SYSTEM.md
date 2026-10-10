@@ -360,6 +360,51 @@ actual census. No Rust changes or real full-suite/push invocation required by
 this help/test-only repair. Next c27 ATOMIC-MISALIGN, reviewed only after clean
 commit; .14 retains statuses/experiments. Final scope is bounded to these fixes.
 
+### `.13` c27 — observe atomic alignment before translation (completed, `SEMULITH-P4-0156`)
+
+Owned on clean9a39f48 after full c26b workflow/actual census. Read roadmap P4,
+frozen OB-ATOMIC-MISALIGN/REQ-D-ATOMIC-MISALIGN and dependencies, public LR/SC/AMO
+execution/reservation/trap interfaces, registry/tests, atomics/v2/runtime/memory
+book and source routes. Binding absent in current98 registry/effective96/114.
+Frozen policy is LR cause5, SC/AMO cause7 before translation; status mirrors and
+structured experiments remain .14, multicore/external events remain their owners.
+
+Finite direct pair: POS48 aligned LR/SC programs (W/D × four aq/rl × M/S/U ×
+rd0/7), two boundaries each; independent negative-word load sign extension and
+low-width store bytes, reservation replacement then clear. NEG all22 atomic
+forms × four aq/rl × every nonzero offset below width × five contexts × rd0/7 ×
+invalid/valid prior reservation =8800 one-boundary cases. Contexts: bare M/S/U,
+M fetch with MPRV-S/Sv39 invalid root, and MPRV-S noncanonical data address.
+Expect cause5/7 with original VA/PC before any Walk/Load/Store, unchanged full
+GPR/FPR/memory/reservation, all CSR owners except literal trap stack/time,
+no retirement and exact two fetch parcels. Negative SC must trap even without
+an eligible reservation. POS companion a-lrsc-pair; NEG a-lrsc-illegal and
+ a-amo-overlap retain original comparison/bytes (illegal encodings are companion
+coverage, not the direct alignment claim).
+
+Scoped report review found an additional live-doc defect, owned/fix-now here:
+gate.sexp's G-CONTRACT open statement still says23 remaining pairs and SSTC
+repairs pending despite current96/114 and completed c13 work. git blame names
+618b7d2e; generated GS repeats that stale canonical prose correctly. Replace
+only this live open statement with the remaining-check/freeze owner and a pointer
+to derived coverage, without another hand count. Add exact one-statement delta
+to identity proof; every other canonical byte stays exact. No gate criterion,
+verdict rule, frozen obligation or .14 status changes.
+
+Derive literal words/state using independent author and pinned primary chapters
+before writing runtime fixtures; source identity must authenticate offline.
+Add named wrong public-table controls for cause/tval/PC/state/reservation/request/
+memory corruption and actually disable an auditor to see RED, restore exact.
+Temporarily change actual LR misalignment cause and bypass its alignment guard
+under invalid Sv39, observe named RED and restore core exactly. Select new pair
+in completeness test first and see missing binding RED before registration.
+Keep prior98 entries/inputs/author/core/generated/frozen/archive exact; only this
+runtime pair adds credit. Run focused checks then make check, all six books and
+normal hooks; update GS/environment/book/live docs/task, explicit three acceptance
+boxes/promotion, commit/empty brief/clean actual census before next pair. DEV
+currently46003/49152 B: keep receipt bounded; contain before a later receipt if
+needed, without weakening caps. No new doctrine or requirement-status change.
+
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
 ### `.13` census and dispositions (slice a)
@@ -501,6 +546,28 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c27 — **ROOT CAUSE**: completeness test rc=101 on missing
+  CHK-ATOMIC-MISALIGN-POS before registration. Authenticated A/machine sources
+  and frozen contract choose LR5 vs SC/AMO7 before translation. Live gate owner
+  note from618b7d2e still says23/SSTC pending although c13 closed; generated GS
+  repeats that prose. Initial W-store expected request ignored explicit trunc32;
+  inspected canonical Sem rule, corrected to low44332211 (bytes were correct).
+- [x] `.13` c27 — **ADDRESSED**: independent literal derivation rc=0,
+  176 words/8896 boundaries/17792 parcels; actual direct fixtures rc=0 with48
+  aligned programs/8800 fault cases,17888 requests, listed state/reservation.
+  Seven wrong effects/thirteen captures reject. Disabled request auditor and
+  actual LR wrong-cause/bypassed-alignment controls rc=101, named CSR/extra-root-
+  Walk failures; core/observer restored exactly. One stale gate open-note replaced
+  with derived-coverage pointer; registry binds two Execution entries.
+- [x] `.13` c27 — **NO REGRESSION**: verify.py rc=0: prior98 bindings,
+  all112 base/348 GC canonical/guest inputs exact except one declared gate prose
+  delta; core/author/generated/frozen/archives and all prior witnesses exact.
+  Independent full167/5365/10524 corpus; companions63/126 =>pair8959/17918.
+  make check rc=0 Rust167/17/217. Registry100/effective98/114; eight pairs/freeze.
+  Focused gates/all six books rc=0; hooks next. LIVE unchanged652/49/P4 12/18.
+  promotion: declined (direct refusing controls and worked memory book retain the policy, diagnosis and finite limits).
+  Next c28a exact DEV sharding before c28b GC-FENCEI; .14 owns statuses/experiments.
+
 - [x] `.13` c26b — **ROOT CAUSE**: baseline help rc=1 advertises obsolete
   variable-only command (13266aa vs ac07ff8 recorded act). Three allocators
   inherit host temp; controls on safe on-volume caller temp rc=1: cadence11/4,
@@ -551,6 +618,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c27 | independent176 words/8896 states; seven wrong effects/thirteen captures; auditor/LR/missing-binding RED101 and restored; full167 corpus/core/prior98 exact except gate note | direct8896/17792, pair8959/17918; effective98/114; Rust167/17/217; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26b | helper controls RED rc=1; hostile/direct15/0,15/0,8/0 rc=0; normal paths/real ledger/CPU/registry/frozen exact | effective96/114 and registered652 unchanged; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c26a | six payloads81532 B; exact source inverse123960 B/SHA; earlier parts/code/input/registry/frozen exact; explicit caps/new-file census | effective96/114 unchanged; focused/all six books rc=0; hooks next |
 
@@ -560,10 +628,17 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c27 | `SEMULITH-P4-0156 (leaf P4-SYSTEM.13): observe atomic alignment before translation` | c28a DEV containment, c28b GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c26b | `SEMULITH-P4-0155 (leaf P4-SYSTEM.13): align push guidance and local self-tests` | c27 ATOMIC-MISALIGN, remaining runtime pairs/freeze |
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c27 (SEMULITH-P4-0156): bind ATOMIC-MISALIGN with
+  direct8896/17792 and full state/request/reservation observations; pair8959/17918.
+  Wrong effects/captures and actual auditor/LR controls reject/restored; prior98/
+  core/inputs exact except one repaired gate owner note. Effective98/114;
+  c28a DEV containment before c28b GC-FENCEI; .14 statuses/experiments unchanged.
 
 - `2026-10-10`: `.13` c26b (SEMULITH-P4-0155): recorded-act refusal help,
   fulfilled-exception pointer, on-volume helper fixtures and literal nonempty

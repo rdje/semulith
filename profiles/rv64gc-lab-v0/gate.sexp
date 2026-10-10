@@ -23,7 +23,7 @@
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-CONTRACT) (owner "P4-SYSTEM.13")
-  (statement "The 23 remaining runtime guarantee pairs need realization. Before SSTC credit, P4-SYSTEM.13 owns the confirmed STCE-clear software-STIP defect and terminal-zero timer observation gap, with corpus preparation then architecture/contract and direct-witness repairs. The privilege-mode, Sv39, Svade, IALIGN-16 and Zicntr witnesses are bound. Physical byte addresses, data widths/attributes, event positioning, one-hart ordering and full cold reset now have direct typed pairs. Version 2 stays open until all effective pairs pass and its membership is frozen."))
+  (statement "P4-SYSTEM.13 owns realization of the remaining effective runtime pairs and the final v2 freeze. The G-CONTRACT criterion derives coverage from the executable registry; the active task tree and runtime book chapters retain completed witnesses and the next slice. Version 2 stays open until every effective check passes and its membership is frozen. P4-SYSTEM.14 retains requirement-status mirrors and structured experiment records."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
   (statement "The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")

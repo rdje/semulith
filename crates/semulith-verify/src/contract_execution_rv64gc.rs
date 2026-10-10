@@ -3,6 +3,7 @@
 //! Literal CSR words and values follow RVP-SSTC 12.1, RVP-SUPERVISOR
 //! 11.1.1.12 and RVP-MACHINE 2.1.1.11/2.1.1.18. No processor semantics live here.
 
+mod atomic_align;
 mod fence;
 mod jalr;
 mod load_x0;
@@ -24,6 +25,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Naturally aligned LR/SC pairs at both widths and ordering bits.
+    AtomicAlignPositive,
+    /// Every atomic form faults before data translation at every misaligned offset.
+    AtomicAlignNegative,
     /// Ordinary and TSO fences retire with no observable one-hart effect.
     FencePositive,
     /// Reserved configurations and ignored fields preserve state and integration.
@@ -55,6 +60,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::AtomicAlignPositive => &["a-lrsc-pair"],
+            Self::AtomicAlignNegative => &["a-lrsc-illegal", "a-amo-overlap"],
             Self::FencePositive => &["scope-alu"],
             Self::FenceNegative => &["fault-fence"],
             Self::WalkPositive => &["sv39-translate-1g", "sv39-translate-2m"],
@@ -73,6 +80,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::AtomicAlignPositive => atomic_align::positive(),
+            Self::AtomicAlignNegative => atomic_align::negative(),
             Self::FencePositive => fence::positive(),
             Self::FenceNegative => fence::negative(),
             Self::WalkPositive => walk::positive(),

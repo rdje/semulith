@@ -241,3 +241,83 @@ logs. Its log omits the nine LR/SC/LD data requests, which the direct CPU
 observer checks separately. These checks establish the selected one-hart
 behavior and field treatment. They do not exercise multiple-hart ordering,
 external devices, all register-pair combinations or every atomic/cache policy.
+
+## Atomic misalignment wins before data translation
+
+OB-ATOMIC-MISALIGN now binds a direct Execution pair at P4.13 c27. RVI-A
+12.1.2/12.1.4 offer address-misaligned or access-fault exceptions. This frozen
+laboratory contract selects access fault before translation. RVP-MACHINE's
+exception table assigns LR to the load family: cause **5**. SC and all nine
+AMOs use the store/AMO family: cause **7**. This is the selected profile choice;
+it does not make every other permitted implementation choose the same cause.
+
+The aligned control runs 48 LR/SC programs: W/D × four aq/rl combinations ×
+M/S/U × destination x0/x7. Both instructions use the selected destination.
+All 96 boundaries compare the full register files, 26 CSR owners, PC, mode,
+complete memory, exact reservation state and request sequence. A prior valid
+reservation at a different address is replaced by LR, then cleared by SC.
+
+For x6=0x1080 and x9=0x8877665544332211, the initial eight data bytes encode
+0x1122334480000001. Representative programs have these results:
+
+| Program, with ordering bits clear | LR destination | SC destination | Final eight-byte cell |
+| --- | --- | --- | --- |
+| LR.W x7,(x6); SC.W x7,x9,(x6) | 0xffffffff80000001 | 0 | 0x1122334444332211 |
+| LR.D x7,(x6); SC.D x7,x9,(x6) | 0x1122334480000001 | 0 | 0x8877665544332211 |
+| Same pairs with rd=x0 | x0 remains zero | x0 remains zero | same stored bytes |
+
+The W instructions sign-extend the loaded word and store only the low four
+bytes, preserving neighboring bytes. The declared SC.W semantic expression
+truncates rs2 before issuing its Store: the observer expects data=0x44332211,
+while SC.D supplies the complete 64-bit value. Every successful program requests
+two parcels then a Load, followed by two parcels then a Store. Counters advance
+41/17 → 42/18 → 43/19 and PC advances 0x1000 → 0x1004 → 0x1008.
+
+The negative matrix executes **8,800** one-boundary cases. It crosses all 22
+legal atomic forms with four aq/rl settings, each nonzero offset below the
+access width (1–3 for W, 1–7 for D), destinations x0/x7, invalid/valid prior
+reservations and five contexts:
+
+| Context | Why alignment must still decide first |
+| --- | --- |
+| Bare M, S and U | Natural alignment is required in each mode |
+| M fetch, MPRV-S data, Sv39 with a zero root PTE | A translation attempt would read the root and raise a page fault |
+| Same MPRV-S setup with noncanonical data VA 0x4000001080+offset | A canonicality check would otherwise raise a page fault |
+
+The translated contexts use satp=0x8000000000000002, root PA=0x2000. Instruction
+fetch remains physical in M. Each misaligned instruction must request exactly
+FetchParcel(0x1000) and FetchParcel(0x1002), with no WalkAccess, Load or Store.
+The trap records the original instruction PC and full data VA. It retires
+nothing, advances mcycle once and preserves all GPRs, FPRs, memory and the exact
+prior reservation. A misaligned SC traps even when no reservation could succeed;
+it must not quietly return the ordinary failed-SC code 1.
+
+For example, LR.D x7,(x6), word 0x100333af, with x6=0x1081 in the invalid-root
+context delivers mcause=5, mepc=0x1000 and mtval=0x1081 to M at PC 0x1100.
+Mstatus changes from 0xa00026808 to 0xa00027880: MIE is saved in MPIE and MPP
+records the originating M mode. Mcycle/minstret become 42/17. The root PTE and
+all other memory stay unchanged. A zero destination still takes that trap.
+SC.D at the same address instead delivers cause 7, preserving the reservation.
+
+The direct pair totals 8,896 boundaries, 17,792 parcels and 17,888 requests.
+Unchanged companions a-lrsc-pair (14/28), a-lrsc-illegal (33/66) and a-amo-overlap
+(16/32) bring the pair to 8,959 boundaries/17,918 parcels. The illegal-encoding
+companion covers decode refusals; the direct matrix contains legal atomic words
+with misaligned addresses. These are separate claims.
+
+Seven wrong public instruction effects fail cause, trap-value, GPR, CSR,
+extra-Load and reservation observations. Thirteen corrupted captures exercise
+every auditor family, including unexpected Walk/Load/Store requests, memory,
+FPR, PC/mode and parcel/outcome changes. Disabling the actual request predicate
+makes the extra-Load control fail: its remaining architectural state matches.
+Changing the actual LR cause to 4 fails the CSR comparison. Bypassing its
+alignment guard issues a root WalkAccess at 0x2000 and fails the request comparison.
+All temporary mutations are restored exactly; production semantics stay unchanged.
+
+Independent specification-side derivation checks all 176 matrix words against
+the assembler and verifies the listed state/memory results and fetch/walk logs.
+Its log omits explicit data requests and models a cleared reservation as absent,
+without retained invalid fields. The direct CPU observer owns those stronger
+observations. This finite evidence establishes the selected alignment policy;
+it does not close the separate atomic arithmetic, reservation-policy or
+multicore obligations. Those retain their own checks.

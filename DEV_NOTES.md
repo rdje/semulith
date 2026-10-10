@@ -1,5 +1,34 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observe atomic alignment before translation (P4-SYSTEM.13 c27)
+
+Authenticated RVI-A12.1.2/12.1.4 and machine exception table support frozen
+LR cause5 vs SC/AMO7 policy. POS48 aligned W/D LR/SC programs cross ordering,
+M/S/U and rd0/7; NEG8800 crosses all22 forms, every misaligned offset, five
+bare/MPRV-S contexts, destinations and prior reservation validity. Full GPR/FPR/
+26 CSR owners/memory/PC/mode/exact reservation and requests observed. Direct
+8896/17792/17888 requests; unchanged companions63/126 give pair8959/17918.
+
+Seven wrong public effects/thirteen corrupt captures reject. Actual request-
+auditor disabled: extra-Load state-equivalent effect admitted, control RED101.
+Actual LR cause4 and bypassed alignment each RED101 (CSR vs WalkAccess at2000);
+core/observer restored exact. Missing-binding test RED101 before two entries.
+Initial W-store expectation wrongly retained source high bits; a.sem.sexp's
+explicit trunc32 explains the request, corrected to44332211; bytes were already
+correct. Independent176 words/8896 states/fetch-walk logs match. Author omits
+explicit data requests/retained invalid reservation fields; CPU observer owns
+those checks. Full167/5365/10524 corpus exact. Prior98 entries,112 base/348 GC
+inputs/core/author/generated/frozen/archives exact except one gate open-note.
+
+That note from618b7d2e still said23 remaining pairs/SSTC fixes pending; GS
+faithfully regenerated stale owner prose. Replace only that statement with
+remaining-check/freeze ownership and a pointer to derived registry coverage.
+All other canonical bytes exact. Registry100/effective98/114; Rust167/17/217.
+LIVE652 arms/49 chapters/P4 12/18 unchanged; focused gates/all six books rc=0;
+hooks next. Eight runtime pairs/freeze remain. Next c28a contains DEV head
+under fixed cap before c28b GC-FENCEI. promotion: declined (direct refusing
+controls and worked memory book retain policy, root cause and finite limits).
+
 ## _(2026-10-10)_ — align push guidance and local self-tests (P4-SYSTEM.13 c26b)
 
 Cadence guidance from13266aa still advertised a variable-only push after
