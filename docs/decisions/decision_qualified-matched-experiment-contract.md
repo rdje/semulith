@@ -2,9 +2,9 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — grammar/mapping implemented; qualification and retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a13, `SEMULITH-P4-0203`/`0204`; existing GC verification policy and evidence-graph requirements
-answers: What must a new GC matched experiment carry, what syntax is implemented, and why does qualification remain closed?
+- **Status:** `active` — grammar/mapping and declared-edge checks implemented; qualification and retention pending
+- **Owner / source:** `P4-SYSTEM.14` a12–a14, `SEMULITH-P4-0203`–`0205`; existing GC verification policy and evidence-graph requirements
+answers: What syntax and identity/edge checks are implemented for matched-GPR captures, and why does qualification remain closed?
 
 ## The fact / decision
 
@@ -16,9 +16,10 @@ inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
 **Current implementation:** a13 implements the optional block in the existing
-reference schema and single dossier mapper. DOSSIER-SCHEMA checks its shape;
+reference schema and single dossier mapper. a14 adds raw-form schema validation,
+scoped identities and declared-edge checks. DOSSIER-SCHEMA checks its shape;
 PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
-while the relationship/artifact evaluator is pending. Legacy flat metadata and
+while artifact/comparison evaluation is pending. Legacy flat metadata and
 experiment/model/pair checks remain intact. No GC record is qualified. This contract applies
 prospectively, before the forthcoming fresh qualification runs, without backdating
 the historical experiments or weakening `profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md`.
@@ -98,7 +99,8 @@ under this method until explicitly requalified.
    `scripts/dossier_sexp.py`; prove all existing dossier dictionaries and generated
    consumers remain exact, and exercise the new nested fields with positive and
    malformed/lost-child controls.
-2. Implement relationship, input-pin, artifact and comparison validation, with
+2. Declared identity/edge checks implemented at a14; input-pin, artifact and
+   comparison evaluation remain pending. Implement the remaining checks with
    controls for wrong results, missing/extra observations, stale inputs, failed
    processes, truncated traces, duplicate/conflicting IDs and broken producer edges.
    Demonstrate each control's intended reason; deleting a predicate must expose it.
@@ -117,7 +119,7 @@ under this method until explicitly requalified.
    gate/policy criteria are actually met. Preserve old records and explicit successor
    edges; do not rewrite a historical capture to appear freshly executed.
 
-Relationship/artifact evaluation and retention layout are the next owned slices. This decision
+Artifact/comparison evaluation and retention layout are the next owned slices. This decision
 does not create an artifact store, change a cap, retire a source, run a reference,
 change a requirement status or close a CPU-SYSTEM axis.
 
@@ -208,7 +210,9 @@ unknown fields at every nested depth, wrong types/arity, duplicated singular
 fields, missing fields/collections, malformed pins, unsupported versions/vocabularies
 and repeated identity-list entries. The mapping proof retains multiple records
 of every child family and ordered repeated/empty arguments. They establish shape
-and losslessness only; canonical paths, numeric bounds, identity resolution,
-actual processes, artifact availability/currentness and adequacy still await the
-next evaluator. No stored flag can assert qualification on its own.
+and losslessness. a14 additionally checks scoped identities, declared edges,
+nonnegative observation sizes and lexical relative-path form, as documented in
+the GC book. Physical path resolution, actual bytes/processes, invocation
+equivalence, artifact availability/currentness and adequacy remain pending.
+No stored flag can assert qualification on its own.
 <!-- ANCHOR_END: contract -->

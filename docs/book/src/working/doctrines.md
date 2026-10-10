@@ -94,7 +94,7 @@ These ship with the discipline spine and are project-neutral:
 | `DELIVERY-PROVENANCE` | every delivered manifest row carries exactly one declared disposition, and the frozen ones still hash to the delivered bytes |
 | `FIXTURE-FINGERPRINT` | every record pinning a file's `sha256` still describes the tree |
 | `README-ROUTING-CLOSURE` | every destination the landing page routes to is governed, exists, and stays under its ceiling — the per-part ceiling two-tiered: authored members are bounded, regeneration-gated derived members are exempt as a checked property (a fact-ownership mirror row with a regeneration governor), reported as proof |
-| `PROFILE-CONSISTENCY` | counts, authority/source and experiment identities agree; structured verification stays closed pending its evaluator |
+| `PROFILE-CONSISTENCY` | counts, authority/source, scoped capture identities and declared edges agree; qualification stays closed pending artifact/comparison evaluation |
 | `SEAM-INTEGRITY` | this project's repairs to the neutral checks still *do their job* — asserted as behaviour, never as presence |
 | `FRONTIER-SYNC` | `docs/TASK_TREE.md` still names the leaf the tree itself calls next, and every tree has exactly one row — the index while open, `docs/TASK_TREE_CLOSED.md` once done |
 | `REGISTRY-MIRROR` | these two tables still list exactly the doctrines the drivers register |

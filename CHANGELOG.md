@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0205 (leaf P4-SYSTEM.14) — validate experiment identities and declared edges
+
+- Validate raw v1 forms before mapping; check scoped requirements/effective obligations, child IDs, input/producer/run/control/observation/pair edges and lexical paths. Reuse the existing effective-contract selector; retain the pending artifact/comparison refusal.
+- Graph63/0 (also optimized), consistency52/0, nine predicate removals, actual checker integration, focused13 and seven books pass. Reproduce/fix C1 path-control acceptance. No canonical captures, runtime/profile/generated/archive/cap or CPU acceptance changes. Derive748 named outer arms.
+
 ## SEMULITH-P4-0204 (leaf P4-SYSTEM.14) — carry structured experiment verification
 
 - Extend the existing references schema and single mapper with matched-GPR inputs/producers/observations/runs/controls/property scope. Preserve ordered invocation arguments and all243 existing dossier dictionaries; no new canonical capture.

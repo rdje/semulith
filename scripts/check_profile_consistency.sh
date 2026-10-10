@@ -60,6 +60,9 @@ python3 - "$@" <<'PY'
 import sys, pathlib
 sys.path.insert(0, "scripts")
 import dossier_sexp as D
+import experiment_verification as V
+import records_sexp as R
+import sexp as S
 
 # P4-SYSTEM.2 slice (c1): the csr-set rule applied OUTSIDE a unit directory — the staged
 # rv64gc state document lives at a scratch path until the route flip, and must validate
@@ -249,16 +252,35 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
                         f"NO REASON  {name}/{cid}: status is '{st}' with no status_reason; "
                         f"SRC-02 makes an honest 'no route' legitimate, but it has to say why")
             experiment_ids = set()
-            for x in rf.get("experiment", []):
+            verification_scope = None
+            raw_experiments = []
+            if any("verification" in x for x in rf.get("experiment", [])):
+                try:
+                    verification_scope = V.load_scope(profile_path.parent,
+                        d.get("profile", {}).get("id"), seen)
+                    raw_references = next(f for f in S.read_file(refs_path)
+                                          if isinstance(f, list) and f and f[0] == "references")
+                    raw_experiments = S.children(raw_references, "experiment")
+                    if len(raw_experiments) != len(rf.get("experiment", [])):
+                        raise ValueError("reference experiment count changed during validation")
+                except (OSError, R.RecordRefused, S.SexpError, SystemExit,
+                        KeyError, ValueError, StopIteration) as error:
+                    findings.append(f"VERIFICATION SCOPE UNAVAILABLE {name}: {error}")
+                    verification_scope = None
+            for experiment_index, x in enumerate(rf.get("experiment", [])):
                 xid = x.get("id", "<unnamed>")
                 if xid in experiment_ids:
                     findings.append(
                         f"DUPLICATE EXPERIMENT ID {name}/{xid}: identity appears twice")
                 experiment_ids.add(xid)
                 if "verification" in x:
+                    if verification_scope is not None:
+                        findings.extend(f"{name}/{xid}: {finding}" for finding in
+                                        V.check_experiment(raw_experiments[experiment_index],
+                                                           verification_scope))
                     findings.append(
                         f"UNQUALIFIED EXPERIMENT VERIFICATION {name}/{xid}: "
-                        "relationship/artifact evaluator pending; syntax gives no qualification")
+                        "artifact/comparison evaluator pending; relationships give no qualification")
                 models = x.get("models") or []
                 if len(models) != len(set(models)):
                     findings.append(
@@ -377,6 +399,16 @@ self_test() {
     elif ! printf '%s' "$out" | grep -qF "$3"; then
       fail=$((fail+1)); printf 'PROFILE-CONSISTENCY self-test MISS: %s right verdict, wrong reason (no %s)\n%s\n' "$1" "$3" "$out" >&2
     else pass=$((pass+1)); fi
+  }
+  score() { # name actual_rc expected_rc output reason
+    argc 5 "$#" score || return
+    if [ "$2" = "$3" ] && printf '%s' "$4" | grep -qF "$5"; then
+      pass=$((pass+1))
+    else
+      fail=$((fail+1))
+      printf 'PROFILE-CONSISTENCY self-test MISS: %s expected rc=%s reason=%s got rc=%s\n%s\n' \
+        "$1" "$3" "$5" "$2" "$4" >&2
+    fi
   }
   # Fixtures are written as the converted form (one document form, multi-line for greppable
   # mutation), the way convert_dossier.py emits them — the arms fire against the format the
@@ -630,6 +662,8 @@ EOF
   rm -f "$t/p/state.sexp" "$t/p/profile.sexp.bak" "$t/p/state.sexp.bak"
 
   rm -rf "$t"
+  out="$(python3 "$ROOT/scripts/probe_experiment_graph.py" 2>&1)"; rc=$?
+  score "GREEN structured verification identity and edge controls" "$rc" 0 "$out" "EXPERIMENT-GRAPH: 63 pass / 0 fail"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

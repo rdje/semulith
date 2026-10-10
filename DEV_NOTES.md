@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — check declared capture edges before artifact qualification (P4-SYSTEM.14 a14)
+
+Add experiment_verification.py with one raw-form entrypoint: schema validation
+precedes the existing mapper. Check scoped requirements/effective obligations,
+unique child IDs, producer/model/input relationships, run observations and repeat
+edges, control relationships and pair assessments. load_scope reuses the public
+gate_report.contract_measure selector and filters profile membership. Keep failed
+controls and ancestry uncertainty honestly representable; these checks confer no
+adequacy/independence credit. Lexical paths/nonnegative sizes are checked; actual
+filesystem, pin, process, comparison and policy validation remain pending.
+
+Graph63/0 and PROFILE-CONSISTENCY52/0 pass. Nine separately removed predicates
+expose their intended controls, including effective-version filtering. Refine the
+reused-observation/control endpoint assertions to require their own diagnostic,
+so an orphan side effect cannot mask the omitted predicate. Actual checker
+integration against predecessor9ec6bfe shows newly specific missing-repeat and
+raw-duplicate refusals; a consistent graph still gets only the pending qualifier
+refusal. An added U+0085 case reproduces a false GREEN in the initial C0/DEL-only
+path predicate; cover C1 as well and retain the regression. Graph63/0 also passes
+under Python optimization. Focused13 and seven books/rendered explanation pass;
+protected existing files/canonical data/generated consumers/archive/caps stay exact.
+No fresh capture or acceptance credit; artifact/comparison evaluation follows.
+
+Evidence target/p4-system-14/a14. promotion: the matched-experiment decision and
+its live GC book explanation retain the implemented scope, examples and limits.
+
 ## _(2026-10-10)_ — implement matched-GPR grammar without premature credit (P4-SYSTEM.14 a13)
 
 The a12 prospective block is now an optional experiment child in the existing

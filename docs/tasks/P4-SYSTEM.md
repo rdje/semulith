@@ -289,12 +289,41 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | qualification relationship/artifact evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | artifact/pin/comparison evaluator, bounded retention and fresh captures, then policy/status checks and mirrors |
 
 ## Decisions
 
 Closed records through `.12` are preserved verbatim in
 [`archive/P4-SYSTEM-6.md`](archive/P4-SYSTEM-6.md).
+
+### `.14` a14 — validate capture identities and declared edges (completed, SEMULITH-P4-0205)
+
+Owned on clean9ec6bfe, brief0/untracked and actual process census OK, before edits.
+Implement a raw-form entrypoint that validates schema before mapping and checks
+unique child identities, scoped requirement/effective-obligation IDs, producer
+and input edges, run observations/repeats, controls and pair relationships.
+Read the canonical catalogue shapes, existing contract_measure public interface,
+reference schema/mapping, GC evidence policy and review book first. Reuse the
+existing effective-contract measurement rather than inventing a second selector.
+Invoke these checks from PROFILE-CONSISTENCY for v1 records, retaining its blanket
+pending-evaluator refusal: identity/edge consistency is not artifact authentication,
+adequacy, actual mutation/execution or qualification. Preserve all legacy inputs,
+generated consumers, runtime, archive and caps. Exercise positive/negative edge
+cases and predicate removals, focused gates/seven books before the commit workflow.
+Evidence target/p4-system-14/a14, entirely on the repository volume. Artifact pins,
+comparison evaluation, bounded retention and the first fresh capture follow.
+
+Graph63/0 (also Python optimized), PROFILE-CONSISTENCY52/0 and schema17/0 pass.
+Nine independent predicate removals expose intended controls; require reused-
+observation and control-endpoint reasons specifically so a secondary orphan does
+not mask a missing predicate. Actual checker integration shows old9ec6bfe only
+reported the pending guard, while current missing-repeat/raw-duplicate cases carry
+their new reasons. A consistent graph still receives only the pending qualifier
+refusal. Reproduce initial C0/DEL-only path false GREEN for U+0085, fix the predicate
+to include C1 and retain that regression. Focused13/seven books/rendered explanation
+pass; all other tracked populations/canonical/generated/archive/caps exact.
+Derive39doctrines/748named outer arms/38routes; CPU incomplete/P4 13/18 unchanged.
+promotion: matched-experiment decision plus the live GC book retain all new scope/limits.
 
 ### `.14` a13 — structured verification grammar and mapping (completed, SEMULITH-P4-0204)
 
@@ -1002,6 +1031,15 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a14 — **ROOT CAUSE**: integration.py/C1 probe rc=0: predecessor
+  reports only pending guard; initial path predicate accepts U+0085 incorrectly.
+- [x] `.14` a14 — **ADDRESSED**: EXPERIMENT-GRAPH63/0 (also optimized),
+  PROFILE-CONSISTENCY52/0 rc=0; nine predicate removals expose intended reasons;
+  C1 regression refuses; actual raw duplicate/repeat checks fire before credit.
+- [x] `.14` a14 — **NO REGRESSION**: focused13/make book/scope proof rc=0:
+  seven books/full rendered explanation; old code/schema/data/generated/archive
+  populations and fixed caps exact; qualification closed, no CPU acceptance change.
+
 - [x] `.14` a13 — **ROOT CAUSE**: prove.py rc=0: old6afe055 schema/mapper
   refuse verification; old writer loses nested data; new grammar needed by a12.
 - [x] `.14` a13 — **ADDRESSED**: schema/profile self-tests rc=0 (17/0 and51/0):
@@ -1153,6 +1191,10 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a14: graph63/0/optimized63/0, profile52/0, schema17/0, nine predicate removals,
+actual checker before/after and C1 false-GREEN repair, focused13/seven books/
+rendered explanation/protected scope rc=0. No Rust changes; qualification pending.
+
 a13: schema17/0, consistency51/0, predecessor/inverse/lost-child/facet/guard controls,
 focused13/seven books/complete illustrative syntax/full five-leg CI rc=0;
 Rust173/17/253. First SEAM check caught a missing rc signature in the new acceptance
@@ -1190,6 +1232,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a14 | `SEMULITH-P4-0205 (leaf P4-SYSTEM.14): validate capture identities and declared edges` | artifact/pin/comparison evaluator, bounded retention, first fresh capture |
 | `.14` a13 | `SEMULITH-P4-0204 (leaf P4-SYSTEM.14): carry structured experiment verification` | relationship/pin/artifact evaluator, bounded retention, first fresh capture |
 | `.14` a12 | `SEMULITH-P4-0203 (leaf P4-SYSTEM.14): declare the qualified matched-experiment contract` | shared schema/mapping/validator, bounded retention, first fresh capture |
 | `.14` a11 | `SEMULITH-P4-0202 (leaf P4-SYSTEM.14): reject invalid experiment identities` | structured GC experiments/controls/producers, policy/status derivation and mirrors |
