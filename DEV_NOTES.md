@@ -1,5 +1,34 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — ground fence reference claims in public evidence (P4-SYSTEM.13 c28e)
+
+Scoped history/text census identifies b5621de's internal Sail-file quotation in
+zifencei.sem.sexp, repeated by fence-i book/old .6 Result. User §20 requires
+published boundaries. Replace maintained semantic/book rationale with authenticated
+ISA/local coherence and public observations; annotate the historical receipt
+without rewriting it. Three identified locations addressed; no repository-wide
+internal-assumption audit is claimed. No dependency implementation was inspected.
+
+Fresh public six guests/29 boundaries AGREE with two byte-identical traces each;
+nonzero0011118f continues to x9=42. Wrong expected43 gives fresh DIVERGE at1,
+rc1. This covers declared GPR changes/deliveries, not all ignored-field combinations.
+Reference binary/config/pins exact; no new structured experiment/status credit.
+Parsed semantic forms exactly equal. Stale generated provenance RED rc1; owner
+regenerates the Rust module with only two source SHA replacements:
+048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c →
+91a6e728d1448d2f440a8672564c5912b6451ed105d87194429ded0f73b75164.
+Every instruction/decode/effect token stays exact; no hand edit of generated code.
+
+verify.py rc0: all profile/guest/frozen/registry102/evaluator/author/archive bytes
+exact; independent167/5365/10524 corpus unchanged. make check rc0 Rust167/17/220;
+DEF-GEN/SEMANTICS/focused/all six books rc0; hooks next. Effective100/114 and
+LIVE652/49/P4 12/18 unchanged. Next c29 GC-ATOMICS SEMULITH-P4-0162, seven runtime
+pairs/freeze; .14 statuses/experiments remain. promotion: declined (established
+public-boundary policy; worked visibility book retains evidence/provenance limits).
+Evidence: target/p4-system-13/c28e (fresh public/control, exact comment delta,
+provenance RED, checks and identity proof).
+
+
 ## _(2026-10-10)_ — observe FENCE.I visibility and ignored fields (P4-SYSTEM.13 c28d)
 
 Authenticated RVI-ZIFENCEI4.1,32380 B SHA4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91.

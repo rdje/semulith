@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0161 (leaf P4-SYSTEM.13 c28e) — ground fence reference claims in public evidence
+
+- Replace the old internal-reference FENCE.I rationale with ISA/public behavior
+  and annotate its historical receipt. Six fresh guest pairs/29 boundaries agree;
+  wrong marker diverges. Parsed semantic forms exactly equal.
+- Provenance guard RED1 before regeneration; generated module changes only two
+  source SHA occurrences. Core behavior/canonical/profile/frozen/registry102 exact;
+  independent corpus unchanged. Rust167/17/220, DEF-GEN/SEMANTICS/focused/all six
+  books green; LIVE652/49/P4 12/18 and coverage100/114 unchanged. Next c29 GC-ATOMICS.
+
+
 ## SEMULITH-P4-0160 (leaf P4-SYSTEM.13 c28d) — observe FENCE.I visibility and ignored fields
 
 - Bind GC-FENCEI using61440 field/mode cells and36 patched W/C programs at0/2

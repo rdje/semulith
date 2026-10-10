@@ -20,9 +20,9 @@
 ;;   on every fetch (D-CODE-VISIBILITY: no instruction-fetch cache state exists, the state
 ;;   document's `present false` census candidate), so there is nothing to flush. The
 ;;   synchronization is therefore ALREADY provided; the fence's retirement is the whole
-;;   contract. Sail 0.14 lands identically ("fence.i is a nop for the memory model",
-;;   extensions/Zifencei/zifencei_insts.sail) — the matched experiment can AGREE rather
-;;   than recorded-diverge (P4-SYSTEM.6 decision 2).
+;;   contract. The matched public experiment (P4-SYSTEM.6 slice c) observes legal
+;;   execution, the reserved-field continuation and the patched value. P4.13 c28e
+;;   re-runs that interface; the nop derives from the ISA/laboratory choice above.
 ;;
 ;; - THE RESERVED FIELDS ARE DECODED-AND-IGNORED, NEVER REJECTED. "The unused fields in
 ;;   the FENCE.I instruction, funct12, rs1, and rd, are reserved for finer-grain fences in

@@ -29,9 +29,9 @@ Slice (c): the matched experiment and the leaf's acceptance. The chapter's
 contract is three sentences (stores to instruction memory are not guaranteed
 visible until a FENCE.I; the fence orders the accesses before it ahead of the
 fetches after it) — and
-both engines land on the same reading: the laboratory's re-read-per-fetch
-makes the fence a nop by construction, and Sail's FENCEI is "a nop for the
-memory model" with its fields decoded-not-fixed. Against the matched
+the laboratory's re-read-per-fetch makes the fence a nop by construction.
+The public Sail experiment observes execution of the guests' canonical/nonzero
+fence words and their continuation markers. Against the matched
 configuration (validate-config clean), all six fence.i guests AGREE
 step-for-step, 29 steps, the patched fetch reading 7. The criterion closes on
 the pair: WITH the synchronization (fencei-selfmod's fence.i executed and legal
@@ -113,3 +113,26 @@ The completeness test first fails the missing CHK-GC-FENCEI-POS entry, then
 passes after two Execution bindings. Registry size becomes 102, effective
 G-CONTRACT 100/114. Seven runtime pairs and final v2 freeze remain. Structured
 experiment records and requirement statuses remain P4.14's work.
+
+## The reference boundary for this explanation
+
+P4.13 c28e replaces an old internal-source quotation in the semantics commentary
+and this explanation with the observed public interface. The laboratory no-op
+still derives from authenticated RVI-ZIFENCEI 4.1 and the chosen coherent provider.
+Reference agreement consists of the named guest observations, rather than an
+assumption about how the dependency implements its instruction.
+
+A fresh public run of min-fencei, it-fencei, fencei-selfmod, fencei-reserved,
+fault-selfmod and dir-selfmod-fence gives six AGREE over 29 declared boundaries,
+with two fresh byte-identical traces each. In particular, the nonzero word
+0x0011118f executes and its next ADDI writes x9=42. Changing only that expected
+marker to 43 produces a fresh DIVERGE at boundary 1. The comparison covers GPR
+changes and witnessed delivery gaps; it adds no reference claim over every field
+combination in the direct CPU matrix.
+
+The semantic-source edit changes comments only: parsed forms are exactly equal.
+The generation guard first detects stale source provenance. Regeneration changes
+only two occurrences of the source SHA in the Rust module, preserving every
+instruction/decode/effect token. The earlier task receipt retains its historical
+wording with an explicit public-evidence annotation. Reference pins, config,
+canonical guest inputs, frozen obligations and 100/114 coverage remain unchanged.

@@ -32,7 +32,7 @@
 //!   `definitions/riscv/zicntr.sexp`  `f0c483e24e2515c12f32d2a95ac55be3a663e2c7ca355cc804890a2f2c3bc675`
 //!   `definitions/riscv/zicsr.sem.sexp`  `52a45e254513ea2b9ed6a224b5cfb17c2ae8bb2ddad711c7f9b9a02e926bc45d`
 //!   `definitions/riscv/zicsr.sexp`  `f2cd1ab3c64e343a6456b2ce81f506e097d1e25de523522f2577dc377b6e78e2`
-//!   `definitions/riscv/zifencei.sem.sexp`  `048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c`
+//!   `definitions/riscv/zifencei.sem.sexp`  `91a6e728d1448d2f440a8672564c5912b6451ed105d87194429ded0f73b75164`
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `6f94e9cfa8fb8aa31daed162f37b22714db1512c6cd252063efcaa3d185a094c`
@@ -170,7 +170,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
         },
         InputPin {
             path: "definitions/riscv/zifencei.sem.sexp",
-            sha256: "048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c",
+            sha256: "91a6e728d1448d2f440a8672564c5912b6451ed105d87194429ded0f73b75164",
         },
         InputPin {
             path: "definitions/riscv/zifencei.sexp",

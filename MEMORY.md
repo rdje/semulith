@@ -18,14 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c28e (SEMULITH-P4-0161) — replace the
-  obsolete Sail-internal FENCE.I explanation with authenticated ISA/public-run
-  evidence, preserve exact semantic forms and regenerate provenance; annotate
-  historical receipt. Then seven runtime pairs/freeze. c28d binds GC-FENCEI:
-  direct61620/123222, pair61637/123256, full state/TLB cursor/wait/requests;
-  eleven bad tables/16 corrupt captures and actual request/wait controls reject.
-  Registry102/effective100/114; Rust167/17/220, GUEST147/doctrine652/49 chapters.
-  Core/author/frozen/prior inputs exact; .14 owns statuses/experiments.
+- next_action: `P4-SYSTEM.13` c29 (SEMULITH-P4-0162) — bind GC-ATOMICS
+  through a bounded direct arithmetic/request/state matrix and existing A
+  companions; read its frozen obligation, canonical forms, independent author,
+  provider/reservation contracts and atomics book before designing/changing.
+  c28e replaces internal-source rationale with ISA/public6/29 +wrong marker;
+  semantic forms exact, generated source SHA twice only. Registry102/effective
+  100/114; seven runtime pairs/freeze. Rust167/17/220, GUEST147/doctrine652/
+  49 chapters unchanged; .14 owns statuses/structured experiment records.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

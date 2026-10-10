@@ -139,6 +139,13 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: when newly written code must become executable, and when stale state may persist (catalog `C13`).
   Acceptance: rewrite-code fixtures with and without the architectural synchronization.
 
+  Evidence-boundary annotation (`2026-10-10`, `.13` c28e): the internal-source
+  quotation in the preceding historical Result is retained as a receipt, with
+  current matching claims grounded in public execution instead. Six fresh guest
+  pairs/29 boundaries agree; a wrong continuation marker diverges. The nop's
+  authority is authenticated ISA latitude plus the laboratory provider choice.
+  See `docs/book/src/plan/p4/fence-i.md#the-reference-boundary-for-this-explanation`.
+
 - ID: `P4-SYSTEM.7` — **floating-point backend qualification** *(task card `T011`)*
   Status: **done** `2026-10-06` (design brief `2026-10-05`, `SEMULITH-P4-0038`; slices (a) `SEMULITH-P4-0039`, (b) `SEMULITH-P4-0040`, (c1)–(c6) `SEMULITH-P4-0041`–`-0048` — F BOUND, (d1)–(d5) `-0049`–`-0053` — D BOUND, (e1)–(e3) `-0054`–`-0056`)
   Result: **met.** rustc_apfloat `=0.2.3` is qualified and pinned behind the model layer `fp.rs`, which owns the RISC-V policy and patches the backend's two genuine flag deviations (overflow on a directed clamp; underflow at the smallest-normal boundary — the record's third was the MPFR oracle's, withdrawn at (d3)). F (30 forms) and D (32) execute in the tracked engine: 150 forms, 125/125 corpus. Correctness is measured spec-side and tracked — 230 directed vectors + 3,168 seeded fixtures from the exact-rational reference (itself hardware-checked every run), 0 of 63,752 corpus disagreements — and end to end on the second engine: Sail 24 AGREE of 24 (927 steps; an encoding/state match, Sail's FP being SoftFloat). Performance: the model layer 2.8–6.9× the raw backend on the arithmetic core, the exact OF/UF's cost. The record: `docs/decisions/decision_fp-backend-qualification.md` (two amendments) and its closing measurement `docs/decisions/reference_fp-model-layer-acceptance.md`.
@@ -580,7 +587,27 @@ RED101 then two registry entries. Direct61620/123222/123294 requests, companions
 Focused gates/all six books rc=0; hooks next. Next c28e below, then seven runtime
 pairs/freeze. .14 still owns statuses/experiments.
 
-### `.13` c28e — remove the obsolete internal-reference rationale (priority next)
+### `.13` c28e — remove the obsolete internal-reference rationale (completed, `SEMULITH-P4-0161`)
+
+Activated on clean99369ab after actual census rc=0/brief0. Relevant history:
+b5621de introduced the semantics commentary's internal-file quotation; current
+book and old .6 Result repeat it. Read generator help and exact encoding/state/
+output pair from DEF-GEN, public adapter/expectations and c28d authenticated ISA.
+Own comment-only semantic-source edit, matching book replacement and historical
+receipt annotation. First run six known fence.i/rewrite guests fresh via published
+CLI and a wrong-marker expectation control, preserving pin/config. Before
+regeneration require DEF-GEN RED on the provenance drift; parsed semantics must
+stay exactly equal. Regenerate only through the existing owner, then prove the
+module differs by the source SHA alone. No engine/reference internals or pin edit.
+Completed: fresh public six pairs/29 boundaries AGREE rc=0; wrong marker43
+DIVERGE at1 rc=1. Comment-only semantic edit, parsed forms exact; stale-provenance
+check RED rc=1 before published regeneration. Module changes only old source SHA
+048555ac8a792789fb534d37d05c0f099a658f822520689e214265ecd2afcd5c to new
+91a6e728d1448d2f440a8672564c5912b6451ed105d87194429ded0f73b75164 twice.
+Book replacement and old .6 receipt annotation complete the three identified
+locations; no repository-wide audit claim. make check rc=0 Rust167/17/220;
+focused/all six books rc=0; hooks next. Commit/brief0/census, then c29 GC-ATOMICS
+(SEMULITH-P4-0162), with its own bounded plan before changes.
 
 Encountered during c28d source review: maintained zifencei.sem.sexp commentary
 names extensions/Zifencei/zifencei_insts.sail and the fence-i book describes the
@@ -736,6 +763,26 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c28e — **ROOT CAUSE**: scoped text/history census rc=0:
+  b5621de introduced the internal-file quotation; maintained semantics/book and
+  old .6 Result repeat it. User §20 requires public dependency boundaries.
+  Fresh public six guests/29 boundaries AGREE rc=0, wrong marker43 DIVERGE
+  at1 rc=1; ISA4.1 source already authenticated in c28d. These observations
+  support execution of the named words/markers, not a dependency implementation.
+- [x] `.13` c28e — **ADDRESSED**: parsed semantic forms exactly equal,
+  scoped prose replacement and historical receipt annotation. Stale-provenance
+  check RED rc=1, published generator rc=0. verify.py rc=0: generated module
+  differs only by two occurrences of the source SHA048555ac→91a6e728.
+  Current semantic/book explanations use public evidence; three known locations
+  handled, no repository-wide census claim.
+- [x] `.13` c28e — **NO REGRESSION**: verify.py rc=0: all canonical
+  profile/guest/frozen/registry102/core evaluator/author/archives exact; only
+  declared semantic commentary/generated SHA delta. Independent167/5365/10524
+  corpus exact. make check rc=0 Rust167/17/220; DEF-GEN/SEMANTICS/focused/all
+  six books rc=0; hooks next. Effective100/114 and LIVE652/49/P4 12/18 unchanged.
+  Next c29 GC-ATOMICS; .14 owns statuses/experiments.
+  promotion: declined (established public-boundary policy; worked visibility book retains scoped evidence and provenance limits).
+
 - [x] `.13` c28d — **ROOT CAUSE**: completeness rc=101, missing
   CHK-GC-FENCEI-POS. Authenticated4.1 source32380 B/SHA4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91
   permits coherent nop and requires ignored fields. Existing corpus alone is
@@ -886,6 +933,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c28e | public6/29 repeated, wrong marker DIVERGE1; semantic forms exact; provenance RED1 then two-SHA-only regeneration; profile/core/registry identity | effective100/114 unchanged; Rust167/17/220; DEF-GEN/SEMANTICS/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28d | independent61440/36;11 bad tables/16 captures; request/wait/missing-binding RED101 restored; prior100/core/inputs exact; full167 corpus | direct61620/123222, pair61637/123256; effective100/114; Rust167/17/220; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28c | budget/legacy RED1→GREEN0; five mutations reject;149AGREE/4566,14 prior differences, three failures/one disabled refused; atomic242 regression; strict parser/input/author/registry identity | effective98/114 unchanged; GUEST147/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28b | public242/3146 repeated; restored granule DIVERGE; original A11AGREE/one named difference;164 successful old traces exact/three failures excluded; scalar/input/corpus/registry identity | effective98/114 unchanged; adapter controls/focused/all six books rc=0; hooks next |
@@ -900,6 +948,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c28e | `SEMULITH-P4-0161 (leaf P4-SYSTEM.13): ground fence reference claims in public evidence` | c29 GC-ATOMICS, remaining runtime pairs/freeze |
 | `.13` c28d | `SEMULITH-P4-0160 (leaf P4-SYSTEM.13): observe FENCE.I visibility and ignored fields` | c28e obsolete dependency rationale, then seven runtime pairs/freeze |
 | `.13` c28c | `SEMULITH-P4-0159 (leaf P4-SYSTEM.13): bound public reference runs` | c28d GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c28b | `SEMULITH-P4-0158 (leaf P4-SYSTEM.13): qualify the public AMO granule boundary` | c28c post-budget adapter repair, then GC-FENCEI c28d |
@@ -909,6 +958,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c28e (SEMULITH-P4-0161): replace internal-source
+  FENCE.I rationale with ISA/public observations, annotate old receipt. Six
+  pairs/29 boundaries agree, wrong marker diverges. Semantic forms exact,
+  only generated source SHA twice changes after provenance RED1. Coverage
+  100/114 unchanged; c29 GC-ATOMICS next.
 
 - `2026-10-10`: `.13` c28d (SEMULITH-P4-0160): bind GC-FENCEI
   field/mode and patched W/C visibility, full state/TLB cursor/wait/requests.
