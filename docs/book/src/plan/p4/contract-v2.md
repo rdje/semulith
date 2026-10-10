@@ -513,10 +513,12 @@ At c7b, 28 runtime pairs remained before version 2 could freeze.
 
 The [runtime contract chapter](contract-runtime.md)
 contains privilege-mode, Sv39, Svade, IALIGN-16, Zicntr and Sstc evidence.
-The [integer runtime chapter](contract-integer.md) retains immediate/register ALU
-and U-immediate bindings, worked values and the newly diagnosed SRAW coverage hole.
-Both retain independent controls and finite evidence limits. Current G-CONTRACT is
-76/114; nineteen runtime pairs and final freeze remain. The split retains
+The [integer runtime chapter](contract-integer.md) retains immediate/register ALU,
+U-immediate and twelve-form shift bindings, worked values and verified SRAW/SRAIW
+count-mask/source-width witness repairs. It also owns the remaining SHAMT
+requirement-association omission and its next repair. Both chapters retain
+independent controls and finite evidence limits. Current G-CONTRACT is
+78/114; eighteen runtime pairs and final freeze remain. The split retains
 all runtime sections byte-verbatim under the book's fixed per-chapter ceiling.
 
 P4.13 c13a2 supersedes the frozen v1 interrupt-source assumption with a twelfth

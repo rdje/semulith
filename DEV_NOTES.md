@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — realize all twelve shift-count domains (P4-SYSTEM.13 c17d)
+
+Bind SHAMT POS to scope-alu and NEG to bound-shift/bound-shiftw: 180 boundaries /
+360 parcels. The frozen statement and pinned RV64I 3.1.2.1–2 specify six bits for
+XLEN immediate/register counts, five for word immediates and low-five rs2 for
+word registers. Twelve isolated author copies each change one mnemonic count
+expression; all fail before credit. XLEN five-bit copies first fail SLLI
+bound-shift 1, SRLI 35, SRAI 73, SLL 87, SRA 88 and SRL bound-shiftw 49. Four-bit
+word-immediate copies fail SLLIW bound-shiftw 46, SRLIW scope-alu 28, SRAIW 29.
+Six-bit word-register copies fail SLLW scope-alu 25, SRLW bound-shiftw 51 and SRAW 55.
+The repaired SRAW count-96 witness now independently closes its old masking gap;
+source-width witnesses remain exact. These legal counterexamples invent no traps.
+
+Add only two registry entries and their declared-check closure: registry 80,
+effective 78/114, thirteen scope/nineteen guest/six boundary/one execution pairs.
+Eighteen runtime pairs/freeze remain. Make check passes fmt/clippy and Rust
+167/17/201; integer probe retains 23 arithmetic/10 branches, 17 gaps/476 steps,
+42 owned records exact. Full independent author corpus is 167/5365/10524 exact.
+Byte comparisons preserve all 112 base/348 GC canonical/guest files, prior 78
+registry entries, production/core/definitions/generated/frozen data. Freeze
+three versions/zero findings, schema 270/two named skips, five fresh reports,
+five derived counts, 37 bounded routes and main/model books pass. LIVE_STATUS
+stays 649 arms/47 chapters/P4 12/18. Profile/book/resume report the new pair.
+
+Scoped requirement review found REQ-D-SHAMT's insns fields omit SLLW/SRLW/SRAW
+in BOTH owner and GC mirror, although its statement explicitly covers all twelve.
+Record probes confirm 9/12; git log -S and git show locate incomplete base
+associations at 1abba2e and the GC copy at b95af58 (original d3fecbf had none).
+WSUFFIX covers the three in aggregate extraction, hiding per-requirement metadata
+incompleteness. No execution/frozen-statement defect. Own c17e metadata repair
+immediately next with a refusing closure assertion and dependent regeneration;
+keep this binding's exact-input proof bounded. c17f WSUFFIX follows; .14 retains
+statuses/structured experiments/registration work.
+promotion: declined (canonical witnesses, executable registry pair and integer runtime chapter retain independently discriminated count domains).
+
+
 ## _(2026-10-10)_ — distinguish arithmetic-W source width (P4-SYSTEM.13 c17c)
 
 The separate width diagnosis showed both isolated full-width arithmetic-W authors

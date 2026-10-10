@@ -231,3 +231,57 @@ are closed; production rules and all 78 registry entries remain unchanged.
 G-CONTRACT stays 76/114 with nineteen runtime pairs and freeze remaining. c17d
 may now register SHAMT after its independent mask controls. The finite-reference
 and platform limits above continue to apply.
+
+## Shift-count domains: all twelve forms
+
+c17d binds CHK-SHAMT-POS to scope-alu and CHK-SHAMT-NEG to bound-shift plus
+bound-shiftw: 180 boundaries / 360 parcels. These are legal architectural
+instructions. The negative evidence distinguishes wrong count rules through
+register observations, without inventing traps for legal shift amounts.
+
+RV64I 3.1.2.1–2 specifies six immediate count bits for SLLI/SRLI/SRAI and the
+low six rs2 bits for SLL/SRL/SRA. Word-immediate forms read five count bits;
+SLLW/SRLW/SRAW read rs2[4:0]. Twelve independent author copies each change only
+one mnemonic's count expression. Every copy is rejected before registry credit:
+
+| Form | Deliberately wrong count | First mismatch |
+| --- | --- | --- |
+| SLLI | five bits | bound-shift 1 |
+| SRLI | five bits | bound-shift 35 |
+| SRAI | five bits | bound-shift 73 |
+| SLL | low five rs2 bits | bound-shift 87 |
+| SRL | low five rs2 bits | bound-shiftw 49 |
+| SRA | low five rs2 bits | bound-shift 88 |
+| SLLIW | four bits | bound-shiftw 46 |
+| SRLIW | four bits | scope-alu 28 |
+| SRAIW | four bits | scope-alu 29 |
+| SLLW | low six rs2 bits | scope-alu 25 |
+| SRLW | low six rs2 bits | bound-shiftw 51 |
+| SRAW | low six rs2 bits | bound-shiftw 55 |
+
+For example, SRLI by 32 gives 0x0000000080000000 from
+0x8000000000000001; the five-bit copy reads zero and preserves the whole input.
+The paired register SRL/SRLW at count 96 deliberately reads 32 versus zero.
+SRL gives 0x00000000ffffffff; SRLW preserves the low word and sign-extends it to
+0xffffffff80000001. SRAW's separate count-96 witness prevents arithmetic fill
+from hiding the mask error: zero count preserves that signed word, while the
+six-bit copy produces all ones. The subsequent source-width witnesses remain
+exact and continue to distinguish pre-shift truncation independently.
+
+The correct engine and author match all selected observations and the complete
+167 / 5,365 / 10,524 corpus. All canonical inputs, guest data, production author,
+core, frozen records and prior 78 bindings remain exact. Registry entries become
+80; effective G-CONTRACT becomes **78/114**: thirteen scope pairs, nineteen guest
+pairs, six boundary pairs and one direct-execution pair. Eighteen runtime pairs
+and final freeze remain. This credit is finite evidence for these inputs; the
+standing independence/platform limits still apply.
+
+The scoped review also found incomplete requirement metadata: REQ-D-SHAMT's
+statement names all twelve forms, while its base and GC insns fields omit
+SLLW/SRLW/SRAW. The original base association commit added nine, and GC copied
+that list. The aggregate extraction gate still sees the three forms through
+WSUFFIX; it does not establish each requirement's association completeness.
+The frozen statement and the twelve-form execution evidence above are correct.
+This metadata defect is OPEN and owned priority-next by c17e, before c17f
+word-result registration: repair both catalogs with a refusing closure test and
+refresh all dependent artifacts. Implementation-status/experiment work stays .14.

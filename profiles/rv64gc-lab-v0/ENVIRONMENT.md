@@ -431,3 +431,15 @@ have 60 steps, GC 120 parcels. Independent corpus 167/5365/10524, fresh Sail
 60 rows/repeat exact, base live Sail/Spike comparisons pass. Two durable controls
 first RED, then registered; production rules, frozen records and 78 bindings
 stay exact. G-CONTRACT remains 76/114; c17d SHAMT binding follows.
+
+c17d binds SHAMT POS to scope-alu, NEG to bound-shift/bound-shiftw, totaling
+180 boundaries/360 parcels. Twelve isolated wrong count expressions each fail a
+named observation before credit; the repaired SRAW mask and arithmetic-W source
+witnesses remain exact. Production/core/author/canonical inputs/generated data
+and all prior 78 bindings stay exact. Registry 80, effective 78/114: thirteen
+scope, nineteen guest, six boundary and one direct-execution pairs. Eighteen
+runtime pairs/freeze remain. The requirement's frozen statement covers all twelve;
+its separate insns metadata omits the three register-W forms in both owner and
+mirror. c17e owns that metadata repair next; c17f WSUFFIX follows. .14 retains
+statuses/structured experiments/registration. See the integer book for examples,
+countermodel table and finite evidence limits.

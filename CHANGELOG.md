@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0137 (leaf P4-SYSTEM.13 c17d) — realize all twelve shift-count domains
+
+- Reject twelve isolated wrong count expressions before SHAMT POS/NEG binding;
+  scope-alu/bound-shift/bound-shiftw span 180 boundaries/360 parcels.
+- Registry 80, effective 78/114; eighteen runtime pairs/freeze remain. Preserve
+  prior entries and all canonical/guest/generated/core/frozen data byte-exact.
+  Rust 167/17/201, full author corpus and focused gates/books pass.
+- Own missing SLLW/SRLW/SRAW requirement associations in both catalogs, traced
+  to their original metadata/copy commits. c17e repairs them next, before c17f
+  word-result credit. LIVE_STATUS remains 649 arms/47 chapters/P4 12/18.
+
+
 ## SEMULITH-P4-0136 (leaf P4-SYSTEM.13 c17c) — distinguish arithmetic-W source width
 
 - Append four pre-derived instructions to both boundary programs; preserve all 56
