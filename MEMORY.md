@@ -18,16 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-09`, `SEMULITH-AC-0061`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (12/18 — `.1`–`.12` closed; CPU-SYSTEM `incomplete`, 8/10 axes open; `.13` contract v2 active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.13` c33 — GC-D, after completed F binding.
-  Refine32D forms from pinned D/F rules and independent governed vectors:
- 25numeric forms including2format conversions, seven transfers/sign forms,
-  FS-Off/reserved-rounding and fault/boxing/directed controls. Split safely
-  before code if needed; missing-binding RED then2Execution entries.
-  C32b F203832positive/12852negative full-state boundaries green;16actual
-  disabled controls restored, independent author and prior167corpus exact.
-  Rust173/17/237, focused/six books green; registry110/effective108/114.
-  D/reservation/SC/freeze open; .14 owns evidence/provenance/stale-note sweep.
-  Core/data/canonical/frozen/history/LIVE exact. No push below cadence.
+- next_action: `P4-SYSTEM.13` c33b — finish D, after numeric prerequisite.
+  Measure book/DEV room first; own containment before complete D examples if
+  needed. Refine seven transfer/sign forms, boxed-single D interpretation/
+  FCVT.D.S invalid boxes, all32 FS-Off/19rounded-form reserved refusals,
+  faults/directed rules and actual disabled controls; missing binding RED then2entries.
+  C33a25numeric D forms/123264boundaries/246528parcels green,16wrong routes/
+  nine actual disabled controls restored; all F matrices/prior167corpus exact.
+  Rust173/17/239, focused/six books green; registry110/effective108/114 unchanged.
+  Core/data/canonical/frozen/history/LIVE exact. D/reservation/SC/freeze open;
+  .14 evidence/provenance/stale-note sweep owned. No push below cadence.
 - in_flight_uncommitted: none at commit.
 - blockers: none. Authorized Kimi closure clears the actual census (`handoff: OK`).
   Sandboxed census is invalid because ps is denied; use the actual unsandboxed check.

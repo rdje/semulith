@@ -207,6 +207,12 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
+C33a adds the D numeric prerequisite:25forms/123264boundaries/246528parcels,
+including both format conversions. The shared private fixture preserves all
+F observations. Independent author agrees; shared specfp adds no lineage.
+D transfers/signs/boxing/refusals and bindings remain; registry110/effective
+108/114 unchanged. The FP book gives literal narrowing/widening examples.
+
 GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
 numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
 reserved-rounding11628 and ordinary memory faults144. Full state, exact

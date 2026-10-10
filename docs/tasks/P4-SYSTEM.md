@@ -930,7 +930,30 @@ promotion: declined (permanent F witnesses, governed numeric data and worked FP 
 
 After F, D then reservation/SC/freeze; .14 evidence/provenance sweep remains owned.
 
-### `.13` c33 — realize double-precision instruction checks (queued)
+### `.13` c33 — realize double-precision instruction checks (active; c33a completed SEMULITH-P4-0180)
+
+Owned on clean a23e2e7/brief0/actual census rc=0. F bound before D.
+Safe subdivision before code: c33a/SEMULITH-P4-0180 owns numeric25forms
+without D registry credit; c33b owns remaining transfers/signs/directed/refusal
+cases and final D bindings. Generalize the private numeric fixture by explicit
+result/source format and rename fp32.rs/fp32/remaining.rs to floating.rs/
+floating/single.rs; preserve every existing F matrix/registry observation.
+Use1504ordinary64-bit rows plus160format-conversion rows (both destination
+widths) from the unchanged governed3168rows:1664rows, four fused variants→
+1904cases,1520rounded×static/DYN+384unrounded→3424settings×M/S/U×six aliases×
+flags0/31=123264boundaries/246528parcels. Literal32/64 encodings and source/
+result widths; D reads full bits, FCVT.D.S unboxes its32-bit source and
+FCVT.S.D boxes its32-bit result. FMA sign adjustment uses the source width.
+Full common state/requests/memory/Dirty/sticky expectations constructed before
+execution. Expected numeric data never calls the production backend; author
+and generator share specfp (no new lineage). Permanent well-formed wrong
+routes/results and actual disabled D-format/boxing/rounding/observer controls
+must fail then byte-restore. Independent author/assembler rederives every
+new boundary; prior F216684/prior167corpus, core/data/canonical/frozen/history/
+registry110/effective108/114/LIVE remain exact. Rust/FP/focused/six books,
+mdBook examples/pointers and clean commit before c33b. Current book room3525B:
+keep this prerequisite narrative concise and own containment before complete
+D examples if needed; no cap increase or omitted current feature examples.
 
 F now bound; own GC-D before code. Review OB-GC-D/REQ-GC-D and F dependency,
 authenticated D21.1.2–.7/F shared rules, current qualified model interface,
@@ -941,6 +964,44 @@ fault/boxing and full-state controls. Decide safe subdivisions before witness
 code; preserve prior110bindings/core/numeric data/frozen inputs and lineage
 limits. Missing-binding RED precedes exactly2Execution entries. D then
 reservation/SC, full gate/freeze; .14 remains scheduled. No cap increases.
+
+C33a result:
+
+Numeric D prerequisite owned on clean a23e2e7 before changes, no D credit.
+Authenticated D21.1.2–.7/F/Machine rules; published32Dforms include25numeric.
+Generalized shared private fixture by explicit result/source format, renamed
+to floating.rs/floating/single.rs. F216684boundaries remain exact in effect.
+From unchanged3168governed rows take1504ordinary64+160both-direction conversion
+rows=1664; FMA variants→1904cases;1520rounded×static/DYN+384unrounded→3424settings.
+M/S/U×rd0/5/6/7/8/31×flags0/31 gives123264boundaries/246528parcels. Raw64D operands,
+boxed32source/result only at respective conversion boundary, source-width FMA
+sign adjustment, integer-word sign extension, full pre-execution state/memory/
+request/retirement/Dirty/sticky expectations. No production FP expected calls.
+
+Nine suites rc=0 include16wrong D numeric routes, plus all previous F controls/
+16bad captures. Nine actual disabled controls RED101 then byte-restored:
+F/X/CSR auditor,request capture,DYN,output boxing,conversion source/destination
+formats,flag accrual,Dirty. Independent author123264/25forms and symbolic
+assembler exact; all F matrices and original167/5365/10524corpus exact. Author
+and generator share specfp, no new numeric lineage. Make check173/17/239;
+FP/focused/six books rc=0. Core/data/canonical/frozen/history/LIVE/registry110/
+effective108/114 exact. Environment/GS/book/index/pointers sync; fixed caps.
+Artifacts target/p4-system-13/c33a. Complete D only after transfer/sign/boxed-single/
+reserved-mode/FS-Off/fault/directed witnesses and final2bindings. Own book/DEV
+containment prerequisite before these larger receipts if measured room requires.
+promotion: declined (shared permanent witnesses, governed independent data and worked D examples retain this prerequisite without a duplicate knowledge card).
+
+
+### `.13` c33b — complete D transfers, format rules and refusals (queued)
+
+Own remaining GC-D after numeric prerequisite; measure book/DEV pressure before
+code. Seven raw64 transfer/sign forms, NaN-boxed singles seen by D as negative
+qNaNs, FCVT.D.S invalid-box canonical input, directed tie/underflow/saturation/
+NaN/FMA rules, all32FS-Off and19rounded-form reserved settings including
+FCVT.D.W[U]/D.S exact operations; full-state faults and controls. Preserve all
+F/numeric D matrices and prior110bindings. Missing-binding RED precedes exactly
+2DExecution entries/effective110/114. Review/refine finite matrices, selected
+reservation policy and independent expectations first. Then reservation/SC/freeze.
 
 
 
@@ -1085,6 +1146,18 @@ retain the scope decisions; this census remains the detailed execution receipt.
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.13` c33a — **ROOT CAUSE**: source/verify.py rc=0 authenticates
+ D32forms/25numeric, exact governed1664rows/explicit source/result formats;
+ shared specfp lineage and no-credit prerequisite scope explicit before code.
+- [x] `.13` c33a — **ADDRESSED**: nine direct suites rc=0:
+ D123264boundaries/246528parcels,16wrong routes/16existing bad captures;
+ nine actual disabled controls RED rc=101 then byte-restored.
+- [x] `.13` c33a — **NO REGRESSION**: make check/verify/focused/six books rc=0:
+ Rust173/17/239; independent123264/25Dforms, all F matrices and167/5365/10524
+ corpus exact; core/data/canonical/frozen/history/LIVE/registry110/effective
+ 108/114 exact. Book/ENV/GS/index/pointers sync, fixed caps; D completion next.
+ promotion: declined (shared witnesses, governed data and worked D examples retain this prerequisite).
 
 - [x] `.13` c32b — **ROOT CAUSE**: authenticated source/verify.py rc=0:
  F30forms/17rounded/19numeric float-readers; literal policy/bit expectations,
@@ -1265,6 +1338,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c33a | independent123264/25Dforms/all F matrices/full167corpus;16wrong D routes/9disabled controls RED101→restored | Rust173/17/239; core/data/canonical/frozen/history/LIVE/registry110/effective108/114 exact; FP/focused/six books rc=0; hooks next |
 | `2026-10-10` | `.13` c32b | all30F/216684boundaries; independent new104940+prior111744/full167corpus;12new wrong effects/16bad captures/16disabled controls+missing binding RED101→restored | Rust173/17/237; prior108bindings/core/data/canonical/frozen/history/LIVE exact; registry110/effective108/114; FP/focused/six books rc=0; hooks next |
 
 | `2026-10-10` | `.13` c32b0 | ten whole paragraphs/full source inverse and damaged controls; sharder12/0/five whole DEV entries/full inverse; protected/history identity | save5723chapter B; registry108/effective106/114/LIVE unchanged; focused/six books rc=0; prior Rust173/17/234 applies; hooks next |
@@ -1289,6 +1363,7 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c33a | `SEMULITH-P4-0180 (leaf P4-SYSTEM.13): witness numeric D instructions before binding` | remaining D controls/bindings, then reservation/SC/freeze; measure containment first |
 | `.13` c32b | `SEMULITH-P4-0179 (leaf P4-SYSTEM.13): complete and bind finite F witnesses` | GC-D before reservation/SC/freeze; .14 evidence sweep scheduled |
 
 | `.13` c32b0 | `SEMULITH-P4-0178 (leaf P4-SYSTEM.13): contain privilege timeline and development receipts` | c32b/0179 F transfers/boxing/FS-Off/rounding refusals and final bindings |
@@ -1302,6 +1377,12 @@ Prior rows: [archive/P4-SYSTEM-10.md](archive/P4-SYSTEM-10.md#commits).
 | `.13` c29e1 | `SEMULITH-P4-0170 (leaf P4-SYSTEM.13): contain completed task and development receipts` | c29e overview repair, then GC-COUNTERS |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c33a (SEMULITH-P4-0180): numeric D25forms/
+ 123264full-state boundaries; shared fixture preserves all F matrices;
+ independent author/corpus and wrong/disabled controls green/restored.
+ Rust173/17/239, FP/focused/six books; no D credit, registry110/effective108/114.
+ Measure containment before remaining D witnesses and final bindings.
 
 - `2026-10-10`: `.13` c32b (SEMULITH-P4-0179): complete F checks,
  216684full-state boundaries/all30forms; independent new/prior matrices and

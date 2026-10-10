@@ -243,7 +243,7 @@ fn invalid_boxes_over(table: &[InsnDef]) -> Result<(), String> {
                         .take(if op.rounded() { 2 } else { 1 })
                     {
                         each(|mode, rd, flags| {
-                            let word = op.word(rd, if dynamic { 7 } else { rm }, fused);
+                            let word = op.word(32, rd, if dynamic { 7 } else { rm }, fused);
                             let (mut h, mut o) = seed(
                                 word,
                                 mode,
@@ -359,6 +359,7 @@ fn directed_over(table: &[InsnDef]) -> Result<(), String> {
                     each(|mode, rd, flags| {
                         Cell {
                             vector: Vector {
+                                format: 32,
                                 op,
                                 rm,
                                 a,
@@ -402,6 +403,7 @@ fn directed_over(table: &[InsnDef]) -> Result<(), String> {
                     each(|mode, rd, flags| {
                         Cell {
                             vector: Vector {
+                                format: 32,
                                 op,
                                 rm,
                                 a,

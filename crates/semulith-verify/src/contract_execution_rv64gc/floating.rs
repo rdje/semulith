@@ -1,4 +1,4 @@
-//! Complete finite single-precision instruction witnesses (P4-SYSTEM.13 c32a/b).
+//! Finite F witnesses and the numeric D prerequisite (P4-SYSTEM.13 c32/c33a).
 //! Expected bits/flags come from the existing FP-VECTORS-governed spec-side data.
 //! The production arithmetic backend is never used to construct an expectation.
 use crate::fixtures::FlatMemory;
@@ -194,7 +194,7 @@ fn execute(
     let executed = exec_rv64gc::step_over(h, observer, table) == StepRv64gc::Executed;
     judge(&Observation::capture(h, observer, executed), expected)
 }
-mod remaining;
+mod single;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Op {
@@ -218,10 +218,14 @@ enum Op {
     FromU32,
     FromI64,
     FromU64,
+    ToSingle,
+    FromSingle,
 }
 impl Op {
-    fn parse(s: &str) -> Result<Self, String> {
+    fn parse(s: &str, format: u32) -> Result<Self, String> {
         Ok(match s {
+            "f2f" if format == 32 => Self::ToSingle,
+            "f2f" => Self::FromSingle,
             "add" => Self::Add,
             "sub" => Self::Sub,
             "mul" => Self::Mul,
@@ -270,9 +274,10 @@ impl Op {
                 | Self::Class
         )
     }
-    fn word(self, rd: u32, rm: u32, fused: u32) -> u32 {
+    fn word(self, format: u32, rd: u32, rm: u32, fused: u32) -> u32 {
         if self == Self::Fma {
             return (8 << 27)
+                | (u32::from(format == 64) << 25)
                 | (7 << 20)
                 | (6 << 15)
                 | (rm << 12)
@@ -299,13 +304,21 @@ impl Op {
             Self::FromU32 => (0x68, 1, rm),
             Self::FromI64 => (0x68, 2, rm),
             Self::FromU64 => (0x68, 3, rm),
+            Self::ToSingle => (0x20, 1, rm),
+            Self::FromSingle => (0x21, 0, rm),
             Self::Fma => unreachable!(),
+        };
+        let funct7 = if matches!(self, Self::ToSingle | Self::FromSingle) {
+            funct7
+        } else {
+            funct7 + u32::from(format == 64)
         };
         (funct7 << 25) | (rs2 << 20) | (6 << 15) | (funct3 << 12) | (rd << 7) | 0x53
     }
 }
 #[derive(Clone, Copy, Debug)]
 struct Vector {
+    format: u32,
     op: Op,
     rm: u32,
     a: u64,
@@ -314,7 +327,7 @@ struct Vector {
     bits: u64,
     flags: u64,
 }
-fn vectors() -> Result<Vec<Vector>, String> {
+fn vectors(profile_format: u32) -> Result<Vec<Vector>, String> {
     let mut out = Vec::new();
     let mut total = 0;
     for line in NUMERIC_DATA
@@ -332,9 +345,10 @@ fn vectors() -> Result<Vec<Vector>, String> {
         if !matches!(n, 32 | 64) {
             return Err(format!("unsupported format: {line}"));
         }
-        if n == 64 || op == "f2f" {
+        // Both format conversions belong to D, including the single result.
+        if (op == "f2f" && profile_format == 32) || (op != "f2f" && n != profile_format) {
             continue;
-        } // D owns the two format conversions.
+        }
         let hex = |v: &str| u64::from_str_radix(v, 16).map_err(|_| format!("invalid hex: {line}"));
         let rm = hex(rm)?;
         let flags = hex(flags)?;
@@ -342,7 +356,8 @@ fn vectors() -> Result<Vec<Vector>, String> {
             return Err(format!("invalid rounding/flag field: {line}"));
         }
         out.push(Vector {
-            op: Op::parse(op)?,
+            format: n,
+            op: Op::parse(op, n)?,
             rm: rm as u32,
             a: hex(a)?,
             b: hex(b)?,
@@ -351,7 +366,7 @@ fn vectors() -> Result<Vec<Vector>, String> {
             flags,
         });
     }
-    if total != 3168 || out.len() != 1504 {
+    if total != 3168 || out.len() != if profile_format == 32 { 1504 } else { 1664 } {
         return Err(format!("numeric data extent {total}/{}", out.len()));
     }
     Ok(out)
@@ -368,6 +383,7 @@ struct Cell {
 impl Cell {
     fn word(self) -> u32 {
         self.vector.op.word(
+            self.vector.format,
             self.rd,
             if self.dynamic { 7 } else { self.vector.rm },
             self.fused,
@@ -384,19 +400,36 @@ impl Cell {
         );
         // Fused variants receive sign-adjusted inputs so the existing independent
         // a*b+c vector remains the expected result under each instruction's algebra.
+        let sign = if v.format == 32 {
+            0x8000_0000
+        } else {
+            0x8000_0000_0000_0000
+        };
         let a = if v.op == Op::Fma && self.fused >= 2 {
-            v.a ^ 0x8000_0000
+            v.a ^ sign
         } else {
             v.a
         };
         let c = if v.op == Op::Fma && self.fused % 2 == 1 {
-            v.c ^ 0x8000_0000
+            v.c ^ sign
         } else {
             v.c
         };
-        h.write_f(6, boxed(a));
-        h.write_f(7, boxed(v.b));
-        h.write_f(8, boxed(c));
+        let source_format = match v.op {
+            Op::ToSingle => 64,
+            Op::FromSingle => 32,
+            _ => v.format,
+        };
+        let input = |bits| {
+            if source_format == 32 {
+                boxed(bits)
+            } else {
+                bits
+            }
+        };
+        h.write_f(6, input(a));
+        h.write_f(7, input(v.b));
+        h.write_f(8, input(c));
         if v.op.integer_source() {
             h.write_x(6, v.a);
         }
@@ -413,7 +446,11 @@ impl Cell {
                 expected.x[self.rd as usize] = bits;
             }
         } else {
-            expected.f[self.rd as usize] = boxed(v.bits);
+            expected.f[self.rd as usize] = if v.format == 32 {
+                boxed(v.bits)
+            } else {
+                v.bits
+            };
         }
         if !v.op.integer_destination() || accrued != self.flags {
             expected.csrs[CSR_MSTATUS] |= 3 << 13;
@@ -430,9 +467,9 @@ impl Cell {
         judge(&actual, &expected).map_err(|why| format!("{self:?}: {why}"))
     }
 }
-fn numeric_over(table: &[InsnDef]) -> Result<(), String> {
+fn numeric_over(table: &[InsnDef], profile_format: u32) -> Result<(), String> {
     let mut count = 0;
-    for vector in vectors()? {
+    for vector in vectors(profile_format)? {
         for fused in 0..if vector.op == Op::Fma { 4 } else { 1 } {
             for dynamic in [false, true]
                 .into_iter()
@@ -457,17 +494,17 @@ fn numeric_over(table: &[InsnDef]) -> Result<(), String> {
             }
         }
     }
-    if count != 111744 {
+    if count != if profile_format == 32 { 111744 } else { 123264 } {
         return Err(format!("numeric matrix extent {count}"));
     }
     Ok(())
 }
 pub(super) fn positive() -> Result<(), String> {
-    numeric_over(INSNS)?;
-    remaining::positive_over(INSNS)
+    numeric_over(INSNS, 32)?;
+    single::positive_over(INSNS)
 }
 pub(super) fn negative() -> Result<(), String> {
-    remaining::negative_over(INSNS)
+    single::negative_over(INSNS)
 }
 #[cfg(test)]
 mod tests {
@@ -477,6 +514,7 @@ mod tests {
     fn cell(mode: PrivilegeMode) -> Cell {
         Cell {
             vector: Vector {
+                format: 32,
                 op: Op::Add,
                 rm: 3,
                 a: 0x3f80_0000,
@@ -510,7 +548,7 @@ mod tests {
     }
     #[test]
     fn single_precision_numeric_instructions_match_independent_vectors() {
-        assert_eq!(numeric_over(INSNS), Ok(()));
+        assert_eq!(numeric_over(INSNS, 32), Ok(()));
     }
     #[test]
     fn wrong_numeric_effects_fail_named_observations() {
@@ -592,7 +630,7 @@ mod tests {
                 .find(|row| row.name == replacement)
                 .unwrap()
                 .effect;
-            let error = numeric_over(&wrong_table(name, effect)).expect_err(name);
+            let error = numeric_over(&wrong_table(name, effect), 32).expect_err(name);
             assert!(
                 error.contains("registers differ") || error.contains("CSR owners differ"),
                 "{name} via {replacement}: {error}"
@@ -661,5 +699,41 @@ mod tests {
         let mut bad = actual.clone();
         bad.executed = false;
         check(bad, "extent/outcome differs");
+    }
+    #[test]
+    fn double_precision_numeric_instructions_match_independent_vectors() {
+        assert_eq!(numeric_over(INSNS, 64), Ok(()));
+    }
+    #[test]
+    fn wrong_double_numeric_instruction_routes_are_rejected() {
+        for (name, replacement) in [
+            ("fadd.d", "fadd.s"),
+            ("fsub.d", "fadd.d"),
+            ("fmul.d", "fdiv.d"),
+            ("fsqrt.d", "fcvt.d.w"),
+            ("fmin.d", "fmax.d"),
+            ("feq.d", "flt.d"),
+            ("fclass.d", "fmv.x.d"),
+            ("fcvt.w.d", "fcvt.wu.d"),
+            ("fcvt.l.d", "fcvt.w.d"),
+            ("fcvt.d.lu", "fcvt.d.l"),
+            ("fmadd.d", "fmsub.d"),
+            ("fmsub.d", "fmadd.d"),
+            ("fnmsub.d", "fmadd.d"),
+            ("fnmadd.d", "fmadd.d"),
+            ("fcvt.s.d", "fcvt.d.s"),
+            ("fcvt.d.s", "fcvt.s.d"),
+        ] {
+            let effect = INSNS
+                .iter()
+                .find(|row| row.name == replacement)
+                .unwrap()
+                .effect;
+            let error = numeric_over(&wrong_table(name, effect), 64).expect_err(name);
+            assert!(
+                error.contains("registers differ") || error.contains("CSR owners differ"),
+                "{name} via {replacement}: {error}"
+            );
+        }
     }
 }

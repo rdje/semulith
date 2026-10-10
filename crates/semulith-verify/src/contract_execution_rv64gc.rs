@@ -9,7 +9,7 @@ mod counters;
 mod csr_access;
 mod fence;
 mod fence_i;
-mod fp32;
+mod floating;
 mod jalr;
 mod load_x0;
 mod walk;
@@ -133,8 +133,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
-            Self::FPositive => fp32::positive(),
-            Self::FNegative => fp32::negative(),
+            Self::FPositive => floating::positive(),
+            Self::FNegative => floating::negative(),
             Self::CsrAccessPositive => csr_access::positive(),
             Self::CsrAccessNegative => csr_access::negative(),
             Self::CountersPositive => counters::positive(),

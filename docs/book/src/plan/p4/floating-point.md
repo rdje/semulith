@@ -331,6 +331,39 @@ missing F check name before the two registry entries are added. Prior108
 entries and frozen/canonical inputs remain exact. Companion guests retain
 their original expectations, and the original167-guest corpus remains exact.
 
+
+## Numeric D prerequisite before binding
+
+C33a generalizes the private numeric fixture by explicit source and result
+width. The shared module is now `floating.rs`, with F's remaining cases in
+`floating/single.rs`; all216,684 F boundaries remain unchanged in effect.
+D receives no registry credit yet: effective G-CONTRACT stays108/114.
+
+The D matrix includes1,504 ordinary double rows and160 format-conversion rows
+from the same governed numeric data. Both destination widths belong to D.
+Four fused forms expand these to1,904 cases; static/DYN rounding yields3,424
+settings. Across M/S/U, six destinations including all source aliases, and
+flags0/31, **123,264 boundaries** require exactly246,528 fetch parcels.
+D operands and results retain full64bits. FCVT.D.S unboxes its single input;
+FCVT.S.D NaN-boxes its single result. Word integer results still sign-extend.
+
+Two literal rows show the format distinction:
+
+| Instruction/input | Expected result/flags |
+| --- | --- |
+| FCVT.S.D, RUP, `0xfff0000000000001` | Boxed canonical single `0xffffffff7fc00000`, NV: the source is a signaling double NaN. |
+| FCVT.D.S, RMM, boxed `0x007fffff` | Double `0x380fffffc0000000`, no flags: widening the largest single subnormal is exact. |
+
+Every rounded form resolves rm even where a legal mode cannot alter the
+numeric result. Reserved-mode refusals, improperly boxed conversion inputs,
+raw transfers/sign payloads and directed D rule cases belong to the completion
+slice. Full state, memory, requests, sticky flags and selected Dirty behavior
+use the same pre-execution comparator as F. Sixteen wrong numeric routes and
+nine actual disabled controls must fail before source restoration. The
+independent instruction author agrees on all new cases; it shares `specfp`
+with the vector generator, adding no numeric lineage. The original167-guest
+corpus remains exact. D binding follows only after its remaining checks pass.
+
 ## Historical verification receipts
 
 Dated progress counts, pre-bind identity checks and exact provenance receipts

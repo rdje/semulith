@@ -1,6 +1,16 @@
 # CHANGELOG.md
 
 
+## SEMULITH-P4-0180 (leaf P4-SYSTEM.13 c33a) — witness numeric D instructions before binding
+
+- Drive25numeric D forms/123264full-state boundaries/246528parcels from unchanged
+  governed data; explicit source/result widths include both format conversions.
+- Preserve all F observations in shared floating fixture;16wrong D routes and
+  nine disabled controls discriminate and restore, shared numeric lineage explicit.
+- Independent author/new and prior matrices/corpus exact; Rust173/17/239,
+  FP/focused/six books green. Core/data/frozen/history/LIVE/registry110/
+  effective108/114 unchanged. D completion/bindings and remaining pairs stay open.
+
 ## SEMULITH-P4-0179 (leaf P4-SYSTEM.13 c32b) — complete and bind finite F witnesses
 
 - Bind all30F forms:203832positive/12852refusal-fault full-state boundaries,

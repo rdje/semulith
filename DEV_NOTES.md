@@ -1,6 +1,32 @@
 # DEV_NOTES.md
 
 
+## _(2026-10-10)_ — witness numeric D instructions before binding (P4-SYSTEM.13 c33a)
+
+Numeric D prerequisite owned on clean a23e2e7 before changes, no D credit.
+Authenticated D21.1.2–.7/F/Machine rules; published32Dforms include25numeric.
+Generalized shared private fixture by explicit result/source format, renamed
+to floating.rs/floating/single.rs. F216684boundaries remain exact in effect.
+From unchanged3168governed rows take1504ordinary64+160both-direction conversion
+rows=1664; FMA variants→1904cases;1520rounded×static/DYN+384unrounded→3424settings.
+M/S/U×rd0/5/6/7/8/31×flags0/31 gives123264boundaries/246528parcels. Raw64D operands,
+boxed32source/result only at respective conversion boundary, source-width FMA
+sign adjustment, integer-word sign extension, full pre-execution state/memory/
+request/retirement/Dirty/sticky expectations. No production FP expected calls.
+
+Nine suites rc=0 include16wrong D numeric routes, plus all previous F controls/
+16bad captures. Nine actual disabled controls RED101 then byte-restored:
+F/X/CSR auditor,request capture,DYN,output boxing,conversion source/destination
+formats,flag accrual,Dirty. Independent author123264/25forms and symbolic
+assembler exact; all F matrices and original167/5365/10524corpus exact. Author
+and generator share specfp, no new numeric lineage. Make check173/17/239;
+FP/focused/six books rc=0. Core/data/canonical/frozen/history/LIVE/registry110/
+effective108/114 exact. Environment/GS/book/index/pointers sync; fixed caps.
+Artifacts target/p4-system-13/c33a. Complete D only after transfer/sign/boxed-single/
+reserved-mode/FS-Off/fault/directed witnesses and final2bindings. Own book/DEV
+containment prerequisite before these larger receipts if measured room requires.
+promotion: declined (shared permanent witnesses, governed independent data and worked D examples retain this prerequisite without a duplicate knowledge card).
+
 ## _(2026-10-10)_ — complete and bind finite F witnesses (P4-SYSTEM.13 c32b)
 
 Completed F after committed numeric prerequisite and containment. Authenticated
