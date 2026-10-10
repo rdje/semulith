@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0160 (leaf P4-SYSTEM.13 c28d) — observe FENCE.I visibility and ignored fields
+
+- Bind GC-FENCEI using61440 field/mode cells and36 patched W/C programs at0/2
+  mod4, canonical/nonzero/no-fence. Full state/TLB cursor/wait and requests;
+  direct61620/123222, pair61637/123256 including unchanged companions.
+- Eleven bad tables/16 corrupt captures reject. Actual request/wait mutations
+  and missing binding RED101, restored exactly; independent literals/corpus exact.
+- Registry102/effective100/114; Rust167/17/220. Prior100 entries/core/author/
+  canonical/frozen unchanged. Focused gates/all six books rc0; LIVE652/49/
+  P4 12/18 unchanged. Next c28e removes obsolete internal-reference rationale,
+  then seven runtime pairs/freeze; .14 statuses/experiment records remain.
+
+
 ## SEMULITH-P4-0159 (leaf P4-SYSTEM.13 c28c) — bound public reference runs
 
 - Request the exact declared Sail boundary limit; retain the strict whole-trace

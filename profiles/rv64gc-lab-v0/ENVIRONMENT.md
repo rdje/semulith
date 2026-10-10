@@ -48,6 +48,11 @@ full trap/request/state and prior-reservation observations. LR uses cause5;
 SC/AMO cause7 before data translation. Aligned LR/SC controls and worked limits:
 `docs/book/src/plan/p4/contract-memory.md`.
 
+GC-FENCEI binds all4096 funct12 values/five register pairs/M/S/U, preserving
+full state and exact requests. Halfword patches of 16-/32-bit targets at0/2 mod4
+remain visible with standard/nonzero FENCE.I and under the coherent no-fence
+control. Worked programs and controls: `docs/book/src/plan/p4/fence-i.md`.
+
 The matched Sail override sets scalar misaligned-atomicity granule exponent0.
 A 16-byte granule permits contained AMOs despite AccessFault, so that former
 setting did not match the unconditional laboratory alignment rule. Public
@@ -129,8 +134,10 @@ frozen v0 obligations; the contract is where v1 corrects them.
 
 Every v1 check, `.8`'s partial-progress pair, the M/C/fetch pairs, and the
 thirteen scope pairs and c1's priority pair are **realized**: the registry
-`crates/semulith-verify/src/contract_checks_rv64gc.rs` binds each check id to tracked guests, and
-its tests run the guest entries under the corpus's comparison rule. Scope entries run
+`crates/semulith-verify/src/contract_checks_rv64gc.rs` binds exact check/obligation
+pairs to guest, static-scope, typed-boundary or direct-execution evidence. Tests
+run every selected leg; guests retain the corpus comparison rule, and Execution
+entries also run their direct observers and named companions. Scope entries run
 `python3 scripts/check_gc_contract_scope.py --check CHECK-ID` over parsed canonical
 declarations and violating in-memory copies. The tests refuse a missing check among
 the pairs bound so far; G-CONTRACT continues to count all remaining missing pairs. A positive fixture exercises the assumption holding; a negative one exercises what would

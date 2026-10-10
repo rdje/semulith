@@ -1,5 +1,42 @@
 # DEV_NOTES.md
 
+## _(2026-10-10)_ — observe FENCE.I visibility and ignored fields (P4-SYSTEM.13 c28d)
+
+Authenticated RVI-ZIFENCEI4.1,32380 B SHA4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91.
+Direct61440 field cells =4096 funct12×five rs1/rd pairs×M/S/U; POS3 canonical,
+NEG61437 ignored-field words. Full GPR/FPR/26 CSR owners/memory/reservation/TLB
+including FIFO cursor/Active wait/PC/mode/outcome/parcels/requests preserved.
+Only PC+4/cycle+1/retired+1 and two parcel fetches.36 five-boundary SH/fence/LHU/
+marker/patched-target programs cross W/C,0/2 mod4,M/S/U,canonical/nonzero/no-fence.
+Word00200413 high-halfword0070 becomes00700413; C4409→441d, both x8=7.
+The coherent no-fence subset and arbitrary-provider limits remain explicit.
+
+Independent derivation first verifies all61440 states and36 program words/state/
+fetch logs; direct61620/123222/123294 requests. Author omits72 SH/LHU requests;
+CPU observer owns them and complete retained TLB/reservation fields. Three unchanged
+companions17/34 give pair61637/123256. Initial diagnostic expected a shortened
+source label; inspection found the existing full4.1/decision2/visibility locator,
+retained verbatim and corrected the diagnostic (no producer change).
+
+Eleven wrong public tables and16 corrupt captures reject, including cursor-only
+TLB. Actual request auditor disabled admits state-equivalent extra Load, RED101;
+actual WFI condition admitting FENCE.I fails wait state, RED101. Both restored
+exact SHA. Wait entry has no public Sem node, so the actual core condition is
+used instead of inventing one. Missing-binding completeness RED101, then two
+Execution entries; prior100 entries exact. Registry102/effective100/114, seven
+runtime pairs/freeze. make check rc0: Rust167/17/220. Independent full corpus
+167/5365/10524; code/author/canonical/frozen/prior archives exact. Focused gates/
+all six books rc0; hooks next. LIVE652/49/P4 12/18 unchanged.
+
+Next c28e owns replacing obsolete Sail-internal explanatory assertions in the
+semantics commentary/book (plus annotation of the old task receipt) with public
+observations, preserving semantic forms/provenance. Current binding relies only
+on authenticated ISA/local provider. .14 still owns statuses/experiments.
+promotion: declined (existing direct-auditor discipline; worked visibility book and refusing controls retain the diagnosis and finite limits).
+Evidence: target/p4-system-13/c28d (source auth, literal derivation, mutations,
+missing-binding RED, direct/check logs, pair census and identity verification).
+
+
 ## _(2026-10-10)_ — bound public reference runs (P4-SYSTEM.13 c28c)
 
 History75c79af introduced instructions+2;190d16b retained it while extending

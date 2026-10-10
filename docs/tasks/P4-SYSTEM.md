@@ -539,6 +539,62 @@ card/INDEX (same question, no new family member); prior card bytes retained.
 Knowledge family30 files/95032 B under fixed30/98304; no cap increase.
 
 
+### `.13` c28d — observe FENCE.I visibility and ignored fields (completed, `SEMULITH-P4-0160`)
+
+Activated on clean d892571 after brief0/actual census rc=0. Read roadmap P4,
+frozen OB-GC-FENCEI/REQ-GC-FENCEI, canonical semantics/decode, existing contract
+Execution registry/completeness tests, full state/FlatMemory/request interfaces,
+ordering assumption and fence-i/memory book. Authenticate RVI-ZIFENCEI4.1 before
+literal derivation; rely only on ISA and laboratory provider contracts/public
+reference output, never a reference implementation claim.
+
+Own direct finite field matrix: all4096 funct12 values, five rs1/rd pairs
+(0/0,0/31,31/0,31/31,7/13), M/S/U =61440 boundaries. POS canonical zero fields;
+NEG nonzero ignored fields execute rather than trap. Observe all GPR/FPR/26 CSR
+owners, memory, PC/mode, exact requests/parcels/outcome, seeded reservation, full
+TLB/cursor and active wait state. Instruction should cause only two parcel fetches,
+PC+4 and one cycle/retirement. Preserve frozen semantics/input/registry records.
+
+Add36 five-boundary programs: 32-bit vs C patched instruction, entry at0/2 mod4,
+M/S/U and canonical FENCE.I/nonzero FENCE.I/no-fence coherent control. A halfword
+store patches the future instruction, LHU reads it back, then its changed GPR
+result proves the fetched bytes. Literal expectations/encodings independently
+derived before running; store/readback/parcel extents must be exact. No claim on
+arbitrary providers or legal stale pre-FENCE.I implementations. Existing ordering
+provider auditor retains its own stale-response controls.
+
+Missing binding must first fail real completeness test rc101. Add bad public
+instruction tables for illegal ignored bits, architectural writes, extra requests,
+trap, PC and reservation/TLB changes; corrupt each observation family including
+wait. Wait entry is gated by the actual WFI word, not a public Sem node; an
+actual temporary core condition admitting FENCE.I must fail the wait observation. Disable
+the actual request auditor to prove a state-equivalent extra load is caught,
+then restore exactly. Add only two registry Execution entries plus existing
+fencei-selfmod/fault-selfmod/fencei-reserved companions after proof. Derive coverage,
+full independent corpus, make check, focused gates/books; synchronized docs and
+commit/brief0/actual census before next slice. Completed: independent literal
+61440/36 derivation and direct witnesses rc=0,11 bad tables/16 corrupt captures
+reject. Actual request/wait mutations RED101/restored exact; missing-binding
+RED101 then two registry entries. Direct61620/123222/123294 requests, companions
+17/34 =>pair61637/123256. Registry102/effective100/114; make check167/17/220.
+Focused gates/all six books rc=0; hooks next. Next c28e below, then seven runtime
+pairs/freeze. .14 still owns statuses/experiments.
+
+### `.13` c28e — remove the obsolete internal-reference rationale (priority next)
+
+Encountered during c28d source review: maintained zifencei.sem.sexp commentary
+names extensions/Zifencei/zifencei_insts.sail and the fence-i book describes the
+reference's internal nop/decoded fields. User §20 requires published boundaries;
+these explanatory assertions are no longer a basis for dependency assumptions.
+The old .6 Result paragraph repeats the internal-source quote; annotate it with
+the public-evidence replacement without rewriting the historical receipt.
+Own bounded documentation/provenance repair after c28d is clean: replace them
+with the observed public experiment/ISA latitude, preserve exact semantic forms,
+regenerate affected provenance using published project tools and prove unchanged
+instruction behavior/guest inputs/frozen obligations. No reference implementation
+inspection or pin change. Priority-next before remaining runtime pairs; current
+c28d derivation excludes these assertions and uses authenticated ISA/local provider.
+
 Completed c18–c22a designs: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#design-b).
 
 ### `.13` census and dispositions (slice a)
@@ -680,6 +736,26 @@ retain the scope decisions; this census remains the detailed execution receipt.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.13` c28d — **ROOT CAUSE**: completeness rc=101, missing
+  CHK-GC-FENCEI-POS. Authenticated4.1 source32380 B/SHA4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91
+  permits coherent nop and requires ignored fields. Existing corpus alone is
+  not the direct full-state/request observer. Initial diagnostic's source-label
+  assertion corrected to existing full locator, no author change. Obsolete
+  internal-reference rationale owned c28e; excluded from derivation.
+- [x] `.13` c28d — **ADDRESSED**: independent61440 states/36 programs
+  rc=0 before CPU execution; direct61620/123222/123294 requests rc=0. Full
+  state/reservation/TLB cursor/wait and exact requests. Eleven bad tables/16
+  corrupt captures reject. Actual request-disabled extra-Load admission and
+  WFI condition admitting FENCE.I RED rc=101; both restored exact SHA. Two
+  Execution entries bind canonical/nonzero/coherent controls plus companions17/34.
+- [x] `.13` c28d — **NO REGRESSION**: verify.py rc=0: prior100 registry
+  entries, core/author/generated/canonical/frozen/archives exact; independent
+  full167/5365/10524 corpus unchanged. Pair61637/123256; effective100/114,
+  seven runtime pairs/freeze. make check rc=0 Rust167/17/220; focused gates/all
+  six books rc=0; hooks next. LIVE652/49/P4 12/18 unchanged; .14 statuses/
+  experiments remain. Next c28e boundary-rationale cleanup before runtime pairs.
+  promotion: declined (established direct-auditor discipline; worked visibility book and refusing controls retain diagnosis and finite limits).
+
 - [x] `.13` c28c — **ROOT CAUSE**: public dir-chase rc=2 with complete17
   rows plus two post-budget fetch deliveries; exact17 AGREE. History75c79af
   introduced +2,190d16b retained it. Exact-limit167 diagnostic rc=0;24/25 tail
@@ -810,6 +886,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#verification).
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-10` | `.13` c28d | independent61440/36;11 bad tables/16 captures; request/wait/missing-binding RED101 restored; prior100/core/inputs exact; full167 corpus | direct61620/123222, pair61637/123256; effective100/114; Rust167/17/220; focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28c | budget/legacy RED1→GREEN0; five mutations reject;149AGREE/4566,14 prior differences, three failures/one disabled refused; atomic242 regression; strict parser/input/author/registry identity | effective98/114 unchanged; GUEST147/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28b | public242/3146 repeated; restored granule DIVERGE; original A11AGREE/one named difference;164 successful old traces exact/three failures excluded; scalar/input/corpus/registry identity | effective98/114 unchanged; adapter controls/focused/all six books rc=0; hooks next |
 | `2026-10-10` | `.13` c28a | sharder12/0; seven whole entries18245 B; exact47951 B source inverse/SHA; prior16 rows/sealed history/code/inputs exact; explicit caps | registry100/effective98/114 unchanged; focused/all six books rc=0; hooks next |
@@ -823,6 +900,7 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.13` c28d | `SEMULITH-P4-0160 (leaf P4-SYSTEM.13): observe FENCE.I visibility and ignored fields` | c28e obsolete dependency rationale, then seven runtime pairs/freeze |
 | `.13` c28c | `SEMULITH-P4-0159 (leaf P4-SYSTEM.13): bound public reference runs` | c28d GC-FENCEI, remaining runtime pairs/freeze |
 | `.13` c28b | `SEMULITH-P4-0158 (leaf P4-SYSTEM.13): qualify the public AMO granule boundary` | c28c post-budget adapter repair, then GC-FENCEI c28d |
 | `.13` c28a | `SEMULITH-P4-0157 (leaf P4-SYSTEM.13): retain bounded development receipts` | c28b public AMO granule qualification, then GC-FENCEI |
@@ -831,6 +909,12 @@ Prior rows: [archive/P4-SYSTEM-9.md](archive/P4-SYSTEM-9.md#commits).
 | `.13` c26a | `SEMULITH-P4-0154 (leaf P4-SYSTEM.13): preserve completed task receipts under fixed caps` | c26b stale exceptional-push help, then remaining runtime pairs |
 
 ## Changelog
+
+- `2026-10-10`: `.13` c28d (SEMULITH-P4-0160): bind GC-FENCEI
+  field/mode and patched W/C visibility, full state/TLB cursor/wait/requests.
+  Direct61620/123222, pair61637/123256; wrong tables/captures and actual
+  request/wait controls reject/restored. Registry102/effective100/114; Rust220.
+  c28e owns obsolete dependency rationale before remaining seven runtime pairs.
 
 - `2026-10-10`: `.13` c28c (SEMULITH-P4-0159): exact public Sail
   budget/legacy fetch vocabulary; strict parser retained.149AGREE/4566 with

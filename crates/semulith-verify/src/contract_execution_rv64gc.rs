@@ -5,6 +5,7 @@
 
 mod atomic_align;
 mod fence;
+mod fence_i;
 mod jalr;
 mod load_x0;
 mod walk;
@@ -25,6 +26,10 @@ const STCE: u64 = 1 << 63;
 /// The direct witness a registry entry names.
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionCheck {
+    /// Canonical instruction synchronization and immediate coherent code visibility.
+    FenceIPositive,
+    /// Ignored FENCE.I fields preserve all state and patched parcel behavior.
+    FenceINegative,
     /// Naturally aligned LR/SC pairs at both widths and ordering bits.
     AtomicAlignPositive,
     /// Every atomic form faults before data translation at every misaligned offset.
@@ -60,6 +65,8 @@ impl ExecutionCheck {
     #[must_use]
     pub const fn guests(self) -> &'static [&'static str] {
         match self {
+            Self::FenceIPositive => &["fencei-selfmod", "fault-selfmod"],
+            Self::FenceINegative => &["fencei-reserved"],
             Self::AtomicAlignPositive => &["a-lrsc-pair"],
             Self::AtomicAlignNegative => &["a-lrsc-illegal", "a-amo-overlap"],
             Self::FencePositive => &["scope-alu"],
@@ -80,6 +87,8 @@ impl ExecutionCheck {
     /// Run the direct witness; the registry also runs its companion guests.
     pub fn run(self) -> Result<(), String> {
         match self {
+            Self::FenceIPositive => fence_i::positive(),
+            Self::FenceINegative => fence_i::negative(),
             Self::AtomicAlignPositive => atomic_align::positive(),
             Self::AtomicAlignNegative => atomic_align::negative(),
             Self::FencePositive => fence::positive(),
