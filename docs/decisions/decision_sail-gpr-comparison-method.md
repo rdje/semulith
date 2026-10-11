@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — bounded syntax/readers/comparison exist; authentication/collector/captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26/a28–a29, `SEMULITH-P4-0210`–`0212`/`0217`/`0219`–`0220`; GC policy/public Sail adapter
+- **Status:** `active` — bounded comparison/identity exist; complete authentication/collector/captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a30, `SEMULITH-P4-0210`–`0221`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -16,9 +16,9 @@ control. Implement this contract before recording a canonical capture. The
 optional witness/baseline grammar and generic witness-kind/budget/baseline-edge
 checks exist; they do not execute the method. A26 adds bounded receipt/manifest
 syntax. A28 exposes immutable first differences after full-budget validation;
-a29 adds bounded supplied-byte comparison and configured Python decimal-index limit refusals.
-Authentication/orchestration and
-fresh collection remain pending. Production qualification stays closed.
+a29 adds bounded byte comparison/decimal-index refusals; a30 authenticates retained
+reference identity. Complete authentication/orchestration and collection remain
+pending. Production qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.

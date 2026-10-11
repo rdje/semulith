@@ -108,6 +108,97 @@ sweep. That sweep covers `profiles/*/*.sexp`; it does not yet sweep a prospectiv
 nested capture store. No such store or canonical v1 capture exists. The future
 retention/capture slice must explicitly connect its files to evaluation and gates.
 
+## Authenticating a retained reference identity
+
+`read_reference_identity(root, record, current_candidate)` in
+`scripts/matched_gpr_identity.py` checks one `reference-identity` input against
+the current Sail candidate. The caller supplies the trusted runtime repository
+root and separately validated parent graph/candidate context. The reader checks
+its used request fields before I/O, then takes one authenticated immutable
+snapshot of at most 64 KiB through the existing anchored reader. It never checks
+a pin and reopens the descriptor. Raw `references` schema validation precedes the
+single dossier mapper; exactly one references document, one candidate and no
+experiments are allowed. Comments may surround that one document.
+
+Execution identity has five required fields: `id` (exactly `sail-riscv`), `origin`,
+`kind`, canonical relative `binary` and lowercase SHA256 `binary_sha256`. Optional
+`release`, `version`, `source_commit`, `asset` and `asset_sha256` must match in both
+presence and value. An absent version differs from a present empty version.
+Missing kind/binary/digest refuses even though the general candidate schema makes
+these fields optional. Descriptive status, matching-scope prose, host and retrieval
+metadata do not change this execution identity. Relevant configuration, source,
+producer-assessment and policy changes still require complete dependency checks.
+Hashing the entire parent dossier into its own experiment would create a cycle;
+this retained descriptor avoids that cycle without excusing closure evaluation.
+
+The frozen `IdentityCheck` keeps its own disposition separate from the reader's
+optional `pin` finding. `execution_identity` is an immutable tuple of field/value
+pairs, populated only on a current match:
+
+| Disposition | Meaning at this boundary |
+| --- | --- |
+| `matched` | The retained file matches its pin, validates, and matches the current execution fields. Qualification remains pending. |
+| `stale` | The file pin differs, or an authenticated descriptor differs from current execution fields. The nested pin distinguishes these causes. |
+| `unavailable` | A required safe read cannot complete. |
+| `refused` | Invalid request, unsafe/oversized artifact, malformed descriptor or unsupported candidate identity. A pin can match while descriptor validation refuses. |
+
+This complete synthetic example writes and removes its fixture under `target/`.
+Its dummy executable digest declares an identity; no executable is opened or
+verified, and no process or canonical capture is created. From the repository root:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_IDENTITY'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import hashlib
+import dossier_sexp as D
+import records_sexp as R
+from matched_gpr_identity import read_reference_identity
+
+root = Path.cwd()
+output = root / "target/reference-identity-example"
+output.mkdir(parents=True, exist_ok=True)
+candidate = dict(id="sail-riscv", role="reference", status="illustrative",
+                 kind="executable", origin="https://example.invalid/sail",
+                 lineage="unknown; synthetic example", binary="reference/bin/sail",
+                 binary_sha256="a" * 64)
+doc = dict(profile="illustration", retrieved="2026-10-11", work_dir="reference",
+           host=dict(os="example", kernel="example", arch="example", cxx="example"),
+           candidate=[candidate])
+payload = R.render_forms([D.references_to_form(doc)]).encode("utf-8")
+with TemporaryDirectory(dir=output) as directory:
+    path = Path(directory) / "identity.sexp"
+    path.write_bytes(payload)
+    record = dict(id="identity", role="reference-identity",
+                  path=path.relative_to(root).as_posix(),
+                  sha256=hashlib.sha256(payload).hexdigest())
+    checked = read_reference_identity(root, record, candidate)
+    print(checked.disposition, checked.pin.disposition)
+    changed = dict(candidate, binary_sha256="b" * 64)
+    stale = read_reference_identity(root, record, changed)
+    print(stale.disposition, stale.pin.disposition)
+PY_IDENTITY
+python3 scripts/probe_matched_gpr_identity.py
+python3 -O scripts/probe_matched_gpr_identity.py
+```
+
+The example prints `matched matched`, then `stale matched`: a correctly pinned
+historical descriptor can differ from the current candidate. The 40-test suite
+runs normal/optimized controls; eight independent omissions lose 4/2/5/1/1/1/20/17
+assertions without harness errors. PROFILE-CONSISTENCY runs both modes. Owned
+fixtures stay on the repository volume and are removed after each test. Existing
+reader controls cover anchored traversal, races, device boundaries and cleanup.
+The new controls also require a single bounded read, schema before mapping,
+immutable results and no reopen after a successful snapshot.
+
+This boundary does not authenticate the executable, execution, receipts,
+invocations, reference-producer version, other inputs/observations or the complete
+dependency closure. Offline retained evidence does not depend on a transient
+binary cache; fresh replay separately needs the actual pinned executable through
+its public acquisition/build route. Full method and aggregate-budget evaluation,
+reviewed collection, retention and policy consumers remain pending. No ancestry,
+independence, qualification or CPU acceptance credit follows from a match.
+
 ## What comes next
 
 A27 repairs the terminal-newline defect found at a26: all project exact-token
@@ -131,7 +222,8 @@ behavior, not file authenticity, producer execution or evidence qualification.
 Historical comparisons remain prose in the canonical dossier. Optional structured
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
 formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
-exist; authenticated method evaluation, reviewed fresh collection, measured
+and retained reference-identity authentication exist; complete method evaluation,
+reviewed fresh collection, measured
 retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
 implementation and is prospective; this book does not backdate it. Candidate

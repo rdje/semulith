@@ -690,6 +690,44 @@ EOF
   score "RED unbounded growth sentinel exceeds snapshot cap" "$rc" 1 "$out" "READ-LIMIT MISS snapshot growth-at-cap consumes at most bound"
   out="$(python3 "$ROOT/scripts/probe_experiment_read_limits.py" --mutation retain-pin-payload 2>&1)"; rc=$?
   score "RED pin-only path retaining snapshot payload is detected" "$rc" 1 "$out" "READ-LIMIT MISS pin-only creates no snapshot payload"
+  # P4-SYSTEM.14 a30: finite identity authentication, not execution/qualification.
+  # Keep every outer arm literal: DERIVED-COUNTS enumerates call sites.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" 2>&1)"; rc=$?
+  score "GREEN normal authenticated reference identity" "$rc" 0 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED normal omitted identity guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED normal omitted identity guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation raw-schema 2>&1)"; rc=$?
+  score "RED normal omitted identity guard raw-schema" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation root-count 2>&1)"; rc=$?
+  score "RED normal omitted identity guard root-count" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation candidate-count 2>&1)"; rc=$?
+  score "RED normal omitted identity guard candidate-count" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation experiment-free 2>&1)"; rc=$?
+  score "RED normal omitted identity guard experiment-free" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation identity-equality 2>&1)"; rc=$?
+  score "RED normal omitted identity guard identity-equality" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 20 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation optional-presence 2>&1)"; rc=$?
+  score "RED normal omitted identity guard optional-presence" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 17 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" 2>&1)"; rc=$?
+  score "GREEN optimized authenticated reference identity" "$rc" 0 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation raw-schema 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard raw-schema" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation root-count 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard root-count" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation candidate-count 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard candidate-count" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation experiment-free 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard experiment-free" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation identity-equality 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard identity-equality" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 20 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation optional-presence 2>&1)"; rc=$?
+  score "RED optimized omitted identity guard optional-presence" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 17 failures / 0 errors; fixtures cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

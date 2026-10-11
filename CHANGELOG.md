@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0221 (leaf P4-SYSTEM.14) — authenticate retained Sail reference identity
+
+- Add one bounded authenticated descriptor read, raw schema before single mapping, exact Sail execution-field/presence matching and frozen separate pin/currentness findings. No executable-cache, receipt/process, full-method or qualification credit.
+- 40 controls pass normal/optimized; eight omissions4/2/5/1/1/1/20/17 discriminate without errors. PROFILE-CONSISTENCY80/0 derives39 doctrines/885 arms. Fresh preflight full CI on clean3960e6b passed all five legs; focused17/sharder12/0/seven books/3038 rendered links/literal commands and full source/history protections pass. Preserve243 canonical dictionaries/1298 other files/96 predecessor entries, fixed seals/caps/CPU status; next receipt binding and complete closure/evaluation.
+
 ## SEMULITH-P4-0220 (leaf P4-SYSTEM.14) — compare bounded supplied-byte Sail units
 
 - Add one immutable three-run byte unit with mandatory exits, pre-decode payload/budget bounds, raw-schema-first single expectation mapping, exact repeat/control bytes and sole witnessed RV64-value discrimination. Normalize native decimal trace-conversion failures to Sail refusals. Separate failed/unsupported/satisfied outcomes; authentication and qualification stay closed.
