@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — contain completed method-unit designs (P4-SYSTEM.14 a36)
+
+Full CI all five legs passes on exact cleane048616: fmt/clippy/443 Rust tests,
+all doctrines, bench/smoke53 and seven books. Log40152B/
+7297dede6627465ad5c0380304ed5b987cd96e6d2ec2970224ba1f55a93a8406;
+verified16 committed sources remain exact, Git clean, brief0 and actual process
+census clear. No push at137/300; the expired exception remains expired.
+
+Root128784B/131072 leaves2288B, insufficient for the next leaf's ownership and
+signoff. Move eight complete a22–a29 designs31998B and whole earlier a22 book
+receipt709B into ordinary part15. Nine marked bodies retain original source
+order/offsets/lengths/SHA256. All eight exact live headings stay with direct
+routes; leave a20/a21 relative links in their original context. The book teaches
+current reading/inverse/refusal rules and includes a literal cat15 command.
+Full task128784B/0e62c1fcaada508f0340ff6b1a8285de4cf2d97a1773ec5b1a3e1d23131587ad
+and book17433B/5e2a6f43319a339b8b33b8732f0750b3fb2e198846f83774356ca3cc31171773
+reconstruct exactly.31 corrupt/missing-marker/omitted-body/actual receipt with
+updated digest/source map/live route/guide refusals pass normal/O. Initial
+actual-count probe guessed an absent spelling; inspect the source and mutate
+its literal All21 corrupt receipt. No false refusal or production defect credit.
+
+Part15 remains plain Markdown outside LC0006; the sealed reader refuses it.
+Trim only the new wrapper EOF, preserving every marked byte. Protected earlier
+parts/seal/caps/code/canonical/method/CPU stay exact. DECLINED new promotion:
+existing lossless partition and tools-first rules apply; task/book/toolbox retain
+current instructions. DEV pressure owns only oldest whole-entry publication,
+with whole source inverses and actual old/new/published receipt+digest refusals.
+Part15=39750B/42b5cb5676271bd3546febd210e4d3b39ab0c3b4d2a0838f26aeff12a5f7e84f.
+DEV51107→47168 at48200 reserved-room target,21=18+3/3939B into0246,
+4172B/d80e583bc5602c3f55005f26ee1b513a0bf2d61ec9e9c63a21cde17d6b47a4d1;
+38live+210sealed248logical. Focused12/sharder12/0/seven books/3076 links,
+normal/print/literal read/history/scope pass;1321 other files/101 prior entries
+exact and real receipt+digest edits refuse. Final hashes/hooks/brief0/census
+required. Next a37 bounded dependency leaf inspection, then aggregate evaluator/
+gates, reviewed collector, measured retention/cases/captures/full policy.
+
 ## _(2026-10-11)_ — normalize shared-reader refusals (P4-SYSTEM.14 a35)
 
 D35-REFUSALS: public parse leaked ValueError for5000-digit decimal and0x_/0b_;
@@ -641,63 +677,4 @@ Old manifest records remain exact; no ceiling rises. Evidence target/p4-system-1
 Focused10, sharder12/0, seven books,15 rendered checks and exact old-book inverse
 pass; protected scope is checked before commit. Latest full CI is a18 green.
 promotion: decision_sail-gpr-comparison-method and its live GC-book include.
-
-## _(2026-10-11)_ — refuse duplicate expectation keys (P4-SYSTEM.14 a18)
-
-Public mapper/adapter reproduction: conflicting x1 values are shape-valid, collapse
-to the last value, then AGREE. Reject duplicate write keys per step in the single
-mapper, even for equal values; dossier gate maps expectations after shape checks.
-Name program/step/key. Preserve distinct keys, empty writes, device labels and
-repeated keys in different steps; grammar unchanged. Mapping12/0, optimized12/0,
-guard removal six intended failures, actual gate0→1 and cached adapter refusal2
-pass. DOSSIER-SCHEMA22/0 and existing mapper14/0 pass.
-
-Raw census222documents/6057steps/4105entries finds zero duplicates. Initial census
-misused S.field's scalar return; corrected the instrument before drawing a result.
-Expanded probe's first emitter had a late global declaration; the new positive/
-reason-specific arms refused it. Fix the declaration and rerun all controls.
-All243canonical dictionaries exact; full five-leg CI, Rust173/17/253 and seven
-books/literal+rendered refusal pass. No canonical capture/status/cap change.
-Evidence target/p4-system-14/a18.
-promotion: matched-experiment decision and GC book own the identity rule and limits.
-
-## _(2026-10-11)_ — bounded authenticated snapshots (P4-SYSTEM.14 a17)
-
-PinResult intentionally carries metadata. Reopening after its check can observe
-a different file. Share the existing anchored traversal with read_snapshot,
-requiring an explicit nonnegative/nonboolean byte bound; oversized files refuse
-before payload reading. Return immutable bytes/result only after all pin/path/
-stability checks and close callbacks succeed; failure has no data. Pin-only API
-and39controls retain their behavior; snapshot memory is proportional to the bound,
-not an exact process-memory ceiling, and multiple snapshots need an aggregate budget.
-
-Snapshot24/0 (also optimized), five independent mutations and twelve old pin
-predicate removals pass. Cases cover partial I/O/close errors, races, no reopen,
-immutability and real multi-chunk bytes, with tracked descriptor/fixture cleanup.
-No canonical capture, store, retention decision, cap or CPU acceptance change.
-Focused13/profile54/0/seven books/rendered API and actual book helper pass;
-protected scope checked before commit. Comparison review reproduces a conflicting
-duplicate x1 write collapsed by the mapper, allowing AGREE; own priority-high a18
-next, before qualification. No claim that current canonical records contain it.
-Evidence target/p4-system-14/a17. promotion: matched-experiment decision and GC book
-own the API, examples, memory bounds and remaining qualification boundary.
-
-## _(2026-10-11)_ — reject surplus Sail observations (P4-SYSTEM.14 a16)
-
-Predecessor11ee6d4 compares one expected NOP as AGREE even with an extra row/x1
-write, interrupt or fetch delivery. Parsing keeps these; expected-only iteration
-ignores their tail. Refuse out-of-budget rows and witnessed deliveries before
-value comparison. Five tail cases/three exact-boundary agreements pass; removing
-either check fails for its intended reason, also under optimization. Retain the
-older offline controls; no blanket optimized-assertion claim.
-
-Live pinned public diagnostics retain atomic242cases/3146boundaries per repeat
-with wrong-granule divergence and the timer's named platform difference. These
-are fresh diagnostic traces, not canonical qualification. Evidence target/p4-system-14/a16.
-Move two oldest complete notes through the existing sharder:28==26+2, exact order/
-bytes, head48971→44439B before this entry; immutable prior shards stay intact.
-GUEST-GEN152/0, focused13, sharder12/0 and seven books/rendered rule pass. All167
-cached guests/334traces retain exact predecessor verdict/reason pairs; this does
-not authenticate process status. Protected1265other tracked files remain exact.
-promotion: matched-experiment decision and GC book own the budget rule and limits.
 

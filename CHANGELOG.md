@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0227 (leaf P4-SYSTEM.14) — contain completed method-unit designs
+
+- Preserve eight whole closed designs31998B and one book receipt709B in ordinary unsealed part15. Keep eight live headings; nine authenticated inverse bodies reconstruct both complete committed sources.31 damaged-body/map/receipt/route/guide controls refuse normal/O; sealed reader scope stays12 originals.
+- Full CI all five legs green on exacte048616 (443 Rust tests/smoke53/seven books). DEV21=18+3/3939B into0246; focused12/sharder12/0/seven books/3076 links/normal+print/literal read and1321 other files/101 old entries/full predecessors pass. No code/canonical/cap/seal/CPU change; a37 bounded leaf inspection follows.
+
 ## SEMULITH-P4-0226 (leaf P4-SYSTEM.14) — normalize shared-reader refusals
 
 - Normalize unreadable numeric atoms to source/line SexpError; CLI refuses expected parse/head/I/O/decode failures. Preserve valid values, host limits and library I/O contract. Replace optimization-removable self-test asserts after reproducing false credit.
