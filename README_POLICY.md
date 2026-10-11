@@ -33,13 +33,12 @@
   (`scripts/shard_history.py`), the freeze manifest, and the `SHARD-FREEZE` check now exist, and
   the fired ceiling was answered by sharding — never by raising the cap. `DEV_NOTES.md` keeps the
   trigger: the same tool serves it when its ceiling fires.
-- **Full live-document-size containment is NOT yet adopted as a doctrine.** That programme
-  governs every long-lived document family. Its trigger — a fired ceiling — HAS fired
-  (measured 2026-10-06: `CHANGELOG.md` and `DEV_NOTES.md` shard routinely at 64 / 48 KiB; the
-  P4 tree file archived at its per-part ceiling; the book's P4 chapter partitioned; the
-  task-tree index applying "completed trees leave the index"), and every firing was answered
-  by the surface's own control, never a raised number. Adopting the doctrine itself is owned
-  by `LIVE-CONTAINMENT.4` (`docs/tasks/LIVE-CONTAINMENT.md`).
+- **Containment contract copied; full adoption remains in progress.** The project-owned
+  `LIVE_DOCUMENT_SIZE_CONTAINMENT.md` retains the reviewed neutral body under a local
+  authority note (`LIVE-CONTAINMENT.4g`, `SEMULITH-LC-0010`). Full graph inventory,
+  field classifications, local debt/limits, checker integration and migrations remain
+  owned by `LIVE-CONTAINMENT.4`. Existing routing controls and ceilings continue to
+  apply; this import does not claim complete coverage or authorize a cap increase.
 <!-- README-POLICY-LOCAL-ADOPTION:END -->
 
 ---

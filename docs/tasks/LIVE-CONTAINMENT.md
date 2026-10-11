@@ -219,6 +219,60 @@ promotion: declined (the orientation correction and canonical routes are local).
   mandatory COMMIT hooks apply. Full doctrine/inventory/checker adoption and
   capacity remedy remain .4; no CPU or qualification credit.
 
+## .4g / SEMULITH-LC-0010 — adopt the local neutral containment contract
+
+Status: complete (contract import only). Owned on clean91a8f59 after exact7-file commit verification,
+brief0/untracked and unrestricted handoff0, before scratch or source changes.
+Read the current external adoption guide, neutral doctrine and checker contract
+in full. Source fsmgen revision a9867e16752e9ea37a873e92c7b955782c5cbf37:
+doctrine32730B SHA256beefcc17ed958a1a5b3d55f4ba91cf6458c68c5e91ab715046980444cf723cbf;
+exact bytes after its local-adoption-end marker20208B/343lines SHA256
+0be4823ed138daff87fd7ed9ff6a9e6fde377a855075b407de97ebca6a293244.
+All three reviewed policy files match that committed source; the other repo is
+strictly read-only and will not become a build dependency.
+
+Copy only the unchanged neutral doctrine body into a project-owned root copy,
+with a separate Semulith authority/phase/locality note bounded to40lines/2048B.
+Register that new normative surface with limits derived from those two parts;
+no existing cap changes. Wire discovery through canonical CLAUDE.md (AGENTS.md
+already routes there), update the README policy's local adoption state, and
+include the complete local contract in the existing book chapter. Preserve
+README policy's neutral body and all old book teaching outside the new section.
+Do not claim complete inventory, field classification, registry/checker adoption
+or migration: these remain explicit .4 obligations under the guide's phases.
+Re-derive routes/current mirrors only after actual registration. Own
+target/live-containment/contract, exact import/source inverses, full prior
+history/head retention, protected modes/Gitlink, focused checks, seven books/
+complete normal+print teaching, actual examples and COMMIT. Existing seals,
+archives, task-file count/caps, CPU and qualification stay unchanged.
+
+D51 owned priority2 for the next .4h capacity review: the old count decision
+calls28 flat files live trees; Git6622177 derives27 trees+one template,
+nine archives and24artifacts. Git314b0c4 derives33trees+one template,
+40archives and22artifacts, with six added trees and none removed. Preserve the
+old receipt; append an explicit classification correction and review any remedy
+against the actual contract expansion. No count raise is authorized by this
+import slice. Exact source inventories: orientation/capacity-baselines.json.
+Full inventory/adoption follows; LC.4 owns every remaining pressure remedy.
+promotion: declined (the adopted local normative contract owns this policy).
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/contract/verify.py`
+  rc=0: source91a8f59 lacks the local copy; reviewed source neutral body is
+  20208B/343lines/SHA0be4823e. Full copy/inventory/checker were pending .4.
+- [x] **ADDRESSED** — verify.py normal/O rc=0: exact neutral body plus separate
+  1892B/28line note; complete22100B/371line policy under derived383/22256 caps.
+  Whole bootstrap/README-neutral/book/registry inverses pass; derive-list rc=0
+  reports39 routes,39 doctrines/1441 arms/49 chapters unchanged otherwise.
+- [x] **NO REGRESSION** — focused.sh/verify.py/rendered.py rc=0 (normal/O for
+  verifiers): focused12/sharder12/seven books/3236 fresh+actual links; all56
+  policy blocks in order normal+print and literal22100B read exact. All99 old
+  history entries/whole heads and1384 protected regular files/Gitlink exact;
+  existing limits, seals, archive bodies and CPU/qualification unchanged.
+- [x] **LOCKSTEP** — canonical bootstrap, local README-policy state, complete
+  book contract, pointer and owner synchronized; LIVE changes only38→39 routes.
+  Full inventory/field/debt/registry/checker/migration adoption remains open;
+  .4h owns D51/capacity review after COMMIT. No count increase in this slice.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -526,6 +580,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4g: verify.py/rendered.py normal/O and focused.sh rc=0: exact20208B neutral
+body, bounded1892B note, complete source inverses/99 old entries/1384 protected
+files/Gitlink exact. Focused12/sharder12/seven books/3236 links; all56 complete
+policy blocks normal+print and literal read pass. Adjacent HTML table cells need
+explicit boundaries in the text verifier; complete content agrees after that
+normalization. Existing caps/seals/CPU unchanged; full adoption still pending.
+
 .4f: verify.py/rendered.py normal/O and focused.sh rc=0: D50 fixed;33 files/six
 active, heading-only/full-book inverses, eight pointer authority homes,97 old
 entries/whole heads/1386 protected files/Gitlink exact. Focused12/sharder12/seven
@@ -576,6 +637,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0010 (leaf LIVE-CONTAINMENT.4): adopt the local containment contract` — .4g complete; full inventory/checker/migrations and .4h capacity review remain.
 
 `SEMULITH-LC-0009 (leaf LIVE-CONTAINMENT.4): make orientation describe its sources` — .4f complete; full adoption and capacity remedy remain.
 

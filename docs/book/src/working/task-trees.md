@@ -61,6 +61,18 @@ cat MEMORY.md
 cat KNOWLEDGE_MAP.md
 ```
 
+## Local containment contract
+
+The following is the complete locally owned contract. Its adoption note separates
+this exact import from the inventory, checker and migration work still owned by
+LIVE-CONTAINMENT.4. Existing controls and ceilings remain in force.
+
+```sh
+cat LIVE_DOCUMENT_SIZE_CONTAINMENT.md
+```
+
+{{#include ../../../../LIVE_DOCUMENT_SIZE_CONTAINMENT.md}}
+
 ## Every lane of the plan, and who owns it
 
 Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository

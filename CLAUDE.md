@@ -14,7 +14,8 @@ human is working. Follow it exactly.
    result: use or build a diagnostic tool FIRST; never guess a root cause.
 4. Read `DOCTRINE_ENFORCEMENT.md` — how every mechanizable doctrine is enforced, and the
    task-acceptance checklist a change MUST pass.
-5. Resume from `MEMORY.md` (the bounded layer-A resume pointer) → the active task-tree's
+5. Read `LIVE_DOCUMENT_SIZE_CONTAINMENT.md` — the local containment contract and adoption frontier.
+6. Resume from `MEMORY.md` (the bounded layer-A resume pointer) → the active task-tree's
    frontier under `docs/tasks/`.
 
 ## The non-negotiables

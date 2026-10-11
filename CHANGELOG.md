@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0010 (leaf LIVE-CONTAINMENT.4) — adopt the local containment contract
+
+- Import the exact20208B/343-line neutral body with a bounded local authority/frontier note; wire bootstrap, README policy, routing and complete book teaching. Derived routes39; existing limits/seals and CPU qualification unchanged.
+- Full graph inventory, field classification, local declarations/checker and migrations remain LC.4. D51's source terminology correction and capacity review are owned next; no count raise in this slice.
+
 ## SEMULITH-LC-0009 (leaf LIVE-CONTAINMENT.4) — make orientation describe its sources
 
 - Correct D50: generated map retains all33 task links under "Task-tree files"; metadata derives six active trees. Generator/map/book inverses preserve all other bytes.

@@ -408,3 +408,5 @@ docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; b
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0
 materials/	reader_navigation	partitioned	the primary-source catalogue; one record per document, identity and licence tracked, bytes not	4	65536	12	262144	131072
 docs/upstream/	reader_navigation	partitioned	upstream issue tracker; one directory per project, one per issue, each self-contained	60	262144	150	1048576	32768
+# LC.4g: exact neutral body20208B/343lines + local-note allowance2048B/40lines.
+LIVE_DOCUMENT_SIZE_CONTAINMENT.md	reader_navigation	normative	local neutral containment contract; LC.4g import, full inventory/checker adoption remains LC.4	0	0	383	22256	0

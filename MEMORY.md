@@ -16,11 +16,10 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: adopt the project-owned containment contract and measured
-  inventory, then resolve task-family capacity under LC.4. Resume P4-SYSTEM.14
-  a42 adequacy after that prerequisite. Read LC.4's frontier before choosing.
-- in_flight_uncommitted: none after LC-0009 COMMIT; results and canonical
-  routes are in `docs/tasks/LIVE-CONTAINMENT.md` .4f. D49 is committed in
-  `docs/tasks/P4-SYSTEM.md` a42l2.
+- next_action: own LC.4h's revision-pinned task-capacity review, then complete
+  graph inventory, field classifications and checker adoption. Read LC.4 first.
+  Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
+- in_flight_uncommitted: none after LC-0010 COMMIT. Exact contract import,
+  remaining adoption work and D51 ownership: `docs/tasks/LIVE-CONTAINMENT.md` .4g.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

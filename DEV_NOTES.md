@@ -1,5 +1,20 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — adopt the local containment contract (LIVE-CONTAINMENT.4g)
+
+Copy the reviewed neutral body20208B/343lines exactly from fsmgen revision
+a9867e1; SHA2560be4823ed138daff87fd7ed9ff6a9e6fde377a855075b407de97ebca6a293244.
+The separate Semulith note1892B/28lines names authority, locality and pending
+adoption work. Its40line/2048B allowance plus the fixed body derives383lines/
+22256B whole-file limits. Existing ceilings and sealed history stay unchanged.
+Canonical bootstrap discovers the local copy; README policy's neutral body is
+retained. The book includes the complete contract and a literal read command.
+Routes re-derive39; only that LIVE count changes. Full inventory, field contracts,
+local declarations/checker and migrations are not claimed complete. D51 and
+capacity review remain owned in LC.4h; original source receipts are retained.
+All56 policy blocks render normal+print; focused12/seven books/3236 links pass.
+promotion: declined (the local normative copy owns the policy).
+
 ## _(2026-10-11)_ — truthful orientation before containment inventory (LIVE-CONTAINMENT.4f)
 
 D50: on314b0c4 the public Knowledge Map generator enumerates33 flat task
