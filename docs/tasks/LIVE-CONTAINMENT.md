@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | finite archive sealed; full inventory, neutral doctrine and checker adoption remain |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | neutral contract copied; .4h2 capacity review, then full inventory and checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -272,6 +272,58 @@ promotion: declined (the adopted local normative contract owns this policy).
   book contract, pointer and owner synchronized; LIVE changes only38→39 routes.
   Full inventory/field/debt/registry/checker/migration adoption remains open;
   .4h owns D51/capacity review after COMMIT. No count increase in this slice.
+
+## .4h — revision-pinned task-capacity review (active)
+
+D51 remains priority2 and owned here. Before selecting a count remedy, retain
+the historical receipt and derive typed source inventories at6622177 and the
+current committed boundary; distinguish task instances, template, archives and
+artifacts. Six real task instances were added. A proposed increase requires a
+new separate reviewed authority proving that expansion, not calendar growth.
+Current decision-family pressure is a prerequisite, not permission to widen it.
+Children: .4h1/LC-0011 index containment, then .4h2/LC-0012 capacity review.
+
+### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
+
+Status: complete. Owned on clean42dd68f after exact10-file commit verification,
+brief0/untracked and unrestricted handoff0, before edits or scratch writes.
+The decisions family is60files/261604B under262144B (540B room); INDEX.md is
+16379/16384B (5B room). Do not add an authority record into that pressure or
+raise either cap. Four task-family and one changelog-family index rows duplicate rationale and historical
+numbers in their linked canonical records; all five records have been read in
+full. Compare every removed clause with its authority before demotion and
+retain D51's source-classification correction for .4h2; no unique detail may be
+removed or a faulty authority hidden. Leave the D51-affected count record's row
+exact until .4h2 repairs its authority. Replace only the other five navigation rows
+with dated topic labels and reader questions, retaining targets/types/order,
+all other index bytes, all canonical records and the complete membership set.
+
+Own target/live-containment/decision-index, immutable source/row/authority
+mapping, complete index inverse, source-clause checks, focused checks and seven
+books. Update the existing book's navigation teaching with a worked read example;
+retain all other book bytes. Own necessary whole-oldest CH/DEV rollover before
+new receipts, full-source/head reconstruction, earlier seals/manifest prefix,
+real receipt+digest refusal controls, protected file/mode/Gitlink proof and COMMIT.
+Existing caps, CPU/canonical/qualification and LIVE stay exact. Full containment
+inventory/checker remains LC.4; no new decision or count raise in this slice.
+promotion: declined (canonical records already own the demoted details).
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/decision-index/verify.py`
+  rc=0: source INDEX16379/16384B; family261604/262144B. Five old summaries
+  repeat15 located clauses in complete linked records; D51's row is excluded.
+- [x] **ADDRESSED** — verify.py normal/O rc=0: INDEX15656B,723B freed;
+  complete index/book inverses, every target/type/order and all five source
+  identities exact. Decision family260881B; no cap or canonical-record change.
+- [x] **NO REGRESSION** — history.py/verify.py/rendered.py normal/O and
+  focused.sh rc=0: all101 prior entries/complete heads/seals retained; genuine
+  head/moved/published receipt+digest controls refuse jointly. Focused12/
+  sharder12/seven books/3238 links, complete normal+print teaching/two literal
+  examples and1387 protected regular files/Gitlink exact; LIVE/CPU unchanged.
+- [x] **LOCKSTEP** — current navigation/book/pointer/frontier and this owner
+  agree. Whole DEV6957B→0280 (7190B SHA b0df3588) and CH1398B→0281
+  (1635B SHA4e913b3d); manifest prefix exact,73live+210sealed283logical.
+  Source EOF blank runs retained; only0280:100/0281:27 whitespace notices,
+  complete inverses prove the runs. COMMIT precedes .4h2/D51 capacity review.
 
 ## Decisions
 
@@ -580,6 +632,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h1: verify/history/rendered normal/O and focused.sh rc=0: five canonical
+identities/15 source clauses, whole index/book/task/head inverses,101 old entries,
+1387 protected files/Gitlink and fixed caps exact. INDEX16379→15656B;
+decision family261604→260881B. Whole DEV6957B→0280/CH1398B→0281 retained,
+receipt+digest refusals discriminate. Focused12/sharder12/seven books/3238links,
+normal+print/two literal examples pass; only inherited EOF notices0280:100 and
+0281:27, all other whitespace0. D51 remains owned next; LIVE/CPU unchanged.
+
 .4g: verify.py/rendered.py normal/O and focused.sh rc=0: exact20208B neutral
 body, bounded1892B note, complete source inverses/99 old entries/1384 protected
 files/Gitlink exact. Focused12/sharder12/seven books/3236 links; all56 complete
@@ -637,6 +697,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0011 (leaf LIVE-CONTAINMENT.4): contain duplicate decision-index summaries` — .4h1 complete; .4h2/D51 capacity review next.
 
 `SEMULITH-LC-0010 (leaf LIVE-CONTAINMENT.4): adopt the local containment contract` — .4g complete; full inventory/checker/migrations and .4h capacity review remain.
 

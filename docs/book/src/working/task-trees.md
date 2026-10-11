@@ -61,6 +61,19 @@ cat MEMORY.md
 cat KNOWLEDGE_MAP.md
 ```
 
+### Decision navigation and the record it opens
+
+The decision index is a bounded navigation view. Dated topic labels and reader
+questions point to the complete records, which own the rationale and historical
+measurements. Shortening duplicate summaries preserves those records and links;
+it does not authorize changing a limit. For example, read the index and the
+per-tree size ruling:
+
+```sh
+cat docs/decisions/INDEX.md
+cat docs/decisions/decision_task-tree-per-part-growth.md
+```
+
 ## Local containment contract
 
 The following is the complete locally owned contract. Its adoption note separates
