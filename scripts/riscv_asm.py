@@ -919,24 +919,11 @@ ELF_PAGE_ALIGN = 4096
 EF_RISCV_RVC = 0x1  # Ratified RVI-PSABI 1.0 §8.1: permits 16-bit instruction alignment.
 
 
-def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
-    """Write a single-segment RV64 executable loading `payload` at `entry`.
+def encode_elf64(entry: int, payload: bytes, ialign: int) -> bytes:
+    """Construct the single-segment RV64 ELF bytes without writing a path.
 
-    `ialign` is the profile's instruction-address alignment in BITS (rv64i: 32; rv64gc with
-    C: 16, D-IALIGN-16) — profile data, derived by the caller from the unit's profile.sexp,
-    never assumed here (the rv64i-era assumption this signature retired hard-coded 32).
-
-    ⛔ A SECTION HEADER TABLE IS EMITTED EVEN THOUGH EXECUTION DOES NOT NEED ONE. A first cut
-    wrote program headers only — which the Sail model loaded and ran without complaint, and which
-    Spike refused outright:
-
-        Assertion failed: (from_le(eh->e_shstrndx) < from_le(eh->e_shnum)), elfloader.cc:116
-
-    With no sections, `e_shnum` and `e_shstrndx` are both 0 and `0 < 0` is false. The two
-    reference models simply disagree about how strict an ELF loader should be. That is a HARNESS
-    difference, not a semantic one, and the right response is to emit the conformant artifact
-    rather than to carry a per-model variant — an input that only one comparator accepts is not a
-    matched experiment.
+    Entry/load bounds, profile IALIGN, headers and padding have one owner here.
+    Payload bytes are exact; this container API does not validate instructions.
     """
     if type(ialign) is not int or ialign not in (16, 32):
         raise AsmError("ELF IALIGN must be 16 or 32 bits")
@@ -985,5 +972,28 @@ def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
         + shdr(name_shstr, SHT_STRTAB, 0, 0, shstr_off, len(shstrtab), 1)
     )
     assert len(ehdr) == EHDR_SIZE and len(phdr) == PHDR_SIZE and len(sections) == 3 * SHDR_SIZE
-    path.write_bytes(ehdr + phdr + bytes(text_off - header_end) + payload + shstrtab
-                     + bytes(shoff - shstr_end) + sections)
+    return (ehdr + phdr + bytes(text_off - header_end) + payload + shstrtab
+            + bytes(shoff - shstr_end) + sections)
+
+
+def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
+    """Write a single-segment RV64 executable loading `payload` at `entry`.
+
+    `ialign` is the profile's instruction-address alignment in BITS (rv64i: 32; rv64gc with
+    C: 16, D-IALIGN-16) — profile data, derived by the caller from the unit's profile.sexp,
+    never assumed here (the rv64i-era assumption this signature retired hard-coded 32).
+
+    ⛔ A SECTION HEADER TABLE IS EMITTED EVEN THOUGH EXECUTION DOES NOT NEED ONE. A first cut
+    wrote program headers only — which the Sail model loaded and ran without complaint, and which
+    Spike refused outright:
+
+        Assertion failed: (from_le(eh->e_shstrndx) < from_le(eh->e_shnum)), elfloader.cc:116
+
+    With no sections, `e_shnum` and `e_shstrndx` are both 0 and `0 < 0` is false. The two
+    reference models simply disagree about how strict an ELF loader should be. That is a HARNESS
+    difference, not a semantic one, and the right response is to emit the conformant artifact
+    rather than to carry a per-model variant — an input that only one comparator accepts is not a
+    matched experiment.
+    """
+    image = encode_elf64(entry, payload, ialign)
+    path.write_bytes(image)

@@ -241,6 +241,80 @@ PYCODE
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-image 2>&1)"; rc=$?
   arm "RED reviewed source annotations cannot change instructions" "$rc" 1 "$out" "accepted source re-derivation changes assembled image"
 
+  # P4.14 a42c: bounded source-byte construction and legacy writer access order.
+  out="$(python3 scripts/probe_matched_gpr_image.py 2>&1)"; rc=$?
+  arm "GREEN source image normal" "$rc" 0 "$out" "MATCHED-GPR-IMAGE: 33 tests / 0 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation source-type 2>&1)"; rc=$?
+  arm "RED source-type normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 7 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation source-bound 2>&1)"; rc=$?
+  arm "RED source-bound normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation program-guard 2>&1)"; rc=$?
+  arm "RED program-guard normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation entry-guard 2>&1)"; rc=$?
+  arm "RED entry-guard normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation utf8 2>&1)"; rc=$?
+  arm "RED utf8 normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation line-preflight 2>&1)"; rc=$?
+  arm "RED line-preflight normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 8 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation final-line 2>&1)"; rc=$?
+  arm "RED final-line normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation canonical-route 2>&1)"; rc=$?
+  arm "RED canonical-route normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 3 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation ialign-context 2>&1)"; rc=$?
+  arm "RED ialign-context normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 4 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation payload-bound 2>&1)"; rc=$?
+  arm "RED payload-bound normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation image-bound 2>&1)"; rc=$?
+  arm "RED image-bound normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation payload-type 2>&1)"; rc=$?
+  arm "RED payload-type normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation image-type 2>&1)"; rc=$?
+  arm "RED image-type normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation source-fingerprint 2>&1)"; rc=$?
+  arm "RED source-fingerprint normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 2 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED entry-forward normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation writer-delegation 2>&1)"; rc=$?
+  arm "RED writer-delegation normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 scripts/probe_matched_gpr_image.py --mutation writer-order 2>&1)"; rc=$?
+  arm "RED writer-order normal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py 2>&1)"; rc=$?
+  arm "GREEN source image optimized" "$rc" 0 "$out" "MATCHED-GPR-IMAGE: 33 tests / 0 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation source-type 2>&1)"; rc=$?
+  arm "RED source-type optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 7 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation source-bound 2>&1)"; rc=$?
+  arm "RED source-bound optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation program-guard 2>&1)"; rc=$?
+  arm "RED program-guard optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation entry-guard 2>&1)"; rc=$?
+  arm "RED entry-guard optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation utf8 2>&1)"; rc=$?
+  arm "RED utf8 optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation line-preflight 2>&1)"; rc=$?
+  arm "RED line-preflight optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 8 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation final-line 2>&1)"; rc=$?
+  arm "RED final-line optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation canonical-route 2>&1)"; rc=$?
+  arm "RED canonical-route optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 3 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation ialign-context 2>&1)"; rc=$?
+  arm "RED ialign-context optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 4 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation payload-bound 2>&1)"; rc=$?
+  arm "RED payload-bound optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation image-bound 2>&1)"; rc=$?
+  arm "RED image-bound optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation payload-type 2>&1)"; rc=$?
+  arm "RED payload-type optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation image-type 2>&1)"; rc=$?
+  arm "RED image-type optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation source-fingerprint 2>&1)"; rc=$?
+  arm "RED source-fingerprint optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 2 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED entry-forward optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 6 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation writer-delegation 2>&1)"; rc=$?
+  arm "RED writer-delegation optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+  out="$(python3 -O scripts/probe_matched_gpr_image.py --mutation writer-order 2>&1)"; rc=$?
+  arm "RED writer-order optimized" "$rc" 1 "$out" "MATCHED-GPR-IMAGE: 33 tests / 1 failures / 0 errors; construction only"
+
   # P4.14 a42b: literal ELF64 fields/layout, including optimized refusal guards.
   out="$(python3 scripts/probe_elf_writer.py 2>&1)"; rc=$?
   arm "GREEN ELF ABI layout normal" "$rc" 0 "$out" "ELF-WRITER: 15 tests / 0 failures / 0 errors; no qualification"

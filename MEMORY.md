@@ -18,16 +18,17 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: run full CI on the clean P4-SYSTEM.14 a42b ELF repair commit,
-  record its result, then activate a42c source-byte image builder. Resume through
-  docs/tasks/P4-SYSTEM.md; no canonical matched-v1 capture/qualification yet.
-- in_flight_uncommitted: none after this repair commit; full CI is next.
-  Writer/controls/docs and Rust fixture clarification are committed together. Four exact old-source ABI defects reproduced;15 controls/
-  eight omissions normal/O;49 RV64I/167 GC payloads and full ELF inverses exact.
-  Rust443/two public CLI profiles/focused17/sharder12/0/seven books/3138 links/
-  all12 examples green, GUEST222/0,39 doctrines1231 arms. Whole old source/task/
-  book/history/canonical/scope proofs pass. Evidence target/p4-system-14/a42b.
-  Last full CI remains clean03ed501 all5 legs443 Rust/smoke53/seven books;
-  target/p4-system-14/a41/full-ci. Next a42b full CI is confirmatory and required
-  before a42c; complete closure/impact/collector provenance remains further work.
+- next_action: start clean P4-SYSTEM.14 a42d authenticated source/image
+  correspondence; use the public bounded builder and account for extra retained
+  bytes before reads within existing aggregate budgets. Then closure/impact/
+  collector provenance. Exact next scope in docs/tasks/P4-SYSTEM.md.
+- in_flight_uncommitted: a42c completed/verified, COMMIT postconditions finish
+  before next activation. Pure ELF owner/legacy order preserved;216 old images/
+  167 source builds exact.33 controls/17 omissions normal/O, old15/eight retained;
+  focused17/sharder12/0/seven books/all13 examples/full source/history guards.
+  D44 draft method-lookup regression fixed and exact-draft control discriminates.
+  GUEST258/0;39 doctrines1267 arms; DEV0253/CH0254 whole-entry moves only.
+  Latest full CI clean93525ac all5 legs green:443 Rust/smoke53/seven books,
+  18 sources unchanged; target/p4-system-14/a42b/full-ci/result.json.
+  No canonical matched-v1 capture/qualification; CPU acceptance unchanged.
 - blockers: none. Archive seal LC0006 complete; full containment adoption remains.

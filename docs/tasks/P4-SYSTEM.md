@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a42b, then a42c source/image builder |
+| 1 | `P4-SYSTEM.14` | `active` | a42d authenticated source/image correspondence, then complete adequacy |
 
 ## Decisions
 
@@ -651,15 +651,107 @@ All49 RV64I/167 GC exact old assembly payloads and complete old ELF inverses pas
 normal/O. Preserve all204 old GUEST-GEN arms and add18 literal controls.
 promotion: declined (bounded ELF repair/limits live in the assembler book, controls and owned task; no new method policy).
 
-### `.14` a42c — build a bounded image from source snapshot bytes (scheduled)
+### `.14` a42c — build a bounded image from source snapshot bytes (completed, SEMULITH-P4-0235)
 
-Start clean after a42b/full CI. Reuse the public canonical assembler and one ELF
-encoding owner to construct a bounded image from supplied immutable source bytes;
-caller owns authenticated input context and tool-dependency adequacy. Record exact
-source/image fingerprints and identifier/entry/alignment metadata; no reference
-process, artifact reopen or qualification. Current public corpus census167 source
-files: maximum41530B and5124 lines. Declare finite builder bounds before use;
-complete closure/conservative impact/collector provenance remain further a42 work.
+Owned before code on clean93525aced341de0c8ec2cc84b619a6c410e043ff;
+all18 verified/staged/committed/working hashes exact, brief0/untracked, standard
+and actual ps/lsof censuses rc=0. A42b full CI all5 legs green:443 Rust tests,
+smoke53/seven books. Log40159B SHA256
+19491814401b0281d45c2c30f8e96e888c59c0babe4cb6c3012c07775999e625;
+result.json records exact revision, rc=0,18 sources unchanged and clean Git.
+Evidence target/p4-system-14/a42b/full-ci. D43 fixed/committed; no canonical
+matched-v1 capture or qualification. Current GC source census167 files has maxima
+41530B and5124 splitlines. Relevant method/qualified contracts, public assembler/
+ELF/runner APIs, their probes and GC evaluation/retained chapters reviewed.
+
+Finite API: pure encode_elf64(entry,payload,ialign)->bytes becomes the single
+encoding owner; legacy write_elf64 keeps its signature, path write and None return.
+Every repaired93525ac ELF byte must remain exact across216 existing guests.
+Add first-method GC build_guest_image(source:bytes,*,program:str,entry:int), using
+the current owned canonical GC encoding route. Return frozen exact program,
+entry/IALIGN, canonical relative encoding route, source/payload/image sizes and
+SHA256s, with only immutable produced image bytes retained. Caller owns supplied
+source authentication/selected parent identity and complete current tool dependency
+adequacy; this utility does not reopen a source path, authenticate artifacts, run
+processes or grant comparison/method/qualification credit. Current canonical tool
+construction reads remain distinct from supplied artifact byte budgets.
+
+Declare before use: source1..1MiB, plain program1..65536 characters, unsigned64
+entry, at most8192 Python splitlines, assembled payload<=32KiB and ELF<=64KiB.
+Count exact Unicode splitlines before allocating the line list/constructing the
+assembler; preserve CRLF and every legacy separator. Refuse invalid source/UTF8/
+metadata/assembly/overflow; keep unavailable canonical tool context distinct from
+invalid source, and bound exposed diagnostics. Only the known canonical file route,
+never directory/table selection. No image/source path writes; caller owns storing
+produced bytes on-volume. Raw .word/.half, labels, C/FP/CSR forms preserve public
+assembler behavior; source/image construction proves no instruction semantics.
+
+Own normal/O controls and independent omissions for bounds/order/metadata/canonical
+selection/sole encoding/API forwarding/immutable result, all old ELF15/eight
+omissions and legacy C/guest controls. Whole original source/API/image inverses,
+canonical340/243 mappings, history/receipt+digest controls, fixed caps/seals and all
+other tracked byte/mode/Gitlink protections. Complete runnable GC book example,
+current toolbox/doctrine/live/task records; COMMIT hooks/brief0/censuses before next.
+
+Own D44-WRITER-ORDER before repair. Initial extraction's one-line
+path.write_bytes(encode_elf64(...)) resolves the output method before evaluating
+its argument. Exact repaired93525ac refuses entry1/IALIGN16 with AsmError and no
+output-method lookup; draft raises the getter's OSError after one lookup instead.
+Draft51834B SHA256
+c36aa80fe71ab6c5830eae2b0157f86684f6c444ef6c9e1cdc77983b4681e5cb,
+saved target/p4-system-14/a42c/writer-order-draft.txt; before.py diagnostic is
+writer-order-before.py/log. Impact: legacy validation/access-order regression,
+not guest-byte or CPU behavior. First32 controls/sixteen omissions and all216
+image comparisons passed without this combined control; no final signoff yet.
+Fix immediately by constructing the image before looking up output.write_bytes;
+add a33rd explicit control and exact-draft omission normal/O before registering.
+
+Own necessary fixed-cap containment in this slice before use: append current DEV/
+CHANGELOG lessons, move only whole oldest published entries through shard_history.py,
+and preserve all104 predecessor entries, manifest prefix, receipts/digests and seals.
+Update only current method implementation routing/progress labels within16384B;
+normative method clauses and artifact budgets remain exact.
+
+D44 repaired/verified: separate construction precedes output-method lookup;
+33 controls/17 omissions normal/O give0 errors and expected assertion failures,
+including1 exact-draft failure in each mode. Complete51834B draft recovered/hash
+exact. All216 repaired ELF images and167 GC source builds exact in both modes.
+Preserve222 old GUEST arms/add36, derive258/0 and39 doctrines1267 arms;
+PROFILE390/0 retained. Initial main-book draft exceeded the fixed family cap54B;
+route gate refused, current ELF explanation tightened without raising any cap.
+DEV16=15+1/4006B into0253 (4239B/9bde028021b6d96fae40dc7a178960ea18c2111fc10f9eacea6b98949e568646);
+CH90=89+1/771B into0254 (1008B/692a564a4cda7f1dc955b944bc7fedd5ab5cebabb6c361d12ad97fd1288f00ee).
+46live+210sealed256logical; all104 old entries and original manifest prefix exact.
+Only two inherited EOF-blank diagnostics (0253:62/0254:17), proved whole-entry
+copies; use ephemeral core.whitespace=-blank-at-eof, no historical trimming.
+Final history-negative diagnostic initially matched the newly added PROFILE390
+receipt in the current lesson, so its edit was correctly allowed. Root cause:
+unanchored first occurrence, not a historical guard defect or changed history.
+Select the exact complete committed predecessor entry before editing its receipt;
+repeated normal/O actual-original/moved/published negatives all refuse.
+Own D45-COMMIT-PREFLIGHT before correction: diagnostic expected two newline
+characters after each EOF warning; actual git output has one. Its Python failure
+was masked by the following message-file command, and unconditional orchestration
+then staged/started commit despite missing verified.json. Interrupted rc130;
+HEAD remains93525ac, both standard/actual censuses rc=0, no hook jobs remain.
+Impact: premature commit initiation, no commit/history/source corruption. Fix the
+exact diagnostic comparison, include already-staged files in the intended-set
+census, and require successful exit before every dependent mutation. Recreate
+all19 verified hashes, re-stage current docs and prove staged/working equality
+before retry; hooks remain enabled. Existing COMMIT contract was not deficient.
+D45 correction verified normal/O: actual stale staged docs refuse rc1 before
+commit, exact old whitespace mismatch refuses rc1 without writing a hash receipt;
+corrected full19-file/EOF-only preflight rc=0. Explicit staged equality is the
+next mandatory gate before retry. No remaining D45 source or history defect.
+promotion: declined (bounded construction API/trust/ordering live in its owner, executable controls and book; normative method unchanged).
+
+### `.14` a42d — authenticate and bind source/image correspondence (scheduled)
+
+Start clean after a42c. Use supplied authenticated source/image snapshots, the
+bounded public construction owner and explicit selected parent context; account
+for additional snapshots inside existing aggregate budgets before I/O. Complete
+closure/conservative impact/collector provenance remain further finite slices.
+Do not convert a built image or matching identifier into qualification.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -757,6 +849,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42c — **ROOT CAUSE**: contract.py rc=0 normal/O recovers
+  complete93525ac assembler and exact D44 draft51834B/hash; old AsmError/no
+  lookup versus draft OSError/one lookup reproduced; exact draft loses1 assertion.
+- [x] `.14` a42c — **ADDRESSED**: run-controls.py rc=0:33 controls/17
+  omissions7/1/6/6/1/8/1/3/4/1/1/1/1/2/6/1/1 failures/0 errors normal/O;
+  legacy ELF15/eight retained. corpus.py rc=0 normal/O:216 ELF/167 GC exact.
+- [x] `.14` a42c — **NO REGRESSION**: focused.sh/rendered.py/contract/
+  history/canonical/scope.py rc=0: focused17/sharder12/0/seven books/3140 links/all13
+  examples/normal+print teaching;340 raw forms/243 maps,104 old entries/1332
+  other files/modes/Gitlinks exact. Actual receipt+new-digest rewrites refuse;
+  fixed caps/seals/CPU/canonical unchanged. Final docs/hooks/hash/brief0/censuses.
 
 - [x] `.14` a42b — **ROOT CAUSE**: before.py rc=0 normal/O recovers exact
   committed writer and all four ABI defects; pinned psABI/gABI and relevant own
@@ -1017,6 +1121,23 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a42c: Verified33/0/0 normal/O, all17 omissions discriminate without errors;
+D44 old/draft method-lookup regression reproduced, exact draft51834B/hash inverse
+and1 assertion failure in both modes; repaired legacy order preserved. Whole
+repaired assembler/checker222 arms/method normative/book/task inverses exact.
+All216 repaired ELF bytes and167 GC source builds exact normal/O; old15/eight
+preserved.36 literal arms registered: GUEST258/0, PROFILE390/0,39 doctrines1267.
+Focused17/sharder12/0/seven books/3140 links/all13 literal examples/normal+print trust/bounds/
+D44 teaching pass. Initial54B main-book overflow refused/corrected; no cap bump.
+History/canonical/scope rc=0 normal/O:104 old entries,340 raw forms/243 maps,
+1332 other files/modes/Gitlinks exact; actual original/moved/published receipt
+rewrites refuse even with updated digests. DEV4006B to0253(4239B/9bde028021b6d96fae40dc7a178960ea18c2111fc10f9eacea6b98949e568646),
+CH771B to0254(1008B/692a564a4cda7f1dc955b944bc7fedd5ab5cebabb6c361d12ad97fd1288f00ee);
+46live+210sealed256logical. Only inherited shard EOF blanks get ephemeral Git
+whitespace exception. Fixed caps/seals/canonical/CPU/qualification unchanged.
+Latest full CI clean93525ac all5 legs443 Rust/smoke53/seven books,18 hashes exact;
+no Rust source change here. Final docs/hooks/hashes/brief0/censuses then a42d.
+
 a42b: Verified:15/0/0 normal/O, eight omissions1/2/1/1/1/9/6/1 fail without
 errors; exact old writer reproduces four header defects and invalid IALIGN0.
 All49 RV64I/167 GC payloads and complete old ELF inverses exact normal/O.
@@ -1256,6 +1377,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42c | `SEMULITH-P4-0235 (leaf P4-SYSTEM.14): construct bounded GC images from source bytes` | a42d authenticated correspondence within shared budgets |
 | `.14` a42b | `SEMULITH-P4-0234 (leaf P4-SYSTEM.14): repair ELF alignment and compressed flags` | full CI on clean repair, then a42c source/image builder |
 | `.14` a42a | `SEMULITH-P4-0233 (leaf P4-SYSTEM.14): bind expectations to the frozen parent program` | a42b source/image correspondence and remaining adequacy |
 | `.14` a41 | `SEMULITH-P4-0232 (leaf P4-SYSTEM.14): compose authenticated byte evaluation` | full CI on clean milestone, then a42 complete adequacy obligations |

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0235 (leaf P4-SYSTEM.14) — construct bounded GC images from source bytes
+
+- Extract one pure ELF encoder; preserve legacy writer API/order and all216 repaired ELF bytes. Bounded immutable source-byte builder freezes exact program/route/entry/IALIGN and sizes/hashes, retains only imagebytes, separates invalid source from unavailable canonical context. No source reopen/write/process/authentication/qualification; caller owns current tool adequacy.
+- 33 controls/seventeen omissions pass/discriminate normal/O without errors; fix D44 draft output-method lookup before validation, exact draft loses1 assertion. All167 GC source builds exact; retain old15/eight and222 GUEST arms, add36 (258;39 doctrines1267 arms). Focused17/sharder12/0/seven books/3140 links/all13 examples/full inverses green;104 old entries/1332 other files protected, actual receipt+digest edits refuse. DEV4006B to0253/CH771B to0254; fixed caps/seals unchanged, draft book overflow corrected. Final docs/hooks/hashes/brief0/censuses; no CPU/canonical change. Preceding93525ac full CI green (443 Rust/smoke53/seven books). Next authenticated correspondence/remaining adequacy.
+
 ## SEMULITH-P4-0234 (leaf P4-SYSTEM.14) — repair ELF alignment and compressed flags
 
 - Repair inherited load/file congruence, natural section-table alignment, profile text alignment and RVC flags. Preserve exact loaded bytes/addresses, sections/RWX and public write API; refuse invalid IALIGN/unsigned64 entry/load extent before writes. Correct synthetic Rust parser-fixture scope/name.
@@ -657,16 +662,4 @@
   pair472/936 including unchanged companions. Rust167/17/212.
 - Registry96/effective94/114; ten pairs/freeze remain. LIVE unchanged652 arms,
   49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks precede c25 FENCE.
-
-## SEMULITH-P4-0151 (leaf P4-SYSTEM.13 c23b) — retain 64-bit user registers and addresses
-
-- Bind XLEN through two U/Sv39 programs with high canonical virtual addresses,
-  full-width GPR/data/PC and exact physical requests. Seven narrow public effects
-  fail both cases; disabled-GPR auditor and missing-binding controls reject.
-- Independent literal mappings/state/fetch-walk and full 167 corpus match; data
-  request evidence comes from the public CPU observer. Prior 92/input/runtime/
-  generated/frozen bytes exact. Pair 128/256 including unchanged companions.
-- Rust 167/17/210; registry 94/effective 92/114, eleven pairs/freeze remain.
-  LIVE_STATUS unchanged (652 arms,49 chapters,P4 12/18). Focused gates/all six
-  books rc=0; hooks precede c24 WALK-IMPLICIT.
 

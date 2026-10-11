@@ -371,3 +371,102 @@ All 49 RV64I and 167 RV64GC guest payloads remain byte-identical after repair;
 only ELF layout/metadata change, so newly generated ELF fingerprints change.
 Retained historical artifacts and receipts remain immutable. These finite checks
 supply no CPU acceptance, complete dependency adequacy or method qualification.
+
+## Build an image from source bytes
+
+`scripts/matched_gpr_image.py::build_guest_image(source, *, program, entry)`
+constructs one first-method GC ELF from supplied immutable UTF-8 source bytes.
+The program is an exact label, not a path to reopen. The known canonical route
+is `profiles/rv64gc-lab-v0/encoding.sexp`; it must be an existing regular file
+without symlink aliases and declare IALIGN16. Directory/table discovery is refused.
+The assembler still supports labels, raw `.word`/`.half`, compressed instructions,
+FP and CSR forms. Canonical construction reads current project tool data.
+
+Callers own source authentication, selection of the parent experiment and complete
+current tool dependency adequacy. The builder neither authenticates an artifact
+nor runs a model. Matching fingerprints describe the bytes constructed; they do
+not prove source semantics, comparison independence or method qualification.
+The utility's canonical tool reads are outside supplied-artifact byte budgets.
+A future authenticated composition must account for its additional retained bytes
+inside the existing shared ledger before reading them.
+
+The result is frozen: exact program, relative encoding route, entry and IALIGN;
+source, assembled payload and complete ELF sizes/SHA256 fingerprints; and immutable
+ELF `image` bytes. It retains no source or payload copy and has no qualification
+field. `encode_elf64(entry, payload, ialign)` is the single pure encoding owner;
+the legacy path writer constructs the image first, then writes once and returns
+None. All 216 repaired RV64I/GC ELF images remain byte-identical after extraction;
+all 167 GC source-byte builds reproduce those repaired images.
+
+Bounds are checked in this order:
+
+| Input or result | Inclusive bound | Check boundary |
+|---|---|---|
+| Source | Plain `bytes`, 1..1048576 bytes, valid UTF-8 | Before canonical tool I/O |
+| Program label | Plain `str`, 1..65536 characters | Before canonical tool I/O |
+| Entry | Plain `int`, 0..2^64−1 | Before canonical tool I/O; ELF alignment/extent checked later |
+| Source lines | At most 8192 `str.splitlines()` lines | Count before line-list allocation or assembler construction |
+| Payload | Immutable `bytes`, at most 32768 bytes | Before ELF encoding |
+| ELF | Immutable `bytes`, at most 65536 bytes | Before returning a result |
+
+The line count preserves CRLF as one boundary and all Python splitlines separators,
+including Unicode separators and an unterminated final line. These are finite
+input/output bounds, not exact RAM or execution-time limits. A nonempty comment-only
+source may produce an empty payload; raw directives and arbitrary payload bytes
+make no instruction-validity claim. The container writer's alignment/extent
+refusals still apply, including an odd entry or an overflowing load.
+
+Run this complete example from the repository root. It uses hand-encoded bytes,
+checks the independent literal ELF decoder, and demonstrates two source refusals.
+No source path is opened and no output path or process is created by the builder.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_IMAGE'
+from matched_gpr_image import build_guest_image, ImageError
+from probe_elf_writer import decode
+source = b'addi x1, x0, 5\nc.addi x1, 1\n'
+result = build_guest_image(source, program='example.s', entry=0x80000002)
+header, segment, sections = decode(result.image)
+payload = result.image[segment[2]:segment[2] + segment[5]]
+if payload != b'\x93\x00\x50\x00\x85\x00':
+    raise SystemExit('hand payload differs')
+if header[4] != result.entry or header[7] != 1 or sections[1][8] != 2:
+    raise SystemExit('entry, RVC flag or text alignment differs')
+print(result.source_size, result.payload_size, result.image_size, result.ialign)
+print(result.image_sha256)
+for bad in (b'#\xff', b'#\n' * 8193):
+    try:
+        build_guest_image(bad, program='refusal.s', entry=0x80000000)
+    except ImageError as error:
+        print(type(error).__name__, str(error))
+    else:
+        raise SystemExit('invalid source was accepted')
+PY_IMAGE
+python3 scripts/probe_matched_gpr_image.py
+python3 -O scripts/probe_matched_gpr_image.py
+```
+
+The first lines are `28 6 4320 16` and
+`db3eac98c94c4e0f0f2e7e46d01948717b5ae641a8532e3a074843b46fc91fc8`,
+then `ImageError source must be UTF-8` and
+`ImageError source exceeds 8192 splitlines`. Each probe reports 33 tests with
+zero failures/errors. Invalid metadata/source, assembler refusal and ELF overflow
+raise `ImageError` with fixed bounded diagnostics, without echoing raw source.
+Missing, malformed or wrong-IALIGN canonical context raises `ImageUnavailable`
+separately; construction cannot judge that context. Other programming failures
+are not converted into a positive result.
+
+Seventeen independent omissions lose 7/1/6/6/1/8/1/3/4/1/1/1/1/2/6/1/1
+assertions, with zero test errors in normal and optimized Python. They cover
+plain types, byte/program/entry bounds, UTF-8, line preflight/final line, canonical
+route/IALIGN, payload/image bounds and immutability, source fingerprint, exact
+entry forwarding, writer delegation and validation ordering. Existing 15 ELF
+controls and eight omissions remain intact.
+
+D44-WRITER-ORDER exposed a draft extraction regression: Python looks up the method
+in `path.write_bytes(encode_elf64(...))` before evaluating the encoding argument.
+A raising output-method getter therefore hid the expected invalid-entry AsmError.
+Constructing bytes in a separate statement preserves the legacy refusal before
+output access. The exact draft fails the added control in both Python modes;
+byte comparisons alone did not detect this API ordering defect. This repair
+adds no CPU acceptance, authenticated correspondence or qualification credit.

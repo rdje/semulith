@@ -295,15 +295,16 @@ its owned cache-policy repair. This prerequisite precedes count adoption.
 
 ## The ELF writer — alignment and loader limits
 
-`write_elf64()` emits one ELF64 little-endian RISC-V `PT_LOAD` at the entry,
-with null, `.text` and `.shstrtab` headers. File/load offsets agree modulo 4096;
-file-only padding preserves payload bytes. The section table is 8-byte aligned.
-IALIGN 16/32 selects text alignment 2/4 and RVC flag 1/0. Invalid alignment, entry
-or overflowing load extent refuses before writing.
+`encode_elf64(entry, payload, ialign)` returns bytes. `write_elf64()` writes them,
+returning None. One little-endian RV64 `PT_LOAD` starts at entry; null, `.text`
+and `.shstrtab` headers remain. File/load offsets agree modulo 4096; file-only
+padding preserves payload. The section table is 8-byte aligned. IALIGN 16/32
+selects text alignment 2/4 and RVC flag 1/0. Invalid alignment, entry or overflowing
+load extent refuses before output access.
 
-Sail historically accepted a sectionless image that Spike refused. Adding sections
-addressed that difference; a42b later fixed alignment/flags. Loader acceptance
-alone does not validate headers. See [the worked layout and controls](../../../models/rv64gc-lab-v0/book/evaluation.html#elf-container-alignment).
+Sail accepted a sectionless image that Spike refused. Sections addressed this;
+a42b fixed alignment/flags. Loader acceptance alone does not validate headers.
+See [the worked layout and controls](../../../models/rv64gc-lab-v0/book/evaluation.html#elf-container-alignment).
 
 ## Running the rv64gc Sail experiment
 
