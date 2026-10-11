@@ -186,9 +186,11 @@ for _tool in ('ps', 'lsof'):
 class Scaffold(unittest.TestCase):
     updater: bytes
     repaired: bytes
+    readme: bytes
+    metrics: bytes
     work: Path
 
-    def sync(self, incoming_census: bytes | None):
+    def sync(self, incoming_census: bytes | None, incoming_readme: bytes | None = None):
         with tempfile.TemporaryDirectory(dir=self.work) as scratch:
             fixture = Path(scratch)
             project, incoming, tools = (fixture / name for name in ('project', 'incoming', 'bin'))
@@ -199,6 +201,8 @@ class Scaffold(unittest.TestCase):
             original = {
                 'scripts/update_scaffold.sh': self.updater,
                 'scripts/check_no_background_jobs.sh': self.repaired,
+                'scripts/check_readme_stability.sh': self.readme,
+                'scripts/read_text_metrics.bash': self.metrics,
                 'scripts/check_task_acceptance.sh': b'# retained acceptance repair\n',
                 'scripts/check_gap_claims.sh': b'# retained gap repair\n',
                 'docs/tasks/OWNED.md': b'# owned project task\n',
@@ -212,6 +216,9 @@ class Scaffold(unittest.TestCase):
                 'README_POLICY.md': b'new neutral policy\n',
                 'DOCTRINE_VERSION': b'new fixture version\n',
             }
+            if incoming_readme is not None:
+                supplied['scripts/check_readme_stability.sh'] = incoming_readme
+                supplied['scripts/read_text_metrics.bash'] = b'# incoming metrics replacement\n'
             if incoming_census is not None:
                 supplied['scripts/check_no_background_jobs.sh'] = incoming_census
             for directory, files in ((project, original), (incoming, supplied)):
@@ -271,6 +278,13 @@ print(project)
         self.sync(None)
 
 
+    def test_stale_readme_cannot_replace_checked_metrics(self):
+        self.sync(None, b'#!/usr/bin/env bash\necho stale README guard\n')
+
+    def test_different_readme_requires_review(self):
+        self.sync(None, b'#!/usr/bin/env bash\necho proposed README replacement\n')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=SCRIPT,
@@ -293,6 +307,8 @@ def main():
     Census.work.mkdir(parents=True, exist_ok=True)
     Scaffold.updater = args.updater_source.read_bytes()
     Scaffold.repaired = SCRIPT.read_bytes()
+    Scaffold.readme = (ROOT / 'scripts/check_readme_stability.sh').read_bytes()
+    Scaffold.metrics = (ROOT / 'scripts/read_text_metrics.bash').read_bytes()
     Scaffold.work = Census.work
     suite = unittest.TestSuite()
     if not args.only_scaffold:

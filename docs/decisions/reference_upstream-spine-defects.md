@@ -65,4 +65,13 @@ different times share no vocabulary unless something forces them to.
   from any direction: a deleted seam, a narrowed pattern, a scaffold overwrite, or a spine
   update that stops consuming the seam altogether.
 
+## Additional local retention boundary
+
+LC-0014 repairs D54's unchecked README measurements, date count and policy-name
+read in this repository. `scripts/read_text_metrics.bash` shares checked counts
+with the route guard. Automatic scaffold sync retains both; adopting an upstream
+replacement requires explicit review. The public local-sync probe preserves
+bytes/modes and detects both stale and different incoming guards. This records
+a local repair and retention rule, without asserting another repository's state.
+
 Related: [[decision_readme-routing-closure]], [[decision_claim-verification-adopted]].

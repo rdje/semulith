@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D52 repaired; .4h4 D51 capacity review, then full inventory and checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D52–54 repaired; .4h5 D51 capacity review, then full inventory and checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -282,7 +282,8 @@ artifacts. Six real task instances were added. A proposed increase requires a
 new separate reviewed authority proving that expansion, not calendar growth.
 Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
-.4h3/LC-0013 inventory-read repair is complete; .4h4 D51 review is next.
+.4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
+complete; .4h5 D51 review is next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -421,6 +422,116 @@ promotion: declined (the existing route checker and permanent controls own the r
   whole oldest entries1382B→0282/1619B/SHA03abd6f7;74live+210sealed284logical,
   old manifest prefix exact. D51 capacity review next; full adoption remains .4.
 
+
+### .4h4 / SEMULITH-LC-0014 — qualify the remaining route-checker reads
+
+Status: complete; D53/D54 fixed and verified. Owned on clean29ffb55 after exact14-file postcheck, brief0,
+unrestricted handoff0 and the full COMMIT report. D52's family repair is done.
+Before D51 capacity review, qualify the remaining direct-file measurements,
+README-link parser and forced-red emitted-hint consumer through the public CLI.
+Source shows unchecked wc assignments and process substitutions; reproduce
+their behavior with selectively failed status/stderr first, without inferring
+a verdict from source. Own target/live-containment/remaining-reads, scoped
+facades delegating every unrelated invocation, immutable real HEAD/index/
+tracked-byte/mode/Gitlink censuses and complete status/stdout/stderr receipts.
+
+If a read failure is falsely green, log and own the reproduced defect priority1
+and repair these finite input paths in this slice, with permanent independent
+failure controls and public normal/O replay. Otherwise record the qualified
+boundary and proceed after COMMIT. Preserve D52 and all original32 controls,
+ordinary health/ceiling behavior, all existing caps/authority/archive bytes and
+CPU/qualification state. Do not build the new neutral checker or change limits.
+Own focused/book checks, any whole-oldest receipt rollover, complete source/
+history/protected-identity proofs, derived count/live/book/pointer sync and
+COMMIT. D51 resumes as .4h5 after this prerequisite; full adoption remains .4.
+promotion: declined (read-path qualification and any repaired controls stay in this owner).
+
+D53, priority1, reproduced on29ffb55: public route checker returns0/green
+for DEV_NOTES byte-measurement status73 or status0+stderr, README parser
+status73 or partial stdout+stderr, and forced-red hint producer status73,
+status1/empty output or unexpected status0. Baseline0/empty stderr; each
+failure injection is individually traced. Root causes: unchecked direct-file
+wc assignments, ignored README-link process-substitution status, and unchecked
+forced-red producer/extractor status plus another process substitution.
+
+D54, priority1, reproduced by the standalone README guard: both wc calls
+return73/empty output; the guard prints integer-expression diagnostics yet
+returns0 with README-STABILITY: OK. Its numeric comparisons do not propagate
+measurement failures. Own this provider repair in .4h4 too, and retain the
+local fix across automatic scaffold sync before claiming it complete. Extend
+the existing public scaffold integration controls; preserve all22 old cases.
+Own a project-local shared text-metrics library for both callers and its failure
+controls; the updater must retain the repaired README guard and helper wiring.
+Also qualify the existing count/aggregate/sort consumers of D52's size table;
+an unavailable derived measurement must not turn a validated inventory green.
+D53 table follow-up: family-consumers/result.json records traced status73 from
+the task-family table's wc count and sort; each public run is still0/green.
+Real HEAD/index/all1398 identities stay exact. Own checked producer totals and
+direct inspection of its ordered rows, eliminating these unchecked consumers.
+Qualify the README provider's date-count and policy-reachability reads too:
+grep's legitimate no-match status1 must not mask an execution failure. Own any
+reproduced correction in D54's provider-read repair before signoff.
+D54 provider follow-up: the initial date-reads diagnostic refused at self-test
+with zero injections, so it establishes no date-parser verdict. Root cause is
+the new hint fixture's omitted Python delegation when grep itself uses Python;
+repair that fixture environment and repeat against Git-pinned predecessor code.
+policy-lookalike/result.json independently runs the copied public README guard
+in a no-Git fixture: both README_POLICY.md and README_POLICYxmd return0/green.
+The old unescaped grep pattern accepts the lookalike. Own checked grep counts
+(no-match1 is valid; execution errors/diagnostics/invalid counts refuse2) and
+literal policy-name matching with controls in this same provider repair.
+Do not amend any upstream repo or infer its current implementation/state.
+
+Evidence: target/live-containment/remaining-reads. Initial actual public CLI
+receipt result-before.json pins checker SHA1989e32b and guard SHAd50f56a4;
+all nine verdicts and original stream digests remain. An early after-run reused
+raw output/census filenames. Recover all18 original streams byte-exact against
+those saved digests in initial-streams-recovered/recovery.json; overwritten
+censuses are not claimed as original evidence. Fresh predecessor-replay runs
+Git29ffb55 source copies, preserves complete real before/after censuses and
+repeats baseline0/all eight failures0green. Source copies are version-pinned;
+this later replay is identified separately from the original actual-path run.
+
+The initial date diagnostic has zero injections and is invalid as defect proof.
+After fixing fixture delegation, date-predecessor independently qualifies the
+Git-pinned public programs: baseline0 and both traced date errors0green, two
+injections each. family-consumers separately proves failed derived wc/sort reads
+on the intermediate checker. Each valid diagnostic preserves HEAD/index/all1398
+tracked identities. OS /bin/sh and resolved installed executables are read-only
+tool dependencies; all project inputs/scratch are repository-local. No other
+Git repository is modified or used as an implementation dependency.
+
+Repair: checked scalar counts require expected status, empty stderr and one
+nonnegative integer. Shared file metrics serve both guards. Link parsing and
+hint production/extraction propagate failure; forced-red hints require status1
+and their guidance contract. Family producer emits totals and ordered sizes,
+removing unchecked count/aggregate/sort consumers. README date/policy counts
+accept legitimate grep no-match1; literal policy matching rejects lookalikes.
+Updater retains the repaired provider/helper; public local-sync controls prove
+bytes/modes, neutral copying and cleanup. No limit or archive authority expands.
+
+The first commit gate refuses two new acceptance boxes: numerical outcomes
+without a declared evidence signature. Name the actual verifier/probe and rc=0
+inside each box; run the staged acceptance and seam controls before retrying.
+The code and program-failure receipts remain unchanged.
+
+- [x] **ROOT CAUSE** — assess.py/predecessor receipts rc=0: eight actual
+  failure modes incorrectly green; separate date, policy-lookalike and table
+  consumer diagnostics identify D53/D54's unchecked/regex read paths.
+- [x] **ADDRESSED** — `python3 target/live-containment/remaining-reads/verify.py`
+  rc=0 normal/O: public replay refuses every injected
+  failed read2 without green/stdout; removed wc/sort consumers receive no
+  injection. Original32 plus36 permanent controls pass68/0 normal/O;
+  fourteen safeguard omissions are detected in isolated project replicas.
+- [x] **NO REGRESSION** — `python3 scripts/probe_handoff_census.py` rc=0
+  normal/O24/0/0 retains original22;
+  old updater5/2/0 proves the new retention controls. Whole source/history,
+  protected bytes/modes/Gitlink, focused checks and complete normal/print
+  teaching with both literal examples verified before commit. Existing caps,
+  sealed/ordinary archive bodies, CPU and qualification state remain exact.
+- [x] **LOCKSTEP** — task owner/frontier, pointer, canonical retention note,
+  doctrine/tool registry, book and derived1492 arms agree. D52 remains fixed;
+  D53/D54 close here, D51 review resumes .4h5, full neutral adoption remains .4.
 
 ## Decisions
 
@@ -729,6 +840,16 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h4: final public normal/O replay baseline0; all injected unavailable
+file/parser/hint/README/date reads refuse2 without green/stdout. Removed derived
+wc/sort consumers receive zero injections. All1398 real tracked identities,
+HEAD/index and pinned programs/facades exact. Original32+36 controls68/0;
+14 omissions detected normal/O. Handoff24/0/0; old updater5/2/0 normal/O.
+Whole source/history/protected-byte/mode inverses,101 prior entries, DEV3021B→
+0283/3254B whole rollover and manifest prefix/seals exact. Focused12/sharder12/
+seven books, full normal+print teaching and two literal examples pass. D53/D54
+fixed; LIVE1492 arms/routing Done, caps/CPU unchanged; D51 .4h5 next.
+
 .4h3: assess.py normal/O rc=0: baseline0; failed73 and partial+stderr
 refuse2 without green/stdout; one family listing, all1397 real identities exact.
 Permanent32/0 normal/O; nine omission variants refuse normal/O. Complete
@@ -811,6 +932,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0014 (leaf LIVE-CONTAINMENT.4): refuse unavailable routing evidence` — .4h4 complete/D53–54 fixed; .4h5 D51 capacity review next.
 
 `SEMULITH-LC-0013 (leaf LIVE-CONTAINMENT.4): refuse unmeasurable family inventories` — .4h3 complete/D52 fixed; .4h4 D51 capacity review next.
 

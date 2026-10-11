@@ -76,21 +76,23 @@ cat docs/decisions/decision_task-tree-per-part-growth.md
 
 ### Capacity evidence must be readable
 
-Run the public family check and its failure controls:
+Run the route guard and its failure controls:
 
 ```sh
 bash scripts/check_readme_routes.sh
 bash scripts/check_readme_routes.sh --self-test
 ```
 
-D52, recorded in `docs/tasks/LIVE-CONTAINMENT.md`, accepted failed or partial
-Git listings with stderr on85fe189. LC.4h3 repairs it: one successful, stderr-free NUL
-inventory yields one validated size table for count, aggregate and per-part
-checks. Unreadable or unsafe family members refuse with status2 and no green
-banner; a measured ceiling breach returns1. A successful empty tracked family
-is valid. Health warnings and regeneration-gated exemptions retain their rules.
-The checker measures working files from tracked membership; this is not an
-atomic repository snapshot or a decision to raise a limit.
+D52–54 fixes check file counts, README links, emitted hints and provider reads.
+A successful, stderr-free NUL inventory supplies validated totals and part sizes.
+Unavailable inputs refuse2 without green; a measured ceiling breach returns1.
+An empty tracked family is valid; health warnings do not block and checked
+regeneration-gated mirrors keep their exemption. README date and literal policy
+counts accept legitimate no-match1, but refuse failed or diagnostic reads.
+Scaffold sync retains the local README guard and helper; review replacements
+explicitly. Working-file measurements over tracked membership are not atomic
+snapshots or authority to raise limits. Full neutral containment adoption remains
+LIVE-CONTAINMENT.4.
 
 ## Local containment contract
 

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0014 (leaf LIVE-CONTAINMENT.4) — refuse unavailable routing evidence
+
+- Fix D53/D54: check file metrics, README parsing, forced-red hints and provider counts; require literal policy names. Emit family totals directly and retain the repaired README guard/helper across scaffold sync. Failed reads refuse2 without green.
+- Preserve original32 controls;36 additions pass68/0 normal/O, fourteen omissions discriminate and public failure replay agrees. Preserve all101 prior entries through whole DEV rollover; sync book/derived1492 arms. Existing caps, archives and CPU qualification unchanged; D51 review follows.
+
 ## SEMULITH-LC-0013 (leaf LIVE-CONTAINMENT.4) — refuse unmeasurable family inventories
 
 - Fix D52: one checked NUL Git inventory and validated size table feed count/aggregate/part bounds. Failed/diagnostic/malformed inventories or unsafe/unmeasurable members refuse2 without a green banner; health and derived exemptions retain their rules.

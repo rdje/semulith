@@ -9,7 +9,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/check_doctrines.sh` | which doctrine is breached, and where? (the whole registry, one verdict per rule) | `make gate` |
 | `scripts/check_delivery_provenance.sh` | has a delivered file drifted from the bytes we were given, and is every manifest row's treatment declared? | `scripts/check_delivery_provenance.sh` |
 | `scripts/check_fixture_fingerprints.sh` | does every pinned `sha256` still describe the file it names? | `scripts/check_fixture_fingerprints.sh` |
-| `scripts/check_readme_routes.sh` | are routed destinations governed and bounded; can the tracked families be measured without a failed or diagnostic inventory? | `scripts/check_readme_routes.sh` |
+| `scripts/check_readme_routes.sh` | are routed destinations governed and bounded; do inventory, file, parser, hint and README-provider reads refuse unavailable evidence? | `scripts/check_readme_routes.sh` |
 | `scripts/check_frontier_sync.sh` | does the task-tree index still name the leaf the tree itself calls next? | `scripts/check_frontier_sync.sh` |
 | `scripts/check_registry_mirror.sh` | do the doctrine documents still list exactly the doctrines that are registered? | `scripts/check_registry_mirror.sh` |
 | `scripts/check_tree_claims.sh` | does a live document state a leaf count, an active tree or a frontier leaf the trees contradict? | `scripts/check_tree_claims.sh` |

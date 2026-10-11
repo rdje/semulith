@@ -33,6 +33,7 @@ ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT"
 # All scratch, including child-tool defaults, stays on the repository volume.
 mkdir -p "$ROOT/target/tmp" || exit 2
 export TMPDIR="$ROOT/target/tmp"
+source "$ROOT/scripts/read_text_metrics.bash" || exit 2
 
 REGISTRY="doctrine/readme_routes.tsv"
 KNOWN_LIFECYCLES="hot_live partitioned generated_index append_history frozen normative archive_terminal"
@@ -95,9 +96,26 @@ PY
 # Forced red via a zero cap so the hint is produced; read-only, and the real verdict is never
 # taken from this run.
 emitted_hint_targets() {
-  README_LINE_CAP=0 README_BYTE_CAP=0 scripts/check_readme_stability.sh 2>&1 \
+  local producer="${1:-scripts/check_readme_stability.sh}" hint_raw hint_status hint_targets
+  hint_raw="$(README_LINE_CAP=0 README_BYTE_CAP=0 "$producer" 2>&1)"
+  hint_status=$?
+  if [ "$hint_status" -ne 1 ] || [[ "$hint_raw" != *"Route the new detail to its canonical home"* ]]; then
+    echo "UNREADABLE emitted-hint producer: expected a forced ceiling breach with routing guidance." >&2
+    return 2
+  fi
+  local hint_errors
+  hint_errors="$(mktemp "$ROOT/target/tmp/hint-errors.XXXXXX")" || return 2
+  hint_targets="$( { printf '%s\n' "$hint_raw" \
     | grep -oE '(^| )[A-Za-z_][A-Za-z0-9_.-]*(/[A-Za-z0-9_.-]*)+|(^| )[A-Z][A-Z0-9_]*\.md' \
-    | tr -d ' ' | sort -u
+    | tr -d ' ' | sort -u; } 2> "$hint_errors")"
+  hint_status=$?
+  if [ "$hint_status" -ne 0 ] || [ -s "$hint_errors" ] || [ -z "$hint_targets" ]; then
+    rm -f "$hint_errors"
+    echo "UNREADABLE emitted-hint destinations" >&2
+    return 2
+  fi
+  rm -f "$hint_errors"
+  printf '%s\n' "$hint_targets"
 }
 
 # ── governed? exact row, or a directory row that is a prefix ─────────────────────────────────
@@ -188,6 +206,7 @@ try:
         measured.append((name, path, identity(info), info.st_size))
     for name, path, before, size in measured:
         require(identity(path.lstat()) == before, 'member changed during measurement: ' + name)
+    print('@totals\t' + str(len(measured)) + '\t' + str(sum(row[3] for row in measured)))
     for name, path, before, size in measured:
         print(str(size) + '\t' + name)
 except (OSError, ValueError, subprocess.SubprocessError) as error:
@@ -206,7 +225,7 @@ PY
 # destination against the self-test's already-deleted temp directory and reported all 24 as
 # MISSING. A control must not be able to contaminate the thing it checks.
 verify_routes() {
-  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 unreadable=0 tmp
+  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 unreadable=0 tmp metrics totals_tag
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || return 2
@@ -215,10 +234,15 @@ verify_routes() {
 
   # (1) every linked destination is governed
   local t
-  while IFS= read -r t; do
-    [ -n "$t" ] || continue
-    governed "$t" "$tmp/destinations" || { echo "  UNGOVERNED link target '$t' — no registry row"; bad=1; }
-  done < <(readme_link_targets "$readme")
+  if ! readme_link_targets "$readme" > "$tmp/links" 2> "$tmp/link-errors" || [ -s "$tmp/link-errors" ]; then
+    echo "  UNREADABLE landing-page links"
+    unreadable=1
+  else
+    while IFS= read -r t; do
+      [ -n "$t" ] || continue
+      governed "$t" "$tmp/destinations" || { echo "  UNGOVERNED link target '$t' — no registry row"; bad=1; }
+    done < "$tmp/links"
+  fi
 
   # (3)+(4) rows: existence, classes, ceilings, health
   local dest rclass life owner hl hb cl cb cp n b line big rel
@@ -247,8 +271,11 @@ verify_routes() {
             cat "$tmp/read-errors"
             unreadable=1; continue
           fi
-          n=$(wc -l < "$tmp/parts" | tr -d ' ')
-          b=$(awk -F'\t' '{total += $1} END {printf "%.0f", total}' "$tmp/parts")
+          if ! IFS=$'\t' read -r totals_tag n b < "$tmp/parts" ||
+             [ "$totals_tag" != @totals ] || ! [[ "$n" =~ ^[0-9]+$ ]] || ! [[ "$b" =~ ^[0-9]+$ ]]; then
+            echo "  UNREADABLE family totals for $dest"
+            unreadable=1; continue
+          fi
           if [ "${cl:-0}" -gt 0 ] && [ "$n" -gt "$cl" ]; then
             echo "  OVER CEILING $dest: $n files > $cl"; bad=1; fi
           if [ "${cb:-0}" -gt 0 ] && [ "$b" -gt "$cb" ]; then
@@ -264,8 +291,8 @@ verify_routes() {
           # the fact-ownership registry as a mirror with a regeneration-doctrine governor
           # is exempt as a checked property, reported as proof, never failed.
           if [ "${cp:-0}" -gt 0 ]; then
-            sort -rn "$tmp/parts" > "$tmp/sorted-parts"
             while IFS= read -r big; do
+              case "$big" in @totals$'\t'*) continue ;; esac
               [ -n "$big" ] || continue
               [ "${big%%	*}" -gt "$cp" ] || continue
               # Report the member RELATIVE to the base. An absolute path here is unusable as
@@ -279,13 +306,16 @@ verify_routes() {
                 echo "  OVER CEILING $dest: part $rel"
                 echo "    ${big%%	*} bytes > $cp"; bad=1
               fi
-            done < "$tmp/sorted-parts"
+            done < "$tmp/parts"
           fi
           ;;
       *)  [ -f "$base/$dest" ] || { echo "  MISSING destination file $dest"; bad=1; continue; }
           [ "$enforce" = 1 ] || continue
-          n=$(wc -l < "$base/$dest" | tr -d ' ')
-          b=$(wc -c < "$base/$dest" | tr -d ' ')
+          if ! metrics="$(read_text_metrics "$ROOT" "$base/$dest" 2>&1)"; then
+            printf '  %s (%s)\n' "$metrics" "$dest"
+            unreadable=1; continue
+          fi
+          IFS=$'\t' read -r n b <<< "$metrics"
           if [ "${cl:-0}" -gt 0 ] && [ "$n" -gt "$cl" ]; then
             echo "  OVER CEILING $dest: $n lines > $cl"; bad=1; fi
           if [ "${cb:-0}" -gt 0 ] && [ "$b" -gt "$cb" ]; then
@@ -418,6 +448,164 @@ PY
   arm "GREEN Unicode and spaced member" 0 "" git_fixture unicode
   reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t1\t5\t3' "$R_KEEP"
   arm "RED one file beyond count boundary" 1 "OVER CEILING docs/: 2 files > 1" git_fixture baseline
+  # Remaining input paths: fixtures fail exactly one reader; no PATH changes
+  # escape their subshells. The README provider runs its published CLI in a
+  # project-local fixture with a synthetic root lookup, not another Git repo.
+  rm -f "$t/docs/link.md"
+  rmdir "$t/docs/subdir"
+  local read_wc read_python read_sort read_grep
+  read_wc="$(command -v wc)"; read_python="$(command -v python3)"; read_sort="$(command -v sort)"; read_grep="$(command -v grep)"
+  cat > "$t/bin/wc" <<'SH'
+#!/bin/sh
+if [ "$1" = -c ]; then
+ case "$ROUTE_READ_MODE" in
+ file_status) printf 'controlled measurement failure\n' >&2; exit 73 ;;
+ file_silent) exit 73 ;;
+ file_failed_value) "$ROUTE_READ_WC" "$@"; exit 73 ;;
+ file_stderr) "$ROUTE_READ_WC" "$@"; printf 'controlled measurement diagnostic\n' >&2; exit 0 ;;
+ file_bad) printf 'invalid\n'; exit 0 ;;
+ file_extra) printf '1\n2\n'; exit 0 ;;
+ esac
+fi
+if [ "$1" = -l ] && [ "$ROUTE_READ_MODE" = file_line_status ]; then exit 73; fi
+exec "$ROUTE_READ_WC" "$@"
+SH
+  cat > "$t/bin/python3" <<'SH'
+#!/bin/sh
+if [ "$#" -eq 2 ] && [ "$1" = - ] && [ "$2" = "$ROUTE_READ_FIXTURE/README.md" ]; then
+ case "$ROUTE_READ_MODE" in
+ parser_status) printf 'controlled parser failure\n' >&2; exit 73 ;;
+ parser_silent) exit 73 ;;
+ parser_stderr) printf 'KEEP.md\n'; printf 'controlled partial parser\n' >&2; exit 0 ;;
+ esac
+fi
+exec "$ROUTE_READ_PYTHON" "$@"
+SH
+  cat > "$t/hint-provider" <<'SH'
+#!/bin/sh
+case "$ROUTE_READ_MODE" in
+ hint_empty) exit 1 ;;
+ hint_no_contract) printf 'README_POLICY.md\n' >&2; exit 1 ;;
+esac
+printf 'Route the new detail to its canonical home\n' >&2
+if [ "$ROUTE_READ_MODE" != hint_no_destinations ]; then printf 'README_POLICY.md\n' >&2; fi
+case "$ROUTE_READ_MODE" in hint_status) exit 73 ;; hint_success) exit 0 ;; esac
+exit 1
+SH
+  cat > "$t/bin/sort" <<'SH'
+#!/bin/sh
+case "$ROUTE_READ_MODE" in
+ hint_sort_status) cat; exit 73 ;;
+ hint_sort_stderr) cat; printf 'controlled extraction diagnostic\n' >&2; exit 0 ;;
+esac
+exec "$ROUTE_READ_SORT" "$@"
+SH
+  cat > "$t/bin/grep" <<'SH'
+#!/bin/sh
+if [ "$1" = -cE ]; then
+ case "$ROUTE_READ_MODE" in
+ date_status) printf '0\n'; exit 73 ;;
+ date_stderr) printf '0\n'; printf 'controlled date diagnostic\n' >&2; exit 0 ;;
+ date_empty) exit 0 ;;
+ esac
+fi
+if [ "$1" = -cF ]; then
+ case "$ROUTE_READ_MODE" in
+ policy_status) printf '1\n'; exit 73 ;;
+ policy_stderr) printf '1\n'; printf 'controlled policy diagnostic\n' >&2; exit 0 ;;
+ policy_empty) exit 0 ;;
+ esac
+fi
+exec "$ROUTE_READ_GREP" "$@"
+SH
+  chmod +x "$t/bin/wc" "$t/bin/python3" "$t/bin/sort" "$t/bin/grep" "$t/hint-provider"
+  input_fixture() { (
+    export PATH="$t/bin:$PATH" ROUTE_READ_MODE="$1" ROUTE_READ_FIXTURE="$t"
+    export ROUTE_READ_WC="$read_wc" ROUTE_READ_PYTHON="$read_python" ROUTE_READ_GREP="$read_grep"
+    verify_routes "$t/routes.tsv" "${2:-$t/README.md}" 1 "$t" find "$t/fact.tsv"
+  ); }
+  hint_fixture() { (
+    export ROUTE_READ_MODE="$1" PATH="$t/bin:$PATH" ROUTE_READ_SORT="$read_sort"
+    export ROUTE_READ_PYTHON="$read_python" ROUTE_READ_WC="$read_wc" ROUTE_READ_GREP="$read_grep"
+    emitted_hint_targets "$t/hint-provider"
+  ); }
+  reg "$R_DOCS" "$R_KEEP"
+  arm "GREEN all fixture input readers work" 0 "" input_fixture baseline
+  arm "RED text byte measurement failed status" 2 "UNREADABLE text measurement" input_fixture file_status
+  arm "RED text byte measurement silent failed status" 2 "UNREADABLE text measurement" input_fixture file_silent
+  arm "RED failed measurement despite plausible numeric output" 2 "UNREADABLE text measurement" input_fixture file_failed_value
+  arm "RED text byte measurement diagnostic" 2 "UNREADABLE text measurement" input_fixture file_stderr
+  arm "RED text measurement invalid integer" 2 "UNREADABLE text measurement" input_fixture file_bad
+  arm "RED text measurement extra integer" 2 "UNREADABLE text measurement" input_fixture file_extra
+  arm "RED text line measurement silent failed status" 2 "UNREADABLE text measurement" input_fixture file_line_status
+  arm "RED linked destination parser failed status" 2 "UNREADABLE landing-page links" input_fixture parser_status
+  arm "RED linked destination parser silent failed status" 2 "UNREADABLE landing-page links" input_fixture parser_silent
+  arm "RED linked destination parser partial diagnostic" 2 "UNREADABLE landing-page links" input_fixture parser_stderr
+  printf '# Empty landing page\n' > "$t/empty-readme.md"
+  arm "GREEN successful link parse can have no links" 0 "" input_fixture baseline "$t/empty-readme.md"
+  arm "GREEN forced-red provider emits destinations" 0 "README_POLICY.md" hint_fixture baseline
+  arm "RED hint provider failed despite plausible guidance" 2 "UNREADABLE emitted-hint producer" hint_fixture hint_status
+  arm "RED hint provider unexpectedly successful despite guidance" 2 "UNREADABLE emitted-hint producer" hint_fixture hint_success
+  arm "RED hint provider returned no guidance" 2 "UNREADABLE emitted-hint producer" hint_fixture hint_empty
+  arm "RED hint provider returned paths without its guidance contract" 2 "UNREADABLE emitted-hint producer" hint_fixture hint_no_contract
+  arm "RED hint extraction returned no destinations" 2 "UNREADABLE emitted-hint destinations" hint_fixture hint_no_destinations
+  arm "RED extraction failed despite nonempty destinations" 2 "UNREADABLE emitted-hint destinations" hint_fixture hint_sort_status
+  arm "RED extraction emitted diagnostics with nonempty destinations" 2 "UNREADABLE emitted-hint destinations" hint_fixture hint_sort_stderr
+
+  mkdir -p "$t/readme-project/scripts" "$t/readme-bin"
+  cp "$ROOT/scripts/check_readme_stability.sh" "$t/readme-project/scripts/"
+  cp "$ROOT/scripts/read_text_metrics.bash" "$t/readme-project/scripts/"
+  printf 'See README_POLICY.md\n' > "$t/readme-project/README.md"
+  printf 'fixture policy\n' > "$t/readme-project/README_POLICY.md"
+  cat > "$t/readme-bin/git" <<'SH'
+#!/bin/sh
+if [ "$#" -eq 2 ] && [ "$1" = rev-parse ] && [ "$2" = --show-toplevel ]; then
+ printf '%s\n' "$ROUTE_READ_PROJECT"; exit 0
+fi
+exit 73
+SH
+  chmod +x "$t/readme-bin/git"
+  readme_fixture() { (
+    export PATH="$t/readme-bin:$t/bin:$PATH" ROUTE_READ_MODE="$1"
+    export ROUTE_READ_WC="$read_wc" ROUTE_READ_PYTHON="$read_python" ROUTE_READ_GREP="$read_grep"
+    export ROUTE_READ_FIXTURE="$t" ROUTE_READ_PROJECT="$t/readme-project"
+    cd "$ROUTE_READ_PROJECT" || exit 2
+    case "$1" in
+      policy_lookalike) printf 'See README_POLICYxmd\n' > README.md ;;
+      policy_absent) printf 'See another policy\n' > README.md ;;
+      dated_page) printf 'See README_POLICY.md on 2026-01-01\n' > README.md ;;
+      *) printf 'See README_POLICY.md\n' > README.md ;;
+    esac
+    bash scripts/check_readme_stability.sh
+  ); }
+  arm "GREEN standalone README CLI measures its page" 0 "README-STABILITY: OK" readme_fixture baseline
+  arm "RED standalone README CLI refuses byte failure" 2 "README-STABILITY: REFUSED" readme_fixture file_silent
+  arm "RED standalone README CLI refuses line failure" 2 "README-STABILITY: REFUSED" readme_fixture file_line_status
+  arm "RED standalone README CLI refuses measurement stderr" 2 "README-STABILITY: REFUSED" readme_fixture file_stderr
+  arm "RED standalone date count failed with plausible zero" 2 "dated-annotation count unavailable" readme_fixture date_status
+  arm "RED standalone date count reported diagnostics" 2 "dated-annotation count unavailable" readme_fixture date_stderr
+  arm "RED standalone date count returned no integer" 2 "dated-annotation count unavailable" readme_fixture date_empty
+  arm "RED standalone policy count failed with plausible integer" 2 "policy-name count unavailable" readme_fixture policy_status
+  arm "RED standalone policy count reported diagnostics" 2 "policy-name count unavailable" readme_fixture policy_stderr
+  arm "RED standalone policy count returned no integer" 2 "policy-name count unavailable" readme_fixture policy_empty
+  arm "RED policy lookalike is not its literal name" 1 "no longer links README_POLICY.md" readme_fixture policy_lookalike
+  arm "RED legitimate policy no-match remains a breach" 1 "no longer links README_POLICY.md" readme_fixture policy_absent
+  arm "RED legitimate dated annotation remains a breach" 1 "date-stamped line(s)" readme_fixture dated_page
+
+  table_fixture() { (
+    family_measure() {
+      case "$ROUTE_TABLE_MODE" in
+        empty) return 0 ;;
+        bad_count) printf '@totals\tinvalid\t2\n' ;;
+        extra) printf '@totals\t1\t2\textra\n' ;;
+      esac
+    }
+    export ROUTE_TABLE_MODE="$1"
+    verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" find "$t/fact.tsv"
+  ); }
+  arm "RED producer table missing its totals" 2 "UNREADABLE family totals" table_fixture empty
+  arm "RED producer table has invalid count" 2 "UNREADABLE family totals" table_fixture bad_count
+  arm "RED producer table has surplus totals field" 2 "UNREADABLE family totals" table_fixture extra
   rm -rf "$t"
   printf 'README-ROUTING-CLOSURE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -439,17 +627,22 @@ regen_set_registered scripts/check_doctrines.project.sh || {
 out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)"
 route_status=$?
 if [ "$route_status" -eq 2 ]; then
-  printf 'README-ROUTING-CLOSURE: REFUSED — family measurement unavailable.\n%s\n' "$out" >&2
+  printf 'README-ROUTING-CLOSURE: REFUSED — routed inputs unavailable.\n%s\n' "$out" >&2
   exit 2
 fi
 [ "$route_status" -eq 0 ] || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
 dests="$(mktemp "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || exit 2; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
+if ! hints="$(emitted_hint_targets 2>&1)"; then
+  rm -f "$dests"
+  printf 'README-ROUTING-CLOSURE: REFUSED — emitted routing guidance unavailable.\n%s\n' "$hints" >&2
+  exit 2
+fi
 while IFS= read -r t; do
   [ -n "$t" ] || continue
   governed "$t" "$dests" || { out="$out"$'\n'"  UNGOVERNED emitted-hint destination '$t' — the guard routes authors there and nothing bounds it"; fail=1; }
-done < <(emitted_hint_targets)
+done <<< "$hints"
 rm -f "$dests"
 
 # (5) the registry owns the landing page's own caps

@@ -20,7 +20,8 @@
 #   A cap increase requires an explicit reviewed decision recorded in your task-tree that the
 #   landing-page contract itself expanded.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+ROOT="$(git rev-parse --show-toplevel)" || exit 2; cd "$ROOT" || exit 2
+source "$ROOT/scripts/read_text_metrics.bash" || exit 2
 
 # ⚠️ TEMPLATE DEFAULTS, deliberately generous — they ship to a project whose README is not
 # this one, so they are set to the policy's own published example rather than fitted to this
@@ -49,8 +50,11 @@ if [ ! -f "$POLICY" ]; then
   exit 2
 fi
 
-lines=$(wc -l < "$TARGET" | tr -d ' ')
-bytes=$(wc -c < "$TARGET" | tr -d ' ')
+if ! metrics="$(read_text_metrics "$ROOT" "$TARGET")"; then
+  echo "README-STABILITY: REFUSED — landing-page measurement unavailable." >&2
+  exit 2
+fi
+IFS=$'\t' read -r lines bytes <<< "$metrics"
 
 routing_hint() {
   cat >&2 <<'HINT'
@@ -84,7 +88,10 @@ fi
 # content?" oracle. It detects exactly ONE leakage class — the dated historical annotation
 # ("... changed on 2026-01-31"), which is a release-history row living on a landing page.
 # A date on a landing page is history; the escape is to move it, not to weaken this check.
-dated=$(grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}' "$TARGET" || true)
+if ! dated="$(read_scalar_count "$ROOT" '0 1' grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}' "$TARGET")"; then
+  echo "README-STABILITY: REFUSED — dated-annotation count unavailable." >&2
+  exit 2
+fi
 if [ "${dated:-0}" -gt 0 ]; then
   note "$TARGET carries $dated date-stamped line(s) — release history belongs in CHANGELOG.md."
   grep -nE '20[0-9]{2}-[0-9]{2}-[0-9]{2}' "$TARGET" | head -5 | sed 's/^/                   /' >&2
@@ -93,7 +100,11 @@ fi
 # ------------------------------------------------------------------ the policy stays reachable
 # The caps are only defensible if a reader can find the reviewed decision behind them. If the
 # README stops naming the policy, the numbers above become folklore.
-if ! grep -q "$POLICY" "$TARGET"; then
+if ! policy_matches="$(read_scalar_count "$ROOT" '0 1' grep -cF "$POLICY" "$TARGET")"; then
+  echo "README-STABILITY: REFUSED — policy-name count unavailable." >&2
+  exit 2
+fi
+if [ "$policy_matches" -eq 0 ]; then
   note "$TARGET no longer links $POLICY — the caps must stay traceable to the decision that set them."
 fi
 

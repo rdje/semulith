@@ -34,6 +34,7 @@ fi
 # tool should not be quietly undoing a repair and relying on another tool to notice.
 # See docs/decisions/reference_upstream-spine-defects.md; carry the fixes upstream instead.
 # The handoff census also stays local: its fail-closed host-tool captures must survive sync.
+# The README guard stays local too: D54's checked text-metrics wiring must survive sync.
 # Review newer upstream changes to these retained checks explicitly before adopting them.
 NEUTRAL=(
   MEMORY_ARCHITECTURE.md
@@ -54,7 +55,6 @@ NEUTRAL=(
   scripts/check_lesson_promotion.sh
   scripts/check_routing_evidence.sh
   scripts/check_table_arity.sh
-  scripts/check_readme_stability.sh
   scripts/check_waiver_routing.sh
   .doctrine/README.md
   scripts/check_docpaths.sh

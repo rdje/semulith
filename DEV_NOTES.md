@@ -1,5 +1,52 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — refuse unavailable routing evidence (LIVE-CONTAINMENT.4h4)
+
+D53/D54 reproduced before repair: actual public CLI green0 for failed/diagnostic
+file measurements and link parsing, broken forced-red hints, and README wc
+failure. Git-pinned predecessor replay repeats all eight failures; separate date
+and table-consumer diagnostics show green after their traced read failures.
+The policy lookalike README_POLICYxmd was also accepted. Root causes are ignored
+command/process-substitution status, suppressed diagnostics and regex matching.
+
+Shared read_text_metrics.bash captures scalar status/stderr/data; only expected
+statuses and one integer pass. Both guards use it. Materialized README links
+and hint production/extraction refuse unjudgeable evidence. Forced hints require
+status1 and their guidance contract. The validated family producer emits totals
+and ordered sizes, removing unchecked wc/awk/sort consumers. README grep counts
+allow legitimate no-match1; policy matching is literal. Updater retains this
+local provider/helper wiring, with two new public sync cases; no upstream edit
+or assertion about another repository's current state.
+
+Original32 controls plus36 additions pass68/0 normal/O. Fourteen omissions fail
+in isolated replicas. Handoff/scaffold24/0/0 retains22 old cases; predecessor
+updater5/2/0 independently exposes both retention failures. Final public replay
+refuses injected failures2, without green/stdout; removed table consumers are
+not called. Evidence: target/live-containment/remaining-reads, code/facade hashes,
+complete real HEAD/index/all1398 tracked identities before/after. All project
+scratch stays on-volume; installed OS/tools are read-only dependencies.
+
+Evidence handling correction: an early after-run overwrote original raw output
+and census filenames. Original verdicts/digests survive in result-before.json;
+all18 streams are recovered byte-exact against those digests. Original censuses
+are not claimed; a fresh pinned-predecessor replay supplies complete independent
+state proof. The first date diagnostic failed at self-test with zero injections;
+fix omitted fixture Python delegation, then repeat successfully on pinned code.
+A stale mutation-harness source match also refused after the library refactor;
+correct the unique seam before the final run. These are diagnostic harness
+failures, not positive product evidence. The first commit gate also refuses
+two new acceptance boxes whose counts lack a declared evidence signature.
+Name the actual verifier/probe with rc=0 inside each box, then rerun staged
+acceptance/seam checks before retrying; code and failure receipts stay exact.
+
+Whole-oldest DEV3021B moves verbatim to0283; all101 prior entries, manifest prefix
+and sealed/ordinary archive bodies remain exact. Verify source inverses, protected
+bytes/modes/Gitlink, focused checks, seven books, complete normal/print teaching
+and two literal examples before COMMIT. LIVE1492 arms/routing Done; existing
+limits and CPU qualification unchanged. D51 classification/capacity review .4h5
+and full neutral containment adoption remain owned separately.
+promotion: declined (local retention rule is in the existing canonical reference).
+
 ## _(2026-10-11)_ — refuse unmeasurable family inventories (LIVE-CONTAINMENT.4h3)
 
 D52 fixed: family_measure obtains one successful, stderr-free NUL listing from
@@ -628,45 +675,4 @@ Fixed caps/seals/canonical/CPU
 unchanged. Evidence target/p4-system-14/a42d3a. Final hashes/modes/brief0/censuses
 before d3b. Director MCU scope question confirms existing ROADMAP north star and
 MCU-DOCS acquisition; no model/milestone selected and no engineering pivot.
-
-## _(2026-10-11)_ — contain completed byte/image designs (P4-SYSTEM.14 a42e)
-
-Capacity preparation in the same active evidence leaf: task126808/131072B leaves
-4264B before authenticated composition. Move eight complete, completed designs
-(a39/a40/a41/a42a/a42b/a42c/a42d1/a42d2) totaling35104B and the whole461B prior
-a40 main-book receipt into ordinary unsealed part17. Every exact live heading
-keeps a direct anchor route; active a42 umbrella and scheduled d3 remain live.
-Use actual next-heading boundaries: a41 is followed by the active a42 umbrella,
-which an assumed a41-to-a42a range would wrongly include. This was detected during
-read-only selection before any move; no active work was archived. Preserve every
-historical byte/count/diagnostic, with no cap raise, seal extension or feature edit.
-
-New part42801B SHA2561c389043c202718872d11b8e329b5da879a2bf1bf8408f636ac908a61de874ae
-contains source revisionf0f8aa3, complete source fingerprints, exact offsets,
-lengths/body hashes and live inverse routes. Nine marked bodies total35565B.
-Both committed predecessors reconstruct exactly normal/O: task126808B SHA256
-8afb9165d0c1e8c7b8a8c00adf0e1633ebe2542200c8f8df508ee32dfad70784;
-book17263B SHA25684af75988b5e905ef9fb3f5c910a310afc1aa85e72ed1f0fa844f53231eaefb1.
-Undo only current unit ownership/frontier/acceptance/verification/commit rows and
-new guide command, not older receipts. Preserve eight headings/direct anchors,
-active a42 body621B/d3 body604B, ordinary cat output and closed-reader refusal.
-All33 independent corrupt/missing-marker/omitted-body/map/actual-receipt/route/
-guide/active-design controls refuse normally and optimized, including a real
-GUEST294→295 receipt rewrite with updated metadata/marker digests. Explicit checks
-remain under optimization. Ordinary history grants no sealed-reader or CPU credit.
-
-Main-book replacement preserves its whole prior receipt in the new part; new
-current paragraph plus literal cat command decreases source29B, inside the fixed
-aggregate. Current feature teaching remains live. Protect all earlier parts/seals,
-code/canonical/data and unrelated files/modes/Gitlinks. Own necessary whole-oldest
-DEV/CH moves, all103 predecessor entries and real receipt+updated-digest refusal
-controls. Focused12/sharder12/0/seven books/3144 links/literal read/full normal+print
-teaching rc=0; history/scope normal/O protect103 prior entries/1352 other files/
-modes/Gitlinks, with actual old/moved/published receipt+new-digest refusals.
-DEV3063B to0259(3296B/932791834dc2bdd48072e9c2598ba87525fbdc1a1a9bb2612e59f8ac5a4def0d),
-CH716B to0260(953B/b029379336defff823d840462426e91cacd255fcf23c89de2e657428863b585d);
-52live+210sealed262logical. Only inherited EOF blanks0259:46/0260:16; ephemeral
-whitespace exception, no historical trimming. LIVE1337/caps/seals/code/canonical/
-CPU unchanged. Final docs/hooks/hashes+modes/brief0/censuses before d3. D2 all17 hashes/modes exact,
-brief0/untracked, both censuses green before activation. Evidence target/p4-system-14/a42e.
 
