@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | priority1 a42l D49 ordinary-history preservation; then remaining a42 adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | priority1 a42l2 D49 working/index preservation and full-gate replay |
 
 ## Decisions
 
@@ -432,203 +432,79 @@ Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42g).
 
 ### `.14` a42h — contain completed adequacy designs (completed, SEMULITH-P4-0243)
 
-Owned after clean b254b95, all16 hashes/modes/brief0 verified; no owned job.
-Director authorized stopping idle Kimi. Move whole completed a42e/d3/d3a/d3b/f/g designs
-and prior book receipt to ordinary part18 with full source inverses and controls;
-preserve active a42, seals/caps/old bytes. Clarify loop-free graph-census domain
-in current teaching. Full plan follows the owned partition. No code change.
-
-Read roadmap/.14 a42/G-TRACE/G-OBLIGATIONS, task-tree setup, history-book rules,
-ordinary part17's inverse contract and upstream containment guide. Exact-history,
-bounded-family and immutable-unit rules apply; full adoption still belongs to
-LIVE-CONTAINMENT.4. No new cap, lifecycle, seal or reader authority is adopted.
-Parent root130463/131072B had609B room: first476B ownership before tools/moves.
-Select six whole completed designs at their actual next ### boundaries,
-total27591B; active a42 umbrella621B excluded. Preserve headings/direct anchors,
-replace bodies with ordinary part18 routes. Move the whole393B book receipt,
-keeping current rules/feature teaching live. Source revision, byte offsets,
-lengths/SHA256 and exact replacements bind all seven bodies and both complete
-parent sources after removing only owned h rows/guide. Part18 stays outside the
-immutable original12 capture; no reader extension, old-part edit or cap increase.
-Partition: root104380B before full h plan, book17219B (-15B), seven bodies27984B;
-part18 33982B SHA2569b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59.
-Map binds committed b254b95. Check body/range/map/route/guide, actual receipt+
-new digest and active-plan omissions normal/O; literal cat and closed-original
-reader refusal. Protect prior bytes/modes/Gitlinks without traversal, all code,
-APIs/canonical data, LIVE1439 and axes. Current impact teaching explicitly names
-the loop-free domain of its4096 graph-pair/32768 seed diagnostic; implementation
-already excludes self edges there. Preserve all18 Bash examples/code fences and
-all other words; domain clarity changes no behavior or API cycle acceptance.
-
-Own necessary whole-oldest DEV/CH sharding before use; both history guards
-protect every parent entry, manifest/seals and actual moved/published receipt+
-digest edits. Focused documentation gates, sharder, seven books/fresh+actual
-normal/print navigation, complete source/task/history/scope inverses and COMMIT
-checks must pass. All code/arms stay exact: no redundant Rust or PROFILE run for
-this doc-only slice; full hooks still apply. Latest full CI exact3e5a3ea, no push
-below cadence. promotion: declined (existing exact-history/claim-domain rules).
-
-Operational handoff: restricted census said OK while full-visibility census
-refused Kimi Code PID60027's two read-only AGENTS.md handles; no owned job remains.
-Director explicitly authorizes stopping all idle Kimi processes. Subsequent
-full ps census finds none; termination record selects zero, so do not claim a
-signal killed the old PID. Unrestricted check_no_background_jobs.sh rc=0 after
-that ruling; no sanctioned row added. Restricted direct ps spawn raises EPERM:
-the script suppresses ps errors and judges an empty census as green. D47 owned
-priority1 next: fail closed on missing process visibility, reproduce both actual
-sandbox denial and deterministic tool failure, preserve successful census rules.
-Use full process visibility for current final census. Selected TASK-HISTORY APIs explicitly guard original12
-only; after containment, assess ordinary-part immutability through a bounded
-actual-gate diagnostic before classifying a gap. Own any confirmed gap as
-priority1 next, without expanding this finite documentation-only slice.
+Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42h).
 
 ### `.14` a42i — fail closed on unavailable handoff census (completed, SEMULITH-P4-0244)
 
-Owned after clean8d6c7e1, all9 committed hashes/modes and brief0 verified,
-all hooks green, unrestricted handoff rc=0; no owned jobs. D47 priority1.
-Read public handoff script, bootstrap/COMMIT/pivot rules, sanctioned data and
-current doctrine-book handoff teaching. This operational repair implements
-existing no-background-job policy; no processor/qualification or roadmap change.
-Root reproduced in a42h: restricted ps spawn EPERM, script suppresses errors
-and accepts its empty snapshot. Unrestricted ps/lsof both rc=0, empty stderr.
-
-Capture ps/lsof status and stderr before judging the census; refuse unavailable
-or empty output with exit2 and no handoff OK. Keep every successful detection,
-ancestry/advisory split, sanctioned rules and existing0/1 verdicts exact. Use
-only owned on-volume temporary stderr storage with cleanup on every exit; fail
-allocation safely. Green still describes this uid and available host view, not
-a proof against undisclosed jobs or silent OS visibility restrictions. Require
-host visibility for actual signoff, without granting new exemptions.
-
-Own also the fixed40-line --help extraction: actual old help truncates before
-usage/exit guidance. Extract the complete header, and refuse surplus arguments
-under the published single-option syntax. Do not alter the historical rationale
-or sanctioned registry. A bounded disposable fixture must run the actual Bash
-script through controlled ps/lsof subprocess outputs, check positives/advisory/
-read-only handles/command paths/sanctioned data/help/usage, failures with partial
-output and successful-but-stderr/empty outputs, and temporary-file cleanup.
-Normal/O tests and independent status/stderr/empty omissions must discriminate
-without errors. Compare the parent implementation on those same cases and the
-actual restricted host denial before/after; verify unrestricted actual census.
-
-Own current mdBook exit/visibility examples, DEV/CH/MEM/task updates, whole-oldest
-sharding if necessary, whole parent-entry/head inverses and actual receipt+
-updated-digest controls. Preserve code outside this operational tool/probe,
-all original/ordinary task history, canonical data, GC teaching/API/examples,
-seals/caps/LIVE1439 and CPU axes. Focused docs/sharder/seven books/rendered
-navigation and scoped source/mode/history checks, then full hooks/COMMIT.
-Own README command teaching, Makefile gate and the existing doctrine CI job
-as regression-test entrypoints:
-run only the synthetic probe normal/O there; actual host census stays explicit
-and outside pre-commit. No new doctrine or arm count. Check the recipe/workflow
-wiring structurally and run the exact new probe commands; full hooks retain all
-existing gates. Exercise TERM cleanup with an explicit checkpoint/release fixture
-so scheduling cannot collapse an assumed timing window. No Rust changed; no
-redundant full CI or push below cadence. promotion: declined (existing fail-closed/
-tool-first/handoff rules); full archive-freeze assessment follows separately.
-First hook refuses SEAM-INTEGRITY: shell allocation census56/57, handoff site70
-reported unqualified. Direct diagnostic finds the isolated expression evaluator
-binds ROOT/d/test_temp_root but omits this existing script's REPO_ROOT binding.
-Actual handoff temp paths already stay on-volume in19 fixtures and host run.
-Own this false-RED instrument fix in scripts/probe_temporary_locality.py before
-editing it: bind REPO_ROOT to the same fixture root, retain every allocator
-predicate. Verify57/57 normal/O, unchanged bare/foreign refusal and full SEAM19;
-omit/misdirect only that binding to reproduce named refusal before any write.
-Whole instrument predecessor inverse must be exact outside this one binding.
-No weakening, exemption or new arm. Update source/history/scope/receipts and
-retry full hooks; no first-attempt commit created. Artifact cleanup is overdue;
-finish/commit, then own cleanup before other work, respecting no dirty pivot.
+Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42i).
 
 ### `.14` a42j — retain the local census repair during scaffold sync (completed, SEMULITH-P4-0245)
 
-Owned2026-10-11 on clean975e37b after AC0063 full hooks/all11 hashes+modes,
-brief0/untracked and unrestricted post-commit census rc=0. Priority1 D48:
-public update_scaffold.sh includes scripts/check_no_background_jobs.sh in its
-NEUTRAL list and copies any present incoming source. Existing make gate controls
-would detect stale D47 replacement; do not claim current upstream is defective
-or a global guard gap. Read public updater/census/probe, workflow/make gate,
-Knowledge Map, ROADMAP P4 and current book source-fix/handoff teaching first.
-
-Reproduced D48: public local-input updater returns0 but overwrites the retained
-scripts/check_no_background_jobs.sh for stale and different supplied versions.
-probe_handoff_census.py --only-scaffold:3tests/2failures/0errors normal/O;
-absent input passes. Named re-run pinpoints that file's changed bytes. Root
-cause is its NEUTRAL membership plus the ordinary present-file cp branch;
-fix membership, retain the copy branch and all other source paths unchanged.
-
-Own a bounded public-interface reproduction in target/p4-system-14/a42j,
-then the minimal retention fix if reproduced. Fixtures use only project-owned
-input copies inside this repository volume, with an empty .git directory marker
-for the updater's documented local-input branch; they are not other Git repos.
-A controlled git executable returns the disposable project root only for the
-published rev-parse request; reject every other Git operation before it can run.
-Never invoke updater against the real working checkout or a foreign repository;
-no network, submodule implementation access, pins or new exemptions.
-
-Preserve the locally repaired census by removing it from automatic sync's
-neutral replacement set, following the existing acceptance/gap source-fix
-precedent. All other updater behavior stays exact, including local acquisition,
-normal neutral copies, absent-file handling, output/counts/modes and EXIT scratch
-cleanup. Newer upstream changes to retained checks require deliberate review.
-Append real public-updater integration cases to the existing synthetic handoff
-probe, preserving all19 old test cases and every old census mutation seam.
-Existing make gate/CI will run the expanded suite normal/O without new doctrine
-or registration/arm changes. Check stale/different incoming repairs and absent
-input, normal neutral update, project-owned/existing repaired checks preserved,
-input bytes/modes unchanged, exact expected output and owned scratch residue0.
-Old updater and independent re-enabled overwrite/omitted sync controls must
-lose assertions with zero errors normal/O; a no-op updater must not pass.
-
-Own complete updater/probe/book/task/make/CI source inverses as applicable,
-focused current gates, seven books/fresh+actual local links/normal+print teaching,
-permanent history guards/all predecessor entry and complete head inverses,
-whole-oldest sharding when necessary, unrelated tracked bytes/modes/Gitlinks
-exact, live docs/MEM/DEV/CH and full COMMIT. Stay within fixed family caps;
-original archive seals/canonical definitions/CPU/qualification/LIVE unchanged.
-No Rust/fullCI/push for this bounded workflow repair. After committed clean
-handoff, assess ordinary-part protection with actual gates before classifying
-that separate candidate, then return to remaining a42 adequacy obligations.
-promotion: declined (existing local-source retention precedent; measured repair and integration evidence live in this leaf).
+Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42j).
 
 ### `.14` a42k — assess staged ordinary-history protection (completed, SEMULITH-P4-0246)
 
-Owned on clean505dd74 after full hooks/all11 hashes+modes/brief0/host census0.
-First-class scripts/task_archive_gate_probe.py, all scratch under
-target/p4-system-14/a42k. Read actual gate/reader/ordinary source map and current
-book before changes; no foreign project writes or submodule implementation reads.
-Diagnostic creates one local object and isolated on-volume proposed index;
-real index is never replaced. Tested facade resolves public global-C/-c options
-and --absolute-git-dir owner, injects only for this checkout's index reads, and
-leaves existing child Git fixtures their own index. Unknown options or failed/
-stderr/empty context refuse. Preserve original command status/stderr. Explicit
-runtime conditions survive optimization. Source8/0/0 normal/O; independent
-unscoped/missing/discovery omissions2/1/3 failures, zero errors normal/O.
+Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42k).
 
-D49 confirmed on505dd74: unchanged full check_doctrines.sh rc=0/all doctrines
-green with proposed part18 receipt3196→3197. Actual source33982B SHA256
-9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59;
-proposed edbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
-Instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
-Real index SHA898b53dfdf832bbf01eea14f4099871b1cff0d2a094e4e1ca4e423e92c4ed909
-and1387working byte/mode/Gitlink identities unchanged; proposed index unchanged,
-243scoped reads/115delegations/no facade refusal; owned proposed index residue0.
-Independent module/index/real ordinary-source hashes re-read exact after result.
-Gate exit is a measured counterexample, not a universal absence-of-checks claim.
-Real ordinary files and original12 sealed reader/descriptor/terminal stay exact.
+### `.14` a42l — preserve published ordinary histories (active)
 
-Classification complete; D49 remains open, a42l repair is priority1. Current
-book/toolbox teach the measured limit and new-output replay command; actual
-run used assessment. No CPU/canonical/qualification/status credit.
-promotion: declined (bounded counterexample/instrument controls remain here; priority1 repair is explicitly owned next).
+Priority1 D49 remains open. a42l1/0247 contains completed records first;
+a42l2/0248 owns working/index preservation, independent controls normal/O
+and actual full-gate replay. Original12 reader authority stays fixed.
 
-### `.14` a42l — preserve published ordinary histories (proposed, SEMULITH-P4-0247)
+### `.14` a42l1 — contain completed workflow records (completed, SEMULITH-P4-0247)
 
-Priority1 D49 repair immediately after committed a42k. Own working/index
-preservation of published ordinary history, independent damaged-input/omission
-controls normal/O and replay of the actual full gate counterexample. Preserve
-all historical bytes and original finite12 reader authority. Read contracts and
-contain the active source first if its fixed cap fires; no dirty pivot. Complete
-current book/live/history/COMMIT sync, then remaining a42 adequacy obligations.
+Owned on clean e10b83a after all10 hashes/modes, brief0 and host census0.
+Move whole completed a42h/i/j/k designs and three whole book receipt spans to
+ordinary part19; bind complete source inverses, independent damage controls,
+all prior bytes/modes, active a42/a42l plans and fixed caps. Own scratch under
+target/p4-system-14/a42l1, necessary whole-oldest DEV/CH sharding, book/live
+sync and COMMIT before a42l2. D49 remains open; no feature change.
+
+Containment prerequisite only: no guard/feature code or qualification changes.
+Read task setup/caps, .14/a42 requirements and current task/history/book contracts;
+D49's measured full-gate case remains priority1. The committed source130798B
+had274B room; ownership activation reached131052B before any mover/scratch.
+Four whole completed designs h/i/j/k total13508B. Three whole book spans
+(a42h, c29e1/c33c and c30b/c33d receipts) total4098B. Preserve every old count,
+diagnostic and command; keep all original book headings and command fences,
+adding only the literal cat part19 guide. Current rules, active a42/a42l,
+current diagnostic teaching and remaining adequacy requirements stay live.
+
+Part19 binds e10b83a complete source lengths/SHA256, each byte range/body
+length/hash and exact inverse replacement. Original fragment navigation gets
+an explicit wrapper route to the source book. All seven whole bodies17606B
+produce ordinary part19 24496B SHA256
+ a1b220bc9a676e775956620c5f7763f942e0642d15764d15e781e50cf91e584f.
+Complete task130798B SHA93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d
+and book17160B SHAd7206011a9d36d789698796988416aadff75852df3b04d0e6f2f489a94aec35c
+must reconstruct after undoing only this unit's seams. Independently damage
+all seven bodies/markers/omissions, actual moved receipt plus new digest,
+source identity/range, route, guide and active plans; explicit conditions
+normal/O. An initial control selected a nonexistent3212 token in j; it refused
+before classification. Corrected to the actual k3196→3197 receipt; both runs
+now pass28 required refusals. No source record was changed by that control.
+
+Protect every other tracked file/mode/Gitlink without traversing submodules,
+all earlier ordinary and sealed histories, code, canonical inputs and LIVE.
+Family count reaches96/96; full containment adoption remains LIVE-CONTAINMENT.4.
+Own whole-oldest DEV/CH moves using the published sharder, complete old-head
+inverses and both permanent guards with genuine moved/published receipt edits
+plus updated digests. Focused12/sharder/seven books/fresh+actual local links,
+normal+print and literal new cat command must pass; then exact COMMIT hashes/
+modes/brief0/unrestricted census. Full hooks apply; no redundant Rust run for
+this doc-only unit. a42l2 repair follows clean committed state; no push below
+cadence. promotion: declined (existing exact-history containment rules; measured inverses and controls remain in this owned unit).
+
+### `.14` a42l2 — preserve published ordinary histories (proposed, SEMULITH-P4-0248)
+
+Priority1 D49 repair follows committed a42l1. Add a separate publishing guard
+for published archive Markdown, comparing complete working and proposed-index
+bytes/modes to HEAD; failed or malformed Git reads refuse. New ordinary parts
+may be added; existing records stay exact. Original closed12 retrieval authority
+and seal remain unchanged. Own independent damaged working/index, omission,
+read-failure and optimization controls, actual full-gate receipt replay, current
+book/toolbox/doctrine teaching, focused checks and COMMIT. No qualification credit.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -726,6 +602,13 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42l1 — **REPRODUCE / ISSUE**: python3 target/p4-system-14/a42l1/proof.py rc=0 reconstructs source130798B; prior verification.json gives book524277B. Fixed caps131072/524288 leave274/11B before ownership; no safe room for D49 repair plan.
+- [x] `.14` a42l1 — **ROOT CAUSE**: python3 target/p4-system-14/a42l1/partition.py rc=0 selects four whole completed designs13508B and three whole book receipts4098B at exact boundaries; current active plans and feature teaching are excluded.
+- [x] `.14` a42l1 — **FIX**: python3 target/p4-system-14/a42l1/proof.py rc=0 normal/O: complete committed task/book inverses exact, seven bodies17606B in24496B ordinary part19; four old headings/direct anchors and all book headings/fences retained.
+- [x] `.14` a42l1 — **ADDRESSED**: proof.py/rendered.py rc=0 normal/O:28 damage/actual-receipt+digest/map/route/guide/active-plan refusals; literal cat24496B exact, closed12 reader refuses part19; normal/print complete routes and commands. Book520841/524288B; task family96/96, fixed caps unchanged.
+- [x] `.14` a42l1 — **NO REGRESSION**: focused.sh/history.py/scope.py rc=0 normal/O where applicable: focused12/sharder12/seven books/3206 fresh+actual links, all99 old entries/complete heads/seals and1382 other tracked bytes/modes exact. All code/canonical inputs/LIVE stay exact; no Rust changes.
+- [x] `.14` a42l1 — **LOCKSTEP**: history.py rc=0: whole-oldest six entries in0278/0279 and manifest prefix preserved, genuine moved/published receipt+new-digest controls refuse jointly. New book/live/task receipts synced; promotion declined here. D49 open, priority1 a42l2 next after COMMIT.
 
 - [x] `.14` a42k — **ROOT CAUSE**: python3 scripts/task_archive_gate_probe.py
   --output target/p4-system-14/a42k/assessment rc=0:actual full gate0/all doctrines
@@ -1144,6 +1027,27 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42l1: proof.py normal/O rc=0: complete e10b83a task130798B SHA256
+93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d and
+book17160B SHAd7206011a9d36d789698796988416aadff75852df3b04d0e6f2f489a94aec35c
+reconstruct exactly. Seven whole bodies17606B; ordinary part19 24496B
+SHAa1b220bc9a676e775956620c5f7763f942e0642d15764d15e781e50cf91e584f.
+28 damage/receipt+new-digest/map/route/guide/active-plan controls refuse;
+all old headings/fences and active a42 exact, a42l/D49 ownership retained.
+focused.sh rc=0: focused12/sharder12/seven books. rendered.py normal/O rc=0:
+complete three current routes and cat/diagnostic commands normal+print,
+literal cat part19 rc=0/24496B exact;3206 fresh/actual hyperlinks resolve.
+history.py normal/O rc=0: all99 old entries/complete head inverses/manifest
+prefix/seals preserved; genuine original/moved/published receipt+updated
+manifest-digest edits refuse jointly. Two whole DEV entries6990B →0278 7223B
+SHAaa07df11a8ebb1bd6c5110933dfb9e7319087588addff054559d8df0b1a2a134;
+four whole CH entries2497B →0279 2734B
+SHAc2695ff51bfdb79fd14514d1d3131f53b338f4a4ad0bbc5ddbf7a363fe0ef8b2.
+71live+210sealed281logical. scope.py normal/O rc=0:1382 other tracked
+byte/mode identities and Gitlinks exact without traversal; no feature/API,
+canonical, original12 reader/seal or LIVE change. Book51/520841B (-3436B),
+task family96files; no cap extension. Priority1 D49 repair remains a42l2.
 
 a42k: actual full gate on505dd74 accepts isolated staged ordinary part18 receipt
 3196→3197 (gate0/all doctrines green). Instrument8/0/0 normal/O, omissions2/1/3
@@ -1605,6 +1509,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42l1 | `SEMULITH-P4-0247 (leaf P4-SYSTEM.14): contain completed workflow records before D49 repair` | priority1 a42l2 published ordinary working/index preservation and actual full-gate replay |
 | `.14` a42k | `SEMULITH-P4-0246 (leaf P4-SYSTEM.14): measure staged ordinary-history gate protection` | priority1 a42l D49 preservation repair, then remaining a42 adequacy |
 | `.14` a42j | `SEMULITH-P4-0245 (leaf P4-SYSTEM.14): retain the repaired handoff census during scaffold sync` | actual ordinary-part protection assessment, then remaining a42 adequacy |
 | `.14` a42i | `SEMULITH-P4-0244 (leaf P4-SYSTEM.14): fail closed on unavailable handoff census` | due recurring cleanup, then ordinary-part gate assessment/remaining adequacy |

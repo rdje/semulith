@@ -87,11 +87,9 @@ read them through the commands below. Current partition rules remain above.
 The whole P4.13 c29b1 append-history receipt is retained in
 [archive 13](#read-task-history).
 
-P4.14 a42h moves six whole completed adequacy designs and the prior
-book receipt to ordinary part18. Seven bodies total27984B;
-source lengths/hashes and routes bind exact reconstruction from `b254b95`.
-Active a42 and feature teaching stay live; original seals/caps stay fixed.
-Read the complete historical bodies with the commands below.
+P4.14 a42l1 retains four completed workflow designs and three whole book
+receipt spans in ordinary part19. Complete source inverses preserve each byte;
+active a42/a42l and current explanations stay live. Read the records below.
 
 ### Read task history
 
@@ -111,6 +109,7 @@ cat docs/tasks/archive/P4-SYSTEM-15.md
 cat docs/tasks/archive/P4-SYSTEM-16.md
 cat docs/tasks/archive/P4-SYSTEM-17.md
 cat docs/tasks/archive/P4-SYSTEM-18.md
+cat docs/tasks/archive/P4-SYSTEM-19.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md
@@ -132,67 +131,15 @@ a42l owns repair.
 
 ### Preserve completed task receipts and live development history
 
-P4.13 c29e1 starts from committed `442a57d`: the live task tree is 124,305
-bytes under its fixed 131,072-byte ceiling. Five whole completed spans total
-79,234 bytes: c26a–c29e0 designs and acceptance, plus the complete verification,
-commit and changelog sections. [Archive 10](#read-task-history)
-retains every byte in source order, including earlier history routes. It is
-81,004 bytes with wrappers. The live partition is 45,649 bytes before its new
-receipt; the frontier, open plans, census and decisions remain live.
-
-Extract the five marked payloads, authenticate their lengths and SHA256, replace
-only the new routes and remove only the new ownership/receipt text: the complete
-source reconstructs to 124,305 bytes, SHA256
-`45f985e70054d5d5fc5683dcc637a679e7fc14f2c7526b0830776e09f3ef57e8`.
-A corrupt payload, absent marker or omitted payload refuses authentication.
-Earlier archives remain immutable.
-
-The same unit uses the published sharder for `DEV_NOTES.md`: its 20 entries /
-36,965 bytes partition into 16 retained entries /29,867 bytes and four oldest
-entries /7,098 payload bytes. Shard 0228 is 7,331 bytes with its wrapper.
-Concatenating the retained prefix and exact suffix reconstructs the source in
-order, SHA256
-`48db9ec6872bf4c7b019286ddd63878ed56579b9f369231a494e0a97c6f01e76`.
-The earlier 19 manifest rows and 210 sealed shards remain exact: 230 logical
-rows are now 20 live plus 210 sealed. No cap or CPU-contract credit changes;
-current feature examples remain in their chapters.
-
-P4.13 c33c repeats the task inverse from `92c5855`: five whole completed
-c29e1–c33b spans total82,856 bytes. [Archive 11](#read-task-history)
-retains them in84,762 bytes with source/payload SHA256 markers. The live
-partition is46,007 bytes before receipts. Restoring only its five routes and
-removing the new ownership/receipts reproduces all127,192 source bytes in order;
-corrupt, absent-marker and omitted-payload controls refuse. Active .13/.14,
-frontier and census remain live; earlier history and fixed caps stay exact.
+The complete c29e1/c33c task and DEV partition receipts are retained in
+ordinary part19. They include source identities and all inverse/control
+measurements. Earlier archives remain immutable.
 
 ### Retain book history while keeping current explanations live
 
-P4.13 c30b captures committed `0e9949b`: five contract chapters contain
-32 historical verification/provenance paragraphs totaling19,833 payload bytes.
-The finite [book receipt archive](#read-task-history)
-is44,570 bytes, SHA256
-`fc0fd50d403f46dd41434e00e49435240e04ef44c4ae926e9b9b991e98ea753a`.
-Its inverse map and marked payloads reconstruct all five complete source chapters,
-checking their individual lengths and hashes. Corrupt, missing-marker and omitted
-payload controls refuse. The current chapters retain every original command,
-fenced example, table, heading and link, plus current feature explanations,
-controls and finite limits. The book saves6,516 chapter bytes before this receipt
-and index regeneration; no ceiling changes.
-
-The same unit moves six whole oldest DEV entries:20entries/37,272bytes become
-14retained/25,777bytes plus11,495payload bytes in shard0229/11,728bytes.
-Retained prefix plus shard payload reconstructs source SHA256
-`ca539130cb7acaa823caaa17c2f32a086f33b9df8aa7b71cc19dc0ce820c07df`.
-Its manifest gains one row; earlier20live rows/210sealed shards remain exact,
-for231logical rows. Code, canonical/frozen inputs and contract bindings stay exact.
-
-P4.13 c33d retains the original7,179-byte atomics introduction and440-byte
-checkpoint paragraph in an8,886-byte finite archive. Its complete14,853-byte
-source inverse authenticates both payloads in order and refuses damaged controls.
-The current chapter saves4,084 bytes while retaining all original headings,
-tables, translation fence and direct/public evidence body. A new canonical
-assembly example is also checked by the independent instruction author.
-The old c29a count is explicitly historical; current counts route to contract v2.
+Ordinary part19 retains the complete c30b/c33d book and DEV partition
+receipts, including source identities and measured inverses. Current
+feature explanations and examples remain in their chapters.
 
 ### Measure stored bytes, including UTF-8
 
