@@ -88,12 +88,12 @@ read them through the commands below. Current partition rules remain above.
 The whole P4.13 c29b1 append-history receipt is retained in
 [archive 13](#read-task-history).
 
-P4.14 a40 moves nine whole a30–a38 designs and the prior a36 book receipt
-to ordinary part16. Ten marked bodies total47028B; source offsets, lengths,
-SHA256 and live routes reconstruct both complete sources from `d1737ca`.
-All34 damaged-body/map/receipt/route/guide controls refuse normally and optimized.
-Original seals/parts remain exact. Active work and feature teaching remain live;
-ordinary history grants no sealed-reader authentication or CPU credit.
+P4.14 a42e moves eight whole completed byte/image designs and the prior
+a40 book receipt to ordinary part17. Nine bodies total35565B; offsets,
+lengths/SHA256/routes reconstruct both sources from `f0f8aa3`.
+All33 body/map/receipt/route/guide controls refuse normal/O.
+Active a42/d3 and feature teaching stay live; ordinary history is outside
+the closed original seal and grants no CPU credit.
 
 ### Read task history
 
@@ -114,6 +114,7 @@ cat docs/tasks/archive/P4-SYSTEM-13.md
 cat docs/tasks/archive/P4-SYSTEM-14.md
 cat docs/tasks/archive/P4-SYSTEM-15.md
 cat docs/tasks/archive/P4-SYSTEM-16.md
+cat docs/tasks/archive/P4-SYSTEM-17.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md

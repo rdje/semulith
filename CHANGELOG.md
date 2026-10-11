@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0238 (leaf P4-SYSTEM.14) — contain completed byte/image designs
+
+- Move eight whole completed designs/35104B and the whole prior461B book receipt into ordinary part17. Both complete committed sources reconstruct exactly; all33 body/map/actual-receipt/route/guide/active-design negatives refuse normal/O. Preserve eight headings/direct anchors and active a42/d3; closed original reader refuses the new path.
+- Part42801B carries exact source offsets/lengths/hashes/inverse map; book source decreases29B. Focused12/sharder12/seven books/3144 links/literal read/full normal+print/history/scope green. Preserve103 entries/1352 other files; whole DEV3063B to0259/CH716B to0260, real receipt+new-digest rewrites refuse. Final COMMIT; fixed caps/seals/code/canonical/CPU unchanged. Then d3 authenticated source/image composition.
+
 ## SEMULITH-P4-0237 (leaf P4-SYSTEM.14) — retain bounded source and ELF snapshots
 
 - Add explicit plainbool source/image retention to the existing shared ledger. Default15 payloads/API stay exact; opt-in17 uses source1MiB/image64KiB caps and reserves64KiB unused rebuild room before new reads. Seventeen maxima+room15.75MiB fit fixed16MiB; keep128MiB read/seed/terminal-release accounting. Authentication confers no image-validity or qualification credit.
@@ -627,15 +632,4 @@
 - Registry100/effective98/114; Rust167/17/217. LIVE652 arms/49 chapters/P4 12/18
   unchanged. Focused gates/all six books rc=0; hooks next. c28a bounds DEV before
   c28b GC-FENCEI; eight runtime pairs/freeze remain.
-
-## SEMULITH-P4-0155 (leaf P4-SYSTEM.13 c26b) — align push guidance and local self-tests
-
-- Refusal names the director-approved recorded act; live decision points to the
-  fulfilled, expired recovery exception. Actual push enforcement remains exact.
-- Keep all three helper-test fixtures and nested temp storage on-volume. Replace
-  borrowed approval history with a literal nonempty ledger and exact no-write
-  assertion. Controls reject old code; helpers pass15/0,15/0,8/0 rc=0.
-- Real ledger/CPU/canonical/registry/frozen/archives exact; effective96/114 and
-  LIVE652 arms/49 chapters/P4 12/18 unchanged. Focused gates/all six books rc=0;
-  hooks next. No project push or new approval. Next c27 ATOMIC-MISALIGN.
 

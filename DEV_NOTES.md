@@ -1,5 +1,46 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — contain completed byte/image designs (P4-SYSTEM.14 a42e)
+
+Capacity preparation in the same active evidence leaf: task126808/131072B leaves
+4264B before authenticated composition. Move eight complete, completed designs
+(a39/a40/a41/a42a/a42b/a42c/a42d1/a42d2) totaling35104B and the whole461B prior
+a40 main-book receipt into ordinary unsealed part17. Every exact live heading
+keeps a direct anchor route; active a42 umbrella and scheduled d3 remain live.
+Use actual next-heading boundaries: a41 is followed by the active a42 umbrella,
+which an assumed a41-to-a42a range would wrongly include. This was detected during
+read-only selection before any move; no active work was archived. Preserve every
+historical byte/count/diagnostic, with no cap raise, seal extension or feature edit.
+
+New part42801B SHA2561c389043c202718872d11b8e329b5da879a2bf1bf8408f636ac908a61de874ae
+contains source revisionf0f8aa3, complete source fingerprints, exact offsets,
+lengths/body hashes and live inverse routes. Nine marked bodies total35565B.
+Both committed predecessors reconstruct exactly normal/O: task126808B SHA256
+8afb9165d0c1e8c7b8a8c00adf0e1633ebe2542200c8f8df508ee32dfad70784;
+book17263B SHA25684af75988b5e905ef9fb3f5c910a310afc1aa85e72ed1f0fa844f53231eaefb1.
+Undo only current unit ownership/frontier/acceptance/verification/commit rows and
+new guide command, not older receipts. Preserve eight headings/direct anchors,
+active a42 body621B/d3 body604B, ordinary cat output and closed-reader refusal.
+All33 independent corrupt/missing-marker/omitted-body/map/actual-receipt/route/
+guide/active-design controls refuse normally and optimized, including a real
+GUEST294→295 receipt rewrite with updated metadata/marker digests. Explicit checks
+remain under optimization. Ordinary history grants no sealed-reader or CPU credit.
+
+Main-book replacement preserves its whole prior receipt in the new part; new
+current paragraph plus literal cat command decreases source29B, inside the fixed
+aggregate. Current feature teaching remains live. Protect all earlier parts/seals,
+code/canonical/data and unrelated files/modes/Gitlinks. Own necessary whole-oldest
+DEV/CH moves, all103 predecessor entries and real receipt+updated-digest refusal
+controls. Focused12/sharder12/0/seven books/3144 links/literal read/full normal+print
+teaching rc=0; history/scope normal/O protect103 prior entries/1352 other files/
+modes/Gitlinks, with actual old/moved/published receipt+new-digest refusals.
+DEV3063B to0259(3296B/932791834dc2bdd48072e9c2598ba87525fbdc1a1a9bb2612e59f8ac5a4def0d),
+CH716B to0260(953B/b029379336defff823d840462426e91cacd255fcf23c89de2e657428863b585d);
+52live+210sealed262logical. Only inherited EOF blanks0259:46/0260:16; ephemeral
+whitespace exception, no historical trimming. LIVE1337/caps/seals/code/canonical/
+CPU unchanged. Final docs/hooks/hashes+modes/brief0/censuses before d3. D2 all17 hashes/modes exact,
+brief0/untracked, both censuses green before activation. Evidence target/p4-system-14/a42e.
+
 ## _(2026-10-11)_ — retain source/image within the shared ledger (P4-SYSTEM.14 a42d2)
 
 Extend the existing declared-file owner with plainbool retain_source_image=False;
@@ -633,45 +674,4 @@ new health control fails exact old committed probe, passes repaired controls;
 no historical receipt rewritten. Staged hashes/hooks/brief0/handoff required.
 Next authenticated closure/aggregate evaluator/gates, collector/retention/captures/
 full policy. Canonical records, qualification and CPU state unchanged.
-
-## _(2026-10-11)_ — bind declared Sail execution inputs and argv (P4-SYSTEM.14 a32)
-
-Add pure matched_gpr_execution.bind_execution over the existing raw-schema/scoped-
-graph-validated canonical dictionary. Bound each used family before its map:
-9 inputs,12 observations,3 runs,3 producers; budget1..4096/sole Sail candidate.
-Bind seven unique common roles and two expectation inputs, eight principal roles
-per run, one reference/two expected producers, reference candidate/version to the
-current binary SHA, reference inputs within the common set, identical baseline/
-repeat selections, distinct control expectation/expected producer and exact repeat
-edges. Three disjoint four-role output sets exhaust twelve observations. Global
-common-role uniqueness plus per-run coverage already establishes unchanged
-executed input identities; omit redundant second predicates for those facts.
-Derive exact eleven-item public Sail argv from binary/config/budget/trace/image;
-only trace-output varies. Frozen nested tuples detach all returned fields from
-caller data. No artifact reads, execution, comparison or full method credit.
-Failed exits/verdicts remain data. Property/control/pair/expected derivation and
-whole-parent/request budgets belong to the next owners, never inferred here.
-
-Initial complete-fixture validation correctly refused missing statement/reason
-and string-valued repeated limitations. Inspect canonical schema and fix only the
-new fixture; generic mapper/schema remain unchanged. Final47 tests pass normal/
-optimized; twelve omissions6/8/3/1/3/2/1/44/2/1/1/1 fail with zero errors. The
-positive graph passes the raw-schema/scoped checker first. Controls exercise
-all argv positions, roles/counts/membership, stale reference version, repeat/control
-selection, unique ownership, bounds, frozen aliases, failed-process data and no I/O.
-Register26 literal outer arms (39 doctrines/935); teach complete synthetic graph,
-raw validation, binding and tamper refusal in the GC book. Existing qualifications,
-canonical records, CPU state and caps/seals remain unchanged. New entry exceeded
-DEV's1206B remaining space: measured50435B, published one whole2631B oldest entry
-into shard0242 (2864B/3adba6785bbc93921b4a2281c56f93e48fda0c854702092b58e439eef599c1c7).
-Published partition24=23+1, bytes/order exact;34 live+210 sealed=244 logical shards.
-Focused17/sharder12/0/seven books/3050 rendered links and full literal commands
-pass. Before/canonical/contract/history/scope rc=0 preserve243 dictionaries,
-1301 other files, complete method/checker/task predecessors and100 old entries.
-Actual moved count and published receipt+updated digest edits refuse. Sole staged
-whitespace finding is0242 EOF line41, inherited exact; ephemeral -blank-at-eof
-only, without rewriting historical bytes or tracked configuration. Staged-byte,
-permanent history/partition hooks and COMMIT postconditions remain mandatory.
-Next a33 property/witness/control/pair and same expected derivation relations,
-then closure/aggregate evaluator, collector/retention/captures/full policy.
 

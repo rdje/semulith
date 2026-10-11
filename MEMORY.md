@@ -18,15 +18,16 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: P4-SYSTEM.14 a42d3 authenticated source/image composition;
-  obtain selected entry through the sole validated expectation owner, freeze
-  parent program/budget before I/O, consume opt-in17 snapshots/reserved rebuild.
-  Complete closure/impact/source-grounded property/collector provenance remain.
-- in_flight_uncommitted: a42d2 completed/verified; COMMIT postconditions before
-  next activation.24/16 and old49/31 normal/O, PROFILE424/0/GUEST294/0;
-  39 doctrines1337 arms re-enumerated. Focused17/sharder12/seven books/
-  3144 links/all15 examples/full inverses/history/canonical/scope/corpus green.
-  DEV0257/CH0258 whole-entry moves; fixed caps/seals/CPU unchanged.
+- next_action: P4-SYSTEM.14 a42d3 validated entry/authenticated source-image
+  composition; freeze parent program/budget before I/O, consume opt-in17
+  snapshots/reserved rebuild. Closure/impact/source-grounded property/collector
+  provenance remain. Eight completed designs now route to ordinary part17.
+- in_flight_uncommitted: a42e completed/verified; COMMIT postconditions before
+  next activation. Both full sources/nine bodies35565B exact,33 negatives
+  normal/O, active a42/d3 retained. Part17 42801B;103 prior history entries/
+  1352 other files protected. Focused12/sharder12/seven books/3144 links/
+  literal cat/full normal+print green; DEV0259/CH0260 whole-entry moves.
+  Code/canonical/CPU/caps/seals/LIVE1337 unchanged.
   Latest full CI clean93525ac all5 legs green:443 Rust/smoke53/seven books,
   18 sources unchanged; target/p4-system-14/a42b/full-ci/result.json.
   No canonical matched-v1 capture/qualification. D44/D45 repaired; no open defect.
