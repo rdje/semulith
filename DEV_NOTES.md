@@ -1,5 +1,47 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — repair inherited ELF alignment and flags (P4-SYSTEM.14 a42b)
+
+D43-ELF-ALIGNMENT owns a source/image prerequisite defect. Exact da627ff writer
+50548B/884a42ee615c98570617a650b57bdf4035601ae9bd94e21f0b53c54f1e1e5d87
+reproduces all four failures normal/O: PT_LOAD offset120 with alignment4096;
+section table139 for a2-byte payload; text alignment4 at entry0x80000002;
+RVC flag0 for IALIGN16. Invalid IALIGN0 divides by zero. Own history shows compact
+layout/alignment in b8d09f5377c093f2e96eaddf49c968b6074a40d1;831a179fcefcdc34551530fcd804e81f71c00488
+added profile IALIGN while preserving those fields. This is input-container drift,
+not a CPU result or a reason to alter historical artifacts.
+
+Pinned ratified RVI-PSABI1.0 PDF273939B/a8d06bdcaa82a6a4567a1904dc27ef1ca1043ebaa1f523558c927a9d72bc23d9
+§8.1 confirms C alignment/RVC and separates internal FP from calling-convention
+flags. Primary gABI1.2/3.2/7.1 confirms natural structure/text/load congruence.
+Choose the first header-following file offset congruent with entry modulo4096;
+zero padding remains outside PT_LOAD. Align section table8, text2/4 by IALIGN,
+set RVC1/0, retain soft-float bits0. Validate known IALIGN, unsigned64 entry and
+load extent before writing. Preserve payload, addresses, RWX, names and None
+return, including empty/odd payloads and legacy bytearray. Clarify the Rust parser
+fixture's synthetic scope/name; it never executed the actual Python writer.
+
+15 controls normal/O pass; eight isolated omissions lose1/2/1/1/1/9/6/1 clean
+assertions in each mode. All3072 legal IALIGN16/32 page offsets checked. All49
+RV64I/167 GC payloads match exact old-source assembly; invert only authorized
+layout/metadata and recover each complete old ELF byte-for-byte. Register18
+literal GUEST-GEN arms, keeping all204 prior arms:222/0;39 doctrines1231 arms.
+Rust443/focused17/sharder12/0/seven books/3138 links/all12 literal examples and
+normal/print teaching pass. Real Python-produced ELF runs through public Rust CLI
+in both profiles with two exact hand-derived PC/write observations. Initial GC
+diagnostic wrongly used the scalar word-bearing parser; the published GC route
+prints PCs/writes, so the corrected oracle checks that complete literal output.
+Initial index drift/source-link failures were caught and corrected before signoff.
+Whole original source/checker204 arms/Rust fixture/book/task inverses,340 raw
+forms/243 maps,103 old entries and1330 other files/Git links stay exact normal/O.
+Actual original/moved/published receipt edits refuse even with updated digests.
+DEV16=15+1/2722B into0252 (2955B, SHA256
+49a4796d11355d281fa5a7751ba5126a83e0f6eadfc53dd34079732b5ec985bb);
+44live+210sealed254logical. Staged hashes/hooks/brief0/censuses finish COMMIT;
+full CI follows the clean repair milestone before a42c. Teach literal field decoding/limits and
+historical loader tolerance without ABI/CPU/qualification overclaim. No canonical,
+reference, schema, seal or cap change. Evidence target/p4-system-14/a42b.
+
 ## _(2026-10-11)_ — bind authenticated expectation program identifiers (P4-SYSTEM.14 a42a)
 
 A41 full CI green on clean03ed501a4c78c3e477f48cb1a4597684c0bb399b:
@@ -637,43 +679,4 @@ no prose compaction or past receipt rewrite is allowed. Next a30 authenticated
 receipt/closure orchestration, reviewed fresh collector, retention/predeclared
 cases/captures and full policy/status. Full CI remains a25 preflight d8083a9;
 a30 owns a fresh full-CI preflight after this completed byte-unit milestone.
-
-## _(2026-10-11)_ — expose structured Sail differences with complete validation (P4-SYSTEM.14 a28)
-
-The method needs exact first GPR changes, not a verdict/reason substring. Expose
-immutable Comparison/GprDifference from the public adapter's single comparison
-owner; the legacy tuple wrapper delegates. Complete observed/expected sets are
-canonical sorted tuples, with no caller-dictionary alias. Delivery mismatches
-carry no GPR difference. Byte/schema/authentication/method checks stay separate.
-
-Before signoff, the controls expose an old defect: both early DIVERGE returns
-precede later required-row/x0 validation. Recover9bad4c4's public adapter: four
-GPR/delivery differences hide missing/nonzero-x0 tails; a fifth delivery mismatch
-hides nonzero x0 in that same row. Both repaired APIs refuse all five, normal/O.
-Retain the first difference while validating every boundary; complete valid
-legacy outcomes/details stay exact. Full adapter inverse undoes only declared
-result packaging/validation continuation; seven other definitions are byte-exact.
-819 complete valid legacy tuples match normally and optimized.
-
-34 methods pass in both modes; ten omitted protections lose11/10/10/1/3/1/1/2/2/2
-assertions with no setup errors. GUEST-GEN174/0 retains152 old outer arms and adds22;
-derive39 doctrines/837 arms. Legacy Sail probe passes; its explicit budget controls
-also pass under optimization, without claiming optimized effectiveness for old
-assert statements. Diagnostic alias/fixture/newline mistakes were corrected;
-only successful final proof runs supply signoff.
-
-Fix duplicate GC book status left stale by a26: route to the included canonical
-method boundary and artifact chapter; clarify historical a20 text. Teach structured
-results, full-tail validation and a complete synthetic example. Normal/print
-phrases, stale-intro absence, all3030 hyperlinks and the literal example plus both
-control commands pass. Promote the validation lesson in the existing method
-record, compressing only current routing prose within fixed caps; no new decision
-file. Focused17/sharder12/0/seven books pass;243 canonical dictionaries and legacy
-mapping ASTs/dispatch remain exact. Scope1293 other tracked files exact, Git links
-unchanged without traversal. No Rust, canonical capture, policy, seals/caps or CPU
-acceptance changes. Whole append/task predecessors and original count-edit REDs
-must pass again with staged-byte equality before COMMIT. Evidence target/p4-system-14/a28.
-Next a29 bounded comparison unit, then authenticated closure/orchestration,
-collector, measured retention/captures and full policy/status. Full CI remains the
-d8083a9 a25 preflight; subsequent slices have focused gates and complete hooks.
 

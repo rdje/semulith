@@ -915,6 +915,8 @@ PF_X, PF_W, PF_R = 1, 2, 4
 SHT_NULL, SHT_PROGBITS, SHT_STRTAB = 0, 1, 3
 SHF_ALLOC, SHF_EXECINSTR, SHF_WRITE = 0x2, 0x4, 0x1
 EHDR_SIZE, PHDR_SIZE, SHDR_SIZE = 64, 56, 64
+ELF_PAGE_ALIGN = 4096
+EF_RISCV_RVC = 0x1  # Ratified RVI-PSABI 1.0 §8.1: permits 16-bit instruction alignment.
 
 
 def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
@@ -936,6 +938,12 @@ def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
     rather than to carry a per-model variant — an input that only one comparator accepts is not a
     matched experiment.
     """
+    if type(ialign) is not int or ialign not in (16, 32):
+        raise AsmError("ELF IALIGN must be 16 or 32 bits")
+    if type(entry) is not int or not 0 <= entry < 1 << 64:
+        raise AsmError("ELF entry must be an unsigned 64-bit integer")
+    if len(payload) > (1 << 64) - entry:
+        raise AsmError("ELF load extent exceeds the 64-bit address space")
     if entry % (ialign // 8):
         raise AsmError(f"entry {entry:#x} is not {ialign // 8}-byte aligned; IALIGN={ialign} "
                        f"for this profile")
@@ -946,21 +954,25 @@ def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
     assert shstrtab[name_shstr:name_shstr + 9] == b".shstrtab"
 
     phoff = EHDR_SIZE
-    text_off = phoff + PHDR_SIZE
+    header_end = phoff + PHDR_SIZE
+    # gABI §7.1: file and virtual addresses agree modulo the load-page alignment.
+    # Choose the first such offset after the headers; padding is outside PT_LOAD.
+    text_off = header_end + (entry - header_end) % ELF_PAGE_ALIGN
     shstr_off = text_off + len(payload)
-    shoff = shstr_off + len(shstrtab)
+    shstr_end = shstr_off + len(shstrtab)
+    shoff = (shstr_end + 7) & ~7  # gABI §1.2: ELF64 structures are naturally aligned.
 
     ehdr = struct.pack(
         "<4sBBBBB7sHHIQQQIHHHHHH",
         b"\x7fELF", 2, 1, 1, 0, 0, b"\0" * 7,   # class 64, LSB data, version 1, SysV
         ET_EXEC, EM_RISCV, 1,
-        entry, phoff, shoff, 0,
+        entry, phoff, shoff, EF_RISCV_RVC if ialign == 16 else 0,
         EHDR_SIZE, PHDR_SIZE, 1, SHDR_SIZE, 3, 2,
     )
     phdr = struct.pack(
         "<IIQQQQQQ",
         PT_LOAD, PF_R | PF_W | PF_X, text_off, entry, entry,
-        len(payload), len(payload), 0x1000,
+        len(payload), len(payload), ELF_PAGE_ALIGN,
     )
 
     def shdr(name, stype, flags, addr, off, size, align):
@@ -969,8 +981,9 @@ def write_elf64(path: Path, entry: int, payload: bytes, ialign: int) -> None:
     sections = (
         shdr(0, SHT_NULL, 0, 0, 0, 0, 0)
         + shdr(name_text, SHT_PROGBITS, SHF_ALLOC | SHF_EXECINSTR | SHF_WRITE,
-               entry, text_off, len(payload), 4)
+               entry, text_off, len(payload), ialign // 8)
         + shdr(name_shstr, SHT_STRTAB, 0, 0, shstr_off, len(shstrtab), 1)
     )
     assert len(ehdr) == EHDR_SIZE and len(phdr) == PHDR_SIZE and len(sections) == 3 * SHDR_SIZE
-    path.write_bytes(ehdr + phdr + payload + shstrtab + sections)
+    path.write_bytes(ehdr + phdr + bytes(text_off - header_end) + payload + shstrtab
+                     + bytes(shoff - shstr_end) + sections)

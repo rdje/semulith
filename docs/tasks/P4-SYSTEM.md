@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42b source/image correspondence, then closure/impact/collector provenance |
+| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a42b, then a42c source/image builder |
 
 ## Decisions
 
@@ -592,12 +592,74 @@ published receipt+updated-digest refusals. No cap or seal changes.
 
 promotion: declined (existing frozen-context/single-mapper/declared-versus-observed contracts apply; the incremental program binding is documented in the existing method and book).
 
-### `.14` a42b — source/image correspondence and remaining adequacy (scheduled)
+### `.14` a42b — repair ELF layout before source/image extension (completed, SEMULITH-P4-0234)
 
-Start clean after a42a. Establish source/image reconstruction through published
-project producer interfaces with explicit authenticated dependencies and bounds;
-then complete relevant closure/conservative impact/collector provenance through
-finite owned slices. Do not replace these obligations with identifier equality.
+Owned before changes on cleanda627ff294bba9695736d87c2e1f3221f0baf267;
+all17 verified/staged/committed/working hashes exact, brief0/untracked and both
+process censuses rc=0. A42a23 controls/seven omissions normal/O, focused17/seven
+books/3124 links/all11 literal blocks green. Full CI remains clean03ed501.
+
+Own D43-ELF-ALIGNMENT, found while reviewing the public source/image boundary.
+Current write_elf64 places PT_LOAD bytes at offset120 yet declares p_align4096;
+ordinary entry0x80000000 and halfword entry0x80000002 are not congruent with120
+modulo4096. Text section also declares alignment4 for the legal IALIGN16 entry
+ending2. Current section table follows an odd-length string table without
+natural structure alignment; inspect against the primary ABI. RVC e_flags is
+always0 despite IALIGN16; verify the pinned ratified psABI before classification.
+Impact: inconsistent/malformed generated input headers can pass lenient reference
+loaders, undermining the intended conformant input contract. No CPU/qualification
+credit is inferred from public-loader tolerance. Root cause is the writer's fixed
+file layout/metadata, distinct from assembled instruction bytes.
+
+Read relevant public Assembler/ELF/runner APIs, their probes/book sections and
+pinned sources. Verify concrete emitted headers with independent struct decoding,
+primary gABI/ratified RVI-PSABI requirements and relevant own-repository history.
+Finite repair: correct confirmed header alignment/flags and layout padding while
+preserving payload bytes, load/entry addresses, named sections and write API;
+no source/model/schema/canonical changes. Derive exact intended layout from the
+ABI; do not simply lower a declared alignment to hide an invalid page layout.
+Own normal/O controls, exact original-source reproduction, independent omission
+controls, full original-source inverse outside approved fields/layout, all167
+GC payloads and legacy consumers. Validate supported IALIGN and unsigned64 entry/
+load extent before writing; invalid IALIGN0 currently divides by zero. Clarify
+the Rust parser synthetic fixture, whose comment overstates writer round-trip
+coverage; verify real Python-generated ELF through the published Rust CLI. Use published reference interfaces only for
+any diagnostic loader runs; inspect no submodule implementation or pins.
+
+Document new ELF layout and historical-loader limitations honestly; regenerate
+the derived main-book index when its source census changes. Preserve all old
+history/receipts with full guards, fixed caps/seal. COMMIT hooks/brief0/
+censuses, then full CI on the clean repair milestone before source/image extension.
+
+D43 confirmed by exact original writer in normal/O: source50548B SHA
+884a42ee615c98570617a650b57bdf4035601ae9bd94e21f0b53c54f1e1e5d87;
+2-byte payload produces offset120/alignment4096, shoff139, text alignment4 and
+RVC0. Halfword entry exposes all four; ordinary entry exposes congruence/table.
+Ratified RVI-PSABI1.0 cache273939B SHA
+a8d06bdcaa82a6a4567a1904dc27ef1ca1043ebaa1f523558c927a9d72bc23d9
+§8.1 plus primary gABI1.2/3.2/7.1 reviewed. Relevant own history:
+b8d09f5377c093f2e96eaddf49c968b6074a40d1 introduced compact layout;
+831a179fcefcdc34551530fcd804e81f71c00488 added IALIGN without these updates.
+Public Rust parse accepts a bounded subset; its synthetic fixture's old claim
+of actual writer round-trip was inaccurate, now clarified without parser change.
+Implementation picks first file offset >=120 congruent with entry modulo4096,
+adds file-only zero padding, aligns table8/text2 or4 and sets RVC forIALIGN16.
+Invalid IALIGN/unsigned64 entry/load extent refuses before writes. No instruction
+semantic validation or float calling-convention inference. D43 is repaired and focused-verified; COMMIT then full CI before a42c. Controls15 normal/O and eight
+omissions1/2/1/1/1/9/6/1 failures, zero errors; all3072 aligned page offsets.
+All49 RV64I/167 GC exact old assembly payloads and complete old ELF inverses pass
+normal/O. Preserve all204 old GUEST-GEN arms and add18 literal controls.
+promotion: declined (bounded ELF repair/limits live in the assembler book, controls and owned task; no new method policy).
+
+### `.14` a42c — build a bounded image from source snapshot bytes (scheduled)
+
+Start clean after a42b/full CI. Reuse the public canonical assembler and one ELF
+encoding owner to construct a bounded image from supplied immutable source bytes;
+caller owns authenticated input context and tool-dependency adequacy. Record exact
+source/image fingerprints and identifier/entry/alignment metadata; no reference
+process, artifact reopen or qualification. Current public corpus census167 source
+files: maximum41530B and5124 lines. Declare finite builder bounds before use;
+complete closure/conservative impact/collector provenance remain further a42 work.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -695,6 +757,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42b — **ROOT CAUSE**: before.py rc=0 normal/O recovers exact
+  committed writer and all four ABI defects; pinned psABI/gABI and relevant own
+  history reviewed. Invalid IALIGN0 ZeroDivisionError reproduced.
+- [x] `.14` a42b — **ADDRESSED**: run-controls.py rc=0:15 controls,
+  eight omissions1/2/1/1/1/9/6/1 failures/no errors normal/O; all3072 legal page
+  offsets. corpus.py rc=0 normal/O:216 payloads/full old ELF inverses exact.
+- [x] `.14` a42b — **NO REGRESSION**: make check/public-cli.py/focused.sh/
+  rendered.py/contract/history/canonical/scope.py rc=0:443 Rust/two profiles,
+  focused17/sharder12/0/seven books/3138 links/all12 examples;103 old entries,
+  1330 other files,340 raw forms/243 maps exact. Full CI follows clean commit.
 
 - [x] `.14` a42a — **ROOT CAUSE**: selection-before.log/exact draft inverse
   rc=0; D42 unsupported-rule/oversized-label changes classification, no reads.
@@ -944,6 +1017,23 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a42b: Verified:15/0/0 normal/O, eight omissions1/2/1/1/1/9/6/1 fail without
+errors; exact old writer reproduces four header defects and invalid IALIGN0.
+All49 RV64I/167 GC payloads and complete old ELF inverses exact normal/O.
+make check443 Rust/public CLI two profiles with exact PC/write observations;
+initial GC diagnostic used the wrong scalar parser, corrected against the explicit
+public GC PC/write format. Generated index drift and cross-book source-link
+failures were caught and corrected; final focused17/sharder12/0/seven books/3138
+links/all12 literal examples/normal+print scope/limits rc=0. GUEST222/0 preserves
+204 old arms and adds18; PROFILE390/0,39 doctrines1231 arms. Complete original
+assembler/checker/Rust fixture/book/task inverses and history/canonical/scope
+rc=0 normal/O:340 raw forms/243 maps,103 old entries/1330 other files exact.
+Actual original/moved/published receipt+digest edits refuse. DEV16=15+1/2722B
+into0252 (2955B/49a4796d11355d281fa5a7751ba5126a83e0f6eadfc53dd34079732b5ec985bb),
+44live+210sealed254logical. Fixed caps/seals/canonical/CPU acceptance unchanged;
+full CI on the clean repair commit before a42c. COMMIT hashes/hooks/brief0/
+censuses next. Last full CI remains03ed501 all5 legs443 Rust/smoke53/seven books.
+
 a42a: Verified:23/0/0 normal/O, seven omissions7/13/5/1/1/1/1 fail without
 errors; D42 exact draft10140B/7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
 loses1 assertion/no errors normal/O. Rule selection now precedes its program
@@ -1166,6 +1256,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42b | `SEMULITH-P4-0234 (leaf P4-SYSTEM.14): repair ELF alignment and compressed flags` | full CI on clean repair, then a42c source/image builder |
 | `.14` a42a | `SEMULITH-P4-0233 (leaf P4-SYSTEM.14): bind expectations to the frozen parent program` | a42b source/image correspondence and remaining adequacy |
 | `.14` a41 | `SEMULITH-P4-0232 (leaf P4-SYSTEM.14): compose authenticated byte evaluation` | full CI on clean milestone, then a42 complete adequacy obligations |
 | `.14` a40 | `SEMULITH-P4-0231 (leaf P4-SYSTEM.14): contain completed authentication-unit designs` | a41 evaluator/composition, then reviewed collector/retention/captures |

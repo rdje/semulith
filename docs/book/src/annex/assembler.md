@@ -293,16 +293,17 @@ The pre-bind census covers 139 historical guests. The author currently matches 1
 architectural traces with no vocabulary refusals; one cached-translation guest awaits
 its owned cache-policy repair. This prerequisite precedes count adoption.
 
-## The ELF writer — and a measured harness difference
+## The ELF writer — alignment and loader limits
 
-`write_elf64()` wraps the words in a minimal ELF64 little-endian RISC-V executable: one
-`PT_LOAD` segment at the entry address. Notably, it emits a **section header table even
-though execution does not need one** — because of a measured difference between the two
-reference models: Sail loaded and ran a sectionless ELF without complaint; Spike refused it
-outright (`elfloader.cc` asserts `e_shstrndx < e_shnum`, and `0 < 0` is false). That is a
-*harness* difference, not a semantic one, and the right response is to emit the conformant
-artifact rather than carry a per-model variant — an input only one comparator accepts is not
-a matched experiment.
+`write_elf64()` emits one ELF64 little-endian RISC-V `PT_LOAD` at the entry,
+with null, `.text` and `.shstrtab` headers. File/load offsets agree modulo 4096;
+file-only padding preserves payload bytes. The section table is 8-byte aligned.
+IALIGN 16/32 selects text alignment 2/4 and RVC flag 1/0. Invalid alignment, entry
+or overflowing load extent refuses before writing.
+
+Sail historically accepted a sectionless image that Spike refused. Adding sections
+addressed that difference; a42b later fixed alignment/flags. Loader acceptance
+alone does not validate headers. See [the worked layout and controls](../../../models/rv64gc-lab-v0/book/evaluation.html#elf-container-alignment).
 
 ## Running the rv64gc Sail experiment
 

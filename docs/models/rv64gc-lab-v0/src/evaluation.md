@@ -302,3 +302,72 @@ unknown-rule/oversized-label control reproduced a diagnostic regression from
 bound after supported selection, still before artifact I/O. The exact recovered
 draft loses one assertion with no errors normally and optimized; the repaired
 23-case suite passes. This ordering preserves method support as a separate finding.
+
+## ELF container alignment
+
+The public `scripts/riscv_asm.py::write_elf64(path, entry, payload, ialign)` writes
+one RV64 little-endian executable. IALIGN is explicit profile data: 16 or 32 bits.
+It preserves the supplied payload exactly, with one read/write/execute PT_LOAD
+at the entry's virtual and physical addresses and equal file/memory lengths.
+Null, `.text` and `.shstrtab` headers remain available to public loaders.
+
+The file offset is the first offset after the 120-byte header area congruent to
+entry modulo 4096. For entry 0x80000000 it is 4096; for 0x80000002 it is 4098.
+Zeros before the payload are outside PT_LOAD and add no guest instructions.
+The string table follows the payload; up to seven zero bytes align the section
+table to 8. Text alignment is 2 for IALIGN=16 and 4 for IALIGN=32, including legal
+halfword entries. These are the [gABI segment](https://gabi.xinuos.com/elf/07-pheader.html),
+[section](https://gabi.xinuos.com/elf/03-sheader.html) and
+[natural structure alignment](https://gabi.xinuos.com/elf/01-intro.html) constraints.
+
+Ratified RVI-PSABI 1.0 §8.1 requires EF_RISCV_RVC=1 when the binary permits 16-bit
+instruction alignment. The writer sets this bit for IALIGN=16. Float-ABI bits
+remain 0 (soft-float calling convention); internal FP instructions do not imply
+a hardware floating-point calling convention. This freestanding container makes
+no compiled LP64D claim. The pinned PDF is catalogued as RVI-PSABI-1.0 and in this
+unit's sources; the [published psABI](https://riscv-non-isa.github.io/riscv-elf-psabi-doc/)
+explains the same distinction.
+
+Run this complete example from the repository root. It emits ignored artifacts,
+reads literal ELF64 field layouts independently, then runs both control modes:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+import struct, sys
+sys.path.insert(0, 'scripts')
+from riscv_asm import write_elf64
+out = Path('target/elf-layout-example')
+out.mkdir(parents=True, exist_ok=True)
+for entry, ialign in ((0x80000000, 32), (0x80000002, 16)):
+    path = out / f'ialign{ialign}.elf'
+    payload = b'\x13\x00\x00\x00'
+    write_elf64(path, entry, payload, ialign)
+    data = path.read_bytes()
+    h = struct.unpack_from('<16sHHIQQQIHHHHHH', data)
+    p = struct.unpack_from('<IIQQQQQQ', data, h[5])
+    text = struct.unpack_from('<IIQQQQIIQQ', data, h[6] + 64)
+    if data[p[2]:p[2] + p[5]] != payload:
+        raise SystemExit('loaded payload differs')
+    print(hex(entry), p[2], p[7], h[6] % 8, h[7], text[8])
+PY
+python3 scripts/probe_elf_writer.py
+python3 -O scripts/probe_elf_writer.py
+```
+
+The first two lines are `0x80000000 4096 4096 0 0 4` and
+`0x80000002 4098 4096 0 1 2`; each probe reports 15 tests/0 failures/0 errors.
+Eight independent omissions fail in both modes. The controls cover every legal
+page offset, exact headers/payload/string table/padding, upper address bounds,
+real path writes and legacy bytearray payloads. Unknown/noninteger IALIGN,
+noninteger/out-of-range entry, overflowing load extent and misaligned entry
+raise AsmError before touching the output. Empty or odd-sized payloads remain
+representable: this container writer does not validate instruction semantics.
+
+D43-ELF-ALIGNMENT reproduced four inherited header defects from the exact old
+writer. Its historical Sail/Spike tolerance was insufficient validation; the
+Rust parser fixture was also synthetic, despite its old writer-round-trip name.
+All 49 RV64I and 167 RV64GC guest payloads remain byte-identical after repair;
+only ELF layout/metadata change, so newly generated ELF fingerprints change.
+Retained historical artifacts and receipts remain immutable. These finite checks
+supply no CPU acceptance, complete dependency adequacy or method qualification.

@@ -241,6 +241,44 @@ PYCODE
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-image 2>&1)"; rc=$?
   arm "RED reviewed source annotations cannot change instructions" "$rc" 1 "$out" "accepted source re-derivation changes assembled image"
 
+  # P4.14 a42b: literal ELF64 fields/layout, including optimized refusal guards.
+  out="$(python3 scripts/probe_elf_writer.py 2>&1)"; rc=$?
+  arm "GREEN ELF ABI layout normal" "$rc" 0 "$out" "ELF-WRITER: 15 tests / 0 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation segment-offset 2>&1)"; rc=$?
+  arm "RED segment-offset normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation page-declaration 2>&1)"; rc=$?
+  arm "RED page-declaration normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 2 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation section-table 2>&1)"; rc=$?
+  arm "RED section-table normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation text-alignment 2>&1)"; rc=$?
+  arm "RED text-alignment normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation rvc-flag 2>&1)"; rc=$?
+  arm "RED rvc-flag normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation ialign-guard 2>&1)"; rc=$?
+  arm "RED ialign-guard normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 9 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation entry-guard 2>&1)"; rc=$?
+  arm "RED entry-guard normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 6 failures / 0 errors; no qualification"
+  out="$(python3 scripts/probe_elf_writer.py --mutation extent-guard 2>&1)"; rc=$?
+  arm "RED extent-guard normal" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py 2>&1)"; rc=$?
+  arm "GREEN ELF ABI layout optimized" "$rc" 0 "$out" "ELF-WRITER: 15 tests / 0 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation segment-offset 2>&1)"; rc=$?
+  arm "RED segment-offset optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation page-declaration 2>&1)"; rc=$?
+  arm "RED page-declaration optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 2 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation section-table 2>&1)"; rc=$?
+  arm "RED section-table optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation text-alignment 2>&1)"; rc=$?
+  arm "RED text-alignment optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation rvc-flag 2>&1)"; rc=$?
+  arm "RED rvc-flag optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation ialign-guard 2>&1)"; rc=$?
+  arm "RED ialign-guard optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 9 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation entry-guard 2>&1)"; rc=$?
+  arm "RED entry-guard optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 6 failures / 0 errors; no qualification"
+  out="$(python3 -O scripts/probe_elf_writer.py --mutation extent-guard 2>&1)"; rc=$?
+  arm "RED extent-guard optimized" "$rc" 1 "$out" "ELF-WRITER: 15 tests / 1 failures / 0 errors; no qualification"
+
   # P4-SYSTEM.12 d1: isolate the full C composition; the expected words and byte
   # image are hand-written spec-side fixtures, independent of the live corpus.
   out="$(python3 scripts/probe_c_assembler.py 2>&1)"; rc=$?

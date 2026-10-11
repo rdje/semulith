@@ -1,10 +1,11 @@
-//! Tests for the ELF loader: every refusal names the field, and the writer the guests use
+//! Tests for the bounded ELF parser: every refusal names the field; a synthetic image
 //! round-trips through parse into the same entry and payload.
 
 use super::*;
 
-/// The same writer shape `scripts/riscv_asm.py`'s `write_elf64` emits: EHDR + one PHDR +
-/// payload + shstrtab + three SHDRs. The loader reads only what it validates.
+/// Synthetic parser fixture: EHDR + one PHDR + payload + strings + three zero SHDRs.
+/// It retains the legacy compact layout; it is not a production-writer or ABI
+/// conformance test. This parser reads only the header and segment fields it validates.
 fn write_elf64(entry: u64, payload: &[u8]) -> Vec<u8> {
     let shstrtab = b"\0.text\0.shstrtab\0";
     let phoff = EHDR;
@@ -49,7 +50,7 @@ fn write_elf64(entry: u64, payload: &[u8]) -> Vec<u8> {
 }
 
 #[test]
-fn the_writer_round_trips_through_parse() {
+fn a_synthetic_image_round_trips_through_parse() {
     let entry = 0x8000_0000u64;
     let payload: [u8; 8] = [0x93, 0x00, 0x50, 0x00, 0x13, 0x81, 0xf0, 0xff];
     let image = write_elf64(entry, &payload);

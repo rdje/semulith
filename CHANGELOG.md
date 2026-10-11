@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0234 (leaf P4-SYSTEM.14) — repair ELF alignment and compressed flags
+
+- Repair inherited load/file congruence, natural section-table alignment, profile text alignment and RVC flags. Preserve exact loaded bytes/addresses, sections/RWX and public write API; refuse invalid IALIGN/unsigned64 entry/load extent before writes. Correct synthetic Rust parser-fixture scope/name.
+- Exact old writer reproduces four ABI defects normal/O. Fifteen controls/eight omissions discriminate without errors;49 RV64I/167 GC payloads and complete original ELF inverses match. Keep204 GUEST-GEN arms, add18 (222/0;39 doctrines1231). Rust443/two public CLI profiles/focused17/sharder12/0/seven books/3138 links/all12 examples/full inverses green. Preserve103 history entries/1330 other files; DEV2722B into0252, real receipt+digest rewrites refuse. Initial diagnostic/index/link errors corrected before signoff. COMMIT then full CI before a42c; canonical/CPU/caps/seals unchanged.
+
 ## SEMULITH-P4-0233 (leaf P4-SYSTEM.14) — bind expectation identifiers to the frozen parent program
 
 - Both authenticated expectation labels must match the parent experiment, including unsupported bytes. Freeze/normalize the bounded parent before reads; optional comparison context preserves all legacy pure-unit calls. Exact repinned wrong-label fixture now refuses while retaining valid record/matched authentication; identifier equality does not prove source/image correspondence or complete adequacy.
