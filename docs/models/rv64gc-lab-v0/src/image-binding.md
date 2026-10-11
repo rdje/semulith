@@ -97,7 +97,161 @@ and complete ELF snapshots to the [source/image consumer](evaluation.md#compare-
 Its authentication and aggregate reservation obligations still apply. The
 [shared ledger's opt-in retention](closure.md#retain-source-and-elf-bytes-for-a-later-check)
 can retain those snapshots within its existing budgets. The authenticated
-evaluator has not yet composed that retention, this context and correspondence.
+evaluator now composes that retention, this context and correspondence
+[below](#compose-authenticated-source-and-elf-snapshots).
 Complete closure, conservative impact, source-grounded properties, collection
 provenance and full method/policy adequacy remain pending; no qualification or
 CPU acceptance follows from this context.
+
+## Compose authenticated source and ELF snapshots
+
+`evaluate_retained_unit` now requests the shared reader's source/image retention
+and combines the entry context above with complete byte correspondence. Its
+function signature stays the same. The frozen `EvaluationCheck` appends an
+optional `source_image` finding after all existing positional fields. The
+[record, authentication and observed comparison fields](evaluation.md#independent-results-and-limits)
+keep their separate meanings. A source/image mismatch can coexist with matched
+authentication and a satisfied three-run comparison.
+
+Before artifact I/O, the evaluator selects immutable source/image bindings from
+the already frozen execution plan, alongside the selected program and budget.
+The shared ledger authenticates each declared file once, including the earlier
+manifest seed, and retains seventeen payloads. It uses the existing 1 MiB source
+and 64 KiB image role caps and reserves another 64 KiB for the rebuilt ELF inside
+the fixed 16 MiB snapshot ceiling. The cumulative artifact-read ceiling remains
+128 MiB. The public reader's omitted/false flag still retains fifteen payloads;
+only this evaluator now explicitly requests the opt-in.
+
+The evaluator first checks the authenticated identity, receipts, complete byte
+comparison and recorded verdicts as before. **Failed and unsupported comparisons
+return before entry extraction or reconstruction**, with `source_image=None`.
+An invalid entry or unavailable image tool must not hide those diagnostic
+outcomes. A satisfied comparison reaches the public entry-context API using the
+exact authenticated baseline expectation and selected parent program/budget.
+The comparison's sole-value control already requires every other expectation
+field to match; no second control-equality rule is introduced.
+
+An entry-context `UnitError` yields a separate `refused` reason beginning
+`image context:`. The satisfied comparison and authentication summary remain
+available, and `source_image` is absent because reconstruction was not reached.
+A missing entry is no longer enough for a positive composed evaluation, although
+the generic expectation grammar and standalone comparison APIs still permit it.
+Odd addresses remain valid context metadata; the builder loads its canonical
+GC context, then owns alignment and load-extent refusals.
+
+The evaluator forwards exact retained source/image bytes and validated
+program/entry to `check_source_image` once. Its returned `SourceImageCheck` is
+retained directly, with `matched`, `refused` or `unavailable` and metadata-only
+facts. A complete-byte mismatch preserves both image fingerprints. Unavailable
+canonical construction stays distinct from invalid source/image content;
+unexpected programming failures propagate. Nothing is rebuilt from a reopened
+artifact path. Later path changes cannot replace the supplied snapshots, and a
+later check must authenticate again.
+
+### Run the composed outcomes
+
+Run from the repository root. `Fixture` is a test-data author using the public
+encoders and builder. It writes a real GC source/ELF pair and explicit entry,
+plus the synthetic 22-file record described in the
+[evaluation example](evaluation.md#run-the-synthetic-evidence-cases). The source
+and synthetic trace both describe `addi x1, x0, 1`; no reference process runs.
+The builder used to author the image is also the reconstruction owner, so this
+fixture is a composition control, not an independent encoding oracle or captured
+experiment. The independent builder/correspondence controls remain separate.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_IMAGE_EVALUATION'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest import mock
+import matched_gpr_evaluation as E
+from probe_matched_gpr_evaluation import Fixture, PC
+
+base = Path('target/p4-system-14/a42d3b/book-fixtures')
+base.mkdir(parents=True, exist_ok=True)
+with TemporaryDirectory(dir=base) as directory:
+    fixture = Fixture(Path(directory))
+    def evaluate():
+        return E.evaluate_retained_unit(fixture.root, **fixture.arguments())
+    def show(checked):
+        print(checked.disposition, checked.record.disposition,
+              checked.authentication.disposition, checked.comparison.disposition,
+              checked.source_image.disposition if checked.source_image else None)
+
+    checked = evaluate()
+    show(checked)
+    print(hex(checked.source_image.facts.entry), checked.source_image.facts.encoding_path,
+          all(fact.data is None for fact in checked.authentication.files))
+
+    # Change unloaded ELF padding and re-pin the file/receipts: authentication
+    # can match while complete source/image correspondence refuses.
+    changed = bytearray(fixture.image)
+    changed[200] ^= 1
+    fixture.write(fixture.inputs['guest-image'], bytes(changed))
+    fixture.publish_receipts()
+    checked = evaluate()
+    show(checked)
+    facts = checked.source_image.facts
+    print(facts.image_sha256 != facts.rebuilt_image_sha256,
+          checked.authentication.disposition == 'matched')
+    fixture.write(fixture.inputs['guest-image'], fixture.image)
+    fixture.publish_receipts()
+
+    with mock.patch.object(E.F.G, 'build_guest_image',
+                           side_effect=E.F.G.ImageUnavailable('synthetic unavailable tool')):
+        show(evaluate())
+
+    fixture.runs['baseline'].update(process_exit=1, verdict='REFUSED')
+    fixture.publish_receipts()
+    with mock.patch.object(E.C, 'expectation_image_context', side_effect=AssertionError('entry reached')), \
+         mock.patch.object(E.F, 'check_source_image', side_effect=AssertionError('build reached')):
+        show(evaluate())
+
+    fixture.runs['baseline'].update(process_exit=0, verdict='AGREE')
+    for role, document in (('expectation', fixture.base), ('mutant-expectation', fixture.control)):
+        document.pop('entry')
+        fixture.write(fixture.inputs[role], PC.encode(document))
+    fixture.publish_receipts()
+    show(evaluate())
+PY_IMAGE_EVALUATION
+python3 scripts/probe_matched_gpr_image_evaluation.py
+python3 -O scripts/probe_matched_gpr_image_evaluation.py
+```
+
+The five evaluations print `pending valid matched satisfied matched`,
+`refused valid matched satisfied refused`,
+`unavailable valid matched satisfied unavailable`,
+`failed valid matched failed None`, and `refused valid matched satisfied None`.
+The positive facts name entry `0x80000000` and canonical route
+`profiles/rv64gc-lab-v0/encoding.sexp`, with all returned file payloads absent.
+The two mismatch Booleans are `True True`. The unavailable tool is deliberately
+simulated; it does not report that the current canonical tool is missing.
+
+Both probe commands report 26 tests, zero failures and zero errors. Fourteen
+independent omissions of retention, context validation/forwarding, exact byte
+selection, no-reopen behavior, result propagation or comparison ordering must
+fail in normal and optimized Python, without harness errors. The existing
+42 evaluation controls/29 omissions and 23 parent-program controls/seven
+omissions are re-run against the composed evaluator; prior receipts remain
+immutable. Tests also cover source/image inclusive caps and one-byte overflow,
+full ELF header/padding/payload/section changes, byte-equivalent comments,
+nondefault entry and two-boundary budget, bundle release and programming errors.
+
+### Remaining limits
+
+Positive evaluation still returns `pending`, with no qualification field or CPU
+acceptance. Correspondence establishes complete reconstructed ELF bytes, not a
+source-grounded expected property, complete dependency closure, conservative
+impact result, actual collector execution/provenance or full method/policy
+adequacy. Caller-selected current parent, scoped authority, provenance and
+complete current tool adequacy remain obligations. Other declared dependencies
+in this fixture are opaque and cannot establish those facts.
+
+The reader performs the reservation; the evaluator performs the reconstruction.
+`snapshot_bytes` reports only payloads returned by the reader, excluding unused
+rebuild room, the earlier manifest peak and process RAM. The extra 64 KiB bounds
+one final rebuilt ELF payload. Source decoding, parsing objects/tokens, assembled
+intermediate buffers, chunks, immutable copies and project-tool I/O are outside
+that artifact-snapshot accounting. These are bounded supplied-artifact and final
+image sizes, not an exact RAM or execution-time guarantee. No reference binary
+or process is accessed; returned findings retain no supplied or rebuilt bytes.

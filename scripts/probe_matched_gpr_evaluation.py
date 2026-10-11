@@ -16,6 +16,7 @@ import unittest
 from unittest import mock
 
 import matched_gpr_evaluation as E
+import matched_gpr_image as G
 import matched_gpr_artifacts as F
 import probe_matched_gpr_execution as P
 import probe_matched_gpr_identity as PI
@@ -35,12 +36,20 @@ class Fixture:
         self.runs = {item["kind"]: item for item in self.graph["run"]}
         for item in self.graph["input"]:
             self.write(item, b"opaque synthetic principal; no source/image adequacy")
+        self.entry = 0x80000000
+        self.source = b"addi x1, x0, 1\n"
+        self.image = G.build_guest_image(self.source, program=self.experiment["program"], entry=self.entry).image
+        self.write(self.inputs["guest-source"], self.source)
+        self.write(self.inputs["guest-image"], self.image)
         self.write(self.inputs["reference-identity"], PI.encode(PI.document(self.candidate)))
         self.base = PC.P.expected([{"x1": "0x1"}]); self.base["program"] = self.experiment["program"]
+        self.base["entry"] = hex(self.entry)
+        self.base["step"][0]["insn"] = "addi x1, x0, 1"
         self.control = deepcopy(self.base); self.control["step"][0]["writes"]["x1"] = "0x2"
         self.write(self.inputs["expectation"], PC.encode(self.base))
         self.write(self.inputs["mutant-expectation"], PC.encode(self.control))
-        self.trace = PC.P.trace([{"x1": 1}]).encode()
+        self.trace = (b"[0] [M]: 0x0000000080000000 (0x00100093) addi x1, x0, 1\n"
+                      b"x1 <- 0x0000000000000001\n")
         for output in self.graph["observation"]:
             self.write(output, self.trace if output["role"] == "raw-gpr" else b"")
         self.child = dict(id="dependency", role="implementation", path="source/tool.py", sha256="a" * 64)
@@ -422,8 +431,8 @@ MUTATIONS = {
     "receipt-context": ('run=run, inputs=', 'run=dict(run, process_exit=0), inputs='),
     "manifest-status": ('if manifest.disposition != "matched":', 'if False:'),
     "manifest-relations": ('if manifest.plan.relations != relations.plan:', 'if False:'),
-    "manifest-reopen": ('files = Q.read_declared_files(root, manifest=manifest, observations=observations)',
-                        'manifest = M.read_dependency_manifest(root, experiment=experiment, current_candidate=candidate)\n    files = Q.read_declared_files(root, manifest=manifest, observations=observations)'),
+    "manifest-reopen": ('files = Q.read_declared_files(root, manifest=manifest, observations=observations,\n                                  retain_source_image=True)',
+                        'manifest = M.read_dependency_manifest(root, experiment=experiment, current_candidate=candidate)\n    files = Q.read_declared_files(root, manifest=manifest, observations=observations,\n                                  retain_source_image=True)'),
     "file-status": ('if files.disposition != "matched":', 'if False:'),
     "payload-release": ('tuple(replace(fact, data=None) for fact in files.files)', 'files.files'),
     "snapshot-account": ('files.retained_bytes)', '0)'),

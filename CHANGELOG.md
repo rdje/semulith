@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0240 (leaf P4-SYSTEM.14) — compose authenticated source and ELF findings
+
+- Append metadata-only source_image findings after legacy result fields. Consume opt-in17 authenticated snapshots/reserved rebuild and explicit selected expectation entry through existing owners, with no artifact reopen. Failed/unsupported comparisons return before reconstruction; retain separate authentication/comparison/content findings. Positive remains pending full adequacy.
+- 26 controls/14 omissions pass/discriminate normal/O with zero errors; old42/29 and23/seven outcomes/counts exact. Add30 PROFILE arms (454; GUEST328;39 doctrines1401), honest bounded source/ELF fixture and complete runnable teaching. Whole source/probe/checker/method/book/task inverses; focused17/sharder12/seven books/3186 links/all17 examples/normal+print/history/scope/canonical/corpus pass;1349 other files/modes/Gitlinks exact, real receipt+digest rewrites refuse. Preserve102 prior entries; whole DEV3121B to0263/CH870B to0264, fixed caps/seals/canonical/CPU unchanged. COMMIT then full CI on clean composition milestone.
+
 ## SEMULITH-P4-0239 (leaf P4-SYSTEM.14) — bind explicit expectation image context
 
 - Add frozen program/budget/entry metadata through the sole expectation validator/mapper/RV64 owner, with explicit selected parent and present entry. Share original guards without legacy API/result/order changes; no alignment/authentication/qualification credit.
@@ -601,19 +606,5 @@
   prose; effective98/114 unchanged. Promote existing knowledge card, update book.
   Focused gates/all six books rc0; LIVE652/49/P4 12/18 unchanged. Next c28d
   GC-FENCEI; .14 owns requirement statuses/structured experiment records.
-
-
-## SEMULITH-P4-0158 (leaf P4-SYSTEM.13 c28b) — qualify the public AMO granule boundary
-
-- Correct the local Sail matching override's scalar MAG exponent4→0. A contained
-  AMO distinguished the old boundary-crossing witness; no CPU/upstream defect.
-- New live public diagnostic242 cases/3146 boundaries per repetition, fresh
-  identical pairs, and restored-MAG4 must-diverge control. Original A11AGREE plus
-  unchanged width-SC difference;164 successful old traces identical, three named
-  process failures excluded. No new registered evidence/contract credit.
-- Core/author/frozen/previous inputs exact except declared reference/prose delta;
-  registry100/effective98/114 unchanged. Focused gates/controls/all six books rc0;
-  LIVE652/49/P4 12/18 unchanged. Promote existing knowledge card; own adapter's
-  post-budget refusal as c28c next, before GC-FENCEI c28d.
 
 

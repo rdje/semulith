@@ -1271,6 +1271,68 @@ EOF
   score "RED optimized omitted byte guard receipt-claim" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-frozen 2>&1)"; rc=$?
   score "RED optimized omitted byte guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  # P4.14 a42d3b: authenticated source/image composition keeps separate findings.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" 2>&1)"; rc=$?
+  score "GREEN normal image evaluation controls" "$rc" 0 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation retention 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted retention" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 22 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-budget 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted context-budget" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-program 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted context-program" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-validation 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted context-validation" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 10 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-refusal 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted context-refusal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation source-selection 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted source-selection" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 18 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-selection 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted image-selection" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 16 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation source-reopen 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted source-reopen" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-reopen 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted image-reopen" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation entry-forward 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted entry-forward" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-label 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted image-label" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-status 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted image-status" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 11 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-finding 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted image-finding" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 22 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation comparison-order 2>&1)"; rc=$?
+  score "RED normal image evaluation omitted comparison-order" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" 2>&1)"; rc=$?
+  score "GREEN optimized image evaluation controls" "$rc" 0 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation retention 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted retention" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 22 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-budget 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted context-budget" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-program 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted context-program" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-validation 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted context-validation" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 10 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation context-refusal 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted context-refusal" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation source-selection 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted source-selection" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 18 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-selection 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted image-selection" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 16 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation source-reopen 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted source-reopen" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-reopen 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted image-reopen" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation entry-forward 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted entry-forward" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-label 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted image-label" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-status 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted image-status" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 11 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation image-finding 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted image-finding" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 22 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_image_evaluation.py" --mutation comparison-order 2>&1)"; rc=$?
+  score "RED optimized image evaluation omitted comparison-order" "$rc" 1 "$out" "MATCHED-GPR-IMAGE-EVALUATION: 26 tests / 2 failures / 0 errors; synthetic only"
+  # End P4.14 a42d3b.
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" 2>&1)"; rc=$?
   score "GREEN normal authenticated byte evaluation" "$rc" 0 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 0 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation scope 2>&1)"; rc=$?

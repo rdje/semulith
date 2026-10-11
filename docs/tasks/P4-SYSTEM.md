@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42d3b authenticated source/image composition, then complete adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | a42d3b COMMIT/full-CI milestone, then complete adequacy |
 
 ## Decisions
 
@@ -461,7 +461,7 @@ LIVE1337/caps/seals/earlier parts unchanged. Final docs/hooks/hashes/modes/
 brief0/censuses before d3. No Rust change/full-CI-per-ordinary-slice requirement.
 promotion: declined (existing lossless source-inverse/history/cap rules apply; finite capacity preparation in the same evidence leaf).
 
-### `.14` a42d3 — compose authenticated source/image correspondence (active)
+### `.14` a42d3 — compose authenticated source/image correspondence (completed, SEMULITH-P4-0239/0240)
 
 Start clean after d2. Bind selected parent program/budget before I/O, obtain exact
 entry through the sole validated expectation owner, consume the authenticated
@@ -528,15 +528,106 @@ DEV3376B to0261/CH1316B to0262,103 entries; fixed caps/seals/canonical/CPU stay.
 Final COMMIT hooks/hash/mode/brief0/censuses before d3b. MCU scope question
 reaffirmed the existing north star/MCU-DOCS boundary; no roadmap pivot.
 
-### `.14` a42d3b — compose authenticated source/image checks (scheduled)
+### `.14` a42d3b — compose authenticated source/image checks (completed, SEMULITH-P4-0240)
 
-Start clean after d3a. Use the validated image context and d1 correspondence
-owner with Q's opt-in17 snapshots/reserved rebuild; preserve separate findings,
-old APIs/control results and failed/unsupported classification. Freeze selected
-parent context before artifact I/O, consume each authenticated artifact once,
-return metadata only. Complete closure/impact/source-grounded property/collector
-provenance and full policy still remain; successful correspondence grants no
-qualification or CPU credit. Declare the exact finite composition before code.
+Owned on clean d2351128fb4372225bd7c377875ba13e2ff916ac after all19 verified/
+staged/committed/working hashes/modes matched, hooks green, brief0/untracked,
+standard handoff and actual ps/lsof censuses rc=0, with no remaining jobs.
+Read the .14 G-TRACE/G-OBLIGATIONS frontier, roadmap/Knowledge Map, method and
+qualified contract, complete public evaluation/comparison/context/source-image/
+builder/ledger/execution/manifest APIs and affected42/29,23/seven,25/16,24/16,
+49/31 probes; GC evaluation/closure/image-binding teaching. Same a42 activity;
+CPU gate7/10 axes remain open. MCU scope remains the existing north star, no pivot.
+
+Finite additive result contract: append source_image:SourceImageCheck|None=None
+to EvaluationCheck; preserve all earlier positional fields and function signature.
+The result separates record validity, file authentication, observed comparison
+and source/image content. Select immutable guest-source/guest-image bindings from
+the already frozen execution plan before manifest/file I/O. Request the existing
+Q.read_declared_files(...,retain_source_image=True) so17 selected snapshots share
+its fixed128MiB read/16MiB snapshot-payload ledger and64KiB unused rebuild room.
+Do not add a reader, reopen artifacts, repeat the manifest seed or alter Q's
+legacy default15/API/caps/accounting/failure cleanup. Authentication metadata
+contains actual retained payload size only, not unused room/earlier peak/RAM.
+
+Keep existing raw-schema/scoped/current-candidate/method selection, context-
+freeze, manifest/relations/file/identity/receipt/verdict order and all diagnostic
+classifications. Failed/unsupported observed comparisons return before entry
+extraction or build, with source_image=None; later unavailable/invalid image
+context must not mask those outcomes. Once the comparison is satisfied, call
+C.expectation_image_context on the exact authenticated baseline expectation
+bytes with frozen plain parent program/budget. Its UnitError refuses separately
+while retaining the satisfied comparison/authentication findings. C's existing
+sole-value control already requires all other baseline/control fields identical.
+No new schema/default entry/mapper/assembler or expectation equality semantics.
+
+Forward the exact authenticated source/image snapshots and validated program/
+entry once to the sole F.check_source_image. Preserve its matched/refused/
+unavailable metadata-only findings, including both fingerprints on mismatch;
+no raw supplied/rebuilt bytes escape. Unexpected programming failures propagate.
+Matched correspondence still returns pending complete method/policy adequacy;
+complete closure/conservative impact/source-grounded expected property/collector
+provenance remain open. The reserved64KiB covers one final rebuilt ELF payload;
+source decoding/tokens/intermediate assembled buffers/copies/tool I/O are outside
+that artifact-snapshot accounting. It is not a process RAM/time bound. Tool
+adequacy and current parent/provenance remain caller obligations; no qualification,
+canonical capture, processor axis or reference ancestry advance.
+
+The old evaluation fixture openly used opaque source/image bytes and absent
+entry. Replace only that fixture authoring with bounded real source/ELF bytes,
+explicit selected entry in both expectations and coherent synthetic trace text;
+this remains synthetic instrumentation, never a recorded independent experiment.
+Keep42 old controls and29 omission meanings, update only affected exact mutation
+seams and honestly rederive failure counts; preserve normal diagnostic outcomes.
+Keep23/seven parent-program controls and25/16 context, Q49/31+24/16, G33/17,
+F24/17 and ELF15/eight controls/legacy APIs exact; prove allowed fixture/seam/
+source/result/book/task inverses and340 raw/243 maps. Re-derive any changed
+omission counts rather than rewriting older receipts.
+
+Own new on-volume composition controls for positive frozen/payload-free facts,
+17-retention/reservation/one-read accounting, exact selected source/image/label/
+entry forwarding, later file/context mutation, absent/malformed/out-of-range/
+odd entry, re-pinned complete ELF header/padding/payload/section mismatches,
+source changes versus byte-equivalent comments, empty/over-bound roles,
+unavailable tools/programming errors and failed/unsupported build ordering.
+Independent normal/O omissions must discriminate without harness errors before
+literal PROFILE registration. Preserve all previous GUEST328/PROFILE424 arms
+apart from explicitly rederived E/program diagnostics if this composition affects
+their loss counts. Fixed caps/seals/ordinary history and all unrelated files/
+modes/Gitlinks remain exact; protect current102 live predecessor entries and
+published rows with both history guards and real receipt+updated-digest negatives.
+
+Append complete runnable authenticated teaching to image-binding.md, retaining
+its whole d3a context example; update only current evaluator/default-retention/
+result teaching in evaluation/closure, plus required live/toolbox/doctrine/method
+routing. Necessary whole-oldest DEV/CH sharding is owned before use, with exact
+complete head inverses and no historical receipt/count edits. Focused17, current
+seven books/literal examples/normal+print checks and COMMIT precede any further
+slice. Full CI on clean composition milestone before later policy/capture work;
+no push below the cadence. This finite unit does not attempt remaining closure/
+impact/property/provenance work. Stop and own an actual defect if tools expose one.
+Initial new26 controls expose four fixture-assumption failures, zero harness
+errors; original42/23 controls pass. Tool diagnosis: two assembly fixtures used
+S-expression ';' comments rather than the existing '#' assembly syntax; the
+new two-boundary trace used short GPR hex rather than the adapter's16-digit
+shape; an odd-entry test wrongly assumed alignment precedes canonical context,
+where G loads the profile/IALIGN then rejects construction. Correct these test
+assumptions and concise diagnostics, keep production contracts/source unchanged;
+rerun before any arm registration. These are new instrumentation corrections,
+not inherited production defects or evidence credit.
+Context-validation omission initially exposes one probe call_args None access;
+assert call_count before inspecting kwargs and rerun before registration. Final
+run-controls.py rc=0 normal/O:26/0/0,14 omissions22/1/1/10/5/18/16/1/1/3/1/11/
+22/2 failures/zero errors. Old42/29 and23/seven retain all baseline/omission
+counts, verified against every old literal arm. New30 PROFILE arms preserveold424
+exact, new454; GUEST328 exact/global1401 derived. Complete evaluator/probe/source/
+API/order/checker/method/three-book/task inverses pass. Focused17/sharder12/seven
+books/3186 links/all17 examples/normal+print and340 raw/243 maps,102 entries/1349
+other files/modes/Gitlinks,216 ELF/167 GC exact normal/O. Real receipt+digest
+rewrites refuse; only inherited EOF blanks DEV/0263/0264. Whole DEV3121B to0263/CH870B to0264,
+102 entries; actual receipt+digest refusals and fixed caps/seals owned. COMMIT
+hooks/hashes/modes/brief0/censuses then clean full CI; no qualification/CPU advance.
+promotion: declined (existing method validation, single-owner, bounded ledger and metadata/qualification contracts govern this finite composition; no new normative policy).
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -634,6 +725,19 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42d3b — **ROOT CAUSE**: contract.py rc=0 normal/O:
+  authentication/observed comparisons did not compose bounded source/image
+  snapshots/validated entry; fixture expressly lacked those facts, no old credit.
+- [x] `.14` a42d3b — **ADDRESSED**: run-controls.py rc=0 normal/O:
+  26 controls/14 omissions22/1/1/10/5/18/16/1/1/3/1/11/22/2, zero errors;
+  old42/29+23/seven all outcomes/counts exact; separate frozen image findings,
+  selected exact bytes/context once, failed/unsupported before reconstruction.
+- [x] `.14` a42d3b — **NO REGRESSION**: focused.sh/rendered.py/contract/
+  history/canonical/scope/corpus rc=0 normal/O: focused17/sharder12/seven books/
+  3186 links/all17 examples/normal+print,340 raw/243 maps,102 entries/1349 other
+  files/modes/Gitlinks and216 ELF/167 GC exact. Actual receipt+new-digest rewrites
+  refuse; fixed caps/seals/CPU unchanged. Final docs/hooks/hash/brief0/censuses.
 
 - [x] `.14` a42d3a — **ROOT CAUSE**: contract.py rc=0 normal/O:
   entry consumer needs complete existing validation and selected parent, not an
@@ -949,6 +1053,16 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42d3b: Verified run-controls.py rc=0 normal/O:26/0/0 and14 omissions22/1/1/
+10/5/18/16/1/1/3/1/11/22/2 failures/zero errors; old42/29 and23/seven every
+outcome/count exact against all old literal arms. New30 PROFILE (454), GUEST328
+exact/global1401 derived. contract.py whole evaluator/probe/API/order/checker/
+normative method/three-book/task inverses pass. Focused17/sharder12/seven books/
+3186 links/all17 examples/normal+print,340 raw/243 maps,102 entries/1349 other
+files/modes/Gitlinks and216 ELF/167 GC exact normal/O. Actual receipt+new-digest
+rewrites refuse; inherited EOF DEV/0263/0264 only. Final docs/hooks/hashes/modes/brief0/censuses before
+full CI on clean milestone. Fixed caps/seals/canonical/CPU unchanged.
 
 a42d3a: Verified run-controls.py normal/O:25/0/0,16 omissions1/6/1/2/4/34/3/
 3/1/1/4/1/2/16/1/3 failures/0 errors; old52/14 and23/seven outcomes exact.
@@ -1269,6 +1383,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42d3b | `SEMULITH-P4-0240 (leaf P4-SYSTEM.14): compose authenticated source and ELF findings` | clean full CI; remaining closure/impact/source-grounded property/collector provenance |
 | `.14` a42d3a | `SEMULITH-P4-0239 (leaf P4-SYSTEM.14): bind explicit expectation image context` | d3b authenticated composition; full closure/impact/property/provenance pending |
 | `.14` a42e | `SEMULITH-P4-0238 (leaf P4-SYSTEM.14): contain completed byte/image designs` | d3 validated entry/authenticated composition; active a42 plan retained |
 | `.14` a42d2 | `SEMULITH-P4-0237 (leaf P4-SYSTEM.14): retain bounded source and ELF snapshots` | d3 authenticated composition; full closure/impact/property/provenance pending |

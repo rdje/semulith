@@ -1,8 +1,8 @@
 # Authenticated Sail byte evaluation
 
 `evaluate_retained_unit` in `scripts/matched_gpr_evaluation.py` composes the
-existing scoped-record, declared-file, identity, receipt and byte-comparison
-checks. It authenticates each declared artifact once, uses its exact snapshot,
+existing scoped-record, declared-file, identity, receipt, byte-comparison and
+[source/image](image-binding.md#compose-authenticated-source-and-elf-snapshots) checks. It authenticates each declared artifact once, uses its exact snapshot,
 and reports the different findings separately. A positive byte composition is
 **pending complete method/policy adequacy**. It grants no qualification or CPU
 acceptance credit. The existing PROFILE-CONSISTENCY qualification refusal remains.
@@ -36,7 +36,9 @@ analysis.
    selection, then authenticate the complete declared set through the shared
    reader. Reuse the manifest seed without reopening it. Apply the fixed 128 MiB
    cumulative artifact-read and 16 MiB live snapshot-payload budgets, with the
-   existing per-role bounds and terminal failure behavior.
+   existing per-role bounds and terminal failure behavior. Request source/image
+   retention: seventeen snapshots and 64 KiB unused rebuilt-ELF room inside the
+   snapshot ceiling; the public reader default still retains fifteen.
 4. Consume the exact retained identity and receipt bytes through the public
    [frozen byte consumers](byte-bindings.md). Bind each receipt's run/argv/exit,
    candidate/collector and input/output inventories. No legacy one-file reader
@@ -47,13 +49,16 @@ analysis.
    complete ordered computed run set. Cross-check each recorded run verdict
    against its computed comparison or refusal. Declared verdict strings cannot
    replace observed outcomes.
-6. Return immutable findings and metadata. Release raw payloads from the returned
+6. Failed/unsupported comparisons return before image construction. A satisfied
+   comparison binds the explicit expectation entry and checks complete source/ELF
+   snapshots through the public owners; return their separate metadata findings.
+7. Return immutable findings and metadata. Release raw payloads from the returned
    authentication summary. A coherent failed process/control remains a valid
    record with failed observed evidence; it does not become a schema error.
 
 The shared reader checks the declared flat dependency set, including disguised
 nested manifests. This establishes the declared bytes at the check, not that the
-set covers every relevant dependency. Source/image correspondence,
+set covers every relevant dependency. Source-grounded expected properties,
 complete closure adequacy, old/new impact, collector provenance and the full
 source/risk/feature policy remain mandatory work. The evaluator deliberately
 does not turn a successful comparison into a successful complete method.
@@ -78,6 +83,7 @@ declared method's reviewed collector/capture trust boundary still applies.
 | `identity` | Optional identity-byte check; its pin is `None` because authentication is separate. |
 | `receipts` | Ordered immutable `ReceiptBinding(run_id, run_kind, declared_verdict, check)` records reached before any terminal refusal. Byte checks have no pins. |
 | `comparison` | Optional public `ComparisonUnit` with the computed run comparisons/refusals. |
+| `source_image` | Appended optional `SourceImageCheck`: complete byte correspondence with frozen metadata only; absent before that check, including failed/unsupported comparisons. |
 
 The record disposition is `valid` after raw schema/scoped graph checks,
 `refused` after their findings or a malformed record, and `unchecked` when an
@@ -87,10 +93,10 @@ exists. Record issues are immutable named findings from the existing validator.
 
 | Evaluation disposition | Meaning |
 | --- | --- |
-| `pending` | The declared files, identity, receipts and observed byte unit bind; complete method/policy adequacy still lacks credit. |
+| `pending` | The declared files, identity, receipts, observed byte unit and source/ELF correspondence bind; complete method/policy adequacy still lacks credit. |
 | `failed` | Supported, coherently recorded byte evidence fails the comparison/control, including nonzero/signal process exits and trace refusal. |
 | `stale` | A required pin changed, or retained execution identity differs from the frozen current candidate. |
-| `unavailable` | A required safe artifact read or supported required schema-tool I/O cannot complete. |
+| `unavailable` | A required safe artifact read, supported required schema-tool I/O or canonical image construction cannot complete. |
 | `refused` | Invalid raw record, contradictory method context/receipt/verdict, unsafe/oversized artifact or malformed required bytes. |
 | `unsupported` | The selected rule or expectation exclusion needs another method. |
 
@@ -98,18 +104,22 @@ A receipt with a nonzero exit can bind successfully while evaluation is `failed`
 A pin can match while its contents refuse. A record can be valid while evidence
 is stale, unavailable, unsupported or contradictory. A computed `satisfied`
 **comparison** is retained even if a false recorded verdict makes the enclosing
-evaluation refuse. No authoritative `qualified` Boolean is stored.
+evaluation refuse. Satisfied comparisons also remain visible when entry/image
+checks refuse or construction is unavailable. No authoritative `qualified`
+Boolean is stored.
 
 The authentication summary preserves the public reader's `authenticated_bytes`
 and conservative `charged_read_bytes`. `snapshot_bytes` is the total payload
-returned by that reader before release; it is neither the earlier live peak nor
+returned by that reader before release, excluding unused rebuild room; it is
+neither the earlier live peak nor
 process RAM. Every returned file fact has `data=None`. The initial manifest check
 can fail before declared-set authentication starts, leaving `authentication=None`
 and its separate manifest pin available. That seed read is bounded to 64 KiB.
 When the set reader runs, its shared ledger includes the seed exactly once.
 
 Schema loading is permitted project-tool I/O. Caller-owned raw parent allocation,
-parsing objects, chunks, immutable copies and comparison structures add memory
+parsing objects, assembled intermediates, chunks, immutable copies and comparison
+structures add memory
 outside the retained snapshot-payload bound. The evaluator offers no option to
 raise the fixed method budgets. Raw payloads are not retained in the result;
 needed currentness checks require another complete evaluation.
@@ -128,7 +138,8 @@ dependency on probes. Its data inventory is:
 | Two expectations | One `x1` change to `0x1`, and the sole control value changed to `0x2`. |
 | Three traces | Identical complete one-boundary synthetic GPR text observing `x1=1`. |
 | Stdout/stderr and receipts | Real empty streams; separately encoded receipts naming the exact selected pins, argv and recorded exit. |
-| Other principals and child | Opaque synthetic declarations, explicitly inadequate to prove source/image correspondence or complete dependency coverage. |
+| Source and ELF | Real `addi x1, x0, 1` source and bounded canonical-GC image with explicit entry; self-consistent construction, not independent encoding or execution evidence. |
+| Other principals and child | Opaque synthetic declarations, explicitly inadequate to prove complete dependency coverage or collector provenance. |
 
 No reference process runs. Dummy identity/digests and self-consistent synthetic
 receipts are not execution attestation. This is why even the positive example
@@ -546,4 +557,4 @@ these fixtures creates a canonical capture or advances CPU acceptance.
 
 [Explicit image context](image-binding.md) binds a selected program/budget to the
 validated expectation entry without a default, build or qualification claim.
-Authenticated evaluator composition is still pending.
+[Authenticated composition](image-binding.md#compose-authenticated-source-and-elf-snapshots) now keeps separate image findings; complete adequacy remains pending.

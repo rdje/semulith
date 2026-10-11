@@ -465,8 +465,8 @@ Reservation does not perform a rebuild. The reader authenticates empty source or
 image bytes too; the source/image consumer separately requires nonempty inputs
 and checks content. Authentication, ELF validity, source correspondence, selected
 parent/entry provenance and complete tool adequacy are separate findings. The
-current evaluator still uses the default reader mode; authenticated source/image
-composition is the next owned slice. No qualification follows from opting in.
+current evaluator explicitly opts in and checks the exact authenticated source/
+image snapshots; its [composed findings](image-binding.md#compose-authenticated-source-and-elf-snapshots) remain pending complete adequacy. No qualification follows from opting in.
 Parser objects, chunks and copies add memory beyond these payload limits.
 
 This standalone example builds a small GC image, declares both files and retains

@@ -21,6 +21,7 @@ import matched_gpr_identity as I
 import matched_gpr_manifest as M
 import matched_gpr_receipt as R
 import matched_gpr_relations as B
+import matched_gpr_source_image as F
 import sexp as S
 
 
@@ -59,6 +60,7 @@ class EvaluationCheck:
     identity: I.IdentityCheck | None = None
     receipts: tuple[ReceiptBinding, ...] = ()
     comparison: C.ComparisonUnit | None = None
+    source_image: F.SourceImageCheck | None = None
 
 
 @dataclass(frozen=True)
@@ -93,7 +95,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     M's bounded manifest seed and Q's shared ledger. All used canonical context
     freezes before either reads. No artifact is reopened, no binary/process is
     accessed, and returned summaries release raw payloads. A fully bound positive
-    comparison remains pending source/program/image/closure/impact/provenance and
+    comparison remains pending source-grounded property/closure/impact/provenance and
     full policy adequacy. It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -119,6 +121,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         if not 1 <= len(program) <= 65536:
             raise ValueError("parent program outside 1..65536 characters")
         execution = relations.plan.execution
+        principals = {item.role: item for item in execution.common_inputs}
+        source_input, image_input = principals["guest-source"], principals["guest-image"]
         graph = experiment["verification"]
         # The public relation/execution owners counted 9 inputs/12 outputs/3 runs
         # before these indexes. Copy selected observations before manifest I/O.
@@ -144,14 +148,16 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         return EvaluationCheck(manifest.disposition, "manifest: " + manifest.reason, record, manifest)
     if manifest.plan.relations != relations.plan:
         return EvaluationCheck("refused", "manifest differs from frozen relations", record, manifest)
-    files = Q.read_declared_files(root, manifest=manifest, observations=observations)
+    files = Q.read_declared_files(root, manifest=manifest, observations=observations,
+                                  retain_source_image=True)
     authentication = _summary(files)
 
     def finish(disposition: str, reason: str, *, identity: I.IdentityCheck | None = None,
                receipts: tuple[ReceiptBinding, ...] = (),
-               comparison: C.ComparisonUnit | None = None) -> EvaluationCheck:
+               comparison: C.ComparisonUnit | None = None,
+               source_image: F.SourceImageCheck | None = None) -> EvaluationCheck:
         return EvaluationCheck(disposition, reason, record, manifest, authentication,
-                               identity, receipts, comparison)
+                               identity, receipts, comparison, source_image)
 
     if files.disposition != "matched":
         return finish(files.disposition, "files: " + files.reason)
@@ -192,5 +198,21 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     if comparison.disposition != "satisfied":
         return finish(comparison.disposition, "comparison: " + comparison.reason,
                       identity=identity, receipts=tuple(receipts), comparison=comparison)
-    return finish("pending", "authenticated byte comparison binds; complete method/policy adequacy pending",
-                  identity=identity, receipts=tuple(receipts), comparison=comparison)
+    try:
+        image_context = C.expectation_image_context(
+            _payload(files, "input", execution.baseline_expectation.input_id),
+            instructions=execution.instructions, program=program)
+    except C.UnitError as exc:
+        return finish("refused", "image context: " + str(exc), identity=identity,
+                      receipts=tuple(receipts), comparison=comparison)
+    source_image = F.check_source_image(
+        _payload(files, "input", source_input.input_id),
+        _payload(files, "input", image_input.input_id),
+        program=image_context.program, entry=image_context.entry)
+    if source_image.disposition != "matched":
+        return finish(source_image.disposition, "source/image: " + source_image.reason,
+                      identity=identity, receipts=tuple(receipts), comparison=comparison,
+                      source_image=source_image)
+    return finish("pending", "authenticated byte comparison binds; source/image match; complete method/policy adequacy pending",
+                  identity=identity, receipts=tuple(receipts), comparison=comparison,
+                  source_image=source_image)
