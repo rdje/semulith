@@ -50,7 +50,7 @@
 (construct (name processor)
   (field (name unit) (type string) (min-length 1))
   (field (name version) (type string) (min-length 1))
-  (field (name dossier-sha256) (type string) (pattern "^[0-9a-f]{64}$"))
+  (field (name dossier-sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name contract) (type string) (min-length 1))
   (field (name contract-version) (type string) (min-length 1)))
 
@@ -66,7 +66,7 @@
   (field (name kind) (type symbol) (values sifive-uart) (values lan9118))
   (field (name material) (type string) (min-length 1))
   (field (name revision) (type string) (min-length 1))
-  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}$"))
+  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name access-widths) (type integer) (repeat yes) (min 1) (unique yes))
   (field (name interrupt) (type symbol) (values unconnected))
   (field (name backend) (type form) (head backend)))
@@ -86,8 +86,8 @@
 
 (construct (name region)
   (field (name name) (type string) (min-length 1))
-  (field (name base) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*$"))
-  (field (name size) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*$"))
+  (field (name base) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*\\Z"))
+  (field (name size) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*\\Z"))
   (field (name kind) (type symbol) (values ram) (values mmio))
   (field (name executable) (type symbol) (values true) (values false))
   (field (name device) (type string) (optional yes)))
@@ -98,7 +98,7 @@
   (field (name kinds) (type symbol) (values cold) (repeat yes) (min 1))
   (field (name entry) (type string) (min-length 1))
   (field (name retained-state) (type symbol) (values none))
-  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1)))
+  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+\\Z") (repeat yes) (min 1)))
 
 ;; The declared absences. `present` admits exactly `false` today: the day a board carries
 ;; a timer or an interrupt controller, its CPU contract has counter/interrupt assumptions
@@ -107,12 +107,12 @@
 (construct (name timers)
   (field (name present) (type symbol) (values false))
   (field (name reason) (type string) (min-length 1))
-  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1)))
+  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+\\Z") (repeat yes) (min 1)))
 
 (construct (name interrupt-controller)
   (field (name present) (type symbol) (values false))
   (field (name reason) (type string) (min-length 1))
-  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1)))
+  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+\\Z") (repeat yes) (min 1)))
 
 (construct (name serial-console)
   (field (name device) (type string) (min-length 1)))
@@ -157,11 +157,11 @@
 ;; the BOARD-VERDICT doctrine checks the binding both ways — every marked obligation is
 ;; answered by exactly one decision, and every `answers` names a marked obligation.
 (construct (name decision)
-  (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))
+  (field (name id) (type string) (pattern "^D-[A-Z0-9-]+\\Z"))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name statement) (type string) (min-length 1))
   (field (name source) (type string) (min-length 1))
   (field (name note) (type string) (optional yes))
-  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+$")
+  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+\\Z")
          (repeat yes) (unique yes) (optional yes)))

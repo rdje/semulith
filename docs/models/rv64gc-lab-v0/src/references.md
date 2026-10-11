@@ -110,9 +110,23 @@ retention/capture slice must explicitly connect its files to evaluation and gate
 
 ## What comes next
 
-A26 also reproduced a terminal-newline digest admitted by the older reference
-schema. `.14` a27 owns exact-token facet repair before evaluator work; these new
-artifact schemas already reject that input.
+A27 repairs the terminal-newline defect found at a26: all project exact-token
+facets now use strict end anchors. For example a 64-hex SHA256 followed by a newline,
+`"AGREE\n"`, `"baseline\n"` or `"x31\n"` refuses schema validation, rather than
+becoming a subtly different identity/verdict. Generic `pattern "needle"` still
+accepts `"hayneedlehay"`; the schema kernel deliberately implements substring
+search, so exactness belongs to the declared token pattern. The repair changes
+83 declarations in 13 schemas; all 91 patterned fields have positive and boundary
+controls, including five complete canonical-document regressions. Run:
+
+```bash
+python3 scripts/probe_schema_token_facets.py
+python3 -O scripts/probe_schema_token_facets.py
+bash scripts/check_requirements.sh --self-test
+```
+
+These offline controls preserve all canonical document bytes. They prove grammar
+behavior, not file authenticity, producer execution or evidence qualification.
 
 Historical comparisons remain prose in the canonical dossier. Optional structured
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact

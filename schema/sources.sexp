@@ -22,7 +22,7 @@
   (field (name file) (type string) (min-length 1))
   (field (name title) (type string) (min-length 1))
   (field (name chapter_version) (type string) (optional yes))
-  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}$"))
+  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name bytes) (type integer))
   (field (name http_status) (type integer))
   (field (name supplies) (type string) (min-length 1)))

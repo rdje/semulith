@@ -18,10 +18,10 @@
 (schema (id "units"))
 
 (construct (name unit)
-  (field (name id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
+  (field (name id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
   (field (name kind) (type symbol) (values processor) (values board) (values device))
   (field (name layer) (type symbol) (values processor) (values board) (values system)
          (values device))
   (field (name book) (type string) (min-length 1))
   (field (name requires) (type string) (repeat yes) (optional yes)
-         (pattern "^(C|D)[0-9]{2}$")))
+         (pattern "^(C|D)[0-9]{2}\\Z")))

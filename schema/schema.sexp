@@ -30,6 +30,9 @@
 ;;
 ;; FACETS (SOT-FORMAT.3) refine a field without a new declaration kind:
 ;;   (pattern "regex")    — a string field's value must match (re.search, JSON-Schema semantics)
+;; Exact-token declarations use ^…\\Z (write the backslash escaped in a string).
+;; A $ end anchor also admits a terminal newline. Generic unanchored patterns
+;; deliberately remain substring searches; do not replace the kernel with fullmatch.
 ;;   (min-length N)       — a string field's value holds at least N characters
 ;;   (min N)              — a (repeat yes) field occurs at least N times — an empty list is
 ;;                          not a citation

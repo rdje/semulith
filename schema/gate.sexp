@@ -14,8 +14,8 @@
 (schema (id "gate"))
 
 (construct (name gate)
-  (field (name id) (type string) (pattern "^[A-Z][A-Z0-9-]*$"))
-  (field (name profile) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*$"))
+  (field (name id) (type string) (pattern "^[A-Z][A-Z0-9-]*\\Z"))
+  (field (name profile) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
   (field (name statement) (type string) (min-length 1)))
 
 ;; One piece of evidence for one required kind of one axis. Exactly one of test / record /
@@ -25,15 +25,15 @@
          (values G-REPLAY) (values G-RELEASE))
   (field (name kind) (type symbol))
   (field (name test) (type form) (head test) (optional yes))
-  (field (name record) (type string) (optional yes) (pattern "^[A-Za-z0-9_./-]+$"))
+  (field (name record) (type string) (optional yes) (pattern "^[A-Za-z0-9_./-]+\\Z"))
   (field (name experiment) (type string) (optional yes) (min-length 1))
   (field (name statement) (type string) (min-length 1)))
 
 ;; A test function in a tracked Rust file — run by `cargo test`, which `make check` runs before
 ;; every commit.
 (construct (name test)
-  (field (name file) (type string) (pattern "^crates/[A-Za-z0-9_/-]+\\.rs$"))
-  (field (name fn) (type string) (pattern "^[a-z_][a-z0-9_]*$")))
+  (field (name file) (type string) (pattern "^crates/[A-Za-z0-9_/-]+\\.rs\\Z"))
+  (field (name fn) (type string) (pattern "^[a-z_][a-z0-9_]*\\Z")))
 
 ;; A required kind this unit declares does not apply — printed in the report with its reason, so
 ;; the reader judges it; it is never silent.
@@ -46,5 +46,5 @@
 ;; nothing open without an owner). Informational: the MEASURE decides an axis, never this form.
 (construct (name open)
   (field (name axis) (type symbol))
-  (field (name owner) (type string) (pattern "^[A-Z][A-Z0-9-]*\\.[0-9]+$"))
+  (field (name owner) (type string) (pattern "^[A-Z][A-Z0-9-]*\\.[0-9]+\\Z"))
   (field (name statement) (type string) (min-length 1)))

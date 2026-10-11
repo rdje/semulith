@@ -164,7 +164,7 @@
   (field (name c_compressed) (type string) (repeat yes) (optional yes)))
 
 (construct (name decision)
-  (field (name id) (type string) (pattern "^D-[A-Z0-9-]+$"))
+  (field (name id) (type string) (pattern "^D-[A-Z0-9-]+\\Z"))
   (field (name authority) (type symbol)
          (values architecture) (values execution-environment) (values laboratory))
   (field (name statement) (type string) (min-length 1))

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0218 (leaf P4-SYSTEM.14) — close exact-token schema end anchors
+
+- Repair83 declarations in13 schemas to refuse terminal newlines, preserving the generic kernel's search contract. Cover all91 patterned fields and five complete canonical documents; no canonical data or qualification changes.
+- Recover old24-schema/five-document corpus:88 assertion failures, no errors, normal/optimized. New7-method suite and omissions96/552/1 discriminate in both modes; RECORD-SCHEMA70/0, focused16/sharder12/0/seven books,3024 hyperlinks and three new book commands pass. Prove complete13-source inverses/24 public schema loads/fixpoint,243 canonical dictionaries and legacy ASTs/dispatch. Derive39 doctrines/815 arms; preserve old history/caps/seals/CPU status. Next a28 bounded comparison core, authenticated orchestration, collector/retention/captures and policy/status.
+
 ## SEMULITH-P4-0217 (leaf P4-SYSTEM.14) — carry bounded prospective artifact formats
 
 - Define dependency manifests and process receipts with one dossier mapping, bounded bytes-only parsing and closed shape/identity checks. Keep failed runs representable; syntax authenticates no artifact and grants no comparison/qualification credit. No capture store or unbounded file loader is introduced.

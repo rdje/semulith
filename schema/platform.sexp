@@ -54,11 +54,11 @@
 (construct (name processor)
   (field (name unit) (type string) (min-length 1))
   (field (name version) (type string) (min-length 1))
-  (field (name dossier-sha256) (type string) (pattern "^[0-9a-f]{64}$"))
+  (field (name dossier-sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name contract) (type string) (min-length 1))
   (field (name contract-version) (type string) (min-length 1))
   (field (name architecture) (type string) (min-length 1))
-  (field (name isa) (type string) (pattern "^[a-z0-9_]+$"))
+  (field (name isa) (type string) (pattern "^[a-z0-9_]+\\Z"))
   (field (name xlen) (type integer))
   (field (name ilen) (type integer))
   (field (name ialign) (type integer))
@@ -79,9 +79,9 @@
 
 (construct (name region)
   (field (name name) (type string) (min-length 1))
-  (field (name base) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*$"))
-  (field (name size) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*$"))
-  (field (name end) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*$"))
+  (field (name base) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*\\Z"))
+  (field (name size) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*\\Z"))
+  (field (name end) (type string) (pattern "^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*\\Z"))
   (field (name kind) (type symbol) (values ram) (values mmio))
   (field (name executable) (type symbol) (values true) (values false))
   (field (name device) (type string) (optional yes))
@@ -95,7 +95,7 @@
   (field (name kind) (type symbol) (values sifive-uart) (values lan9118))
   (field (name material) (type string) (min-length 1))
   (field (name revision) (type string) (min-length 1))
-  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}$"))
+  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name region) (type string) (min-length 1))
   (field (name access-widths) (type integer) (repeat yes) (min 1) (unique yes))
   (field (name interrupt) (type symbol) (values unconnected))
@@ -107,13 +107,13 @@
 (construct (name absence)
   (field (name element) (type symbol) (values timers) (values interrupt-controller))
   (field (name presence) (type symbol) (values absent-by-contract))
-  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1)))
+  (field (name satisfies) (type string) (pattern "^OB-[A-Z0-9-]+\\Z") (repeat yes) (min 1)))
 
 ;; A composition disposition: the board's binding of a device obligation the dossier
 ;; deferred to the composing board (BOARD-VERDICT-checked both ways in the definition).
 (construct (name disposition)
-  (field (name decision) (type string) (pattern "^D-[A-Z0-9-]+$"))
-  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+$") (repeat yes) (min 1))
+  (field (name decision) (type string) (pattern "^D-[A-Z0-9-]+\\Z"))
+  (field (name answers) (type string) (pattern "^OB-[A-Z0-9-]+\\Z") (repeat yes) (min 1))
   (field (name statement) (type string) (min-length 1)))
 
 ;; The boot contract, mirrored from the board definition (its owner) — §3's third
@@ -137,7 +137,7 @@
 ;; it cannot judge rather than guessing a fidelity.
 (construct (name time)
   (field (name time-source) (type symbol) (values none))
-  (field (name frozen-counter-disposition) (type string) (pattern "^D-[A-Z0-9-]+$") (optional yes))
+  (field (name frozen-counter-disposition) (type string) (pattern "^D-[A-Z0-9-]+\\Z") (optional yes))
   (field (name timing-fidelity) (type symbol) (values functional-only))
   (field (name presence) (type symbol) (values absent-by-contract)))
 

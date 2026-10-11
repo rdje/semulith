@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a27 exact schema facets, then a28 evaluator/collector, retention/captures and full policy/status |
+| 1 | `P4-SYSTEM.14` | `active` | a28 bounded comparison core, then authenticated evaluation/collector, retention/captures and policy/status |
 
 ## Decisions
 
@@ -550,7 +550,7 @@ Scope rc=0 proves1285 other tracked files byte/mode exact, Git links untouched
 without traversal. Final complete append/task inverse and retained/moved receipt
 refusals pass; require staged byte equality after all sync, before committing.
 
-### `.14` a27 — close existing schema end-anchor facets (scheduled, SEMULITH-P4-0218)
+### `.14` a27 — close existing schema end-anchor facets (completed, SEMULITH-P4-0218)
 
 Owned finding from a26: check_sexp_schema uses re.search and the existing
 references SHA256 pattern ends in `$`, which also admits one terminal newline.
@@ -563,6 +563,55 @@ shapes, fix exact-token facets without changing regex semantics that intentional
 allow other text, and add discriminating controls. Preserve canonical dictionaries,
 keep historical receipts exact, sync book/decisions and COMMIT. Priority high:
 a grammar promise must hold before new evidence consumes it. Then a28 evaluator.
+
+Owned on clean1861712, brief0/untracked and standard handoff: OK plus actual
+ps/lsof census, before implementation. Inventory24 project schemas:91 patterned
+fields,83 old `$` end anchors across the existing token contracts, eight new strict
+artifact facets. Read the kernel's explicit JSON-Schema re.search contract, each
+affected schema declaration and record/dossier gates, plus book review surfaces.
+Repair data declarations only; preserve generic substring-search semantics,
+all canonical data/mappers and original bytes outside those exact end anchors.
+Add public-kernel per-facet positive/newline controls, real-document regressions
+and genuine loose-end/ignored-pattern/fullmatch omissions, normal/optimized.
+Own doctrine registration/count/book/live sync, bounded new decision and current
+index containment if needed; preserve complete history/task predecessors and
+COMMIT before a28 evaluator. No artifact store, cap, CPU or qualification change.
+
+Verification: before.py rc=0 recovers1861712's24 schemas/five complete docs
+without a secondary Git repo;7 methods/88 assertion failures/no errors, normal/O,
+fixture removed. After:7 methods/91 facets/five docs pass; loose-end/ignored-pattern/
+fullmatch omissions96/552/1 discriminate normally/optimized. RECORD-SCHEMA70/0;
+39 doctrines/815 outer arms. declarations.py rc=0 proves83 exact end changes,
+complete13-source inverses,24 public schema loads and schema fixpoint. An initial
+instrument wrongly tried the construct-only metaschema on operator declarations;
+use their unchanged public loader instead, no failed proof supplies signoff.
+canonical.py rc=0 proves243 unchanged dictionaries/legacy ASTs/dispatch. Focused16/
+sharder12/0/seven books,3024 links, five normal/print teaching phrases and three
+literal new commands pass. Index containment only shortens three hot labels/hooks;
+all old full decision records remain exact. Require final append/task inverses,
+scope and staged bytes before COMMIT. No old seals/caps/CPU credit changes.
+
+Final scope rc=0:1279 other tracked files byte/mode exact, Git links unchanged
+without traversal; kernel and old full decisions protected. history.py rc=0
+reconstructs complete predecessors: DEV41643B/5f384ce6e4c3ccba7b8feaa759ede1a50818e7c6ee10df1b473bdc0ddde2a0cf;
+CHANGELOG49068B/815fde00e9af7f906f086cd9ca47925afe05fd9d346b8e77997b52183e8e9fb2;
+root68275B/aeb2522d76608c9e11e311bb5aeedc809cec96af8351745ef8314a0cb6c36252.
+Both original receipt-count edits refuse. No sharding needed. Repeat after final
+sync and require all staged bytes equal verified working bytes before COMMIT.
+
+### `.14` a28 — implement bounded Sail comparison core (scheduled, SEMULITH-P4-0219)
+
+Read the a19/a26 method/artifact contract, actual public trace adapter, expectation
+mapping/schema and graph APIs, policy and GC book before code. Choose a finite
+read-only comparison-core slice: strict bounded trace/expectation bytes, declared
+GPR witness and exact baseline/repeat/wrong-value control discrimination. Preserve
+mapping ownership and the successful-process adapter path; genuine positive and
+wrong-target/process/truncation/extra-observation controls must discriminate.
+Keep authenticated closure/aggregate budgets and orchestration as a subsequent
+owned slice; keep blanket qualification closed until complete evaluation/gate
+integration exists. Then reviewed fresh collector, measured retention/predeclared
+cases, canonical captures and full policy/status consumers. No store/cap or CPU
+advance by declaration. Own code/book/live sync and COMMIT before moving onward.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -661,6 +710,14 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a27 — **ROOT CAUSE**: before.py rc=0; old24-schema/five-document
+  fixture has88 assertions failing (83 facets+5 docs), no errors, normal/optimized.
+- [x] `.14` a27 — **ADDRESSED**: mutations.py rc=0;7 methods/91 facets/five
+  documents pass and omissions96/552/1 discriminate, both modes; record70/0.
+- [x] `.14` a27 — **NO REGRESSION**: declarations.py/canonical.py rc=0;
+  complete13-source inverses/24 loads/fixpoint,243 dictionaries and old ASTs exact;
+  focused16/sharder12/0/seven books/rendered.py rc=0 (3024 links/three commands).
+
 - [x] `.14` a26 — **ROOT CAUSE**: before.py rc=0 shows509410a lacks both
   artifact schemas/four mappings/bounded parser; a19 requires them before capture.
 - [x] `.14` a26 — **ADDRESSED**: mutations.py rc=0;36/0 normal/optimized and
@@ -739,6 +796,10 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a27: before/declarations/canonical/mutations/rendered rc=0;88 old assertion
+failures/no errors ->7 methods/91 facets/five docs pass, omissions96/552/1;
+record70/0/focused16/sharder12/0/seven books,3024 hyperlinks/three commands.
+
 a26: before/canonical/mutations/rendered rc=0;36/0 normal/optimized and ten
 omissions3/1/2/1/1/3/4/1/1/1; schema47/0, focused15/sharder12/0/seven books;
 3024 links/five commands. New formats grant no method credit; a27 owns exact facets.
@@ -796,6 +857,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a27 | `SEMULITH-P4-0218 (leaf P4-SYSTEM.14): close exact-token schema end anchors` | a28 comparison core, authenticated orchestration/collector and captures |
 | `.14` a26 | `SEMULITH-P4-0217 (leaf P4-SYSTEM.14): carry bounded prospective artifact formats` | a27 exact facets, a28 evaluator/collector, retention/captures and full policy/status |
 | `.14` a25 | `SEMULITH-P4-0216 (leaf P4-SYSTEM.14): preserve live history predecessors` | a26 artifact schemas/mapping, then evaluator/collector and captures |
 | `.14` a24 | `SEMULITH-P4-0215 (leaf P4-SYSTEM.14): gate fresh book navigation and catalogue` | full CI preflight, a25 append-history preservation, then a26 artifacts |
@@ -810,6 +872,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a27 (SEMULITH-P4-0218): close83 exact-token ends in13 schemas; preserve generic searches,91 facets/five-doc controls and three mutations; focused/rendered/inverses pass, no canonical or qualification change.
 - `2026-10-11`: `.14` a26 (SEMULITH-P4-0217): bounded dependency/receipt shapes and one mapping;36/0/ten omissions,243 canonical inverses and focused/rendered checks pass; a27 owns old newline facets, no qualification credit.
 - `2026-10-11`: `.14` a25 (SEMULITH-P4-0216): guard complete index/working append predecessors and the staged partition; shared pure entry definitions,38/0 controls/five omissions, actual inverse/refusals and focused checks pass; full CI preflight green.
 

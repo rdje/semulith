@@ -977,6 +977,23 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   arm "GREEN catalog reader controls" 0 "31 pass / 0 fail"
   arm_command=(python3 scripts/probe_record_catalog.py --mutation ignore-includes)
   arm "RED lost include expansion" 1 "CONTROL-MISSED"
+  # All project token patterns, and the public kernel's deliberate search contract.
+  arm_command=(python3 scripts/probe_schema_token_facets.py)
+  arm "GREEN exact-token facets normal" 0 "Ran 7 tests"
+  arm_command=(python3 scripts/probe_schema_token_facets.py --mutation loose-end)
+  arm "RED normal token loose-end mutation" 1 "FAILED (failures=96)"
+  arm_command=(python3 scripts/probe_schema_token_facets.py --mutation ignore-pattern)
+  arm "RED normal token ignore-pattern mutation" 1 "FAILED (failures=552)"
+  arm_command=(python3 scripts/probe_schema_token_facets.py --mutation fullmatch)
+  arm "RED normal token fullmatch mutation" 1 "FAILED (failures=1)"
+  arm_command=(python3 -O scripts/probe_schema_token_facets.py)
+  arm "GREEN exact-token facets optimized" 0 "Ran 7 tests"
+  arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation loose-end)
+  arm "RED optimized token loose-end mutation" 1 "FAILED (failures=96)"
+  arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation ignore-pattern)
+  arm "RED optimized token ignore-pattern mutation" 1 "FAILED (failures=552)"
+  arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation fullmatch)
+  arm "RED optimized token fullmatch mutation" 1 "FAILED (failures=1)"
   rm -rf "$t"
   printf 'RECORD-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

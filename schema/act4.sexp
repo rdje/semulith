@@ -38,7 +38,7 @@
   (field (name verdicts) (type string) (min-length 1)))
 
 (construct (name test)
-  (field (name file) (type string) (min-length 1) (pattern "^I-[a-z0-9]+-[0-9]+\\.S$"))
+  (field (name file) (type string) (min-length 1) (pattern "^I-[a-z0-9]+-[0-9]+\\.S\\Z"))
   (field (name signature_slots) (type integer))
   (field (name verdict_semulith) (type string) (min-length 1))
   (field (name verdict_sail) (type string) (min-length 1))
