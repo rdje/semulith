@@ -323,6 +323,10 @@ not authenticate those declarations or replace the complete method evaluator.
 [Witness/control/derivation/pair bindings](retained-method.md#binding-witness-control-derivation-and-actual-pairs)
 likewise preserve failed recorded outcomes as data, without method credit.
 
+[Manifest binding](retained-method.md#authenticating-and-binding-the-dependency-manifest)
+authenticates one bounded manifest and binds its declared file identities;
+children and aggregate closure remain uncredited until checked.
+
 ## Bounded three-run byte comparison
 
 `compare_unit` in `scripts/matched_gpr_comparison.py` checks supplied immutable

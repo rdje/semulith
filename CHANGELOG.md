@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0225 (leaf P4-SYSTEM.14) — authenticate and bind the dependency manifest
+
+- Authenticate one bounded manifest snapshot, reuse raw schema/single mapper, bind exact principal overlap and exclude ID/path/output conflicts. Frozen context/union facts, separate pin/staleness/unavailability, no leaf/process/complete-closure credit.
+- 33 controls pass normal/O; eight omissions4/2/16/4/1/1/1/1 discriminate without errors. Add18 literal arms (39 doctrines/993, profile188/0); complete synthetic GC manifest example. DEV51772B triggers two whole3081B entries into published0244,23=21+2 exact. Focused17/sharder12/0/seven books/3072 links/all5 literal commands and full source/history inverses pass;243 dictionaries/1308 other files/101 entries protected. Fixed seals/caps/canonical/CPU unchanged.
+
 ## SEMULITH-P4-0224 (leaf P4-SYSTEM.14) — bind declared Sail method relations
 
 - Bind finite witness/control/declared-derivation/actual-pair relations over the existing validated graph and execution plan; frozen partial facts, honest failed-control data, no I/O/ancestry/comparison/qualification inference.

@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a34 bounded dependency closure, then aggregate evaluation and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a35 bounded leaf inspection, then aggregate evaluation and captures |
 
 ## Decisions
 
@@ -1049,19 +1049,96 @@ evidence/navigation inverse verified; all previous literal examples rerun. New
 chapter26464B, references8679B/evidence30652B, all under32768. Full source/method/
 canonical/history guards and fixed caps intact.
 
-### `.14` a34 — bounded dependency closure (scheduled, SEMULITH-P4-0225)
+### `.14` a34 — authenticate and bind the dependency manifest (completed, SEMULITH-P4-0225)
 
-Start clean after a33 COMMIT. Review full a19 principal/manifest closure, hidden
-nested/self prohibition, source/program/input relation, old/new impact and exact
-8MiB-leaf/128MiB-authenticated/16MiB-snapshot aggregate bounds, plus public anchored
-pin/snapshot and bounded manifest/identity/receipt/comparison/binding APIs. Define
-one safe finite dependency-closure unit before code; split closure planning,
-authentication and aggregate orchestration into named owners if needed rather
-than growing one slice unsafely. No second mapper, pin-then-reopen or success
-inference from stored words. Own real positive/stale/missing/unsafe/hidden-nesting/
-limit controls and complete GC examples, then integrate aggregate evaluator and
-gates. Collector/retention/cases/captures/full policy follow. Keep fixed seals,
-caps, canonical data and CPU/qualification status until verified work warrants it.
+Owned on cleane11a6be after a33 all-hooks/brief0/actual ps+lsof censuses rc=0,
+before code. Review a19 closure/trust/budget/currentness clauses, canonical schema
+and graph, public frozen relation/execution APIs, anchored snapshot reader,
+bounded manifest codec and current GC retained-method chapter. Choose one finite
+manifest dependency before whole leaf authentication and aggregate orchestration.
+
+Add read_dependency_manifest(root,*,experiment,current_candidate): caller first
+validates raw parent schema/scoped graph and supplies trusted runtime project root.
+Reuse public bind_relations; freeze the nine principal bindings and twelve output
+paths before I/O. Derive sole manifest input from its principal role, take exactly
+one authenticated snapshot bounded to64KiB, and reuse parse_dependencies raw-schema/
+single mapper. Preserve pin findings and distinguish matched/stale/unavailable/
+refused/unsupported. Normalize schema-tool I/O to unavailable with the pin retained.
+
+Bind manifest children to one flat declared input namespace. The codec owns1..64
+children, unique child IDs/paths, canonical paths, SHA syntax and lexical self/
+nested-role refusal before closure index construction. Permit exact principal
+record overlap (same ID/role/path/SHA) once; refuse conflicting ID, same path under
+different IDs, principal role/hash/path contradiction, output-path alias or self
+identity. Arbitrary nonempty manifest IDs remain the published codec contract;
+do not add a parallel token grammar. Return a frozen union of at most73 input
+bindings plus child edges and frozen relations; no caller/mapped dictionary/list
+aliases. Child order is immaterial, and one file identity cannot silently be
+assigned a second binding. This establishes declared manifest relations only.
+
+Do not open children or executable, run processes, re-open the manifest, claim
+complete/current dependency closure, inspect disguised child content or compare/
+qualify evidence. Coherent failed controls remain data. Hidden nested manifests,
+actual child authentication, complete dependency/source/program/image relation,
+old/new impact and aggregate8MiB-leaf/128MiB-auth/16MiB-snapshot budgets remain
+a35+ owners, with no currentness credit before they exist. Test complete generic
+schema/scoped fixture, actual on-volume one-read/pin/schema/context immutability,
+matching/conflicting overlaps, output alias, stale/missing/unsafe/bounded manifests,
+lexical self/nesting, no other-file/process I/O, failed records, normal/O and
+independent omitted-predicate controls. Preserve assertion-safe subcase cleanup.
+
+Own current/live/book/toolbox/doctrine sync and full canonical/source/method/task/
+append predecessors. DEV49105B/49152 leaves47B: measure/publish only oldest whole
+entries through published sharder. Retained-method26464B leaves6304B; measure
+teaching before any further partition. Task root115338B/131072 leaves15734B;
+if necessary own natural unsealed task part with exact predecessor preservation,
+never extend LC0006 seal. Keep fixed caps, seals, canonical data and CPU status.
+Then a35 leaf authentication/hidden nesting and aggregate evaluator/gates;
+reviewed collector, measured retention/cases/captures/full policy follow.
+
+Acceptance: mutations.py rc=0;33/0/0 normal/O, eight independent omissions
+lose4/2/16/4/1/1/1/1 assertions without errors. Profile188/0 and literal
+DERIVED-COUNTS39/993; focused17/sharder12/0/seven books/rendered.py rc=0,3072 links,
+all five literal commands and normal/print credit-limit phrases. Before/canonical/
+contract/history/scope rc=0 protect243 canonical dictionaries/1308 other files,
+complete old method/checker/task/append/teaching predecessors and101 old entries.
+DEV measured51772B; published sharder moves two whole3081B entries:23=21+2,
+immediate head48691B.0244 is3314B/349d17d95b6fccc58047299337eefca98f882854c75df02128e1a7a53ef2d37d;
+36 live+210 sealed=246logical. Actual moved Focused9 and published0243 rc+updated
+digest edits refuse. Retained-method32287B/32768 leaves481B; all prior teaching
+exact and all examples rerun. Task root remains below131072; no new task part,
+seal extension/cap/canonical/qualification/CPU change. Staged hashes, hooks,
+brief0 and actual job censuses mandatory before next unit. Sole staged whitespace
+finding is0244 EOF line51, inherited exact; close census and use ephemeral
+-blank-at-eof only, without historical/configuration rewrites.
+
+Initial ignored history probe selected an absent receipt needle. Inspect actual
+0244 text and use its real Focused9 count; final predecessor/full-partition
+mutation tools refuse the real edits. No production archive defect inferred.
+DECLINED promotion: one-snapshot caller freeze, parser reuse, positive-only pin
+facts and actual-fixture census implement existing contracts; current API/control
+scope is durable here/toolbox/GC teaching. No new architecture or ancestry claim.
+
+### `.14` a35 — bounded dependency leaf inspection (scheduled, SEMULITH-P4-0226)
+
+Start clean after a34 COMMIT. Review first-method closure and budgets, bounded
+manifest consumer, anchored reader and generic S-expression/manifest contracts.
+Define one finite read-only leaf authentication/content-inspection API before
+code. Reuse public owners and one authenticated byte snapshot per inspected
+leaf, never a pin check followed by reopen. Resolve exact overlap once. Bound
+per-leaf8MiB and total authenticated128MiB before reads; preserve16MiB retained-
+snapshot obligations and distinguish payload/parsed-copy RAM. Detect disguised
+manifest content through the published format, without inventing a parallel
+mapper or counting declared roles as content proof. Preserve explicit pending
+principal/snapshot/comparison/aggregate obligations if this finite unit does
+not own them; no complete closure/qualification credit by implication. Split
+inspection and aggregate evaluator into named owners when needed. Actual missing/
+stale/unsafe/nested/bounds/control fixtures, immutable/no-other-file guarantees,
+normal/O omissions and GC examples required. Retained-method has481B room and
+DEV at ceiling pressure: own natural complete teaching/whole-entry partitions
+and, only if measured necessary, an unsealed task part; never extend LC0006.
+Then full aggregate evaluator/gates, collector/retention/cases/captures/policy.
+Keep fixed caps/seals/canonical/CPU state until actual verification warrants it.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -1159,6 +1236,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a34 — **ROOT CAUSE**: before.py rc=0; closede11a6be lacks manifest
+  consumer; unchanged snapshot/syntax/parent relations accept a principal SHA
+  contradiction separately, new union binding refuses. No old qualification.
+- [x] `.14` a34 — **ADDRESSED**: mutations.py rc=0;33/0/0 normal/O and eight
+  omissions4/2/16/4/1/1/1/1 discriminate; profile188/0/993 literal arms.
+- [x] `.14` a34 — **NO REGRESSION**: canonical/contract/history/scope/rendered.py
+  rc=0; focused17/sharder12/0/seven books/3072 links/all5 literal blocks pass;
+  243 dictionaries/1308 other files/101 old entries/full prior teaching and
+  method/checker/task protected; published0244 exact and real receipt edits RED.
 
 - [x] `.14` a33 — **ROOT CAUSE**: before.py rc=0; closed483014b lacks relation
   binder, generic graph/execution accepts wrong expected version/other input;
@@ -1308,6 +1395,15 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a34: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
+33/0/0 normal/O; eight omissions4/2/16/4/1/1/1/1 fail without errors; profile188/0/
+993 literal arms. Focused17/sharder12/0/seven books/3072 links/all5 literal commands
+and normal/print limits pass. Whole old method/checker/task/append/teaching and
+243 dictionaries/1308 other files/101 entries exact. DEV51772→48691 after two whole
+3081B entries moved to0244 (3314B/349d17d95b6fccc58047299337eefca98f882854c75df02128e1a7a53ef2d37d),
+23=21+2,36 live+210 sealed246logical; actual receipts+updated digests refuse.
+Fixed caps/seals/canonical/qualification/CPU unchanged; COMMIT checks next.
+
 a33: before/canonical/contract/mutations/history/scope/rendered/book_partition.py
 rc=0;39/0/0 relations and48/0/0 execution normal/O;15/12 production omissions and
 2/2 cleanup controls all fail without errors; profile170/0/975 literal arms.
@@ -1415,6 +1511,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a34 | `SEMULITH-P4-0225 (leaf P4-SYSTEM.14): authenticate and bind the dependency manifest` | a35 leaf inspection, aggregate evaluator/gates and captures |
 | `.14` a33 | `SEMULITH-P4-0224 (leaf P4-SYSTEM.14): bind declared Sail method relations` | a34 bounded dependency closure, aggregate evaluator/gates and captures |
 | `.14` a32 | `SEMULITH-P4-0223 (leaf P4-SYSTEM.14): bind declared Sail execution inputs and argv` | a33 property/control/derivation/pair relations, closure/evaluation and captures |
 | `.14` a31 | `SEMULITH-P4-0222 (leaf P4-SYSTEM.14): bind authenticated Sail process receipts` | a32 fixed invocation/principal/producer binding, closure/evaluation and captures |
@@ -1436,6 +1533,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a34 (SEMULITH-P4-0225): manifest33/0/0/eight omissions, profile188/0/993 arms; focused/books/history/source/full teaching protection pass; published0244 exact, leaf/closure/qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a33 (SEMULITH-P4-0224): declared relations39/0/0, repaired execution48/0/0; D33-ISOLATION fixed and cleanup regressions; profile170/0/975 arms; focused/books/history/source/teaching protection pass, published0243 exact, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a32 (SEMULITH-P4-0223): pure execution bindings47/0/0/twelve omissions, profile130/0/935 arms; focused/books/source/history protection pass; published0242 whole-entry partition exact, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a31 (SEMULITH-P4-0222): bounded authenticated receipt binding43/0/0/eleven omissions, profile104/0/909 arms; focused/books/history/source protection pass, qualification/seals/caps/CPU unchanged.

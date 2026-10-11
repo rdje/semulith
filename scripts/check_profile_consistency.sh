@@ -912,6 +912,43 @@ EOF
   score "RED optimized omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-version-cleanup 2>&1)"; rc=$?
   score "RED optimized omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  # P4-SYSTEM.14 a34: authenticate/bind only the manifest, never its leaves.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" 2>&1)"; rc=$?
+  score "GREEN normal authenticated manifest binding" "$rc" 0 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation manifest-codec 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard manifest-codec" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 16 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation principal-overlap 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard principal-overlap" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation path-alias 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard path-alias" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation output-alias 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard output-alias" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation context-freeze 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard context-freeze" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED normal omitted manifest guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" 2>&1)"; rc=$?
+  score "GREEN optimized authenticated manifest binding" "$rc" 0 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation manifest-codec 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard manifest-codec" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 16 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation principal-overlap 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard principal-overlap" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation path-alias 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard path-alias" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation output-alias 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard output-alias" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation context-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard context-freeze" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED optimized omitted manifest guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
