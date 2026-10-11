@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a23 rendered book navigation, then artifact mappings/evaluator, retention/captures and policy/status/mirrors |
+| 1 | `P4-SYSTEM.14` | `active` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifacts/evaluator/captures |
 
 ## Decisions
 
@@ -344,16 +344,86 @@ Broader rendered-link census is a23 next.
 Evidence target/p4-system-14/a22; latest full CI remains a18 green.
 promotion: declined (finite partition receipts; existing task-book policy unchanged).
 
-### `.14` a23 — verify rendered book navigation (scheduled, SEMULITH-P4-0214)
+### `.14` a23 — resolve main-book record navigation (completed, SEMULITH-P4-0214)
 
-After a22's clean COMMIT workflow, census repository-owned Markdown routes in all
+Owned on clean5de7c27 after brief0/untracked and actual handoff census OK.
+Before edits, own the repository-only link census, public output/serving contract
+review and finite repairs; preserve current examples, contracts and fixed caps.
+Finite a23 scope: repair the main book’s50 missing paths through an HTML
+preprocessor after mdBook’s built-in include expansion. Preserve canonical
+LIVE_STATUS/TASK_TREE source bytes; direct their task links and the two external
+history links to book-local record-reading instructions. Test the public
+[context, book] protocol, code examples, labels and exact route resolution.
+Own new reader/config/probes, decision and focused/book/live sync before code.
+A24 owns the six cross-unit routes and complete rendered-navigation gate, then
+a25 append-history guard, then a26 artifacts. All56 missing paths are high-priority owned defects.
+
+Initial read-only path census: main50, lan9118/netboard/sifive books2 each; other
+three model books0 missing paths. Log every destination and root cause before
+repair; fragment correctness is still unmeasured. Split finite follow-ups if
+different route families need different repairs, keeping defects owned/high priority.
+
+Census repository-owned Markdown routes in all
 seven rendered books, reproduce missing generated destinations, and repair them
 through coherent book-local reading/navigation instructions. Priority high:
 mdBook rewrites external `.md` targets to ungenerated `.html`; the task-history
 chapter supplies five measured cases. Own all findings and finite follow-up
 slices; test actual rendered destinations/controls, preserve examples and caps.
-Then a24 artifact schemas/mappings (SEMULITH-P4-0215), method evaluator/collector,
-retention and fresh captures. No evidence qualification or CPU credit from links.
+Own the live decision-index capacity correction before edits: routing guard
+refuses INDEX16509B above16384 after the new row. Shorten only the three hot
+index labels/hooks, preserving targets and all full decision bodies; fixed cap.
+
+Main-book record resolver/config now active after built-in include expansion;
+canonical LIVE_STATUS and task indexes stay exact. Simple inline task links and
+two declared historical surfaces lead to book-local reading instructions, with
+exact tree-ID/filename commands; labels/examples and other destinations stay exact.
+Public protocol fixture confirms mdBook0.5.4 [context,book]/items and command cwd.
+Public disabled/repaired builds measure50 missing paths ->0; exactly50 href
+changes and50 complete normal HTML page inverses are byte-exact otherwise.
+Print paths/fragments also resolve; no duplicated print credit. The diagnostic
+restores the owned configuration in finally before starting the repaired build.
+Probe19/0 also optimized; four independent route/mask/context/source-guard
+omissions fail16/10/13/2 assertions in each mode. Missing/symlinked declarations
+and bad protocol refuse without partial stdout; code examples/metadata preserved.
+Five actual book retrieval commands match originals. Decision-index guard correctly
+refused16509B; shorten only three live labels/hooks to16320B, preserving targets
+and all full bodies.1281 protected tracked files byte/mode exact; Git links unchanged.
+Run the final seven-book build sequentially after UNIT-BOOKS, since both write
+model outputs. Scope/focused12/seven books
+pass rc=0. No Rust/CPU/canonical/qualification/cap/LIVE changes;39doctrines and
+768outer arms remain. Full rendered gate and remaining6cross-unit paths belong
+to a24; no all-book navigation completion claim. Latest full CI a18 green.
+Own the overbroad count-edit defect before restoration: the focused11->12 edit
+also changed one older LC0007 receipt in each live DEV/CHANGELOG head. Cached diff
+isolates those two lines; the scope proof allowed entire heads and missed them.
+Stop the pending commit and only its owned hook subtree (rc143); HEAD remains
+5de7c27 and actual stopped census is OK. Restore the complete predecessor suffix
+of each head and require a pinned-base history-preservation proof before retry; both complete predecessor heads are byte-exact and both original
+over-broad-edit controls refuse (history.py rc=0).
+Schedule a25's permanent append-history preservation guard before artifact work;
+this specific scope-proof blind spot is owned, not a claim about all other gates.
+Evidence target/p4-system-14/a23. Promotion: decision_book-record-navigation.md.
+
+### `.14` a24 — resolve cross-unit book navigation (scheduled, SEMULITH-P4-0215)
+
+After a23's clean COMMIT workflow, repair the six measured cross-unit book links
+(lan9118 introduction/index2, SiFive UART introduction/index2, netboard materials2).
+Read the actual build/serving contract; preserve each book's teaching narrative,
+source identities and fixed caps. Implement full rendered path/fragment checks
+and fail-closed controls across all seven books (including print views) before
+registering a navigation gate. Own every further finding and safe follow-up.
+Then a25 append-history preservation guard (SEMULITH-P4-0216), followed by a26
+artifact schemas/mappings (SEMULITH-P4-0217), evaluator/collector and captures. No CPU qualification from navigation.
+
+### `.14` a25 — preserve live append-history predecessors (scheduled, SEMULITH-P4-0216)
+
+After a24's clean COMMIT workflow, replace the a23 byte-scope proof's whole-file
+allowance for DEV/CHANGELOG with a permanent, shard-aware predecessor preservation
+check and discriminating controls. Reproduce the two overbroad count changes;
+require exact retained/moved entries and reject unauthorized old-entry edits while
+allowing new whole entries and published lossless sharding. Keep historical
+corrections as new owned records; preserve exact originals and all fixed caps.
+Then a26 artifact schemas/mappings (SEMULITH-P4-0217), evaluator/collector/captures.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -452,6 +522,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a23 — **ROOT CAUSE**: initial census.log/public build-before.log rc=0
+  enumerate56 missing paths,50 main/6cross-unit, no bad fragments. Include origins
+  and mdBook `.md`->`.html` conversion produce ungenerated destinations.
+- [x] `.14` a23 — **ADDRESSED**: proof.py/probe19/0/mutations.py rc=0; main50->0,
+  exactly50 href changes,50 full HTML inverses/print paths and five literal reads;
+  four omissions16/10/13/2 failures, also optimized. Six cross-unit defects stay a24.
+- [x] `.14` a23 — **NO REGRESSION**: focused12/seven books/scope rc=0; canonical
+  LIVE_STATUS/task indexes/prior history exact, examples/labels/metadata preserved,
+  no CPU/evidence/cap/count change. history.py rc=0 proves both complete old heads
+  and the complete task-root inverse, refusing both original bad-edit controls;
+  stop the first pending commit before restoration/retry. Full gate follows a24.
+
 - [x] `.14` a22 — **ROOT CAUSE**: census.log/partition.py rc=0; source task130487B
   leaves585B, DEV48712B leaves440B; ten incoming root links need no moved anchors.
 - [x] `.14` a22 — **ADDRESSED**: proof.py rc=0; seven exact bodies/two complete
@@ -486,6 +568,11 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a23: public before/after main50->0,50 full HTML inverses/print navigation,
+probe19/0 also optimized, omissions16/10/13/2 also optimized, five literal reads,
+focused12/seven books/scope rc=0. Canonical indexes/LIVE/history exact; six model
+routes remain owned at a24. Full all-book gate unregistered until repair.
+
 a22: partition.py/proof.py rc=0; seven marked bodies, full task/book inverses,
 21 damaged refusals; DEV30==28+2/4953B with old manifest prefix exact; census,
 focused10/sharder12/0/TASK-HISTORY46/seven books/rendered/scope rc=0. Correct the
@@ -518,6 +605,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a23 | `SEMULITH-P4-0214 (leaf P4-SYSTEM.14): resolve included book record links` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifact mappings |
 | `.14` a22 | `SEMULITH-P4-0213 (leaf P4-SYSTEM.14): preserve completed evidence records` | a23 rendered book navigation, then artifact schemas/mappings and evaluator/collector |
 | `.14` a21 | `SEMULITH-P4-0212 (leaf P4-SYSTEM.14): bound pin-only reads and snapshot probes` | a22 completed-unit containment, artifact mappings/evaluator, retention and fresh captures |
 | `.14` a20 | `SEMULITH-P4-0211 (leaf P4-SYSTEM.14): carry typed GPR witnesses and control baselines` | a21 bounded pin-only reads, artifact mappings/evaluator, retention and first canonical capture |
@@ -527,6 +615,8 @@ Completed .14 a1–a19 commit rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-11`: `.14` a23 (SEMULITH-P4-0214): preserve canonical include inputs while resolving50 missing main-book routes;19 API/CLI tests/4omissions and full HTML inverses green; six cross-unit defects and full gate owned next.
 
 - `2026-10-11`: `.14` a22 (SEMULITH-P4-0213): preserve88967 task/1462 book bytes in part13, exact two-source and DEV30==28+2 inverses;21 damaged refusals/focused10/seven books green; fixed caps and active feature explanations retained.
 

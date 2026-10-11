@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — resolve included book record links (P4-SYSTEM.14 a23)
+
+Actual seven-book census found56 missing paths (main50; three board/device books2
+apiece), no missing fragments. Includes keep repository-relative links while the
+renderer changes .md to .html. Add an HTML-only public-protocol preprocessor after
+include expansion for the main book's declared task/history inline links. Preserve
+canonical inputs, metadata, labels, examples and other destinations; the book
+shows the exact record-reading commands. Missing/symlinked declared records and
+invalid protocol refuse without partial stdout. Unsupported syntax stays unchanged.
+
+Public disabled/repaired builds:50missing->0, exactly50href changes; all50normal
+HTML page inverses are byte-exact otherwise, print paths/fragments resolve, and
+five literal book commands return exact retained bytes. Decision-index guard
+correctly refused16509B; shorten three hot labels/hooks to16320B without changing
+full records or targets.1281 protected files stay exact. Final seven-book build
+runs sequentially after UNIT-BOOKS to avoid concurrent output writers. Configuration
+restores in finally before repaired rendering.19 API/CLI tests pass normally and
+optimized; independent route/mask/relative-context/source-guard omissions fail
+16/10/13/2 assertions, also optimized. All fixtures cleaned on this volume.
+Focused12/seven books/protected scope pass; no Rust/canonical/CPU/qualification/
+cap/LIVE or outer-count change. Remaining6cross-unit routes/full gate are a24
+next; no all-book completion claim. Evidence target/p4-system-14/a23; CI a18 green.
+Catch my overbroad focused-count replacement changing two older LC0007 receipt
+lines. Stop only this pending commit/hook subtree(rc143, HEAD still5de7c27,
+actual census OK); restore both complete predecessor suffixes. History proof
+confirms all45659DEV/45463CHANGELOG predecessor bytes exact and refuses both
+original edit controls. A25 owns the permanent shard-aware preservation guard
+before a26 artifacts; a24 remains the six cross-unit routes/full navigation gate.
+promotion: decision_book-record-navigation.md, retrievable by canonical-link question.
+
 ## _(2026-10-11)_ — preserve completed evidence records (P4-SYSTEM.14 a22)
 
 Before the task's fixed128KiB ceiling, move six whole completed a1–a19 spans

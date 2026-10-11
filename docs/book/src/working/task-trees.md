@@ -130,6 +130,9 @@ exact bytes and order. Established size ceilings and CPU status stay unchanged.
 
 ### Read task history
 
+Links from the live status and task tables lead here. Read an active or closed
+record with `cat docs/tasks/<TREE>.md`, using the linked tree ID.
+
 Run these commands from the repository root. Sealed parts1–12 use the checked
 reader; select the numbered part you need, for example archive9:
 
@@ -142,10 +145,13 @@ Ordinary part13 and named book receipts remain directly readable Markdown:
 ```sh
 cat docs/tasks/archive/P4-SYSTEM-13.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
+cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
+cat docs/task-history/README.md
 ```
 
 These instructions stay in the book because mdBook rewrites external Markdown
-links to HTML files that it does not generate.
+links to HTML files that it does not generate. The build resolver runs after
+includes, preserving labels, examples and canonical source files.
 
 ### Preserve completed task receipts and live development history
 

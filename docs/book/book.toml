@@ -9,3 +9,8 @@ src = "src"
 default-theme = "rust"
 git-repository-url = ""
 no-section-label = false
+
+[preprocessor.project-record-links]
+command = "python3 ../../scripts/book_navigation.py"
+renderers = ["html"]
+after = ["links"]

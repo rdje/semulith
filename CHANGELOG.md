@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0214 (leaf P4-SYSTEM.14) — resolve included book record links
+
+- Resolve the main book's included task/history links after include expansion without changing canonical records, labels, examples or metadata. Book-local instructions retain exact reading commands; bad protocol or missing/symlinked declarations refuse without partial output.
+- Public renders measure50missing->0 with exactly50href changes and50complete HTML inverses; print navigation and five literal reads pass. Probe19/0 and four omissions16/10/13/2 discriminate, also optimized. Focused12/seven books/scope pass; six cross-unit links/full gate owned next. Restore two overbroad edits to older receipts before commit; both complete predecessor heads and negative controls pass, permanent preservation guard owned after navigation. No CPU, qualification, cap, LIVE or count changes.
+
 ## SEMULITH-P4-0213 (leaf P4-SYSTEM.14) — preserve completed evidence records
 
 - Preserve six whole completed task spans and one older book receipt in bounded ordinary archive13; keep current features/frontier/recent work live and source-context navigation intact. No existing cap or sealed capture changes.
