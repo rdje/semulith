@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42d authenticated source/image correspondence, then complete adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | a42d2 bounded source/image snapshots, then authenticated composition |
 
 ## Decisions
 
@@ -745,13 +745,83 @@ corrected full19-file/EOF-only preflight rc=0. Explicit staged equality is the
 next mandatory gate before retry. No remaining D45 source or history defect.
 promotion: declined (bounded construction API/trust/ordering live in its owner, executable controls and book; normative method unchanged).
 
-### `.14` a42d — authenticate and bind source/image correspondence (scheduled)
+### `.14` a42d1 — bind supplied source/image bytes (completed, SEMULITH-P4-0236)
 
-Start clean after a42c. Use supplied authenticated source/image snapshots, the
-bounded public construction owner and explicit selected parent context; account
-for additional snapshots inside existing aggregate budgets before I/O. Complete
-closure/conservative impact/collector provenance remain further finite slices.
-Do not convert a built image or matching identifier into qualification.
+Owned on clean958eb81da14c9dfb89154d9d661491ecb1ff8e5a before changes;
+all19 verified/staged/committed/working hashes exact, all hooks green, brief0/
+untracked, standard and actual ps/lsof censuses rc=0. A42c complete, D44/D45
+repaired and verified; no canonical matched-v1 capture or qualification. Relevant
+.14/roadmap G-TRACE/G-OBLIGATIONS, Knowledge Map, method/qualified contracts,
+public builder/ELF, comparison/ledger/evaluator APIs/probes and GC evaluation/
+closure/retained teaching reviewed. Full source/image composition is split into
+finite committed prerequisites; no method policy or existing API changes here.
+
+Add byte-only check_source_image(source:bytes,image:bytes,*,program:str,entry:int)
+in scripts/matched_gpr_source_image.py, using the sole public GC builder. Program/
+entry are caller-selected immutable parent context; caller owns their provenance,
+source/image authentication, complete current tool adequacy and aggregate budget
+reservation before artifact I/O. This unit performs no artifact reads/reopens,
+path writes, processes or source-grounded expected-property/qualification claims.
+Canonical assembler/tool reads remain outside supplied-artifact byte budgets.
+
+Declare before use: image plainbytes1..64KiB before builder/context I/O; source/
+program/entry and construction use all existing1MiB/8192lines/65536characters/
+unsigned64/32KiBpayload/64KiBimage guards unchanged. Compare complete rebuilt ELF
+bytes directly, including file-only padding/headers/sections, not just fingerprints
+or loaded payload. Return frozen matched/refused/unavailable plus optional frozen
+construction metadata and supplied-image size/hash. Retain neither source nor
+supplied/rebuilt imagebytes in results. Invalid image/source/context or mismatch
+refuses; unavailable canonical tools stay unavailable. Fixed bounded diagnostic
+strings, no source echo. Matching comments/spacing that emit identical bytes are
+legitimate; program is a caller label, not an embedded ELF filename or semantic
+proof. Caller must allow up to64KiB temporary rebuilt ELF in addition to its two
+supplied snapshots; payload caps are not RAM/time ceilings.
+
+Own normal/O controls and independent omissions for input/order/complete equality,
+source/metadata forwarding, metadata-only immutability, refusal/unavailable
+classification and no path/process effects. Preserve all old builder33/17 and
+ELF15/eight controls/omissions and every216 repaired ELF byte. Complete original
+source/checker/normative method/book/task inverses,340 raw forms/243 dictionaries,
+all104 predecessor history entries and actual receipt+updated-digest negatives,
+fixed caps/seals/otherfile+mode/Gitlink guards. Current DEV/CH close to caps: own
+necessary whole-oldest-entry sharding before use, no published edits or cap raise.
+Complete runnable bounded GC book teaching; add literal doctrine arms only after
+controls discriminate, focused checks/COMMIT per contract before next slice.
+
+Verified24 controls and17 omissions normal/O: failures8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1,
+zero errors. Payload-only comparison loses9 assertions; all167 source/image pairs
+and216 repaired ELF images exact. Keep all258 old GUEST arms/add36:294/0,
+39 doctrines1303 arms; old builder33/17 and ELF15/eight retained. Full old library/
+probe/API/checker/normative method/book/task inverses exact;340 raw forms/243 maps,
+104 original history entries and1338 other files/modes/Gitlinks exact normal/O.
+Actual original/moved/published receipt rewrites refuse with updated digests.
+DEV16=15+1/4040B to0255(4273B/4f753427cb62340959d76a2cedaadd1debbb6e9199a47cdaa71b955de5ca964e),
+CH90=89+1/800B to0256(1037B/fe19c06691b65329637b20bfe013102981ac865c87af1af0e2c8b6b6d862857f);
+48live+210sealed258logical. Only inherited EOF blanks0255:62/0256:17; preserve
+whole entries, ephemeral Git whitespace exception only. Focused17/sharder12/0/
+seven books/3142 links/all14 literal examples/normal+print teaching rc=0.
+Fixed caps/seals/canonical/CPU unchanged; no Rust source change/full CI required
+for this ordinary slice. Final docs/hook/hash/brief0/censuses precede d2.
+promotion: declined (bounded complete-byte correspondence and limits live in its owner, controls and book; current method routing only, no new normative policy).
+
+### `.14` a42d2 — retain source/image within the shared ledger (scheduled)
+
+Start clean after d1. Add opt-in bounded source/image snapshots to the existing
+Q owner, preserving default15-payload/API behavior. Account for both before reads;
+existing128MiB artifact-read/16MiB live snapshot budgets and seed charges remain.
+Existing15 maxima14.625MiB plus source1MiB/image64KiB =17 maxima15.6875MiB;
+reserve a further64KiB before I/O for temporary reconstruction when composing.
+Verify exact inclusive/refusal boundaries, transient ordering and failure releases.
+
+### `.14` a42d3 — compose authenticated source/image correspondence (scheduled)
+
+Start clean after d2. Bind selected parent program/budget before I/O, obtain exact
+entry through the sole validated expectation owner, consume the authenticated
+source/image snapshots once and compare via d1. Preserve separate record/auth/
+comparison/content findings, method selection and legacy unit APIs; publish only
+metadata, release payloads. Complete closure/conservative impact/source-grounded
+property/collector provenance remain further finite a42 work. Built or byte-matched
+images never grant qualification.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -849,6 +919,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42d1 — **ROOT CAUSE**: run-controls.py rc=0 normal/O:
+  complete-byte omission loses14 assertions, payload-only omission9; headers,
+  unloaded padding, strings/sections and payload must all match the sole rebuild.
+- [x] `.14` a42d1 — **ADDRESSED**: run-controls.py rc=0:24 controls,
+  seventeen omissions8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1 failures/0 errors
+  normal/O. corpus.py rc=0 normal/O:167 pairs/216 ELF exact; metadata-only facts.
+- [x] `.14` a42d1 — **NO REGRESSION**: focused.sh/rendered.py/contract/
+  history/canonical/scope.py rc=0: focused17/sharder12/0/seven books/3142 links/
+  all14 examples; legacy sources/APIs/probes/checker258 and normative method/book/
+  task inverses exact.340 raw forms/243 maps,104 old entries/1338 other files/
+  modes/Gitlinks protected; real receipt+digest edits refuse. Caps/seals fixed.
 
 - [x] `.14` a42c — **ROOT CAUSE**: contract.py rc=0 normal/O recovers
   complete93525ac assembler and exact D44 draft51834B/hash; old AsmError/no
@@ -1121,6 +1203,24 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a42d1: Verified24/0/0 and17 omissions normal/O, failures
+8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1 without errors. Complete ELF regions,
+changed source/entry, comment equivalence, exact selected label, input ordering/
+bounds, metadata-only frozen results and unavailable/refused/programming failures
+checked. All167 GC source/image pairs and216 complete repaired images exact.
+Legacy builder/ELF/evaluation/ledger/comparison/probe sources byte-exact;
+checker258 plus36 => GUEST294/0,39 doctrines1303. Focused17/sharder12/0/seven
+books/3142 links/all14 complete literal examples/normal+print teaching rc=0.
+Contract/history/canonical/scope rc=0 normal/O: full normative/book/task inverses,
+340 raw forms/243 maps,104 old entries/1338 other files/modes/Gitlinks exact;
+actual original/moved/published receipt+new-digest rewrites refuse. DEV4040B to0255
+(4273B/4f753427cb62340959d76a2cedaadd1debbb6e9199a47cdaa71b955de5ca964e),
+CH800B to0256(1037B/fe19c06691b65329637b20bfe013102981ac865c87af1af0e2c8b6b6d862857f);
+48live+210sealed258logical. Only two inherited EOF blanks, no historical trimming.
+No cap/seal/canonical/CPU/qualification change. Latest full CI93525ac443 Rust/
+smoke53/seven books; no Rust change here. Final docs/hooks/hashes/brief0/censuses
+then d2 opt-in ledger snapshots and d3 authenticated composition.
+
 a42c: Verified33/0/0 normal/O, all17 omissions discriminate without errors;
 D44 old/draft method-lookup regression reproduced, exact draft51834B/hash inverse
 and1 assertion failure in both modes; repaired legacy order preserved. Whole
@@ -1377,6 +1477,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42d1 | `SEMULITH-P4-0236 (leaf P4-SYSTEM.14): bind complete source and ELF image bytes` | d2 bounded opt-in source/image snapshots, then d3 composition |
 | `.14` a42c | `SEMULITH-P4-0235 (leaf P4-SYSTEM.14): construct bounded GC images from source bytes` | a42d authenticated correspondence within shared budgets |
 | `.14` a42b | `SEMULITH-P4-0234 (leaf P4-SYSTEM.14): repair ELF alignment and compressed flags` | full CI on clean repair, then a42c source/image builder |
 | `.14` a42a | `SEMULITH-P4-0233 (leaf P4-SYSTEM.14): bind expectations to the frozen parent program` | a42b source/image correspondence and remaining adequacy |

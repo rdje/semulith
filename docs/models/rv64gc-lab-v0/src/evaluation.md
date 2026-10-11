@@ -470,3 +470,74 @@ Constructing bytes in a separate statement preserves the legacy refusal before
 output access. The exact draft fails the added control in both Python modes;
 byte comparisons alone did not detect this API ordering defect. This repair
 adds no CPU acceptance, authenticated correspondence or qualification credit.
+
+## Compare complete source and image bytes
+
+`scripts/matched_gpr_source_image.py::check_source_image(source, image, *, program,
+entry)` compares a supplied complete ELF with the bounded GC reconstruction above.
+It compares bytes directly, including headers, file-only padding, strings and
+section headers. Equal loaded instruction payloads alone are insufficient.
+The program and entry are caller-selected immutable parent context; the program
+is a label, not a filename embedded in ELF. Different comments or spacing may
+legitimately produce the same image, with their own exact source fingerprints.
+
+The caller owns authentication of both supplied snapshots, selection of the
+parent context, complete current tool dependency adequacy and aggregate budget
+reservation before artifact I/O. This byte unit does not perform those checks.
+It reads no artifact paths, writes no output and runs no reference process.
+The public builder still reads canonical project tool data. A match does not
+prove a source-grounded expected property, independent derivation or qualification.
+Authenticated ledger/evaluator composition remains the next implementation work.
+
+The supplied image must be plain immutable `bytes` of 1..65536 bytes before the
+builder runs. The builder's source, program, entry, line, payload and image bounds
+remain unchanged. Allow up to another 64 KiB for temporary rebuilt ELF bytes in
+addition to the two supplied snapshots. These are finite payload bounds, not exact
+RAM or execution-time ceilings. Empty supplied images refuse; nonempty comment-only
+source can match an ELF with an empty payload, without instruction-semantic credit.
+
+`SourceImageCheck` and its optional `SourceImageFacts` are frozen. Facts contain
+only program/entry/encoding/IALIGN and source/payload/rebuilt-image/supplied-image
+sizes and SHA256s; neither result retains source or image bytes. A complete match
+returns `matched`. A byte mismatch returns `refused` with both exact image
+fingerprints available. Invalid image/source/context refuses without facts.
+Unavailable canonical construction returns `unavailable` separately. Diagnostics
+are fixed bounded strings and never echo source text. Unexpected programming
+failures propagate rather than becoming successful findings.
+
+Run the complete example from the repository root. Its fixtures exist only in
+memory. Flipping byte120 changes unloaded file padding while preserving every
+loaded instruction, so it must still refuse:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_SOURCE_IMAGE'
+from matched_gpr_image import build_guest_image
+from matched_gpr_source_image import check_source_image
+source = b'addi x1, x0, 5\nc.addi x1, 1\n'
+context = dict(program='example.s', entry=0x80000002)
+image = build_guest_image(source, **context).image
+matched = check_source_image(source, image, **context)
+print(matched.disposition, matched.facts.source_size, matched.facts.image_size)
+changed = bytearray(image)
+changed[120] ^= 1
+refused = check_source_image(source, bytes(changed), **context)
+print(refused.disposition, refused.reason)
+print(refused.facts.rebuilt_image_sha256 == matched.facts.image_sha256,
+      refused.facts.image_sha256 != matched.facts.image_sha256)
+invalid = check_source_image(source, changed, **context)
+print(invalid.disposition, invalid.reason, invalid.facts)
+PY_SOURCE_IMAGE
+python3 scripts/probe_matched_gpr_source_image.py
+python3 -O scripts/probe_matched_gpr_source_image.py
+```
+
+It prints `matched 28 4320`, then
+`refused supplied ELF bytes differ from rebuilt source`, `True True`, and
+`refused image must be plain bytes of 1..65536 bytes None`. Both probes report
+24 tests with zero failures/errors. Seventeen omissions lose
+8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1 assertions with zero test errors in
+both Python modes. The payload-only omission loses nine assertions, explicitly
+showing why whole-container equality matters. All 167 GC source/image pairs
+match; the complete 216 repaired RV64I/GC images remain byte-identical.
+Existing builder33/seventeen and ELF15/eight controls remain intact. None of
+these fixtures creates a canonical capture or advances CPU acceptance.

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0236 (leaf P4-SYSTEM.14) — bind complete source and ELF image bytes
+
+- Compare supplied complete ELF bytes to the sole bounded source reconstruction, including unloaded headers/padding/sections. Frozen metadata-only facts preserve both fingerprints on mismatch; bounded invalid/unavailable findings remain separate. Caller owns authentication, selected context, tool adequacy and aggregate reservation; no source-property/qualification credit.
+- 24 controls/seventeen omissions pass/discriminate normal/O with zero errors; payload-only comparison loses9 assertions. All167 GC pairs/216 repaired images exact; preserve old33/17,15/eight and258 GUEST arms, add36 (294/0;39 doctrines1303). Focused17/sharder12/0/seven books/3142 links/all14 examples/full guards green;104 old entries/1338 other files protected. DEV4040B to0255/CH800B to0256, real receipt+digest edits refuse; caps/seals fixed. Final COMMIT. Next d2 shared-ledger retention/d3 authenticated composition; CPU/canonical unchanged.
+
 ## SEMULITH-P4-0235 (leaf P4-SYSTEM.14) — construct bounded GC images from source bytes
 
 - Extract one pure ELF encoder; preserve legacy writer API/order and all216 repaired ELF bytes. Bounded immutable source-byte builder freezes exact program/route/entry/IALIGN and sizes/hashes, retains only imagebytes, separates invalid source from unavailable canonical context. No source reopen/write/process/authentication/qualification; caller owns current tool adequacy.
@@ -650,16 +655,4 @@
   full167 corpus match. Rust167/17/214; registry98/effective96/114.
 - LIVE unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next;
   c26a bounds task receipts before remaining nine runtime pairs/freeze.
-
-## SEMULITH-P4-0152 (leaf P4-SYSTEM.13 c24) — observe implicit Sv39 requests and no-write faults
-
-- Bind WALK-IMPLICIT through20 CPU cases/29 boundaries/50 parcels/104 requests:
-  exact one/two/three-level paths, same-page hits, Svade/fault termination and
-  unchanged PTEs. Seven capture controls, disabled observer and two actual walker
-  mutations reject. Production core/frozen declarations remain byte-exact.
-- Independent literals/state/fetch-walk and full167 corpus match; actual observer
-  owns explicit data request evidence. Prior94 bindings/inputs remain exact;
-  pair472/936 including unchanged companions. Rust167/17/212.
-- Registry96/effective94/114; ten pairs/freeze remain. LIVE unchanged652 arms,
-  49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks precede c25 FENCE.
 

@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — bind complete source/image bytes (P4-SYSTEM.14 a42d1)
+
+Use sole public bounded GC builder; require supplied image plainbytes1..64KiB
+before canonical I/O, retain all source/program/entry/line/payload/image guards.
+Compare complete ELF bytes directly, including headers, file-only padding,
+strings and sections. Return frozen matched/refused/unavailable plus metadata-only
+facts with exact source/payload/rebuilt/supplied sizes/hashes and selected context.
+Mismatch keeps both fingerprints; invalid context/source/image has no facts;
+canonical unavailability distinct, fixed bounded diagnostics/no source echo.
+No artifact paths/writes/processes/authentication/qualification; caller owns
+selected parent, current tool adequacy and aggregate reservation before reads,
+including at most64KiB temporary rebuilt image. Payload bounds are not RAM/time
+claims. A program is a label, comments may emit identical bytes, empty payload
+from nonempty comments makes no instruction-semantic/property claim.
+
+24 controls normal/O green;17 omissions lose8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1
+assertions, zero errors in both modes. Payload-only equality loses9 assertions;
+changes in each ELF region, truncation/extras, changed source/entry, Unicode label,
+comment equivalence, pre-I/O bounds, exact forwarding, metadata-only immutability
+and unavailable/refused/programming-failure distinctions discriminate. All167 GC
+correspondences and216 complete repaired images match normal/O. Register36 literal
+arms after discrimination, preserving all258 old GUEST arms; old builder33/17 and
+ELF15/eight remain. Book complete in-memory example changes unloaded padding.
+
+Focused17/sharder12/0/seven books/3142 links/all14 complete literal examples and
+normal/print teaching green. Complete old library/probe/API/checker258/normative/
+book/task inverses,340 raw forms/243 maps,104 old entries/1338 other files/modes/
+Gitlinks exact normal/O; actual original/moved/published receipt rewrites refuse
+with updated digests. GUEST294/0,39 doctrines1303 arms. DEV4040B to0255(4273B/
+4f753427cb62340959d76a2cedaadd1debbb6e9199a47cdaa71b955de5ca964e), CH800B to0256
+(1037B/fe19c06691b65329637b20bfe013102981ac865c87af1af0e2c8b6b6d862857f);
+48live+210sealed258logical. Only two inherited whole-entry EOF blanks; ephemeral
+Git whitespace exception, no trimming/cap/seal changes. Final docs/hooks/verified
+==staged==committed==working hashes/brief0/censuses. A42c958eb81 clean/hash-exact/censuses before activation;
+D44/D45 repaired, no open defect. Latest full CI clean93525ac green443 Rust/smoke53/
+seven books; no Rust change here. Next d2 bounded opt-in source/image retention,
+d3 authenticated composition, then complete closure/impact/source-grounded property/
+collector provenance. No canonical capture/CPU/qualification change. Evidence
+target/p4-system-14/a42d1.
+
 ## _(2026-10-11)_ — bounded source-byte image construction (P4-SYSTEM.14 a42c)
 
 Extract encode_elf64 as the sole pure owner; legacy write_elf64 constructs then
@@ -619,61 +659,4 @@ controls hold. Final changed-fixture/docs checks and staged/hooks/brief0 require
 Fixed seals/caps/canonical records/CPU status remain unchanged.
 Next fixed invocation/principal/producer binding, closure/aggregate evaluator,
 reviewed collector, measured retention/cases, canonical captures and full policy.
-
-## _(2026-10-11)_ — authenticate retained Sail reference identity (P4-SYSTEM.14 a30)
-
-Fresh full-CI preflight on clean3960e6b completed all five legs rc0, including
-173/17/253 Rust tests and53 smoke-bench arms. This receipt belongs to that
-pre-change milestone; it does not claim full CI on this implementation.
-
-Add matched_gpr_identity.read_reference_identity as a finite authenticated method
-dependency. Validate request role/ID and used candidate fields before I/O, then
-read exactly one immutable pinned descriptor through read_snapshot (64KiB cap).
-Validate raw references schema before D's single mapper; require exactly one root,
-one Sail candidate and no experiments. Match required id/origin/kind/binary/
-binary_sha256 and exact presence/value of release/version/source_commit/asset/
-asset_sha256. Do not hash the whole parent dossier, inspect/open the executable
-cache, launch a process, bind receipts/producers or claim whole-closure currentness.
-Frozen results separate matched/stale/unavailable/refused from underlying pin
-findings; expose detached immutable execution fields only on a current match.
-A matched pin can still yield invalid syntax or stale execution identity.
-
-The first40-test run exposed this new consumer's KeyError assumption (37 errors):
-the established mapper omits absent repeated families. Tools identified the
-complete mapper tail; use get(experiment,[]) without changing the mapper. Schema
-omission also motivated defensive candidate-count access. Assertion-only mutation
-controls use dict.get for optional-result inspection so missing identity fields
-produce intended assertion failures rather than harness KeyErrors. Final40/0/0
-passes normal/optimized; eight omissions lose4/2/5/1/1/1/20/17 assertions in both
-modes, no errors. PROFILE-CONSISTENCY80/0 adds18 outer arms (39 doctrines/885).
-First focused registration correctly refused885 versus869: DERIVED-COUNTS counts
-literal outer calls. Replace the new loop with18 explicit calls, preserving the
-enumerator and all62 old arms; remeasure before accepting the live count.
-Actual on-volume files exercise inclusive caps, pre-read oversized refusal,
-unsafe/missing/changed pins, schema-before-mapping, all fields/presence, descriptive
-metadata, frozen detached results and snapshot reuse after a later path rewrite.
-The new reader owns no artifact mutation; fixture lifetimes clean each test.
-
-Teach complete synthetic root-relative writer/reader/staleness example in the GC
-book; explicitly separate descriptor pins from executable authentication, replay,
-receipt/process attestation, producer ancestry and qualification. Correct a
-missing sentence separator in the touched doctrine description. Existing APIs,
-canonical records, full history receipts and fixed seals/caps remain protected.
-Focused17/sharder12/0/seven books and3038 rendered links/full literal commands
-pass. Before/canonical/contract/history/scope tools rc0 protect243 canonical
-dictionaries/legacy ASTs, all normative method text/all62 previous checker arms,
-1298 other files/modes/Gitlinks and complete old append/task predecessors. The
-first published-receipt diagnostic used the pure heads/new-shards sub-check;
-inspect both owners and use the full partition judge, which refuses the actual
-old shard0241 rc+digest rewrite (MODIFIED ROW). No production archive defect.
-No sharding required; all fixed seals/caps remain unchanged. Next a31
-receipt/invocation/input/producer binding, then closure/aggregate orchestration,
-collector, measured retention/cases, captures and full policy/status consumers.
-
-First COMMIT attempt refuses solely TASK-ACCEPTANCE/SEAM-INTEGRITY: this new
-unit's three ticked boxes used rc0, which does not match the declared rc=0 evidence
-signature. Inspect the exact enforcer regex, correct only this unit's receipts,
-leave all signatures/gates intact and retry hooks. Routine caller/registration/
-receipt lessons explicitly declined for promotion in the owning leaf; existing
-contracts already own them. No failed hook run is claimed as signoff.
 

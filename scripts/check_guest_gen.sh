@@ -241,6 +241,80 @@ PYCODE
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-image 2>&1)"; rc=$?
   arm "RED reviewed source annotations cannot change instructions" "$rc" 1 "$out" "accepted source re-derivation changes assembled image"
 
+  # P4.14 a42d1: complete source/image bytes, metadata-only findings and refusals.
+  out="$(python3 scripts/probe_matched_gpr_source_image.py 2>&1)"; rc=$?
+  arm "GREEN complete source-image normal" "$rc" 0 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 0 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation image-guard 2>&1)"; rc=$?
+  arm "RED source-image image-guard normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 8 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation image-bound 2>&1)"; rc=$?
+  arm "RED source-image image-bound normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation empty-image 2>&1)"; rc=$?
+  arm "RED source-image empty-image normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation complete-equality 2>&1)"; rc=$?
+  arm "RED source-image complete-equality normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 14 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation payload-only 2>&1)"; rc=$?
+  arm "RED source-image payload-only normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 9 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation source-forward 2>&1)"; rc=$?
+  arm "RED source-image source-forward normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 18 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation program-forward 2>&1)"; rc=$?
+  arm "RED source-image program-forward normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 8 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED source-image entry-forward normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 17 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation unavailable-class 2>&1)"; rc=$?
+  arm "RED source-image unavailable-class normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation refusal-class 2>&1)"; rc=$?
+  arm "RED source-image refusal-class normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 20 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation source-fingerprint 2>&1)"; rc=$?
+  arm "RED source-image source-fingerprint normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 2 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation image-fingerprint 2>&1)"; rc=$?
+  arm "RED source-image image-fingerprint normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation source-retention 2>&1)"; rc=$?
+  arm "RED source-image source-retention normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 3 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation frozen-result 2>&1)"; rc=$?
+  arm "RED source-image frozen-result normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation frozen-facts 2>&1)"; rc=$?
+  arm "RED source-image frozen-facts normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation diagnostic-echo 2>&1)"; rc=$?
+  arm "RED source-image diagnostic-echo normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 20 failures / 0 errors; byte correspondence only"
+  out="$(python3 scripts/probe_matched_gpr_source_image.py --mutation broad-unavailable 2>&1)"; rc=$?
+  arm "RED source-image broad-unavailable normal" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py 2>&1)"; rc=$?
+  arm "GREEN complete source-image optimized" "$rc" 0 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 0 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation image-guard 2>&1)"; rc=$?
+  arm "RED source-image image-guard optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 8 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation image-bound 2>&1)"; rc=$?
+  arm "RED source-image image-bound optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation empty-image 2>&1)"; rc=$?
+  arm "RED source-image empty-image optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation complete-equality 2>&1)"; rc=$?
+  arm "RED source-image complete-equality optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 14 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation payload-only 2>&1)"; rc=$?
+  arm "RED source-image payload-only optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 9 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation source-forward 2>&1)"; rc=$?
+  arm "RED source-image source-forward optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 18 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation program-forward 2>&1)"; rc=$?
+  arm "RED source-image program-forward optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 8 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED source-image entry-forward optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 17 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation unavailable-class 2>&1)"; rc=$?
+  arm "RED source-image unavailable-class optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation refusal-class 2>&1)"; rc=$?
+  arm "RED source-image refusal-class optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 20 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation source-fingerprint 2>&1)"; rc=$?
+  arm "RED source-image source-fingerprint optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 2 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation image-fingerprint 2>&1)"; rc=$?
+  arm "RED source-image image-fingerprint optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation source-retention 2>&1)"; rc=$?
+  arm "RED source-image source-retention optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 3 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation frozen-result 2>&1)"; rc=$?
+  arm "RED source-image frozen-result optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation frozen-facts 2>&1)"; rc=$?
+  arm "RED source-image frozen-facts optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation diagnostic-echo 2>&1)"; rc=$?
+  arm "RED source-image diagnostic-echo optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 20 failures / 0 errors; byte correspondence only"
+  out="$(python3 -O scripts/probe_matched_gpr_source_image.py --mutation broad-unavailable 2>&1)"; rc=$?
+  arm "RED source-image broad-unavailable optimized" "$rc" 1 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 1 failures / 0 errors; byte correspondence only"
+
   # P4.14 a42c: bounded source-byte construction and legacy writer access order.
   out="$(python3 scripts/probe_matched_gpr_image.py 2>&1)"; rc=$?
   arm "GREEN source image normal" "$rc" 0 "$out" "MATCHED-GPR-IMAGE: 33 tests / 0 failures / 0 errors; construction only"
