@@ -17,6 +17,7 @@ import matched_gpr_artifacts as F
 import matched_gpr_comparison as C
 import matched_gpr_execution as E
 import matched_gpr_identity as I
+import matched_gpr_image as G
 import matched_gpr_leaf as L
 import matched_gpr_manifest as M
 
@@ -82,7 +83,8 @@ def _identity(record_id, role, path, sha256):
     _require(re.fullmatch(r"[0-9a-f]{64}", sha256) is not None, "invalid declared file digest")
 
 
-def _requests(manifest: M.ManifestCheck, observations) -> tuple[_Request, tuple[_Request, ...]]:
+def _requests(manifest: M.ManifestCheck, observations, *,
+              retain_source_image: bool = False) -> tuple[_Request, tuple[_Request, ...]]:
     plan, pin = manifest.plan, manifest.pin
     _require(isinstance(plan, M.ManifestPlan) and isinstance(pin, A.PinResult),
              "expected an authenticated manifest plan and pin")
@@ -123,11 +125,16 @@ def _requests(manifest: M.ManifestCheck, observations) -> tuple[_Request, tuple[
              ("input", selected.input_id, selected.path, selected.sha256) and
              type(pin.byte_size) is int and 1 <= pin.byte_size <= F.DOCUMENT_BYTES,
              "manifest pin does not match its selected bounded identity")
+    retained_roles = {"reference-identity", "expectation"}
+    if retain_source_image:
+        retained_roles.update({"guest-source", "guest-image"})
     requests = []
     for item in plan.inputs:
-        retain = item.input_id in principal_ids and item.role in {"reference-identity", "expectation"}
+        retain = item.input_id in principal_ids and item.role in retained_roles
         limit = (I.IDENTITY_BYTES if item.role == "reference-identity" and retain else
-                 C.EXPECTATION_BYTES if item.role == "expectation" and retain else L.LEAF_BYTES)
+                 C.EXPECTATION_BYTES if item.role == "expectation" and retain else
+                 G.SOURCE_BYTES if item.role == "guest-source" and retain else
+                 G.IMAGE_BYTES if item.role == "guest-image" and retain else L.LEAF_BYTES)
         requests.append(_Request("input", item.input_id, item.role, item.path, item.sha256,
                                  None, limit, retain, item.input_id in children))
     expected = []
@@ -159,7 +166,8 @@ def _requests(manifest: M.ManifestCheck, observations) -> tuple[_Request, tuple[
 
 def read_declared_files(root: Path, *, manifest: M.ManifestCheck, observations,
                         max_read_bytes: int = MAX_READ_BYTES,
-                        max_snapshot_bytes: int = MAX_SNAPSHOT_BYTES) -> FileSetCheck:
+                        max_snapshot_bytes: int = MAX_SNAPSHOT_BYTES,
+                        retain_source_image: bool = False) -> FileSetCheck:
     """Read one complete declared set once, including the earlier manifest charge.
 
     Both limits must cover the known manifest seed, including its earlier snapshot
@@ -167,7 +175,15 @@ def read_declared_files(root: Path, *, manifest: M.ManifestCheck, observations,
     transient payload while it exists; parsed objects/chunks/copies add RAM. A failure
     ends the batch, drops all payloads and cannot retry inside a reset budget.
     Later path changes require another evaluation; these are individual read facts.
+
+    Opt-in source/image retention uses the builder's 1 MiB/64 KiB caps and reserves
+    another 64 KiB inside the snapshot limit for later reconstruction. This unused
+    room is deducted before new reads, also constraining the earlier manifest peak
+    and transient payloads. retained_bytes excludes it. No reconstruction occurs
+    here; empty authenticated bytes are allowed and need separate content checks.
     """
+    if type(retain_source_image) is not bool:
+        return FileSetCheck("refused", "source/image retention requires a plain boolean")
     if (type(max_read_bytes) is not int or not 0 <= max_read_bytes <= MAX_READ_BYTES or
             type(max_snapshot_bytes) is not int or not 0 <= max_snapshot_bytes <= MAX_SNAPSHOT_BYTES):
         return FileSetCheck("refused", "invalid aggregate read/snapshot byte limits")
@@ -181,7 +197,10 @@ def read_declared_files(root: Path, *, manifest: M.ManifestCheck, observations,
             return FileSetCheck("refused", "unknown manifest disposition")
         return FileSetCheck(manifest.disposition, manifest.reason, manifest_pin=manifest.pin)
     try:
-        seed, requests = _requests(manifest, observations)
+        seed, requests = _requests(manifest, observations, retain_source_image=retain_source_image)
+        reserve = G.IMAGE_BYTES if retain_source_image else 0
+        _require(reserve <= max_snapshot_bytes, "snapshot budget below source/image rebuild reservation")
+        max_snapshot_bytes -= reserve
         _require(manifest.pin.byte_size <= max_read_bytes, "read budget below the authenticated manifest seed")
         _require(manifest.pin.byte_size <= max_snapshot_bytes, "snapshot budget below the authenticated manifest seed")
     except (FileSetError, AttributeError, IndexError, KeyError, TypeError, ValueError) as exc:

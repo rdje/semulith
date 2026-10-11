@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0237 (leaf P4-SYSTEM.14) — retain bounded source and ELF snapshots
+
+- Add explicit plainbool source/image retention to the existing shared ledger. Default15 payloads/API stay exact; opt-in17 uses source1MiB/image64KiB caps and reserves64KiB unused rebuild room before new reads. Seventeen maxima+room15.75MiB fit fixed16MiB; keep128MiB read/seed/terminal-release accounting. Authentication confers no image-validity or qualification credit.
+- 24 controls/16 omissions pass/discriminate normal/O with zero errors; original49/31 results unchanged. Register34 PROFILE arms (424/0; GUEST294/0;39 doctrines1337), complete runnable book example. Full inverses/history/canonical/scope/corpus green; focused17/sharder12/seven books/3144 links/all15 examples pass. Preserve104 prior entries/1341 other files; move whole DEV2901B to0257/CH1431B to0258, real receipt+new-digest rewrites refuse; caps/seals fixed. Final COMMIT. Then d3 authenticated composition; no canonical/CPU change.
+
 ## SEMULITH-P4-0236 (leaf P4-SYSTEM.14) — bind complete source and ELF image bytes
 
 - Compare supplied complete ELF bytes to the sole bounded source reconstruction, including unloaded headers/padding/sections. Frozen metadata-only facts preserve both fingerprints on mismatch; bounded invalid/unavailable findings remain separate. Caller owns authentication, selected context, tool adequacy and aggregate reservation; no source-property/qualification credit.
@@ -633,26 +638,4 @@
 - Real ledger/CPU/canonical/registry/frozen/archives exact; effective96/114 and
   LIVE652 arms/49 chapters/P4 12/18 unchanged. Focused gates/all six books rc=0;
   hooks next. No project push or new approval. Next c27 ATOMIC-MISALIGN.
-
-## SEMULITH-P4-0154 (leaf P4-SYSTEM.13 c26a) — preserve completed task receipts under fixed caps
-
-- Retain six whole completed payloads/81532 B in authenticated archive9; inverse
-  restores exact committed source123960 B/SHA. Archive9 is83418 B; live partition
-  45205 B before new receipt. Earlier parts/kept bytes and all runtime inputs exact.
-- Registry98/effective96/114 unchanged; fixed caps stay. No Rust changes. LIVE
-  unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next.
-- Own stale exceptional-push recovery guidance as next c26b; actual enforcement
-  already requires the recorded approved_push.sh act. No push is performed.
-
-## SEMULITH-P4-0153 (leaf P4-SYSTEM.13 c25) — observe FENCE fields and preservation
-
-- Bind FENCE with61440 field/mode cases and six reservation/cache programs;
-  direct61461/122922, pair61500/123000 with unchanged companions. All GPR/FPR/
-  CSR owners/memory and exact requests observed; ten wrong-table controls and
-  disabled-GPR/missing-binding controls reject.
-- Correct only author stock FENCE locator1.1.6→1.1.7; all canonical inputs,
-  prior96 bindings/core/generated/frozen bytes exact. Independent words/state/
-  full167 corpus match. Rust167/17/214; registry98/effective96/114.
-- LIVE unchanged652 arms/49 chapters/P4 12/18. Focused gates/all six books rc=0; hooks next;
-  c26a bounds task receipts before remaining nine runtime pairs/freeze.
 

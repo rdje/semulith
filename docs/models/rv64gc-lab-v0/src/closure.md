@@ -441,3 +441,120 @@ method evaluator must consume these exact snapshots, check identities/receipts
 and program relationships, compare the complete runs and derive separate
 dispositions. It must keep the existing qualification gate closed until all
 remaining method and policy obligations are satisfied.
+
+## Retain source and ELF bytes for a later check
+
+The same reader accepts `retain_source_image=True`. The flag must be a plain
+Boolean; integers, strings and other truthy values refuse before new artifact
+I/O. Omitting it or passing `False` preserves the fifteen-payload behavior above.
+The opt-in adds the selected `guest-source` and `guest-image` principals, for
+seventeen retained payloads. It uses the public builder's limits: source at most
+1 MiB and complete ELF at most 64 KiB. An oversized selected file refuses before
+reading its payload. A principal also declared as a child still receives one
+read, its stricter role cap and the nested-document check.
+
+Before any new file read, the reader reserves another 64 KiB inside the requested
+snapshot ceiling for a later rebuilt ELF. All retained and transient reads, and
+the earlier manifest peak, must fit the remaining room. The seventeen role maxima
+sum to 15.6875 MiB; adding this reservation gives 15.75 MiB, below the unchanged
+16 MiB ceiling. The unchanged 128 MiB read ledger still charges the earlier
+manifest exactly once. A smaller custom ceiling must cover the reservation plus
+each live payload peak; unused room never appears in `retained_bytes`.
+
+Reservation does not perform a rebuild. The reader authenticates empty source or
+image bytes too; the source/image consumer separately requires nonempty inputs
+and checks content. Authentication, ELF validity, source correspondence, selected
+parent/entry provenance and complete tool adequacy are separate findings. The
+current evaluator still uses the default reader mode; authenticated source/image
+composition is the next owned slice. No qualification follows from opting in.
+Parser objects, chunks and copies add memory beyond these payload limits.
+
+This standalone example builds a small GC image, declares both files and retains
+their authenticated bytes. The other files are deliberately opaque fixtures;
+there is no reference execution or complete method evaluation. All fixture paths
+and temporary storage stay on the repository volume and are removed afterward.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_GUEST_FILES'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import hashlib
+import dossier_sexp as D
+import experiment_verification as V
+import sexp as S
+from matched_gpr_artifacts import encode_dependencies
+from matched_gpr_files import read_declared_files
+from matched_gpr_image import build_guest_image
+from matched_gpr_manifest import read_dependency_manifest
+from probe_matched_gpr_execution import fixture, raw_experiment
+
+output = Path.cwd() / "target/source-image-file-example"
+output.mkdir(parents=True, exist_ok=True)
+with TemporaryDirectory(dir=output) as directory:
+    root = Path(directory)
+    experiment, candidate = fixture()
+    graph = experiment["verification"]
+    source = b"addi x1, x0, 5\nc.addi x1, 1\n"
+    built = build_guest_image(source, program=experiment["program"],
+                              entry=0x80000002)
+    manifest = next(item for item in graph["input"]
+                    if item["role"] == "dependency-manifest")
+    def write(record, payload):
+        path = root / record["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payload)
+        record["sha256"] = hashlib.sha256(payload).hexdigest()
+        if "byte_size" in record:
+            record["byte_size"] = len(payload)
+    for item in graph["input"]:
+        if item is not manifest:
+            payload = (source if item["role"] == "guest-source" else
+                       built.image if item["role"] == "guest-image" else b"opaque")
+            write(item, payload)
+    for item in graph["observation"]:
+        write(item, b"x")
+    child = dict(id="code dependency", role="implementation",
+                 path="source/code.py", sha256="c" * 64)
+    write(child, b"opaque child")
+    write(manifest, encode_dependencies(
+        dict(format_version="matched-gpr-dependencies-v1", input=[child]),
+        path=manifest["path"]))
+    scope = V.Scope("synthetic", frozenset({"sail-riscv"}),
+                    frozenset({"REQ-synthetic"}), frozenset({"OBL-synthetic"}))
+    raw = raw_experiment(experiment, candidate)
+    issues = V.check_experiment(raw, scope)
+    if issues:
+        raise ValueError(issues)
+    canonical = D.references_to_doc([S.Symbol("references"), raw])["experiment"][0]
+    checked = read_dependency_manifest(root, experiment=canonical,
+                                       current_candidate=candidate)
+    def read(**kwargs):
+        return read_declared_files(root, manifest=checked,
+            observations=canonical["verification"]["observation"], **kwargs)
+    default = read()
+    extended = read(retain_source_image=True)
+    print(default.disposition, sum(item.data is not None for item in default.files))
+    print(extended.disposition, sum(item.data is not None for item in extended.files))
+    for role in ("guest-source", "guest-image"):
+        fact = next(item for item in extended.files if item.role == role)
+        print(role, len(fact.data))
+    limit = extended.retained_bytes + 65536
+    exact = read(retain_source_image=True, max_snapshot_bytes=limit)
+    exhausted = read(retain_source_image=True, max_snapshot_bytes=limit - 1)
+    print(exact.disposition, exhausted.disposition, exhausted.retained_bytes)
+    invalid = read(retain_source_image=1)
+    print(invalid.disposition, invalid.reason)
+PY_GUEST_FILES
+python3 scripts/probe_matched_gpr_guest_files.py
+python3 -O scripts/probe_matched_gpr_guest_files.py
+```
+
+It prints `matched 15`, `matched 17`, `guest-source 28`, `guest-image 4320`,
+`matched refused 0`, then `refused source/image retention requires a plain boolean`.
+The 24 controls pass normally and with optimization; all sixteen independent
+omissions fail without harness errors under PROFILE-CONSISTENCY. They cover
+unchanged defaults, selected retention, exact role/read/live limits, the earlier
+manifest and transient peaks, unused rebuild room, one read per file, overlapping
+children, empty authentication, stale/unavailable separation, terminal payload
+release, immutable facts and absence of build/process/write effects. The original
+49 controls and 31 omission outcomes remain unchanged in both modes.

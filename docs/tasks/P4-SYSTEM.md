@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42d2 bounded source/image snapshots, then authenticated composition |
+| 1 | `P4-SYSTEM.14` | `active` | a42d3 authenticated source/image composition, then complete adequacy |
 
 ## Decisions
 
@@ -804,7 +804,7 @@ Fixed caps/seals/canonical/CPU unchanged; no Rust source change/full CI required
 for this ordinary slice. Final docs/hook/hash/brief0/censuses precede d2.
 promotion: declined (bounded complete-byte correspondence and limits live in its owner, controls and book; current method routing only, no new normative policy).
 
-### `.14` a42d2 — retain source/image within the shared ledger (scheduled)
+### `.14` a42d2 — retain source/image within the shared ledger (completed, SEMULITH-P4-0237)
 
 Start clean after d1. Add opt-in bounded source/image snapshots to the existing
 Q owner, preserving default15-payload/API behavior. Account for both before reads;
@@ -812,6 +812,57 @@ existing128MiB artifact-read/16MiB live snapshot budgets and seed charges remain
 Existing15 maxima14.625MiB plus source1MiB/image64KiB =17 maxima15.6875MiB;
 reserve a further64KiB before I/O for temporary reconstruction when composing.
 Verify exact inclusive/refusal boundaries, transient ordering and failure releases.
+
+Owned on clean77c5302d073e44302e86487d7571ab406671a8d0 after all17
+verified/staged/committed/working hashes and modes matched, hooks green, brief0/
+untracked and standard/actual process censuses rc=0. Relevant .14 G-TRACE/
+G-OBLIGATIONS, method/qualified contracts, Knowledge Map, ledger/manifest/leaf/
+execution/comparison/builder APIs and controls plus GC closure/evaluation teaching
+reviewed. Current ownership remains .14; no qualification or CPU gate advance.
+
+Declare additive keyword retain_source_image:bool=False on read_declared_files;
+plain boolean only, checked before new artifact I/O. Default output schema,15
+retained payloads, caps, ordering, failure classifications and all old49/31
+controls/omissions stay unchanged. Opt-in retains the two selected principal
+roles guest-source/guest-image, using the sole builder's SOURCE_BYTES=1MiB and
+IMAGE_BYTES=64KiB constants. No build or semantic comparison occurs in the reader.
+Before any new file I/O, deduct IMAGE_BYTES from the requested snapshot ceiling
+as unused rebuild room, then require the earlier manifest peak to fit as before.
+All transient/retained reads share that reduced ceiling and the unchanged128MiB
+read ledger; failures purge every returned payload and end the batch. Retained
+bytes counts actual returned payload only, excluding unused room. The17 maxima
+15.6875MiB plus64KiB room =15.75MiB, below16MiB. Earlier manifest/transient peaks
+also share the reduced ceiling; parsed objects/chunks/copies are not bounded RAM.
+Empty authenticated source/image remains an authentication fact; the byte-only
+consumer separately refuses empty construction inputs. Preserve one read per
+file, selected overlaps/classification, frozen identities and no source reopening.
+
+Own new normal/O real-file controls and independent omissions for flag/type,
+selected retention, role caps, reservation, seed/transient peaks, inclusive/
+exhausted read/live limits, payload release/frozen facts and no build/process
+effects. Preserve complete prior sources/APIs/probes/checker arms, with a whole
+ledger inverse removing only the declared extension. Preserve canonical340 raw/
+243 mapped forms, original104 history entries, full normative method/book/task
+inverses, fixed caps/seals and otherfile/mode/Gitlinks. Own necessary whole-oldest
+DEV/CH sharding before use. Add literal PROFILE-CONSISTENCY arms only after
+controls discriminate; update runnable bounded GC teaching, focused checks and
+COMMIT postconditions before d3. No full-CI-per-ordinary-slice requirement.
+Verified24 controls and16 omissions normal/O, failures7/1/11/10/9/3/3/7/5/2/3/1/8/1/1/6,
+zero errors. Old49/31 controls/omission counts unchanged. Exact17-maxima payloads
+16449536B plus65536B room fit16515072B; one byte less refuses. Complete ledger/
+default API/legacy library/probe/checker/normative method/closure/task inverses,
+340 raw forms/243 dictionaries,104 prior entries/1341 other files/modes/Gitlinks
+exact normal/O. All216 repaired ELF bytes and167 GC builds/correspondences exact.
+Keep old390 PROFILE arms/add34:424/0; GUEST294/0;39 doctrines1337 re-enumerated.
+Focused17/sharder12/0/seven books/3144 links/all15 complete literal examples and
+normal/print teaching rc=0. Actual old/moved/published receipt+new-digest edits
+refuse; DEV15=14+1/2901B to0257(3134B/567e1b86be36050afc6057591772097bbce64c3bf77259bac946c2abde91be87),
+CH89=87+2/1431B to0258(1668B/6369c69b7b5a72212171f8ceaa2ec5abf36be02162b96883191d82b24e7b1a78);
+50live+210sealed260logical. Only inherited EOF blanks0257:45/0258:27; preserve
+whole entries, ephemeral whitespace exception only. No caps/seals/canonical/CPU/
+qualification change; latest full CI93525ac443 Rust/smoke53/seven books. No Rust
+source change. Final docs/hooks/hash+mode/brief0/censuses precede d3 activation.
+promotion: declined (opt-in ledger behavior and reservation live in their owner, falsifying controls and closure teaching; no new normative policy).
 
 ### `.14` a42d3 — compose authenticated source/image correspondence (scheduled)
 
@@ -920,6 +971,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42d2 — **ROOT CAUSE**: run-controls.py rc=0 normal/O:
+  default pins supplied no source/image bytes; extension boundaries and all16
+  independent omissions discriminate without errors, including reservation.
+- [x] `.14` a42d2 — **ADDRESSED**: run-controls.py rc=0:24 controls,
+  opt-in17 exact snapshots,1MiB/64KiB caps/64KiB unused rebuild room; inclusive
+  read/seed/transient/retained limits, frozen facts and terminal release verified.
+- [x] `.14` a42d2 — **NO REGRESSION**: focused.sh/rendered.py/contract/
+  history/canonical/scope/corpus rc=0 normal/O; old49/31 counts and all legacy
+  sources/arms/method/closure/task exact,104 entries/1341 other files protected;
+  216 ELF/167 pairs,17 focused gates/sharder12/seven books/all15 examples pass.
 - [x] `.14` a42d1 — **ROOT CAUSE**: run-controls.py rc=0 normal/O:
   complete-byte omission loses14 assertions, payload-only omission9; headers,
   unloaded padding, strings/sections and payload must all match the sole rebuild.
@@ -1203,6 +1264,22 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a42d2: Verified24 controls and16 omissions normal/O, failures7/1/11/10/9/3/3/7/5/2/3/1/8/1/1/6,
+zero errors. Old49/31 controls/omission counts unchanged. Exact17-maxima payloads
+16449536B plus65536B room fit16515072B; one byte less refuses. Complete ledger/
+default API/legacy library/probe/checker/normative method/closure/task inverses,
+340 raw forms/243 dictionaries,104 prior entries/1341 other files/modes/Gitlinks
+exact normal/O. All216 repaired ELF bytes and167 GC builds/correspondences exact.
+Keep old390 PROFILE arms/add34:424/0; GUEST294/0;39 doctrines1337 re-enumerated.
+Focused17/sharder12/0/seven books/3144 links/all15 complete literal examples and
+normal/print teaching rc=0. Actual old/moved/published receipt+new-digest edits
+refuse; DEV15=14+1/2901B to0257(3134B/567e1b86be36050afc6057591772097bbce64c3bf77259bac946c2abde91be87),
+CH89=87+2/1431B to0258(1668B/6369c69b7b5a72212171f8ceaa2ec5abf36be02162b96883191d82b24e7b1a78);
+50live+210sealed260logical. Only inherited EOF blanks0257:45/0258:27; preserve
+whole entries, ephemeral whitespace exception only. No caps/seals/canonical/CPU/
+qualification change; latest full CI93525ac443 Rust/smoke53/seven books. No Rust
+source change. Final docs/hooks/hash+mode/brief0/censuses precede d3 activation.
+
 a42d1: Verified24/0/0 and17 omissions normal/O, failures
 8/1/1/14/9/18/8/17/1/20/2/1/3/1/1/20/1 without errors. Complete ELF regions,
 changed source/entry, comment equivalence, exact selected label, input ordering/
@@ -1477,6 +1554,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42d2 | `SEMULITH-P4-0237 (leaf P4-SYSTEM.14): retain bounded source and ELF snapshots` | d3 authenticated composition; full closure/impact/property/provenance pending |
 | `.14` a42d1 | `SEMULITH-P4-0236 (leaf P4-SYSTEM.14): bind complete source and ELF image bytes` | d2 bounded opt-in source/image snapshots, then d3 composition |
 | `.14` a42c | `SEMULITH-P4-0235 (leaf P4-SYSTEM.14): construct bounded GC images from source bytes` | a42d authenticated correspondence within shared budgets |
 | `.14` a42b | `SEMULITH-P4-0234 (leaf P4-SYSTEM.14): repair ELF alignment and compressed flags` | full CI on clean repair, then a42c source/image builder |

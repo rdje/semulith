@@ -1,5 +1,60 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — retain source/image within the shared ledger (P4-SYSTEM.14 a42d2)
+
+Extend the existing declared-file owner with plainbool retain_source_image=False;
+invalid truthy values refuse before new artifact I/O. Default15 payloads, result
+schema, source/image pin-only8MiB caps and all legacy classifications stay exact.
+Opt-in retains both selected principal roles with the sole GC builder constants:
+source1MiB and complete image64KiB. Selected child overlaps still use one strict
+snapshot/classification. Empty source/image authentication remains legitimate
+file evidence, without content-validity or source-correspondence credit. Reader
+performs no image build, source reopen, reference process or path write.
+
+Deduct another64KiB from requested live-snapshot room before any new read, then
+check the earlier manifest peak as before. Reserve is unused room for a later
+rebuild, not returned payload. All retained and transient snapshots share the
+remaining room;17 role maxima16449536B (15.6875MiB) plus65536B =16515072B
+(15.75MiB), within fixed16MiB. Keep128MiB cumulative reads, prior seed charge
+exactly once, conservative failed-read charges and terminal failure release.
+retained_bytes counts actual returned bytes only; parser/chunk/copy RAM remains
+outside these payload counts. Reader does not claim source semantics, selected
+entry provenance, current complete tool adequacy, dependency closure or execution.
+
+24 real-file controls pass normal/O;16 omissions lose7/1/11/10/9/3/3/7/5/2/3/1/8/1/1/6
+assertions without errors in both modes. Real17-maxima buffers fit inclusive
+16515072B; one byte less refuses. Test earlier seed+reserve, transient+reserve,
+returned payload+reserve, exact shared read consumption, per-role pre-read
+oversize refusal, wrong flag types, one read per file, selected child overlaps/
+nested documents, empty authentication, stale/unavailable separation, late
+failure purge, frozen facts, stable bytes after path changes and no build/process/
+legacy-reader/write effects. New test instrument initially expected25 instead
+of actual24 controls; corrected before results. A deliberately omitted retention
+flag exposed len(None) in the new counter assertion; assert both payload types
+first so the omission fails by assertions, not a harness error. Production old
+49 controls/31 omissions retain every original failure count normal/O. Register
+34 literal PROFILE arms only after actual discrimination; PROFILE424/0,
+GUEST294/0;39 doctrines1337 arms re-enumerated, no running-total inference.
+
+Complete original ledger inverse removes only the declared additive extension;
+all prior library/probe/GUEST and PROFILE arms, normative method, closure teaching
+and task bodies preserved. Canonical340 raw forms/243 maps, original104 history
+entries, other-file/mode/Gitlink scope and real receipt+new-digest refusal guards
+owned. Necessary oldest whole DEV/CH entries move verbatim, no published edits,
+cap changes or seal changes. A complete new standalone book example builds and
+authenticates28B source/4320B ELF, shows default15/opt-in17, inclusive reservation/
+refusal and non-Boolean rejection. Other fixture files remain opaque and confer
+no method credit. Focused17/sharder12/0/seven books/3144 links/all15 complete literal examples
+and normal/print teaching rc=0. Full history/inverse/canonical/scope/corpus guards
+pass normal/O:104 old entries/1341 other files/modes/Gitlinks,216 ELF/167 GC pairs.
+DEV2901B to0257(3134B/567e1b86be36050afc6057591772097bbce64c3bf77259bac946c2abde91be87);
+CH1431B/two entries to0258(1668B/6369c69b7b5a72212171f8ceaa2ec5abf36be02162b96883191d82b24e7b1a78).
+50live+210sealed260logical; actual old/moved/published receipt rewrites refuse
+with new digests. Only inherited EOF blanks0257:45/0258:27 receive ephemeral Git
+whitespace exception. No history trimming/cap/seal change. Final docs/hooks/
+verified==staged==committed==working hashes+modes/brief0/censuses before d3. Latest full CI clean93525ac green443 Rust/smoke53/
+seven books; ordinary Python-only slice, no Rust change. Evidence target/p4-system-14/a42d2.
+
 ## _(2026-10-11)_ — bind complete source/image bytes (P4-SYSTEM.14 a42d1)
 
 Use sole public bounded GC builder; require supplied image plainbytes1..64KiB
@@ -619,44 +674,4 @@ only, without rewriting historical bytes or tracked configuration. Staged-byte,
 permanent history/partition hooks and COMMIT postconditions remain mandatory.
 Next a33 property/witness/control/pair and same expected derivation relations,
 then closure/aggregate evaluator, collector/retention/captures/full policy.
-
-## _(2026-10-11)_ — bind authenticated Sail receipts (P4-SYSTEM.14 a31)
-
-Add matched_gpr_receipt.read_run_receipt as one finite dependency of the complete
-method evaluator. Caller first validates raw parent schema/graph and separately
-checks current reference identity. Freeze selected canonical fields before I/O:
-1..8 inputs, exactly4 unique output roles including the receipt,1..11 ordered argv,
-integer exit, exact input/output run membership, one collector, safe unique paths
-and used Sail ID/digest fields. Used context text caps at65536 characters separately
-from the receipt's64KiB byte bound and caller-owned allocation. Eight principal
-roles, fixed invocation, reference-producer version and three-run method relations
-remain separate; a small consistent context grants no coverage credit.
-
-Derive the sole receipt from its run observations; take one bounded authenticated
-observation snapshot, then reuse parse_capture's raw-schema/single mapper. Bind
-run ID/kind/argv/exit, candidate/binary SHA, collector, complete unordered input
-ID/digest inventory and all three output ID/role/path/size/digests. Frozen facts
-retain argv/exit and host/tool provenance; a matched receipt can record a nonzero
-or signal exit. No other declared files or cache/binary are opened, argv is never
-executed, no file is reopened after pinning, and no attestation/qualification is
-inferred. Missing/changed/unsafe bytes remain unavailable/stale/refused separately.
-
-Initial42 controls passed. A deliberate schema-file I/O injection then exposed one
-new wrapper-boundary OSError among43 tests: the pure artifact parser normalizes
-document errors but can propagate tool-file I/O. Keep that public parser intact;
-this authenticated consumer now returns unavailable with the already-matched pin.
-The omission control converts any escaped OSError to an explicit assertion failure.
-Final43/0/0 normal/optimized; eleven omissions1/4/2/2/2/6/2/4/5/1/1 discriminate
-without errors. PROFILE-CONSISTENCY104/0; explicit24 new outer calls preserve the
-literal enumerator, which rederives39 doctrines/909 arms. Teach a full synthetic
-receipt writer/reader/failure/contradictory-argv example; dummy other-file pins are
-explicit and no process is claimed; synthetic failed-run verdict also reads
-REFUSED. Focused17/sharder12/0/seven books/3044 rendered links/full literal
-commands pass; before/canonical/contract/history/scope rc=0 preserve243 canonical
-dictionaries/legacy ASTs/dispatch, entire old method/checker/append/root and1300
-other files. All98 predecessor entries and actual old/published rc+digest rewrite
-controls hold. Final changed-fixture/docs checks and staged/hooks/brief0 required.
-Fixed seals/caps/canonical records/CPU status remain unchanged.
-Next fixed invocation/principal/producer binding, closure/aggregate evaluator,
-reviewed collector, measured retention/cases, canonical captures and full policy.
 

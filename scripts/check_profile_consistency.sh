@@ -1013,6 +1013,76 @@ EOF
   score "RED optimized omitted leaf guard schema-preflight" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-before-map 2>&1)"; rc=$?
   score "RED optimized omitted leaf guard schema-before-map" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  # P4.14 a42d2: opt-in source/image snapshots share the original ledger and rebuild room.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" 2>&1)"; rc=$?
+  score "GREEN normal source/image files controls" "$rc" 0 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation flag-type 2>&1)"; rc=$?
+  score "RED normal source/image files omitted flag-type" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation default 2>&1)"; rc=$?
+  score "RED normal source/image files omitted default" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation forward 2>&1)"; rc=$?
+  score "RED normal source/image files omitted forward" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation retain-source 2>&1)"; rc=$?
+  score "RED normal source/image files omitted retain-source" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 10 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation retain-image 2>&1)"; rc=$?
+  score "RED normal source/image files omitted retain-image" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 9 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation source-cap 2>&1)"; rc=$?
+  score "RED normal source/image files omitted source-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation image-cap 2>&1)"; rc=$?
+  score "RED normal source/image files omitted image-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reserve 2>&1)"; rc=$?
+  score "RED normal source/image files omitted reserve" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reserve-debit 2>&1)"; rc=$?
+  score "RED normal source/image files omitted reserve-debit" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation seed-peak 2>&1)"; rc=$?
+  score "RED normal source/image files omitted seed-peak" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation snapshot-cap 2>&1)"; rc=$?
+  score "RED normal source/image files omitted snapshot-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation read-cap 2>&1)"; rc=$?
+  score "RED normal source/image files omitted read-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation drop-failed-payloads 2>&1)"; rc=$?
+  score "RED normal source/image files omitted drop-failed-payloads" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation immutable-facts 2>&1)"; rc=$?
+  score "RED normal source/image files omitted immutable-facts" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED normal source/image files omitted immutable-result" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reservation-counter 2>&1)"; rc=$?
+  score "RED normal source/image files omitted reservation-counter" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" 2>&1)"; rc=$?
+  score "GREEN optimized source/image files controls" "$rc" 0 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation flag-type 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted flag-type" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation default 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted default" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation forward 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted forward" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation retain-source 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted retain-source" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 10 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation retain-image 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted retain-image" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 9 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation source-cap 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted source-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation image-cap 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted image-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reserve 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted reserve" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reserve-debit 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted reserve-debit" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation seed-peak 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted seed-peak" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation snapshot-cap 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted snapshot-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation read-cap 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted read-cap" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation drop-failed-payloads 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted drop-failed-payloads" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation immutable-facts 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted immutable-facts" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted immutable-result" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_guest_files.py" --mutation reservation-counter 2>&1)"; rc=$?
+  score "RED optimized source/image files omitted reservation-counter" "$rc" 1 "$out" "MATCHED-GPR-GUEST-FILES: 24 tests / 6 failures / 0 errors; fixtures cleaned"
+  # End P4.14 a42d2.
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" 2>&1)"; rc=$?
   score "GREEN normal aggregate declared file set" "$rc" 0 "$out" "MATCHED-GPR-FILES: 49 tests / 0 failures / 0 errors; fixtures cleaned"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation aggregate-limits 2>&1)"; rc=$?
