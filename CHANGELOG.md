@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0012 (leaf LIVE-CONTAINMENT.4) — qualify capacity inputs before authority review
+
+- Reproduce D52 through the public checker: baseline0; failed73 inventory and partial listing+stderr both incorrectly return0 with the green banner. Real HEAD/index/all1397 tracked identities stay exact.
+- Own priority1 repair next, before D51 capacity review. Sync the observed limitation in the book; no checker, cap, authority, archive or CPU change; LIVE routing closure marked Mostly Done for D52.
+
 ## SEMULITH-LC-0011 (leaf LIVE-CONTAINMENT.4) — contain duplicate decision-index summaries
 
 - Compare five summaries with their complete canonical records, then retain targets/types/order with dated topic labels and reader questions. INDEX16379→15656B; source records and D51's affected row stay exact, no cap or LIVE change.

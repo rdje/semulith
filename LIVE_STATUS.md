@@ -13,7 +13,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
 | Project doctrines (39 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 1441 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
-| README policy + routing closure | Done | caps 85 lines / 4,864 B; 39 destinations governed; containment deferred with a trigger |
+| README policy + routing closure | Mostly Done | caps85lines/4864B; 39 routes; D52 failed inventory accepted, LC.4h3 owns repair |
 | mdBook is the review surface | Done | 49 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |

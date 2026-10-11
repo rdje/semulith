@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — qualify capacity inputs before authority review (LIVE-CONTAINMENT.4h2)
+
+D52, priority1, is reproduced on85fe189 through the literal public route checker.
+A narrowly scoped PATH Git facade intercepts only the docs/tasks/ listing;
+every other real read is delegated. Baseline returns0 with empty stderr. A
+status73/empty listing and a status0/one-path listing with stderr both return0
+with the same success banner. Three inventory reads occur per case. The root
+cause is unchecked family_files pipelines: count, aggregate and per-part status
+do not affect verify_routes' bad verdict; cat errors are also suppressed.
+This finite assessment establishes this checker defect, not a whole-enforcer
+counterexample or permission to raise a limit. .4h3 owns the repair and durable
+failure controls before D51 authority/capacity review.
+
+Evidence in target/live-containment/capacity-inputs: assess.py, result.json,
+per-case stdout/stderr/trace and before/after censuses. HEAD/index SHA/all1397
+tracked identities remain exact; the script and facade hashes are pinned.
+The task owner records a complete selective-facade recipe and both outputs.
+Book teaching states the current failure honestly; LIVE routing closure is
+Mostly Done until D52 is repaired. Preserve all prior entries,
+all other tracked bytes/modes and existing limits; focused/book checks at commit.
+
 ## _(2026-10-11)_ — contain duplicate decision-index summaries (LIVE-CONTAINMENT.4h1)
 
 The decisions family had60files/261604B under262144B and INDEX16379/16384B;

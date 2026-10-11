@@ -74,6 +74,22 @@ cat docs/decisions/INDEX.md
 cat docs/decisions/decision_task-tree-per-part-growth.md
 ```
 
+### Capacity evidence must be readable
+
+Before reviewing a family limit, run its public check:
+
+```sh
+bash scripts/check_readme_routes.sh
+```
+
+LC.4h2 recorded D52 on revision85fe189: a controlled Git facade returned either
+status73 with no task-family listing, or status0 with one real path and stderr.
+Both runs still returned0 and printed `README-ROUTING-CLOSURE: ok`. The
+baseline, failure receipts and unchanged real Git state are recorded in
+`docs/tasks/LIVE-CONTAINMENT.md`. An error message beside a success banner is
+not sufficient evidence for a capacity decision. D52's repair is the next slice;
+existing limits remain in force.
+
 ## Local containment contract
 
 The following is the complete locally owned contract. Its adoption note separates
