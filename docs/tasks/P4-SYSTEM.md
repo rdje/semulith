@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | priority1 a42l2 D49 working/index preservation and full-gate replay |
+| 1 | `P4-SYSTEM.14` | `active` | remaining a42 closure/collector/policy adequacy; own the next finite slice |
 
 ## Decisions
 
@@ -446,11 +446,10 @@ Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42j).
 
 Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42k).
 
-### `.14` a42l — preserve published ordinary histories (active)
+### `.14` a42l — preserve published ordinary histories (completed, SEMULITH-P4-0247/0248)
 
-Priority1 D49 remains open. a42l1/0247 contains completed records first;
-a42l2/0248 owns working/index preservation, independent controls normal/O
-and actual full-gate replay. Original12 reader authority stays fixed.
+D49 resolved by a42l2's separate publishing guard and actual full-gate replay.
+a42l1 preserves complete prior records; original12 reader authority stays fixed.
 
 ### `.14` a42l1 — contain completed workflow records (completed, SEMULITH-P4-0247)
 
@@ -496,7 +495,7 @@ modes/brief0/unrestricted census. Full hooks apply; no redundant Rust run for
 this doc-only unit. a42l2 repair follows clean committed state; no push below
 cadence. promotion: declined (existing exact-history containment rules; measured inverses and controls remain in this owned unit).
 
-### `.14` a42l2 — preserve published ordinary histories (proposed, SEMULITH-P4-0248)
+### `.14` a42l2 — preserve published ordinary histories (completed, SEMULITH-P4-0248)
 
 Priority1 D49 repair follows committed a42l1. Add a separate publishing guard
 for published archive Markdown, comparing complete working and proposed-index
@@ -505,6 +504,43 @@ may be added; existing records stay exact. Original closed12 retrieval authority
 and seal remain unchanged. Own independent damaged working/index, omission,
 read-failure and optimization controls, actual full-gate receipt replay, current
 book/toolbox/doctrine teaching, focused checks and COMMIT. No qualification credit.
+
+Owned on clean8237f71 after all9 committed hashes/modes, brief0 and unrestricted
+host census0. D49 primary before-result remains a42k on505dd74: actual full gate0
+with isolated staged part18 receipt3196→3197; actual files/index exact. Read
+published TASK-HISTORY shell, closed12 reader/probe, predecessor guard/control
+patterns, current history/book/doctrine/toolbox and derived-count contracts.
+
+Implement scripts/task_history_preservation.py as a separate publishing guard,
+leaving original reader/descriptor/terminal/probes byte-exact. Public no-argument
+CLI returns0 for both views exact,1 for changed published history,2 when reads
+cannot support a verdict. Closed HEAD/index Git inventories and bounded blob
+reads cover archive Markdown/navigation; failed/stderr/malformed/empty baseline
+reads refuse. Compare complete old bytes and Git modes in index and working
+files; reject missing/changed/nonregular/symlink/off-volume/Git-boundary inputs.
+New archive files may be added; this does not validate their first publication
+or prove historical claims true. All scratch stays under target/p4-system-14/a42l2.
+
+Own first-class scripts/probe_task_history_preservation.py, independent fixtures
+without secondary real Git repos, normal/O and omission controls for each view,
+mode and failed/malformed reads. Integrate two normal/O wrapper arms into the
+existing TASK-HISTORY self-test; retain all46 old controls and original finite12
+reader authority. Re-derive current count/mirrors after registering, updating
+LIVE_STATUS count only if measured; preserve old historical count receipts.
+Actual existing first-class gate probe replays the same part18 edit with scoped
+real Git delegation and isolated index; require full gate rejection naming the
+new index guard, real index/all tracked working identities/proposed index exact,
+owned index residue0, and independently pin both new module hashes before/after.
+
+Update current main-book reading/gate teaching, toolbox and doctrine mirrors;
+keep old bodies/commands byte-exact except explicitly current teaching seams.
+Protect all other tracked code/data/records/modes/Gitlinks, all40 published
+archive files and original seals; no canonical/CPU/qualification change. Existing
+fixed caps and task file96/96 stay fixed. Own any needed whole-oldest DEV/CH
+sharding before use, whole-source inverses/both guards/real receipt+digest
+controls. Focused checks, normal+print/seven books/navigation, actual full-gate
+replay and mandatory COMMIT hooks precede the next slice. Full CI before push;
+no push below cadence. promotion: declined (existing publishing/failed-read doctrine; measured repair and independent controls remain in this leaf).
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -602,6 +638,13 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42l2 — **REPRODUCE / ISSUE**: a42k assessment/result.json rc=0 records actual full gate0 accepting the same isolated staged part18 receipt3196→3197; source/index stayed exact.
+- [x] `.14` a42l2 — **ROOT CAUSE**: proof.py rc=0 retains original46 sealed controls/reader; ordinary archive preservation is a separate publishing obligation. replay-post.py rc=0 names the new index guard on the same counterexample.
+- [x] `.14` a42l2 — **FIX**: task_history_preservation.py normal/O rc=0 checks40 published files/1070409B; probe43/0/0 normal/O, nine omissions6/8/2/1/1/1/1/1/1 assertions, zero errors. TASK-HISTORY48/0.
+- [x] `.14` a42l2 — **ADDRESSED**: replay-post.py rc=0: actual full gate1 rejects staged part18; real index/1392 tracked working identities/proposed index and pinned sources exact, no facade refusal, index residue0. D49 fixed and verified.
+- [x] `.14` a42l2 — **NO REGRESSION**: focused.sh/proof.py/history.py/scope.py/rendered.py rc=0 normal/O where applicable: focused12/sharder12/seven books/3206 links;95 old entries and1380 other files/modes/Gitlinks exact, original12 unchanged.
+- [x] `.14` a42l2 — **LOCKSTEP**: derived-list/mirror/rendered rc=0:1441 total, current docs/LIVE count synced; complete teaching normal+print and all3 literal commands verified. Caps/CPU/canonical/qualification unchanged; promotion declined here; COMMIT applies.
 
 - [x] `.14` a42l1 — **REPRODUCE / ISSUE**: python3 target/p4-system-14/a42l1/proof.py rc=0 reconstructs source130798B; prior verification.json gives book524277B. Fixed caps131072/524288 leave274/11B before ownership; no safe room for D49 repair plan.
 - [x] `.14` a42l1 — **ROOT CAUSE**: python3 target/p4-system-14/a42l1/partition.py rc=0 selects four whole completed designs13508B and three whole book receipts4098B at exact boundaries; current active plans and feature teaching are excluded.
@@ -1027,6 +1070,29 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42l2: actual full gate replay on8237f71 rc=1, names TASK-PRESERVATION index
+changed part18; before a42k/505dd74 gate0. Same33982B source SHA256
+9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59 and
+3196→3197 proposed SHAedbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
+Real index SHA7fbbb196247f7e5244231a86728a11a78554762a4485b1686fc8111ca5de1be8,
+1392 tracked working identities including Gitlink and proposed index exact;
+249scoped reads/115delegations/no facade refusal; owned index residue0.
+Independent source/index/ordinary hashes exact after replay. Guard SHA256
+f217da5aa9bb1b5394e6ca50bf69f565212f1fa562c9b16581c88fdec7f0e097;
+probe SHA3aeec34dc1cea01512692f0311643c95a8d4f29a63094789165baacaa1dcacda;
+unchanged instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
+Final43 controls normal/O rc=0; nine independent omissions lose6/8/2/1/1/1/1/1/1
+assertions, zero errors. An initial blob-identity omission reached a later working
+mismatch error; corrected the control to isolate snapshot identity, retaining
+initial-error log. Initial guessed43 controller count refused actual42; derived
+from loader, then added SHA256 case and re-derived43 before final controls.
+TASK-HISTORY48/0 retains all46 old arms; closed12 reader exact. Real guard
+normal/O0 checks40 published files/1070409B. Derived total1441; only current
+LIVE count changes, CPU/canonical/qualification exact. Final focused12/sharder12/seven books/3206 fresh+actual links and all3 literal
+commands pass; complete current teaching normal+print. All95 prior entries/whole
+heads/manifest/seals and1380 other tracked files/modes/Gitlinks exact normal/O.
+D49 fixed/verified; COMMIT applies. Evidence target/p4-system-14/a42l2.
 
 a42l1: proof.py normal/O rc=0: complete e10b83a task130798B SHA256
 93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d and
@@ -1509,6 +1575,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42l2 | `SEMULITH-P4-0248 (leaf P4-SYSTEM.14): preserve published ordinary task history` | remaining a42 closure/collector/policy adequacy; own next finite slice on clean state |
 | `.14` a42l1 | `SEMULITH-P4-0247 (leaf P4-SYSTEM.14): contain completed workflow records before D49 repair` | priority1 a42l2 published ordinary working/index preservation and actual full-gate replay |
 | `.14` a42k | `SEMULITH-P4-0246 (leaf P4-SYSTEM.14): measure staged ordinary-history gate protection` | priority1 a42l D49 preservation repair, then remaining a42 adequacy |
 | `.14` a42j | `SEMULITH-P4-0245 (leaf P4-SYSTEM.14): retain the repaired handoff census during scaffold sync` | actual ordinary-part protection assessment, then remaining a42 adequacy |

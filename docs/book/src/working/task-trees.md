@@ -119,15 +119,30 @@ These instructions stay in the book because mdBook rewrites external Markdown
 links to HTML files that it does not generate. The build resolver runs after
 includes, preserving labels, examples and canonical source files.
 
+The publishing guard compares all HEAD archive Markdown and navigation files
+with both staged and working bytes and Git modes:
+
+```sh
+python3 scripts/task_history_preservation.py
+python3 scripts/probe_task_history_preservation.py
+```
+
+The first exits0 for exact preservation,1 for changed records,2 when it cannot
+judge. Failed Git reads, malformed responses, unsafe paths and unavailable
+inputs refuse. The second runs43 controls; `python3 -O` runs the same controls
+with optimization. New files may be added. This checks preservation, not first
+publication or historical truth; corrections belong in new records. The sealed
+reader still owns only its original12 files; a future seal needs its own transition.
+
 Use a new owned output directory to test the full gate:
 
 ```sh
-python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42k/replay
+python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42l2/replay
 ```
 
 Exit0 marks a completed measurement; `gate_rc` is the gate verdict.
-The real index/worktree must stay exact. A42k's altered receipt passed;
-a42l owns repair.
+The real index/worktree must stay exact. A42k's altered receipt passed
+before the publishing guard. A42l2's same staged edit is rejected (`gate_rc=1`).
 
 ### Preserve completed task receipts and live development history
 

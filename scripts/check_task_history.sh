@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # TASK-HISTORY: the approved finite capture, original identities and navigation stay frozen.
 # Reader never invokes Git; this gate also compares the committed descriptor and runs controls.
+# A separate publishing check preserves archived Markdown in both index and working views.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)" || exit 2
 cd "$ROOT" || exit 2
@@ -12,7 +13,13 @@ self_test() {
       printf 'TASK-HISTORY self-test HARNESS: arm requires case, rc and reason\n' >&2
       fail=$((fail+1)); return
     fi
-    out="$(python3 scripts/probe_task_history.py --case "$1" 2>&1)"; rc=$?
+    case "$1" in
+      ordinary-normal)
+        out="$(python3 scripts/probe_task_history_preservation.py 2>&1)"; rc=$? ;;
+      ordinary-optimized)
+        out="$(python3 -O scripts/probe_task_history_preservation.py 2>&1)"; rc=$? ;;
+      *) out="$(python3 scripts/probe_task_history.py --case "$1" 2>&1)"; rc=$? ;;
+    esac
     if [ "$rc" -eq "$2" ] && printf '%s' "$out" | grep -qF "$3"; then
       pass=$((pass+1))
     else
@@ -67,6 +74,8 @@ self_test() {
   arm "links-green" 0 "incoming history path/anchor resolves"
   arm "links-anchor" 1 "unretained history link anchor"
   arm "links-include" 1 "sealed narrative used as live include"
+  arm "ordinary-normal" 0 "43 tests / 0 failures / 0 errors"
+  arm "ordinary-optimized" 0 "43 tests / 0 failures / 0 errors"
   printf 'TASK-HISTORY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
@@ -85,4 +94,5 @@ if [ -n "$tracked" ]; then
 else
   python3 scripts/task_history_archive.py || exit $?
 fi
+python3 scripts/task_history_preservation.py || exit $?
 python3 scripts/check_task_history_links.py

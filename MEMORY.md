@@ -18,13 +18,15 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-11`, `SEMULITH-AC-0063`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: P4-SYSTEM.14 a42l2/0248 priority1 D49 published ordinary-history
-  working/index preservation, independent controls and actual full-gate replay.
-  Activate on committed clean state; preserve original12 reader authority.
-- in_flight_uncommitted: none after a42l1/0247 COMMIT. Seven whole records
- 17606B retained in ordinary part19; complete source inverses/28 damage controls
-  normal/O, all99 old history entries and1382 protected files exact. Focused12/
-  sharder12/seven books/3206 links and normal+print passed. D49 remains open.
-  Evidence target/p4-system-14/a42l1. Book520841/524288B; task files96/96.
-  Full containment adoption remains LC.4; latest full CI3e5a3ea; no push below cadence.
+- next_action: resume P4-SYSTEM.14 a42's remaining closure/collector/policy
+  adequacy obligations. Read current public contracts and own the next finite
+  slice on committed clean state. Fixed task-file capacity96/96 remains LC.4's inventory.
+- in_flight_uncommitted: none after a42l2/0248 COMMIT. D49 fixed/verified:
+  actual full gate1 rejects the same staged part18 receipt accepted before repair.
+  Real index/1392 tracked identities/proposed index and source hashes exact,
+  residue0;43 controls normal/O, nine omissions discriminate with zero errors.
+  Original46 controls/reader exact; TASK-HISTORY48/0, derived1441. Focused12/
+  sharder12/seven books/3206 links,95 prior entries and1380 protected files exact.
+  Evidence target/p4-system-14/a42l2/replay/result.json. No CPU/qualification credit;
+  fixed caps unchanged; full containment adoption stays LC.4. No push below cadence.
 - blockers: none. Archive seal LC0006 complete; full containment adoption remains.
