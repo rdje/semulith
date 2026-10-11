@@ -780,57 +780,138 @@ EOF
   score "RED optimized omitted receipt guard collector-role" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
   # P4-SYSTEM.14 a32: pure execution bindings, never complete method credit.
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" 2>&1)"; rc=$?
-  score "GREEN normal fixed execution bindings" "$rc" 0 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 0 failures / 0 errors; synthetic only"
+  score "GREEN normal fixed execution bindings" "$rc" 0 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 0 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation budget 2>&1)"; rc=$?
-  score "RED normal omitted execution guard budget" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 6 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard budget" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation family-counts 2>&1)"; rc=$?
-  score "RED normal omitted execution guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 8 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 8 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation reference-pin 2>&1)"; rc=$?
-  score "RED normal omitted execution guard reference-pin" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 3 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard reference-pin" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 3 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation run-reference 2>&1)"; rc=$?
-  score "RED normal omitted execution guard run-reference" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard run-reference" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation repeat-edge 2>&1)"; rc=$?
-  score "RED normal omitted execution guard repeat-edge" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 3 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard repeat-edge" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 3 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation spurious-repeat 2>&1)"; rc=$?
-  score "RED normal omitted execution guard spurious-repeat" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 2 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard spurious-repeat" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation output-ownership 2>&1)"; rc=$?
-  score "RED normal omitted execution guard output-ownership" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard output-ownership" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixed-argv 2>&1)"; rc=$?
-  score "RED normal omitted execution guard fixed-argv" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 44 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard fixed-argv" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 44 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation repeat-selection 2>&1)"; rc=$?
-  score "RED normal omitted execution guard repeat-selection" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 2 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard repeat-selection" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation control-expectation 2>&1)"; rc=$?
-  score "RED normal omitted execution guard control-expectation" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard control-expectation" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation control-producer 2>&1)"; rc=$?
-  score "RED normal omitted execution guard control-producer" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard control-producer" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation reference-inputs 2>&1)"; rc=$?
-  score "RED normal omitted execution guard reference-inputs" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted execution guard reference-inputs" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
+  score "RED normal omitted execution guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixture-argv-cleanup 2>&1)"; rc=$?
+  score "RED normal omitted execution guard fixture-argv-cleanup" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" 2>&1)"; rc=$?
-  score "GREEN optimized fixed execution bindings" "$rc" 0 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 0 failures / 0 errors; synthetic only"
+  score "GREEN optimized fixed execution bindings" "$rc" 0 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 0 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation budget 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard budget" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 6 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard budget" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation family-counts 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 8 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 8 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation reference-pin 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard reference-pin" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 3 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard reference-pin" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 3 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation run-reference 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard run-reference" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard run-reference" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation repeat-edge 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard repeat-edge" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 3 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard repeat-edge" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 3 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation spurious-repeat 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard spurious-repeat" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 2 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard spurious-repeat" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation output-ownership 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard output-ownership" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard output-ownership" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixed-argv 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard fixed-argv" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 44 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard fixed-argv" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 44 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation repeat-selection 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard repeat-selection" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 2 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard repeat-selection" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation control-expectation 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard control-expectation" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard control-expectation" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation control-producer 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard control-producer" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard control-producer" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation reference-inputs 2>&1)"; rc=$?
-  score "RED optimized omitted execution guard reference-inputs" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 47 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted execution guard reference-inputs" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
+  score "RED optimized omitted execution guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_execution.py" --mutation fixture-argv-cleanup 2>&1)"; rc=$?
+  score "RED optimized omitted execution guard fixture-argv-cleanup" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
+  # P4-SYSTEM.14 a33: declared method relations and assertion-safe fixture controls.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" 2>&1)"; rc=$?
+  score "GREEN normal declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED normal omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 9 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation gpr-only 2>&1)"; rc=$?
+  score "RED normal omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-budget 2>&1)"; rc=$?
+  score "RED normal omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-register 2>&1)"; rc=$?
+  score "RED normal omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-runs 2>&1)"; rc=$?
+  score "RED normal omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-property 2>&1)"; rc=$?
+  score "RED normal omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-mutation 2>&1)"; rc=$?
+  score "RED normal omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-intent 2>&1)"; rc=$?
+  score "RED normal omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-observed 2>&1)"; rc=$?
+  score "RED normal omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-version 2>&1)"; rc=$?
+  score "RED normal omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-selection 2>&1)"; rc=$?
+  score "RED normal omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-consumes 2>&1)"; rc=$?
+  score "RED normal omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-common 2>&1)"; rc=$?
+  score "RED normal omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-endpoints 2>&1)"; rc=$?
+  score "RED normal omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-sharing 2>&1)"; rc=$?
+  score "RED normal omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
+  score "RED normal omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-version-cleanup 2>&1)"; rc=$?
+  score "RED normal omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" 2>&1)"; rc=$?
+  score "GREEN optimized declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 9 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation gpr-only 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-budget 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-register 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-runs 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-property 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-mutation 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-intent 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-observed 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-version 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-selection 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-consumes 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-common 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-endpoints 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-sharing 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-version-cleanup 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

@@ -317,9 +317,11 @@ Python modes; GUEST-GEN runs all controls. These results confer no canonical
 capture, execution or CPU acceptance credit. Bounded expectation/trace evaluation
 and authenticated orchestration remain the next implementation steps.
 
-Pure [execution binding](references.md#binding-the-declared-sail-invocations) now checks
+Pure [execution binding](retained-method.md#binding-the-declared-sail-invocations) now checks
 principal inputs, the binary-pinned reference and exact three-run argv. It does
 not authenticate those declarations or replace the complete method evaluator.
+[Witness/control/derivation/pair bindings](retained-method.md#binding-witness-control-derivation-and-actual-pairs)
+likewise preserve failed recorded outcomes as data, without method credit.
 
 ## Bounded three-run byte comparison
 
@@ -397,8 +399,8 @@ It prints `satisfied ['AGREE', 'AGREE', 'DIVERGE']`. All 52 tests and fourteen
 independent omissions run under GUEST-GEN in normal/optimized Python, including
 the inclusive payload and 4096-boundary limits. Complete input-closure and
 aggregate retained/read-budget evaluation remains pending. Retained
-[reference identity](references.md#authenticating-a-retained-reference-identity) and
-[receipt binding](references.md#authenticating-and-binding-a-process-receipt) have
+[reference identity](retained-method.md#authenticating-a-retained-reference-identity) and
+[receipt binding](retained-method.md#authenticating-and-binding-a-process-receipt) have
 bounded authenticated checks. Complete evaluation is followed
 by reviewed fresh collection and canonical captures. PROFILE-CONSISTENCY still
 refuses v1 qualification; this byte unit does not lift that boundary.

@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a33 property/control/derivation/pair relations, then closure/evaluation and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a34 bounded dependency closure, then aggregate evaluation and captures |
 
 ## Decisions
 
@@ -954,23 +954,114 @@ print and literal command checks pass. No production defect inferred from these
 harness/fixture mistakes. DECLINED promotion: routine fixture/schema validation,
 complete-predecessor ownership and wait-for-build rules already govern them.
 
-### `.14` a33 — bind first-method property/control/derivation/pairs (scheduled, SEMULITH-P4-0224)
+### `.14` a33 — bind first-method property/control/derivation/pairs (completed, SEMULITH-P4-0224)
 
-Start clean after a32 COMMIT. Review complete a19 property/witness/control and
-producer-pair requirements, public canonical schema/graph and frozen execution
-plan. Declare a finite pure relationship API before code. Exact one property,
-GPR-only observation kind and witness within parent budget; exactly one typed
-control naming sole baseline/control/property and sole mutant expectation;
-coherent failed recorded outcomes remain data, never success. Require exactly
-two actual reference/expected pairs with declared sharing and uncertainty, no
-producer-count independence inference. Review public expected-producer contract
-to bind same derivation with explicit mutant relation without inventing ancestry
-or a new parallel mapper/format. Counts before maps, immutable results, normal/O
-and independent omissions, complete GC book examples and qualification limits.
-GC reference source29424B/32768 leaves3344B: own a natural teaching chapter
-partition if this slice needs more room; preserve whole prior teaching and links.
-Then closure/aggregate evaluator/gates, collector, measured retention/cases,
-canonical captures and full policy/status. Keep fixed caps/seals/CPU state.
+Owned on clean483014b after a32 all-hooks/brief0/actual ps+lsof censuses rc=0,
+before code. Review a19 typed witness/control/producer/bounds/result clauses,
+canonical references schema/scoped graph, public frozen execution and byte APIs,
+GC policy and existing teaching. Current task remains P4-SYSTEM.14; no pivot.
+
+Add pure bind_relations(experiment,current_candidate), first reusing public
+bind_execution and then bounding own collections before maps: one property,
+one control, two pairs. Require sole GPR-change observation kind, typed witness
+within parent budget and canonical x1..31. Bind control to the sole baseline,
+control run/property and mutant expectation. First-method intent must be DIVERGE;
+coherent observed AGREE/REFUSED remains record data, not method success. Recheck
+control observed verdict against the selected run; no stored word earns success.
+
+Reuse existing producer version/input edges and typed control baseline/mutation
+as the explicit declared mutant relation: the two expected producers have equal
+nonempty versions, each includes its own selected expectation, no external
+candidate, inputs within its run and identical other input IDs. No new field,
+mapper or ancestry inference. This establishes declared relation only; actual
+expected-code/dependency currentness and sole RV64 value mutation remain separate.
+Bind exactly two actual reference/expected pair endpoints, unique pair IDs and
+shared IDs equal to actual declared input intersection. Preserve subsystem,
+assessment/evidence/consequence as bounded frozen declarations, without treating
+an assessment string or producer count as independently verified ancestry.
+
+Return detached immutable execution/witness/control/declared-derivation/pair facts.
+Do not traverse/copy obligation IDs here: scope/adequacy remain caller/policy
+owners. Bound every used text to65536 characters, used producer input IDs1..8,
+shared IDs0..7 and singleton control/property selections. Whole parent/request
+allocation belongs future orchestrator. No artifact I/O/process/comparison/full
+qualification. Test complete raw-schema/scoped graph positive, all missing/extra/
+wrong target/version/input/pair/typed witness/control inconsistencies, failed
+recorded processes, immutable aliases, partial-scope limits and no I/O. Normal/O
+and singular omitted-predicate controls, literal PROFILE-CONSISTENCY registration,
+full runnable GC book examples and full old source/history/task/method inverses.
+
+Owned defect D33-ISOLATION (priority now, blocks signoff): reproduce with a32
+--mutation family-counts: after input/extra assertion skips restoration, later
+observation/run/producer cases all fail on invalid input record. A33 reproduces
+same pattern plus an empty-property StopIteration after count removal. Positive
+production guards still pass/refuse as intended; inflated/cascaded omission
+failure counts are not independent controls. Repair every temporary restoration
+in both new probes using try/finally, add valid surplus-record controls and
+normalize selected iteration failure in the new API. Rerun both full normal/O
+mutation matrices; update only a32's affected literal oracle/current teaching
+counts, preserving historical receipts verbatim. Own previous probe changes in
+this slice; production a32 API must stay byte-exact. Verify each subcase's named
+fixture remains isolated and publish before/after failure reasons/counts. Then
+close this defect with verification rather than merely recording it.
+
+GC reference29424B/32768 leaves3344B: own a natural retained-method teaching
+chapter partition if this slice's examples exceed that room, moving complete
+old sections byte-verbatim and updating every internal/normal/print link. DEV
+48378B/49152 leaves774B: own measured whole-entry publication through published
+sharder if this slice crosses the ceiling; fixed old seals/caps and receipt edits
+must remain protected. No canonical capture/store/policy/CPU advance. Next a34
+authenticated dependency closure and aggregate method orchestration, then gates,
+reviewed collector, measured retention/cases/captures and full policy/status.
+
+Acceptance: mutations.py/execution-isolated.log rc=0; new39/0/0 and repaired
+execution48/0/0 normal/O. Fifteen relation omissions9/5/6/6/4/4/4/1/2/5/2/2/1/4/4;
+twelve execution omissions6/8/3/1/3/2/1/44/2/1/1/1; each adds two cleanup mutants1/1,
+all errors0. Profile170/0 and literal DERIVED-COUNTS39/975; focused17/sharder12/0/
+seven books/rendered.py rc=0,3068 links/all four literal blocks/normal+print.
+Before/canonical/contract/history/scope/book_partition rc=0 protect243 canonical
+dictionaries/1302 other files, full method/old checker/task/append predecessors.
+All101 old entries exact. DEV actual pre-change48378B (late a32 EOF receipt added
+158B after earlier48220 measurement), leaves774B; initial new head51115B. Published
+sharder moves two whole2649B entries:24=22+2, immediate head48466B;0243 is2882B/
+80ae4edf4ef30e27edc63288331a00ccd7d6ae5d14e64dd8178550c789971b56;35 live+210 sealed=
+245 logical shards. Actual newly moved receipt and already-published0242 count
+plus updated digest rewrites refuse. No seals/caps/canonical/CPU/qualification
+change. Sole staged whitespace finding is0243 EOF line44, inherited exact; close census
+and use only ephemeral -blank-at-eof, without historical/configuration rewrites.
+Staged hashes/hooks/brief0/actual job censuses required before next unit.
+
+D33-ISOLATION fixed and verified: before.py rc=0 runs the new forced-assertion
+health control on exact committed483014b probe and gets1failure/0errors. Repaired
+health controls pass; independent unsafe post-assertion cleanup placement mutants
+each yield1failure/0errors normal/O. Raw production omission totals happened to
+remain unchanged; later named fixtures now test their own selected fields. No
+old receipts edited. The new local API normalizes missing selected iteration
+under count omission; valid surplus property/control cases also discriminate.
+DECLINED promotion: these fixes implement existing assertion-safe control and
+bounded caller/partition contracts; ownership and current commands live here/
+toolbox/GC teaching. No new architectural claim or independent ancestry inferred.
+
+GC new teaching4709B exceeded former3344B room. Move complete21128B old identity/
+receipt/execution sections to retained-method.md, changing only current47→48-test
+oracle, plus explicit harness correction/new relations. Whole prior references/
+evidence/navigation inverse verified; all previous literal examples rerun. New
+chapter26464B, references8679B/evidence30652B, all under32768. Full source/method/
+canonical/history guards and fixed caps intact.
+
+### `.14` a34 — bounded dependency closure (scheduled, SEMULITH-P4-0225)
+
+Start clean after a33 COMMIT. Review full a19 principal/manifest closure, hidden
+nested/self prohibition, source/program/input relation, old/new impact and exact
+8MiB-leaf/128MiB-authenticated/16MiB-snapshot aggregate bounds, plus public anchored
+pin/snapshot and bounded manifest/identity/receipt/comparison/binding APIs. Define
+one safe finite dependency-closure unit before code; split closure planning,
+authentication and aggregate orchestration into named owners if needed rather
+than growing one slice unsafely. No second mapper, pin-then-reopen or success
+inference from stored words. Own real positive/stale/missing/unsafe/hidden-nesting/
+limit controls and complete GC examples, then integrate aggregate evaluator and
+gates. Collector/retention/cases/captures/full policy follow. Keep fixed seals,
+caps, canonical data and CPU/qualification status until verified work warrants it.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -1068,6 +1159,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a33 — **ROOT CAUSE**: before.py rc=0; closed483014b lacks relation
+  binder, generic graph/execution accepts wrong expected version/other input;
+  new binder refuses. Exact old probe fails new fixture-isolation control1/0.
+- [x] `.14` a33 — **ADDRESSED**: mutations.py/execution-isolated.log rc=0;
+  relation39/0/0/execution48/0/0 normal/O,15/12 production omissions plus2/2
+  assertion-safe cleanup regressions discriminate; profile170/0/975 literal arms.
+- [x] `.14` a33 — **NO REGRESSION**: canonical/contract/history/scope/rendered/
+  book_partition.py rc=0; focused17/sharder12/0/seven books/3068 links/all4 literal
+  blocks pass;243 dictionaries/1302 other files/101 old entries protected;
+  whole21128B teaching and published0243 partition exact, real receipts refuse.
 
 - [x] `.14` a32 — **ROOT CAUSE**: before.py rc=0; closed97b06a1 lacks execution
   binder, unchanged generic schema/graph accepts wrong argv/version as declared
@@ -1206,6 +1308,17 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a33: before/canonical/contract/mutations/history/scope/rendered/book_partition.py
+rc=0;39/0/0 relations and48/0/0 execution normal/O;15/12 production omissions and
+2/2 cleanup controls all fail without errors; profile170/0/975 literal arms.
+Focused17/sharder12/0/seven books/3068 links/all four literal commands pass.
+Complete prior method/checker/task/append/teaching and243 dictionaries/1302 other
+files/101 entries exact. DEV51115→48466 after two whole2649B entries published0243,
+2882B/80ae4edf4ef30e27edc63288331a00ccd7d6ae5d14e64dd8178550c789971b56;24=22+2,
+35 live+210 sealed245logical. Actual receipt+digest edits refuse; D33-ISOLATION
+fixed with exact old-probe RED/current GREEN/unsafe-cleanup REDs. COMMIT checks
+next; fixed caps/seals/canonical/qualification/CPU unchanged.
+
 a32: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
 47/0/0 normal/O; twelve omissions6/8/3/1/3/2/1/44/2/1/1/1, profile130/0/935 literal
 arms; focused17/sharder12/0/seven books/3050 links/full commands pass. Whole old
@@ -1302,6 +1415,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a33 | `SEMULITH-P4-0224 (leaf P4-SYSTEM.14): bind declared Sail method relations` | a34 bounded dependency closure, aggregate evaluator/gates and captures |
 | `.14` a32 | `SEMULITH-P4-0223 (leaf P4-SYSTEM.14): bind declared Sail execution inputs and argv` | a33 property/control/derivation/pair relations, closure/evaluation and captures |
 | `.14` a31 | `SEMULITH-P4-0222 (leaf P4-SYSTEM.14): bind authenticated Sail process receipts` | a32 fixed invocation/principal/producer binding, closure/evaluation and captures |
 | `.14` a30 | `SEMULITH-P4-0221 (leaf P4-SYSTEM.14): authenticate retained Sail reference identity` | a31 receipt/invocation/input/producer binding, closure/evaluation, collector/captures |
@@ -1322,6 +1436,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a33 (SEMULITH-P4-0224): declared relations39/0/0, repaired execution48/0/0; D33-ISOLATION fixed and cleanup regressions; profile170/0/975 arms; focused/books/history/source/teaching protection pass, published0243 exact, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a32 (SEMULITH-P4-0223): pure execution bindings47/0/0/twelve omissions, profile130/0/935 arms; focused/books/source/history protection pass; published0242 whole-entry partition exact, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a31 (SEMULITH-P4-0222): bounded authenticated receipt binding43/0/0/eleven omissions, profile104/0/909 arms; focused/books/history/source protection pass, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a30 (SEMULITH-P4-0221): authenticated retained identity40/0/0/eight omissions, profile80/0/885 arms; focused/books/history/source protection pass; fresh3960e6b full-CI preflight green, qualification/CPU unchanged.

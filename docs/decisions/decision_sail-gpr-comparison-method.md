@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — byte/identity/receipt/execution checks exist; closure/collector/captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a32, `SEMULITH-P4-0210`–`0223`; GC policy/public Sail adapter
+- **Status:** `active` — byte/identity/receipt/method bindings exist; closure/collector/captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a33, `SEMULITH-P4-0210`–`0224`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -13,11 +13,11 @@ Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
-optional witness/baseline grammar and generic witness-kind/budget/baseline-edge
-checks exist; they do not execute the method. A26 adds bounded receipt/manifest
-syntax. A28 exposes immutable first differences after full-budget validation;
-a29 adds byte comparison/decimal refusals; a30 authenticates identity;
-a31 binds receipts; a32 binds execution inputs/argv. Complete closure/orchestration and collection remain pending. Production qualification stays closed.
+optional witness/baseline grammar and generic scoped checks exist. A26 validates
+receipt/manifest syntax; a28 exposes full-budget immutable differences; a29 adds
+bounded byte comparison/decimal refusals; a30 authenticates identity; a31 binds
+receipts; a32 binds execution; a33 binds declared method relations. Complete
+closure/orchestration and collection remain pending. Qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.

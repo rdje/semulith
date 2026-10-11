@@ -18,12 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a33/0224: bind property/witness/control/pair and
-  same expected-derivation relations; then closure/aggregate evaluator/gates,
-  collector/retention/captures/policy. A32 execution binding47/0/0/12 omissions,
-  profile130/0/935 literal arms; focused17/sharder12/0/seven books/3050 links.
-  Published0242 lossless; fixed seals/caps/canonical/CPU state unchanged. Full CI
-  on clean3960e6b passed all five legs; ordinary focused checks cover a32.
-- in_flight_uncommitted: none. Complete COMMIT/brief0/handoff before selecting
-  a33; GC reference29424B needs a natural partition if its teaching grows.
+- next_action: `P4-SYSTEM.14` a34/0225: bound dependency closure, then aggregate
+  evaluator/gates, collector/retention/cases/captures/full policy. A33 relations
+  39/0/0 and repaired execution48/0/0 normal/O,15/12 omissions+2/2 cleanup REDs;
+  profile170/0/975 arms, focused17/seven books/3068 links/all4 literal examples.
+  D33-ISOLATION fixed;0243 whole-entry publication and natural GC chapter verified.
+  Full CI clean3960e6b green; qualification/seals/caps/canonical/CPU unchanged.
+- in_flight_uncommitted: none. Complete COMMIT/brief0/handoff before selecting a34.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

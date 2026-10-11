@@ -166,7 +166,8 @@ class ExecutionTests(unittest.TestCase):
                              ("binary_sha256", "A" * 64), ("binary_sha256", "a" * 64 + "\n")):
             with self.subTest(field=field, value=value):
                 original = self.candidate[field]; self.candidate[field] = value
-                self.result("refused"); self.candidate[field] = original
+                try: self.result("refused")
+                finally: self.candidate[field] = original
 
     def test_family_counts_refuse_before_indexing(self):
         for family in ("input", "observation", "run", "producer"):
@@ -175,16 +176,44 @@ class ExecutionTests(unittest.TestCase):
                     original = self.graph[family]
                     self.graph[family] = original[:-1] if change == "missing" else original + [None]
                     # A bad excess element cannot be visited before the count refusal.
-                    self.result("refused", "method requires")
-                    self.graph[family] = original
+                    try: self.result("refused", "method requires")
+                    finally: self.graph[family] = original
+
+    def test_failed_subcases_restore_count_and_argv_fixtures(self):
+        families = ("input", "observation", "run", "producer")
+        expected_counts = dict(zip(families, (9, 12, 3, 3)))
+        pristine, _ = fixture()
+        for method, expected in (
+            ("test_family_counts_refuse_before_indexing", [(family,) for family in families for _ in range(2)]),
+            ("test_each_argv_position_is_fixed", [(kind, n) for kind in M.RUN_KINDS for n in range(11)]),
+        ):
+            observed = []
+            def injected(experiment, candidate):
+                graph = experiment["verification"]
+                if "counts" in method:
+                    observed.append(tuple(family for family in families
+                                          if len(graph[family]) != expected_counts[family]))
+                else:
+                    differences = [(run["kind"], n) for run, original in zip(graph["run"], pristine["verification"]["run"])
+                                   for n, (actual, wanted) in enumerate(zip(run["argv"], original["argv"])) if actual != wanted]
+                    observed.append(differences[0] if len(differences) == 1 else ("cascaded", len(differences)))
+                return M.ExecutionCheck("refused", "injected assertion failure")
+            result = unittest.TestResult()
+            with mock.patch.object(M, "bind_execution", side_effect=injected): ExecutionTests(method).run(result)
+            self.assertEqual(result.errors, [])
+            self.assertEqual(len(result.failures), len(expected))
+            self.assertEqual(observed, expected, "a failed subcase contaminated a later fixture")
 
     def test_family_type_and_duplicate_ids_refuse(self):
         for family in ("input", "observation", "run", "producer"):
             with self.subTest(family=family):
-                original = self.graph[family]; self.graph[family] = {}; self.result("refused")
-                self.graph[family] = deepcopy(original)
-                self.graph[family][-1]["id"] = self.graph[family][0]["id"]
-                self.result("refused", "duplicate"); self.graph[family] = original
+                original = self.graph[family]
+                try:
+                    self.graph[family] = {}; self.result("refused")
+                    self.graph[family] = deepcopy(original)
+                    self.graph[family][-1]["id"] = self.graph[family][0]["id"]
+                    self.result("refused", "duplicate")
+                finally: self.graph[family] = original
 
     def test_invalid_record_and_id_refuse(self):
         self.graph["input"][0] = None; self.result("refused", "record")
@@ -197,14 +226,16 @@ class ExecutionTests(unittest.TestCase):
         for field, value in (("path", "../source"), ("sha256", "B" * 64), ("sha256", "b" * 64 + "\n")):
             with self.subTest(field=field):
                 original = self.graph["input"][0][field]; self.graph["input"][0][field] = value
-                self.result("refused"); self.graph["input"][0][field] = original
+                try: self.result("refused")
+                finally: self.graph["input"][0][field] = original
 
     def test_observation_paths_digests_sizes_and_roles_refuse(self):
         for field, value in (("path", "a//trace"), ("sha256", "b" * 63), ("byte_size", -1),
                              ("byte_size", True), ("byte_size", "0"), ("role", "other")):
             with self.subTest(field=field, value=value):
                 original = self.graph["observation"][0][field]; self.graph["observation"][0][field] = value
-                self.result("refused"); self.graph["observation"][0][field] = original
+                try: self.result("refused")
+                finally: self.graph["observation"][0][field] = original
 
     def test_input_output_path_aliases_refuse(self):
         self.graph["observation"][0]["path"] = self.graph["input"][0]["path"]
@@ -259,7 +290,9 @@ class ExecutionTests(unittest.TestCase):
     def test_spurious_repeat_edges_refuse(self):
         for run in (self.base, self.control):
             with self.subTest(kind=run["kind"]):
-                run["repeat_of"] = "base"; self.result("refused", "spurious"); del run["repeat_of"]
+                run["repeat_of"] = "base"
+                try: self.result("refused", "spurious")
+                finally: del run["repeat_of"]
 
     def test_repeat_expectation_must_match_baseline(self):
         self.repeat["input_ids"][-1] = "mutant-expectation"
@@ -296,7 +329,8 @@ class ExecutionTests(unittest.TestCase):
             for n in range(11):
                 with self.subTest(kind=run["kind"], position=n):
                     original = run["argv"][n]; run["argv"][n] = "changed"
-                    self.result("refused", "fixed public invocation"); run["argv"][n] = original
+                    try: self.result("refused", "fixed public invocation")
+                    finally: run["argv"][n] = original
 
     def test_argv_type_count_order_and_empty_arguments_refuse(self):
         original = list(self.base["argv"])
@@ -312,7 +346,8 @@ class ExecutionTests(unittest.TestCase):
             with self.subTest(role=role):
                 item = next(item for item in self.graph["input"] if item["role"] == role)
                 original = item["path"]; item["path"] = "inputs/changed"
-                self.result("refused", "fixed public invocation"); item["path"] = original
+                try: self.result("refused", "fixed public invocation")
+                finally: item["path"] = original
 
     def test_argv_uses_current_binary(self):
         self.candidate["binary"] = "reference/bin/another-sail"
@@ -336,6 +371,10 @@ MUTATIONS = {
     "control-expectation": ('selected["control"]["expectation"].input_id != baseline["expectation"].input_id,', 'True,'),
     "control-producer": ('expected_ids["control"] != expected_ids["baseline"],', 'True,'),
     "reference-inputs": ('set(reference_inputs) <= common_ids,', 'True,'),
+    "fixture-count-cleanup": ('                    finally: self.graph[family] = original\n',
+                              '                    finally: pass\n                    self.graph[family] = original\n'),
+    "fixture-argv-cleanup": ('                    finally: run["argv"][n] = original\n',
+                             '                    finally: pass\n                    run["argv"][n] = original\n'),
 }
 
 
@@ -343,15 +382,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mutation", choices=MUTATIONS)
     args = parser.parse_args()
+    test_class = ExecutionTests
     if args.mutation:
         global M
-        source = Path(M.__file__).read_text(); before, after = MUTATIONS[args.mutation]
+        filename = __file__ if args.mutation.startswith("fixture-") else M.__file__
+        source = Path(filename).read_text(); before, after = MUTATIONS[args.mutation]
         if source.count(before) != 1: raise SystemExit("mutation seam is not singular")
-        module = types.ModuleType("mutated_gpr_execution"); module.__file__ = M.__file__
+        module = types.ModuleType("mutated_gpr_execution"); module.__file__ = filename
         sys.modules[module.__name__] = module
-        exec(compile(source.replace(before, after), M.__file__, "exec"), module.__dict__)
-        M = module
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(ExecutionTests)
+        exec(compile(source.replace(before, after), filename, "exec"), module.__dict__)
+        if args.mutation.startswith("fixture-"): test_class = module.ExecutionTests
+        else: M = module
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(test_class)
     result = unittest.TextTestRunner(verbosity=1).run(suite)
     print(f"MATCHED-GPR-EXECUTION: {result.testsRun} tests / {len(result.failures)} failures / "
           f"{len(result.errors)} errors; synthetic only")

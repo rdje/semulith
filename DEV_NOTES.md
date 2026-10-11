@@ -1,5 +1,51 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — bind declared Sail method relations (P4-SYSTEM.14 a33)
+
+Add pure matched_gpr_relations.bind_relations after raw-schema/scoped graph, reusing
+public bind_execution. Before maps require property1/control1/pair2; bind sole
+GPR-only witness/budget/x1..31 and typed control baseline/run/property/mutant edges.
+Expected control intent is DIVERGE; coherent observed AGREE/REFUSED remains data,
+not method success. Bind expected producers' nonempty equal versions, own selected
+expectation and identical other selected input IDs, with no external candidate.
+This is the declared mutant relation; actual derivation/code/sole value change
+remain authenticated/comparison owners. Bind exactly two actual reference/expected
+pairs and declared input intersections; retain bounded subsystem/assessment/
+evidence/consequence as frozen data. No ancestry inference from strings/counts.
+No obligation traversal, artifact I/O, execution or full qualification credit.
+
+Initial37 tests pass. Count-guard removal exposes an empty-property StopIteration;
+normalize selected-context iteration failure and add well-formed surplus records.
+The trace also reveals assertion-skipped restoration; reproduce the same defect
+in committed a32 family-count controls: later families see the leftover invalid
+input. Own D33-ISOLATION now. Repair all temporary field/family/argv/version/edge
+restorations with try/finally in both probes. Add forced-assertion subcase-isolation
+checks and independent cleanup mutants that restore the old unsafe post-assertion
+placement. Each cleanup mutant loses exactly one health assertion, no errors;
+ordinary omission counts retain the same totals but now target isolated fixtures.
+Production a32 API remains byte-exact. New probe39/0/0, fifteen relation omissions
+9/5/6/6/4/4/4/1/2/5/2/2/1/4/4; existing execution48/0/0, twelve omissions
+6/8/3/1/3/2/1/44/2/1/1/1. Both add two cleanup mutants1/1 and pass normal/O.
+Register40 new literal calls, deriving39 doctrines/975 arms (profile170/0).
+Keep old history receipts intact; current teaching/oracles explain repaired scope.
+
+GC reference29424B leaves3344B; new teaching exceeds that room. Move complete
+identity/receipt/execution sections into a natural retained-method chapter,
+preserving prior examples, update all links and add full raw-schema/scoped relation
+example and partial credit limits. Measure DEV48378B plus this entry; publish only
+oldest whole entries using the published sharder, no seal extension/cap increase.
+Measured51115B→48466B immediately after two whole2649B entries moved:24=22+2.
+Shard0243 is2882B/80ae4edf4ef30e27edc63288331a00ccd7d6ae5d14e64dd8178550c789971b56;
+35 live+210 sealed=245 logical. Focused17/sharder12/0/seven books/3068 links/all
+four literal commands and normal/print checks pass. Before/canonical/contract/
+history/scope/book_partition rc=0 preserve243 dictionaries/1302 other files/101
+old entries, all old normative/source/task/history and21128B moved teaching.
+Actual moved/published receipt+updated digest edits refuse. D33-ISOLATION fixed:
+new health control fails exact old committed probe, passes repaired controls;
+no historical receipt rewritten. Staged hashes/hooks/brief0/handoff required.
+Next authenticated closure/aggregate evaluator/gates, collector/retention/captures/
+full policy. Canonical records, qualification and CPU state unchanged.
+
 ## _(2026-10-11)_ — bind declared Sail execution inputs and argv (P4-SYSTEM.14 a32)
 
 Add pure matched_gpr_execution.bind_execution over the existing raw-schema/scoped-
@@ -656,43 +702,4 @@ history/archive/LIVE populations remain byte-exact. No CPU axis closes; P4 13/18
 Next shared schema/mapping/validator, then bounded retention and fresh qualification.
 Evidence target/p4-system-14/a12; all scratch on the repository volume.
 promotion: decision_qualified-matched-experiment-contract.md owns the complete declaration.
-
-## _(2026-10-10)_ — enforce experiment identity edges (P4-SYSTEM.14 a11)
-
-Before adding GC records, four controls against the byte-identical production
-prefix reproduce false GREENs: a single undeclared model, conflicting experiments
-sharing one ID, repeated model entries and an independence pair naming one model
-twice. Original46 pass/4 fail. Scoped git -S pins experiment metadata tob8d09f5
-and pair logic to147de76. The candidate-ID set existed, but experiment IDs and
-model membership/distinctness were not checked; pair length counted entries.
-
-Track experiment IDs, check every model against candidate identities, reject
-repetition and require two distinct candidates per independence pair. Fifty
-controls pass, and five current dossiers remain GREEN. Restore each missing
-predicate separately:49/1 each for its intended control. The repeated-model
-control also requires its own reason when a separate bad-pair rule refuses.
-The reference schema grammar AST is identical; remove only its stale39arm comment.
-Correct three residual SEAM current-corpus descriptions; no historical-box claim.
-
-Focused13/seven books/protected byte census pass; model-book examples and error
-names explain the exact metadata boundary. Derive39doctrines/732arms/38routes.
-All runtime/canonical/profile/frozen/fixture/history/archive data and existing
-ceilings remain unchanged. CPU incomplete7axes/P4 13/18; this does not establish
-adequacy or independence. Next structured GC runs/controls/producers, then policy/
-status/mirrors. Evidence target/p4-system-14/a11, repository-volume only.
-promotion: declined (the existing graph contract, permanent controls and book retain this repair).
-
-## _(2026-10-10)_ — expose temporary controls in the review book (LIVE-CONTAINMENT.4e)
-
-LC0007's book paragraph names the detailed reference path without including its
-mode matrix or limitations. The director reviews the book, so this leaves that
-new workflow insufficiently reviewable there. Anchor the canonical reference body,
-include it directly in the existing chapter and add five runnable positive examples.
-Whole old reference bytes remain after removing only anchors/examples; replacing
-the new include with the original paragraph reconstructs the complete old chapter.
-Seven books build; rendered first/last limits and all five commands are present.
-Focused8/protected scope1269unchanged rc=0. No implementation,
-profile, archive, cap or LIVE change; full containment adoption still remains.
-Evidence target/live-containment/locality-book, on the repository volume.
-promotion: declined (the existing canonical reference and direct include retain the lesson).
 

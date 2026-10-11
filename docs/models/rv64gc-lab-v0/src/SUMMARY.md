@@ -5,6 +5,7 @@
 [Gaps and laboratory choices](gaps.md)
 [From sources to checked behavior](methodology.md)
 [References and comparison limits](references.md)
+[Retained Sail method checks](retained-method.md)
 [Evidence policy](policy.md)
 [Current processor gate](evidence.md)
 [Historical dossier wording](history.md)

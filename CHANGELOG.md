@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0224 (leaf P4-SYSTEM.14) — bind declared Sail method relations
+
+- Bind finite witness/control/declared-derivation/actual-pair relations over the existing validated graph and execution plan; frozen partial facts, honest failed-control data, no I/O/ancestry/comparison/qualification inference.
+- Fix D33-ISOLATION: failed subcases skipped fixture restoration in a32/new a33 probes. Use finally, permanent forced-assertion isolation controls and four independent cleanup regressions, each one failure/no errors. Execution48/0/0 and relations39/0/0 pass normal/O; all twelve/fifteen production omissions discriminate. Add40 literal arms (39 doctrines/975, profile170/0).
+- Move21128B prior teaching naturally, preserving examples; publish two whole2649B DEV entries as0243,24=22+2 exact. Focused17/sharder12/0/seven books/3068 links/all four literal commands and full inverses pass;243 dictionaries/1302 other files/101 entries protected. Fixed seals/caps/canonical/CPU state unchanged.
+
 ## SEMULITH-P4-0223 (leaf P4-SYSTEM.14) — bind declared Sail execution inputs and argv
 
 - Add pure bounded principal/run/output/reference-binary bindings and exact eleven-item Sail argv; immutable plans, no artifact I/O or execution/full-method credit. Property/control/pair/derivation semantics remain next; coherent failed exits/verdicts remain data.
