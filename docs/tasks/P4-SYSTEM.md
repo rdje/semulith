@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a38 aggregate budget ledger, then closure evaluator/gates and captures |
+| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a38, then a39 byte consumers/evaluator and captures |
 
 ## Decisions
 
@@ -875,18 +875,112 @@ captures/full policy follow. No full aggregate credit from this finite helper.
 D37-DECLINE-MARKER: first commit hook refuses the prose-only decline; all project
 checks pass, sole breach LESSON-PROMOTION. Record its exact required token/reason
 in this owned leaf, verify staged gate, then retry all hooks; no commit was made.
-### `.14` a38 — aggregate authenticated closure and method budgets (scheduled, SEMULITH-P4-0229)
+### `.14` a38 — aggregate authentication and snapshot budgets (completed, SEMULITH-P4-0229)
 
-Start clean after a37 COMMIT. Own a single ledger/orchestrator before loops for
-aggregate authenticated project-file128MiB and retained snapshot16MiB budgets,
-using exact manifest/principal overlap once and explicit per-file bounds. Reuse
-one authenticated read per selected file and released leaf inspection payloads;
-distinguish payload accounting/parsed-copy RAM. Define complete closure/current
-source/program/image and byte/receipt/identity/method composition obligations,
-splitting further finite units when needed. Preserve all failed-record data and
-unsupported/stale/unavailable/refused findings; keep blanket qualification closed
-until every method requirement and independent omission gate exists. Full CI at
-that foundational milestone; collector/retention/cases/captures/full policy next.
+Owned on clean ee8805d after a37 all hooks/21 committed hashes/brief0/standard
+and actual censuses, before code. Review a19 bounded-evaluation/flat-union,
+public ManifestCheck/Plan and anchored reader contracts, execution observation
+bindings, byte-comparison input caps and GC closure teaching. Finite API:
+matched_gpr_files.read_declared_files(root,*,manifest,observations,
+max_read_bytes=128MiB,max_snapshot_bytes=16MiB). Caller first validates raw parent
+schema/scoped graph and obtains the public manifest check. Preserve its failed/
+unsupported findings with no new I/O; a success requires its exact matched pin
+and frozen plan. This authenticates a declared file set, not closure adequacy,
+source/program/image relationships, observed comparisons or method qualification.
+
+Before any new I/O, validate/freeze all used records:1..64 distinct children,
+9..73 unique union inputs, exactly nine consistent principals, exactly twelve
+observations selected by the three frozen runs/four roles each, unique IDs/paths
+and no input/output alias. Bound counts before maps/iteration; preserve arbitrary
+nonempty manifest child IDs. Require the union to equal principals plus child
+IDs and exact principal identity overlaps once. Seed aggregate read accounting
+from the already-authenticated manifest size1..64KiB and match its kind/ID/path/
+SHA to the selected manifest; do not reopen it. Limits must be exact integers
+in0..128MiB/0..16MiB before any new read; refuse a budget below that known seed.
+
+Use one public anchored read per remaining distinct file. Identity64KiB,
+expectations1MiB each, raw traces4MiB each, receipts/stdout/stderr64KiB each;
+other principals/children use explicit8MiB bounds. Principal guest/source/image/
+config/collector/adapter files need pin-only reads unless also selected children.
+Retain only identity/expectations and twelve observations. Every child needs
+snapshot-based public format classification, including a principal overlap;
+reject disguised nested documents and preserve unavailable schema tools. Reuse
+F.is_dependencies_document, never L's reader or a reopen/parallel parser.
+Process transient child snapshots before retained snapshots; release transient
+bytes before the next read. The reader cap is the minimum of its per-file bound,
+remaining aggregate read budget and (for any snapshot, including transient)
+remaining retained-payload budget. Zero still permits only empty payloads.
+
+Check matched pin identity/size and snapshot payload consistency before content
+use. Successful read charge is its actual authenticated size. Any failure stops
+new I/O; charge a failed/inconsistent reader call its entire admitted cap as a
+conservative consumed-byte upper bound, since the public pin API need not report
+partial consumption. No retries can reset the experiment budget. A later content
+failure has already-known matched-byte charge. Preserve partial immutable pin/
+classification facts but drop all retained payloads on failure. Return immutable
+file facts and counters, separate authenticated-byte totals/read-budget charges/
+retained payload. No exact process-RAM or cross-file atomic-currentness claim;
+parse objects/copies remain additional memory and later path changes require
+another evaluation. Offline binary cache/processes are not accessed unless a
+file is explicitly declared as a required project dependency.
+
+Own actual on-volume complete synthetic declared-file fixtures, cap inclusivity/
+zero/custom/invalid limits, aggregate exhaustion before excess consumption,
+transient-first peak accounting, exact-overlap single reads, stale/missing/unsafe/
+partial/cleanup failures, no further reads after failure, payload/metadata
+consistency, raw-schema-first nested classification/tool failures and immutable
+results/context. Normal/O and independent omitted guards must discriminate
+without errors. Own focused/source/canonical/method/history/scope/book/live/
+doctrine checks, measured whole-entry publication and COMMIT. Fixed caps/seals/
+canonical/CPU status unchanged. promotion: declined (existing bounded-reader/raw-schema/single-mapper/history rules apply; current contract belongs in method/book/toolbox).
+
+Initial actual-file smoke passes22 files/430 authenticated bytes/89 retained,
+with independent disk-size accounting. Initial41-test probe has one failure:
+its self-manifest case drops the original child and therefore hits the earlier
+union-membership refusal. Fix only that instrument by retaining the original
+child and adding manifest self; no green credit before corrected normal/O runs.
+
+D38-SEED-SNAPSHOT-PEAK (blocking draft defect): the actual public manifest
+reader retained217B before the draft file-set helper accepted max_snapshot_bytes=0
+and returned matched when all other snapshot payloads were empty. Root cause:
+read seed is charged, but its already-used snapshot peak is omitted from the
+new peak-budget preflight. Before source640697ecd50b6a1be0d7a1b6886b31d0c16e2b4201ccb82c4d57214ff337cbe3;
+actual on-volume seed-before diagnostic records217/0/matched. Initial47 controls/
+thirty omissions pass normal/O but do not establish this missing whole-evaluation
+boundary. Own requiring both aggregate limits to cover the known manifest seed
+before any new I/O. Its released bytes do not subtract from current live payload
+room, but its earlier peak must fit. Add permanent below-seed/zero and inclusive
+seed-peak controls plus independent omitted-seed-peak mutation. Enlarge the
+retained-bound fixture above its seed so it tests the intended later boundary;
+zero cannot match a method whose mandatory manifest is nonempty. Teach the peak
+versus final retained/cumulative-read distinction explicitly. No default cap
+change, complete-closure or qualification credit; resolve before registration.
+
+Verified: D38-SEED-SNAPSHOT-PEAK resolved before registration. before.py rc=0
+normal/O: exact old draft loses3 assertions/no errors. Repaired49/0/0 normal/O;
+31 omissions14/2/3/6/4/3/2/1/2/2/1/2/8/2/1/4/1/2/3/10/6/12/4/11/1/3/1/1/1/13/2, all fail/no errors. PROFILE284/0,
+39 doctrines/1107 literal arms. Actual134217728B inclusive matches; one extra
+byte refuses after exactly134217728B consumed+seed/charged, returning0 payload.
+Focused17/sharder12/0/seven books/3090 links/all8 literal examples pass; complete
+old checker/method/closure/evidence inverses/340 raw parses/types/243 mappings
+exact. DEV51263→47923,18=16+2/3340B into0248 (3573B/
+92fadf9f73eeb4f58ba5374c647da6e25bdbb3b3645b21d0b5f06bb7d7090141),
+40live+210sealed250logical. History/scope rc=0:100 old entries/1319 other files
+and whole predecessor heads exact; original/moved/published real receipt edits
+with updated digests refuse. Fixed caps/seals/canonical/CPU unchanged. COMMIT
+hooks/brief0/censuses mandatory, then full CI on the clean milestone before a39.
+No complete closure adequacy, source/program/image or qualification credit.
+
+### `.14` a39 — compose authenticated byte consumers and method evaluation (scheduled)
+
+Start clean after a38 COMMIT. Consume its one-read snapshot bundle; expose/compose
+public byte-level identity/receipt checks without reopening files. Bind the exact
+same frozen execution/relations and run/input/output identities into comparison;
+keep record/comparison/method dispositions separate and failed controls as data.
+Define complete source/program/image/closure-adequacy and impact obligations in
+finite owned units; qualification stays closed until every requirement and its
+independent omission gate exists. Full CI at the foundational composition
+milestone. Reviewed collector/retention/cases/captures/full policy/status follow.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -984,6 +1078,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a38 — **ROOT CAUSE**: seed-before/before.py rc=0; actual manifest
+  snapshot217B omitted from custom0 peak preflight; draft matched empty later
+  payloads. Exact old source loses3 new assertions normal/O without errors.
+- [x] `.14` a38 — **ADDRESSED**: mutations.json/profile-final-self.log rc=0;
+  49/0/0 normal/O,31 omissions fail/no errors; PROFILE284/0/1107 arms. Actual
+  128MiB inclusive/plus-one control consumes at most134217728B and drops failed payloads.
+- [x] `.14` a38 — **NO REGRESSION**: contract/canonical/history/scope/rendered.py
+  rc=0; focused17/sharder12/0/seven books/3090 links/all8 examples; complete old
+  source/teaching/history inverses/100 prior entries/1319 other files exact,
+  340 raw parses/types/243 mappings unchanged; actual receipt+digest edits refuse.
+  Caps/seals/canonical/CPU unchanged; full CI after clean milestone COMMIT.
 
 - [x] `.14` a37 — **ROOT CAUSE**: before.py rc=0 normal/O; old binder checks
   outer manifest only; new leaf API absent. Draft name-only rule falsely rejects
@@ -1175,6 +1281,22 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a38: Verified: D38-SEED-SNAPSHOT-PEAK resolved before registration. before.py rc=0
+normal/O: exact old draft loses3 assertions/no errors. Repaired49/0/0 normal/O;
+31 omissions14/2/3/6/4/3/2/1/2/2/1/2/8/2/1/4/1/2/3/10/6/12/4/11/1/3/1/1/1/13/2, all fail/no errors. PROFILE284/0,
+39 doctrines/1107 literal arms. Actual134217728B inclusive matches; one extra
+byte refuses after exactly134217728B consumed+seed/charged, returning0 payload.
+Focused17/sharder12/0/seven books/3090 links/all8 literal examples pass; complete
+old checker/method/closure/evidence inverses/340 raw parses/types/243 mappings
+exact. DEV51263→47923,18=16+2/3340B into0248 (3573B/
+92fadf9f73eeb4f58ba5374c647da6e25bdbb3b3645b21d0b5f06bb7d7090141),
+40live+210sealed250logical. History/scope rc=0:100 old entries/1319 other files
+and whole predecessor heads exact; original/moved/published real receipt edits
+with updated digests refuse. Fixed caps/seals/canonical/CPU unchanged. COMMIT
+hooks/brief0/censuses mandatory, then full CI on the clean milestone before a39.
+No complete closure adequacy, source/program/image or qualification credit.
+
+
 Verified: before/contract/canonical/history/scope/rendered.py rc=0; both owned
 D37 defects closed.50/0/0 normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2,
 no errors. Legacy36 bodies exact and bound omission3/0 normal/O. PROFILE220/0,
@@ -1324,6 +1446,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a38 | `SEMULITH-P4-0229 (leaf P4-SYSTEM.14): authenticate the declared file set within shared budgets` | full CI on clean milestone, then a39 byte consumers/evaluator and captures |
 | `.14` a37 | `SEMULITH-P4-0228 (leaf P4-SYSTEM.14): inspect one authenticated dependency leaf` | a38 aggregate budget ledger, then closure evaluator/gates and captures |
 | `.14` a36 | `SEMULITH-P4-0227 (leaf P4-SYSTEM.14): contain completed method-unit designs` | a37 bounded leaf inspection and aggregate evaluator/gates |
 | `.14` a35 | `SEMULITH-P4-0226 (leaf P4-SYSTEM.14): normalize shared-reader refusals` | full CI on clean repair, then a36 leaf inspection |

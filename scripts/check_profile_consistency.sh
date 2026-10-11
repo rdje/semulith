@@ -1013,6 +1013,134 @@ EOF
   score "RED optimized omitted leaf guard schema-preflight" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-before-map 2>&1)"; rc=$?
   score "RED optimized omitted leaf guard schema-before-map" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" 2>&1)"; rc=$?
+  score "GREEN normal aggregate declared file set" "$rc" 0 "$out" "MATCHED-GPR-FILES: 49 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation aggregate-limits 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard aggregate-limits" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 14 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-budget 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard seed-budget" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-snapshot-peak 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard seed-snapshot-peak" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation snapshot-consistency 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard snapshot-consistency" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-count 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard observation-count" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation execution-counts 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard execution-counts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation child-identities 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard child-identities" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation union-identities 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard union-identities" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation union-membership 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard union-membership" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation principal-identity 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard principal-identity" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-selection 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard manifest-selection" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-seed 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard manifest-seed" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-selection 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard observation-selection" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-unique 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard observation-unique" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-size 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard observation-size" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation output-alias 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard output-alias" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation read-cap 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard read-cap" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation snapshot-cap 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard snapshot-cap" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-charge 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard seed-charge" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 10 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation failed-charge 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard failed-charge" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation stop-after-failure 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard stop-after-failure" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 12 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation drop-failed-payloads 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard drop-failed-payloads" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation transient-first 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard transient-first" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation transient-release 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard transient-release" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation nested-classification 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard nested-classification" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard immutable-result" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation immutable-facts 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard immutable-facts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation context-freeze 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard context-freeze" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-reopen 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard manifest-reopen" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 13 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_files.py" --mutation legacy-pin 2>&1)"; rc=$?
+  score "RED normal omitted file-set guard legacy-pin" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" 2>&1)"; rc=$?
+  score "GREEN optimized aggregate declared file set" "$rc" 0 "$out" "MATCHED-GPR-FILES: 49 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation aggregate-limits 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard aggregate-limits" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 14 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-budget 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard seed-budget" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-snapshot-peak 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard seed-snapshot-peak" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation snapshot-consistency 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard snapshot-consistency" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-count 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard observation-count" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation execution-counts 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard execution-counts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation child-identities 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard child-identities" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation union-identities 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard union-identities" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation union-membership 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard union-membership" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation principal-identity 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard principal-identity" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-selection 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard manifest-selection" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-seed 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard manifest-seed" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-selection 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard observation-selection" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-unique 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard observation-unique" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation observation-size 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard observation-size" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation output-alias 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard output-alias" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation read-cap 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard read-cap" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation snapshot-cap 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard snapshot-cap" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation seed-charge 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard seed-charge" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 10 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation failed-charge 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard failed-charge" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation stop-after-failure 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard stop-after-failure" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 12 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation drop-failed-payloads 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard drop-failed-payloads" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation transient-first 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard transient-first" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation transient-release 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard transient-release" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation nested-classification 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard nested-classification" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard immutable-result" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation immutable-facts 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard immutable-facts" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation context-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard context-freeze" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation manifest-reopen 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard manifest-reopen" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 13 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation legacy-pin 2>&1)"; rc=$?
+  score "RED optimized omitted file-set guard legacy-pin" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
