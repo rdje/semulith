@@ -115,6 +115,9 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         relations = B.bind_relations(experiment, candidate)
         if relations.disposition != "matched":
             return EvaluationCheck(relations.disposition, "relations: " + relations.reason, record)
+        program = str(experiment["program"])
+        if not 1 <= len(program) <= 65536:
+            raise ValueError("parent program outside 1..65536 characters")
         execution = relations.plan.execution
         graph = experiment["verification"]
         # The public relation/execution owners counted 9 inputs/12 outputs/3 runs
@@ -170,6 +173,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                       for binding, receipt in zip(execution.runs, receipts))
     try:
         comparison = C.compare_unit(instructions=execution.instructions, witness=relations.plan.witness,
+            program=program,
             baseline_expectation=_payload(files, "input", execution.baseline_expectation.input_id),
             control_expectation=_payload(files, "input", execution.control_expectation.input_id),
             baseline=run_bytes[0], repeat=run_bytes[1], control=run_bytes[2])

@@ -53,7 +53,7 @@ analysis.
 
 The shared reader checks the declared flat dependency set, including disguised
 nested manifests. This establishes the declared bytes at the check, not that the
-set covers every relevant dependency. Parent-program/source/image correspondence,
+set covers every relevant dependency. Source/image correspondence,
 complete closure adequacy, old/new impact, collector provenance and the full
 source/risk/feature policy remain mandatory work. The evaluator deliberately
 does not turn a successful comparison into a successful complete method.
@@ -224,6 +224,81 @@ the public byte owner correctly returned `comparison=None` plus a process-refusa
 reason. The corrected control checks that representation and the separate valid
 record/failed evaluation. No implementation success was credited from the error.
 
-Full CI follows the clean composition commit. Complete adequacy, reviewed fresh
+Full CI passed on the clean composition milestone. Complete adequacy, reviewed fresh
 collection, retention/case/capture declarations and full policy/status derivation
 remain subsequent owned work. No canonical capture or CPU acceptance changes here.
+
+## Bind the parent program identifier
+
+The evaluator now freezes the parent experiment's `program` before artifact reads,
+normalizing an accepted mapped string to a plain value. For a supported rule, a value outside 1–65,536
+characters refuses before the manifest read. Unknown rules remain `unsupported`
+before this method-specific bound applies. Both authenticated expectation
+snapshots must name that exact program, even when their two labels agree with
+each other. Case, prefixes and whitespace are significant; the checker does not
+infer a path from a basename. Unsupported expectation flags do not excuse a
+contradictory program identifier.
+
+The public `compare_unit` accepts an optional `program` keyword for this binding.
+When supplied, it requires a plain string within the same character bound before
+payload parsing, then checks both validated, singly mapped expectations. Omitted
+or `None` context preserves the existing pure byte-unit API. The evaluator always
+supplies the frozen context. This creates no second expectation loader or artifact
+reopen, and does not change the fixed artifact read/snapshot budgets.
+
+Identifier equality is one adequacy obligation. It does not establish that the
+pinned source assembles to the pinned image, that the image corresponds to a
+source-grounded property, or that the dependency closure and collector are
+adequate. Those checks remain mandatory subsequent work. Positive evaluation
+still returns `pending`; no canonical capture or CPU acceptance is added.
+
+This example changes both expectation labels, then republishes their exact pins
+and receipts. All bytes authenticate, but the parent relationship refuses:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_PROGRAM'
+from copy import deepcopy
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from matched_gpr_evaluation import evaluate_retained_unit
+from probe_matched_gpr_evaluation import Fixture
+from probe_matched_gpr_comparison import encode
+
+parent = Path("target/parent-program-example")
+parent.mkdir(parents=True, exist_ok=True)
+with TemporaryDirectory(dir=parent) as directory:
+    fixture = Fixture(Path(directory))
+    def check():
+        return evaluate_retained_unit(fixture.root, **fixture.arguments())
+    print(check().disposition)
+    for role, original in (("expectation", fixture.base),
+                           ("mutant-expectation", fixture.control)):
+        changed = deepcopy(original)
+        changed["program"] = "consistently-wrong.s"
+        fixture.write(fixture.inputs[role], encode(changed))
+    fixture.publish_receipts()
+    result = check()
+    print(result.disposition, result.record.disposition,
+          result.authentication.disposition, result.comparison)
+    print(result.reason)
+PY_PROGRAM
+python3 scripts/probe_matched_gpr_program.py
+python3 -O scripts/probe_matched_gpr_program.py
+```
+
+It prints `pending`, then `refused valid matched None`, then
+`comparison: expectation program differs from parent`. The final commands run
+23 controls in each mode. Seven omissions lose 7/13/5/1/1/1/1 assertions with zero
+test errors in both modes: type/bound, program binding, forwarding, pre-read
+freeze, early evaluator bound, plain-value normalization and rule selection. Existing 52
+comparison and 42 evaluation controls remain green; their APIs and omission
+controls remain covered. The earlier a41 synthetic positive was explicitly
+pending these adequacy obligations, so the new refusal does not rewrite a
+historical qualification or execution claim.
+
+A draft initially applied the parent bound before rule selection. The combined
+unknown-rule/oversized-label control reproduced a diagnostic regression from
+`unsupported` to `refused`, with no artifact reads or qualification. Move the
+bound after supported selection, still before artifact I/O. The exact recovered
+draft loses one assertion with no errors normally and optimized; the repaired
+23-case suite passes. This ordering preserves method support as a separate finding.

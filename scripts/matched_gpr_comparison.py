@@ -110,14 +110,19 @@ def _compare(kind: str, run: RunBytes, expected: dict) -> RunComparison:
 
 def compare_unit(*, instructions: int, witness: GprWitness,
                  baseline_expectation: bytes, control_expectation: bytes,
-                 baseline: RunBytes, repeat: RunBytes, control: RunBytes) -> ComparisonUnit:
+                 baseline: RunBytes, repeat: RunBytes, control: RunBytes,
+                 program: str | None = None) -> ComparisonUnit:
     """Compute a finite three-run byte comparison, never method qualification.
 
     Bounds are payload limits, not exact RAM caps. All five payloads are checked
     before decoding/parsing; full authentication and aggregate method budgets
     belong to orchestration. Invalid method inputs raise UnitError. Unsupported
     expectations and valid failed comparisons return separate dispositions.
+    An optional parent program binds both expectation identifiers exactly; omitted
+    context preserves the legacy pure-unit boundary. This is not source/image proof.
     """
+    if program is not None and (type(program) is not str or not 1 <= len(program) <= 65536):
+        raise UnitError("parent program must be a plain string of 1..65536 characters")
     if type(instructions) is not int or not 1 <= instructions <= MAX_BOUNDARIES:
         raise UnitError(f"parent budget must contain 1..{MAX_BOUNDARIES} boundaries")
     if (not isinstance(witness, GprWitness) or type(witness.step_n) is not int
@@ -132,6 +137,8 @@ def compare_unit(*, instructions: int, witness: GprWitness,
         _bounded(run.trace, TRACE_BYTES, f"{kind} trace", empty=True)
     base = _expectation(baseline_expectation, instructions, "baseline expectation")
     changed = _expectation(control_expectation, instructions, "control expectation")
+    if program is not None and (base["program"] != program or changed["program"] != program):
+        raise UnitError("expectation program differs from parent")
     for doc in (base, changed):
         if doc.get("cross_model") is False or "expect_divergence" in doc or "refuse" in doc:
             return ComparisonUnit(

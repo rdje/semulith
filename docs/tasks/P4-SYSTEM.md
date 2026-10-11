@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a41, then a42 complete adequacy obligations |
+| 1 | `P4-SYSTEM.14` | `active` | a42b source/image correspondence, then closure/impact/collector provenance |
 
 ## Decisions
 
@@ -534,7 +534,7 @@ false green credit from that instrument error.
 
 promotion: declined (existing declared record/evidence separation, frozen-context/raw-schema/single-mapper/history rules apply; current API and limits are in method/book/toolbox).
 
-### `.14` a42 — complete method adequacy and impact obligations (scheduled)
+### `.14` a42 — complete method adequacy and impact obligations (active)
 
 Start clean after a41 and its full CI. Resolve explicit parent-program/source/
 image correspondence, complete relevant dependency closure and conservative
@@ -543,6 +543,61 @@ Computed byte agreement alone does not lift qualification. Reviewed collector,
 fresh process/output controls, retention budget, predeclared cases/captures and
 full policy/status/mirror derivation follow. Preserve all legacy records and
 published APIs; declare any genuinely new contract before affected runs.
+
+### `.14` a42a — bind expectations to the parent program (completed, SEMULITH-P4-0233)
+
+Owned before code on clean03ed501a4c78c3e477f48cb1a4597684c0bb399b;
+all18 verified/staged/committed/working hashes exact, brief0/untracked, standard
+and actual ps/lsof censuses rc=0. A41 full CI all5 legs green:443 Rust tests,
+smoke53/seven books. Log40152B SHA256
+c6fd1d7b22b9770b2b7b07b98ad0b1a43a4c1ef0eccfda71e68def0cc3f01e24;
+result.json records exact revision, rc=0,18 sources unchanged and clean Git.
+Evidence target/p4-system-14/a41/full-ci. Review method/qualified contract/policy,
+EVIDENCE_AND_GATES and Knowledge Map; public comparison/evaluation/mapping owners,
+probes and GC evidence/evaluation chapters. No canonical matched-v1 capture yet.
+
+Finite first adequacy slice: require both authenticated expectations to name the
+frozen parent experiment program, even when they otherwise agree with each other.
+Extend the existing comparison owner with an optional explicit parent program
+context; omitted context preserves every legacy pure-unit API/result. With context,
+require a plain nonempty string bounded to65536 characters before byte parsing;
+require exact program identity in both mapped expectations, including unsupported
+expectations. The evaluator always binds/normalizes this context before artifact
+I/O, refuses an oversized parent before reads, and passes the frozen value to the
+same sole expectation parser/mapper. No artifact reopen or duplicate format owner.
+
+Own actual repinned fixture controls for consistently wrong labels, one wrong
+label, supported/unsupported bytes, before-read bounds and context mutation;
+normal/O independent omissions plus all old comparison/evaluation controls and
+signatures. This proves identifier correspondence only: actual source/image
+reconstruction, complete closure, conservative old/new impact and collector
+provenance remain subsequent a42 slices. Positive evaluation stays pending,
+blanket qualification refusal remains; no program-path inference or CPU credit.
+Update complete runnable book teaching, live records and task receipts; protect
+whole prior source/contracts/history/canonical bytes, commit before a42b. Address
+capacity with whole-entry containment only if measured necessary; fixed caps/seal.
+
+Own D42-PROGRAM-SELECTION: actual old03ed501 and draft evaluation of an
+unsupported comparison rule plus65537-character parent give unsupported/valid
+versus refused/valid, with zero artifact reads. Draft10140B SHA256
+7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6.
+Root cause: new first-method program bound precedes public rule selection.
+Impact: diagnostic classification regression, no success/qualification credit.
+Fix now: select a supported rule before applying its parent program bound,
+retain all context freezing before artifact I/O, add the combined control and
+an exact recovered-draft normal/O refusal. Track through focused checks/COMMIT.
+Measured DEV48688B leaves464B before this lesson/final receipt; contain whole
+oldest entries if the completed lesson exceeds49152B, with full predecessor and
+published receipt+updated-digest refusals. No cap or seal changes.
+
+promotion: declined (existing frozen-context/single-mapper/declared-versus-observed contracts apply; the incremental program binding is documented in the existing method and book).
+
+### `.14` a42b — source/image correspondence and remaining adequacy (scheduled)
+
+Start clean after a42a. Establish source/image reconstruction through published
+project producer interfaces with explicit authenticated dependencies and bounds;
+then complete relevant closure/conservative impact/collector provenance through
+finite owned slices. Do not replace these obligations with identifier equality.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -640,6 +695,19 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42a — **ROOT CAUSE**: selection-before.log/exact draft inverse
+  rc=0; D42 unsupported-rule/oversized-label changes classification, no reads.
+  Recovered10140B draft loses1 assertion/0 errors in23 controls normal/O; fixed
+  ordering preserves unsupported selection before first-method program bounds.
+- [x] `.14` a42a — **ADDRESSED**: program23/0/0 normal/O, seven omissions
+  7/13/5/1/1/1/1 failures/no errors, exact repinned mismatch fixture rc=0;
+  both authenticated labels bind frozen parent, optional legacy calls preserved.
+- [x] `.14` a42a — **NO REGRESSION**: focused17/sharder12/0/seven books,
+  3124 links/all11 literal blocks/normal+print teaching rc=0; PROFILE390/0,
+  1213 arms. Contract/history/canonical/scope rc=0 normal/O: complete old sources,
+  340 raw forms/243 mappings,102 entries/1329 other files exact. Actual original/
+  moved/published receipt+digest edits refuse; fixed caps/seals/CPU unchanged.
 
 - [x] `.14` a41 — **ADDRESSED**: evaluation42/0/0 normal/O,29 independent
   omissions fail without errors; all60 pre/post readability signatures exact,
@@ -876,6 +944,24 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a42a: Verified:23/0/0 normal/O, seven omissions7/13/5/1/1/1/1 fail without
+errors; D42 exact draft10140B/7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
+loses1 assertion/no errors normal/O. Rule selection now precedes its program
+bound, all used context freezes before artifact I/O. Initial22-case gates passed
+before this combined control; repeated focused17/sharder12/0/seven books/3124
+links/all11 literal examples/normal+print teaching rc=0 on corrected source.
+PROFILE390/0,39 doctrines1213 arms; legacy52/42 and old omissions retained.
+Contract/history/canonical/scope rc=0 normal/O: whole old implementations/checker/
+method/book/task inverse exact;340 raw forms/243 maps,102 old entries/1329 other
+files protected. Actual original/moved/published receipt+digest edits refuse.
+DEV16=15+1/2262B into0251 (2495B/
+dbff2bb0274d826c2884f03d2e1a9df35d50c3d953db058ca7307b0de4a0b042),
+43live+210sealed253logical. Preceding clean03ed501 full CI all5 legs443 Rust/
+smoke53/seven books green,18 sources exact and both censuses green. Positive
+byte/identifier evidence stays pending actual source/image/closure/impact/
+provenance; no canonical/CPU/cap/seal changes. COMMIT hooks/brief0/censuses then
+clean a42b public source/image correspondence and remaining adequacy.
+
 a41: Verified: evaluation42/0/0 and29 omissions normal/O rc=0 for expected
 signatures, no errors. Initial38-case failed-process instrument error corrected;
 production already valid/failed. Sixty pre/post readability signatures exact.
@@ -1080,6 +1166,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42a | `SEMULITH-P4-0233 (leaf P4-SYSTEM.14): bind expectations to the frozen parent program` | a42b source/image correspondence and remaining adequacy |
 | `.14` a41 | `SEMULITH-P4-0232 (leaf P4-SYSTEM.14): compose authenticated byte evaluation` | full CI on clean milestone, then a42 complete adequacy obligations |
 | `.14` a40 | `SEMULITH-P4-0231 (leaf P4-SYSTEM.14): contain completed authentication-unit designs` | a41 evaluator/composition, then reviewed collector/retention/captures |
 | `.14` a39 | `SEMULITH-P4-0230 (leaf P4-SYSTEM.14): bind retained bytes to context frozen before reads` | a40 evaluator/composition, then reviewed collector/retention/captures |

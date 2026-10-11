@@ -1321,6 +1321,38 @@ EOF
   score "RED optimized omitted evaluation guard authentication-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-frozen 2>&1)"; rc=$?
   score "RED optimized omitted evaluation guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" 2>&1)"; rc=$?
+  score "GREEN normal parent-program controls" "$rc" 0 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-type 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-type" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-binding 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-binding" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-forward 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-forward" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-freeze 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-freeze" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-bound 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-bound" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-plain 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-plain" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-selection 2>&1)"; rc=$?
+  score "RED normal omitted parent-program guard program-selection" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" 2>&1)"; rc=$?
+  score "GREEN optimized parent-program controls" "$rc" 0 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-type 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-type" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-binding 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-binding" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-forward 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-forward" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-freeze" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-bound 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-bound" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-plain 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-plain" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-selection 2>&1)"; rc=$?
+  score "RED optimized omitted parent-program guard program-selection" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
