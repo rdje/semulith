@@ -1,3 +1,5 @@
 # ARTIFACT CLEANUP — last run
 
-- `2026-10-10`: removed204 untracked cargo incremental `.bin` caches (978,509,475 B); residue0 at cleanup; retained6261diagnostic/reference/input files byte/hash-exact (`ARTIFACT-CLEANUP.5`, `SEMULITH-AC-0062`).
+<!-- ANCHOR: latest -->
+- `2026-10-11T18:24:49Z`: removed 24 untracked Cargo incremental `.bin` caches (155,683,881 B); immediate residue 0; retained 9,225 diagnostic/reference/input files byte/hash-exact (`ARTIFACT-CLEANUP.6`, `SEMULITH-AC-0063`).
+<!-- ANCHOR_END: latest -->

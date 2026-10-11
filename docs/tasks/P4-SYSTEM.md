@@ -539,6 +539,22 @@ No weakening, exemption or new arm. Update source/history/scope/receipts and
 retry full hooks; no first-attempt commit created. Artifact cleanup is overdue;
 finish/commit, then own cleanup before other work, respecting no dirty pivot.
 
+### `.14` a42j — retain the local census repair during scaffold sync (proposed, SEMULITH-P4-0245)
+
+Priority1 after AC0063; logged by recurring cleanup, no active implementation.
+D48 scaffold-retention risk: public update_scaffold.sh still includes
+scripts/check_no_background_jobs.sh in its NEUTRAL copy list and copies any
+present incoming file. A stale incoming version can replace the locally repaired
+D47 census. Existing make gate synthetic controls would detect that regression;
+no claim that current upstream is defective or that nothing checks it.
+Own a bounded reproduction through the public updater in a disposable on-volume
+fixture, using only project-owned input copies; never modify another Git repo
+or inspect submodule implementation. If reproduced, retain the local source
+repair across automatic sync, with positive/negative integration controls and
+current teaching/live/COMMIT sync. Preserve existing update behavior otherwise.
+No new exemption, reader authority or CPU/qualification scope. Then assess the
+ordinary-part freeze with actual gates before classifying that separate candidate.
+
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
 Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.

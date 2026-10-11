@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — recurring cleanup with a live book receipt (ARTIFACT-CLEANUP.6)
+
+Prior run2026-10-10T17:22:34Z; due recurrence waited for clean a42h/a42i commits
+under the no-dirty-pivot rule. Completed2026-10-11T18:24:49.098493+00:00:
+24untracked known Cargo incremental caches/155683881B, in three roots:
+debug6/78086999B, C-engine6/46660980B, C-guest-image12/30935902B. Save complete
+relative-path/device/inode/size/mtime/SHA identities, preflight the whole cohort,
+then recheck each before unlink. Regular files only, one link, same device,
+no symlink ancestors, tracked files or nested-Git traversal; four nested roots
+skipped. Actual unrestricted repaired host census rc=0/handoff: OK before unlink.
+Explicit runtime guards survive optimization; altered candidate SHA and totals
+each refuse before any deletion normal/O. Immediate repeat census selected
+residue0, every saved candidate absent, all9225retained/128863947B byte/hash-exact.
+
+Keep9156diagnostic logs/126765759B,62reference logs/2097132B,7source bins/1056B;
+release/deps stray paths0. Six large reserve/debit negative-control logs explain
+the diagnostic-byte increase; retained as evidence. Later checks legitimately
+rewrite diagnostic logs and builds regenerate caches; receipt is for the
+immediate event. No tracked code/data/input deletion or cross-Git/volume write.
+
+Overwrite latest one-entry record with named anchor and include it in the book;
+normal/print show the exact receipt, and chapter source shrinks within fixed cap.
+Full hooks/COMMIT close this unit; no redundant Rust/fullCI or push. LIVE
+unchanged:39doctrines/1439arms, P4 13/18/CPU incomplete7axes, P5 10/12 gated;
+no qualification credit. A final redundant receipt exceeded the head cap; the
+explicit preflight refused, and only this new entry was shortened.
+
+D48 risk durably queued priority1 in P4 a42j/0245: public scaffold updater still
+copies the locally repaired census from any present incoming source. Existing
+synthetic gate detects a stale replacement; no upstream-defect/global-gap claim.
+Bounded public-interface reproduction and retention repair follow this cleanup,
+then independent ordinary-part actual-gate assessment and remaining a42 adequacy.
+Measured:3212links/100old entries/1372protected files; DEV1817B→0272/CH690B→0273,
+65live+210sealed275logical; book -51B/family524225 of524288. Normal/O green.
+promotion: declined (standing safe-output/ownership/containment rules; measured receipts and risk ownership stay in task trees).
+
 ## _(2026-10-11)_ — fail closed on unavailable handoff census (P4-SYSTEM.14 a42i)
 
 D47: actual sandbox denies ps spawn with EPERM, but the parent handoff script
@@ -648,31 +684,4 @@ refuse. DEV17=15+2/5355B into0250,5588B SHA256
 069f0a33f16e72ff955ec7c60b4ca4708aae708490db7c7c79e2dccb53309f73;
 42live+210sealed252logical. Final docs/staged-byte checks and COMMIT hooks next,
 then full CI on clean milestone before a42. Fixed caps/seals/canonical/CPU unchanged.
-
-## _(2026-10-11)_ — contain completed authentication-unit designs (P4-SYSTEM.14 a40)
-
-Live task126100/131072B needs room before evaluator design/receipts. Move nine
-whole a30–a38 designs46529B and whole prior a36 book receipt499B to ordinary
-part16. Ten bodies47028B with original offsets/lengths/SHA256 and inverse map;
-nine exact live headings/routes and direct ordinary book read. Preserve historical
-bytes/counts, current feature teaching and closed twelve-file LC0006 reader/seal.
-No code/canonical/CPU/cap change. Main-book guide replaces only its whole older
-receipt plus one command; all old words remain in the authenticated body.
-
-D40-PROOF-SCOPE: adapted diagnostic retained an old a36 dated-receipt undo clause.
-First whole-source inverse refused; exact diff isolated only that older receipt
-removed in scratch reconstruction. Tracked source/archive bodies never changed.
-Remove obsolete clause; both complete committed sources now reconstruct exactly,
-normal/O. No false credit from the initial proof. Ten bodies each have corrupt/
-missing-marker/omitted-body refusals; real PROFILE284/0 receipt edit with updated
-digests, wrong source hash, missing route and omitted guide also refuse:34 total.
-
-Part16 54755B SHA256
-2475c948fec2c461e53270a41ef4183d7c4b092160b044854d7508541d41359f.
-Predecessors: task126100B and book17262B, full hashes/rows in the archive map.
-Current task: 86304B; main-book guide grows only1B. Earlier ordinary/sealed
-parts must remain byte/mode exact. Focused12/sharder12/0/seven books/3104 links/full normal+print guide/literal cat
-pass.100 old entries/whole heads/1334 other files exact; actual original/published
-receipt+digest edits refuse. All published rows/shards unchanged; no new shard.
-COMMIT then a41 bounded evaluator/composition and complete adequacy obligations.
 

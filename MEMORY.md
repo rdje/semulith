@@ -16,18 +16,14 @@
 - latest_commit: `git log -1`. ⛔ **Do not push** below the 300-commit cadence without the
   director's `scripts/approved_push.sh` act (`decision_push-cadence`) —
   `scripts/check_push_cadence.sh --status` says where we stand.
-- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
+- **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-11`, `SEMULITH-AC-0063`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: finish a42i /0244 COMMIT postconditions, then due recurring
-  artifact cleanup (AC0062 last2026-10-10 17:22:34UTC), before ordinary-part gate
-  assessment/remaining a42 adequacy. No dirty pivot.
-- in_flight_uncommitted: a42i verified D47 repair, complete help/arity and
-  synthetic make gate/CI wiring.19 cases normal/O; parent11 failures,
-  omissions2/2/4/1, zero errors. Actual restricted2/host0/literal --all0;
-  focused12/sharder12/seven books/3212 links/full normal+print, whole source/task/
-  README/Makefile/workflow/book inverses/history100/scope1367 exact normal/O.
-  39 doctrines/1439 arms/caps/seals/GC/canonical/CPU/qualification unchanged.
-  First hook refused missing isolated REPO_ROOT binding; fixed fixture only.
-  Locality57/57 normal/O/SEAM19 pass; two binding controls refuse before writes.
-  Final14-file hooks retry/hash/mode/brief0/host census pending. Latest full CI exact3e5a3ea.
+- next_action: P4-SYSTEM.14 a42j/0245, proposed scaffold-retention risk D48.
+  Read its bounded public updater reproduction plan; own active work before
+  scratch/implementation. Then ordinary-part actual-gate assessment, then a42.
+- in_flight_uncommitted: none. AC0063 complete;24caches/
+  155683881B removed, immediate residue0;9225retained/128863947B SHA exact.
+  Latest record included in book, fixed caps/LIVE/canonical/CPU unchanged.
+  Evidence target/artifact-cleanup-0063; resume only after committed clean host
+  census. Latest full CI remains exact3e5a3ea; no push below cadence.
 - blockers: none. Archive seal LC0006 complete; full containment adoption remains.

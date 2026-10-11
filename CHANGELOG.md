@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0063 (leaf ARTIFACT-CLEANUP.6) — clean incremental caches and include the latest book receipt
+
+- Remove24untracked Cargo incremental caches/155683881B after complete identity/safety preflight and unrestricted idle-host census. Immediate residue0, all9225retained input/evidence files/128863947B byte/hash-exact; four nested Git roots skipped. Altered SHA/totals refuse normal/O; no code/input deletion.
+- Include the overwritten latest record directly in book normal/print; source shrinks within fixed cap. Focused12/sharder12/seven books/navigation and complete task/book/head/history/scope invariants pass; LIVE/canonical/CPU unchanged. D48 scaffold-retention risk owned next in P4 a42j/0245; no fullCI/push for housekeeping.
+
 ## SEMULITH-P4-0244 (leaf P4-SYSTEM.14) — fail closed on unavailable handoff census
 
 - Fix D47: ps/lsof errors, stderr and empty/whitespace snapshots return2 without handoff OK; preserve successful detection/advisory/authority rules. Clean owned on-volume stderr on normal/refusal and catchable exits; actual restricted ps exit126 now refuses, host-view census passes. Restore complete help and single-option arity.
@@ -554,16 +559,4 @@
   self-test12/0, focused/all six books green. Logical history229 rows.
 - Fixed caps, all code/canonical/author/frozen/registry/effective102/114 unchanged.
   Correct the book's historical AMO-next-action tense; c29c then c29d next.
-
-## SEMULITH-P4-0164 (leaf P4-SYSTEM.13 c29b) — ground FP-state claims in public evidence
-
-- Replace two internal-reference comments and unsupported backend rationale.
-  Correct book prose: every f-register write marks Dirty, even an identical value.
-- Independent/direct/public12-step witness agrees; read-only control stays Clean,
-  wrong Clean expectation diverges10. Existing24 public FP pairs/927 agree.
-- Non-comment code/profile/author/generated/registry/frozen/archive bytes exact;
-  effective102/114 unchanged. Rust167/17/223, focused/all six books green.
-- Own DEV containment c29b1, state/requirement prose c29c and book containment
-  c29d before the remaining runtime pairs.
-
 
