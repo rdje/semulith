@@ -541,3 +541,9 @@ showing why whole-container equality matters. All 167 GC source/image pairs
 match; the complete 216 repaired RV64I/GC images remain byte-identical.
 Existing builder33/seventeen and ELF15/eight controls remain intact. None of
 these fixtures creates a canonical capture or advances CPU acceptance.
+
+## Explicit expectation entry
+
+[Explicit image context](image-binding.md) binds a selected program/budget to the
+validated expectation entry without a default, build or qualification claim.
+Authenticated evaluator composition is still pending.

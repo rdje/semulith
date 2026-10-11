@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0239 (leaf P4-SYSTEM.14) — bind explicit expectation image context
+
+- Add frozen program/budget/entry metadata through the sole expectation validator/mapper/RV64 owner, with explicit selected parent and present entry. Share original guards without legacy API/result/order changes; no alignment/authentication/qualification credit.
+- 25 controls/16 omissions pass/discriminate normal/O with zero errors; old52/14 and23/seven outcomes preserved. Add34 literal GUEST arms (328;39 doctrines1371), complete runnable book chapter/short route. Full comparison/checker/method/book/task inverses and340 raw/243 maps exact. Focused17/sharder12/seven books/3168 links/all16 examples/history/scope pass; preserve1347 other files/modes/Gitlinks, real receipt+new-digest rewrites refuse; whole DEV3376B to0261/CH1316B to0262,103 prior entries. Fixed caps/seals/canonical/CPU unchanged; final COMMIT before d3b authenticated composition.
+
 ## SEMULITH-P4-0238 (leaf P4-SYSTEM.14) — contain completed byte/image designs
 
 - Move eight whole completed designs/35104B and the whole prior461B book receipt into ordinary part17. Both complete committed sources reconstruct exactly; all33 body/map/actual-receipt/route/guide/active-design negatives refuse normal/O. Preserve eight headings/direct anchors and active a42/d3; closed original reader refuses the new path.
@@ -611,25 +616,4 @@
   LIVE652/49/P4 12/18 unchanged. Promote existing knowledge card; own adapter's
   post-budget refusal as c28c next, before GC-FENCEI c28d.
 
-
-## SEMULITH-P4-0157 (leaf P4-SYSTEM.13 c28a) — retain bounded development receipts
-
-- Move seven whole entries/18245 B to authenticated shard0225; retain16/23 in
-  29706 B before new receipt. Exact inverse restores committed47951 B/SHA;
-  earlier manifest/sealed history unchanged, fixed caps stay.
-- Sharder12/0; identity/inverse/focused gates/all six books rc=0; hooks next.
-  Runtime/registry100/effective98/114 and LIVE652/49/P4 12/18 unchanged.
-- Own public contained-AMO granule qualification as next c28b, then GC-FENCEI.
-
-## SEMULITH-P4-0156 (leaf P4-SYSTEM.13 c27) — observe atomic alignment before translation
-
-- Bind both widths/all22 forms/four ordering settings across aligned pairs and
-  8800 misaligned cases. Observe full state/reservation/requests; seven wrong
-  effects/thirteen capture controls and actual auditor/LR mutations reject.
-- Direct8896/17792, pair8959/17918. Independent words/state/corpus exact; prior98
-  bindings/core/author/generated/frozen unchanged. Correct only stale gate-owner
-  prose (old23/SSTC pending) to derived-coverage pointer; other inputs exact.
-- Registry100/effective98/114; Rust167/17/217. LIVE652 arms/49 chapters/P4 12/18
-  unchanged. Focused gates/all six books rc=0; hooks next. c28a bounds DEV before
-  c28b GC-FENCEI; eight runtime pairs/freeze remain.
 

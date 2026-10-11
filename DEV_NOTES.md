@@ -1,5 +1,56 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — bind explicit expectation image context (P4-SYSTEM.14 a42d3a)
+
+The source/image consumer needs a validated entry rather than an unchecked field
+or default. Add frozen ExpectationImageContext(program,instructions,entry) and
+expectation_image_context in the existing byte-comparison owner. Extract only
+its exact parent program/budget guards into one helper; compare_unit retains
+its signature, optional program, diagnostics, validation order and results.
+New consumer requires explicit plain program1..65536 chars/budget1..4096 before
+parsing/tool reads, nonempty plainbytes at most1MiB, then the existing raw-schema,
+sole mapper, complete ordered steps and GPR validation once. Bind exact program,
+require explicit string entry and use the existing RV64 parser0..2**64-1, including
+hex aliases/leading zeros. Odd entry is metadata; the builder owns alignment/load
+extent. Generic optional-entry grammar and legacy consumers remain unchanged.
+
+Return only three frozen facts, no raw payloads/pins/process/auth/qualification.
+Unsupported flags are metadata; current selection, authenticated snapshots and
+complete tool adequacy belong to the caller. Schema-tool reads are outside
+artifact budgets; byte caps are not exact process RAM/time. No artifact loader,
+build, process or path write occurs. Subsequent authenticated composition remains
+separate from complete closure/impact/source-grounded property/collector provenance.
+
+25 controls pass and16 omissions lose1/6/1/2/4/34/3/3/1/1/4/1/2/16/1/3 assertions,
+zero errors, normal/O. Preserve old52/14 comparison failures6/1/8/1/3/1/10/6/1/1/
+7/6/5/4 and23/seven program failures7/13/5/1/1/1/1 in both modes. Initial ignored
+runner expected a custom summary absent from the old unittest probe; read its
+actual Ran/OK/FAILED census and rerun the complete matrix. This was an instrument
+format correction, not a production failure. Added explicit no-build footprint
+control and reran before registering34 literal GUEST arms; old294 stay exact,
+new328,39 doctrines1371 derived. PROFILE424 unchanged.
+
+New natural image-binding chapter owns a complete synthetic example, aliases,
+refusals/limits and pending composition; append only a short evaluation route.
+Whole old comparison source/API, checker arms, normative method, book/task
+inverses and340 raw/243 canonical maps exact. Focused17/sharder12/0/seven books/3168 links/all16 complete examples and
+normal+print teaching pass. Both history guards normal/O preserve103 entries;
+scope protects1347 other tracked files/modes/Gitlinks. All216 ELF/167 GC builds
+and correspondences exact; no legacy evaluator42/29 result change.
+Whole oldest DEV3376B to0261(3609B/a7d9346b0438f670c309b1d8f066e7ef8c4ca9237c51439017168c492bfe3f4e),
+CH1316B/two entries to0262(1553B/b629c6a9f06141e21569fb4dd46bd122ba7214686a9669b5c7b69fc01b17227b).
+54live+210sealed264logical;103 predecessor entries protected, real old/moved/
+published receipt+new-digest edits refuse. An initial ignored history diagnostic
+wrongly required each guard to detect every class: the predecessor owner checks
+live/moved old entries, while the partition owner checks published history.
+Confirmed both positive guards and explicit complementary negative outcomes
+normal/O; no production change. Only inherited EOF blanks in head CH and new
+0261/0262; complete predecessor/whole-entry inverses prove their origin, no trim.
+Fixed caps/seals/canonical/CPU
+unchanged. Evidence target/p4-system-14/a42d3a. Final hashes/modes/brief0/censuses
+before d3b. Director MCU scope question confirms existing ROADMAP north star and
+MCU-DOCS acquisition; no model/milestone selected and no engineering pivot.
+
 ## _(2026-10-11)_ — contain completed byte/image designs (P4-SYSTEM.14 a42e)
 
 Capacity preparation in the same active evidence leaf: task126808/131072B leaves
@@ -628,50 +679,4 @@ refuse. Staged hashes/hooks/brief0/handoff mandatory.
 Next child/hidden-nesting authentication and aggregate evaluator/gates, reviewed
 collector, measured retention/cases/captures/full policy. Canonical data and CPU
 qualification status unchanged.
-
-## _(2026-10-11)_ — bind declared Sail method relations (P4-SYSTEM.14 a33)
-
-Add pure matched_gpr_relations.bind_relations after raw-schema/scoped graph, reusing
-public bind_execution. Before maps require property1/control1/pair2; bind sole
-GPR-only witness/budget/x1..31 and typed control baseline/run/property/mutant edges.
-Expected control intent is DIVERGE; coherent observed AGREE/REFUSED remains data,
-not method success. Bind expected producers' nonempty equal versions, own selected
-expectation and identical other selected input IDs, with no external candidate.
-This is the declared mutant relation; actual derivation/code/sole value change
-remain authenticated/comparison owners. Bind exactly two actual reference/expected
-pairs and declared input intersections; retain bounded subsystem/assessment/
-evidence/consequence as frozen data. No ancestry inference from strings/counts.
-No obligation traversal, artifact I/O, execution or full qualification credit.
-
-Initial37 tests pass. Count-guard removal exposes an empty-property StopIteration;
-normalize selected-context iteration failure and add well-formed surplus records.
-The trace also reveals assertion-skipped restoration; reproduce the same defect
-in committed a32 family-count controls: later families see the leftover invalid
-input. Own D33-ISOLATION now. Repair all temporary field/family/argv/version/edge
-restorations with try/finally in both probes. Add forced-assertion subcase-isolation
-checks and independent cleanup mutants that restore the old unsafe post-assertion
-placement. Each cleanup mutant loses exactly one health assertion, no errors;
-ordinary omission counts retain the same totals but now target isolated fixtures.
-Production a32 API remains byte-exact. New probe39/0/0, fifteen relation omissions
-9/5/6/6/4/4/4/1/2/5/2/2/1/4/4; existing execution48/0/0, twelve omissions
-6/8/3/1/3/2/1/44/2/1/1/1. Both add two cleanup mutants1/1 and pass normal/O.
-Register40 new literal calls, deriving39 doctrines/975 arms (profile170/0).
-Keep old history receipts intact; current teaching/oracles explain repaired scope.
-
-GC reference29424B leaves3344B; new teaching exceeds that room. Move complete
-identity/receipt/execution sections into a natural retained-method chapter,
-preserving prior examples, update all links and add full raw-schema/scoped relation
-example and partial credit limits. Measure DEV48378B plus this entry; publish only
-oldest whole entries using the published sharder, no seal extension/cap increase.
-Measured51115B→48466B immediately after two whole2649B entries moved:24=22+2.
-Shard0243 is2882B/80ae4edf4ef30e27edc63288331a00ccd7d6ae5d14e64dd8178550c789971b56;
-35 live+210 sealed=245 logical. Focused17/sharder12/0/seven books/3068 links/all
-four literal commands and normal/print checks pass. Before/canonical/contract/
-history/scope/book_partition rc=0 preserve243 dictionaries/1302 other files/101
-old entries, all old normative/source/task/history and21128B moved teaching.
-Actual moved/published receipt+updated digest edits refuse. D33-ISOLATION fixed:
-new health control fails exact old committed probe, passes repaired controls;
-no historical receipt rewritten. Staged hashes/hooks/brief0/handoff required.
-Next authenticated closure/aggregate evaluator/gates, collector/retention/captures/
-full policy. Canonical records, qualification and CPU state unchanged.
 

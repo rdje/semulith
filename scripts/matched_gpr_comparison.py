@@ -29,6 +29,13 @@ class UnitError(ValueError):
 
 
 @dataclass(frozen=True)
+class ExpectationImageContext:
+    program: str
+    instructions: int
+    entry: int
+
+
+@dataclass(frozen=True)
 class GprWitness:
     step_n: int
     register: str
@@ -59,6 +66,13 @@ def _bounded(payload: bytes, limit: int, where: str, *, empty: bool) -> None:
         raise UnitError(f"{where}: immutable snapshot bytes required")
     if len(payload) > limit or (not empty and not payload):
         raise UnitError(f"{where}: payload outside {0 if empty else 1}..{limit} bytes")
+
+
+def _parent_context(instructions: int, program: str | None) -> None:
+    if program is not None and (type(program) is not str or not 1 <= len(program) <= 65536):
+        raise UnitError("parent program must be a plain string of 1..65536 characters")
+    if type(instructions) is not int or not 1 <= instructions <= MAX_BOUNDARIES:
+        raise UnitError(f"parent budget must contain 1..{MAX_BOUNDARIES} boundaries")
 
 
 @lru_cache(maxsize=1)
@@ -108,6 +122,29 @@ def _compare(kind: str, run: RunBytes, expected: dict) -> RunComparison:
         return RunComparison(kind, None, str(exc))
 
 
+def expectation_image_context(payload: bytes, *, instructions: int,
+                              program: str) -> ExpectationImageContext:
+    """Bind explicit RV64 entry metadata through the sole expectation decoder.
+
+    This new consumer requires entry; generic expectations and legacy byte
+    comparisons keep their existing optional-entry contract. Source/image
+    correspondence, alignment, authentication, tool adequacy and qualification
+    are separate. Unsupported expectation flags grant no credit here. Schema
+    loading is project-tool I/O; no artifact paths, builds or processes are used.
+    """
+    if program is None:
+        raise UnitError("image context requires an explicit parent program")
+    _parent_context(instructions, program)
+    _bounded(payload, EXPECTATION_BYTES, "image expectation", empty=False)
+    doc = _expectation(payload, instructions, "image expectation")
+    if doc["program"] != program:
+        raise UnitError("expectation program differs from parent")
+    entry = doc.get("entry")
+    if type(entry) is not str:
+        raise UnitError("image expectation requires an explicit string entry")
+    return ExpectationImageContext(program, instructions, _rv64(entry, "image expectation entry"))
+
+
 def compare_unit(*, instructions: int, witness: GprWitness,
                  baseline_expectation: bytes, control_expectation: bytes,
                  baseline: RunBytes, repeat: RunBytes, control: RunBytes,
@@ -121,10 +158,7 @@ def compare_unit(*, instructions: int, witness: GprWitness,
     An optional parent program binds both expectation identifiers exactly; omitted
     context preserves the legacy pure-unit boundary. This is not source/image proof.
     """
-    if program is not None and (type(program) is not str or not 1 <= len(program) <= 65536):
-        raise UnitError("parent program must be a plain string of 1..65536 characters")
-    if type(instructions) is not int or not 1 <= instructions <= MAX_BOUNDARIES:
-        raise UnitError(f"parent budget must contain 1..{MAX_BOUNDARIES} boundaries")
+    _parent_context(instructions, program)
     if (not isinstance(witness, GprWitness) or type(witness.step_n) is not int
             or not 0 <= witness.step_n < instructions or not isinstance(witness.register, str)
             or not _REGISTER.fullmatch(witness.register)):

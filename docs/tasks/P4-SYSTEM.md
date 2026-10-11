@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42d3 authenticated source/image composition, then complete adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | a42d3b authenticated source/image composition, then complete adequacy |
 
 ## Decisions
 
@@ -461,7 +461,7 @@ LIVE1337/caps/seals/earlier parts unchanged. Final docs/hooks/hashes/modes/
 brief0/censuses before d3. No Rust change/full-CI-per-ordinary-slice requirement.
 promotion: declined (existing lossless source-inverse/history/cap rules apply; finite capacity preparation in the same evidence leaf).
 
-### `.14` a42d3 — compose authenticated source/image correspondence (scheduled)
+### `.14` a42d3 — compose authenticated source/image correspondence (active)
 
 Start clean after d2. Bind selected parent program/budget before I/O, obtain exact
 entry through the sole validated expectation owner, consume the authenticated
@@ -470,6 +470,73 @@ comparison/content findings, method selection and legacy unit APIs; publish only
 metadata, release payloads. Complete closure/conservative impact/source-grounded
 property/collector provenance remain further finite a42 work. Built or byte-matched
 images never grant qualification.
+
+### `.14` a42d3a — expose validated expectation image context (completed, SEMULITH-P4-0239)
+
+Owned on clean52dba4e6fdf03ba9fea57761d57ba75928c567fe after all9
+verified/staged/committed/working hashes/modes matched, hooks green, brief0/
+untracked and both standard/actual ps/lsof censuses rc=0. A42e complete, both
+whole sources/nine bodies and33 negative controls normal/O; active a42/d3 retained.
+Read .14/roadmap G-TRACE/G-OBLIGATIONS, Knowledge Map, method/qualified contracts,
+public comparison/execution/evaluation/build/ledger APIs and probes, generic
+expectation schema/sole mapper and GC evaluation/closure/retained teaching.
+Finite d3 prerequisite before changing authenticated composition; no pivot.
+
+Add ExpectationImageContext(program:str,instructions:int,entry:int), frozen and
+metadata-only, plus expectation_image_context(payload:bytes,*,instructions:int,
+program:str) in the existing comparison owner. Share the existing program/budget
+guards with compare_unit without changing legacy signatures, optional omitted
+program semantics, diagnostics or order. New API requires explicit plain parent
+program1..65536 characters and plain budget1..4096 before parsing/tool reads.
+Bound immutable nonempty expectation bytes to existing1MiB before decoding;
+reuse the sole _expectation raw-schema/mapper/complete-step/GPR owner once.
+Require exact expected program and explicit entry, parsed by the existing _rv64
+owner: hexadecimal0..2**64-1, including numeric aliases/leading zeros. No new
+schema, parser, mapper, defaults, instruction semantics or aligned-image claim.
+Generic optional entry remains optional outside this new consumer; all old
+comparison/evaluation and canonical captures stay exact. Unsupported expectation
+flags are metadata here, not adequacy/comparison credit. Return no raw payload,
+paths, pins, process results, authentication or qualification fields. Schema-tool
+loading remains project-tool I/O outside authenticated artifact budgets; callers
+own selected context/provenance, authentication and complete tool adequacy.
+
+Own normal/O pure-byte controls and independent omissions for parent/bounds/order,
+raw schema before mapping, sole owner forwarding, program/entry presence/range,
+metadata-only immutability and no artifact/build/process/write effects. Retain
+all old52/14 comparison and23/seven parent-program controls/omissions, evaluator
+42/29 and public signatures; complete source inverse may remove only this API
+and shared-guard extraction. Preserve other library/probe/checker arms, normative
+method/book/task/source inverses, canonical340 raw/243 maps,103 history entries,
+other-file/mode/Gitlinks and fixed caps/seals/parts. Register literal GUEST arms
+only after controls discriminate. New natural image-binding.md chapter owns
+complete runnable context teaching and later composition, within existing model
+book/family caps; evaluation gets a short route only. Own necessary whole-oldest
+DEV/CH sharding before use, focused checks/books/COMMIT before d3b. No CPU advance.
+promotion: declined (shared validation and explicit image-context contract live in their owner, falsifying controls and model book; no normative method policy change).
+
+Result:25 controls/16 omissions normal/O, failures1/6/1/2/4/34/3/3/1/1/4/1/
+2/16/1/3, zero errors; old52/14 and23/seven outcomes exact. Frozen three facts,
+explicit entry, sole decoder/shared guards and no artifact/build/process/write.
+Register34 GUEST arms after discrimination, old294 exact, new328/global1371.
+Whole comparison/API/checker/method/evaluation/catalogue/task inverses and340
+raw/243 maps exact. Focused17/sharder12/seven books/3168 links/all16 examples/
+normal+print/history/scope pass;1347 other files/modes/Gitlinks and216 ELF/167 GC
+builds/correspondences exact. Real old/moved/published receipt+new-digest edits
+refuse via complementary predecessor/partition guards. Only inherited whole-
+entry EOF blanks in CH/0261/0262; no historical trimming. Whole
+DEV3376B to0261/CH1316B to0262,103 entries; fixed caps/seals/canonical/CPU stay.
+Final COMMIT hooks/hash/mode/brief0/censuses before d3b. MCU scope question
+reaffirmed the existing north star/MCU-DOCS boundary; no roadmap pivot.
+
+### `.14` a42d3b — compose authenticated source/image checks (scheduled)
+
+Start clean after d3a. Use the validated image context and d1 correspondence
+owner with Q's opt-in17 snapshots/reserved rebuild; preserve separate findings,
+old APIs/control results and failed/unsupported classification. Freeze selected
+parent context before artifact I/O, consume each authenticated artifact once,
+return metadata only. Complete closure/impact/source-grounded property/collector
+provenance and full policy still remain; successful correspondence grants no
+qualification or CPU credit. Declare the exact finite composition before code.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -567,6 +634,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42d3a — **ROOT CAUSE**: contract.py rc=0 normal/O:
+  entry consumer needs complete existing validation and selected parent, not an
+  unchecked field/default; legacy APIs and normative method remain exact.
+- [x] `.14` a42d3a — **ADDRESSED**: run-controls.py rc=0 normal/O:
+  25 controls/16 omissions1/6/1/2/4/34/3/3/1/1/4/1/2/16/1/3, zero errors;
+  original52/14 and23/seven results exact; frozen three facts, no side effects.
+- [x] `.14` a42d3a — **NO REGRESSION**: focused.sh/rendered.py/contract/
+  history/canonical/scope/corpus rc=0 normal/O: focused17/sharder12/seven books/
+  3168 links/all16 examples/normal+print teaching;340 raw/243 maps,103 entries/
+  1347 other files/modes/Gitlinks,216 ELF/167 GC builds/correspondences exact.
+  Real receipt+new-digest edits refuse; caps/seals fixed. Final COMMIT checks next.
 
 - [x] `.14` a42e — **ROOT CAUSE**: partition.py/proof.py rc=0 normal/O:
   live task126808/131072B; eight completed bodies35104B and prior book461B,
@@ -870,6 +949,16 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42d3a: Verified run-controls.py normal/O:25/0/0,16 omissions1/6/1/2/4/34/3/
+3/1/1/4/1/2/16/1/3 failures/0 errors; old52/14 and23/seven outcomes exact.
+contract.py normal/O and canonical.py rc=0: whole source/API/checker294/PROFILE424/
+normative method/evaluation/catalogue/task inverses,340 raw/243 maps exact.
+Focused17/sharder12/seven books/3168 links/all16 examples/normal+print, history/
+scope/corpus normal/O rc=0:103 old entries/1347 other files/modes/Gitlinks and216
+ELF/167 GC exact; actual receipt+digest rewrites refuse in complementary guards.
+Whole DEV3376B to0261/CH1316B to0262; only inherited EOF blanks. Final docs/hooks/
+hash/mode/brief0/censuses before d3b. Fixed caps/seals/canonical/CPU unchanged.
 
 a42e: Verified proof.py rc=0 normal/O: nine whole bodies35565B, both complete
 committed predecessors reconstruct exactly; task126808B SHA256
@@ -1180,6 +1269,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42d3a | `SEMULITH-P4-0239 (leaf P4-SYSTEM.14): bind explicit expectation image context` | d3b authenticated composition; full closure/impact/property/provenance pending |
 | `.14` a42e | `SEMULITH-P4-0238 (leaf P4-SYSTEM.14): contain completed byte/image designs` | d3 validated entry/authenticated composition; active a42 plan retained |
 | `.14` a42d2 | `SEMULITH-P4-0237 (leaf P4-SYSTEM.14): retain bounded source and ELF snapshots` | d3 authenticated composition; full closure/impact/property/provenance pending |
 | `.14` a42d1 | `SEMULITH-P4-0236 (leaf P4-SYSTEM.14): bind complete source and ELF image bytes` | d2 bounded opt-in source/image snapshots, then d3 composition |

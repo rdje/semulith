@@ -8,6 +8,7 @@
 [Retained Sail method checks](retained-method.md)
 [Frozen context and snapshot checks](byte-bindings.md)
 [Authenticated byte evaluation](evaluation.md)
+[Explicit image context](image-binding.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Evidence policy](policy.md)
 [Current processor gate](evidence.md)

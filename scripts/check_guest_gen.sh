@@ -241,6 +241,76 @@ PYCODE
   out="$(python3 scripts/check_gc_mirror.py --self-test --mutation ignore-source-image 2>&1)"; rc=$?
   arm "RED reviewed source annotations cannot change instructions" "$rc" 1 "$out" "accepted source re-derivation changes assembled image"
 
+  # P4.14 a42d3a: explicit entry context through the sole expectation owner.
+  out="$(python3 scripts/probe_matched_gpr_entry.py 2>&1)"; rc=$?
+  arm "GREEN normal entry context controls" "$rc" 0 "$out" "MATCHED-GPR-ENTRY: 25 tests / 0 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation required-program 2>&1)"; rc=$?
+  arm "RED normal entry context omitted required-program" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation program-type 2>&1)"; rc=$?
+  arm "RED normal entry context omitted program-type" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 6 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation budget-cap 2>&1)"; rc=$?
+  arm "RED normal entry context omitted budget-cap" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation byte-bounds 2>&1)"; rc=$?
+  arm "RED normal entry context omitted byte-bounds" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 2 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation payload-type 2>&1)"; rc=$?
+  arm "RED normal entry context omitted payload-type" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 4 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation payload-forward 2>&1)"; rc=$?
+  arm "RED normal entry context omitted payload-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 34 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation budget-forward 2>&1)"; rc=$?
+  arm "RED normal entry context omitted budget-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation raw-schema 2>&1)"; rc=$?
+  arm "RED normal entry context omitted raw-schema" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation root-count 2>&1)"; rc=$?
+  arm "RED normal entry context omitted root-count" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation step-sequence 2>&1)"; rc=$?
+  arm "RED normal entry context omitted step-sequence" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation program-identity 2>&1)"; rc=$?
+  arm "RED normal entry context omitted program-identity" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 4 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation explicit-entry 2>&1)"; rc=$?
+  arm "RED normal entry context omitted explicit-entry" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation rv64-range 2>&1)"; rc=$?
+  arm "RED normal entry context omitted rv64-range" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 2 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED normal entry context omitted entry-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 16 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation immutable 2>&1)"; rc=$?
+  arm "RED normal entry context omitted immutable" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 scripts/probe_matched_gpr_entry.py --mutation metadata-budget 2>&1)"; rc=$?
+  arm "RED normal entry context omitted metadata-budget" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py 2>&1)"; rc=$?
+  arm "GREEN optimized entry context controls" "$rc" 0 "$out" "MATCHED-GPR-ENTRY: 25 tests / 0 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation required-program 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted required-program" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation program-type 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted program-type" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 6 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation budget-cap 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted budget-cap" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation byte-bounds 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted byte-bounds" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 2 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation payload-type 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted payload-type" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 4 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation payload-forward 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted payload-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 34 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation budget-forward 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted budget-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation raw-schema 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted raw-schema" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation root-count 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted root-count" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation step-sequence 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted step-sequence" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation program-identity 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted program-identity" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 4 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation explicit-entry 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted explicit-entry" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation rv64-range 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted rv64-range" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 2 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation entry-forward 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted entry-forward" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 16 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation immutable 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted immutable" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 1 failures / 0 errors; metadata only"
+  out="$(python3 -O scripts/probe_matched_gpr_entry.py --mutation metadata-budget 2>&1)"; rc=$?
+  arm "RED optimized entry context omitted metadata-budget" "$rc" 1 "$out" "MATCHED-GPR-ENTRY: 25 tests / 3 failures / 0 errors; metadata only"
+  # End P4.14 a42d3a.
   # P4.14 a42d1: complete source/image bytes, metadata-only findings and refusals.
   out="$(python3 scripts/probe_matched_gpr_source_image.py 2>&1)"; rc=$?
   arm "GREEN complete source-image normal" "$rc" 0 "$out" "MATCHED-GPR-SOURCE-IMAGE: 24 tests / 0 failures / 0 errors; byte correspondence only"
