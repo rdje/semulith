@@ -1,5 +1,52 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — contain completed adequacy designs (P4-SYSTEM.14 a42h)
+
+Parent b254b95 live task130463/131072B leaves609B; first476B ownership
+precedes every move/tool. Select six whole completed a42e/d3/d3a/d3b/f/g
+bodies at actual next-heading boundaries (27591B); exclude active a42 (621B).
+Move prior whole393B book receipt too. Ordinary part18 carries seven27984B
+bodies, exact source revision/offsets/lengths/hashes/replacements and direct
+anchors. Both entire predecessor sources reconstruct byte-exact; main book
+shrinks15B. Part33982B SHA256
+9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59.
+Original12 capture/reader, earlier ordinary parts, limits and current feature
+teaching remain unchanged. Literal cat reads the whole part; closed reader
+refuses its unknown path.26 independent body/map/actual-receipt+new-digest/
+route/guide/active-plan omissions refuse normal/O; whole inverses pass.
+
+Clarify only two current impact-book seams:4096 graph pairs and32768 seed
+combinations enumerate loop-free three-node graphs. API cycles/self-dependencies
+remain supported; explicit cycle tests still exist. No implementation change.
+All31 Bash fences, including18 previously executed complete examples, stay exact;
+all impact fences and every other source word reconstruct. Initial scratch
+instrument incorrectly counted every fence as one of18 selected complete
+examples; actual census31 distinguishes the scopes, with both preserved.
+
+Director explicitly authorizes stopping idle Kimi Code. Subsequent unrestricted
+ps finds no Kimi processes and termination selection is empty: record absence,
+not an unproved signal outcome. Unrestricted handoff check rc=0, no exemption.
+D47 reproduced: default sandbox denies ps spawn with EPERM; handoff script
+suppresses that failure, processes an empty snapshot and can report green.
+Own priority1 next finite repair: fail closed when visibility is unavailable,
+retain successful rules and reproduce deterministic tool failures plus actual
+sandbox denial. Current handoff verdict uses unrestricted process visibility.
+Ordinary-task archive freeze outside original12 remains an explicitly bounded
+assessment next; selected TASK-HISTORY APIs alone do not establish a global gap.
+
+Verified focused12/sharder12/seven books/3212 fresh+actual links, literal read
+and complete normal/print teaching. Whole source/task/history inverses and all99
+parent entries exact normal/O;1369 other tracked files/modes/Gitlinks unchanged.
+Both history guards jointly refuse old/moved/published actual receipt edits with
+updated digests. Whole DEV3668B/one entry moves to0269 (3901B/SHA256
+b4f121d78bb7ced0dd36078bb3ccdb0c801cd3bb35233d9cf6b0a8a834929c0d);
+61live+210sealed271logical. No CH shard needed. Scratch moved-receipt control
+initially guessed a missing65/0; inspect actual body, mutate PROFILE284/0 to285/0,
+then verify named joint refusal normal/O. No production claim came from that
+instrument failure. Final docs/hooks/hash/mode/brief0/full-visibility census next.
+promotion: declined — existing exact-history/claim-domain rules apply; D47
+is owned as a concrete tool repair, not a new policy or source of authority.
+
 ## _(2026-10-11)_ — conservative old/new dependency impact (P4-SYSTEM.14 a42g)
 
 Implement the existing EVIDENCE_AND_GATES sections3–4 algorithm in a pure bounded
@@ -602,57 +649,4 @@ entries and actual original/moved/published receipt+digest edits protected.
 DEV17=15+2/5031B into0249 (5264B SHA256
 9da0f3afce2b05ba0b8809b3c545b85fc80a4a08508c16220c813ca2b80f85aa),
 41live+210sealed251logical. COMMIT then a40 composition/adequacy obligations.
-
-## _(2026-10-11)_ — authenticate the declared file set within shared budgets (P4-SYSTEM.14 a38)
-
-Add read_declared_files consuming the public manifest check and twelve selected
-observation records from the raw-schema/scoped validated parent. Freeze/count/
-bind the complete9..73 input union and12 outputs before I/O; exact principal
-identity overlaps once, distinct selected IDs/paths and no input/output alias.
-Reuse the manifest pin without reopening; seed cumulative read accounting from
-its known authenticated size. One anchored read per remaining distinct file,
-explicit role caps. Transient children first, pin-only principals next, retained
-identity/two expectations/twelve observations last. Inspect every child through
-the same snapshot, including principal overlaps; preserve published-format and
-schema-tool boundaries. No complete closure/source/program/image, comparison,
-execution, atomic currentness or qualification credit.
-
-Clip each read to per-file/remaining aggregate128MiB and every snapshot to live
-payload room within16MiB. Charge actual successful sizes; a failed/inconsistent
-reader call charges its admitted cap conservatively because partial consumption
-is not always reported. Stop immediately, keep immutable partial pin/content
-facts and drop all retained payloads. Distinguish authenticated sizes, read-budget
-charges and returned retained bytes. Chunks/parse objects/copies add RAM. Coherent
-failed process records remain data; absent external binary cache is irrelevant
-unless explicitly declared as a required project dependency.
-
-D38-SEED-SNAPSHOT-PEAK: initial draft returned matched for max_snapshot_bytes=0
-after actual manifest snapshot217B when all later payloads were empty. Source
-640697ecd50b6a1be0d7a1b6886b31d0c16e2b4201ccb82c4d57214ff337cbe3.
-Read charge covered the seed, earlier peak preflight did not. Both budgets now
-must cover the known seed before new I/O; released bytes leave later live room.
-Exact old draft loses3 new assertions normal/O, repaired passes, omitted seed-
-peak guard loses3. Initial47 controls/thirty omissions were incomplete signoff.
-Initial41-test fixture also dropped its original child when selecting manifest
-self, correctly hitting union membership first; retain the child/add self to
-exercise the intended guard. Instrument-only correction, no false green credit.
-
-49/0/0 normal/O;31 independent omissions fail without errors,64 literal arms:
-PROFILE284/0,39 doctrines/1107 arms. Actual128MiB inclusive fixture matches:
-134217728 consumed+seed/charged, retained89. Add1 declared byte: refused after
-exactly134217728 consumed+seed/charged, retained0. Fixtures cleaned. Focused17,
-sharder12/0/seven books/3090 links/all8 literal examples and normal/print teaching
-pass. Complete old checker/method/closure/evidence inverses,340 raw parses/types
-and243 mappings exact. DECLINED new promotion: existing bounded-reader/schema/
-single-mapper/history rules apply; task/method/book/toolbox carry current API.
-Own measured DEV publication and full history/scope/receipt refusals/COMMIT;
-fixed caps/seals/canonical/CPU status unchanged. Next a39 byte consumers/evaluator
-using these exact snapshots without reopens, then collector/retention/captures.
-
-DEV51263→47923 at48200 target,18=16+2/3340B published0248,
-3573B/92fadf9f73eeb4f58ba5374c647da6e25bdbb3b3645b21d0b5f06bb7d7090141;
-40live+210sealed250logical. History/scope rc=0:100 old entries/1319 other files
-and whole source/head predecessors exact. Original PROFILE220/0, moved Limits53/0
-and published0247 Graph74/0 edits refuse even with updated digests. Full CI on
-this clean authentication milestone follows COMMIT, before a39 code.
 

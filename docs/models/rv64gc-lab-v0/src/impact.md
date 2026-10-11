@@ -164,7 +164,7 @@ have 128 profiles, 1024 node IDs and 8192 edges. They do not alter the retained-
 
 The tracked probe exercises positive, removed-edge, old/deleted-evidence, shared
 scope, unknown/unmapped, fixed-point, ordering, cycle, type and inclusive-boundary
-cases. It independently checks all 4096 pairs of directed three-node graphs with
+cases. It independently checks all 4096 pairs of loop-free directed three-node graphs with
 one explicit changed input against set-based reachability. The registered normal
 and optimized suites also omit individual semantic and validation guards; only
 actual discriminating omissions are counted. Synthetic checks validate this
@@ -173,7 +173,7 @@ operation, not a real graph's completeness or a CPU experiment.
 The explicit reverse union is retained even though seeding every changed-edge
 dependent makes a one-sided traversal redundant in the bounded diagnostic.
 Run `python3 [-O] scripts/probe_change_impact.py --redundancy` to rederive all
-32768 old/new/seed combinations over three nodes. This separate diagnostic checks
+32768 old/new/seed combinations over loop-free three-node graphs. This separate diagnostic checks
 both one-sided closures against the union; it is not a registered discriminating
 omission or a universal proof.
 Neither that observation nor any passing helper result permits missing canonical
