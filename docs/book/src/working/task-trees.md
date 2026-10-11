@@ -6,14 +6,12 @@ every commit.
 
 ## What a leaf is
 
-The smallest unit that can be finished, verified, and committed as one signoff-quality slice.
-A tree file under `docs/tasks/` carries the goal, the non-goals, the acceptance criteria, the
-leaves with their statuses, the current frontier, the decisions, the open questions, the
-verification log, and the commit log.
+A leaf is one signoff-quality slice, finished, verified and committed together.
+Its `docs/tasks/` tree holds goals/non-goals, acceptance, statuses/frontier,
+decisions/questions, verification and commit logs.
 
-Statuses run `proposed` → `pending` → `active`/`in_progress` → `done`. A stalled leaf is marked
-`blocked` with the blocker named, never left `active` — the difference is what a reader six
-weeks later needs.
+Statuses: `proposed` → `pending` → `active`/`in_progress` → `done`.
+Mark a stalled leaf `blocked` and name its blocker for the next reader.
 
 ## The acceptance checklist
 
@@ -97,11 +95,8 @@ Read the complete historical bodies with the commands below.
 
 ### Read task history
 
-Links from the live status and task tables lead here. Read an active or closed
-record with `cat docs/tasks/<TREE>.md`, using the linked tree ID.
-
-Run these commands from the repository root. Sealed parts1–12 use the checked
-reader; select the numbered part you need, for example archive9:
+From the root, read live records with `cat docs/tasks/<TREE>.md`. Sealed
+parts1–12 use the checked reader; choose the part, for example archive9:
 
 ```sh
 python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
@@ -124,6 +119,16 @@ cat docs/task-history/README.md
 These instructions stay in the book because mdBook rewrites external Markdown
 links to HTML files that it does not generate. The build resolver runs after
 includes, preserving labels, examples and canonical source files.
+
+Use a new owned output directory to test the full gate:
+
+```sh
+python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42k/replay
+```
+
+Exit0 marks a completed measurement; `gate_rc` is the gate verdict.
+The real index/worktree must stay exact. A42k's altered receipt passed;
+a42l owns repair.
 
 ### Preserve completed task receipts and live development history
 

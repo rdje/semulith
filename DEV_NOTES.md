@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — measure staged ordinary-history protection (P4-SYSTEM.14 a42k)
+
+D49 measured on505dd74: unchanged complete doctrine enforcer accepts proposed
+part18 receipt3196→3197 (gate0/all doctrines green). Actual file stays33982B/
+9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59;
+proposed SHAedbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
+This single staged-receipt counterexample refutes publishing protection for that
+case; it is not a claim that every integrity check is absent. Original12 sealed
+reader/descriptor/manifest/terminal and all real ordinary parts stay unchanged.
+
+First-class task_archive_gate_probe.py creates one local Git object and isolated
+on-volume proposed index. Git facade delegates real commands, resolves published
+global-C/-c and --absolute-git-dir owner, scopes index reads to this checkout;
+existing child fixture repositories keep their own index. Failed/stderr/empty
+context and unsupported globals refuse, status/stderr preserved.8positives
+normal/O; unscoped/missing/discovery omissions2/1/3 failures, zero errors.
+Explicit runtime guards survive optimization, output parent/device checked
+before creation; no global index override in the enforcer environment.
+
+243scoped reads/115delegations/no refusal; real index and1387working identities
+unchanged, proposed index exact, owned index residue0. Independent module/index/
+real-source postchecks exact. Measurement instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
+No real index replacement, damaged commit, other-project write, network or
+submodule implementation inspection. Tool exit0 means measurement complete;
+result gate_rc is the actual verdict. New-output replay command is in the book;
+actual run used assessment. Preserve original current teaching rules/historical
+receipts/commands; toolbox routes reproducible diagnostics. Focused/books/source/
+history/scope and full COMMIT protect the classification unit. No Rust/fullCI or
+push, canonical/CPU/qualification/LIVE unchanged. D49 remains open and priority1
+a42l owns its working/index preservation repair immediately after this commit.
+Final focused12/sharder12/seven books/3212fresh+actual links/normal+print;
+99old entries/complete heads and1378protected files/modes/Gitlinks exact normal/O.
+Whole DEV3183B→0276/CH647B→0277,69live+210sealed279logical, receipt+digest edits
+refuse. Book -8B/family524277 of524288; fixed caps and original archives unchanged.
+promotion: declined (bounded counterexample and instrument controls stay in the owning leaf; next repair is explicitly priority1).
+
 ## _(2026-10-11)_ — retain the census source repair across sync (P4-SYSTEM.14 a42j)
 
 D48 reproduced through the actual public updater in owned local fixtures:
@@ -624,49 +660,4 @@ DEV16=15+1/2722B into0252 (2955B, SHA256
 full CI follows the clean repair milestone before a42c. Teach literal field decoding/limits and
 historical loader tolerance without ABI/CPU/qualification overclaim. No canonical,
 reference, schema, seal or cap change. Evidence target/p4-system-14/a42b.
-
-## _(2026-10-11)_ — bind authenticated expectation program identifiers (P4-SYSTEM.14 a42a)
-
-A41 full CI green on clean03ed501a4c78c3e477f48cb1a4597684c0bb399b:
-all5 legs,443 Rust tests/smoke53/seven books;18 verified source hashes unchanged.
-Log40152B SHA c6fd1d7b22b9770b2b7b07b98ad0b1a43a4c1ef0eccfda71e68def0cc3f01e24;
-actual receipt target/p4-system-14/a41/full-ci/result.json, both censuses green.
-Own a42a on this clean milestone before edits; subsequent a42 slices retain
-source/image reconstruction, complete closure, conservative impact and provenance.
-
-Actual22-file fixture with both expectation labels consistently wrong, pins and
-receipts republished, previously gives pending/valid/matched/satisfied. This is
-the explicitly scheduled parent-program obligation, not a qualified false green.
-Extend the same comparison owner with optional program context: plain string,
-1..65536 characters before payload validation, exact identity in both validated
-expectations before unsupported flags. Omitted/None context preserves the pure
-legacy unit. Evaluator normalizes/freezes the parent value before artifact reads,
-refuses oversize before manifest I/O and always supplies the frozen value. No
-new loader/mapper, reopen or budget change. Actual repaired fixture returns
-refused/valid/matched with comparison=None and the exact parent-mismatch reason.
-
-23 controls pass normal/O; seven independent omissions lose7/13/5/1/1/1/1 assertions,
-zero errors in both modes. Cover exact labels/case/prefix/whitespace, one/both
-wrong labels, unsupported records, inclusive/overflow bounds, pre-read canonical
-mutation and accepted mapped-string normalization; actual repinning preserves
-independent authentication credit. Legacy comparison52/evaluation42 green both
-modes; all old registered omissions must remain exact in focused gates.
-Sixteen literal arms: PROFILE390/0,39 doctrines1213 arms. Complete new book
-example teaches identifier-only correspondence and pending adequacy. Current
-method owner range corrected before checks; no normative requirement changes.
-Own D42-PROGRAM-SELECTION: new bound initially ran before public rule selection.
-Actual unknown-rule/65537-char case changed old unsupported/valid to refused/valid,
-zero artifact reads. Move bound after supported selection, before artifact I/O;
-add combined control. Exact recovered draft10140B SHA256
-7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
-loses1 assertion/0 errors in23 cases normal/O; repaired23/0/0. Initial focused
-checks passed without this combination; repeat on the fixed source/new controls.
-Repeated focused17/sharder12/0/seven books/3124links/all11 literal examples,
-normal+print teaching and whole source/task/method/book inverses pass normal/O.
-340 raw forms/243 mappings,102 prior entries/1329 other files exact. Real original/
-moved/published receipt+digest rewrites refuse. DEV49218->46956B,16=15+1/2262B
-whole a27 entry into0251,2495B SHA256
-dbff2bb0274d826c2884f03d2e1a9df35d50c3d953db058ca7307b0de4a0b042;
-43live+210sealed253logical. Final docs/staged-byte checks and COMMIT hooks next;
-no canonical capture, source/image/closure/provenance qualification or CPU credit.
 

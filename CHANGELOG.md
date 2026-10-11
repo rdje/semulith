@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0246 (leaf P4-SYSTEM.14) — measure staged ordinary-history gate protection
+
+- Confirm D49: unchanged full enforcer accepts altered staged part18 receipt3196→3197. Real index/1387working identities/proposed index exact;243scoped reads/115delegations/no refusal, owned index residue0. All real ordinary/sealed bodies unchanged; one measured counterexample, no global absence claim.
+- Add first-class isolated-index diagnostic:8controls pass normal/O, unscoped/missing/discovery omissions fail2/1/3 with zero errors. Scoped real Git delegation preserves child fixtures and command status/stderr. Book/toolbox/live/task/source/history verification aligned; fixed caps/CPU/canonical/LIVE unchanged. D49 remains open, priority1 a42l repair next after full COMMIT.
+
 ## SEMULITH-P4-0245 (leaf P4-SYSTEM.14) — retain the repaired handoff census during scaffold sync
 
 - Fix D48: remove only the locally repaired census from automatic neutral replacement; other updater behavior stays exact. Public local-input reproduction3/2/0 normal/O pinpoints replaced repair despite rc0; newer upstream changes require deliberate review.
@@ -537,14 +542,4 @@
   Book documents the distinction and completed c29c/c29d receipt tense.
 - No runtime/registry/contract credit change; focused/all six books in tree.
   C29e public-ancestry repair next, then GC-COUNTERS.
-
-## SEMULITH-P4-0167 (leaf P4-SYSTEM.13 c29d) — retain book verification history under fixed caps
-
-- Contain45 dated receipt spans across four P4 chapters, retaining current
-  behavior, all original code/commands/tables/links/headings and precise routes.
-- Preserve exact payloads in finite51848B archive; four full source inverses
-  match bytes/order/SHA. Corruption, offset and omitted-span controls reject.
-- Save6703B without raising caps or moving rendered content outside the budget.
-  Runtime/registry/effective102/114 unchanged; focused/all six books in tree.
-- Own P0's remaining internal-ancestry rationale as c29e before GC-COUNTERS.
 

@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | assess ordinary-part protection with actual gates; then remaining a42 adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | priority1 a42l D49 ordinary-history preservation; then remaining a42 adequacy |
 
 ## Decisions
 
@@ -590,6 +590,46 @@ handoff, assess ordinary-part protection with actual gates before classifying
 that separate candidate, then return to remaining a42 adequacy obligations.
 promotion: declined (existing local-source retention precedent; measured repair and integration evidence live in this leaf).
 
+### `.14` a42k — assess staged ordinary-history protection (completed, SEMULITH-P4-0246)
+
+Owned on clean505dd74 after full hooks/all11 hashes+modes/brief0/host census0.
+First-class scripts/task_archive_gate_probe.py, all scratch under
+target/p4-system-14/a42k. Read actual gate/reader/ordinary source map and current
+book before changes; no foreign project writes or submodule implementation reads.
+Diagnostic creates one local object and isolated on-volume proposed index;
+real index is never replaced. Tested facade resolves public global-C/-c options
+and --absolute-git-dir owner, injects only for this checkout's index reads, and
+leaves existing child Git fixtures their own index. Unknown options or failed/
+stderr/empty context refuse. Preserve original command status/stderr. Explicit
+runtime conditions survive optimization. Source8/0/0 normal/O; independent
+unscoped/missing/discovery omissions2/1/3 failures, zero errors normal/O.
+
+D49 confirmed on505dd74: unchanged full check_doctrines.sh rc=0/all doctrines
+green with proposed part18 receipt3196→3197. Actual source33982B SHA256
+9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59;
+proposed edbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
+Instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
+Real index SHA898b53dfdf832bbf01eea14f4099871b1cff0d2a094e4e1ca4e423e92c4ed909
+and1387working byte/mode/Gitlink identities unchanged; proposed index unchanged,
+243scoped reads/115delegations/no facade refusal; owned proposed index residue0.
+Independent module/index/real ordinary-source hashes re-read exact after result.
+Gate exit is a measured counterexample, not a universal absence-of-checks claim.
+Real ordinary files and original12 sealed reader/descriptor/terminal stay exact.
+
+Classification complete; D49 remains open, a42l repair is priority1. Current
+book/toolbox teach the measured limit and new-output replay command; actual
+run used assessment. No CPU/canonical/qualification/status credit.
+promotion: declined (bounded counterexample/instrument controls remain here; priority1 repair is explicitly owned next).
+
+### `.14` a42l — preserve published ordinary histories (proposed, SEMULITH-P4-0247)
+
+Priority1 D49 repair immediately after committed a42k. Own working/index
+preservation of published ordinary history, independent damaged-input/omission
+controls normal/O and replay of the actual full gate counterexample. Preserve
+all historical bytes and original finite12 reader authority. Read contracts and
+contain the active source first if its fixed cap fires; no dirty pivot. Complete
+current book/live/history/COMMIT sync, then remaining a42 adequacy obligations.
+
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
 Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
@@ -686,6 +726,21 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42k — **ROOT CAUSE**: python3 scripts/task_archive_gate_probe.py
+  --output target/p4-system-14/a42k/assessment rc=0:actual full gate0/all doctrines
+  green accepts changed staged part18 receipt3196→3197. Real index/1387working
+  identities/proposed index exact,243scoped reads/115delegations, no facade refusal.
+- [x] `.14` a42k — **ADDRESSED**: python3 scripts/task_archive_gate_probe.py
+  --self-test --output target/p4-system-14/a42k/control-normal rc=0;
+  -O/control-optimized also rc=0:8positives. run-controls.py rc=0:unscoped/missing/
+  discovery omissions2/1/3 failures, zero errors. First-class diagnostic closes
+  classification; D49 remains open, priority1 a42l owns repair. No bad commit.
+- [x] `.14` a42k — **NO REGRESSION**: focused.sh/proof.py/history.py/scope.py/
+  rendered.py rc=0 as applicable normal/O:focused12/sharder12/seven books/fresh+
+  actual navigation, whole old task/book/head inverses and unrelated bytes/modes/
+  Gitlinks exact. Measured instrument hash unchanged; all real ordinary/sealed/
+  canonical/CPU/LIVE/caps unchanged. Full COMMIT/hooks/postconditions close unit.
 
 - [x] `.14` a42j — **ROOT CAUSE**: probe_handoff_census.py --only-scaffold
   before fix:3tests/2failures/0errors normal/O, named changed bytes in
@@ -1089,6 +1144,28 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42k: actual full gate on505dd74 accepts isolated staged ordinary part18 receipt
+3196→3197 (gate0/all doctrines green). Instrument8/0/0 normal/O, omissions2/1/3
+without errors; contexts/status/stderr/unsupported globals covered. No global
+GIT_INDEX_FILE leak into child fixtures;243scoped reads/115delegations, no refusal.
+Real index/1387working identities and proposed index exact, owned index residue0;
+independent source/index/ordinary-source hash postchecks exact. Local unreachable
+object only, no damaged history committed. Actual ordinary/sealed bodies unchanged.
+D49 owned priority1 a42l; classification unit complete, defect remains open.
+Root cause: check_task_history.sh invokes the closed12 reader and link checks;
+its --list excludes ordinary part18. a42l adds proposed/working preservation
+at publication without extending the original reader.
+Final focused12/sharder12/seven books/3212fresh+actual links, full normal/print
+teaching rc=0; proof/history/scope/rendered normal/O rc=0. All99old entries/
+complete heads and1378other tracked files/modes/Gitlinks exact. Whole DEV3183B
+→0276/3416B SHA790d7e1117fdf9d7ec1ac0c13c813882073b63a3961160e0e1f071bb1eda5a26;
+CH647B→0277/884B SHA8660c64b756a1430de34d7669a091085d25a8d41e1e22cfda7b2da41d4a78189.
+69live+210sealed279logical; actual receipt+updated-digest edits jointly refuse.
+Book -8B/family524277 of524288, all fixed caps/original archives unchanged.
+Book current introduction/reading guidance condensed, all old historical receipts
+and commands preserved; new-output measurement command and actual limits taught.
+First-class diagnostic/toolbox/live/task/COMMIT aligned, fixed caps unchanged.
 
 a42j: D48 public local-sync replacement reproduced3/2/0 normal/O; named repair
 file changed although updater returns0. Remove only its NEUTRAL row and explain
@@ -1528,6 +1605,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42k | `SEMULITH-P4-0246 (leaf P4-SYSTEM.14): measure staged ordinary-history gate protection` | priority1 a42l D49 preservation repair, then remaining a42 adequacy |
 | `.14` a42j | `SEMULITH-P4-0245 (leaf P4-SYSTEM.14): retain the repaired handoff census during scaffold sync` | actual ordinary-part protection assessment, then remaining a42 adequacy |
 | `.14` a42i | `SEMULITH-P4-0244 (leaf P4-SYSTEM.14): fail closed on unavailable handoff census` | due recurring cleanup, then ordinary-part gate assessment/remaining adequacy |
 | `.14` a42h | `SEMULITH-P4-0243 (leaf P4-SYSTEM.14): contain completed adequacy designs` | D47 fail-closed handoff census, then bounded ordinary-part guard assessment/remaining adequacy |
