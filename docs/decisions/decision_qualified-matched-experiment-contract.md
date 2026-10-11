@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — grammar/mapping, edges, pins and artifact formats implemented; comparison/qualification and retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a21, `SEMULITH-P4-0203`–`0212`; existing GC verification policy and evidence-graph requirements
+- **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
+- **Owner / source:** `P4-SYSTEM.14` a12–a42f, `SEMULITH-P4-0203`–`0241`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,22 +15,19 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Current implementation:** a13 implements the optional block in the existing
-reference schema and single dossier mapper. a14 adds raw-form schema validation,
-scoped identities and declared-edge checks; a15 authenticates declared file pins
-through anchored same-volume traversal. a16 repairs Sail comparison to refuse
-rows/witnessed deliveries beyond the declared step budget, before value comparison.
-a17 adds immutable snapshots from the same authenticated read, with an explicit
-caller byte bound and no data on failure. a18 refuses repeated expectation write
-keys before dictionary collapse. a20 adds optional GPR witnesses and control
-baselines, with generic budget/kind/endpoint checks. a21 adds bounded pin-only reads
-and bounds snapshot growth probes. a26 adds bounded prospective dependency/receipt
-formats and single mapping; evaluation and collection remain pending. DOSSIER-SCHEMA checks shape;
-PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
-while comparison/qualification evaluation is pending. Legacy flat metadata and
-experiment/model/pair checks remain intact. No GC record is qualified. This contract applies
-prospectively, before the forthcoming fresh qualification runs, without backdating
-the historical experiments or weakening `profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md`.
+**Current implementation:** a13–a21 add grammar/mapping, scoped edges, safe
+pins/snapshots, complete-budget comparison, duplicate-write refusal and typed
+witness/baseline fields. a26 adds dependency/receipt formats. a29–a42d3b implement
+bounded byte comparison, identity/receipt/execution/relations/manifest bindings,
+shared-budget file authentication, selected expectation context and complete
+source/ELF correspondence. The GC book's authenticated evaluation chapter
+(`docs/models/rv64gc-lab-v0/src/evaluation.md`) documents the composed API and findings.
+
+DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
+`UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh
+collection remain pending. Legacy checks/records stay intact; no GC record is
+qualified. The original declaration remains prospective for fresh qualification;
+it neither backdates historical experiments nor weakens the GC verification policy.
 
 ## Why
 
@@ -47,13 +44,13 @@ single dossier mapping owner rather than introducing a second source format.
 The `matched-gpr-v1` envelope carries GPR-change and witnessed-delivery observations.
 The prospective first comparison rule, `sail-gpr-change-v1`, credits GPR witnesses;
 its exact controls, closure, bounds and replay limits are declared in
-`docs/decisions/decision_sail-gpr-comparison-method.md`. Implementation is pending.
+`docs/decisions/decision_sail-gpr-comparison-method.md`. Authenticated byte/source-image checks exist; complete method/policy adequacy and collection remain pending.
 It cannot establish unrecorded FP registers, memory, CSRs, request counts or full
 architectural equivalence. Other observation methods need their own explicit
 versioned contract before they receive credit.
 
-The block has the following required information. Syntax is implemented; matching
-relationships and authenticated execution evidence remain separate requirements.
+The block has the following required information. Syntax and selected authenticated relationships are implemented; execution
+provenance and full adequacy remain separate requirements.
 
 | Information | Required content and relationship |
 | --- | --- |
@@ -109,8 +106,8 @@ under this method until explicitly requalified.
    `scripts/dossier_sexp.py`; prove all existing dossier dictionaries and generated
    consumers remain exact, and exercise the new nested fields with positive and
    malformed/lost-child controls.
-2. Declared identity/edge checks implemented at a14 and file pins at a15;
-   comparison/qualification evaluation remains pending. Implement remaining checks with
+2. Declared identities, pins and authenticated byte/source-image evaluation
+   are implemented; complete adequacy and collection remain pending. Retain
    controls for wrong results, missing/extra observations, stale inputs, failed
    processes, truncated traces, duplicate/conflicting IDs and broken producer edges.
    Demonstrate each control's intended reason; deleting a predicate must expose it.
@@ -129,7 +126,7 @@ under this method until explicitly requalified.
    gate/policy criteria are actually met. Preserve old records and explicit successor
    edges; do not rewrite a historical capture to appear freshly executed.
 
-Comparison/qualification evaluation and retention layout are the next owned slices. This decision
+Complete closure/impact/property/provenance, policy qualification and capture retention remain. This decision
 does not create an artifact store, change a cap, retire a source, run a reference,
 change a requirement status or close a CPU-SYSTEM axis.
 
@@ -144,12 +141,12 @@ must be nonempty. Those counts do not prove baseline/repeat/control coverage.
 
 | Child | Other fields; brackets mean optional |
 | --- | --- |
-| `property` | `requirement_id`, repeated `obligation_ids`, repeated `observation_kinds` (`gpr-change`, `witnessed-delivery`), `statement` |
+| `property` | `requirement_id`, repeated `obligation_ids`, repeated `observation_kinds` (`gpr-change`, `witnessed-delivery`), `statement`, [`gpr_witness(step_n, register)`] |
 | `input` | `role`, `path`, `sha256` |
 | `producer` | `role` (`reference`, `expected`), `version`, [`candidate_id`], repeated `input_ids`, [repeated `shared_input_ids`] |
 | `observation` | `role`, `path`, integer `byte_size`, `sha256` |
 | `run` | `kind`, repeated ordered `argv`, repeated `input_ids`, repeated `producer_ids`, [`repeat_of`], integer `process_exit`, `verdict`, repeated `observation_ids` |
-| `control_run` | `run_id`, repeated `mutation_input_ids`, repeated `property_ids`, `expected_verdict`, `observed_verdict`, `reason` |
+| `control_run` | `run_id`, [`baseline_id`], repeated `mutation_input_ids`, repeated `property_ids`, `expected_verdict`, `observed_verdict`, `reason` |
 | `producer_pair` | `left`, `right`, `subsystem`, `assessment`, [repeated `shared_input_ids`], `evidence`, `consequence` |
 
 Identity lists must be nonempty and unique when required. `argv` preserves order,
@@ -162,7 +159,7 @@ are `AGREE`, `DIVERGE`, `REFUSED`; an expected control verdict is `DIVERGE` or
 
 This complete illustrative experiment passes the **shape** contract. Its dummy
 pins and paths are not artifacts or a qualified capture. Adding it to an otherwise
-consistent dossier causes the pending-evaluator refusal described above.
+consistent dossier still causes the qualification refusal described above.
 
 ```lisp
 (experiment (id "example-v1") (program "example.s") (instructions 1)
@@ -224,7 +221,7 @@ and losslessness. a14 additionally checks scoped identities, declared edges,
 nonnegative observation sizes and lexical relative-path form, as documented in
 the GC book. a15 checks physical paths, same-volume regular files, hashes and
 observation sizes, with explicit matched/mismatch/unavailable/refused results.
-Execution, comparison/invocation equivalence, full dependency currentness and
-policy adequacy remain pending; matching pins establish only bytes at check time.
-No stored flag can assert qualification on its own.
+Authenticated comparison and invocation binding exist. Fresh process provenance,
+complete dependency adequacy and full policy remain pending. Pin matches establish
+check-time bytes; no stored flag can assert qualification on its own.
 <!-- ANCHOR_END: contract -->

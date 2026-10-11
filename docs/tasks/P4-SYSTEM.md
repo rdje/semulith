@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42d3b COMMIT/full-CI milestone, then complete adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | a42f D46 review-surface currency, then complete adequacy |
 
 ## Decisions
 
@@ -629,6 +629,68 @@ rewrites refuse; only inherited EOF blanks DEV/0263/0264. Whole DEV3121B to0263/
 hooks/hashes/modes/brief0/censuses then clean full CI; no qualification/CPU advance.
 promotion: declined (existing method validation, single-owner, bounded ledger and metadata/qualification contracts govern this finite composition; no new normative policy).
 
+### `.14` a42f — align implemented-method review surfaces (completed, SEMULITH-P4-0241)
+
+Owned on clean3e5a3ea3df98301facc10090c1e2f27993a889a8 after d3b all20
+verified/staged/committed/working hashes/modes, hooks, brief0/untracked and both
+handoff censuses passed. Full make ci on that exact revision rc=0 all five legs:
+443 Rust tests, all doctrines, wasm bench/smoke53, seven books. All1370 tracked
+files/modes/Gitlinks unchanged, Git clean, jobs closed. CI log40159B SHA256
+5476197fa2aed74bcc2e9d3cc38972a09bb8853252992b4dce4ecc1a744c2cff;
+receipt target/p4-system-14/a42d3b/full-ci/result.json. No push below cadence.
+
+D46-IMPLEMENTATION-STATUS — priority1 review-surface defect, owned here now.
+Reproduce at the parent: qualified-experiment decision says evaluation/comparison
+pending; its index hooks say authentication/evaluation pending; GC evidence and
+references chapters retain future-evaluator/aggregate-budget descriptions. The
+production PROFILE refusal also says comparison evaluator pending. Public
+E.evaluate_retained_unit already composes authentication/comparison/source-image,
+C.compare_unit has optional parent program, Q owns aggregate budgets and nested
+child inspection. Standalone implemented checks and still-pending complete
+qualification are conflated, misleading the director's only review surface.
+Git log/blame: qualified overview last touched18617123/0217 at artifact formats,
+before byte comparison/authenticated composition03ed501/0232 and3e5a3ea/0240;
+later implementation teaching updated selectively. Root cause: partial propagation
+of current-boundary summaries. No failed CPU behavior or falsely opened gate.
+
+Read .14 a42/G-TRACE/G-OBLIGATIONS, roadmap/Knowledge Map, full qualification and
+method declarations, GC evidence/references/evaluation/image/closure teaching,
+public C/E/Q/F APIs and PROFILE's actual unconditional qualification refusal.
+Correct only descriptive implementation/API summaries, index hooks and the
+refusal reason/self-test label/comment. Keep the qualification diagnostic category,
+unconditional refusal, every predicate/arm/count, original declaration date,
+method/policy criteria, legacy grammar/records and complete illustrative examples.
+Document optional witness/baseline fields already declared at a20 and optional
+parent-program argument already implemented at a42a; no new contract or API.
+
+Own exact old-to-new seam maps and complete source inverses, including every
+unchanged code example and normative clause outside named status/API corrections.
+Current qualified decision16281/16384B and evidence32641/32768B need concise
+current summaries inside fixed caps, with direct routes to full live teaching.
+Necessary whole-oldest DEV3018B/CH868B sharding is owned before use; protect all102
+predecessor entries, prior manifest prefix/seals/parts and actual old/moved/
+published receipt+new-digest refusal controls through both history guards.
+Protect all other tracked bytes/modes/Gitlinks, canonical data, LIVE1401 and all
+CPU axes. Derive knowledge map and literal counts without inventing changes.
+Focused documentation gates plus PROFILE self-test, sharder controls, seven books/
+fresh navigation and normal/print current descriptions must pass; preserve all17
+literal examples byte-exact from the verified parent. No new test framework or
+qualification integration. Complete COMMIT hooks/hash/mode/brief0/censuses before
+further finite closure/impact/property/provenance work. Full CI before push remains.
+Draft evidence33055B refused fixed32768 before repair writes; concise source
+32742B fits. Initial gate-output comparison included distinct owned random paths;
+normalize only the validated fixture path, then actual old/new33-control prefixes
+and all other findings agree normal/O. Fresh UNIT gate refuses two newly inserted
+source-relative include links (normal/print); replace with the root-relative source
+pointer while retaining the intro's working direct book link, rerun before signoff.
+HTML text extraction initially inserted spaces before inline-link punctuation;
+normalize only those artificial punctuation gaps when checking rendered prose.
+Result: focused13/full PROFILE/sharder12/seven books/3196 links/normal+print
+pass; source/task inverses,17 examples, actual gate33/0 prefixes and102 history/
+1358 other files/modes/Gitlinks exact normal/O; actual receipt+digest edits refuse.
+D46 closed. Qualification/canonical/CPU/caps/seals/counts unchanged. COMMIT next.
+promotion: declined (existing live-document currency, source-grounded claims and single-owner review rules govern this implementation-status repair; no new policy).
+
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
 Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
@@ -725,6 +787,19 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42f — **ROOT CAUSE**: proof.py normal/O rc=0 and targeted Git
+  log/blame: D46 old future-status summaries conflict with public C/E/Q checks;
+  actual old gate prefix33/0 retains the outdated reason and closed category.
+- [x] `.14` a42f — **ADDRESSED**: proof.py/rendered.py rc=0 normal/O:
+  whole source/task inverses; all17 literal examples unchanged; old/new gate
+  prefixes33/0 differ only in reason after owned-path normalization. Correct
+  current contract/index/book/API and refusal descriptions; qualification closed.
+- [x] `.14` a42f — **NO REGRESSION**: focused.sh/history/scope rc=0:
+  focused13/full PROFILE/sharder12/seven books/3196 fresh+actual links and
+  normal/print teaching pass;102 entries/1358 other files/modes/Gitlinks exact
+  normal/O, actual receipt+new-digest edits refuse. Fixed caps/seals/LIVE1401/
+  canonical/CPU unchanged. Final COMMIT hooks/hashes/modes/brief0/censuses.
 
 - [x] `.14` a42d3b — **ROOT CAUSE**: contract.py rc=0 normal/O:
   authentication/observed comparisons did not compose bounded source/image
@@ -1053,6 +1128,21 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42f: Verified proof.py normal/O: whole descriptive/API source and task
+inverses, all17 complete examples byte-exact; actual old/new gate prefixes33/0
+retain every finding except reason after normalization of only owned random
+fixture path. Focused13/full PROFILE/sharder12/seven books/3196 fresh+actual
+links/normal+print pass. History102/scope1358 other bytes/modes/Gitlinks exact
+normal/O; actual receipt+new-digest edits refuse. D46 closed; three non-predicate
+shell seams only, counts PROFILE454/GUEST328/global1401 unchanged. Whole
+DEV3018B to0265(3251B/04779083dc8548b471421a04c0e63c0b5442ef3e197cab8214d3ee7c80ac063e),
+CH868B to0266(1105B/c158e29d14e19226eba0d63862160c9f11f4a9e2e0709ba25bc16fd4d5645b87),
+58live+210sealed268logical. Fixed caps/seals/canonical/CPU/qualification remain.
+Actual Git whitespace census has only inherited EOF blanks0265/0266; the
+finalizer's assumed DEV warning was absent. Pin the actual two diagnostics,
+proved by whole history inverses; no trimming. Final docs/hooks/hashes/modes/
+brief0/censuses before next finite adequacy slice.
 
 a42d3b: Verified run-controls.py rc=0 normal/O:26/0/0 and14 omissions22/1/1/
 10/5/18/16/1/1/3/1/11/22/2 failures/zero errors; old42/29 and23/seven every
@@ -1383,6 +1473,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42f | `SEMULITH-P4-0241 (leaf P4-SYSTEM.14): align implemented-method review surfaces` | finite complete closure/impact/property/provenance work |
 | `.14` a42d3b | `SEMULITH-P4-0240 (leaf P4-SYSTEM.14): compose authenticated source and ELF findings` | clean full CI; remaining closure/impact/source-grounded property/collector provenance |
 | `.14` a42d3a | `SEMULITH-P4-0239 (leaf P4-SYSTEM.14): bind explicit expectation image context` | d3b authenticated composition; full closure/impact/property/provenance pending |
 | `.14` a42e | `SEMULITH-P4-0238 (leaf P4-SYSTEM.14): contain completed byte/image designs` | d3 validated entry/authenticated composition; active a42 plan retained |

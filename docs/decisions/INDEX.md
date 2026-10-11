@@ -9,8 +9,8 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [Exact token facets](decision_exact-token-facets.md) | `decision` | strict token ends, generic searches;91 field controls |
 | [Append-history predecessors](decision_append-history-predecessors.md) | `decision` | exact old bodies/order through sharding; staged and working proofs; failed Git reads refuse |
 | [Book record navigation](decision_book-record-navigation.md) | `decision` | included and cross-unit links; fresh catalogue/path/fragment gate; shared viewing root |
-| [Sail GPR comparison](decision_sail-gpr-comparison-method.md) | `decision` | Sail GPR: bounded readers/artifacts, byte comparison; authentication pending |
-| [Matched experiment contract](decision_qualified-matched-experiment-contract.md) | `decision` | matched-GPR shape/edges, pins and expectation keys; evaluation/retention pending |
+| [Sail GPR comparison](decision_sail-gpr-comparison-method.md) | `decision` | Sail GPR: authenticated byte/source-image findings; complete adequacy/collection pending |
+| [Matched experiment contract](decision_qualified-matched-experiment-contract.md) | `decision` | matched-GPR syntax and authenticated evaluation; qualification/capture retention pending |
 | [Obligation parts](decision_obligation-catalog-parts.md) | `decision` | explicit root-relative parts share one expansion owner; frozen bytes/order and fixed caps survive partition |
 | [`decision_claim-verification-adopted.md`](decision_claim-verification-adopted.md) | `decision` | "checked" means re-derived, falsified and durable; a missing leg is named, never omitted |
 | [`decision_delivery-provenance-is-frozen.md`](decision_delivery-provenance-is-frozen.md) | `decision` | a delivered manifest records what arrived; its live rows are declared, not silently drifting |

@@ -49,8 +49,8 @@ Two prospective artifact documents now have schemas and one mapping owner,
 children. Each input has `id`, `role`, canonical repository-relative `path` and
 lowercase 64-hex `sha256`. IDs and paths are unique. The document cannot name
 itself or declare a child with role `dependency-manifest`. Detecting manifest
-content hidden behind another role and authenticating the complete closure still
-belong to the forthcoming evaluator.
+content hidden behind another role is now covered by [leaf inspection](closure.md#inspecting-one-selected-dependency-leaf)
+and the shared reader. Completeness of the relevant closure remains pending.
 
 For example, this is valid **syntax with a dummy pin**, not a verified file:
 
@@ -97,7 +97,7 @@ artifact's canonical relative location. Each refuses more than 64 KiB **before**
 decoding/parsing, malformed UTF-8, extra/missing roots, unknown fields, duplicate
 singulars and invalid types/facets. They validate raw shape before dictionary
 mapping, then check the identities above. They never open an artifact or launch
-a process; future consumers must pass bytes from the anchored authenticated
+a process; consumers pass bytes from the anchored authenticated
 snapshot reader. Parsing does not authenticate a pin. Schema files themselves
 are read as project tools. These are payload limits, not total process RAM caps.
 The convenience encoders refuse unknown keys, lossy mappings and oversized
@@ -113,8 +113,9 @@ retention/capture slice must explicitly connect its files to evaluation and gate
 
 The [retained Sail method chapter](retained-method.md) contains the complete
 identity, receipt and invocation examples, plus witness/control/derivation/pair
-bindings. Their frozen results bind declarations and selected files separately;
-complete authenticated method evaluation and policy qualification remain pending.
+bindings. [Authenticated evaluation](evaluation.md) composes them with bounded
+comparison and [source/ELF correspondence](image-binding.md#compose-authenticated-source-and-elf-snapshots).
+Complete method/policy adequacy and qualification remain pending.
 
 ## What comes next
 
@@ -140,10 +141,16 @@ Historical comparisons remain prose in the canonical dossier. Optional structure
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
 formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
 and retained reference-identity authentication, [receipt binding](retained-method.md#authenticating-and-binding-a-process-receipt)
-and [execution binding](retained-method.md#binding-the-declared-sail-invocations) exist; complete method evaluation,
-reviewed fresh collection, measured
-retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
+and [execution binding](retained-method.md#binding-the-declared-sail-invocations) exist. The composed evaluator also binds
+source/ELF bytes. Complete closure/impact/source-grounded property/provenance and
+policy adequacy, reviewed fresh collection, measured capture retention and canonical
+captures remain pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
 implementation and is prospective; this book does not backdate it. Candidate
 availability, a successful book build and syntax checks do not advance requirement
 status or close G-TRACE. Full policy/status consumers follow verified captures.
+
+At composition checkpoint `3e5a3ea`, full local CI passed all 443 Rust tests,
+doctrines, browser bench, 53 smoke controls and seven book builds. All 1,370
+tracked files/modes/submodule pins remained unchanged. This regression checkpoint
+provides no experiment qualification or CPU acceptance credit.

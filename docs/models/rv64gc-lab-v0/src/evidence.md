@@ -89,9 +89,9 @@ fail the legacy test in both modes; explicit checks prevent `-O` false credit.
 ## Qualification contract and structured syntax
 
 The complete declaration below is included from its authoritative decision.
-Grammar/mapping, declared-edge checks and file-pin authentication exist;
-qualification remains closed.
-The current gate report is unchanged.
+[Authenticated evaluation](evaluation.md) composes declared-file, comparison
+and source/ELF checks. Full method/policy adequacy remains pending; qualification
+stays closed and the current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
 
@@ -117,8 +117,8 @@ control or missing ID. The single mapper preserves both additions; it refuses
 unknown witness fields and repeated whole witness children.
 
 Legacy/generic graphs may omit these optional fields. A generic control may name
-any declared baseline; the future first-method evaluator must require its sole
-baseline, exactly one witness and the intended value difference. A valid locator
+any declared baseline; the first-method bindings require their sole baseline
+and witness, and byte comparison checks the exact intended value difference. A valid locator
 does not prove the property, bind an obligation to an observation or qualify a run.
 The a20 grammar step added no receipt/manifest mapping or canonical capture;
 the artifact formats are described in [References](references.md#artifact-syntax-you-can-inspect).
@@ -207,7 +207,7 @@ when another rule also refuses the same record.
 
 An empty issue list from `check_experiment` means these declared relationships
 are consistent. The blanket `UNQUALIFIED EXPERIMENT VERIFICATION` refusal remains
-in production pending comparison/qualification evaluation. Relationship checks do not verify
+in production pending complete method/policy adequacy. These relationship checks do not verify
 executed mutations, successful processes, invocation equivalence, complete traces,
 byte-identical repeats, correct results or sufficient coverage. No CPU requirement
 status, gate axis, artifact budget or retention layout changes.
@@ -371,7 +371,7 @@ complete method/policy adequacy and qualification remain uncredited.
 `compare_unit` in `scripts/matched_gpr_comparison.py` checks supplied immutable
 bytes. It never opens an artifact or executes a producer. Its keyword arguments
 are `instructions`, `witness`, `baseline_expectation`, `control_expectation`,
-`baseline`, `repeat` and `control`:
+`baseline`, `repeat`, `control` and optional `program=None`:
 
 | Value | Contract |
 | --- | --- |
@@ -380,6 +380,8 @@ are `instructions`, `witness`, `baseline_expectation`, `control_expectation`,
 | Two expectation payloads | Immutable bytes, 1–1048576 bytes each; UTF-8, exactly one raw-schema-valid document, then the single dossier mapping |
 | `RunBytes(trace, process_exit)` for each run | Immutable trace bytes, 0–4194304 bytes each; an explicit integer exit with no default |
 
+Optional `program=None` preserves legacy calls. A supplied plain string of
+1–65536 characters binds both expectations; the evaluator always supplies it.
 All five payload bounds are checked before any decoding/parsing. These are
 payload limits, not exact process RAM ceilings. Complete ordered steps must match
 the parent budget. Duplicate writes refuse before dictionary collapse. Change
@@ -440,13 +442,10 @@ python3 -O scripts/probe_matched_gpr_comparison.py
 
 It prints `satisfied ['AGREE', 'AGREE', 'DIVERGE']`. All 52 tests and fourteen
 independent omissions run under GUEST-GEN in normal/optimized Python, including
-the inclusive payload and 4096-boundary limits. Complete input-closure and
-aggregate retained/read-budget evaluation remains pending. Retained
-[reference identity](retained-method.md#authenticating-a-retained-reference-identity) and
-[receipt binding](retained-method.md#authenticating-and-binding-a-process-receipt) have
-bounded authenticated checks. Complete evaluation is followed
-by reviewed fresh collection and canonical captures. PROFILE-CONSISTENCY still
-refuses v1 qualification; this byte unit does not lift that boundary.
+the inclusive payload and 4096-boundary limits. [Evaluation](evaluation.md) now
+composes identity/receipt/comparison and source/ELF checks; the [shared reader](closure.md#authenticating-the-declared-file-set-within-shared-budgets) owns aggregate accounting.
+Complete closure/impact/property/provenance, full policy, collection and canonical
+captures remain pending. This byte unit grants no qualification.
 
 ## Authenticating a pin with a total read bound
 
@@ -476,7 +475,7 @@ sentinel did not produce agreement; the prospective method needs stricter bounds
 
 Legacy `read_pinned` retains its streaming/chunk limit and initial-size-plus-one
 probe, with no total byte cap. The new per-call limit does not enforce aggregate
-experiment budgets: the future evaluator must reserve/account for those separately.
+experiment budgets: the [shared reader](closure.md#authenticating-the-declared-file-set-within-shared-budgets) owns that accounting.
 None of these APIs authenticates a process or qualifies a comparison.
 
 ```bash
@@ -522,10 +521,9 @@ def bytes_for_comparison(record):
     return snapshot.data
 ```
 
-The 4 MiB value is an illustrative caller bound, not an approved retention or
-method budget. The future comparison method must declare both its per-file and
-aggregate working-set bounds. Holding many snapshots can exceed a single file's
-bound. Snapshot assembly uses memory proportional to the bound: collected chunks
+The example selects 4 MiB. The shared reader enforces the first method's
+per-role and aggregate budgets; this snapshot API alone does not bound multiple
+retained files. Snapshot assembly uses memory proportional to the bound: collected chunks
 and their joined immutable bytes can coexist, so the bound is **not** a promise
 of exactly that many bytes of process memory. The underlying read chunk remains
 at most 1 MiB, and all existing stability, volume, Git-boundary and cleanup rules
@@ -549,7 +547,7 @@ A later filename replacement leaves returned bytes intact; it can make the
 workspace cease to match that capture. Snapshots provide check-time bytes, not
 process authentication, currentness for an entire dependency graph, execution of
 a control, evidence adequacy or retention. Production still refuses every v1
-block pending comparison/qualification evaluation; no canonical capture or CPU
+block pending complete method/policy adequacy; no canonical capture or CPU
 acceptance credit follows from this API.
 
 ## Expectation write keys cannot collapse
@@ -599,4 +597,4 @@ canonical expectation documents; all valid mapped dictionaries remain unchanged.
 
 This identity check does not validate source derivations or make expected values
 correct. It supplies no execution, producer-independence, policy-adequacy or CPU
-acceptance credit. Structured comparison/qualification remains pending.
+acceptance credit. Full method/policy adequacy remains pending.

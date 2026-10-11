@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-11`
 - **Status:** `active` — authenticated byte evaluation exists; complete adequacy/collection pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42d3b, `SEMULITH-P4-0210`–`0240`; GC policy/public Sail adapter
+- **Owner / source:** `P4-SYSTEM.14` a19–a42f, `SEMULITH-P4-0210`–`0241`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -174,7 +174,7 @@ Project dependency pins may stream without retaining payload; bound one dependen
 read to 8 MiB and the aggregate authenticated project-file reads to 128 MiB.
 `read_bounded_pin` now enforces an explicit total read cap without retaining payload;
 `read_snapshot` shares the bound, including growth probes. Legacy `read_pinned` has
-no total byte cap. The future evaluator still owns the aggregate method budgets.
+no total byte cap. The shared reader/evaluator own aggregate method budgets.
 Counts/bytes are checked before allocating/reading beyond a bound. Parsed objects,
 chunks and immutable copies add memory: these payload bounds are not exact process
 RAM ceilings. Overflow refuses, never truncates to fit.

@@ -1,5 +1,47 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — align implemented-method review surfaces (P4-SYSTEM.14 a42f)
+
+D46-IMPLEMENTATION-STATUS: active qualified overview/index and older GC evidence/
+reference teaching still described comparison/authentication/aggregate accounting
+as future, conflating implemented standalone checks with pending full adequacy.
+PROFILE's unconditional refusal reason also said comparison evaluator pending.
+Git log/blame pins the overview's last artifact-stage edit18617123/0217, before
+03ed501/0232 composition and3e5a3ea/0240 source/ELF binding. Root cause: selective
+propagation of current implementation summaries, not an opened qualification gate.
+Owned priority1 and fixed in the same finite .14 unit; full policy stays pending.
+
+Correct descriptive boundaries, optional witness/baseline syntax and program=None
+API teaching; route to existing complete examples. Change only PROFILE's reason,
+one self-test label and their comment, preserving category/unconditional refusal,
+all predicates/arms and counts. Full source seam inverses and code-fence equality
+protect original declaration date, normative policy, historical cases and APIs.
+First draft evidence33055B exceeded32768: all-candidate preflight refused before
+repair writes; concise summaries now32742B, within fixed caps. No feature teaching
+or example removed; no cap extension. Fresh UNIT navigation then rejects two new
+source-relative include links: use a root-relative file pointer; the book intro
+already owns the working chapter route. Rerun both normal/print checks. Diagnostic
+comparison initially included distinct random fixture names; normalize only the
+validated owned six-character fixture path. Both33-control prefixes and every
+other actual finding then agree, normal/O. Existing claim/currency/owner rules govern,
+promotion explicitly declined in the owning task.
+
+Before this unit, full make ci on clean3e5a3ea rc=0 all five legs:443 Rust,
+all doctrines, wasm bench/smoke53/seven books; all1370 tracked bytes/modes/Gitlinks
+unchanged and both job censuses empty. Log40159B SHA256
+5476197fa2aed74bcc2e9d3cc38972a09bb8853252992b4dce4ecc1a744c2cff,
+receipt target/p4-system-14/a42d3b/full-ci/result.json. D3b all20 committed hashes/
+modes exact, brief0/untracked; no push below cadence.
+
+Whole oldest DEV3018B to0265/CH868B to0266,58live+210sealed268logical;
+protect102 predecessor entries with both guards and real receipt+new-digest edits.
+Focused13/full PROFILE/sharder12/seven books/3196 fresh+actual links and
+normal/print descriptions pass. Whole source/task inverses, all17 literal
+examples byte-exact from verified parent; actual old/new33-control gate prefixes
+retain every finding except reason normal/O. History102/scope1358 bytes/modes/
+Gitlinks exact normal/O; actual receipt+new-digest edits refuse. D46 closed. LIVE1401,
+canonical data, existing caps/seals/ordinary parts and CPU/qualification unchanged.
+
 ## _(2026-10-11)_ — compose authenticated source and ELF findings (P4-SYSTEM.14 a42d3b)
 
 Append source_image=None after all existing EvaluationCheck positional fields;
@@ -643,50 +685,4 @@ normal/print/literal read/history/scope pass;1321 other files/101 prior entries
 exact and real receipt+digest edits refuse. Final hashes/hooks/brief0/census
 required. Next a37 bounded dependency leaf inspection, then aggregate evaluator/
 gates, reviewed collector, measured retention/cases/captures/full policy.
-
-## _(2026-10-11)_ — normalize shared-reader refusals (P4-SYSTEM.14 a35)
-
-D35-REFUSALS: public parse leaked ValueError for5000-digit decimal and0x_/0b_;
-CLI also leaked empty/nested-list head SexpError and missing/decode exceptions.
-Before diagnostic records all seven escapes. Normalize only integer conversion
-ValueError to source/line/base/length SexpError; no whole-token echo or host-limit
-change. Preserve valid integer/symbol values, two-argument _atom consumers and
-library read_file I/O contract. CLI computes its head summary inside the expected
-SexpError/OSError/UnicodeError refusal boundary; success and usage stay stable.
-
-D35-HEAD-DIAGNOSTIC: valid5000-digit hexadecimal head parses, then full-form repr
-leaks decimal-display ValueError. Replace error rendering with bounded type/shape;
-valid head/accessor semantics stay exact. D35-OPT-CREDIT: exact old self-test with
-parsed12 replaced13 reports17/1 rc1 normally but18/0 rc0 optimized. Replace four
-removable asserts in one/refuses/_eq/_raises with explicit checks. Wrong-value,
-extra-form and wrong-reason controls exercise the actual legacy test in both modes.
-
-29 controls pass normal/O; eight omissions6/3/3/3/2/2/1/2 fail without errors.
-SOURCE-FORMAT25/0 registers18 literal outer arms:39 doctrines/1011 arms.
-Normalize the span test's expected conversion escape to a failure before counting
-omissions. Host-disabled before probe skipped a case and changed omission6→5: scope/restore
-one real decimal-limit fixture in finally; default/disabled normal/O stay29/0/0
-with no skips and identical omission counts. Production limits never change.
-New GC examples teach parser/CLI/library and byte-budget boundaries;
-main lesson links the built HTML route, after the fresh gate rejects an unsupported
-main-to-model source route. No navigation contract or architecture change.
-
-D35-HISTORY-EDIT: whole-file new-note23/0→25/0 replacement also changed two old
-a24 gate receipts. Public predecessor guard refused. Restore complete entries
-from HEAD and limit all subsequent updates to the new entry. Full inverse and
-actual original/moved/published receipt edits with updated digests must refuse;
-never accept corrected-history counts. DECLINED new decision promotion: existing
-refusal/assertion-safe/history contracts own these repairs; task/toolbox/book
-retain the commands and lessons.
-
-DEV measured51367B; public sharder moves two whole3141B entries into0245,
-22=20+2, immediate head48226B; shard3374B/
-d6783a698a7554a60f0f9fc2eaa5492d165dacecead2f891d83f7b7de78d6f73.
-37live+210sealed=247logical. Preserve340 raw parses/types,243 dictionaries,
-1311 other files,101 prior entries and whole reader/checker/method/task/teaching.
-Focused17/sharder12/0/seven books/3076 links/all6 literal blocks and real CLI20
-cases pass; final exact-source/hooks/brief0/censuses required. Fixed caps/seals/
-canonical/qualification/CPU unchanged. Full CI follows the clean repair commit,
-then a36 bounded leaf inspection and aggregate evaluator/collector/captures.
-
 

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0241 (leaf P4-SYSTEM.14) — align implemented-method review surfaces
+
+- Fix D46: distinguish implemented authenticated byte/source-image checks from pending full adequacy in contract/index/book; document existing optional fields/program API. Update PROFILE refusal reason/label, retaining category, unconditional closure, predicates and all counts.
+- Clean3e5a3ea full CI passes all5 legs/443 Rust/smoke53/seven books,1370 tracked files/modes/Gitlinks exact; jobs closed. Preserve102 prior entries; whole DEV3018B to0265/CH868B to0266. Focused13/full PROFILE/sharder12/seven books/3196 links/normal+print pass. Whole source/task inverses,17 examples exact, actual gate prefixes33/0 normal/O; history102/scope1358 and receipt+digest refusals pass. D46 closed; no canonical/CPU/qualification/cap change.
+
 ## SEMULITH-P4-0240 (leaf P4-SYSTEM.14) — compose authenticated source and ELF findings
 
 - Append metadata-only source_image findings after legacy result fields. Consume opt-in17 authenticated snapshots/reserved rebuild and explicit selected expectation entry through existing owners, with no artifact reopen. Failed/unsupported comparisons return before reconstruction; retain separate authentication/comparison/content findings. Positive remains pending full adequacy.
@@ -592,19 +597,5 @@
   canonical/frozen unchanged. Focused gates/all six books rc0; LIVE652/49/
   P4 12/18 unchanged. Next c28e removes obsolete internal-reference rationale,
   then seven runtime pairs/freeze; .14 statuses/experiment records remain.
-
-
-## SEMULITH-P4-0159 (leaf P4-SYSTEM.13 c28c) — bound public reference runs
-
-- Request the exact declared Sail boundary limit; retain the strict whole-trace
-  parser. Recognize the historical word-less fetch only with a real delivery.
-- Both controls first RED rc1, then GREEN rc0; five prior mutations still reject.
-  Public runner149AGREE/4566 boundaries,14 unchanged differences, three process
-  failures and one disabled guest refused. All25 tail-shaped raw cases assessed;
-  disabled raw comparison earns no runner credit. Atomics242 regression rc0.
-- Core/author/frozen/registry100 and prior inputs exact except live reference
-  prose; effective98/114 unchanged. Promote existing knowledge card, update book.
-  Focused gates/all six books rc0; LIVE652/49/P4 12/18 unchanged. Next c28d
-  GC-FENCEI; .14 owns requirement statuses/structured experiment records.
 
 
