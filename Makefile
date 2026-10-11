@@ -1,11 +1,11 @@
-# Makefile — standard commands. `make gate` = the doctrine enforcer; `make check` = Rust.
+# Makefile — standard commands. `make gate` = doctrines + synthetic handoff tests; `make check` = Rust.
 SHELL := /usr/bin/env bash
 
 .PHONY: help vendor gate check ci fmt clippy test book bench smoke-bench hooks bootstrap update-scaffold
 
 help:
 	@echo "make vendor          - populate the on-volume dependency store (.app-data/vendor; .cargo/config.toml)"
-	@echo "make gate            - run the doctrine enforcer (scripts/check_doctrines.sh)"
+	@echo "make gate            - doctrines + synthetic handoff regressions"
 	@echo "make check           - cargo fmt --check + clippy (deny warnings) + test"
 	@echo "make fmt             - cargo fmt --all"
 	@echo "make clippy          - cargo clippy --all-targets -- -D warnings"
@@ -32,6 +32,8 @@ vendor:
 
 gate: vendor
 	scripts/check_doctrines.sh
+	python3 scripts/probe_handoff_census.py
+	python3 -O scripts/probe_handoff_census.py
 
 check: vendor
 	cargo fmt --all -- --check

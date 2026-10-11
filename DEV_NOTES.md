@@ -1,5 +1,77 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — fail closed on unavailable handoff census (P4-SYSTEM.14 a42i)
+
+D47: actual sandbox denies ps spawn with EPERM, but the parent handoff script
+suppresses stderr, ignores failed capture and judges its empty process snapshot
+as green. Host-view ps/lsof both rc=0 with empty stderr. Director authorizes
+stopping idle Kimi; subsequent absence is recorded, no new sanctioned exemption.
+The defect concerns inability to judge process state, not an unproved CPU result.
+
+Capture each host tool's exit/status, separate stderr and nonempty stdout before
+using its snapshot. Any failed command, reported stderr, or empty/whitespace-only
+output returns2 without handoff OK. Retain original lsof-before-ps ordering and
+every successful parser/classifier/ancestry/advisory/sanctioned rule; no lexical
+process-name detector or extra exemptions. Owned mktemp stderr file is on the
+repository volume, mode/creation owned by mktemp, EXIT cleanup and HUP/INT/TERM handlers. Normal/refusal
+and TERM cleanup paths are verified. No claim of SIGKILL cleanup or detection
+of silent host restrictions, other-uid jobs, or processes invisible to published
+handle/command rules. Full host visibility remains the signoff requirement.
+
+Old fixed40-line help stops before Usage/exit contract. Extract the complete
+comment header and reject surplus arguments under the published single-option
+syntax. These are narrow existing CLI-contract repairs. User-facing book explains
+0/1/2, host visibility, read-only handles, advisories/authority and synthetic CI.
+Current teaching revised within the fixed aggregate cap; historical crash-recovery
+receipt remains byte-exact. README/make help reflect the same gate command.
+
+New bounded stdlib probe executes actual Bash copies with controlled ps/lsof
+subprocess responses in disposable repo-volume fixtures. It copies the real
+sanctioned registry verbatim; worker IDs are synthetic records and are never
+signaled by tests. Read-only handle outside repository cwd, command-named checkout,
+advisory/all, existing exemption/unsanctioned other process and usage are exercised.
+Tool failures retain valid partial stdout; status0+stderr and empty/whitespace
+snapshots still refuse. Every exit checks owned stderr residue. TERM uses an
+explicit checkpoint/release handshake, not a scheduling window; collect child
+completion before disposing fixtures. Existing exemption cannot cover another
+process. No real editor is closed by these tests.
+
+19 positives pass normal/O; committed parent loses11 assertions with zero errors.
+Independent omitted status/stderr/empty/TERM guards lose2/2/4/1 normal/O, no errors.
+Actual restricted new census rc=2 names ps exit126 and leaves no stderr file;
+unrestricted actual rc=0. No green verdict is inferred from restricted visibility.
+Makefile gate adds the exact normal/O synthetic commands; the existing doctrine
+CI job invokes make gate. Actual host census remains outside commit/CI gates;
+39 doctrines/1439 arms unchanged. No redundant Rust/fullCI or outward push.
+
+Verified whole source/task/README/Makefile/workflow/book inverses normal/O;
+make -n gate resolves the enforcer plus exact tested normal/O commands, all other
+suite legs/CI setup unchanged. Focused12/sharder12/seven books/3212 fresh+actual
+links, complete normal/print teaching and literal --all host example rc=0.
+History100/scope1367 bytes/modes/Gitlinks exact normal/O; actual old/moved/
+published receipt+updated-digest edits jointly refuse. Whole DEV3180B/one entry
+moves to0270 (3413B/51171112f2da43ec469733f22f3d887da1c786e94729eb17656cbe587580cf6d),
+CH647B/one to0271 (884B/c96521afd6916316f9ca2f0936cd96c04f5c0759b5d44d371d43ab0591728819);
+63live+210sealed273logical. Book proposal first exceeded36B remaining family
+room; bounded rewrite lands +24B, with earlier receipt untouched. Render probe
+initially compared straight apostrophe with actual smart apostrophe; normalize
+that observed formatting only, then verify every teaching word normal/O.
+EOF instrument first assumed per-line, then last-line warnings; both refused.
+Actual byte/line census shows one Git warning at the first blank of each EOF
+run (0270:51;0271:15). Match those exact outputs with whole moved bytes proved.
+First commit hook refuses SEAM-INTEGRITY:56/57 isolated shell allocations.
+Actual new allocation is on-volume; evaluator binds ROOT but not REPO_ROOT.
+Add that existing script binding to the fixture root only; all allocator/path/
+volume predicates remain byte-exact.57/57 normal/O and SEAM19/0 pass; omitted
+or misdirected binding returns56/57 at handoff site70 before nonproject writes,
+normal/O. Bare allocation still refuses. Whole instrument inverse exact outside
+one binding. No first-attempt commit; update14-file proof/stage and retry hooks.
+Final hooks/hash/mode/brief0/host-census postconditions next.
+Artifact cleanup became due during this slice: finish/commit before pivot, then
+own recurring cleanup ahead of ordinary-part guard assessment/remaining adequacy.
+promotion: declined — existing fail-closed/tool-first/handoff rules govern;
+no new policy, sanctioned entry, archive authority or qualification credit.
+
 ## _(2026-10-11)_ — contain completed adequacy designs (P4-SYSTEM.14 a42h)
 
 Parent b254b95 live task130463/131072B leaves609B; first476B ownership
@@ -603,50 +675,4 @@ parts must remain byte/mode exact. Focused12/sharder12/0/seven books/3104 links/
 pass.100 old entries/whole heads/1334 other files exact; actual original/published
 receipt+digest edits refuse. All published rows/shards unchanged; no new shard.
 COMMIT then a41 bounded evaluator/composition and complete adequacy obligations.
-
-## _(2026-10-11)_ — freeze context and consume identity/receipt bytes (P4-SYSTEM.14 a39)
-
-Expose bind_reference_identity/ReferenceIdentity and bind_receipt_context/
-ReceiptContext before artifact I/O. Public check_reference_identity_bytes and
-check_receipt_bytes consume the exact declared-file snapshots without reopens,
-artifact/binary/process access or pin credit. Shared old raw-schema/sole mapper/
-semantic owners preserve legacy authenticated reader results. Optional identity
-presence/value, receipt exit/argv/inventories frozen; coherent failed exits stay
-data. Byte checks1..65536 immutable bytes; identity counts/types/canonical path
-before mapping/parsing. Binder output is selected canonical context, not parent
-schema/graph, complete closure/source/program/image, execution or qualification.
-Schema loading remains tool I/O; preserve old identity refusal versus receipt
-unavailable schema-I/O dispositions. Receipt byte reasons explicitly leave
-authentication/process/method credit pending; all byte results pin=None.
-
-D39-IDENTITY-CONTEXT-ROUNDTRIP: draft binder accepted str subclasses but byte
-consumer refused its context. Reproduction after successful bind: refused invalid
-frozen identity fields. Freeze selected identity values to plain strings; accept
-canonical string-subclass diagnostic paths. Exact draft7346B SHA256
-454cf97f21187958c768053f45daec6ebbc6bd1c3df54909c92ff2de4c50a1ef
-loses3 assertions/no errors in new22 suite normal/O. Omitted normalization loses2.
-No capture or qualification used the draft. Initial20/1 probe guessed unquoted
-kind spelling; sole writer emits quoted strings. Fix observed bytes with explicit
-changed-payload assertion. Omission probes initially dereferenced absent facts;
-assert presence first so binder/parser omissions fail without test errors.
-
-22 controls/14 omissions normal/O:19/2/2/5/1/1/3/13/1/13/1/14/1/1 failures,
-no errors. Actual synthetic declared set22 files feeds retained identity and all
-three receipts after path/context changes with artifact/process calls forbidden.
-Legacy identity40/receipt43 and their19 omissions retained. Thirty literal outer
-arms: PROFILE314/0,39 doctrines1137 arms. Whole source/checker/method/old teaching
-inverses; canonical340 raw parses/243 mappings, complete predecessor heads and
-published history/scope protections required before COMMIT. New complete teaching
-would exceed32768B retained-method cap; use linked7912B byte-bindings chapter,
-old26543B teaching exact plus165B route. No cap/seal/canonical/CPU change.
-
-Full CI on clean preceding c84bb7b all five legs green:443 Rust tests/smoke53/
-seven books; log40152B SHA256
-babc9c8c70598f6522be05df31aac30da15dbb243907219e56585409fa8f5fa9,
-all17 verified files unchanged, standard/actual census rc=0. Focused17/sharder12/0/seven books/3104 links/all9 literal blocks/normal+print
-teaching pass. Whole task inverse and1320 other tracked files exact;100 prior
-entries and actual original/moved/published receipt+digest edits protected.
-DEV17=15+2/5031B into0249 (5264B SHA256
-9da0f3afce2b05ba0b8809b3c545b85fc80a4a08508c16220c813ca2b80f85aa),
-41live+210sealed251logical. COMMIT then a40 composition/adequacy obligations.
 

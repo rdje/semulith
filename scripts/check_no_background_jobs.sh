@@ -47,19 +47,50 @@
 #
 # Usage:  bash scripts/check_no_background_jobs.sh [--all]
 #   --all  also list ADVISORY rows (inherited-cwd session infrastructure); never changes the exit code
-# Exit:   0 = no project work running · 1 = project work still running · 2 = usage error
+# Exit:   0 = no observed project work · 1 = project work running · 2 = usage/census failure
+# ps/lsof must succeed, report no stderr, and return nonempty data. Run with host visibility;
+# an unavailable snapshot is not evidence of an empty process set. Tool errors fail closed.
 
 set -uo pipefail
 
+[ "$#" -le 1 ] || { printf 'usage: bash scripts/check_no_background_jobs.sh [--all]\n' >&2; exit 2; }
 SHOW_ALL=""
 case "${1:-}" in
-  -h|--help) sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  -h|--help) sed -n '2,/^set -uo pipefail/p' "${BASH_SOURCE[0]}" | sed -n 's/^# \{0,1\}//p'; exit 0 ;;
   --all) SHOW_ALL=1 ;;
   "") : ;;
   *) printf 'usage: bash scripts/check_no_background_jobs.sh [--all]\n' >&2; exit 2 ;;
 esac
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)" || exit 2
+
+# Preserve stderr separately: a successful command may still warn that its view
+# is incomplete. This file is ours, on the repository volume, and removed on exit.
+mkdir -p "$REPO_ROOT/target/handoff-census" || exit 2
+CENSUS_ERROR="$(mktemp "$REPO_ROOT/target/handoff-census/stderr.XXXXXX")" || exit 2
+trap 'rm -f -- "$CENSUS_ERROR"' EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+capture_census() {
+  local label="$1" output rc
+  shift
+  output="$("$@" 2>"$CENSUS_ERROR")"; rc=$?
+  if [ "$rc" -ne 0 ]; then
+    printf 'handoff: REFUSED — %s census failed (exit %s); cannot judge.\n' "$label" "$rc" >&2
+    return 2
+  fi
+  if [ -s "$CENSUS_ERROR" ]; then
+    printf 'handoff: REFUSED — %s census reported stderr; cannot judge.\n' "$label" >&2
+    return 2
+  fi
+  if ! [[ "$output" =~ [^[:space:]] ]]; then
+    printf 'handoff: REFUSED — %s census returned no data; cannot judge.\n' "$label" >&2
+    return 2
+  fi
+  CENSUS_OUTPUT="$output"
+}
 
 # The caller's own ancestry: this script, the shell that ran it, the harness above that.
 # ⚠️ This walk CAN TRUNCATE if an intermediate shell has already exited and the caller is
@@ -75,18 +106,20 @@ ancestry() {
 EXCLUDE=" $(ancestry "$$" | tr '\n' ' ') "
 
 # ONE lsof call, pattern-free: which pids hold a repo FILE, and which merely inherited a repo cwd.
-LSOF="$(lsof -u "$(id -u)" -Fpfn 2>/dev/null | awk -v R="$REPO_ROOT/" -v RE="$REPO_ROOT" '
+capture_census lsof lsof -u "$(id -u)" -Fpfn || exit 2
+LSOF="$(printf '%s\n' "$CENSUS_OUTPUT" | awk -v R="$REPO_ROOT/" -v RE="$REPO_ROOT" '
   /^p/ { pid = substr($0, 2); next }
   /^f/ { fd  = substr($0, 2); next }
   /^n/ { n = substr($0, 2)
          if (index(n, R) == 1 || n == RE) { if (fd == "cwd") c[pid] = 1; else h[pid]++ } }
   END  { for (p in c) printf "%s cwd %d\n", p, h[p] + 0
-         for (p in h) if (!(p in c)) printf "%s hnd %d\n", p, h[p] }')"
+         for (p in h) if (!(p in c)) printf "%s hnd %d\n", p, h[p] }')" || exit 2
 
 cwd_in_repo()  { printf '%s\n' "$LSOF" | grep -q "^$1 cwd "; }
 handles_of()   { printf '%s\n' "$LSOF" | awk -v p="$1" '$1==p {print $3; exit}'; }
 
-SNAP="$(ps -Ao pid=,etime=,command= 2>/dev/null)"
+capture_census ps ps -Ao pid=,etime=,command= || exit 2
+SNAP="$CENSUS_OUTPUT"
 BLOCKING=""; ADVISORY=""
 
 # Sanctioned exemptions: the director's standing rulings, read as data (see the header). A row

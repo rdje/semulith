@@ -55,12 +55,17 @@ Miri's printed test durations use its default simulated clock. External GitHub s
 timestamps supply wall-time evidence; the timing reference records the observed
 difference. Test counts remain exact, and isolation stays enabled.
 
-Handoff has a separate process census: `scripts/check_no_background_jobs.sh` counts
-open repository file handles, including read-only editor handles. A refused census
-remains visible even when verification jobs have finished. Closing another editor
-requires appropriate authority; a standing exemption requires the director's ruling
-in `doctrine/sanctioned_processes.tsv`. An exemption changes the handoff census only;
-tracked-content gates remain enforced.
+Handoff counts repository handles, even read-only ones:
+
+```sh
+bash scripts/check_no_background_jobs.sh --all
+```
+
+Exit 0 sees no project jobs; 1 names jobs; 2 refuses tool errors, stderr or empty
+snapshots. Use host visibility. `--all` lists inherited cwd advisories. Closing
+editors needs authority; exemptions need the director's ruling in
+`doctrine/sanctioned_processes.tsv` and affect this census only. Content gates
+stay enforced. `make gate` and CI test synthetic snapshots.
 
 During the 2026-10-09 crash recovery, the actual census found Kimi Code still holding
 two read-only AGENTS.md handles. The director authorized its closure; SIGTERM stopped

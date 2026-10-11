@@ -128,7 +128,7 @@ def run_shell(expression, fixture):
                SEMULITH_LOCALITY_ROOT=str(ROOT), SEMULITH_REAL_MKTEMP=real)
     for name in ('tmp', 'doctrine-selftest', 'history-check', 'push-selftest'):
         (ROOT / 'target' / name).mkdir(parents=True, exist_ok=True)
-    command = (f'ROOT={shlex.quote(str(ROOT))}; d="$ROOT/target/doctrine-selftest"; '
+    command = (f'ROOT={shlex.quote(str(ROOT))}; REPO_ROOT="$ROOT"; d="$ROOT/target/doctrine-selftest"; '
                'test_temp_root="$ROOT/target/push-selftest"; ' + expression)
     result = subprocess.run(['bash', '-c', command], env=env, capture_output=True, text=True)
     if result.returncode:

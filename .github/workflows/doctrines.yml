@@ -29,8 +29,8 @@ jobs:
           echo "$GITHUB_WORKSPACE/.app-data/ci-tools/bin" >> "$GITHUB_PATH"
       - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
         run: make vendor
-      - name: Run the doctrine enforcer
-        run: scripts/check_doctrines.sh
+      - name: Run doctrines and synthetic handoff regressions
+        run: make gate
       - name: Preserve the guest self-test diagnostic on failure
         if: failure()
         uses: actions/upload-artifact@v4

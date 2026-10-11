@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42h exact-history containment; D47 fail-closed handoff next |
+| 1 | `P4-SYSTEM.14` | `active` | a42i D47 fail-closed handoff census; ordinary-part assessment follows |
 
 ## Decisions
 
@@ -482,6 +482,63 @@ only; after containment, assess ordinary-part immutability through a bounded
 actual-gate diagnostic before classifying a gap. Own any confirmed gap as
 priority1 next, without expanding this finite documentation-only slice.
 
+### `.14` a42i — fail closed on unavailable handoff census (completed, SEMULITH-P4-0244)
+
+Owned after clean8d6c7e1, all9 committed hashes/modes and brief0 verified,
+all hooks green, unrestricted handoff rc=0; no owned jobs. D47 priority1.
+Read public handoff script, bootstrap/COMMIT/pivot rules, sanctioned data and
+current doctrine-book handoff teaching. This operational repair implements
+existing no-background-job policy; no processor/qualification or roadmap change.
+Root reproduced in a42h: restricted ps spawn EPERM, script suppresses errors
+and accepts its empty snapshot. Unrestricted ps/lsof both rc=0, empty stderr.
+
+Capture ps/lsof status and stderr before judging the census; refuse unavailable
+or empty output with exit2 and no handoff OK. Keep every successful detection,
+ancestry/advisory split, sanctioned rules and existing0/1 verdicts exact. Use
+only owned on-volume temporary stderr storage with cleanup on every exit; fail
+allocation safely. Green still describes this uid and available host view, not
+a proof against undisclosed jobs or silent OS visibility restrictions. Require
+host visibility for actual signoff, without granting new exemptions.
+
+Own also the fixed40-line --help extraction: actual old help truncates before
+usage/exit guidance. Extract the complete header, and refuse surplus arguments
+under the published single-option syntax. Do not alter the historical rationale
+or sanctioned registry. A bounded disposable fixture must run the actual Bash
+script through controlled ps/lsof subprocess outputs, check positives/advisory/
+read-only handles/command paths/sanctioned data/help/usage, failures with partial
+output and successful-but-stderr/empty outputs, and temporary-file cleanup.
+Normal/O tests and independent status/stderr/empty omissions must discriminate
+without errors. Compare the parent implementation on those same cases and the
+actual restricted host denial before/after; verify unrestricted actual census.
+
+Own current mdBook exit/visibility examples, DEV/CH/MEM/task updates, whole-oldest
+sharding if necessary, whole parent-entry/head inverses and actual receipt+
+updated-digest controls. Preserve code outside this operational tool/probe,
+all original/ordinary task history, canonical data, GC teaching/API/examples,
+seals/caps/LIVE1439 and CPU axes. Focused docs/sharder/seven books/rendered
+navigation and scoped source/mode/history checks, then full hooks/COMMIT.
+Own README command teaching, Makefile gate and the existing doctrine CI job
+as regression-test entrypoints:
+run only the synthetic probe normal/O there; actual host census stays explicit
+and outside pre-commit. No new doctrine or arm count. Check the recipe/workflow
+wiring structurally and run the exact new probe commands; full hooks retain all
+existing gates. Exercise TERM cleanup with an explicit checkpoint/release fixture
+so scheduling cannot collapse an assumed timing window. No Rust changed; no
+redundant full CI or push below cadence. promotion: declined (existing fail-closed/
+tool-first/handoff rules); full archive-freeze assessment follows separately.
+First hook refuses SEAM-INTEGRITY: shell allocation census56/57, handoff site70
+reported unqualified. Direct diagnostic finds the isolated expression evaluator
+binds ROOT/d/test_temp_root but omits this existing script's REPO_ROOT binding.
+Actual handoff temp paths already stay on-volume in19 fixtures and host run.
+Own this false-RED instrument fix in scripts/probe_temporary_locality.py before
+editing it: bind REPO_ROOT to the same fixture root, retain every allocator
+predicate. Verify57/57 normal/O, unchanged bare/foreign refusal and full SEAM19;
+omit/misdirect only that binding to reproduce named refusal before any write.
+Whole instrument predecessor inverse must be exact outside this one binding.
+No weakening, exemption or new arm. Update source/history/scope/receipts and
+retry full hooks; no first-attempt commit created. Artifact cleanup is overdue;
+finish/commit, then own cleanup before other work, respecting no dirty pivot.
+
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
 Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
@@ -578,6 +635,23 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42i — **ROOT CAUSE**: run-controls.py rc=0 normal/O:
+  committed parent loses11/19 assertions, zero errors; actual restricted ps EPERM
+  explains false-green empty snapshot. Help/arity and TERM handling reproduced.
+- [x] `.14` a42i — **ADDRESSED**: run-controls.py rc=0 normal/O:19 positives,
+  independent status/stderr/empty/TERM omissions2/2/4/1 failures, zero errors;
+  actual restricted census refuses2 (ps exit126), unrestricted/literal --all rc=0.
+  Successful rules/authority unchanged, owned stderr cleanup incl TERM verified.
+- [x] `.14` a42i — **NO REGRESSION**: focused.sh rc=0; proof/history/scope/
+  rendered.py normal/O rc=0: focused12/sharder12/seven books/3212 links/full normal+print,
+  complete source/task/README/Makefile/workflow/book inverses and make recipe;
+  history100/scope1367 bytes/modes/Gitlinks exact, real receipt+digest edits
+  jointly refuse. All GC examples/code/canonical/CPU/seals/caps/LIVE1439 unchanged.
+  Synthetic normal/O commands configured in gate/CI; host census stays explicit.
+  Locality57/57 normal/O and SEAM19 rc=0 after correcting the isolated
+  REPO_ROOT binding; omit/misdirect it refuses56/57 before nonproject writes.
+  Full hooks retry/hashes/modes/brief0/host census, then overdue cleanup.
 
 - [x] `.14` a42h — **ROOT CAUSE**: proof.py normal/O rc=0:
   parent130463/131072B, whole completed boundaries27591B and book393B;
@@ -947,6 +1021,31 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42i: Verified19/0/0 normal/O; committed parent19/11/0 and four independent
+status/stderr/empty/TERM omissions with2/2/4/1 failures, zero errors. Controlled
+host-tool subprocesses cover read-only/outside-cwd/command/advisory/exemption/
+usage and explicit checkpoint/release TERM cleanup. Actual restricted ps exit126
+refuses2 without handoff OK or stderr residue; full-host actual/literal --all
+example rc=0. Whole Bash inverse exact outside capture/traps/help/arity;
+original lsof-before-ps order/parsers/ancestry/sanctioned behavior unchanged.
+Whole task/README/Makefile/workflow/book inverses exact normal/O; make -n gate
+resolves the original enforcer plus exact tested19 normal/O synthetic commands,
+CI invokes that target. Actual host census remains outside commit/CI gates.
+Focused12/sharder12/seven books/3212 fresh+actual links/complete normal+print
+teaching pass; book+24B within original36B room, historic receipt exact.
+Render instrument normalizes observed smart apostrophe only. History100/
+scope1367 bytes/modes/Gitlinks exact normal/O, actual old/moved/published receipt+
+updated-digest edits jointly refuse. Whole DEV3180B/one to0270 (3413B/SHA256
+51171112f2da43ec469733f22f3d887da1c786e94729eb17656cbe587580cf6d),
+CH647B/one to0271 (884B/c96521afd6916316f9ca2f0936cd96c04f5c0759b5d44d371d43ab0591728819),
+63live+210sealed273logical. D47 repaired/verified; no new exemption, doctrine,
+arm or CPU/qualification/canonical change. First hook refused isolated REPO_ROOT binding:56/57; actual allocation valid.
+One fixture binding repairs it:57/57 normal/O, SEAM19/0; omit/misdirect binding
+refuses56/57 before nonproject writes; whole instrument predecessor exact.
+No commit created.14-file full-hook retry, then overdue cleanup;
+ordinary-part actual-gate assessment/remaining adequacy follows. Latest fullCI
+exact3e5a3ea; no push below cadence or claim of hosted execution of new wiring.
 
 a42h: Verified proof.py normal/O rc=0: both entire committed sources exact,
 seven bodies27984B/part33982B SHA256
@@ -1329,6 +1428,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42i | `SEMULITH-P4-0244 (leaf P4-SYSTEM.14): fail closed on unavailable handoff census` | due recurring cleanup, then ordinary-part gate assessment/remaining adequacy |
 | `.14` a42h | `SEMULITH-P4-0243 (leaf P4-SYSTEM.14): contain completed adequacy designs` | D47 fail-closed handoff census, then bounded ordinary-part guard assessment/remaining adequacy |
 | `.14` a42g | `SEMULITH-P4-0242 (leaf P4-SYSTEM.14): compute conservative old/new dependency impact` | complete closure/property/collector adequacy; qualification remains pending |
 | `.14` a42f | `SEMULITH-P4-0241 (leaf P4-SYSTEM.14): align implemented-method review surfaces` | finite complete closure/impact/property/provenance work |
