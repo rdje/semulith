@@ -1201,6 +1201,126 @@ EOF
   score "RED optimized omitted byte guard receipt-claim" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-frozen 2>&1)"; rc=$?
   score "RED optimized omitted byte guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" 2>&1)"; rc=$?
+  score "GREEN normal authenticated byte evaluation" "$rc" 0 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation scope 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard scope" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation raw-check 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard raw-check" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation raw-findings 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard raw-findings" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation candidate-freeze 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard candidate-freeze" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation relations-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard relations-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation observation-freeze 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard observation-freeze" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-context 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard receipt-context" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard manifest-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-relations 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard manifest-relations" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-reopen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard manifest-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation file-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard file-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation payload-release 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard payload-release" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 27 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation snapshot-account 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard snapshot-account" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation identity-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard identity-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation identity-reopen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard identity-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard receipt-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-reopen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard receipt-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation process-facts 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard process-facts" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation control-selection 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard control-selection" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 15 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-refusal 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard comparison-refusal" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-completeness 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard comparison-completeness" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation verdict-binding 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard verdict-binding" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-status 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard comparison-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation qualification 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard qualification" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 10 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation result-frozen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard result-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation record-frozen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard record-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation authentication-frozen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard authentication-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-frozen 2>&1)"; rc=$?
+  score "RED normal omitted evaluation guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" 2>&1)"; rc=$?
+  score "GREEN optimized authenticated byte evaluation" "$rc" 0 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation scope 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard scope" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation raw-check 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard raw-check" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation raw-findings 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard raw-findings" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation candidate-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard candidate-freeze" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation relations-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard relations-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation observation-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard observation-freeze" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-context 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard receipt-context" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard manifest-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-relations 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard manifest-relations" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation manifest-reopen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard manifest-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation file-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard file-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation payload-release 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard payload-release" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 27 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation snapshot-account 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard snapshot-account" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation identity-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard identity-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation identity-reopen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard identity-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard receipt-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-reopen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard receipt-reopen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation process-facts 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard process-facts" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation control-selection 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard control-selection" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 15 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-refusal 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard comparison-refusal" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-completeness 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard comparison-completeness" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation verdict-binding 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard verdict-binding" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation comparison-status 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard comparison-status" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation qualification 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard qualification" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 10 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation result-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard result-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation record-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard record-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation authentication-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard authentication-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_evaluation.py" --mutation receipt-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted evaluation guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-EVALUATION: 42 tests / 1 failures / 0 errors; synthetic only"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

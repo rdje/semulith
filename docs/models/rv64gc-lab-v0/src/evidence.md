@@ -354,8 +354,8 @@ expected=(('x1', 2),))`. The 34-test suite covers exact first differences,
 complete change sets, immutable data, mixed GPR/delivery ordering, complete trace
 validation and legacy delegation. Ten independent omissions must fail in both
 Python modes; GUEST-GEN runs all controls. These results confer no canonical
-capture, execution or CPU acceptance credit. Bounded expectation/trace evaluation
-and authenticated orchestration remain the next implementation steps.
+capture, execution or CPU acceptance credit. Bounded byte evaluation and
+authenticated orchestration are partial; complete adequacy remains pending.
 
 Pure [execution binding](retained-method.md#binding-the-declared-sail-invocations) now checks
 principal inputs, the binary-pinned reference and exact three-run argv. It does
@@ -363,8 +363,8 @@ not authenticate those declarations or replace the complete method evaluator.
 [Witness/control/derivation/pair bindings](retained-method.md#binding-witness-control-derivation-and-actual-pairs)
 likewise preserve failed recorded outcomes as data, without method credit.
 
-[Declared-file checks](closure.md) authenticate the selected set within shared
-budgets; closure adequacy and full method evaluation remain uncredited.
+[Byte evaluation](evaluation.md) composes authentication and observed comparisons;
+complete method/policy adequacy and qualification remain uncredited.
 
 ## Bounded three-run byte comparison
 

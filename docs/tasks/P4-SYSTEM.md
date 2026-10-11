@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a41 evaluator/composition, then reviewed collector/retention/captures |
+| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a41, then a42 complete adequacy obligations |
 
 ## Decisions
 
@@ -484,17 +484,65 @@ seals/parts/code/canonical/CPU unchanged. COMMIT hooks/brief0/censuses then a41.
 
 promotion: declined (existing lossless source-inverse/history/tools-first rules apply; this is finite capacity preparation for the same active evidence leaf).
 
-### `.14` a41 — compose authenticated method evaluation (scheduled)
+### `.14` a41 — compose authenticated byte evaluation (completed, SEMULITH-P4-0232)
 
-Start clean after a40 capacity preparation. Bind all identity/receipt and execution/relations context
-before artifact I/O; consume a38's exact snapshots without reopens and compose
-comparison while preserving record/comparison/method dispositions and failed
-controls as data. Define source/program/image/closure-adequacy and impact
-obligations in finite owned units; qualification stays closed until every
-requirement and independent omission gate exists. Full CI at the foundational
-composition milestone. Reviewed collector/retention/cases/captures/full policy/
-status follow. Inspect capacity before implementation; naturally partition whole
-completed records/teaching if needed, never raise caps or rewrite sealed history.
+Owned before code on clean785ea006d309b78dc17eeeaba051738d6454f220,
+brief0/untracked; all6 verified/staged/committed/working hashes exact, standard
+and actual ps/lsof censuses rc=0. A40 leaves live task86304/131072B. Review the
+declared method/policy, public E/R/M/Q/I/receipt/C interfaces, their tests and
+current evidence/retained/closure/byte book chapters. Preserve all old APIs and
+normative method requirements; no source/schema/canonical or qualification change.
+
+Finite scope: a public read-only evaluator accepts one raw experiment form, its
+scoped validation context and the current candidate. Reuse existing raw-schema/
+scoped graph checks before the sole dossier mapping owner; keep record validity
+separate from supported method bindings, authenticated files and observed byte
+comparisons. Freeze candidate execution fields, selected receipt contexts and
+every used run verdict/exit/observation record before the first artifact read.
+Reuse public relations/manifest/file-set readers within fixed128MiB authenticated
+read/16MiB snapshot budgets. No configurable larger limits, legacy readers,
+artifact reopens, binary/cache access or process execution. Consume exact retained
+identity/receipt/expectation/trace snapshots via existing public byte owners.
+Cross-check recorded run verdicts with the computed outcomes; coherent failed
+process/control data remains a valid record with a failed evaluation.
+
+Return frozen record/authentication/binding/comparison facts with independent
+refused/unsupported/stale/unavailable/failed findings. Release raw snapshot
+payloads from returned authentication summaries. A successful byte composition
+is explicitly pending complete method/policy adequacy, never qualified or CPU
+credit. Parent-program/source/image correspondence, complete dependency coverage,
+conservative impact and collector provenance remain mandatory a42 obligations;
+do not hide them behind successful hashes or comparison. Keep the existing
+PROFILE-CONSISTENCY blanket qualification refusal in force.
+
+Own actual on-volume complete synthetic fixtures, terminal failure/no-read and
+snapshot/context-change controls, raw-schema-before-mapping, independent omitted
+guards in normal/optimized Python, legacy/source/canonical/history/scope inverses,
+focused checks and full runnable book teaching. Use a natural evaluation chapter
+rather than exceeding existing chapter/family caps. If DEV needs containment,
+move whole oldest entries with permanent predecessor/full-published-row guards
+and actual receipt-edit controls. COMMIT hooks/brief0/censuses, then full CI on
+the clean composition milestone before a42; no dirty pivot or unverified credit.
+
+Own initial a41 probe correction: first38 controls had0 failures/1 error because
+the failed-baseline assertion dereferenced comparison=None. The existing byte
+owner represents nonzero-process comparison refusal as RunComparison(refusal,
+comparison=None), not a Comparison verdict object. Actual evaluation already
+returned valid record/failed evaluation correctly. Assert the published refusal
+representation and preserve the computed REFUSED binding; no production fix or
+false green credit from that instrument error.
+
+promotion: declined (existing declared record/evidence separation, frozen-context/raw-schema/single-mapper/history rules apply; current API and limits are in method/book/toolbox).
+
+### `.14` a42 — complete method adequacy and impact obligations (scheduled)
+
+Start clean after a41 and its full CI. Resolve explicit parent-program/source/
+image correspondence, complete relevant dependency closure and conservative
+old/new impact obligations through finite owned public interfaces and controls.
+Computed byte agreement alone does not lift qualification. Reviewed collector,
+fresh process/output controls, retention budget, predeclared cases/captures and
+full policy/status/mirror derivation follow. Preserve all legacy records and
+published APIs; declare any genuinely new contract before affected runs.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -592,6 +640,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a41 — **ADDRESSED**: evaluation42/0/0 normal/O,29 independent
+  omissions fail without errors; all60 pre/post readability signatures exact,
+  literal example and rendered.py rc=0. One artifact authentication per declared
+  path, frozen context/exact snapshots/payload-free facts, positive pending.
+- [x] `.14` a41 — **NO REGRESSION**: focused17/sharder12/0/seven books,
+  3122 links/all10 literal blocks/normal+print teaching rc=0. Contract/history/
+  canonical/scope rc=0: complete old APIs/checker/normative/book/task sources,
+  340 raw forms/243 mappings,102 entries/1326 other files exact. Actual original/
+  moved/published receipt edits with updated digests refuse; caps/seals/CPU exact.
 
 - [x] `.14` a40 — **ROOT CAUSE**: partition/proof.py rc=0; committed live task
   126100/131072B leaves insufficient evaluator design/receipt room. Nine completed
@@ -818,6 +876,20 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a41: Verified: evaluation42/0/0 and29 omissions normal/O rc=0 for expected
+signatures, no errors. Initial38-case failed-process instrument error corrected;
+production already valid/failed. Sixty pre/post readability signatures exact.
+PROFILE374/0,39 doctrines1197 arms; existing APIs/old controls preserved.
+Focused17/sharder12/0/seven books/3122 links/all10 literal blocks/normal+print
+teaching rc=0. Complete old checker/normative method/evidence/SUMMARY/task
+inverses;340 raw forms/243 mappings exact. History/scope rc=0:102 old entries,
+1326 other tracked files/Git links protected; real original/moved/published
+receipt+digest edits refuse. DEV17=15+2/5355B into0250 (5588B/
+069f0a33f16e72ff955ec7c60b4ca4708aae708490db7c7c79e2dccb53309f73),
+42live+210sealed252logical. Positive byte evidence stays pending complete
+adequacy; no canonical/cap/seal/CPU changes. COMMIT hooks/brief0/standard+actual
+censuses, then full CI on this clean composition milestone before a42.
+
 a40: Verified: proof.py rc=0 normal/O: ten bodies47028B, both whole committed
 sources exact,34 independent damage/map/receipt+digest/route/guide refusals;
 D40 stale diagnostic undo clause fixed, no tracked source damage or false credit.
@@ -1008,6 +1080,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a41 | `SEMULITH-P4-0232 (leaf P4-SYSTEM.14): compose authenticated byte evaluation` | full CI on clean milestone, then a42 complete adequacy obligations |
 | `.14` a40 | `SEMULITH-P4-0231 (leaf P4-SYSTEM.14): contain completed authentication-unit designs` | a41 evaluator/composition, then reviewed collector/retention/captures |
 | `.14` a39 | `SEMULITH-P4-0230 (leaf P4-SYSTEM.14): bind retained bytes to context frozen before reads` | a40 evaluator/composition, then reviewed collector/retention/captures |
 | `.14` a38 | `SEMULITH-P4-0229 (leaf P4-SYSTEM.14): authenticate the declared file set within shared budgets` | full CI on clean milestone, then a39 byte consumers/evaluator and captures |

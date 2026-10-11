@@ -18,16 +18,17 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: own `P4-SYSTEM.14` a41 authenticated evaluator/composition on
-  clean a40/0231. Capacity preparation complete: ten whole bodies47028B in ordinary
-  part16 reconstruct both committed sources;34 damage refusals normal/O. Live
-  task has room again; original twelve-file seal/reader unchanged.
-  Bind all context before reads; consume exact snapshots without reopens.
-  Complete closure adequacy/source/program/image/impact/collector/retention/full
-  policy remain mandatory; qualification closed. Latest code a39:22 controls/
-  14 omissions normal/O; PROFILE314/0/1137 arms; focused17/all9 examples pass.
-- in_flight_uncommitted: none after a40 COMMIT/brief0/standard+actual census.
-  Focused12/sharder12/0/seven books/3104 links/normal+print/literal read pass;
-  100 old entries/1334 other files exact. Last full CI c84bb7b all five legs green
-  (443 Rust tests/smoke53/seven books). Fixed caps/seals/canonical/CPU unchanged.
+- next_action: run full CI on the clean a41 composition milestone, record the
+  actual revision/log/result, then start owned a42 complete method adequacy:
+  parent-program/source/image correspondence, complete relevant dependency
+  closure, conservative impact and collector provenance. Positive byte evidence
+  remains pending, blanket v1 qualification refusal and CPU status unchanged.
+- in_flight_uncommitted: none after COMMIT; inspect Git before resuming.
+  A41 evaluator42 controls/29 omissions normal/O; PROFILE374/0,1197 arms.
+  Focused17/sharder12/0/seven books/3122 links/all10 literal examples pass;
+  complete source/history/task/canonical inverses protect102 entries/1326 files.
+  DEV17=15+2/5355B into0250; whole receipt+digest edits refuse. New book chapter
+  documents independent findings, fixed budgets, frozen context/exact snapshots,
+  coherent failed processes, released payloads and incomplete adequacy.
+  Last full CI c84bb7b all five legs green (443 Rust/smoke53/seven books).
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

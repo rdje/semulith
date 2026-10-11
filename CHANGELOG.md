@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0232 (leaf P4-SYSTEM.14) — compose authenticated byte evaluation
+
+- Validate one raw scoped record, freeze selected context before reads, authenticate the declared set once and bind exact identity/receipt/expectation/trace snapshots into observed comparisons. Preserve independent record/authentication/content/comparison findings and coherent failed-process evidence; return metadata without raw payloads. Successful composition remains pending complete adequacy/qualification.
+- 42 controls/29 omissions pass/discriminate normal/O without errors; fix initial failed-process probe representation, no production defect/false credit. Sixty new arms: PROFILE374/0,39 doctrines1197 arms; complete runnable eight-outcome book example. Focused17/sharder12/0/seven books/3122 links/all10 examples/full inverses pass;102 old entries/1326 other files protected, actual receipt+digest edits refuse. DEV17=15+2/5355B into0250. COMMIT then full CI on clean composition milestone and a42 complete adequacy. Old APIs/normative method/caps/seals/canonical/CPU unchanged.
+
 ## SEMULITH-P4-0231 (leaf P4-SYSTEM.14) — contain completed authentication-unit designs
 
 - Move nine whole a30–a38 designs46529B and prior book receipt499B into ordinary unsealed part16; retain exact live headings/anchor routes and a direct book read. Ten marked bodies47028B reconstruct both complete committed sources; no historical byte/count corrections or seal/cap extension.

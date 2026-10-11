@@ -7,6 +7,7 @@
 [References and comparison limits](references.md)
 [Retained Sail method checks](retained-method.md)
 [Frozen context and snapshot checks](byte-bindings.md)
+[Authenticated byte evaluation](evaluation.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Evidence policy](policy.md)
 [Current processor gate](evidence.md)
