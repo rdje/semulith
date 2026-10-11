@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0013 (leaf LIVE-CONTAINMENT.4) — refuse unmeasurable family inventories
+
+- Fix D52: one checked NUL Git inventory and validated size table feed count/aggregate/part bounds. Failed/diagnostic/malformed inventories or unsafe/unmeasurable members refuse2 without a green banner; health and derived exemptions retain their rules.
+- Keep original17 controls; add15 with independent status/stderr, boundary and path failures. Verify normal/O, omission mutations, public CLI replay, whole history/source inverses and focused/seven-book checks. No cap, archive-body or CPU change; D51 capacity review follows.
+
 ## SEMULITH-LC-0012 (leaf LIVE-CONTAINMENT.4) — qualify capacity inputs before authority review
 
 - Reproduce D52 through the public checker: baseline0; failed73 inventory and partial listing+stderr both incorrectly return0 with the green banner. Real HEAD/index/all1397 tracked identities stay exact.
@@ -489,25 +494,4 @@
 - Independent author12096exact+864named vocabulary refusals; full167corpus
   exact, prior106 entries/frozen/core/history/LIVE unchanged. Rust173/17/230,
   focused/six books green; registry108/effective106/114, four pairs/freeze remain.
-
-## SEMULITH-P4-0175 (leaf P4-SYSTEM.13 c31a) — ignore complete satp writes with unsupported modes
-
-- Fix core ASID/PPN updates and author invalid-value writes when satp.MODE is
-  unsupported; preserve whole register after permission checks, metadata-owned set.
-- Real old/disabled guards RED→4176core/3540author cells green; two bad-author
-  controls discriminate. Public Sail/Spike9M read-back repeats exact, finite only.
-- Descriptor prose/three hashes only; independent167 corpus exact. Rust173/17/226,
-  GUEST150/0/655arms, focused/six books rc=0; book/environment/GS synchronized.
-- Registry106/effective104/114 unchanged; LIVE only arm count655, statuses unchanged.
-  C31 CSR-access next, then F/D/reservation/SC and freeze.
-
-## SEMULITH-P4-0174 (leaf P4-SYSTEM.13 c30b) — contain contract and development receipts
-
-- Preserve32whole historical book paragraphs/19833payload B in finite44570B
-  archive; five full source inverses exact, damaged/marker/omission controls refuse.
-- Save6516chapter B while retaining all commands/examples/tables/headings/links,
-  current features, controls and limits; fixed caps and book worked inverse.
-- Sharder12/0, six whole DEV entries→0229/full37272B inverse; prior history exact.
-- Core/canonical/frozen/registry106/effective104/114/LIVE unchanged; focused/six
-  books rc=0, prior Rust170/17/226 applies. C31 GC-CSR-ACCESS next.
 

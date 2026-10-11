@@ -111,13 +111,90 @@ governed() { # $1 target  $2 file with one destination per line
   return 1
 }
 
-# Count a directory family's members. The registry governs the REPOSITORY, so the real run
-# counts TRACKED files: `docs/book/` measured 92 files / 2,738,590 bytes with `find` because
-# mdbook's build output sits inside it, against 3 tracked files — a generated artifact would
-# otherwise fire a ceiling written for authored content.
-family_files() { # $1 base  $2 dest  $3 mode(git|find)
-  if [ "$3" = git ]; then git -C "$1" ls-files -- "$2" | sed "s|^|$1/|"
-  else find "$1/$2" -type f; fi
+# Measure a complete family once. Git supplies NUL-delimited tracked paths; fixture
+# mode walks only its local tree. No count or byte total is published on a failed
+# read, and paths never escape the base or cross a symlink, volume or Git boundary.
+family_measure() { # $1 base  $2 destination directory  $3 mode(git|find)
+  python3 - "$1" "$2" "$3" <<'PY'
+import os
+from pathlib import Path, PurePosixPath
+import stat
+import subprocess
+import sys
+
+base = Path(sys.argv[1])
+dest, mode = sys.argv[2:]
+
+def require(ok, reason):
+    if not ok:
+        raise ValueError(reason)
+
+def safe(name):
+    p = PurePosixPath(name)
+    require(name != '.' and not p.is_absolute() and str(p) == name and '..' not in p.parts
+            and '\\' not in name and all(32 <= ord(c) != 127 for c in name),
+            'unsafe member path')
+    return p
+
+def owned(name):
+    cursor = base
+    for part in safe(name).parts:
+        cursor /= part
+        info = cursor.lstat()
+        require(not stat.S_ISLNK(info.st_mode), 'symlink member or parent: ' + name)
+        require(info.st_dev == device, 'off-volume member or parent: ' + name)
+        marker = cursor / '.git'
+        require(not marker.is_symlink() and not marker.exists(),
+                'nested Git boundary: ' + name)
+    return cursor, info
+
+def identity(info):
+    return (info.st_dev, info.st_ino, info.st_mode, info.st_size,
+            info.st_mtime_ns, info.st_ctime_ns)
+
+def walk_error(error):
+    raise error
+
+try:
+    device = base.stat().st_dev
+    require(dest.endswith('/') and str(safe(dest[:-1])) == dest[:-1],
+            'unsafe family destination')
+    directory, info = owned(dest[:-1])
+    require(stat.S_ISDIR(info.st_mode), 'family is not a directory')
+    if mode == 'git':
+        result = subprocess.run(['git', '-C', str(base), 'ls-files', '-z', '--', dest],
+                                capture_output=True, timeout=30)
+        require(result.returncode == 0 and not result.stderr,
+                'Git inventory failed or wrote stderr (status ' + str(result.returncode) + ')')
+        raw = result.stdout
+        require(not raw or raw.endswith(b'\0'), 'incomplete NUL inventory')
+        names = [v.decode('utf-8') for v in raw.split(b'\0')[:-1]]
+    elif mode == 'find':
+        names = []
+        for parent, directories, files in os.walk(directory, onerror=walk_error):
+            for child in directories:
+                owned((Path(parent) / child).relative_to(base).as_posix())
+            names.extend((Path(parent) / child).relative_to(base).as_posix()
+                         for child in files)
+    else:
+        raise ValueError('unknown family listing mode')
+    require(len(names) == len(set(names)), 'duplicate family member')
+    measured = []
+    for name in sorted(names):
+        safe(name)
+        require(name.startswith(dest), 'member outside family: ' + name)
+        path, info = owned(name)
+        require(stat.S_ISREG(info.st_mode), 'non-regular family member: ' + name)
+        measured.append((name, path, identity(info), info.st_size))
+    for name, path, before, size in measured:
+        require(identity(path.lstat()) == before, 'member changed during measurement: ' + name)
+    for name, path, before, size in measured:
+        print(str(size) + '\t' + name)
+except (OSError, ValueError, subprocess.SubprocessError) as error:
+    reason = error.strerror if isinstance(error, OSError) else str(error)
+    print('  UNREADABLE family ' + dest + ': ' + reason, file=sys.stderr)
+    sys.exit(2)
+PY
 }
 
 # $1 = registry path, $2 = README path, $3 = 1 to enforce ceilings, $4 = root the destinations
@@ -129,7 +206,7 @@ family_files() { # $1 base  $2 dest  $3 mode(git|find)
 # destination against the self-test's already-deleted temp directory and reported all 24 as
 # MISSING. A control must not be able to contaminate the thing it checks.
 verify_routes() {
-  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 tmp
+  local registry="$1" readme="$2" enforce="$3" base="$4" mode="${5:-find}" fo="${6:-}" bad=0 unreadable=0 tmp
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || return 2
@@ -166,8 +243,12 @@ verify_routes() {
           # file-count and aggregate ceilings, so the two numeric axes mean files and total
           # bytes here rather than lines and bytes. Splitting a monolith without bounding the
           # resulting collection just moves the same append pressure one level down.
-          n=$(family_files "$base" "$dest" "$mode" | wc -l | tr -d ' ')
-          b=$(family_files "$base" "$dest" "$mode" | tr '\n' '\0' | xargs -0 cat 2>/dev/null | wc -c | tr -d ' ')
+          if ! family_measure "$base" "$dest" "$mode" > "$tmp/parts" 2> "$tmp/read-errors"; then
+            cat "$tmp/read-errors"
+            unreadable=1; continue
+          fi
+          n=$(wc -l < "$tmp/parts" | tr -d ' ')
+          b=$(awk -F'\t' '{total += $1} END {printf "%.0f", total}' "$tmp/parts")
           if [ "${cl:-0}" -gt 0 ] && [ "$n" -gt "$cl" ]; then
             echo "  OVER CEILING $dest: $n files > $cl"; bad=1; fi
           if [ "${cb:-0}" -gt 0 ] && [ "$b" -gt "$cb" ]; then
@@ -183,9 +264,7 @@ verify_routes() {
           # the fact-ownership registry as a mirror with a regeneration-doctrine governor
           # is exempt as a checked property, reported as proof, never failed.
           if [ "${cp:-0}" -gt 0 ]; then
-            family_files "$base" "$dest" "$mode" | while IFS= read -r one; do
-              printf '%s\t%s\n' "$(wc -c < "$one" | tr -d ' ')" "$one"
-            done | sort -rn > "$tmp/parts"
+            sort -rn "$tmp/parts" > "$tmp/sorted-parts"
             while IFS= read -r big; do
               [ -n "$big" ] || continue
               [ "${big%%	*}" -gt "$cp" ] || continue
@@ -200,7 +279,7 @@ verify_routes() {
                 echo "  OVER CEILING $dest: part $rel"
                 echo "    ${big%%	*} bytes > $cp"; bad=1
               fi
-            done < "$tmp/parts"
+            done < "$tmp/sorted-parts"
           fi
           ;;
       *)  [ -f "$base/$dest" ] || { echo "  MISSING destination file $dest"; bad=1; continue; }
@@ -220,6 +299,7 @@ verify_routes() {
   done < "$registry"
 
   rm -rf "$tmp"
+  [ "$unreadable" -eq 0 ] || return 2
   return "$bad"
 }
 
@@ -290,6 +370,54 @@ self_test() {
   printf 'x\nx\nx\n' > "$t/KEEP.md"
   reg "$R_DOCS" $'KEEP.md\tboth\thot_live\towner\t1\t0\t9\t0\t0'
                                                  arm "GREEN health target only warns" 0 "health: KEEP.md is 3 lines (target 1)"
+  # Synthetic Git data exercises the real inventory subprocess without creating
+  # another repository or leaking PATH into the caller (the subshell owns it).
+  mkdir -p "$t/bin"
+  cat > "$t/bin/git" <<'PY'
+#!/usr/bin/env python3
+import os, sys
+mode = os.environ['ROUTE_FIXTURE_MODE']
+names = {
+    'empty': [], 'duplicate': ['docs/inner.md', 'docs/inner.md'],
+    'outside': ['KEEP.md'], 'traversal': ['docs/../KEEP.md'],
+    'missing': ['docs/missing.md'], 'symlink': ['docs/link.md'],
+    'directory': ['docs/subdir'], 'unicode': ['docs/café name.md'],
+}.get(mode, ['docs/inner.md', 'docs/space name.md'])
+if mode in {'failed', 'partial_stderr', 'failed_partial'}:
+    sys.stderr.write('controlled inventory error\n')
+if mode in {'failed', 'failed_silent'}: sys.exit(73)
+if mode == 'partial_stderr': names = names[:1]
+sys.stdout.buffer.write(b'\0'.join(n.encode() for n in names) + (b'\0' if names else b''))
+if mode == 'malformed': sys.stdout.buffer.write(b'unterminated')
+if mode == 'failed_partial': sys.exit(73)
+PY
+  chmod +x "$t/bin/git"
+  printf 'xyz' > "$t/docs/space name.md"
+  printf 'xy' > "$t/docs/café name.md"
+  mkdir "$t/docs/subdir"
+  ln -s ../KEEP.md "$t/docs/link.md"
+  git_fixture() { (
+    export PATH="$t/bin:$PATH" ROUTE_FIXTURE_MODE="$1"
+    verify_routes "$t/routes.tsv" "$t/README.md" 1 "$t" git "$t/fact.tsv"
+  ); }
+  R_MEASURED=$'docs/\treader_navigation\tpartitioned\towner\t0\t0\t2\t5\t3'
+  reg "$R_MEASURED" "$R_KEEP"
+  arm "GREEN exact count/aggregate/part boundary and spaced member" 0 "" git_fixture baseline
+  arm "GREEN successful empty tracked family" 0 "" git_fixture empty
+  arm "RED failed empty inventory" 2 "UNREADABLE family docs/: Git inventory failed" git_fixture failed
+  arm "RED silent nonzero inventory status" 2 "UNREADABLE family docs/: Git inventory failed" git_fixture failed_silent
+  arm "RED partial listing with stderr and successful status" 2 "UNREADABLE family docs/: Git inventory failed" git_fixture partial_stderr
+  arm "RED failed nonempty inventory" 2 "UNREADABLE family docs/: Git inventory failed" git_fixture failed_partial
+  arm "RED unterminated NUL inventory" 2 "incomplete NUL inventory" git_fixture malformed
+  arm "RED duplicate inventory member" 2 "duplicate family member" git_fixture duplicate
+  arm "RED member outside family" 2 "member outside family" git_fixture outside
+  arm "RED traversal in member" 2 "unsafe member path" git_fixture traversal
+  arm "RED missing listed member" 2 "UNREADABLE family docs/:" git_fixture missing
+  arm "RED symlink member" 2 "symlink member or parent" git_fixture symlink
+  arm "RED directory listed as member" 2 "non-regular family member" git_fixture directory
+  arm "GREEN Unicode and spaced member" 0 "" git_fixture unicode
+  reg $'docs/\treader_navigation\tpartitioned\towner\t0\t0\t1\t5\t3' "$R_KEEP"
+  arm "RED one file beyond count boundary" 1 "OVER CEILING docs/: 2 files > 1" git_fixture baseline
   rm -rf "$t"
   printf 'README-ROUTING-CLOSURE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -308,7 +436,13 @@ fail=0
 regen_set_registered scripts/check_doctrines.project.sh || {
   echo "README-ROUTING-CLOSURE: REFUSED — the regeneration-doctrine set and the driver disagree." >&2
   exit 2; }
-out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)" || fail=1
+out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)"
+route_status=$?
+if [ "$route_status" -eq 2 ]; then
+  printf 'README-ROUTING-CLOSURE: REFUSED — family measurement unavailable.\n%s\n' "$out" >&2
+  exit 2
+fi
+[ "$route_status" -eq 0 ] || fail=1
 
 # (2) every path-shaped destination the guard actually emits must be governed
 dests="$(mktemp "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || exit 2; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"

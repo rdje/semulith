@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | neutral contract copied; D52 inventory-read repair, then D51 capacity review and full adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D52 repaired; .4h4 D51 capacity review, then full inventory and checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -282,7 +282,7 @@ artifacts. Six real task instances were added. A proposed increase requires a
 new separate reviewed authority proving that expansion, not calendar growth.
 Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
-then .4h3 inventory-read repair before D51 capacity review.
+.4h3/LC-0013 inventory-read repair is complete; .4h4 D51 review is next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -328,7 +328,7 @@ promotion: declined (canonical records already own the demoted details).
 
 ### .4h2 / SEMULITH-LC-0012 — qualify capacity inputs before authority review
 
-Status: assessment complete; D52 open, priority1, repair next. Owned on clean85fe189 after exact9-file commit verification,
+Status: assessment complete; D52 fixed/verified by .4h3 below. Owned on clean85fe189 after exact9-file commit verification,
 brief0/untracked and unrestricted handoff0, before edits or scratch writes.
 Read the route checker's family listing/count/aggregate/per-part paths and all
 relevant count/size decisions. Qualify successful and failed inventory reads
@@ -374,6 +374,53 @@ HEAD85fe189, index SHA and all1397 tracked byte/mode/Gitlink identities match.
 The controlled checker SHA is
 `e0b023586154ec4545763abf61b0c874b170ef73aa183c1f4671490c735033dc`; facade SHA and complete receipt digests are in result.json.
 All scratch is project-local; no checker, ceiling, authority or index changed.
+
+### .4h3 / SEMULITH-LC-0013 — refuse unmeasurable family inventories
+
+Status: complete; D52 fixed/verified. Owned on clean403595f after exact6-file postcheck, brief0,
+unrestricted handoff0 and the complete COMMIT report. D52 priority1 blocks D51
+capacity review. Repair only the existing route checker's family measurement:
+one successful, stderr-free NUL Git inventory, validated unique family-relative
+paths and regular project-local members, then one measured size table for all
+three ceilings. Failed/diagnostic/malformed listings or member measurements refuse
+with status2 and no green banner. Preserve ordinary health/ceiling verdicts,
+derived-member exemptions, all original17 controls, current ceilings, authority
+records, sealed and ordinary archives, and CPU/qualification state.
+
+Own target/live-containment/capacity-repair, source/checker inverses, independent
+Git-facade CLI controls, new permanent boundary/failure controls, normal/O runs,
+complete history/head/protected-mode/Gitlink checks, focused checks/seven books
+and any whole-oldest rollover needed before receipts. Sync tool/doctrine/book
+descriptions and the generated keyword index, derived arm count, LIVE's actual
+repair status and resume pointer.
+No new neutral checker or limit decision in this slice. After verified COMMIT,
+resume D51 capacity review; full containment inventory/adoption remains LC.4.
+promotion: declined (the existing route checker and permanent controls own the repair).
+
+
+- [x] **REPRODUCE / ISSUE** — LC-0012's public CLI receipts on85fe189
+  falsely return0 for failed73 and partial-with-stderr listings; owning .4h2
+  retains the selective facade recipe and pinned checker/source identities.
+- [x] **ROOT CAUSE** — `python3 target/live-containment/capacity-inputs/assess.py`
+  rc=0 on85fe189: all three cases return0, three listings each, unchanged
+  real HEAD/index/all1397 identities. Unchecked family_files pipelines discard
+  inventory failures and never set verify_routes' bad verdict.
+- [x] **FIX** — family_measure validates one NUL listing and member sizes;
+  every family bound consumes that table. Failed metadata/listing reads refuse2.
+- [x] **ADDRESSED** — capacity-repair/assess.py rc=0 normal/O: public
+  baseline0, failed73→2 and partial+stderr→2; one listing each, no failed-run
+  stdout/green banner. Real HEAD/index/all1397 tracked identities stay exact.
+- [x] **NO REGRESSION** — focused.sh/history.py/checker-inverse.py/rendered.py
+  rc=0: original17 plus15 controls,32/0 normal/O; nine omission variants
+  discriminate normal/O. Complete checker/book/task/head inverses,101 prior
+  entries and1383 protected regular files/Gitlink exact. Focused12/sharder12/
+  seven books/3242 links; full normal+print teaching and two literal commands
+  pass. Existing ceilings, authorities, archive bodies and CPU state exact.
+- [x] **LOCKSTEP** — tool/driver/doctrine/book/index/pointer agree; derived
+  arms1456 and LIVE routing closure Done reflect the verified repair. CH two
+  whole oldest entries1382B→0282/1619B/SHA03abd6f7;74live+210sealed284logical,
+  old manifest prefix exact. D51 capacity review next; full adoption remains .4.
+
 
 ## Decisions
 
@@ -682,6 +729,15 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h3: assess.py normal/O rc=0: baseline0; failed73 and partial+stderr
+refuse2 without green/stdout; one family listing, all1397 real identities exact.
+Permanent32/0 normal/O; nine omission variants refuse normal/O. Complete
+checker/book/task/head inverses,101 prior entries,1383 protected regular files/
+Gitlink and fixed limits exact. Focused12/sharder12/seven books/3242 links,
+normal+print/two literal examples pass; D52 fixed. CH1382B→0282/1619B whole
+rollover, manifest prefix exact,74live+210sealed284logical. LIVE routing closure
+Done/derived1456 arms; no CPU qualification change. D51 .4h4 next.
+
 .4h2: assess.py rc=0: baseline0/empty stderr; failed73 and partial+stderr
 both falsely green0, three scoped listings each. Real HEAD/index/all1397
 tracked identities exact. verify.py normal/O: complete book/task/LIVE/head
@@ -755,6 +811,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0013 (leaf LIVE-CONTAINMENT.4): refuse unmeasurable family inventories` — .4h3 complete/D52 fixed; .4h4 D51 capacity review next.
 
 `SEMULITH-LC-0012 (leaf LIVE-CONTAINMENT.4): qualify capacity inputs before authority review` — .4h2 assessment complete; D52 repair precedes D51 capacity review.
 

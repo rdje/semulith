@@ -76,19 +76,21 @@ cat docs/decisions/decision_task-tree-per-part-growth.md
 
 ### Capacity evidence must be readable
 
-Before reviewing a family limit, run its public check:
+Run the public family check and its failure controls:
 
 ```sh
 bash scripts/check_readme_routes.sh
+bash scripts/check_readme_routes.sh --self-test
 ```
 
-LC.4h2 recorded D52 on revision85fe189: a controlled Git facade returned either
-status73 with no task-family listing, or status0 with one real path and stderr.
-Both runs still returned0 and printed `README-ROUTING-CLOSURE: ok`. The
-baseline, failure receipts and unchanged real Git state are recorded in
-`docs/tasks/LIVE-CONTAINMENT.md`. An error message beside a success banner is
-not sufficient evidence for a capacity decision. D52's repair is the next slice;
-existing limits remain in force.
+D52, recorded in `docs/tasks/LIVE-CONTAINMENT.md`, accepted failed or partial
+Git listings with stderr on85fe189. LC.4h3 repairs it: one successful, stderr-free NUL
+inventory yields one validated size table for count, aggregate and per-part
+checks. Unreadable or unsafe family members refuse with status2 and no green
+banner; a measured ceiling breach returns1. A successful empty tracked family
+is valid. Health warnings and regeneration-gated exemptions retain their rules.
+The checker measures working files from tracked membership; this is not an
+atomic repository snapshot or a decision to raise a limit.
 
 ## Local containment contract
 

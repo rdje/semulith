@@ -16,11 +16,11 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: own LC.4h3's D52 inventory-read repair and failed/partial
-  controls before D51's task-capacity authority review. Read LC.4's frontier.
+- next_action: own LC.4h4's revision-pinned D51 task-capacity authority
+  review, after LC.4h3's verified D52 repair. Read LC.4's frontier and decisions.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC-0012 COMMIT. Public CLI reproduction
-  and repair ownership: `docs/tasks/LIVE-CONTAINMENT.md` .4h2.
+- in_flight_uncommitted: none after LC-0013 COMMIT. Inventory repair,
+  controls and preservation evidence: `docs/tasks/LIVE-CONTAINMENT.md` .4h3.
   Full inventory/checker adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.
