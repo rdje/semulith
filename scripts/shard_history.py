@@ -42,49 +42,16 @@ import sys
 import tempfile
 from pathlib import Path
 
+from history_entries import (
+    ENTRY, REGISTRY, SHARD_HEADER, ShardRefused, registry_ceiling, split_entries,
+)
+
 REPO = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
 
-REGISTRY = "doctrine/readme_routes.tsv"
 DEFAULT_HEAD = "CHANGELOG.md"
 DEFAULT_SHARD_DIR = "docs/changelog"
 MANIFEST_NAME = "SHARDS.sha256"
-ENTRY = re.compile(r"^## ", re.M)
-
-
-class ShardRefused(Exception):
-    """A refusal with a reason, never a partial shard."""
-
-
-def split_entries(text: str) -> tuple[str, list[tuple[str, str]]]:
-    """A history file as (preamble, entries): preamble is everything before the first `## `,
-    each entry is (id, bytes) with the id taken from its heading line. Concatenating preamble +
-    entry bytes reproduces the file exactly."""
-    marks = list(ENTRY.finditer(text))
-    if not marks:
-        raise ShardRefused("the head holds no '## ' entries — there is nothing to shard")
-    preamble = text[: marks[0].start()]
-    entries: list[tuple[str, str]] = []
-    for i, m in enumerate(marks):
-        end = marks[i + 1].start() if i + 1 < len(marks) else len(text)
-        block = text[m.start():end]
-        eid = block.splitlines()[0][3:].strip()
-        entries.append((eid, block))
-    return preamble, entries
-
-
-def registry_ceiling(root: Path, head_rel: str) -> int:
-    row_re = re.compile(rf"^{re.escape(head_rel)}\t[^\t]*\t[^\t]*\t[^\t]*\t\d+\t\d+\t\d+\t(\d+)\t\d+$")
-    reg = root / REGISTRY
-    if not reg.is_file():
-        raise ShardRefused(f"{REGISTRY} does not exist — the ceiling is owned by the registry, "
-                           f"and this tool refuses to invent one")
-    for line in reg.read_text().splitlines():
-        m = row_re.match(line)
-        if m:
-            return int(m.group(1))
-    raise ShardRefused(f"{REGISTRY} has no row declaring a byte ceiling for {head_rel} — "
-                       f"sharding an ungoverned head would move pressure into the dark")
 
 
 def manifest_rows(shard_dir: Path, root: Path) -> list[str]:
@@ -106,16 +73,6 @@ def next_shard_name(shard_dir: Path, root: Path) -> str:
         if m:
             n = max(n, int(m.group(1)))
     return f"shard-{n + 1:04d}.md"
-
-
-SHARD_HEADER = (
-    "# {head} shard — {first} … {last}\n"
-    "\n"
-    "> Sharded from `{head}.md` under its {kib} KiB ceiling "
-    "(`doctrine/readme_routes.tsv`).\n"
-    "> Entries in a shard are **never edited after the shard** — git history is canonical.\n"
-    "\n"
-)
 
 
 def shard(root: Path, head_rel: str, shard_dir_rel: str, manifest_rel: str,

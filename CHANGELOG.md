@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0216 (leaf P4-SYSTEM.14) — preserve live history predecessors
+
+- Extend SHARD-FREEZE to exact complete predecessor entries/preambles in index and working views, allowing new records and published whole-suffix sharding. Authenticate the complete staged partition too; failed Git reads refuse. Share the unchanged entry/wrapper/ceiling definitions without import-time Git reads.
+- Reproduce both original count edits accepted by the old judge;38/0 controls and five omissions17/1/2/2/1 discriminate, also optimized. Actual a24 two-source inverses/three receipt refusals, shared AST/aliases,43/0+sharder12/0, focused12/seven books/3022 hyperlinks pass; derive785 outer arms/39 doctrines. Full CI preflight all five legs green on d8083a9. Preserve complete old append heads/root,1283 protected files and fixed seals/caps/CPU status. Next a26 artifact schemas/mapping, evaluator/collector and captures.
+
 ## SEMULITH-P4-0215 (leaf P4-SYSTEM.14) — gate fresh book navigation and catalogue
 
 - Resolve six ordinary/four print sibling-book paths; correct and gate the registered model catalogue without CPU acceptance credit. Shared record mapping, safe relative source paths, fresh disposable seven-book builds and rendered local path/HTML-fragment checks extend UNIT-BOOKS.

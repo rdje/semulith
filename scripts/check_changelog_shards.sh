@@ -28,9 +28,16 @@
 # ⛔ Fired RED again when DOC-SHARDING.2 taught the check the two-head family: a scratch shard
 # carrying a live DEV_NOTES.md heading was flagged DUPLICATED ENTRY (probe recorded in the leaf).
 #
-# ⚠️ HONEST LIMIT: it proves the partition is frozen, complete and unrewritten from the first
-# committed manifest onward. The shard EVENT's completeness (head-before == head-after + shard,
-# order and bytes exact) is the tool's proof, printed at the event and recorded in the tree.
+# ⚠️ HONEST LIMIT: byte preservation and authenticated partitioning do not establish
+# the truth of a historical claim. Corrections belong in new whole entries. The
+# published sharder supplies the event inverse; the predecessor guard retains it.
+#
+# 5. HEAD PREDECESSORS: the proposed index and working files preserve complete
+#    predecessor entry bytes/order, allowing new prefixes and whole oldest-suffix
+#    moves through the published sharder. The complete staged partition is judged
+#    by the same existing checker in an owned disposable snapshot, so restored
+#    working bytes cannot hide staged shard/manifest/archive changes. Git failures
+#    refuse; a failed read is never interpreted as an absent predecessor.
 #
 # Sealed terminal descriptors/objects are authenticated by history_archive.py on every run;
 # committed descriptors remain immutable. Temporary comparison files stay under target/.
@@ -77,6 +84,19 @@ self_test() {
       for extra in "$@"; do printf '%s\n' "$extra"; done; } > "$MAN"
   }
   run() {
+    if [ -n "${PREDECESSOR_CONTROL:-}" ]; then
+      case "$PREDECESSOR_CONTROL" in
+        normal) python3 scripts/probe_history_predecessor.py ;;
+        optimized) python3 -O scripts/probe_history_predecessor.py ;;
+        *)
+          if [ "${PREDECESSOR_OPTIMIZED:-0}" = 1 ]; then
+            python3 -O scripts/probe_history_predecessor.py --mutation "$PREDECESSOR_CONTROL"
+          else
+            python3 scripts/probe_history_predecessor.py --mutation "$PREDECESSOR_CONTROL"
+          fi ;;
+      esac
+      return $?
+    fi
     if [ -n "${ARCHIVE_CONTROL:-}" ]; then
       python3 scripts/probe_history_archive.py --mutation "$ARCHIVE_CONTROL"
       return $?
@@ -178,6 +198,31 @@ $(printf '0%s  docs/changelog/shard-0001.md' "$(sha256sum "$SDIR/shard-0001.md" 
   ARCHIVE_CONTROL=duplicate-location
   arm "RED archive duplicate-location" 1 "DUPLICATE ARCHIVED PATH"
   ARCHIVE_CONTROL=""
+  PREDECESSOR_CONTROL=normal
+  arm "GREEN complete predecessor controls" 0 "OK"
+  PREDECESSOR_CONTROL=optimized
+  arm "GREEN optimized predecessor controls" 0 "OK"
+  PREDECESSOR_CONTROL=no-predecessor; PREDECESSOR_OPTIMIZED=0
+  arm "RED omitted no-predecessor" 1 "FAILED (failures="
+  PREDECESSOR_OPTIMIZED=1
+  arm "RED optimized omitted no-predecessor" 1 "FAILED (failures="
+  PREDECESSOR_CONTROL=no-order; PREDECESSOR_OPTIMIZED=0
+  arm "RED omitted no-order" 1 "FAILED (failures="
+  PREDECESSOR_OPTIMIZED=1
+  arm "RED optimized omitted no-order" 1 "FAILED (failures="
+  PREDECESSOR_CONTROL=no-staged-partition; PREDECESSOR_OPTIMIZED=0
+  arm "RED omitted no-staged-partition" 1 "FAILED (failures="
+  PREDECESSOR_OPTIMIZED=1
+  arm "RED optimized omitted no-staged-partition" 1 "FAILED (failures="
+  PREDECESSOR_CONTROL=ignore-git-error; PREDECESSOR_OPTIMIZED=0
+  arm "RED omitted ignore-git-error" 1 "FAILED (failures="
+  PREDECESSOR_OPTIMIZED=1
+  arm "RED optimized omitted ignore-git-error" 1 "FAILED (failures="
+  PREDECESSOR_CONTROL=no-shard-wrapper; PREDECESSOR_OPTIMIZED=0
+  arm "RED omitted no-shard-wrapper" 1 "FAILED (failures="
+  PREDECESSOR_OPTIMIZED=1
+  arm "RED optimized omitted no-shard-wrapper" 1 "FAILED (failures="
+  PREDECESSOR_CONTROL=""; PREDECESSOR_OPTIMIZED=0
   rm -rf "$t"
   printf 'SHARD-FREEZE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -214,5 +259,11 @@ if [ "$rc" -ne 0 ]; then
     echo "  to make the check pass; shard_history.py grows the partition, it never rewrites it."; } >&2
   exit 1
 fi
+predecessor="$(python3 scripts/history_predecessor.py)"; predecessor_rc=$?
+if [ "$predecessor_rc" -ne 0 ]; then
+  printf '%s\n' "$predecessor" >&2
+  exit "$predecessor_rc"
+fi
+printf '%s\n' "$predecessor"
 printf 'SHARD-FREEZE: ok (%s shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)\n' "${count:-0}"
 exit 0

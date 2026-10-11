@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | full CI preflight, a25 append-history preservation, then a26 artifacts/evaluator/captures |
+| 1 | `P4-SYSTEM.14` | `active` | a26 artifact schemas/mapping, then evaluator/collector, retention/captures and full policy/status |
 
 ## Decisions
 
@@ -458,15 +458,65 @@ acceptance/qualification change. Fix my cwd-relative -d assumption caught by the
 rendered proof: restore Makefile, reproduce/remove41 generated files, rerun normal
 builds. Full CI milestone check is the next clean preflight before a25 changes.
 
-### `.14` a25 — preserve live append-history predecessors (scheduled, SEMULITH-P4-0216)
+### `.14` a25 — preserve live append-history predecessors (completed, SEMULITH-P4-0216)
 
-After a24's clean COMMIT workflow, replace the a23 byte-scope proof's whole-file
+Owned on clean d8083a9, brief0/untracked and actual ps/lsof handoff census OK,
+before changes. Run the full CI milestone preflight with tracked sources frozen,
+then replace the a23 byte-scope proof's whole-file
 allowance for DEV/CHANGELOG with a permanent, shard-aware predecessor preservation
 check and discriminating controls. Reproduce the two overbroad count changes;
 require exact retained/moved entries and reject unauthorized old-entry edits while
 allowing new whole entries and published lossless sharding. Keep historical
 corrections as new owned records; preserve exact originals and all fixed caps.
 Then a26 artifact schemas/mappings (SEMULITH-P4-0217), evaluator/collector/captures.
+
+Own a staged-and-working predecessor guard through the existing SHARD-FREEZE
+contract, its controls and public sharder integration, live/book/decision sync and
+COMMIT workflow. Refuse failed Git reads rather than interpreting them as absence;
+preserve complete entry bytes/order through whole oldest-suffix moves. No earlier
+archive/seal/cap or canonical/CPU-status change. Record full CI result here.
+
+Full CI preflight on d8083a9 plus only a25 ownership/resume text: make ci rc=0,
+all five legs green (Rust443, doctrines, bench, smoke-bench, seven books).
+Tracked inputs stayed frozen; session79683 closed before implementation edits.
+
+before.py rc=0 reconstructs the relevant5de7c27 history corpus on this volume:
+old partition judge reports240 checked rows/rc0 despite both original Focused11
+receipt edits; the new predecessor API refuses each. Extend the existing partition
+judge to the complete staged corpus too: a staged frozen-shard edit cannot hide
+behind restored working bytes. Pure controls reproduce that distinction without
+creating or amending another Git repository. All old archive controls stay intact.
+
+Current probes38/0 normally/optimized; five omissions lose17/1/2/2/1 assertions
+in both modes, including staged partition, ordering, Git-error and shard-wrapper
+checks. Published-sharder integration preserves exact bytes; prototype real gate
+reports241 frozen rows and97 complete predecessor entries per index/working view.
+Correct three initial fixture errors by allocating its required scratch parent;
+no production verdict was accepted from that failed instrument.
+
+Final review reproduces an import-time Git read outside the new guard's refusal
+handler: shard_history.py initializes its CLI repository global on import. Own
+extracting its entry splitter, wrapper, ceiling reader and exception into one pure
+shared module; retain public sharder aliases and exact function/constant semantics.
+Add a fresh-process import control and rerun public sharder/event/guard checks.
+
+Final verification:38/0 normal/optimized; five omissions17/1/2/2/1 in each;
+SHARD-FREEZE43/0/sharder12/0, focused12/seven books/3022 hyperlinks, exact two
+book commands and scope1283 pass. Shared six-definition/constant AST and aliases,
+all remaining sharder definitions, actual a24 two-source inverses/three receipt
+refusals pass. Final append/root predecessors and staged bytes checked before commit.
+Index containment changes one hot label/hook only; full record preserved. Full CI
+preflight five legs green on d8083a9. No old archive/seal/cap/CPU credit changes.
+
+### `.14` a26 — carry prospective artifact schemas and mapping (scheduled, SEMULITH-P4-0217)
+
+Read the a19 matched-GPR method and qualification decisions, relevant canonical
+schemas/mappers/graph readers and RV64GC book policy first. Implement the bounded
+prospective dependency-manifest and capture-receipt shapes with one mapping and
+closed validation/controls. Preserve generic evidence and all canonical records;
+syntax alone supplies no qualification. Keep replay/evaluation, capture production,
+retention budgets and full policy/status consumers explicitly pending until their
+own verified slices. Own schema/book/live sync and COMMIT before moving onward.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -565,6 +615,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a25 — **ROOT CAUSE**: before.py rc=0 reproduces old judge240 rows/rc0
+  despite both original count edits; the live-body predecessor comparison was absent.
+  The import-time Git-read reproduction identifies sharder CLI initialization.
+- [x] `.14` a25 — **ADDRESSED**: guard/proof.py/shared.py/mutations.py rc=0;
+  38/0 controls and five omissions17/1/2/2/1 discriminate normally/optimized,
+  actual a24 two-source inverses/three old-receipt refusals and pure aliases pass.
+  Complete staged partition and working/index predecessors both checked.
+- [x] `.14` a25 — **NO REGRESSION**: focused12/SHARD-FREEZE43/0/sharder12/0,
+  seven books/rendered/scope rc=0;3022 hyperlinks/two literal commands and1283
+  protected files exact. Full make ci preflight rc=0 on d8083a9, all five legs green;
+  39 doctrines/785 outer arms derived, no old archive/seal/cap/canonical/CPU change.
+
 - [x] `.14` a24 — **ROOT CAUSE**: before.py/expanded-before.log rc=0/1 reproduce
   old absolute-source acceptance, stale RV64GC catalogue and six normal/four print
   missing paths. Public CLI help identifies the attempted -d cwd assumption.
@@ -623,6 +685,14 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a25: before.py oldjudge240 rows accepts two original count edits, repaired refuses;
+38/0 normal/optimized, five omissions17/1/2/2/1 each, actual a24 two-source
+inverses/three refusals, six shared AST/alias definitions and remaining sharder
+AST exact. SHARD-FREEZE43/0/sharder12/0/focused12/seven books/3022 hyperlinks/
+literal commands/scope1283 rc=0. Full CI preflight rc=0 on d8083a9, five legs green.
+Correct fixture-parent and retained/moved-count assumptions before signoff; no
+history change or CPU credit. Both current complete append/root inverses pass.
+
 a24: before.py/expanded-before.log old absolute source accepted, catalogue missing
 RV64GC and six normal/four print missing hrefs; repaired fresh gate3016 hyperlinks,
 62 full HTML inverses/12 HTTP reads,26/0+23/0 probes normally/optimized, omissions
@@ -668,6 +738,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a25 | `SEMULITH-P4-0216 (leaf P4-SYSTEM.14): preserve live history predecessors` | a26 artifact schemas/mapping, then evaluator/collector and captures |
 | `.14` a24 | `SEMULITH-P4-0215 (leaf P4-SYSTEM.14): gate fresh book navigation and catalogue` | full CI preflight, a25 append-history preservation, then a26 artifacts |
 | `.14` a23 | `SEMULITH-P4-0214 (leaf P4-SYSTEM.14): resolve included book record links` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifact mappings |
 | `.14` a22 | `SEMULITH-P4-0213 (leaf P4-SYSTEM.14): preserve completed evidence records` | a23 rendered book navigation, then artifact schemas/mappings and evaluator/collector |
@@ -679,6 +750,8 @@ Completed .14 a1–a19 commit rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-11`: `.14` a25 (SEMULITH-P4-0216): guard complete index/working append predecessors and the staged partition; shared pure entry definitions,38/0 controls/five omissions, actual inverse/refusals and focused checks pass; full CI preflight green.
 
 - `2026-10-11`: `.14` a24 (SEMULITH-P4-0215): repair/gate seven-book catalogue and rendered navigation; relative safe inputs/fresh outputs,26/0+23/0 controls and62 HTML inverses; preserve part14/DEV predecessors, fixed caps and CPU status.
 

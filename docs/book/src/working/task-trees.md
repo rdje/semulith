@@ -235,6 +235,21 @@ same-volume byte census; keep file count, aggregate bytes and per-part caps
 as separate checks. The corrected planning receipt and inverse retain the
 measurement's source and scope.
 
+### Preserve older live entries
+
+SHARD-FREEZE also compares complete old DEV/CHANGELOG entries in the staged and
+working views. Whole oldest suffixes may move through the published sharder;
+bytes/order stay exact. New corrections precede old records. Editing an older
+count refuses even if the working file is restored after staging. Failed Git
+reads refuse; preservation does not prove old claims true.
+
+```sh
+bash scripts/check_changelog_shards.sh
+python3 scripts/shard_history.py --head DEV_NOTES.md --max-bytes 42000 --dry-run
+```
+
+The first checks both views and the staged partition; the second previews a move.
+
 ## Reading sealed history
 
 Older changelog and development-note shards now have a query-first archive terminal.

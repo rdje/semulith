@@ -1,5 +1,47 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — preserve live history predecessors (P4-SYSTEM.14 a25)
+
+Reproduce both a23 overbroad Focused11 edits in the5de7c27 history corpus: the
+old partition judge reports240 frozen rows/rc0 despite changed live bodies.
+The new guard refuses each. SHARD-FREEZE now compares complete predecessor
+entries/preambles in both index and working views; new prefixes and whole oldest
+suffix moves retain exact bytes/order. New shards use published wrappers/digests.
+The existing partition judge also authenticates the complete staged corpus in an
+owned disposable snapshot, so restored working bytes cannot hide staged edits.
+Git failures refuse; only a successful closed inventory establishes absence.
+Snapshots stay on-volume, bounded8MiB/1024 paths. No secondary Git repo is created.
+Corrections belong in new entries; byte preservation does not establish prose truth.
+
+38 controls pass normally/optimized; five omissions lose17/1/2/2/1 assertions in
+both modes. SHARD-FREEZE43/0 includes the original31 controls and12 new shell
+arms; published sharder12/0 passes. Actual a24 source inverses reconstruct46331B
+CHANGELOG/f7911fea77ea6063eece04fa524c8bae97d1b260fd73df3ce83f09e81c40c8e0
+and47829B DEV/fed228c3151e8b7da96fe8b3ca76bd6e3760e9cdb4e8521a565661a62ad73e35.
+Two retained count edits and a real moved rc edit with updated digest refuse.
+Both proposed/working views prove97 complete predecessor entries at d8083a9.
+Focused12/seven books and3022 rendered hyperlinks/literal book commands pass;
+1283 protected files stay exact, Git links untouched. Derive39 doctrines/785 outer
+arms; no fixed cap, old seal/archive, canonical input or CPU acceptance change.
+
+Final review reproduces an import-time Git read outside refusal handling from
+shard_history's CLI setup. Extract six shared definitions/constants into the pure
+history_entries owner; public sharder aliases and all remaining definition ASTs
+stay exact. Fresh-process no-Git import control, sharder/event proofs pass.
+Correct three initial fixture errors by allocating its scratch parent; correct
+an actual-proof assumption by locating the old notes count in its retained head,
+then test a real moved rc field separately. No failed instrument supplied signoff.
+The new decision records the contract; contain only one hot index label/hook,
+keeping its full record unchanged. Book explains new corrections and dry-run moves.
+
+Full CI preflight on d8083a9 plus only a25 ownership/resume text passed all five
+legs (Rust173/17/253, all doctrines, bench, smoke-bench53, seven books), with
+tracked sources frozen until session79683 closed. Post-guard focused checks and
+hooks verify the new history behavior; no Rust changes. Next a26 dependency and
+capture artifact schemas/mapping, then evaluator/collector, retention/captures and
+full policy/status consumers. Evidence target/p4-system-14/a25. Repeat full append
+predecessor/root inverses and staged-byte equality before commit.
+
 ## _(2026-10-11)_ — gate fresh book navigation and catalogue (P4-SYSTEM.14 a24)
 
 Reproduce six ordinary/four print missing sibling destinations and the stale
