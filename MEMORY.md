@@ -18,16 +18,18 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: finish P4-SYSTEM.14 a42f COMMIT postconditions, then the next
-  finite complete-closure/impact/source-grounded property/collector adequacy unit.
-  D46 repair verified; no qualification integration or new method/API.
-- in_flight_uncommitted: a42f complete/verified, final COMMIT pending. Focused13/
-  full PROFILE/sharder12/seven books/3196 links/normal+print pass. Whole source/
-  task inverses,17 examples exact; actual gate prefixes33/0 normal/O differ only
-  in reason.102 history entries/1358 other files/modes/Gitlinks exact normal/O;
-  real receipt+digest edits refuse. D46 closed; PROFILE454/GUEST328/global1401.
-  Latest full CI exact3e5a3ea:443 Rust/all doctrines/bench/smoke53/seven books,
-  all1370 tracked bytes/modes/Gitlinks unchanged; jobs closed before ownership.
-  Receipt target/p4-system-14/a42d3b/full-ci/result.json. Canonical/CPU/caps/seals
-  unchanged; no canonical v1 capture or qualification.
+- next_action: finish P4-SYSTEM.14 a42g /0242 COMMIT postconditions, then
+  next finite complete closure/property/collector adequacy unit. No qualification
+  integration; caller still owns complete reviewed impact projection/currentness.
+- in_flight_uncommitted: a42g complete/verified; final COMMIT pending.34 controls/
+  18 omissions normal/O,4096 graph pairs and tracked32768 redundancy diagnostic;
+  focused13/full PROFILE/sharder12/seven books/3212 fresh+actual links/normal+
+  print/exact new example pass. Whole source/task/17 old examples/history102/
+  scope1360 bytes/modes/Gitlinks exact normal/O; real receipt+digest edits refuse.
+  PROFILE492/GUEST328/global1439 derived; canonical/CPU/caps/seals unchanged.
+  Latest full CI exact3e5a3ea all five legs green (443 Rust/smoke53/seven books),
+  receipt target/p4-system-14/a42d3b/full-ci/result.json. No canonical v1 capture.
+  First hook refused two checklist signatures; failed owned job tree closed,
+  HEAD unchanged. Repair own-box receipts and rerun. External Kimi Code has two
+  read-only AGENTS.md handles; do not kill; recheck standard handoff after commit.
 - blockers: none. Archive seal LC0006 complete; full containment adoption remains.

@@ -10,6 +10,7 @@
 [Authenticated byte evaluation](evaluation.md)
 [Explicit image context](image-binding.md)
 [Dependency manifest and leaf inspection](closure.md)
+[Conservative change impact](impact.md)
 [Evidence policy](policy.md)
 [Current processor gate](evidence.md)
 [Historical dossier wording](history.md)

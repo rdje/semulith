@@ -1,5 +1,61 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — conservative old/new dependency impact (P4-SYSTEM.14 a42g)
+
+Implement the existing EVIDENCE_AND_GATES sections3–4 algorithm in a pure bounded
+in-memory API. Exact frozen node/graph inputs and plain tuple/string/bool shapes
+precede indexing; unique IDs/edges, resolved compatible endpoints and declared
+counts/character bounds refuse ambiguity. Fingerprints are exact lowercase SHA256
+or explicitly unknown. Reuse the canonical lexical path predicate; introduce no
+persisted format, parser, artifact I/O or qualification flag. Caller still owns
+complete reviewed projection, actual fingerprints/change inventory and updates.
+
+Seed added/deleted/content/metadata nodes, changed-edge dependents and all nodes
+for mapped changed paths. Reverse-traverse both old/new graphs, retaining deleted
+requirements/evidence. Unknown pins broaden their scopes; unmapped paths,
+uncertainty or universe edits broaden all old/new profiles. Affected shared kinds
+broaden associated old/new scopes; broad expansion and reverse closure share a
+fixed point so a shared primitive exposed by P can also select Q. Deterministic
+sorted frozen result names invalidation recommendations/reasons, not currentness.
+
+Draft33-test positives lose two unmapped assertions: defaultdict lookup inserts
+missing paths before census (0 instead of1024; no broadening). Diagnose raw
+output, replace with non-inserting get, retain that exact regression omission.
+Initial one-sided edge traversal omissions both33/0/0 normal/O; changed-edge
+endpoint seeding makes those traversal edges redundant. Independent three-node
+reachability census32768 old/new/seed combinations agrees normal/O; retain
+explicit union per policy and exclude those nondiscriminating omissions. No
+committed API or CPU result was ever credited by either draft outcome.
+
+Final34 positives pass normal/O;18 independent omissions discriminate with zero
+errors. Probe independently checks all4096 three-node graph pairs with one mapped
+changed input, including cycles. Old454 PROFILE arms/entire source exact after
+removing only new38 actual-result registrations; re-derived global1439/GUEST328.
+Graph bounds512nodes/4096edges/64profiles per version and1024 changed paths apply
+to allocated metadata, not the128MiB/16MiB artifact ledger or RAM/time guarantees.
+New natural GC chapter includes complete source/content/removed-edge/unmapped/
+shared-scope example, output and caller/qualification limits. Existing methods,
+byte evaluators, schemas, canonical data, legacy examples and CPU axes untouched.
+
+Verified focused13/full PROFILE/sharder12/seven books/3212 fresh+actual links,
+normal/print teaching and the exact new example. Whole source/task inverses, all17
+prior examples,102 predecessor entries and1360 other files/modes/Gitlinks exact
+normal/O; actual receipt+updated-digest rewrites refuse. Routing first refused
+the guest-evidence table at16525/16384B: move only the new row to execution, keep
+all old bytes/caps. Manual table census catches its new literal pipe (5 delimiters
+instead of4); omit that unnecessary alternative syntax, verify three columns.
+History/proof instruments first assumed shared receipt wording/score-only arms;
+use actual3196 receipts and both403score+51arm idioms. No gate bypass. COMMIT
+hooks/hashes/modes/brief0/job censuses next. First hook correctly refuses two
+acceptance bullets lacking recognized invocation/output signatures; stop the
+failed9-process owned tree, HEAD unchanged. Put actual rc=0 receipts inside each
+box, rerun acceptance/final proofs/docs/full hooks; no governor or signature change.
+External Kimi Code holds only read-only AGENTS.md handles; leave it untouched and
+recheck the standard handoff census after commit. Whole oldest DEV
+5788B/two entries to0267(6021B); CH2250B/three entries to0268(2487B),60live+
+210sealed270logical. Preserve all102 predecessor entries and fixed seals/caps.
+promotion: declined (implementation of existing conservative impact policy; no new normative policy or independent lesson).
+
 ## _(2026-10-11)_ — align implemented-method review surfaces (P4-SYSTEM.14 a42f)
 
 D46-IMPLEMENTATION-STATUS: active qualified overview/index and older GC evidence/
@@ -599,90 +655,4 @@ DEV51263→47923 at48200 target,18=16+2/3340B published0248,
 and whole source/head predecessors exact. Original PROFILE220/0, moved Limits53/0
 and published0247 Graph74/0 edits refuse even with updated digests. Full CI on
 this clean authentication milestone follows COMMIT, before a39 code.
-
-## _(2026-10-11)_ — inspect one authenticated dependency leaf (P4-SYSTEM.14 a37)
-
-Add inspect_dependency_leaf for one selected child from the public validated
-manifest plan. Bound child/union counts before lookup, require one edge/binding,
-copy selected identity, reject manifest self/role, preserve nonempty-string IDs.
-Integer limit0..8MiB precedes I/O; zero permits empty. One anchored snapshot,
-no reopen; stale/unavailable/refused remain separate, payload consistency before
-interpretation, frozen metadata without retained bytes. No other artifact or
-process read, aggregate closure/currentness/source semantics/qualification credit.
-
-D37-HEADER-FALSE-POSITIVE: draft root-name classification rejected valid Python
-("dependencies",1), although the published codec correctly refuses it as a
-manifest. Initial40 controls/twelve omissions/profile214/0 validate that bad
-rule and are not signoff. Reuse the published64KiB raw schema and sole mapper
-through is_dependencies_document. Raw-schema-valid documents remain manifests
-before self/nested-edge checks; malformed/opaque/lookalike/over-format-bound
-bytes are non-manifest, never valid-source claims. Missing/invalid schema tools
-are unavailable with matched pin, not ordinary content. Empty/>64KiB needs no
-tools. Fifty controls include AST-confirmed valid Python and schema/tool bounds.
-
-D37-LEGACY-SEAM: the new classifier duplicates an old byte-guard spelling; old
-probe correctly refuses seam drift. Scope only no-byte-bound mutation to its
-_document owner; all36 test bodies and legacy artifact functions remain exact,
-expected3 failures/no errors normal/O. Initial absent D.experiment_to_form and
-R.dumps fixture calls corrected using observed P.raw_experiment/R.render_forms;
-freeze nested bytes before schema-fault injection. Earlier instrument errors
-receive no control credit. DECLINED new lesson promotion: existing tools-first,
-raw-schema/single-mapper and exact-history rules apply; method/book/toolbox carry
-current API and limits.
-
-50/0/0 normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2 fail without
-errors.32 literal arms yield PROFILE220/0,39 doctrines/1043 arms. Focused17,
-sharder12/0/seven books/3088 links/all7 literal examples and normal/print teaching
-pass. Move complete old manifest section5822B without edits to closure chapter;
-whole old artifact/probe/checker/method/evidence/retained teaching inverses exact,
-340 raw parses/types and243 canonical dictionaries exact. Own measured whole-entry
-DEV publication and actual original/moved/published receipt+digest refusals.
-Final history/scope/hooks/brief0/censuses required. Next a38 aggregate budget
-ledger/evaluation; fixed caps/seals/canonical/CPU status remain unchanged.
-
-DEV50265→47433 at48200 target:19=17+2/2832B published0247,
-3065B/ed0282158fdbd6c1f4fed91d3c02ab2cb261ee103136b1e42267d63ce1d593e1;
-39live+210sealed249logical. History/scope rc=0:100 old entries/1312 other files
-and all complete predecessors protected; original count, moved Graph74/0 and
-published0246 Mapping12/0 edits refuse even with updated digests. Full CI remains
-all five legs green on exacte048616; this finite slice uses focused gates.
-
-Initial hook rejects prose-only decline; exact promotion marker/reason recorded
-in the owned leaf before retrying all hooks. No rejected commit was created.
-
-## _(2026-10-11)_ — contain completed method-unit designs (P4-SYSTEM.14 a36)
-
-Full CI all five legs passes on exact cleane048616: fmt/clippy/443 Rust tests,
-all doctrines, bench/smoke53 and seven books. Log40152B/
-7297dede6627465ad5c0380304ed5b987cd96e6d2ec2970224ba1f55a93a8406;
-verified16 committed sources remain exact, Git clean, brief0 and actual process
-census clear. No push at137/300; the expired exception remains expired.
-
-Root128784B/131072 leaves2288B, insufficient for the next leaf's ownership and
-signoff. Move eight complete a22–a29 designs31998B and whole earlier a22 book
-receipt709B into ordinary part15. Nine marked bodies retain original source
-order/offsets/lengths/SHA256. All eight exact live headings stay with direct
-routes; leave a20/a21 relative links in their original context. The book teaches
-current reading/inverse/refusal rules and includes a literal cat15 command.
-Full task128784B/0e62c1fcaada508f0340ff6b1a8285de4cf2d97a1773ec5b1a3e1d23131587ad
-and book17433B/5e2a6f43319a339b8b33b8732f0750b3fb2e198846f83774356ca3cc31171773
-reconstruct exactly.31 corrupt/missing-marker/omitted-body/actual receipt with
-updated digest/source map/live route/guide refusals pass normal/O. Initial
-actual-count probe guessed an absent spelling; inspect the source and mutate
-its literal All21 corrupt receipt. No false refusal or production defect credit.
-
-Part15 remains plain Markdown outside LC0006; the sealed reader refuses it.
-Trim only the new wrapper EOF, preserving every marked byte. Protected earlier
-parts/seal/caps/code/canonical/method/CPU stay exact. DECLINED new promotion:
-existing lossless partition and tools-first rules apply; task/book/toolbox retain
-current instructions. DEV pressure owns only oldest whole-entry publication,
-with whole source inverses and actual old/new/published receipt+digest refusals.
-Part15=39750B/42b5cb5676271bd3546febd210e4d3b39ab0c3b4d2a0838f26aeff12a5f7e84f.
-DEV51107→47168 at48200 reserved-room target,21=18+3/3939B into0246,
-4172B/d80e583bc5602c3f55005f26ee1b513a0bf2d61ec9e9c63a21cde17d6b47a4d1;
-38live+210sealed248logical. Focused12/sharder12/0/seven books/3076 links,
-normal/print/literal read/history/scope pass;1321 other files/101 prior entries
-exact and real receipt+digest edits refuse. Final hashes/hooks/brief0/census
-required. Next a37 bounded dependency leaf inspection, then aggregate evaluator/
-gates, reviewed collector, measured retention/cases/captures/full policy.
 

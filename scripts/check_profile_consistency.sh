@@ -1485,6 +1485,83 @@ EOF
   score "RED optimized omitted parent-program guard program-plain" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_program.py" --mutation program-selection 2>&1)"; rc=$?
   score "RED optimized omitted parent-program guard program-selection" "$rc" 1 "$out" "MATCHED-GPR-PROGRAM: 23 tests / 1 failures / 0 errors; synthetic only"
+  # a42g: bounded conservative old/new graph impact; synthetic projections only.
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" 2>&1)"; rc=$?
+  score "GREEN normal change-impact controls" "$rc" 0 "$out" "CHANGE-IMPACT: 34 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation content-seeds 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard content-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 17 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation edge-seeds 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard edge-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation path-seeds 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard path-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation unmapped-insertion 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard unmapped-insertion" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation unmapped-broad 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard unmapped-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation uncertain-broad 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard uncertain-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation scope-broad 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard scope-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation unknown-broad 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard unknown-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation shared-broad 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard shared-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 16 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation broad-expansion 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard broad-expansion" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 18 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation reverse-closure 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard reverse-closure" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation node-bound 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard node-bound" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation edge-bound 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard edge-bound" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation plain-bool 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard plain-bool" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation node-unique 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard node-unique" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation edge-unique 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard edge-unique" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation edge-scope 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard edge-scope" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_change_impact.py" --mutation result-frozen 2>&1)"; rc=$?
+  score "RED normal omitted change-impact guard result-frozen" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" 2>&1)"; rc=$?
+  score "GREEN optimized change-impact controls" "$rc" 0 "$out" "CHANGE-IMPACT: 34 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation content-seeds 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard content-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 17 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation edge-seeds 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard edge-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 4 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation path-seeds 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard path-seeds" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 6 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation unmapped-insertion 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard unmapped-insertion" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation unmapped-broad 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard unmapped-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation uncertain-broad 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard uncertain-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation scope-broad 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard scope-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation unknown-broad 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard unknown-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation shared-broad 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard shared-broad" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 16 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation broad-expansion 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard broad-expansion" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 18 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation reverse-closure 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard reverse-closure" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 7 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation node-bound 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard node-bound" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation edge-bound 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard edge-bound" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation plain-bool 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard plain-bool" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation node-unique 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard node-unique" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation edge-unique 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard edge-unique" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation edge-scope 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard edge-scope" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation result-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted change-impact guard result-frozen" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

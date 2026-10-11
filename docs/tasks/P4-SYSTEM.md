@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42f D46 review-surface currency, then complete adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | a42g conservative old/new impact; complete adequacy follows |
 
 ## Decisions
 
@@ -691,6 +691,97 @@ pass; source/task inverses,17 examples, actual gate33/0 prefixes and102 history/
 D46 closed. Qualification/canonical/CPU/caps/seals/counts unchanged. COMMIT next.
 promotion: declined (existing live-document currency, source-grounded claims and single-owner review rules govern this implementation-status repair; no new policy).
 
+### `.14` a42g — bounded conservative old/new impact (completed, SEMULITH-P4-0242)
+
+Owned on clean7a082a1b2d783e173511fe6f8c115dc46ee25576 after a42f all13
+verified/staged/committed/working hashes/modes, hooks, brief0/untracked and both
+handoff censuses passed. Read roadmap/.14 a42/G-TRACE/G-OBLIGATIONS, Knowledge
+Map, docs/EVIDENCE_AND_GATES.md sections3–4, GC policy, current Sail declaration,
+manifest/relations/evaluation interfaces, graph checker and GC closure teaching.
+The Rust starter graph checker owns single-bundle integrity/currentness; the
+manifest binder owns flat authenticated identities, not old/new influence.
+Implement the already-declared reverse-union algorithm through a separate pure
+in-memory API; no second canonical parser or changed persisted format.
+
+Declare this finite API before its controls/captures: scripts/change_impact.py
+owns frozen DependencyNode(key, kind, profile_ids, fingerprint, path),
+DependencyGraph(profile_ids, nodes, edges) and analyze_impact(old, new,
+changed_paths=(), uncertain=False). Edges point dependent to dependency.
+Each graph has1–64 distinct profile IDs (1–128 characters),0–512 unique nodes
+and0–4096 unique edges; IDs are plain strings1–1024 characters; fingerprints
+are lowercase SHA256 or None (unknown); optional canonical root-relative paths
+have1–4096 characters, checked by the existing public lexical path predicate.
+Node scopes are nonempty subsets of graph scope; edge endpoints must exist and
+share a profile. Inputs use exact frozen dataclasses/plain tuples/strings/bool;
+reject ambiguous/mutable/subclass shapes and over-counts before indexing.
+Changed-path inventory is a plain tuple of at most1024 unique canonical paths.
+Kinds are requirement, obligation, evidence, case-input, semantic, configuration,
+implementation, primitive, generator, comparator, source, reference-build,
+policy, schema, build, artifact, test. Only the first four permit conditional
+narrowing. All other kinds default to broad validation of every associated old
+and new profile when affected, including nodes reached transitively.
+
+Seed added/deleted or content/metadata-changed nodes, changed-edge dependents,
+and every node mapped to an explicitly changed path. Traverse reverse edges
+from both graphs, retaining removed old requirements/evidence. Unknown pins
+broaden their profiles even without an observed edit; unmapped paths or explicit
+uncertainty broaden all old/new profiles; profile-scope changes do likewise.
+Expand broad profiles to all their old/new nodes and continue reverse closure
+until stable, so broad expansion cannot hide a newly affected shared node.
+Cycles terminate through visited sets; input order is immaterial. Return frozen,
+sorted seeds/affected IDs/affected profiles/broadened profiles/evidence needing
+revalidation/unmapped paths and named broadening reasons, never qualification.
+Caller owns the complete reviewed projection, changed-path inventory, actual
+fingerprints and evidence-status updates. A narrow conditional graph result is
+not a proof that declarations capture all influences or that evidence is current.
+No artifact/process I/O, schema/mapping, retained-file budget, collector, policy
+qualification, canonical capture or CPU status change in this unit. These graph
+metadata bounds do not establish a RAM/time bound or alter the128MiB/16MiB ledger.
+
+Own source/probe and explicit PROFILE normal/O control registrations after actual
+omission discrimination without harness errors; preserve all454 predecessor arms,
+existing public APIs/canonical files/ELFs/other model teaching. Teach the API,
+edge orientation, positive/removed-edge/unmapped examples, limits and caller
+responsibilities in a natural GC impact chapter and SUMMARY; update existing
+doctrine descriptions only within fixed family caps. Re-derive global counts.
+Necessary whole-oldest DEV/CH sharding and live updates are owned here; protect
+whole predecessor entries through both history guards, actual receipt+digest
+edits, fixed caps/seals/parts and all other tracked bytes/modes/Gitlinks.
+Focused PROFILE/docs/sharder checks, seven books/fresh normal+print navigation,
+normal/O controls and old/new-source/scope/history inverses precede COMMIT.
+Finish hooks/hashes/modes/brief0/censuses before selecting the next finite a42
+closure/property/collector unit. Latest full CI remains exact3e5a3ea; full CI
+before push, no push below cadence. No blockers at activation.
+
+Draft defect owned here: positive controls33 initially lose the two unmapped-path
+assertions (0 paths instead of1024; no broadening instead of empty/p). Accessing
+a missing defaultdict key while collecting seeds inserted it before the unmapped
+census. Replace with non-inserting get, rerun normal/O and retain a regression
+omission of that exact unsafe lookup. No committed API/capture received credit.
+Initial omission census also finds old-only/new-only edge traversal each33/0/0
+normal/O: every changed-edge dependent is already seeded, making the removed
+traversal edges redundant with that conservative seed. Own a bounded independent
+reachability census before classification; retain the policy's explicit union
+in production and do not register those nondiscriminating omissions as controls.
+Focused routing refuses the new guest-evidence toolbox row at16525/16384B;
+move only the new row to the existing execution/evidence table, preserving every
+predecessor byte and fixed cap. Retain --redundancy in the tracked probe so the
+32768 diagnostic is reproducible from a fresh clone. Initial history instrument
+assumed identical surrounding receipt wording in both heads; use their actual
+3196 receipt. Initial arm instrument counted403 score calls only; rederive both
+idioms403score+51arm=454 before comparing registrations. Instruments corrected,
+rerun all final checks; no production gate bypass or weakened policy.
+Manual new-row census then finds5 unescaped delimiters instead of4: omit the
+unnecessary literal-pipe alternative, retain --redundancy teaching in the chapter
+and verify the new toolbox row remains a three-column table.
+First commit hook refuses ADDRESSED/NO REGRESSION: actual results were cited
+without a recognized invocation/output signature inside those two bullets. Stop
+the already-failed owned9-process tree; HEAD remains7a082a1, all children close.
+Add actual run-controls.py/focused.sh/proof/history/scope rc=0 inside their own
+bullets; rerun acceptance and final proofs/docs, then full hooks without bypass.
+External Kimi Code GUI holds only two read-only AGENTS.md handles; not our job.
+Own the handoff check here and re-census after commit; never kill foreign work.
+
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
 Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
@@ -787,6 +878,20 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42g — **ROOT CAUSE**: proof.py normal/O rc=0: actual
+  authenticated/source-image fixture remains pending; selected E has no impact
+  or qualification field. Existing policy requires conservative reverse union.
+- [x] `.14` a42g — **ADDRESSED**: run-controls.py rc=0:34 controls/18 omissions normal/O,
+  failures17/4/6/2/2/2/1/2/16/18/7/1/1/1/2/1/1/1, zero errors;4096 graph
+  pairs against independent reachability, tracked32768 redundancy diagnostic;
+  exact new literal example and normal/print fields/limits/closed qualification.
+- [x] `.14` a42g — **NO REGRESSION**: focused.sh/proof/history/scope rc=0:
+  focused13/full PROFILE/sharder12/
+  seven books/3212 links; whole source/task and17 examples exact;102 old entries/
+  1360 other files/modes/Gitlinks normal/O, actual receipt+digest refusals. All454
+  old arms exact, new38/PROFILE492/GUEST328/global1439; caps/seals/canonical/CPU
+  unchanged. Final COMMIT hooks/hashes/modes/brief0/censuses.
 
 - [x] `.14` a42f — **ROOT CAUSE**: proof.py normal/O rc=0 and targeted Git
   log/blame: D46 old future-status summaries conflict with public C/E/Q checks;
@@ -1128,6 +1233,22 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42g: Verified34/0/0 normal/O and18 independent omissions with failures
+17/4/6/2/2/2/1/2/16/18/7/1/1/1/2/1/1/1, zero errors.4096 three-node
+old/new pairs agree with independent reachability; tracked --redundancy checks
+32768 bounded combinations normal/O, no universal claim. Draft unmapped lookup
+fixed; no nondiscriminating one-sided traversal controls registered. Whole
+PROFILE predecessor exact (403score+51arm=454), add38 actual arms/492;GUEST328,
+global1439 derived. Focused13/full PROFILE/sharder12/seven books/3212 fresh+
+actual links/normal+print and exact new example pass. Source/task inverses/all17
+old examples/102 old entries/1360 other files/modes/Gitlinks exact normal/O;
+actual old/moved/published receipt+new-digest edits jointly refuse. Whole DEV
+5788B/two entries to0267(6021B/cf7425a786bd16439eba73d8e5493aa103f1b0212d38319094803fb0f611cc0a),
+CH2250B/three to0268(2487B/fbb7abd6cb290c5dd231ecd19e6801dffc45157332de1dbb145744acf3839813),
+60live+210sealed270logical. Fixed caps/seals/canonical/CPU/qualification remain;
+conditional influence API does not prove projection completeness or currentness.
+Final COMMIT before next finite a42 adequacy unit.
 
 a42f: Verified proof.py normal/O: whole descriptive/API source and task
 inverses, all17 complete examples byte-exact; actual old/new gate prefixes33/0
@@ -1473,6 +1594,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42g | `SEMULITH-P4-0242 (leaf P4-SYSTEM.14): compute conservative old/new dependency impact` | complete closure/property/collector adequacy; qualification remains pending |
 | `.14` a42f | `SEMULITH-P4-0241 (leaf P4-SYSTEM.14): align implemented-method review surfaces` | finite complete closure/impact/property/provenance work |
 | `.14` a42d3b | `SEMULITH-P4-0240 (leaf P4-SYSTEM.14): compose authenticated source and ELF findings` | clean full CI; remaining closure/impact/source-grounded property/collector provenance |
 | `.14` a42d3a | `SEMULITH-P4-0239 (leaf P4-SYSTEM.14): bind explicit expectation image context` | d3b authenticated composition; full closure/impact/property/provenance pending |

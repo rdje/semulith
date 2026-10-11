@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0242 (leaf P4-SYSTEM.14) — conservative old/new dependency impact
+
+- Add pure bounded frozen graph impact: reverse old/new union, deleted evidence, changed-edge seeds, unknown/unmapped/shared broadening and stable profile expansion. Caller owns complete projection, actual pins/inventory and status updates; no qualification integration or canonical change.
+- 34 controls/18 discriminating omissions pass normal/O with zero errors;4096 graph pairs checked, separate32768 redundancy census, draft unmapped-lookup defect fixed. Preserve454 PROFILE arms/source; add38 (492; GUEST328; global1439). Focused13/full PROFILE/sharder12/seven books/3212 fresh+actual links/normal+print and exact example pass; whole source/task/history/scope inverses,17 old examples and1360 other files/modes/Gitlinks exact; real receipt+digest rewrites refuse. COMMIT next; whole DEV5788B to0267/CH2250B to0268,102 predecessor entries and fixed caps/seals protected.
+
 ## SEMULITH-P4-0241 (leaf P4-SYSTEM.14) — align implemented-method review surfaces
 
 - Fix D46: distinguish implemented authenticated byte/source-image checks from pending full adequacy in contract/index/book; document existing optional fields/program API. Update PROFILE refusal reason/label, retaining category, unconditional closure, predicates and all counts.
@@ -561,41 +566,5 @@
   profiles/guests/reports/author/registry/frozen/archive bytes remain exact.
 - Rust167/17/223, focused gates/all six books green; effective102/114 unchanged.
   Own two encountered FP internal rationales as priority-next c29b.
-
-
-## SEMULITH-P4-0162 (leaf P4-SYSTEM.13 c29) — discriminate atomic execution and faults
-
-- Bind GC-ATOMICS with literal W/D nine-operation values, LR/SC success/failure,
-  all ordering encodings, M/S/U and representative source/destination aliases.
-- Observe full state/requests, three-level AMO mapping, page fault15 and physical
-  fault7; direct12168/24336/45840 requests, companions198/396, pair12366/24732.
-- Independent12024 states/992 words; nine bad tables/14 captures, actual
-  request/permission mutations and missing binding reject/restored. Registry104,
-  effective102/114. make check167/17/223, focused gates/all six books green.
-- Own obsolete internal atomic rationale c29a as priority next; six runtime
-  pairs/freeze remain. No frozen record, CPU behavior or canonical guest change.
-
-## SEMULITH-P4-0161 (leaf P4-SYSTEM.13 c28e) — ground fence reference claims in public evidence
-
-- Replace the old internal-reference FENCE.I rationale with ISA/public behavior
-  and annotate its historical receipt. Six fresh guest pairs/29 boundaries agree;
-  wrong marker diverges. Parsed semantic forms exactly equal.
-- Provenance guard RED1 before regeneration; generated module changes only two
-  source SHA occurrences. Core behavior/canonical/profile/frozen/registry102 exact;
-  independent corpus unchanged. Rust167/17/220, DEF-GEN/SEMANTICS/focused/all six
-  books green; LIVE652/49/P4 12/18 and coverage100/114 unchanged. Next c29 GC-ATOMICS.
-
-
-## SEMULITH-P4-0160 (leaf P4-SYSTEM.13 c28d) — observe FENCE.I visibility and ignored fields
-
-- Bind GC-FENCEI using61440 field/mode cells and36 patched W/C programs at0/2
-  mod4, canonical/nonzero/no-fence. Full state/TLB cursor/wait and requests;
-  direct61620/123222, pair61637/123256 including unchanged companions.
-- Eleven bad tables/16 corrupt captures reject. Actual request/wait mutations
-  and missing binding RED101, restored exactly; independent literals/corpus exact.
-- Registry102/effective100/114; Rust167/17/220. Prior100 entries/core/author/
-  canonical/frozen unchanged. Focused gates/all six books rc0; LIVE652/49/
-  P4 12/18 unchanged. Next c28e removes obsolete internal-reference rationale,
-  then seven runtime pairs/freeze; .14 statuses/experiment records remain.
 
 
