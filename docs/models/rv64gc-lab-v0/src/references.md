@@ -75,8 +75,9 @@ For example, this is valid **syntax with a dummy pin**, not a verified file:
 The receipt never contains its own hash or names itself as an output. Empty output
 files and nonzero or signal exits are valid recorded data; they do not meet the
 method's success requirements. Versions and provenance are recorded observations,
-not attestation that a process executed. Matching the run, argv, inputs, outputs
-and candidate against the canonical graph remains an evaluator obligation.
+not attestation that a process executed. The bounded receipt-binding check below
+now matches selected run/argv/input/output/candidate fields; complete graph and
+method evaluation remain separate obligations.
 
 From the repository root, these commands print complete illustrative documents to
 stdout and run the controls. They create no capture and their dummy pins do not
@@ -199,6 +200,139 @@ its public acquisition/build route. Full method and aggregate-budget evaluation,
 reviewed collection, retention and policy consumers remain pending. No ancestry,
 independence, qualification or CPU acceptance credit follows from a match.
 
+## Authenticating and binding a process receipt
+
+`read_run_receipt(root, run=..., inputs=..., observations=...,
+current_candidate=...)` in `scripts/matched_gpr_receipt.py` authenticates one
+receipt and binds its contents to selected canonical records. First validate the
+complete raw parent schema and graph; select this run's records from that graph.
+The current candidate's retained identity has its separate check above. This
+helper checks used request fields and freezes their values before artifact I/O,
+so later mutation of caller dictionaries cannot change the comparison mid-read.
+It does not replace parent validation or the complete method evaluator.
+
+The selected context accepts 1–8 inputs, exactly four observations and 1–11 ordered
+argv entries. IDs and paths are unique, input/output paths cannot alias, run edges
+must name exactly the selected records, and exactly one input has role `collector`.
+The observations have one each of `raw-gpr`, `process-stdout`, `process-stderr` and
+`process-receipt`. Used context strings have a separate 65,536-character request
+limit; caller dictionary allocation is not covered by a RAM ceiling. These bounds
+protect this helper; full method evaluation still requires all eight principal
+roles, the fixed public invocation, producer bindings and three-run relationships.
+Repeated/empty argv strings are preserved exactly, without execution or rewriting.
+
+The helper selects the receipt observation itself, authenticates one immutable
+snapshot of at most 64 KiB, and calls the existing bounded `parse_capture` API.
+Raw schema validation still precedes the single dossier mapper. No receipt is
+reopened after checking its hash. It then requires:
+
+- Exact run ID, kind, ordered argv and integer process exit.
+- Exact current Sail candidate ID/binary SHA256 and selected collector input ID.
+- The complete input ID/digest inventory; its order is not significant.
+- All three output IDs, roles, paths, sizes and digests; inventory order is not significant.
+
+The frozen `ReceiptCheck` keeps its disposition, reason, optional underlying
+`pin` and optional `facts` separate. `ReceiptFacts` contains run ID/kind, immutable
+argv, process exit and immutable host/tool provenance. Facts appear only after a
+successful binding. Host and tool versions describe the retained receipt; this
+helper does not compare them with the checking machine or attest their truth.
+
+| Disposition | Meaning at this boundary |
+| --- | --- |
+| `matched` | Authenticated receipt bytes bind to the frozen selected context. A nonzero or signal exit remains failed-process data. |
+| `stale` | Receipt bytes or size differ from the declared observation pin. |
+| `unavailable` | A safe artifact read or required schema-tool I/O cannot complete. The receipt pin may already match when the schema is unavailable. |
+| `refused` | Invalid/unsafe/oversized context or receipt, invalid syntax, or a contradiction with the selected canonical fields. |
+
+This synthetic example creates only a receipt fixture under `target/`, then removes
+it. Input/output pins are dummy declarations and their files are absent. No binary
+or process is accessed, and no canonical capture is created. It deliberately shows
+that authenticating a receipt does not authenticate its other declared files or
+prove the recorded process ran:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_RECEIPT'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import hashlib
+from matched_gpr_artifacts import encode_capture
+from matched_gpr_receipt import read_run_receipt
+
+root = Path.cwd()
+output = root / "target/receipt-binding-example"
+output.mkdir(parents=True, exist_ok=True)
+candidate = dict(id="sail-riscv", role="reference", status="illustrative",
+                 kind="executable", origin="https://example.invalid/sail",
+                 lineage="unknown; synthetic example", binary="reference/bin/sail",
+                 binary_sha256="a" * 64)
+roles = ("guest-source", "guest-image", "reference-config", "reference-identity",
+         "expectation", "collector", "adapter", "dependency-manifest")
+inputs = [dict(id=role, role=role, path="illustrative-inputs/" + role,
+               sha256="b" * 64) for role in roles]
+with TemporaryDirectory(dir=output) as directory:
+    prefix = Path(directory).relative_to(root).as_posix()
+    outputs = [dict(id=name, role=role, path=prefix + "/base." + name,
+                    byte_size=0, sha256="c" * 64)
+               for name, role in (("trace", "raw-gpr"),
+                                  ("stdout", "process-stdout"),
+                                  ("stderr", "process-stderr"))]
+    receipt = dict(id="receipt", role="process-receipt",
+                   path=prefix + "/base.receipt.sexp", byte_size=0, sha256="0" * 64)
+    observations = [dict(item) for item in outputs] + [receipt]
+    argv = [candidate["binary"], "--config-override", "illustrative-inputs/reference-config",
+            "--inst-limit", "1", "--trace-instr", "--trace-gpr", "--trace-exception",
+            "--trace-output", outputs[0]["path"], "illustrative-inputs/guest-image"]
+    run = dict(id="base", kind="baseline", argv=list(argv), process_exit=0,
+               input_ids=[item["id"] for item in inputs],
+               producer_ids=["reference", "expected"], verdict="AGREE",
+               observation_ids=[item["id"] for item in observations])
+    capture = dict(format_version="sail-gpr-capture-v1", run_id="base", run_kind="baseline",
+                   argv=list(argv), process_exit=0, reference_candidate_id="sail-riscv",
+                   reference_binary_sha256=candidate["binary_sha256"], collector_input_id="collector",
+                   input=[dict(id=item["id"], sha256=item["sha256"]) for item in inputs],
+                   observation=[dict(item) for item in outputs],
+                   host=dict(os="example", kernel="example", arch="example"),
+                   tool=[dict(id="collector", version="illustrative")])
+    def publish():
+        payload = encode_capture(capture, path=receipt["path"])
+        (root / receipt["path"]).write_bytes(payload)
+        receipt.update(byte_size=len(payload), sha256=hashlib.sha256(payload).hexdigest())
+    def check():
+        return read_run_receipt(root, run=run, inputs=inputs,
+                                observations=observations, current_candidate=candidate)
+    publish()
+    checked = check()
+    print(checked.disposition, checked.facts.process_exit)
+    capture["process_exit"] = run["process_exit"] = 1
+    run["verdict"] = "REFUSED"
+    publish()
+    failed = check()
+    print(failed.disposition, failed.facts.process_exit)
+    capture["argv"][0] = "wrong/binary"
+    publish()
+    bad = check()
+    print(bad.disposition, bad.pin.disposition)
+PY_RECEIPT
+python3 scripts/probe_matched_gpr_receipt.py
+python3 -O scripts/probe_matched_gpr_receipt.py
+```
+
+It prints `matched 0`, `matched 1`, then `refused matched`. A coherent failed
+process remains bound data; a correctly pinned receipt with a contradictory argv
+refuses. The 43-test suite passes normal/optimized; eleven independent omissions
+lose 1/4/2/2/2/6/2/4/5/1/1 assertions without harness errors. PROFILE-CONSISTENCY
+runs both modes. Controls cover actual owned files, all bindings and pre-read
+limits, schema-before-mapping, missing/stale/unsafe data, schema-tool I/O and
+immutable context/results. Every temporary fixture is removed after the check.
+
+This helper does not read the selected inputs or raw/stdout/stderr files. It does
+not check the fixed invocation, all principal roles, reference-producer version,
+three-run relationships, full dependency closure or aggregate budgets. A
+self-consistent fabricated receipt cannot establish execution by hashes alone.
+The reviewed collector/capture protocol, authenticated remaining inputs and
+computed full method/policy checks remain mandatory. PROFILE-CONSISTENCY still
+refuses v1 qualification; binding a receipt cannot advance CPU acceptance.
+
 ## What comes next
 
 A27 repairs the terminal-newline defect found at a26: all project exact-token
@@ -222,7 +356,8 @@ behavior, not file authenticity, producer execution or evidence qualification.
 Historical comparisons remain prose in the canonical dossier. Optional structured
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
 formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
-and retained reference-identity authentication exist; complete method evaluation,
+and retained reference-identity authentication and [receipt binding](#authenticating-and-binding-a-process-receipt)
+exist; complete method evaluation,
 reviewed fresh collection, measured
 retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after

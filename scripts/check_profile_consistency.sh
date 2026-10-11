@@ -728,6 +728,56 @@ EOF
   score "RED optimized omitted identity guard identity-equality" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 20 failures / 0 errors; fixtures cleaned"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_identity.py" --mutation optional-presence 2>&1)"; rc=$?
   score "RED optimized omitted identity guard optional-presence" "$rc" 1 "$out" "MATCHED-GPR-IDENTITY: 40 tests / 17 failures / 0 errors; fixtures cleaned"
+  # P4-SYSTEM.14 a31: receipt pin/binding is separate from process/method success.
+  # Literal arms preserve DERIVED-COUNTS's documented enumeration contract.
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" 2>&1)"; rc=$?
+  score "GREEN normal authenticated receipt binding" "$rc" 0 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation context-counts 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard context-counts" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation context-edges 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard context-edges" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation scalar-binding 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard scalar-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation argv-binding 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard argv-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation input-binding 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard input-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation output-binding 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard output-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation output-roles 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard output-roles" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation collector-role 2>&1)"; rc=$?
+  score "RED normal omitted receipt guard collector-role" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" 2>&1)"; rc=$?
+  score "GREEN optimized authenticated receipt binding" "$rc" 0 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation schema-tool 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation context-counts 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard context-counts" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation context-edges 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard context-edges" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation scalar-binding 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard scalar-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation argv-binding 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard argv-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation input-binding 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard input-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation output-binding 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard output-binding" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 5 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation output-roles 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard output-roles" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_receipt.py" --mutation collector-role 2>&1)"; rc=$?
+  score "RED optimized omitted receipt guard collector-role" "$rc" 1 "$out" "MATCHED-GPR-RECEIPT: 43 tests / 1 failures / 0 errors; fixtures cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

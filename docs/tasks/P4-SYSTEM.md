@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a31 receipt/invocation/input/producer binding, then closure/evaluation and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a32 fixed invocation/principal/producer binding, then closure/evaluation and captures |
 
 ## Decisions
 
@@ -813,21 +813,88 @@ DECLINED: omitted-family caller handling, literal-arm enumeration and evidence
 signature spelling apply existing mapper/DERIVED-COUNTS/TASK-ACCEPTANCE contracts;
 the retained-identity boundary is recorded in the existing method and GC book.
 
-### `.14` a31 — bind authenticated Sail process receipts (scheduled, SEMULITH-P4-0222)
+### `.14` a31 — bind authenticated Sail process receipts (completed, SEMULITH-P4-0222)
 
-Start from clean committed a30; re-read exact a19 receipt/invocation/role contract,
-identity result, bounded parser/reader, canonical graph and GC book. Own a finite
-receipt-binding dependency before code: cross-check authenticated receipt bytes
-against the selected canonical run, exact argv/exit, candidate/binary identity,
-collector inventory, input digests and raw/stdout/stderr observations. Declare
-precise caller prerequisites, bounds, separate dispositions and negative controls;
-no hash check followed by reopen. Do not mistake checking declared pins in a
-receipt for authenticating their files or a process. Bind reference producer and
-fixed invocation/principal roles in this or a separately owned safe slice after
-interface review. Complete dependency closure/aggregate orchestration follows in
-finite commits; qualification stays closed until complete evaluator/gate controls.
-Then reviewed collector, measured retention/predeclared cases, canonical captures
-and full policy/status. Fixed caps/seals/CPU status remain unchanged.
+Owned on clean66e64ad, brief0/untracked and both actual job censuses clear, before
+code. Re-read P4/CPU-SYSTEM evidence acceptance, a19 invocation/receipt/limits,
+a26 bounded raw-schema/single mapper, a30 identity result, anchored observation
+snapshot API, canonical run/input/output graph and GC book.
+
+Finite interface: read_run_receipt(root, *, run, inputs, observations,
+current_candidate) in a dedicated module. Caller first validates the complete raw
+parent schema/graph and derives these selected canonical records; candidate
+identity authentication remains a separate a30 result. Bound selected context to
+1..8 inputs, four uniquely owned output roles (including process-receipt),1..11
+ordered argv entries, exact exit integer and unique IDs/paths before file I/O;
+freeze all compared fields so caller mutation cannot alter the check mid-read.
+This is a receipt-binding dependency, not the full method's exact eight principal
+roles, fixed invocation or reference-producer checker. Validate used request
+fields/candidate Sail ID/digest before I/O, require one collector role and exact
+run input/output membership. Derive the sole receipt from those outputs; take one
+64KiB authenticated observation snapshot, then reuse parse_capture's raw schema
+and single mapper. Cross-check run ID/kind/ordered argv/exit, candidate ID/binary
+SHA, collector ID, complete unordered input ID/digests and all three output
+ID/role/path/size/digests. Preserve host/tool provenance as immutable facts.
+
+Return frozen separate matched/stale/unavailable/refused/pin findings and facts
+only on match. Matched means record binding: coherent nonzero/signal exits remain
+matched failed-process data, never comparison success. Do not open other files,
+cache/binary or execute argv; no selfhash, receipt reopen, whole closure/aggregate
+budget, process attestation, producer ancestry or qualification. Legacy APIs and
+all canonical records stay exact. Parent-context memory is not a payload RAM cap.
+
+Used context strings also cap at65536 characters before regex/path work; this
+request bound is separate from the receipt's64KiB byte cap and caller allocation.
+Injected schema-tool I/O first reproduces43 tests/one native OSError (schema-before
+log): parse_capture owns document refusals but tool-file OSError can propagate.
+Own normalization at this new authenticated consumer boundary to unavailable
+while retaining the already-matched receipt pin; preserve the pure parser API.
+Add an independent omission and assertion-only native-error catcher so mutation
+failure is deliberate, not an unclassified harness exception. Rerun both modes.
+
+Controls: real on-volume pinned receipts; all binding fields and identities,
+permuted inventories versus exact argv ordering/repeats/empty strings, failure
+exits, malformed/duplicate raw syntax, missing/unsafe/stale/oversized artifacts,
+pre-read context limits/membership/aliases, detached immutable facts/context and
+one read/schema-before-mapping. Run normal/optimized and independent omitted
+predicate controls; register literal outer PROFILE-CONSISTENCY arms. Teach full
+runnable GC book examples/limits; prove old source/method/history/task inverses,
+protected canonical bytes, focused checks and COMMIT before next slice. Keep
+qualification closed. Next fixed invocation/principal/producer binding, dependency
+closure/aggregate orchestration, reviewed collector, measured retention/cases,
+canonical captures and full policy/status. Fixed caps/seals/CPU status unchanged.
+
+Final controls: mutations.py rc=0;43/0/0 normal/optimized, eleven omitted guards
+lose1/4/2/2/2/6/2/4/5/1/1 assertions without errors. Profile104/0 and literal
+DERIVED-COUNTS39/909 pass; focused17/sharder12/0/seven books/rendered.py rc=0,
+full literal writer/binding/failed-exit/argv-refusal commands, six normal/print
+limits/provenance phrases and3044 links resolve. Before/canonical/contract/history/
+scope tools rc=0: old pin/parser bytes and single mapper unchanged,243 canonical
+dictionaries/legacy ASTs/dispatch, whole method/old checker inverses,1300 other
+files/modes/Gitlinks, complete old append/task predecessors and98 entries exact.
+Actual old count receipts and published shard rc+digest rewrites refuse. No
+canonical data/store/cap/seal or CPU advance. Mark synthetic failed-run verdict
+REFUSED as well as its nonzero exit; no comparison verdict string earns credit.
+Final changed-fixture/docs checks, staged equality/hooks/brief0 and COMMIT follow.
+Lesson promotion DECLINED: consumer schema-I/O normalization and literal/evidence
+receipts apply existing parser/doctrine contracts; the new API/trust boundary is
+recorded in the existing method and GC book, with no new ancestry or scope claim.
+
+### `.14` a32 — bind fixed Sail invocation and producers (scheduled, SEMULITH-P4-0223)
+
+Start clean after a31 COMMIT. Review full a19 typed unit/principal/input/producer/
+invocation contract and implemented byte/identity/receipt APIs. Declare a safe
+finite relationship checker before code: exact first-method counts and roles,
+same executed inputs across baseline/repeat/control, sole mutant expectation,
+fixed ordered public Sail argv differing only in trace path, correct reference
+candidate/version and distinct related expected producers, control/baseline/
+property witness edges and actual producer-pair assessments. Reuse validated
+canonical graph/mapping; do not derive success from stored verdicts or producer
+counts. Separate record consistency from comparison/authentication/method credit.
+Precise bounds, coherent failure cases and omitted-predicate controls must precede
+qualification. Then authenticated dependency closure/aggregate orchestration and
+full evaluator/gate controls, reviewed collector, measured retention/cases,
+canonical captures and full policy/status. Keep fixed caps/seals/CPU state.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -925,6 +992,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a31 — **ROOT CAUSE**: before.py rc=0; closed66e64ad lacks receipt
+  binding, while unchanged pin/parser APIs accept correctly pinned contradictory
+  argv as syntax/bytes, without qualification. schema-before rc=1 owns one new
+  consumer tool-I/O escape; normalize it to unavailable, preserving the pin.
+- [x] `.14` a31 — **ADDRESSED**: mutations.py rc=0;43/0/0 normal/O, eleven
+  omissions1/4/2/2/2/6/2/4/5/1/1 discriminate; profile104/0/909 literal arms.
+- [x] `.14` a31 — **NO REGRESSION**: canonical/contract/history/scope/rendered.py
+  rc=0; focused17/sharder12/0/seven books/3044 links/literal commands,243 dictionaries,
+  complete old method/checker/append/task inverses and1300 protected files exact.
+  Published rc+digest rewrite refuses; qualification/seals/caps/CPU unchanged.
 
 - [x] `.14` a30 — **ROOT CAUSE**: before.py rc=0; closed3960e6b API inventory
   has no retained-identity checker; an authenticated pin alone leaves changed
@@ -1042,6 +1120,14 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a31: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
+43/0/0 normal/O; eleven omissions1/4/2/2/2/6/2/4/5/1/1, profile104/0/909 literal
+arms, focused17/sharder12/0/seven books/3044 links/full literal commands pass.
+Protect243 dictionaries/legacy ASTs, full method/checker/append/root inverses,
+1300 other files and98 predecessor entries; published receipt rc+digest refuses.
+Initial schema-tool injection43/one error now unavailable with authenticated pin;
+final docs/fixture checks/staged equality/hooks/brief0 and actual handoff required.
+
 a30: full-CI preflight on clean3960e6b all five legs rc0 (Rust173/17/253,
 smoke53); implementation40/0/0 normal/O/eight omissions4/2/5/1/1/1/20/17,
 profile80/0/focused17/sharder12/0/seven books/rendered3038 links/literal commands.
@@ -1121,6 +1207,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a31 | `SEMULITH-P4-0222 (leaf P4-SYSTEM.14): bind authenticated Sail process receipts` | a32 fixed invocation/principal/producer binding, closure/evaluation and captures |
 | `.14` a30 | `SEMULITH-P4-0221 (leaf P4-SYSTEM.14): authenticate retained Sail reference identity` | a31 receipt/invocation/input/producer binding, closure/evaluation, collector/captures |
 | `.14` a29 | `SEMULITH-P4-0220 (leaf P4-SYSTEM.14): compare bounded supplied-byte Sail units` | a30 full-CI preflight/authentication, collector and captures |
 | `.14` a28 | `SEMULITH-P4-0219 (leaf P4-SYSTEM.14): expose structured Sail differences with complete validation` | a29 bounded unit, authenticated orchestration/collector and captures |
@@ -1139,6 +1226,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a31 (SEMULITH-P4-0222): bounded authenticated receipt binding43/0/0/eleven omissions, profile104/0/909 arms; focused/books/history/source protection pass, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a30 (SEMULITH-P4-0221): authenticated retained identity40/0/0/eight omissions, profile80/0/885 arms; focused/books/history/source protection pass; fresh3960e6b full-CI preflight green, qualification/CPU unchanged.
 - `2026-10-11`: `.14` a29 (SEMULITH-P4-0220): bounded byte unit52/0/fourteen omissions; exact GPR control/repeat discrimination, focused/books/inverses pass; published DEV sharding lossless, qualification/CPU unchanged.
 - `2026-10-11`: `.14` a28 (SEMULITH-P4-0219): expose immutable first differences; five hidden invalid tails/rows now refuse;34/0/ten omissions,819 legacy tuples and focused/rendered/inverse checks pass; no qualification/CPU advance.

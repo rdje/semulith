@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0222 (leaf P4-SYSTEM.14) — bind authenticated Sail process receipts
+
+- Authenticate one bounded receipt snapshot and bind frozen canonical run/argv/exit/candidate/collector/input/output facts; reuse raw schema/single mapping. Preserve coherent failed-process data and separate stale/unavailable/refused findings, including unavailable schema I/O; no other-file/process/method credit.
+- 43 controls pass normal/optimized; eleven omissions1/4/2/2/2/6/2/4/5/1/1 discriminate without errors. PROFILE-CONSISTENCY104/0,39 doctrines/909 literal outer arms. Focused17/sharder12/0/seven books/3044 links/literal commands and full source/history inverses pass; protect243 dictionaries/1300 other files/98 predecessor entries. Caps/seals/canonical records/CPU status unchanged. Next fixed invocation/principal/producer binding and complete closure/evaluation.
+
 ## SEMULITH-P4-0221 (leaf P4-SYSTEM.14) — authenticate retained Sail reference identity
 
 - Add one bounded authenticated descriptor read, raw schema before single mapping, exact Sail execution-field/presence matching and frozen separate pin/currentness findings. No executable-cache, receipt/process, full-method or qualification credit.

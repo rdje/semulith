@@ -391,10 +391,11 @@ python3 -O scripts/probe_matched_gpr_comparison.py
 
 It prints `satisfied ['AGREE', 'AGREE', 'DIVERGE']`. All 52 tests and fourteen
 independent omissions run under GUEST-GEN in normal/optimized Python, including
-the inclusive payload and 4096-boundary limits. Authentication of the input
-closure, receipts and aggregate retained/read budgets remains pending; retained
-[reference identity](references.md#authenticating-a-retained-reference-identity) now
-has its own bounded authenticated check. Complete evaluation is followed
+the inclusive payload and 4096-boundary limits. Complete input-closure and
+aggregate retained/read-budget evaluation remains pending. Retained
+[reference identity](references.md#authenticating-a-retained-reference-identity) and
+[receipt binding](references.md#authenticating-and-binding-a-process-receipt) have
+bounded authenticated checks. Complete evaluation is followed
 by reviewed fresh collection and canonical captures. PROFILE-CONSISTENCY still
 refuses v1 qualification; this byte unit does not lift that boundary.
 
