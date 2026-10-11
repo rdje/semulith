@@ -74,19 +74,27 @@ class Comparison:
     gpr_difference: GprDifference | None = None
 
 
+def _decimal_trace_index(digits: str, line: int) -> int:
+    """Normalize native decimal digit-limit failures without changing that limit."""
+    try:
+        return int(digits)
+    except ValueError as exc:
+        raise SailError(f'line {line}: decimal trace index cannot be converted') from exc
+
+
 def parse_trace(text: str) -> tuple[dict[int, Row], dict[int, tuple[str, int]]]:
     rows, deliveries = {}, {}
     current = None
     for number, raw in enumerate(text.splitlines(), 1):
         line = raw.strip()
         if match := STEP_RE.fullmatch(line):
-            n = int(match[1])
+            n = _decimal_trace_index(match[1], number)
             if n in rows or n in deliveries or (current is not None and n <= current.n):
                 raise SailError(f'line {number}: duplicate/out-of-order step {n}')
             current = Row(n, int(match[3], 16), int(match[4], 16))
             rows[n] = current
         elif match := WRITE_RE.fullmatch(line):
-            index = int(match[1])
+            index = _decimal_trace_index(match[1], number)
             if current is None or index > 31:
                 raise SailError(f'line {number}: invalid or orphan GPR write')
             reg = f'x{index}'

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0220 (leaf P4-SYSTEM.14) — compare bounded supplied-byte Sail units
+
+- Add one immutable three-run byte unit with mandatory exits, pre-decode payload/budget bounds, raw-schema-first single expectation mapping, exact repeat/control bytes and sole witnessed RV64-value discrimination. Normalize native decimal trace-conversion failures to Sail refusals. Separate failed/unsupported/satisfied outcomes; authentication and qualification stay closed.
+- 52 methods pass normal/optimized; fourteen omissions6/1/8/1/3/1/10/6/1/1/7/6/5/4 discriminate. GUEST-GEN204/0, focused17/sharder12/0/seven books,3034 links/literal examples,243 canonical dictionaries and full method/index inverses pass; derive39 doctrines/867 arms. Preserve full append/task predecessors, protected inputs, seals/caps and CPU status. Next authenticated receipts/closure/orchestration then collector/captures/policy; fresh full-CI preflight follows this milestone.
+
 ## SEMULITH-P4-0219 (leaf P4-SYSTEM.14) — expose structured Sail differences with complete validation
 
 - Expose immutable first GPR differences through the existing comparison owner and legacy tuple wrapper. Repair early differences hiding missing rows/nonzero x0; five old invalid outcomes become refusals, while819 complete valid legacy tuples and the adapter inverse remain exact.

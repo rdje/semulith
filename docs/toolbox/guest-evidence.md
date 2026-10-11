@@ -6,6 +6,7 @@ verbatim from the definition table at its fixed per-part ceiling (`P4-SYSTEM.12`
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `scripts/probe_matched_gpr_comparison.py` | does the bounded three-run byte unit reject a wrong target, failed/truncated trace, changed raw bytes or extra expectation change? | `python3 scripts/probe_matched_gpr_comparison.py` (also `-O`); fourteen `--mutation` omissions, including decimal conversion; GUEST-GEN runs both modes; no authentication or execution credit |
 | `scripts/probe_sail_comparison.py` | are first GPR differences exact and immutable, and can any earlier difference hide incomplete/invalid evidence? | `python3 scripts/probe_sail_comparison.py` (also `-O`); ten named `--mutation` omissions; GUEST-GEN runs both modes; synthetic fixtures confer no execution credit |
 | `scripts/probe_gc_sail.py` | can absent ordinary rows, failed status, unwitnessed gaps or stale traces escape the Sail adapter? | `python3 scripts/probe_gc_sail.py`; `--mutation permit-missing`, `ignore-status`, `unwitnessed-gap`, `keep-stale` or `ignore-parcel-interrupt`; GUEST-GEN runs GREEN/all five RED controls offline |
 | `scripts/probe_gc_sail_timer.py` | does the pinned public reference supply the laboratory's timer pending bit with stimecmp zero? | `python3 scripts/probe_gc_sail_timer.py`; live, acquired binary required; ten pre-derived boundaries with explicit STCE enable/read-back, public config validation variants, exact repeat traces; reports the named platform difference |

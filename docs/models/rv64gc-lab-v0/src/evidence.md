@@ -317,6 +317,85 @@ Python modes; GUEST-GEN runs all controls. These results confer no canonical
 capture, execution or CPU acceptance credit. Bounded expectation/trace evaluation
 and authenticated orchestration remain the next implementation steps.
 
+## Bounded three-run byte comparison
+
+`compare_unit` in `scripts/matched_gpr_comparison.py` checks supplied immutable
+bytes. It never opens an artifact or executes a producer. Its keyword arguments
+are `instructions`, `witness`, `baseline_expectation`, `control_expectation`,
+`baseline`, `repeat` and `control`:
+
+| Value | Contract |
+| --- | --- |
+| `instructions` | Integer 1–4096, excluding booleans; the complete parent budget |
+| `GprWitness(step_n, register)` | An in-budget boundary and canonical `x1`–`x31`; both expectations must declare that change |
+| Two expectation payloads | Immutable bytes, 1–1048576 bytes each; UTF-8, exactly one raw-schema-valid document, then the single dossier mapping |
+| `RunBytes(trace, process_exit)` for each run | Immutable trace bytes, 0–4194304 bytes each; an explicit integer exit with no default |
+
+All five payload bounds are checked before any decoding/parsing. These are
+payload limits, not exact process RAM ceilings. Complete ordered steps must match
+the parent budget. Duplicate writes refuse before dictionary collapse. Change
+registers must be canonical `x1`–`x31`; values are hexadecimal RV64 integers.
+Upper/lowercase hex and redundant leading zeros are allowed within the payload
+bound. A spelling change alone cannot satisfy the negative control.
+
+Baseline and repeat must both agree, with byte-identical raw traces. The control
+trace must also be byte-identical: it executes the same inputs, while only the
+expected value changes. The control expectation must differ in precisely its
+witnessed value; every other mapped field remains identical. Comments/formatting
+do not change mapped data. The control must diverge at that boundary with exactly
+the complete baseline/control change sets. A verdict or diagnostic substring
+cannot stand in for these structured checks.
+
+The immutable `ComparisonUnit` returns `disposition`, `reason` and a tuple of
+`RunComparison(run_kind, comparison, refusal)` records:
+
+- `satisfied` means this supplied-byte comparison passed. It grants no method
+  qualification, authentication, execution provenance or CPU acceptance credit.
+- `failed` retains all three computed comparisons/refusals. Nonzero exits,
+  empty/truncated/malformed traces, wrong targets and changed raw bytes fail.
+- `unsupported` has no run comparisons: `cross_model false`, declared profile
+  differences and fault injection need another method.
+
+`UnitError` refuses malformed method inputs, invalid values/budgets and exceeded
+payload limits; it is not a canonical record-validity verdict. Other expectation
+metadata remains part of the sole-change check. This GPR method gives no extra
+credit for `fetches`, `never_written`, PC/word, memory or direct CSR/FP observations.
+Recorded process exits alone do not establish that a process executed.
+Decimal step/GPR indices that Python refuses to convert raise `SailError`,
+which the byte unit retains as a comparison refusal. Production leaves the
+interpreter's configured digit limit unchanged. Native-limit and isolated
+conversion-injection controls cover both fields and the legacy tuple API.
+
+Run this complete **synthetic** example from the repository root:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY'
+from matched_gpr_comparison import GprWitness, RunBytes, compare_unit
+base = b'''(expectations (program "fixture.s") (instructions 1)
+  (step (n 0) (insn "addi x1,x0,1")
+    (writes (write (reg "x1") (value "0x1")))
+    (derivation "synthetic example, not execution evidence") (source "fixture")))'''
+changed = base.replace(b'(value "0x1")', b'(value "0x2")')
+raw = b'''[0] [M]: 0x0000000080000000 (0x00100093) addi x1,x0,1
+x1 <- 0x0000000000000001
+'''
+run = RunBytes(raw, 0)
+result = compare_unit(instructions=1, witness=GprWitness(0, "x1"),
+                      baseline_expectation=base, control_expectation=changed,
+                      baseline=run, repeat=run, control=run)
+print(result.disposition, [run.comparison.verdict for run in result.runs])
+PY
+python3 scripts/probe_matched_gpr_comparison.py
+python3 -O scripts/probe_matched_gpr_comparison.py
+```
+
+It prints `satisfied ['AGREE', 'AGREE', 'DIVERGE']`. All 52 tests and fourteen
+independent omissions run under GUEST-GEN in normal/optimized Python, including
+the inclusive payload and 4096-boundary limits. Authentication of the input
+closure, receipts and aggregate retained/read budgets remains pending, followed
+by reviewed fresh collection and canonical captures. PROFILE-CONSISTENCY still
+refuses v1 qualification; this byte unit does not lift that boundary.
+
 ## Authenticating a pin with a total read bound
 
 `read_bounded_pin` returns the same immutable `PinResult` as `read_pinned`, while

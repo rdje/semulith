@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a29 bounded comparison unit, then authenticated evaluation/collector and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a30 authenticated receipts/closure/orchestration, then collector and captures |
 
 ## Decisions
 
@@ -657,7 +657,7 @@ Both original count edits refuse; no past receipt is rewritten. Final scope1293
 exact; repeat after final sync and require all15 staged files byte-equal to verified
 working files before the mandatory hook commit. No fixed caps or sealed bytes move.
 
-### `.14` a29 — implement bounded Sail comparison unit (scheduled, SEMULITH-P4-0220)
+### `.14` a29 — implement bounded Sail comparison unit (completed, SEMULITH-P4-0220)
 
 Read the a19/a26 method/artifact contract, structured public adapter result,
 expectation mapping/schema and graph APIs, policy and GC book before code.
@@ -670,6 +670,98 @@ owned slice; keep blanket qualification closed until complete evaluation/gate
 integration exists. Then reviewed fresh collector, measured retention/predeclared
 cases, canonical captures and full policy/status consumers. No store/cap or CPU
 advance by declaration. Own code/book/live sync and COMMIT before moving onward.
+
+Owned on cleandbd4e43, brief0/untracked and both actual handoff checks OK,
+before any a29 edit. Re-read the a19 method's exact witness/expectation/bounds,
+GC evidence/policy, raw expectations schema/single mapper, public parser/result
+and bounded artifact owner. scripts API census rc=0 finds no compare_unit owner.
+Implement one supplied-byte unit with typed witness/three runs, required actual
+exit statuses, 1..4096 boundaries, 1MiB expectations/4MiB traces before decoding,
+raw-schema-first/single mapping and exact sole target-value mutation. Distinguish
+unsupported expectations from failed comparisons/refusals and satisfied byte
+comparisons; no authoritative qualified Boolean. Preserve exact raw repeat/control
+bytes and full structured first-difference discrimination. No artifact I/O, pin,
+receipt, collector or aggregate authenticated-read claim; qualification stays
+closed. Own positive, wrong-target/program/extra-change/process/truncation,
+shape/value/byte/budget controls and independent omissions normal/O, permanent
+GUEST-GEN integration, public book examples, live/history sync and COMMIT. Measure
+live capacities before appending; use published lossless sharding if required.
+
+Own measured history pressure before publication: new DEV head49869B exceeds
+its fixed49152B ceiling. Published sharder dry-run rc=0 gives26==21 kept+5 moved,
+9628 payload bytes, target42000 and next shard0241. Publish only complete oldest
+entries, keep prior manifest bytes/shards/seals exact, prove complete old head
+reassembly plus retained/moved receipt-edit REDs even with a new digest. No cap
+increase or old prose edit. The late native-conversion lesson is promoted in the existing method record.
+
+Verification: before.py rc=0 proves no compare_unit/module in the closed dbd4e43
+scripts inventory; new synthetic positive satisfied without execution/authentication
+credit.52 methods pass normally/optimized, including inclusive1MiB/4MiB/4096
+limits. Fourteen omissions6/1/8/1/3/1/10/6/1/1/7/6/5/4 fail clean assertions in both
+modes. GUEST-GEN204/0=174 old+30 new outer arms; derive39 doctrines/867 arms.
+Focused17/sharder12/0/seven books pass. canonical.py rc=0 proves243 dictionaries/
+legacy mapping ASTs/dispatch exact. contract.py rc=0 restores the complete old
+method/index after current status/owner/opening/hook updates; normative requirements
+stay exact. rendered.py rc=0: five normal/print phrases, complete literal example
+and both control commands,3034 links. Final public example now spells out every
+input instead of requiring a diagnostic fixture; re-run after the final book build.
+
+Published sharding rc=0:26==21+5,9628 moved payload bytes, head49869->40241B;
+shard0241 is9861B/c122685fc9cb1698d0cfc22e1048a7f85e4f35f3cc190fac1a7bcada64e98c44.
+Old manifest prefix exact, now33 live rows/243 logical frozen shard rows; fixed seals
+remain exact. Permanent predecessor guard:99 complete old entries/index+working,
+whole staged partition authenticated; require final full-head/task inverses,
+retained/moved count-edit REDs and staged equality before COMMIT. No Rust,
+canonical capture, policy, qualification, cap or CPU advance. Next a30 auth.
+
+Final history.py rc=0 reconstructs complete old heads and root: DEV46627B/
+7b3d85694c8ae5aa8d624e84fca0d11eee86ec596cc2849ed6dd3f4e7b7249d3;
+CHANGELOG50837B/94616be80eaabe3fa436e5a61f00ef1f275672d4f1ede0d6b57c13a66fe96826;
+root78505B/49b4906e999a8e985f5e2a0be58be3ed0534c191a56884546cb31411eb1f5690.
+Both original count edits and an actual moved rc edit refuse, even with a new
+manifest digest. scope.py rc=0 protects1292 other tracked files/Git links, including
+old mappings/schema/authentication/policy/canonical/sealed bytes.
+Final explicit book block/normal+optimized controls and all3034 links pass;
+require all19 staged files equal verified working bytes before mandatory hooks.
+
+The published shard alone retains one original terminal blank line. Exact
+staged-whitespace census names only shard0241:142; preserve its authenticated
+payload and apply an ephemeral blank-at-eof exception only after that closed
+census. Ordinary code/docs whitespace remains clean; all mandatory hooks run.
+
+Own the late native-decimal defect before repair: actual public compare_unit
+probes return uncaught ValueError for both a5000-digit step number and GPR index,
+well below4MiB. STEP_RE/WRITE_RE admit decimal strings; parse_trace calls native
+int at both sites without converting configured digit-limit failures into SailError.
+The byte unit consequently loses its failed/refusal result. Stop only the verified
+own a29 commit subtree (exit143, HEAD remainsdbd4e43); actual handoff checks pass
+before edits. Repair decimal conversion in the public parser, preserving normal
+numbers and interpreter limits; add real/injected conversion controls for the byte
+unit and legacy API, plus an independent omission, normal/O. Re-run full affected
+controls/focused books/inverses/staged verification before retrying COMMIT.
+
+Decimal verification: decimal-before.py rc=0 reconstructs dbd4e43's public
+adapter: four native API ValueError escapes -> four SailError refusals/two failed
+byte units, normal/O. 52 methods/fourteen omissions pass; decimal omission loses4
+assertions in each mode. adapter.py rc=0 proves complete source inverse (only
+helper/two decimal calls restored), ten other ASTs exact. Correct the initial
+mock's global-int/isinstance interference; isolate copied-helper conversion globals
+and reset native step/register fixtures before accepting control results. No
+production digit limit is changed. Repeat affected focused/book/staged gates.
+
+### `.14` a30 — authenticate retained comparison inputs (scheduled, SEMULITH-P4-0221)
+
+Own fresh full-CI preflight on the clean committed a29 byte-unit milestone before
+code changes. Then read the full a19/a26 method/artifact/receipt/authenticated-read
+contract, current bounded byte unit, graph/candidate/dependency owners and book.
+Select the next safe finite receipt/closure authentication dependency; declare its
+exact interfaces/controls before changing code. Bind actual input/observation/run/
+producer identities, process receipts/invocations and current dependencies through
+bounded immutable authenticated reads and separate dispositions. Implement the
+remaining aggregate/orchestration work in further finite commits. Keep blanket
+qualification closed until complete evaluation and gate integration exist; then
+fresh reviewed collector, measured retention/predeclared cases, canonical captures
+and full policy/status consumers. No store/cap or CPU advance by declaration.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -768,6 +860,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a29 — **ROOT CAUSE**: before.py rc=0; closed dbd4e43 scripts
+  inventory lacks a byte-unit owner; decimal-before.py rc=0 additionally proves
+  four native conversion crashes in its public adapter, repaired to refusals.
+- [x] `.14` a29 — **ADDRESSED**: mutations.py rc=0;52 methods normal/O,
+  fourteen omissions6/1/8/1/3/1/10/6/1/1/7/6/5/4 discriminate; byte unit separates
+  failed/unsupported/satisfied outcomes and never grants qualification.
+- [x] `.14` a29 — **NO REGRESSION**: canonical.py/contract.py/adapter.py rc=0;
+  243 dictionaries/legacy ASTs/full method/index/adapter inverses; focused17/sharder12/0/
+  seven books/rendered.py rc=0 (3034 links/literal examples); final history/scope
+  and staged equality required before COMMIT.
+
 - [x] `.14` a28 — **ROOT CAUSE**: before.py rc=0; five old GPR/delivery
   DIVERGE outcomes mask missing/nonzero-x0 evidence; no structured API existed.
 - [x] `.14` a28 — **ADDRESSED**: mutations.py rc=0;34 methods pass normal/O,
@@ -862,6 +965,11 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a29: before/canonical/contract/mutations/rendered rc=0;52/0 normal/O, fourteen
+omissions6/1/8/1/3/1/10/6/1/1/7/6/5/4, guest204/0/focused17/sharder12/0/seven books,
+3034 links/explicit literal commands. Published DEV26==21+5; shard0241/33 live
+manifest rows/243 logical frozen shard rows, exact append/task inverses before COMMIT.
+
 a28: before/compatibility/canonical/mutations/rendered/scope rc=0; five invalid
 old outcomes refuse,34/0 normal/O and ten omissions11/10/10/1/3/1/1/2/2/2;
 819 complete valid legacy tuples/seven definition bytes exact; guest174/0,
@@ -928,6 +1036,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a29 | `SEMULITH-P4-0220 (leaf P4-SYSTEM.14): compare bounded supplied-byte Sail units` | a30 full-CI preflight/authentication, collector and captures |
 | `.14` a28 | `SEMULITH-P4-0219 (leaf P4-SYSTEM.14): expose structured Sail differences with complete validation` | a29 bounded unit, authenticated orchestration/collector and captures |
 | `.14` a27 | `SEMULITH-P4-0218 (leaf P4-SYSTEM.14): close exact-token schema end anchors` | a28 comparison core, authenticated orchestration/collector and captures |
 | `.14` a26 | `SEMULITH-P4-0217 (leaf P4-SYSTEM.14): carry bounded prospective artifact formats` | a27 exact facets, a28 evaluator/collector, retention/captures and full policy/status |
@@ -944,6 +1053,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a29 (SEMULITH-P4-0220): bounded byte unit52/0/fourteen omissions; exact GPR control/repeat discrimination, focused/books/inverses pass; published DEV sharding lossless, qualification/CPU unchanged.
 - `2026-10-11`: `.14` a28 (SEMULITH-P4-0219): expose immutable first differences; five hidden invalid tails/rows now refuse;34/0/ten omissions,819 legacy tuples and focused/rendered/inverse checks pass; no qualification/CPU advance.
 - `2026-10-11`: `.14` a27 (SEMULITH-P4-0218): close83 exact-token ends in13 schemas; preserve generic searches,91 facets/five-doc controls and three mutations; focused/rendered/inverses pass, no canonical or qualification change.
 - `2026-10-11`: `.14` a26 (SEMULITH-P4-0217): bounded dependency/receipt shapes and one mapping;36/0/ten omissions,243 canonical inverses and focused/rendered checks pass; a27 owns old newline facets, no qualification credit.

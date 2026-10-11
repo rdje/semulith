@@ -130,7 +130,8 @@ behavior, not file authenticity, producer execution or evidence qualification.
 
 Historical comparisons remain prose in the canonical dossier. Optional structured
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
-formats exist; the first method evaluator, reviewed fresh collector, measured
+formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
+exist; authenticated method evaluation, reviewed fresh collection, measured
 retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
 implementation and is prospective; this book does not backdate it. Candidate

@@ -343,6 +343,68 @@ PYCODE
   out="$(python3 -O scripts/probe_sail_comparison.py --mutation early-delivery-return 2>&1)"; rc=$?
   arm "RED Sail early-delivery-return optimized" "$rc" 1 "$out" "FAILED (failures=2)"
 
+  # P4.14 a29: bounded supplied-byte units, not authenticated qualification.
+  out="$(python3 scripts/probe_matched_gpr_comparison.py 2>&1)"; rc=$?
+  arm "GREEN bounded GPR byte unit normal" "$rc" 0 "$out" "Ran 52 tests"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation byte-bounds 2>&1)"; rc=$?
+  arm "RED GPR byte unit byte-bounds normal" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation budget-cap 2>&1)"; rc=$?
+  arm "RED GPR byte unit budget-cap normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation raw-schema 2>&1)"; rc=$?
+  arm "RED GPR byte unit raw-schema normal" "$rc" 1 "$out" "FAILED (failures=8)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation root-count 2>&1)"; rc=$?
+  arm "RED GPR byte unit root-count normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation step-sequence 2>&1)"; rc=$?
+  arm "RED GPR byte unit step-sequence normal" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation rv64-range 2>&1)"; rc=$?
+  arm "RED GPR byte unit rv64-range normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation process-exit 2>&1)"; rc=$?
+  arm "RED GPR byte unit process-exit normal" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation unsupported 2>&1)"; rc=$?
+  arm "RED GPR byte unit unsupported normal" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation repeat-bytes 2>&1)"; rc=$?
+  arm "RED GPR byte unit repeat-bytes normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation control-bytes 2>&1)"; rc=$?
+  arm "RED GPR byte unit control-bytes normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation sole-value 2>&1)"; rc=$?
+  arm "RED GPR byte unit sole-value normal" "$rc" 1 "$out" "FAILED (failures=7)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation structured-difference 2>&1)"; rc=$?
+  arm "RED GPR byte unit structured-difference normal" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation witness-register 2>&1)"; rc=$?
+  arm "RED GPR byte unit witness-register normal" "$rc" 1 "$out" "FAILED (failures=5)"
+  out="$(python3 scripts/probe_matched_gpr_comparison.py --mutation decimal-conversion 2>&1)"; rc=$?
+  arm "RED GPR byte unit decimal-conversion normal" "$rc" 1 "$out" "FAILED (failures=4)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py 2>&1)"; rc=$?
+  arm "GREEN bounded GPR byte unit optimized" "$rc" 0 "$out" "Ran 52 tests"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation byte-bounds 2>&1)"; rc=$?
+  arm "RED GPR byte unit byte-bounds optimized" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation budget-cap 2>&1)"; rc=$?
+  arm "RED GPR byte unit budget-cap optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation raw-schema 2>&1)"; rc=$?
+  arm "RED GPR byte unit raw-schema optimized" "$rc" 1 "$out" "FAILED (failures=8)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation root-count 2>&1)"; rc=$?
+  arm "RED GPR byte unit root-count optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation step-sequence 2>&1)"; rc=$?
+  arm "RED GPR byte unit step-sequence optimized" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation rv64-range 2>&1)"; rc=$?
+  arm "RED GPR byte unit rv64-range optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation process-exit 2>&1)"; rc=$?
+  arm "RED GPR byte unit process-exit optimized" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation unsupported 2>&1)"; rc=$?
+  arm "RED GPR byte unit unsupported optimized" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation repeat-bytes 2>&1)"; rc=$?
+  arm "RED GPR byte unit repeat-bytes optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation control-bytes 2>&1)"; rc=$?
+  arm "RED GPR byte unit control-bytes optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation sole-value 2>&1)"; rc=$?
+  arm "RED GPR byte unit sole-value optimized" "$rc" 1 "$out" "FAILED (failures=7)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation structured-difference 2>&1)"; rc=$?
+  arm "RED GPR byte unit structured-difference optimized" "$rc" 1 "$out" "FAILED (failures=6)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation witness-register 2>&1)"; rc=$?
+  arm "RED GPR byte unit witness-register optimized" "$rc" 1 "$out" "FAILED (failures=5)"
+  out="$(python3 -O scripts/probe_matched_gpr_comparison.py --mutation decimal-conversion 2>&1)"; rc=$?
+  arm "RED GPR byte unit decimal-conversion optimized" "$rc" 1 "$out" "FAILED (failures=4)"
+
   # d3c: independent C parcel rules, including scatter basis and original trap bits.
   out="$(python3 scripts/probe_c_author.py 2>&1)"; rc=$?
   arm "GREEN independent C author expansions and effects" "$rc" 0 "$out" "37 expansions/effects"

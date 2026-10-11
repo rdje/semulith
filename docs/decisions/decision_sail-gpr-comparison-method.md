@@ -2,9 +2,9 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — grammar, bounded readers/artifacts and structured results exist; evaluator/collector/captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26/a28, `SEMULITH-P4-0210`–`0212`/`0217`/`0219`; matched-experiment contract, GC policy and public adapter
-answers: Which typed witness/baseline and bounded-read checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
+- **Status:** `active` — bounded syntax/readers/comparison exist; authentication/collector/captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26/a28–a29, `SEMULITH-P4-0210`–`0212`/`0217`/`0219`–`0220`; GC policy/public Sail adapter
+answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
 
@@ -13,12 +13,12 @@ Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
-grammar implements optional witness/baseline fields. Generic graph checks validate
-witness bounds/observation kind and declared baseline endpoints; they do not execute
-this method. Receipt/dependency-manifest formats and bounded bytes-only validation now exist
-at a26. A28 exposes immutable first differences after full-budget validation;
-authentication/evaluation and fresh collection remain pending.
-Production qualification stays closed.
+optional witness/baseline grammar and generic witness-kind/budget/baseline-edge
+checks exist; they do not execute the method. A26 adds bounded receipt/manifest
+syntax. A28 exposes immutable first differences after full-budget validation;
+a29 adds bounded supplied-byte comparison and configured Python decimal-index limit refusals.
+Authentication/orchestration and
+fresh collection remain pending. Production qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.
@@ -199,6 +199,7 @@ a verdict/reason substring is not a substitute. A wrong earlier value, changed
 program, extra write, missing row or failed process does not satisfy this control.
 
 answers: Why does a Sail difference still require validating every later boundary?
+answers: Why can decimal trace indices refuse conversion despite valid syntax?
 
 ## Results, gates and implementation order
 
