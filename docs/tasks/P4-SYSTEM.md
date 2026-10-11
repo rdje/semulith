@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a28 bounded comparison core, then authenticated evaluation/collector, retention/captures and policy/status |
+| 1 | `P4-SYSTEM.14` | `active` | a29 bounded comparison unit, then authenticated evaluation/collector and captures |
 
 ## Decisions
 
@@ -599,14 +599,72 @@ root68275B/aeb2522d76608c9e11e311bb5aeedc809cec96af8351745ef8314a0cb6c36252.
 Both original receipt-count edits refuse. No sharding needed. Repeat after final
 sync and require all staged bytes equal verified working bytes before COMMIT.
 
-### `.14` a28 — implement bounded Sail comparison core (scheduled, SEMULITH-P4-0219)
+### `.14` a28 — expose structured Sail GPR differences (completed, SEMULITH-P4-0219)
 
-Read the a19/a26 method/artifact contract, actual public trace adapter, expectation
-mapping/schema and graph APIs, policy and GC book before code. Choose a finite
-read-only comparison-core slice: strict bounded trace/expectation bytes, declared
-GPR witness and exact baseline/repeat/wrong-value control discrimination. Preserve
-mapping ownership and the successful-process adapter path; genuine positive and
-wrong-target/process/truncation/extra-observation controls must discriminate.
+Owned on clean9bad4c4, brief0/untracked and both handoff checks OK, before edits.
+Read a19/a26 method/artifact requirements, graph/schema and expectation mapping,
+public run_rv64gc_sail comparator/parser/runner and offline controls, policy and
+GC book. Choose the comparison core's first finite dependency: expose immutable
+structured first-GPR-difference data from the existing comparison owner, preserving
+the legacy tuple API/complete valid details and complete budget checks. This avoids
+interpreting reason substrings or duplicating the comparison algorithm. Test actual
+observed/expected changes, exact boundary, non-GPR delivery differences, failed
+process/malformed/truncated/surplus traces and independent omitted-data controls,
+normal/optimized. Prove the comparison inverse excluding owned result/full-validation changes
+and other definitions unchanged. No new bounds or method success credit claimed by this API alone.
+
+Own the book drift before repair: evidence.md's manual intro still says capture
+artifacts pending, last changed329259e; a26 updated the included method decision
+and references.md but missed that duplicate intro. Replace it with a pointer to
+the canonical implementation boundary and explicit artifact chapter route; clarify
+the historical a20 wording. Verify actual normal/print output and navigation.
+No semantics gate currently checks that prose; UNIT-BOOKS only promises catalogue/
+path/fragment correctness. Own focused checks, decision/book/live sync, append/task
+predecessors, protected scope and COMMIT before a29 bounded comparison unit.
+
+Own four reproduced early-return defects before repair: before.py rc=0 loads
+9bad4c4's public adapter and gets DIVERGE for GPR/delivery differences followed
+by a missing required row or nonzero x0. Both value/delivery returns precede later
+coverage/invariant checks. A failed/truncated trace must not satisfy a wrong-value
+control. Preserve the first structured difference while validating the whole
+budget, then return it; complete valid legacy outcomes/details stay exact, these
+four invalid outcomes intentionally become refusals. Add separate early-GPR and
+early-delivery omissions and normal/optimized controls before accepting signoff.
+
+Verification: before.py rc=0 reproduces four later-boundary defects plus a fifth
+same-row nonzero-x0 delivery defect on9bad4c4; both repaired APIs refuse all five,
+normal/O. compatibility.py rc=0 proves the entire adapter inverse (only owned
+packaging/validation continuation undone), seven other definitions byte-exact and
+819 complete valid legacy tuples exact, both modes. 34 methods pass normal/O;
+ten omissions11/10/10/1/3/1/1/2/2/2 cleanly lose assertions, no setup errors.
+GUEST-GEN174/0=152 old+22 new outer arms; derived39 doctrines/837 arms. Legacy
+probe and optimized explicit budget controls pass. Correct exploratory alias,
+fixture and inverse-newline mistakes before accepting final diagnostic results.
+Focused17/sharder12/0/seven books,3030 links and complete literal new book block
+pass. rendered.py rc=0 confirms five normal/print boundaries and stale-intro
+absence. canonical.py rc=0 proves243 dictionaries/legacy mapping ASTs/dispatch
+exact; scope.py rc=0 protects1293 other files/Git links. Promote the validation
+lesson in the existing method record; shorten only current routing prose to keep
+fixed caps. No sharding, Rust, canonical capture, policy, seal/cap or CPU advance.
+Require complete append/task inverses, old count-edit REDs and staged equality
+before COMMIT. Next a29 bounded unit, then authentication/collector and captures.
+
+Final history.py rc=0 reconstructs complete predecessors: DEV43905B/
+a27ed1b3dee460094040bb33e1dfff39f4e61d1fdb08941ac620ad0a0b065357;
+CHANGELOG49947B/b237161587baedf42e52f1cece8b362fdc75bdf6d4b8b2045d43b0971bd35b97;
+root73036B/37a9f31d145529ab5035e683310ba212a373193c4b44e652886c82777f7f7f6c.
+Both original count edits refuse; no past receipt is rewritten. Final scope1293
+exact; repeat after final sync and require all15 staged files byte-equal to verified
+working files before the mandatory hook commit. No fixed caps or sealed bytes move.
+
+### `.14` a29 — implement bounded Sail comparison unit (scheduled, SEMULITH-P4-0220)
+
+Read the a19/a26 method/artifact contract, structured public adapter result,
+expectation mapping/schema and graph APIs, policy and GC book before code.
+Implement a finite read-only comparison core: bounded trace/expectation bytes,
+declared GPR witness and exact baseline/repeat/wrong-value control discrimination.
+Preserve mapping ownership and the successful-process adapter path; genuine
+positive and wrong-target/process/truncation/extra-observation controls discriminate.
 Keep authenticated closure/aggregate budgets and orchestration as a subsequent
 owned slice; keep blanket qualification closed until complete evaluation/gate
 integration exists. Then reviewed fresh collector, measured retention/predeclared
@@ -710,6 +768,14 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a28 — **ROOT CAUSE**: before.py rc=0; five old GPR/delivery
+  DIVERGE outcomes mask missing/nonzero-x0 evidence; no structured API existed.
+- [x] `.14` a28 — **ADDRESSED**: mutations.py rc=0;34 methods pass normal/O,
+  ten omissions11/10/10/1/3/1/1/2/2/2 discriminate; both APIs refuse five old defects.
+- [x] `.14` a28 — **NO REGRESSION**: compatibility.py/canonical.py rc=0;
+  full adapter inverse/seven definitions/819 legacy tuples/243 dictionaries exact;
+  focused17/sharder12/0/seven books/rendered.py rc=0 (3030 links/literal commands).
+
 - [x] `.14` a27 — **ROOT CAUSE**: before.py rc=0; old24-schema/five-document
   fixture has88 assertions failing (83 facets+5 docs), no errors, normal/optimized.
 - [x] `.14` a27 — **ADDRESSED**: mutations.py rc=0;7 methods/91 facets/five
@@ -796,6 +862,11 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a28: before/compatibility/canonical/mutations/rendered/scope rc=0; five invalid
+old outcomes refuse,34/0 normal/O and ten omissions11/10/10/1/3/1/1/2/2/2;
+819 complete valid legacy tuples/seven definition bytes exact; guest174/0,
+focused17/sharder12/0/seven books,3030 links and literal new commands pass.
+
 a27: before/declarations/canonical/mutations/rendered rc=0;88 old assertion
 failures/no errors ->7 methods/91 facets/five docs pass, omissions96/552/1;
 record70/0/focused16/sharder12/0/seven books,3024 hyperlinks/three commands.
@@ -857,6 +928,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a28 | `SEMULITH-P4-0219 (leaf P4-SYSTEM.14): expose structured Sail differences with complete validation` | a29 bounded unit, authenticated orchestration/collector and captures |
 | `.14` a27 | `SEMULITH-P4-0218 (leaf P4-SYSTEM.14): close exact-token schema end anchors` | a28 comparison core, authenticated orchestration/collector and captures |
 | `.14` a26 | `SEMULITH-P4-0217 (leaf P4-SYSTEM.14): carry bounded prospective artifact formats` | a27 exact facets, a28 evaluator/collector, retention/captures and full policy/status |
 | `.14` a25 | `SEMULITH-P4-0216 (leaf P4-SYSTEM.14): preserve live history predecessors` | a26 artifact schemas/mapping, then evaluator/collector and captures |
@@ -872,6 +944,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a28 (SEMULITH-P4-0219): expose immutable first differences; five hidden invalid tails/rows now refuse;34/0/ten omissions,819 legacy tuples and focused/rendered/inverse checks pass; no qualification/CPU advance.
 - `2026-10-11`: `.14` a27 (SEMULITH-P4-0218): close83 exact-token ends in13 schemas; preserve generic searches,91 facets/five-doc controls and three mutations; focused/rendered/inverses pass, no canonical or qualification change.
 - `2026-10-11`: `.14` a26 (SEMULITH-P4-0217): bounded dependency/receipt shapes and one mapping;36/0/ten omissions,243 canonical inverses and focused/rendered checks pass; a27 owns old newline facets, no qualification credit.
 - `2026-10-11`: `.14` a25 (SEMULITH-P4-0216): guard complete index/working append predecessors and the staged partition; shared pure entry definitions,38/0 controls/five omissions, actual inverse/refusals and focused checks pass; full CI preflight green.

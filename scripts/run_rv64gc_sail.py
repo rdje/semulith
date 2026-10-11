@@ -56,6 +56,24 @@ class Row:
     writes: dict[str, int] = field(default_factory=dict)
 
 
+@dataclass(frozen=True)
+class GprDifference:
+    """The complete change sets at the first differing boundary, as immutable data."""
+
+    step_n: int
+    observed: tuple[tuple[str, int], ...]
+    expected: tuple[tuple[str, int], ...]
+
+
+@dataclass(frozen=True)
+class Comparison:
+    """Computed adapter outcome; a delivery mismatch has no GPR difference."""
+
+    verdict: str
+    detail: str
+    gpr_difference: GprDifference | None = None
+
+
 def parse_trace(text: str) -> tuple[dict[int, Row], dict[int, tuple[str, int]]]:
     rows, deliveries = {}, {}
     current = None
@@ -92,7 +110,13 @@ def parse_trace(text: str) -> tuple[dict[int, Row], dict[int, tuple[str, int]]]:
     return rows, deliveries
 
 
-def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, str]:
+def compare_observations(expected: dict, text: str, returncode: int = 0) -> Comparison:
+    """Compare through one owner and retain the first GPR difference structurally.
+
+    The caller supplies mapped expectations. Schema/method validation, byte bounds,
+    authentication and qualification are separate. Malformed or incomplete evidence
+    raises SailError even after an earlier difference.
+    """
     if returncode != 0:
         raise SailError(f'reference process failed: rc={returncode}')
     if not isinstance(expected.get('instructions'), int) or expected['instructions'] <= 0:
@@ -107,6 +131,7 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
     if extra_deliveries := sorted(n for n in deliveries if n >= count):
         raise SailError(f'delivery steps {extra_deliveries} outside declared budget [0, {count})')
     registers = {f'x{i}': 0 for i in range(32)}
+    first_difference = None
     for e in steps:
         n = e['n']
         want = {k: int(v, 16) for k, v in e['writes'].items()}
@@ -123,8 +148,6 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
             if not want and (interrupt or fetch_fault):
                 continue
             raise SailError(f'missing expected step {n} ({e["insn"]}); absent evidence is not agreement')
-        if declared or fetch_declared or e['insn'].startswith('<halted>'):
-            return 'DIVERGE', f'step {n}: Sail printed an instruction row for declared delivery/wait'
         changes = {}
         for reg, value in rows[n].writes.items():
             if reg == 'x0' and value != 0:
@@ -132,9 +155,25 @@ def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, 
             if registers[reg] != value:
                 changes[reg] = value
             registers[reg] = value
-        if changes != want:
-            return 'DIVERGE', f'step {n} ({e["insn"]}): Sail {changes}, expectations {want}'
-    return 'AGREE', f'{count} declared steps; every change-observation and required row present'
+        if declared or fetch_declared or e['insn'].startswith('<halted>'):
+            if first_difference is None:
+                first_difference = Comparison(
+                    'DIVERGE', f'step {n}: Sail printed an instruction row for declared delivery/wait')
+            continue
+        if changes != want and first_difference is None:
+            first_difference = Comparison(
+                'DIVERGE', f'step {n} ({e["insn"]}): Sail {changes}, expectations {want}',
+                GprDifference(n, tuple(sorted(changes.items())), tuple(sorted(want.items()))))
+    if first_difference is not None:
+        return first_difference
+    return Comparison(
+        'AGREE', f'{count} declared steps; every change-observation and required row present')
+
+
+def compare_trace(expected: dict, text: str, returncode: int = 0) -> tuple[str, str]:
+    """Compatibility API: preserve verdict/detail tuples for complete valid traces."""
+    result = compare_observations(expected, text, returncode)
+    return result.verdict, result.detail
 
 
 def project_path(path: Path) -> Path:

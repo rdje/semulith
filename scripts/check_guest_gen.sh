@@ -297,6 +297,52 @@ PYCODE
   out="$(python3 scripts/probe_gc_sail.py --mutation ignore-extra-deliveries 2>&1)"; rc=$?
   arm "RED Sail witnessed deliveries cannot exceed the declared budget" "$rc" 1 "$out" "out-of-budget interrupt delivery accepted"
 
+  # P4.14 a28: structured differences, full-tail validation, both Python modes.
+  out="$(python3 scripts/probe_sail_comparison.py 2>&1)"; rc=$?
+  arm "GREEN structured Sail comparison normal" "$rc" 0 "$out" "Ran 34 tests"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation lose-difference 2>&1)"; rc=$?
+  arm "RED Sail lose-difference normal" "$rc" 1 "$out" "FAILED (failures=11)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation wrong-boundary 2>&1)"; rc=$?
+  arm "RED Sail wrong-boundary normal" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation reverse-change-sets 2>&1)"; rc=$?
+  arm "RED Sail reverse-change-sets normal" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation lose-extra-changes 2>&1)"; rc=$?
+  arm "RED Sail lose-extra-changes normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation ignore-status 2>&1)"; rc=$?
+  arm "RED Sail ignore-status normal" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation ignore-extra-rows 2>&1)"; rc=$?
+  arm "RED Sail ignore-extra-rows normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation ignore-extra-deliveries 2>&1)"; rc=$?
+  arm "RED Sail ignore-extra-deliveries normal" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation bypass-wrapper 2>&1)"; rc=$?
+  arm "RED Sail bypass-wrapper normal" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation early-gpr-return 2>&1)"; rc=$?
+  arm "RED Sail early-gpr-return normal" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(python3 scripts/probe_sail_comparison.py --mutation early-delivery-return 2>&1)"; rc=$?
+  arm "RED Sail early-delivery-return normal" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(python3 -O scripts/probe_sail_comparison.py 2>&1)"; rc=$?
+  arm "GREEN structured Sail comparison optimized" "$rc" 0 "$out" "Ran 34 tests"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation lose-difference 2>&1)"; rc=$?
+  arm "RED Sail lose-difference optimized" "$rc" 1 "$out" "FAILED (failures=11)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation wrong-boundary 2>&1)"; rc=$?
+  arm "RED Sail wrong-boundary optimized" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation reverse-change-sets 2>&1)"; rc=$?
+  arm "RED Sail reverse-change-sets optimized" "$rc" 1 "$out" "FAILED (failures=10)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation lose-extra-changes 2>&1)"; rc=$?
+  arm "RED Sail lose-extra-changes optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation ignore-status 2>&1)"; rc=$?
+  arm "RED Sail ignore-status optimized" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation ignore-extra-rows 2>&1)"; rc=$?
+  arm "RED Sail ignore-extra-rows optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation ignore-extra-deliveries 2>&1)"; rc=$?
+  arm "RED Sail ignore-extra-deliveries optimized" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation bypass-wrapper 2>&1)"; rc=$?
+  arm "RED Sail bypass-wrapper optimized" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation early-gpr-return 2>&1)"; rc=$?
+  arm "RED Sail early-gpr-return optimized" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(python3 -O scripts/probe_sail_comparison.py --mutation early-delivery-return 2>&1)"; rc=$?
+  arm "RED Sail early-delivery-return optimized" "$rc" 1 "$out" "FAILED (failures=2)"
+
   # d3c: independent C parcel rules, including scatter basis and original trap bits.
   out="$(python3 scripts/probe_c_author.py 2>&1)"; rc=$?
   arm "GREEN independent C author expansions and effects" "$rc" 0 "$out" "37 expansions/effects"

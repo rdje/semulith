@@ -55,11 +55,13 @@ The current gate report is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
 
-## First comparison method — typed grammar exists, evaluator pending
+## First comparison method — contract and implementation boundary
 
-The following contract adds a typed witness and an exact wrong-value control.
-Witness/baseline syntax and generic relationship checks exist; capture artifacts
-and the method evaluator remain pending. Production qualification stays closed. The declaration gives no new requirement or CPU acceptance credit.
+The canonical contract below defines the typed witness and exact wrong-value
+control. Its opening paragraph states the current implementation boundary;
+[References](references.md#artifact-syntax-you-can-inspect) describes the artifact
+formats. Production qualification stays closed; the declaration gives no new
+requirement or CPU acceptance credit.
 
 {{#include ../../../decisions/decision_sail-gpr-comparison-method.md:method}}
 
@@ -78,7 +80,8 @@ Legacy/generic graphs may omit these optional fields. A generic control may name
 any declared baseline; the future first-method evaluator must require its sole
 baseline, exactly one witness and the intended value difference. A valid locator
 does not prove the property, bind an obligation to an observation or qualify a run.
-No receipt, dependency-manifest mapping or canonical capture is added by this step.
+The a20 grammar step added no receipt/manifest mapping or canonical capture;
+the artifact formats are described in [References](references.md#artifact-syntax-you-can-inspect).
 
 Run the offline controls from the repository root:
 
@@ -267,6 +270,52 @@ The comparison vocabulary remains limited: PC/word, FP registers, direct CSR
 state, memory and requests are uncredited except where read into the declared GPR
 changes. Validating a trace budget does not authenticate execution or qualify a
 structured experiment. No canonical capture or requirement status changes here.
+
+## Structured differences and full-trace validation
+
+`compare_observations(expected, text, returncode=0)` in
+`scripts/run_rv64gc_sail.py` returns immutable `Comparison(verdict, detail,
+gpr_difference)`. A GPR difference contains `step_n` and the **complete** observed
+and expected change sets as sorted tuples of `(register, integer)` pairs. The
+ordering is lexical (`x1`, `x10`, `x2`); values are RV64 integers. The first differing
+boundary is retained. Agreement has no difference; a first delivery/wait mismatch
+also has no GPR difference. Consumers must inspect these fields rather than parse
+human-readable diagnostic text.
+
+The historical `compare_trace` delegates to that same comparison owner and returns
+its `(verdict, detail)` pair. Complete valid traces retain their previous outcomes
+and diagnostic wording. Parsing, process failures and invalid evidence raise
+`SailError`. The API accepts already mapped expectations and trace text; it does
+not supply schema validation, byte limits, authentication or method qualification.
+
+A28 fixes an older early-return defect: a wrong GPR value or delivery mismatch
+could return `DIVERGE` before discovering a missing later row or nonzero `x0`.
+The comparator now checks every declared boundary before returning its first
+difference. Nonzero `x0` also refuses in the delivery-mismatch row itself. An
+incomplete or invalid trace cannot become a successful negative control just
+because an earlier observation differed. Surplus observations still refuse before
+comparison. Raw trace completeness remains distinct from execution provenance.
+
+This complete example uses **synthetic diagnostic fixtures**, not Sail execution:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY'
+from probe_sail_comparison import expected, trace
+from run_rv64gc_sail import compare_observations
+result = compare_observations(expected([{'x1': '0x2'}]), trace([{'x1': 1}]))
+print(result.verdict, result.gpr_difference)
+PY
+python3 scripts/probe_sail_comparison.py
+python3 -O scripts/probe_sail_comparison.py
+```
+
+The example prints `DIVERGE GprDifference(step_n=0, observed=(('x1', 1),),
+expected=(('x1', 2),))`. The 34-test suite covers exact first differences,
+complete change sets, immutable data, mixed GPR/delivery ordering, complete trace
+validation and legacy delegation. Ten independent omissions must fail in both
+Python modes; GUEST-GEN runs all controls. These results confer no canonical
+capture, execution or CPU acceptance credit. Bounded expectation/trace evaluation
+and authenticated orchestration remain the next implementation steps.
 
 ## Authenticating a pin with a total read bound
 

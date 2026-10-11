@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0219 (leaf P4-SYSTEM.14) — expose structured Sail differences with complete validation
+
+- Expose immutable first GPR differences through the existing comparison owner and legacy tuple wrapper. Repair early differences hiding missing rows/nonzero x0; five old invalid outcomes become refusals, while819 complete valid legacy tuples and the adapter inverse remain exact.
+- 34 methods pass normal/optimized; ten omissions11/10/10/1/3/1/1/2/2/2 discriminate; GUEST-GEN174/0, focused17/sharder12/0/seven books,3030 rendered links and literal book commands pass. Fix the stale duplicate book boundary and teach structured results. Derive39 doctrines/837 arms; preserve243 canonical dictionaries,1293 other tracked files, full append/task predecessors, seals/caps/CPU status. Next a29 bounded unit then authenticated orchestration/collector/captures; qualification stays closed.
+
 ## SEMULITH-P4-0218 (leaf P4-SYSTEM.14) — close exact-token schema end anchors
 
 - Repair83 declarations in13 schemas to refuse terminal newlines, preserving the generic kernel's search contract. Cover all91 patterned fields and five complete canonical documents; no canonical data or qualification changes.

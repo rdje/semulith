@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — typed grammar, bounded readers and artifact formats implemented; evaluator/collector and captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26, `SEMULITH-P4-0210`–`0212`/`0217`; matched-experiment contract, GC verification policy and public Sail adapter
+- **Status:** `active` — grammar, bounded readers/artifacts and structured results exist; evaluator/collector/captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26/a28, `SEMULITH-P4-0210`–`0212`/`0217`/`0219`; matched-experiment contract, GC policy and public adapter
 answers: Which typed witness/baseline and bounded-read checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
 
 ## The fact / decision
@@ -16,7 +16,8 @@ control. Implement this contract before recording a canonical capture. The
 grammar implements optional witness/baseline fields. Generic graph checks validate
 witness bounds/observation kind and declared baseline endpoints; they do not execute
 this method. Receipt/dependency-manifest formats and bounded bytes-only validation now exist
-at a26; their authentication/evaluation and fresh collection remain pending.
+at a26. A28 exposes immutable first differences after full-budget validation;
+authentication/evaluation and fresh collection remain pending.
 Production qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
@@ -197,6 +198,8 @@ non-target observation. Check structured rows/changes and the expectation diff;
 a verdict/reason substring is not a substitute. A wrong earlier value, changed
 program, extra write, missing row or failed process does not satisfy this control.
 
+answers: Why does a Sail difference still require validating every later boundary?
+
 ## Results, gates and implementation order
 
 Compute separate record validity, observed-comparison and method dispositions.
@@ -240,10 +243,10 @@ Receipt host fields are os/kernel/arch, tools are repeated id/version children;
 input inventory is id/sha256, outputs use the existing observation field names.
 Unknown writer keys and lossy mappings refuse. Failed exits/empty files remain
 representable, with no success credit. The parser performs no artifact I/O or
-execution; future evaluation must supply authenticated snapshots. No unbounded
-legacy file-loader dispatch is added. DOSSIER-SCHEMA controls these APIs, without
-claiming a future capture-store sweep. Examples and exact fields are in the GC
-book's References chapter. No canonical v1, store, cap or qualification changes.
+execution; evaluation must supply authenticated snapshots. No legacy loader
+dispatch is added. DOSSIER-SCHEMA controls these APIs, without
+claiming a future capture-store sweep. The GC book's References chapter gives
+examples/fields. No canonical v1, store, cap or qualification changes.
 
 ## Related records
 
