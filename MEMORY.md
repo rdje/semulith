@@ -18,13 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a37/0228 bounded dependency leaf inspection;
-  define the finite API and published-format nesting rule before code, then
-  aggregate evaluator/gates, collector/retention/cases/captures/full policy.
-  A36 nine complete bodies32707B in ordinary15, full inverses/31 refusals normal/O,
-  eight live headings;0246 whole entries/focused12/seven books/3076 links pass.
+- next_action: `P4-SYSTEM.14` a38/0229 aggregate budget ledger, then complete
+  closure/evaluator/gates and reviewed collector/retention/cases/captures/full policy.
+  A37 selected leaf50/0/0 normal/O/fifteen omissions; PROFILE220/0/1043 arms;
+  valid-Python false positive fixed through published schema/single mapper.
+  Focused17/seven books/3088 links/all7 examples; full predecessors protected.
   Full CI all five legs green on cleane048616 (443 Rust tests/smoke53/seven books).
-- in_flight_uncommitted: none after COMMIT/brief0/actual census. Code/canonical/
-  fixed seals/caps/CPU unchanged; part15 is outside original12-file LC0006 seal.
-  Root below131072; new feature teaching needs a natural GC chapter partition.
+- in_flight_uncommitted: none after this slice's COMMIT/brief0/actual census.
+  Canonical/fixed caps/seals/CPU unchanged; no aggregate/qualification credit.
+  DEV19=17+2/2832B published0247,100 prior entries/1312 other files protected.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

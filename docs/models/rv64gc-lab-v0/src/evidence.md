@@ -363,9 +363,9 @@ not authenticate those declarations or replace the complete method evaluator.
 [Witness/control/derivation/pair bindings](retained-method.md#binding-witness-control-derivation-and-actual-pairs)
 likewise preserve failed recorded outcomes as data, without method credit.
 
-[Manifest binding](retained-method.md#authenticating-and-binding-the-dependency-manifest)
-authenticates one bounded manifest and binds its declared file identities;
-children and aggregate closure remain uncredited until checked.
+[Manifest/leaf checks](closure.md#authenticating-and-binding-the-dependency-manifest)
+authenticate declared bindings and one selected leaf at a time;
+aggregate closure remains uncredited.
 
 ## Bounded three-run byte comparison
 

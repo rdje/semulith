@@ -1,5 +1,55 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — inspect one authenticated dependency leaf (P4-SYSTEM.14 a37)
+
+Add inspect_dependency_leaf for one selected child from the public validated
+manifest plan. Bound child/union counts before lookup, require one edge/binding,
+copy selected identity, reject manifest self/role, preserve nonempty-string IDs.
+Integer limit0..8MiB precedes I/O; zero permits empty. One anchored snapshot,
+no reopen; stale/unavailable/refused remain separate, payload consistency before
+interpretation, frozen metadata without retained bytes. No other artifact or
+process read, aggregate closure/currentness/source semantics/qualification credit.
+
+D37-HEADER-FALSE-POSITIVE: draft root-name classification rejected valid Python
+("dependencies",1), although the published codec correctly refuses it as a
+manifest. Initial40 controls/twelve omissions/profile214/0 validate that bad
+rule and are not signoff. Reuse the published64KiB raw schema and sole mapper
+through is_dependencies_document. Raw-schema-valid documents remain manifests
+before self/nested-edge checks; malformed/opaque/lookalike/over-format-bound
+bytes are non-manifest, never valid-source claims. Missing/invalid schema tools
+are unavailable with matched pin, not ordinary content. Empty/>64KiB needs no
+tools. Fifty controls include AST-confirmed valid Python and schema/tool bounds.
+
+D37-LEGACY-SEAM: the new classifier duplicates an old byte-guard spelling; old
+probe correctly refuses seam drift. Scope only no-byte-bound mutation to its
+_document owner; all36 test bodies and legacy artifact functions remain exact,
+expected3 failures/no errors normal/O. Initial absent D.experiment_to_form and
+R.dumps fixture calls corrected using observed P.raw_experiment/R.render_forms;
+freeze nested bytes before schema-fault injection. Earlier instrument errors
+receive no control credit. DECLINED new lesson promotion: existing tools-first,
+raw-schema/single-mapper and exact-history rules apply; method/book/toolbox carry
+current API and limits.
+
+50/0/0 normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2 fail without
+errors.32 literal arms yield PROFILE220/0,39 doctrines/1043 arms. Focused17,
+sharder12/0/seven books/3088 links/all7 literal examples and normal/print teaching
+pass. Move complete old manifest section5822B without edits to closure chapter;
+whole old artifact/probe/checker/method/evidence/retained teaching inverses exact,
+340 raw parses/types and243 canonical dictionaries exact. Own measured whole-entry
+DEV publication and actual original/moved/published receipt+digest refusals.
+Final history/scope/hooks/brief0/censuses required. Next a38 aggregate budget
+ledger/evaluation; fixed caps/seals/canonical/CPU status remain unchanged.
+
+DEV50265→47433 at48200 target:19=17+2/2832B published0247,
+3065B/ed0282158fdbd6c1f4fed91d3c02ab2cb261ee103136b1e42267d63ce1d593e1;
+39live+210sealed249logical. History/scope rc=0:100 old entries/1312 other files
+and all complete predecessors protected; original count, moved Graph74/0 and
+published0246 Mapping12/0 edits refuse even with updated digests. Full CI remains
+all five legs green on exacte048616; this finite slice uses focused gates.
+
+Initial hook rejects prose-only decline; exact promotion marker/reason recorded
+in the owned leaf before retrying all hooks. No rejected commit was created.
+
 ## _(2026-10-11)_ — contain completed method-unit designs (P4-SYSTEM.14 a36)
 
 Full CI all five legs passes on exact cleane048616: fmt/clippy/443 Rust tests,
@@ -635,46 +685,4 @@ Focused13/profile62/0/schema25/0, seven books, actual book helper, rendered chec
 and protected scope pass. Derive768outer arms; no canonical/qualification/status/
 cap advance. Evidence target/p4-system-14/a21; latest full CI a18 green.
 promotion: matched-experiment/first-method decisions and GC-book read-budget API.
-
-## _(2026-10-11)_ — typed comparison locators (P4-SYSTEM.14 a20)
-
-Carry optional singular gpr_witness(step_n,register) and control baseline_id in the
-existing reference schema/single mapper. Validate canonical x1..x31, raw shape
-before mapping, witness budget/GPR observation kind and baseline run endpoints.
-Generic omission/different baselines stay valid; exact first-method adequacy and
-all qualification remain pending. Correct the stale schema evaluator comment.
-
-Graph74/0 (also optimized); removing budget/kind/baseline guards loses4/1/3 named
-refusals, also optimized. New shape/roundtrip/mapper controls, two writer omissions
-and a register-facet omission discriminate. Old schema refuses each new field;
-old graph owner with new grammar/mapper66/8 isolates missing semantic checks.
-All243canonical dictionaries exact. Actual production prefix names bad bounds/
-baselines and keeps unqualified refusal; temporary fixture removed, no live run.
-
-Correct two instrument assumptions: use the exact min-length diagnostic and test
-old-schema fields separately because a root reports its first failure. Focused13,
-schema25/0/profile57/0, seven books/eleven rendered checks/literal typed syntax pass;
-protected scope checked before commit. Derive763outer arms; milestone states and
-caps unchanged. Evidence target/p4-system-14/a20; latest full CI a18 green.
-promotion: first-method/matched-experiment decisions and GC-book typed API/limits.
-
-## _(2026-10-11)_ — declare the first GPR comparison method (P4-SYSTEM.14 a19)
-
-Declare sail-gpr-change-v1 prospectively, before canonical execution: one typed
-step/register witness, baseline/repeat and an exact one-value control. Fix roles,
-producer pairs, relative argv, receipt cross-checks, dependency closure and finite
-per-file/aggregate bounds. Keep method success distinct from full policy adequacy.
-Retained executable identity plus reviewed collector provenance permits offline
-comparison without a transient binary cache; replay availability stays explicit.
-Hashes do not attest execution. Required project-file pins remain mandatory.
-
-The full decision is live-included in the GC book. Current schema refuses both
-new fields by name; implementation/capture/qualification remain pending. Correct
-only the shape-probe's stale evaluator docstring; executable AST is exact.
-Make room by moving the two oldest whole notes, 29==27kept+2moved, exact bytes/order,
-to shard-0237 (4171B, SHA f7355839fce7c1483a4ef078b2111854543e9a7bd505f8d6ff7c591b449c3433).
-Old manifest records remain exact; no ceiling rises. Evidence target/p4-system-14/a19.
-Focused10, sharder12/0, seven books,15 rendered checks and exact old-book inverse
-pass; protected scope is checked before commit. Latest full CI is a18 green.
-promotion: decision_sail-gpr-comparison-method and its live GC-book include.
 

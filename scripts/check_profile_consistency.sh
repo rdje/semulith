@@ -949,6 +949,70 @@ EOF
   score "RED optimized omitted manifest guard context-freeze" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_manifest.py" --mutation schema-tool 2>&1)"; rc=$?
   score "RED optimized omitted manifest guard schema-tool" "$rc" 1 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" 2>&1)"; rc=$?
+  score "GREEN normal selected dependency leaf" "$rc" 0 "$out" "MATCHED-GPR-LEAF: 50 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation selected-edge 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard selected-edge" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation selected-binding 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard selected-binding" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation manifest-selection 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard manifest-selection" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation byte-limit 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard byte-limit" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation payload-consistency 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard payload-consistency" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation document-classification 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard document-classification" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation no-nesting 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard no-nesting" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation snapshot-reopen 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard snapshot-reopen" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard immutable-result" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation document-bound 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard document-bound" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-preflight 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard schema-preflight" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-before-map 2>&1)"; rc=$?
+  score "RED normal omitted leaf guard schema-before-map" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" 2>&1)"; rc=$?
+  score "GREEN optimized selected dependency leaf" "$rc" 0 "$out" "MATCHED-GPR-LEAF: 50 tests / 0 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation family-counts 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation selected-edge 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard selected-edge" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation selected-binding 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard selected-binding" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation manifest-selection 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard manifest-selection" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation byte-limit 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard byte-limit" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation read-bound 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard read-bound" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation pin-status 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard pin-status" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation payload-consistency 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard payload-consistency" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 4 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation document-classification 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard document-classification" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 11 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation no-nesting 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard no-nesting" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 7 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation snapshot-reopen 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard snapshot-reopen" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 6 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation immutable-result 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard immutable-result" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 1 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation document-bound 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard document-bound" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 3 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-preflight 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard schema-preflight" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 8 failures / 0 errors; fixtures cleaned"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_leaf.py" --mutation schema-before-map 2>&1)"; rc=$?
+  score "RED optimized omitted leaf guard schema-before-map" "$rc" 1 "$out" "MATCHED-GPR-LEAF: 50 tests / 2 failures / 0 errors; fixtures cleaned"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

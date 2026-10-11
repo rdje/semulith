@@ -361,10 +361,16 @@ def main():
     elif args.mutation:
         source = Path(A.__file__).read_text()
         old, new = MUTATIONS[args.mutation]
-        if source.count(old) != 1: raise SystemExit("mutation seam drift")
+        if args.mutation == "no-byte-bound":
+            start = source.index("def _document(")
+            end = source.index("\n\ndef parse_dependencies(", start)
+            prefix, selected, suffix = source[:start], source[start:end], source[end:]
+        else:
+            prefix, selected, suffix = "", source, ""
+        if selected.count(old) != 1: raise SystemExit("mutation seam drift")
         module = types.ModuleType("matched_gpr_artifacts_mutant")
         module.__file__ = A.__file__
-        exec(compile(source.replace(old, new), A.__file__, "exec"), module.__dict__)
+        exec(compile(prefix + selected.replace(old, new) + suffix, A.__file__, "exec"), module.__dict__)
         A = module
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(ArtifactTests))
     return 0 if result.wasSuccessful() else 1

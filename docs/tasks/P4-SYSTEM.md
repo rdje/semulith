@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a37 bounded leaf inspection, then aggregate evaluator/gates and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a38 aggregate budget ledger, then closure evaluator/gates and captures |
 
 ## Decisions
 
@@ -794,26 +794,99 @@ mandatory. DECLINED new promotion: existing lossless/history/tools-first contrac
 own this routine containment; task/book record current commands and lessons.
 Earlier archives/seal/caps/code/canonical/method/CPU status unchanged.
 
-### `.14` a37 — bounded dependency leaf inspection (scheduled, SEMULITH-P4-0228)
+### `.14` a37 — bounded dependency leaf inspection (completed, SEMULITH-P4-0228)
 
-Start clean after a36 COMMIT. Review first-method closure and budgets, bounded
-manifest consumer, anchored reader and generic S-expression/manifest contracts.
-Define one finite read-only leaf authentication/content-inspection API before
-code. Reuse public owners and one authenticated byte snapshot per inspected
-leaf, never a pin check followed by reopen. Resolve exact overlap once. Bound
-per-leaf8MiB and total authenticated128MiB before reads; preserve16MiB retained-
-snapshot obligations and distinguish payload/parsed-copy RAM. Detect disguised
-manifest content through the published format, without inventing a parallel
-mapper or counting declared roles as content proof. Preserve explicit pending
-principal/snapshot/comparison/aggregate obligations if this finite unit does
-not own them; no complete closure/qualification credit by implication. Split
-inspection and aggregate evaluator into named owners when needed. Actual missing/
-stale/unsafe/nested/bounds/control fixtures, immutable/no-other-file guarantees,
-normal/O omissions and GC examples required. Retained-method has481B room and
-DEV at ceiling pressure: own natural complete teaching/whole-entry partitions
-and, only if measured necessary, an unsealed task part; never extend LC0006.
-Then full aggregate evaluator/gates, collector/retention/cases/captures/policy.
-Keep fixed caps/seals/canonical/CPU state until actual verification warrants it.
+Owned on cleanb8a728f after a36 all hooks/brief0/actual census, before code.
+Review a19 closure/trust/budget clauses, raw dependencies schema, public frozen
+ManifestPlan/InputBinding and anchored Snapshot/PinResult contracts, generic
+parser and GC manifest teaching. Define one finite public API:
+inspect_dependency_leaf(root,*,manifest,input_id,max_bytes=8MiB). Caller supplies
+a ManifestPlan from the raw-schema/scoped validated public manifest binder.
+Before selected lookup bound children1..64 and union9..73; require exactly one
+selected child edge and binding, preserve arbitrary nonempty manifest IDs.
+Copy only the used selected binding into a fresh reader record before I/O.
+Validate integer byte limit0..8MiB before opening; zero permits only an empty
+file under the shared reader contract. One anchored authenticated snapshot,
+never pin-then-reopen; preserve stale/unavailable/refused findings and matched
+pin metadata separately. No other input/output/binary/process access.
+
+D37-HEADER-FALSE-POSITIVE (blocking draft defect): tools prove valid Python
+("dependencies",1) is rejected by the draft name-only classifier while the
+published manifest codec correctly refuses it as a manifest. Initial40 tests/
+twelve omissions and profile214/0 validate an overbroad self-authored rule and
+are not final signoff. Own correcting content classification through the actual
+published raw schema and single canonical mapper, with a permanent valid-code
+regression. No new root-name heuristic or source-language restriction.
+
+Add one public artifact-format classifier using the existing bounded _document
+owner. Exactly one raw-schema-valid dependencies document (optional canonical
+comments) is a manifest, before child-edge/self/nested-role semantic checks.
+Invalid syntax/shape/version/multiple roots/opaque or >64KiB bytes cannot decode
+as that published bounded document; they are non-manifest content, not validated
+source semantics. Load/check schema tools outside the bad-input refusal boundary;
+missing/invalid tools yield unavailable, never non-manifest credit. Reuse one
+mapper after raw validation; no parallel grammar, loader or hash reader.
+Leaf snapshot remains bounded0..8MiB before decoding. Return frozen pin/content
+facts with no retained payload. Parsed objects/copies add RAM; this is not an
+exact process-memory cap. Snapshot payload type/size consistency must precede
+interpretation. Successful leaf inspection grants no complete closure/current
+experiment, comparison, qualification, source/program/image binding, impact or
+CPU credit. Add64KiB format boundaries, valid Python, schema-first/no-premap and
+missing/invalid-schema controls plus independent omitted classifier/tool guards.
+
+Own actual on-volume empty/text/binary/valid/malformed/mixed/quoted/comment nested
+cases, cap inclusivity/zero/invalid/oversize/pre-read limits, stale/missing/unsafe/
+Git-boundary paths, one-read/no-other-I/O and immutable metadata. Controls normal/O
+and independent omitted predicates must fail without errors or unsafe subcase
+cleanup. Move the complete old manifest-teaching section to a natural new GC
+closure chapter, preserving all bytes and prior examples; update all routes and
+teach a standalone synthetic leaf read/tamper/nesting example. Own focused/
+canonical/source/method/history/scope/live/book/doctrine checks, measured whole-
+entry DEV publication and COMMIT; fixed caps/seals/canonical/CPU remain unchanged.
+Own the initial probe's absent D.experiment_to_form call (40 tests/1 error,
+normal/O): inspect the published execution fixture and use P.raw_experiment,
+which reuses the canonical references mapper; assert scoped findings ==[].
+The expanded classifier probe also guessed absent R.dumps; use observed public
+R.render_forms. Freeze its valid nested payload before schema-failure injection,
+so the fixture writer is not mistaken for the classifier under test. Initial
+50 tests/4 failures/1 error reflect those instrument mistakes; repair before
+any control credit. These are test-instrument errors, not production defects.
+D37-LEGACY-SEAM (blocking instrument drift): adding the classifier's byte guard
+makes legacy no-byte-bound source text occur twice; the existing probe correctly
+refuses mutation seam drift. Scope that old mutation to its owned _document
+function, preserving all old test bodies/counts and unrelated helper source.
+Verify the same three legacy bound failures normal/O and all legacy controls;
+never weaken seam uniqueness or rewrite historical receipts.
+Verified: before/contract/canonical/history/scope/rendered.py rc=0; both owned
+D37 defects closed.50/0/0 normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2,
+no errors. Legacy36 bodies exact and bound omission3/0 normal/O. PROFILE220/0,
+39 doctrines/1043 literal arms. Focused17/sharder12/0/seven books/3088 links/all7
+literal examples/normal+print teaching pass. Whole old artifact/probe/checker/
+method/evidence/retained teaching inverses, moved5822B,340 raw parses/types and
+243 dictionaries exact. DEV50265→47433,19=17+2/2832B into0247,3065B/
+ed0282158fdbd6c1f4fed91d3c02ab2cb261ee103136b1e42267d63ce1d593e1;
+39live+210sealed249logical.100 prior entries/1312 other files and whole old heads
+protected; actual original/moved/published receipts+updated digests refuse.
+promotion: declined (existing tools-first/raw-schema/single-mapper/history rules apply; current method/book/toolbox carry the public contract). COMMIT hooks/brief0/censuses
+mandatory. No aggregate/current-experiment/source validity/qualification credit.
+Then a38 owns aggregate budgets/evaluation; reviewed collector/retention/cases/
+captures/full policy follow. No full aggregate credit from this finite helper.
+
+D37-DECLINE-MARKER: first commit hook refuses the prose-only decline; all project
+checks pass, sole breach LESSON-PROMOTION. Record its exact required token/reason
+in this owned leaf, verify staged gate, then retry all hooks; no commit was made.
+### `.14` a38 — aggregate authenticated closure and method budgets (scheduled, SEMULITH-P4-0229)
+
+Start clean after a37 COMMIT. Own a single ledger/orchestrator before loops for
+aggregate authenticated project-file128MiB and retained snapshot16MiB budgets,
+using exact manifest/principal overlap once and explicit per-file bounds. Reuse
+one authenticated read per selected file and released leaf inspection payloads;
+distinguish payload accounting/parsed-copy RAM. Define complete closure/current
+source/program/image and byte/receipt/identity/method composition obligations,
+splitting further finite units when needed. Preserve all failed-record data and
+unsupported/stale/unavailable/refused findings; keep blanket qualification closed
+until every method requirement and independent omission gate exists. Full CI at
+that foundational milestone; collector/retention/cases/captures/full policy next.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -911,6 +984,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a37 — **ROOT CAUSE**: before.py rc=0 normal/O; old binder checks
+  outer manifest only; new leaf API absent. Draft name-only rule falsely rejects
+  valid Python; existing published codec refuses it as a manifest.
+- [x] `.14` a37 — **ADDRESSED**: mutations.json/profile-final-self.log rc=0;
+  50/0/0 normal/O, fifteen omissions fail without errors; PROFILE220/0/1043 arms.
+  Schema-first format membership and unavailable tools separate; legacy36/3/0 retained.
+- [x] `.14` a37 — **NO REGRESSION**: contract/canonical/history/scope/rendered.py
+  rc=0; focused17/sharder12/0/seven books/3088 links/all7 literal examples;
+  full old source/teaching/history inverses/100 prior entries/1312 other files,
+  340 raw parses/types/243 dictionaries exact; actual receipt+digest edits refuse.
+  Caps/seals/canonical/CPU unchanged; aggregate evaluation remains uncredited.
 
 - [x] `.14` a36 — **ROOT CAUSE**: partition.py rc=0; committed task128784B
   leaves2288B; full CI on exacte048616 all five legs green before ownership.
@@ -1090,6 +1175,20 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+Verified: before/contract/canonical/history/scope/rendered.py rc=0; both owned
+D37 defects closed.50/0/0 normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2,
+no errors. Legacy36 bodies exact and bound omission3/0 normal/O. PROFILE220/0,
+39 doctrines/1043 literal arms. Focused17/sharder12/0/seven books/3088 links/all7
+literal examples/normal+print teaching pass. Whole old artifact/probe/checker/
+method/evidence/retained teaching inverses, moved5822B,340 raw parses/types and
+243 dictionaries exact. DEV50265→47433,19=17+2/2832B into0247,3065B/
+ed0282158fdbd6c1f4fed91d3c02ab2cb261ee103136b1e42267d63ce1d593e1;
+39live+210sealed249logical.100 prior entries/1312 other files and whole old heads
+protected; actual original/moved/published receipts+updated digests refuse.
+DECLINED new promotion: existing tools-first/raw-schema/single-mapper/history
+rules apply, current method/book/toolbox updated. COMMIT hooks/brief0/censuses
+mandatory. No aggregate/current-experiment/source validity/qualification credit.
+
 a36: proof/history/scope/rendered.py rc=0; nine bodies32707B, both complete
 source inverses exact,31 refusals normal/O/eight headings/plain read/closed seal.
 Part15=39750B/42b5cb5676271bd3546febd210e4d3b39ab0c3b4d2a0838f26aeff12a5f7e84f.
@@ -1225,6 +1324,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a37 | `SEMULITH-P4-0228 (leaf P4-SYSTEM.14): inspect one authenticated dependency leaf` | a38 aggregate budget ledger, then closure evaluator/gates and captures |
 | `.14` a36 | `SEMULITH-P4-0227 (leaf P4-SYSTEM.14): contain completed method-unit designs` | a37 bounded leaf inspection and aggregate evaluator/gates |
 | `.14` a35 | `SEMULITH-P4-0226 (leaf P4-SYSTEM.14): normalize shared-reader refusals` | full CI on clean repair, then a36 leaf inspection |
 | `.14` a34 | `SEMULITH-P4-0225 (leaf P4-SYSTEM.14): authenticate and bind the dependency manifest` | a35 leaf inspection, aggregate evaluator/gates and captures |

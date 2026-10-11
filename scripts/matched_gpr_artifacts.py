@@ -26,6 +26,10 @@ class ArtifactError(ValueError):
     """No partial document escapes a shape or identity refusal."""
 
 
+class ArtifactToolError(RuntimeError):
+    """Document classification cannot establish its project schema tools."""
+
+
 @lru_cache(maxsize=2)
 def _schema(family: str):
     name = {"dependencies": "matched-gpr-dependencies", "capture": "sail-gpr-capture"}[family]
@@ -87,6 +91,29 @@ def parse_dependencies(payload: bytes, *, path: str) -> dict:
         if item["role"] == "dependency-manifest":
             raise ArtifactError("dependencies: nested manifest role")
     return doc
+
+
+def is_dependencies_document(payload: bytes, *, path: str) -> bool:
+    """Recognize the published bounded raw format, before child-edge checks.
+
+    A source file that merely resembles the root is not a manifest. Missing or
+    invalid schema tools raise separately; they cannot establish non-membership.
+    The cached schema and existing document decoder own validation and mapping.
+    """
+    if type(payload) is not bytes:
+        raise ArtifactError("dependencies classification requires immutable bytes")
+    _path(path, "dependencies classification location")
+    if not payload or len(payload) > DOCUMENT_BYTES:
+        return False
+    try:
+        _schema("dependencies")
+    except (OSError, UnicodeError, S.SexpError, K.SchemaError, ValueError) as exc:
+        raise ArtifactToolError(f"dependencies schema unavailable: {type(exc).__name__}: {exc}") from exc
+    try:
+        _document(payload, "dependencies", path)
+    except ArtifactError:
+        return False
+    return True
 
 
 def parse_capture(payload: bytes, *, path: str) -> dict:
