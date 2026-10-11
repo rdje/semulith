@@ -1141,6 +1141,66 @@ EOF
   score "RED optimized omitted file-set guard manifest-reopen" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 13 failures / 0 errors; fixtures cleaned"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_files.py" --mutation legacy-pin 2>&1)"; rc=$?
   score "RED optimized omitted file-set guard legacy-pin" "$rc" 1 "$out" "MATCHED-GPR-FILES: 49 tests / 2 failures / 0 errors; fixtures cleaned"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" 2>&1)"; rc=$?
+  score "GREEN normal frozen byte consumers" "$rc" 0 "$out" "MATCHED-GPR-BYTES: 22 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-freeze 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-freeze" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 19 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-string-freeze 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-string-freeze" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-context 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-context" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-path 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-path" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-fields 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-fields" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-count 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-count" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-canonical 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-canonical" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-parser 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-parser" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-frozen 2>&1)"; rc=$?
+  score "RED normal omitted byte guard identity-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-binder 2>&1)"; rc=$?
+  score "RED normal omitted byte guard receipt-binder" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-context 2>&1)"; rc=$?
+  score "RED normal omitted byte guard receipt-context" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-parser 2>&1)"; rc=$?
+  score "RED normal omitted byte guard receipt-parser" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 14 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-claim 2>&1)"; rc=$?
+  score "RED normal omitted byte guard receipt-claim" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-frozen 2>&1)"; rc=$?
+  score "RED normal omitted byte guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" 2>&1)"; rc=$?
+  score "GREEN optimized frozen byte consumers" "$rc" 0 "$out" "MATCHED-GPR-BYTES: 22 tests / 0 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-freeze" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 19 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-string-freeze 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-string-freeze" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-context 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-context" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-path 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-path" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 5 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-fields 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-fields" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-count 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-count" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-canonical 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-canonical" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 3 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-parser 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-parser" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation identity-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard identity-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-binder 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard receipt-binder" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 13 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-context 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard receipt-context" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-parser 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard receipt-parser" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 14 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-claim 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard receipt-claim" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_bytes.py" --mutation receipt-frozen 2>&1)"; rc=$?
+  score "RED optimized omitted byte guard receipt-frozen" "$rc" 1 "$out" "MATCHED-GPR-BYTES: 22 tests / 1 failures / 0 errors; synthetic only"
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

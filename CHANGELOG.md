@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0230 (leaf P4-SYSTEM.14) — freeze context and consume identity/receipt bytes
+
+- Public immutable context binders run before artifact I/O; identity/receipt byte checks share legacy raw schema/sole mapper/binding owners and consume exact snapshots without reopens or authentication credit. Preserve optional identity presence, receipt argv/exit/inventories and coherent failed-process facts; full method qualification stays closed.
+- Fix draft accepted-context string-subclass refusal; exact draft loses3 assertions normal/O, repaired22 controls pass and14 omissions fail without errors. Thirty new arms: PROFILE314/0,39 doctrines1137 arms; old identity40/receipt43 and19 omissions retained. Link complete byte-binding teaching in a new bounded chapter, preserving old26543B exactly. Focused17/sharder12/0/seven books/3104 links/all9 examples and full source/history/canonical checks pass;100 prior entries/1320 other files protected, actual receipt+digest edits refuse. DEV17=15+2/5031B into0249; full CI green on preceding c84bb7b (443 Rust tests/smoke53/seven books). Fixed caps/seals/CPU unchanged; next a40 evaluation.
+
 ## SEMULITH-P4-0229 (leaf P4-SYSTEM.14) — authenticate the declared file set within shared budgets
 
 - Freeze/bind the complete declared input/output set before I/O; reuse manifest pin, authenticate remaining distinct files once within128MiB read/16MiB live-snapshot budgets, inspect transient children first and retain only required comparison payloads. Conservative failure charges/terminal reads/frozen partial facts; no complete closure, source semantics or method credit.

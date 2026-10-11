@@ -2,6 +2,8 @@
 
 These partial checks support the declared [comparison method](evidence.md#first-comparison-method--contract-and-implementation-boundary).
 Complete authenticated evaluation and collection remain pending.
+For snapshots already authenticated as a declared set, use the
+[frozen byte consumers](byte-bindings.md#binding-authenticated-bytes-to-context-frozen-before-reads).
 
 ## Authenticating a retained reference identity
 

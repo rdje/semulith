@@ -18,14 +18,14 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` full CI on the clean a38/0229 authentication
-  milestone, then a39 byte identity/receipt consumers and method evaluation
-  using the exact frozen snapshots without reopens. Closure adequacy/collector/
-  retention/cases/captures/full policy remain mandatory; qualification stays closed.
-  A38 49/0/0 normal/O/31 omissions; manifest seed peak fixed; actual128MiB boundary
-  and plus-one refusal verified. PROFILE284/0/1107 arms; focused17/seven books/
-  3090 links/all8 examples;100 prior entries/1319 other files protected.
-- in_flight_uncommitted: none after a38 COMMIT/brief0/actual census; full CI
-  starts on that clean revision before new code. Last full CI all five legs green
-  on e048616 (443 Rust tests/smoke53/seven books). Fixed caps/seals/CPU unchanged.
+- next_action: own `P4-SYSTEM.14` a40 authenticated evaluator/composition from
+  clean a39/0230. Inspect capacity before edits. Bind all context before reads;
+  consume exact snapshots without reopens. Complete closure adequacy/source/
+  program/image/impact/collector/retention/full policy remain mandatory;
+  qualification closed. A39 22/0/0 normal/O/14 omissions; draft context roundtrip
+  fixed; legacy identity40/receipt43 unchanged. PROFILE314/0/1137 arms;
+  focused17/seven books/3104 links/all9 examples;100 prior entries/1320 other files exact.
+- in_flight_uncommitted: none after a39 COMMIT/brief0/standard+actual census.
+  Last full CI all five legs green on c84bb7b (443 Rust tests/smoke53/seven books),
+  all17 verified files exact. Fixed caps/seals/CPU unchanged.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

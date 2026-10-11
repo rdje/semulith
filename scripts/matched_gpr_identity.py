@@ -33,6 +33,13 @@ class IdentityCheck:
     execution_identity: tuple[tuple[str, str], ...] = ()  # Only on a current match.
 
 
+@dataclass(frozen=True)
+class ReferenceIdentity:
+    """Selected canonical identity, frozen by bind_reference_identity before I/O."""
+
+    fields: tuple[tuple[str, str], ...]
+
+
 class IdentityError(ValueError):
     """The request or retained descriptor cannot supply this method's identity."""
 
@@ -80,6 +87,50 @@ def _descriptor(payload: bytes, path: str) -> tuple[tuple[str, str], ...]:
     return _execution_identity(doc["candidate"][0])
 
 
+def bind_reference_identity(current_candidate: dict) -> ReferenceIdentity:
+    """Freeze used execution fields/presence; raise IdentityError without file I/O."""
+    fields = _execution_identity(current_candidate)
+    return ReferenceIdentity(tuple((field, str(value)) for field, value in fields))
+
+
+def _check_identity(payload: bytes, path: str, current: tuple[tuple[str, str], ...],
+                    pin: A.PinResult | None = None) -> IdentityCheck:
+    try:
+        retained = _descriptor(payload, path)
+    except (IdentityError, UnicodeError, S.SexpError, K.SchemaError,
+            D.DossierError, RecursionError, ValueError, OSError) as exc:
+        return IdentityCheck("refused", f"cannot use retained identity: {exc}", pin)
+    if retained != current:
+        return IdentityCheck("stale", "retained execution identity differs from current candidate", pin)
+    return IdentityCheck("matched", "retained execution identity matches; qualification pending",
+                         pin, retained)
+
+
+def check_reference_identity_bytes(payload: bytes, *, path: str,
+                                   context: ReferenceIdentity) -> IdentityCheck:
+    """Bind immutable descriptor bytes to a context frozen before authentication.
+
+    This pure consumer never reads an artifact or authenticates a pin. The caller
+    supplies the exact authenticated snapshot and owns parent schema/graph checks.
+    Descriptive candidate metadata remains outside this finite execution identity.
+    """
+    if (type(context) is not ReferenceIdentity or not isinstance(path, str) or
+            not is_canonical_path(path)):
+        return IdentityCheck("refused", "expected frozen identity context and canonical path")
+    fields = context.fields
+    if (type(fields) is not tuple or not len(REQUIRED_FIELDS) <= len(fields) <=
+            len(REQUIRED_FIELDS) + len(OPTIONAL_FIELDS) or
+            any(type(pair) is not tuple or len(pair) != 2 or
+                any(type(value) is not str for value in pair) for pair in fields)):
+        return IdentityCheck("refused", "invalid frozen identity fields")
+    try:
+        if _execution_identity(dict(fields)) != fields:
+            raise IdentityError("noncanonical frozen identity fields")
+    except IdentityError as exc:
+        return IdentityCheck("refused", str(exc))
+    return _check_identity(payload, path, fields)
+
+
 def read_reference_identity(root: Path, record: dict, current_candidate: dict) -> IdentityCheck:
     """Read one reference-identity input once; preserve independent pin findings.
 
@@ -103,12 +154,4 @@ def read_reference_identity(root: Path, record: dict, current_candidate: dict) -
     if pin.disposition != "matched":
         disposition = "stale" if pin.disposition == "mismatch" else pin.disposition
         return IdentityCheck(disposition, pin.reason, pin)
-    try:
-        retained = _descriptor(snapshot.data, record["path"])
-    except (IdentityError, UnicodeError, S.SexpError, K.SchemaError,
-            D.DossierError, RecursionError, ValueError, OSError) as exc:
-        return IdentityCheck("refused", f"cannot use retained identity: {exc}", pin)
-    if retained != current:
-        return IdentityCheck("stale", "retained execution identity differs from current candidate", pin)
-    return IdentityCheck("matched", "retained execution identity matches; qualification pending",
-                         pin, retained)
+    return _check_identity(snapshot.data, record["path"], current, pin)

@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | full CI on clean a38, then a39 byte consumers/evaluator and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a40 evaluator/composition, then reviewed collector/retention/captures |
 
 ## Decisions
 
@@ -971,16 +971,89 @@ with updated digests refuse. Fixed caps/seals/canonical/CPU unchanged. COMMIT
 hooks/brief0/censuses mandatory, then full CI on the clean milestone before a39.
 No complete closure adequacy, source/program/image or qualification credit.
 
-### `.14` a39 — compose authenticated byte consumers and method evaluation (scheduled)
+### `.14` a39 — freeze context and consume identity/receipt bytes (completed, SEMULITH-P4-0230)
 
-Start clean after a38 COMMIT. Consume its one-read snapshot bundle; expose/compose
-public byte-level identity/receipt checks without reopening files. Bind the exact
-same frozen execution/relations and run/input/output identities into comparison;
-keep record/comparison/method dispositions separate and failed controls as data.
-Define complete source/program/image/closure-adequacy and impact obligations in
-finite owned units; qualification stays closed until every requirement and its
-independent omission gate exists. Full CI at the foundational composition
-milestone. Reviewed collector/retention/cases/captures/full policy/status follow.
+Owned before edits on clean c84bb7b01b32b1ec8062d263d15fa0f702364768,
+brief0/untracked, standard and actual ps/lsof censuses rc=0. Full CI on that exact
+revision rc=0: all five legs,443 Rust tests/smoke53/seven books,17 verified files
+unchanged; log40152B SHA256
+babc9c8c70598f6522be05df31aac30da15dbb243907219e56585409fa8f5fa9.
+Evidence: target/p4-system-14/a38/full-ci/. Python3.11 additionally preserves new
+49 controls/seed-peak3 failures and old identity40/identity-equality20 failures,
+normal/O; no compatibility defect found.
+
+Finite scope: expose immutable identity and receipt context binders, called before
+artifact I/O, and public pure byte consumers. Share the existing sole raw-schema/
+mapper and semantic owners with legacy authenticated readers; preserve every old
+control, omission and result, including independent pins and coherent failed
+process facts. Byte results carry no pin or authentication claim. Consume immutable
+payloads under existing64KiB bounds; reject bad context/type/path before parsing.
+Freeze all used candidate optional-field presence and run exit/argv/inventories;
+later mutation of caller dictionaries must not alter the bound check. Never open
+files/processes/caches from byte APIs. Parent raw schema/scoped graph validation
+remains caller-owned; binder output is the selected canonical context, not proof
+of source/currentness/ancestry or complete method qualification.
+
+Own independent omission controls in normal/optimized Python, legacy API/result
+equivalence, focused gates, live/mdBook examples and complete source/history/
+canonical/scope inverses. If DEV needs containment, move only whole oldest entries
+with authenticated predecessor and real receipt-edit controls; no ceiling/seal
+extension. Keep fixed budgets and normative method clauses unchanged. COMMIT and
+brief0/censuses before a40. No comparison/evaluator/collector change in this unit.
+
+Own a39 probe setup correction: initial20 tests/1 failure/0 errors replaced an
+unquoted `(kind executable)` substring, but the sole writer emits quoted strings.
+Use observed `(kind "executable")` bytes and retain an explicit changed-payload
+assertion before claiming raw-schema discrimination. Instrument-only, no codec
+defect or false green credit.
+Initial omission runs also dereferenced absent receipt facts after intentional
+binder/parser refusal, producing one test error each. Assert facts presence first
+so these omissions produce explicit assertion failures, never credited errors.
+
+Own D39-IDENTITY-CONTEXT-ROUNDTRIP: draft binder accepts str subclasses under
+the existing execution-identity contract, but its new byte consumer refuses the
+result as non-plain field strings. Actual reproduction returns `refused invalid
+frozen identity fields` after successful binding. Normalize selected values to
+plain immutable strings in the new binder, preserve legacy readers/sole identity
+rules, and permanently test accepted-context roundtrip and omitted normalization
+normal/O before signoff. Byte diagnostic paths accept valid str subclasses too.
+Impact: false refusal of an accepted new API request; no canonical capture used it.
+
+Own natural teaching partition before publication: old retained-method26543B plus
+the new teaching/route8000B exceeds its32768B ceiling (34543B total).
+Put the complete new section in byte-bindings.md, link SUMMARY and the existing
+chapter, and prove the old26543B teaching reconstructs exactly after removing its
+new route. No historical teaching truncation, archive/seal extension or cap rise.
+
+Verified: before.py rc=0 normal/O: exact7346B draft loses3 assertions/0 errors;
+D39-IDENTITY-CONTEXT-ROUNDTRIP closed. Repaired22/0/0 normal/O; fourteen
+omissions19/2/2/5/1/1/3/13/1/13/1/14/1/1 failures/no errors. PROFILE314/0,
+39 doctrines1137 literal arms. Focused17/sharder12/0/seven books/3104 links/all9
+literal blocks and normal/print teaching rc=0. HTML text oracle initially joined
+inline code and punctuation with spaces; use stable phrase without trailing
+punctuation, preserving the actual authored/rendered sentence. No book defect.
+Whole old identity/receipt sources, checker30 arms, normative method and26543B
+teaching inverses exact; new7912B chapter/165B route, no cap rise. Raw340 parses/
+types and243 canonical dictionaries exact. DEV51229→46198,17=15+2/5031B into
+0249 (5264B SHA2569da0f3afce2b05ba0b8809b3c545b85fc80a4a08508c16220c813ca2b80f85aa),
+41live+210sealed251logical. History/scope rc=0 normal/O:100 old entries,
+1320 other tracked files byte/mode exact, Git links unchanged without traversal;
+actual original/moved/published receipt edits refuse with updated digests.
+COMMIT hooks/brief0/standard+actual censuses mandatory, then clean a40.
+
+promotion: declined (existing context-freeze/raw-schema/single-mapper/history rules apply; current API contract is in method/book/toolbox).
+
+### `.14` a40 — compose authenticated method evaluation (scheduled)
+
+Start clean after a39. Bind all identity/receipt and execution/relations context
+before artifact I/O; consume a38's exact snapshots without reopens and compose
+comparison while preserving record/comparison/method dispositions and failed
+controls as data. Define source/program/image/closure-adequacy and impact
+obligations in finite owned units; qualification stays closed until every
+requirement and independent omission gate exists. Full CI at the foundational
+composition milestone. Reviewed collector/retention/cases/captures/full policy/
+status follow. Inspect capacity before implementation; naturally partition whole
+completed records/teaching if needed, never raise caps or rewrite sealed history.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -1078,6 +1151,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a39 — **ROOT CAUSE**: before.py rc=0 normal/O; old public byte APIs
+  absent, exact draft accepted string-subclass context then refused it; new22
+  suite loses3 assertions/no errors. Normalize new context values, preserve old APIs.
+- [x] `.14` a39 — **ADDRESSED**: mutations.json/focused.log rc=0;22/0/0 normal/O,
+  fourteen omissions fail/no errors; PROFILE314/0/1137 arms, frozen contexts and
+  exact retained snapshots, no reopens/pin/process/qualification credit.
+- [x] `.14` a39 — **NO REGRESSION**: contract/task-contract/canonical/history/
+  scope/rendered.py rc=0; focused17/sharder12/0/seven books/3104 links/all9 literal
+  blocks, old sources/normative method/teaching/100 prior entries/1320 other files
+  protected;340 raw parses/243 mappings exact, actual receipt+digest edits refuse.
+  Fixed caps/seals/CPU unchanged; full CI green on preceding clean c84bb7b.
 
 - [x] `.14` a38 — **ROOT CAUSE**: seed-before/before.py rc=0; actual manifest
   snapshot217B omitted from custom0 peak preflight; draft matched empty later
@@ -1281,6 +1366,20 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a39: Verified: before.py rc=0 normal/O, exact draft22 tests/3 failures/0 errors;
+D39 accepted-context roundtrip resolved. Repaired22/0/0 and fourteen omissions
+19/2/2/5/1/1/3/13/1/13/1/14/1/1 failures/no errors normal/O. PROFILE314/0,
+39 doctrines1137 arms; legacy identity40/receipt43/19 omissions unchanged.
+Focused17/sharder12/0/seven books/3104 links/all9 literal blocks/normal+print
+teaching rc=0. Whole source/checker/method/old teaching/task inverses; raw340/
+243 mappings exact. DEV17=15+2/5031B published0249 (5264B/
+9da0f3afce2b05ba0b8809b3c545b85fc80a4a08508c16220c813ca2b80f85aa),
+41live+210sealed251logical;100 old entries/1320 other files protected. Actual
+original/moved/published receipt+digest edits refuse. Preceding clean c84bb7b
+full CI all five legs443 Rust/smoke53/seven books green; all17 verified hashes
+exact, standard/actual census rc=0. No canonical/CPU/cap/seal change; no complete
+method/adequacy/qualification credit. COMMIT hooks/brief0/censuses then clean a40.
+
 a38: Verified: D38-SEED-SNAPSHOT-PEAK resolved before registration. before.py rc=0
 normal/O: exact old draft loses3 assertions/no errors. Repaired49/0/0 normal/O;
 31 omissions14/2/3/6/4/3/2/1/2/2/1/2/8/2/1/4/1/2/3/10/6/12/4/11/1/3/1/1/1/13/2, all fail/no errors. PROFILE284/0,
@@ -1446,6 +1545,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a39 | `SEMULITH-P4-0230 (leaf P4-SYSTEM.14): bind retained bytes to context frozen before reads` | a40 evaluator/composition, then reviewed collector/retention/captures |
 | `.14` a38 | `SEMULITH-P4-0229 (leaf P4-SYSTEM.14): authenticate the declared file set within shared budgets` | full CI on clean milestone, then a39 byte consumers/evaluator and captures |
 | `.14` a37 | `SEMULITH-P4-0228 (leaf P4-SYSTEM.14): inspect one authenticated dependency leaf` | a38 aggregate budget ledger, then closure evaluator/gates and captures |
 | `.14` a36 | `SEMULITH-P4-0227 (leaf P4-SYSTEM.14): contain completed method-unit designs` | a37 bounded leaf inspection and aggregate evaluator/gates |

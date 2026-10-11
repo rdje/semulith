@@ -41,7 +41,9 @@ class ReceiptCheck:
 
 
 @dataclass(frozen=True)
-class _Context:
+class ReceiptContext:
+    """Selected canonical fields frozen by bind_receipt_context before artifact I/O."""
+
     run_id: str
     run_kind: str
     argv: tuple[str, ...]
@@ -114,7 +116,7 @@ def _records(records, *, observation: bool):
     return copied
 
 
-def _context(run, inputs, observations, candidate) -> _Context:
+def _context(run, inputs, observations, candidate) -> ReceiptContext:
     if not isinstance(run, dict) or not isinstance(candidate, dict):
         raise BindingError("expected canonical run/candidate dictionaries")
     run_id = _id(run.get("id"), "run id")
@@ -145,11 +147,38 @@ def _context(run, inputs, observations, candidate) -> _Context:
     if len(collectors) != 1:
         raise BindingError("expected one collector input")
     receipt = next(item for item in observations if item["role"] == "process-receipt")
-    return _Context(run_id, kind, argv, status, candidate_id, binary_sha, collectors[0],
-                    tuple(sorted((item["id"], item["sha256"]) for item in inputs)),
-                    tuple(sorted((item["id"], item["role"], item["path"], item["byte_size"],
-                                  item["sha256"]) for item in observations if item is not receipt)),
-                    tuple(receipt.items()))
+    return ReceiptContext(run_id, kind, argv, status, candidate_id, binary_sha, collectors[0],
+                          tuple(sorted((item["id"], item["sha256"]) for item in inputs)),
+                          tuple(sorted((item["id"], item["role"], item["path"], item["byte_size"],
+                                        item["sha256"]) for item in observations if item is not receipt)),
+                          tuple(receipt.items()))
+
+
+def bind_receipt_context(*, run: dict, inputs: list[dict], observations: list[dict],
+                         current_candidate: dict) -> ReceiptContext:
+    """Freeze selected canonical fields; raise BindingError without artifact I/O.
+
+    Parent raw schema and scoped graph validation are caller prerequisites. This
+    binder preserves the existing selected-context contract, not full method
+    coverage. Use its immutable result with check_receipt_bytes after authentication.
+    """
+    return _context(run, inputs, observations, current_candidate)
+
+
+def check_receipt_bytes(payload: bytes, *, context: ReceiptContext) -> ReceiptCheck:
+    """Bind exact snapshot bytes to binder-produced context without artifact I/O.
+
+    Context must come from bind_receipt_context before any artifact reads. A match
+    has no pin/authentication claim; coherent nonzero exits remain failed data.
+    This does not authenticate other files or establish process/method success.
+    """
+    if type(context) is not ReceiptContext:
+        return ReceiptCheck("refused", "expected frozen receipt context")
+    checked = _check_receipt(payload, context)
+    if checked.disposition == "matched":
+        return ReceiptCheck("matched", "receipt bytes bind; authentication/process/method credit pending",
+                            facts=checked.facts)
+    return checked
 
 
 def read_run_receipt(root: Path, *, run: dict, inputs: list[dict],
@@ -170,8 +199,14 @@ def read_run_receipt(root: Path, *, run: dict, inputs: list[dict],
     if pin.disposition != "matched":
         disposition = "stale" if pin.disposition == "mismatch" else pin.disposition
         return ReceiptCheck(disposition, pin.reason, pin)
+    return _check_receipt(snapshot.data, context, pin)
+
+
+def _check_receipt(payload: bytes, context: ReceiptContext,
+                   pin: A.PinResult | None = None) -> ReceiptCheck:
+    record = dict(context.receipt)
     try:
-        doc = F.parse_capture(snapshot.data, path=record["path"])
+        doc = F.parse_capture(payload, path=record["path"])
     except F.ArtifactError as exc:
         return ReceiptCheck("refused", str(exc), pin)
     except OSError as exc:
