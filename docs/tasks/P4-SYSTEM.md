@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a35 bounded leaf inspection, then aggregate evaluation and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a35 committed repair full CI, then a36 leaf inspection and aggregate evaluation |
 
 ## Decisions
 
@@ -1119,9 +1119,67 @@ DECLINED promotion: one-snapshot caller freeze, parser reuse, positive-only pin
 facts and actual-fixture census implement existing contracts; current API/control
 scope is durable here/toolbox/GC teaching. No new architecture or ancestry claim.
 
-### `.14` a35 — bounded dependency leaf inspection (scheduled, SEMULITH-P4-0226)
+### `.14` a35 — normalize shared-reader refusals (completed, SEMULITH-P4-0226)
 
-Start clean after a34 COMMIT. Review first-method closure and budgets, bounded
+Owned on clean5ac3f1c after a34 COMMIT/brief0/actual process census, before code.
+D35-REFUSALS (priority blocking): public parse of a5000-digit decimal or0x_/0b_
+raises ValueError instead of SexpError; CLI also leaks head-shape errors for()
+and((a)), FileNotFoundError and UnicodeError. Reproduced with actual parse and
+public main with controlled Path.read_text; impacts named refusal/reporting,
+not evidence qualification. Root: unchecked integer conversions and CLI head
+summary/read failures outside its SexpError-only boundary. Own narrow conversion
+normalization with source/line and bounded diagnostic; preserve valid values,
+symbol grammar, host integer limit and library read_file I/O contract. CLI must
+refuse expected parse/head/I/O/decode failures with rc1/no traceback. Inspect and
+reproduce optimized self-test assertion disappearance before any harness repair.
+D35-OPT-CREDIT (priority blocking) reproduced before repair: replace parsed12
+with13 through _atom; full self-test normal17/1 rc1, optimized18/0 rc0. Four
+assert sites (one/refuses/_eq/_raises) disappear under optimization. Own explicit
+checks and independently wrong value/reason/arity controls, normal/O; no false
+inference that the reader itself changes values under optimization.
+Review public parser/accessors/spans, SOURCE-FORMAT, schema/mapper consumers and
+main definition teaching. Verify normal/O, independent omitted guards, actual
+on-volume CLI cases, whole old valid parser/243 canonical dictionaries, protected
+method/source/history and scope. Own focused checks, book/live/doctrine sync,
+measured whole-entry DEV sharding and COMMIT workflow. Then full CI milestone on
+exact clean committed repair, followed by a36 leaf inspection; no method/CPU
+qualification, canonical, seal or cap change. D35-HEAD-DIAGNOSTIC (priority blocking) found by boundary expansion: a valid
+5000-digit hexadecimal integer at list head parses, then head's full-form repr
+raises ValueError under the host decimal-display limit. CLI escapes instead of
+refusing. Own bounded type/shape diagnostics, preserving valid head/accessor
+semantics, and independent library/CLI/diagnostic omission controls.
+D35-HISTORY-EDIT (blocking authoring defect): new-note whole-file23/0→25/0
+replacement accidentally changes a24 gate receipts in both heads. Public
+history_predecessor refuses before commit. Restore each whole prior entry from
+HEAD, restrict subsequent note edits to the new entry, rerun full partition and
+actual old/new/published receipt+digest mutations. No history rewrite is allowed.
+D35-HOST-FIXTURE (harness portability): PYTHONINTMAXSTRDIGITS=0 skips the
+host-decimal case and changes omission6→5. Reproduced before repair. Scope a
+minimum supported decimal limit to that one testcase and restore the caller's
+setting in finally, even after assertion failure; production never changes it.
+Verify normal/O with both default and disabled host configurations, no skips.
+All defects remain owned here. During teaching verification, initial main-book
+source link is not in the published sibling-model source rewrite contract and
+fails normal/print navigation. Use the built relative HTML route and rerun the
+fresh all-book gate; no navigation feature or contract change is needed.
+
+Acceptance: SOURCE-FORMAT25/0 rc=0;29/0/0 normal/O, eight omissions
+6/3/3/3/2/2/1/2 fail without errors; derive39 doctrines/1011 literal arms.
+Canonical/contract/history/scope/cli rc=0:340 raw parses/types,243 dictionaries,
+1311 other files,101 prior entries and whole old reader/checker/method/task/
+teaching protected.20 actual CLI subprocess cases pass, no traceback/success on
+refusal. DEV51367→48226B, two whole3141B entries,22=20+2,0245 is3374B/
+d6783a698a7554a60f0f9fc2eaa5492d165dacecead2f891d83f7b7de78d6f73;
+37live+210sealed247logical. Actual original/new moved/published receipt+digest
+edits refuse. Focused17/sharder12/0/seven books/3076 links/all6 literal blocks
+and normal/print refusal teaching pass. Final staged hashes/hooks/brief0 and actual
+job censuses mandatory; full CI on exact clean repair follows. DECLINED new ADR:
+existing refusal/assertion-safe/history contracts own these fixes; commands and
+lessons retained here/toolbox/book. No canonical/cap/seal/CPU qualification change.
+
+### `.14` a36 — bounded dependency leaf inspection (scheduled, SEMULITH-P4-0227)
+
+Start clean after a35 COMMIT/full CI. Review first-method closure and budgets, bounded
 manifest consumer, anchored reader and generic S-expression/manifest contracts.
 Define one finite read-only leaf authentication/content-inspection API before
 code. Reuse public owners and one authenticated byte snapshot per inspected
@@ -1236,6 +1294,17 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a35 — **ROOT CAUSE**: before.py rc=0; seven escaped exceptions,
+  old wrong-integer self-test17/1 normal versus18/0 optimized. Boundary probe
+  identifies huge-hex head repr ValueError; guard rejects accidental old counts.
+- [x] `.14` a35 — **ADDRESSED**: source-self.log rc=0;29/0/0 normal/O,
+  eight omissions6/3/3/3/2/2/1/2 fail without errors; SOURCE-FORMAT25/0,
+ 39 doctrines/1011 literal arms. Explicit checks and bounded head/refusal reports.
+- [x] `.14` a35 — **NO REGRESSION**: canonical/contract/history/scope/cli/
+  rendered.py rc=0; focused17/sharder12/0/seven books/3076 links/all6 examples,
+ 340 raw parses/243 mappings/1311 other files/101 old entries exact;0245 whole
+ entries plus real old/moved/published receipt+digest tampering refuse.
 
 - [x] `.14` a34 — **ROOT CAUSE**: before.py rc=0; closede11a6be lacks manifest
   consumer; unchanged snapshot/syntax/parent relations accept a principal SHA
@@ -1395,6 +1464,15 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a35: source-self/canonical/contract/history/scope/cli/rendered.py rc=0;
+29/0/0 normal/O, eight omissions6/3/3/3/2/2/1/2 fail without errors;
+SOURCE-FORMAT25/0/1011 arms. Focused17/sharder12/0/seven books/3076 links/all6
+literal blocks;20 CLI cases;340 raw parses/types/243 dictionaries/1311 otherfiles/
+101 old entries/full old reader/checker/method/task/teaching exact. DEV51367→48226,
+22=20+2,3141B into0245 (3374B/d6783a698a7554a60f0f9fc2eaa5492d165dacecead2f891d83f7b7de78d6f73),
+37live+210sealed247logical; actual receipts+updated digests refuse. Final hooks/
+brief0/censuses mandatory. Full CI on clean repair next; caps/seals/CPU unchanged.
+
 a34: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
 33/0/0 normal/O; eight omissions4/2/16/4/1/1/1/1 fail without errors; profile188/0/
 993 literal arms. Focused17/sharder12/0/seven books/3072 links/all5 literal commands
@@ -1511,6 +1589,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a35 | `SEMULITH-P4-0226 (leaf P4-SYSTEM.14): normalize shared-reader refusals` | full CI on clean repair, then a36 leaf inspection |
 | `.14` a34 | `SEMULITH-P4-0225 (leaf P4-SYSTEM.14): authenticate and bind the dependency manifest` | a35 leaf inspection, aggregate evaluator/gates and captures |
 | `.14` a33 | `SEMULITH-P4-0224 (leaf P4-SYSTEM.14): bind declared Sail method relations` | a34 bounded dependency closure, aggregate evaluator/gates and captures |
 | `.14` a32 | `SEMULITH-P4-0223 (leaf P4-SYSTEM.14): bind declared Sail execution inputs and argv` | a33 property/control/derivation/pair relations, closure/evaluation and captures |
@@ -1532,6 +1611,10 @@ Completed .14 a1–a19 commit rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-11`: `.14` a35 closes shared-reader numeric/CLI/head refusals and
+  optimization false credit; bounded diagnostics,29 normal/O controls/eight
+  omissions, whole-entry0245 preservation and book sync. No CPU credit.
 
 - `2026-10-11`: `.14` a34 (SEMULITH-P4-0225): manifest33/0/0/eight omissions, profile188/0/993 arms; focused/books/history/source/full teaching protection pass; published0244 exact, leaf/closure/qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a33 (SEMULITH-P4-0224): declared relations39/0/0, repaired execution48/0/0; D33-ISOLATION fixed and cleanup regressions; profile170/0/975 arms; focused/books/history/source/teaching protection pass, published0243 exact, qualification/seals/caps/CPU unchanged.

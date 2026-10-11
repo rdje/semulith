@@ -20,6 +20,8 @@
 #           families is refused by name — a source of truth outside the format.
 #   PARSES  every tracked `.sexp` in the corpus parses with `scripts/sexp.py` — "in the
 #           format" means the one reader reads it.
+# Reader refusal/optimization controls are also mandatory: a failed instrument
+# cannot declare the corpus readable.
 # An empty corpus is REFUSED (nothing to judge) — the same discipline the record gates carry.
 #
 # Schema coverage is deliberately NOT this gate's lane: RECORD-SCHEMA owns the record
@@ -134,6 +136,36 @@ self_test() {
 
   rm -f "$t/profiles/p/DOSSIER.md" "$t/profiles/p/guests.s"
   arm "RED   an empty corpus is refused, not passed" 2 "cannot judge"
+
+  score() {
+    argc 5 "$#" score || return
+    local label="$1" mode="$2" mutation="$3" want_rc="$4" signature="$5"
+    local args=() py=()
+    [ "$mode" = optimized ] && py=(-O)
+    [ -n "$mutation" ] && args=(--mutation "$mutation")
+    out="$(python3 "${py[@]}" "$ROOT/scripts/probe_sexp_refusals.py" "${args[@]}" 2>&1)"; rc=$?
+    if [ "$rc" -ne "$want_rc" ] || ! printf '%s' "$out" | grep -qF "$signature"; then
+      fail=$((fail+1)); printf 'SOURCE-FORMAT reader MISS: %s rc=%s wanted=%s\n%s\n' "$label" "$rc" "$want_rc" "$out" >&2
+    else pass=$((pass+1)); fi
+  }
+  score "GREEN normal shared-reader refusals" normal "" 0 "SEXP-REFUSALS: 29 tests / 0 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard integer-refusal" normal integer-refusal 1 "SEXP-REFUSALS: 29 tests / 6 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard cli-head" normal cli-head 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard head-diagnostic" normal head-diagnostic 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard cli-io" normal cli-io 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard cli-decode" normal cli-decode 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard selftest-equality" normal selftest-equality 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard selftest-arity" normal selftest-arity 1 "SEXP-REFUSALS: 29 tests / 1 failures / 0 errors; fixtures cleaned"
+  score "RED normal omitted reader guard selftest-reason" normal selftest-reason 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
+  score "GREEN optimized shared-reader refusals" optimized "" 0 "SEXP-REFUSALS: 29 tests / 0 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard integer-refusal" optimized integer-refusal 1 "SEXP-REFUSALS: 29 tests / 6 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard cli-head" optimized cli-head 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard head-diagnostic" optimized head-diagnostic 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard cli-io" optimized cli-io 1 "SEXP-REFUSALS: 29 tests / 3 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard cli-decode" optimized cli-decode 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard selftest-equality" optimized selftest-equality 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard selftest-arity" optimized selftest-arity 1 "SEXP-REFUSALS: 29 tests / 1 failures / 0 errors; fixtures cleaned"
+  score "RED optimized omitted reader guard selftest-reason" optimized selftest-reason 1 "SEXP-REFUSALS: 29 tests / 2 failures / 0 errors; fixtures cleaned"
 
   rm -rf "$t"
   printf 'SOURCE-FORMAT --self-test: %d pass / %d fail\n' "$pass" "$fail"

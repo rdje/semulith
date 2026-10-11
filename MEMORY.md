@@ -18,12 +18,13 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a35/0226: bounded dependency leaf inspection,
-  then aggregate evaluator/gates, collector/retention/cases/captures/policy.
-  A34 manifest33/0/0 normal/O/eight omissions, profile188/0/993 arms;
-  focused17/seven books/3072 links/all5 examples.0244 whole-entry publication
-  verified; complete leaf/closure/qualification remains pending. Full CI on
-  clean3960e6b green; fixed seals/caps/canonical/CPU state unchanged.
-- in_flight_uncommitted: none. Complete COMMIT/brief0/handoff before selecting a35;
-  retained-method32287B leaves481B, so next teaching needs natural partition.
+- next_action: `P4-SYSTEM.14`: full CI milestone on exact clean a35/0226 repair,
+  then a36/0227 bounded dependency leaf inspection; aggregate evaluator/gates,
+  collector/retention/cases/captures/policy follow. A35 reader29/0/0 normal/O,
+  eight omissions; SOURCE-FORMAT25/0/1011 arms; focused17/seven books/3076 links/
+  all6 examples/20 real CLI cases.0245 whole entries and all predecessors exact.
+  Canonical data/fixed seals/caps/CPU qualification unchanged.
+- in_flight_uncommitted: none after COMMIT/brief0/actual census. Latest full CI
+  remains clean3960e6b until repair milestone completes. DEV head below49152;
+  task root below131072, GC evidence below32768; next teaching needs partition.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

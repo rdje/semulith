@@ -164,7 +164,7 @@ reading carefully, because they are where a first model usually lies to itself:
 unit's `encoding.sexp` *composes* fragments; it never copies an instruction.
 
 **Why one format.** Every source of truth in this project is an S-expression
-(`decision_one-format-every-source-of-truth`), read by one reader (`scripts/sexp.py`), so
+(`decision_one-format-every-source-of-truth`), read by [one reader](../../../models/rv64gc-lab-v0/book/evidence.html#shared-reader-refusals) (`scripts/sexp.py`), so
 "the definition" is never three files that might disagree. The format split this replaced had
 the same fact in TOML, JSON and JSONL at once — a structure that guarantees drift, and did.
 

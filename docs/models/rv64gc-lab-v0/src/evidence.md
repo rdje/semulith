@@ -46,6 +46,46 @@ establish adequate evidence, observed controls, current artifacts or independenc
 Structured GC runs and policy-derived requirement status remain P4.14 work; the
 generated gate report above remains the acceptance authority.
 
+## Shared-reader refusals
+
+All canonical S-expressions use `scripts/sexp.py`. A malformed integer matching
+its numeric grammar raises `SexpError` with source/line, base and token length;
+the diagnostic never repeats the whole token. The host decimal conversion limit
+stays in force. Valid signed decimal/hex/binary values and symbols keep their
+meaning; large power-of-two-base integers remain accepted. This parser has no
+artifact byte budget: bounded evidence consumers must enforce their own limits.
+
+The CLI reports expected parse, list-head, file-access and decoding failures as
+`REFUSED` on stderr with exit1 and no success report. Wrong usage exits2. Head errors describe types and shapes, never whole values;
+even a huge valid hexadecimal integer in head position gets a named refusal.
+`read_file` remains a library API: I/O/decode exceptions propagate to its caller.
+Empty lists are valid parser data but cannot supply the CLI's list-head summary.
+
+From the repository root, these commands use only synthetic in-memory input and
+owned temporary files under `target/`; the probe restores its decimal-limit fixture:
+
+```bash
+python3 scripts/sexp.py --self-test
+python3 -O scripts/sexp.py --self-test
+python3 scripts/probe_sexp_refusals.py
+python3 -O scripts/probe_sexp_refusals.py
+python3 - <<'PYREADER'
+import sys
+sys.path.insert(0, 'scripts')
+import sexp as S
+print(S.parse('(n +12 0x1f -0b10)'))
+try:
+    S.parse('(n\n 0x_)', 'example.sexp')
+except S.SexpError as exc:
+    print('REFUSED:', exc)
+PYREADER
+```
+
+Expect18/0 from each legacy self-test,29/0/0 from each refusal probe, values
+`12,31,-2` and a refusal naming `example.sexp:2`. Eight independent omitted guards
+fail normally and optimized without test errors. Replacing `12` with `13` must
+fail the legacy test in both modes; explicit checks prevent `-O` false credit.
+
 ## Qualification contract and structured syntax
 
 The complete declaration below is included from its authoritative decision.

@@ -47,13 +47,22 @@ class Symbol(str):
 _ESCAPES = {'"': '"', '\\': '\\', 'n': '\n', 't': '\t', 'r': '\r'}
 
 
-def _atom(text: str, line: int) -> Atom:
+def _integer(text: str, base: int, line: int, where: str) -> int:
+    try:
+        return int(text.replace("_", ""), base)
+    except ValueError as exc:
+        # Keep the host's conversion limit and never echo an unbounded token.
+        raise SexpError(f"{where}:{line}: unreadable base-{base} integer "
+                        f"({len(text)} characters)") from exc
+
+
+def _atom(text: str, line: int, where: str = "<sexp>") -> Atom:
     if re.fullmatch(r"[+-]?\d+", text):
-        return int(text)
+        return _integer(text, 10, line, where)
     if re.fullmatch(r"[+-]?0[xX][0-9a-fA-F_]+", text):
-        return int(text.replace("_", ""), 16)
+        return _integer(text, 16, line, where)
     if re.fullmatch(r"[+-]?0[bB][01_]+", text):
-        return int(text.replace("_", ""), 2)
+        return _integer(text, 2, line, where)
     return Symbol(text)
 
 
@@ -111,7 +120,7 @@ def parse(text: str, where: str = "<sexp>") -> list[Sexp]:
             j += 1
         if j == i:
             raise SexpError(f"{where}:{line}: cannot read {ch!r}")
-        stack[-1].append(_atom(text[i:j], line))
+        stack[-1].append(_atom(text[i:j], line, where))
         i = j
     if len(stack) != 1:
         raise SexpError(f"{where}: {len(stack) - 1} unterminated list(s); the outermost opened "
@@ -158,7 +167,13 @@ def forms_with_spans(text: str, where: str = "<sexp>") -> list[tuple[Sexp, int, 
 # ---------------------------------------------------------------------------------------
 def head(form: Sexp, where: str = "") -> str:
     if not isinstance(form, list) or not form or not isinstance(form[0], str):
-        raise SexpError(f"{where}: expected a list beginning with a symbol, got {form!r}")
+        if not isinstance(form, list):
+            shape = type(form).__name__
+        elif not form:
+            shape = "empty list"
+        else:
+            shape = f"list beginning with {type(form[0]).__name__}"
+        raise SexpError(f"{where}: expected a list beginning with a symbol, got {shape}")
     return str(form[0])
 
 
@@ -204,14 +219,16 @@ def _selftest() -> int:
 
     def one(text: str):
         forms = parse(text, "<arm>")
-        assert len(forms) == 1, f"expected one top-level form, got {len(forms)}"
+        if len(forms) != 1:
+            raise AssertionError(f"expected one top-level form, got {len(forms)}")
         return forms[0]
 
     def refuses(text: str, needle: str) -> None:
         try:
             parse(text, "<arm>")
         except SexpError as exc:
-            assert needle in str(exc), f"refused, but for the wrong reason: {exc}"
+            if needle not in str(exc):
+                raise AssertionError(f"refused, but for the wrong reason: {exc}")
         else:
             raise AssertionError(f"accepted {text!r}; it must be refused")
 
@@ -270,14 +287,16 @@ def _selftest() -> int:
 
 
 def _eq(got, want) -> None:
-    assert got == want, f"got {got!r}, want {want!r}"
+    if got != want:
+        raise AssertionError(f"got {got!r}, want {want!r}")
 
 
 def _raises(fn, needle: str) -> None:
     try:
         fn()
     except SexpError as exc:
-        assert needle in str(exc), f"raised, but for the wrong reason: {exc}"
+        if needle not in str(exc):
+            raise AssertionError(f"raised, but for the wrong reason: {exc}")
     else:
         raise AssertionError(f"did not raise; it must refuse ({needle})")
 
@@ -291,11 +310,12 @@ def main(argv: list[str]) -> int:
         return 2
     try:
         forms = read_file(Path(argv[1]))
-    except SexpError as exc:
+        heads = sorted({head(f, argv[1]) for f in forms if isinstance(f, list)})
+    except (SexpError, OSError, UnicodeError) as exc:
         print(f"REFUSED: {exc}", file=sys.stderr)
         return 1
     print(f"ok: {len(forms)} top-level form(s); heads: "
-          f"{', '.join(sorted({head(f) for f in forms if isinstance(f, list)}))}")
+          f"{', '.join(heads)}")
     return 0
 
 

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0226 (leaf P4-SYSTEM.14) — normalize shared-reader refusals
+
+- Normalize unreadable numeric atoms to source/line SexpError; CLI refuses expected parse/head/I/O/decode failures. Preserve valid values, host limits and library I/O contract. Replace optimization-removable self-test asserts after reproducing false credit.
+- 29 controls pass normal/O; eight omissions6/3/3/3/2/2/1/2 fail without errors. SOURCE-FORMAT25/0,39 doctrines/1011 literal arms; bounded head diagnostics; focused17/sharder12/0/seven books/3076 links/all6 examples pass. DEV22=20+2,3141B into0245; full predecessors/340 raw parses/243 mappings/1311 other files exact and real receipt edits refuse. Canonical/seals/caps/CPU unchanged; full CI after clean repair commit, then bounded leaf inspection.
+
 ## SEMULITH-P4-0225 (leaf P4-SYSTEM.14) — authenticate and bind the dependency manifest
 
 - Authenticate one bounded manifest snapshot, reuse raw schema/single mapper, bind exact principal overlap and exclude ID/path/output conflicts. Frozen context/union facts, separate pin/staleness/unavailability, no leaf/process/complete-closure credit.
