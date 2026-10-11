@@ -18,12 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a26/0217: read the a19 method contract, then
-  implement bounded dependency-manifest/capture-receipt schemas and single mapping.
-  A25 guards complete append predecessors in index/working views and authenticates
-  the staged partition; shared entry definitions are pure. Then evaluator/collector,
-  retention and fresh captures, full policy/status/mirrors. Qualification stays
-  closed, no canonical v1. Full CI a25 preflight on d8083a9 green; post-guard
-  focused12/seven books/hooks verified. Ordinary parts13/14 remain outside the seal.
+- next_action: `P4-SYSTEM.14` a27/0218: inventory/repair existing exact-token
+  schema end anchors (a26 reproduces a terminal-newline SHA256 admitted by `$`).
+  Then a28 bounded evaluator, reviewed collector, retention/fresh captures and full
+  policy/status. A26 adds bounded dependency/receipt formats and one mapping,
+  with36/0 controls/ten omissions;243 canonical dictionaries/legacy ASTs exact.
+  Qualification stays closed, no canonical v1/store/cap change. Full CI a25
+  preflight d8083a9 green; a26 focused15/seven books verified. Parts13/14 unsealed.
 - in_flight_uncommitted: none after this commit.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

@@ -658,6 +658,73 @@ def sources_to_doc(form) -> dict:
     return d
 
 
+# --------------------------------------------------------------------------- prospective capture artifacts
+
+_DEPENDENCIES_SPEC = [("format_version", "str")]
+_DEPENDENCY_INPUT_SPEC = [(key, "str") for key in ("id", "role", "path", "sha256")]
+_CAPTURE_SPEC = [("format_version", "str"), ("run_id", "str"), ("run_kind", "str"),
+                 ("argv", "strs"), ("process_exit", "int"),
+                 ("reference_candidate_id", "str"), ("reference_binary_sha256", "str"),
+                 ("collector_input_id", "str")]
+_CAPTURE_PARTS = (
+    ("input", [("id", "str"), ("sha256", "str")]),
+    ("observation", [("id", "str"), ("role", "str"), ("path", "str"),
+                     ("byte_size", "int"), ("sha256", "str")]),
+    ("tool", [("id", "str"), ("version", "str")]),
+)
+_CAPTURE_HOST_SPEC = [(key, "str") for key in ("os", "kernel", "arch")]
+
+
+def _artifact_fields(spec, doc, where, children=()):
+    """New artifact writers refuse unknown keys rather than dropping them."""
+    if not isinstance(doc, dict):
+        raise DossierError(f"{where}: expected a dictionary")
+    unknown = set(doc) - {name for name, _ in spec} - set(children)
+    if unknown:
+        raise DossierError(f"{where}: undeclared keys {sorted(unknown, key=str)!r}")
+    return _emit_flat(spec, doc)
+
+
+def dependencies_to_form(doc: dict) -> list:
+    form = [S.Symbol("dependencies"),
+            *_artifact_fields(_DEPENDENCIES_SPEC, doc, "dependencies", ("input",))]
+    for record in doc.get("input", []):
+        form.append([S.Symbol("input"),
+                     *_artifact_fields(_DEPENDENCY_INPUT_SPEC, record, "dependencies/input")])
+    return form
+
+
+def dependencies_to_doc(form) -> dict:
+    """Pure mapping; callers validate raw schema before singular fields collapse."""
+    doc = _read_flat(_DEPENDENCIES_SPEC, form, "dependencies", skip=("input",))
+    doc["input"] = [_read_flat(_DEPENDENCY_INPUT_SPEC, child, "dependencies/input")
+                    for child in _children_in(form, "input")]
+    return doc
+
+
+def capture_to_form(doc: dict) -> list:
+    children = ("host", *(head for head, _ in _CAPTURE_PARTS))
+    form = [S.Symbol("capture"), *_artifact_fields(_CAPTURE_SPEC, doc, "capture", children)]
+    if "host" in doc:
+        form.append([S.Symbol("host"),
+                     *_artifact_fields(_CAPTURE_HOST_SPEC, doc["host"], "capture/host")])
+    for head, spec in _CAPTURE_PARTS:
+        for record in doc.get(head, []):
+            form.append([S.Symbol(head), *_artifact_fields(spec, record, f"capture/{head}")])
+    return form
+
+
+def capture_to_doc(form) -> dict:
+    """Pure mapping, deliberately outside the unbounded legacy file loader."""
+    children = ("host", *(head for head, _ in _CAPTURE_PARTS))
+    doc = _read_flat(_CAPTURE_SPEC, form, "capture", skip=children)
+    doc["host"] = _read_flat(_CAPTURE_HOST_SPEC, _child_in(form, "host"), "capture/host")
+    for head, spec in _CAPTURE_PARTS:
+        doc[head] = [_read_flat(spec, child, f"capture/{head}")
+                     for child in _children_in(form, head)]
+    return doc
+
+
 # --------------------------------------------------------------------------- references.toml
 
 _CANDIDATE_SPEC = [(k, "str") for k in (

@@ -1,0 +1,10 @@
+;; Prospective sail-gpr-change-v1 dependency closure; shape is not authentication.
+(schema (id "matched-gpr-dependencies"))
+(construct (name dependencies)
+  (field (name format_version) (type string) (pattern "^matched-gpr-dependencies-v1\\Z"))
+  (field (name input) (type form) (head input) (repeat yes) (min 1)))
+(construct (name input)
+  (field (name id) (type string) (min-length 1))
+  (field (name role) (type string) (min-length 1))
+  (field (name path) (type string) (min-length 1))
+  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}\\Z")))

@@ -189,6 +189,61 @@ EOF
   out="$(python3 "$ROOT/scripts/probe_expectation_mapping.py" --mutation ignore-duplicate-writes 2>&1)"; rc=$?
   arm "RED removed expectation key guard exposes conflicting input" "$rc" 1 "$out" "EXPECTATION MISS conflicting keys: duplicate write accepted"
 
+  # Bytes-only artifact checks. No canonical capture exists: these controls do not
+  # extend the one-level tracked-dossier sweep into a future retention store.
+  artifact_case() {
+    local optimization="$1" mode="${2:-}"
+    local args=()
+    [ "$optimization" = optimized ] && args+=(-O)
+    args+=("$ROOT/scripts/probe_matched_gpr_artifacts.py")
+    [ -n "$mode" ] && args+=(--mutation "$mode")
+    python3 "${args[@]}"
+  }
+  out="$(artifact_case normal 2>&1)"; rc=$?
+  arm "GREEN bounded artifacts normal" "$rc" 0 "$out" "Ran 36 tests"
+  out="$(artifact_case normal no-facets 2>&1)"; rc=$?
+  arm "RED normal artifact no-facets omission" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(artifact_case normal no-root-count 2>&1)"; rc=$?
+  arm "RED normal artifact no-root-count omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case normal no-path 2>&1)"; rc=$?
+  arm "RED normal artifact no-path omission" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(artifact_case normal no-manifest-limit 2>&1)"; rc=$?
+  arm "RED normal artifact no-manifest-limit omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case normal no-nested-manifest 2>&1)"; rc=$?
+  arm "RED normal artifact no-nested-manifest omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case normal no-byte-bound 2>&1)"; rc=$?
+  arm "RED normal artifact no-byte-bound omission" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(artifact_case normal no-identity 2>&1)"; rc=$?
+  arm "RED normal artifact no-identity omission" "$rc" 1 "$out" "FAILED (failures=4)"
+  out="$(artifact_case normal no-manifest-edges 2>&1)"; rc=$?
+  arm "RED normal artifact no-manifest-edges omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case normal no-output-set 2>&1)"; rc=$?
+  arm "RED normal artifact no-output-set omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case normal no-collector-edge 2>&1)"; rc=$?
+  arm "RED normal artifact no-collector-edge omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized 2>&1)"; rc=$?
+  arm "GREEN bounded artifacts optimized" "$rc" 0 "$out" "Ran 36 tests"
+  out="$(artifact_case optimized no-facets 2>&1)"; rc=$?
+  arm "RED optimized artifact no-facets omission" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(artifact_case optimized no-root-count 2>&1)"; rc=$?
+  arm "RED optimized artifact no-root-count omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized no-path 2>&1)"; rc=$?
+  arm "RED optimized artifact no-path omission" "$rc" 1 "$out" "FAILED (failures=2)"
+  out="$(artifact_case optimized no-manifest-limit 2>&1)"; rc=$?
+  arm "RED optimized artifact no-manifest-limit omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized no-nested-manifest 2>&1)"; rc=$?
+  arm "RED optimized artifact no-nested-manifest omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized no-byte-bound 2>&1)"; rc=$?
+  arm "RED optimized artifact no-byte-bound omission" "$rc" 1 "$out" "FAILED (failures=3)"
+  out="$(artifact_case optimized no-identity 2>&1)"; rc=$?
+  arm "RED optimized artifact no-identity omission" "$rc" 1 "$out" "FAILED (failures=4)"
+  out="$(artifact_case optimized no-manifest-edges 2>&1)"; rc=$?
+  arm "RED optimized artifact no-manifest-edges omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized no-output-set 2>&1)"; rc=$?
+  arm "RED optimized artifact no-output-set omission" "$rc" 1 "$out" "FAILED (failures=1)"
+  out="$(artifact_case optimized no-collector-edge 2>&1)"; rc=$?
+  arm "RED optimized artifact no-collector-edge omission" "$rc" 1 "$out" "FAILED (failures=1)"
+
   rm -rf "$t"
   printf 'DOSSIER-SCHEMA --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]

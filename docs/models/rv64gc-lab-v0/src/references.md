@@ -41,11 +41,84 @@ specified request-path expectation can expose a walk or fault-order defect that
 a final handler register masks. The policy requires methods to address the same
 property, with their controls and limitations recorded.
 
+## Artifact syntax you can inspect
+
+Two prospective artifact documents now have schemas and one mapping owner,
+`scripts/dossier_sexp.py`. `schema/matched-gpr-dependencies.sexp` describes a
+`dependencies` root with version `matched-gpr-dependencies-v1` and 1–64 `input`
+children. Each input has `id`, `role`, canonical repository-relative `path` and
+lowercase 64-hex `sha256`. IDs and paths are unique. The document cannot name
+itself or declare a child with role `dependency-manifest`. Detecting manifest
+content hidden behind another role and authenticating the complete closure still
+belong to the forthcoming evaluator.
+
+For example, this is valid **syntax with a dummy pin**, not a verified file:
+
+```lisp
+(dependencies (format_version "matched-gpr-dependencies-v1")
+  (input (id "mapper") (role "mapping") (path "scripts/dossier_sexp.py")
+    (sha256 "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")))
+```
+
+`schema/sail-gpr-capture.sexp` describes a `capture` root with version
+`sail-gpr-capture-v1`. It records the following data:
+
+| Field/child | Content |
+| --- | --- |
+| `run_id`, `run_kind` | Run identity and `baseline`, `repeat` or `control` |
+| Repeated `argv`, integer `process_exit` | Exact argument order, including repeated/empty arguments; actual process result |
+| `reference_candidate_id`, `reference_binary_sha256`, `collector_input_id` | Recorded executable identity and the collector's input identity |
+| Repeated `input` | Unique `id` and exact SHA256; collector ID must occur in this inventory |
+| Three `observation` children | Unique `id`/`path`, nonnegative `byte_size`, SHA256; exactly one each of `raw-gpr`, `process-stdout`, `process-stderr` |
+| `host`, repeated `tool` | Nonempty host `os`/`kernel`/`arch`; unique tool `id` with nonempty `version` |
+
+The receipt never contains its own hash or names itself as an output. Empty output
+files and nonzero or signal exits are valid recorded data; they do not meet the
+method's success requirements. Versions and provenance are recorded observations,
+not attestation that a process executed. Matching the run, argv, inputs, outputs
+and candidate against the canonical graph remains an evaluator obligation.
+
+From the repository root, these commands print complete illustrative documents to
+stdout and run the controls. They create no capture and their dummy pins do not
+authenticate anything:
+
+```bash
+python3 scripts/probe_matched_gpr_artifacts.py --emit dependencies
+python3 scripts/probe_matched_gpr_artifacts.py --emit capture
+python3 scripts/probe_matched_gpr_artifacts.py
+python3 -O scripts/probe_matched_gpr_artifacts.py
+bash scripts/check_dossier_schema.sh --self-test
+```
+
+The public `parse_dependencies(payload, path=...)` and `parse_capture(payload,
+path=...)` in `scripts/matched_gpr_artifacts.py` accept immutable bytes plus the
+artifact's canonical relative location. Each refuses more than 64 KiB **before**
+decoding/parsing, malformed UTF-8, extra/missing roots, unknown fields, duplicate
+singulars and invalid types/facets. They validate raw shape before dictionary
+mapping, then check the identities above. They never open an artifact or launch
+a process; future consumers must pass bytes from the anchored authenticated
+snapshot reader. Parsing does not authenticate a pin. Schema files themselves
+are read as project tools. These are payload limits, not total process RAM caps.
+The convenience encoders refuse unknown keys, lossy mappings and oversized
+serialized documents; rendering a caller-owned dictionary has no separate RAM
+budget guarantee.
+
+DOSSIER-SCHEMA runs these offline controls before its existing tracked dossier
+sweep. That sweep covers `profiles/*/*.sexp`; it does not yet sweep a prospective
+nested capture store. No such store or canonical v1 capture exists. The future
+retention/capture slice must explicitly connect its files to evaluation and gates.
+
 ## What comes next
 
-The earlier comparisons are prose in the canonical reference dossier. Structured
-experiment, control and independence records, fresh repeated execution and
-adequacy/status checks remain .14 obligations. The [policy](policy.md) was declared
-after implementation and is prospective; this book does not backdate it. Candidate
-availability, a successful book build and a complete contract registry do not
-advance requirement status or close G-TRACE.
+A26 also reproduced a terminal-newline digest admitted by the older reference
+schema. `.14` a27 owns exact-token facet repair before evaluator work; these new
+artifact schemas already reject that input.
+
+Historical comparisons remain prose in the canonical dossier. Optional structured
+graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
+formats exist; the first method evaluator, reviewed fresh collector, measured
+retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
+to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
+implementation and is prospective; this book does not backdate it. Candidate
+availability, a successful book build and syntax checks do not advance requirement
+status or close G-TRACE. Full policy/status consumers follow verified captures.

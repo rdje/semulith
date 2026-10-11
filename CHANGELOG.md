@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0217 (leaf P4-SYSTEM.14) — carry bounded prospective artifact formats
+
+- Define dependency manifests and process receipts with one dossier mapping, bounded bytes-only parsing and closed shape/identity checks. Keep failed runs representable; syntax authenticates no artifact and grants no comparison/qualification credit. No capture store or unbounded file loader is introduced.
+- Tests36/0 normal/optimized and ten omissions3/1/2/1/1/3/4/1/1/1 discriminate; DOSSIER-SCHEMA47/0, focused15/sharder12/0/seven books,3024 hyperlinks and five literal book commands pass. Preserve243 canonical dictionaries, legacy ASTs/dispatch and complete append/task predecessors; derive39 doctrines/807 outer arms. Own existing terminal-newline facet defect as a27 before a28 evaluator. Fixed seals/caps/CPU status unchanged; published DEV sharding stays lossless.
+
 ## SEMULITH-P4-0216 (leaf P4-SYSTEM.14) — preserve live history predecessors
 
 - Extend SHARD-FREEZE to exact complete predecessor entries/preambles in index and working views, allowing new records and published whole-suffix sharding. Authenticate the complete staged partition too; failed Git reads refuse. Share the unchanged entry/wrapper/ceiling definitions without import-time Git reads.

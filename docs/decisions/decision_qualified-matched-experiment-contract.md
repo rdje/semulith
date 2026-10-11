@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — grammar/mapping, declared edges and file pins implemented; comparison/qualification and retention pending
+- **Status:** `active` — grammar/mapping, edges, pins and artifact formats implemented; comparison/qualification and retention pending
 - **Owner / source:** `P4-SYSTEM.14` a12–a21, `SEMULITH-P4-0203`–`0212`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
@@ -24,7 +24,8 @@ a17 adds immutable snapshots from the same authenticated read, with an explicit
 caller byte bound and no data on failure. a18 refuses repeated expectation write
 keys before dictionary collapse. a20 adds optional GPR witnesses and control
 baselines, with generic budget/kind/endpoint checks. a21 adds bounded pin-only reads
-and bounds snapshot growth probes. DOSSIER-SCHEMA checks shape;
+and bounds snapshot growth probes. a26 adds bounded prospective dependency/receipt
+formats and single mapping; evaluation and collection remain pending. DOSSIER-SCHEMA checks shape;
 PROFILE-CONSISTENCY refuses every block as `UNQUALIFIED EXPERIMENT VERIFICATION`
 while comparison/qualification evaluation is pending. Legacy flat metadata and
 experiment/model/pair checks remain intact. No GC record is qualified. This contract applies

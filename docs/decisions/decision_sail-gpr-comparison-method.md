@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — typed grammar and bounded readers implemented; method/artifacts and canonical captures pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a21, `SEMULITH-P4-0210`–`0212`; matched-experiment contract, GC verification policy and public Sail adapter
+- **Status:** `active` — typed grammar, bounded readers and artifact formats implemented; evaluator/collector and captures pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a21/a26, `SEMULITH-P4-0210`–`0212`/`0217`; matched-experiment contract, GC verification policy and public Sail adapter
 answers: Which typed witness/baseline and bounded-read checks exist, what must the first Sail GPR evaluator still check, and which claims remain outside its scope?
 
 ## The fact / decision
@@ -15,8 +15,9 @@ one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
 grammar implements optional witness/baseline fields. Generic graph checks validate
 witness bounds/observation kind and declared baseline endpoints; they do not execute
-this method. Receipt/dependency-manifest artifacts and method evaluation remain
-pending; production qualification stays closed.
+this method. Receipt/dependency-manifest formats and bounded bytes-only validation now exist
+at a26; their authentication/evaluation and fresh collection remain pending.
+Production qualification stays closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.
@@ -149,8 +150,8 @@ must exit zero; missing output, signal/nonzero exit or parse refusal cannot sati
 the wrong-value control. Keep project temporary work on the repository volume.
 
 The receipt is a versioned S-expression observation (`sail-gpr-capture-v1`), not a
-second editable source of experiment truth. Before implementation define its schema
-and single mapping alongside the collector. Required content: run ID/kind, ordered
+second editable source of experiment truth. Its schema and single dossier mapping
+are implemented at a26; the collector remains pending. Required content: run ID/kind, ordered
 exact argv, process exit, reference candidate/binary SHA256, collector input ID,
 input-ID/digest inventory, trace/stdout/stderr identity/size/digests and observed
 host/tool versions. Cross-check all of it against the canonical run and its pins.
@@ -221,6 +222,28 @@ set; first canonical capture; then full policy/status/mirror derivation. Preserv
 all legacy records. Before any canonical capture, resolve the actual retained
 file set and registered family budget; this declaration creates no store or cap.
 <!-- ANCHOR_END: method -->
+
+## Implemented artifact boundary (a26)
+
+answers: Which artifact-byte checks exist and why do they confer no Sail execution or method credit?
+
+`schema/matched-gpr-dependencies.sexp` and `schema/sail-gpr-capture.sexp` declare
+roots `dependencies` and `capture`. Pure mappings live only in dossier_sexp;
+`scripts/matched_gpr_artifacts.py` validates supplied immutable bytes (1–65536)
+before mapping, with exactly one document, closed fields/types/version/digest
+facets and identity checks. Canonical relative location is required: manifests
+refuse duplicate IDs/paths, self references, declared nested manifests and >64
+leaves; receipts require unique input/output/tool IDs, unique output paths,
+collector inventory membership, the exact three output roles and nonnegative
+sizes. Hidden nested content still requires authenticated closure evaluation.
+Receipt host fields are os/kernel/arch, tools are repeated id/version children;
+input inventory is id/sha256, outputs use the existing observation field names.
+Unknown writer keys and lossy mappings refuse. Failed exits/empty files remain
+representable, with no success credit. The parser performs no artifact I/O or
+execution; future evaluation must supply authenticated snapshots. No unbounded
+legacy file-loader dispatch is added. DOSSIER-SCHEMA controls these APIs, without
+claiming a future capture-store sweep. Examples and exact fields are in the GC
+book's References chapter. No canonical v1, store, cap or qualification changes.
 
 ## Related records
 

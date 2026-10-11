@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a26 artifact schemas/mapping, then evaluator/collector, retention/captures and full policy/status |
+| 1 | `P4-SYSTEM.14` | `active` | a27 exact schema facets, then a28 evaluator/collector, retention/captures and full policy/status |
 
 ## Decisions
 
@@ -508,7 +508,7 @@ refusals pass. Final append/root predecessors and staged bytes checked before co
 Index containment changes one hot label/hook only; full record preserved. Full CI
 preflight five legs green on d8083a9. No old archive/seal/cap/CPU credit changes.
 
-### `.14` a26 — carry prospective artifact schemas and mapping (scheduled, SEMULITH-P4-0217)
+### `.14` a26 — carry prospective artifact schemas and mapping (completed, SEMULITH-P4-0217)
 
 Read the a19 matched-GPR method and qualification decisions, relevant canonical
 schemas/mappers/graph readers and RV64GC book policy first. Implement the bounded
@@ -517,6 +517,52 @@ closed validation/controls. Preserve generic evidence and all canonical records;
 syntax alone supplies no qualification. Keep replay/evaluation, capture production,
 retention budgets and full policy/status consumers explicitly pending until their
 own verified slices. Own schema/book/live sync and COMMIT before moving onward.
+
+Owned on clean509410a, brief0/untracked and the completed a25 handoff census,
+before implementation. Read a19, the qualification contract, policy, canonical
+schema/mapping and authenticated-reader APIs, graph/path rules and GC book first.
+Implement bytes-only bounded readers and pure single-owner dossier mappings;
+close singular/root/type/version, path/ID, manifest64/self/nesting and receipt
+output identity checks with normal/optimized discriminating controls. A coherent
+failed process remains representable. No artifact file I/O, pin authentication,
+method credit or capture store in this slice. Preserve every canonical dossier
+and generic mapping exactly; publish lossless DEV sharding if needed, never raise
+caps. Own code, focused gates, rendered book examples, docs and COMMIT workflow.
+
+Verification: before.py rc=0 confirms both shapes/four mapping APIs/byte parser
+absent at509410a; canonical.py rc=0 proves243 exact dossiers, old definition ASTs
+and dispatch. Probe36/0 normal/optimized; ten omissions3/1/2/1/1/3/4/1/1/1 in
+each. Mutations driver initially refuses an ambiguous self-path seam; narrow
+only that seam, then require clean assertion failures, not setup errors. Both
+schemas validate against the metaschema. DOSSIER-SCHEMA47/0; focused15/sharder12/0/
+seven books and rendered.py rc=0 (3024 links, five commands, seven normal/print
+boundary phrases) pass. Recheck after final live/append sync and published sharding.
+Full policy/status, evaluator/collector/retention/captures remain pending. No old
+canonical bytes, seal or cap change; a27 exact facets next, then a28 evaluator.
+
+Published DEV move29==23+6 retains8528B as shard0240/8761B, SHA256
+f1c4d0b9efe531d83a32058d3e037f4b3934a70d8eee3d36707015deb3452a2f.
+Old manifest prefix and99 complete predecessor entries stay exact. Full source
+inverses: DEV47759B/7fe1078e3ece7edf62f2368778b968b0a040ce1c0e7235fc8560cee99984c478;
+CHANGELOG48204B/92ed24bd4f9aba02f5bdde251d9f5ccbda1d23eb0714f4df04f389c9e0b01c78;
+root63798B/c4dff97b7a2b4a66f38183a9b2976bf296ae29adf8b6b2775aafc1921ef724cf.
+Scope rc=0 proves1285 other tracked files byte/mode exact, Git links untouched
+without traversal. Final complete append/task inverse and retained/moved receipt
+refusals pass; require staged byte equality after all sync, before committing.
+
+### `.14` a27 — close existing schema end-anchor facets (scheduled, SEMULITH-P4-0218)
+
+Owned finding from a26: check_sexp_schema uses re.search and the existing
+references SHA256 pattern ends in `$`, which also admits one terminal newline.
+A26's memory-only P.fixture input with sha256='a'*64+'\n' passes the current
+references schema (reproducer rc=0); this contradicts the declared exact64-hex
+shape, though downstream pin/method checks remain separate. New artifact schemas
+use strict end anchors and controls now. Before evaluator work, inventory affected
+project-owned schema string facets (no vendor traversal), reproduce real affected
+shapes, fix exact-token facets without changing regex semantics that intentionally
+allow other text, and add discriminating controls. Preserve canonical dictionaries,
+keep historical receipts exact, sync book/decisions and COMMIT. Priority high:
+a grammar promise must hold before new evidence consumes it. Then a28 evaluator.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -615,6 +661,14 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a26 — **ROOT CAUSE**: before.py rc=0 shows509410a lacks both
+  artifact schemas/four mappings/bounded parser; a19 requires them before capture.
+- [x] `.14` a26 — **ADDRESSED**: mutations.py rc=0;36/0 normal/optimized and
+  ten omissions3/1/2/1/1/3/4/1/1/1 in each; schema47/0, metaschemas rc=0.
+- [x] `.14` a26 — **NO REGRESSION**: canonical.py rc=0 proves243 dictionaries
+  and legacy ASTs/dispatch exact; focused15/sharder12/0/seven books/rendered.py rc=0
+  (3024 hyperlinks/five commands); append/task/scope proofs before COMMIT.
+
 - [x] `.14` a25 — **ROOT CAUSE**: before.py rc=0 reproduces old judge240 rows/rc0
   despite both original count edits; the live-body predecessor comparison was absent.
   The import-time Git-read reproduction identifies sharder CLI initialization.
@@ -685,6 +739,10 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a26: before/canonical/mutations/rendered rc=0;36/0 normal/optimized and ten
+omissions3/1/2/1/1/3/4/1/1/1; schema47/0, focused15/sharder12/0/seven books;
+3024 links/five commands. New formats grant no method credit; a27 owns exact facets.
+
 a25: before.py oldjudge240 rows accepts two original count edits, repaired refuses;
 38/0 normal/optimized, five omissions17/1/2/2/1 each, actual a24 two-source
 inverses/three refusals, six shared AST/alias definitions and remaining sharder
@@ -738,6 +796,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a26 | `SEMULITH-P4-0217 (leaf P4-SYSTEM.14): carry bounded prospective artifact formats` | a27 exact facets, a28 evaluator/collector, retention/captures and full policy/status |
 | `.14` a25 | `SEMULITH-P4-0216 (leaf P4-SYSTEM.14): preserve live history predecessors` | a26 artifact schemas/mapping, then evaluator/collector and captures |
 | `.14` a24 | `SEMULITH-P4-0215 (leaf P4-SYSTEM.14): gate fresh book navigation and catalogue` | full CI preflight, a25 append-history preservation, then a26 artifacts |
 | `.14` a23 | `SEMULITH-P4-0214 (leaf P4-SYSTEM.14): resolve included book record links` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifact mappings |
@@ -751,6 +810,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a26 (SEMULITH-P4-0217): bounded dependency/receipt shapes and one mapping;36/0/ten omissions,243 canonical inverses and focused/rendered checks pass; a27 owns old newline facets, no qualification credit.
 - `2026-10-11`: `.14` a25 (SEMULITH-P4-0216): guard complete index/working append predecessors and the staged partition; shared pure entry definitions,38/0 controls/five omissions, actual inverse/refusals and focused checks pass; full CI preflight green.
 
 - `2026-10-11`: `.14` a24 (SEMULITH-P4-0215): repair/gate seven-book catalogue and rendered navigation; relative safe inputs/fresh outputs,26/0+23/0 controls and62 HTML inverses; preserve part14/DEV predecessors, fixed caps and CPU status.
