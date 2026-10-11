@@ -333,6 +333,128 @@ The reviewed collector/capture protocol, authenticated remaining inputs and
 computed full method/policy checks remain mandatory. PROFILE-CONSISTENCY still
 refuses v1 qualification; binding a receipt cannot advance CPU acceptance.
 
+## Binding the declared Sail invocations
+
+`matched_gpr_execution.bind_execution(experiment, current_candidate)` consumes the
+canonical dictionary **after** raw schema and scoped graph checks. It returns a
+frozen plan for the first method's execution relationships, without opening any
+artifact or launching a process. A `matched` result is partial binding only.
+
+Before constructing each used index it requires 9 inputs, 12 observations,
+3 runs and 3 producers. The parent budget is 1–4096 boundaries with sole model
+Sail. Each run selects eight principal roles: seven common inputs plus an
+expectation. Baseline/repeat use the same selections and expected producer;
+control selects the other expectation and expected producer. Each run owns one
+raw trace, stdout, stderr and receipt; all twelve outputs have distinct owners.
+The reference producer names Sail and `sha256:<current binary SHA256>`.
+
+For each run the derived argv is exactly:
+
+```text
+binary --config-override config --inst-limit budget --trace-instr --trace-gpr --trace-exception --trace-output this-run-trace guest-image
+```
+
+Order, flags and all values must match; only the trace-output path varies across
+runs. Paths are canonical repository-relative identifiers. There is no shell
+command or implicit current-directory selection. The repeated run names the
+baseline through `repeat_of`; other runs cannot carry that edge.
+
+This complete synthetic graph uses dummy pins and creates no files. It passes the
+existing raw-schema/scoped graph checker before mapping and binding. It then shows
+that failed-process records remain data and a wrong trace-output argument refuses:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_EXECUTION'
+import dossier_sexp as D
+import experiment_verification as V
+from matched_gpr_execution import bind_execution
+
+candidate = dict(id="sail-riscv", role="reference", status="illustrative", kind="executable",
+                 origin="https://example.invalid/sail", lineage="unknown; synthetic example",
+                 binary="reference/bin/sail", binary_sha256="a" * 64)
+common = ["guest-source", "guest-image", "reference-config", "reference-identity",
+          "collector", "adapter", "dependency-manifest"]
+output_roles = ("raw-gpr", "process-stdout", "process-stderr", "process-receipt")
+roles = (*common, "expectation")
+inputs = [dict(id=role, role=role, path="inputs/" + role, sha256=f"{n + 1:x}" * 64)
+          for n, role in enumerate(roles)]
+inputs.append(dict(id="mutant-expectation", role="expectation",
+                   path="inputs/mutant-expectation", sha256="9" * 64))
+producers = [dict(id="reference", role="reference", candidate_id="sail-riscv",
+                  version="sha256:" + candidate["binary_sha256"], input_ids=common)]
+for pid, expectation in (("expected", "expectation"), ("expected-mutant", "mutant-expectation")):
+    producers.append(dict(id=pid, role="expected", version="source-derivation-v1",
+                          input_ids=["guest-source", expectation, "adapter", "dependency-manifest"]))
+observations, runs = [], []
+for kind, rid in (("baseline", "base"), ("repeat", "repeat"), ("control", "control")):
+    outputs = [dict(id=rid + "-" + role, role=role, path=f"outputs/{rid}.{role}",
+                    sha256="b" * 64, byte_size=0) for role in output_roles]
+    observations.extend(outputs)
+    run = dict(id=rid, kind=kind, input_ids=common + ["mutant-expectation" if kind == "control" else "expectation"],
+               producer_ids=["reference", "expected-mutant" if kind == "control" else "expected"],
+               observation_ids=[output["id"] for output in outputs], process_exit=0,
+               verdict="DIVERGE" if kind == "control" else "AGREE",
+               argv=[candidate["binary"], "--config-override", "inputs/reference-config",
+                     "--inst-limit", "1", "--trace-instr", "--trace-gpr", "--trace-exception",
+                     "--trace-output", outputs[0]["path"], "inputs/guest-image"])
+    if kind == "repeat": run["repeat_of"] = "base"
+    runs.append(run)
+pairs = [dict(id=pid + "-pair", left="reference", right=pid, subsystem="gpr-change",
+              assessment="not-examined", shared_input_ids=["guest-source", "adapter", "dependency-manifest"],
+              evidence="unknown; synthetic fixture", consequence="no independence credit")
+         for pid in ("expected", "expected-mutant")]
+graph = dict(format_version="matched-gpr-v1", comparison_rule="sail-gpr-change-v1",
+             limitations=["synthetic; no execution or qualification"], input=inputs,
+             producer=producers, observation=observations, run=runs, producer_pair=pairs,
+             property=[dict(id="property", statement="synthetic GPR change", requirement_id="REQ-synthetic", obligation_ids=["OBL-synthetic"],
+                            observation_kinds=["gpr-change"], gpr_witness=dict(step_n=0, register="x1"))],
+             control_run=[dict(id="wrong-expectation", run_id="control", baseline_id="base",
+                               property_ids=["property"], mutation_input_ids=["mutant-expectation"],
+                               expected_verdict="DIVERGE", observed_verdict="DIVERGE",
+                               reason="synthetic wrong-expectation control")])
+experiment = dict(id="synthetic", program="synthetic.s", instructions=1, models=["sail-riscv"],
+                  verdict="AGREE", reproduced="synthetic fixture", control="synthetic fixture", verification=graph)
+document = dict(profile="synthetic", retrieved="2026-10-11", work_dir="reference",
+                host=dict(os="example", kernel="example", arch="example", cxx="example"),
+                candidate=[candidate], experiment=[experiment])
+raw = D.references_to_form(document)
+form = next(item for item in raw if isinstance(item, list) and item and item[0] == "experiment")
+scope = V.Scope("synthetic", frozenset({"sail-riscv"}), frozenset({"REQ-synthetic"}),
+                frozenset({"OBL-synthetic"}))
+issues = V.check_experiment(form, scope)
+if issues:
+    raise ValueError(issues)
+canonical = D.references_to_doc(raw)["experiment"][0]
+checked = bind_execution(canonical, candidate)
+print(checked.disposition, len(checked.plan.runs))
+for run in canonical["verification"]["run"]:
+    run.update(process_exit=127, verdict="REFUSED")
+canonical["verification"]["control_run"][0]["observed_verdict"] = "REFUSED"
+print(bind_execution(canonical, candidate).disposition, "REFUSED")
+canonical["verification"]["run"][2]["argv"][9] = "outputs/wrong.raw-gpr"
+print(bind_execution(canonical, candidate).disposition)
+print(bind_execution(dict(id="legacy"), candidate).disposition)
+PY_EXECUTION
+python3 scripts/probe_matched_gpr_execution.py
+python3 -O scripts/probe_matched_gpr_execution.py
+```
+
+It prints `matched 3`, `matched REFUSED`, `refused`, then `unsupported`. The
+47-test suite passes normal/optimized; twelve independent omissions lose
+6/8/3/1/3/2/1/44/2/1/1/1 assertions with no harness errors. PROFILE-CONSISTENCY
+runs both modes. Controls cover all argv positions, selected roles/membership,
+counts before indexing, binary-version binding, repeat/control relations, output
+ownership, immutable detached plans and absence of artifact/process I/O.
+
+This plan does not authenticate any declared file or binary. Property/witness,
+control and producer-pair semantics, the expected producers' derivation relation,
+source/program/image binding, dependency closure and aggregate budgets remain
+separate requirements. Identical expectation hashes can bind here; the byte
+comparison must still prove a sole changed witness value. Recorded verdicts do
+not establish process or comparison success. Unsupported legacy/other rules need
+their own method. Malformed or contradictory selected context returns `refused`.
+No execution plan grants qualification or CPU acceptance.
+
 ## What comes next
 
 A27 repairs the terminal-newline defect found at a26: all project exact-token
@@ -356,8 +478,8 @@ behavior, not file authenticity, producer execution or evidence qualification.
 Historical comparisons remain prose in the canonical dossier. Optional structured
 graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifact
 formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
-and retained reference-identity authentication and [receipt binding](#authenticating-and-binding-a-process-receipt)
-exist; complete method evaluation,
+and retained reference-identity authentication, [receipt binding](#authenticating-and-binding-a-process-receipt)
+and [execution binding](#binding-the-declared-sail-invocations) exist; complete method evaluation,
 reviewed fresh collection, measured
 retention and canonical captures are still pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after

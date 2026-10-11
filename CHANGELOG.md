@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0223 (leaf P4-SYSTEM.14) — bind declared Sail execution inputs and argv
+
+- Add pure bounded principal/run/output/reference-binary bindings and exact eleven-item Sail argv; immutable plans, no artifact I/O or execution/full-method credit. Property/control/pair/derivation semantics remain next; coherent failed exits/verdicts remain data.
+- 47 controls pass normal/optimized; twelve omissions6/8/3/1/3/2/1/44/2/1/1/1 discriminate without errors. Add26 literal PROFILE-CONSISTENCY arms (39 doctrines/935). Teach full synthetic graph/raw validation/binding/tamper controls. DEV50435B triggers one whole2631B entry into published0242;24=23+1 exact. Focused17/sharder12/0/seven books/3050 links/full literal commands and source/history inverses pass;243 dictionaries/1301 other files/100 old entries protected. Fixed seals/caps/canonical/CPU state preserved.
+
 ## SEMULITH-P4-0222 (leaf P4-SYSTEM.14) — bind authenticated Sail process receipts
 
 - Authenticate one bounded receipt snapshot and bind frozen canonical run/argv/exit/candidate/collector/input/output facts; reuse raw schema/single mapping. Preserve coherent failed-process data and separate stale/unavailable/refused findings, including unavailable schema I/O; no other-file/process/method credit.

@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a32 fixed invocation/principal/producer binding, then closure/evaluation and captures |
+| 1 | `P4-SYSTEM.14` | `active` | a33 property/control/derivation/pair relations, then closure/evaluation and captures |
 
 ## Decisions
 
@@ -880,20 +880,96 @@ Lesson promotion DECLINED: consumer schema-I/O normalization and literal/evidenc
 receipts apply existing parser/doctrine contracts; the new API/trust boundary is
 recorded in the existing method and GC book, with no new ancestry or scope claim.
 
-### `.14` a32 — bind fixed Sail invocation and producers (scheduled, SEMULITH-P4-0223)
+### `.14` a32 — bind Sail execution inputs and invocations (completed, SEMULITH-P4-0223)
 
-Start clean after a31 COMMIT. Review full a19 typed unit/principal/input/producer/
-invocation contract and implemented byte/identity/receipt APIs. Declare a safe
-finite relationship checker before code: exact first-method counts and roles,
-same executed inputs across baseline/repeat/control, sole mutant expectation,
-fixed ordered public Sail argv differing only in trace path, correct reference
-candidate/version and distinct related expected producers, control/baseline/
-property witness edges and actual producer-pair assessments. Reuse validated
-canonical graph/mapping; do not derive success from stored verdicts or producer
-counts. Separate record consistency from comparison/authentication/method credit.
-Precise bounds, coherent failure cases and omitted-predicate controls must precede
-qualification. Then authenticated dependency closure/aggregate orchestration and
-full evaluator/gate controls, reviewed collector, measured retention/cases,
+Owned on clean97b06a1, brief0/untracked and both actual job censuses clear before
+code. Review a19 roles/invocation/reference-identity/bounds, actual public Sail
+run_guest argv, canonical schema/graph, implemented byte/identity/receipt APIs and
+GC book. Choose this finite dependency; property/control/expected derivation/pair
+semantics follow a33 rather than growing this slice into full orchestration.
+
+Add a pure bind_execution(experiment,current_candidate) API consuming the already
+raw-schema/graph-validated single-mapper dictionary. Before indexing, require the
+used first-method collections:9 inputs,12 observations,3 runs,3 producers; parent
+budget1..4096 and matching envelope/rule. Require eight principal roles per run,
+seven common input identities and two distinct expectation IDs; baseline/repeat
+select identical inputs and expected producer, control changes only expectation
+selection and uses the other expected producer. Require one reference/two expected
+producer records, reference candidate Sail/version sha256:<current binary pin>,
+reference inputs within common inputs and one reference/expected per run. Bind
+four uniquely owned observation roles per run and exact global ownership.
+
+Derive the exact11-element public Sail argv from current relative binary path,
+selected config/image, parent budget and each raw trace path; compare exact order,
+values and flags. Thus only trace-output differs between runs. Require repeat_of
+baseline and no spurious repeat edges. Return frozen partial execution plan with
+IDs/roles/argv; refuse malformed/contradictory context and unsupported rule, without
+I/O, execution, comparison, other-file currentness or qualification. Coherent
+failed exits/verdicts remain record data; never use verdict strings as success.
+Caller owns complete raw parent schema/scope/graph; validate used fields/counts
+before maps and expose no caller dictionary/list aliases. Same budget constant
+as the bounded byte unit. No new schema, mapper, store, cap or canonical data.
+
+Controls: complete synthetic graph passing existing raw schema/scoped graph first,
+all count/role/identity/membership/repeat/argv/reference-version/ownership errors,
+coherent failed processes, partial-scope limits, frozen detached plans, no artifact
+I/O or execution, normal/optimized runs and independent omission controls. Register
+literal PROFILE-CONSISTENCY arms; teach full GC book examples and credit limits.
+Preserve complete old method/checker/canonical/history/task predecessors and fixed
+seals. DEV head47946B leaves1206B: if this owned new entry crosses49152, measure
+and publish only the exact oldest whole-entry partition through shard_history,
+with full old-entry inverses and actual receipt+digest edit refusals before commit.
+This measured pressure owns any necessary append-history publication in this slice.
+
+Next a33 owns exact property/witness/control/pair counts and same expected
+producer derivation with explicit mutant relation; source/program label and
+actual guest/expectation/image dependency binding belong to the full authenticated
+orchestrator after interface review. The existing byte unit only binds parent
+budget/witness; it deliberately does not claim the full parent/input relation.
+Then closure/aggregate evaluator/gates, reviewed collector, measured retention/
+cases, canonical captures and full policy/status. Qualification/CPU remain closed.
+
+Acceptance: mutations.py rc=0;47/0/0 normal/O. Twelve independent omissions
+lose6/8/3/1/3/2/1/44/2/1/1/1 assertions without errors. Profile130/0 and literal
+DERIVED-COUNTS39/935 pass; focused17/sharder12/0/seven books/rendered.py rc=0,
+3050 links and complete literal graph/raw-schema/scope/binding/tamper example.
+Before/canonical/contract/history/scope rc=0 preserve243 canonical dictionaries,
+1301 other files and complete old method/checker/task/append predecessors. All100
+old entries retain exact bytes/order. New entry measured DEV50435B, so published
+sharder moves one whole2631B entry:24=23+1; head47804B immediately after sharding.
+Shard0242 is2864B/3adba6785bbc93921b4a2281c56f93e48fda0c854702092b58e439eef599c1c7;
+34 live+210 sealed=244 logical shards. Actual moved count and already-published
+0241 rc+digest rewrites refuse via permanent predecessor/full partition judges.
+The sole staged whitespace finding is shard0242 EOF line41, inherited verbatim
+from its old entry; close that census and use only ephemeral -blank-at-eof.
+No seal extension, cap, canonical data, CPU status or method qualification change.
+Staged hashes, hooks/brief0 and actual job censuses required before continuation.
+
+Initial fixture controls found missing statement/reason and incorrectly string-
+valued repeated limitations; inspect actual schema and repair only new fixture.
+The first task inverse omitted the old scheduled a32 block; restore that entire
+predecessor block in the inverse, rather than treating it as absent. Rendered
+probe run before book completion correctly saw old HTML; final rebuilt normal/
+print and literal command checks pass. No production defect inferred from these
+harness/fixture mistakes. DECLINED promotion: routine fixture/schema validation,
+complete-predecessor ownership and wait-for-build rules already govern them.
+
+### `.14` a33 — bind first-method property/control/derivation/pairs (scheduled, SEMULITH-P4-0224)
+
+Start clean after a32 COMMIT. Review complete a19 property/witness/control and
+producer-pair requirements, public canonical schema/graph and frozen execution
+plan. Declare a finite pure relationship API before code. Exact one property,
+GPR-only observation kind and witness within parent budget; exactly one typed
+control naming sole baseline/control/property and sole mutant expectation;
+coherent failed recorded outcomes remain data, never success. Require exactly
+two actual reference/expected pairs with declared sharing and uncertainty, no
+producer-count independence inference. Review public expected-producer contract
+to bind same derivation with explicit mutant relation without inventing ancestry
+or a new parallel mapper/format. Counts before maps, immutable results, normal/O
+and independent omissions, complete GC book examples and qualification limits.
+GC reference source29424B/32768 leaves3344B: own a natural teaching chapter
+partition if this slice needs more room; preserve whole prior teaching and links.
+Then closure/aggregate evaluator/gates, collector, measured retention/cases,
 canonical captures and full policy/status. Keep fixed caps/seals/CPU state.
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
@@ -992,6 +1068,16 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a32 — **ROOT CAUSE**: before.py rc=0; closed97b06a1 lacks execution
+  binder, unchanged generic schema/graph accepts wrong argv/version as declared
+  record data; new finite binder refuses both. No old qualification inferred.
+- [x] `.14` a32 — **ADDRESSED**: mutations.py rc=0;47/0/0 normal/O, twelve
+  omissions6/8/3/1/3/2/1/44/2/1/1/1 discriminate; profile130/0/935 literal arms.
+- [x] `.14` a32 — **NO REGRESSION**: canonical/contract/history/scope/rendered.py
+  rc=0; focused17/sharder12/0/seven books/3050 links/full literal commands pass;
+  243 dictionaries/1301 other files/100 old entries/complete method/checker/task
+  protected; published0242 lossless and actual receipt+digest edits refuse.
 
 - [x] `.14` a31 — **ROOT CAUSE**: before.py rc=0; closed66e64ad lacks receipt
   binding, while unchanged pin/parser APIs accept correctly pinned contradictory
@@ -1120,6 +1206,15 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a32: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
+47/0/0 normal/O; twelve omissions6/8/3/1/3/2/1/44/2/1/1/1, profile130/0/935 literal
+arms; focused17/sharder12/0/seven books/3050 links/full commands pass. Whole old
+method/checker/task/append and243 dictionaries/1301 other files/100 entries exact;
+DEV50435→47804 immediately after2631B whole-entry publication0242 (2864B,
+3adba6785bbc93921b4a2281c56f93e48fda0c854702092b58e439eef599c1c7). Partition24=23+1,
+34 live+210 sealed=244logical; old receipt+new digest edits refuse. Fixed caps,
+seals, canonical data, qualification and CPU state unchanged. COMMIT checks next.
+
 a31: before/canonical/contract/mutations/history/scope/rendered.py rc=0;
 43/0/0 normal/O; eleven omissions1/4/2/2/2/6/2/4/5/1/1, profile104/0/909 literal
 arms, focused17/sharder12/0/seven books/3044 links/full literal commands pass.
@@ -1207,6 +1302,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a32 | `SEMULITH-P4-0223 (leaf P4-SYSTEM.14): bind declared Sail execution inputs and argv` | a33 property/control/derivation/pair relations, closure/evaluation and captures |
 | `.14` a31 | `SEMULITH-P4-0222 (leaf P4-SYSTEM.14): bind authenticated Sail process receipts` | a32 fixed invocation/principal/producer binding, closure/evaluation and captures |
 | `.14` a30 | `SEMULITH-P4-0221 (leaf P4-SYSTEM.14): authenticate retained Sail reference identity` | a31 receipt/invocation/input/producer binding, closure/evaluation, collector/captures |
 | `.14` a29 | `SEMULITH-P4-0220 (leaf P4-SYSTEM.14): compare bounded supplied-byte Sail units` | a30 full-CI preflight/authentication, collector and captures |
@@ -1226,6 +1322,7 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
+- `2026-10-11`: `.14` a32 (SEMULITH-P4-0223): pure execution bindings47/0/0/twelve omissions, profile130/0/935 arms; focused/books/source/history protection pass; published0242 whole-entry partition exact, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a31 (SEMULITH-P4-0222): bounded authenticated receipt binding43/0/0/eleven omissions, profile104/0/909 arms; focused/books/history/source protection pass, qualification/seals/caps/CPU unchanged.
 - `2026-10-11`: `.14` a30 (SEMULITH-P4-0221): authenticated retained identity40/0/0/eight omissions, profile80/0/885 arms; focused/books/history/source protection pass; fresh3960e6b full-CI preflight green, qualification/CPU unchanged.
 - `2026-10-11`: `.14` a29 (SEMULITH-P4-0220): bounded byte unit52/0/fourteen omissions; exact GPR control/repeat discrimination, focused/books/inverses pass; published DEV sharding lossless, qualification/CPU unchanged.

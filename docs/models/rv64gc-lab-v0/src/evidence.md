@@ -317,6 +317,10 @@ Python modes; GUEST-GEN runs all controls. These results confer no canonical
 capture, execution or CPU acceptance credit. Bounded expectation/trace evaluation
 and authenticated orchestration remain the next implementation steps.
 
+Pure [execution binding](references.md#binding-the-declared-sail-invocations) now checks
+principal inputs, the binary-pinned reference and exact three-run argv. It does
+not authenticate those declarations or replace the complete method evaluator.
+
 ## Bounded three-run byte comparison
 
 `compare_unit` in `scripts/matched_gpr_comparison.py` checks supplied immutable
