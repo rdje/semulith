@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — retain the census source repair across sync (P4-SYSTEM.14 a42j)
+
+D48 reproduced through the actual public updater in owned local fixtures:
+3tests/2failures/0errors normal/O. Present stale/different incoming census
+replaces the local D47 repair while returning0; absent input passes. Named
+assertion isolates scripts/check_no_background_jobs.sh. Cause: NEUTRAL membership
+and normal present-file cp. Remove only that row, following the two existing
+retained source fixes, and document deliberate review of newer upstream changes.
+No other updater behavior changes; no real upstream-defect/global-gap claim.
+
+Append3 integration cases to existing handoff probe, preserving all19 old cases
+and four census mutation seams byte-exact.22/0/0 normal/O. Parent/re-enabled
+copy lose2 assertions each, no-sync/cleanup omissions3 each, zero errors normal/O;
+old census omissions still2/2/4/1. Public fixtures use project-owned on-volume
+copies, an empty .git local-input marker, controlled rev-parse root; reject other
+Git operations. They are not other repositories. No actual working-checkout
+sync, network, foreign repo writes, pins or submodule implementation reads.
+
+Verify ordinary policy/version copies, prior repairs/project inputs retained,
+input bytes/modes unchanged, exact stdout/count, acquisition scratch removed.
+No-op updater fails. Existing make gate/CI runs expanded normal/O suite; all
+Makefile/CI/README/host-census/registry/PROFILE bytes stay exact. Whole source/
+book/toolbox/task inverses; book adds60B within63B room, one runnable local-sync
+example and normal/print teaching. Focused12/sharder12/seven books/navigation,
+permanent history guards/complete old heads and unrelated bytes/modes/Gitlinks
+exact; full hooks/COMMIT close the unit. Fixed caps/39doctrines1439arms/LIVE/
+canonical/CPU/qualification unchanged, no Rust/fullCI/push. Next ordinary-part
+actual-gate assessment remains unclassified, then remaining a42 adequacy.
+Measured:3212fresh+actual links/normal+print/literal3case example,100old entries/
+complete heads and1374protected files/modes/Gitlinks exact normal/O. Whole DEV
+3486B→0274/CH1219B→0275,67live+210sealed277logical; receipt+digest edits refuse.
+Book family524285/524288; original archives and fixed caps unchanged.
+promotion: declined (standing local-source retention precedent; bounded failure/repair controls and receipts are retained in the task leaf).
+
 ## _(2026-10-11)_ — recurring cleanup with a live book receipt (ARTIFACT-CLEANUP.6)
 
 Prior run2026-10-10T17:22:34Z; due recurrence waited for clean a42h/a42i commits
@@ -635,53 +669,4 @@ whole a27 entry into0251,2495B SHA256
 dbff2bb0274d826c2884f03d2e1a9df35d50c3d953db058ca7307b0de4a0b042;
 43live+210sealed253logical. Final docs/staged-byte checks and COMMIT hooks next;
 no canonical capture, source/image/closure/provenance qualification or CPU credit.
-
-## _(2026-10-11)_ — compose authenticated byte evaluation (P4-SYSTEM.14 a41)
-
-Expose evaluate_retained_unit(raw experiment, scoped validation context, current
-candidate, trusted root). Reuse raw-schema/scoped graph checks before sole dossier
-mapping, then public relations/manifest/declared-set/identity/receipt/comparison
-owners. Freeze execution identity values, all three receipt contexts, every used
-run verdict and selected observations before artifact I/O. Candidate contexts are
-plain immutable values; canonical observations are copied before manifest read.
-Cross-check manifest relations with the initial frozen selection. Exactly one
-anchored authentication per distinct declared file, manifest seed reused, fixed
-128MiB read/16MiB snapshot budgets. No legacy readers/reopens/binary/process/cache.
-
-Keep RecordCheck validity separate from unsupported method selection, pins,
-content bindings and observed comparisons. AuthenticationSummary retains metadata,
-authenticated/charged bytes and returned snapshot amount before release; every
-returned FileFact.data=None. Initial manifest failure keeps its independent pin
-and no set summary. Public byte consumers retain pin=None and separate results.
-Receipt process exits drive actual comparisons; require complete ordered computed
-runs and cross-check recorded verdicts. Coherent failed processes/controls remain
-valid records with failed evaluations. Successful byte composition stays pending
-complete method/policy adequacy; no qualified Boolean or CPU/status credit.
-Parent-program/source/image, complete closure, old/new impact and collector
-provenance remain mandatory a42 work. Blanket v1 qualification refusal unchanged.
-
-Initial38 controls had0 failures/1 instrument error: failed-baseline assertion
-assumed a Comparison object. Actual owner returns comparison=None plus process-
-refusal text; evaluator already correctly reports valid/failed. Fix assertions,
-no production defect or false green credit. Expanded42 controls pass normal/O;
-29 omissions1/4/3/1/1/2/1/2/3/1/3/6/27/1/3/5/2/4/2/15/1/3/1/7/10/1/1/1/1
-fail without errors in both modes. Refactor context selection into an explicit
-loop and type finish; all60 behavioral signatures identical before/after. Actual
-synthetic22-file fixture, seed/read census, no-binary/process/legacy, before-read
-context freeze, later-path mutation, terminal failures, supported failed data,
-recorded-verdict contradiction, unsupported expectations, incomplete result and
-payload-free immutable summaries covered. Existing APIs remain unchanged.
-
-Sixty literal outer arms: PROFILE374/0,39 doctrines1197 arms. New evaluation book
-chapter gives all result fields/limits and runnable eight-outcome example with
-42 normal/O controls. Opaque synthetic source/image/principal files intentionally
-establish no complete adequacy; positive returns pending. Focused/source/history/
-canonical/scope/rendered checks pass: focused17/sharder12/0/seven books/3122links,
-all10 literal blocks/full normal+print teaching. Complete old checker/normative
-method/evidence/SUMMARY/task inverses;340 raw forms/243 mappings,102 old entries
-and1326 other files exact. Actual original/moved/published receipt+digest edits
-refuse. DEV17=15+2/5355B into0250,5588B SHA256
-069f0a33f16e72ff955ec7c60b4ca4708aae708490db7c7c79e2dccb53309f73;
-42live+210sealed252logical. Final docs/staged-byte checks and COMMIT hooks next,
-then full CI on clean milestone before a42. Fixed caps/seals/canonical/CPU unchanged.
 

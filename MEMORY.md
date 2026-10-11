@@ -18,12 +18,11 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-11`, `SEMULITH-AC-0063`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: P4-SYSTEM.14 a42j/0245, proposed scaffold-retention risk D48.
-  Read its bounded public updater reproduction plan; own active work before
-  scratch/implementation. Then ordinary-part actual-gate assessment, then a42.
-- in_flight_uncommitted: none. AC0063 complete;24caches/
-  155683881B removed, immediate residue0;9225retained/128863947B SHA exact.
-  Latest record included in book, fixed caps/LIVE/canonical/CPU unchanged.
-  Evidence target/artifact-cleanup-0063; resume only after committed clean host
-  census. Latest full CI remains exact3e5a3ea; no push below cadence.
+- next_action: P4-SYSTEM.14, bounded ordinary-part protection assessment with
+  actual gates before classifying the candidate; then remaining a42 adequacy.
+  Own the next finite slice on committed clean state before scratch or changes.
+- in_flight_uncommitted: none after a42j/0245 COMMIT. D48 repaired:local census
+  retained by scaffold sync;22cases normal/O, parent/omissions discriminate,
+  prior source/CI/tests/history/CPU/canonical/LIVE/caps preserved. Evidence
+  target/p4-system-14/a42j. Latest full CI exact3e5a3ea; no push below cadence.
 - blockers: none. Archive seal LC0006 complete; full containment adoption remains.

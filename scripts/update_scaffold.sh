@@ -33,6 +33,8 @@ fi
 # undetectable is not a fix. SEAM-INTEGRITY would still catch the revert behaviourally, but a
 # tool should not be quietly undoing a repair and relying on another tool to notice.
 # See docs/decisions/reference_upstream-spine-defects.md; carry the fixes upstream instead.
+# The handoff census also stays local: its fail-closed host-tool captures must survive sync.
+# Review newer upstream changes to these retained checks explicitly before adopting them.
 NEUTRAL=(
   MEMORY_ARCHITECTURE.md
   DOCTRINE_ENFORCEMENT.md
@@ -49,7 +51,6 @@ NEUTRAL=(
   scripts/check_doctrines.sh
   scripts/check_memory_architecture.sh
   scripts/check_live_doc_currency.sh
-  scripts/check_no_background_jobs.sh
   scripts/check_lesson_promotion.sh
   scripts/check_routing_evidence.sh
   scripts/check_table_arity.sh

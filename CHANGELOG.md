@@ -1,5 +1,12 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0245 (leaf P4-SYSTEM.14) — retain the repaired handoff census during scaffold sync
+
+- Fix D48: remove only the locally repaired census from automatic neutral replacement; other updater behavior stays exact. Public local-input reproduction3/2/0 normal/O pinpoints replaced repair despite rc0; newer upstream changes require deliberate review.
+- Expanded existing probe22/0/0 normal/O preserves19 old cases; parent/overwrite/no-sync/cleanup controls fail2/2/3/3, zero errors, old census omissions2/2/4/1 retained. Owned copies/controlled Git, normal copies/input preservation/scratch cleanup verified. Existing gate/CI wiring unchanged; focused12/sharder12/seven books/navigation/source/history/scope checks, book+60B within63B room and new runnable example. LIVE/CPU/canonical/caps unchanged; full COMMIT then ordinary-part actual-gate assessment.
+- Final checks:3212fresh+actual links/normal+print/literal example,100old entries/1374protected files exact normal/O; whole DEV3486B→0274/CH1219B→0275,67live+210sealed277logical, receipt+digest edits refuse; fixed book cap524285/524288.
+
+
 ## SEMULITH-AC-0063 (leaf ARTIFACT-CLEANUP.6) — clean incremental caches and include the latest book receipt
 
 - Remove24untracked Cargo incremental caches/155683881B after complete identity/safety preflight and unrestricted idle-host census. Immediate residue0, all9225retained input/evidence files/128863947B byte/hash-exact; four nested Git roots skipped. Altered SHA/totals refuse normal/O; no code/input deletion.
@@ -540,23 +547,4 @@
 - Save6703B without raising caps or moving rendered content outside the budget.
   Runtime/registry/effective102/114 unchanged; focused/all six books in tree.
 - Own P0's remaining internal-ancestry rationale as c29e before GC-COUNTERS.
-
-## SEMULITH-P4-0166 (leaf P4-SYSTEM.13 c29c) — align state-source rationale and FP policy detail
-
-- Replace internal-source prose and state the selected trap-retention/FP Dirty
-  policies; correct only F requirement detail, preserving statement/frozen mirror.
-- Provenance checks RED rc=1 before published regeneration; exact output delta
-  is three hashes and two census explanation strings, all executable bytes exact.
-- Fresh public24/927 and identical-write12 traces repeat; corpus167/5365/10524,
-  registry104/effective102/114 unchanged. Focused/Rust/books recorded in tree.
-- Book/environment/GS synchronized; c29d contains book history before GC-COUNTERS.
-
-## SEMULITH-P4-0165 (leaf P4-SYSTEM.13 c29b1) — retain exact history under fixed caps
-
-- Partition DEV46505B into15kept/9moved and CHANGELOG56022B into59kept/38moved
-  via published sharder; new frozen shards0226/0227 retain all payload bytes.
-- Verify exact source inverses/SHA, prior17manifest rows/210sealed shards;
-  self-test12/0, focused/all six books green. Logical history229 rows.
-- Fixed caps, all code/canonical/author/frozen/registry/effective102/114 unchanged.
-  Correct the book's historical AMO-next-action tense; c29c then c29d next.
 

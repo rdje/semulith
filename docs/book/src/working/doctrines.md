@@ -353,12 +353,17 @@ reason is a measurement: with both seam files moved aside, the full enforcer pri
 `=== all doctrines green ===` and `rc=0`. Three fixes had silently reverted and nothing said a
 word. *A fix whose disappearance is undetectable is not a fix.*
 
-What belongs where is not arbitrary. The anchored `src/`, the three universally
-behaviour-governing path families, and the shared census vocabulary are true of **every**
-consumer of the template — repairing them in the check is a repair, not a fork. This project's
-own gate *data* and *instrument signatures* stay in `.doctrine/`, because a neutral check cannot
-know they exist. And both repaired checks were removed from `update_scaffold.sh`'s re-sync list,
-so a scaffold update cannot quietly undo them.
+Template-wide repairs belong in the checks: anchored `src/`, behaviour-governing
+path families and shared census vocabulary. Project gate data and instrument
+signatures stay in `.doctrine/`. `update_scaffold.sh` retains the repaired
+acceptance, gap and handoff checks; review newer upstream changes manually.
+`make gate` checks local sync in owned fixtures with controlled Git: repairs and
+project files retained, ordinary files copied, inputs unchanged, scratch removed.
+Run just these cases with:
+
+```bash
+python3 scripts/probe_handoff_census.py --only-scaffold
+```
 
 `SEAM-INTEGRITY` then guards all of it by asserting **behaviour rather than presence** — every
 current tracked acceptance box must match a declared evidence signature, and the two gates

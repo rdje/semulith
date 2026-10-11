@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42i D47 fail-closed handoff census; ordinary-part assessment follows |
+| 1 | `P4-SYSTEM.14` | `active` | assess ordinary-part protection with actual gates; then remaining a42 adequacy |
 
 ## Decisions
 
@@ -539,21 +539,56 @@ No weakening, exemption or new arm. Update source/history/scope/receipts and
 retry full hooks; no first-attempt commit created. Artifact cleanup is overdue;
 finish/commit, then own cleanup before other work, respecting no dirty pivot.
 
-### `.14` a42j — retain the local census repair during scaffold sync (proposed, SEMULITH-P4-0245)
+### `.14` a42j — retain the local census repair during scaffold sync (completed, SEMULITH-P4-0245)
 
-Priority1 after AC0063; logged by recurring cleanup, no active implementation.
-D48 scaffold-retention risk: public update_scaffold.sh still includes
-scripts/check_no_background_jobs.sh in its NEUTRAL copy list and copies any
-present incoming file. A stale incoming version can replace the locally repaired
-D47 census. Existing make gate synthetic controls would detect that regression;
-no claim that current upstream is defective or that nothing checks it.
-Own a bounded reproduction through the public updater in a disposable on-volume
-fixture, using only project-owned input copies; never modify another Git repo
-or inspect submodule implementation. If reproduced, retain the local source
-repair across automatic sync, with positive/negative integration controls and
-current teaching/live/COMMIT sync. Preserve existing update behavior otherwise.
-No new exemption, reader authority or CPU/qualification scope. Then assess the
-ordinary-part freeze with actual gates before classifying that separate candidate.
+Owned2026-10-11 on clean975e37b after AC0063 full hooks/all11 hashes+modes,
+brief0/untracked and unrestricted post-commit census rc=0. Priority1 D48:
+public update_scaffold.sh includes scripts/check_no_background_jobs.sh in its
+NEUTRAL list and copies any present incoming source. Existing make gate controls
+would detect stale D47 replacement; do not claim current upstream is defective
+or a global guard gap. Read public updater/census/probe, workflow/make gate,
+Knowledge Map, ROADMAP P4 and current book source-fix/handoff teaching first.
+
+Reproduced D48: public local-input updater returns0 but overwrites the retained
+scripts/check_no_background_jobs.sh for stale and different supplied versions.
+probe_handoff_census.py --only-scaffold:3tests/2failures/0errors normal/O;
+absent input passes. Named re-run pinpoints that file's changed bytes. Root
+cause is its NEUTRAL membership plus the ordinary present-file cp branch;
+fix membership, retain the copy branch and all other source paths unchanged.
+
+Own a bounded public-interface reproduction in target/p4-system-14/a42j,
+then the minimal retention fix if reproduced. Fixtures use only project-owned
+input copies inside this repository volume, with an empty .git directory marker
+for the updater's documented local-input branch; they are not other Git repos.
+A controlled git executable returns the disposable project root only for the
+published rev-parse request; reject every other Git operation before it can run.
+Never invoke updater against the real working checkout or a foreign repository;
+no network, submodule implementation access, pins or new exemptions.
+
+Preserve the locally repaired census by removing it from automatic sync's
+neutral replacement set, following the existing acceptance/gap source-fix
+precedent. All other updater behavior stays exact, including local acquisition,
+normal neutral copies, absent-file handling, output/counts/modes and EXIT scratch
+cleanup. Newer upstream changes to retained checks require deliberate review.
+Append real public-updater integration cases to the existing synthetic handoff
+probe, preserving all19 old test cases and every old census mutation seam.
+Existing make gate/CI will run the expanded suite normal/O without new doctrine
+or registration/arm changes. Check stale/different incoming repairs and absent
+input, normal neutral update, project-owned/existing repaired checks preserved,
+input bytes/modes unchanged, exact expected output and owned scratch residue0.
+Old updater and independent re-enabled overwrite/omitted sync controls must
+lose assertions with zero errors normal/O; a no-op updater must not pass.
+
+Own complete updater/probe/book/task/make/CI source inverses as applicable,
+focused current gates, seven books/fresh+actual local links/normal+print teaching,
+permanent history guards/all predecessor entry and complete head inverses,
+whole-oldest sharding when necessary, unrelated tracked bytes/modes/Gitlinks
+exact, live docs/MEM/DEV/CH and full COMMIT. Stay within fixed family caps;
+original archive seals/canonical definitions/CPU/qualification/LIVE unchanged.
+No Rust/fullCI/push for this bounded workflow repair. After committed clean
+handoff, assess ordinary-part protection with actual gates before classifying
+that separate candidate, then return to remaining a42 adequacy obligations.
+promotion: declined (existing local-source retention precedent; measured repair and integration evidence live in this leaf).
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -651,6 +686,23 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42j — **ROOT CAUSE**: probe_handoff_census.py --only-scaffold
+  before fix:3tests/2failures/0errors normal/O, named changed bytes in
+  scripts/check_no_background_jobs.sh. Public updater returns0 and ordinary
+  NEUTRAL cp replaces the repair for stale/different inputs; absent case passes.
+- [x] `.14` a42j — **ADDRESSED**: probe_handoff_census.py rc=0 normal/O:
+  22/0/0 including19 old cases and3 public local-sync fixtures. controls.py rc=0:
+  parent/re-enabled overwrite2failures, no-sync3, cleanup3, zero errors normal/O;
+  original census status/stderr/empty/TERM omissions retain2/2/4/1 failures.
+  Only census membership removed; other updater bytes/modes/copy behavior exact.
+- [x] `.14` a42j — **NO REGRESSION**: focused.sh/proof.py/history.py/scope.py/
+  rendered.py rc=0 normal/O as applicable:focused12/sharder12/seven books/fresh+
+  actual navigation and new normal/print teaching; complete source/task/head
+  inverses, old19 cases/4 omissions, unrelated bytes/modes/Gitlinks exact.
+  Existing make gate/CI invokes expanded probe; host census source unchanged.
+  All fixed caps/39doctrines1439arms/CPU/canonical/qualification/LIVE unchanged.
+  Full hooks/hashes/modes/brief0/host census close COMMIT before next assessment.
 
 - [x] `.14` a42i — **ROOT CAUSE**: run-controls.py rc=0 normal/O:
   committed parent loses11/19 assertions, zero errors; actual restricted ps EPERM
@@ -1037,6 +1089,38 @@ Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-1
 Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
+
+a42j: D48 public local-sync replacement reproduced3/2/0 normal/O; named repair
+file changed although updater returns0. Remove only its NEUTRAL row and explain
+local retention/manual upstream review beside the two existing retained fixes.
+All other updater source bytes/order/copy/cleanup behavior exact. Append3 public
+integration cases to existing probe; old19 cases/4 mutation seams byte-exact.
+22/0/0 normal/O; parent and independent overwrite/no-sync/cleanup controls lose
+2/2/3/3 assertions, zero errors. Old census omissions still2/2/4/1 normal/O.
+Fixtures are project-owned copies on repository volume, empty local-input .git
+marker rather than another Git repo, controlled rev-parse only; every other Git
+operation refused. No updater call against the real checkout, network, foreign
+repo write or submodule access. Ordinary neutral policy/version copy, both prior
+repairs/project file retained, input bytes/modes unchanged, exact stdout/counts,
+owned acquisition scratch removed. Explicit unittest checks survive optimization.
+Whole updater/probe/book/toolbox/task inverses normal/O; Makefile/CI/README/host
+census/registry/PROFILE exact, actual make -n gate resolves same normal/O commands.
+Book+60B within original63B room; current paragraph replaces current teaching,
+all historical receipts/other chapters remain exact. One complete --only-scaffold
+Bash example added and run; normal/print include the exact revised teaching.
+Focused12/sharder12/seven books/fresh+actual links/history/scope close verification;
+full hooks and COMMIT then actual ordinary-part guard assessment, still unclassified.
+D48 fixed; no new exemption/doctrine/arm/CPU/canonical/qualification credit.
+Final measured checks: focused12/sharder12/seven books/3212fresh+actual links,
+complete normal/print teaching/literal3case example rc=0; proof/history/scope/
+rendered normal/O rc=0. All100old entries/complete heads and1374other tracked
+files/modes/Gitlinks exact. Whole DEV3486B/one entry to0274 (3719B/SHA256
+40c6393751a28e2020db03aa893e39dd1eac3206019b43e5840867a7a773ce00);
+CH1219B/two to0275 (1456B/SHA256
+ac82e6f09686f4d7ed5ed1e6aaa5b723b4ae87e8e19642c54bcba1c41f60519f).
+67live+210sealed277logical; original/moved/published receipt+updated-digest
+edits jointly refuse. Book family524285/524288, per-part/caps unchanged.
+promotion: declined (standing source-retention precedent; measured bounded integration repair remains in this leaf).
 
 a42i: Verified19/0/0 normal/O; committed parent19/11/0 and four independent
 status/stderr/empty/TERM omissions with2/2/4/1 failures, zero errors. Controlled
@@ -1444,6 +1528,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42j | `SEMULITH-P4-0245 (leaf P4-SYSTEM.14): retain the repaired handoff census during scaffold sync` | actual ordinary-part protection assessment, then remaining a42 adequacy |
 | `.14` a42i | `SEMULITH-P4-0244 (leaf P4-SYSTEM.14): fail closed on unavailable handoff census` | due recurring cleanup, then ordinary-part gate assessment/remaining adequacy |
 | `.14` a42h | `SEMULITH-P4-0243 (leaf P4-SYSTEM.14): contain completed adequacy designs` | D47 fail-closed handoff census, then bounded ordinary-part guard assessment/remaining adequacy |
 | `.14` a42g | `SEMULITH-P4-0242 (leaf P4-SYSTEM.14): compute conservative old/new dependency impact` | complete closure/property/collector adequacy; qualification remains pending |

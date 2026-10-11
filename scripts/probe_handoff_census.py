@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the public Bash handoff census with controlled host-tool responses."""
+"""Exercise public handoff checks and scaffold sync in owned disposable fixtures."""
 from __future__ import annotations
 
 import argparse
@@ -13,6 +13,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / 'scripts/check_no_background_jobs.sh'
+UPDATER = ROOT / 'scripts/update_scaffold.sh'
 MUTATIONS = {
     'status': ('if [ "$rc" -ne 0 ]; then', 'if false; then'),
     'stderr': ('if [ -s "$CENSUS_ERROR" ]; then', 'if false; then'),
@@ -182,11 +183,103 @@ for _tool in ('ps', 'lsof'):
         setattr(Census, 'test_' + _tool + '_' + _failure, failure_case(_tool, _failure))
 
 
+class Scaffold(unittest.TestCase):
+    updater: bytes
+    repaired: bytes
+    work: Path
+
+    def sync(self, incoming_census: bytes | None):
+        with tempfile.TemporaryDirectory(dir=self.work) as scratch:
+            fixture = Path(scratch)
+            project, incoming, tools = (fixture / name for name in ('project', 'incoming', 'bin'))
+            for directory in (project, incoming, tools):
+                directory.mkdir()
+            # Only a local-input marker; no nested Git repository is initialized.
+            (incoming / '.git').mkdir()
+            original = {
+                'scripts/update_scaffold.sh': self.updater,
+                'scripts/check_no_background_jobs.sh': self.repaired,
+                'scripts/check_task_acceptance.sh': b'# retained acceptance repair\n',
+                'scripts/check_gap_claims.sh': b'# retained gap repair\n',
+                'docs/tasks/OWNED.md': b'# owned project task\n',
+                'README_POLICY.md': b'old neutral policy\n',
+                'DOCTRINE_VERSION': b'old fixture version\n',
+            }
+            supplied = {
+                'scripts/check_task_acceptance.sh': b'# incoming acceptance\n',
+                'scripts/check_gap_claims.sh': b'# incoming gap\n',
+                'docs/tasks/OWNED.md': b'# incoming project task\n',
+                'README_POLICY.md': b'new neutral policy\n',
+                'DOCTRINE_VERSION': b'new fixture version\n',
+            }
+            if incoming_census is not None:
+                supplied['scripts/check_no_background_jobs.sh'] = incoming_census
+            for directory, files in ((project, original), (incoming, supplied)):
+                for name, content in files.items():
+                    path = directory / name
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    path.write_bytes(content)
+                    path.chmod(0o755 if name.endswith('.sh') else 0o644)
+
+            def snapshot(directory):
+                return {path.relative_to(directory).as_posix():
+                        (path.read_bytes(), path.stat().st_mode & 0o777)
+                        for path in directory.rglob('*') if path.is_file()}
+
+            source_before = snapshot(incoming)
+            git = tools / 'git'
+            git.write_text('''#!/usr/bin/env python3
+import pathlib, sys
+fixture = pathlib.Path(__file__).resolve().parent.parent
+project = fixture / 'project'
+if sys.argv[1:] != ['rev-parse', '--show-toplevel'] or pathlib.Path.cwd() != project:
+    sys.exit('unexpected Git operation in scaffold fixture')
+print(project)
+''')
+            git.chmod(0o755)
+            environment = {**os.environ, 'PATH': str(tools) + os.pathsep + os.environ['PATH']}
+            result = subprocess.run(['bash', 'scripts/update_scaffold.sh', str(incoming)],
+                                    cwd=project, env=environment, capture_output=True,
+                                    text=True, timeout=20)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stderr, '')
+            expected = dict(original)
+            for name in ('README_POLICY.md', 'DOCTRINE_VERSION'):
+                expected[name] = supplied[name]
+            actual = snapshot(project)
+            self.assertEqual(set(actual), set(expected), 'sync changed the file inventory')
+            for name, content in expected.items():
+                self.assertTrue(actual[name][0] == content, 'sync changed bytes in ' + name)
+                self.assertEqual(actual[name][1], 0o755 if name.endswith('.sh') else 0o644,
+                                 'sync changed mode of ' + name)
+            self.assertEqual(snapshot(incoming), source_before, 'sync changed its input')
+            self.assertEqual(list((project / 'target/tmp').iterdir()), [],
+                             'updater leaked its owned acquisition workspace')
+            self.assertEqual(result.stdout,
+                             '  synced README_POLICY.md\n'
+                             '  synced DOCTRINE_VERSION\n'
+                             '✓ 2 scaffold file(s) synced to new fixture version.\n'
+                             "  Review 'git diff', run 'make gate', then commit.\n")
+
+    def test_stale_incoming_census_cannot_replace_repair(self):
+        self.sync(b'#!/usr/bin/env bash\necho stale census\n')
+
+    def test_different_incoming_census_requires_review(self):
+        self.sync(b'#!/usr/bin/env bash\necho proposed replacement\n')
+
+    def test_absent_incoming_census_still_syncs_neutral_files(self):
+        self.sync(None)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=SCRIPT,
                         help='trusted implementation source for predecessor comparison')
     parser.add_argument('--mutation', choices=sorted(MUTATIONS))
+    parser.add_argument('--updater-source', type=Path, default=UPDATER,
+                        help='trusted scaffold implementation for predecessor comparison')
+    parser.add_argument('--only-scaffold', action='store_true',
+                        help='run only the public scaffold integration cases')
     args = parser.parse_args()
     source = args.source.read_bytes()
     if args.mutation:
@@ -198,9 +291,16 @@ def main():
     Census.sanctioned = (ROOT / 'doctrine/sanctioned_processes.tsv').read_bytes()
     Census.work = ROOT / 'target/handoff-selftest'
     Census.work.mkdir(parents=True, exist_ok=True)
-    result = unittest.TextTestRunner(verbosity=1).run(unittest.defaultTestLoader.loadTestsFromTestCase(Census))
+    Scaffold.updater = args.updater_source.read_bytes()
+    Scaffold.repaired = SCRIPT.read_bytes()
+    Scaffold.work = Census.work
+    suite = unittest.TestSuite()
+    if not args.only_scaffold:
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(Census))
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(Scaffold))
+    result = unittest.TextTestRunner(verbosity=1).run(suite)
     print(f'HANDOFF-CENSUS: {result.testsRun} tests / {len(result.failures)} failures / '
-          f'{len(result.errors)} errors; synthetic host-tool responses')
+          f'{len(result.errors)} errors; synthetic host tools and local scaffold sync')
     return 0 if result.wasSuccessful() else 1
 
 
