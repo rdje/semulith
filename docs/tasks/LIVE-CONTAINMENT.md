@@ -177,6 +177,48 @@ map/index/caps/table/path/currentness checks, then commit before resuming P4.14.
 Status: complete; all seven books and complete source inverses pass.
 Evidence target/live-containment/locality-book.
 
+## .4f / SEMULITH-LC-0009 — truthful orientation before inventory adoption
+
+Status: complete; D50 fixed/verified. Owned on clean314b0c4 after exact13-file commit verification,
+brief0/untracked and unrestricted handoff0, before edits or scratch writes.
+Inventory observation D50, priority2: KNOWLEDGE_MAP.md labels all33 flat task
+files "Active task-trees"; its generator enumerates filenames without reading
+status. Reproduce from the public generator and independent metadata census;
+correct the heading to the complete task-file inventory, retaining every link,
+order and other output byte. Verify a heading-only source/output inverse and
+that the predecessor's active-set interpretation fails while the new complete
+inventory agrees. No filtering or record removal is authorized by this slice.
+
+The current MEMORY pointer also repeats roster details and D49 measurements.
+Audit each removed field against its canonical task/index/decision home, then
+overwrite it with the selected LC.4 action, required active IDs, in-flight state,
+blockers and derive-on-read revision. Preserve the existing TREE-CLAIMS active-ID
+contract; no cap or checker semantics change. Publish both orientation meanings
+and exact read commands in the existing book chapter. Own target/live-containment/
+orientation diagnostics, focused checks, seven books/rendered normal+print,
+complete old history/head retention and protected-file/mode proof. Fixed caps,
+archive bodies, CPU/canonical/LIVE stay exact; COMMIT before the next slice.
+Task-family census on314b0c4:96files/2362533B =33trees/1175978B,
+one template/3414B,40archive files/1070409B and22artifacts/112732B.
+Full doctrine/inventory/checker adoption and a reviewed capacity remedy remain
+LC.4; this slice does not adopt donor measurements or widen a limit.
+promotion: declined (the orientation correction and canonical routes are local).
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/orientation/verify.py`
+  rc=0: predecessor labels33 files active; independent Metadata census derives
+  six active,23 done and four proposed. Generator enumerates all flat filenames.
+- [x] **ADDRESSED** — verify.py normal/O rc=0: heading-only generator/map
+  inverses exact, all33 ordered links retained. MEMORY32lines/2871B becomes
+  26lines/1461B before final resume wording; eight canonical audit homes resolve,
+  six active IDs close. TREE-CLAIMS rc=0 after draft line-wrap correction.
+- [x] **NO REGRESSION** — focused.sh/verify.py/rendered.py rc=0 (normal/O for
+  verifiers): focused12/sharder12/seven books/3208 fresh+actual links, complete
+  normal+print teaching/three literal commands,97 old history entries/whole
+  heads and1386 protected regular files/Gitlink exact. Caps/archive/LIVE unchanged.
+- [x] **LOCKSTEP** — book/source/map/pointer/history and this owner agree;
+  mandatory COMMIT hooks apply. Full doctrine/inventory/checker adoption and
+  capacity remedy remain .4; no CPU or qualification credit.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -484,6 +526,11 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4f: verify.py/rendered.py normal/O and focused.sh rc=0: D50 fixed;33 files/six
+active, heading-only/full-book inverses, eight pointer authority homes,97 old
+entries/whole heads/1386 protected files/Gitlink exact. Focused12/sharder12/seven
+books/3208 links and three literal examples pass; fixed caps and LIVE unchanged.
+
 .4e: seven books, whole reference/book inverses and rendered five-command/first-
 last checks, focused8 and protected scope1269unchanged rc=0.
 
@@ -529,6 +576,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0009 (leaf LIVE-CONTAINMENT.4): make orientation describe its sources` — .4f complete; full adoption and capacity remedy remain.
 
 `SEMULITH-LC-0008 (leaf LIVE-CONTAINMENT.4): publish temporary-control procedures in the book` — .4e complete.
 

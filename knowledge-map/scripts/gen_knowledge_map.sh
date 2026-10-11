@@ -26,7 +26,7 @@ if [ -f knowledge-map/subsystems.md ]; then
 fi
 
 echo
-echo "## Active task-trees"
+echo "## Task-tree files"
 echo
 found=0
 for f in $(ls docs/tasks/*.md 2>/dev/null | LC_ALL=C sort); do

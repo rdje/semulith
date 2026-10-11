@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0009 (leaf LIVE-CONTAINMENT.4) — make orientation describe its sources
+
+- Correct D50: generated map retains all33 task links under "Task-tree files"; metadata derives six active trees. Generator/map/book inverses preserve all other bytes.
+- Restore MEMORY to a selected action and canonical routes; audit removed detail to eight existing homes. Keep all old history entries, archive bytes, fixed caps and LIVE/CPU state exact. Full containment inventory/adoption and capacity remedy remain LC.4.
+
 ## SEMULITH-P4-0248 (leaf P4-SYSTEM.14) — preserve published ordinary task history
 
 - Add separate HEAD/index/working archive byte/mode preservation. All43 controls pass normal/O; nine omissions lose6/8/2/1/1/1/1/1/1 assertions with zero errors. Retain original46 sealed controls and reader; TASK-HISTORY48, derived total1441.

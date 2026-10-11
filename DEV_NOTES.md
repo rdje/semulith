@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-11)_ — truthful orientation before containment inventory (LIVE-CONTAINMENT.4f)
+
+D50: on314b0c4 the public Knowledge Map generator enumerates33 flat task
+files without reading status, yet labels the list "Active task-trees". The
+independent exact Metadata census derives only six active trees. Correct only
+the source heading to "Task-tree files" and regenerate; all33 links, ordering,
+labels and every other source/output byte remain exact. The status-aware open
+and closed indexes retain their distinct role; no task is filtered or retired.
+
+MEMORY had resumed copying roster detail and completed D49 measurements.
+Audit eight canonical authority routes, then overwrite the current block with
+one selected LC.4 action, the required active IDs, in-flight state, blockers and
+Git's revision accessor. The first draft wrapped three active IDs onto another
+line; TREE-CLAIMS refused those missing IDs. Restoring one complete labeled line
+passes without changing the checker. Detailed D49 and CPU facts remain in their
+owners; no unique fact needs a backfill. The earlier pointer remains in Git.
+
+The book teaches both inventories and three literal read commands. Verify
+complete generator/map/book inverses, whole old history heads, protected files/
+modes/Gitlink, fixed caps, focused checks and seven normal/print book outputs.
+Final focused12/sharder12/seven books/3208 links and all three literal examples
+pass; complete teaching appears normal+print. Verify normal/O preserves all97
+old entries/whole heads and1386 protected regular files/Gitlink. Pointer initial
+32lines/2871B becomes26lines/1461B before final resume wording. The diagnostic
+first required a bare status line and refused the valid dated BOOK-APPARATUS
+status; the exact leading status token grammar now accepts its documented tail.
+No archive bytes, canonical inputs, CPU gates or LIVE values change. Full
+containment doctrine/inventory/checker adoption and capacity remedy stay LC.4.
+promotion: declined (local orientation correction; existing pointer decision is authoritative).
+
 ## _(2026-10-11)_ — preserve published ordinary task history (P4-SYSTEM.14 a42l2)
 
 D49 before: a42k's unchanged full gate on505dd74 accepted an isolated staged

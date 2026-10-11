@@ -47,6 +47,20 @@ Diagnostic evidence and dependency inputs are retained.
 
 {{#include ../../../ARTIFACT_CLEANUP.md:latest}}
 
+## Orientation and the selected next action
+
+`KNOWLEDGE_MAP.md` lists every task-tree file, including completed and proposed
+trees. Its generated inventory is not an active-work roster. The status-aware
+open and closed indexes below own that distinction. `MEMORY.md` selects one
+next action; measurements and completed receipts stay in their owning trees.
+Read the current revision from Git:
+
+```sh
+git log -1 --format='%H %s'
+cat MEMORY.md
+cat KNOWLEDGE_MAP.md
+```
+
 ## Every lane of the plan, and who owns it
 
 Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository

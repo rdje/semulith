@@ -43,7 +43,7 @@
 - `scripts/` — the doctrine enforcer and its checks; `scripts/check_doctrines.project.sh` is
   this project's own slot.
 
-## Active task-trees
+## Task-tree files
 
 - [`AG-OS.md`](docs/tasks/AG-OS.md)
 - [`ARTIFACT-CLEANUP.md`](docs/tasks/ARTIFACT-CLEANUP.md)
