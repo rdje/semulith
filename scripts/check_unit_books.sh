@@ -1,20 +1,12 @@
 #!/usr/bin/env bash
 # scripts/check_unit_books.sh — UNIT-BOOKS (project doctrine).
 #
-# MODEL-BOOKS.6's acceptance, mechanized (the tree's criterion 1): every REGISTERED modelled
-# unit (`materials/units.sexp` — the one registration place) has its own mdBook
-# (`decision_one-definition-one-book`) and the book BUILDS. A unit without a book is a unit
-# whose materials are unreviewable; a book under `docs/models/` that no unit registers fails
-# by name too — the reverse direction is what keeps the family from accreting unregistered
-# prose. The structure check (book.toml + src/SUMMARY.md present) is complemented by the
-# build itself: a malformed book.toml fails the build outright. ⚠️ mdbook tolerates a
-# SUMMARY naming a missing chapter (it renders a draft with a warning) — measured while
-# writing the self-test — so the build arm's broken fixture is a malformed book.toml,
-# which fails hard.
-#
-# CONTRACT: exit code is the verdict; explains on stderr; deterministic; no network. The build
-# writes each book's gitignored output directory, the same standing as PORT-WEB's wasm build.
-#   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
+# UNIT-BOOKS: shared registry mapping, relative owned source paths, exact catalogue,
+# no orphan books, and fresh builds of the complete documentation collection.
+# Every rendered local hyperlink path/HTML fragment (including print) must resolve.
+# Remote availability and semantic/chapter completeness are separate claims.
+# Scratch outputs and self-test fixtures stay under target/ and are removed.
+# Exit 0 = checked; 1 = defect; 2 = cannot judge/refused input. No network.
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
@@ -24,71 +16,7 @@ command -v mdbook >/dev/null 2>&1 || {
   echo "UNIT-BOOKS: REFUSED — mdbook is not on PATH; this check cannot judge." >&2
   echo "  Install it with: cargo install mdbook" >&2; exit 2; }
 
-check_books() { # $1 = corpus root (materials/units.sexp + docs/models/ under it)
-python3 - "$1" <<'PY'
-import subprocess
-import sys
-from pathlib import Path
-
-root = Path(sys.argv[1])
-sys.path.insert(0, "scripts")
-import sexp as S
-
-registry = root / "materials" / "units.sexp"
-if not registry.is_file():
-    print("UNIT-BOOKS: REFUSED — materials/units.sexp is absent; the unit registry this "
-          "check enumerates is gone")
-    print("__CHECKED__ 0"); sys.exit(2)
-units = [u for u in S.read_file(registry)
-         if isinstance(u, list) and u and str(u[0]) == "unit"]
-if not units:
-    print("UNIT-BOOKS: REFUSED — the unit registry is empty; a census over no units is a "
-          "claim about nothing")
-    print("__CHECKED__ 0"); sys.exit(2)
-
-findings, checked = [], 0
-registered_books: dict[str, str] = {}
-for u in units:
-    uid = str(S.field(u, "id", "units.sexp"))
-    book_rel = str(S.field(u, "book", "units.sexp")).rstrip("/")
-    checked += 1
-    book_dir = root / book_rel
-    if not book_rel or not book_dir.is_dir():
-        findings.append(f"NO BOOK {uid}: the registry names '{book_rel}', which does not "
-                        f"exist — a unit without a book is a unit whose materials are "
-                        f"unreviewable")
-        continue
-    registered_books[book_dir.resolve().as_posix()] = uid
-    for piece in ("book.toml", "src/SUMMARY.md"):
-        if not (book_dir / piece).is_file():
-            findings.append(f"INCOMPLETE BOOK {uid}: {book_rel} lacks {piece} — a book "
-                            f"that cannot be navigated is not a book")
-            break
-    else:
-        r = subprocess.run(["mdbook", "build", str(book_dir)],
-                           capture_output=True, text=True)
-        if r.returncode != 0:
-            tail = [l for l in (r.stderr or r.stdout).splitlines() if l.strip()]
-            findings.append(f"BOOK DOES NOT BUILD {uid}: `mdbook build {book_rel}` "
-                            f"failed — {tail[-1] if tail else 'no output'}")
-
-# the reverse direction: a book no unit registers
-models = root / "docs" / "models"
-if models.is_dir():
-    for child in sorted(models.iterdir()):
-        if not child.is_dir() or not (child / "book.toml").is_file():
-            continue
-        if child.resolve().as_posix() not in registered_books:
-            findings.append(f"ORPHAN BOOK {child.relative_to(root)}: a book under "
-                            f"docs/models/ that no unit registers — register the unit in "
-                            f"materials/units.sexp or remove the book")
-
-for f in findings:
-    print(f)
-print(f"__CHECKED__ {checked}")
-sys.exit(1 if findings else 0)
-PY
-}
+check_books() { python3 scripts/unit_books.py "$1"; }
 
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
@@ -125,6 +53,10 @@ self_test() {
   registry '(unit (id "u1") (kind processor) (layer processor) (book "docs/models/u1"))'
   arm "RED   a unit whose book does not exist" 1 "NO BOOK u1"
 
+  mkdir -p "$t/docs/book/src"
+  printf '[book]\ntitle = "project"\nsrc = "src"\n' > "$t/docs/book/book.toml"
+  printf '# Summary\n\n[Models](models.md)\n' > "$t/docs/book/src/SUMMARY.md"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n' > "$t/docs/book/src/models.md"
   book u1
   arm "GREEN a registered unit with a building book" 0 "__CHECKED__ 1"
 
@@ -140,9 +72,40 @@ self_test() {
   arm "RED   a book that does not build (a malformed book.toml)" 1 "BOOK DOES NOT BUILD u1"
   printf '[book]\ntitle = "u1"\nsrc = "src"\n' > "$t/docs/models/u1/book.toml"
 
+  printf '# Models\n' > "$t/docs/book/src/models.md"
+  arm "RED   missing registered catalogue entry" 1 "MODEL-CATALOGUE missing u1"
+  printf '# Models\n\n- **`u1`** (kind: board)\n' > "$t/docs/book/src/models.md"
+  arm "RED   wrong catalogue kind" 1 "MODEL-CATALOGUE kind u1"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n' > "$t/docs/book/src/models.md"
+
+  printf '# Intro\n\n[Missing](missing.md)\n' > "$t/docs/models/u1/src/intro.md"
+  arm "RED   rendered local path is absent" 1 "BOOK-LINK missing-path"
+  printf '# Intro\n\n[Missing](intro.md#absent)\n' > "$t/docs/models/u1/src/intro.md"
+  arm "RED   rendered HTML anchor is absent" 1 "BOOK-LINK missing-anchor"
+  printf '# Intro\n' > "$t/docs/models/u1/src/intro.md"
+
+  registry "(unit (id \"u1\") (kind processor) (layer processor) (book \"$t/docs/models/u1\"))"
+  arm "REFUSE absolute registry book path before build" 2 "UNSAFE BOOK PATH"
+
   registry ''
   arm "REFUSE an empty registry" 2 "registry is empty"
 
+  out="$(python3 scripts/probe_unit_books.py 2>&1)"; rc=$?
+  if [ "$rc" -eq 0 ]; then pass=$((pass+1)); else
+    fail=$((fail+1)); printf 'UNIT-BOOKS probe failed\n%s\n' "$out" >&2
+  fi
+  out="$(python3 -O scripts/probe_unit_books.py 2>&1)"; rc=$?
+  if [ "$rc" -eq 0 ]; then pass=$((pass+1)); else
+    fail=$((fail+1)); printf 'UNIT-BOOKS optimized probe failed\n%s\n' "$out" >&2
+  fi
+  out="$(python3 scripts/probe_book_navigation.py 2>&1)"; rc=$?
+  if [ "$rc" -eq 0 ]; then pass=$((pass+1)); else
+    fail=$((fail+1)); printf 'UNIT-BOOKS navigation probe failed\n%s\n' "$out" >&2
+  fi
+  out="$(python3 -O scripts/probe_book_navigation.py 2>&1)"; rc=$?
+  if [ "$rc" -eq 0 ]; then pass=$((pass+1)); else
+    fail=$((fail+1)); printf 'UNIT-BOOKS optimized navigation probe failed\n%s\n' "$out" >&2
+  fi
   rm -rf "$t"
   printf 'UNIT-BOOKS --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -155,17 +118,18 @@ self_test >/dev/null 2>&1 || {
 
 out="$(check_books "$ROOT")"; rc=$?
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"
-body="$(printf '%s' "$out" | grep -v '^__CHECKED__ ' || true)"
+body="$(printf '%s' "$out" | grep -v '^__\(CHECKED\|LINKS\)__ ' || true)"
 if [ "$rc" -eq 2 ]; then
   { echo "UNIT-BOOKS: REFUSED — the unit corpus could not be read."
     printf '%s\n' "$body" | sed 's/^/  /'; } >&2
   exit 2
 fi
 if [ "$rc" -ne 0 ]; then
-  { echo "UNIT-BOOKS: a registered unit lacks its book, or a book lacks its unit."
+  { echo "UNIT-BOOKS: catalogue, source, build or rendered-navigation defect."
     printf '%s\n' "$body" | sed 's/^/  /'
-    echo "  One definition, one book: register the unit's book, or write it."; } >&2
+    echo "  Inspect the named source and fresh bundle verdict; stale output cannot qualify."; } >&2
   exit 1
 fi
-printf 'UNIT-BOOKS: ok (%s unit(s) — every registered unit has its book, and every book builds)\n' "${count:-0}"
+links="$(printf '%s' "$out" | sed -n 's/^__LINKS__ //p')"
+printf 'UNIT-BOOKS: ok (%s units + project book; catalogue and %s rendered hyperlinks checked in fresh bundle)\n' "${count:-0}" "${links:-0}"
 exit 0

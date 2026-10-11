@@ -18,12 +18,12 @@
   `scripts/check_push_cadence.sh --status` says where we stand.
 - **Active trees:** `CITATION-ACCURACY` (1/2 — CITATION-QUOTES registered; `.2` the Markdown census, proposed) · `LIVE-CONTAINMENT` (3/4 — the closed-tree register, the orientation sources, TOOLBOX/DOCTRINE_ENFORCEMENT partitioned; `.4` active: finite archive sealed; full inventory/adoption remains) · `LAB-BENCH` (1/2 — `.2` feedback-gated) · `ARTIFACT-CLEANUP` (recurring §8; last run `2026-10-10`, `SEMULITH-AC-0062`) · `P5-BOARD` (10/12 — the platform capability manifest landed: `platform.sexp`, derived and drift-gated by the 34th doctrine PLATFORM-GEN; the dossier pin load-bearing; `.5` probes and `.7` gate report stay gated on the CPU's acceptance trajectory) · `P4-SYSTEM` (13/18 — `.1`–`.13` closed; CPU-SYSTEM `incomplete`, 7/10 axes open; `.14` evidence active).
   Milestone frontier: `P4-SYSTEM` (the CPU the board waits on). (`BOOK-APPARATUS` and `MCU-DOCS` closed `2026-10-02`, 2/2 each — the MCU documentation set is acquired and digest-verified.)
-- next_action: `P4-SYSTEM.14` a24/0215: six cross-unit book routes and the full
-  rendered path/fragment gate across seven books/print views. Main-book50->0 via
-  after-include resolver; canonical indexes/LIVE exact,19 API/CLI tests and four
-  omissions checked. A25 owns permanent append-history preservation after an
-  overbroad edit was stopped/restored before commit; both old heads prove exact.
-  Then a26 artifacts/evaluator/collector, captures and full policy/status/mirrors. Ordinary archive13 stays
-  outside the12-file seal. Qualification closed, no canonical v1; CI a18 green.
+- next_action: `P4-SYSTEM.14` a25/0216: permanent shard-aware append-history
+  predecessor preservation, reproducing a23's two refused old-receipt edits.
+  A24 repairs six cross-unit routes/four print copies and the stale RV64GC
+  catalogue; UNIT-BOOKS now builds seven books fresh and checks local paths/HTML
+  fragments. Ordinary part14 retains whole old overview/receipts outside the
+  closed12-file seal. Then a26 artifacts/evaluator/collector, captures and full
+  policy/status/mirrors. Qualification closed, no canonical v1; CI a18 green.
 - in_flight_uncommitted: none after this commit.
 - blockers: none. Archive seal LC0006 is complete; full containment adoption remains.

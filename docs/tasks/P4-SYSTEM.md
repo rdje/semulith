@@ -289,7 +289,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifacts/evaluator/captures |
+| 1 | `P4-SYSTEM.14` | `active` | full CI preflight, a25 append-history preservation, then a26 artifacts/evaluator/captures |
 
 ## Decisions
 
@@ -404,9 +404,38 @@ Schedule a25's permanent append-history preservation guard before artifact work;
 this specific scope-proof blind spot is owned, not a claim about all other gates.
 Evidence target/p4-system-14/a23. Promotion: decision_book-record-navigation.md.
 
-### `.14` a24 — resolve cross-unit book navigation (scheduled, SEMULITH-P4-0215)
+### `.14` a24 — resolve cross-unit navigation and catalogue drift (completed, SEMULITH-P4-0215)
 
-After a23's clean COMMIT workflow, repair the six measured cross-unit book links
+Owned on cleanf40ece2, brief0/untracked and actual handoff census OK, before edits.
+Own the six cross-unit route repairs, static bundle viewing contract, full rendered
+path/fragment checks and current model-catalogue correction. Preserve canonical
+registration/profile data, authored examples, all prior task/history receipts and
+fixed caps. Use pinned-base predecessor/source inverses before every commit.
+
+New high-priority defect: docs/book/src/models.md lists5 units and calls RV64GC
+unregistered/definition pipeline unstarted, while materials/units.sexp registers6,
+including rv64gc-lab-v0 and its existing book. Sexp/Markdown set census isolates
+that missing ID; registry last changed47cb436 (a10 registration), overview last
+changed141c1bd (profile resolution). Thus the old stage prose survived registration.
+Read those precise public records; correct current claims and gate catalogue IDs
+against the canonical registry. No CPU acceptance credit follows registration.
+
+Additional measured path defect: before.py rc=0 invokes the old unit helper on
+an owned on-volume fixture. An absolute book path outside its supplied corpus
+is accepted and built. No external repository/volume was touched; the fixture
+was removed. schema/units.sexp only requires a nonempty book string. Own a shared
+single-mapper registry reader and safe relative/same-volume/Git-boundary checks
+before any build. Keep output fresh in an owned scratch bundle so old HTML cannot
+supply a passing verdict; preserve public per-book output layout for normal builds.
+
+Own preprocessor/public-protocol extensions, existing UNIT-BOOKS/full navigation
+checks/probes, affected relative book configs, live/decision/book sync and COMMIT
+workflow. If main-book capacity requires it, preserve whole old receipt/source
+spans in ordinary part14, with exact source inverse/order/link/damaged controls;
+keep the closed seal/earlier archives and all size ceilings unchanged. Own notes
+sharding if needed, through the published tool and full predecessor proofs.
+
+Repair the six measured cross-unit book links
 (lan9118 introduction/index2, SiFive UART introduction/index2, netboard materials2).
 Read the actual build/serving contract; preserve each book's teaching narrative,
 source identities and fixed caps. Implement full rendered path/fragment checks
@@ -414,6 +443,20 @@ and fail-closed controls across all seven books (including print views) before
 registering a navigation gate. Own every further finding and safe follow-up.
 Then a25 append-history preservation guard (SEMULITH-P4-0216), followed by a26
 artifact schemas/mappings (SEMULITH-P4-0217), evaluator/collector and captures. No CPU qualification from navigation.
+
+Verification: fresh UNIT-BOOKS now reports no catalogue/path/fragment defects;
+3016 hyperlinks checked. Preserve62 complete model HTML pages except six normal/
+four print hrefs;12 loopback reads pass and server closes. Gate23/0/navigation26/0,
+normal/optimized; omissions4/9/12/2 and20/11/15/2 assertion failures, also optimized.
+Focused12/sharder12/0/seven books/scope1268 pass. Derive39 doctrines/773 outer arms.
+
+Part14 contains the whole2621B overview and1956B completed book span; complete
+source inverses/six damaged refusals pass. DEV30==26+4/5874B preserves all entries
+and old manifest prefix. Before staging, repeat whole append-predecessor and
+root inverses, including the original bad-count controls. No old seal/cap/CPU
+acceptance/qualification change. Fix my cwd-relative -d assumption caught by the
+rendered proof: restore Makefile, reproduce/remove41 generated files, rerun normal
+builds. Full CI milestone check is the next clean preflight before a25 changes.
 
 ### `.14` a25 — preserve live append-history predecessors (scheduled, SEMULITH-P4-0216)
 
@@ -522,6 +565,18 @@ Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a24 — **ROOT CAUSE**: before.py/expanded-before.log rc=0/1 reproduce
+  old absolute-source acceptance, stale RV64GC catalogue and six normal/four print
+  missing paths. Public CLI help identifies the attempted -d cwd assumption.
+- [x] `.14` a24 — **ADDRESSED**: UNIT-BOOKS/proof.py/rendered.py/mutations.py rc=0;
+  fresh seven-book gate checks3016 hyperlinks,62 HTML inverses and12 HTTP reads;
+  gate23/0/resolver26/0 and eight omissions discriminate normally/optimized.
+  Two source inverses/six damaged refusals and DEV30==26+4 remain exact.
+- [x] `.14` a24 — **NO REGRESSION**: focused12/sharder12/0/seven books/scope rc=0;
+  1268 other tracked files exact, Git links unchanged; derive773 outer arms and
+  39 doctrines. Preserve both append predecessors/root inverse and refuse two old
+  receipt edits before staging. No CPU/canonical/cap advance; full CI preflight next.
+
 - [x] `.14` a23 — **ROOT CAUSE**: initial census.log/public build-before.log rc=0
   enumerate56 missing paths,50 main/6cross-unit, no bad fragments. Include origins
   and mdBook `.md`->`.html` conversion produce ungenerated destinations.
@@ -568,6 +623,14 @@ Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#accepta
 
 ## Verification Log
 
+a24: before.py/expanded-before.log old absolute source accepted, catalogue missing
+RV64GC and six normal/four print missing hrefs; repaired fresh gate3016 hyperlinks,
+62 full HTML inverses/12 HTTP reads,26/0+23/0 probes normally/optimized, omissions
+20/11/15/2 and4/9/12/2 also optimized. Part14 two complete source inverses/six
+refusals; DEV30==26+4/5874B and old manifest prefix exact. Focused12/sharder12/0/
+seven books/scope1268 rc=0;773 outer arms. Restore Makefile after measured -d
+assumption failure; reproduce/remove41 generated files. Full CI preflight next.
+
 a23: public before/after main50->0,50 full HTML inverses/print navigation,
 probe19/0 also optimized, omissions16/10/13/2 also optimized, five literal reads,
 focused12/seven books/scope rc=0. Canonical indexes/LIVE/history exact; six model
@@ -605,6 +668,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a24 | `SEMULITH-P4-0215 (leaf P4-SYSTEM.14): gate fresh book navigation and catalogue` | full CI preflight, a25 append-history preservation, then a26 artifacts |
 | `.14` a23 | `SEMULITH-P4-0214 (leaf P4-SYSTEM.14): resolve included book record links` | a24 cross-unit routes/rendered gate, a25 append-history preservation, then artifact mappings |
 | `.14` a22 | `SEMULITH-P4-0213 (leaf P4-SYSTEM.14): preserve completed evidence records` | a23 rendered book navigation, then artifact schemas/mappings and evaluator/collector |
 | `.14` a21 | `SEMULITH-P4-0212 (leaf P4-SYSTEM.14): bound pin-only reads and snapshot probes` | a22 completed-unit containment, artifact mappings/evaluator, retention and fresh captures |
@@ -615,6 +679,8 @@ Completed .14 a1–a19 commit rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-
 Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
+
+- `2026-10-11`: `.14` a24 (SEMULITH-P4-0215): repair/gate seven-book catalogue and rendered navigation; relative safe inputs/fresh outputs,26/0+23/0 controls and62 HTML inverses; preserve part14/DEV predecessors, fixed caps and CPU status.
 
 - `2026-10-11`: `.14` a23 (SEMULITH-P4-0214): preserve canonical include inputs while resolving50 missing main-book routes;19 API/CLI tests/4omissions and full HTML inverses green; six cross-unit defects and full gate owned next.
 

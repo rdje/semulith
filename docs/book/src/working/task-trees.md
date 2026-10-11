@@ -82,38 +82,8 @@ lengths. The frozen manifest gains one row; earlier rows and sealed history rema
 unchanged. The 48 KiB live ceiling stays fixed, and the book retains the worked
 feature examples independently of the session notes.
 
-P4.13 c26a applies the same discipline to the task tree itself. At 123,960 bytes,
-the live tree had 7,112 bytes of room under its fixed 131,072-byte part ceiling.
-Six completed spans totaled 81,532 bytes; archive 8 already held 59,436, so those
-payloads could not fit there. [Archive 9](#read-task-history)
-retains all six payloads in source order with individual byte lengths and SHA256
-markers, including older log rows in their original context. It is 83,418 bytes
-with wrappers; the live partition is 45,205 bytes before the new receipt.
-
-The verification extracts each marked payload, removes only new live routing,
-ownership and receipt text, and reconstructs the committed source from 5eaef2a:
-123,960 bytes, SHA256
-`efd367b86309c45a53ddf736352135e18ea56171f1669d43c43941626c7fb4ac`.
-Earlier archive parts and all retained source segments are byte-exact. The
-frontier, census and next action stay live; feature examples remain in their
-book chapters. Neither the task-family nor per-part cap grows, and this move
-adds no CPU-contract credit.
-
-P4.13 c28a repeats the whole-entry proof for development notes. Source `5daa7bb`
-holds 23 entries/47,951 bytes, only 1,201 bytes below the fixed 49,152-byte cap.
-The published sharder targets 30,000 bytes: sixteen entries remain in 29,706
-bytes; seven oldest entries move as an exact 18,245-byte suffix into shard 0225
-(18,478 bytes including its wrapper). Remove only the new receipt/navigation
-footer and concatenate the retained prefix and archived suffix to reconstruct
-the source, SHA256
-`6d0ccb9383365685023d20543138f1e47735360257fe1fb9fe9560e91ecb70c3`.
-The earlier manifest rows and sealed history stay byte-exact, and no bound grows.
-At that checkpoint the next evidence question was the public Sail override's
-contained-versus-crossing AMO granule behavior. C28b subsequently qualified it;
-the [memory chapter](../plan/p4/contract-memory.md) retains that result and its
-wrong-granule control.
-
-
+The complete P4.13 c26a/c28a book receipts remain in ordinary archive14;
+read them through the commands below. Current partition rules remain above.
 
 The whole P4.13 c29b1 append-history receipt is retained in
 [archive 13](#read-task-history).
@@ -144,6 +114,7 @@ Ordinary part13 and named book receipts remain directly readable Markdown:
 
 ```sh
 cat docs/tasks/archive/P4-SYSTEM-13.md
+cat docs/tasks/archive/P4-SYSTEM-14.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md

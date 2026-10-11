@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Resolve the project book's declared inline record links after include expansion.
+"""Resolve declared inline record and sibling-book links after include expansion.
 
 This is an HTML-only mdBook preprocessor, not a general Markdown parser. It
-rewrites simple inline links to existing task records and external task-history
-reading surfaces. Labels, examples, other destinations and canonical inputs stay
+rewrites simple inline links to existing task records, task-history reading
+surfaces and registered sibling chapters. Labels, examples and canonical inputs stay
 unchanged. Unsupported link syntax is left for rendered navigation verification.
 """
 from __future__ import annotations
@@ -14,7 +14,9 @@ from pathlib import Path, PurePosixPath
 import posixpath
 import re
 import sys
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
+
+import unit_books as B
 
 ROOT = Path(__file__).resolve().parent.parent
 INLINE = re.compile(r'(?<!!)\[[^\]\n]*\]\((?P<target>[^\s()]+)\)')
@@ -78,9 +80,31 @@ def code_mask(content: str) -> str:
     return ''.join(chars)
 
 
-def destination(root: Path, chapter: str, target: str) -> str | None:
-    """Map only unfragmented declared project-record paths to reading instructions."""
+def destination(root: Path, chapter: str, target: str,
+                book_root: Path | None = None) -> str | None:
+    """Map declared records to the guide, or sibling chapters to built HTML."""
     url = urlsplit(target)
+    if book_root is not None and book_root != root / 'docs/book':
+        if url.scheme or url.netloc or not url.path or '\\' in url.path:
+            return None
+        source = (book_root / 'src' / PurePosixPath(chapter).parent / url.path).resolve()
+        for unit in B.registered_units(root):
+            other = B.book_path(root, unit['book'])
+            if other == book_root or not source.is_relative_to(other / 'src'):
+                continue
+            leaf = source.relative_to(other / 'src')
+            if leaf.suffix != '.md':
+                return None
+            original = book_root / 'src' / PurePosixPath(chapter).parent / url.path
+            # Resolve for matching, then validate the original route's components.
+            # A symlink must not turn an unrelated source into a declared chapter.
+            if original.is_symlink() or not source.is_file():
+                raise NavigationRefused('declared model chapter is missing or symlinked: ' + target)
+            B.source_path(root, original.relative_to(root).as_posix())
+            relative = posixpath.relpath(other / 'book' / leaf.with_suffix('.html'),
+                                        book_root / 'book' / PurePosixPath(chapter).parent)
+            return urlunsplit(('', '', relative, url.query, url.fragment))
+        return None
     if url.scheme or url.netloc or url.query or url.fragment or not url.path:
         return None
     task = TASK.fullmatch(url.path)
@@ -98,7 +122,8 @@ def destination(root: Path, chapter: str, target: str) -> str | None:
     return relative + '#read-task-history'
 
 
-def rewrite_links(root: Path, chapter: str, content: str) -> tuple[str, int]:
+def rewrite_links(root: Path, chapter: str, content: str,
+                  book_root: Path | None = None) -> tuple[str, int]:
     edits = []
     for match in INLINE.finditer(code_mask(content)):
         before = match.start() - 1
@@ -106,7 +131,7 @@ def rewrite_links(root: Path, chapter: str, content: str) -> tuple[str, int]:
             before -= 1
         if (match.start() - before - 1) % 2:
             continue
-        replacement = destination(root, chapter, match.group('target'))
+        replacement = destination(root, chapter, match.group('target'), book_root)
         if replacement is not None:
             edits.append((*match.span('target'), replacement))
     for start, end, replacement in reversed(edits):
@@ -115,13 +140,27 @@ def rewrite_links(root: Path, chapter: str, content: str) -> tuple[str, int]:
 
 
 def preprocess(context: dict, book: dict, root: Path = ROOT) -> tuple[dict, int]:
+    try:
+        return _preprocess(context, book, root)
+    except B.BookRefused as exc:
+        raise NavigationRefused(str(exc)) from exc
+
+
+def _preprocess(context: dict, book: dict, root: Path) -> tuple[dict, int]:
     if not isinstance(context, dict) or not isinstance(book, dict):
         raise NavigationRefused('expected context and book objects')
     if context.get('renderer') != 'html':
         raise NavigationRefused('only the HTML renderer is supported')
-    book_root = context.get('root')
-    if not isinstance(book_root, str) or Path(book_root).resolve() != root / 'docs/book':
-        raise NavigationRefused('expected the project book root')
+    root = B.owned_root(root)
+    supplied_root = context.get('root')
+    if not isinstance(supplied_root, str):
+        raise NavigationRefused('expected a declared book root')
+    book_root = Path(supplied_root).resolve()
+    if book_root != root / 'docs/book':
+        declared = [B.book_path(root, unit['book']) for unit in B.registered_units(root)]
+        if book_root not in declared:
+            raise NavigationRefused('expected a declared book root')
+    B.source_path(root, book_root.relative_to(root).as_posix())
     result = copy.deepcopy(book)
     total = 0
 
@@ -144,7 +183,7 @@ def preprocess(context: dict, book: dict, root: Path = ROOT) -> tuple[dict, int]
                 if (not isinstance(path, str) or not path or '\\' in path or
                         PurePosixPath(path).is_absolute() or '..' in PurePosixPath(path).parts):
                     raise NavigationRefused('unsafe chapter path')
-                chapter['content'], count = rewrite_links(root, path, content)
+                chapter['content'], count = rewrite_links(root, path, content, book_root)
                 total += count
             visit(chapter.get('sub_items'))
 
@@ -166,7 +205,7 @@ def main(argv=None):
         print('BOOK-NAVIGATION: REFUSED — ' + str(exc), file=sys.stderr)
         return 2
     print(output)
-    print(f'BOOK-NAVIGATION: resolved {count} declared project-record links', file=sys.stderr)
+    print(f'BOOK-NAVIGATION: resolved {count} declared book links', file=sys.stderr)
     return 0
 
 

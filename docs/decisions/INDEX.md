@@ -6,7 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
-| [Book record navigation](decision_book-record-navigation.md) | `decision` | canonical task links resolve after includes; actual HTML inverse; cross-unit routes pending |
+| [Book record navigation](decision_book-record-navigation.md) | `decision` | included and cross-unit links; fresh catalogue/path/fragment gate; shared viewing root |
 | [Sail GPR comparison](decision_sail-gpr-comparison-method.md) | `decision` | typed witnesses and bounded readers; finite first-method/provenance/replay contract; evaluator pending |
 | [Matched experiment contract](decision_qualified-matched-experiment-contract.md) | `decision` | matched-GPR grammar/edges, authenticated reads, unique expectation writes and step budgets; evaluator/retention pending |
 | [`decision_obligation-catalog-parts.md`](decision_obligation-catalog-parts.md) | `decision` | explicit root-relative parts share one expansion owner; frozen bytes/order and fixed caps survive partition |

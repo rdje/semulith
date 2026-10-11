@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0215 (leaf P4-SYSTEM.14) — gate fresh book navigation and catalogue
+
+- Resolve six ordinary/four print sibling-book paths; correct and gate the registered model catalogue without CPU acceptance credit. Shared record mapping, safe relative source paths, fresh disposable seven-book builds and rendered local path/HTML-fragment checks extend UNIT-BOOKS.
+- Probe26/0 and gate23/0, both optimized, discriminate eight omissions;62 full model HTML inverses,3016 hyperlinks and12 loopback reads pass. Focused12/sharder12/0/seven books pass; derive773 outer arms/39 doctrines. Preserve whole old overview/receipts in ordinary part14 with two full inverses/six refusals and DEV30==26+4. Restore the established Makefile after the rendered proof catches a cwd-relative -d assumption; reproduce/remove41 generated files. Prior history/canonical inputs/fixed caps/CPU status stay exact; full CI preflight then a25 history preservation, a26 artifacts.
+
 ## SEMULITH-P4-0214 (leaf P4-SYSTEM.14) — resolve included book record links
 
 - Resolve the main book's included task/history links after include expansion without changing canonical records, labels, examples or metadata. Book-local instructions retain exact reading commands; bad protocol or missing/symlinked declarations refuse without partial output.

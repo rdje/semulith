@@ -35,6 +35,69 @@ class NavigationTests(unittest.TestCase):
         (self.root / 'docs/book').mkdir()
         self.context = {'root': str(self.root / 'docs/book'), 'renderer': 'html'}
 
+    def models(self):
+        registry = self.root / 'materials/units.sexp'
+        registry.parent.mkdir()
+        registry.write_text(''.join('(unit (id "' + uid + '") (kind processor) '
+                                   '(layer processor) (book "docs/models/' + uid + '/"))\n'
+                                   for uid in ['u1', 'u2']))
+        for uid in ['u1', 'u2']:
+            source = self.root / 'docs/models' / uid / 'src'
+            source.mkdir(parents=True)
+            (source / 'intro.md').write_text('# Intro\n')
+        return self.root / 'docs/models/u1'
+
+    def model_rewrite(self, book_root, text, path='intro.md'):
+        context = {'root': str(book_root), 'renderer': 'html'}
+        actual, count = N.preprocess(context, {'items': [chapter(path, text)]}, self.root)
+        return actual['items'][0]['Chapter']['content'], count
+
+    def test_model_sibling_route_and_suffixes(self):
+        book = self.models()
+        self.assertEqual(self.model_rewrite(book, '[Other](../../u2/src/intro.md?q=1#intro)'),
+                         ('[Other](../../u2/book/intro.html?q=1#intro)', 1))
+
+    def test_nested_model_route(self):
+        book = self.models()
+        self.assertEqual(self.model_rewrite(book, '[Other](../../../u2/src/intro.md)', 'deep/page.md'),
+                         ('[Other](../../../u2/book/intro.html)', 1))
+
+    def test_model_examples_and_unregistered_destinations_unchanged(self):
+        book = self.models()
+        for text in ['`[Other](../../u2/src/intro.md)`', '[Own](intro.md)',
+                     '[Unknown](../../unknown/src/intro.md)',
+                     '[Web](https://example.org/u2/src/intro.md)', '[Here](#intro)']:
+            self.assertEqual(self.model_rewrite(book, text), (text, 0))
+
+    def test_model_missing_source_refused(self):
+        book = self.models()
+        with self.assertRaisesRegex(N.NavigationRefused, 'missing or symlinked'):
+            self.model_rewrite(book, '[Missing](../../u2/src/missing.md)')
+
+    def test_model_symlink_source_and_ancestor_refused(self):
+        book = self.models()
+        source = self.root / 'docs/models/u2/src'
+        (source / 'alias.md').symlink_to('intro.md')
+        with self.assertRaises(N.NavigationRefused):
+            self.model_rewrite(book, '[Alias](../../u2/src/alias.md)')
+        (source / 'alias').symlink_to('.', target_is_directory=True)
+        with self.assertRaises(N.NavigationRefused):
+            self.model_rewrite(book, '[Alias](../../u2/src/alias/intro.md)')
+
+    def test_unregistered_model_context_refused(self):
+        self.models()
+        context = {'root': str(self.root / 'docs/models/unknown'), 'renderer': 'html'}
+        with self.assertRaises(N.NavigationRefused):
+            N.preprocess(context, {'items': []}, self.root)
+
+    def test_cli_model_json_protocol(self):
+        context = {'root': str(N.ROOT / 'docs/models/lan9118-lab-v0'), 'renderer': 'html'}
+        book = {'items': [chapter('introduction.md', '[Board](../../netboard-lab-v0/src/introduction.md)')]}
+        result = self.cli(payload=json.dumps([context, book]))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['items'][0]['Chapter']['content'],
+                         '[Board](../../netboard-lab-v0/book/introduction.html)')
+
     def rewrite(self, text, path='status.md'):
         return N.rewrite_links(self.root, path, text)
 
