@@ -1,8 +1,7 @@
 # Task-trees
 
-**Nothing changes in this repository without a task-tree leaf that owns the change, created
-before the change is made.** It is the binding rule, and `TASK-TREE-OWNERSHIP` enforces it on
-every commit.
+**Create the owning task-tree leaf before any change.**
+`TASK-TREE-OWNERSHIP` enforces ownership on every commit.
 
 ## What a leaf is
 
@@ -98,7 +97,15 @@ limits 0..9223372036854775807. `00064` becomes 64; `-1` returns 2.
 Validated rows supply routes/caps/count. D56's seven unchecked
 consumers are removed; three reader faults return 2 normal/O. D57's five
 malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
-Checks are finite; measurements are not atomic or capacity authority. LC.4i1 inputs are qualified; graph coverage and full adoption remain open.
+Checks are finite; measurements are not atomic or capacity authority.
+LC.4i2a at `28920c6`:1411 source identities/53 include candidates,
+120 rendered pages/3244 anchor links. Graph coverage/full adoption stay open.
+Use a fresh output directory:
+
+```sh
+python3 scripts/collect_containment_graph.py --revision 28920c6 \
+  --output target/live-containment/graph-census/replay
+```
 
 ## Local containment contract
 
@@ -117,16 +124,14 @@ Open trees, included live from `docs/TASK_TREE.md`:
 
 {{#include ../../../TASK_TREE.md:trees}}
 
-A tree that completes leaves the index and keeps its row, verbatim, in the closed-tree register
-(`docs/TASK_TREE_CLOSED.md`, included live too); FRONTIER-SYNC gates both files, so every tree
-has exactly one row, by its status:
+Closed rows move verbatim to `docs/TASK_TREE_CLOSED.md`, included below.
+FRONTIER-SYNC requires one row per tree, in the index matching its status:
 
 {{#include ../../../TASK_TREE_CLOSED.md:closed}}
 
-A milestone tree's **acceptance criteria are its gate** — quoted from
-`docs/EVIDENCE_AND_GATES.md`, not restated, because a restated gate is a second owner. Its
-leaves each cite the roadmap section, task card, rule ID or catalog entry they derive from, so
-a reader refutes a leaf by reading one paragraph rather than by trusting the tree.
+A milestone quotes its acceptance gate from `docs/EVIDENCE_AND_GATES.md`.
+Each leaf cites its roadmap section, task card, rule ID or catalog entry;
+readers assess the leaf against that source.
 
 ⚠️ That citation is the strongest control available for a prose-to-structure conversion, and it
 is weaker than a test. The honest statement is: the plan is the oracle for these trees, and

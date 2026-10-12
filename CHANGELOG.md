@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0023 (leaf LIVE-CONTAINMENT.4) — collect closed graph inventory evidence
+
+- Source28920c6:1411 identities/462 Markdown/53 literal include candidates; seven fresh books expose120 HTML pages/3244 anchor links. Retain2076 resource candidates and338 Markdown paths outside book source directories for review; complete graph/adoption remains pending.
+- Durable source-read-only collector,22 finite refusals normal/O, full source/blob and before/after input/output checks; whole prior history/source/protected inverses and focused/seven-book/rendered checks required. Book teaches replay within unchanged bounds; registry/canonical/LIVE/CPU unchanged. .4i2b transitive reader review next.
+
 ## SEMULITH-LC-0022 (leaf LIVE-CONTAINMENT.4) — qualify containment inventory inputs
 
 - Pin complete1408 source identities and39 existing destinations; durable read-only replay and12 deliberate refusals pass normal/O. Publish a local graph/utility/field/debt/checker integration contract; complete semantic coverage and full adoption remain pending.
@@ -448,23 +453,4 @@
 - Diagnose unmapped failed-SC physical-permission defect through public core,
   author and fresh Sail/Spike observations; own immediate c34b0 repair before
   reservation/SC binding, qualified live policy mirrors and final freeze.
-
-## SEMULITH-P4-0184 (leaf P4-SYSTEM.13 c33d) — contain atomics timeline before final pairs
-
-- Preserve7179B introduction/440B checkpoint in finite8886B archive; full14853B
-  chapter inverse/order/SHA and damaged controls pass, saving4084chapter bytes.
-- Retain current atomic policies/examples/public evidence; canonical88ordering
-  words and independent LR/SC/read-back example exact. Own assembler ancestry
-  docstring repair in .14 before evidence signoff; checkpoint count historical.
-- Focused/six books green; core/data/frozen/history/LIVE/registry112/effective
-  110/114 unchanged. Fixed caps, prior Rust173/17/242 applies; reservation next.
-
-## SEMULITH-P4-0183 (leaf P4-SYSTEM.13 c33c) — contain completed task receipts
-
-- Preserve five whole completed spans/82856B in finite archive11/84762B;
-  authenticate full127192B source inverse/order/SHA and damaged controls.
-- Live partition46007B retains frontier/.13/.14/census; prior archives/history,
-  core/data/frozen/registry112/effective110/114/LIVE exact. Fixed caps.
-- Focused gates/six books green; prior Rust173/17/242 applies. Own atomics-book
-  timeline containment before remaining reservation/SC examples and freeze.
 

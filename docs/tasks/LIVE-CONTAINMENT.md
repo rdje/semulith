@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i1 input contract; .4i2 complete graph inventory next |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2a census collected; .4i2b transitive reader review next |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -1065,6 +1065,104 @@ mismatch, then correct only the instrument and rerun. No product render defect.
 Book grows1B to524282; every other canonical/profile/CPU/registry input exact.
 Normal staged acceptance/seam, hooks and exact postcheck/brief0/host0 required.
 
+### .4i2 — complete graph inventory (active, decomposed)
+
+Follow inventory-contract.md's discovery procedure in independently committed
+children: .4i2a closed source/member/include and actual rendered-link evidence;
+.4i2b transitive index/query/generated expansion and reader-candidate review;
+.4i2c emitted author-route census through isolated public failure cases;
+.4i2d terminal/exclusion/overlap reconciliation and omission qualification.
+No child alone claims complete semantic coverage. Keep unresolved candidates
+explicit until actual consumers are reviewed; utility/lifecycle decisions stay .4i3.
+While capturing author hints, .4i2c also qualifies public enforcer source-read
+preconditions, including DERIVED-COUNTS registry projections; do not infer a
+direct-call contract from sibling registration order. This is a pending
+assessment, not a measured defect verdict.
+
+### .4i2a / SEMULITH-LC-0023 — collect closed graph inventory evidence
+
+Status: complete; collection evidence only, semantic graph closure pending. Owned on clean28920c6 after normal hooks, exact10-file postcheck,
+brief0/untracked, unrestricted handoff0 and complete COMMIT report. Fresh checked
+recursive source has1411 identities,462 Markdown files and one opaque Gitlink;
+source wire SHAaa328d6df30bb2b39d1491c348e88e4a666934f4db51d43d633d9571942351a2.
+Existing book_navigation.py is explicitly a limited resolver, not a general
+Markdown parser. Actual seven-book HTML link verification is available through
+unit_books.py. Do not mistake either for complete source-graph coverage.
+
+Own target/live-containment/graph-census, a durable source-read-only evidence collector
+under scripts/, its toolbox row and bounded graph-census receipt artifact.
+Qualify complete immutable source/member identities and blob reads; account for
+all tracked members without opening Gitlink implementation. Inventory literal
+mdBook include candidates with exact source offsets/markers, and actual rendered
+local/remote/fragment links from freshly verified seven books, including print.
+Pin source inputs and rendered outputs; independently reconcile the complete
+output file/link population with the existing rendered verifier. Record source
+Markdown outside registered book source directories and every unresolved candidate
+explicitly for .4i2b, rather than silently excluding it or inventing a lifecycle.
+Outside a book's source directory does not mean absent from its expanded pages.
+Keep syntactic include candidates distinct from proven actual expansion.
+The collector may invoke the documented mdbook build interface into a fresh
+owned target directory; snapshot all source/index inputs across the build.
+Inventory anchor hyperlinks separately from rendered resource candidates;
+the existing verifier's hyperlink count is not resource-route coverage.
+
+This child is collection evidence, not a generic CommonMark parser, final route
+registry, utility decision or complete graph/adoption verdict. Source-only
+references, read commands, generated/index/query routes, public emitted author
+hints, exact terminal obligations and exclusions remain separately owned.
+Do not import the neutral checker, migrate content, raise any bound, extend
+sealed captures or introduce external project-owned stores.
+
+Own deliberate failed/partial/diagnostic read and omitted member/output/link
+controls normal/O; source/program/real HEAD/index/protected/mode/Gitlink pins;
+whole prior CH/DEV history inverses and real damaged receipt/digest refusals;
+bounded book/frontier/pointer/owner synchronization, focused/seven-book/rendered
+checks and normal COMMIT/postcheck/brief0/unrestricted host0. Registry/count107,
+health64 warning debt, canonical/CPU/profiles and archives remain exact.
+promotion: declined (local collection evidence and its producer are owned task artifacts, not new policy authority).
+
+
+Implementation: scripts/collect_containment_graph.py retains a complete source
+and fresh seven-book evidence bundle. graph-census.md names the measured source,
+working-view distinction, replay/refusals and exact pending review obligations.
+First census:1411 identities/462 Markdown/53 include candidates;120 HTML pages/
+3244 anchor occurrences (2006 fragment,1176 local,62 remote),2076 separate
+resource candidates and338 paths outside book source directories. No final
+semantic route/lifecycle/coverage claim.22 finite controls pass normal/O.
+
+- [x] **REPRODUCE / ISSUE** — complete source/member and actual rendered evidence
+  are inputs to .4i2; a limited link resolver cannot choose semantic routes.
+- [x] **ROOT CAUSE** — `python3 target/live-containment/graph-census/check-evidence.py`
+  rc=0 normal/O; source28920c6 census1411/462 and fresh seven-book120/3244
+  distinguish immutable source, actual working render and pending candidates.
+- [x] **FIX** — tracked collector/receipt/toolbox discovery and bounded book replay;
+  .4i2b-d explicitly own transitive reader, emitted author and terminal closure.
+- [x] **ADDRESSED** — `python3 target/live-containment/graph-census/verify.py`
+  rc=0 normal/O: complete independent source census, actual normal/O
+  collection, read/program/state/output pins, source/book/task/history inverses.
+- [x] **NO REGRESSION** — `bash target/live-containment/graph-census/focused.sh`
+  rc=0: focused12/sharder12/seven books/rendered/literal examples;
+  every prior whole history entry, protected file/mode/Gitlink and seal exact.
+- [x] **LOCKSTEP** — book/pointer/owner/artifact/toolbox agree: collection evidence
+  only; .4i2b review next. Registry/caps/count107/health64 debt/LIVE/CPU unchanged.
+  Normal COMMIT/postcheck/brief0/unrestricted handoff close before next child.
+
+Final qualification: normal/O full census bytes identical, SHA
+89aa869394874856c27e4416a86002a86db889e0a5092678f22e452e4c01f732.
+Independent complete source1411 identities, byte-position/include/Git-grep
+population and all120 per-page ordered href lists agree.22 controls plus one
+copied resource append omission discriminate; three actual public CLI cases/
+mode refuse2/no stdout, with real1411+three additions and old bundle exact.
+All ten measured proposal bodies/modes and exact index retained against their
+recorded pins before closing the task record; historical render replay is not
+promised.1403 other regular files/Gitlink exact. Whole CH1190B/two entries→0292/
+1427B/SHAe8249f4db35c375da0032bbd3864b8e5e99d3e4072fd0d14b1347d5f49e51c71
+preserves106 prior entries; real receipt/digest refusals and full inverses pass.
+Focused12/sharder12/seven books/3244 fresh+actual links, normal+print teaching
+and five literal decision/contract reads pass normal/O. Book shrinks81B; every
+bound and canonical/CPU/profile/seal remains fixed. Collector literal replay,
+normal staged acceptance/seam/hooks/post/brief0/unrestricted host close COMMIT.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1372,6 +1470,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2a: complete source1411/462 Markdown/53 literal include candidates; retained
+seven-book120 HTML pages/3244 hyperlinks,2076 resource candidates and338 paths
+outside book source directories. Source versus working rendering explicit;
+22 finite refusals normal/O. Full independent source/program/state/output/
+protected/history inverses, focused/seven-book/rendered and normal COMMIT
+required; focused12/sharder12/seven books/3244 links and five reads pass.
+No final graph/adoption claim; .4i2b transitive reader review next.
+
 .4i1: immutable source1408/39 declarations and12 durable input refusals normal/O.
 Local contract separates source membership from pending semantic graph coverage,
 utility/lifecycle/fields/debt and checker integration. Whole-history/source/
@@ -1527,6 +1633,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0023 (leaf LIVE-CONTAINMENT.4): collect closed graph inventory evidence` — .4i2a collection only; .4i2b transitive reader review next.
 
 `SEMULITH-LC-0022 (leaf LIVE-CONTAINMENT.4): qualify containment inventory inputs` — .4i1 inputs and local integration contract; .4i2 graph inventory next.
 
