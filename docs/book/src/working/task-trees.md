@@ -317,15 +317,18 @@ counts and content-addressed object. The archive's SHA manifest authenticates ea
 member. A missing object, changed descriptor or bad member fails the same unconditional
 freeze gate used locally and in CI. Restore the committed bytes when that happens.
 
-The live and archived manifests form one logical partition. Moving a row into the
-archive keeps its digest and predecessor identity; it does not delete history. The
-gate checks heading uniqueness across both live heads and the complete archive, and
-the sharder includes retired filenames when allocating its next number. Thirty-one
-positive/negative controls guard these checks. This finite terminal has one object,
-a bounded descriptor and a retrieval front door; a later seal needs its own verified
-capture and transition. Full containment-doctrine adoption remains owned by
-LIVE-CONTAINMENT.4.
+The manifests remain one partition; sharding never reuses retired names.
+Qualification checks six catalogues and all222 originals from pinned sources:
 
+```sh
+python3 scripts/qualify_query_consumers.py --output target/query-replay
+```
+
+Use a fresh path. Exit0 means assessment completed; `--require-clean` fails1
+on wrong outcomes. LC0036's263 observations expose D76: malformed deflate
+raises a traceback1 instead of named refusal1 (repair LC0037). Three real
+consumer omissions and seven ledger corruptions discriminate. Full
+containment adoption remains open.
 
 ### Reading closed P4 task histories
 

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0036 (leaf LIVE-CONTAINMENT.4) — qualify catalogue and archive query consumers
+
+- Reconcile all1454 pinned source identities,30 selected inputs, six roots/two parts and210 history/twelve P4 originals with independent complete membership/order/bytes/modes and actual read traces normal/O. All263 observations retained; named public refusal1 remains distinct from qualifier refusal2. Public commands use no Git.
+- Three actual consumer omissions and seven ledger corruptions discriminate. D76 malformed deflate tracebacks1 rather than named refusal1, no stdout; immediate priority1 LC0037 repair owned before generated navigation. Preserve whole published prefix/book/history/source/modes/caps; lossless captures and book/toolbox/live sync. LIVE1575/full graph/adoption/processor acceptance unchanged.
+
 ## SEMULITH-LC-0035 (leaf LIVE-CONTAINMENT.4) — preserve orientation and record refusals
 
 - Fix D74/D75: complete map generation retains source/tool failures and actual generator status; decision membership requires actual table links outside comments/fences, unavailable reads refuse2. Current22 observations/0 wrong verdicts normal/O; real map/guard/row omissions fail1 with2/5/1 bad outcomes. Valid map/memberships and legacy17/11 fields stay exact; extended source21/14 remains measurable.
@@ -418,9 +423,4 @@
 
 - Declare GC's forthcoming qualification policy after the existing implementation, without backdating; include the full policy and examples in the book, leaving all requirement statuses unchanged.
 - Repair scalar policy/presence label/resolved manifest prose with exact historical, AST and derived inverses; damaged/stale controls, focused15/six books/rendered policy pass. Runtime/frozen114/114/registry/fixtures/history/LIVE remain exact.
-
-## SEMULITH-P4-0198 (leaf P4-SYSTEM.14) — correct canonical reference evidence and derived claims
-
-- Preserve31 historical spans with four full-source inverses; reject three damaged controls and authenticate the pinned HTML inputs.
-- Correct canonical lineage, G0 producer and materials scope; regenerate reports, board metadata and model tables with exact derived inverses. Focused15/six books/invariants pass; runtime/frozen114/114/registry/fixtures/prior history/LIVE remain exact, no new conformance credit.
 

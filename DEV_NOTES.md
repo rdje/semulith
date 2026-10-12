@@ -1,5 +1,42 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — catalogue and archive consumer qualification (LIVE-CONTAINMENT.4i2b4b3)
+
+LC0036 pins source23fdb8a/1454 owned identities and30 actual query inputs.
+Independent balanced spans expand all six catalogue roots/two parts without
+the production parser. Whole archived originals are compared with their
+original Git captures, complete manifests, order, modes and bytes:210 history
+originals include208 numbered shards plus two monthly files; P4 retains twelve.
+All222 --read outputs are byte-exact. Actual successful reads reconcile full
+path/order/bytes/SHA: five roots read one source, GC three; history two; P4
+fifteen. The history front is statted, not read; no full front-auth claim.
+All263 queries execute without .git using a rejecting Git shim; zero Git calls.
+
+D76 is the only wrong source outcome: a19-byte invalid deflate stream whose
+outer object digest/name/size are correctly updated raises zlib.error, no
+original stdout. Decompression catches OSError/EOFError/TarError but omits
+zlib.error; main omits it too. Named public refusal1 is the established contract,
+not adapter refusal2. LC0037 owns the immediate priority1 repair. Deep JSON8000,
+missing/UTF-8/corrupt reads, unsafe includes and actual open faults refuse1.
+Three copied real consumer omissions yield child0/qualification1. Seven
+independent ledger corruptions refuse2, including omitted/duplicated/wrong
+originals, forbidden Git use and damaged full source-read traces. Forged
+terminals alter the last original while requesting the unchanged first; P4
+also updates manifest/navigation/outer identities consistently.
+
+Tracked producer returns0 on completed measurement,1 with --require-clean
+for any wrong outcome,2 if qualification cannot complete. Both final runs
+--require-clean return1:263 observations/one D76. Complete normal/O raw fields
+are retained losslessly in the graph-census append: original-query joins plus
+five optimized overrides, including four fixture-path stderr digest changes.
+The complete5135B published prefix and entire old sealed-history book section
+are authenticated before replacement. Initial no-read missing log was a
+producer preparation failure, fixed by initializing empty logs before launch;
+only final complete runs are evidence. Whole old live receipts/source/modes,
+inverse patches, fixed caps and focused/seven-book/rendered/literal checks
+qualify before normal COMMIT. No archive/cap/consumer behavior change here;
+full graph/adoption and CPU/MCU/DSP/board qualification remain open.
+
 ## _(2026-10-12)_ — preserve orientation and record refusal (LIVE-CONTAINMENT.4i2b4b2r)
 
 D74 generator continuation hid failed curated reads/discovery/sorting; the guard
@@ -671,35 +708,4 @@ three literal reads pass. LIVE routing Done/1518arms; limits/canonical/CPU exact
 Staged acceptance/seam, normal hooks, exact postcheck/brief0/host0 close COMMIT;
 separate .4h6c3 capacity authority next. Full containment adoption remains .4.
 promotion: declined (verified guard/control pair owns the repaired behavior).
-
-## _(2026-10-12)_ — qualify remaining registry projections (LIVE-CONTAINMENT.4h6c1)
-
-D56 confirmed: actual public route CLI returns0/green after each of14 single
-injections normal/O: failed73 with healthy output, or successful output plus
-diagnostics, for two destination producers, README line/byte cap projections,
-and final governed-count awk/wc/tr consumers. Healthy delegates all return0;
-traces prove exactly one injection. Every fault's stdout matches its batch's
-healthy baseline; stderr cases retain the injected diagnostic. No corruption
-or disappearance of a tracked input is needed to reproduce the false green.
-
-Root cause: unchecked awk producers/substitutions and final printf swallowing
-the count pipeline's status despite pipefail. Source checker SHAff2fdb76 and
-helper/README/registry/facades are pinned. Normal first matrix uses only awk;
-separate formatter matrix adds wc/tr; optimized matrix uses all three and
-PYTHONOPTIMIZE=1 for children. Preserve all original raw outputs, hashes and
-per-run real HEAD/index/all1402 identities. Task ownership was extended between
-normal batches, so do not claim the working tree was identical across batches.
-Each batch's complete before/after state is exact; public source programs match.
-
-Priority1 repair .4h6c2/LC-0019 is immediate next, ahead of .4h6c3 capacity
-review. This assessment changes no checker or bound; LIVE routing closure
-is Mostly Done and the book names all seven consumers and current limitation.
-D51–55 remain fixed; all canonical/profile/CPU/qualification state is exact.
-Whole-oldest DEV3990B→0286/CH1330B/two entries→0287 retain105 prior entries,
-all old archive/seal bytes/modes and combined genuine receipt/digest refusals.
-Evidence target/live-containment/registry-projections: check-evidence/verify/
-history/rendered normal/O,1393 protected files/Gitlink, focused12/sharder12/
-seven books and full normal+print/three literal reads. Normal hooks, exact
-postcheck, brief0 and unrestricted host0 precede the repair. Full adoption .4.
-promotion: declined (the owned defect/repair carries this finite assessment).
 

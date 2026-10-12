@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b3 / LC0036 qualify catalogue/archive queries after LC0035 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b3r / LC0037 repair D76 malformed gzip refusal after LC0036 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -641,13 +641,67 @@ All caps/old archives/seals/current historical captures remain exact.
 - [x] **NO REGRESSION** — `bash target/live-containment/orientation-repair/focused.sh` rc=0: focused12/sharder12/seven books, scaffold7/full handoff26 normal/O. Individual updater omissions fail1, seven tests/two failures each. Whole old history/protected modes/Gitlink, source inverses, fixed caps, normal/print teaching/literal commands and fresh navigation qualify before normal COMMIT.
 - [x] **LOCKSTEP** — task/pointer/CH/DEV/book/toolbox/capture and public sync align; LIVE1575/CPU/MCU/DSP/board/full graph/adoption unchanged. promotion: declined (source-pinned consumer record owns the repaired boundary and finite retained controls).
 
-##### .4i2b4b3 / SEMULITH-LC-0036 — qualify catalogue/archive queries (pending)
+##### .4i2b4b3 / SEMULITH-LC-0036 — qualify catalogue/archive queries (complete)
 
 Reconcile actual catalogue/archive query expansion, output membership/exclusions,
 failed inputs and real omissions against independently pinned owned sources.
 Keep published prefixes/caps/seals exact; reuse a suitable existing canonical
 artifact, never add a108th task-family file. Generated navigation stays .4i2b5;
 full graph/adoption remains open. Qualify before making any additional repair.
+
+Owned on clean23fdb8a after exact16-file postcheck/brief0/host0. Pin all1454
+owned source identities, keeping Gitlinks opaque. Own scripts/qualify_query_consumers.py
+and an append-only LC0036 phase in artifacts/live-containment/graph-census.md;
+retain/authenticate its whole published prefix and old live book explanation
+before updates. No108th task-family file or cap/seal extension. Qualify the
+actual record_catalog.py, history_archive.py and task_history_archive.py CLIs
+in isolated same-volume fixtures normal/O: all six root catalogues/two parts,
+all210 sealed shards/twelve P4 originals, full source/member/order/byte/trace
+reconciliation, exclusions, failed/corrupt reads and real consumer omissions.
+Public named refusal1 is preserved as these existing interfaces specify; the
+inventory adapter's cannot-judge2 is separate. Record/schedule every actual
+defect before repair; no existing consumer behavior change in this assessment.
+Update relevant toolbox/live/book records; prove complete old source/history/
+modes/prefixes and fixed limits. Outputs: target/live-containment/query-consumers.
+
+D76 verified source23fdb8a: an invalid gzip deflate block with correctly updated
+outer object identity produces zlib.error/traceback1 instead of the public named
+refusal1. No original bytes are emitted. Reproduce with tracked producer:
+`python3 scripts/qualify_query_consumers.py --require-clean --output target/query-deflate`
+returns1; result.json and invalid-deflate stderr capture the actual refusal failure.
+Root cause: history_archive.py load_archives catches OSError/EOFError/TarError
+around decompression but omits zlib.error; main also leaves it uncaught. Priority1,
+owner .4i2b4b3r / LC0037, immediate after this qualification COMMIT, before .4i2b5.
+Deep JSON2048 was measured as named refusal1, so no JSON defect is classified.
+
+
+Verified LC0036 (2026-10-12): source23fdb8a/1454 immutable identities;30 selected
+pins; all six roots/two parts,210 history/twelve P4 originals exact normal/O.
+All263 actual outcomes/complete byte traces reconciled. One source defect D76;
+--require-clean1 in both modes, no successful-signoff claim. Three actual
+consumer omissions give child0/qualification1; seven independent ledger
+corruptions refuse2. Public commands in no-.git fixtures make zero Git calls.
+Complete ordered normal/O captures reconstruct losslessly from graph-census's
+append, whose whole5135B published prefix and old book section are retained.
+No existing consumer, archive, historical record, capacity or acceptance changes.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_query_consumers.py --require-clean --output target/live-containment/query-consumers/final-normal` (with owned `--addition scripts/qualify_query_consumers.py` before tracking) rc=1:263 observations, D76 only. Trace and invalid gzip/outer identity prove actual uncaught zlib.error; current code never catches it.
+- [x] **ADDRESSED** — `python3 scripts/qualify_query_consumers.py --output target/query-replay` rc=0: assessment complete; all222 originals and six full expansions match independent source/capture membership/order/bytes/modes. Actual read/exclusion/fault/forgery protocols and complete result fields retained; normal/O source-defect1 and all3+7 omission controls exact. D76 is explicitly owned for immediate repair, not closed here.
+- [x] **NO REGRESSION** — `bash target/live-containment/query-consumers/focused.sh` rc=0: focused12/sharder12/seven books/scaffold7/full handoff26 normal/O. Whole source/history/prefix/inverse/mode/cap and rendered/literal checks qualify before normal COMMIT; no Rust change.
+- [x] **LOCKSTEP** — pointer/task/CH/DEV/book/toolbox/capture align. LIVE1575/CPU/MCU/DSP/board and full graph/adoption remain unchanged. promotion: declined (bounded source-pinned consumer record owns this assessment).
+
+##### .4i2b4b3r / SEMULITH-LC-0037 — repair D76 malformed gzip refusal (pending)
+
+Immediately after LC0036 normal COMMIT, catch the verified zlib decompression
+failure through the public history reader's named refusal1, no traceback/stdout.
+Preserve valid sealed originals and all existing refusal contracts. Replay
+the immutable LC0036 source263/1 fields unchanged; working-code normal/O must
+be263/0. Add an actual catch omission proving the repaired boundary fails1.
+Retain existing3 consumer/seven ledger controls and all archive controls;
+append evidence to the same graph-census artifact without editing its prefix.
+Update book/live docs and preserve full source/history/modes/seals/fixed caps.
+Commit normally, exact postcheck/brief0/host0, then resume generated navigation
+.4i2b5. No full graph/adoption or processor acceptance credit.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1219,6 +1273,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0036 (leaf LIVE-CONTAINMENT.4): qualify catalogue and archive query consumers` — complete263-query assessment/D76 owned; LC0037 repair next.
 
 `SEMULITH-LC-0031 (leaf LIVE-CONTAINMENT.4): retain whole closed reader records` — ten spans/nine units/checklist retained; index/query next.
 
