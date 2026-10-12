@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b2r / LC0035 repair D74 map and D75 decision-index readers |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b3 / LC0036 qualify catalogue/archive queries after LC0035 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -593,7 +593,7 @@ reader repair in the assessment; cap107 is unchanged, last pooled slot used.
 - [x] **NO REGRESSION** — `bash target/live-containment/orientation-indexes/focused.sh` rc=0: focused12/sharder12/seven books, scaffold5/full handoff24 normal/O. Complete old live history/order and protected identities/modes/Gitlink, fixed caps and source inverses pass; normal/print whole teaching, literal historical/current commands and fresh links verified before normal COMMIT.
 - [x] **LOCKSTEP** — task/CH/DEV/pointer/toolbox/book and canonical capture align. LIVE1575 and CPU/MCU/DSP/board/full graph/adoption scope unchanged. promotion: declined (source-pinned consumer record owns this finite qualification and scheduled repairs).
 
-##### .4i2b4b2r / SEMULITH-LC-0035 — repair D74/D75 orientation and record readers (pending)
+##### .4i2b4b2r / SEMULITH-LC-0035 — repair D74/D75 orientation and record readers
 
 Repair named missing/unreadable map sources, tool/discovery failures and actual
 generator status propagation; reject comment-only decision listings, refuse
@@ -601,6 +601,53 @@ unavailable index evidence. Preserve complete valid map and memberships, origina
 LC0034 capture, old controls/caps/seals. Working-code actual interface matrix must
 be healthy normal/O, and real copied refusal/membership omissions must discriminate.
 Continue catalogue/archive queries .4i2b4b3 only after this normal COMMIT.
+
+Owned on cleand0943de after exact12-file postcheck/brief0/host0. Own complete
+map generation/guard failure boundaries, MEMORY-ARCH decision row/read checks,
+tracked working-code qualification and real omissions. Preserve valid map bytes,
+all207 historical inputs/17 observations and the complete LC0034 artifact prefix.
+Reuse its canonical artifact within131072B; no new task-family member or cap.
+Own scaffold retention of these three repairs, actual public sync probes and
+normal/O failure controls; update all affected mirrors/book/live counts if needed.
+Map/record failure status and membership are the finite acceptance, not full
+Markdown/adoption/graph/processor authority. Outputs: target/live-containment/orientation-repair.
+
+Verified LC0035 (`2026-10-12`): D74/D75 FIXED. Complete map stdout is emitted
+only after checked curated read, regular inventory discovery/sort and output.
+Actual guard captures/checks generator status before diff; unavailable inputs/
+comparisons refuse2, missing/drifted map remains1. MEMORY-ARCH reads UTF-8 with
+checked I/O, removes HTML comments/fenced examples, quotes literal filename
+regex data, requires anchored table links and distinguishes no-match1/refusal2.
+Valid complete map bytes and33/59/29 source memberships remain exact.
+
+Original legacy17 observations/11 wrong verdicts replay all fields exactly;
+extended immutable21/14 qualifies prose/commented/fenced decisions and valid
+one-line comments. Current22/0 normal/O includes actual normalization-tool
+failure. Every current injected tool fault/failed generator main fires once.
+Real copied map/guard/row omission probes fail1 with2/5/1 wrong outcomes per
+mode; three real map expansions and three independent roster omissions still
+refuse2 in every scenario. Five full normal/O scenarios reconstruct losslessly
+from the unchanged published109161B LC0034 record prefix and compact deltas.
+
+Scaffold retains all three repairs. Seven subset/26 full public tests normal/O
+preserve all five original methods and add two stale/different-source controls.
+Individually restoring each reader to the updater overwrite list makes both
+new cases fail:7 tests/2 failures/0 errors normal/O. No upstream-state claim.
+Fresh DERIVED-COUNTS keeps1575 shell arms; Python method count is separate.
+All caps/old archives/seals/current historical captures remain exact.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_orientation_indexes.py --extended --require-clean --output target/live-containment/orientation-repair/before-final-normal` rc=1:21 observations/14 wrong outcomes, reproduced normal/O. Actual missing/tool inputs and generator42 status locate D74; prose/comment/fence cases locate D75's substring reader.
+- [x] **ADDRESSED** — `python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-repair/after-final-normal` rc=0:22 observations/0 wrong outcomes normal/O, exact complete map and memberships. Three real repair omissions fail1 (2/5/1 wrong outcomes); three map/three roster controls discriminate. D74/D75 closed; original legacy fields and full prefix stay exact.
+- [x] **NO REGRESSION** — `bash target/live-containment/orientation-repair/focused.sh` rc=0: focused12/sharder12/seven books, scaffold7/full handoff26 normal/O. Individual updater omissions fail1, seven tests/two failures each. Whole old history/protected modes/Gitlink, source inverses, fixed caps, normal/print teaching/literal commands and fresh navigation qualify before normal COMMIT.
+- [x] **LOCKSTEP** — task/pointer/CH/DEV/book/toolbox/capture and public sync align; LIVE1575/CPU/MCU/DSP/board/full graph/adoption unchanged. promotion: declined (source-pinned consumer record owns the repaired boundary and finite retained controls).
+
+##### .4i2b4b3 / SEMULITH-LC-0036 — qualify catalogue/archive queries (pending)
+
+Reconcile actual catalogue/archive query expansion, output membership/exclusions,
+failed inputs and real omissions against independently pinned owned sources.
+Keep published prefixes/caps/seals exact; reuse a suitable existing canonical
+artifact, never add a108th task-family file. Generated navigation stays .4i2b5;
+full graph/adoption remains open. Qualify before making any additional repair.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 

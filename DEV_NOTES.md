@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — preserve orientation and record refusal (LIVE-CONTAINMENT.4i2b4b2r)
+
+D74 generator continuation hid failed curated reads/discovery/sorting; the guard
+lost actual generator status through process substitution. Render into one owned
+on-volume scratch file only after checking all inputs/tool statuses/emissions,
+then publish complete stdout. The guard captures real generation, refuses failures2,
+and distinguishes diff0/drift1/unavailable2. Missing generated map remains breach1.
+D75 substring grep accepted prose/comment-only filenames and treated grep failure
+as missing membership. Normalize checked UTF-8 input, ignore HTML comments/fences,
+quote literal filename data and require anchored table links. Matching0, absent1,
+unavailable2 remain distinct. Temporary allocations/cleanup stay repository-local.
+
+Tracked source fixture retains all207 pins, full33 task/59 decision/29 knowledge
+memberships and exact valid map bytes. Original default17/11 fields replay exactly
+normal/O. Extended source21/14 exposes three extra false memberships and preserves
+a valid one-line-comment index. Working22/0 includes normalization-tool failure.
+Every current fault/failed generator main fires once. Real copied map/guard/row
+repair omissions fail1 with2/5/1 wrong outcomes normal/O; three actual map expansion
+and three roster omissions remain discriminating in each scenario. Full normal/O
+results reconstruct losslessly from the unchanged109161B published LC0034 prefix
+and inherited-result/path/digest deltas; no historical observation is rewritten.
+
+Scaffold updater removes these three repaired readers from neutral overwrite.
+Public sync probes retain all bytes/modes, copy neutral inputs and clean scratch;
+five original methods stay exact, two stale/different-reader controls are added.
+Seven subset/26 full cases pass normal/O. Individually restoring each reader to
+the overwrite list fails both added controls:7 tests/2 failures/0 errors each.
+DERIVED-COUNTS re-measures1575 shell arms; Python method count stays separate.
+No external repository or upstream source is modified or used as a truth claim.
+
+Preserve/authenticate the complete prior book explanation before current teaching;
+full source/history/mode/cap inverses, focused12/sharder12/seven books and literal/
+normal/print/navigation checks qualify publication. LIVE1575, CPU/MCU/DSP/board and
+full graph/adoption qualification unchanged; catalogue/archive readers follow COMMIT.
+
+Lesson promotion: declined — existing source-pinned consumer record owns the cause,
+finite repair and replayable failure/retention controls.
+
 ## _(2026-10-12)_ — orientation and record-index qualification (LIVE-CONTAINMENT.4i2b4b2)
 
 Pin source50a102b/1448 identities and207 selected inputs; opaque Gitlinks never
@@ -664,32 +702,4 @@ history/rendered normal/O,1393 protected files/Gitlink, focused12/sharder12/
 seven books and full normal+print/three literal reads. Normal hooks, exact
 postcheck, brief0 and unrestricted host0 precede the repair. Full adoption .4.
 promotion: declined (the owned defect/repair carries this finite assessment).
-
-## _(2026-10-12)_ — correct the five-unit composition receipt (LIVE-CONTAINMENT.4h6b)
-
-D55 fixed with a separate858B correction; preserve the entire original authority.
-LAN parent28be1c4 has151 profiles/631979B;3071ae8 has160/845819B, adding nine
-LAN files/213840B with all prior members exact. UART fa3f74c has the identical
-profiles tree as LAN's parent. The four-unit note counted partial142+five UART
-documents=147, whereas its committed tree has151. Reusing147 against160 wrongly
-attributes four UART files to LAN. Original total/per-part figures and bounds
-stand. Index marks composition corrected; book explains the mismatch and adds
-a complete canonical read, preserving D51 typed facts and both original reads.
-
-Four closed NUL inventories hash complete blobs, not staging estimates. UART
-adds nine files/66700B and changes the board DOSSIER registration routing by77B;
-all other prior bytes are exact. Initial scratch assessor incorrectly assumed
-every prior UART member unchanged/66777B added; strict failure led to the exact
-Git diff and complete pinned77B delta, then normal/O pass. No product defect
-in that documented routing change. Stale147 and invented13 controls refuse;
-real HEAD/index/all1402 identities remain exact. An initial book draft exceeded
-the fixed family bound by7B; bounded wording retains all facts and three reads.
-
-Evidence target/live-containment/five-unit-correction: whole authority/index/
-book/task/head inverses,103 prior entries,1394 protected files/Gitlink, frozen
-manifest/seals and caps exact. Focused12/sharder12/seven books, full normal+
-print teaching/three literal reads, staged acceptance/seam and normal hooks
-close the slice before postcheck/host0. No rollover needed; LIVE/CPU unchanged.
-Separate .4h6c capacity review follows; full inventory/checker remains .4.
-promotion: declined (the canonical five-unit record owns the correction).
 

@@ -188,9 +188,11 @@ class Scaffold(unittest.TestCase):
     repaired: bytes
     readme: bytes
     metrics: bytes
+    orientation: dict
     work: Path
 
-    def sync(self, incoming_census: bytes | None, incoming_readme: bytes | None = None):
+    def sync(self, incoming_census: bytes | None, incoming_readme: bytes | None = None,
+             incoming_orientation: dict | None = None):
         with tempfile.TemporaryDirectory(dir=self.work) as scratch:
             fixture = Path(scratch)
             project, incoming, tools = (fixture / name for name in ('project', 'incoming', 'bin'))
@@ -199,6 +201,7 @@ class Scaffold(unittest.TestCase):
             # Only a local-input marker; no nested Git repository is initialized.
             (incoming / '.git').mkdir()
             original = {
+                **self.orientation,
                 'scripts/update_scaffold.sh': self.updater,
                 'scripts/check_no_background_jobs.sh': self.repaired,
                 'scripts/check_readme_stability.sh': self.readme,
@@ -216,6 +219,8 @@ class Scaffold(unittest.TestCase):
                 'README_POLICY.md': b'new neutral policy\n',
                 'DOCTRINE_VERSION': b'new fixture version\n',
             }
+            if incoming_orientation is not None:
+                supplied.update(incoming_orientation)
             if incoming_readme is not None:
                 supplied['scripts/check_readme_stability.sh'] = incoming_readme
                 supplied['scripts/read_text_metrics.bash'] = b'# incoming metrics replacement\n'
@@ -284,6 +289,16 @@ print(project)
     def test_different_readme_requires_review(self):
         self.sync(None, b'#!/usr/bin/env bash\necho proposed README replacement\n')
 
+    def test_stale_orientation_readers_cannot_replace_repairs(self):
+        self.sync(None, incoming_orientation={
+            name: b'#!/usr/bin/env bash\necho stale orientation reader\n'
+            for name in self.orientation})
+
+    def test_different_orientation_readers_require_review(self):
+        self.sync(None, incoming_orientation={
+            name: b'#!/usr/bin/env bash\necho proposed orientation reader\n'
+            for name in self.orientation})
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -309,6 +324,9 @@ def main():
     Scaffold.repaired = SCRIPT.read_bytes()
     Scaffold.readme = (ROOT / 'scripts/check_readme_stability.sh').read_bytes()
     Scaffold.metrics = (ROOT / 'scripts/read_text_metrics.bash').read_bytes()
+    Scaffold.orientation = {name: (ROOT / name).read_bytes() for name in (
+        'knowledge-map/scripts/gen_knowledge_map.sh',
+        'knowledge-map/scripts/check_knowledge_map.sh', 'scripts/check_memory_architecture.sh')}
     Scaffold.work = Census.work
     suite = unittest.TestSuite()
     if not args.only_scaffold:

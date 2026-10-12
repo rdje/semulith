@@ -4,7 +4,9 @@
 # Structural, harness-agnostic checks that the durable-memory layers exist and hold
 # their shape. Cheap, deterministic, no network.
 set -uo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
+refuse(){ printf 'MEMORY-ARCH: REFUSED — %s\n' "$1" >&2; exit 2; }
+ROOT="$(git rev-parse --show-toplevel)" || refuse 'repository root unavailable'
+cd "$ROOT" || refuse 'repository root unavailable'
 errs=0
 fail(){ echo "MEMORY-ARCH: $1" >&2; errs=$((errs+1)); }
 
@@ -38,11 +40,64 @@ fi
 [ -d docs/decisions ] || fail "docs/decisions/ (layer-C decision records) is missing"
 [ -f docs/decisions/INDEX.md ] || fail "docs/decisions/INDEX.md is missing"
 # Every decision record (excluding INDEX/TEMPLATE) must be listed in the index.
-if [ -d docs/decisions ]; then
+if [ -d docs/decisions ] && [ -f docs/decisions/INDEX.md ]; then
+  mkdir -p "$ROOT/target/tmp" || refuse 'scratch directory unavailable'
+  tmp="$(mktemp -d "$ROOT/target/tmp/memory-index.XXXXXX")" || refuse 'scratch allocation failed'
+  trap 'rm -rf -- "$tmp"' EXIT
+  index="$tmp/index"
+  # Ignore comments and fenced examples: only an actual table link lists a record.
+  python3 - docs/decisions/INDEX.md "$index" <<'INDEX_READER' || refuse 'decision index read failed'
+from pathlib import Path
+import re
+import sys
+
+try:
+    text = Path(sys.argv[1]).read_text(encoding='utf-8')
+    output, fence, comment = [], None, False
+    for line in text.splitlines(keepends=True):
+        marker = re.match(r' {0,3}(`{3,}|~{3,})(.*)$', line)
+        if fence is not None:
+            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                fence = None
+            continue
+        if not comment and marker:
+            fence = marker[1]
+            continue
+        while line:
+            if comment:
+                end = line.find('-->')
+                if end < 0:
+                    break
+                line, comment = line[end + 3:], False
+            else:
+                start = line.find('<!--')
+                if start < 0:
+                    output.append(line)
+                    break
+                output.append(line[:start])
+                line, comment = line[start + 4:], True
+    Path(sys.argv[2]).write_text(''.join(output), encoding='utf-8')
+except (OSError, UnicodeError) as exc:
+    print('MEMORY-ARCH: REFUSED — decision index normalization: ' + str(exc), file=sys.stderr)
+    raise SystemExit(2)
+INDEX_READER
+  shopt -s nullglob
   for f in docs/decisions/*.md; do
-    b="$(basename "$f")"
+    b="${f##*/}"
     case "$b" in INDEX.md|TEMPLATE.md) continue;; esac
-    grep -q "$b" docs/decisions/INDEX.md || fail "decision record $b is not listed in docs/decisions/INDEX.md"
+    # Filenames are literal data, never regular expressions.
+    escaped="$b"
+    for special in '\' '.' '[' ']' '*' '^' '$' '+' '?' '(' ')' '{' '}' '|'; do
+      escaped="${escaped//"$special"/\\$special}"
+    done
+    pattern="^\| \[[^]]+\]\($escaped\) \|"
+    grep -Eq -- "$pattern" "$index"
+    rc=$?
+    case "$rc" in
+      0) ;;
+      1) fail "decision record $b is not listed in docs/decisions/INDEX.md";;
+      *) refuse "decision index match unavailable: $b";;
+    esac
   done
 fi
 

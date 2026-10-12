@@ -102,7 +102,7 @@ def reconcile(actual: bytes, expected: bytes) -> None:
     require(actual == expected, 'complete independent map bytes/membership differ')
 
 
-def execute(command, fixture, output, label, fault=None):
+def execute(command, fixture, output, label, fault=None, *, working=False):
     tools = output / 'tools'
     if tools.exists():
         shutil.rmtree(tools)
@@ -125,7 +125,7 @@ def execute(command, fixture, output, label, fault=None):
     (output / (label + '.stderr')).write_bytes(result.stderr)
     calls = trace.read_text().splitlines() if trace.exists() else []
     if fault:
-        expected_calls = {'sed': 1, 'ls': 2, 'sort': 2, 'grep': 59}[fault[0]]
+        expected_calls = 1 if working else {'sed': 1, 'ls': 2, 'sort': 2, 'grep': 59}[fault[0]]
         require(calls == [fault[0]] * expected_calls, 'actual tool fault count differs')
     return result, calls
 
@@ -136,6 +136,9 @@ def main():
     parser.add_argument('--addition', action='append', default=[])
     parser.add_argument('--working-code', action='store_true')
     parser.add_argument('--require-clean', action='store_true')
+    parser.add_argument('--extended', action='store_true')
+    parser.add_argument('--mutation', choices=['no-map-refusal', 'no-guard-refusal',
+                                              'no-row-membership'])
     args = parser.parse_args()
     os.environ['GIT_NO_LAZY_FETCH'] = '1'
     try:
@@ -161,6 +164,20 @@ def main():
                 require(pin['mode'] == (0o755 if selected[name][0] == '100755' else 0o644),
                         'working code mode differs')
                 bodies[name] = (ROOT / name).read_bytes()
+        if args.mutation:
+            require(args.working_code, 'actual refusal omissions require working-code')
+            name, old, new = {
+                'no-map-refusal': (GEN,
+                    "sed '/^<!--/,/-->/d' knowledge-map/subsystems.md >> \"$tmp/map\" || refuse 'curated source read failed'",
+                    "sed '/^<!--/,/-->/d' knowledge-map/subsystems.md >> \"$tmp/map\" || true"),
+                'no-guard-refusal': (GUARD,
+                    '"$gen" > "$tmp/render" || refuse \'generator failed\'',
+                    '"$gen" > "$tmp/render" || true'),
+                'no-row-membership': (MEMORY,
+                    'grep -Eq -- "$pattern" "$index"', 'grep -q -- "$b" "$index"'),
+            }[args.mutation]
+            require(bodies[name].count(old.encode()) == 1, 'unique actual refusal omission')
+            bodies[name] = bodies[name].replace(old.encode(), new.encode(), 1)
         population = inventory(bodies)
         expected = render(bodies, population['members'])
         reconcile(bodies[MAP], expected)
@@ -181,7 +198,8 @@ def main():
 
         def observe(case, interface, status, fault=None):
             result, calls = execute(['bash', {'generator': GEN, 'guard': GUARD,
-                'memory': MEMORY}[interface]], fixture, output, case + '-' + interface, fault)
+                'memory': MEMORY}[interface]], fixture, output, case + '-' + interface, fault,
+                working=args.working_code)
             observations.append({'case': case, 'interface': interface,
                 'expected_returncode': status, 'returncode': result.returncode,
                 'stdout_bytes': len(result.stdout), 'stdout_sha256': C.digest(result.stdout),
@@ -227,12 +245,38 @@ def main():
         observe('comment-only-decision', 'memory', 1)
         reset()
         observe('grep-failed', 'memory', 2, ('grep', 42))
+        if args.extended or args.working_code:
+            for case, substitute in [
+                ('prose-only-decision', Path(decision).name.encode() + b'\n'),
+                ('commented-decision-row', b'<!--\n' + row + b'-->\n'),
+                ('fenced-decision-row', b'```md\n' + row + b'```\n'),
+            ]:
+                reset()
+                (fixture / index).write_bytes(bodies[index].replace(row, substitute, 1))
+                observe(case, 'memory', 1)
+        if args.extended or args.working_code:
+            reset()
+            (fixture / index).write_bytes(b'<!-- ordinary note -->\n' + bodies[index])
+            observe('single-line-comment-before-valid-index', 'memory', 0)
+        if args.working_code:
+            reset()
+            observe('decision-index-read-failed', 'memory', 2, ('python3', 42))
 
         omissions = []
         for family in ['tasks', 'decisions', 'curated']:
             reset()
             original = bodies[GEN]
-            if family == 'curated':
+            if args.working_code and family in {'tasks', 'decisions'}:
+                old = {'tasks': b'map_directory docs/tasks TEMPLATE.md',
+                       'decisions': b'map_directory docs/decisions INDEX.md TEMPLATE.md'}[family]
+                new = b': # LC0035 actual directory expansion omission'
+            elif args.working_code:
+                old = b"sed '/^<!--/,/-->/d' knowledge-map/subsystems.md >> \"$tmp/map\" || refuse 'curated source read failed'"
+                # A map-refusal mutation still has a real curated-output omission control.
+                if args.mutation == 'no-map-refusal':
+                    old = old.replace(b"|| refuse 'curated source read failed'", b'|| true')
+                new = b': # LC0035 actual curated expansion omission'
+            elif family == 'curated':
                 old = b"  sed '/^<!--/,/-->/d' knowledge-map/subsystems.md"
                 new = b'  : # LC0034 actual curated read omission'
             else:
@@ -282,6 +326,8 @@ def main():
             'actual_omissions': omissions, 'roster_controls': controls,
             'failed_generator': {'body': failed, 'sha256': C.digest(failed.encode()),
                                  'actual_main_calls': 1}}
+        if args.mutation:
+            record['mutation'] = args.mutation
         (output / 'result.json').write_text(json.dumps(record, indent=2) + '\n')
         print(json.dumps({k: record[k] for k in ['source', 'mode', 'code_mode', 'source_defects']}
                          | {'inputs': len(bodies), 'observations': len(observations),

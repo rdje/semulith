@@ -35,6 +35,8 @@ fi
 # See docs/decisions/reference_upstream-spine-defects.md; carry the fixes upstream instead.
 # The handoff census also stays local: its fail-closed host-tool captures must survive sync.
 # The README guard stays local too: D54's checked text-metrics wiring must survive sync.
+# D74/D75 map and decision-index readers stay local: preserve checked inputs,
+# real table membership and generator/refusal status. Public sync probes guard all three.
 # Review newer upstream changes to these retained checks explicitly before adopting them.
 NEUTRAL=(
   MEMORY_ARCHITECTURE.md
@@ -50,7 +52,6 @@ NEUTRAL=(
   .githooks/pre-commit
   .githooks/commit-msg
   scripts/check_doctrines.sh
-  scripts/check_memory_architecture.sh
   scripts/check_live_doc_currency.sh
   scripts/check_lesson_promotion.sh
   scripts/check_routing_evidence.sh
@@ -59,8 +60,6 @@ NEUTRAL=(
   .doctrine/README.md
   scripts/check_docpaths.sh
   scripts/check_task_tree_ownership.sh
-  knowledge-map/scripts/gen_knowledge_map.sh
-  knowledge-map/scripts/check_knowledge_map.sh
   DOCTRINE_VERSION
 )
 

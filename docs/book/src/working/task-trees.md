@@ -48,24 +48,25 @@ Diagnostic evidence and dependency inputs are retained.
 
 ## Orientation and the selected next action
 
-`KNOWLEDGE_MAP.md` inventories all task files; open/closed indexes below own
-status. `MEMORY.md` selects the next action. LC0034 independently reconciles
-33 tasks,59 decisions,29 lesson cards at50a102b. Run fresh replay:
+`KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.
+`MEMORY.md` selects the next action. Source-pinned checks cover33 tasks,
+59 decisions and29 lesson cards. Fresh current replay:
 
 ```sh
-python3 scripts/qualify_orientation_indexes.py --output target/live-containment/orientation-replay/source2
+python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source
 ```
 
-Exit0 means measurement complete:17 public observations include11 wrong
-verdicts. D74 loses map input/tool failures; D75 accepts comment-only decision
-mentions and misclassifies failed reads. Both are owned for immediate repair.
-Knowledge-card links are independently checked here; MEMORY-ARCH covers decisions.
+D74/D75 fixed:22 observations/0 wrong verdicts. Map input/generator/comparison
+failures refuse2; drift fails1. Decision listings require table links outside
+comments/fences. Unavailable reads refuse2. Knowledge links are independently
+checked. Scaffold sync retains all three repairs. Historical default17/11;
+`--extended` 21/14. These are finite controls.
 
 The term index scans raw SUMMARY chapters and glossary terms/acronyms;
 includes stay unexpanded. D73 read/write/launch refusals are fixed:
 
 ```sh
-python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/orientation-replay/index
+python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/orientation-verified/index
 ```
 
 ### Decision navigation and the record it opens

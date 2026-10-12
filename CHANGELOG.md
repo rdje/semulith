@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0035 (leaf LIVE-CONTAINMENT.4) — preserve orientation and record refusals
+
+- Fix D74/D75: complete map generation retains source/tool failures and actual generator status; decision membership requires actual table links outside comments/fences, unavailable reads refuse2. Current22 observations/0 wrong verdicts normal/O; real map/guard/row omissions fail1 with2/5/1 bad outcomes. Valid map/memberships and legacy17/11 fields stay exact; extended source21/14 remains measurable.
+- Retain all three repairs through public scaffold sync:7 subset/26 full controls normal/O; individual overwrite omissions each fail both new cases. Preserve complete LC0034 prefix, lossless matrices, whole old history/modes/caps and book/toolbox/live sync. LIVE1575/processor/full-adoption scope unchanged; catalogue/archive query qualification next.
+
 ## SEMULITH-LC-0034 (leaf LIVE-CONTAINMENT.4) — qualify orientation and record indexes
 
 - Source50a102b:207 immutable inputs, exact33 task/59 decision/29 knowledge rosters and full map bytes. Seventeen actual observations per mode expose11 wrong verdicts; real map/roster omissions discriminate. D74 map failure/status loss and D75 comment-only decision matching/read classification are priority1, owned for immediate LC0035 repair.
@@ -418,14 +423,4 @@
 
 - Preserve31 historical spans with four full-source inverses; reject three damaged controls and authenticate the pinned HTML inputs.
 - Correct canonical lineage, G0 producer and materials scope; regenerate reports, board metadata and model tables with exact derived inverses. Focused15/six books/invariants pass; runtime/frozen114/114/registry/fixtures/prior history/LIVE remain exact, no new conformance credit.
-
-## SEMULITH-AC-0062 (leaf ARTIFACT-CLEANUP.5) — remove recurring incremental caches and retain evidence
-
-- Remove exactly204 untracked Cargo incremental caches/978509475B after identity/safety preflight and actual no-job census; residue0, all6261retained input/evidence hashes exact.
-- Overwrite latest cleanup record and synchronize task/index/book/resume; focused9/six books/invariants pass. Code/profiles/frozen/registry/history/LIVE unchanged; return to P4-SYSTEM.14 a7.
-
-## SEMULITH-P4-0197 (leaf P4-SYSTEM.14) — withdraw maintained internal ancestry assertions
-
-- Preserve three complete historical records, the closed FP card and profile note with exact payload/full-task inverses; reject three damaged archive controls.
-- Correct maintained ancestry/FP acceptance/search advice/INDEX/task/book scope around public observations and explicit lineage limits. Realized runner1/1, focused12/six books/invariants pass; runtime/producers/profiles/frozen/registry/history/LIVE remain exact,114/114 frozen.
 

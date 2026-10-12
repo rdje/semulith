@@ -6,7 +6,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
-| `scripts/qualify_orientation_indexes.py` | do actual map/index readers retain all members and failed-input verdicts? | `python3 scripts/qualify_orientation_indexes.py --output target/PATH`; normal/O; --require-clean fails on measured defects |
+| `scripts/qualify_orientation_indexes.py` | do map/index readers retain complete members and failure verdicts; do real repair omissions fail? | `python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/PATH`; normal/O; legacy replay remains explicit |
 | `scripts/check_doctrines.sh` | which doctrine is breached, and where? (the whole registry, one verdict per rule) | `make gate` |
 | `scripts/check_delivery_provenance.sh` | has a delivered file drifted from the bytes we were given, and is every manifest row's treatment declared? | `scripts/check_delivery_provenance.sh` |
 | `scripts/check_fixture_fingerprints.sh` | does every pinned `sha256` still describe the file it names? | `scripts/check_fixture_fingerprints.sh` |
