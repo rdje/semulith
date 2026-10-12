@@ -25,8 +25,8 @@ summarize the snapshot in every commit-workflow completion message.
 | Reference independence inventoried | Done | Historical 6 rows; ancestry basis withdrawn; current record sweep: `P4-SYSTEM.14` |
 | North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 6 units today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
-| Composition of models | Done | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 6 of 6 leaves complete: encoding union/fragments, assumption discharge, declared partial slots, nested unit materialization and per-instruction refinement checks. Tree closure claims no accepted processor or board. |
-| Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 18/18 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
+| Composition of models | Done | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 6 of 6 leaves: union/fragments, discharge, partial slots, nested units, per-instruction refinement. Closure qualifies no processor/board. |
+| Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 19/19 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
 | Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`); `.18` added the per-kind demand chapter |
 | Per-unit books | Done | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 8/8 — one definition, one mdBook; the arc landed, `UNIT-BOOKS` gates it |
 
@@ -38,7 +38,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P1 — processor laboratory | G1 | Done | [`P1-LAB`](docs/tasks/P1-LAB.md) 13/13 — **gate `G1` RUN, verdict `passed` (`2026-09-30`)**: criteria 1–5 met; criterion 6 — the C-toolchain guest — met by `P2-SCALAR.5` (`c-scope.c`, three-way 129/129) |
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — `.9` CPU-LAB report stands: `incomplete` (G-CONTRACT/G-OBLIGATIONS open), the EXPERIMENTAL release decision recorded — 642/642 live |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`, each with ROUTING EVIDENCE; no oracle claim |
-| P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 8/8 — **gate `BREADTH` RUN, verdict `passed`**: TI C6000 / SHARC unclaimed explicitly |
+| P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 6 of 7 leaves done; `.1` slice-gated, TI/VLIW legs conditional. Gate `BREADTH` RUN, verdict **`passed`**; TI C6000 / SHARC unclaimed. |
 | P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 13/18; `.14` evidence active; v2 frozen |
 | P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 10/12; the platform manifest landed (PLATFORM-GEN); probes/gate report gated on the CPU trajectory |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves; adapter designed against the real eADL interface |

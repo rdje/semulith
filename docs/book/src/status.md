@@ -1,25 +1,22 @@
 # Current status
 
-Included from the authoritative `LIVE_STATUS.md` at build time:
+Included from authoritative `LIVE_STATUS.md` at build time:
 
 {{#include ../../../LIVE_STATUS.md}}
 
-## How to read a row
+## Reading progress
 
-`Done` means work finished, verified and committed. A milestone's gate is a
-separate claim: `passed`, `failed` or `incomplete`, recorded in its evidence.
-Composition work closing does not qualify a processor or board.
+`Done` means work verified and committed; gate verdicts (`passed`, `failed`,
+`incomplete`) are separate evidence. Composition closure qualifies no processor/board.
 
-Use `A of B leaves` beside a task-tree link for explicit progress.
-TREE-CLAIMS checks that syntax; bare ratios are outside its current grammar.
-D59 owns source-parser and broader ratio coverage before full adoption.
-The same-total/wrong-completed control guards the completed-count branch:
+Use explicit `A of B leaves` beside a task-tree link. Bare ratios and incomplete
+source decoding await D59/D64 repair. The immutable source assessment checks
+bold statuses and actual archived declarations; slice-gated is conditional, not done:
 
 ```sh
-bash scripts/check_tree_claims.sh --self-test
+python3 scripts/qualify_task_claim_inputs.py
 ```
 
-## Where the detail lives
-
-Task-trees and evidence: `docs/tasks/`, indexed by `docs/TASK_TREE.md`.
-Decisions: `docs/decisions/`. Changes: `CHANGELOG.md` and Git.
+Details: `docs/tasks/artifacts/live-containment/task-claims.md`.
+Task/evidence routes: `docs/TASK_TREE.md`; decisions: `docs/decisions/`;
+changes: `CHANGELOG.md` and Git.

@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D58/D60/D61 fixed; .4i2b2 priority1 D59 source/ratio qualification next |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b2a source/consumer qualification; .4i2b2b repair follows |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -1171,12 +1171,13 @@ exact11-file postcheck, brief0/untracked and unrestricted host0 close this unit.
 
 ### .4i2b2 — priority1 D59 source parser and bare-ratio coverage
 
-Status: pending, immediately after .4i2b1 COMMIT, before remaining reader review.
+Status: active, decomposed; .4i2b2a qualifies source/consumer defects first;
+.4i2b2b repairs them in lockstep before remaining reader review.
 Owner: LIVE-CONTAINMENT.4. Actual public TREE-CLAIMS reports0 with a stale bare
 composition ratio (D58); assessment.json enumerates every ratio after a tree
 reference across all four live files. Candidate binding is not semantic truth:
 MODEL-METHOD's later52/52 is instruction coverage; P1/P2's later129/129 and642/642
-are guest/observation coverage. Its current parser measures MODEL-METHOD6/6,
+are guest/observation coverage. At5bdaa14 its parser measures MODEL-METHOD6/6,
 P3-BREADTH6/7 and P4-SYSTEM4/18, while the live rows state18/18,8/8 and13/18.
 Tools locate archived summaries, slice-gated status and bold done as source
 preconditions requiring qualification, not evidence that every live count is
@@ -1188,6 +1189,83 @@ stale live counts in lockstep. Qualify statuses/summary uniqueness, omissions,
 old controls, history exclusion, nearest-tree binding and later non-task ratios.
 No full generic Markdown coverage claim. Until this closes, explicit
 A-of-B-leaves is the supported progress grammar for repaired projections.
+
+#### .4i2b2a / SEMULITH-LC-0025 — qualify source and progress-reader boundaries
+
+Status: complete; qualification/projection repair only. Normal COMMIT required. Owned on clean5bdaa14 after normal hooks, exact11-file
+postcheck, brief0/untracked, unrestricted handoff0 and full COMMIT report.
+Own target/live-containment/task-claim-inputs and a durable source-read-only
+qualifier under scripts/. Pin complete immutable1416-member source and real
+HEAD/index/member/mode/Gitlink state. Independently decode all33 task roots'
+direct IDs/statuses, the one explicit archived whole-leaf declaration, and
+exact root metadata/frontier/closed-register claims; preserve archive bodies.
+Qualify explicit backtick/bold status spellings and conditional slice-gated
+semantics without equating it with done. Validate the declared archived range
+against actual immutable archived IDs/statuses, not the summary alone.
+
+Run actual public TREE-CLAIMS and FRONTIER-SYNC, then isolated public truth/
+falsehood cases for bold statuses, archived leaves, same-total done drift,
+leading versus later ratios and punctuated closed-register claims. Derive
+claims from actual source, classify only measured defects, log reproduction/
+impact/priority and schedule each repair .4i2b2b before broader graph work.
+Keep source/consumer code repair separate; correct proven stale live and closed
+progress projections here after public qualification. No registry count, cap,
+canonical record, archived body or lifecycle change in this unit. Qualify failed/malformed/duplicate/missing
+inputs and copied omissions normal/O; preserve real state across every run.
+Own bounded receipt/toolbox/book teaching, necessary whole-entry CH/DEV rollover,
+full history/protected/source inverses, focused/seven-book/rendered/literal
+checks, normal COMMIT/exact postcheck/brief0/unrestricted host0. If the task's
+part limit approaches, separately own a whole closed-unit migration rather
+than growing its cap. Full adoption and CPU qualification remain pending.
+promotion: declined (local source assessment and producer are task artifacts, not new policy authority).
+
+- [x] **REPRODUCE / ISSUE** — `python3 target/live-containment/task-claim-inputs/public.py`
+  rc=0 normal/O:12 cases/mode; actual TREE/FRONTIER0, typed source differs.
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_task_claim_inputs.py` rc=0
+  normal/O:33 roots/34 source pins/205 numeric declarations;14 refusals.
+  Public bold/archive1, unknown0 and punctuated false count0 locate D59/D64.
+- [x] **FIX** — D62/D63 live/closed projections corrected; durable qualifier/
+  receipt/toolbox/book and separate D59/D64 repair owner after part containment.
+- [x] **ADDRESSED** — `python3 target/live-containment/task-claim-inputs/check-evidence.py`
+  rc=0 normal/O:205 IDs/34 pins,14 controls/12 public cases per mode; real state exact.
+- [x] **NO REGRESSION** — `python3 target/live-containment/task-claim-inputs/verify.py`
+  rc=0 normal/O:106 old entries/1406 protected/Gitlink/full inverses;
+  `bash target/live-containment/task-claim-inputs/focused.sh` rc=0;12 checks,
+  sharder12/seven books/3242 links/rendered/literal source replay pass.
+- [x] **LOCKSTEP** — D62/D63 corrected; source tasks/archives/guard1519/caps/CPU
+  exact. .4i2b2h part containment precedes D59/D64 code repair.
+
+Source qualification: immutable5bdaa14/1416 identities, wire603ef1a2;
+33 roots/34 exact source pins. Direct192 IDs plus13 actually checked archived
+MODEL-METHOD IDs yield205:164 done,36 pending,2 proposed,2 active,1 slice-gated.
+MODEL-METHOD19/19 differs from live18/18 (D62, priority1 this unit);
+P3-BREADTH6/7 plus the conditional leaf differs from live/closed8/8 (D63,
+priority1 this unit). P4 13/18 is correct; its bold status decoding is D59.
+Actual public TREE/FRONTIER baselines0 normal/O, with real1416 plus owned
+producer exact. Twelve cases/mode qualify bold/archive false breaches1,
+unknown-status false greens0, bare/later ratios0, explicit false count1, and
+D64 punctuated false closed count0 versus plain false1. D64 priority1 repair
+is owned .4i2b2b; its parser requires a closing parenthesis immediately after
+complete. Qualification is finite, not universal source/Markdown coverage.
+
+#### .4i2b2h — whole closed-unit part containment before code repair
+
+Status: pending; next after .4i2b2a COMMIT. Own a lossless whole closed-unit
+move from this root into a new ordinary task archive, retaining all bytes,
+source/order/anchors/navigation and earlier published archives/modes. Qualify
+independent inverses and normal history/book/gates. No cap or seal expansion.
+Do not start .4i2b2b code repair until this separately committed unit is clean.
+
+#### .4i2b2b — repair qualified task source and mirrored progress
+
+Status: pending after .4i2b2a COMMIT. Implement only the measured producer/
+consumer repairs, with shared typed source decoding where appropriate; qualify
+all actual affected consumers before integration. Correct independently proven
+stale live/index projections without changing task source to fit a mirror.
+Preserve archive immutability, source failure refusals, original controls and
+non-task ratios; add discriminator/omission controls normal/O. Reconcile book,
+registry-derived arms, task/pointer/frontier and normal COMMIT. Do not infer
+universal Markdown or full graph coverage from these finite supported forms.
 
 ### .4i2a / SEMULITH-LC-0023 — collect closed graph inventory evidence
 
@@ -1580,6 +1658,10 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b2a: source/D59/D64 qualified, D62/D63 corrected.14 controls/12 public
+cases per mode;106 old entries/1406 protected/Gitlink exact. Focused12/seven
+books/3242 links/rendered/literal pass; .4i2b2h containment next.
+
 .4i2b1: D58 live composition Done/6 of6; D60 same-total arm13, old12 exact;
 seven public cases/mode and copied omission0→2 normal/O. D61 two table joins,
 all21 actual normal/print Foundation rows;3244 links and literal13-control
@@ -1751,6 +1833,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0025 (leaf LIVE-CONTAINMENT.4): qualify task source and correct stale projections` — .4i2b2h next.
 
 `SEMULITH-LC-0024 (leaf LIVE-CONTAINMENT.4): correct live composition progress` — D58/D60/D61 fixed; D59 qualification next.
 

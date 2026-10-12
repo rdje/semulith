@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0025 (leaf LIVE-CONTAINMENT.4) — qualify task source and correct stale projections
+
+- Immutable5bdaa14:33 roots/34 source pins/205 numeric declarations; actual archived range checked.14 refusals normal/O and two copied omissions/failed-source refusals. Twelve actual public cases/mode qualify D59 source decoding and D64 punctuated-count repair; current guard code unchanged.
+- D62 live method18/18 becomes19/19; D63 live/closed P3 eight/eight becomes six done plus one conditional. Source tasks/archives/caps/CPU unchanged. Whole history/source/protected inverses and focused/seven-book/rendered checks required; preserve closed task units for headroom before code repair.
+
 ## SEMULITH-LC-0024 (leaf LIVE-CONTAINMENT.4) — correct live composition progress
 
 - D58: composition closed six leaves on 2026-09-27; repair the stale In Progress/2/6 row to Done with explicit guarded progress. Tree closure claims no accepted processor or board.
@@ -437,15 +442,4 @@
 - Preserve the complete original C chapter and inverse; replace completed chronology with current features, all37forms and a verified mixed-length example. Save17043B and route the stale realization count to its current owner.
 - Move6oldest whole DEV entries and23CHANGELOG entries to0232/0233 with exact byte/order inverses; prior history, code/data, frozen contracts, registry/effective110/114 and caps remain exact.
 - Verify37hand words,21operand refusals,4worked boundaries/5parcels and all167prior guests. Five damaged inverse controls refuse; verify/derive/focused8docs/six books rc=0.
-
-## SEMULITH-P4-0186 (leaf P4-SYSTEM.13 c34b0) — check physical permission on failed SC
-
-- Failed SC now checks physical store permission before retiring, with no data
-  read/write; denied checks trap7 with VA and preserve the reservation. Malformed
-  replies stay provider violations. Extend open-v2 pairs/adapters/census.
-- New1625full-state boundaries and1536independent architectural derivations,
-  six new/23prior actual controls discriminate; all guest data/frozen/history/
-  LIVE/prior registry exact. Rust173/17/253/focused/full CI/six books green.
-- Effective110/114 unchanged. Own bounded book/development containment before
-  qualified reservation/SC binding and final freeze; .14 sweep stays scheduled.
 
