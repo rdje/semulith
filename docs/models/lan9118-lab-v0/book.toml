@@ -14,3 +14,9 @@ no-section-label = false
 command = "python3 ../../../scripts/book_navigation.py"
 renderers = ["html"]
 after = ["links"]
+
+[preprocessor.source-check]
+command = "python3 ../../../scripts/book_includes.py"
+renderers = ["html"]
+before = ["links"]
+optional = false

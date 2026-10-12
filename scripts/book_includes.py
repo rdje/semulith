@@ -24,6 +24,10 @@ INCLUDE = re.compile(r'\{\{\s*#include\s+([^\s{}]+)[ \t]*}}')
 ANCHOR = re.compile(r'ANCHOR(_END)?:[ \t]*([\w-]+)(?![\w-]|[^\x00-\x7f])')
 NAME = re.compile(r'[A-Za-z0-9_-]+\Z')
 DECIMAL = re.compile(r'[0-9]+\Z')
+PREFIX = 'BOOK-INCLUDES: '
+DEFECT_PREFIX = PREFIX + 'DEFECT — '
+REFUSED_PREFIX = PREFIX + 'REFUSED — '
+CHECKED = re.compile(re.escape(PREFIX) + r'checked ([0-9]+) chapters / ([0-9]+) include edges\Z')
 
 
 class IncludeDefect(ValueError):
@@ -282,13 +286,13 @@ def main(argv=None):
         require(isinstance(wire, list) and len(wire) == 2, 'expected [context, book]')
         book, report = preprocess(wire[0], wire[1], args.root)
     except IncludeDefect as exc:
-        print('BOOK-INCLUDES: ' + str(exc), file=sys.stderr)
+        print(DEFECT_PREFIX + str(exc), file=sys.stderr)
         return 1
     except (IncludeRefused, UnicodeError, OSError, ValueError, RecursionError) as exc:
-        print('BOOK-INCLUDES: REFUSED — ' + str(exc), file=sys.stderr)
+        print(REFUSED_PREFIX + str(exc), file=sys.stderr)
         return 2
     json.dump(book, sys.stdout, ensure_ascii=False)
-    print('BOOK-INCLUDES: checked ' + str(len(report['chapters'])) + ' chapters / ' +
+    print(PREFIX + 'checked ' + str(len(report['chapters'])) + ' chapters / ' +
           str(len(report['include_edges'])) + ' include edges', file=sys.stderr)
     return 0
 

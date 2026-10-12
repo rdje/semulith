@@ -163,21 +163,111 @@ class BookTests(unittest.TestCase):
         findings, _ = B.navigation_findings(self.root / 'web', [self.root / 'web/book'])
         self.assertTrue(any('NO RENDERED BOOK' in f for f in findings), findings)
 
+    def test_missing_include_fails_in_project_and_unit(self):
+        for relative in ['docs/book/src/intro.md', 'docs/models/u1/src/intro.md']:
+            with self.subTest(relative=relative):
+                path = self.root / relative
+                original = path.read_text()
+                path.write_text(original + '\n{{#include absent.txt}}\n')
+                findings, _, _ = B.check_books(self.root)
+                self.assertTrue(any('BOOK DOES NOT BUILD' in f and
+                                    'missing include/source file' in f for f in findings), findings)
+                path.write_text(original)
+
+    def test_missing_duplicate_and_inverted_anchor_fail_before_expansion(self):
+        bodies = ['// ANCHOR: other\ncontract\n// ANCHOR_END: other\n',
+                  '// ANCHOR: part\ncontract\n// ANCHOR_END: part\n' * 2,
+                  '// ANCHOR_END: part\ncontract\n// ANCHOR: part\n']
+        for relative in ['docs/book/src/intro.md', 'docs/models/u1/src/intro.md']:
+            path = self.root / relative
+            original = path.read_text()
+            for body in bodies:
+                with self.subTest(relative=relative, body=body):
+                    (path.parent / 'fragment.txt').write_text(body)
+                    path.write_text(original + '\n{{#include fragment.txt:part}}\n')
+                    findings, _, _ = B.check_books(self.root)
+                    self.assertTrue(any('missing/ambiguous anchor' in f for f in findings), findings)
+            path.write_text(original)
+
+    def test_unsafe_or_unreadable_include_refuses_in_both_books(self):
+        for relative in ['docs/book/src/intro.md', 'docs/models/u1/src/intro.md']:
+            path = self.root / relative
+            original = path.read_text()
+            fragment = path.parent / 'fragment.txt'
+            for kind in ['symlink', 'utf8']:
+                with self.subTest(relative=relative, kind=kind):
+                    if kind == 'symlink':
+                        fragment.symlink_to(path.name)
+                    else:
+                        fragment.write_bytes(b'\xff')
+                    path.write_text(original + '\n{{#include fragment.txt}}\n')
+                    with self.assertRaises(B.BookRefused):
+                        B.check_books(self.root)
+                    fragment.unlink()
+            path.write_text(original)
+
+    def test_guard_overrides_disabled_or_reordered_source_processor(self):
+        prefix = 'MDBOOK_PREPROCESSOR__SOURCE_CHECK__'
+        disabled = {prefix + 'COMMAND': 'false', prefix + 'BEFORE': '[]',
+                    prefix + 'AFTER': '["links"]', prefix + 'RENDERERS': '["pdf"]',
+                    prefix + 'OPTIONAL': 'true'}
+        path = self.root / 'docs/models/u1/src/intro.md'
+        path.write_text('{{#include absent.txt}}\n')
+        with mock.patch.dict(os.environ, disabled):
+            findings, _, _ = B.check_books(self.root)
+        self.assertTrue(any('missing include/source file' in f for f in findings), findings)
+
+    def test_missing_duplicate_or_refused_success_witness_refuses(self):
+        witness = 'BOOK-INCLUDES: checked 1 chapters / 0 include edges\n'
+        for stderr in ['', witness * 2, 'BOOK-INCLUDES: REFUSED — controlled\n',
+                       witness + 'BOOK-INCLUDES: unknown status\n']:
+            with self.subTest(stderr=stderr), self.assertRaises(B.BookRefused):
+                B.require_include_execution(subprocess.CompletedProcess([], 0, '', stderr), 'fixture')
+        B.require_include_execution(subprocess.CompletedProcess([], 0, '', witness), 'fixture')
+
+    def test_unavailable_or_invalid_include_protocol_metadata_refuses(self):
+        for module in [types.SimpleNamespace(PREFIX='BOOK-INCLUDES: '),
+                       types.SimpleNamespace(PREFIX=None, DEFECT_PREFIX='defect',
+                                             REFUSED_PREFIX='refused', CHECKED=object())]:
+            with self.subTest(module=module), mock.patch.dict(sys.modules, {'book_includes': module}):
+                with self.assertRaises(B.BookRefused):
+                    B.require_include_execution(subprocess.CompletedProcess([], 0, '', ''), 'fixture')
+
+    def test_named_processor_protocol_failures_refuse_but_toml_defect_stays(self):
+        for stderr in ['ERROR Unable to parse the preprocessed book from "source-check" processor\n',
+                       'ERROR The "source-check" preprocessor exited unsuccessfully with exit status: 2 status\n']:
+            with self.subTest(stderr=stderr), self.assertRaises(B.BookRefused):
+                B.require_include_execution(subprocess.CompletedProcess([], 101, '', stderr), 'fixture')
+        B.require_include_execution(subprocess.CompletedProcess([], 101, '', 'ERROR invalid TOML\n'), 'fixture')
+        B.require_include_execution(subprocess.CompletedProcess([], 101, '',
+            'BOOK-INCLUDES: DEFECT — missing include/source file absent.txt\n'
+            'ERROR The "source-check" preprocessor exited unsuccessfully with exit status: 1 status\n'), 'fixture')
+
     def test_real_build_is_fresh_and_removed(self):
         parent = B.PROJECT / 'target/unit-books'
-        before = set(parent.iterdir()) if parent.exists() else set()
-        findings, count, links = B.check_books(self.root)
+        allocate = B.tempfile.TemporaryDirectory
+        allocated = []
+
+        def observed(*args, **kwargs):
+            directory = allocate(*args, **kwargs)
+            allocated.append(Path(directory.name))
+            return directory
+
+        with mock.patch.object(B.tempfile, 'TemporaryDirectory', observed):
+            findings, count, links = B.check_books(self.root)
         self.assertEqual(findings, [])
         self.assertEqual(count, 1)
         self.assertGreater(links, 0)
-        self.assertEqual(set(parent.iterdir()), before)
+        self.assertEqual(len(allocated), 1)
+        self.assertEqual(allocated[0].parent, parent)
+        self.assertFalse(allocated[0].exists())
         self.assertFalse((self.root / 'docs/book/book').exists())
         self.assertFalse((self.root / 'docs/models/u1/book').exists())
 
     def test_stale_success_output_cannot_supply_missing_fresh_render(self):
         self.write('docs/book/book/index.html', '<h1>Stale project</h1>')
         self.write('docs/models/u1/book/index.html', '<h1>Stale model</h1>')
-        with mock.patch.object(B.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '', '')):
+        with mock.patch.object(B.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, '', 'BOOK-INCLUDES: checked 1 chapters / 0 include edges\n')):
             findings, _, _ = B.check_books(self.root)
         self.assertEqual(sum('NO RENDERED BOOK' in f for f in findings), 2, findings)
 
@@ -193,7 +283,7 @@ def main():
     args = sys.argv[1:]
     if args:
         if len(args) != 2 or args[0] != '--mutation':
-            raise SystemExit('usage: probe_unit_books.py [--mutation no-catalogue|no-navigation|no-path-guard|reuse-stale]')
+            raise SystemExit('usage: probe_unit_books.py [--mutation no-catalogue|no-navigation|no-path-guard|reuse-stale|no-include-env|no-include-witness|no-include-refusal]')
         mode = args[1]
         if mode == 'no-catalogue':
             B.catalogue_findings = lambda *args: []
@@ -201,6 +291,22 @@ def main():
             B.navigation_findings = lambda *args: ([], 0)
         elif mode == 'no-path-guard':
             B.book_path = lambda root, value: root / value.rstrip('/')
+        elif mode in {'no-include-env', 'no-include-witness', 'no-include-refusal'}:
+            source = Path(B.__file__).read_text()
+            old, new = {
+                'no-include-env': ('text=True, env=env)', 'text=True)'),
+                'no-include-witness': ('if len(tagged) != 1 or checked.fullmatch(tagged[0]) is None:',
+                                       'if False:'),
+                'no-include-refusal': ('            require_include_execution(result, uid)',
+                                       '            if not result.returncode: require_include_execution(result, uid)'),
+            }[mode]
+            if source.count(old) != 1:
+                raise SystemExit('nonunique include mutation seam ' + mode)
+            source = source.replace(old, new, 1)
+            mutant = types.ModuleType('unit_books_mutant')
+            mutant.__file__ = B.__file__
+            exec(compile(source, mutant.__file__, 'exec'), mutant.__dict__)
+            B = mutant
         elif mode == 'reuse-stale':
             source = Path(B.__file__).read_text()
             source = source.replace("output = scratch / book.relative_to(root) / 'book'", "output = book / 'book'")
@@ -212,7 +318,10 @@ def main():
             B = mutant
         else:
             raise SystemExit('unknown mutation ' + mode)
-    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(BookTests))
+    import probe_book_includes as includes
+    suite = unittest.defaultTestLoader.loadTestsFromTestCase(BookTests)
+    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(includes.IncludeTests))
+    result = unittest.TextTestRunner(verbosity=2).run(suite)
     return 0 if result.wasSuccessful() else 1
 
 

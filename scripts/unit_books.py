@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build an owned, fresh documentation bundle and check its catalogue/navigation.
+"""Build an owned, fresh documentation bundle; validate includes and navigation.
 
 Registry dictionaries use records_sexp's single mapping. All build outputs are
 isolated under target/ and removed; source books are read-only inputs. Local
@@ -11,6 +11,7 @@ from html.parser import HTMLParser
 import os
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -137,10 +138,48 @@ def navigation_findings(web_root: Path, output_dirs: list[Path]) -> tuple[list[s
     return findings, checked
 
 
+def include_environment(root: Path) -> dict:
+    """Force the owned validator before expansion, including scratch corpora."""
+    validator = source_path(PROJECT, 'scripts/book_includes.py')
+    if not validator.is_file():
+        raise BookRefused('include validator is unavailable')
+    env = dict(os.environ)
+    prefix = 'MDBOOK_PREPROCESSOR__SOURCE_CHECK__'
+    env.update({prefix + 'COMMAND': shlex.join([sys.executable, str(validator), '--root', str(root)]),
+                prefix + 'BEFORE': '["links"]', prefix + 'AFTER': '[]',
+                prefix + 'RENDERERS': '["html"]', prefix + 'OPTIONAL': 'false'})
+    return env
+
+
+def require_include_execution(result, uid: str) -> None:
+    """Require one success witness and retain typed failures across mdBook."""
+    try:
+        import book_includes as I
+        prefix, defect_prefix, refused_prefix, checked = I.PREFIX, I.DEFECT_PREFIX, I.REFUSED_PREFIX, I.CHECKED
+    except (ImportError, OSError, SyntaxError, AttributeError) as exc:
+        raise BookRefused('include protocol is unavailable: ' + str(exc)) from exc
+    if (not all(isinstance(value, str) and value for value in [prefix, defect_prefix, refused_prefix])
+            or not isinstance(checked, re.Pattern)):
+        raise BookRefused('invalid include protocol metadata')
+    lines = result.stderr.splitlines()
+    tagged = [line for line in lines if line.startswith(prefix)]
+    refused = [line for line in tagged if line.startswith(refused_prefix)]
+    if refused:
+        raise BookRefused('include inputs ' + uid + ': ' + refused[0])
+    if result.returncode == 0:
+        if len(tagged) != 1 or checked.fullmatch(tagged[0]) is None:
+            raise BookRefused('missing/ambiguous include execution witness ' + uid)
+    elif any('"source-check"' in line and
+             ('preprocessor' in line or 'processor' in line) for line in lines):
+        if len(tagged) != 1 or not tagged[0].startswith(defect_prefix):
+            raise BookRefused('include processor failed before a typed verdict ' + uid)
+
+
 def check_books(root: Path) -> tuple[list[str], int, int]:
     root = owned_root(root)
     units = registered_units(root)
     findings = catalogue_findings(root, units)
+    env = include_environment(root)
     books = [source_path(root, 'docs/book')] + [book_path(root, u['book']) for u in units]
     registered = set(books[1:])
     models = root / 'docs/models'
@@ -172,7 +211,8 @@ def check_books(root: Path) -> tuple[list[str], int, int]:
                 continue
             output = scratch / book.relative_to(root) / 'book'
             result = subprocess.run(['mdbook', 'build', str(book), '-d', str(output)],
-                                    capture_output=True, text=True)
+                                    capture_output=True, text=True, env=env)
+            require_include_execution(result, uid)
             if result.returncode:
                 findings.append('BOOK DOES NOT BUILD ' + uid + ': ' + (result.stderr or result.stdout).strip())
                 continue

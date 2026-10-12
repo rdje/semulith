@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0030 (leaf LIVE-CONTAINMENT.4) — enforce include integrity in public and default builds
+
+- Close D65: seven default books validate before links; UNIT-BOOKS forces execution and preserves typed defect1/refusal2. Both public interfaces reject the original24 false greens normal/O; unsafe inputs and16 injected read/change failures refuse2. All93 expanded chapters/49 includes and344 output files match pass-through builds.
+- Preserve old controls;52 aggregate methods/26 navigation methods and22 shell arms pass normal/O, six copied omissions discriminate. Fix D68's shared-directory test race:15 of16 historical concurrent failures become16 passes. Re-derived1571 arms; retain2180B complete book receipts, whole history/source/mode/cap inverses and tracked replay recipes. Full graph/adoption and processor qualification remain open.
+
 ## SEMULITH-LC-0029 (leaf LIVE-CONTAINMENT.4) — qualify before-links include validation
 
 - Standalone strict source validator checks owned chapters and selected transitive inputs; valid books are unchanged, missing/ambiguous inputs fail1, unsafe/unsupported/unreadable inputs refuse2. Preserve path predicates/public aliases and old23/26 controls;22 component controls pass normal/O.
@@ -428,10 +433,4 @@
 
 - Remove the withdrawn backend-defect claim from one generator comment/two templates and regenerate three directed labels. Preserve all230numeric rows and3168fixture bytes exactly; stale tracked/scratch notes reject before/after regeneration controls.
 - Rust173/17/253, focused10 including FP-VECTORS hardware/self-tests, six books and exact invariant verifier pass. CPU/profile/frozen/registry/LIVE/history remain unchanged; continue owned provenance repairs before evidence signoff.
-
-## SEMULITH-P4-0191 (leaf P4-SYSTEM.13) — freeze the complete environment contract
-
-- Freeze14v2 members with exact canonical-record SHA256 pins; preserve all v0/v1 bytes, obligations, runtime and fixtures. Intact candidate passes; edited record/missing pin/dropped membership controls each refuse.
-- Full five-leg CI passes, including Rust173/17/253 and six books; final focused9/books/invariants green. G-CONTRACT green114/114; CPU-SYSTEM incomplete7/10axes.
-- Close .13, activate .14; synchronize P4 13/18, live/book/frontier/resume pointers. Priority provenance/note repairs precede evidence records/status and unit registration.
 

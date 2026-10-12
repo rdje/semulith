@@ -1,5 +1,56 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — enforce include integrity through actual public builds (LIVE-CONTAINMENT.4i2b3b2)
+
+D65's status/navigation boundary is repaired in both public UNIT-BOOKS interfaces
+and all seven default book configurations. Every build validates owned actual
+chapters and selected transitive include sources before links. The guard forces
+the validator independently of corpus configuration/caller overrides, requires
+one exact checked witness, and preserves typed source defect1/refusal2 across
+mdbook's shared101 failure status. Shared metadata lives in book_includes.py;
+lazy protocol loading makes missing/invalid metadata refuse2. Ordinary malformed
+TOML retains build-defect1. Public installed mdbook0.5.4 probes show why explicit
+HTML renderer selection matters: without it, a rejected supports probe or absent
+Python script can leave build0. Explicit renderer bypasses supports and forces
+the actual processor. No native mdbook defect or general prose truth is claimed.
+
+Tracked qualify_include_guard.py owns eight modes: actual protocol, immutable
+original/current CLI+shell matrices, exact read/change injections, seven default
+book/pass-through comparisons, actual guard/config omissions and original/current
+concurrent shell calibration. Immutable aacaee98 regular inputs copy byte/mode
+exact; Gitlinks remain opaque, lazy fetch disabled, no Git init/external writes.
+Original missing file/anchor/duplicate cases yield24 public false greens across
+normal/O; repaired interfaces yield24 defect1,16 unsafe refusal2 and four valid0.
+Sixteen actual chapter/include read/change cases refuse2 with one injection each.
+All seven defaults preserve93 full expanded chapters and344 output files against
+independent pass-through builds;49 source edges match actual before-links inputs.
+Three guard omissions fail1 and three actual configuration omissions refuse2 per
+mode. Legacy cad73f3 replay still reproduces the exact80700B LC0028 ledger.
+
+D68 was exposed by concurrent qualification: the existing fresh/removal probe
+compared the entire shared target/unit-books directory before/after one build.
+Eight overlapping actual shell checks fail when healthy peers allocate/remove
+bundles. Observe this invocation's real allocation and prove its removal, while
+retaining fresh-output/source-clean assertions. Tracked immutable reproduction
+fails15 of16 shells across normal/O; the repaired calibration passes16. All52 aggregate
+unit/include methods,26 navigation methods and22 shell arms pass; six new static
+source arms re-derive the project total as1571. Initial selected-chapter fixture
+mistake was isolated with actual public capture and corrected before signoff.
+
+Copy/verify four complete closed book receipt spans (2180B) into the integration
+record before replacement. Preserve headings/current explanations/examples and
+full source inverse; main book family524281→523499B, within the unchanged524288
+ceiling. Main config137B plus doctrine96B and teaching/retention−1015B; six unit
+configs add840B outside that family. Whole CH/DEV suffixes move via the published
+sharder;106 prior entries/order and every published archive/seal remain exact.
+Normal focused/staged/hooks/postcheck/brief0/host0 complete this unit. D70
+corrects earlier subset counts: scaffold5; full handoff24, both run here. D65/D68
+fixed; full graph/adoption and CPU/MCU/DSP/board qualification stay open.
+
+Lesson promotion: declined — the concrete transport/calibration contracts and
+reproducible before/after recipes are retained in canonical code and the owned
+integration record; no new cross-cutting policy is introduced.
+
 ## _(2026-10-12)_ — qualify owned include sources and tracked replay (LIVE-CONTAINMENT.4i2b3b1)
 
 The standalone book_includes.py public preprocessor validates actual Chapter/
@@ -666,49 +717,4 @@ two literal reads pass. All101 old entries/whole heads/seals and1387 protected
 files/modes/Gitlink exact normal/O; genuine receipt+digest controls refuse.
 Only inherited EOF notices0280:100/0281:27 remain; full inverses prove those bytes.
 promotion: declined (existing canonical records own the demoted details).
-
-## _(2026-10-11)_ — adopt the local containment contract (LIVE-CONTAINMENT.4g)
-
-Copy the reviewed neutral body20208B/343lines exactly from fsmgen revision
-a9867e1; SHA2560be4823ed138daff87fd7ed9ff6a9e6fde377a855075b407de97ebca6a293244.
-The separate Semulith note1892B/28lines names authority, locality and pending
-adoption work. Its40line/2048B allowance plus the fixed body derives383lines/
-22256B whole-file limits. Existing ceilings and sealed history stay unchanged.
-Canonical bootstrap discovers the local copy; README policy's neutral body is
-retained. The book includes the complete contract and a literal read command.
-Routes re-derive39; only that LIVE count changes. Full inventory, field contracts,
-local declarations/checker and migrations are not claimed complete. D51 and
-capacity review remain owned in LC.4h; original source receipts are retained.
-All56 policy blocks render normal+print; focused12/seven books/3236 links pass.
-promotion: declined (the local normative copy owns the policy).
-
-## _(2026-10-11)_ — truthful orientation before containment inventory (LIVE-CONTAINMENT.4f)
-
-D50: on314b0c4 the public Knowledge Map generator enumerates33 flat task
-files without reading status, yet labels the list "Active task-trees". The
-independent exact Metadata census derives only six active trees. Correct only
-the source heading to "Task-tree files" and regenerate; all33 links, ordering,
-labels and every other source/output byte remain exact. The status-aware open
-and closed indexes retain their distinct role; no task is filtered or retired.
-
-MEMORY had resumed copying roster detail and completed D49 measurements.
-Audit eight canonical authority routes, then overwrite the current block with
-one selected LC.4 action, the required active IDs, in-flight state, blockers and
-Git's revision accessor. The first draft wrapped three active IDs onto another
-line; TREE-CLAIMS refused those missing IDs. Restoring one complete labeled line
-passes without changing the checker. Detailed D49 and CPU facts remain in their
-owners; no unique fact needs a backfill. The earlier pointer remains in Git.
-
-The book teaches both inventories and three literal read commands. Verify
-complete generator/map/book inverses, whole old history heads, protected files/
-modes/Gitlink, fixed caps, focused checks and seven normal/print book outputs.
-Final focused12/sharder12/seven books/3208 links and all three literal examples
-pass; complete teaching appears normal+print. Verify normal/O preserves all97
-old entries/whole heads and1386 protected regular files/Gitlink. Pointer initial
-32lines/2871B becomes26lines/1461B before final resume wording. The diagnostic
-first required a bare status line and refused the valid dated BOOK-APPARATUS
-status; the exact leading status token grammar now accepts its documented tail.
-No archive bytes, canonical inputs, CPU gates or LIVE values change. Full
-containment doctrine/inventory/checker adoption and capacity remedy stay LC.4.
-promotion: declined (local orientation correction; existing pointer decision is authoritative).
 

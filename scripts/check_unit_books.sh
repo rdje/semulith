@@ -2,7 +2,8 @@
 # scripts/check_unit_books.sh — UNIT-BOOKS (project doctrine).
 #
 # UNIT-BOOKS: shared registry mapping, relative owned source paths, exact catalogue,
-# no orphan books, and fresh builds of the complete documentation collection.
+# no orphan books, validated include sources before expansion, and fresh builds.
+# Mandatory execution witnesses and typed source refusals prevent skipped checks.
 # Every rendered local hyperlink path/HTML fragment (including print) must resolve.
 # Remote availability and semantic/chapter completeness are separate claims.
 # Scratch outputs and self-test fixtures stay under target/ and are removed.
@@ -77,6 +78,27 @@ self_test() {
   printf '# Models\n\n- **`u1`** (kind: board)\n' > "$t/docs/book/src/models.md"
   arm "RED   wrong catalogue kind" 1 "MODEL-CATALOGUE kind u1"
   printf '# Models\n\n- **`u1`** (kind: processor)\n' > "$t/docs/book/src/models.md"
+
+  # Source integrity is independent of the final rendered hyperlink census.
+  printf '// ANCHOR: selected\ncontract\n// ANCHOR_END: selected\n' > "$t/docs/book/src/fragment.txt"
+  cp "$t/docs/book/src/fragment.txt" "$t/docs/models/u1/src/fragment.txt"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n\n{{#include absent.txt}}\n' > "$t/docs/book/src/models.md"
+  arm "RED   project include file missing" 1 "DEFECT"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n\n{{#include fragment.txt:absent}}\n' > "$t/docs/book/src/models.md"
+  arm "RED   project include anchor missing" 1 "DEFECT"
+  cat "$t/docs/book/src/fragment.txt" >> "$t/docs/book/src/fragment.txt.duplicate"
+  cat "$t/docs/book/src/fragment.txt" >> "$t/docs/book/src/fragment.txt.duplicate"
+  mv "$t/docs/book/src/fragment.txt.duplicate" "$t/docs/book/src/fragment.txt"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n\n{{#include fragment.txt:selected}}\n' > "$t/docs/book/src/models.md"
+  arm "RED   project include anchor duplicate" 1 "DEFECT"
+  printf '# Models\n\n- **`u1`** (kind: processor)\n' > "$t/docs/book/src/models.md"
+  printf '# Intro\n\n{{#include absent.txt}}\n' > "$t/docs/models/u1/src/intro.md"
+  arm "RED   unit include file missing" 1 "DEFECT"
+  printf '# Intro\n\n{{#include fragment.txt:absent}}\n' > "$t/docs/models/u1/src/intro.md"
+  arm "RED   unit include anchor missing" 1 "DEFECT"
+  cp "$t/docs/book/src/fragment.txt" "$t/docs/models/u1/src/fragment.txt"
+  printf '# Intro\n\n{{#include fragment.txt:selected}}\n' > "$t/docs/models/u1/src/intro.md"
+  arm "RED   unit include anchor duplicate" 1 "DEFECT"
 
   printf '# Intro\n\n[Missing](missing.md)\n' > "$t/docs/models/u1/src/intro.md"
   arm "RED   rendered local path is absent" 1 "BOOK-LINK missing-path"

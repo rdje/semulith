@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b3b2 integrate source validation into public guards; then graph review |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4 index/query expansion after LC0030 normal COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -439,7 +439,7 @@ preconditions, including DERIVED-COUNTS registry projections; do not infer a
 direct-call contract from sibling registration order. This is a pending
 assessment, not a measured defect verdict.
 
-### .4i2b3 — include-reader qualification (active, decomposed)
+### .4i2b3 — include-reader qualification (complete scoped reader repair)
 
 Immutable input: cad73f376766572119490b157a98b69ce5ad04f7. LC0028 owned
 this child on clean cad73f3 after normal hooks, exact13-file postcheck,
@@ -536,13 +536,13 @@ signatures; add actual diagnostic command/rc=0 evidence and rerun unchanged gate
 - [x] **LOCKSTEP** — book/pointer/task/receipt agree: assessment closed, D65
   repair next, graph/adoption open. Normal COMMIT closes this work unit.
 
-#### .4i2b3b — priority1 D65 include source/selection repair (next)
+#### .4i2b3b — priority1 D65 include source/selection repair (complete)
 
-Status: active, decomposed; owned by LIVE-CONTAINMENT.4. LC0028 commit
+Status: complete scoped repair at LC0030; owned by LIVE-CONTAINMENT.4. LC0028 commit
 b6a21234d47bc1423883c4dc4425bfe42b6df632 passed normal hooks, exact8-file
 postcheck, brief0 and unrestricted host0 before activation. LC0029 qualifies
 the reusable source validator; LC0030 integrates/qualifies the actual guard.
-D65 remains open until the public interfaces reject the recorded bad cases. Review actual chapter input
+D65 is fixed by LC0030 actual public/default verification below. Review actual chapter input
 and existing book/registry/preprocessor contracts; use public mdbook protocol/
 CLI only. Qualify project-owned source/selection validity, positive whole/
 anchor/range/fenced/nested behavior, missing/duplicate selectors, unavailable/
@@ -739,9 +739,11 @@ D66/D67 fixed; D65 still open. Restart mandatory normal staged checks/hooks;
 exact15-file/parent/message postcheck, brief0/untracked and host0 required before
 LC0030. The interrupted first run cannot satisfy the workflow.
 
-##### .4i2b3b2 / SEMULITH-LC-0030 — integrate and close D65 (next)
+##### .4i2b3b2 / SEMULITH-LC-0030 — integrate and close D65
 
-Status: pending; activate only after LC0029 clean normal COMMIT. Wire qualified
+Status: verified; normal COMMIT completes the unit. Owned on clean aacaee98b02292bfcee8f139fad28530bcfe4e95
+(LC0029 normal hooks/exact15-file postcheck/brief0/host0 complete and reported).
+Outputs: target/live-containment/include-source-integration. Wire qualified
 source validation before actual links expansion into both public UNIT-BOOKS
 interfaces and seven default book builds. Preserve all old controls; add
 integration omission controls. Rerun the same LC0028 bad/positive matrix normal/O,
@@ -750,6 +752,144 @@ qualification. Missing/duplicate cases must reject through actual public guards;
 only that verified result may close D65. Update live/book/tool/doctrine contracts
 and derived counts if arms change; own whole source/history/protected inverses,
 normal focused/COMMIT workflow, then resume include-reader signoff.
+
+Read complete U/B/I/shared-path APIs, public old23/26/component22 probes,
+actual original LC0028 public guard matrix, seven current configs, generator/
+Makefile routes, book doctrine/task sections, roadmap/MODEL-BOOKS contracts and
+inventory contract before choosing integration. Require actual before-links
+execution for owned scratch corpora independently of their book configuration,
+not build0 alone. Qualify success witness/typed failures through public mdbook
+protocol first; detect skipped, missing or failed source processors. Preserve
+missing/ambiguous1 versus unsafe/unavailable2 at both public guard interfaces.
+Use primary public mdbook docs/CLI only; no implementation or Gitlink access.
+
+Public protocol qualification:24 actual installed0.5.4 builds normal/O,
+six controlled processor cases × explicit-renderer absent/present. Without
+renderers, supports rejection and absent Python script both leave build0;
+explicit renderers=[html] bypasses supports and absent script fails101. With
+explicit renderer, typed processor exits1/2 both become mdbook101, preserving
+the component stderr prefix; invalid processor JSON also fails101 with the
+source-check processor named. Successful invocation emits one checked witness.
+Use explicit renderer/mandatory before-links injection and require one exact
+success witness; propagate explicit component REFUSED as guard2. A named
+processor launch/protocol failure also refuses2, while ordinary malformed TOML
+remains the existing book-build defect1. No native mdbook defect is claimed;
+these are public integration semantics that the project guard must handle.
+Retain these recipes in tracked integration probes before publishing numbers.
+
+Integration RED: old23 methods retained plus six new methods yields29 tests,
+13 failures/eight missing-helper errors before implementation. Actual missing/
+anchor/unsafe/disabled-source cases discriminate the current status-only guard.
+The stale-output control now supplies a valid source witness in its simulated
+successful build so it continues isolating navigation rather than bypassing the
+new source contract. Add typed DEFECT/REFUSED prefixes and checked-witness grammar
+in I as the single shared transport authority; preserve all exit/stdout/book
+contracts and old22 component methods. U imports those constants instead of
+mirroring exception-message wording. Qualify the new public typed stderr and
+copied predicate omissions, keeping LC0029's published evidence byte-exact.
+
+All1434 immutable/index/physical/mode identities and each owned addition must
+be pinned. Preserve old controls; add live forced-execution/typed-verdict and
+actual copied integration omission controls, then re-derive global arm counts
+only if registered arms change. Re-run same original public guard positives/
+negatives normal/O and actual source failure cases, complete current seven-book
+protocol/output equivalence, literal/rendered commands and fresh links.
+
+Prepublication fixture correction: six first post-implementation failures all
+modify models.md, which this probe's SUMMARY does not select. Actual public
+chapter capture names intro.md. Correct those fixtures to the selected chapter;
+immutable original U then gives51 aggregate methods/13 failures/eight missing-
+helper errors, current guard gives51/0 normal/O (old23 + six integration +22
+component). This isolates actual Chapter inputs; no broader catalogue/chapter
+completeness claim is added. Lazy shared I-protocol import keeps unavailable
+processor metadata within guard refusal2 rather than an import-time crash.
+
+Own scripts/qualify_include_guard.py as the tracked public diagnostic for
+protocol cases, original/current actual CLI+shell matrix, controlled public
+source read/change faults, seven actual default builds/full outputs and copied
+integration/config omissions. Reuse checked project source/capture APIs; retain
+actual source/index/mode pins and recipe/result identities. The default book
+qualification must not override source-check ordering/command: otherwise a
+configuration omission would be masked. Compare actual default witnesses with
+actual pre-expansion inputs and independent pass-through baseline outputs.
+
+Stored book-family bytes currently524281/524288: seven default configs and
+updated doctrine teaching need semantic containment before publication. Own
+copy/verify of complete closed receipt spans into a new directly retrievable
+record; retain current whole-entry/byte-count explanations, source inverses,
+all headings/routes/examples and every prior archive byte/mode/seal. Measure
+actual config/text deltas before choosing spans; no cap authority change.
+Own whole CH/DEV rollovers, old106-entry history/protected/source/mode/Gitlink
+inverses, normal focused/staged/hooks/postcheck/brief0/host0. D65 remains open
+until both actual public guards and all seven defaults qualify. Other product/
+CPU/MCU/DSP/board and full graph/adoption milestones remain unchanged.
+
+D68 confirmed, priority1, owned in this integration unit: eight concurrent
+actual shell self-tests fail only test_real_build_is_fresh_and_removed. That
+old probe compares the entire shared target/unit-books directory before/after;
+other healthy concurrent builds create/remove their own bundles during the
+comparison. Actual isolated shell self-test22/0. Public CLI source verdicts
+are correct; shell rejects because its calibration races. Preserve the old
+fresh-output/removal assertions but observe only the exact allocation owned
+by this invocation. Re-run the same eight concurrent shell controls and all
+public/default qualification before closure; no serialization workaround.
+
+
+LC0030 verified result (`2026-10-12`): D65 and D68 fixed. Tracked producer
+qualify_include_guard.py owns eight public replay modes (record below).
+Normal/O:24 protocol builds; same original24 bad public greens now24 defect1,
+16 unsafe refusal2/four positive0;16 exact actual read/change faults refuse2.
+All seven actual defaults validate before links;93 complete expanded chapters/
+49 edges/all344 outputs equal independent pass-through builds. Three actual
+U omissions fail1 and three copied default-config omissions refuse2 per mode.
+Original concurrent self-tests15 failures/one pass → current16 passes; D68's probe now
+observes only its own real allocation/removal. Old23 unit/26 navigation/22
+component methods retained, with the stale-output mock supplying a source
+witness and D68 cleanup assertion calibrated to invocation ownership. Seven
+new integration methods give52 aggregate methods normal/O;22 shell arms include
+six explicit project/unit missing-file/anchor/duplicate controls. Global arms
+re-derived1571; no milestone, cap or submodule changes. Legacy cad73f3 replay
+still emits exact80700B ledger SHAb4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5.
+
+Complete contracts, actual input/result/code pins, retained2180B/four whole book
+receipts and final whole-book inverse live in:
+docs/tasks/artifacts/live-containment/include-source-integration.md.
+Main family524281→523499B: config+137, doctrine+96, task teaching/retention−1015;
+six unit configs+840 lie outside that family. No cap/health/authority change.
+Whole old106 CH/DEV entries/order/source, protected identities/modes/Gitlink,
+all older archives/seals and copied book inverses must remain exact through
+normal focused/staged/hooks/postcheck. Full graph/adoption/CPU acceptance open.
+
+
+D69 (minor, fixed here): source inspection found the LC0027 checklist still
+labeled current after LC0029/30. Rename only its historical heading; retain
+its complete evidence and the new LC0030 acceptance under its actual unit.
+
+D70 (receipt scope, fixed by this correction): LC0027/28/29 five historical
+scaffold24 claims above were backed by --only-scaffold logs reporting5 tests,
+not24. Source/public CLI distinguish5 scaffold from24 full handoff+scaffold
+methods (19 census, including eight generated failure methods). Those historical
+runs qualify only5 per mode. Preserve their original receipts; this explicit
+correction is authoritative. LC0030 runs both commands normal/O:5 and24/0,
+with raw logs retained. Do not infer the full-suite result from the subset.
+
+Acceptance — LC0030:
+- [x] **ROOT CAUSE (WHY + WHERE)** — `python3 scripts/qualify_include_guard.py --mode original --output target/live-containment/include-source-integration/reproduce-original` rc=0 qualifies original24 false greens; `--mode original-concurrency` qualifies D68's real shared-directory calibration failures. Actual protocol exposes supports-skip and101 transport. Record has source pins/complete recipes.
+- [x] **ADDRESSED (verified)** — `python3 scripts/qualify_include_guard.py --mode public --output target/live-containment/include-source-integration/reproduce-public` rc=0 qualifies repaired24 defect1/16 unsafe2/four valid0 normal/O; faults16 refuse2; books93/49/344 full equality; omissions six/mode discriminate; concurrency16 pass. D65/D68 fixed.
+- [x] **NO REGRESSION** — `bash scripts/check_unit_books.sh --self-test` rc=0,22/0;52 aggregate methods/26 navigation methods normal/O retain old controls. Legacy replay ledger exact; whole source/book/history/protected inverses and focused12/sharder12/seven books/normal-print/literal/handoff24+scaffold5 checks rc=0. Mandatory normal hooks/postcheck finish COMMIT.
+- [x] **LOCKSTEP** — root/pointer/CH/DEV/LIVE1571, all seven defaults, book/tool/doctrine contracts and retained record align. promotion: declined (contracts and reproducible failure recipes already have canonical owners; no additional cross-cutting policy).
+
+### .4i2b4 / SEMULITH-LC-0031 — qualify index/query expansion (pending)
+
+Activate only after LC0030 normal COMMIT/postcheck/brief0/host0 and clean state.
+Pin a fresh immutable/current inventory; inspect published index/query interfaces,
+canonical membership, generated navigation and actual reader commands. Enumerate
+exact expansion/consumer targets and boundary exclusions before choosing repairs;
+qualify failed/unavailable inputs and omitted members through public interfaces.
+Preserve seals, prior archives, source/history inverses, all bounds and CPU state.
+This is scoped reader evidence; .4i2b5 generated/resources, author hints, terminal/
+coverage reconciliation and .4i3–8 full adoption remain open. Commit per normal
+workflow before moving to another slice. No donor implementation access.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1235,7 +1375,7 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 - None.
 
-## Acceptance Checklist (current code unit — LIVE-CONTAINMENT.4i2b2b)
+## Acceptance Checklist (LC0027 task-source repair — LIVE-CONTAINMENT.4i2b2b)
 
 - [x] **ROOT CAUSE** — LC0025 public.py rc=0 measured D59 bold/archive
   false breaches1 and unknown-status false greens0; D64 annotated false count0.
@@ -1458,6 +1598,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b3b2: D65/D68 fixed; public24 bad greens→defect1,16 unsafe2,16 injected
+faults2; seven defaults93 expanded chapters/49 edges/344 outputs exact normal/O.
+Six actual omissions/mode discriminate; concurrent historical15/16 failures→0/16.
+52 aggregate/26 navigation methods,22 shell arms;1571 derived. Retained2180B
+whole book receipts;106 old live entries/source/order/protected identities/modes
+verified before normal COMMIT. Full graph/adoption/processor acceptance open.
+
 .4i2b3b1 final: component22/old23+26 controls normal/O; seven books93 chapters/
 49 includes/all344 output files unchanged.34 public fixtures/eight actual faults,
 13 component/four producer copied omissions discriminate normal/O. Tracked
@@ -1660,6 +1807,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0030 (leaf LIVE-CONTAINMENT.4): enforce include integrity in public builds` — D65/D68 fixed; index/query expansion next.
 
 `SEMULITH-LC-0029 (leaf LIVE-CONTAINMENT.4): qualify owned include sources and replay` — component complete/D66 fixed; D65 public integration next.
 

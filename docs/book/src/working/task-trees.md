@@ -99,7 +99,7 @@ consumers are removed; three reader faults return 2 normal/O. D57's five
 malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
 Checks are finite; measurements are not atomic or capacity authority.
 At `cad73f3`:54 candidates;49 includes match93 chapters.
-D65: missing/duplicate includes pass UNIT-BOOKS; repair before signoff.
+D65 repair: UNIT-BOOKS rejects missing/ambiguous includes before expansion.
 Graph/full adoption open. Replay (fresh output):
 
 ```sh
@@ -140,24 +140,15 @@ nothing mechanically proves a tree still matches it.
 ## Keeping verification receipts bounded
 
 Completed development notes move as whole entries into authenticated history
-shards; their contents are retained, not summarized away. P4.13 c22a moved seven
-older entries from a 47,462-byte live head, leaving thirteen entries / 31,228 bytes
-before the new receipt. Removing only that new receipt and navigation footer,
-then concatenating the live prefix and archived suffix, reconstructs the original
-bytes and entry order exactly. The owning task records source/suffix SHA256 and
-lengths. The frozen manifest gains one row; earlier rows and sealed history remain
-unchanged. The 48 KiB live ceiling stays fixed, and the book retains the worked
-feature examples independently of the session notes.
+shards. Remove the new live receipt/footer and concatenate the retained live
+prefix and archived suffix to reconstruct the original bytes and entry order.
+The manifest gains rows; earlier rows and sealed history remain immutable.
+The 48 KiB ceiling stays fixed; current worked feature examples stay in the book.
+Complete c22a/c26a/c28a/c29b1/a42l1 receipts and source inverses are retained:
 
-The complete P4.13 c26a/c28a book receipts remain in ordinary archive14;
-read them through the commands below. Current partition rules remain above.
-
-The whole P4.13 c29b1 append-history receipt is retained in
-[archive 13](#read-task-history).
-
-P4.14 a42l1 retains four completed workflow designs and three whole book
-receipt spans in ordinary part19. Complete source inverses preserve each byte;
-active a42/a42l and current explanations stay live. Read the records below.
+```sh
+cat docs/tasks/artifacts/live-containment/include-source-integration.md
+```
 
 ### Read task history
 
@@ -215,27 +206,20 @@ before the publishing guard. A42l2's same staged edit is rejected (`gate_rc=1`).
 
 ### Preserve completed task receipts and live development history
 
-The complete c29e1/c33c task and DEV partition receipts are retained in
-ordinary part19. They include source identities and all inverse/control
-measurements. Earlier archives remain immutable.
+Read the complete c29e1/c33c receipts in the retained record above.
+Earlier archives remain immutable.
 
 ### Retain book history while keeping current explanations live
 
-Ordinary part19 retains the complete c30b/c33d book and DEV partition
-receipts, including source identities and measured inverses. Current
-feature explanations and examples remain in their chapters.
+The retained record preserves the complete c30b/c33d receipt and source route.
+Current feature explanations and examples remain in their chapters.
 
 ### Measure stored bytes, including UTF-8
 
-Size claims use encoded file bytes. At the c29d1 diagnostic, the index generator
-reported 23,612 "bytes" for a file containing 24,064 bytes: it had counted Python
-characters, which omit UTF-8's extra bytes for non-ASCII text. The generator now
-reports the written file's `stat().st_size`. Its output bytes and 40 indexed terms
-are unchanged, and `--check` still succeeds quietly. The byte-count assertion
-fails on the old message and passes after the reporting-only correction.
-Containment and inverse proofs measure actual bytes throughout; a character
-count cannot establish available space under a byte cap.
-
+Measure `len(text.encode("utf-8"))` or the written file's `stat().st_size`,
+not character count: `"é"` is one character but two UTF-8 bytes.
+Limits, available-space calculations and inverses use actual bytes.
+The retained record above includes the complete c29d1 diagnostic receipt.
 
 ## Why this shape
 
@@ -251,7 +235,7 @@ are retained with the include-validator evidence:
 cat docs/tasks/artifacts/live-containment/include-source-validator.md
 ```
 
-**Include source validation (component).** Whole text, ASCII anchors and one-based
+**Include source validation.** Whole text, ASCII anchors and one-based
 line selections (`:2`, `::10`, `:2:`, `:2:10`) are checked before expansion.
 Missing/ambiguous selections fail1; unsupported/unsafe/unreadable inputs refuse2.
 Valid input returns the same book. Spaces after # refuse2. Fences expand;
@@ -259,17 +243,22 @@ nested includes follow selected text relative to the included file. Cycles fail;
 empty files and empty named regions are valid. CRLF becomes LF; bare CR/Unicode
 separators stay inside physical lines. This checks source integrity, not prose truth.
 
-From the repository root, qualify controls and opt into the project-book check:
+All seven books validate before links by default. UNIT-BOOKS forces validation
+even for scratch configurations, requires an execution witness and preserves
+source refusal2. Missing files/anchors and duplicate anchors fail1. From root:
 
 ```sh
 python3 scripts/probe_book_includes.py
 python3 -O scripts/probe_book_includes.py
-MDBOOK_PREPROCESSOR__SOURCE_CHECK__COMMAND='python3 ../../scripts/book_includes.py' \
-MDBOOK_PREPROCESSOR__SOURCE_CHECK__BEFORE='["links"]' \
-mdbook build docs/book
+bash scripts/check_unit_books.sh
+make book
 ```
 
-Default UNIT-BOOKS still needs LC0030 integration; D65 remains open.
+Replay public/default qualification:
+
+```sh
+cat docs/tasks/artifacts/live-containment/include-source-integration.md
+```
 
 Containment measurements count every tracked family member, including
 `docs/book/book.toml`. A Markdown-only scratch census omitted its309bytes and

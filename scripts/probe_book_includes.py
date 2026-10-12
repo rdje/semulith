@@ -86,7 +86,7 @@ class IncludeTests(unittest.TestCase):
                 result = self.run_public()
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertEqual(result.stdout, b'')
-                self.assertIn(b'BOOK-INCLUDES:', result.stderr)
+                self.assertTrue(result.stderr.startswith(I.DEFECT_PREFIX.encode()), result.stderr)
 
     def test_duplicate_missing_end_and_inverted_anchors_fail(self):
         for body in ['// ANCHOR: part\na\n// ANCHOR_END: part\n' * 2,
@@ -162,6 +162,7 @@ class IncludeTests(unittest.TestCase):
         self.include('fragment.txt', b'\xff')
         result = self.run_public()
         self.assertEqual((result.returncode, result.stdout), (2, b''))
+        self.assertTrue(result.stderr.startswith(I.REFUSED_PREFIX.encode()), result.stderr)
         self.write('book/src/fragment.txt', 'text\n')
         original = I.os.open
         target = self.book_root / 'src/fragment.txt'
