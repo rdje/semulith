@@ -1,5 +1,48 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — retain complete closed inventory and reader units (LIVE-CONTAINMENT.4i2b4a)
+
+The committed task root was129969/131072B, leaving1103B before query work.
+Retain nine complete closed LC0022–30 units and the full historical LC0027
+acceptance checklist as ten source-ordered spans:61745B/869LF, payload SHA
+b35de12b250dab9e18c10bad92687b230652009663518cf285a2f22db142f7f5.
+New ordinary archive63161B/SHA30c2d38cc48b54282b639aca630799073ec31f69dd689bc47b6e8fb5b85342cc
+is copied/authenticated before retirement. No historical pending statement or
+receipt byte is edited. Original native heading IDs are obtained from actual
+mdbook output; all ten stay live as direct complete-record links and in the
+archive. Full archived articles agree before/after; whole HTML differs only
+at authenticated generated search-index names. The lone raw ]( candidate is
+LC0026's explanatory prose, not an inline link; there are no include markers,
+reference definitions or HTML tags in the selected payloads. Original source
+and ownership-root inverses and every older archive/seal/mode remain exact.
+
+D71: the parent .4h heading and planning intro still said active/D51 pending
+although LC0015 fixed D51 and LC0021 applied the separate count authority.
+Preserve the complete original965B intro in the tracked evidence record before
+reapplying current closure. Keep its original native incoming anchor explicitly;
+qualify that target in the actual native render. An initial preparation order
+wrote closure before its separate tracked copy; restore exact text, authenticate
+the retained copy, and reapply. The accepted order preserves every original byte.
+D70 addendum: complete case-insensitive immutable-source census finds seven
+historical scaffold24 claims plus the correction's own mention. Two capitalized
+claims were missed by the earlier lowercase search. The historical subset runs
+qualify five methods per mode; full handoff+scaffold is24. Preserve original
+receipts with the explicit source-pinned correction. No runtime count changed.
+
+The tracked replay command checks full source reconstruction and nine corruption
+controls normal/O, including a receipt change with recomputed digests.
+The mdBook teaches both ordinary LIVE-CONTAINMENT archive reads; root/native
+anchors, complete normal/print reader section and literal reads are qualified.
+Whole CH/DEV suffix rollover retains all105 prior live entries in order; genuine
+old/moved/published receipt changes must refuse jointly. Fixed count107/health64
+debt, aggregate/per-part caps, processor/MCU/DSP/board state and full adoption
+remain unchanged. Focused checks/seven books/normal hooks/postcheck/brief0/host0
+complete this unit; fresh index/query consumer qualification is next.
+
+Lesson promotion: declined — the whole-record transition and correction are
+fully owned by the existing containment contract and concrete retained records;
+no additional cross-cutting policy is introduced.
+
 ## _(2026-10-12)_ — enforce include integrity through actual public builds (LIVE-CONTAINMENT.4i2b3b2)
 
 D65's status/navigation boundary is repaired in both public UNIT-BOOKS interfaces
@@ -672,49 +715,4 @@ literal examples and source/history/protected-mode inverses pass. Nine omission
 variants fail normally and optimized; all32 permanent controls pass both ways.
 CH0282 is1619B/SHA03abd6f7;101 prior entries and1383 other regular files/Gitlink
 remain exact, with no cap or archive-body change.
-
-## _(2026-10-11)_ — qualify capacity inputs before authority review (LIVE-CONTAINMENT.4h2)
-
-D52, priority1, is reproduced on85fe189 through the literal public route checker.
-A narrowly scoped PATH Git facade intercepts only the docs/tasks/ listing;
-every other real read is delegated. Baseline returns0 with empty stderr. A
-status73/empty listing and a status0/one-path listing with stderr both return0
-with the same success banner. Three inventory reads occur per case. The root
-cause is unchecked family_files pipelines: count, aggregate and per-part status
-do not affect verify_routes' bad verdict; cat errors are also suppressed.
-This finite assessment establishes this checker defect, not a whole-enforcer
-counterexample or permission to raise a limit. .4h3 owns the repair and durable
-failure controls before D51 authority/capacity review.
-
-Evidence in target/live-containment/capacity-inputs: assess.py, result.json,
-per-case stdout/stderr/trace and before/after censuses. HEAD/index SHA/all1397
-tracked identities remain exact; the script and facade hashes are pinned.
-The task owner records a complete selective-facade recipe and both outputs.
-Book teaching states the current failure honestly; LIVE routing closure is
-Mostly Done until D52 is repaired. Preserve all prior entries,
-all other tracked bytes/modes and existing limits; focused/book checks at commit.
-
-## _(2026-10-11)_ — contain duplicate decision-index summaries (LIVE-CONTAINMENT.4h1)
-
-The decisions family had60files/261604B under262144B and INDEX16379/16384B;
-adding an authority record would pressure both. Five navigation rows repeated
-rationale and historical numbers in their linked records. Read all five records
-and compare source clauses before shortening only those rows to dated topic
-labels and reader questions. Retain every target/type/order and all other index
-bytes; all canonical records remain exact. INDEX now15656B,723B less. Leave the
-D51-affected count row untouched until .4h2 repairs its source classification.
-The book teaches this boundary through index/per-part-ruling read commands.
-
-Whole-oldest rollover retains two DEV entries/6957B in0280 and two CH entries/
-1398B in0281. Original head sizes48975/65231 become42018/63833 before the new
-receipts. Earlier manifest prefix and sealed captures stay exact. Verify full
-source/head inverses, every prior entry, genuine receipt+digest refusals, all
-protected files/modes/Gitlink, focused checks and complete normal/print teaching.
-Existing caps, LIVE, CPU and qualification stay exact. .4h2 capacity review and
-full inventory/checker adoption remain owned; no new decision in this slice.
-Final focused12/sharder12/seven books/3238 links and whole normal+print teaching/
-two literal reads pass. All101 old entries/whole heads/seals and1387 protected
-files/modes/Gitlink exact normal/O; genuine receipt+digest controls refuse.
-Only inherited EOF notices0280:100/0281:27 remain; full inverses prove those bytes.
-promotion: declined (existing canonical records own the demoted details).
 

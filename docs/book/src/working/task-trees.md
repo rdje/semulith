@@ -160,6 +160,9 @@ python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
 ```
 
 Ordinary part13 and named book receipts remain directly readable Markdown:
+Two LIVE-CONTAINMENT archives retain whole closed units; the second also
+retains the complete LC0027 checklist. Original task headings link to the full
+records. Read both archives below.
 
 ```sh
 cat docs/tasks/archive/P4-SYSTEM-13.md
@@ -170,6 +173,7 @@ cat docs/tasks/archive/P4-SYSTEM-17.md
 cat docs/tasks/archive/P4-SYSTEM-18.md
 cat docs/tasks/archive/P4-SYSTEM-19.md
 cat docs/tasks/archive/LIVE-CONTAINMENT.md
+cat docs/tasks/archive/LIVE-CONTAINMENT-readers.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md

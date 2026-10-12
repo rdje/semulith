@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0031 (leaf LIVE-CONTAINMENT.4) — retain whole closed reader records
+
+- Retain nine complete LC0022–30 units plus the complete LC0027 checklist:61745B/869LF verbatim in a new ordinary archive. Copy/authenticate before retirement; ten original native headings/anchors link to complete records, both archived articles remain exact, generated search resources resolve.
+- Tracked replay qualifies full reconstruction and nine deliberate corruptions normal/O. Preserve the historical965B capacity-review introduction and its incoming anchor; correct stale active/D51-pending state (D71). Source-pinned D70 addendum qualifies seven historical claims, including two missed capitals. Whole source/history/mode/seal inverses and focused/seven-book/rendered/literal checks required; no cap, CPU or full-adoption change. Index/query qualification follows normal COMMIT.
+
 ## SEMULITH-LC-0030 (leaf LIVE-CONTAINMENT.4) — enforce include integrity in public and default builds
 
 - Close D65: seven default books validate before links; UNIT-BOOKS forces execution and preserves typed defect1/refusal2. Both public interfaces reject the original24 false greens normal/O; unsafe inputs and16 injected read/change failures refuse2. All93 expanded chapters/49 includes and344 output files match pass-through builds.
@@ -428,9 +433,4 @@
 
 - Replace assembler module/annex unsupported lineage claims and stale route rationale with canonical API and finite published observations; cite pinned F permission and selected policy for reserved rounding.
 - Preserve Python executable AST/Rust behavior, all167guest byte images and fresh GPR/fetch corpus; Rust173/17/253, focused15/six books/invariants pass. Canonical data, profiles/frozen/registry/history/LIVE remain exact.
-
-## SEMULITH-P4-0192 (leaf P4-SYSTEM.14) — correct signaling-NaN fixture notes
-
-- Remove the withdrawn backend-defect claim from one generator comment/two templates and regenerate three directed labels. Preserve all230numeric rows and3168fixture bytes exactly; stale tracked/scratch notes reject before/after regeneration controls.
-- Rust173/17/253, focused10 including FP-VECTORS hardware/self-tests, six books and exact invariant verifier pass. CPU/profile/frozen/registry/LIVE/history remain unchanged; continue owned provenance repairs before evidence signoff.
 
