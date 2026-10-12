@@ -1,5 +1,51 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — qualify actual include readers and source-validity boundary (LIVE-CONTAINMENT.4i2b3a)
+
+Immutable cad73f3 supplies1425 identities/473 Markdown/54 literal candidates.
+Fresh normal/O collector bytes agree; source-wire and JSON pins, all49 source/
+target/selection rows and replay recipe live in include-readers.md under
+ docs/tasks/artifacts/live-containment. Relative to LC0023 source,14 additions,
+13 changed existing members/0 removals are fully pinned. Eleven new Markdown
+and one teaching marker explain population changes; Gitlink stays opaque.
+
+Fourteen public mdbook builds capture actual post-links chapter protocol before
+unchanged book_navigation. Wrapper forwards original stdin/stdout/stderr/status;
+all344 output files match independent fresh baseline normal/O. Seven consumers/
+93 chapters reconcile complete text with immutable physical/source/mode inputs:
+49 occurrences=42 whole+seven unique ordered anchors,48 regular targets. No
+target has a nested include prefix. Five other candidates are absent from all
+actual chapter/target inputs; other-reader coverage remains open. Ledger80700B
+SHAb4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5.
+
+Twelve public fixture cases/mode observe whole LF/no-LF/double-LF/CRLF,
+anchor/nested-anchor/whole-anchor, line range, fenced/nested includes and three
+failures. Whole selection normalizes CRLF/removes one final LF; selected anchor
+marker lines disappear, whole anchors remain; fences still expand. Range2:4
+selects lines2–4. Three actual diagnostic omissions fail population/full-text
+checks1 normal/O; finite instrument evidence, not a repaired integration gate.
+
+D65 priority1: missing file leaves token with ERROR/WARN but mdbook returns0;
+missing anchor emits nothing without warning/error, duplicate anchor selects
+first region. Actual unit_books.py and check_unit_books.sh return0 for all three
+cases in project/model books normal/O:24 bad interface evaluations; four valid
+selected-anchor greens. Existing guard self-tests pass first. Root cause is
+status-only build success plus navigation checks without include source/
+selection validity. UNIT-BOOKS promises catalogue/build/navigation, expressly
+separating completeness. New source-integrity ownership closes that uncovered
+requirement; stderr-only repair cannot detect silent anchor failures. Impact:
+included contracts can vanish/truncate while the director's book check is green.
+Current real include content matches. LC0029 repairs before wider graph review.
+
+Initial diagnostic corrections (sections→actual items API, one terminal LF,
+and a missing bracket before driver compilation) follow tools and preserve
+failed traces; no product verdict inferred. Other repositories, mdbook/Gitlink
+implementation, caps and archive authority untouched. Book advances current
+assessment in3 extra bytes, retaining historical collector example. Full
+source/task/book/pointer/history inverses, focused12/sharder12/seven books,
+normal/print teaching/literal reads and normal COMMIT qualify this assessment;
+D65 repair, graph/adoption/utility and CPU qualification remain open.
+
 ## _(2026-10-12)_ — validate shared task-source and progress consumers (LIVE-CONTAINMENT.4i2b2b)
 
 D59 came from duplicated narrow parsers in TREE-CLAIMS/FRONTIER-SYNC: backtick
@@ -642,42 +688,4 @@ prior code/records outside owned seams, all95 old entries/complete heads/seals
 and1380 other tracked files/modes/Gitlinks normal/O. No new shard needed.
 D49 fixed and verified; mandatory COMMIT hooks apply before the next slice.
 promotion: declined (existing publishing/failed-read doctrine; independent controls and actual before/after remain in P4-SYSTEM.14 a42l2).
-
-## _(2026-10-11)_ — contain completed workflow records before D49 repair (P4-SYSTEM.14 a42l1)
-
-Owned on clean e10b83a; task130798/131072B had274B room and book524277/524288B
-had11B. Activation131052B precedes tools/moves. Four whole completed h/i/j/k
-designs13508B and three whole book receipt spans4098B now live in ordinary
-part19, seven bodies17606B. Part24496B SHA256
-a1b220bc9a676e775956620c5f7763f942e0642d15764d15e781e50cf91e584f.
-The immutable map binds complete e10b83a task130798B SHA256
-93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d
-and book17160B SHA256
-d7206011a9d36d789698796988416aadff75852df3b04d0e6f2f489a94aec35c.
-Both full inverses pass normal/O, restoring exact old ownership/frontier and
-removing only new unit receipts/guide. All28 independent corrupt/missing/omitted
-body, actual moved receipt with updated digest, map/range, route/guide and
-active-plan controls refuse. First control selected absent3212 in j and refused
-before classification; actual k3196→3197 now supplies the named receipt control.
-
-Book retains all original headings/fences and adds the literal part19 cat guide;
-current feature/rule/diagnostic teaching stays live. Whole historical c29e1/c33c
-and c30b/c33d receipts remain retrievable without shortened counts/diagnostics.
-D49 remains open priority1 a42l2: published ordinary working/index preservation
-and actual full-gate replay follow this finite doc-only prerequisite. The closed
-original12 reader still refuses part19; its original seal/authority stay exact.
-The task-family count reaches96/96; full containment adoption remains owned by
-LIVE-CONTAINMENT.4. No limit, CPU/canonical input or qualification credit changes.
-
-Whole-oldest history sharding preserves every old entry/source and manifest
-prefix; focused checks, seven books/rendered teaching/navigation, scope and
-complete inverse receipts are recorded in the owning leaf before COMMIT.
-Verified focused12/sharder12/seven books/3206 fresh+actual local hyperlinks;
-normal/print contain all three complete current routes and both commands.
-Literal cat part19 emits exactly24496B. Scope1382 protected files/modes/Gitlinks
-exact, old99 entries/whole heads/seals exact normal/O; genuine moved/published
-receipt changes with updated digests refuse jointly. Book520841/524288B,
-51files; no fixed cap or feature/status change. Full hooks and COMMIT apply.
-
-promotion: declined (existing exact-history rules; measured unit evidence remains in P4-SYSTEM.14 a42l1).
 

@@ -98,9 +98,9 @@ Validated rows supply routes/caps/count. D56's seven unchecked
 consumers are removed; three reader faults return 2 normal/O. D57's five
 malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
 Checks are finite; measurements are not atomic or capacity authority.
-LC.4i2a at `28920c6`:1411 source identities/53 include candidates,
-120 rendered pages/3244 anchor links. Graph coverage/full adoption stay open.
-Use a fresh output directory:
+At `cad73f3`:54 candidates;49 includes match93 chapters.
+D65: missing/duplicate includes pass UNIT-BOOKS; repair before signoff.
+Graph/full adoption open. Replay (fresh output):
 
 ```sh
 python3 scripts/collect_containment_graph.py --revision 28920c6 \

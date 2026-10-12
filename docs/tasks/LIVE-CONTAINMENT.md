@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b transitive reader/index/query/generated-expansion review |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b3b D65 source/selection repair; then include signoff and index/query/generated review |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -439,6 +439,115 @@ preconditions, including DERIVED-COUNTS registry projections; do not infer a
 direct-call contract from sibling registration order. This is a pending
 assessment, not a measured defect verdict.
 
+### .4i2b3 — include-reader qualification (active, decomposed)
+
+Immutable input: cad73f376766572119490b157a98b69ce5ad04f7. LC0028 owned
+this child on clean cad73f3 after normal hooks, exact13-file postcheck,
+brief0 and unrestricted host0. Collection begins with only owned task/pointer
+changes; every executed source/target matches immutable source. Separate
+.4i2b4 owns index/query expansion, .4i2b5 generated-navigation/resource review;
+.4i2c author hints and .4i2d terminal/exclusion/overlap closure remain open.
+No child alone claims semantic graph coverage, utility/lifecycle authority or
+full adoption. Caps, archives, Gitlink boundary and CPU/MCU/DSP/board stay fixed.
+
+#### .4i2b3a / SEMULITH-LC-0028 — qualify actual readers and source-validity gap
+
+Status: complete assessment; normal COMMIT/postcheck/brief0/host0 close this
+unit before D65 repair. Outputs: target/live-containment/include-readers.
+Durable ledger, full source/target rows, reproduction, instrument/result pins
+and limitations: docs/tasks/artifacts/live-containment/include-readers.md.
+
+Fresh collector normal/O:1425 identities/473 Markdown/54 literal candidates;
+source-wire SHAe975d5d8798b71d460e63dac1f931afee0b2d30be9569943b1d0212341435414,
+JSON SHA89534a7efe1e055b83803cf0598b9bc443736739f7630407fb0644cfd3ea1dfd.
+Compare all old/new member records:14 additions/13 changed existing/0 removed;
+eleven new Markdown files and one graph-receipt teaching marker explain counts.
+All changed existing bodies are pinned separately; no submodule implementation
+is read. Actual after-links capture forwards unchanged book_navigation stdin/
+stdout/stderr/status through published mdbook command override. Seven consumers,
+93 chapters and344 complete output files are byte-identical to fresh baseline
+normal/O. Whole chapter payloads agree across modes. Source/mode and selection
+reconstruction exactly matches all93 expanded chapter texts:49 occurrences,
+42 whole/seven unique ordered anchors,48 regular targets. None of these target
+bodies contains an include prefix. Five remaining literal candidates are absent
+from all actual chapter sources and targets; other-reader review stays open.
+Reader ledger80700B/SHA
+b4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5.
+
+Twelve public mdbook0.5.4 fixtures per mode qualify observed whole LF/no-LF/
+double-LF/CRLF, anchor/nested-anchor/whole-anchor, range, fenced/nested behavior
+and three failures. Whole selection omits one terminal LF and normalizes CRLF;
+whole anchors remain, selected anchor marker lines disappear. Fenced/nested
+includes execute; range2:4 includes lines2–4. Three actual copied diagnostic
+omissions (metadata, selected content, chapter append) fail named population/
+full-text checks with exit1 normal/O, preserving real inputs and successful
+ledger bytes. These are finite assessment checks, not a repaired project gate.
+
+D65 confirmed, priority1: public mdbook returns0 for missing file (token
+survives; ERROR/WARN on stderr), missing anchor (empty; no warning/error),
+duplicate anchor (first region). Actual public unit_books.py CORPUS_ROOT and
+check_unit_books.sh also return0 for all six bad role/case combinations/mode,
+in project and registered model books:24 false-green interface evaluations.
+One selected-anchor positive/mode returns0 on both (four greens). All existing
+self-tests pass first; real tracked inputs/modes/index/Gitlink stay exact.
+Root cause: check_books accepts mdbook return0 and checks rendered navigation,
+without include source/selection validation; successful stderr is ignored.
+Silent anchor failures mean stderr-only checking is insufficient. Existing
+UNIT-BOOKS expressly qualifies catalogue/build/navigation, with completeness
+separate; this is an uncovered source-integrity requirement. Impact: a missing
+or ambiguous included contract may vanish/truncate from the director's book
+while the commit guard stays green. Current real include content reconciles;
+no broken real include is claimed. Own repair before wider graph review below.
+
+Diagnostic corrections: actual protocol uses items, not guessed sections;
+whole target expansion omits one terminal LF. Correct instruments from actual
+protocol/full text, retaining first failed traces. Public fixture driver first
+failed compilation for a missing closing bracket; correct only ignored driver
+before execution. No product defect/verdict follows from these instrument errors.
+No mdbook/donor/Gitlink implementation inspected or amended.
+
+Verification: verify.py/history.py rc0 normal/O, complete source/book/task/
+pointer/history inverses,1418 protected regular files/modes/opaque Gitlink,
+106 old entries/order exact. Whole DEV2490B→0300/2723B/SHA
+647b7f0205366dfa77701686f48ecede2cd8ad4d4d55d631e3e787084d1f404b;
+old archives/seals/modes unchanged. Two original receipt mutations, one moved
+receipt+digest and one old published receipt+digest refuse jointly. Focused12/
+sharder12/seven books/scaffold24 normal/O pass.3242 fresh/actual links, complete
+normal+print teaching, literal ledger read and bad-anchor recipe normal/O
+qualify. Book +3B to524275; generated index and all other canonical/CPU inputs
+stay exact. Tasks101≤107 and all current byte/part caps unchanged; health64
+debt retained. Normal staged acceptance/seam/hooks and exact8-file postcheck,
+brief0/host0 are required before the next unit.
+
+Final verifier initially assumed per-member index OIDs from another snapshot
+schema. Read actual snapshot/source: whole index SHA plus physical members.
+Correct only diagnostic; check complete actual stage0 OIDs/modes against the
+immutable source and captured whole-index SHA. All qualified outputs unchanged.
+First staged SEAM check refused three new boxes without declared result
+signatures; add actual diagnostic command/rc=0 evidence and rerun unchanged gate.
+
+- [x] **ROOT CAUSE** — public_guard.py rc=0; actual public fixtures and
+  project-owned source identify D65's status-only/navigation boundary normal/O.
+- [x] **ADDRESSED** — ledger.py rc=0 normal/O; current ledger/full-text and
+  source pins, durable reproduction/limits and priority1 repair owner recorded;
+  this does not claim D65 fixed or source-validity signoff.
+- [x] **NO REGRESSION** — verify.py/focused.sh rc=0; full source/history checks,
+  focused12/seven books/3242 links and normal/print/literal checks pass.
+- [x] **LOCKSTEP** — book/pointer/task/receipt agree: assessment closed, D65
+  repair next, graph/adoption open. Normal COMMIT closes this work unit.
+
+#### .4i2b3b — priority1 D65 include source/selection repair (next)
+
+Status: pending; SEMULITH-LC-0029, owned by LIVE-CONTAINMENT.4. Activate only
+after LC0028 normal COMMIT/postcheck/brief0/host0. Review actual chapter input
+and existing book/registry/preprocessor contracts; use public mdbook protocol/
+CLI only. Qualify project-owned source/selection validity, positive whole/
+anchor/range/fenced/nested behavior, missing/duplicate selectors, unavailable/
+unsafe sources and actual predicate omissions normal/O. Preserve old controls,
+current seven-book content, source ownership, all caps and archive contracts.
+Only after verified repair may .4i2b3 source-validity signoff close and wider
+index/query/generated reader review resume. Full adoption stays .4i3–8.
+
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
 Status: complete; D58/D60/D61 fixed and verified; normal COMMIT/postcheck required before D59 and remaining .4i2b reader review. Owned on
@@ -531,8 +640,9 @@ exact11-file postcheck, brief0/untracked and unrestricted host0 close this unit.
 
 ### .4i2b2 — priority1 D59 source parser and bare-ratio coverage
 
-Status: active, decomposed; .4i2b2a qualifies source/consumer defects first;
-.4i2b2b repairs them in lockstep before remaining reader review.
+Status: complete; LC0025 qualified sources/projections, LC0026 retained
+closed units, and LC0027 repaired D59/D64. Commitcad73f3 passed normal hooks,
+exact13-file postcheck, brief0 and host handoff0 before reader review resumed.
 Owner: LIVE-CONTAINMENT.4. Actual public TREE-CLAIMS reports0 with a stale bare
 composition ratio (D58); assessment.json enumerates every ratio after a tree
 reference across all four live files. Candidate binding is not semantic truth:
@@ -547,8 +657,8 @@ bare leading-progress-ratio grammar. Preserve archival immutability; do not
 rewrite source tasks to fit summaries. Correct any independently established
 stale live counts in lockstep. Qualify statuses/summary uniqueness, omissions,
 old controls, history exclusion, nearest-tree binding and later non-task ratios.
-No full generic Markdown coverage claim. Until this closes, explicit
-A-of-B-leaves is the supported progress grammar for repaired projections.
+No generic Markdown coverage claim. LC0027 supports explicit leaf counts
+and scoped leading ratios; later bare instruction/observation ratios stay excluded.
 
 #### .4i2b2a / SEMULITH-LC-0025 — qualify source and progress-reader boundaries
 
@@ -1145,6 +1255,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b3a:1425-source/54-candidate boundary;49 include occurrences/48 targets/
+93 full chapter expansions exact,344 output files unchanged normal/O. D65
+public interfaces false-green24, valid4; three diagnostic omissions fail1 in
+both modes. Whole DEV2490B retained,106 old entries/1418 protected modes/Gitlink
+and complete inverses qualify. Focused12/books/seven/3242 links/rendered/literal
+pass; no caps, CPU or archive-authority changes. D65 priority1 repair next.
+
 .4i2b2b: D59/D64 repaired; original13/20 controls retained,38/41 normal/O;
 12 public cases/mode,11 actual omissions/38 cases and eight real read faults
 qualify.105 old entries/1411 protected/Gitlink and full source inverses exact;
@@ -1331,6 +1448,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0028 (leaf LIVE-CONTAINMENT.4): qualify actual include readers` — .4i2b3a assessment complete; D65 repair next.
 
 `SEMULITH-LC-0027 (leaf LIVE-CONTAINMENT.4): validate task sources before progress claims` — D59/D64 fixed; .4i2b reader review next.
 

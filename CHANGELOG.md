@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0028 (leaf LIVE-CONTAINMENT.4) — qualify include readers and own source-validity repair
+
+- Fresh immutable1425/473/54 census; seven actual consumers/93 full chapters/49 includes/48 targets reconcile normal/O. All344 output files match uninstrumented builds; five remaining markers await other-reader review.
+- Public mdbook0.5.4 and both actual project interfaces accept missing file, absent anchor and duplicate anchor. Own D65 priority1 repair next; current real includes match. Preserve complete ledger/reproduction/pins, old history/source/modes/caps; focused/seven-book/rendered checks required. Full adoption and CPU qualification stay open.
+
 ## SEMULITH-LC-0027 (leaf LIVE-CONTAINMENT.4) — validate task sources before progress claims
 
 - Fix D59/D64: both guards share explicit checked backtick/bold/whole-archive source decoding; unknown/ambiguous/unavailable source refuses2. Check leading progress ratios and annotated closed counts, including every recognized count in a cell; later bare instruction ratios remain excluded.
