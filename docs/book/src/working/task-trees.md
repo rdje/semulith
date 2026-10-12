@@ -63,10 +63,11 @@ cat KNOWLEDGE_MAP.md
 
 ### Decision navigation and the record it opens
 
-The bounded index routes dated questions to complete records, which own rationale
-and measurements. Retain an incorrect historical receipt and append its explicit
-correction. The count record's 61 files mean 27 task instances + one template + nine
-archives + 24 artifacts; they do not count active work. At `d39092f`,
+Shorten index summaries to dated questions; retain every target, type and order.
+Canonical records keep details and explicit corrections. D55 needs 151 + 9 in
+place of 147 + 13; LC.4h6b owns repair before capacity review. The count record's
+61 files mean 27 task instances + one template + nine archives + 24 artifacts;
+they do not count active work. At `d39092f`,
 33 + 1 + 40 + 22 = 96.
 Classification correction supplies no authority to raise a ceiling. Read both:
 

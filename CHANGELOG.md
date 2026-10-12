@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0016 (leaf LIVE-CONTAINMENT.4) — contain navigation before capacity authority
+
+- Shorten nine duplicated summaries after complete canonical reads/27 clause comparisons; INDEX15526→13122B recovers2404B, leaving2674B for separately reviewed authority. Keep every target/type/order, corrected D51 row and canonical record exact; no cap change.
+- Preserve104 prior entries through whole DEV3668B/CH1417B rollover and combined damaged-receipt refusals; verify full inverses, protected identities, focused/seven books and literal reads. Own D55's stale147+13 composition as immediate next correction: committed sources prove151+9=160. LIVE/CPU unchanged.
+
 ## SEMULITH-LC-0015 (leaf LIVE-CONTAINMENT.4) — correct the count receipt classification
 
 - Fix D51 without rewriting its historical receipt:61 files are27 task instances+one template+nine archives+24 artifacts. Current96 is33+1+40+22; six instances added, none removed. Append the typed correction to the canonical authority and registry; align index/book.
@@ -482,26 +487,4 @@
 - Sharder12/0; five whole DEV entries→0230, full35081B inverse and prior history
   exact. Core/data/frozen/registry108/effective106/114/LIVE unchanged; previous
   Rust173/17/234 applies, focused/six books green. C32b/0179 completes F next.
-
-## SEMULITH-P4-0177 (leaf P4-SYSTEM.13 c32a) — witness numeric F instructions before binding
-
-- Drive23numeric F forms/111744full-state boundaries/223488parcels from governed
-  independent data; static/DYN, all modes/source aliases, sticky flags and Dirty.
-- Twenty wrong effects/routes,16bad captures and8actual disabled controls
-  discriminate; author111744/full167corpus exact, no new numeric lineage.
-- Rust173/17/234, FP/focused/six books green; core/data/frozen/history/LIVE/
-  registry108/effective106/114 unchanged. C32b owns remaining F checks/bindings.
-- Own stale signaling-NaN backend-deviation notes in .14's priority evidence
-  sweep; root99475c13 and withdrawing qualification amendment identified.
-
-## SEMULITH-P4-0176 (leaf P4-SYSTEM.13 c31) — bind CSR access, permissions and suppression
-
-- Bind4480legal/8480refused full-state boundaries across six forms, modes,
-  gates, aliases and source-field/value distinction;25920parcels.
-- Thirteen wrong effects/sixteen bad captures/15actual disabled controls
-  discriminate; passing extra-read control explicitly limits dynamic evidence,
-  separate compiled-table inspection rejects it. Missing binding RED first.
-- Independent author12096exact+864named vocabulary refusals; full167corpus
-  exact, prior106 entries/frozen/core/history/LIVE unchanged. Rust173/17/230,
-  focused/six books green; registry108/effective106/114, four pairs/freeze remain.
 

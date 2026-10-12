@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–54 repaired; .4h6 separate capacity review, then full inventory and checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–54 repaired; .4h6b D55 correction, .4h6c capacity review, then full adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -283,7 +283,8 @@ new separate reviewed authority proving that expansion, not calendar growth.
 Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
-complete; .4h5/LC-0015 classification correction completes D51; .4h6 reviews capacity next.
+complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
+.4h6b/LC-0017 corrects D55 next, then .4h6c reviews capacity.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -584,6 +585,77 @@ stay byte-exact; the separate dated correction does not rewrite that record.
 - [x] **LOCKSTEP** — authority/index/registry/book/owner/pointer agree; LIVE and
   CPU qualification unchanged. D51 closes; separate .4h6 capacity remedy review
   and full .4 containment adoption remain open. No new authority to raise a cap.
+
+### .4h6a / SEMULITH-LC-0016 — contain navigation before capacity authority
+
+Status: complete. Owned on cleanfbded8d after exact8-file postcheck, brief0,
+unrestricted handoff0 and the full COMMIT report. D51–54 are fixed. The
+separate .4h6c capacity review needs a new authority record; decisions family
+261874/262144B leaves270B. Budget up to2048B for that bounded review and256B
+for its navigation row:2304B required. Apply duplicate-navigation containment
+first; no ceiling or authority changes in this slice.
+
+Read complete canonical records for nine selected lengthy index rows:
+derived-members-of-bounded-families, profiles-family-composed-units,
+profiles-family-processor-corpus, device-applicability-by-declared-vehicle,
+profiles-family-five-units, dsp56300-lab-v0-subset, profiles-family-four-units
+mdbook-incremental-engaging and doctrine-enforcement-ceiling-rederivation
+(all decision_*.md). Compare the source clauses
+before replacing only these summaries with dated topic labels and reader
+questions. Preserve every target/type/order, the corrected D51 row, and every
+canonical record byte. Own target/live-containment/capacity-navigation,
+source pins/clause comparisons and complete index/book/task/history inverses.
+
+Own the needed whole-oldest DEV/CH rollover, retained-head/frozen-manifest/
+archive/protected-byte/mode/Gitlink proof and genuine damaged-receipt controls.
+Book teaching retains D51's typed facts and literal reads while explaining
+navigation containment; all existing limits, LIVE and CPU remain exact.
+Run focused/book/rendered/literal and staged acceptance/seam checks, normal
+COMMIT hooks, exact postcheck and unrestricted handoff before .4h6b's D55
+correction and .4h6c's capacity review.
+Full neutral inventory/checker adoption remains .4.
+promotion: declined (the unchanged canonical records own every demoted detail).
+
+D55, priority2, owned here after the full source comparison: the five-units
+record's 147 prior +13 LAN files is contradicted by its own six+three listing.
+Read-only Git3071ae83604c96113a0ca424593796d1613755b6 measures160 profiles/
+845819B and nine LAN files/213840B; parent28be1c4ef5eaea00e9a97be13a649ed4803132d1
+has151 profiles/631979B and no LAN files. Thus151+9=160; total and byte figures
+stand. Reproduce with git ls-tree -rlz at those revisions, grouping by the LAN
+prefix. Impact: erroneous historical composition in a capacity authority,
+without a demonstrated runtime defect or changed bound. The record has one
+creation commit and has never been corrected. Do not bury it by shortening
+navigation. Keep its complete source bytes in this containment commit; own
+immediate next .4h6b/LC-0017 correction after handoff-ready, then .4h6c's separate
+capacity authority review. Inspect the intervening UART history to establish
+why147 was reused, and retain the original receipt with an explicit correction.
+Root cause verified: the four-units record's partial staging inventory counts
+142 old+five initial UART documents=147, explicitly leaving profile/expectations
+for the same leaf. Its committed fa3f74c instead has151=142+nine UART files;
+that profiles tree OID5d2ca41b6f4cbdfe13b1e1eadd5ed6c15cc9b82f is identical at
+LAN's parent28be1c4. The five-units record mixes the partial staging subtotal
+with committed160 and attributes the four-file difference to LAN. Source
+D55-uart-history.json retains all paths/sizes/tree OIDs. Add a ninth duplicate
+navigation row to meet the bounded2304B future-review projection; no canonical
+record changes here, including the now-owned D55 source.
+
+Verified: INDEX15526→13122B; decisions259470B/free2674B. All nine canonical
+sources/27 clauses, every target/type/order and D51's row remain exact. D55's
+source stays exact and its finite LAN/UART inventories are pinned here.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/capacity-navigation/verify.py`
+  rc=0 normal/O: nine duplicated summaries match complete source records;
+  270B original headroom cannot cover the bounded2304B separate review.
+- [x] **ADDRESSED** — `python3 target/live-containment/capacity-navigation/verify.py`
+  rc=0 normal/O: whole index inverse proves only nine summaries changed;
+  source pins and clauses remain exact,2404B recovered without a cap change.
+- [x] **NO REGRESSION** — `bash target/live-containment/capacity-navigation/focused.sh`
+  rc=0: focused12/sharder12/seven books; history/rendered normal/O prove104 old
+  entries, complete inverses, protected bytes/modes/Gitlink, normal+print/two
+  literal reads and existing caps/LIVE exact. Staged acceptance/seam and normal
+  hooks must pass before COMMIT closes this slice.
+- [x] **LOCKSTEP** — index/book/owner/pointer route D55 to .4h6b before .4h6c;
+  canonical authority and CPU qualification unchanged; full adoption remains .4.
 
 ## Decisions
 
@@ -892,6 +964,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6a: capacity-navigation verify/history/rendered normal/O and focused.sh rc=0:
+nine complete sources/27 clauses; index15526→13122B, free2674B. Whole source/
+head/book/task inverses retain104 prior entries; receipt/digest refusals,
+protected identities, focused12/sharder12/seven books and literal reads pass.
+DEV3668B→0284/CH1417B→0285; all prior archives/seals/caps/LIVE/CPU exact.
+D55 diagnosed/owned .4h6b next; separate capacity review .4h6c follows COMMIT.
+
 .4h5: assess.py/verify.py normal/O rc=0: typed source inventories27/1/9/24
 and33/1/40/22, six added instances/no removals, two metadata negatives refuse;
 real HEAD/index/all1400 identities exact. Whole authority/registry/index/book/
@@ -992,6 +1071,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0016 (leaf LIVE-CONTAINMENT.4): contain navigation before capacity authority` — .4h6a complete; .4h6b D55 correction next, .4h6c capacity review after.
 
 `SEMULITH-LC-0015 (leaf LIVE-CONTAINMENT.4): correct the count receipt classification` — .4h5 complete/D51 fixed; .4h6 separate capacity review next.
 
