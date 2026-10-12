@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0029 (leaf LIVE-CONTAINMENT.4) — qualify before-links include validation
+
+- Standalone strict source validator checks owned chapters and selected transitive inputs; valid books are unchanged, missing/ambiguous inputs fail1, unsafe/unsupported/unreadable inputs refuse2. Preserve path predicates/public aliases and old23/26 controls;22 component controls pass normal/O.
+- Actual seven-book component execution:93 chapters/49 includes, all344 output files equivalent normal/O. Public34 fixtures/eight faults and13 copied component omissions discriminate. Fix D66 with tracked immutable replay: exact LC0028 ledger SHA,10 controls/four producer omissions normal/O. D65 remains open until LC0030 integration. Retain1179B closed book receipts verbatim; whole history/source/mode/cap verification and normal hooks required. CPU/full adoption unchanged.
+
 ## SEMULITH-LC-0028 (leaf LIVE-CONTAINMENT.4) — qualify include readers and own source-validity repair
 
 - Fresh immutable1425/473/54 census; seven actual consumers/93 full chapters/49 includes/48 targets reconcile normal/O. All344 output files match uninstrumented builds; five remaining markers await other-reader review.
@@ -429,15 +434,4 @@
 - Freeze14v2 members with exact canonical-record SHA256 pins; preserve all v0/v1 bytes, obligations, runtime and fixtures. Intact candidate passes; edited record/missing pin/dropped membership controls each refuse.
 - Full five-leg CI passes, including Rust173/17/253 and six books; final focused9/books/invariants green. G-CONTRACT green114/114; CPU-SYSTEM incomplete7/10axes.
 - Close .13, activate .14; synchronize P4 13/18, live/book/frontier/resume pointers. Priority provenance/note repairs precede evidence records/status and unit registration.
-
-## SEMULITH-P4-0190 (leaf P4-SYSTEM.13) — qualify and bind deterministic SC
-
-- Qualify completed SC permission/trap prerequisites in live mirrors and inspection wording; supersede the frozen statement with v2 member14 and two Execution bindings. Regenerate inspection text/fingerprints only, preserving CPU semantics and frozen records.
-- Explicitly reuse62176direct boundaries/194688requests with96unchanged companion boundaries. Missing-binding RED,35restored guard/route controls, fresh167guest derivation and worked alias history discriminate; no unique-case or independence credit for overlap.
-- Rust173/17/253 rc=0; focused15/six books/final verifier rc=0. Registry116/effective114/114; latest v2 remains open for full CI/freeze. Prior data/history/LIVE/caps unchanged.
-
-## SEMULITH-P4-0189 (leaf P4-SYSTEM.13) — preserve authority in versioned requirement mirrors
-
-- Reject a superseding explicit mirror that downgrades an architectural requirement to laboratory authority, even when its statement is identical; retain valid laboratory policies and frozen-mirror qualification.
-- Reproduce false acceptance RED1, pass62record self-tests and an actual disabled-predicate control; preserve all CPU/profile/contract/history/milestone data. Re-derive669doctrine arms; focused9/six books rc=0.
 

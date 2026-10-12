@@ -244,24 +244,32 @@ model. The tree is the layer that makes that survivable — its frontier row *is
 and the acceptance checklist is why a successor can trust the previous step without repeating
 it.
 
-A later privilege-timeline containment applies the same complete-source inverse
-at one span. Its map in `docs/tasks/archive/P4-SYSTEM-book-c32b0.md` records
-source `21a997f`, 14,486 bytes and SHA-256
-`bc97a1b69d515c5a9b0af2dd9022084bac7c08e8dc8955720e2901756595382f`.
-Check the retained chapter's proposed digest, replace the exact replacement at
-the recorded byte offset with the marked original 8,436-byte payload, then
-verify the entire restored source against that commit. Corruption, a missing
-marker or an omitted payload must refuse. Current features and CSR examples
-stay in the book; historical checkpoint counts stay in the immutable archive.
+The complete privilege/FP timeline-containment receipts and inverse instructions
+are retained with the include-validator evidence:
 
-The FP timeline provides another full-source inverse:
-`docs/tasks/archive/P4-SYSTEM-book-c33b0.md` authenticates source `07e14ae`,
-24,259 bytes, SHA-256
-`ef2fd2d2d8395dbbf848d6b6a37b914c3b6d4499b60812d98db507edd8ad0db1`.
-Verify proposed chapter bytes/SHA, replace the mapped span with the marked
-10,576-byte original introduction, then verify the entire restored chapter
-against Git. Its semantic code fence and current feature/witness sections
-remain in the book. Damaged payloads or missing markers cannot receive credit.
+```sh
+cat docs/tasks/artifacts/live-containment/include-source-validator.md
+```
+
+**Include source validation (component).** Whole text, ASCII anchors and one-based
+line selections (`:2`, `::10`, `:2:`, `:2:10`) are checked before expansion.
+Missing/ambiguous selections fail1; unsupported/unsafe/unreadable inputs refuse2.
+Valid input returns the same book. Spaces after # refuse2. Fences expand;
+nested includes follow selected text relative to the included file. Cycles fail;
+empty files and empty named regions are valid. CRLF becomes LF; bare CR/Unicode
+separators stay inside physical lines. This checks source integrity, not prose truth.
+
+From the repository root, qualify controls and opt into the project-book check:
+
+```sh
+python3 scripts/probe_book_includes.py
+python3 -O scripts/probe_book_includes.py
+MDBOOK_PREPROCESSOR__SOURCE_CHECK__COMMAND='python3 ../../scripts/book_includes.py' \
+MDBOOK_PREPROCESSOR__SOURCE_CHECK__BEFORE='["links"]' \
+mdbook build docs/book
+```
+
+Default UNIT-BOOKS still needs LC0030 integration; D65 remains open.
 
 Containment measurements count every tracked family member, including
 `docs/book/book.toml`. A Markdown-only scratch census omitted its309bytes and

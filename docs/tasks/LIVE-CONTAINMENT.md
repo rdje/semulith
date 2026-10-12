@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b3b D65 source/selection repair; then include signoff and index/query/generated review |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b3b2 integrate source validation into public guards; then graph review |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -538,8 +538,11 @@ signatures; add actual diagnostic command/rc=0 evidence and rerun unchanged gate
 
 #### .4i2b3b — priority1 D65 include source/selection repair (next)
 
-Status: pending; SEMULITH-LC-0029, owned by LIVE-CONTAINMENT.4. Activate only
-after LC0028 normal COMMIT/postcheck/brief0/host0. Review actual chapter input
+Status: active, decomposed; owned by LIVE-CONTAINMENT.4. LC0028 commit
+b6a21234d47bc1423883c4dc4425bfe42b6df632 passed normal hooks, exact8-file
+postcheck, brief0 and unrestricted host0 before activation. LC0029 qualifies
+the reusable source validator; LC0030 integrates/qualifies the actual guard.
+D65 remains open until the public interfaces reject the recorded bad cases. Review actual chapter input
 and existing book/registry/preprocessor contracts; use public mdbook protocol/
 CLI only. Qualify project-owned source/selection validity, positive whole/
 anchor/range/fenced/nested behavior, missing/duplicate selectors, unavailable/
@@ -547,6 +550,206 @@ unsafe sources and actual predicate omissions normal/O. Preserve old controls,
 current seven-book content, source ownership, all caps and archive contracts.
 Only after verified repair may .4i2b3 source-validity signoff close and wider
 index/query/generated reader review resume. Full adoption stays .4i3–8.
+
+##### .4i2b3b1 / SEMULITH-LC-0029 — qualify before-links include validation
+
+Status: complete; D67 grammar repair requalified before publication, owned on clean
+b6a2123. Outputs: target/live-containment/include-source-validator.
+The current public guard remains unchanged in scope until .4i2b3b2/LC0030;
+this component alone cannot close D65 or source-validity signoff.
+
+Read roadmap/review-surface requirements, inventory contract, complete LC0028
+ledger/reproduction, actual unit_books/book_navigation/collector interfaces,
+public book configuration, old probes and relevant model/task-tree teaching.
+Public mdbook manuals read as read-only integration contracts: configuration/
+environment-variables.html, configuration/preprocessors.html, developer
+preprocessors.html and format/mdbook.html under rust-lang.github.io/mdBook.
+Use actual installed0.5.4 CLI fixtures to qualify env injection/order, nested
+path bases and selected-content behavior before choosing implementation.
+Never inspect its implementation or another repository/Gitlink implementation.
+
+Implement project-owned book_includes.py as a strict public preprocessor:
+actual Chapter/source_path/content traversal before links, owned source and
+transitive selected include inputs, explicit whole/named/four line-selection
+forms, unique ordered selected anchors, complete input/schema accounting.
+Valid output preserves the complete book object; no success output on invalid/
+unavailable inputs. Missing/ambiguous source selection fails1; unsupported,
+unsafe or unreadable inputs refuse2. Qualify fences and nested selected regions,
+UTF-8/line endings, ranges, missing/duplicate/inverted selectors, cycles,
+unsafe paths/symlinks/volumes/Git boundaries, actual read failures and omissions
+normal/O. Preserve the original published mdbook syntax for supported positives;
+any narrowed/unsupported syntax must be explicit, never silently green.
+
+Share existing PROJECT/BookRefused/owned_root/book_path/source_path through
+book_paths.py, preserving their bodies/contracts and U's public aliases rather
+than making include and unit-book consumers depend cyclically on each other.
+No catalogue/navigation predicate or original probe is removed. Qualify old
+public U/navigation probes normal/O, source/full module inverse and copied
+actual predicate omissions. The next unit integrates this validated component
+into both public guard interfaces and default seven-book configs; current
+component tests must not be described as that future integration coverage.
+
+Pin all1427 immutable/source/index/physical/mode/Gitlink identities and every
+actual code/capture/fixture. Qualify positive seven-book before-links executions
+through published command overrides and complete output equivalence. Record
+public CLI/fixture contracts and exact behavior/finite limitations durably.
+Current book524275/524288 leaves13B, so own any needed semantic containment:
+copy complete closed reader receipt span(s) into an explicitly retrievable
+canonical record before removing them, preserve all old record bytes/modes,
+whole book/source inverse, exact reader route/examples and rendered full text.
+Do not raise caps, extend an archive seal, or alter earlier archive Markdown.
+Own any whole CH/DEV rollover and full history/source/task/book/pointer inverses,
+protected members/modes/Gitlink and current caps. Update toolbox/book/current
+records; run focused checks/seven books/rendered/literal qualification and
+normal COMMIT/postcheck/brief0/host0 before .4i2b3b2 integration. CPU/MCU/DSP/
+board and full graph/adoption/utility/lifecycle qualification stay unchanged.
+
+Prepublication probes: initial15-method run fails three actual contracts:
+lexical book-root `corpus/../book` escapes the declared corpus, omitted
+source_path is treated as draft, and unknown CLI action returns1 instead of2.
+All use benign owned fixtures; no other repository or Gitlink data is read.
+Own/fix these immediately in this component and keep the failed trace. Two
+unsupported-selector subcases also lack their target file: correct that fixture
+to isolate syntax from missing-source classification, not the expected verdict.
+
+Public line qualification: eight captures normal/O preserve bare CR, Unicode
+LS/NEL inside a physical LF line; a requested second line selects gamma, not
+beta. Initial component used Python splitlines/universal bare-CR conversion;
+new20-method falsifier observes beta instead of actual gamma. Own/fix now:
+normalize CRLF only and split LF lines, preserving other Unicode/CR characters.
+This is prepublication component repair, not a new shipped-project failure.
+
+D66 confirmed/priority1, owned now in LC0029: actual git ls-files refuses1
+for LC0028 capture_preprocessor.py/capture_all.py/ledger.py; check-ignore0
+confirms all three named producers live only under target/. The published
+byte pins/edge rows preserve evidence but not executable producer durability.
+TOOLBOX.md requires a tracked diagnostic; CLAIM_VERIFICATION.md §3C calls this
+re-derived/falsified, not durable. The tracked collector explicitly leaves
+include expansions unreviewed, so it does not replace these named producers.
+Do not represent LC0028's source-to-expanded ledger as fully durable yet.
+
+Repair within this component before COMMIT: own scripts/qualify_book_includes.py
+and its toolbox route as the tracked public replay producer. Use checked local
+Git objects to copy only regular project source into a fresh on-volume target
+workspace, preserving source bytes/modes and opaque Gitlink exclusion. This is
+an owned non-Git copy, not a new repository. Execute only documented mdbook
+build/preprocessor interfaces, with the copied project's own published book
+preprocessors. Capture actual raw/expanded chapters, independently reconstruct
+whole/named includes from pinned source and compare all full chapter texts,
+classify every literal candidate by actual chapter/target membership, and emit
+the exact LC0028 closed ledger projection/digest when replaying cad73f3.
+Never promise historical toolchain/output retention; this is a fresh public
+build from immutable source. Require original actual working/source identities
+and copied regular bytes/modes unchanged. Source objects unavailable refuse2,
+no fetching; no Gitlink implementation is read or copied.
+
+Retain producer self-tests with missing/duplicate/mismatched ledger/consumer/
+chapter/output populations and actual copied producer omissions normal/O.
+Include public fixture recipes/results in tracked replay source, not only ignored
+helper pins. Run historical cad73f3 replay and actual current component/book
+qualification before publishing durable claims. Current default guard remains
+D65-open; this producer adds no neutral coverage/lifecycle/cap authority.
+
+Initial component qualification:21 methods, old23/26 controls normal/O;
+actual seven-book component execution93 chapters/49 edges/all344 output files
+unchanged.24 public fixtures/eight actual read/change faults;12 copied component
+omissions fail1 normal/O. D66 repaired by tracked qualify_book_includes.py:
+immutable cad73f3 replay exactly re-emits80700B ledger SHAb4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5,
+all93 full expansions/49 occurrences/48 targets/five other candidates and344
+outputs reconcile normal/O.10 producer controls/four actual omissions/missing
+source qualify. Capture/projection/public fixtures/fault/omission recipes and
+toolbox route are tracked; no Gitlink materialized or foreign repository changed.
+Full contracts, pins and replay: docs/tasks/artifacts/live-containment/include-source-validator.md.
+
+Book containment: copy1179B complete closed privilege/FP reader receipts before
+replacing the single span with1172B current teaching/commands/direct read route.
+Whole-source inverse in that record; book−7 to524268/524288, generated index
+unchanged. All prior archive Markdown/seals remain exact; no cap changes.
+First fixture wrapper expected a nonexistent DEFECT prefix; read actual typed
+stderr and corrected only wrapper. Failed trace retained. Source/helper/comment
+and qualification recipe refinements requalified through the final tracked tool.
+
+Verification: verify.py/history.py rc=0 normal/O; complete source/module/
+book/task/pointer/history inverses and1418 protected regular bytes/modes/opaque
+Gitlink exact.107 old CH/DEV entries/order retained. Whole CH1301B→0301/1538B/
+SHAa4d3776c08efaf963c6f3575626add3a1400cf6d3808944054a9c1a242b66ef9;
+DEV2955B→0302/3188B/SHA2d6fc392885862b5671a3f8a2cbe1826d98a8bc7abbb2c0ae9e964fdab3098ab.
+Two original receipt mutations, new moved receipt+digest and old published
+receipt+digest refuse jointly. Missing/corrupt retained payload and damaged
+proposed book refuse the whole-source inverse. All prior archives/seals exact.
+Focused12/sharder12/seven books/scaffold24 normal/O pass;3242 fresh/actual links,
+whole normal/print teaching, literal component controls/opt-in build and full
+record read qualify. Book524268/524288, tasks102≤107; byte/part caps unchanged,
+health64 debt retained. All other canonical/live/CPU inputs unchanged. Normal
+staged acceptance/seam/hooks and exact15-file postcheck/brief0/host0 required
+before LC0030 activation. D66 fixed; D65 remains open until actual integration.
+Render verifier initially kept Markdown bold delimiters in expected plain text;
+actual full HTML showed the text present. Correct only normalization, rerun
+whole normal/print/literal checks; source and qualified outputs unchanged.
+Lesson promotion: declined (canonical contracts/failed controls/owned record
+retain this lesson; no additional cross-cutting principle established).
+
+- [x] **ROOT CAUSE** — rc=0 actual public source/line/read fixtures identify
+  unsafe/missing/ambiguous inputs; git ls-files/check-ignore identify D66.
+- [x] **ADDRESSED** — rc=0 strict before-links component and tracked replay
+  qualify normal/O; exact historical ledger restored, D65 integration next.
+- [x] **NO REGRESSION** — rc=0 complete inverses/protected modes/history,
+  old23/26 controls, focused12/seven books/3242 links and literal/rendered checks.
+- [x] **LOCKSTEP** — component complete, D66 fixed, D65 open, LC0030 next;
+  full graph/adoption and CPU milestones unchanged. Normal COMMIT closes unit.
+
+D67 confirmed/priority1, owned within LC0029 before publication: six actual
+public mdbook spacing captures show whitespace before # and after include works,
+but whitespace between # and include remains literal. Four actual component
+CLI evaluations (two unsupported forms × normal/O) return0, accepting a grammar
+it labels valid although public expansion does not execute it. Root cause:
+INCLUDE permits whitespace after #. HELPER should keep recognizing that broad
+candidate, but strict INCLUDE must refuse the unsupported spelling2. Add an
+actual failing component control and tracked public baseline/validated fixtures,
+then requalify complete component/replay/protected/history/rendered evidence.
+No affected production book uses this spelling; existing49 includes still match.
+
+The pending normal commit was interrupted deliberately before HEAD changed:
+owned git commit PID76141 and eight observed hook descendants received TERM;
+process exit143, HEAD remains b6a2123, staged15 source files retained and no
+index lock remains. This is an incomplete commit, not a skipped or green gate.
+Repair now, restage exact verified files and restart normal hooks; do not pivot.
+
+D67 repair verified before publication: new22nd method fails on both actual
+unsupported spellings before strict INCLUDE repair, passes normal/O after it.
+Tracked --fixtures preserves literal text in four unvalidated baselines and
+refuses2/stop101 on all four validated builds. Before-# and argument spaces/tabs
+remain valid. Final34 public fixtures=24 positive full-text matches+six original
+missing/ambiguous failures+four unsupported-spacing refusals; eight actual read/
+change faults still refuse2/empty stdout/injection1. Thirteen copied component
+omissions (including grammar) and four producer omissions fail normal/O.
+Tracked immutable replay still emits exact historical ledger; current seven
+books/93 chapters/49 edges/all344 output files match before/after normal/O.
+Book teaching now names after-# refusal: replacement1185B retains original1179B
+payload and whole-source inverse; final book+6 to524281/524288. Earlier −7/21/
+24/12-component figures above describe the initial pre-D67 qualification only.
+Final verification rc=0 normal/O: all whole source/module/book/owner/history
+inverses,107 old entries and1418 protected regular bytes/modes/opaque Gitlink
+remain exact. Final working/index qualification covers1434 identities;34 public fixtures/
+17 copied omissions per mode qualify; all current raw/expanded chapter objects and input
+reports agree normal/O. Focused12/sharder12/seven books/scaffold24 normal/O pass;
+3242 links, complete normal/print teaching and literal22-method/opt-in/record
+commands pass. Book524281B, all fixed caps hold, health64 debt retained.
+D66/D67 fixed; D65 still open. Restart mandatory normal staged checks/hooks;
+exact15-file/parent/message postcheck, brief0/untracked and host0 required before
+LC0030. The interrupted first run cannot satisfy the workflow.
+
+##### .4i2b3b2 / SEMULITH-LC-0030 — integrate and close D65 (next)
+
+Status: pending; activate only after LC0029 clean normal COMMIT. Wire qualified
+source validation before actual links expansion into both public UNIT-BOOKS
+interfaces and seven default book builds. Preserve all old controls; add
+integration omission controls. Rerun the same LC0028 bad/positive matrix normal/O,
+unsafe/unavailable actual failures and whole real output/expanded-source
+qualification. Missing/duplicate cases must reject through actual public guards;
+only that verified result may close D65. Update live/book/tool/doctrine contracts
+and derived counts if arms change; own whole source/history/protected inverses,
+normal focused/COMMIT workflow, then resume include-reader signoff.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1255,6 +1458,15 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b3b1 final: component22/old23+26 controls normal/O; seven books93 chapters/
+49 includes/all344 output files unchanged.34 public fixtures/eight actual faults,
+13 component/four producer copied omissions discriminate normal/O. Tracked
+cad73f3 replay exact80700B ledger; D66/D67 fixed, D65 integration next. Whole
+reader copy1179B/book+6→524281,107 old entries/1418 protected modes/Gitlink/full
+inverses exact. Focused12/books/scaffold24/3242 links/normal+print/literal checks
+pass; caps exact. First pending commit interrupted for D67 before HEAD changed;
+only restarted normal hooks and final postcheck can complete this unit.
+
 .4i2b3a:1425-source/54-candidate boundary;49 include occurrences/48 targets/
 93 full chapter expansions exact,344 output files unchanged normal/O. D65
 public interfaces false-green24, valid4; three diagnostic omissions fail1 in
@@ -1448,6 +1660,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0029 (leaf LIVE-CONTAINMENT.4): qualify owned include sources and replay` — component complete/D66 fixed; D65 public integration next.
 
 `SEMULITH-LC-0028 (leaf LIVE-CONTAINMENT.4): qualify actual include readers` — .4i2b3a assessment complete; D65 repair next.
 
