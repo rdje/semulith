@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b1r repair D73 public index refusal after LC0032 normal COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b2 qualify orientation/record indexes after LC0033 normal COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -509,11 +509,51 @@ controls refuse2. No actual source/index/mode changes; Gitlinks stay opaque.
 - [x] **NO REGRESSION** — `bash target/live-containment/book-index-consumer/focused.sh` rc=0: focused12/sharder12/seven books; original six BOOK-INDEX controls normal/O, whole normal/print teaching and literal tracked replay also pass. Whole old CH/DEV entries/order, every older archive/seal and protected source modes/Gitlink remain exact; staged full inverse and normal COMMIT are required before LC0033.
 - [x] **LOCKSTEP** — task/pointer/CH/DEV/book/toolbox and canonical record align; LIVE1571, all caps, CPU/MCU/DSP/board and full graph/adoption scope unchanged. promotion: declined (existing inventory contract and source-pinned consumer evidence own this assessment).
 
-##### .4i2b4b1r / SEMULITH-LC-0033 — repair D73 public index refusal (pending)
+##### .4i2b4b1r / SEMULITH-LC-0033 — repair D73 public index refusal
 
-Preserve typed input refusal2 in generator and guard, valid bytes and original
-six shell controls. Add actual public read/Unicode controls normal/O and copied
-omissions; update book/registry mirrors only where actual scope changes.
+Owned on clean6bd4618 after normal hooks/exact11-file postcheck/brief0/host0.
+Own gen_book_index.py's complete input/output exception boundary and
+check_book_index.sh's actual verdict branch: preserve valid output and drift1,
+refuse unjudgeable input2, retain all original six controls. Extend tracked
+qualify_book_index.py with a clean-verdict selector, actual read/write/launch
+failures and copied real omissions, normal/O. Own relevant toolbox, doctrine
+registry/mirrors/LIVE derived arm count and book teaching. Append complete
+source-pinned repair evidence to book-index-consumer.md without changing any
+published prefix byte; own full root/book/source/history inverses and exact
+modes. No new task artifact or cap, processor/MCU/DSP/board qualification or
+full graph/adoption change. Outputs: target/live-containment/book-index-refusal.
+D73 is priority1; close it before other index/query consumers .4i2b4b2–3.
+
+Verified LC0033 (`2026-10-12`): D73 fixed. Generator's complete generate/compare
+boundary catches named Refusal/OSError/UnicodeError and returns2 without a
+traceback. The actual wrapper accepts only named drift1; failed/unknown launches
+and typed input refusal retain2. Valid bytes, public arguments and all original
+six controls remain exact. Four new verdict controls pass: ten total normal/O;
+fresh DERIVED-COUNTS enumerates1575 arms,39 doctrines/49 chapters/39 routes.
+
+Expanded tracked actual-interface probe:16 input cases/28 observations per
+mode. Five actual read classes, one output write and three failed-launch
+statuses each inject exactly once; invalid source UTF-8 is named refusal2.
+Before:16 defective outcomes per mode and clean-verdict selector exits1;
+after:0 defects, exits0, both valid baselines/index bytes and full49/40/53
+source expansion agree. Real copied I/O/Unicode/wrapper refusal omissions
+exit1 normal/O (11/2/8 defective outcomes); original three generator omissions
+still drift1 and two corrupted ledger controls refuse2. No source/index/mode
+mutation. Complete source-pinned repair capture appends to the LC0032 record;
+its published64688B prefix and all older archives/seals stay exact.
+Default historical population24/12 is retained normal/O; explicit extended
+source replay gives28/16, current working-code replay28/0. During preparation
+new cases changed the default population; restore its legacy boundary before publication.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/book-index-refusal/before-normal` rc=1: original16 wrong child outcomes; actual read/write/launch fault counts each1. Stack/branch evidence pins uncaught I/O/Unicode and lost actual generator verdict; source6bd4618.
+- [x] **ADDRESSED** — the same tracked working-code clean-verdict probe at after-normal/after-optimized rc=0: all28 observations expected,0 D73 defects, valid49 chapters/40 terms/53 full reads/index bytes exact. Three copied real refusal omissions each rc=1 normal/O; original three omissions and two ledger controls retain their named failures. D73 closed.
+- [x] **NO REGRESSION** — `bash target/live-containment/book-index-refusal/focused.sh` rc=0: focused12/sharder12/seven books; original six plus four new index controls normal/O. Full source/history/mode/cap inverses, whole normal/print teaching and literal clean replay pass; staged inverse and normal COMMIT required before next consumer.
+- [x] **LOCKSTEP** — current doctrine/registry/toolbox/book/task/CH/DEV/pointer align; LIVE changes only derived arm count1571→1575. No cap, processor/MCU/DSP/board or full graph/adoption qualification. promotion: declined (existing source-pinned consumer contract and its appended repair evidence own the lesson).
+
+##### .4i2b4b2 / SEMULITH-LC-0034 — qualify orientation and record indexes (pending)
+
+Qualify actual Knowledge Map and decision/knowledge/task index members,
+exclusions, failed inputs and independent omissions; reconcile D72 first.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 

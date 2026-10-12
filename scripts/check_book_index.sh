@@ -28,6 +28,20 @@ BOOK="docs/book"
 GLOSSARY="docs/GLOSSARY.md"
 OUT="docs/book/src/index.md"
 
+# Status1 denotes the generator's named drift verdict. Other failures cannot
+# establish drift: preserve refusal2, including failed launches and unknown exits.
+judge_generator() {
+  local rc="$1" output="$2"
+  [ "$rc" -eq 0 ] && return 0
+  printf '%s\n' "$output" >&2
+  if [ "$rc" -eq 1 ] && printf '%s\n' "$output" | grep -q '^gen_book_index: DRIFT — '; then
+    printf 'BOOK-INDEX: FAIL — %s is out of sync with the book. Regenerate — never edit:\n  python3 scripts/gen_book_index.py\n' "$OUT" >&2
+    return 1
+  fi
+  printf 'BOOK-INDEX: REFUSED — the generator cannot judge %s (exit%s).\n' "$OUT" "$rc" >&2
+  return 2
+}
+
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
 SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
 
@@ -104,6 +118,15 @@ self_test() {
         --out "$t/index.md" 2>&1)"; rc=$?
   arm "RED a missing SUMMARY.md is refused, naming it" "$rc" 2 "$out" "SUMMARY.md"
 
+  out="$(judge_generator 2 'gen_book_index: REFUSED — unreadable source' 2>&1)"; rc=$?
+  arm "RED typed generator refusal stays refusal2" "$rc" 2 "$out" "BOOK-INDEX: REFUSED"
+  out="$(judge_generator 1 'generator launch failed' 2>&1)"; rc=$?
+  arm "RED untyped launch failure is not drift" "$rc" 2 "$out" "BOOK-INDEX: REFUSED"
+  out="$(judge_generator 77 'unknown generator failure' 2>&1)"; rc=$?
+  arm "RED unknown generator status refuses" "$rc" 2 "$out" "BOOK-INDEX: REFUSED"
+  out="$(judge_generator 1 'gen_book_index: DRIFT — changed index' 2>&1)"; rc=$?
+  arm "RED named drift stays defect1" "$rc" 1 "$out" "BOOK-INDEX: FAIL"
+
   rm -rf "$t"
   printf 'BOOK-INDEX --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -123,12 +146,8 @@ self_test >/dev/null 2>&1 || {
 [ -f "$BOOK/src/SUMMARY.md" ] || { echo "BOOK-INDEX: ok (no project book yet)"; exit 0; }
 
 out="$(python3 scripts/gen_book_index.py --check --book "$BOOK" --glossary "$GLOSSARY" \
-      --out "$OUT" 2>&1)" || {
-  printf '%s\n' "$out" >&2
-  printf 'BOOK-INDEX: FAIL — %s is out of sync with the book. Regenerate — never edit:\n  python3 scripts/gen_book_index.py\n' \
-    "$OUT" >&2
-  exit 1
-}
+      --out "$OUT" 2>&1)"; rc=$?
+judge_generator "$rc" "$out" || exit $?
 terms="$(grep -c '^| ' "$OUT")"
 printf 'BOOK-INDEX: ok (%s matches the book, %s table rows)\n' "$OUT" "$((terms - 2))"
 exit 0

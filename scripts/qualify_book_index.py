@@ -30,6 +30,7 @@ require = C.require
 HOOK = '''import hashlib,json,os
 from pathlib import Path
 original=Path.read_text
+original_write=Path.write_text
 root=Path(os.environ['INDEX_FIXTURE'])
 trace=Path(os.environ['INDEX_TRACE'])
 calls={}
@@ -45,6 +46,22 @@ def observed(path,*args,**kwargs):
           'sha256':hashlib.sha256(value.encode()).hexdigest()})+'\\n')
     return value
 Path.read_text=observed
+def observed_write(path,*args,**kwargs):
+    name=path.absolute().relative_to(root).as_posix()
+    if name==os.environ.get('INDEX_WRITE_FAULT'):
+        with trace.open('a') as stream:stream.write(json.dumps({'write_fault':name})+'\\n')
+        raise OSError('LC0033 actual output write failure')
+    return original_write(path,*args,**kwargs)
+Path.write_text=observed_write
+'''
+
+LAUNCHER = '''#!/bin/bash
+if [ "${1:-}" = 'scripts/gen_book_index.py' ] && [ "${3:-}" = '--book' ] && [ "${4:-}" = 'docs/book' ]; then
+    printf '%s\\n' "$INDEX_LAUNCH_STATUS" >> "$INDEX_LAUNCH_LOG"
+    printf 'LC0033 controlled generator launch failure\\n' >&2
+    exit "$INDEX_LAUNCH_STATUS"
+fi
+exec "$INDEX_REAL_PYTHON" "$@"
 '''
 
 
@@ -124,7 +141,7 @@ def reconcile(output, trace, expected, declared, bodies):
                 'actual read content differs from immutable input')
 
 
-def run(command, fixture, output, label, hook, fault=None):
+def run(command, fixture, output, label, hook, fault=None, write_fault=None, launch_status=None):
     env = Q.environment()
     env.update(TMPDIR=str(output / 'tmp'), GIT_NO_LAZY_FETCH='1', GIT_OPTIONAL_LOCKS='0',
                GIT_DIR=str(ROOT / '.git'), GIT_WORK_TREE=str(fixture),
@@ -135,14 +152,25 @@ def run(command, fixture, output, label, hook, fault=None):
     if fault is not None:
         env['INDEX_READ_FAULT'], nth = fault
         env['INDEX_READ_FAULT_NTH'] = str(nth)
+    if write_fault is not None:
+        env['INDEX_WRITE_FAULT'] = write_fault
+    if launch_status is not None:
+        env.update(PATH=str(output / 'launcher') + os.pathsep + env['PATH'],
+                   INDEX_REAL_PYTHON=sys.executable, INDEX_LAUNCH_STATUS=str(launch_status),
+                   INDEX_LAUNCH_LOG=str(output / (label + '.launches')))
     result = subprocess.run(command, cwd=fixture, env=env, capture_output=True)
     (output / (label + '.stdout')).write_bytes(result.stdout)
     (output / (label + '.stderr')).write_bytes(result.stderr)
     trace = output / (label + '.reads.jsonl')
     reads = [json.loads(line) for line in trace.read_text().splitlines()] if trace.exists() else []
+    launches = output / (label + '.launches')
+    launched = launches.read_text().splitlines() if launches.exists() else []
+    require(launched == ([] if launch_status is None else [str(launch_status)]),
+            'actual generator launch injection count')
     return {'returncode': result.returncode, 'stdout_sha256': C.digest(result.stdout),
             'stderr_sha256': C.digest(result.stderr),
-            'traceback': b'Traceback (most recent call last)' in result.stderr}, reads
+            'traceback': b'Traceback (most recent call last)' in result.stderr,
+            'launch_faults': len(launched)}, reads
 
 
 def main():
@@ -151,6 +179,11 @@ def main():
     parser.add_argument('--addition', action='append', default=[])
     parser.add_argument('--working-code', action='store_true',
                         help='overlay only the actual generator/guard onto immutable book inputs')
+    parser.add_argument('--require-clean', action='store_true',
+                        help='exit1 if any measured child violates its expected verdict')
+    parser.add_argument('--extended', action='store_true',
+                        help='include LC0033 write/launch cases; implied by working-code')
+    parser.add_argument('--mutation', choices=['no-io-refusal', 'no-unicode-refusal', 'no-guard-refusal'])
     args = parser.parse_args()
     os.environ['GIT_NO_LAZY_FETCH'] = '1'
     try:
@@ -174,6 +207,16 @@ def main():
                 require(pin['mode'] == (0o755 if selected[name][0] == '100755' else 0o644),
                         'working code mode differs from reviewed source')
                 bodies[name] = (ROOT / name).read_bytes()
+        if args.mutation:
+            require(args.working_code, 'actual omissions require working-code inputs')
+            name = GUARD if args.mutation == 'no-guard-refusal' else GEN
+            old = ('judge_generator "$rc" "$out" || exit $?' if name == GUARD
+                   else 'except (Refusal, OSError, UnicodeError) as exc:')
+            new = {'no-io-refusal': 'except (Refusal, UnicodeError) as exc:',
+                   'no-unicode-refusal': 'except (Refusal, OSError) as exc:',
+                   'no-guard-refusal': 'if [ "$rc" -ne 0 ]; then printf "%s\\n" "$out" >&2; exit 1; fi'}[args.mutation]
+            require(bodies[name].count(old.encode()) == 1, 'unique actual refusal omission seam')
+            bodies[name] = bodies[name].replace(old.encode(), new.encode(), 1)
         declared, vocabulary = chapters(bodies), terms(bodies)
         expected, ledger = expected_rows(bodies, declared, vocabulary)
         output.mkdir(parents=True)
@@ -187,6 +230,10 @@ def main():
         hook = output / 'hook'
         hook.mkdir()
         (hook / 'sitecustomize.py').write_text(HOOK)
+        launcher = output / 'launcher'
+        launcher.mkdir()
+        (launcher / 'python3').write_text(LAUNCHER)
+        (launcher / 'python3').chmod(0o755)
         python = [sys.executable, *(['-O'] if sys.flags.optimize else [])]
         commands = {'generator': python + [GEN, '--check'], 'guard': ['bash', GUARD]}
         results = {}
@@ -200,6 +247,8 @@ def main():
         mutations = ['stale-index', 'missing-chapter', 'missing-summary', 'missing-glossary',
                      'missing-acronyms', 'invalid-chapter-utf8', 'invalid-summary-utf8', 'read-fault',
                      'read-summary-fault', 'read-glossary-fault', 'read-acronyms-fault', 'read-index-fault']
+        if args.extended or args.working_code:
+            mutations.extend(['write-fault', 'launch-fault-1', 'launch-fault-2', 'launch-fault-77'])
         observations = []
         first = declared[0]['path']
         fault_sites = {'read-fault': (first, 1), 'read-summary-fault': (BOOK + '/src/SUMMARY.md', 1),
@@ -222,13 +271,22 @@ def main():
                 path.write_bytes(original + b'\nchanged generated receipt\n')
             try:
                 for interface, command in commands.items():
+                    if mode == 'write-fault':
+                        if interface != 'generator':
+                            continue
+                        command = python + [GEN]
+                    if mode.startswith('launch-fault-') and interface != 'guard':
+                        continue
                     result, trace = run(command, fixture, output, mode + '-' + interface, hook,
-                                        fault_sites.get(mode))
+                                        fault_sites.get(mode), OUT if mode == 'write-fault' else None,
+                                        int(mode.rsplit('-', 1)[1]) if mode.startswith('launch-fault-') else None)
                     faults = sum('fault' in item for item in trace)
                     require(faults == (1 if mode in fault_sites else 0), 'actual read fault injection count')
+                    writes = sum('write_fault' in item for item in trace)
+                    require(writes == (1 if mode == 'write-fault' else 0), 'actual write fault injection count')
                     observations.append({'case': mode, 'interface': interface,
                                          'expected_returncode': 1 if mode == 'stale-index' else 2,
-                                         'fault_reads': faults, **result})
+                                         'fault_reads': faults, 'fault_writes': writes, **result})
             finally:
                 path.write_bytes(original)
         omissions = []
@@ -272,12 +330,17 @@ def main():
                                      or r['traceback']],
                   'omissions': omissions, 'ledger_controls': controls,
                   'mode': 'optimized' if sys.flags.optimize else 'normal'}
+        result['mutation'] = args.mutation
         Q.write_json(output / 'result.json', result)
         summary = {k: result[k] for k in ['source', 'source_members', 'input_files', 'code_source',
                    'mode', 'include_expansion', 'source_defects', 'ledger_controls']}
         summary.update(chapters=len(declared), terms=len(vocabulary), observations=len(observations),
                        actual_omissions=len(omissions))
         print(json.dumps(summary, sort_keys=True))
+        if args.require_clean and result['source_defects']:
+            print('BOOK-INDEX-CONSUMER: FAIL — ' + str(len(result['source_defects']))
+                  + ' child verdict defect(s)', file=sys.stderr)
+            return 1
         return 0
     except (C.Q.Refused, C.U.BookRefused, OSError, UnicodeError, ValueError, KeyError, TypeError, IndexError) as exc:
         print('BOOK-INDEX-CONSUMER: REFUSED — ' + str(exc), file=sys.stderr)

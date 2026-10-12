@@ -62,10 +62,10 @@ cat KNOWLEDGE_MAP.md
 
 The term index scans raw SUMMARY chapters, glossary terms and acronyms.
 It excludes glossary/index discussion hits; includes stay unexpanded.
-Exit0 below means measurement complete, including D73 failures:
+D73 is fixed: unreadable inputs refuse2. Check the actual repaired commands:
 
 ```sh
-python3 scripts/qualify_book_index.py --output target/live-containment/book-index-replay/book
+python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/book-index-replay/current
 ```
 
 ### Decision navigation and the record it opens

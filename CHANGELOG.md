@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0033 (leaf LIVE-CONTAINMENT.4) — preserve public index input refusal
+
+- Fix D73: generator I/O/Unicode failures and failed/unknown launches refuse2; only named index drift stays1. All16 original wrong outcomes per mode become0 across28 observations; valid index bytes and49/40/53 source expansion remain exact. Three real refusal omissions discriminate normal/O.
+- Retain six original controls; four new verdict controls pass, global arms re-derived1575. Append repair evidence without changing the published LC0032 prefix; preserve full source/history/mode/cap inverses, focused/seven-book/rendered/literal checks. CPU/MCU/DSP/board and full graph/adoption qualification unchanged; orientation/record indexes follow COMMIT.
+
 ## SEMULITH-LC-0032 (leaf LIVE-CONTAINMENT.4) — qualify the project-book index consumer
 
 - Replay all1443 immutable identities;54 fixture inputs,49 chapters/40 terms and53 actual full source reads agree with independent expansion normal/O. Both public baselines pass; three copied generator omissions and two damaged-ledger controls discriminate.
@@ -423,14 +428,4 @@
 
 - Replace state header/mstatus encoding-header assertions with public chapter layouts and RV64 Figure7; preserve full two-span source inverse and all field/reset/policy/census bytes.
 - Published stale state/definition/report controls reject; regeneration changes only three input hashes and the dossier fingerprint. Rust173/17/253, focused15/six books/invariants pass; frozen114/114, runtime/registry/history/LIVE unchanged.
-
-## SEMULITH-P4-0195 (leaf P4-SYSTEM.14) — ground privilege and wait-state rationales
-
-- Ground unchanged privilege constants and FP/wait policies in authenticated published requirements/diagrams; remove internal/default rationale, stale decode/fixture comments and wait-book70/114 count.
-- Preserve executable expressions and exact comment/one-why/generated inverses; stale state/definition/report checks reject before regeneration; GS changes only its dossier fingerprint. Rust173/17/253, focused15/six books/invariants pass; frozen114/114, registry/history/LIVE unchanged.
-
-## SEMULITH-P4-0194 (leaf P4-SYSTEM.14) — contain completed contract and append histories
-
-- Preserve76064B of closed-.13 receipts in archive12 with complete117546B source inverse; retain live task graph/.14/frontier and fix the book census route. Six damaged task/journal controls refuse.
-- Publish eight whole DEV and22CHANGELOG entries to0234/0235, with ordered byte inverses and dry-run parity; sharder12/0, focused9/six books/verifier pass. All prior history/code/data/LIVE and fixed caps remain exact.
 

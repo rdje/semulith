@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — preserve public index refusal boundaries (LIVE-CONTAINMENT.4i2b4b1r)
+
+D73 root cause was measured through both actual public commands before repair:
+five read classes, one output write and three failed-launch statuses expose16
+wrong outcomes across28 observations per mode; invalid source UTF-8 is included.
+Tracked qualify_book_index.py's --require-clean exits1 on that complete before
+measurement. Each actual fault injects exactly once; source/index/modes stay exact.
+
+Move emission/comparison behind gen_book_index.py's complete public boundary:
+Refusal/OSError/UnicodeError become named exit2 without traceback. Preserve all
+rendering/terms/chapter functions and valid output bytes. The actual shell branch
+uses judge_generator: only named drift1 stays1, all unjudgeable/nonzero unknown
+results refuse2. Ten shell controls retain the original six and add typed2,
+untyped1, unknown77 and named-drift1 verdict controls. DERIVED-COUNTS enumerates
+1575 arms; no new doctrine. Current raw-source index scope is explicit in registry,
+doctrine mirrors, toolbox and book; chapter truth/include expansion unclaimed.
+
+Before→after normal/O:16 defective outcomes→0, clean-selector1→0, valid baselines
+and complete49 chapters/40 terms/53 actual full source reads exact. Actual copied
+I/O/Unicode/wrapper refusal omissions return1 with11/2/8 bad outcomes per mode;
+the old three generator omissions still drift1 and two damaged ledgers refuse2.
+Default historical24/12 is retained; working-code implies extended28/0.
+The explicit extended immutable replay is28/16; both legacy/current modes pass.
+The real worktree/index never changes during measurements. Complete matrices/code
+pins/inverse seams append to the LC0032 artifact; every published prefix byte and
+older archive/seal stays exact. Whole old live entries/order roll only via the
+published sharder, with joint receipt-mutation refusals. Original live book rows
+are copied/authenticated before updating current prose. No cap or CPU/MCU/DSP/
+board/full-adoption qualification changes. Focused12/sharder12/seven books,
+normal/print/literal, staged inverse and normal hooks qualify publication.
+
+Lesson promotion: declined — the existing source-pinned reader contract and its
+appended repair record retain root cause, refusal behavior and every control.
+
 ## _(2026-10-12)_ — qualify the project-book index consumer (LIVE-CONTAINMENT.4i2b4b1)
 
 Tracked qualify_book_index.py replays source32f9c31/1443 identities through
