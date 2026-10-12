@@ -34,6 +34,7 @@
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || exit 2
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
 command -v python3 >/dev/null 2>&1 || {
@@ -41,8 +42,20 @@ command -v python3 >/dev/null 2>&1 || {
 
 # $1 = repo-ish root holding the routes tsv, the tasks dir and the live docs.
 check_claims() {
-python3 - "$1" "$2" "$3" <<'PY'
+python3 - "$1" "$2" "$3" "$SOURCE_DIR" <<'PY'
 import re, sys, pathlib
+sys.path.insert(0, sys.argv[4])
+try:
+    from task_source import TaskSourceError, read_task
+except ImportError as error:
+    print("UNAVAILABLE TASK READER " + str(error)); print("__CHECKED__ 0"); sys.exit(2)
+
+
+def task_source(path):
+    try:
+        return read_task(path)
+    except TaskSourceError as error:
+        print("UNAVAILABLE TASK SOURCE " + str(error)); print("__CHECKED__ 0"); sys.exit(2)
 
 root      = pathlib.Path(sys.argv[1])
 routes    = root / sys.argv[2]
@@ -68,25 +81,8 @@ if not live:
 
 # ---------------------------------------------------------------- the trees are the source
 def parse_tree(path):
-    t = path.read_text(); lines = t.splitlines()
-    status = None
-    ms = re.search(r"^- Status:\s*(.+)$", t, re.M)
-    if ms:
-        tk = re.findall(r"`([^`]+)`", ms.group(1))
-        status = tk[0] if tk else ms.group(1).strip()
-    leaves = {}
-    for i, ln in enumerate(lines):
-        mi = re.match(r"^- ID:\s*`([A-Za-z0-9._-]+\.\d+)`", ln)
-        if not mi:
-            continue
-        st = None
-        for ln2 in lines[i + 1 : i + 8]:
-            if re.match(r"^- ID:\s*`", ln2):
-                break
-            m2 = re.search(r"^\s*Status:\s*`([a-z_]+)`", ln2)
-            if m2:
-                st = m2.group(1); break
-        leaves[mi.group(1)] = st
+    facts = task_source(path)
+    status, leaves, lines = facts.status, facts.leaves, facts.text.splitlines()
     nxt = None
     inside = False
     for ln in lines:
@@ -112,7 +108,8 @@ if not trees:
     print(f"NO TREES   {tasks_dir} yields no task-trees — cannot judge")
     print("__CHECKED__ 0"); sys.exit(2)
 
-TREEREF  = re.compile(r"`(?P<id>[A-Z][A-Za-z0-9-]*)`|\(?[^()]*tasks/(?P<id2>[A-Za-z0-9._-]+)\.md\)")
+TREEREF  = re.compile(r"\[[^\]\n]+\]\((?:docs/)?tasks/(?P<id2>[A-Za-z0-9._-]+)\.md\)|`(?P<id>[A-Z][A-Za-z0-9-]*)`")
+LEADING_RATIO = re.compile(r"^[ \t]*(?:[—–-][ \t]*)?\(?(?P<a>\d+)\s*/\s*(?P<b>\d+)(?=$|[\s;,):—–|])")
 A_OF_B   = re.compile(r"(?P<a>\d+)\s+of\s+(?P<b>\d+)\s+leaves?\b")
 B_ONLY   = re.compile(r"(?<![\w/])(?P<b>\d+)\s+leaves?\b")
 LEAFREF  = re.compile(r"`(?P<leaf>[A-Za-z0-9._-]+\.\d+)`")
@@ -138,6 +135,17 @@ for rel in live:
     for line in path.read_text().splitlines():
         # 1. COUNT ---------------------------------------------------------------
         spans = []
+        for reference in TREEREF.finditer(line):
+            tree = reference.group("id") or reference.group("id2")
+            ratio = LEADING_RATIO.match(line[reference.end():])
+            if tree not in trees or ratio is None:
+                continue
+            _, leaves, _ = trees[tree]
+            real = (sum(status == "done" for status in leaves.values()), len(leaves))
+            if (int(ratio["a"]), int(ratio["b"])) != real:
+                findings.append(
+                    f"COUNT DRIFT {rel}: '{ratio.group(0).strip()}' for {tree}; "
+                    f"the tree has {real[0]} of {real[1]}")
         for m in A_OF_B.finditer(line):
             spans.append((m.start(), m.end()))
             t = tree_at(line, m.start())
@@ -291,6 +299,151 @@ EOF
   routes; rm -f "$t/tasks/ALPHA.md";                        arm "REFUSE no trees to check against" 2 "NO TREES"
   tree ALPHA active pending pending 1
   rm -f "$t/r.tsv";                                         arm "REFUSE the routes registry is gone" 2 "NO ROUTES"
+
+
+  # Shared-source qualification. Original controls above remain verbatim.
+  source_edit() {
+    argc 2 "$#" source_edit || return
+    python3 - "$t/tasks/ALPHA.md" "$1" "$2" <<'SOURCE_EDIT'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1]); text = p.read_text()
+if text.count(sys.argv[2]) != 1:
+    raise ValueError("source fixture seam")
+p.write_text(text.replace(sys.argv[2], sys.argv[3], 1))
+SOURCE_EDIT
+    local source_rc=$?
+    if [ "$source_rc" -ne 0 ]; then
+      fail=$((fail+1)); printf 'source fixture edit failed rc=%s\n' "$source_rc" >&2
+      return "$source_rc"
+    fi
+  }
+  archive_fixture() {
+    argc 0 "$#" archive_fixture || return
+    mkdir -p "$t/tasks/archive"
+    cat > "$t/tasks/ALPHA.md" <<'ARCHIVED_ROOT'
+# ALPHA
+- Tree ID: `ALPHA`
+- Status: `active`
+_Leaves `.1`–`.1` (done `2026-10-01`) — live in [archive](archive/ALPHA.md)._
+- ID: `ALPHA.2`
+  Status: `pending`
+## Current Frontier
+| Order | Leaf | Status | Why next |
+| --- | --- | --- | --- |
+| 1 | `ALPHA.2` | `pending` | next |
+ARCHIVED_ROOT
+    printf '%s\n' '- ID: `ALPHA.1`' '  Status: `done`' > "$t/tasks/archive/ALPHA.md"
+  }
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  source_edit 'Status: `done`' 'Status: **done**'
+  arm "GREEN bold source status" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  source_edit 'Status: `done`' 'Status: `slice-gated`'
+  doc '`ALPHA` 0 of 2 leaves'
+  arm "GREEN conditional source is not completed" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  source_edit 'Status: `done`' 'Status: `invented`'
+  arm "REFUSE unknown source status" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  source_edit 'Status: `done`' 'Missing: `done`'
+  arm "REFUSE missing source status" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  printf '%s\n' '- ID: `ALPHA.1`' '  Status: `done`' >> "$t/tasks/ALPHA.md"
+  arm "REFUSE duplicate source ID" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  source_edit 'Status: `done`' $'Status: `done`\n  Status: `pending`'
+  arm "REFUSE duplicate leaf status" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  printf '%s\n' '- Status: `active`' >> "$t/tasks/ALPHA.md"
+  arm "REFUSE duplicate root status" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  printf '\377' > "$t/tasks/ALPHA.md"
+  arm "REFUSE invalid UTF8 task source" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  arm "GREEN checked whole archived range" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  rm -f "$t/tasks/archive/ALPHA.md"
+  arm "REFUSE missing archive" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  printf '%s\n' '- ID: `ALPHA.1`' '  Status: `pending`' > "$t/tasks/archive/ALPHA.md"
+  arm "REFUSE archive is not completed" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  printf '%s\n' '- ID: `ALPHA.3`' '  Status: `done`' > "$t/tasks/archive/ALPHA.md"
+  arm "REFUSE archive has wrong population" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  printf '%s\n' '- ID: `ALPHA.1`' '  Status: `done`' >> "$t/tasks/ALPHA.md"
+  arm "REFUSE root archive overlap" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  printf '%s\n' '_Leaves `.1`–`.1` (done `2026-10-01`) — live in [archive](archive/ALPHA.md)._' >> "$t/tasks/ALPHA.md"
+  arm "REFUSE repeated archive declaration" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  source_edit 'archive/ALPHA.md' 'archive/../ALPHA.md'
+  arm "REFUSE unsafe archive locator" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  archive_fixture
+  source_edit '_Leaves' '_Leaves unsupported'
+  arm "REFUSE unsupported archive declaration" 2 "UNAVAILABLE TASK SOURCE"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '`ALPHA` 1/2'
+  arm "GREEN leading progress ratio" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '`ALPHA` 0/2'
+  arm "RED leading completed ratio drifts" 1 "COUNT DRIFT"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '`ALPHA` — (1/3)'
+  arm "RED leading total ratio drifts" 1 "COUNT DRIFT"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '`ALPHA` 1/2; instructions52/52'
+  arm "GREEN later instruction ratio excluded" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '`ALPHA` instructions52/52'
+  arm "GREEN labeled instruction ratio excluded" 0 "__CHECKED__"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  doc '[`ALPHA`](tasks/ALPHA.md) 0/2'
+  arm "RED Markdown tree link ratio drifts" 1 "COUNT DRIFT"
+
+  routes; tree ALPHA active done pending 2; doc '`ALPHA` 1 of 2 leaves'
+  tree BETA proposed pending pending 1
+  doc '`ALPHA` 1/2; `BETA` 0/2'
+  arm "GREEN each leading ratio binds to its own tree" 0 "__CHECKED__"
+  doc '`ALPHA` 1/2; `BETA` 1/2'
+  arm "RED second tree leading ratio drifts" 1 "COUNT DRIFT"
+  rm -f "$t/tasks/BETA.md"
+
+  archive_fixture
+  mv "$t/tasks/archive" "$t/archive-source"
+  ln -s "$t/archive-source" "$t/tasks/archive"
+  arm "REFUSE linked archive directory" 2 "UNAVAILABLE TASK SOURCE"
 
   rm -rf "$t"
   printf 'TREE-CLAIMS --self-test: %d pass / %d fail\n' "$pass" "$fail"

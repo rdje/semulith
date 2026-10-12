@@ -10,9 +10,9 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/check_delivery_provenance.sh` | has a delivered file drifted from the bytes we were given, and is every manifest row's treatment declared? | `scripts/check_delivery_provenance.sh` |
 | `scripts/check_fixture_fingerprints.sh` | does every pinned `sha256` still describe the file it names? | `scripts/check_fixture_fingerprints.sh` |
 | `scripts/check_readme_routes.sh` | are routed destinations governed and bounded; do reads refuse unavailable evidence and registry rows reject bad arity, paths or numeric limits? | `scripts/check_readme_routes.sh` |
-| `scripts/check_frontier_sync.sh` | does the task-tree index still name the leaf the tree itself calls next? | `scripts/check_frontier_sync.sh` |
+| `scripts/check_frontier_sync.sh` | do index/register facts agree with validated task sources, including annotated counts? | `bash scripts/check_frontier_sync.sh`; `--self-test`:41 controls; shares `scripts/task_source.py` |
 | `scripts/check_registry_mirror.sh` | do the doctrine documents still list exactly the doctrines that are registered? | `scripts/check_registry_mirror.sh` |
-| `scripts/check_tree_claims.sh` | does a live document state a leaf count, an active tree or a frontier leaf the trees contradict? | `scripts/check_tree_claims.sh` |
+| `scripts/check_tree_claims.sh` | do live explicit/leading-ratio counts and pointers agree with validated task sources? | `bash scripts/check_tree_claims.sh`; `--self-test`:38 controls; shares `scripts/task_source.py` |
 | `scripts/check_derived_counts.sh --list` | which counts in the live docs are re-derived, by what command, and what do they currently come to? | `scripts/check_derived_counts.sh [--list]` |
 | `scripts/check_fact_ownership.sh` | does the fact-ownership registry hold — one owner per kind, every mirror governed, every restatement registered? | `scripts/check_fact_ownership.sh [--self-test]` (FACT-OWNERSHIP doctrine; registry: `doctrine/fact_ownership.tsv`) |
 | `scripts/check_push_cadence.sh` | may this push happen now, or is it exceptional and awaiting the director? | `scripts/check_push_cadence.sh [--status \| --gate \| --self-test]` |

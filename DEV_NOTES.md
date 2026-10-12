@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — validate shared task-source and progress consumers (LIVE-CONTAINMENT.4i2b2b)
+
+D59 came from duplicated narrow parsers in TREE-CLAIMS/FRONTIER-SYNC: backtick
+statuses only and no explicit whole archived range. LC0025 measured truthful
+bold/archive counts rejected1, unknown statuses accepted0; LC0024 measured a
+stale leading bare ratio accepted0. D64 required the closing parenthesis right
+after complete, skipping actual semicolon-annotated closed counts. The same
+isolated twelve public cases/mode now return desired0/1/2 on both interfaces.
+
+New task_source.py supplies known UTF-8 backtick/bold statuses, duplicate ID/
+status refusal and actual disjoint completed archived populations. Missing,
+unsafe, unsupported and unavailable sources refuse2. Numeric declarations are
+the explicit contract; heading-based nested work and arbitrary Markdown are
+not silently counted. Metadata binds to the filename when declared; legacy
+synthetic fixtures without Tree ID retain filename binding. Regular files and
+archive directory components prevent symlink traversal. Both actual consumers
+use this one decoder; the historical immutable qualifier remains independent.
+
+Leading A/B immediately follows a known tree code/link ID, with optional dash/
+opening parenthesis. Each reference binds its own count; later bare instruction
+or observation ratios are excluded. FRONTIER checks semicolon/comma-annotated
+completed counts and every recognized count in a cell. Prior13/20 controls are
+retained byte-for-byte;17 new source controls per guard and8/4 progress controls
+give38/41, normal/O. Eleven actual predicate omissions across38 consumer/mode
+cases yield named selftest1/default2. Eight actual public root/archive read
+failures each inject once and refuse2/no stdout after default selftests pass.
+
+Separate LC0025 decoder agrees on33 roots/34 source pins/205 declarations:164 done,36 pending,
+2 proposed,2 active,1 slice-gated. Both real interfaces pass0; complete original
+guard/control inverses hold. Re-derived39 doctrines/1565 arms; only the arm
+count changes in LIVE. Book proposals above the fixed cap were refused; known-
+tree-ID wording avoids a measured29B lexical Oracle topic hit, and regenerated
+index remains exact. Three runnable commands retain historical assessment.
+Whole old CH/DEV entries and published archives/modes are preserved; focused/
+seven-book/rendered/source/history checks and normal hooks qualify completion.
+The decoders share explicit grammar; this is not independent semantic proof.
+No Rust, CPU/MCU/DSP/board semantics, qualification, milestone or cap changes.
+
 ## _(2026-10-12)_ — preserve whole closed task units (LIVE-CONTAINMENT.4i2b2h)
 
 The live root reached130973B against131072B before the next source/consumer
@@ -642,40 +680,4 @@ receipt changes with updated digests refuse jointly. Book520841/524288B,
 51files; no fixed cap or feature/status change. Full hooks and COMMIT apply.
 
 promotion: declined (existing exact-history rules; measured unit evidence remains in P4-SYSTEM.14 a42l1).
-
-## _(2026-10-11)_ — measure staged ordinary-history protection (P4-SYSTEM.14 a42k)
-
-D49 measured on505dd74: unchanged complete doctrine enforcer accepts proposed
-part18 receipt3196→3197 (gate0/all doctrines green). Actual file stays33982B/
-9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59;
-proposed SHAedbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
-This single staged-receipt counterexample refutes publishing protection for that
-case; it is not a claim that every integrity check is absent. Original12 sealed
-reader/descriptor/manifest/terminal and all real ordinary parts stay unchanged.
-
-First-class task_archive_gate_probe.py creates one local Git object and isolated
-on-volume proposed index. Git facade delegates real commands, resolves published
-global-C/-c and --absolute-git-dir owner, scopes index reads to this checkout;
-existing child fixture repositories keep their own index. Failed/stderr/empty
-context and unsupported globals refuse, status/stderr preserved.8positives
-normal/O; unscoped/missing/discovery omissions2/1/3 failures, zero errors.
-Explicit runtime guards survive optimization, output parent/device checked
-before creation; no global index override in the enforcer environment.
-
-243scoped reads/115delegations/no refusal; real index and1387working identities
-unchanged, proposed index exact, owned index residue0. Independent module/index/
-real-source postchecks exact. Measurement instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
-No real index replacement, damaged commit, other-project write, network or
-submodule implementation inspection. Tool exit0 means measurement complete;
-result gate_rc is the actual verdict. New-output replay command is in the book;
-actual run used assessment. Preserve original current teaching rules/historical
-receipts/commands; toolbox routes reproducible diagnostics. Focused/books/source/
-history/scope and full COMMIT protect the classification unit. No Rust/fullCI or
-push, canonical/CPU/qualification/LIVE unchanged. D49 remains open and priority1
-a42l owns its working/index preservation repair immediately after this commit.
-Final focused12/sharder12/seven books/3212fresh+actual links/normal+print;
-99old entries/complete heads and1378protected files/modes/Gitlinks exact normal/O.
-Whole DEV3183B→0276/CH647B→0277,69live+210sealed279logical, receipt+digest edits
-refuse. Book -8B/family524277 of524288; fixed caps and original archives unchanged.
-promotion: declined (bounded counterexample and instrument controls stay in the owning leaf; next repair is explicitly priority1).
 

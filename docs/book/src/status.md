@@ -1,22 +1,24 @@
 # Current status
 
-Included from authoritative `LIVE_STATUS.md` at build time:
+Authority: `LIVE_STATUS.md` (included below).
 
 {{#include ../../../LIVE_STATUS.md}}
 
 ## Reading progress
 
-`Done` means work verified and committed; gate verdicts (`passed`, `failed`,
-`incomplete`) are separate evidence. Composition closure qualifies no processor/board.
+Work closure (`Done`) and gate verdicts differ. Composition closure qualifies
+no processor/board; slice-gated is conditional.
 
-Use explicit `A of B leaves` beside a task-tree link. Bare ratios and incomplete
-source decoding await D59/D64 repair. The immutable source assessment checks
-bold statuses and actual archived declarations; slice-gated is conditional, not done:
+Use `A of B leaves`, `B leaves`, or leading `A/B` after a known tree ID
+(optional dash/parenthesis). Later bare ratios are excluded. Guards validate
+backtick/bold statuses and whole archived ranges. Bad source refuses2; drift
+fails1. Closed counts allow semicolon/comma annotations. Syntax is finite.
 
 ```sh
+bash scripts/check_tree_claims.sh
+bash scripts/check_frontier_sync.sh
 python3 scripts/qualify_task_claim_inputs.py
 ```
 
-Details: `docs/tasks/artifacts/live-containment/task-claims.md`.
-Task/evidence routes: `docs/TASK_TREE.md`; decisions: `docs/decisions/`;
-changes: `CHANGELOG.md` and Git.
+Last command: historical assessment (`docs/tasks/artifacts/live-containment/task-claims.md`).
+Routes: `docs/TASK_TREE.md`, `docs/decisions/`, `CHANGELOG.md`, Git.

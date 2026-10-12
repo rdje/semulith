@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b2b D59/D64 code repair; then graph reader review |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b transitive reader/index/query/generated-expansion review |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -653,9 +653,81 @@ code repair is next after clean COMMIT. No processor/MCU/DSP/board behavior chan
 
 #### .4i2b2b — repair qualified task source and mirrored progress
 
-Status: pending after .4i2b2a COMMIT. Implement only the measured producer/
-consumer repairs, with shared typed source decoding where appropriate; qualify
-all actual affected consumers before integration. Correct independently proven
+Status: complete; SEMULITH-LC-0027. Owned on cleanca9f0c8 after LC0026
+normal hooks, exact nine-file postcheck, brief0 and host handoff0. Repair D59
+and D64 through one explicit task-source reader used by both public guards:
+known backtick/bold statuses, checked whole archived ranges, uniqueness and
+unavailable/malformed source refusal2. Preserve the original control blocks.
+Add only a leading progress ratio immediately after a known tree reference,
+optionally separated by a dash or opening parenthesis; later instruction or
+observation ratios remain outside that grammar. Bind each count to its own
+nearest preceding tree. FRONTIER-SYNC must check parenthesized completed
+counts followed by semicolon/comma annotations as well as closing parentheses.
+Qualify actual source205 declarations, both public interfaces, source failures,
+finite positive/negative/omission controls normal/O and unchanged history.
+No universal Markdown, full graph or processor qualification claim.
+
+Implemented: shared scripts/task_source.py reads regular UTF-8 sources once,
+known backtick/bold statuses, unique declared IDs/statuses and explicit whole
+archived ranges with actual completed/disjoint populations. Missing/malformed/
+unavailable inputs refuse2; no summary-only archive completion. Archive paths
+are normalized relative locators, with regular files/directory components;
+no symlink traversal. Source metadata is checked when declared; legacy numeric
+fixtures without a Tree ID retain filename binding. The source grammar covers
+numeric declarations, not every heading-based nested activity.
+
+Seventeen new source controls per consumer plus eight leading-ratio/four
+annotated-count controls retain every original13/20 control. Current38/41 pass
+normal/O. All recognized counts in an index cell are checked, including a
+second false count after a truthful first. Ratios immediately after separate
+known tree references bind independently; later instruction/observation ratios
+remain excluded. Both actual public baselines0 and the same12 isolated cases/
+mode agree with desired verdicts. Eleven actual predicate omissions produce38
+consumer/mode discriminators (named selftest1 and default2). Eight actual root/
+archive read failures each inject once, refuse2/no stdout after selftests pass.
+Separate immutable LC0025 decoder agrees on33 roots/34 sources/205 declarations:164 done,
+36 pending,2 proposed,2 active,1 conditional. The old guard/control inverses
+are complete. Only these two imports use the new reader; neither is in the
+scaffold updater's published NEUTRAL copy list; the module is project-owned.
+
+Book proposals exceeding the unchanged aggregate cap were refused before
+writing book bytes. Final teaching retains the historical command and adds both
+live commands. The index generator initially found a29B Oracle/reference link
+from the generic word reference; precise known-tree-ID wording removes that
+lexical false topic hit. Regeneration now agrees byte-for-byte; no index edit.
+D59/D64 are repaired. Full source/guard/control/book/tool/doctrine/task/pointer
+inverses,1411 protected files/modes and opaque Gitlink,105 old history entries
+and earlier archives/seals are exact normal/O. DEV2622B/one whole entry→0299/
+2855B/SHAed596ff1cf24c437d3a293a9d4e540734f90f6141e2a1ccaff5389b85259bfce;
+CH remains unsharded. Two old receipt, one moved-receipt+digest and one
+published-receipt+digest controls refuse jointly. Focused12/sharder12/seven
+books/3242 actual links,21 normal/print Foundation rows, complete current
+explanation and three literal commands pass. Scaffold24 controls normal/O
+pass. Re-derived1565 arms; all other LIVE bytes and milestones stay exact.
+Book +67B→524272B, generated index exact, fixed caps unchanged.
+The separate decoder shares the explicit source grammar; this is structural
+reconciliation and finite discrimination, not independent semantic/oracle proof.
+Normal hooks/postcheck/brief0 and host handoff complete this unit; next is
+.4i2b transitive reader/index/query/generated-expansion review. Full graph/
+adoption and processor qualification remain open.
+
+Qualified code SHA256 (same bytes used by public/omission/read-fault runs):
+- scripts/task_source.py:817c110bafb8da93c67e8367d54f09b81dd97fed0e95807d71964c5050d7bdf3
+- scripts/check_tree_claims.sh:7db60abdcee6c7d031cc562d6091fcf8734c3d19ab743c0e92997ff6d9bfafc3
+- scripts/check_frontier_sync.sh:6838534c65ff95c6d5b1b6e64e4c7ea6cea42e6b44a60c6776dea2c1acd2ffd2
+Eleven copied omissions: bold alternative, known-status membership, duplicate
+ID, unique status, archive population/completion/overlap, directory lstat,
+leading-ratio loop, annotated-count lookahead and every-count loop. Eight
+shared-reader omissions exercise both consumers; three loop/lookahead
+omissions exercise their own consumer, all normal/O:19 per mode,38 total.
+Each copied selftest fails1 with its named control; default refuses2. The durable
+38/41 controls remain embedded in the two public scripts. Final inverse checks
+caught two scratch defects: colliding governance.md capture basenames and an
+unanchored frontier phrase repeated in the completion receipt. Read the two
+separate immutable Git objects and anchor the whole frontier row; complete
+scoped row/source inverses now pass normal/O. No project source was affected. Raw diagnostic copies
+and outputs are under target/live-containment/task-source-repair; historical
+retention/replay of those ignored aids is not promised. Correct independently proven
 stale live/index projections without changing task source to fit a mirror.
 Preserve archive immutability, source failure refusals, original controls and
 non-task ratios; add discriminator/omission controls normal/O. Reconcile book,
@@ -849,6 +921,26 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 ## Blockers
 
 - None.
+
+## Acceptance Checklist (current code unit — LIVE-CONTAINMENT.4i2b2b)
+
+- [x] **ROOT CAUSE** — LC0025 public.py rc=0 measured D59 bold/archive
+  false breaches1 and unknown-status false greens0; D64 annotated false count0.
+  LC0024 source/public census rc=0 measured the stale bare progress ratio0.
+  Duplicated source parsers accepted only backticks; closed regex required an
+  immediate closing parenthesis. Source205 declarations/34 pins reconcile.
+- [x] **ADDRESSED** — TREE-CLAIMS --self-test:38 pass /0 fail;
+  FRONTIER-SYNC --self-test:41 pass /0 fail, normal/O. Same12 public cases/mode
+  now return desired0/1/2; eleven actual predicate omissions across38 consumer/
+  mode cases give named selftest1/default2. Eight actual read-fault cases
+  refuse2/no stdout, exactly one injection each; default selftests passed.
+- [x] **NO REGRESSION** — focused12/sharder12/seven books rc=0;
+  rendered.py rc=0 normal/O:3242 links,21 complete Foundation table rows and
+  three literal commands pass. verify.py/history.py/check-source.py rc=0:
+  whole inverses,105 old entries/1411 protected files/modes/Gitlink exact.
+  Scaffold24 normal/O pass; Rust/profile/canonical/frozen/archive scope exact.
+  promotion: declined (the shared explicit reader and both guarded consumers
+  own the repair; no new cross-cutting policy or general Markdown claim).
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
 
@@ -1053,6 +1145,12 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b2b: D59/D64 repaired; original13/20 controls retained,38/41 normal/O;
+12 public cases/mode,11 actual omissions/38 cases and eight real read faults
+qualify.105 old entries/1411 protected/Gitlink and full source inverses exact;
+focused12/seven books/3242 links/21 Foundation rows/three literal commands and
+scaffold24 normal/O pass. Derived1565 arms; other LIVE/caps/CPU unchanged.
+
 .4i2b2h: eleven whole units47486B/684LF retained with11 native anchor links;
 1413 protected files/Gitlink/106 old entries and whole source inverses exact.
 Focused12/seven books/3242 links/11 literal reads/normal+print pass; normal/O
@@ -1233,6 +1331,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0027 (leaf LIVE-CONTAINMENT.4): validate task sources before progress claims` — D59/D64 fixed; .4i2b reader review next.
 
 `SEMULITH-LC-0026 (leaf LIVE-CONTAINMENT.4): retain whole closed task units` — .4i2b2h complete; D59/D64 code repair next.
 

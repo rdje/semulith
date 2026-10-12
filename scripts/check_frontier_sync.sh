@@ -39,6 +39,7 @@
 # CONTRACT: exit code is the verdict; explains on stderr; deterministic; read-only; no network.
 #   --self-test   run the RED/GREEN controls against synthetic fixtures and exit.
 set -uo pipefail
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || exit 2
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 
 command -v python3 >/dev/null 2>&1 || {
@@ -46,8 +47,20 @@ command -v python3 >/dev/null 2>&1 || {
 
 # $1 = a directory holding TASK_TREE.md and tasks/. Prints findings, then __CHECKED__ <n>.
 check_frontier() {
-python3 - "$1" <<'PY'
+python3 - "$1" "$SOURCE_DIR" <<'PY'
 import re, sys, pathlib
+sys.path.insert(0, sys.argv[2])
+try:
+    from task_source import TaskSourceError, read_task
+except ImportError as error:
+    print("UNAVAILABLE TASK READER " + str(error)); print("__CHECKED__ 0"); sys.exit(2)
+
+
+def task_source(path):
+    try:
+        return read_task(path)
+    except TaskSourceError as error:
+        print("UNAVAILABLE TASK SOURCE " + str(error)); print("__CHECKED__ 0"); sys.exit(2)
 
 root = pathlib.Path(sys.argv[1])
 index_path = root / "TASK_TREE.md"
@@ -78,7 +91,7 @@ LINK = re.compile(r"\(tasks/(?P<id>[A-Za-z0-9][A-Za-z0-9._-]*)\.md\)")
 # A leaf reference is `.N` or `TREE.N`, always inside backticks in both documents.
 LEAF = re.compile(r"`(?P<leaf>[A-Za-z0-9._-]*\.\d+)`")
 # Both spellings the index actually uses for a derived leaf count.
-DONE_COUNTS = (re.compile(r"\((?P<a>\d+)\s*/\s*(?P<b>\d+)\s+leaves?\s+complete\)"),
+DONE_COUNTS = (re.compile(r"\((?P<a>\d+)\s*/\s*(?P<b>\d+)\s+leaves?\s+complete(?=\s*[;,)])"),
                re.compile(r"(?P<a>\d+)\s+of\s+(?P<b>\d+)\s+leaves?\s+done"))
 
 def cells(line):
@@ -115,27 +128,8 @@ if not rows:
 
 # ---------------------------------------------------------------- parse each tree file
 def parse_tree(path):
-    t = path.read_text()
-    status = None
-    ms = re.search(r"^- Status:\s*(.+)$", t, re.M)
-    if ms:
-        status = unticks(ms.group(1))
-    # leaves: "- ID: `TREE.N`" followed (within its block) by "Status: `x`"
-    leaves = {}
-    lines = t.splitlines()
-    for i, ln in enumerate(lines):
-        mi = re.match(r"^- ID:\s*`([A-Za-z0-9._-]+\.\d+)`", ln)
-        if not mi:
-            continue
-        leaf = mi.group(1)
-        st = None
-        for ln2 in lines[i + 1 : i + 8]:
-            if re.match(r"^- ID:\s*`", ln2):
-                break
-            m2 = re.search(r"^\s*Status:\s*`([a-z_]+)`", ln2)
-            if m2:
-                st = m2.group(1); break
-        leaves[leaf] = st
+    facts = task_source(path)
+    status, leaves, lines = facts.status, facts.leaves, facts.text.splitlines()
     # the Current Frontier table's data rows, in file order
     frontier = []
     inside = False
@@ -242,8 +236,7 @@ for tree_id, (status_cell, frontier_cell), home in sorted(every):
                     f"which the tree records as `done`")
 
     # 4. COUNT -------------------------------------------------------------------
-    mc = next((m for m in (r.search(frontier_cell) for r in DONE_COUNTS) if m), None)
-    if mc:
+    for mc in (m for pattern in DONE_COUNTS for m in pattern.finditer(frontier_cell)):
         a, b = int(mc.group("a")), int(mc.group("b"))
         real_b = len(leaves)
         real_a = sum(1 for st in leaves.values() if st == "done")
@@ -405,6 +398,135 @@ EOF
   printf '# index\n\nno table here\n' > "$t/TASK_TREE.md"
                                               arm "REFUSE no parseable rows"       2 "NO ROWS"
   rm -f "$t/TASK_TREE.md";                    arm "REFUSE no index at all"         2 "NO INDEX"
+
+
+  # Shared-source qualification. Original controls above remain verbatim.
+  source_edit() {
+    argc 2 "$#" source_edit || return
+    python3 - "$t/tasks/T.md" "$1" "$2" <<'SOURCE_EDIT'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1]); text = p.read_text()
+if text.count(sys.argv[2]) != 1:
+    raise ValueError("source fixture seam")
+p.write_text(text.replace(sys.argv[2], sys.argv[3], 1))
+SOURCE_EDIT
+    local source_rc=$?
+    if [ "$source_rc" -ne 0 ]; then
+      fail=$((fail+1)); printf 'source fixture edit failed rc=%s\n' "$source_rc" >&2
+      return "$source_rc"
+    fi
+  }
+  archive_fixture() {
+    argc 0 "$#" archive_fixture || return
+    mkdir -p "$t/tasks/archive"
+    cat > "$t/tasks/T.md" <<'ARCHIVED_ROOT'
+# T
+- Tree ID: `T`
+- Status: `active`
+_Leaves `.1`–`.1` (done `2026-10-01`) — live in [archive](archive/T.md)._
+- ID: `T.2`
+  Status: `pending`
+## Current Frontier
+| Order | Leaf | Status | Why next |
+| --- | --- | --- | --- |
+| 1 | `T.2` | `pending` | next |
+ARCHIVED_ROOT
+    printf '%s\n' '- ID: `T.1`' '  Status: `done`' > "$t/tasks/archive/T.md"
+  }
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  source_edit 'Status: `done`' 'Status: **done**'
+  arm "GREEN bold source status" 0 "__CHECKED__"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  source_edit 'Status: `done`' 'Status: `slice-gated`'
+  index active '`.2` — 0 of 2 leaves done'
+  arm "GREEN conditional source is not completed" 0 "__CHECKED__"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  source_edit 'Status: `done`' 'Status: `invented`'
+  arm "REFUSE unknown source status" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  source_edit 'Status: `done`' 'Missing: `done`'
+  arm "REFUSE missing source status" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  printf '%s\n' '- ID: `T.1`' '  Status: `done`' >> "$t/tasks/T.md"
+  arm "REFUSE duplicate source ID" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  source_edit 'Status: `done`' $'Status: `done`\n  Status: `pending`'
+  arm "REFUSE duplicate leaf status" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  printf '%s\n' '- Status: `active`' >> "$t/tasks/T.md"
+  arm "REFUSE duplicate root status" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  printf '\377' > "$t/tasks/T.md"
+  arm "REFUSE invalid UTF8 task source" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  arm "GREEN checked whole archived range" 0 "__CHECKED__"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  rm -f "$t/tasks/archive/T.md"
+  arm "REFUSE missing archive" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  printf '%s\n' '- ID: `T.1`' '  Status: `pending`' > "$t/tasks/archive/T.md"
+  arm "REFUSE archive is not completed" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  printf '%s\n' '- ID: `T.3`' '  Status: `done`' > "$t/tasks/archive/T.md"
+  arm "REFUSE archive has wrong population" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  printf '%s\n' '- ID: `T.1`' '  Status: `done`' >> "$t/tasks/T.md"
+  arm "REFUSE root archive overlap" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  printf '%s\n' '_Leaves `.1`–`.1` (done `2026-10-01`) — live in [archive](archive/T.md)._' >> "$t/tasks/T.md"
+  arm "REFUSE repeated archive declaration" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  source_edit 'archive/T.md' 'archive/../T.md'
+  arm "REFUSE unsafe archive locator" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  archive_fixture
+  source_edit '_Leaves' '_Leaves unsupported'
+  arm "REFUSE unsupported archive declaration" 2 "UNAVAILABLE TASK SOURCE"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  index active '`.2` — (0/2 leaves complete; scope)'
+  arm "RED semicolon annotated count drifts" 1 "COUNT DRIFT"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  index active '`.2` — (0/2 leaves complete, scope)'
+  arm "RED comma annotated count drifts" 1 "COUNT DRIFT"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  index active '`.2` — (1/2 leaves complete); (0/2 leaves complete)'
+  arm "RED every count in a cell is checked" 1 "COUNT DRIFT"
+
+  tree T active 2 pending done pending; index active '`.2` — 1 of 2 leaves done'
+  index active '`.2` — (1/2 leaves complete; scope)'
+  arm "GREEN annotated count agrees" 0 "__CHECKED__"
+
+  archive_fixture
+  mv "$t/tasks/archive" "$t/archive-source"
+  ln -s "$t/archive-source" "$t/tasks/archive"
+  arm "REFUSE linked archive directory" 2 "UNAVAILABLE TASK SOURCE"
 
   rm -rf "$t"
   printf 'FRONTIER-SYNC --self-test: %d pass / %d fail\n' "$pass" "$fail"
