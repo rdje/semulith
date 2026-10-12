@@ -16,9 +16,9 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b — transitive reader/include/index/query/generated review
-  from the qualified LC.4i2a census; author routes and terminal closure follow.
+- next_action: LC.4i2b2 — priority1 D59 source-parser/bare-ratio qualification
+  and repair; transitive reader review follows its COMMIT.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC-0023 COMMIT; full adoption remains LC.4.
+- in_flight_uncommitted: none after LC-0024 COMMIT; full adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

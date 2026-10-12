@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — explicit composition progress and discriminating count control (LIVE-CONTAINMENT.4i2b1)
+
+D58: actual public TREE-CLAIMS returned0 on LIVE_STATUS's In Progress/2/6
+composition row, while MODEL-COMPOSE metadata, all six statuses, frontier and
+closed register record done/6/6 on 2026-09-27. The guard recognizes explicit
+A-of-B-leaves, not bare ratios. Repair the live row to Done/6 of 6 leaves,
+accurately naming union/fragments, discharge, partial slots, materialization
+and per-instruction refinement. Tree closure grants no processor/board claim.
+
+The complete four-live-file candidate census exposed broader source decoding
+and ratio-binding preconditions. D59 is owned priority1 immediately next;
+archived summaries, bold statuses, slice-gated scope and later instruction/
+guest ratios need independent qualification before broad syntax enforcement.
+The book and doctrine describe these limits rather than claiming coverage.
+
+D60: the first copied A_OF_B-loop omission unexpectedly passed all12 old
+controls and accepted a wrong-done/same-total row0. Retain the initial stopped
+instrument and raw streams. Add one same-total/wrong-completed arm, preserving
+all12 old arms byte-exact;13 now pass. The copied omission now makes the actual
+public self-check refuse2/no stdout. Seven public cases/mode cover the original
+unsupported bare ratio0, explicit stale1, corrected0, wrong-done1, wrong-total1,
+later non-task ratio0 and append-history exclusion0. Normal/O agree; real1414
+HEAD/index/member identities remain exact across each batch. These are finite
+controls, not general Markdown or complete source-parser qualification.
+
+D61: actual normal/print HTML rendered12 of21 Foundation rows as literal
+pipe prose. Two blank lines split the only declared table; remove those two
+breaks without changing any cell. Reconcile every Foundation row against its
+rendered cells, not text presence. Initial instrumentation inserted inline-code
+spaces and overreported one label; corrected cell-text census retains all21.
+
+Whole-oldest DEV rollover retains every prior entry/source byte. Source/book/
+task/guard/doctrine/live inverses, all other regular files/modes/Gitlink, focused
+checks/seven books/rendered status and literal self-test qualify the slice.
+Derived arm count1518 becomes1519; other LIVE milestones and every cap remain
+exact. Normal COMMIT/postcheck/brief0/unrestricted handoff closes before D59.
+promotion: declined (local stale projection and test discriminator repair, with the broader parser obligation owned in its task tree).
+
 ## _(2026-10-12)_ — collect closed graph inventory evidence (LIVE-CONTAINMENT.4i2a)
 
 Immutable28920c6 has1411 identities/1410 regular blobs/one opaque Gitlink,
@@ -642,76 +680,4 @@ then independent ordinary-part actual-gate assessment and remaining a42 adequacy
 Measured:3212links/100old entries/1372protected files; DEV1817B→0272/CH690B→0273,
 65live+210sealed275logical; book -51B/family524225 of524288. Normal/O green.
 promotion: declined (standing safe-output/ownership/containment rules; measured receipts and risk ownership stay in task trees).
-
-## _(2026-10-11)_ — fail closed on unavailable handoff census (P4-SYSTEM.14 a42i)
-
-D47: actual sandbox denies ps spawn with EPERM, but the parent handoff script
-suppresses stderr, ignores failed capture and judges its empty process snapshot
-as green. Host-view ps/lsof both rc=0 with empty stderr. Director authorizes
-stopping idle Kimi; subsequent absence is recorded, no new sanctioned exemption.
-The defect concerns inability to judge process state, not an unproved CPU result.
-
-Capture each host tool's exit/status, separate stderr and nonempty stdout before
-using its snapshot. Any failed command, reported stderr, or empty/whitespace-only
-output returns2 without handoff OK. Retain original lsof-before-ps ordering and
-every successful parser/classifier/ancestry/advisory/sanctioned rule; no lexical
-process-name detector or extra exemptions. Owned mktemp stderr file is on the
-repository volume, mode/creation owned by mktemp, EXIT cleanup and HUP/INT/TERM handlers. Normal/refusal
-and TERM cleanup paths are verified. No claim of SIGKILL cleanup or detection
-of silent host restrictions, other-uid jobs, or processes invisible to published
-handle/command rules. Full host visibility remains the signoff requirement.
-
-Old fixed40-line help stops before Usage/exit contract. Extract the complete
-comment header and reject surplus arguments under the published single-option
-syntax. These are narrow existing CLI-contract repairs. User-facing book explains
-0/1/2, host visibility, read-only handles, advisories/authority and synthetic CI.
-Current teaching revised within the fixed aggregate cap; historical crash-recovery
-receipt remains byte-exact. README/make help reflect the same gate command.
-
-New bounded stdlib probe executes actual Bash copies with controlled ps/lsof
-subprocess responses in disposable repo-volume fixtures. It copies the real
-sanctioned registry verbatim; worker IDs are synthetic records and are never
-signaled by tests. Read-only handle outside repository cwd, command-named checkout,
-advisory/all, existing exemption/unsanctioned other process and usage are exercised.
-Tool failures retain valid partial stdout; status0+stderr and empty/whitespace
-snapshots still refuse. Every exit checks owned stderr residue. TERM uses an
-explicit checkpoint/release handshake, not a scheduling window; collect child
-completion before disposing fixtures. Existing exemption cannot cover another
-process. No real editor is closed by these tests.
-
-19 positives pass normal/O; committed parent loses11 assertions with zero errors.
-Independent omitted status/stderr/empty/TERM guards lose2/2/4/1 normal/O, no errors.
-Actual restricted new census rc=2 names ps exit126 and leaves no stderr file;
-unrestricted actual rc=0. No green verdict is inferred from restricted visibility.
-Makefile gate adds the exact normal/O synthetic commands; the existing doctrine
-CI job invokes make gate. Actual host census remains outside commit/CI gates;
-39 doctrines/1439 arms unchanged. No redundant Rust/fullCI or outward push.
-
-Verified whole source/task/README/Makefile/workflow/book inverses normal/O;
-make -n gate resolves the enforcer plus exact tested normal/O commands, all other
-suite legs/CI setup unchanged. Focused12/sharder12/seven books/3212 fresh+actual
-links, complete normal/print teaching and literal --all host example rc=0.
-History100/scope1367 bytes/modes/Gitlinks exact normal/O; actual old/moved/
-published receipt+updated-digest edits jointly refuse. Whole DEV3180B/one entry
-moves to0270 (3413B/51171112f2da43ec469733f22f3d887da1c786e94729eb17656cbe587580cf6d),
-CH647B/one to0271 (884B/c96521afd6916316f9ca2f0936cd96c04f5c0759b5d44d371d43ab0591728819);
-63live+210sealed273logical. Book proposal first exceeded36B remaining family
-room; bounded rewrite lands +24B, with earlier receipt untouched. Render probe
-initially compared straight apostrophe with actual smart apostrophe; normalize
-that observed formatting only, then verify every teaching word normal/O.
-EOF instrument first assumed per-line, then last-line warnings; both refused.
-Actual byte/line census shows one Git warning at the first blank of each EOF
-run (0270:51;0271:15). Match those exact outputs with whole moved bytes proved.
-First commit hook refuses SEAM-INTEGRITY:56/57 isolated shell allocations.
-Actual new allocation is on-volume; evaluator binds ROOT but not REPO_ROOT.
-Add that existing script binding to the fixture root only; all allocator/path/
-volume predicates remain byte-exact.57/57 normal/O and SEAM19/0 pass; omitted
-or misdirected binding returns56/57 at handoff site70 before nonproject writes,
-normal/O. Bare allocation still refuses. Whole instrument inverse exact outside
-one binding. No first-attempt commit; update14-file proof/stage and retry hooks.
-Final hooks/hash/mode/brief0/host-census postconditions next.
-Artifact cleanup became due during this slice: finish/commit before pivot, then
-own recurring cleanup ahead of ordinary-part guard assessment/remaining adequacy.
-promotion: declined — existing fail-closed/tool-first/handoff rules govern;
-no new policy, sanctioned entry, archive authority or qualification credit.
 

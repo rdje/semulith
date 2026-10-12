@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0024 (leaf LIVE-CONTAINMENT.4) — correct live composition progress
+
+- D58: composition closed six leaves on 2026-09-27; repair the stale In Progress/2/6 row to Done with explicit guarded progress. Tree closure claims no accepted processor or board.
+- D61: join two Foundation table breaks; all21 rows must render as table cells in normal and print output, rather than12 rows of literal pipe prose.
+- D60: same-total/wrong-completed control closes a measured omission gap; 12 prior arms preserved, 13 pass, derived project total1519. Seven public cases/mode and copied omission qualify normal/O; D59 broader source/ratio repair is priority1 next. Whole history/protected/book inverses and focused checks required; caps/CPU unchanged.
+
 ## SEMULITH-LC-0023 (leaf LIVE-CONTAINMENT.4) — collect closed graph inventory evidence
 
 - Source28920c6:1411 identities/462 Markdown/53 literal include candidates; seven fresh books expose120 HTML pages/3244 anchor links. Retain2076 resource candidates and338 Markdown paths outside book source directories for review; complete graph/adoption remains pending.
@@ -442,15 +448,4 @@
   LIVE/prior registry exact. Rust173/17/253/focused/full CI/six books green.
 - Effective110/114 unchanged. Own bounded book/development containment before
   qualified reservation/SC binding and final freeze; .14 sweep stays scheduled.
-
-## SEMULITH-P4-0185 (leaf P4-SYSTEM.13 c34a) — witness reservation histories before binding
-
-- Add unbound60640full-state boundaries/121280parcels/168192requests for
-  reservation histories, ordinary overlap retention, physical aliases/faults.
-- Discriminate16wrong effects/16bad captures/23actual disabled controls;
-  independent author/canonical205words/prior corpus exact. Rust173/17/246,
-  focused/six books green; core/data/frozen/history/LIVE/effective110/114 exact.
-- Diagnose unmapped failed-SC physical-permission defect through public core,
-  author and fresh Sail/Spike observations; own immediate c34b0 repair before
-  reservation/SC binding, qualified live policy mirrors and final freeze.
 

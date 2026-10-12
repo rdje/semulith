@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2a census collected; .4i2b transitive reader review next |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D58/D60/D61 fixed; .4i2b2 priority1 D59 source/ratio qualification next |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -1079,6 +1079,116 @@ preconditions, including DERIVED-COUNTS registry projections; do not infer a
 direct-call contract from sibling registration order. This is a pending
 assessment, not a measured defect verdict.
 
+### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
+
+Status: complete; D58/D60/D61 fixed and verified; normal COMMIT/postcheck required before D59 and remaining .4i2b reader review. Owned on
+clean9706ecb after normal hooks, exact10-file postcheck, brief0/untracked,
+unrestricted handoff0 and full COMMIT report. Reproduction: LIVE_STATUS.md's
+Composition row reports In Progress/2/6; MODEL-COMPOSE metadata, six leaf
+statuses, frontier and closed register report done/6/6 on 2026-09-27. Impact:
+the authoritative live review surface understates completed composition work.
+Confirmed guard gap: actual public check returns0 on the stale bare ratio;
+all12 old controls pass. Complete four-live-file candidate census also exposes
+source/parser and semantic-binding preconditions, owned priority1 .4i2b2 below.
+Use the existing explicit A-of-B-leaves grammar for this repair, and qualify
+its actual refusal rather than widening an ambiguous parser. Historical
+receipts and task source stay exact.
+
+D61 confirmed/priority1 same-unit repair: actual status.html and print.html
+render12 of21 Foundation rows as literal pipe prose, including composition.
+Two blank lines end the only declared table; subsequent row groups have no
+header/separator. table-before-v2.json enumerates all12 missing actual rows.
+Join exactly those two breaks; own full rendered21-row reconciliation normal/O.
+The initial row instrument also inserted spaces around inline code, giving
+one extra false missing label; preserve it and the corrected cell-text census.
+No table cell content is changed by this structural repair.
+
+D60 confirmed in the first copied omission: removing the A_OF_B loop leaves
+all12 old controls green and the actual wrong-done same-total row accepted0.
+The initial diagnostic expected refusal and stopped; retain that failure and
+raw streams. Own this priority1 same-unit discriminator repair: add one
+same-total/wrong-completed count arm, preserving all12 prior arms. This makes
+the copied omission refuse2 through the public self-check. Qualify normal/O
+before/after; derived arm count changes only after the arm actually exists.
+
+Own target/live-containment/composition-progress diagnostics and qualified
+before/after evidence; existing scripts/check_tree_claims.sh actual public
+positive/refusal and copied omission controls plus the D60 self-test arm;
+truthful live composition row, doctrine
+scope/limits and bounded mdBook explanation, including regenerated
+docs/book/src/index.md from the public generator after chapter changes. Review the six completed leaves,
+composition contract/public tools and current book before writing the new row.
+No processor qualification or conformance claim follows tree closure. Preserve
+existing controls, history exclusion and nearest-tree binding. Qualify guard
+omissions and real source/HEAD/index/mode/Gitlink preservation normal/O.
+Own whole-oldest CH/DEV rollover where required, full history/protected/book
+inverses, focused checks/seven books/rendered teaching/literal examples, normal
+COMMIT and exact postcheck/brief0/unrestricted host0. No cap, lifecycle, canonical
+record, archived history or CPU change. Remaining .4i2b follows clean COMMIT.
+promotion: declined (local stale projection and parser repair, not new policy authority).
+
+- [x] **REPRODUCE / ISSUE** — `python3 target/live-containment/composition-progress/assess.py`
+  rc=0: actual public0 on stale2/6; six completed leaves and four live files pinned.
+- [x] **ROOT CAUSE** — `python3 target/live-containment/composition-progress/qualify-before-v2.py`
+  rc=0 normal/O: explicit stale1; original bare0 and copied count-loop omission0.
+  Existing12 arms lack same-total/wrong-done discrimination (D60).
+- [x] **FIX** — live Done/6 of 6 leaves; one discriminator added; book and
+  doctrine state exact syntax/source limits and D59 priority1 ownership.
+- [x] **ADDRESSED** — `python3 target/live-containment/composition-progress/check-evidence.py`
+  rc=0 normal/O: seven public cases/mode; D60 copied omission0 to2/no stdout.
+  `python3 target/live-containment/composition-progress/rendered.py` rc=0 normal/O:
+  D61 twelve missing Foundation rows become all21 exact normal/print cells.
+- [x] **NO REGRESSION** — `python3 target/live-containment/composition-progress/verify.py`
+  rc=0 normal/O:106 prior entries,1404 protected regular files/Gitlink and
+  complete source/book/task/guard/doctrine/live/history inverses.
+  `bash target/live-containment/composition-progress/focused.sh` rc=0:
+  focused12/sharder12/seven books; final make book and3244 actual links pass.
+- [x] **LOCKSTEP** — live Done/6 of6 explicit leaves and derived1519 arms;
+  book shows the corrected row, all Foundation cells and syntax/source limits.
+  Pointer/frontier/owner schedule D59 next, then transitive reader review.
+
+Final qualification: source9706ecb/1414 identities. All12 prior controls and
+production guard source reconstruct exactly after removing the one new arm;
+13 pass normal/O. Explicit stale2 of6 rejects1; corrected6 of6 passes0;
+wrong-done and wrong-total reject1; later non-task ratio and history exclusion
+pass0. Bare ratio remains outside current grammar, explicitly owned D59.
+Copied count-loop omission passed0 before and refuses2 after through the public
+self-check. Real HEAD/index/member identities remain exact across both batches.
+D61 joins exactly two Foundation table breaks without changing cells; all21
+rows reconcile against actual normal/print HTML. Initial inline/emphasis
+instrument mismatches are retained and corrected from rendered cell evidence.
+Generated index re-derives byte-exact; source wording calls a task-tree link,
+not an oracle reference. The initial generated diff was reviewed before this
+wording choice. Book grows58B within its unchanged bound to524259.
+Whole CH706B→0293/943B/SHAe902f608386b3c2c2e8b3b8d36e0e3d28f5970236f68de8967fb0a50b37f56a2;
+DEV5150B→0294/5383B/SHAa0ae173134b1d53855480fe9d3bd5adeae988d2f98a2b88e8568f76fcd4e3530.
+106 prior entries/source/order/seals exact; actual old/moved/published receipt
+edits plus updated digests are jointly refused.1404 protected files/Gitlink,
+normal/O complete inverses, focused12/sharder12/seven books/3244 links and
+literal13-control example pass. Count107/health64 debt, all caps, canonical
+records, other milestones/CPU remain exact. Normal staged acceptance/seam/hooks,
+exact11-file postcheck, brief0/untracked and unrestricted host0 close this unit.
+
+### .4i2b2 — priority1 D59 source parser and bare-ratio coverage
+
+Status: pending, immediately after .4i2b1 COMMIT, before remaining reader review.
+Owner: LIVE-CONTAINMENT.4. Actual public TREE-CLAIMS reports0 with a stale bare
+composition ratio (D58); assessment.json enumerates every ratio after a tree
+reference across all four live files. Candidate binding is not semantic truth:
+MODEL-METHOD's later52/52 is instruction coverage; P1/P2's later129/129 and642/642
+are guest/observation coverage. Its current parser measures MODEL-METHOD6/6,
+P3-BREADTH6/7 and P4-SYSTEM4/18, while the live rows state18/18,8/8 and13/18.
+Tools locate archived summaries, slice-gated status and bold done as source
+preconditions requiring qualification, not evidence that every live count is
+wrong. Reproduce each source boundary via public interfaces and records, log
+any further confirmed defect, then fix source decoding before adding a scoped
+bare leading-progress-ratio grammar. Preserve archival immutability; do not
+rewrite source tasks to fit summaries. Correct any independently established
+stale live counts in lockstep. Qualify statuses/summary uniqueness, omissions,
+old controls, history exclusion, nearest-tree binding and later non-task ratios.
+No full generic Markdown coverage claim. Until this closes, explicit
+A-of-B-leaves is the supported progress grammar for repaired projections.
+
 ### .4i2a / SEMULITH-LC-0023 — collect closed graph inventory evidence
 
 Status: complete; collection evidence only, semantic graph closure pending. Owned on clean28920c6 after normal hooks, exact10-file postcheck,
@@ -1470,6 +1580,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i2b1: D58 live composition Done/6 of6; D60 same-total arm13, old12 exact;
+seven public cases/mode and copied omission0→2 normal/O. D61 two table joins,
+all21 actual normal/print Foundation rows;3244 links and literal13-control
+example pass.106 old history entries,1404 protected files/Gitlink and complete
+source/book/task/guard/doctrine/live/history inverses exact normal/O;
+focused12/sharder12/seven books pass. D59 source/ratio qualification priority1
+next; other milestones/caps/canonical/CPU unchanged. Normal COMMIT required.
+
 .4i2a: complete source1411/462 Markdown/53 literal include candidates; retained
 seven-book120 HTML pages/3244 hyperlinks,2076 resource candidates and338 paths
 outside book source directories. Source versus working rendering explicit;
@@ -1633,6 +1751,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0024 (leaf LIVE-CONTAINMENT.4): correct live composition progress` — D58/D60/D61 fixed; D59 qualification next.
 
 `SEMULITH-LC-0023 (leaf LIVE-CONTAINMENT.4): collect closed graph inventory evidence` — .4i2a collection only; .4i2b transitive reader review next.
 

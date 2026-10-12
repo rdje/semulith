@@ -1,20 +1,25 @@
 # Current status
 
-The table below is **included live** from `LIVE_STATUS.md`, the repository's authoritative
-progress tracker. It is not a copy: the book renders whatever that file says at build time, so
-this page cannot drift from it.
+Included from the authoritative `LIVE_STATUS.md` at build time:
 
 {{#include ../../../LIVE_STATUS.md}}
 
 ## How to read a row
 
-`Done` means the work is finished, verified, and committed — not that a milestone's *gate* has
-passed. Gate status is a separate, stronger claim with its own vocabulary (`passed` / `failed` /
-`incomplete`) and it is recorded in the evidence records, never in this tracker.
+`Done` means work finished, verified and committed. A milestone's gate is a
+separate claim: `passed`, `failed` or `incomplete`, recorded in its evidence.
+Composition work closing does not qualify a processor or board.
+
+Use `A of B leaves` beside a task-tree link for explicit progress.
+TREE-CLAIMS checks that syntax; bare ratios are outside its current grammar.
+D59 owns source-parser and broader ratio coverage before full adoption.
+The same-total/wrong-completed control guards the completed-count branch:
+
+```sh
+bash scripts/check_tree_claims.sh --self-test
+```
 
 ## Where the detail lives
 
-- Active work, its frontier, and its evidence: the task-trees under `docs/tasks/`, indexed by
-  `docs/TASK_TREE.md`.
-- Durable decisions: `docs/decisions/`.
-- What changed and when: `CHANGELOG.md` and git history.
+Task-trees and evidence: `docs/tasks/`, indexed by `docs/TASK_TREE.md`.
+Decisions: `docs/decisions/`. Changes: `CHANGELOG.md` and Git.

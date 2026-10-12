@@ -258,6 +258,8 @@ EOF
 
   doc '- **Active trees:** `ALPHA` (1 of 3 leaves).
 - **Frontier leaf:** `ALPHA.2` — second.';                  arm "RED   the A-of-B count drifts"   1 "COUNT DRIFT"
+  doc '- **Active trees:** `ALPHA` (0 of 2 leaves).
+- **Frontier leaf:** `ALPHA.2` — second.';                  arm "RED   done count drifts with total fixed" 1 "COUNT DRIFT"
   doc '- **Active trees:** `ALPHA` — 7 leaves.
 - **Frontier leaf:** `ALPHA.2` — second.';                  arm "RED   the bare total drifts"     1 "COUNT DRIFT"
   doc '- **Active trees:** `ALPHA` (1 of 2 leaves).

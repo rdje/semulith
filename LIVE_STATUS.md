@@ -11,23 +11,21 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | `SEMULITH-PKG` — docs landed, fingerprints gated, routes closed, book grown |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (39 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 1518 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
+| Project doctrines (39 registered) | Done | the registry in `scripts/check_doctrines.project.sh` names them — 1519 self-test arms, all fired RED before registration; not mirrored here (a hand-kept list loses rows) |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | caps85lines/4864B; 39 destinations; D52–57 fixed: unavailable/malformed inputs refuse2 |
 | mdBook is the review surface | Done | 49 chapters; contracts verbatim; its doctrine chapter is gated against the registry |
 | Hand-kept mirrors gated | Done | [`MIRROR-DRIFT`](docs/tasks/MIRROR-DRIFT.md) 4/4 — index, doctrine documents, task-tree facts, derived counts |
 | Roadmap converted to task-trees | Done | `SEMULITH-TREES` — all 11 lanes are trees, registered, bounded, and mapped in the book |
-
 | Reference models acquired | Done | Sail 0.14, Spike `1e05ddac`, QEMU 11.1.1 pinned; ACT located. `scripts/fetch_references.sh` |
 | Matched-profile evidence path | Done | 4 guests, 2 models, 34 spec-derived values, 4 negative observations, 7 differences; `scripts/run_smoke.py` |
 | Requirements catalogue seeded | Done | `P0-PROFILE.3` (+ `MODEL-METHOD.10`) — 28 machine-readable records, every declared instruction covered; in the one format since `SOT-FORMAT.3`, schema-validated |
 | Profile dossier in the one format | Done | `SOT-FORMAT.4` — profile, state, sources, references, the matched override and the guest expectations all behind the schema layer; commentary survives as first-class `(comment …)` forms |
 | Environment contract v0 | Done | `P0-PROFILE.4` — `rv64i-lab-env-v0`: 36 obligations, all 10 boundary items dispositioned (4 in scope, 6 out with reasons), 72 checks **declared not implemented** |
 | Reference independence inventoried | Done | Historical 6 rows; ancestry basis withdrawn; current record sweep: `P4-SYSTEM.14` |
-
 | North star: model widely, start small | In Progress | `decision_one-definition-one-book` — kind + layer decide what a unit owns; 6 units today |
 | Dual mandate: production + teaching | In Progress | `decision_dual-mandate-production-and-teaching` — mistakes stay in the record |
-| Composition of models | In Progress | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 2/6 — union decidable and built; fragments reusable under `definitions/`; records merge by id across a composition boundary and decide, refusals naming the conflicting fact (`SOT-FORMAT.5`, `scripts/merge_records.py`) |
+| Composition of models | Done | [`MODEL-COMPOSE`](docs/tasks/MODEL-COMPOSE.md) 6 of 6 leaves complete: encoding union/fragments, assumption discharge, declared partial slots, nested unit materialization and per-instruction refinement checks. Tree closure claims no accepted processor or board. |
 | Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 18/18 — `.14` measured adopt-in-principle `2026-09-30` — encodings owned; semantics 52/52, cited not verified; the extraction contract decides sufficiency (52 instructions, one set four ways) |
 | Modelling method + materials | Done | same tree — the census, the acquisitions, the method in prose (`docs/METHOD.md`); `.18` added the per-kind demand chapter |
 | Per-unit books | Done | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 8/8 — one definition, one mdBook; the arc landed, `UNIT-BOOKS` gates it |
