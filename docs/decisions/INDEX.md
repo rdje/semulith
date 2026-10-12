@@ -38,7 +38,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [`decision_profiles-family-two-units.md`](decision_profiles-family-two-units.md) | `decision` | the profiles/ bound is re-derived to 2× (240 files / 1,146,880 B) because the second unit's dossier is the family's designed growth; the per-part stays 32 KiB |
 | [`decision_profiles-family-three-units.md`](decision_profiles-family-three-units.md) | `decision` | the profiles/ bound is re-derived to 3× (360 files / 1,720,320 B) because the first board dossier is the family's designed growth — the unit count, not content pressure, drives it; the per-part stays 32 KiB |
 | [Four-unit bounds (2026-10-02)](decision_profiles-family-four-units.md) | `decision` | Why rederive when the first device arrives? |
-| [Five-unit bounds (2026-10-02; D55 open)](decision_profiles-family-five-units.md) | `decision` | Why the device/per-part changes? Composition repair: LC.4h6b. |
+| [Five-unit bounds (2026-10-02; composition corrected)](decision_profiles-family-five-units.md) | `decision` | Why the device/per-part changes, and what did LAN add? |
 | [Composed bounds (2026-10-02; superseded in part)](decision_profiles-family-composed-units.md) | `decision` | Which measurements survive the interim raise? |
 | [Corpus pressure (2026-10-06)](decision_profiles-family-processor-corpus.md) | `decision` | Why govern corpus growth separately? |
 | [Derived bounds (2026-10-02)](decision_derived-members-of-bounded-families.md) | `decision` | How are derived exemptions proved? |

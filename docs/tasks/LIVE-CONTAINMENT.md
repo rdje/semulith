@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–54 repaired; .4h6b D55 correction, .4h6c capacity review, then full adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–55 repaired; .4h6c capacity review, then full inventory/checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -284,7 +284,7 @@ Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
 complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
-.4h6b/LC-0017 corrects D55 next, then .4h6c reviews capacity.
+.4h6b/LC-0017 completes D55; .4h6c reviews capacity next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -657,6 +657,50 @@ source stays exact and its finite LAN/UART inventories are pinned here.
 - [x] **LOCKSTEP** — index/book/owner/pointer route D55 to .4h6b before .4h6c;
   canonical authority and CPU qualification unchanged; full adoption remains .4.
 
+### .4h6b / SEMULITH-LC-0017 — correct the five-unit composition receipt
+
+Status: complete; D55 fixed/verified. Owned on clean98edfae after exact9-file postcheck, brief0,
+unrestricted handoff0 and the full COMMIT report. D55 priority2: the canonical
+five-unit authority wrongly attributes13 files to LAN by reusing UART's partial
+147 subtotal. The immutable committed trees prove151+9=160 and845819B total.
+Append a dated source-pinned correction to decision_profiles-family-five-units;
+retain its entire original receipt. Explain the partial/committed mismatch and
+nine-file byte subtotal; preserve all policy limits and original raise rationale.
+Correct only its index row and existing book teaching; D51 facts/literal reads
+stay exact. Existing MCU/CPU/DSP/device/board direction and qualification stand.
+
+Own target/live-containment/five-unit-correction, fresh immutable source census,
+closed LAN/UART inventories and identity/delta checks, complete authority/index/
+book/task/head/history inverses, any necessary whole-oldest rollover, protected
+bytes/modes/Gitlink, genuine damaged-receipt controls, focused/book/rendered/
+literal, staged acceptance/seam, normal COMMIT hooks, exact postcheck and host0.
+Use checked NUL Git/blob reads; normal/O must agree and leave real HEAD/index/
+all1402 tracked identities exact. Retain LC-0016 source receipts; never rewrite
+qualified evidence. Its postcheck initially retained an old subject after a
+scratch replacement; corrected checker verified all9 files, clean/brief0.
+No runtime, limit, seal, archive-body or LIVE change. .4h6c capacity authority
+review follows clean COMMIT; full containment inventory/checker remains .4.
+promotion: declined (the existing canonical five-unit record owns this correction).
+
+Verified: LAN's151+9=160 and213840B delta; UART's nine files/66700B and
+separate board-note77B routing delta are pinned. Four complete source snapshots
+and original authority hashes agree normal/O; two wrong counts refuse. Real
+HEAD/index/all1402 identities are unchanged. D55 original bytes remain prefix.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/five-unit-correction/assess.py`
+  rc=0 normal/O:147 is partial142+five UART documents, but UART's committed
+  profiles tree is identical to LAN's151-file parent. LAN adds nine, not13.
+- [x] **ADDRESSED** — `python3 target/live-containment/five-unit-correction/verify.py`
+  rc=0 normal/O: complete original prefix plus separate dated source-pinned
+  correction, index and book inverses agree with closed inventories; D55 fixed.
+- [x] **NO REGRESSION** — `bash target/live-containment/five-unit-correction/focused.sh`
+  rc=0: focused12/sharder12/seven books; history/rendered normal/O retain103
+  prior entries,1394 protected files/Gitlink, all caps/manifest/seals/LIVE,
+  full normal+print teaching and three literal reads. Staged acceptance/seam
+  and normal hooks must pass before COMMIT closes this slice.
+- [x] **LOCKSTEP** — canonical correction/index/book/pointer/frontier agree;
+  CPU qualification unchanged. .4h6c capacity review and full .4 adoption remain.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -964,6 +1008,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6b: five-unit-correction assess/verify/history/rendered normal/O and focused.sh
+rc=0: four closed inventories, complete profile deltas and original authority
+pins; two wrong-count controls refuse; real1402 identities exact. Whole source/
+head inverses,103 prior entries/1394 protected files/Gitlink and all ceilings/
+manifest/seals exact. Focused12/sharder12/seven books, full normal+print/three
+literal reads pass. D55 fixed; LIVE/CPU unchanged. .4h6c capacity review next.
+
 .4h6a: capacity-navigation verify/history/rendered normal/O and focused.sh rc=0:
 nine complete sources/27 clauses; index15526→13122B, free2674B. Whole source/
 head/book/task inverses retain104 prior entries; receipt/digest refusals,
@@ -1071,6 +1122,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0017 (leaf LIVE-CONTAINMENT.4): correct the five-unit composition receipt` — .4h6b complete/D55 fixed; .4h6c separate capacity review next.
 
 `SEMULITH-LC-0016 (leaf LIVE-CONTAINMENT.4): contain navigation before capacity authority` — .4h6a complete; .4h6b D55 correction next, .4h6c capacity review after.
 

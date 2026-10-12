@@ -64,16 +64,17 @@ cat KNOWLEDGE_MAP.md
 ### Decision navigation and the record it opens
 
 Shorten index summaries to dated questions; retain every target, type and order.
-Canonical records keep details and explicit corrections. D55 needs 151 + 9 in
-place of 147 + 13; LC.4h6b owns repair before capacity review. The count record's
-61 files mean 27 task instances + one template + nine archives + 24 artifacts;
-they do not count active work. At `d39092f`,
+Canonical records retain receipts and dated corrections. D55 corrects
+147 + 13 to 151 + 9: UART's partial subtotal was reused; total160 stands.
+The count record's historical61 files = 27 task instances + one template +
+nine archives + 24 artifacts, not an active roster. At `d39092f`,
 33 + 1 + 40 + 22 = 96.
-Classification correction supplies no authority to raise a ceiling. Read both:
+Classification correction authorizes no ceiling change. Read all three:
 
 ```sh
 cat docs/decisions/INDEX.md
 cat docs/decisions/decision_task-tree-family-count-rederivation.md
+cat docs/decisions/decision_profiles-family-five-units.md
 ```
 
 ### Capacity evidence must be readable

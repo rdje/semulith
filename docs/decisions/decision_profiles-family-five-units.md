@@ -58,3 +58,17 @@ its numbers rather than smuggled past the ceiling. The aggregate bounds follow t
 count as before; the per-part follows the measured largest member with the margin stated
 in the open. The next re-derivation (6×) waits for the next measured unit — never ahead
 of it.
+
+## Composition correction — 2026-10-12 (LC-0017)
+
+The original receipt above is retained. Parent `28be1c4ef5eaea00e9a97be13a649ed4803132d1`
+has151 profiles files/631,979B; commit `3071ae83604c96113a0ca424593796d1613755b6`
+has160/845,819B. LAN adds nine files/213,840B: six dossier documents and three
+expectations. Thus151+9=160, not147+13; total bytes and per-part figures stand.
+
+The147 came from the four-unit record's partial staging subtotal142+five UART
+documents. Its committed fa3f74c has151 files, and its complete profiles tree
+`5d2ca41b6f4cbdfe13b1e1eadd5ed6c15cc9b82f` is identical at LAN's parent.
+Comparing that partial subtotal with committed160 misattributes four UART files
+to LAN. Closed Git inventories and complete member deltas: LIVE-CONTAINMENT.4h6b.
+This corrects composition only; every original limit and raise rationale remains.
