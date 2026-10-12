@@ -216,6 +216,72 @@ except (OSError, ValueError, subprocess.SubprocessError) as error:
 PY
 }
 
+# Reject binary/control data before Bash command substitution can discard NULs.
+registry_text() {
+  python3 - "$1" <<'PYCODE'
+from pathlib import Path
+import sys
+try:
+    text = Path(sys.argv[1]).read_bytes().decode('utf-8').replace('\r\n', '\n')
+    if any((ord(c) < 32 and c not in '\t\n') or ord(c) == 127 for c in text):
+        raise ValueError('unexpected control character')
+    sys.stdout.write(text)
+except (OSError, UnicodeError, ValueError) as error:
+    print('UNREADABLE registry text: ' + str(error), file=sys.stderr)
+    sys.exit(2)
+PYCODE
+}
+
+# Load the complete registry before publishing any projection. Numeric policy
+# fields are decimal, nonnegative signed-64-bit values; normalize leading zeros
+# before Bash comparisons. Keep class/owner breaches in verify_routes (status1).
+read_registry_rows() {
+  local file="$1" error data rc line tabs dest rclass life owner hl hb cl cb cp
+  local value output="" seen=$'\n' row LC_ALL=C
+  local normalized=()
+  error="$(mktemp "$ROOT/target/tmp/registry-errors.XXXXXX")" || return 2
+  data="$(registry_text "$file" 2> "$error")"; rc=$?
+  if [ "$rc" -ne 0 ] || [ -s "$error" ]; then
+    rm -f "$error"
+    echo "  UNREADABLE registry read: failed status or diagnostics" >&2
+    return 2
+  fi
+  rm -f "$error"
+  while IFS= read -r line; do
+    case "$line" in ''|'#'*) continue ;; esac
+    tabs="${line//[^$'\t']/}"
+    if [ "${#tabs}" -ne 8 ]; then
+      echo "  UNREADABLE registry row: expected nine tab-separated fields" >&2
+      return 2
+    fi
+    IFS=$'\x1f' read -r dest rclass life owner hl hb cl cb cp <<<"${line//$'\t'/$'\x1f'}"
+    case "$dest" in ''|.|/*|./*|../*|*/../*|*/..|*/./*|*/.|*//*|*\\*)
+      echo "  UNREADABLE registry row: destination must be a normalized relative path" >&2
+      return 2 ;; esac
+    case "$seen" in *$'\n'"$dest"$'\n'*)
+      echo "  UNREADABLE registry row: duplicate destination" >&2; return 2 ;; esac
+    seen+="$dest"$'\n'
+    normalized=()
+    for value in "$hl" "$hb" "$cl" "$cb" "$cp"; do
+      if ! [[ "$value" =~ ^[0-9]+$ ]]; then
+        echo "  UNREADABLE registry limits: expected nonnegative decimal integers" >&2
+        return 2
+      fi
+      value="${value#"${value%%[!0]*}"}"; value="${value:-0}"
+      if [ "${#value}" -gt 19 ] ||
+         { [ "${#value}" -eq 19 ] && [[ "$value" > 9223372036854775807 ]]; }; then
+        echo "  UNREADABLE registry limits: integer exceeds signed-64-bit range" >&2
+        return 2
+      fi
+      normalized+=("$value")
+    done
+    printf -v row '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+      "$dest" "$rclass" "$life" "$owner" "${normalized[@]}"
+    output+="$row"
+  done <<< "$data"
+  printf '%s' "$output"
+}
+
 # $1 = registry path, $2 = README path, $3 = 1 to enforce ceilings, $4 = root the destinations
 # resolve against, $5 = family listing mode (git|find), $6 = fact-ownership registry for
 # the two-tier per-part exemption (optional; empty or missing = no exemptions).
@@ -229,8 +295,13 @@ verify_routes() {
   [ -f "$registry" ] || { echo "  MISSING registry $registry"; return 1; }
   [ -f "$readme" ]   || { echo "  MISSING landing page $readme"; return 1; }
   tmp="$(mktemp -d "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || return 2
-  awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$registry" > "$tmp/destinations"
-  [ -s "$tmp/destinations" ] || { echo "  EMPTY registry $registry"; rm -rf "$tmp"; return 1; }
+  local registry_rows registry_line
+  if ! registry_rows="$(read_registry_rows "$registry")"; then rm -rf "$tmp"; return 2; fi
+  if [ -z "$registry_rows" ]; then echo "  EMPTY registry $registry"; rm -rf "$tmp"; return 1; fi
+  : > "$tmp/destinations"
+  while IFS= read -r registry_line; do
+    printf '%s\n' "${registry_line%%$'\t'*}" >> "$tmp/destinations" || { rm -rf "$tmp"; return 2; }
+  done <<< "$registry_rows"
 
   # (1) every linked destination is governed
   local t
@@ -326,7 +397,7 @@ verify_routes() {
             echo "  health: $dest is $b bytes (target $hb)"; fi
           ;;
     esac
-  done < "$registry"
+  done <<< "$registry_rows"
 
   rm -rf "$tmp"
   [ "$unreadable" -eq 0 ] || return 2
@@ -606,9 +677,165 @@ SH
   arm "RED producer table missing its totals" 2 "UNREADABLE family totals" table_fixture empty
   arm "RED producer table has invalid count" 2 "UNREADABLE family totals" table_fixture bad_count
   arm "RED producer table has surplus totals field" 2 "UNREADABLE family totals" table_fixture extra
+  registry_fixture() { (
+    local registry_case_mode="$1" registry_case="$t/registry-case.tsv" registry_readme="$t/registry-readme.md" row captured registry_rc
+    printf 'See [keep](KEEP.md).\n' > "$registry_readme"
+    row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t5\t64\t0'
+    case "$registry_case_mode" in
+      invalid_line) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\tinvalid\t64\t0' ;;
+      invalid_byte) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t5\tinvalid\t0' ;;
+      negative_health) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t-1\t0\t5\t64\t0' ;;
+      negative_ceiling) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t-1\t64\t0' ;;
+      overflow) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t5\t99999999999999999999999999999999999\t0' ;;
+      max_plus_one) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t5\t9223372036854775808\t0' ;;
+      max) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t9223372036854775807\t9223372036854775807\t0' ;;
+      zeros) row=$'KEEP.md\treader_navigation\thot_live\tfixture\t000\t000\t0000000000000000000000000000000000005\t00000000000000000000000000000000000064\t000' ;;
+      extra) row+=$'\textra' ;;
+      missing) row="${row%$'\t'*}" ;;
+      unsafe) row=$'../KEEP.md\treader_navigation\thot_live\tfixture\t0\t0\t5\t64\t0' ;;
+    esac
+    printf '%s\n' "$row" > "$registry_case"
+    case "$registry_case_mode" in
+      duplicate) printf '%s\n' "$row" >> "$registry_case" ;;
+      no_lf) printf '%s' "$row" > "$registry_case" ;;
+      crlf) printf '%s\r\n' "$row" > "$registry_case" ;;
+      nul) printf '\000' >> "$registry_case" ;;
+      control) printf '\037' >> "$registry_case" ;;
+      invalid_utf8) printf 'KEEP.md\treader_navigation\thot_live\tfi\377xture\t0\t0\t5\t64\t0\n' > "$registry_case" ;;
+      status|diagnostic|silent)
+        registry_text() {
+          [ "$registry_case_mode" = silent ] || cat "$1"
+          [ "$registry_case_mode" != diagnostic ] || { echo 'controlled registry diagnostic' >&2; return 0; }
+          return 73
+        } ;;
+      no_partial)
+        printf 'extra.md\treader_navigation\thot_live\tfixture\t0\t0\tbad\t64\t0\n' >> "$registry_case"
+        captured="$(read_registry_rows "$registry_case" 2> "$t/registry-case-error")"; registry_rc=$?
+        [ "$registry_rc" -eq 2 ] && [ -z "$captured" ] || return 1
+        printf 'invalid suffix publishes no rows\n'; return 0 ;;
+    esac
+    verify_routes "$registry_case" "$registry_readme" 1 "$t" find "$t/fact.tsv"
+  ); }
+  arm "GREEN registry baseline retains existing semantics" 0 "" registry_fixture baseline
+  arm "RED registry producer failed despite healthy rows" 2 "UNREADABLE registry read" registry_fixture status
+  arm "RED registry producer diagnostic despite healthy rows" 2 "UNREADABLE registry read" registry_fixture diagnostic
+  arm "RED registry producer silent failure" 2 "UNREADABLE registry read" registry_fixture silent
+  arm "RED registry line limit is not an integer" 2 "UNREADABLE registry limits" registry_fixture invalid_line
+  arm "RED registry byte limit is not an integer" 2 "UNREADABLE registry limits" registry_fixture invalid_byte
+  arm "RED registry health limit is negative" 2 "UNREADABLE registry limits" registry_fixture negative_health
+  arm "RED registry ceiling is negative" 2 "UNREADABLE registry limits" registry_fixture negative_ceiling
+  arm "RED registry integer overflows Bash comparisons" 2 "signed-64-bit range" registry_fixture overflow
+  arm "RED registry integer one above maximum" 2 "signed-64-bit range" registry_fixture max_plus_one
+  arm "GREEN registry exact signed-64-bit maximum" 0 "" registry_fixture max
+  arm "GREEN registry decimal leading zeros normalize" 0 "" registry_fixture zeros
+  arm "RED registry surplus field" 2 "nine tab-separated fields" registry_fixture extra
+  arm "RED registry missing field" 2 "nine tab-separated fields" registry_fixture missing
+  arm "RED registry duplicate destination" 2 "duplicate destination" registry_fixture duplicate
+  arm "RED registry unsafe relative destination" 2 "normalized relative path" registry_fixture unsafe
+  arm "GREEN registry last row needs no LF" 0 "" registry_fixture no_lf
+  arm "GREEN registry CRLF normalizes" 0 "" registry_fixture crlf
+  arm "RED registry NUL cannot disappear in substitution" 2 "UNREADABLE registry read" registry_fixture nul
+  arm "RED registry separator control character" 2 "UNREADABLE registry read" registry_fixture control
+  arm "RED registry invalid UTF-8" 2 "UNREADABLE registry read" registry_fixture invalid_utf8
+  arm "GREEN invalid registry suffix publishes no prefix" 0 "publishes no rows" registry_fixture no_partial
+  registry_main_fixture() { (
+    local registry_entry_mode="$1" main_root="$t/readme-project"
+    export PATH="$t/readme-bin:$PATH" ROUTE_READ_PROJECT="$main_root"
+    cd "$main_root" || exit 2
+    ROOT="$PWD"; REGISTRY=routes.tsv
+    mkdir -p "$ROOT/target/tmp" || exit 2
+    printf 'See README_POLICY.md\n' > README.md
+    printf 'fixture policy\n' > README_POLICY.md
+    printf 'README.md\treader_navigation\thot_live\tfixture\t0\t0\t100\t65536\t0\nREADME_POLICY.md\treader_navigation\tnormative\tfixture\t0\t0\t0\t0\t0\n' > "$REGISTRY"
+    regen_set_registered() { return 0; }
+    emitted_hint_targets() { printf 'README_POLICY.md\n'; }
+    case "$registry_entry_mode" in
+      status|diagnostic)
+        registry_text() {
+          cat "$1"
+          [ "$registry_entry_mode" != diagnostic ] || { echo 'controlled main registry diagnostic' >&2; return 0; }
+          return 73
+        } ;;
+      malformed) printf 'extra.md\treader_navigation\tnormative\tfixture\t0\t0\tbad\t0\t0\n' >> "$REGISTRY" ;;
+    esac
+    main_routes
+  ); }
+  arm "GREEN entry flow derives exact destination count and README caps" 0 "ok (2 governed destination(s))" registry_main_fixture baseline
+  arm "RED entry flow propagates failed registry producer" 2 "REFUSED — registry inputs unavailable" registry_main_fixture status
+  arm "RED entry flow propagates registry diagnostics" 2 "REFUSED — registry inputs unavailable" registry_main_fixture diagnostic
+  arm "RED entry flow rejects malformed registry suffix" 2 "REFUSED — registry inputs unavailable" registry_main_fixture malformed
   rm -rf "$t"
   printf 'README-ROUTING-CLOSURE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
+}
+
+# Shared entry flow: self-tests invoke this same body in isolated fixtures.
+main_routes() {
+  fail=0
+  # The two-tier per-part exemption consumes the fact-ownership registry, and the regen set
+  # must agree with the doctrine driver — a disagreement refuses, never silently widens.
+  regen_set_registered scripts/check_doctrines.project.sh || {
+    echo "README-ROUTING-CLOSURE: REFUSED — the regeneration-doctrine set and the driver disagree." >&2
+    exit 2; }
+  registry_work="$(mktemp -d "$ROOT/target/tmp/registry-snapshot.XXXXXX")" || exit 2
+  trap 'rm -rf "$registry_work"' EXIT
+  if ! registry_rows="$(read_registry_rows "$REGISTRY")"; then
+    echo "README-ROUTING-CLOSURE: REFUSED — registry inputs unavailable." >&2
+    exit 2
+  fi
+  printf '%s\n' "$registry_rows" > "$registry_work/rows" || exit 2
+  out="$(verify_routes "$registry_work/rows" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)"
+  route_status=$?
+  if [ "$route_status" -eq 2 ]; then
+    printf 'README-ROUTING-CLOSURE: REFUSED — routed inputs unavailable.\n%s\n' "$out" >&2
+    exit 2
+  fi
+  [ "$route_status" -eq 0 ] || fail=1
+
+  # (2) every path-shaped destination the guard actually emits must be governed
+  dests="$registry_work/destinations"
+  : > "$dests" || exit 2
+  lc=0; bc=0; governed_count=0
+  while IFS= read -r registry_line; do
+    [ -n "$registry_line" ] || continue
+    IFS=$'\x1f' read -r dest rclass life owner hl hb cl cb cp <<<"${registry_line//$'\t'/$'\x1f'}"
+    printf '%s\n' "$dest" >> "$dests" || exit 2
+    governed_count=$((governed_count + 1))
+    if [ "$dest" = README.md ]; then lc="$cl"; bc="$cb"; fi
+  done <<< "$registry_rows"
+  if ! hints="$(emitted_hint_targets 2>&1)"; then
+    rm -f "$dests"
+    printf 'README-ROUTING-CLOSURE: REFUSED — emitted routing guidance unavailable.\n%s\n' "$hints" >&2
+    exit 2
+  fi
+  while IFS= read -r t; do
+    [ -n "$t" ] || continue
+    governed "$t" "$dests" || { out="$out"$'\n'"  UNGOVERNED emitted-hint destination '$t' — the guard routes authors there and nothing bounds it"; fail=1; }
+  done <<< "$hints"
+  rm -f "$dests"
+
+  # (5) the registry owns the landing page's own caps
+  if [ -n "$lc" ] && [ -n "$bc" ] && [ "$lc" -gt 0 ] && [ "$bc" -gt 0 ]; then
+    if ! capout="$(README_LINE_CAP="$lc" README_BYTE_CAP="$bc" scripts/check_readme_stability.sh 2>&1)"; then
+      out="$out"$'\n'"  $capout"; fail=1
+    else
+      out="$out"$'\n'"  registry caps applied: $capout"
+    fi
+  else
+    out="$out"$'\n'"  README.md has no enforced caps in the registry — the landing page must be bounded"; fail=1
+  fi
+
+  if [ "$fail" -ne 0 ]; then
+    { echo "README-ROUTING-CLOSURE: a routed destination is ungoverned, missing, or over its ceiling."
+      printf '%s\n' "$out" | grep -v '^$'
+      echo "  Give it a row in $REGISTRY with a class, an owner and a bound — or move the content."
+      echo "  Raising a ceiling needs a reviewed decision that the surface's contract expanded."
+    } >&2
+    exit 1
+  fi
+  printf 'README-ROUTING-CLOSURE: ok (%s governed destination(s))\n' "$governed_count"
+  printf '%s\n' "$out" | grep -E '^  (health:|derived:|registry caps applied:)' || true
+  exit 0
 }
 
 [ "${1:-}" = "--self-test" ] && { self_test; exit $?; }
@@ -618,55 +845,4 @@ self_test >/dev/null 2>&1 || {
   exit 2
 }
 
-fail=0
-# The two-tier per-part exemption consumes the fact-ownership registry, and the regen set
-# must agree with the doctrine driver — a disagreement refuses, never silently widens.
-regen_set_registered scripts/check_doctrines.project.sh || {
-  echo "README-ROUTING-CLOSURE: REFUSED — the regeneration-doctrine set and the driver disagree." >&2
-  exit 2; }
-out="$(verify_routes "$REGISTRY" README.md 1 "$ROOT" git doctrine/fact_ownership.tsv)"
-route_status=$?
-if [ "$route_status" -eq 2 ]; then
-  printf 'README-ROUTING-CLOSURE: REFUSED — routed inputs unavailable.\n%s\n' "$out" >&2
-  exit 2
-fi
-[ "$route_status" -eq 0 ] || fail=1
-
-# (2) every path-shaped destination the guard actually emits must be governed
-dests="$(mktemp "$ROOT/target/tmp/check_readme_routes.XXXXXX")" || exit 2; awk -F'\t' '!/^#/ && NF>=9 {print $1}' "$REGISTRY" > "$dests"
-if ! hints="$(emitted_hint_targets 2>&1)"; then
-  rm -f "$dests"
-  printf 'README-ROUTING-CLOSURE: REFUSED — emitted routing guidance unavailable.\n%s\n' "$hints" >&2
-  exit 2
-fi
-while IFS= read -r t; do
-  [ -n "$t" ] || continue
-  governed "$t" "$dests" || { out="$out"$'\n'"  UNGOVERNED emitted-hint destination '$t' — the guard routes authors there and nothing bounds it"; fail=1; }
-done <<< "$hints"
-rm -f "$dests"
-
-# (5) the registry owns the landing page's own caps
-lc="$(awk -F'\t' '$1=="README.md" {print $7}' "$REGISTRY")"
-bc="$(awk -F'\t' '$1=="README.md" {print $8}' "$REGISTRY")"
-if [ -n "$lc" ] && [ -n "$bc" ] && [ "$lc" -gt 0 ] && [ "$bc" -gt 0 ]; then
-  if ! capout="$(README_LINE_CAP="$lc" README_BYTE_CAP="$bc" scripts/check_readme_stability.sh 2>&1)"; then
-    out="$out"$'\n'"  $capout"; fail=1
-  else
-    out="$out"$'\n'"  registry caps applied: $capout"
-  fi
-else
-  out="$out"$'\n'"  README.md has no enforced caps in the registry — the landing page must be bounded"; fail=1
-fi
-
-if [ "$fail" -ne 0 ]; then
-  { echo "README-ROUTING-CLOSURE: a routed destination is ungoverned, missing, or over its ceiling."
-    printf '%s\n' "$out" | grep -v '^$'
-    echo "  Give it a row in $REGISTRY with a class, an owner and a bound — or move the content."
-    echo "  Raising a ceiling needs a reviewed decision that the surface's contract expanded."
-  } >&2
-  exit 1
-fi
-printf 'README-ROUTING-CLOSURE: ok (%s governed destination(s))\n' \
-  "$(awk -F'\t' '!/^#/ && NF>=9' "$REGISTRY" | wc -l | tr -d ' ')"
-printf '%s\n' "$out" | grep -E '^  (health:|derived:|registry caps applied:)' || true
-exit 0
+main_routes

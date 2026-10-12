@@ -1,5 +1,48 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — refuse unavailable or malformed registry policy (LIVE-CONTAINMENT.4h6c2)
+
+D56: seven unchecked registry projections let14 single failed-status/diagnostic
+faults return green0 normal/O in the actual public CLI. D57: original isolated
+verify_routes returns0 for five malformed numeric/arity fixtures; invalid and
+overflow comparisons print diagnostics without setting bad, negatives disable
+limits and a final field absorbs surplus columns. Source-pinned original
+program/raw fixture and actual public evidence are retained separately; initial
+D57 fixtures did not capture full real state and are not described as doing so.
+
+Repair lowest shared seam: checked UTF-8 read rejects binary/control input
+before Bash substitution can discard NUL; failed status or stderr refuses2.
+Validate all rows before publishing: nine fields, unique normalized relative
+paths, five nonnegative decimal limits within signed64; normalize leading zeros.
+One complete validated snapshot supplies destination membership, README caps
+and count with Bash builtins; seven original awk/wc/tr consumers disappear.
+Keep class/owner breach1, advisory health, existing ceilings and checked derived
+exemptions. Shared main_routes is invoked by both actual CLI and isolated entry
+controls. Whole inverse retains original68 controls and every undeclared byte.
+
+Qualified94/0 normal/O,17 omission pairs detected, all26 new controls fail under
+omissions. Actual public18 cases/mode: three single primary-reader faults2/no
+stdout;14 removed-consumer controls0/zero injections and exact healthy output.
+Source programs/facades/raw streams/traces pinned; each replay's real HEAD/index/
+all1404 identities exact. Same five malformed fixtures0→2 normal/O with complete
+real-state inverses; healthy fixture0. Finite evidence, not zero-defect proof.
+
+Initial fixture linked an ungoverned destination; mutation replica lost source
+executable modes; next UTF-8 mutation seam matched twice. Retain both failed
+qualifications, then narrow exact seams/modes. Initial Python facade selected
+itself through env; fresh host ps identified only the owned replay tree, stopped
+it, retained unqualified evidence and used a known-interpreter launcher. No
+product failure or old evidence overwrite is claimed. Scaffold public24/0 normal/O;
+updater already retains project routing/README checks and source-only helper.
+
+Whole-oldest DEV2901B→0288 retains104 prior entries, all old archive/seal bytes/
+modes and combined genuine receipt/digest refusals. Complete source/doc/history/
+protected inverses, focused12/sharder12/seven books, normal+print teaching and
+three literal reads pass. LIVE routing Done/1518arms; limits/canonical/CPU exact.
+Staged acceptance/seam, normal hooks, exact postcheck/brief0/host0 close COMMIT;
+separate .4h6c3 capacity authority next. Full containment adoption remains .4.
+promotion: declined (verified guard/control pair owns the repaired behavior).
+
 ## _(2026-10-12)_ — qualify remaining registry projections (LIVE-CONTAINMENT.4h6c1)
 
 D56 confirmed: actual public route CLI returns0/green after each of14 single
@@ -635,46 +678,4 @@ recheck the standard handoff census after commit. Whole oldest DEV
 5788B/two entries to0267(6021B); CH2250B/three entries to0268(2487B),60live+
 210sealed270logical. Preserve all102 predecessor entries and fixed seals/caps.
 promotion: declined (implementation of existing conservative impact policy; no new normative policy or independent lesson).
-
-## _(2026-10-11)_ — align implemented-method review surfaces (P4-SYSTEM.14 a42f)
-
-D46-IMPLEMENTATION-STATUS: active qualified overview/index and older GC evidence/
-reference teaching still described comparison/authentication/aggregate accounting
-as future, conflating implemented standalone checks with pending full adequacy.
-PROFILE's unconditional refusal reason also said comparison evaluator pending.
-Git log/blame pins the overview's last artifact-stage edit18617123/0217, before
-03ed501/0232 composition and3e5a3ea/0240 source/ELF binding. Root cause: selective
-propagation of current implementation summaries, not an opened qualification gate.
-Owned priority1 and fixed in the same finite .14 unit; full policy stays pending.
-
-Correct descriptive boundaries, optional witness/baseline syntax and program=None
-API teaching; route to existing complete examples. Change only PROFILE's reason,
-one self-test label and their comment, preserving category/unconditional refusal,
-all predicates/arms and counts. Full source seam inverses and code-fence equality
-protect original declaration date, normative policy, historical cases and APIs.
-First draft evidence33055B exceeded32768: all-candidate preflight refused before
-repair writes; concise summaries now32742B, within fixed caps. No feature teaching
-or example removed; no cap extension. Fresh UNIT navigation then rejects two new
-source-relative include links: use a root-relative file pointer; the book intro
-already owns the working chapter route. Rerun both normal/print checks. Diagnostic
-comparison initially included distinct random fixture names; normalize only the
-validated owned six-character fixture path. Both33-control prefixes and every
-other actual finding then agree, normal/O. Existing claim/currency/owner rules govern,
-promotion explicitly declined in the owning task.
-
-Before this unit, full make ci on clean3e5a3ea rc=0 all five legs:443 Rust,
-all doctrines, wasm bench/smoke53/seven books; all1370 tracked bytes/modes/Gitlinks
-unchanged and both job censuses empty. Log40159B SHA256
-5476197fa2aed74bcc2e9d3cc38972a09bb8853252992b4dce4ecc1a744c2cff,
-receipt target/p4-system-14/a42d3b/full-ci/result.json. D3b all20 committed hashes/
-modes exact, brief0/untracked; no push below cadence.
-
-Whole oldest DEV3018B to0265/CH868B to0266,58live+210sealed268logical;
-protect102 predecessor entries with both guards and real receipt+new-digest edits.
-Focused13/full PROFILE/sharder12/seven books/3196 fresh+actual links and
-normal/print descriptions pass. Whole source/task inverses, all17 literal
-examples byte-exact from verified parent; actual old/new33-control gate prefixes
-retain every finding except reason normal/O. History102/scope1358 bytes/modes/
-Gitlinks exact normal/O; actual receipt+new-digest edits refuse. D46 closed. LIVE1401,
-canonical data, existing caps/seals/ordinary parts and CPU/qualification unchanged.
 

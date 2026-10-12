@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0019 (leaf LIVE-CONTAINMENT.4) — refuse unavailable or malformed registry policy
+
+- Fix D56/D57: validate the complete registry before projecting destinations/README caps/count; reject failed status, diagnostics, malformed arity/paths/limits. Preserve68 original controls;94 pass,17 omissions detected/all26 new controls discriminate normal/O.
+- Public18 cases/mode: three reader faults refuse2/no stdout; seven unchecked consumers are removed. Five original malformed fixtures0→2; real1404 identities/pins exact. Whole DEV rollover retains104 prior entries; focused12/sharder12/seven books/three reads and scaffold24 normal/O pass. LIVE routing Done/1518arms; caps/CPU unchanged, separate authority review next.
+
 ## SEMULITH-LC-0018 (leaf LIVE-CONTAINMENT.4) — qualify remaining registry projections
 
 - Confirm D56 through the actual public CLI: seven registry consumers/14 failed-status or diagnostic cases still return green0, normal/O. Preserve unique raw streams/traces, pinned programs/facades and real HEAD/index/all1402 identities.

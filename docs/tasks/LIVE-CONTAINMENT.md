@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–55 repaired; .4h6c2 D56 repair, .4h6c3 capacity review, then full adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; .4h6c3 capacity review, then full inventory/checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -285,7 +285,7 @@ Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
 complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
 .4h6b/LC-0017 completes D55; .4h6c1/LC-0018 confirms D56. Immediate next
-.4h6c2/LC-0019 repairs registry reads, then .4h6c3 reviews capacity.
+.4h6c2/LC-0019 completes D56/D57; .4h6c3 reviews capacity next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -755,6 +755,87 @@ formatter qualification and optimized replay here; do not change code or limits.
 - [x] **LOCKSTEP** — LIVE routing closure Mostly Done; book/owner/pointer agree
   with observed D56. CPU unchanged; .4h6c2 repair precedes .4h6c3 authority.
 
+### .4h6c2 / SEMULITH-LC-0019 — refuse unavailable registry projections
+
+Status: complete; D56/D57 fixed and verified. Owned on clean3ab0660 after exact10-file postcheck, brief0,
+unrestricted handoff0 and the full COMMIT report. D56 priority1: actual public
+CLI green0 after fourteen single failed-status/diagnostic injections into seven
+registry destination/cap/count consumers. Raw LC-0018 before/formatter/optimized
+streams, program/facade pins and per-run complete real-state inverses are frozen.
+Repair those projections with checked producer status, stderr and typed output;
+never let formatting emit green before all required reads succeed. Preserve
+all68 original controls, declared lifecycle/health/ceiling/exemption behavior,
+current limits, canonical records, sealed and ordinary history, CPU and profiles.
+Retain failure2 versus measured-breach1; no new cap or silent input fallback.
+
+Own target/live-containment/registry-repair, fresh immutable HEAD census and
+real HEAD/index/all1404 identities, source-preserving edits and qualified public
+normal/O before/after replay, positive/negative controls and omissions proving
+they discriminate. Inspect registry row parsing too: candidate D57 (unverified)
+is malformed numeric/arity input bypassing a comparison. Log/reproduce with a
+source-pinned isolated fixture before classifying it; fix here if small/shared,
+otherwise own a priority before capacity authority. Do not infer absence of
+other readers or a universal guarantee from this finite assessment.
+
+Own relevant governance/toolbox/derived-arm/fact mirrors and scaffold retention
+checks, LIVE/book/pointer/frontier sync, complete source/history/protected-mode/
+Gitlink inverses and necessary whole-oldest rollover, genuine damaged-receipt
+controls, focused/book/rendered/literal, staged acceptance/seam, normal hooks,
+exact postcheck/brief0 and unrestricted host0. Existing routing code/helper are
+retained by the updater; inspect that contract before changing helper shape.
+D56 remains open until verified repair; .4h6c3 capacity review follows clean
+COMMIT, then full containment inventory/checker adoption remains .4.
+promotion: declined (the verified guard/control pair owns the repaired behavior).
+
+D57 confirmed/priority1, owned in this same bounded repair: source-pinned
+original verify_routes on isolated fixtures returns0 for invalid line/byte
+limits, negative line ceiling, overflowing byte ceiling and a surplus column.
+Invalid/overflow comparisons print Bash integer diagnostics but bad stays0;
+negative limits disable enforcement, and the last parsed field absorbs extras.
+The healthy fixture also0 without diagnostics. This is a function-level replay,
+not the actual public CLI proof used for D56. Source prefix and original script
+hashes/raw results: registry-repair/schema-before.json. Root cause is missing
+row arity/nonnegative bounded-integer validation before numeric comparisons.
+Validate schema before enforcing limits, retaining named class/owner breach1
+behavior; unavailable producers refuse2. Add permanent discriminating controls
+and preserve original68. D56/D57 both must close before capacity authority.
+
+
+Repair: checked UTF-8/control-safe full registry read; exact9 fields, unique
+normalized relative destinations, five decimal limits0..MAX_I64 with leading
+zero normalization. Derive destinations/README caps/count with Bash from one
+validated snapshot; remove seven unchecked consumers. Existing class/owner
+breach1, health/ceiling/derived exemption semantics and all68 old controls stay.
+Shared main_routes is the actual CLI body and the entry-flow fixture body.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/registry-repair/check-before.py`
+  rc=0 normal/O: D56's seven consumers/14 single faults returned green0;
+  original source pins/raw traces/streams and real1402 inverses retained.
+  schema-before.json pins the original function: five malformed fixtures0,
+  missing arity/range checks and swallowed comparison errors explain D57.
+- [x] **ADDRESSED** — `python3 target/live-containment/registry-repair/check-after.py`
+  rc=0 normal/O: public18 cases/mode, primary read status/diagnostic/malformed
+  faults2/no stdout with one traced injection; removed14 consumer faults0
+  with zero injections. Same five malformed fixtures2; healthy0. Real1404
+  identities/program pins exact. Self-test94/0;17 omissions detected and
+  all26 added controls fail under omissions; no universal absence claim.
+- [x] **NO REGRESSION** — `bash target/live-containment/registry-repair/focused.sh`
+  rc=0: focused12/sharder12/seven books; source/history/rendered/verify normal/O
+  preserve104 old entries, protected files/Gitlink, all limits/canonical/seals,
+  full normal+print teaching/three literal reads. Handoff probe24/0 normal/O.
+  Staged acceptance/seam and normal hooks precede exact postcheck/brief0/host0.
+- [x] **LOCKSTEP** — driver/governance/toolbox/LIVE/book/pointer/owner agree:
+  routing Done;39 doctrines/1518 arms. CPU unchanged. .4h6c3 capacity authority
+  review is next; full containment inventory/checker adoption remains .4.
+
+Instrument corrections: initial registry fixture included an ungoverned link;
+initial mutation replica lost executable modes; a later UTF-8 seam was ambiguous.
+Both failed qualifications remain preserved. Public Python facade initially
+self-selected through env; stopped only its freshly identified owned process
+tree and preserved unqualified evidence before using a real-interpreter launcher.
+These instrument failures are not product regressions; no original evidence was
+replaced. Baseline/public/omission replay source bytes and modes are pinned.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1062,6 +1143,15 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6c2: registry-repair check-before/check-after/source-inverse/verify/history/
+rendered normal/O and focused.sh rc=0. D56 primary faults2/no stdout; removed
+seven consumers absent; D57 five malformed fixtures0→2. Public18 per mode,
+real1404/pinned programs exact;94 controls,17 omissions/all26 discriminators.
+Original68 byte-exact. Whole DEV rollover preserves104 old entries; caps,
+canonical/history/seals/CPU exact. Focused12/sharder12/seven books/full normal+
+print/three literal reads, handoff probe24/0 normal/O, staged acceptance/seam
+and normal hooks required. LIVE routing Done/1518arms; .4h6c3 authority next.
+
 .4h6c1: registry-projections check-evidence/verify/history/rendered normal/O and
 focused.sh rc=0: seven actual consumers/14 fault cases green0, single traced
 injections and healthy delegates; all raw streams/pins and per-run real1402
@@ -1184,6 +1274,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0019 (leaf LIVE-CONTAINMENT.4): refuse unavailable or malformed registry policy` — .4h6c2 complete/D56–57 fixed; .4h6c3 separate capacity authority review next.
 
 `SEMULITH-LC-0018 (leaf LIVE-CONTAINMENT.4): qualify remaining registry projections` — .4h6c1 complete/D56 confirmed; priority1 .4h6c2 repair before .4h6c3 authority.
 

@@ -79,23 +79,24 @@ cat docs/decisions/decision_profiles-family-five-units.md
 
 ### Capacity evidence must be readable
 
-Run the route guard and its failure controls:
+Run 94 controls:
 
 ```sh
 bash scripts/check_readme_routes.sh
 bash scripts/check_readme_routes.sh --self-test
 ```
 
-D52–54 check file metrics, links, hints and README provider reads. Checked
-NUL inventories supply totals/parts; empty families are valid. Breaches return1;
-health is advisory; checked derived mirrors stay exempt. Failed file/date/policy
-reads refuse2; no-match1 is valid. Sync retains the README guard/helper.
+D52–57 check NUL inventory totals/parts, metrics, links, hints and README/registry reads.
+Read failures/diagnostics return 2; breaches return 1; health is advisory.
+Empty families and date/policy no-match (1) are valid; checked derived mirrors
+stay exempt. Sync retains that guard/helper.
 
-D56 is open: seven registry consumers ignore failed status or diagnostics.
-All14 public fault cases return green0 normal/O. Destinations, README caps and
-count projections need LC.4h6c2/LC-0019 repair before capacity review. Healthy
-runs do not prove failure discrimination. Working measurements are not atomic
-snapshots or authority to raise limits. Full adoption remains LIVE-CONTAINMENT.4.
+Registry: UTF-8, nine tab-separated fields, unique normalized relative paths,
+limits 0..9223372036854775807. `00064` becomes 64; `-1` returns 2.
+Validated rows supply routes/caps/count. D56's seven unchecked
+consumers are removed; three reader faults return 2 normal/O. D57's five
+malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
+Checks are finite; measurements are not atomic or capacity authority. Full adoption remains LIVE-CONTAINMENT.4.
 
 ## Local containment contract
 
