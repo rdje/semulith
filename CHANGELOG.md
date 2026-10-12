@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0022 (leaf LIVE-CONTAINMENT.4) — qualify containment inventory inputs
+
+- Pin complete1408 source identities and39 existing destinations; durable read-only replay and12 deliberate refusals pass normal/O. Publish a local graph/utility/field/debt/checker integration contract; complete semantic coverage and full adoption remain pending.
+- Retain caps/count107/health64 debt, canonical/profile/CPU and sealed histories. Book gains the contract read with only bounded duplicate navigation shortened; preserve whole old CH/DEV entries, source inverses and modes. Focused12/sharder12/seven books/rendered/literal checks and normal COMMIT required; .4i2 graph inventory next.
+
 ## SEMULITH-LC-0021 (leaf LIVE-CONTAINMENT.4) — apply reviewed task count authority
 
 - Fresh same33 IDs/typed96 match the separate authority; two omissions refuse normal/O. Change only count96→107 plus a dated registry pointer; health64 warning debt/all other bounds stay fixed. Original107 breach1 becomes0; new108 breach1/65 advisory0.

@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; count authority applied; .4i full inventory/checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i1 input contract; .4i2 complete graph inventory next |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -972,6 +972,99 @@ Precondition instrument initially omitted imports needed by its shared checked
 Git readers; it refused before any registry write. Add explicit stat/path imports,
 then both qualified preconditions pass; no product failure or cap change on error.
 
+### .4i — complete containment adoption (active)
+
+Count prerequisite is complete at3615547; full adoption is not. Follow the
+locally owned contract's checklist with separately committed children:
+.4i1 local inventory/integration contract and closed source inputs;
+.4i2 complete transitive surface/reader/author/terminal graph;
+.4i3 utility, consumers, canonical authority and lifecycle decisions;
+.4i4 explicit derived-state fields, reviewed survivors/limits and transition debt;
+.4i5 local neutral-checker qualification and revision-aware adapters;
+.4i6 unconditional resulting-tree integration with fail-closed coverage;
+.4i7 independently owned atomic migrations for measured debt;
+.4i8 complete coverage/retrieval/pressure/field truth and adoption signoff.
+Do not combine unrelated families or classify by file age/number-shaped prose.
+Do not change direct browsing or delete unique material without the required
+review/retention authority. Existing guards stay unconditional during adoption.
+
+### .4i1 / SEMULITH-LC-0022 — qualify inventory inputs and local contract
+
+Status: complete; input qualification only, full graph/adoption pending. Owned on clean3615547 after normal hooks, exact8-file postcheck,
+brief0/untracked, unrestricted handoff0 and full COMMIT report. Read the full
+local doctrine, source adoption guide and published neutral checker contract.
+The external source is read-only (fsmgen HEAD21f4d3d); its ordinary package tree
+is not a submodule. Complete local imported body remains20208B/SHA0be4823e,
+including its six-byte separator; heading-only comparison is20202B and is not
+the complete imported-body measurement. No source-policy drift observed.
+
+Own target/live-containment/inventory-contract, fresh immutable HEAD census
+and real HEAD/index/all1408 identities, checked complete source/path and existing
+39-route declarations, local mapping of existing dimensions/classes/verifiers
+against the published checker schema, and a bounded durable contract under
+docs/tasks/artifacts/live-containment/, including its read-only source replay
+qualifier and deliberate malformed-input controls. This is preparatory code,
+not an integrated containment gate; own scripts/qualify_containment_inventory_inputs.py,
+its toolbox discovery row and acceptance. Place executable discipline under the
+existing scripts/ classification, rather than expanding the gate's path policy.
+Separate complete source membership from
+semantic graph coverage: no claim of complete surface/route/field adoption in
+this preparatory slice. Keep authority/utility/lifecycle choices open until their
+actual consumers are reviewed; no mechanical extension/date-based classification.
+
+Own a concrete .4i2 discovery/coverage procedure: reader and emitted author
+routes, transitive includes/index/query expansion, generated views, exact terminals,
+opaque Gitlinks, candidate exclusions with reasons, and finite control-plane
+bounds. Review published checker execution/proof-token/staged-input contracts
+without importing donor paths, thresholds, owners or debt. Do not yet copy or
+integrate checker implementation, migrate content, alter limits or inspect
+submodule internals. Published integration contracts only for Gitlinks.
+
+Own source/protected bytes/modes/Gitlink and whole-history inverses, necessary
+whole-oldest CH/DEV rollover, real receipt/digest refusals, bounded book frontier/
+pointer/owner synchronization, focused/seven books/rendered/literal checks,
+normal hooks/exact postcheck/brief0/unrestricted host0. Existing registry count107,
+health64 warning debt, canonical records, archived histories, CPU and profiles
+remain exact. .4i2 follows COMMIT; all later adoption children stay pending.
+promotion: declined (local preparatory contract and source replay are task artifacts, not new cross-cutting authority).
+
+
+Implementation: inventory-contract.md specifies the source boundary, local
+schema/classification gaps and separately owned .4i2–8 procedure. Tracked
+qualify_containment_inventory_inputs.py replays immutable1408 identities/39 destinations;12 named
+refusal controls pass normal/O. Registry/count107/health64 debt and imported
+policy body unchanged. Complete graph/field coverage, lifecycle choices,
+neutral-checker import and integration are not claimed by this slice.
+
+- [x] **REPRODUCE / ISSUE** — existing39 routed destinations are a finite
+  starting set; complete semantic graph coverage remains pending, not inferred.
+- [x] **FIX** — locally owned bounded contract and read-only source qualifier;
+  complete graph/utility/fields/debt/checker activities have separate owners.
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_containment_inventory_inputs.py`
+  rc=0 normal/O: complete source1408/39 declarations pinned; existing declarations
+  are inputs, with semantic graph coverage explicitly pending LC.4i2.
+- [x] **ADDRESSED** — `python3 target/live-containment/inventory-contract/verify.py`
+  rc=0 normal/O: complete source/protected/book/task/history inverses;
+  local contract and read-only qualifier align, no capacity or lifecycle change.
+- [x] **NO REGRESSION** — `bash target/live-containment/inventory-contract/focused.sh`
+  rc=0: focused12/sharder12/seven books; rendered normal+print and five
+  literal reads. All prior whole entries/modes/seals, LIVE/CPU remain exact.
+- [x] **LOCKSTEP** — bounded book/pointer/task/artifacts/toolbox agree: closed
+  inputs qualified; full adoption remains .4i. Normal COMMIT and postcheck close
+  this unit before .4i2 complete graph inventory begins.
+
+Final evidence: whole DEV3178B→0291/3411B,
+SHA840f48217ca358f7fbee42f5e9f2b54f930f327db729bf7da5e19f9398349132;
+105 prior entries and full source/order preserved. Combined guards refuse real
+original/moved/published receipt edits with updated digests. Immutable normal/O
+censuses,1400 protected regular files/Gitlink exact. Focused12/sharder12/seven
+books and3244 fresh/actual links pass; complete navigation teaching, expanded
+policy and five literal decision/contract reads verified normal/O. Render
+instrument first compared an include token with expanded prose; trace pins that
+mismatch, then correct only the instrument and rerun. No product render defect.
+Book grows1B to524282; every other canonical/profile/CPU/registry input exact.
+Normal staged acceptance/seam, hooks and exact postcheck/brief0/host0 required.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1279,6 +1372,13 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4i1: immutable source1408/39 declarations and12 durable input refusals normal/O.
+Local contract separates source membership from pending semantic graph coverage,
+utility/lifecycle/fields/debt and checker integration. Whole-history/source/
+protected inverses, focused12/seven books/rendered/five literal reads and normal
+COMMIT required; focused12/sharder12/seven books/3244 links and five reads pass. Existing caps, count107/health64 debt, canonical/profile/CPU
+and sealed histories remain exact; .4i2 complete graph inventory follows.
+
 .4h6c4: task-capacity-application check-evidence/verify/history/rendered normal/O
 and focused.sh rc=0. Fresh same33 IDs/typed96, exact separate authority and two
 precondition refusals; count96→107 only plus dated pointer. Original107 breach1
@@ -1427,6 +1527,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0022 (leaf LIVE-CONTAINMENT.4): qualify containment inventory inputs` — .4i1 inputs and local integration contract; .4i2 graph inventory next.
 
 `SEMULITH-LC-0021 (leaf LIVE-CONTAINMENT.4): apply reviewed task count authority` — .4h6c4 complete; count107, health64 debt; .4i full containment adoption next.
 

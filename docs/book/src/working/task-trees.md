@@ -98,22 +98,22 @@ limits 0..9223372036854775807. `00064` becomes 64; `-1` returns 2.
 Validated rows supply routes/caps/count. D56's seven unchecked
 consumers are removed; three reader faults return 2 normal/O. D57's five
 malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
-Checks are finite; measurements are not atomic or capacity authority. Full adoption remains LIVE-CONTAINMENT.4.
+Checks are finite; measurements are not atomic or capacity authority. LC.4i1 inputs are qualified; graph coverage and full adoption remain open.
 
 ## Local containment contract
 
-The local contract and its adoption frontier:
+Contract and frontier:
 
 ```sh
 cat LIVE_DOCUMENT_SIZE_CONTAINMENT.md
+cat docs/tasks/artifacts/live-containment/inventory-contract.md
 ```
 
 {{#include ../../../../LIVE_DOCUMENT_SIZE_CONTAINMENT.md}}
 
 ## Every lane of the plan, and who owns it
 
-Included live from `docs/TASK_TREE.md`, so this map cannot drift from the index the repository
-maintains — the OPEN trees:
+Open trees, included live from `docs/TASK_TREE.md`:
 
 {{#include ../../../TASK_TREE.md:trees}}
 
