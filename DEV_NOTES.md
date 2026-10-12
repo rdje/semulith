@@ -1,5 +1,36 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — qualify remaining registry projections (LIVE-CONTAINMENT.4h6c1)
+
+D56 confirmed: actual public route CLI returns0/green after each of14 single
+injections normal/O: failed73 with healthy output, or successful output plus
+diagnostics, for two destination producers, README line/byte cap projections,
+and final governed-count awk/wc/tr consumers. Healthy delegates all return0;
+traces prove exactly one injection. Every fault's stdout matches its batch's
+healthy baseline; stderr cases retain the injected diagnostic. No corruption
+or disappearance of a tracked input is needed to reproduce the false green.
+
+Root cause: unchecked awk producers/substitutions and final printf swallowing
+the count pipeline's status despite pipefail. Source checker SHAff2fdb76 and
+helper/README/registry/facades are pinned. Normal first matrix uses only awk;
+separate formatter matrix adds wc/tr; optimized matrix uses all three and
+PYTHONOPTIMIZE=1 for children. Preserve all original raw outputs, hashes and
+per-run real HEAD/index/all1402 identities. Task ownership was extended between
+normal batches, so do not claim the working tree was identical across batches.
+Each batch's complete before/after state is exact; public source programs match.
+
+Priority1 repair .4h6c2/LC-0019 is immediate next, ahead of .4h6c3 capacity
+review. This assessment changes no checker or bound; LIVE routing closure
+is Mostly Done and the book names all seven consumers and current limitation.
+D51–55 remain fixed; all canonical/profile/CPU/qualification state is exact.
+Whole-oldest DEV3990B→0286/CH1330B/two entries→0287 retain105 prior entries,
+all old archive/seal bytes/modes and combined genuine receipt/digest refusals.
+Evidence target/live-containment/registry-projections: check-evidence/verify/
+history/rendered normal/O,1393 protected files/Gitlink, focused12/sharder12/
+seven books and full normal+print/three literal reads. Normal hooks, exact
+postcheck, brief0 and unrestricted host0 precede the repair. Full adoption .4.
+promotion: declined (the owned defect/repair carries this finite assessment).
+
 ## _(2026-10-12)_ — correct the five-unit composition receipt (LIVE-CONTAINMENT.4h6b)
 
 D55 fixed with a separate858B correction; preserve the entire original authority.
@@ -646,59 +677,4 @@ examples byte-exact from verified parent; actual old/new33-control gate prefixes
 retain every finding except reason normal/O. History102/scope1358 bytes/modes/
 Gitlinks exact normal/O; actual receipt+new-digest edits refuse. D46 closed. LIVE1401,
 canonical data, existing caps/seals/ordinary parts and CPU/qualification unchanged.
-
-## _(2026-10-11)_ — compose authenticated source and ELF findings (P4-SYSTEM.14 a42d3b)
-
-Append source_image=None after all existing EvaluationCheck positional fields;
-keep evaluate_retained_unit's signature and old raw/scoped/method/context/
-manifest/file/identity/receipt/verdict order. Select immutable source/image
-bindings from the frozen execution plan before artifact I/O. Explicitly request
-Q's opt-in17 snapshots/1MiB source/64KiB image roles and64KiB unused rebuild room,
-under unchanged128MiB reads/16MiB artifact-snapshot payload. Q default15/API/
-role/accounting/seed/failure-release contracts remain exact. No artifact reopen.
-
-Failed/unsupported observed comparisons return before entry extraction/build,
-with no image finding; invalid entry or unavailable construction cannot mask
-those diagnostic outcomes. Once comparison is satisfied, pass its authenticated
-baseline expectation and frozen selected program/budget to the public context
-owner, then exact source/image bytes and validated label/entry once to the sole
-correspondence owner. UnitError refuses with a separate image-context reason;
-retain satisfied comparison/authentication. Preserve matched/refused/unavailable
-content findings directly, including both image fingerprints on mismatch;
-unexpected programming errors propagate. Return metadata only and release the
-bundle. Positive correspondence remains pending full adequacy; closure/impact/
-source-grounded expected property/collector provenance remain. Reserved64KiB
-covers one final rebuilt ELF; decoding/tokens/assembled intermediates/copies/tool
-I/O are outside artifact-snapshot accounting, not exact RAM/time guarantees.
-
-Old fixture openly had opaque source/image and absent entry. Replace only its
-authoring with real bounded GC source/ELF, explicit entry and coherent synthetic
-addi trace; no reference process or independent encoding/experiment credit.
-Whole old evaluator/probe inverses recover every original byte after undoing
-only additive composition, fixture authoring and one reopen-mutation seam.
-26 new controls/14 omissions lose22/1/1/10/5/18/16/1/1/3/1/11/22/2 assertions,
-zero errors, normal/O. Original42/29 and23/seven retain every outcome/failure
-count: compare actual matrices to every old literal arm before registration.
-Add30 PROFILE arms, old424 exact/new454; GUEST328 exact,39 doctrines1401 derived.
-
-Initial26 controls expose four fixture-assumption failures: two use ';' instead
-of assembly '#', budget2 trace uses short rather than16-digit GPR hex, and odd-
-entry control incorrectly assumes alignment precedes canonical context loading.
-Diagnose existing owners/probes and correct instrument only. Context-validation
-omission then exposes one mock call_args None access; assert call_count first,
-rerun full new/legacy matrix before registration. No harness errors or false
-credit survive. Full new book example shows pending/mismatch/unavailable/failed/
-missing-entry outcomes, separate findings and bounds; update only current
-teaching and retain whole prior context example. Complete book/source/task/API/
-method/checker inverses/340 raw/243 maps exact. Focused17/sharder12/seven books/
-3186 links/all17 examples/normal+print pass;102 entries/1349 other files/modes/
-Gitlinks and216 ELF/167 GC exact normal/O. Real receipt+new-digest edits refuse;
-only inherited whole-entry EOF blanks in DEV/0263/0264, no trimming. No CPU advance.
-Whole oldest DEV3121B to0263(3354B/40d5789b96d561795cc729922315eafff19c5140fd6b86a269d7858fa5e13fe6),
-CH870B to0264(1107B/6842d8cbaad1062effe5178d787d542a705b13a7c8455b7e755bf78b24f51466).
-56live+210sealed266logical;102 predecessor entries and actual old/moved/published
-receipt+new-digest refusals owned with both complementary history guards.
-Fixed caps/seals/ordinary history and unrelated files/modes/Gitlinks exact.
-Evidence target/p4-system-14/a42d3b; final COMMIT hooks/hashes/modes/brief0/censuses,
-then full CI on clean composition milestone before further finite a42 work.
 

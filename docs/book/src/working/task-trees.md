@@ -86,16 +86,16 @@ bash scripts/check_readme_routes.sh
 bash scripts/check_readme_routes.sh --self-test
 ```
 
-D52–54 fixes check file counts, README links, emitted hints and provider reads.
-A successful, stderr-free NUL inventory supplies validated totals and part sizes.
-Unavailable inputs refuse2 without green; a measured ceiling breach returns1.
-An empty tracked family is valid; health warnings do not block and checked
-regeneration-gated mirrors keep their exemption. README date and literal policy
-counts accept legitimate no-match1, but refuse failed or diagnostic reads.
-Scaffold sync retains the local README guard and helper; review replacements
-explicitly. Working-file measurements over tracked membership are not atomic
-snapshots or authority to raise limits. Full neutral containment adoption remains
-LIVE-CONTAINMENT.4.
+D52–54 check file metrics, links, hints and README provider reads. Checked
+NUL inventories supply totals/parts; empty families are valid. Breaches return1;
+health is advisory; checked derived mirrors stay exempt. Failed file/date/policy
+reads refuse2; no-match1 is valid. Sync retains the README guard/helper.
+
+D56 is open: seven registry consumers ignore failed status or diagnostics.
+All14 public fault cases return green0 normal/O. Destinations, README caps and
+count projections need LC.4h6c2/LC-0019 repair before capacity review. Healthy
+runs do not prove failure discrimination. Working measurements are not atomic
+snapshots or authority to raise limits. Full adoption remains LIVE-CONTAINMENT.4.
 
 ## Local containment contract
 

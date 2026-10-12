@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–55 repaired; .4h6c capacity review, then full inventory/checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–55 repaired; .4h6c2 D56 repair, .4h6c3 capacity review, then full adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -284,7 +284,8 @@ Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
 complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
-.4h6b/LC-0017 completes D55; .4h6c reviews capacity next.
+.4h6b/LC-0017 completes D55; .4h6c1/LC-0018 confirms D56. Immediate next
+.4h6c2/LC-0019 repairs registry reads, then .4h6c3 reviews capacity.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -701,6 +702,59 @@ HEAD/index/all1402 identities are unchanged. D55 original bytes remain prefix.
 - [x] **LOCKSTEP** — canonical correction/index/book/pointer/frontier agree;
   CPU qualification unchanged. .4h6c capacity review and full .4 adoption remain.
 
+### .4h6c1 / SEMULITH-LC-0018 — qualify remaining registry projections
+
+Status: complete; D56 confirmed/repair owned next. Owned on cleanf5c4639 after exact7-file postcheck, brief0,
+unrestricted handoff0 and the full COMMIT report. During read-only capacity
+preparation, observed unchecked awk destinations/cap/count projections in the
+route guard. Candidate D56, priority1 if confirmed: status/diagnostic failures
+may still yield green, contrary to the routed-input failure contract. Reproduce
+through the actual public CLI with narrowly matched executable facades; preserve
+real HEAD/index/all1402 tracked identities and pinned checker/helper/registry.
+Probe both destinations reads separately, README line/byte cap projections,
+and final governed-count awk/wc/tr reads. Cover failed status with plausible
+output, diagnostic successful output, and a healthy baseline; finite traces
+must prove injection into actual registry consumers, leaving self-tests intact.
+Do not infer failure from source inspection alone. If confirmed, own immediate
+next .4h6c2 repair before .4h6c3 capacity authority; otherwise close the candidate
+with the exact observed limits. No runtime code, cap, source-authority or archive
+body changes in this assessment slice.
+
+Own target/live-containment/registry-projections, closed immutable source and
+real-state censuses, unique before/raw result evidence, normal/O public replay,
+book/LIVE/pointer/frontier honesty, complete source/history inverses and needed
+whole-oldest DEV/CH rollover, genuine receipt/digest controls, protected modes/
+Gitlink, focused/seven-book/rendered/literal, staged acceptance/seam, normal
+COMMIT, exact postcheck and unrestricted host0. Keep existing qualifications,
+canonical records, current limits and seals exact. Full adoption remains .4.
+promotion: declined (the owning defect/repair leaf carries this finite assessment).
+
+D56 confirmed by actual public CLI: healthy baseline0, all ten targeted awk
+status73/success-with-stderr controls also0 with the green banner. Both
+destinations projections, README line/byte caps and governed-count extraction
+are affected. Exactly one traced injection per fault; delegated reads all0.
+Source checker/helper/registry/facade hashes and real HEAD/index/all1402
+identities remain exact. Raw streams/traces/censuses: registry-projections/before.
+Root cause: unchecked awk substitutions/producers; final printf ignores the
+failed count pipeline even with pipefail enabled. Priority1 repair is owned
+immediate next .4h6c2/LC-0019, ahead of .4h6c3 capacity authority. Finish wc/tr
+formatter qualification and optimized replay here; do not change code or limits.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/registry-projections/check-evidence.py`
+  rc=0 normal/O: seven actual consumers ignore failed status/diagnostics;
+  all14 fault cases return0/green with one traced injection and healthy delegate.
+- [x] **ADDRESSED** — `python3 target/live-containment/registry-projections/verify.py`
+  rc=0 normal/O: finite assessment, LIVE/book truth and priority1 immediate
+  repair are owned; original streams/program pins and real1402 identities exact.
+  This assessment does not claim D56 fixed; .4h6c2/LC-0019 owns the repair.
+- [x] **NO REGRESSION** — `bash target/live-containment/registry-projections/focused.sh`
+  rc=0: focused12/sharder12/seven books; history/rendered normal/O preserve105
+  prior entries/1393 protected files/Gitlink, complete source/head inverses,
+  all caps/canonical/seals and full normal+print/three literal reads. Staged
+  acceptance/seam and normal hooks must pass before COMMIT closes this slice.
+- [x] **LOCKSTEP** — LIVE routing closure Mostly Done; book/owner/pointer agree
+  with observed D56. CPU unchanged; .4h6c2 repair precedes .4h6c3 authority.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1008,6 +1062,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6c1: registry-projections check-evidence/verify/history/rendered normal/O and
+focused.sh rc=0: seven actual consumers/14 fault cases green0, single traced
+injections and healthy delegates; all raw streams/pins and per-run real1402
+identities exact. Whole source/head inverses retain105 prior entries/1393
+protected files/Gitlink; DEV3990B→0286/CH1330B→0287; frozen/canonical/caps exact.
+Focused12/sharder12/seven books/full normal+print/three literal reads pass.
+LIVE routing Mostly Done/D56 priority1 repair .4h6c2 next; CPU unchanged.
+
 .4h6b: five-unit-correction assess/verify/history/rendered normal/O and focused.sh
 rc=0: four closed inventories, complete profile deltas and original authority
 pins; two wrong-count controls refuse; real1402 identities exact. Whole source/
@@ -1122,6 +1184,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0018 (leaf LIVE-CONTAINMENT.4): qualify remaining registry projections` — .4h6c1 complete/D56 confirmed; priority1 .4h6c2 repair before .4h6c3 authority.
 
 `SEMULITH-LC-0017 (leaf LIVE-CONTAINMENT.4): correct the five-unit composition receipt` — .4h6b complete/D55 fixed; .4h6c separate capacity review next.
 

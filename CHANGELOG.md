@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0018 (leaf LIVE-CONTAINMENT.4) — qualify remaining registry projections
+
+- Confirm D56 through the actual public CLI: seven registry consumers/14 failed-status or diagnostic cases still return green0, normal/O. Preserve unique raw streams/traces, pinned programs/facades and real HEAD/index/all1402 identities.
+- Own priority1 repair next, before capacity authority. Book and LIVE routing closure now disclose the gap (Mostly Done); keep code, caps, canonical records and CPU exact. Preserve105 prior entries through whole DEV3990B/CH1330B rollover and verify full inverses/focused/seven books/literal reads.
+
 ## SEMULITH-LC-0017 (leaf LIVE-CONTAINMENT.4) — correct the five-unit composition receipt
 
 - Fix D55 by retaining the complete original authority and appending its source-pinned correction:151 prior+9 LAN files=160/845819B. The147 subtotal came from partial UART staging; every original bound and raise rationale stands.
@@ -471,25 +476,4 @@
 - Independent author/new and prior matrices/corpus exact; Rust173/17/239,
   FP/focused/six books green. Core/data/frozen/history/LIVE/registry110/
   effective108/114 unchanged. D completion/bindings and remaining pairs stay open.
-
-## SEMULITH-P4-0179 (leaf P4-SYSTEM.13 c32b) — complete and bind finite F witnesses
-
-- Bind all30F forms:203832positive/12852refusal-fault full-state boundaries,
-  including raw transfers/sign payloads, improper boxes, rounding and FS gates.
-- Twelve new wrong effects,16bad captures and16actual disabled controls
-  discriminate; missing-binding RED before2entries, prior108entries exact.
-- Independent author/directed literals/prior numeric/corpus exact; shared
-  specfp lineage explicit. Rust173/17/237, FP/focused/six books green.
-- Core/data/frozen/history/LIVE exact; registry110/effective108/114.
-  D/reservation/SC/freeze and .14 evidence/provenance sweep remain open.
-
-## SEMULITH-P4-0178 (leaf P4-SYSTEM.13 c32b0) — contain privilege timeline and development receipts
-
-- Preserve10whole checkpoint paragraphs/8436payload B in finite12446B archive;
-  full14486B source inverse exact, corruption/marker/omission controls refuse.
-- Retain current features, commands/examples/tables/headings/links and CSR
-  controls; save5723chapter B, add worked inverse under unchanged caps.
-- Sharder12/0; five whole DEV entries→0230, full35081B inverse and prior history
-  exact. Core/data/frozen/registry108/effective106/114/LIVE unchanged; previous
-  Rust173/17/234 applies, focused/six books green. C32b/0179 completes F next.
 
