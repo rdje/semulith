@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0032 (leaf LIVE-CONTAINMENT.4) — qualify the project-book index consumer
+
+- Replay all1443 immutable identities;54 fixture inputs,49 chapters/40 terms and53 actual full source reads agree with independent expansion normal/O. Both public baselines pass; three copied generator omissions and two damaged-ledger controls discriminate.
+- Twelve input cases/both interfaces produce24 observations per mode and expose12 D73 verdict failures. Actual read failures/UTF-8 inputs traceback1; LC0033 priority1 repair is immediately next. Preserve source/history/mode/seal/cap inverses and teach raw-source index scope; full graph/adoption and processor qualification remain open.
+
 ## SEMULITH-LC-0031 (leaf LIVE-CONTAINMENT.4) — retain whole closed reader records
 
 - Retain nine complete LC0022–30 units plus the complete LC0027 checklist:61745B/869LF verbatim in a new ordinary archive. Copy/authenticate before retirement; ten original native headings/anchors link to complete records, both archived articles remain exact, generated search resources resolve.
@@ -428,9 +433,4 @@
 
 - Preserve76064B of closed-.13 receipts in archive12 with complete117546B source inverse; retain live task graph/.14/frontier and fix the book census route. Six damaged task/journal controls refuse.
 - Publish eight whole DEV and22CHANGELOG entries to0234/0235, with ordered byte inverses and dry-run parity; sharder12/0, focused9/six books/verifier pass. All prior history/code/data/LIVE and fixed caps remain exact.
-
-## SEMULITH-P4-0193 (leaf P4-SYSTEM.14) — correct public-source rationales
-
-- Replace assembler module/annex unsupported lineage claims and stale route rationale with canonical API and finite published observations; cite pinned F permission and selected policy for reserved rounding.
-- Preserve Python executable AST/Rust behavior, all167guest byte images and fresh GPR/fetch corpus; Rust173/17/253, focused15/six books/invariants pass. Canonical data, profiles/frozen/registry/history/LIVE remain exact.
 

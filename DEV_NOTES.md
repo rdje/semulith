@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — qualify the project-book index consumer (LIVE-CONTAINMENT.4i2b4b1)
+
+Tracked qualify_book_index.py replays source32f9c31/1443 identities through
+both actual public interfaces in on-volume copies. All54 input pins,49
+chapters/40 terms and53 actual read calls agree with independent declaration,
+term/alias/hit expansion and immutable full content digests. The index scans
+raw chapter source; glossary/index discussion hits are excluded and mdBook
+includes are not expanded. These boundaries are recorded, not generalized to
+complete graph coverage. No Git repository/fetch/Gitlink inspection is needed;
+Git's public work-tree inputs select fixtures against read-only real metadata.
+
+D73: each of five actual read classes (SUMMARY, chapter, canonical glossary,
+acronym table, generated output) throws an injected OSError exactly once per
+public interface. Original commands traceback1; invalid chapter/SUMMARY UTF-8
+also gives generator traceback1. Thus24 observations include12 verdict defects
+per mode. The generator catches only its own Refusal; shell actual-error branch
+rewrites all nonzero results to drift1. Missing inputs already refuse2. Priority1
+repair is scheduled immediately next, LC0033/.4i2b4b1r. This unit changes no
+existing generator/guard behavior; probe exit0 means measurement completed.
+Normal/O and actual-working-code replay agree. Three copied generator omissions
+(chapter/term/discussion expansion) cause drift1; omitted-read and forged digest
+controls refuse2. Full source/index/mode snapshots stay exact. Qualification
+records all concrete inputs/hits/verdicts and durable reproduction commands.
+
+Focused12/sharder12/seven books and the original six BOOK-INDEX controls in both
+modes, rendered normal/print teaching and literal replay qualify publication.
+All prior complete CH/DEV entries/order and older archives/seals/modes remain
+exact. Fixed caps, LIVE1571 and CPU/MCU/DSP/board qualification stay unchanged.
+D72 candidate stale BOOK-APPARATUS parent/commit labels is owned for source-based
+reconciliation in .4i2b4b2; its historical receipts are not rewritten here.
+
+Lesson promotion: declined — the existing graph inventory contract and complete
+source-pinned consumer evidence own this assessment; no new general policy.
+
 ## _(2026-10-12)_ — retain complete closed inventory and reader units (LIVE-CONTAINMENT.4i2b4a)
 
 The committed task root was129969/131072B, leaving1103B before query work.
@@ -639,80 +673,4 @@ protected-mode inverses,102 prior head entries, focused12/sharder12/seven books,
 complete normal+print teaching/two literal reads and staged acceptance/seam
 checks must be green before normal COMMIT hooks and exact postcheck.
 promotion: declined (the canonical count authority owns the correction).
-
-## _(2026-10-11)_ — refuse unavailable routing evidence (LIVE-CONTAINMENT.4h4)
-
-D53/D54 reproduced before repair: actual public CLI green0 for failed/diagnostic
-file measurements and link parsing, broken forced-red hints, and README wc
-failure. Git-pinned predecessor replay repeats all eight failures; separate date
-and table-consumer diagnostics show green after their traced read failures.
-The policy lookalike README_POLICYxmd was also accepted. Root causes are ignored
-command/process-substitution status, suppressed diagnostics and regex matching.
-
-Shared read_text_metrics.bash captures scalar status/stderr/data; only expected
-statuses and one integer pass. Both guards use it. Materialized README links
-and hint production/extraction refuse unjudgeable evidence. Forced hints require
-status1 and their guidance contract. The validated family producer emits totals
-and ordered sizes, removing unchecked wc/awk/sort consumers. README grep counts
-allow legitimate no-match1; policy matching is literal. Updater retains this
-local provider/helper wiring, with two new public sync cases; no upstream edit
-or assertion about another repository's current state.
-
-Original32 controls plus36 additions pass68/0 normal/O. Fourteen omissions fail
-in isolated replicas. Handoff/scaffold24/0/0 retains22 old cases; predecessor
-updater5/2/0 independently exposes both retention failures. Final public replay
-refuses injected failures2, without green/stdout; removed table consumers are
-not called. Evidence: target/live-containment/remaining-reads, code/facade hashes,
-complete real HEAD/index/all1398 tracked identities before/after. All project
-scratch stays on-volume; installed OS/tools are read-only dependencies.
-
-Evidence handling correction: an early after-run overwrote original raw output
-and census filenames. Original verdicts/digests survive in result-before.json;
-all18 streams are recovered byte-exact against those digests. Original censuses
-are not claimed; a fresh pinned-predecessor replay supplies complete independent
-state proof. The first date diagnostic failed at self-test with zero injections;
-fix omitted fixture Python delegation, then repeat successfully on pinned code.
-A stale mutation-harness source match also refused after the library refactor;
-correct the unique seam before the final run. These are diagnostic harness
-failures, not positive product evidence. The first commit gate also refuses
-two new acceptance boxes whose counts lack a declared evidence signature.
-Name the actual verifier/probe with rc=0 inside each box, then rerun staged
-acceptance/seam checks before retrying; code and failure receipts stay exact.
-
-Whole-oldest DEV3021B moves verbatim to0283; all101 prior entries, manifest prefix
-and sealed/ordinary archive bodies remain exact. Verify source inverses, protected
-bytes/modes/Gitlink, focused checks, seven books, complete normal/print teaching
-and two literal examples before COMMIT. LIVE1492 arms/routing Done; existing
-limits and CPU qualification unchanged. D51 classification/capacity review .4h5
-and full neutral containment adoption remain owned separately.
-promotion: declined (local retention rule is in the existing canonical reference).
-
-## _(2026-10-11)_ — refuse unmeasurable family inventories (LIVE-CONTAINMENT.4h3)
-
-D52 fixed: family_measure obtains one successful, stderr-free NUL listing from
-Git, validates unique paths within the family and refuses symlink, nested-Git,
-off-volume or non-regular members. Local fixture walks propagate errors too.
-File sizes are measured once into a complete table; count, aggregate and part
-checks consume it. No member content is copied to compute its byte size.
-Unavailable measurements return2 through verify_routes and the public CLI;
-there is no green banner. Existing ceiling/health verdicts and derived-member
-exemptions retain their rules. This is a working-file measurement over tracked
-membership, not an atomic Git/filesystem snapshot or the new neutral checker.
-
-Original17 controls remain. Fifteen additions cover exact count/aggregate/part
-boundaries, legitimate empty/space/Unicode families, separate nonzero-status and
-stderr failures, partial/malformed/duplicate inventories, outside/traversal,
-missing/symlink/non-regular members and an over-count breach. The first omission
-run exposed coupled status+stderr fixtures; add a silent status73 fixture so
-removing either check independently fails. Normal/O and actual CLI refusal
-receipts, protected state and source inverses: target/live-containment/capacity-repair.
-Whole-oldest CH rollover retains predecessor entries before these new receipts.
-LIVE routing closure returns Done; arm count is derived1456. No existing limit,
-authority, archive body or CPU qualification change. D51 review resumes next.
-
-Completion: focused12/sharder12/seven books/3242 links, full normal+print/two
-literal examples and source/history/protected-mode inverses pass. Nine omission
-variants fail normally and optimized; all32 permanent controls pass both ways.
-CH0282 is1619B/SHA03abd6f7;101 prior entries and1383 other regular files/Gitlink
-remain exact, with no cap or archive-body change.
 

@@ -60,6 +60,14 @@ cat MEMORY.md
 cat KNOWLEDGE_MAP.md
 ```
 
+The term index scans raw SUMMARY chapters, glossary terms and acronyms.
+It excludes glossary/index discussion hits; includes stay unexpanded.
+Exit0 below means measurement complete, including D73 failures:
+
+```sh
+python3 scripts/qualify_book_index.py --output target/live-containment/book-index-replay/book
+```
+
 ### Decision navigation and the record it opens
 
 Indexes keep dated questions; records retain receipts/corrections.

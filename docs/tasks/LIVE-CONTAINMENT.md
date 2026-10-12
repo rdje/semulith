@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b qualify index/query expansion after LC0031 normal COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b1r repair D73 public index refusal after LC0032 normal COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -450,10 +450,70 @@ full handoff24 both qualify normal/O. No runtime or milestone count changes.
 - [x] **NO REGRESSION** — `bash target/live-containment/reader-records-retention/focused.sh` rc=0: focused12/sharder12/seven books, scaffold5/full handoff24 normal/O. Whole105 prior CH/DEV entries/order/source and older published archives/seals/modes remain exact; receipt mutations refuse jointly. Complete normal/print reader section and twelve literal reads pass before normal COMMIT.
 - [x] **LOCKSTEP** — task/pointer/CH/DEV/book and canonical retention record align; LIVE1571/caps/CPU/MCU/DSP/board/full-adoption scope unchanged. promotion: declined (existing containment contract and concrete retained evidence own this transition).
 
-#### .4i2b4b / SEMULITH-LC-0032 — qualify index/query expansion (pending)
+#### .4i2b4b — qualify index/query expansion (active, decomposed)
 
-Pin fresh source/current membership and public index/query interfaces; qualify
-actual expansion, exclusions, failed inputs and omissions before repairs.
+Project-book index first (.4i2b4b1/LC0032); orientation/record indexes next
+(.4i2b4b2), then catalogue/archive queries and reconciliation (.4i2b4b3).
+Generated navigation/resources remain .4i2b5; full graph/adoption stays open.
+
+##### .4i2b4b1 / SEMULITH-LC-0032 — qualify the project-book index consumer
+
+Owned on clean32f9c31 after normal hooks/exact12-file postcheck/brief0/host0.
+Pin all1443 immutable identities and actual HEAD/index/working inputs. Discover
+only through the owned Git tree; Gitlinks remain opaque. An earlier broad
+filename search listed Gitlink paths; no implementation content or inferred
+assumption is consumed. All following discovery excludes that boundary.
+Own scripts/qualify_book_index.py, its toolbox row and the canonical record
+ docs/tasks/artifacts/live-containment/book-index-consumer.md. Execute both
+public project index interfaces in isolated repository-volume fixtures normal/O;
+observe exact source reads, terms, chapter membership/order, exclusions and
+output. Qualify missing/changed/invalid inputs, independent membership and real
+omissions before repairs; record every observed defect with a scheduled owner.
+No existing generator/guard behavior change in this assessment unit. Preserve
+all older receipts/archives/modes, full CH/DEV entries and fixed caps; teach the
+actual index scope in the mdBook. Outputs: target/live-containment/book-index-consumer.
+D72 candidate: BOOK-APPARATUS metadata says done while its root task entry says
+active and .1 commit says pending. Reconcile with canonical records and tools in
+.4i2b4b2 before classifying or correcting; no historical receipt is rewritten.
+
+D73 verified normal (`2026-10-12`): actual source read failure produces traceback/
+exit1 in both public interfaces; invalid UTF-8 also gives generator traceback1.
+The generator promises unsupported/unjudgeable inputs refuse2; the wrapper
+classifies a real failed read as index drift1. Missing-source cases do refuse2.
+Reproduce: python3 scripts/qualify_book_index.py --output target/live-containment/book-index-consumer/reproduce.
+Exit0 means measurement complete; inspect observations, not a green safety claim.
+Root cause: uncaught Path.read_text errors in gen_book_index.py; the shell's
+actual generator failure branch rewrites all nonzero results to1. Priority1;
+owner .4i2b4b1r/LC0033 repairs and verifies these boundaries immediately after
+this assessment COMMIT, before other query readers. Qualification producer
+also owns actual-read digest/omission controls and a working-code replay mode.
+
+Verified LC0032 assessment (`2026-10-12`): all1443 source identities pinned,
+54 fixture inputs; independent declaration/term expansion reproduces all49
+chapters/40 terms and53 actual source reads in exact order with full content
+identities. Both public baselines pass. The index scans raw source chapters,
+not expanded includes; glossary/index discussion occurrences are deliberately
+excluded. Complete memberships, terms/aliases/hits, source pins and child
+verdicts: docs/tasks/artifacts/live-containment/book-index-consumer.md.
+
+Normal/O and actual-working-code replay agree. Twelve input cases across both
+public interfaces produce24 observations per mode. Five real read classes
+(SUMMARY/chapter/canonical glossary/acronyms/generated index) plus two invalid
+UTF-8 generator cases expose12 D73 verdict defects per mode. Every injected
+read fault fires exactly once. Three real copied generator omissions (chapter,
+term, discussions) return drift1; omitted-read and forged-read-digest ledger
+controls refuse2. No actual source/index/mode changes; Gitlinks stay opaque.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_book_index.py --output target/live-containment/book-index-consumer/final-normal` rc=0 measures12 original D73 child failures with traceback1; exact stack reaches Path.read_text and wrapper's failure branch. Exit0 marks completed measurement, not absence of defects. D73 priority1 repair is owned immediately next.
+- [x] **ADDRESSED** — tracked producer normal/O and `--working-code` rc=0 reproduce49 chapters/40 terms/53 full actual reads,54 input pins,24 observations, three real omissions and two independent ledger refusals per mode. Complete retained source/consumer record and replay commands are canonical; existing generator/guard semantics are unchanged.
+- [x] **NO REGRESSION** — `bash target/live-containment/book-index-consumer/focused.sh` rc=0: focused12/sharder12/seven books; original six BOOK-INDEX controls normal/O, whole normal/print teaching and literal tracked replay also pass. Whole old CH/DEV entries/order, every older archive/seal and protected source modes/Gitlink remain exact; staged full inverse and normal COMMIT are required before LC0033.
+- [x] **LOCKSTEP** — task/pointer/CH/DEV/book/toolbox and canonical record align; LIVE1571, all caps, CPU/MCU/DSP/board and full graph/adoption scope unchanged. promotion: declined (existing inventory contract and source-pinned consumer evidence own this assessment).
+
+##### .4i2b4b1r / SEMULITH-LC-0033 — repair D73 public index refusal (pending)
+
+Preserve typed input refusal2 in generator and guard, valid bytes and original
+six shell controls. Add actual public read/Unicode controls normal/O and copied
+omissions; update book/registry mirrors only where actual scope changes.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
