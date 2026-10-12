@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0020 (leaf LIVE-CONTAINMENT.4) — review separate six-activity count authority
+
+- Re-derive closed task inventories27/1/9/24→33/1/40/22, six creation/scope pins and independent107 equations; four typed/two metadata controls refuse normal/O, real1405 states exact. Record separate authority; application pending, health64 debt and every cap unchanged.
+- Preserve original records/D51/D55 teaching/four literal reads; compare three duplicate contract-intro clauses before shortening the pointer, retain full include. Whole CH1863B/three-entry rollover retains105 old entries; source/history/protected inverses, focused12/sharder12/seven books/rendered pass. LIVE/CPU unchanged; fresh preconditions before .4h6c4 application.
+
 ## SEMULITH-LC-0019 (leaf LIVE-CONTAINMENT.4) — refuse unavailable or malformed registry policy
 
 - Fix D56/D57: validate the complete registry before projecting destinations/README caps/count; reject failed status, diagnostics, malformed arity/paths/limits. Preserve68 original controls;94 pass,17 omissions detected/all26 new controls discriminate normal/O.
@@ -452,33 +457,4 @@
   core/data/frozen/registry112/effective110/114/LIVE exact. Fixed caps.
 - Focused gates/six books green; prior Rust173/17/242 applies. Own atomics-book
   timeline containment before remaining reservation/SC examples and freeze.
-
-## SEMULITH-P4-0182 (leaf P4-SYSTEM.13 c33b) — complete and bind finite D witnesses
-
-- Bind all32Dforms with219960positive/14292refusal-fault boundaries, preserving
-  numeric prerequisite/F cases; raw64payloads, mixed-format rules and FS states.
-- Fifteen new wrong effects/16bad captures/18disabled controls discriminate and
-  restore; missing-binding RED precedes2entries, prior110exact. Effective110/114.
-- Independent author/new/prior matrices/corpus exact; Rust173/17/242,
-  FP/focused/six books green. Core/data/frozen/history/LIVE exact; remaining
-  reservation/SC/freeze and .14 sweep open. Contain completed task history next.
-
-## SEMULITH-P4-0181 (leaf P4-SYSTEM.13 c33b0) — contain FP timeline and development receipts
-
-- Preserve10576B original FP introduction/full24259B source inverse in finite
-  archive; damaged controls refuse, semantic example/current features remain.
-- Save5114chapter B and shard five whole DEV entries→0231/full31448B inverse;
-  prior history exact. Correct Markdown-only census's omitted309B book.toml.
-- Core/data/frozen/history/registry110/effective108/114/LIVE unchanged; prior
-  Rust173/17/239 applies, focused/six books green. Complete D next under fixed caps.
-
-## SEMULITH-P4-0180 (leaf P4-SYSTEM.13 c33a) — witness numeric D instructions before binding
-
-- Drive25numeric D forms/123264full-state boundaries/246528parcels from unchanged
-  governed data; explicit source/result widths include both format conversions.
-- Preserve all F observations in shared floating fixture;16wrong D routes and
-  nine disabled controls discriminate and restore, shared numeric lineage explicit.
-- Independent author/new and prior matrices/corpus exact; Rust173/17/239,
-  FP/focused/six books green. Core/data/frozen/history/LIVE/registry110/
-  effective108/114 unchanged. D completion/bindings and remaining pairs stay open.
 

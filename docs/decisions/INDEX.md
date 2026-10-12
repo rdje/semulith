@@ -64,3 +64,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [`decision_memory-next-action-pointer.md`](decision_memory-next-action-pointer.md) | `decision` | MEMORY.md exists solely to point at the next action — overwrite-only per MEMORY_ARCHITECTURE.md §6; everything durable lives in its own layer and is named by reference only |
 | [Task-family bytes (2026-10-03)](decision_task-tree-family-aggregate-rederivation.md) | `decision` | Why did the aggregate change while the count and per-part bounds stayed? |
 | [`decision_generated-mirror-needs-tracked-input.md`](decision_generated-mirror-needs-tracked-input.md) | `decision` | a tracked generated module needs a tracked canonical input — the rv64gc state module's landing is flip-bound; the scratch proof is the interim evidence (P4-SYSTEM.2 slice c) |
+| [Six-activity count](decision_task-family-six-activity-count.md) | `decision` | Why 107, and what stays fixed before its separate application? |

@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; .4h6c3 capacity review, then full inventory/checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; .4h6c4 reviewed count application, then full adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -285,7 +285,8 @@ Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
 complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
 .4h6b/LC-0017 completes D55; .4h6c1/LC-0018 confirms D56. Immediate next
-.4h6c2/LC-0019 completes D56/D57; .4h6c3 reviews capacity next.
+.4h6c2/LC-0019 completes D56/D57; .4h6c3/LC-0020 reviews authority;
+.4h6c4 applies it next after fresh preconditions.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -836,6 +837,82 @@ tree and preserved unqualified evidence before using a real-interpreter launcher
 These instrument failures are not product regressions; no original evidence was
 replaced. Baseline/public/omission replay source bytes and modes are pinned.
 
+### .4h6c3 / SEMULITH-LC-0020 — review separate task-count authority
+
+Status: complete; separate authority reviewed, application pending. Owned on clean decd043 after normal hooks, exact13-file
+postcheck/brief0, unrestricted handoff0 and full COMMIT report. D51–57 are
+fixed; existing task count96 is full. Before selecting a remedy, re-read the
+three historical task-family authorities and local containment contract,
+re-derive complete typed inventories at6622177 and decd043, and verify all33
+metadata identities plus the six added activities' creation/scope evidence.
+No limit is selected by this ownership entry; calendar/archive accumulation
+alone cannot authorize a raise. Preserve the corrected original authority.
+
+Own target/live-containment/task-capacity-review, immutable source census and
+real HEAD/index/all1405 inverses, exhaustive/disjoint typed classification,
+metadata/omission/misclassification controls normal/O, independent arithmetic
+and a bounded separate reviewed authority if the six activities justify it.
+Explicitly test alternatives and template/archive allowance assumptions; keep
+legacy warning debt visible rather than calling current occupancy healthy.
+This review changes no registry cap or runtime behavior. A justified authority
+must land separately before its later owned application; otherwise perform the
+appropriate containment remedy. No human approval requirement is inferred from
+historical wording; stop only for an actual director-only rule or missing fact.
+
+Own bounded decision-index/book teaching (retain D51/D55 facts and literal
+reads), necessary Knowledge Map regeneration, and compare the duplicate book
+contract-introduction clauses with the complete local adoption note before
+shortening only that pointer; retain the complete include. Own pointer/frontier/live review, necessary whole-oldest CH/DEV rollover,
+complete source/history/protected bytes/modes/Gitlink inverses, genuine damaged
+receipt/digest controls, focused/seven books/rendered/literal, normal hooks,
+exact postcheck/brief0 and unrestricted host0. Existing ceilings, CPU, canonical
+records, ordinary task archives and sealed objects remain exact. Full .4
+inventory/checker adoption remains after this count prerequisite.
+promotion: declined (the separate canonical authority owns this fact; no independent diagnostic lesson).
+
+
+Result: six required activities added after the original count derivation;
+current typed33+1+40+22=96. Select separate count authority107=33+1+33+40,
+also96+6+6−1 after correcting the template archive error. No registry change
+here. Archive40>forecast33 is explicit pooled capacity, artifact22<envelope40;
+11 slots remain. Keep health64 as LC.4 transition/warning debt, not a healthy
+survivor; aggregate3145728B/part131072B and all other limits remain exact.
+Deleting mandated evidence, moving it to an unbounded destination, raising
+byte/part caps or automatic calendar renewals do not address added activities.
+Authority: docs/decisions/decision_task-family-six-activity-count.md.
+Next .4h6c4 owns later application with fresh same33-ID/typed96 preconditions;
+full inventory/utility/lifecycle/debt/checker adoption remains .4 afterward.
+
+Creation/scope pins (all ancestors of decd043, absent from6622177):
+- BOOK-APPARATUS fd4ca40239b790d8208d2a4d5c01754cfebb9ab5 — book apparatus.
+- CI-RECOVERY 401956e84e82539574d6089885bde88033f11989 — failed verification.
+- CITATION-ACCURACY bf2070a7ee74c9f0effa79f83053b6e0d9ef1cbb — source attribution.
+- LIVE-CONTAINMENT be0f8e0203b65e5843662781720300fb4be6c0fb — bounded surfaces.
+- MCU-DOCS 4d01d3ea2b39022952358f637b1eb3d726112f6d — MCU research inputs.
+- MEMORY-POINTER f201c7a5a5f8ba95058eb913f78d4c92d602405b — durable resume.
+These are tracking activities, not six processor features or calendar growth.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/task-capacity-review/review.py`
+  rc=0 normal/O: complete closed inventories27/1/9/24→33/1/40/22 and six
+  creation/scope pins establish expanded tracking; template has no archive.
+  Four typed omission/misclassification and two metadata controls refuse.
+- [x] **ADDRESSED** — `python3 target/live-containment/task-capacity-review/verify.py`
+  rc=0 normal/O: separate1658B authority, bounded index and book teaching agree
+  with both independent107 equations; no cap/code/current-warning change.
+  Complete source/doc/history inverses preserve original canonical records and
+  real1405 snapshots. Three introduction clauses compared with included note.
+- [x] **NO REGRESSION** — `bash target/live-containment/task-capacity-review/focused.sh`
+  rc=0: focused12/sharder12/seven books; full normal+print teaching/four literal
+  reads;105 prior entries/protected files/Gitlink and caps/history/seals exact.
+  Normal hooks, exact staged/post hashes/modes, brief0 and host0 close COMMIT.
+- [x] **LOCKSTEP** — authority/index/Knowledge Map/book/pointer/owner agree;
+  LIVE/CPU unchanged. .4h6c4 application is next; full adoption remains .4.
+
+Initial review qualifier treated raw metadata status as an unquoted enum;
+quoted statuses with explanatory notes refused. Preserve failed source/logs,
+then parse the documented leading status token. It was an instrument assumption,
+not a repository defect; qualified complete results agree normal/O.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1143,6 +1220,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6c3: task-capacity-review assess/review/verify/history/rendered normal/O and
+focused.sh rc=0. Typed27/1/9/24→33/1/40/22, six creation/scopes, four typed/two
+metadata refusals; real1405 snapshots exact. Separate107 authority; health64
+debt and every registry limit unchanged. Three book-intro clauses compared;
+D51/D55 facts and four literal reads/full normal+print remain. Whole CH rollover
+retains105 prior entries; protected identities/Gitlink/canonical/seals exact.
+Focused12/sharder12/seven books and normal COMMIT required; .4h6c4 applies next.
+
 .4h6c2: registry-repair check-before/check-after/source-inverse/verify/history/
 rendered normal/O and focused.sh rc=0. D56 primary faults2/no stdout; removed
 seven consumers absent; D57 five malformed fixtures0→2. Public18 per mode,
@@ -1274,6 +1359,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0020 (leaf LIVE-CONTAINMENT.4): review separate six-activity count authority` — .4h6c3 complete; no cap change; .4h6c4 applies after fresh same33-ID/typed96 checks.
 
 `SEMULITH-LC-0019 (leaf LIVE-CONTAINMENT.4): refuse unavailable or malformed registry policy` — .4h6c2 complete/D56–57 fixed; .4h6c3 separate capacity authority review next.
 

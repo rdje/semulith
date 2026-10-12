@@ -63,18 +63,20 @@ cat KNOWLEDGE_MAP.md
 
 ### Decision navigation and the record it opens
 
-Shorten index summaries to dated questions; retain every target, type and order.
-Canonical records retain receipts and dated corrections. D55 corrects
-147 + 13 to 151 + 9: UART's partial subtotal was reused; total160 stands.
-The count record's historical61 files = 27 task instances + one template +
-nine archives + 24 artifacts, not an active roster. At `d39092f`,
-33 + 1 + 40 + 22 = 96.
-Classification correction authorizes no ceiling change. Read all three:
+Indexes keep dated questions; records retain receipts/corrections.
+D55 corrects the partial UART subtotal: 147 + 13 becomes 151 + 9; total 160 stands.
+D51: 61 = 27 tasks + one template + 9 archives +
+24 artifacts; at `d39092f`, 96 = 33 + 1 + 40 + 22. These are files, not active work.
+Classification alone changes no limit. A separate review authorizes count 107:
+33 tasks + template + 33 archive allowance + 40 artifacts. It is pooled capacity;
+40 archives already exceed that forecast. Health 64 remains warning debt.
+Application pending; byte/part caps stay fixed. Read:
 
 ```sh
 cat docs/decisions/INDEX.md
 cat docs/decisions/decision_task-tree-family-count-rederivation.md
 cat docs/decisions/decision_profiles-family-five-units.md
+cat docs/decisions/decision_task-family-six-activity-count.md
 ```
 
 ### Capacity evidence must be readable
@@ -100,9 +102,7 @@ Checks are finite; measurements are not atomic or capacity authority. Full adopt
 
 ## Local containment contract
 
-The following is the complete locally owned contract. Its adoption note separates
-this exact import from the inventory, checker and migration work still owned by
-LIVE-CONTAINMENT.4. Existing controls and ceilings remain in force.
+The complete local contract and its adoption frontier:
 
 ```sh
 cat LIVE_DOCUMENT_SIZE_CONTAINMENT.md
