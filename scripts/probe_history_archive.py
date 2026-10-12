@@ -6,8 +6,10 @@ import gzip
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import tarfile
 
@@ -48,7 +50,7 @@ def main():
         'object-digest', 'unknown-field', 'unsafe-path', 'string-count', 'duplicate-key',
         'oversized-index', 'duplicate-member', 'extra-member', 'unsafe-member',
         'shard-digest', 'expansion-bound', 'missing-index', 'previous-descriptor',
-        'duplicate-heading', 'duplicate-location'])
+        'duplicate-heading', 'duplicate-location', 'invalid-deflate'])
     args = parser.parse_args()
     parent = ROOT / 'target/doctrine-selftest'
     parent.mkdir(parents=True, exist_ok=True)
@@ -94,8 +96,31 @@ def main():
             previous_path = root / 'previous.json'
             previous_path.write_text(json.dumps(previous))
             record['reason'] = 'rewritten committed descriptor'
+        elif args.mutation == 'invalid-deflate':
+            # Correct outer identity lets the public reader reach the corrupt
+            # compression stream instead of rejecting an unrelated digest.
+            blob = b'\x1f\x8b\x08\x00' + b'\x00' * 6 + b'\x07' + b'\x00' * 8
+            (root / record['object']).unlink()
+            record.update(sha256=H.digest(blob), bytes=len(blob),
+                          object=f'docs/history/sealed/{H.digest(blob)}.tar.gz')
+            (root / record['object']).write_bytes(blob)
         path = root / H.INDEX
         path.write_text(json.dumps(index))
+        if args.mutation == 'invalid-deflate':
+            expected = 'HISTORY-ARCHIVE: REFUSED — unreadable archive object\n'.encode()
+            env = dict(os.environ)
+            env.pop('PYTHONOPTIMIZE', None)
+            for flags in ([], ['-O']):
+                query = subprocess.run([sys.executable, *flags,
+                    str(ROOT / 'scripts/history_archive.py'), '--root', str(root),
+                    '--read', NAME], capture_output=True, env=env)
+                if query.returncode != 1 or query.stdout or query.stderr != expected:
+                    print('HISTORY-ARCHIVE probe: incorrect public deflate refusal',
+                          file=sys.stderr)
+                    sys.stderr.buffer.write(query.stderr)
+                    return 2
+            print('HISTORY-ARCHIVE: REFUSED — unreadable archive object (public normal/optimized)')
+            return 1
         if args.mutation == 'duplicate-key':
             path.write_text(path.read_text()[:-1]+',"schema_version":1}')
         elif args.mutation == 'oversized-index':

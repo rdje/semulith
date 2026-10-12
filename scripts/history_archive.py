@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 import re
 import sys
 import tarfile
+import zlib
 
 INDEX = 'docs/history/archives.json'
 MANIFEST = 'docs/changelog/SHARDS.sha256'
@@ -141,7 +142,7 @@ def load_archives(root, previous_index=None):
                     require(0 < member.size <= record['source_bytes'], 'archive member size exceeds bound')
                     require(len(members) < record['members'], 'extra archive member')
                     members[member.name] = archive.extractfile(member).read()
-        except (OSError, EOFError, tarfile.TarError) as exc:
+        except (OSError, EOFError, zlib.error, tarfile.TarError) as exc:
             raise ArchiveRefused('unreadable archive object') from exc
         require(len(members) == record['members'] and MANIFEST in members, 'archive members incomplete')
         manifest = members[MANIFEST]

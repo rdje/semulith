@@ -197,6 +197,8 @@ $(printf '0%s  docs/changelog/shard-0001.md' "$(sha256sum "$SDIR/shard-0001.md" 
   arm "RED archive duplicate-heading" 1 "DUPLICATED ENTRY"
   ARCHIVE_CONTROL=duplicate-location
   arm "RED archive duplicate-location" 1 "DUPLICATE ARCHIVED PATH"
+  ARCHIVE_CONTROL=invalid-deflate
+  arm "RED archive invalid-deflate" 1 "unreadable archive object (public normal/optimized)"
   ARCHIVE_CONTROL=""
   PREDECESSOR_CONTROL=normal
   arm "GREEN complete predecessor controls" 0 "OK"

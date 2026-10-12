@@ -318,17 +318,16 @@ member. A missing object, changed descriptor or bad member fails the same uncond
 freeze gate used locally and in CI. Restore the committed bytes when that happens.
 
 The manifests remain one partition; sharding never reuses retired names.
-Qualification checks six catalogues and all222 originals from pinned sources:
+Recheck the public consumers against all222 archived originals and six catalogues:
 
 ```sh
-python3 scripts/qualify_query_consumers.py --output target/query-replay
+python3 scripts/qualify_query_consumers.py --working-code --require-clean --output target/query-repair-replay
 ```
 
-Use a fresh path. Exit0 means assessment completed; `--require-clean` fails1
-on wrong outcomes. LC0036's263 observations expose D76: malformed deflate
-raises a traceback1 instead of named refusal1 (repair LC0037). Three real
-consumer omissions and seven ledger corruptions discriminate. Full
-containment adoption remains open.
+Use a fresh path. All263 observations pass normal/O. Malformed deflate now
+gives named refusal1 without stdout or traceback; removing its catch fails
+qualification. Three consumer omissions/seven ledger controls still discriminate.
+Immutable replay retains D76. Full containment adoption remains open.
 
 ### Reading closed P4 task histories
 

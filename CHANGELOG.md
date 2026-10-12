@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0037 (leaf LIVE-CONTAINMENT.4) — preserve malformed history decompression refusal
+
+- Fix D76: catch actual zlib decompression failure and return named HISTORY-ARCHIVE refusal1 without stdout/traceback. All263 working query observations/222 byte-exact original reads pass normal/O; immutable source263/1 remains explicit. Removing the new catch restores the defect and fails qualification1; old3+7 controls remain.
+- Add a permanent public normal/O deflate regression, first RED before repair; all44 history controls now pass, shell arms re-derived1576. Preserve whole115053B published prefix, lossless legacy/current matrices, original history/modes/caps; book/toolbox/live sync. Generated navigation next; CPU/MCU/DSP/board and full graph/adoption remain open.
+
 ## SEMULITH-LC-0036 (leaf LIVE-CONTAINMENT.4) — qualify catalogue and archive query consumers
 
 - Reconcile all1454 pinned source identities,30 selected inputs, six roots/two parts and210 history/twelve P4 originals with independent complete membership/order/bytes/modes and actual read traces normal/O. All263 observations retained; named public refusal1 remains distinct from qualifier refusal2. Public commands use no Git.
@@ -413,14 +418,4 @@
 - Register the sixth unit, all24 category dispositions and its dedicated14-file model book; authenticate24 pins and keep acquisition/implementation/acceptance distinct.
 - Fix the reader silently dropping later required categories (scope10/0, old8/2); correct generated catalogue disclosures and stale dossier/census prose with exact historical/source/output inverses and negative controls.
 - Focused20/seven books/rendered chapters/full five-leg CI pass, Rust173/17/253. Units6/arms672; requirement statuses/runtime/frozen114/114/fixtures/history and milestones unchanged. Measured containment review next; no cap raise or release credit.
-
-## SEMULITH-P4-0200 (leaf P4-SYSTEM.14) — correct BREADTH evidence attribution
-
-- Attribute only each unit's own tracked reports; reserve DSP axis1 for the DSP subset and explicitly identify board/device dossiers without unit gate reports.
-- Add four regression controls (producer24/0; original fallback21/3), reject stale BREADTH, preserve exact source/report inverses and explain the scope in the book. Focused9/six books pass; other reports, criteria/verdicts, runtime/frozen114/114, registry, fixtures, history and LIVE unchanged.
-
-## SEMULITH-P4-0199 (leaf P4-SYSTEM.14) — declare prospective evidence requalification policy
-
-- Declare GC's forthcoming qualification policy after the existing implementation, without backdating; include the full policy and examples in the book, leaving all requirement statuses unchanged.
-- Repair scalar policy/presence label/resolved manifest prose with exact historical, AST and derived inverses; damaged/stale controls, focused15/six books/rendered policy pass. Runtime/frozen114/114/registry/fixtures/history/LIVE remain exact.
 

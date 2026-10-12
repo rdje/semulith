@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b3r / LC0037 repair D76 malformed gzip refusal after LC0036 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5 / LC0038 qualify generated navigation/resources after LC0037 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -690,7 +690,7 @@ No existing consumer, archive, historical record, capacity or acceptance changes
 - [x] **NO REGRESSION** — `bash target/live-containment/query-consumers/focused.sh` rc=0: focused12/sharder12/seven books/scaffold7/full handoff26 normal/O. Whole source/history/prefix/inverse/mode/cap and rendered/literal checks qualify before normal COMMIT; no Rust change.
 - [x] **LOCKSTEP** — pointer/task/CH/DEV/book/toolbox/capture align. LIVE1575/CPU/MCU/DSP/board and full graph/adoption remain unchanged. promotion: declined (bounded source-pinned consumer record owns this assessment).
 
-##### .4i2b4b3r / SEMULITH-LC-0037 — repair D76 malformed gzip refusal (pending)
+##### .4i2b4b3r / SEMULITH-LC-0037 — repair D76 malformed gzip refusal (complete)
 
 Immediately after LC0036 normal COMMIT, catch the verified zlib decompression
 failure through the public history reader's named refusal1, no traceback/stdout.
@@ -702,6 +702,47 @@ append evidence to the same graph-census artifact without editing its prefix.
 Update book/live docs and preserve full source/history/modes/seals/fixed caps.
 Commit normally, exact postcheck/brief0/host0, then resume generated navigation
 .4i2b5. No full graph/adoption or processor acceptance credit.
+
+Owned on cleane2dad9a after normal hooks/exact11-file postcheck/brief0/host0.
+Pin all1457 owned identities; Gitlink opaque. Own history_archive.py catch,
+probe_history_archive.py public normal/O deflate regression and its permanent
+SHARD-FREEZE arm; qualify actual catch removal through qualify_query_consumers.py.
+Re-derive LIVE controls and relevant toolbox count; preserve all old controls.
+Retain whole published graph-census prefix before an append-only repair capture,
+all original immutable query fields apart from named runtime stderr path digests,
+and every old source/history/mode. Update book/live guidance within fixed caps.
+Outputs target/live-containment/query-repair; no archive or authority change.
+
+
+Verified LC0037 (2026-10-12): D76 FIXED by catching zlib.error at actual gzip
+decompression. Named HISTORY-ARCHIVE refusal1/no stdout/no traceback now holds.
+All263 working observations are correct normal/O, all222 original outputs and
+full source traces remain exact. Immutable source263/1 replays unchanged apart
+from named fixture-path stderr digests. Three old consumer/seven ledger controls
+remain; actual removal of just the new catch restores traceback1 and fails
+qualification1. Whole published115053B prefix and old book seam retained.
+New permanent public regression first fails2 before repair, SHARD-FREEZE43/1;
+after repair exact stderr/exit1 checked normal/O, permanent44/0 in both modes.
+Re-derived shell arms1576; LIVE changed only that current count.
+
+- [x] **ROOT CAUSE** — `python3 scripts/probe_history_archive.py --mutation invalid-deflate` rc=2 before catch; `bash scripts/check_changelog_shards.sh --self-test` rc=1:43 pass/1 fail. Correctly updated outer identity reaches actual deflate decoding; omitted zlib.error causes public traceback1 rather than named refusal1.
+- [x] **ADDRESSED** — `python3 scripts/qualify_query_consumers.py --working-code --require-clean --output target/live-containment/query-repair/working-normal` rc=0:263/0 normal/O; further actual catch omission fails1, traceback1/no stdout. Immutable source263/1 remains; original3+7 controls preserved. Public regression rc=1 named/no traceback normal/O; permanent44/0 rc=0 normal/O.
+- [x] **NO REGRESSION** — `bash target/live-containment/query-repair/focused.sh` rc=0: focused12/sharder12/seven books/scaffold7/full handoff26 normal/O; complete legacy/current raw fields, old source/history/prefix/modes, staged inverse/fixed caps and normal/print/literal checks qualify before normal COMMIT. No Rust change.
+- [x] **LOCKSTEP** — pointer/task/CH/DEV/book/toolbox/capture/LIVE1576 align. CPU/MCU/DSP/board, complete graph and adoption remain open. promotion: declined (existing source-pinned query record owns this repaired contract).
+
+##### .4i2b5 / SEMULITH-LC-0038 — qualify generated navigation and resources (pending)
+
+After LC0037 normal COMMIT/exact postcheck/brief0/host0, pin a fresh source and
+qualify actual generated navigation/resource expansion across seven registered
+books. Reconcile complete source/output membership, reader routes, exclusions
+and failures against independent evidence; execute real producer omissions.
+Use only public mdBook commands and owned code/contracts; Gitlinks opaque.
+Own defects and schedule verified repairs immediately when blocking. Retain
+whole published prefixes/history/modes and fixed caps without a108th task file.
+Select a suitable existing canonical artifact and teach actual scope in book.
+Generated ignored bundles remain on volume and source identities must not move
+during qualification. Author hints/reconciliation remain .4i2c/d; no complete
+graph, utility, capacity, adoption or processor acceptance credit here.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1273,6 +1314,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0037 (leaf LIVE-CONTAINMENT.4): preserve malformed history decompression refusal` — D76 fixed/263 current queries clean; generated navigation next.
 
 `SEMULITH-LC-0036 (leaf LIVE-CONTAINMENT.4): qualify catalogue and archive query consumers` — complete263-query assessment/D76 owned; LC0037 repair next.
 

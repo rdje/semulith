@@ -273,6 +273,18 @@ def reconcile_trace(trace, names, bodies):
     require(trace == expected, 'complete actual input reads/order/digests differ')
 
 
+def invalid_deflate(fixture, descriptor):
+    """Retain valid outer metadata while corrupting the actual gzip stream."""
+    bad = b'\x1f\x8b\x08\x00' + b'\x00' * 6 + b'\x07' + b'\x00' * 8
+    row = dict(descriptor)
+    row.update(sha256=C.digest(bad), bytes=len(bad),
+               object='docs/history/sealed/' + C.digest(bad) + '.tar.gz')
+    (fixture / descriptor['object']).unlink()
+    (fixture / row['object']).write_bytes(bad)
+    (fixture / HI).write_text(json.dumps({'schema_version': 1, 'archives': [row]}) + '\n')
+    return {'case': 'invalid-deflate', 'gzip_hex': bad.hex(), 'descriptor': row}
+
+
 def reconcile_queries(observations, expected):
     queries = [r for r in observations if r.get('original')]
     require(len(queries) == len(expected), 'complete original query count differs')
@@ -453,14 +465,7 @@ def main():
             protocols.append({'case': case, 'changed_path': gc, 'appended': suffix})
             observe(directory, 'catalogue', case, [gc, '--stdout'], 1)
         directory = fixture('invalid-deflate')
-        bad = b'\x1f\x8b\x08\x00' + b'\x00' * 6 + b'\x07' + b'\x00' * 8
-        row = dict(h)
-        row.update(sha256=C.digest(bad), bytes=len(bad),
-                   object='docs/history/sealed/' + C.digest(bad) + '.tar.gz')
-        (directory / h['object']).unlink()
-        (directory / row['object']).write_bytes(bad)
-        (directory / HI).write_text(json.dumps({'schema_version': 1, 'archives': [row]}) + '\n')
-        protocols.append({'case': 'invalid-deflate', 'gzip_hex': bad.hex(), 'descriptor': row})
+        protocols.append(invalid_deflate(directory, h))
         observe(directory, 'history', 'invalid-deflate', [], 1)
         for family, paths in [('catalogue', [gc, part]), ('history', [HI, h['object']]),
                               ('task', [TI, trecords[-1]['path']])]:
@@ -499,6 +504,24 @@ def main():
             omissions.append({'family': family, 'source_old': old, 'source_new': new,
                               'mutated_code_sha256': C.digest(changed), 'observation': actual,
                               'qualification_returncode': 1})
+
+        refusal_omission = None
+        if args.working_code:
+            old = 'except (OSError, EOFError, zlib.error, tarfile.TarError) as exc:'
+            new = 'except (OSError, EOFError, tarfile.TarError) as exc:'
+            require(bodies[HISTORY].count(old.encode()) == 1, 'unique repaired deflate catch')
+            directory = fixture('omit-deflate-catch')
+            changed = bodies[HISTORY].replace(old.encode(), new.encode(), 1)
+            (directory / HISTORY).write_bytes(changed)
+            invalid_deflate(directory, h)
+            actual, _ = observe(directory, 'history', 'actual-refusal-omission', [],
+                                1, collect=False)
+            require(actual['returncode'] == 1 and actual['traceback']
+                    and not actual['stdout_bytes'] and not actual['expected_contract'],
+                    'actual deflate catch omission did not discriminate')
+            refusal_omission = {'source_old': old, 'source_new': new,
+                               'mutated_code_sha256': C.digest(changed),
+                               'observation': actual, 'qualification_returncode': 1}
 
         controls = []
         for name in ['omitted-query', 'duplicate-query', 'forged-query-digest',
@@ -548,6 +571,8 @@ def main():
                 'ordinary_task_records': sorted(n for n in all_rows if n.startswith('docs/tasks/') and n.endswith('.md')
                     and n not in {r['path'] for r in trecords}),
                 'catalogue_parts': sorted(set(n for v in catalog_reads.values() for n in v) - set(roots))}}
+        if refusal_omission is not None:
+            result['refusal_omission'] = refusal_omission
         (output / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
         print(json.dumps({'source': SOURCE, 'mode': result['mode'], 'code_mode': result['code_mode'],
             'inputs': len(bodies), 'catalogues': len(roots), 'history_originals': len(hrecords),
