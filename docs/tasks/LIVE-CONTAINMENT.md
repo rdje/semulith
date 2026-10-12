@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D52–54 repaired; .4h5 D51 capacity review, then full inventory and checker adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–54 repaired; .4h6 separate capacity review, then full inventory and checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -283,7 +283,7 @@ new separate reviewed authority proving that expansion, not calendar growth.
 Current decision-family pressure is a prerequisite, not permission to widen it.
 Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 .4h3/LC-0013 inventory repair and .4h4/LC-0014 remaining-read repair are
-complete; .4h5 D51 review is next.
+complete; .4h5/LC-0015 classification correction completes D51; .4h6 reviews capacity next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -532,6 +532,58 @@ The code and program-failure receipts remain unchanged.
 - [x] **LOCKSTEP** — task owner/frontier, pointer, canonical retention note,
   doctrine/tool registry, book and derived1492 arms agree. D52 remains fixed;
   D53/D54 close here, D51 review resumes .4h5, full neutral adoption remains .4.
+
+### .4h5 / SEMULITH-LC-0015 — correct the retained count receipt's classification
+
+Status: complete; D51 fixed/verified. Owned on cleand39092f after all19 committed/staged/working
+identities match, brief0, unrestricted handoff0 and the full COMMIT report.
+D51 priority2 is the retained count authority's classification error: its28
+root Markdown files include TEMPLATE.md, not28 task instances or active trees.
+Rederive a complete, NUL-delimited typed inventory at6622177 and d39092f;
+check root task identities against metadata and preserve complete real HEAD/
+index/all1400 working-byte/mode/Gitlink identities during the read-only census.
+Own target/live-containment/classification and its source/receipt/negative proofs.
+
+Preserve the complete original count record and registry derivation bytes;
+append a dated, revision-pinned classification correction, including the true
+27+1+9+24 historical61 and33+1+40+22 current96 composition and the six added
+instances. Correct its navigation row and book teaching without turning a
+historical correction into capacity authority. Review the count/per-part/
+aggregate decisions, README routing and local containment contract first.
+No count, health, byte or part bound changes here; a new, separate reviewed
+expansion authority and any remedy remain .4h6. Full neutral adoption remains .4.
+
+Own whole source/head/history/protected-identity inverses, any necessary
+whole-oldest receipt rollover, focused checks, complete normal/print teaching
+and literal reads, live/pointer/frontier sync, staged acceptance/seam checks,
+normal COMMIT hooks and postcheck. Keep all sealed/ordinary history, code,
+CPU qualification and existing policy ceilings exact.
+promotion: declined (the existing canonical count record owns this correction).
+
+Evidence: classification/assess.py rc=0 and result.json; complete NUL Git
+inventories pinned at6622177 and d39092f, unique root-relative blob members,
+root IDs matching task metadata. Both template-as-instance and mismatched-ID
+controls refuse. Source census uses immutable HEAD blobs, not the edited
+working tree; real before/after HEAD/index/all1400 identities agree exactly.
+Source groups are exhaustive/disjoint: historical27/1/9/24=61; current33/1/40/
+22=96. Added: BOOK-APPARATUS,CI-RECOVERY,CITATION-ACCURACY,LIVE-CONTAINMENT,
+MCU-DOCS,MEMORY-POINTER; none removed. Canonical and registry original receipts
+stay byte-exact; the separate dated correction does not rewrite that record.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/classification/assess.py`
+  rc=0: the original28 label includes TEMPLATE.md;27 instance IDs agree with
+  source metadata. The61 total/9archives/24artifacts are not erroneous.
+- [x] **ADDRESSED** — `python3 target/live-containment/classification/verify.py`
+  rc=0 normal/O: complete original authority prefix and registry inverse exact;
+  appended correction agrees with typed sources. Index/book point to the truth.
+- [x] **NO REGRESSION** — `bash target/live-containment/classification/focused.sh`
+  rc=0: focused12/sharder12/seven books, complete normal+print teaching and both
+  literal reads pass;102 old head entries, frozen archives, protected bytes/
+  modes/Gitlink and all existing ceilings remain exact. Staged acceptance/seam
+  checks and normal hooks must pass before COMMIT closes this slice.
+- [x] **LOCKSTEP** — authority/index/registry/book/owner/pointer agree; LIVE and
+  CPU qualification unchanged. D51 closes; separate .4h6 capacity remedy review
+  and full .4 containment adoption remain open. No new authority to raise a cap.
 
 ## Decisions
 
@@ -840,6 +892,14 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h5: assess.py/verify.py normal/O rc=0: typed source inventories27/1/9/24
+and33/1/40/22, six added instances/no removals, two metadata negatives refuse;
+real HEAD/index/all1400 identities exact. Whole authority/registry/index/book/
+task/head inverses retain original receipt and102 old head entries; protected
+bytes/modes/Gitlink, manifests/seals and ceilings exact. Focused12/sharder12/
+seven books, full normal+print teaching and two literal reads pass. D51 fixed;
+LIVE/CPU unchanged. .4h6 separate capacity review follows COMMIT.
+
 .4h4: final public normal/O replay baseline0; all injected unavailable
 file/parser/hint/README/date reads refuse2 without green/stdout. Removed derived
 wc/sort consumers receive zero injections. All1398 real tracked identities,
@@ -932,6 +992,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0015 (leaf LIVE-CONTAINMENT.4): correct the count receipt classification` — .4h5 complete/D51 fixed; .4h6 separate capacity review next.
 
 `SEMULITH-LC-0014 (leaf LIVE-CONTAINMENT.4): refuse unavailable routing evidence` — .4h4 complete/D53–54 fixed; .4h5 D51 capacity review next.
 

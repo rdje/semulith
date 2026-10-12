@@ -63,15 +63,16 @@ cat KNOWLEDGE_MAP.md
 
 ### Decision navigation and the record it opens
 
-The decision index is a bounded navigation view. Dated topic labels and reader
-questions point to the complete records, which own the rationale and historical
-measurements. Shortening duplicate summaries preserves those records and links;
-it does not authorize changing a limit. For example, read the index and the
-per-tree size ruling:
+The bounded index routes dated questions to complete records, which own rationale
+and measurements. Retain an incorrect historical receipt and append its explicit
+correction. The count record's 61 files mean 27 task instances + one template + nine
+archives + 24 artifacts; they do not count active work. At `d39092f`,
+33 + 1 + 40 + 22 = 96.
+Classification correction supplies no authority to raise a ceiling. Read both:
 
 ```sh
 cat docs/decisions/INDEX.md
-cat docs/decisions/decision_task-tree-per-part-growth.md
+cat docs/decisions/decision_task-tree-family-count-rederivation.md
 ```
 
 ### Capacity evidence must be readable

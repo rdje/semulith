@@ -308,6 +308,10 @@ docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed 
 #   lifecycle itself. Per-part STAYS 64 KiB (it bit correctly, sixth proof). Grounds and
 #   rejected alternatives in
 #               docs/decisions/decision_task-tree-family-count-rederivation.md.
+# Classification correction, LC-0015 (2026-10-12): at6622177, the28 root Markdown
+#   files are27 task instances + TEMPLATE.md; nine archives/24 artifacts/61 total
+#   remain correct. The complete original receipt is retained; the count record
+#   above owns the dated correction. No bound changes in this correction.
 docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	3145728	131072
 # Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
 #   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice

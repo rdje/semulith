@@ -70,3 +70,12 @@ lanes, archive parts, and evidence artifacts the project tracks" grew by design.
 Related: [[decision_task-tree-family-bound]],
 [[decision_task-tree-family-bound-rederivation]],
 [[decision_changelog-family-aggregate-rederivation]].
+
+## Classification correction — 2026-10-12 (LC-0015)
+
+The original receipt above is retained. At revision `6622177da19c69bce2416e628c40245ecae9ef5d`,
+its 28 root Markdown files are 27 task instances plus TEMPLATE.md, not 28 live trees.
+Nine archives, 24 artifacts and the 61 total are correct. At `d39092f3ed37e447f5e88737fa04ae55f1e2e9a5`,
+33 instances + one template + 40 archives + 22 artifacts = 96; six instances were added,
+none removed. Complete typed inventories and metadata checks: LIVE-CONTAINMENT.4h5.
+This corrects classification only; count 96 and all other limits retain their authority.

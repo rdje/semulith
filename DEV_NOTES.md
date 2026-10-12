@@ -1,5 +1,26 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — correct the retained count classification (LIVE-CONTAINMENT.4h5)
+
+D51 fixed: the original count authority labels28 top-level Markdown files live
+trees, but Git6622177 has27 task instances and TEMPLATE.md. Its nine archives,
+24 artifacts and61 total are correct. At d39092f,33 instances+one template+
+40 archives+22 artifacts=96. Six instances were added and none removed.
+Complete NUL inventories are exhaustive/disjoint; every root task ID matches
+metadata, and template-as-instance/wrong-ID negatives refuse. The read-only
+census preserves real HEAD/index/all1400 identities. Source census hashes
+immutable HEAD blobs, so current owner edits cannot contaminate the baseline.
+
+Keep every original authority/registry receipt byte and append a separate dated
+classification correction. The affected index row and book teach what the
+count actually measures. This is no capacity authorization; separate .4h6
+review owns any remedy. Preserve every bound, archive body, LIVE and CPU claim.
+Evidence: target/live-containment/classification. Whole source/head/history and
+protected-mode inverses,102 prior head entries, focused12/sharder12/seven books,
+complete normal+print teaching/two literal reads and staged acceptance/seam
+checks must be green before normal COMMIT hooks and exact postcheck.
+promotion: declined (the canonical count authority owns the correction).
+
 ## _(2026-10-11)_ — refuse unavailable routing evidence (LIVE-CONTAINMENT.4h4)
 
 D53/D54 reproduced before repair: actual public CLI green0 for failed/diagnostic
