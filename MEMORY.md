@@ -16,9 +16,10 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b2h — whole closed-unit task-part containment before
-  .4i2b2b D59/D64 source/consumer code repair; graph reader review follows.
+- next_action: LC.4i2b2b — repair D59/D64 task-source and progress readers;
+  whole closed-unit history is retained in the ordinary LC archive.
+  Graph reader review follows.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC-0025 COMMIT; full adoption remains LC.4.
+- in_flight_uncommitted: none after LC-0026 COMMIT; full adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

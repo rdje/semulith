@@ -178,6 +178,7 @@ cat docs/tasks/archive/P4-SYSTEM-16.md
 cat docs/tasks/archive/P4-SYSTEM-17.md
 cat docs/tasks/archive/P4-SYSTEM-18.md
 cat docs/tasks/archive/P4-SYSTEM-19.md
+cat docs/tasks/archive/LIVE-CONTAINMENT.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md
