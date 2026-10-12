@@ -16,10 +16,10 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b4b2 / LC0034 — qualify orientation and record indexes.
-  D73 fixed; full graph/adoption and CPU qualification remain open.
+- next_action: LC.4i2b4b2r / LC0035 — repair D74 map and D75 record-index readers.
+  D72/D73 fixed; D74/D75 owned next; full graph/adoption and CPU qualification open.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0033 normal COMMIT; full adoption remains LC.4.
+- in_flight_uncommitted: none after LC0034 normal COMMIT; adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

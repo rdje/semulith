@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — orientation and record-index qualification (LIVE-CONTAINMENT.4i2b4b2)
+
+Pin source50a102b/1448 identities and207 selected inputs; opaque Gitlinks never
+materialize. Tracked qualify_orientation_indexes.py independently expands33 direct
+task files,59 decision records and29 knowledge cards, excluding templates/indexes/
+nested task artifacts. Markdown roster destinations match exact owned inventories.
+Full map bytes derive from curated text and C-sorted task/decision names; knowledge
+cards are separate index navigation, not MEMORY-ARCH scope. All public commands run
+in isolated same-volume copies, selecting the real read-only Git metadata through
+its documented work-tree environment. Actual source/index/physical modes stay exact.
+
+Seventeen observations per mode expose11 wrong verdicts. D74: missing curated input
+and actual sed/ls/sort42 are hidden by generator continuation; guard misclassifies
+incomplete output and ignores failed generator status. A generator emits the exact
+map then exits42; actual guard still0. D75: unanchored grep accepts a decision
+filename only in a comment; failed grep42 becomes breach1. Exact fault counts are
+1 sed,2 ls,2 sort,59 grep and1 failed generator main. Source/code/outputs pinned;
+all nonmode fields agree normal/O. Three real generator omissions and three
+independent roster omissions refuse2. Default measurement0 does not mean healthy;
+--require-clean exits1 on these11 source defects. Both defects are priority1 with
+immediate LC0035 ownership; assessment intentionally makes no reader repair claim.
+
+D72 reconciliation reads both BOOK-APPARATUS commits/messages/stats/tree deltas:
+BA0001 fd4ca402 introduced the index and completed .1; BA0002 48b37729 closed .2
+and metadata but left internal root active/.1 commit pending. Retain/authenticate
+the complete21612B original and old book explanation before correcting only those
+two current fields. Whole historical receipts remain exact. One canonical artifact
+uses final pooled task slot107 without raising caps; full producer/capture/inverses
+and focused/book/rendered/literal checks support publication. LIVE1575, all processor/
+MCU/DSP/board qualification and full graph/adoption remain unchanged.
+
+Lesson promotion: declined — existing source-pinned consumer record retains cause,
+finite scope and explicit immediate repair ownership, with full normal/O controls.
+
 ## _(2026-10-12)_ — preserve public index refusal boundaries (LIVE-CONTAINMENT.4i2b4b1r)
 
 D73 root cause was measured through both actual public commands before repair:
@@ -658,53 +692,4 @@ print teaching/three literal reads, staged acceptance/seam and normal hooks
 close the slice before postcheck/host0. No rollover needed; LIVE/CPU unchanged.
 Separate .4h6c capacity review follows; full inventory/checker remains .4.
 promotion: declined (the canonical five-unit record owns the correction).
-
-## _(2026-10-12)_ — contain navigation before capacity authority (LIVE-CONTAINMENT.4h6a)
-
-Nine complete canonical records retain all27 compared clauses and original bytes;
-replace only their duplicated INDEX summaries with dated questions. Every target,
-type and order and D51's corrected row stay exact. INDEX15526→13122B saves2404B;
-decisions261874→259470B leaves2674B against a bounded2304B review projection.
-No authority, ceiling, runtime or CPU qualification changes. Book teaches both
-containment and the pending D55 repair, retaining typed D51 facts/literal reads.
-
-D55 root cause: four-unit staging subtotal142+five initial UART documents=147
-was reused against committed160, attributing four UART files to LAN. Git fa3f74c
-and LAN's parent28be1c4 have the same151-file profiles tree. LAN3071ae8 adds
-nine files/213840B, yielding160/845819B. The totals stand; historical147+13 is
-wrong. Keep that entire source here; priority2 LC.4h6b/LC-0017 corrects it next,
-then .4h6c reviews capacity authority. No permission or bound inferred from it.
-
-Whole-oldest DEV3668B to0284 and CH1417B/two entries to0285 preserve104 prior
-entries. Source-head/manifest/seal/book/task/index inverses and protected modes/
-Gitlink prove scope. Genuine old/moved receipt edits refuse even with updated
-shard digests; published receipt+digest edit refuses through the other guard.
-Evidence target/live-containment/capacity-navigation: immutable Git source1400,
-real HEAD/index/working capture exact; verify/history/rendered normal/O,
-focused12/sharder12/seven books, full normal+print and two literal reads.
-An ignored LAN census initially used the wrong directory prefix; exact Git paths
-identified lan9118-lab-v0, then the strict151/9 census passed. Normal hooks,
-postcheck, brief0 and unrestricted host census close this slice before D55.
-promotion: declined (unchanged canonical records own every demoted detail).
-
-## _(2026-10-12)_ — correct the retained count classification (LIVE-CONTAINMENT.4h5)
-
-D51 fixed: the original count authority labels28 top-level Markdown files live
-trees, but Git6622177 has27 task instances and TEMPLATE.md. Its nine archives,
-24 artifacts and61 total are correct. At d39092f,33 instances+one template+
-40 archives+22 artifacts=96. Six instances were added and none removed.
-Complete NUL inventories are exhaustive/disjoint; every root task ID matches
-metadata, and template-as-instance/wrong-ID negatives refuse. The read-only
-census preserves real HEAD/index/all1400 identities. Source census hashes
-immutable HEAD blobs, so current owner edits cannot contaminate the baseline.
-
-Keep every original authority/registry receipt byte and append a separate dated
-classification correction. The affected index row and book teach what the
-count actually measures. This is no capacity authorization; separate .4h6
-review owns any remedy. Preserve every bound, archive body, LIVE and CPU claim.
-Evidence: target/live-containment/classification. Whole source/head/history and
-protected-mode inverses,102 prior head entries, focused12/sharder12/seven books,
-complete normal+print teaching/two literal reads and staged acceptance/seam
-checks must be green before normal COMMIT hooks and exact postcheck.
-promotion: declined (the canonical count authority owns the correction).
 

@@ -48,24 +48,24 @@ Diagnostic evidence and dependency inputs are retained.
 
 ## Orientation and the selected next action
 
-`KNOWLEDGE_MAP.md` lists every task-tree file, including completed and proposed
-trees. Its generated inventory is not an active-work roster. The status-aware
-open and closed indexes below own that distinction. `MEMORY.md` selects one
-next action; measurements and completed receipts stay in their owning trees.
-Read the current revision from Git:
+`KNOWLEDGE_MAP.md` inventories all task files; open/closed indexes below own
+status. `MEMORY.md` selects the next action. LC0034 independently reconciles
+33 tasks,59 decisions,29 lesson cards at50a102b. Run fresh replay:
 
 ```sh
-git log -1 --format='%H %s'
-cat MEMORY.md
-cat KNOWLEDGE_MAP.md
+python3 scripts/qualify_orientation_indexes.py --output target/live-containment/orientation-replay/source2
 ```
 
-The term index scans raw SUMMARY chapters, glossary terms and acronyms.
-It excludes glossary/index discussion hits; includes stay unexpanded.
-D73 is fixed: unreadable inputs refuse2. Check the actual repaired commands:
+Exit0 means measurement complete:17 public observations include11 wrong
+verdicts. D74 loses map input/tool failures; D75 accepts comment-only decision
+mentions and misclassifies failed reads. Both are owned for immediate repair.
+Knowledge-card links are independently checked here; MEMORY-ARCH covers decisions.
+
+The term index scans raw SUMMARY chapters and glossary terms/acronyms;
+includes stay unexpanded. D73 read/write/launch refusals are fixed:
 
 ```sh
-python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/book-index-replay/current
+python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/orientation-replay/index
 ```
 
 ### Decision navigation and the record it opens

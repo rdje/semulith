@@ -41,7 +41,7 @@ the policy survives the session.
 ## Task Tree
 
 - ID: `BOOK-APPARATUS`
-  Status: `active`
+  Status: `done` (`2026-10-02`, `SEMULITH-BA-0002`)
   Goal: the project book carries a governed glossary, annexes, and index
   Children: `BOOK-APPARATUS.1`, `BOOK-APPARATUS.2`
 
@@ -56,7 +56,7 @@ the policy survives the session.
   green, registered, mirrored, and its RED arms were fired before registration; `make gate`
   green.
   Verification: `2026-10-02` — all in the Verification Log below.
-  Commit: `pending`
+  Commit: `fd4ca40239b790d8208d2a4d5c01754cfebb9ab5` (`SEMULITH-BA-0001`)
   `promotion: declined (per-slice history; the durable halves are the BOOK-INDEX doctrine row
   and decision_mdbook-incremental-engaging, both retrievable already).`
 

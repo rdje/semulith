@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0034 (leaf LIVE-CONTAINMENT.4) — qualify orientation and record indexes
+
+- Source50a102b:207 immutable inputs, exact33 task/59 decision/29 knowledge rosters and full map bytes. Seventeen actual observations per mode expose11 wrong verdicts; real map/roster omissions discriminate. D74 map failure/status loss and D75 comment-only decision matching/read classification are priority1, owned for immediate LC0035 repair.
+- Fix D72's two stale BOOK-APPARATUS fields after both-commit reconciliation and retention of its complete21612B original. Publish tracked replay/capture, bounded book/toolbox sync; preserve history, modes and fixed caps. LIVE1575/CPU/MCU/DSP/board/full-adoption qualification unchanged.
+
 ## SEMULITH-LC-0033 (leaf LIVE-CONTAINMENT.4) — preserve public index input refusal
 
 - Fix D73: generator I/O/Unicode failures and failed/unknown launches refuse2; only named index drift stays1. All16 original wrong outcomes per mode become0 across28 observations; valid index bytes and49/40/53 source expansion remain exact. Three real refusal omissions discriminate normal/O.
@@ -423,9 +428,4 @@
 
 - Preserve three complete historical records, the closed FP card and profile note with exact payload/full-task inverses; reject three damaged archive controls.
 - Correct maintained ancestry/FP acceptance/search advice/INDEX/task/book scope around public observations and explicit lineage limits. Realized runner1/1, focused12/six books/invariants pass; runtime/producers/profiles/frozen/registry/history/LIVE remain exact,114/114 frozen.
-
-## SEMULITH-P4-0196 (leaf P4-SYSTEM.14) — correct canonical state source citations
-
-- Replace state header/mstatus encoding-header assertions with public chapter layouts and RV64 Figure7; preserve full two-span source inverse and all field/reset/policy/census bytes.
-- Published stale state/definition/report controls reject; regeneration changes only three input hashes and the dossier fingerprint. Rust173/17/253, focused15/six books/invariants pass; frozen114/114, runtime/registry/history/LIVE unchanged.
 

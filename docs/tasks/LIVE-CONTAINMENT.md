@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b2 qualify orientation/record indexes after LC0033 normal COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b4b2r / LC0035 repair D74 map and D75 decision-index readers |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -550,10 +550,57 @@ new cases changed the default population; restore its legacy boundary before pub
 - [x] **NO REGRESSION** — `bash target/live-containment/book-index-refusal/focused.sh` rc=0: focused12/sharder12/seven books; original six plus four new index controls normal/O. Full source/history/mode/cap inverses, whole normal/print teaching and literal clean replay pass; staged inverse and normal COMMIT required before next consumer.
 - [x] **LOCKSTEP** — current doctrine/registry/toolbox/book/task/CH/DEV/pointer align; LIVE changes only derived arm count1571→1575. No cap, processor/MCU/DSP/board or full graph/adoption qualification. promotion: declined (existing source-pinned consumer contract and its appended repair evidence own the lesson).
 
-##### .4i2b4b2 / SEMULITH-LC-0034 — qualify orientation and record indexes (pending)
+##### .4i2b4b2 / SEMULITH-LC-0034 — qualify orientation and record indexes
 
 Qualify actual Knowledge Map and decision/knowledge/task index members,
 exclusions, failed inputs and independent omissions; reconcile D72 first.
+
+Owned on clean50a102b after exact16-file postcheck/brief0/host0. Pin the
+owned Git tree; keep Gitlinks opaque. Own scripts/qualify_orientation_indexes.py
+and one canonical artifact orientation-indexes.md (task-family slot107/107),
+its toolbox route and bounded book teaching. Measure actual map generator/guard
+and MEMORY-ARCH through isolated on-volume copies, normal/O; independently
+reconcile task/decision/knowledge inventories, exclusions and links. Inject
+actual reader/tool failures and omit real members; record source-pinned verdicts
+and schedule every defect. Reconcile both BOOK-APPARATUS commits before D72
+current-field corrections, retaining its whole original file first. No other
+consumer repair in this assessment unit; repair follows COMMIT if needed.
+Preserve published receipts, old live history, modes and fixed caps; no processor
+qualification or full graph/adoption claim. Outputs: target/live-containment/orientation-indexes.
+
+Verified LC0034 (`2026-10-12`):207 immutable inputs from all1448 source identities;
+independent33 task/59 decision/29 knowledge memberships and complete map bytes
+agree. All Markdown rosters have exact owned destinations; nested task records,
+templates and index files are explicitly excluded from map membership. Three
+actual generator omissions and three independent roster omissions refuse2,
+normal/O. Seventeen public observations agree completely except mode;11 wrong
+source verdicts. Real faults execute exactly1 sed/2 ls/2 sort/59 grep calls;
+a failed actual generator emits exact map then exits42 once, guard wrongly0.
+
+D72 FIXED: `git log -- docs/tasks/BOOK-APPARATUS.md` identifies BA0001 fd4ca402
+and BA0002 48b37729 only. Read both whole commit messages/stat and relevant tree
+deltas: metadata/.2 closed at BA0002, root active and .1 pending stayed stale.
+Copy/authenticate complete21612B original before correcting those two current
+fields; historical logs/receipts and every other byte stay exact.
+D74 priority1: generator hides missing curated input and failed sed/ls/sort;
+checker loses generator exit status (9 wrong outcomes). D75 priority1: comment-only
+decision filename passes and failed grep42 becomes breach1 (2 wrong outcomes).
+Both owned/scheduled .4i2b4b2r/LC0035 immediately after this COMMIT. No other
+reader repair in the assessment; cap107 is unchanged, last pooled slot used.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_orientation_indexes.py --require-clean --output target/live-containment/orientation-indexes/final-normal` rc=1:17 actual observations/11 wrong verdicts,207 source pins and33/59/29 memberships; actual shell/tool failures locate D74 process-status loss and D75 substring matching. Complete capture: artifacts/live-containment/orientation-indexes.md.
+- [x] **ADDRESSED** — the same producer under `python3 -O` at final-optimized rc=1 reproduces all17 observations exactly; three real generator omissions and three roster omissions refuse2. Whole21612B D72 source retained/authenticated before two corrected current fields; original histories stay exact. D74/D75 explicitly remain open with immediate LC0035 repair, no healthy-reader claim.
+- [x] **NO REGRESSION** — `bash target/live-containment/orientation-indexes/focused.sh` rc=0: focused12/sharder12/seven books, scaffold5/full handoff24 normal/O. Complete old live history/order and protected identities/modes/Gitlink, fixed caps and source inverses pass; normal/print whole teaching, literal historical/current commands and fresh links verified before normal COMMIT.
+- [x] **LOCKSTEP** — task/CH/DEV/pointer/toolbox/book and canonical capture align. LIVE1575 and CPU/MCU/DSP/board/full graph/adoption scope unchanged. promotion: declined (source-pinned consumer record owns this finite qualification and scheduled repairs).
+
+##### .4i2b4b2r / SEMULITH-LC-0035 — repair D74/D75 orientation and record readers (pending)
+
+Repair named missing/unreadable map sources, tool/discovery failures and actual
+generator status propagation; reject comment-only decision listings, refuse
+unavailable index evidence. Preserve complete valid map and memberships, original
+LC0034 capture, old controls/caps/seals. Working-code actual interface matrix must
+be healthy normal/O, and real copied refusal/membership omissions must discriminate.
+Continue catalogue/archive queries .4i2b4b3 only after this normal COMMIT.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
