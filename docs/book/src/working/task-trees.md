@@ -70,7 +70,7 @@ D51: 61 = 27 tasks + one template + 9 archives +
 Classification alone changes no limit. A separate review authorizes count 107:
 33 tasks + template + 33 archive allowance + 40 artifacts. It is pooled capacity;
 40 archives already exceed that forecast. Health 64 remains warning debt.
-Application pending; byte/part caps stay fixed. Read:
+107 passes; 108 breaches. Byte/part caps stay fixed. Read:
 
 ```sh
 cat docs/decisions/INDEX.md
@@ -102,7 +102,7 @@ Checks are finite; measurements are not atomic or capacity authority. Full adopt
 
 ## Local containment contract
 
-The complete local contract and its adoption frontier:
+The local contract and its adoption frontier:
 
 ```sh
 cat LIVE_DOCUMENT_SIZE_CONTAINMENT.md

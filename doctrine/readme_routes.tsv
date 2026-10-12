@@ -312,7 +312,11 @@ docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed 
 #   files are27 task instances + TEMPLATE.md; nine archives/24 artifacts/61 total
 #   remain correct. The complete original receipt is retained; the count record
 #   above owns the dated correction. No bound changes in this correction.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	96	3145728	131072
+# Count authority, LC-0020/LC-0021 (2026-10-12): six added activities; same33-ID/typed96
+#   preconditions checked at573a706. Count107 is pooled33+1+33+40; health64 warning
+#   debt and all byte/part bounds stay fixed. Separate reviewed authority:
+#   docs/decisions/decision_task-family-six-activity-count.md.
+docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	107	3145728	131072
 # Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
 #   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice
 #   checklists are the designed growth; per-part (128 KiB) and count (96) did not fire.

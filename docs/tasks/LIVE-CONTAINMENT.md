@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; .4h6c4 reviewed count application, then full adoption |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D51–57 repaired; count authority applied; .4i full inventory/checker adoption |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -286,7 +286,7 @@ Children: .4h1/LC-0011 index containment, .4h2/LC-0012 input assessment,
 complete; .4h5/LC-0015 completes D51; .4h6a/LC-0016 contains navigation,
 .4h6b/LC-0017 completes D55; .4h6c1/LC-0018 confirms D56. Immediate next
 .4h6c2/LC-0019 completes D56/D57; .4h6c3/LC-0020 reviews authority;
-.4h6c4 applies it next after fresh preconditions.
+.4h6c4/LC-0021 applies it after fresh preconditions; .4i full adoption next.
 
 ### .4h1 / SEMULITH-LC-0011 — contain duplicated decision-index summaries
 
@@ -913,6 +913,65 @@ quoted statuses with explanatory notes refused. Preserve failed source/logs,
 then parse the documented leading status token. It was an instrument assumption,
 not a repository defect; qualified complete results agree normal/O.
 
+### .4h6c4 / SEMULITH-LC-0021 — apply reviewed count authority
+
+Status: complete; reviewed count applied after fresh preconditions. Owned on clean573a706 after normal hooks, exact10-file
+postcheck/brief0, unrestricted handoff0 and full COMMIT report. Separate
+LC-0020 authority is docs/decisions/decision_task-family-six-activity-count.md;
+read in full. It permits count107 only after fresh same33-ID/complete typed96
+preconditions. Own this single conditional application; no implicit widening.
+
+Own target/live-containment/task-capacity-application, fresh immutable HEAD
+census and real HEAD/index/all1407 inverses, source-pinned typed preconditions
+normal/O against the reviewed33/1/40/22 membership, independent record/registry
+field comparisons and actual same guard source. If preconditions pass, change
+only docs/tasks/ count96→107 plus a dated authority pointer; keep health64 as
+warning debt and all remaining cells/rows/comments byte-exact. Existing
+aggregate3145728B/part131072B, canonical records, CPU/profiles and every other
+limit remain exact. Do not change the guard or its94 discriminating controls.
+
+Own source-pinned isolated count boundary fixtures107/108 and advisory65 under
+the actual nine-field row, explicit public healthy CLI normal/O, source/registry/
+protected modes/Gitlink inverses, necessary whole-oldest CH/DEV rollover,
+genuine receipt/digest controls, book application truth/four literal reads,
+pointer/frontier/LIVE review, focused/seven books/rendered, staged acceptance/
+seam, normal hooks/exact postcheck/brief0/unrestricted host0. Do not claim the
+isolated boundary fixtures are public CLI runs. Full inventory, utility/lifecycle,
+field/debt declarations, neutral checker integration and migrations remain .4;
+this application closes only the reviewed count prerequisite.
+promotion: declined (the separate reviewed authority already owns this policy).
+
+
+Result: same33 IDs and complete typed33/1/40/22=96 match the separately
+reviewed decd043 inventory; two precondition omissions refuse normal/O.
+Published1658B authority exact. Apply only count96→107 and a four-line dated
+pointer. Complete registry inverse retains every other cell/row/comment;
+health64 debt, aggregate3145728B/part131072B and all other limits stay exact.
+Guard source SHA f6897a88cb82d1851cda989f8d00bbfa76c9a5f790deabfbd1b100dede78668e
+and all94 controls remain byte-exact. Current96 leaves11 count slots.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/task-capacity-application/check-evidence.py`
+  rc=0 normal/O: prior count96 is full; separate authority and fresh same33-ID/
+  typed96 preconditions pass; two omitted/replaced-instance controls refuse.
+  Original isolated row107 breaches1; 65 warns0 and96 is inclusive0.
+- [x] **ADDRESSED** — `python3 target/live-containment/task-capacity-application/verify.py`
+  rc=0 normal/O: new isolated107 passes0,108 breaches1,65 warns0; actual public
+  CLI normal/O green0/39 routes and health64 warning retained. Enclosing
+  public matrix real1407 state exact. Isolated fixtures are function-level,
+  not public CLI. Registry/count authority/source/protected inverses exact.
+- [x] **NO REGRESSION** — `bash target/live-containment/task-capacity-application/focused.sh`
+  rc=0: focused12/sharder12/seven books; full normal+print/four literal reads,
+  104 prior entries/protected files/Gitlink, original canonical/ordinary/sealed
+  history exact. Normal hooks, staged/post hashes/modes, brief0 and host0 close.
+- [x] **LOCKSTEP** — registry/book/pointer/owner agree: count107 applied;
+  health64 warning debt remains LC.4. LIVE/CPU unchanged. Full inventory,
+  utility/lifecycle/field/debt declarations, checker integration and migrations
+  remain .4i, immediate next; no full containment closure is claimed.
+
+Precondition instrument initially omitted imports needed by its shared checked
+Git readers; it refused before any registry write. Add explicit stat/path imports,
+then both qualified preconditions pass; no product failure or cap change on error.
+
 ## Decisions
 
 - `2026-10-10` .4b (`SEMULITH-LC-0005`), owned on clean47cb436: review12 closed
@@ -1220,6 +1279,15 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 ## Verification Log
 
+.4h6c4: task-capacity-application check-evidence/verify/history/rendered normal/O
+and focused.sh rc=0. Fresh same33 IDs/typed96, exact separate authority and two
+precondition refusals; count96→107 only plus dated pointer. Original107 breach1
+becomes0; new108 breach1 and65 advisory0. Public normal/O green0/39 routes,
+health64 debt; enclosing1407 states and guard94 byte-exact. Whole DEV4026B→0290
+preserves104 prior entries; protected/Gitlink/canonical/ordinary/seals exact.
+Focused12/sharder12/seven books/full normal+print/four reads and normal COMMIT
+required; LIVE/CPU unchanged. .4i full inventory/checker adoption is next.
+
 .4h6c3: task-capacity-review assess/review/verify/history/rendered normal/O and
 focused.sh rc=0. Typed27/1/9/24→33/1/40/22, six creation/scopes, four typed/two
 metadata refusals; real1405 snapshots exact. Separate107 authority; health64
@@ -1359,6 +1427,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0021 (leaf LIVE-CONTAINMENT.4): apply reviewed task count authority` — .4h6c4 complete; count107, health64 debt; .4i full containment adoption next.
 
 `SEMULITH-LC-0020 (leaf LIVE-CONTAINMENT.4): review separate six-activity count authority` — .4h6c3 complete; no cap change; .4h6c4 applies after fresh same33-ID/typed96 checks.
 
