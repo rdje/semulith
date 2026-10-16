@@ -20,6 +20,6 @@
   LC0038 assessment complete; graph/adoption and CPU qualification open.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0038 normal COMMIT; adoption remains LC.4.
+- in_flight_uncommitted: none after AC0064 normal COMMIT; adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

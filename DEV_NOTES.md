@@ -1,5 +1,29 @@
 # DEV_NOTES.md
 
+## _(2026-10-16)_ — recurring cleanup preserves qualification evidence (ARTIFACT-CLEANUP.7)
+
+Latest cleanup2026-10-11T18:24:49Z is over24h old. Start clean d3d2904 after
+LC0038 hooks/exact post/brief0/unrestricted host census. Reuse the standing
+safe-cohort tool on target/.app-data: no symlink/nested-Git/foreign-device
+traversal, select only untracked known incremental Cargo outputs. Save every
+relative path/device/inode/mtime/size/SHA and all retained byte/SHA identities.
+Complete cohort preflight, then recheck each candidate immediately before unlink.
+Actual unrestricted pre-delete census reports handoff: OK/no project job.
+Changed candidate SHA and totals refuse before deletion normal/O.
+
+Measured event2026-10-16T21:24:43.629148+00:00:18caches/77596881B removed;
+C-engine6/46660983B and C-guest-image12/30935898B. Immediate selected residue0;
+all10701retained files/131474223B byte/hash-exact. Release/deps strays0, four
+nested Git roots skipped. Keep all diagnostic/reference logs, qualification
+captures, source fixtures and unknown inputs. Later gates may rewrite logs or
+regenerate caches; the receipt describes this immediate event. Latest single
+record reaches normal/print through the existing include; no book source growth.
+External README/containment package unchanged from reviewed21f4d3d; claim source
+still9f99df25. Complete original task/index/history inverses, unrelated source
+identities/modes/Gitlink, fixed caps, focused12/sharder12/seven books and exact
+rendered receipt qualify before normal COMMIT. CPU/LIVE/full adoption unchanged;
+next LC0039 D77 repair. Scratch remains project-local target/artifact-cleanup-0064.
+
 ## _(2026-10-12)_ — qualify actual book navigation (LIVE-CONTAINMENT.4i2b5a)
 
 LC0038 separates actual owned navigation from later generated TOC/search and
@@ -671,35 +695,4 @@ initial logs, then normal/print/five literal reads pass normal/O. No product
 render defect. Full graph inventory is .4i2 next, before utility decisions or
 checker import.
 promotion: declined (local preparatory contract and replay live with their owning task artifact; no new cross-cutting policy authority).
-
-## _(2026-10-12)_ — apply reviewed task count authority (LIVE-CONTAINMENT.4h6c4)
-
-Separate authority at573a706 is1658B and byte-exact. Fresh complete typed
-33 instances/one template/40 archives/22 artifacts=96 and same33 IDs match
-reviewed decd043 membership; two omitted/replaced-instance controls refuse
-normal/O. Precondition tool first lacked stat/path imports for shared checked
-Git readers and refused before a registry write; explicit imports then qualify.
-
-Change only docs/tasks/ count96→107 plus four dated authority-pointer lines.
-Whole registry inverse preserves all other fields/rows/comments: health64 debt,
-byte health1153433, aggregate3145728 and authored part131072 remain fixed.
-Current96 leaves11 slots; no calendar renewal or other capacity authority.
-Complete guard f6897a88 and all94 controls byte-exact. Published authority,
-canonical/profile/CPU/qualification and ordinary/sealed histories unchanged.
-
-Source-pinned isolated function fixtures using the actual nine-field row:
-old65 advisory0/96 inclusive0/107 breach1; new65 advisory0/107 inclusive0/
-108 breach1, normal/O. Every matrix's real HEAD/index/all1407 identities exact.
-Actual public CLI normal/O green0/39 destinations, retained health64 warning;
-enclosing matrix state exact. These are two different evidence legs; no claim
-that isolated synthetic boundaries are actual public CLI runs. No guard edit.
-
-Whole-oldest DEV4026B→0290 retains104 prior entries, all old archive/seal bytes/
-modes and genuine receipt+updated-digest refusals through combined guards.
-Source/registry/book/task/history/protected inverses, focused12/sharder12/seven
-books/full normal+print/four literal reads pass normal/O. Normal hooks, exact
-staged/post hashes/modes, brief0 and unrestricted host0 close COMMIT. Book
-now teaches107 pass/108 breach. LIVE unchanged. Full inventory/utility/lifecycle/
-field/debt/checker adoption remains .4i, immediate next, before P4 adequacy.
-promotion: declined (the separate reviewed authority already owns this policy).
 

@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0064 (leaf ARTIFACT-CLEANUP.7) — remove due incremental caches and retain qualification evidence
+
+- Remove18 identity-checked Cargo incremental caches/77596881B; immediate selected residue0, all10701 retained diagnostic/reference/input files/131474223B byte/hash-exact. Four nested repositories skipped; no tracked/source/dependency input deleted. Damaged identity/totals refuse normal/O; unrestricted pre-delete census green.
+- Overwrite latest receipt, rendered through the existing named book include; preserve original teaching, complete prior history/source/modes and fixed caps. Focused12/sharder12/seven books and normal COMMIT verify housekeeping. CPU/LIVE/full adoption unchanged; next LC0039 D77 nesting refusal repair.
+
 ## SEMULITH-LC-0038 (leaf LIVE-CONTAINMENT.4) — qualify the actual book navigation consumer
 
 - Source213f818/1459 identities: seven books,93 whole chapters/344 outputs; independent complete HTML transformation reconciles54 source/110 rendered rewrites and3240 hyperlinks with all exclusions normal/O. Exact canonical registry reads and unchanged labels/examples/non-route bytes; actual capture preserves every original output byte.
@@ -406,15 +411,4 @@
 - Repair12 shell sites/two Python self-test allocators, fixture cleanup and synth's missing scratch parent; constrain child TMPDIR at14 entrypoints. Guard56 shell sites,2 Python tests and28 child defaults with named negative and optimization controls.
 - Repair the stale custom-token acceptance fixture (9/1→10/0), correct current-corpus and SHARD-FREEZE reporting, and retain earlier controls. SEAM19/0; named-arm census728.
 - Focused11, protected byte-scope proof and final full five-leg CI/seven books pass; Rust173/17/253. Archive pins, existing caps and CPU/P4/P5 acceptance unchanged. Return to P4 evidence work; full containment adoption remains.
-
-## SEMULITH-LC-0006 (leaf LIVE-CONTAINMENT.4) — seal closed P4 task history
-
-- Preserve all12originals byte-exact in the approved tracked archive; retain former paths/eight anchors and verified no-Git/tar retrieval. Release1,137,663B from the task family without raising an earlier cap.
-- Register TASK-HISTORY with46 positive/adversarial controls, immutable descriptor, bounded decompression and navigation/link checks. Full predecessor/consumer proofs, focused15, seven books and full five-leg CI pass; Rust173/17/253.
-- Doctrine/arm/route counts re-derived39/718/38; CPU acceptance and milestones unchanged. Full containment adoption remains; resume P4 evidence work.
-
-## SEMULITH-LC-0005 (leaf LIVE-CONTAINMENT.4) — prepare finite task-history archive review
-
-- Verify a deterministic12-file closed-P4 archive prototype with exact source/manifest identities, all Python/tar retrievals and four fail-closed controls; preserve originals.
-- Record five consumer files and proposed navigation stubs retaining paths/eight anchors; publish the exact manifest/reproduction and pending browsing decision. No removal, ceiling/checker/runtime/profile/status change; focused9/seven books pass.
 
