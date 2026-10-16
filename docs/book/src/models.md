@@ -1,9 +1,9 @@
 # One definition, one book
 
-Every modelled unit has its own mdBook under `docs/models/<unit-id>/` — the
-`decision_one-definition-one-book` rule. Read its pinned materials, missing inputs,
-modelling choices, reference limits and evidence verdict there. Registration makes
-that work reviewable; it does not by itself accept the model.
+Each unit owns an mdBook under `docs/models/<unit-id>/`
+(`decision_one-definition-one-book`): pinned materials, missing inputs,
+modelling choices, reference limits and evidence verdicts. Registration makes
+this work reviewable; it does not accept the model.
 
 Registered units:
 
@@ -45,19 +45,20 @@ Sibling rewrites preserve queries, fragments and sources.
 
 ```sh
 python3 scripts/qualify_book_navigation.py --working-code --require-clean --output target/nav-verified
+python3 scripts/qualify_book_toc.py --require-clean --output target/toc-verified
 ```
 
-Use a fresh path. D77 depth1200 now refuses2; immutable replay retains16/1.
+Use fresh paths. D77 depth1200 refuses2; immutable navigation replay retains16/1.
+Chapter TOCs match SUMMARY hierarchy/labels; page headings/search/resources remain open.
 
 ## What the gate establishes
 
 `UNIT-BOOKS` (`scripts/check_unit_books.sh`) reads `materials/units.sexp` through
-the shared record mapper. It checks the catalogue's IDs/kinds, missing and orphan
-books, and builds the project book plus all registered books into a fresh temporary
-bundle under `target/`. Every rendered local hyperlink path and HTML fragment is
-checked there, including print pages. Old output cannot supply a passing verdict;
-the temporary bundle is removed. Registered source paths must be relative, on the
-project volume and outside symlinks or nested Git repositories.
+the shared mapper, checks catalogue IDs/kinds and missing/orphan books, then
+builds every book in a fresh `target/` bundle. It checks rendered local hyperlink
+paths and HTML fragments, including print. Old output cannot pass; the bundle is
+removed. Registered source paths must be relative, on the project volume,
+outside symlinks and nested Git repositories.
 
 For example, removing the RV64GC catalogue entry reports
 `MODEL-CATALOGUE missing rv64gc-lab-v0`; a link to an absent local page reports

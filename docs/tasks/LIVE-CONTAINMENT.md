@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b / LC0040 qualify generated TOC/search after LC0039 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b1h / LC0041 contain task-family byte pressure before heading/search |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -840,7 +840,7 @@ MCU, DSP, board, complete graph or adoption acceptance change.
 - [x] **NO REGRESSION** — focused.sh/verify.py/history.py/rendered/literal checks rc=0 normal/O where applicable:focused12/sharder12/seven books, complete93-chapter/344-output transformations, whole published prefix/book/history/source/modes/fixed caps and staged inverse exact. Normal COMMIT hooks/postcheck complete before LC0040. No Rust change.
 - [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/capture align; immutable source results remain explicit. promotion: declined (the source-pinned navigation record owns this depth contract).
 
-###### .4i2b5b / SEMULITH-LC-0040 — qualify generated TOC/search (pending)
+###### .4i2b5b — generated TOC/search (active, decomposed)
 
 After LC0039 normal COMMIT/exact postcheck/brief0/unrestricted host0, pin fresh
 source/input identities and qualify actual public mdBook-generated navigation
@@ -855,6 +855,70 @@ Preserve published prefixes, whole history/source/modes and fixed capacities;
 no108th task file. Keep resource routes .4i2b5c, author hints/reconciliation
 .4i2c/d, full graph/adoption and processor qualification explicitly open.
 Update current book teaching and complete the normal COMMIT workflow.
+
+###### .4i2b5b1 / SEMULITH-LC-0040 — qualify chapter TOC data (complete)
+
+Owned2026-10-16UTC from clean718bbd9 after LC0039 normal hooks, exact13-file
+postcheck/brief0/unrestricted host0. Read inventory-contract .4i2, current
+models chapter, complete include-source-integration record, registry/books/
+SUMMARY inputs and owned capture/copy/path interfaces before changes. Pin the
+fresh1466-identity source. Use public mdBook0.5.4 commands and generated data;
+all Gitlinks opaque, other repositories read-only. Own the tracked producer
+scripts/qualify_book_toc.py and target/live-containment/chapter-toc scratch.
+
+Scope: independently reconstruct the seven SUMMARY chapter/part hierarchy,
+paths, labels and numbering, reconcile captured full mdBook chapter metadata
+and both generated chapter-contents representations (toc.html and toc JS data).
+Authenticate complete immutable source copies before/after, canonical inputs,
+all actual output membership/bytes and an unchanged capture baseline normal/O.
+Qualify actual supported SUMMARY omissions/renaming/hierarchy changes against
+the complete original contract; native producer success alone is insufficient.
+Retain every candidate/row and name exclusions explicitly. Runtime per-page
+heading insertion is .4i2b5b2; search is .4i2b5b3; resource loading is .4i2b5c.
+Do not claim browser runtime, full graph/adoption or processor qualification.
+
+Append a bounded complete reconstruction capture to existing canonical
+artifacts/live-containment/include-source-integration.md, preserving its full
+24876B published prefix. All fixed caps/count107 remain unchanged; keep the
+whole old book teaching before compact current guidance. Preserve source,
+history, modes and complete inverses; update MEM/CH/DEV/toolbox/book; focused
+checks/seven books/rendered/literal commands and normal COMMIT close this unit.
+Log and own any verified product defect before repair; no speculative fixes.
+promotion: declined (source-pinned generated-navigation evidence owns the scope).
+
+Verified TOC data/controls below pass normal/O. The capture API lacked its own
+no-fetch guard (CLI had it): a proxy before its first Git read failed. source_manifest
+now sets the flag; codec.py rc=0 verifies the guard normal/O.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualify_book_toc.py --addition scripts/qualify_book_toc.py --require-clean --output target/live-containment/chapter-toc/prepare-normal` rc=0:source1466/107 pins, seven books/93 chapters/14 TOCs,0 wrong verdicts; prior navigation qualification left chapter TOC data open.
+- [x] **ADDRESSED** — same qualifier normal/O rc=0:100 complete chapter/part rows match protocol and both generated forms;344 outputs capture-exact, three real SUMMARY controls build0/qualification1. codec.py rc=0 normal/O:complete inverse and six damaged-input refusals.
+- [x] **NO REGRESSION** — focused.sh/history.py/verify.py/rendered.py rc=0 normal/O where applicable:focused12/sharder12/seven books; whole prior source/history/modes/book/prefix/cap and staged inverses exact; normal COMMIT required. No Rust/LIVE/processor/adoption change.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/capture align; heading/search/resources remain open. promotion: declined (source-pinned generated-navigation record owns the scope).
+
+###### .4i2b5b1h / SEMULITH-LC-0041 — contain task-family byte pressure (pending)
+
+Before further heading/search captures, measure remaining107-file/3145728-byte
+capacity and classify the largest complete records against the local containment
+contract. Own a lossless, authenticated retention remedy with published retrieval
+and verified source/mode/order inverses; preserve every authored record and all
+current features. Existing capacities remain fixed. Check the director's standing
+archive authorization and local transition rules before any retirement; prepare
+a concrete reviewable transition if a further ruling is actually required.
+
+###### .4i2b5b2 — qualify per-page heading navigation (pending)
+
+After chapter TOC signoff, qualify generated/runtime heading navigation through
+public artifacts and interfaces, complete page/header membership/anchors,
+source contracts and actual omissions. Distinguish rendering from browser
+execution; retain explicit exclusions and own every observed defect.
+
+###### .4i2b5b3 — qualify generated search (pending)
+
+After heading navigation, qualify full seven-book search document membership,
+routes/labels/content contracts, actual inputs, normalization and omissions.
+Inspect large generated indexes structurally, never dump entire lines. Preserve
+published captures, whole history/source/modes and fixed limits; resources
+remain .4i2b5c. No complete graph/adoption/processor acceptance claim.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1426,6 +1490,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0040 (leaf LIVE-CONTAINMENT.4): qualify generated chapter contents` —93 chapters/14 TOCs, complete source/rows; byte-pressure remedy next.
 
 `SEMULITH-LC-0039 (leaf LIVE-CONTAINMENT.4): preserve public navigation nesting refusal` — D77 fixed; legacy16/1/current16/0; generated TOC/search next.
 

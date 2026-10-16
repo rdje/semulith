@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0040 (leaf LIVE-CONTAINMENT.4) — qualify generated chapter contents
+
+- Pin1466 source identities/107 inputs; all93 chapters/seven parts across seven books match independent SUMMARY hierarchy, labels, paths and numbering in captured metadata and14 TOCs normal/O. All344 output files remain capture-exact; three supported remove/rename/unnest SUMMARY controls build0 and fail complete original qualification1. Page headings/search/resources and330 other output candidates remain open.
+- Preserve the whole24876B published prefix, old book teaching, source/history/modes and fixed capacities. Complete metadata reconstructs through bounded XZ/source/manifest references; all107 source pins/TOC rows/exclusions retained, six damaged captures refuse normal/O. Focused/seven-book/rendered/literal and normal COMMIT checks qualify the slice. CPU/LIVE/adoption unchanged; task-family byte containment next.
+
 ## SEMULITH-LC-0039 (leaf LIVE-CONTAINMENT.4) — preserve public navigation nesting refusal
 
 - Fix D77 at the public API: observed deep-copy recursion becomes named NavigationRefused; CLI returns2 with no stdout/traceback. Permanent depth regression first RED in API and explicit normal/O children, then27/0; all26 original methods preserved. Working-code replay overlays only pinned consumer/probe on immutable data.
@@ -405,9 +410,4 @@
 - Reproduce four false GREENs: unknown model, conflicting experiment IDs, repeated models and a self-paired independence row. Enforce identity/membership/distinctness through the existing checker; retain valid data and grammar.
 - PROFILE-CONSISTENCY50/0 (old46/4); four independently restored predicates each49/1; current five dossiers/focused13/seven books/protected scope pass. Correct stale schema count and three current-corpus descriptions; derive732arms.
 - Runtime/canonical/profile/frozen/fixtures/history/archive, existing caps and milestone states unchanged; CPU incomplete7axes/P4 13/18. Structured GC records and policy-derived statuses remain next.
-
-## SEMULITH-LC-0008 (leaf LIVE-CONTAINMENT.4) — publish temporary-control procedures in the book
-
-- Replace the book's path-only reference with a live include of the full authoritative control matrix, reproduction and limits; add five runnable positive examples.
-- Seven books, rendered commands/limits and complete old reference/book inverses pass. Focused8/protected census1269unchanged pass; runtime, profiles, archive, existing caps and LIVE unchanged. Resume P4.14.
 
