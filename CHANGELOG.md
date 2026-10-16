@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0039 (leaf LIVE-CONTAINMENT.4) — preserve public navigation nesting refusal
+
+- Fix D77 at the public API: observed deep-copy recursion becomes named NavigationRefused; CLI returns2 with no stdout/traceback. Permanent depth regression first RED in API and explicit normal/O children, then27/0; all26 original methods preserved. Working-code replay overlays only pinned consumer/probe on immutable data.
+- All16 current observations correct normal/O; immutable16/1 retained. All93 chapters/344 outputs,54 source/110 rendered rewrites,3240 hyperlinks/exclusions exact; three original route omissions plus actual catch omission discriminate. Retain whole106266B published prefix/book/history/source/modes and fixed caps; complete lossless four-matrix evidence, bounded book/toolbox/live sync, focused/seven-book/rendered/literal checks and normal COMMIT. LIVE1576/CPU/MCU/DSP/board/full graph/adoption unchanged; generated TOC/search next.
+
 ## SEMULITH-AC-0064 (leaf ARTIFACT-CLEANUP.7) — remove due incremental caches and retain qualification evidence
 
 - Remove18 identity-checked Cargo incremental caches/77596881B; immediate selected residue0, all10701 retained diagnostic/reference/input files/131474223B byte/hash-exact. Four nested repositories skipped; no tracked/source/dependency input deleted. Damaged identity/totals refuse normal/O; unrestricted pre-delete census green.
@@ -405,10 +410,4 @@
 
 - Replace the book's path-only reference with a live include of the full authoritative control matrix, reproduction and limits; add five runnable positive examples.
 - Seven books, rendered commands/limits and complete old reference/book inverses pass. Focused8/protected census1269unchanged pass; runtime, profiles, archive, existing caps and LIVE unchanged. Resume P4.14.
-
-## SEMULITH-LC-0007 (leaf LIVE-CONTAINMENT.4) — keep temporary allocations on the repository volume
-
-- Repair12 shell sites/two Python self-test allocators, fixture cleanup and synth's missing scratch parent; constrain child TMPDIR at14 entrypoints. Guard56 shell sites,2 Python tests and28 child defaults with named negative and optimization controls.
-- Repair the stale custom-token acceptance fixture (9/1→10/0), correct current-corpus and SHARD-FREEZE reporting, and retain earlier controls. SEAM19/0; named-arm census728.
-- Focused11, protected byte-scope proof and final full five-leg CI/seven books pass; Rust173/17/253. Archive pins, existing caps and CPU/P4/P5 acceptance unchanged. Return to P4 evidence work; full containment adoption remains.
 

@@ -3,6 +3,8 @@
 
 Use a fresh --output target/PATH. Source copies omit Gitlinks. Captures retain
 relative book identities and whole protocol books, never absolute contexts.
+Default replay retains immutable code; --working-code overlays only the owned
+navigation consumer and its permanent probe on the same authenticated data.
 """
 from __future__ import annotations
 
@@ -26,6 +28,7 @@ import qualify_book_includes as B
 ROOT = C.ROOT
 SOURCE = '213f818533f66b024f9dbb2561122d0bb39ddf6a'
 NAV = 'scripts/book_navigation.py'
+PROBE = 'scripts/probe_book_navigation.py'
 require = C.require
 
 READ_HOOK = '''import hashlib,json,os
@@ -105,6 +108,24 @@ def environment(temporary):
     if sys.flags.optimize:
         env['PYTHONOPTIMIZE'] = '1'
     return env
+
+
+def copy_fixture(source, output, overlays):
+    """Authenticate the original copy before overlaying explicitly pinned code.
+
+    The expected-copy view changes byte fingerprints only; its immutable Git
+    provenance remains separate from the working code identities in the result.
+    """
+    fixture, _ = B.copy_source(source, output)
+    expected = copy.deepcopy(source)
+    for row in expected['members']:
+        name = row['path']
+        if name in overlays:
+            body = overlays[name]
+            (fixture / name).write_bytes(body)
+            row.update(bytes=len(body), sha256=C.digest(body), lf_lines=body.count(b'\n'))
+    B.verify_copy(expected, fixture)
+    return fixture, expected
 
 
 def destination(book, chapter, target, books, members):
@@ -375,7 +396,7 @@ def public_cases(fixture, output):
     return records
 
 
-def consumer_omissions(source, output, books, captures):
+def consumer_omissions(source, output, books, captures, overlays):
     """Run mutated copies of the real public consumer on every captured book."""
     seams = [('task', 'if task:', 'if False: # LC0038 omitted task routing'),
              ('history', 'if source not in history:', 'if True: # LC0038 omitted history routing'),
@@ -385,7 +406,7 @@ def consumer_omissions(source, output, books, captures):
     for name, old, new in seams:
         directory = output / ('omit-' + name)
         directory.mkdir()
-        fixture, _ = B.copy_source(source, directory)
+        fixture, expected_copy = copy_fixture(source, directory, overlays)
         path = fixture / NAV
         code = path.read_bytes()
         require(code.count(old.encode()) == 1, 'unique actual navigation omission')
@@ -413,11 +434,39 @@ def consumer_omissions(source, output, books, captures):
         # Restore only this owned fixture copy, then authenticate its whole
         # original population/modes. The project source and index never move.
         path.write_bytes(code)
-        B.verify_copy(source, fixture)
+        B.verify_copy(expected_copy, fixture)
         records.append({'role': name, 'source_old': old, 'source_new': new,
             'mutated_code_sha256': C.digest(changed), 'observations': observations,
             'qualification_returncode': 1})
     return records
+
+
+def nesting_catch_omission(source, output, overlays):
+    """Remove the actual API catch and repeat the complete public input matrix."""
+    directory = output / 'omit-nesting-catch'
+    directory.mkdir()
+    (directory / 'tmp').mkdir()
+    fixture, expected = copy_fixture(source, directory, overlays)
+    path = fixture / NAV
+    code = path.read_bytes()
+    old, new = b'except RecursionError as exc:', b'except ArithmeticError as exc:'
+    require(code.count(old) == 1, 'unique repaired navigation nesting catch')
+    changed = code.replace(old, new, 1)
+    path.write_bytes(changed)
+    observations = public_cases(fixture, directory)
+    wrong = [r for r in observations if not r['expected_contract']]
+    require(len(wrong) == 1 and wrong[0]['case'] == 'depth-1200'
+            and wrong[0]['returncode'] == 1 and wrong[0]['traceback']
+            and wrong[0]['stdout_bytes'] == 0,
+            'actual nesting catch omission did not restore the measured defect')
+    require(b'RecursionError' in (directory / 'public/depth-1200.stderr').read_bytes(),
+            'omission failed for a different exception')
+    require(path.read_bytes() == changed, 'omitted code changed during execution')
+    path.write_bytes(code)
+    B.verify_copy(expected, fixture)
+    return {'source_old': old.decode(), 'source_new': new.decode(),
+            'mutated_code_sha256': C.digest(changed), 'observations': observations,
+            'qualification_returncode': 1}
 
 
 def build_stage(fixture, output, books, stage):
@@ -457,6 +506,7 @@ def main():
     parser.add_argument('--output')
     parser.add_argument('--addition', action='append', default=[])
     parser.add_argument('--require-clean', action='store_true')
+    parser.add_argument('--working-code', action='store_true')
     parser.add_argument('--capture', action='store_true')
     parser.add_argument('--fixture')
     parser.add_argument('--capture-output')
@@ -483,9 +533,22 @@ def main():
         before = C.working_snapshot(args.addition)
         source = C.source_census(SOURCE)
         require(len(source['members']) == 1459, 'whole immutable source population')
+        overlays, code_inputs = {}, []
+        if args.working_code:
+            members_by_path = {r['path']: r for r in source['members']}
+            for name in [NAV, PROBE]:
+                pin = before['members'][name]
+                original = members_by_path[name]
+                require(pin['mode'] == int(original['mode'][-3:], 8),
+                        'working navigation code mode differs')
+                body = (ROOT / name).read_bytes()
+                require(C.digest(body) == pin['sha256'] and len(body) == pin['bytes'],
+                        'working navigation code changed during read')
+                overlays[name] = body
+                code_inputs.append({'path': name, 'source_oid': original['oid'], **pin})
         output.mkdir(parents=True)
         (output / 'tmp').mkdir()
-        fixture, _ = B.copy_source(source, output)
+        fixture, expected_copy = copy_fixture(source, output, overlays)
         units = C.U.registered_units(fixture)
         require(not C.U.catalogue_findings(fixture, units), 'source catalogue differs')
         books = ['docs/book', *[u['book'].rstrip('/') for u in units]]
@@ -511,23 +574,29 @@ def main():
         chapters, mappings, counts = source_protocols(books, stages['captured']['captures'], members)
         rendered = rendered_oracle(output, books, stages, mappings, counts)
         observations = public_cases(fixture, output)
-        omissions = consumer_omissions(source, output, books, stages['captured']['captures'])
-        component = subprocess.run([sys.executable, str(fixture / 'scripts/probe_book_navigation.py')],
+        omissions = consumer_omissions(source, output, books, stages['captured']['captures'], overlays)
+        refusal_omission = (nesting_catch_omission(source, output, overlays)
+                            if args.working_code else None)
+        component = subprocess.run([sys.executable, str(fixture / PROBE)],
                                    capture_output=True, check=False,
                                    env=environment(output / 'tmp'), timeout=60)
         (output / 'component.stdout').write_bytes(component.stdout)
         (output / 'component.stderr').write_bytes(component.stderr)
-        require(component.returncode == 0 and b'Ran 26 tests' in component.stderr,
-                'original26 navigation controls did not pass')
-        B.verify_copy(source, fixture)
+        tests = 27 if args.working_code else 26
+        require(component.returncode == 0 and f'Ran {tests} tests'.encode() in component.stderr,
+                'navigation component controls did not pass')
+        B.verify_copy(expected_copy, fixture)
         require(before == C.working_snapshot(args.addition), 'actual source/index/modes changed')
         result = {'source': SOURCE, 'source_members': 1459, 'source_tree_sha256': source['tree_sha256'],
                   'mode': 'optimized' if sys.flags.optimize else 'normal',
                   'books': books, 'stages': stages, 'chapters': chapters,
                   'rendered': rendered, 'observations': observations, 'actual_omissions': omissions,
-                  'component': {'returncode': component.returncode, 'tests': 26,
+                  'component': {'returncode': component.returncode, 'tests': tests,
                                 'stderr_sha256': C.digest(component.stderr)},
                   'source_defects': sum(not r['expected_contract'] for r in observations)}
+        if args.working_code:
+            result.update(code_mode='working', code_inputs=code_inputs,
+                          refusal_omission=refusal_omission)
         write_json(output / 'result.json', result)
         print(json.dumps({'source': SOURCE, 'books': len(books),
                           'files': len(stages['baseline']['files']), 'capture_unchanged': True,

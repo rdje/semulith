@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -170,6 +171,33 @@ class NavigationTests(unittest.TestCase):
     def test_draft_and_empty_book_preserved(self):
         for book in [{'items': []}, {'items': [chapter(None, '[Draft](tasks/P4-SYSTEM.md)')]}]:
             self.assertEqual(N.preprocess(self.context, book, self.root), (book, 0))
+
+    def test_deep_nesting_refused_by_api_and_public_cli(self):
+        book = {'items': []}
+        children = book['items']
+        for _ in range(1200):
+            node = chapter(None, '')
+            children.append(node)
+            children = node['Chapter']['sub_items']
+        with self.subTest(interface='api'):
+            with self.assertRaisesRegex(N.NavigationRefused, 'book nesting exceeds supported depth'):
+                N.preprocess(self.context, book, self.root)
+
+        context = {'root': str(N.ROOT / 'docs/book'), 'renderer': 'html'}
+        node = '{"Chapter":{"path":null,"content":"","sub_items":['
+        payload = ('[' + json.dumps(context) + ',{"items":[' + node * 1200
+                   + ']}}' * 1200 + ']}]')
+        env = dict(os.environ)
+        env.pop('PYTHONOPTIMIZE', None)
+        for flags in [[], ['-O']]:
+            with self.subTest(flags=flags):
+                result = subprocess.run([sys.executable, *flags, N.__file__],
+                                        input=payload, text=True, capture_output=True,
+                                        env=env, timeout=60)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stdout, '')
+                self.assertEqual(result.stderr, 'BOOK-NAVIGATION: REFUSED — '
+                                 'book nesting exceeds supported depth\n')
 
     def test_invalid_context_refused(self):
         for context in [[], {'renderer': 'pdf', 'root': self.context['root']},

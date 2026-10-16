@@ -40,15 +40,14 @@ python3 -m http.server --bind 127.0.0.1 --directory docs 8000
 
 Open `http://127.0.0.1:8000/book/book/`; a model starts at, for example,
 `http://127.0.0.1:8000/models/rv64gc-lab-v0/book/`. Stop the server with Ctrl-C.
-Cross-unit links need the shared `docs` root and built destinations. Mapping
-sibling Markdown to HTML preserves query/fragment suffixes and sources.
+Cross-unit links require the shared `docs` root and built destinations.
+Sibling rewrites preserve queries, fragments and sources.
 
 ```sh
-python3 scripts/qualify_book_navigation.py --output target/nav-replay
+python3 scripts/qualify_book_navigation.py --working-code --require-clean --output target/nav-verified
 ```
 
-Use a fresh path. Exit0 completes assessment; `--require-clean` fails1 on
-D77's deep-nesting traceback (repair LC0039).
+Use a fresh path. D77 depth1200 now refuses2; immutable replay retains16/1.
 
 ## What the gate establishes
 

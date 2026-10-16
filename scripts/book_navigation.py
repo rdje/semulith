@@ -144,6 +144,8 @@ def preprocess(context: dict, book: dict, root: Path = ROOT) -> tuple[dict, int]
         return _preprocess(context, book, root)
     except B.BookRefused as exc:
         raise NavigationRefused(str(exc)) from exc
+    except RecursionError as exc:
+        raise NavigationRefused('book nesting exceeds supported depth') from exc
 
 
 def _preprocess(context: dict, book: dict, root: Path) -> tuple[dict, int]:

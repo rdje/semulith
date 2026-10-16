@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5ar / LC0039 repair D77 navigation nesting refusal after LC0038 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b / LC0040 qualify generated TOC/search after LC0039 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -792,7 +792,14 @@ source replay and explicit generated-diagnostic/non-archival boundaries.
 - [x] **NO REGRESSION** — `bash target/live-containment/navigation-consumer/focused.sh` rc=0: focused12/sharder12/seven books/scaffold7/full handoff26 normal/O. Complete source/history/prefix/book/inverse/modes/fixed caps and normal/print/literal teaching qualify before normal COMMIT. No Rust or existing consumer change.
 - [x] **LOCKSTEP** — task/pointer/CH/DEV/book/toolbox/capture align; LIVE1576/CPU/MCU/DSP/board/full graph/adoption unchanged. promotion: declined (source-pinned navigation record owns this assessment).
 
-###### .4i2b5ar / SEMULITH-LC-0039 — repair D77 navigation nesting refusal (pending)
+###### .4i2b5ar / SEMULITH-LC-0039 — repair D77 navigation nesting refusal (complete)
+
+Owned2026-10-16 from clean f608639 after AC0064 hooks, exact9-file postcheck,
+brief0 and unrestricted host census0. Read the leaf requirements, actual
+book_navigation.py API/CLI and all26 original probe methods, complete tracked
+qualifier and current model-book teaching before code changes. All work and
+scratch remain in this tree/target/live-containment/navigation-repair. Preserve
+the complete LC0038 capture prefix and legacy16/1 while qualifying current16/0.
 
 Immediately after LC0038 normal COMMIT/exact postcheck/brief0/host0, convert
 the verified deepcopy depth failure into named navigation refusal2, zero
@@ -805,6 +812,49 @@ Append repair evidence to the same artifact without changing its published
 prefix. Update book/live/toolbox guidance, preserve whole history/source/modes/
 caps and commit normally. Then continue generated TOC/search .4i2b5b, resources
 .4i2b5c; no complete graph/adoption or processor acceptance credit.
+
+Verified LC0039 (2026-10-16): D77 FIXED. Public preprocess catches the
+observed RecursionError and raises NavigationRefused with a named depth reason;
+main's existing refusal path emits2, zero stdout and no traceback. No invented
+numeric depth limit or recursion-limit adjustment. Depth20 remains unchanged0.
+The permanent test first records27tests/two CLI failures and one API error in
+both parent modes; after repair27/0 normal/O, including explicit normal/-O
+children with inherited PYTHONOPTIMIZE removed. All original26 method ASTs exact.
+
+Working replay overlays only the authenticated consumer/probe bytes on the
+same immutable1459-identity data copy. Original copy authenticates before
+application; all original and three omission fixtures verify against explicit
+working byte/mode expectations afterward. Legacy16/1 remains; current16/0 in
+both modes, all93 chapters/344 outputs/54 source/110 rendered rewrites and
+3240 hyperlinks/exclusions exact. All three route omissions remain actual.
+Removing only the new catch restores public depth1200 traceback1/no stdout
+and qualification1; the other15 cases remain correct. Complete four matrices
+reconstruct losslessly from the published capture and explicit patches/added
+fields. Retain the full106266B artifact prefix and complete old book seam.
+Focused checks, seven books, normal/print/literal teaching, whole source/history/
+mode/cap inverses and normal COMMIT qualify this repair. No LIVE1576, CPU,
+MCU, DSP, board, complete graph or adoption acceptance change.
+
+- [x] **ROOT CAUSE** — `python3 scripts/probe_book_navigation.py` rc=1 before repair normal/O:27 tests, failures2/errors1; new API/depth1200 public CLI reproduces deepcopy RecursionError. Original26 methods pass. Immutable qualifier --require-clean rc=1,16/1 normal/O.
+- [x] **ADDRESSED** — `python3 scripts/qualify_book_navigation.py --working-code --require-clean --output target/live-containment/navigation-repair/working-normal` rc=0:16/0 normal/O; exact named depth refusal2/no stdout/traceback. Actual catch omission restores D77 and fails qualification1; old three route omissions discriminate. Permanent27/0 normal/O.
+- [x] **NO REGRESSION** — focused.sh/verify.py/history.py/rendered/literal checks rc=0 normal/O where applicable:focused12/sharder12/seven books, complete93-chapter/344-output transformations, whole published prefix/book/history/source/modes/fixed caps and staged inverse exact. Normal COMMIT hooks/postcheck complete before LC0040. No Rust change.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/capture align; immutable source results remain explicit. promotion: declined (the source-pinned navigation record owns this depth contract).
+
+###### .4i2b5b / SEMULITH-LC-0040 — qualify generated TOC/search (pending)
+
+After LC0039 normal COMMIT/exact postcheck/brief0/unrestricted host0, pin fresh
+source/input identities and qualify actual public mdBook-generated navigation
+and search across seven books. Reconcile complete chapter/output membership,
+TOC hierarchy, search document membership/routes, canonical inputs, actual
+exclusions and all untouched content through independent evidence. Use public
+commands/contracts, never Gitlink or dependency implementation assumptions.
+Execute actual supported producer/configuration omissions, retain raw complete
+captures on volume and compact durable reconstruction metadata in an existing
+owned artifact. Log/own/schedule every verified defect before repairing it.
+Preserve published prefixes, whole history/source/modes and fixed capacities;
+no108th task file. Keep resource routes .4i2b5c, author hints/reconciliation
+.4i2c/d, full graph/adoption and processor qualification explicitly open.
+Update current book teaching and complete the normal COMMIT workflow.
 
 ### .4i2b1 / SEMULITH-LC-0024 — correct composition progress and count discrimination
 
@@ -1376,6 +1426,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0039 (leaf LIVE-CONTAINMENT.4): preserve public navigation nesting refusal` — D77 fixed; legacy16/1/current16/0; generated TOC/search next.
 
 `SEMULITH-LC-0038 (leaf LIVE-CONTAINMENT.4): qualify the actual book navigation consumer` — complete source/rendered assessment; D77 repair immediately next.
 
