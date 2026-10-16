@@ -1,5 +1,44 @@
 # DEV_NOTES.md
 
+## _(2026-10-12)_ — qualify actual book navigation (LIVE-CONTAINMENT.4i2b5a)
+
+LC0038 separates actual owned navigation from later generated TOC/search and
+resource review. Source213f818 authenticates1459 identities; all1458 regular
+blobs/modes are copied/verified, Gitlink opaque. Public mdBook0.5.4 builds seven
+books in original, captured-consumer and pass-through-navigation bundles per
+mode. Original/captured344-file manifests and every byte agree. Captured before/
+after protocol books contain93 complete chapters; only54 declared destinations
+change, all other text/examples/labels/metadata exact. Independent quoted-anchor
+HTML spans plus declared route contracts transform the whole bare bundle into
+the actual bundle:110 rewrites/12 files, all3240 hyperlinks and3130 explicit
+exclusions. All non-HTML assets remain byte-equal. The project index is authored;
+six model index aliases are first authenticated against their original chapter.
+
+Actual Path.open reads are complete units.sexp bytes/digest/order: project0,
+RV64I1,DSP1,netboard5,UART2,NIC2,RV64GC41. Task/history destinations are statted,
+not body-read; module import/stat operations are outside byte-read trace claims.
+Sixteen real public cases preserve supports0/unsupported1 and named refusal2.
+One injected registry-open fault fires once. D77 alone fails: depth20 nested
+Chapter/sub_items passes0, depth1200 triggers copy.deepcopy RecursionError/
+traceback1/no stdout. Main catches ValueError/OSError/TypeError, not this depth
+failure. LC0039 owns priority1 repair immediately next. Actual copied task/
+history/sibling route omissions each execute all seven captured books0, then
+fail whole expected-book qualification1; original26 controls pass normal/O.
+
+Preparation errors were corrected from actual evidence: project authored index
+is not an alias, and registry reads use Path.open rather than read_text. Neither
+is a source defect. Final normal/O clean selectors return1 with D77 only.
+The complete17280B published prefix and prior book seam are retained. Inline
+zlib/base64 encodes complete bounded metadata rows/manifests/exclusions/cases/
+reads losslessly, with47 optimized runtime overrides. Whole protocol bodies
+have canonical byte/SHA fingerprints and pinned-source public replay; raw bodies
+and build logs are generated diagnostics, not an archive-retention promise.
+A bounded standard-library decoder authenticates compressed and metadata
+identities. Source-context/log hashes vary with runtime fixture/time; this is
+explicit, not silently normalized. Whole history/source/mode/inverse/cap and
+focused/seven-book/rendered/literal checks qualify before normal COMMIT.
+No existing consumer, archive, capacity, processor or full-adoption change.
+
 ## _(2026-10-12)_ — preserve malformed history decompression refusal (LIVE-CONTAINMENT.4i2b4b3r)
 
 D76 repair adds zlib.error to the actual bounded gzip/tar decompression catch,
@@ -663,36 +702,4 @@ staged/post hashes/modes, brief0 and unrestricted host0 close COMMIT. Book
 now teaches107 pass/108 breach. LIVE unchanged. Full inventory/utility/lifecycle/
 field/debt/checker adoption remains .4i, immediate next, before P4 adequacy.
 promotion: declined (the separate reviewed authority already owns this policy).
-
-## _(2026-10-12)_ — review separate count authority (LIVE-CONTAINMENT.4h6c3)
-
-Separate reviewed authority follows repaired D51–57; no registry or code change.
-Closed source6622177 has27 instances/one template/nine archives/24 artifacts=61;
-source decd043 has33/1/40/22=96. Same33 metadata IDs, six new creation/scope pins,
-no removed activity. BOOK-APPARATUS, CI-RECOVERY, CITATION-ACCURACY,
-LIVE-CONTAINMENT, MCU-DOCS, MEMORY-POINTER add required tracking activities;
-they are not six processor features. Both real HEAD/index/all1405 captures exact.
-Four typed omission/misclassification controls and two metadata controls refuse
-normal/O. Initial qualifier rejected quoted statuses/notes as raw enums; preserve
-failed source/logs and parse the documented leading token. No repository defect.
-
-Independent equations107=33+1+33+40 and96+6+6−1 remove the template's false
-archive allowance. Explicit pooled capacity: current40 archives exceed33 forecast,
-artifact22 leaves18 of40; total96 leaves11 slots. Calendar growth cannot renew it.
-Deleting mandated evidence, unbounded export or byte/part increases do not address
-new activities. Separate1658B authority lands before owned application; fresh
-same33-ID/typed96 preconditions required. Health64 remains warning debt owned
-by LC.4; current occupancy is not declared a healthy survivor. All caps, CPU,
-profiles and old canonical records exact; full containment adoption remains .4.
-
-Index/new Knowledge Map/book/pointer/owner agree. Compare three duplicate book
-contract-intro clauses with complete local adoption note before shortening only
-the pointer; full contract include and D51/D55 facts/three old reads remain.
-Fourth read opens new authority. Whole CH1863B/three entries→0289 preserves105
-old entries and all earlier archive/seal bytes/modes; genuine damaged receipt+
-updated digest controls refuse through combined guards. Complete source/doc/
-history/protected inverses, focused12/sharder12/seven books, full normal+print
-teaching/four literal reads pass normal/O. Normal hooks, exact staged/post hashes/
-modes, brief0 and unrestricted host0 close COMMIT; .4h6c4 applies only after
-fresh preconditions. Promotion declined: canonical authority owns the fact.
 

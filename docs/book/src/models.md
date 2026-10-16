@@ -40,10 +40,15 @@ python3 -m http.server --bind 127.0.0.1 --directory docs 8000
 
 Open `http://127.0.0.1:8000/book/book/`; a model starts at, for example,
 `http://127.0.0.1:8000/models/rv64gc-lab-v0/book/`. Stop the server with Ctrl-C.
-Cross-unit links require this shared `docs` serving root and all destination books
-built. A server rooted in only one unit cannot serve its sibling books. The
-HTML-only preprocessor maps declared sibling Markdown chapters to their built HTML
-locations, retaining query/fragment suffixes; authored unit sources stay intact.
+Cross-unit links need the shared `docs` root and built destinations. Mapping
+sibling Markdown to HTML preserves query/fragment suffixes and sources.
+
+```sh
+python3 scripts/qualify_book_navigation.py --output target/nav-replay
+```
+
+Use a fresh path. Exit0 completes assessment; `--require-clean` fails1 on
+D77's deep-nesting traceback (repair LC0039).
 
 ## What the gate establishes
 

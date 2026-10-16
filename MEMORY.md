@@ -16,10 +16,10 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b5 / LC0038 — qualify generated navigation/resources.
-  D76 fixed; graph/adoption and CPU qualification remain open.
+- next_action: LC.4i2b5ar / LC0039 — repair D77 navigation nesting refusal.
+  LC0038 assessment complete; graph/adoption and CPU qualification open.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0037 normal COMMIT; adoption remains LC.4.
+- in_flight_uncommitted: none after LC0038 normal COMMIT; adoption remains LC.4.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.

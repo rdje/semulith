@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0038 (leaf LIVE-CONTAINMENT.4) — qualify the actual book navigation consumer
+
+- Source213f818/1459 identities: seven books,93 whole chapters/344 outputs; independent complete HTML transformation reconciles54 source/110 rendered rewrites and3240 hyperlinks with all exclusions normal/O. Exact canonical registry reads and unchanged labels/examples/non-route bytes; actual capture preserves every original output byte.
+- Sixteen public cases expose only D77 deep-nesting traceback1; immediate LC0039 named-refusal repair owned. Three actual task/history/sibling omissions and26 original controls discriminate normal/O. Retain whole published prefix/book/source/history/modes/caps and bounded full metadata/frame verification; book/toolbox/live sync. TOC/search/resources and full graph/adoption/processor acceptance remain open.
+
 ## SEMULITH-LC-0037 (leaf LIVE-CONTAINMENT.4) — preserve malformed history decompression refusal
 
 - Fix D76: catch actual zlib decompression failure and return named HISTORY-ARCHIVE refusal1 without stdout/traceback. All263 working query observations/222 byte-exact original reads pass normal/O; immutable source263/1 remains explicit. Removing the new catch restores the defect and fails qualification1; old3+7 controls remain.
@@ -412,10 +417,4 @@
 
 - Verify a deterministic12-file closed-P4 archive prototype with exact source/manifest identities, all Python/tar retrievals and four fail-closed controls; preserve originals.
 - Record five consumer files and proposed navigation stubs retaining paths/eight anchors; publish the exact manifest/reproduction and pending browsing decision. No removal, ceiling/checker/runtime/profile/status change; focused9/seven books pass.
-
-## SEMULITH-P4-0201 (leaf P4-SYSTEM.14) — register RV64GC and enforce every required category
-
-- Register the sixth unit, all24 category dispositions and its dedicated14-file model book; authenticate24 pins and keep acquisition/implementation/acceptance distinct.
-- Fix the reader silently dropping later required categories (scope10/0, old8/2); correct generated catalogue disclosures and stale dossier/census prose with exact historical/source/output inverses and negative controls.
-- Focused20/seven books/rendered chapters/full five-leg CI pass, Rust173/17/253. Units6/arms672; requirement statuses/runtime/frozen114/114/fixtures/history and milestones unchanged. Measured containment review next; no cap raise or release credit.
 
