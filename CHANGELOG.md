@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0042 (leaf LIVE-CONTAINMENT.4) — qualify executed page-heading navigation
+
+- Pin source1226311/1477 identities and107 book inputs; execute all120 HTML pages across seven books in nonpersistent OS WebKit. Independent Python/DOM readers reconcile1406 headings/589 navigation entries, complete labels/markup/targets/nesting, roles and active-parent bindings normal/O. Strict Swift6 compilation and four delayed-JS/blank/omitted/HTTP witnesses distinguish execution from exit0.
+- Three actual producer omissions and a fallback cause control discriminate; D78 authored Index activates two chapters. Own immediate LC0043 conditional repair, preserving six index aliases. Retain both complete metadata views,344 baseline output identities, whole published46333B prefix and old book teaching; nine damaged captures refuse normal/O. Focused/seven-book/source/history/mode/cap/inverse checks precede normal COMMIT; LIVE1578/39/40/49 and processor/full graph/adoption claims unchanged.
+
 ## SEMULITH-LC-0041 (leaf LIVE-CONTAINMENT.4) — retain closed qualification history losslessly
 
 - Apply the director's standing archive delegation to four completed qualification records and the whole prior task-tree book source. Preserve all497850B/3647LF, Git modes/identities/order and20 heading aliases from968bc010; Python/tar retrieve all5 originals without Git/extraction. Retire481178B to5016B navigation, releasing476162B under unchanged task-family limits.
@@ -398,10 +403,4 @@
 
 - Validate raw v1 forms before mapping; check scoped requirements/effective obligations, child IDs, input/producer/run/control/observation/pair edges and lexical paths. Reuse the existing effective-contract selector; retain the pending artifact/comparison refusal.
 - Graph63/0 (also optimized), consistency52/0, nine predicate removals, actual checker integration, focused13 and seven books pass. Reproduce/fix C1 path-control acceptance. No canonical captures, runtime/profile/generated/archive/cap or CPU acceptance changes. Derive748 named outer arms.
-
-## SEMULITH-P4-0204 (leaf P4-SYSTEM.14) — carry structured experiment verification
-
-- Extend the existing references schema and single mapper with matched-GPR inputs/producers/observations/runs/controls/property scope. Preserve ordered invocation arguments and all243 existing dossier dictionaries; no new canonical capture.
-- DOSSIER-SCHEMA17/0, PROFILE-CONSISTENCY51/0, predecessor/lost-child/facet/qualification-guard controls, focused13/full five-leg CI/seven books and complete book example pass; Rust173/17/253. Qualification stays closed pending relationship/artifact evaluation. Derive747 named arms; CPU/P4/P5 states, protected data/archive and all caps unchanged.
-
 

@@ -93,20 +93,14 @@ bash scripts/check_readme_routes.sh
 bash scripts/check_readme_routes.sh --self-test
 ```
 
-D52–57 check NUL inventory totals/parts, metrics, links, hints and README/registry reads.
-Read failures/diagnostics return 2; breaches return 1; health is advisory.
-Empty families and date/policy no-match (1) are valid; checked derived mirrors
-stay exempt. Sync retains that guard/helper.
-
-Registry: UTF-8, nine tab-separated fields, unique normalized relative paths,
-limits 0..9223372036854775807. `00064` becomes 64; `-1` returns 2.
-Validated rows supply routes/caps/count. D56's seven unchecked
-consumers are removed; three reader faults return 2 normal/O. D57's five
-malformed fixtures change 0→2. All 26 new controls fail under 17 omissions.
-Checks are finite; measurements are not atomic or capacity authority.
-At `cad73f3`:54 candidates;49 includes match93 chapters.
-D65 repair: UNIT-BOOKS rejects missing/ambiguous includes before expansion.
-Graph/full adoption open. Replay (fresh output):
+D52–57 validate NUL totals/parts, metrics, links, hints and README/registry reads.
+Unavailable/diagnostic reads refuse2; breaches fail1; health is advisory.
+Empty families/date-policy no-match remain valid; checked derived mirrors exempt.
+Registry: UTF-8, nine tab fields, unique relative paths, limits0..9223372036854775807.
+`00064` becomes64; `-1` refuses2. Sync retains the guards. D65 rejects missing/
+ambiguous includes before expansion. Historical counts remain in retained book
+source; finite checks grant neither atomic measurements nor capacity authority.
+Graph/adoption remain open. Replay (fresh output):
 
 ```sh
 python3 scripts/collect_containment_graph.py --revision 28920c6 \
@@ -139,9 +133,8 @@ A milestone quotes its acceptance gate from `docs/EVIDENCE_AND_GATES.md`.
 Each leaf cites its roadmap section, task card, rule ID or catalog entry;
 readers assess the leaf against that source.
 
-⚠️ That citation is the strongest control available for a prose-to-structure conversion, and it
-is weaker than a test. The honest statement is: the plan is the oracle for these trees, and
-nothing mechanically proves a tree still matches it.
+The plan is the oracle; a citation is weaker than a test. No mechanical check
+proves a tree still matches the roadmap.
 
 ## Keeping verification receipts bounded
 
@@ -196,12 +189,11 @@ python3 scripts/task_history_preservation.py
 python3 scripts/probe_task_history_preservation.py
 ```
 
-The first exits0 for exact preservation,1 for changed records,2 when it cannot
-judge. Failed Git reads, malformed responses, unsafe paths and unavailable
-inputs refuse. The second runs43 controls; `python3 -O` runs the same controls
-with optimization. New files may be added. This checks preservation, not first
-publication or historical truth; corrections belong in new records. The sealed
-reader still owns only its original12 files; a future seal needs its own transition.
+Preservation exits0, changes1, unavailable evidence2. Git/read/unsafe/malformed
+failures refuse.43 controls run normally and with `python3 -O`. New files are
+allowed; originals stay exact. This does not judge first publication or truth.
+Correct in new records. The separate sealed reader owns12 files; future seals
+need owned transitions.
 
 Use a new owned output directory to test the full gate:
 
@@ -209,36 +201,29 @@ Use a new owned output directory to test the full gate:
 python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42l2/replay
 ```
 
-Exit0 marks a completed measurement; `gate_rc` is the gate verdict.
-The real index/worktree must stay exact. A42k's altered receipt passed
-before the publishing guard. A42l2's same staged edit is rejected (`gate_rc=1`).
+Exit0 means measurement completed; `gate_rc` is the verdict. The real views stay
+exact. A42k's altered receipt passed; the publishing guard now rejects it(1).
 
 ### Preserve completed task receipts and live development history
 
-Read the complete c29e1/c33c receipts in the retained record above.
-Earlier archives remain immutable.
+Full c29e1/c33c task receipts remain above; archives stay immutable.
 
 ### Retain book history while keeping current explanations live
 
-The retained record preserves the complete c30b/c33d receipt and source route.
-Current feature explanations and examples remain in their chapters.
+Full c30b/c33d book receipts remain above; current explanations/examples stay live.
 
 ### Measure stored bytes, including UTF-8
 
 Measure `len(text.encode("utf-8"))` or the written file's `stat().st_size`,
 not character count: `"é"` is one character but two UTF-8 bytes.
-Limits, available-space calculations and inverses use actual bytes.
-The retained record above includes the complete c29d1 diagnostic receipt.
+Use actual bytes for limits, space and inverses; the full c29d1 receipt remains above.
 
 ## Why this shape
 
-A session can be lost at any moment: a crash, a context reset, a change of tool, a change of
-model. The tree is the layer that makes that survivable — its frontier row *is* the next step,
-and the acceptance checklist is why a successor can trust the previous step without repeating
-it.
+After a crash, reset or harness change, the frontier names the next step and
+the acceptance evidence lets a successor assess the completed work.
 
-The complete privilege/FP timeline-containment receipts and inverse instructions
-are retained with the include-validator evidence:
+Complete privilege/FP receipts and source inverses remain here:
 
 ```sh
 cat docs/tasks/artifacts/live-containment/include-source-validator.md
@@ -289,25 +274,45 @@ python3 scripts/shard_history.py --head DEV_NOTES.md --max-bytes 42000 --dry-run
 
 The first checks both views and the staged partition; the second previews a move.
 
+
+### Executed page-heading navigation
+
+LC0042 pins source1226311: seven books/120 HTML pages,1406 heading rows and589
+navigation entries. Independent Python/DOM readers reconcile labels, full inline
+markup, targets, nesting, page roles and active-parent bindings. Nonpersistent
+WebKit executes the generated scripts; Swift compiles with warnings as errors,
+module caches/temp stay on volume. Four JS/HTTP witnesses, three real producer
+omissions and an index-fallback cause control discriminate normal/O.
+
+```sh
+python3 scripts/qualify_book_headings.py --output target/heading-replay
+python3 scripts/qualify_book_headings.py --verify-record
+python3 -O scripts/qualify_book_headings.py --self-test
+```
+
+Use a fresh output. Capture exits0 when measured; source D78 leaves one wrong
+contract: Index marks both Introduction and Index active. Removing the fallback
+fixes that page but breaks a unit index alias; LC0043 owns the conditional repair.
+`--require-clean` fails1 for this source. Record queries verify the full retained
+metadata; nine damaged frames refuse. Replay needs pinned Git sources/producers
+and the OS Swift/WebKit tools. Raw DOM/HTTP streams remain generated diagnostics.
+Click/scroll/layout, search/resources, full graph/adoption and CPU stay unclaimed.
+
 ## Reading sealed history
 
-Older changelog and development-note shards now have a query-first archive terminal.
-The 210 older shards and their manifest retain every byte, but use a tracked immutable
-compressed object instead of individual Markdown files. Recent shards and both live
-heads remain directly readable. This approved transition restores the live collection's
-headroom; sharding alone had left its aggregate at the limit.
+The query-first terminal retains210 older CH/DEV shards and their manifest
+byte-exact in an immutable tracked object. Recent shards/live heads stay native.
+This approved transition restored aggregate room when sharding could not.
 
 ```sh
 python3 scripts/history_archive.py
 python3 scripts/history_archive.py --read docs/changelog/shard-0001.md
 ```
 
-The first command verifies all identities; the second prints the original shard.
-Both work in an ordinary shallow clone without fetching history or extracting files.
-The descriptor in docs/history/archives.json names the exact source capture, source
-counts and content-addressed object. The archive's SHA manifest authenticates each
-member. A missing object, changed descriptor or bad member fails the same unconditional
-freeze gate used locally and in CI. Restore the committed bytes when that happens.
+Verify checks all identities; read prints the original. Both work in ordinary/
+shallow clones without fetch/extraction. docs/history/archives.json pins source,
+counts and content-addressed object; the SHA manifest authenticates every member.
+Missing/changed inputs fail the unconditional freeze gate. Restore committed bytes.
 
 The manifests remain one partition; sharding never reuses retired names.
 Recheck the original P4/history terminals (222 originals) and six catalogues:
