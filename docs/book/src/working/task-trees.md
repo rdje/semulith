@@ -282,13 +282,7 @@ python3 scripts/qualify_heading_repair.py --require-clean --output target/headin
 
 `--verify-record`/`--self-test` query the retained full source/current matrices;
 seven damaged frames refuse. Immutable LC0042 remains one-defect evidence.
-D79 remains open: a print replay lacked Mark/book enhancements. LC0044 streams
-HTTP receipt/write and resource/script outcomes even on refusal;960 selected
-browser witnesses restore from LC0043. Six actual controls/three boundary checks
-pass normal/O; seven damaged ledger frames refuse. An assembler trace loses ten
-resources before receipt; later paired queue5/32 runs expose only D80. Passing
-repeats do not establish cause. TCP counters return only zero; scoped BPF access
-is denied. Packet-level diagnosis needs authorized access.
+{{#include ../../../toolbox/governance.md:dependency-capture}}
 
 ```sh
 python3 scripts/probe_book_dependency_trace.py --output target/dependency-controls

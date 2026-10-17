@@ -6,6 +6,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `scripts/capture_book_dependencies.py` | can one terminal command collect scoped packets alongside the pinned D79 workload? | `python3 scripts/capture_book_dependencies.py`; one sudo tcpdump, four owned lo0 ports, bounded96-byte packets/deadline; fresh target output; `--self-test` is unprivileged, `--check-preparation` verifies native setup without sudo; D79 remains open pending captured evidence/analysis |
 | `scripts/trace_book_dependencies.py` · `scripts/probe_book_dependency_trace.py` · `scripts/book_dependency_record.py` | do delivery/resource observations survive refusal? | `python3 scripts/probe_book_dependency_trace.py --output target/NEW`;6 actual controls/3 boundaries normal/O; record `--verify-record`/`--self-test`:7 refusals; D79 BPF access blocked, D80 owned |
 | `scripts/qualify_heading_repair.py` | does the owned Index repair preserve complete headings/context and aliases? | `python3 scripts/qualify_heading_repair.py --require-clean --output target/NEW`; `--verify-record`/`--self-test`:7 refusals normal/O;120 current contracts; D79 tracing next |
 | `scripts/qualify_book_headings.py` · `scripts/book_headings_webkit.swift` | do executed heading labels/targets/nesting and active parents agree? | `python3 scripts/qualify_book_headings.py --verify-record`; `--self-test`:9 refusals normal/O; seven books/120 pages; D78 repair next |
@@ -54,3 +55,38 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/qualify_include_guard.py` | actual include execution, default configuration and public verdicts? | `python3 scripts/qualify_include_guard.py --help`; eight replay modes in `docs/tasks/artifacts/live-containment/include-source-integration.md` |
 | `scripts/qualify_reader_record_retention.py` | whole closed-record preservation and native retrieval? | `python3 scripts/qualify_reader_record_retention.py --help`; replay recipes in `docs/tasks/artifacts/live-containment/reader-records-retention.md` |
 | `scripts/qualify_book_index.py` | actual term-index reads, expansion and failure handling; do three actual refusal omissions fail? | `python3 scripts/qualify_book_index.py --output target/index-replay`; `--working-code --require-clean`; `docs/tasks/artifacts/live-containment/book-index-consumer.md` |
+
+## Terminal packet capture
+
+<!-- ANCHOR: dependency-capture -->
+D79 remains open: a print replay lacked Mark/book enhancements. LC0044 streams
+HTTP receipt/write and resource/script outcomes even on refusal;960 selected
+browser witnesses restore from LC0043. Six actual controls/three boundary checks
+pass normal/O; seven damaged ledger frames refuse. An assembler trace loses ten
+resources before receipt; later paired queue5/32 runs expose only D80. Passing
+repeats do not establish cause. TCP counters return only zero; scoped BPF access
+is denied. Packet-level diagnosis needs authorized access.
+
+For the terminal capture, run this **single command as your ordinary user**:
+
+```sh
+python3 scripts/capture_book_dependencies.py
+```
+
+It prepares the pinned books and nonpersistent WebKit, reserves four loopback
+ports, then asks for your administrator password through `sudo` if needed.
+Only the system `tcpdump` runs as administrator. Its filter covers those owned
+ports on `lo0`, with 96 bytes per packet, a 200,000-packet ceiling and a
+600-second capture deadline. No system permissions are changed.
+The tool runs source then repaired pages, with two servers and two browser
+workers per server, stops capture and joins workers. Ctrl-C retains partial
+diagnostics and cancels queued pages. Output goes to a fresh automatically
+named `target/live-containment/packet-*` directory; the terminal prints its path.
+`result.json` joins the capture summary with HTTP journals and browser outcomes;
+`capture/traffic.pcap` retains packets. Preparation/authentication/refusal logs
+remain available even without a complete result. Exit0 means evidence was
+collected, and may include known D80 failures; it does not resolve D79.
+The tool's `--self-test` needs no administrator access. `--check-preparation`
+verifies real builds, WebKit and server cleanup without invoking `sudo`.
+
+<!-- ANCHOR_END: dependency-capture -->

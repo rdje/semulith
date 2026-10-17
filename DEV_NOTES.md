@@ -1,5 +1,40 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — one terminal command for scoped packet evidence (LIVE-CONTAINMENT.4i2b5b2r.d2)
+
+The director requests a single terminal tool for the blocked D79 packet leg.
+capture_book_dependencies.py prepares immutable LC0044 inputs through existing
+public helpers, calibrates nonpersistent WebKit and reserves all four origins
+before one sudo tcpdump starts. Only that system binary gains privilege; Python,
+builds, journals, packet file descriptors and browser workers stay user-owned.
+The IPv4 TCP filter requires both endpoints127.0.0.1 and a reserved owned port;
+96-byte snapshots,200000 packets and600seconds bound capture. Native startup
+acknowledgement precedes replay. Source/current phases each run two servers with
+two workers. SIGINT/TERM/HUP unwinds cleanup; pending pages cancel, active pages
+join, sudo relays the stop signal to tcpdump, and the child is waited. A stopped
+capture, missing/drop counters, out-of-scope/truncated pcap or changed source
+refuses rather than reporting complete evidence. Raw journals survive refusal.
+
+Normal/O controls use real unprivileged substitute children and an independent
+offline system tcpdump oracle: malformed scope/pcap, missing ports, counter/drop
+faults, authentication denial, startup/deadline, interruption, pending cancellation
+and whole observation streaming. They do not claim actual privileged capture.
+The real native preparation path initially exposed a tmp-name collision with the
+frozen builder. Use environment-tmp for caller defaults, preserving the builder's
+own tmp allocation. --check-preparation validates the corrected actual public path
+and four server closures without sudo. Initial sandbox WebKit refusal is separated
+from the host-native check; no browser diagnostic is suppressed or blessed.
+
+Existing tracers/producers/retained captures remain unchanged. The book includes
+the toolbox's bounded capture contract, preserving its previous D79 paragraph
+byte-exact in that canonical anchor. The draft duplicate exceeded the book
+aggregate; inclusion restores room without raising a cap. The contract explains
+the sole user command and generated paths. No permission changes, new decision
+file, capacity increase or acceptance claim. D79 remains open until the user's
+authorized terminal capture and causal analysis; passing repeats cannot close it.
+Six whole oldest CH entries roll to0334 with exact byte/order reconstruction;
+focused gates/seven books and normal COMMIT qualify tool delivery only.
+
 ## _(2026-10-17)_ — persistent dependency forensics and explicit evidence blocker (LIVE-CONTAINMENT.4i2b5b2r.d)
 
 LC0044 owns the diagnostic gap after D79's missing-Mark print refusal. Pin current

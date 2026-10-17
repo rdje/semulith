@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2 / LC0045 D79 packet evidence blocked on scoped BPF access after LC0044 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2 / LC0045 terminal tool prepared; user capture/analysis for D79 next |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -1018,19 +1018,21 @@ profile/journal identities are retained. No resource-completeness/cause claim.
 - [x] **NO REGRESSION** — `python3 target/live-containment/mark-dependency/verify.py` rc=0: exact13 files,1476 protected regular files/Gitlink, whole prefixes/5729B unit/declared ledger/probes/book inverses,21 old headings/all55 commands/3242 links and fresh120-page header/title parity exact. Focused13/sharder12/seven books rc=0; all95 prior live history entries/order/digest-updated refusals exact. Full staged reverse patch and normal COMMIT finish publication. Fixed caps/LIVE/CPU unchanged.
 - [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree, generated index unchanged. promotion: declined; finite evidence and precise D79/D80 owners remain native. No new decision file, producer rewrite, cap raise or processor/full graph/adoption acceptance. Stop on the actual BPF access blocker after a clean committed handoff; do not mark D79 resolved.
 
-###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — obtain scoped D79 packet evidence (blocked)
+###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — one-command D79 tool complete; capture pending
 
-D79 remains priority1/open. Complete stream forensics now preserve refusal;
-actual combined missing-Mark/book response controls reproduce the whole original
-failed witness and enhancement state. One assembler workload loses ten assets
-before HTTP receipt, while later queue5/32 comparisons show only D80. Cause is
-not established. OS TCP counters all report0, including actual traffic; unusable
-for attribution. The owned two-packet/96-byte lo0 probe is denied by macOS:
-cannot open BPF device /dev/bpf0, Permission denied. No packet was captured.
-Need an approved means of read-only packet capture limited to the tracer's own
-loopback ports, with project-local output and no global permission changes.
-Preserve all existing evidence/old producers. Resume this precise causal test
-when that access exists; do not close D79 from passing repeats. D80 is next below.
+Owned clean8dedef7 before edits, per director's one-terminal-tool request.
+scripts/capture_book_dependencies.py owns pinned unprivileged preparation/replay,
+one sudo tcpdump on four reserved lo0 ports,96-byte packets, deadlines, cleanup
+and persistent evidence. Existing producers/evidence/caps stay exact; LC0044's
+retained record owns original failure/access facts. Native preparation exposed
+an output/tmp collision; separate environment-tmp fixes that exact public path.
+No global permission change or CPU/adoption credit. D79 remains priority1/open;
+user capture/analysis is next, before D80. promotion: declined (local tooling).
+
+- [x] **ROOT CAUSE** — `python3 scripts/capture_book_dependencies.py --self-test` rc=0; actual host sudo requires a password,0capture bytes.
+- [x] **ADDRESSED** — same command rc=0 normal/O,24 controls; `python3 scripts/capture_book_dependencies.py --check-preparation` rc=0, no sudo.
+- [x] **NO REGRESSION** — `bash scripts/check_readme_routes.sh` rc=0; focused13/seven books, old producer/history/source identities preserved; normal COMMIT required.
+- [x] **LOCKSTEP** — book/toolbox/MEM/CH/DEV agree; capture and causal signoff remain pending.
 
 ###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
 
@@ -1659,6 +1661,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0045 (leaf LIVE-CONTAINMENT.4): add one-command scoped dependency capture` — tool prepared; D79 capture/analysis pending.
 
 `SEMULITH-LC-0044 (leaf LIVE-CONTAINMENT.4): preserve dependency failure forensics` — finite verified trace/evidence; D79 packet access blocked, D80 repair owned.
 
