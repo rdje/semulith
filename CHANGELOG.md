@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0044 (leaf LIVE-CONTAINMENT.4) — preserve dependency failure forensics
+
+- Add source-pinned nonpersistent-WebKit delivery tracing that persists linked HTTP/resource/script observations on refusal. Six actual controls/three ownership/type boundaries pass normal/O; missing Mark plus book script reproduces the entire original failed witness and absent enhancements. Retain960 selected source/fixed heading witnesses, complete verdict/script/error/delivery footprints, actual execution producers and selected failure evidence; seven damaged ledger controls refuse.
+- Keep D79 open: one assembler trace loses ten assets before HTTP receipt, later paired queue5/32 runs expose only D80. All TCP counters are zero; the scoped two-packet BPF probe is denied, precise access owner LC0045 blocked. D80 seven-book 404 base repair is immediate LC0046 before search. Preserve whole29198B native prefix/5729B closed LC0043 task/book teaching and history/modes/caps. Focused/seven-book/source/inverse checks qualify this finite forensic slice; LIVE/processor/full graph/adoption unchanged.
+
 ## SEMULITH-LC-0043 (leaf LIVE-CONTAINMENT.4) — repair authored-index active context
 
 - Fix D78 through the public additional-js integration: a unique explicit chapter wins before heading insertion; first-chapter aliases retain their fallback. Source5c72864/1481 identities: all120 current page contracts pass normal/O,1408 headings/590 navigation entries and all six unit aliases retained. Whole344-output comparison:51 exact script-tag insertions,293 unchanged outputs and one byte-exact owned asset; supported main alias and three actual repair omissions discriminate.
@@ -388,14 +393,4 @@
 
 - Reproduce conflicting write keys silently collapsing before an AGREE result. Reject repeated per-step keys at the single mapper and after dossier shape checks, including equal-valued duplicates; preserve valid inputs and schema grammar.
 - Mapping12/0 (also optimized), six failed cases on guard removal, actual gate/CLI integration, dossier22/0 and mapper14/0 pass. Raw canonical census222documents/6057steps/4105entries has zero duplicates. No canonical qualification or CPU acceptance credit; derive757 outer arms. All243valid dictionaries exact; full five-leg CI/Rust173/17/253/seven books and literal/rendered example pass.
-
-## SEMULITH-P4-0208 (leaf P4-SYSTEM.14) — return bounded authenticated snapshots
-
-- Share the anchored pin reader with an immutable snapshot API requiring an explicit byte bound. Refuse oversize before payload reading and return no data on any failure; avoid reopening validated filenames.
-- Snapshot24/0 and five mutations (also optimized), old pin39/0 and twelve predicate removals pass. Document caller/aggregate memory limits and the closed qualification boundary; no canonical capture, store, retention/cap or CPU acceptance change. Focused13/profile54/0/seven books/rendered helper pass; derive752 outer arms. Own reproduced duplicate-write mapping defect as a18 next.
-
-## SEMULITH-P4-0207 (leaf P4-SYSTEM.14) — refuse surplus Sail observations
-
-- Reproduce/fix false agreement on extra instruction rows or witnessed deliveries. Validate the full declared budget before value comparison; preserve the finite GPR/delivery vocabulary.
-- Five tail/three exact-boundary cases and two check-removal controls pass, including optimized budget checks. Existing live atomic/timer diagnostics retain their expected results. Preserve two complete old notes through lossless sharding; no canonical qualification or CPU acceptance credit. Focused13/GUEST-GEN152/0/sharder12/0/seven books and334cached outcome-pair/protected-scope checks pass. Derive751 outer arms.
 

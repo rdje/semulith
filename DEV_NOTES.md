@@ -1,5 +1,65 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — persistent dependency forensics and explicit evidence blocker (LIVE-CONTAINMENT.4i2b5b2r.d)
+
+LC0044 owns the diagnostic gap after D79's missing-Mark print refusal. Pin current
+f3c5e81/1485 identities and reproduction5c72864/1481 separately. Public mdBook0.5.4
+rebuilds all345 fixed output identities exactly from the original source plus the
+two-file D78 overlay. Frozen Q/R/Swift/reader/helper bytes and Gitlink remain exact.
+The new owned tracer streams linked received/response/written/failure records and
+page observations even when native/DOM/qualification refuses. Every handler has
+bounded reads and shutdown joins all workers; process/source/index snapshots stay
+stable. Separate normal/O processes with two workers each reproduce four-adapter
+source-before-fixed workloads. Nonpersistent WebKit/strict Swift6 and execution
+witnesses retain their actual boundaries and on-volume data locality.
+
+The first window-load observer misses descendant resource loads: DOM's document
+parent is null for load events. Use document capture and independent declaration/
+load-or-error membership. An actual omitted-document-listener control refuses2
+with intact journals. The source URL oracle also initially ignored base href=/
+on404 pages; corrected static/browser base reconciliation makes those actual
+resource failures observable rather than unjudgeable. All seven 404 assets route
+outside their book under shared serving, a verified D80 priority1 owned by LC0046.
+
+Six real controls pass normally/optimized, plus three mutation/type boundaries:
+positive; Mark404; Mark200empty; Mark+book404; omitted load observer; absent native
+adapter. Receipt/delivery/observation streams reconcile fully even on refusal.
+Mark-only failures keep1917 highlighted nodes/155 spans/97 copy buttons. Combined
+denial removes all enhancements and reproduces the entire original failed heading
+witness. This is a sufficient symptom mechanism, not proof of original cause.
+
+Four selected normal/O queue5/32 comparisons retain960 complete source/fixed
+heading witnesses and all verdict/check/script/error/global/enhancement rows.
+Full per-path delivery/status/byte/count footprints reconcile every event. Final
+profiles expose only seven D80 cases each. An earlier optimized queue5 assembler
+trace loses ten assets before application receipt: two styles and eight scripts
+emit resource-error, globals/late enhancements absent; other styles/fonts arrive.
+Full selected failure forensics and page-linked delivery rows are retained. Later
+passing queue5/32 repeats do not close D79 or establish a listen-backlog cause.
+OS TCP counters all report0 including observed traffic, so cannot attribute loss.
+A strictly owned lo0 port/two-packet/96-byte tcpdump probe is denied opening BPF;
+no packet/other-app traffic was captured. Immediate LC0045 is blocked on approved
+read-only capture of the tracer's own ports, without global permission changes.
+
+The native reader-retention record preserves its whole29198B prefix and5729B
+closed LC0043 unit before a bounded live pointer is used. Bounded XZ references
+restore all selected full witnesses from immutable LC0043 bases, with complete
+source/current/probe verdicts, selected failures/access evidence, producer bytes
+and old/new book/task seams. Both actual collector source versions are retained;
+the sole difference is an unused posixpath import, verified by execution AST.
+Current code passes permanent native controls normal/O; seven damaged evidence
+frames refuse. Whole projected data equals the capture-derived projection. Raw
+ordered HTTP/non-script successful-load order/resource timings/DOM remain generated
+diagnostics with profile/journal identities, not a new raw-output archive promise.
+Pinned Git/producers are required with lazy fetch disabled. No resource-completeness,
+concurrent-load, original-cause, full graph/adoption or processor acceptance claim.
+
+Book/toolbox/live pointers and exact earlier history/source/modes stay aligned.
+Focused checks/seven books and the full staged reverse patch precede normal COMMIT.
+Existing caps and LIVE1578/39/40/49 remain fixed. No new decision file is needed:
+finite evidence, the exact access blocker and D80 repair have native canonical
+owners. This slice delivers verified forensics; D79 remains explicitly open.
+
 ## _(2026-10-17)_ — authored-index context repair and scoped replay (LIVE-CONTAINMENT.4i2b5b2r)
 
 D78's source5c72864/1481 identities still marks Introduction and authored Index
@@ -593,70 +653,4 @@ fixed; full graph/adoption and CPU/MCU/DSP/board qualification stay open.
 Lesson promotion: declined — the concrete transport/calibration contracts and
 reproducible before/after recipes are retained in canonical code and the owned
 integration record; no new cross-cutting policy is introduced.
-
-## _(2026-10-12)_ — qualify owned include sources and tracked replay (LIVE-CONTAINMENT.4i2b3b1)
-
-The standalone book_includes.py public preprocessor validates actual Chapter/
-source_path/content before links, recursively following only selected include
-text relative to the included file. Whole/ASCII named/single/inclusive/open-ended
-line forms preserve published supported behavior; unsupported syntax/helpers
-refuse explicitly. Missing/ambiguous selections and cycles fail1; unsafe/unreadable/
-changed inputs refuse2 without stdout. Valid complete JSON books are unchanged.
-UTF-8 is strict; CRLF becomes LF, bare CR and Unicode LS/NEL stay in physical LF
-lines. Whole includes remove one final LF; selected anchor marker lines disappear.
-Source-less drafts cannot include; a missing source field refuses. Catalogue
-completeness/prose truth remain separate contracts. Default guards are unchanged
-until LC0030; this independently reviewable component does not close D65.
-
-Original U path predicates move verbatim into book_paths.py, with U's public
-aliases preserved and no circular imports. Old23 unit-book/26 navigation controls
-and22 component methods pass normal/O. Thirteen copied actual component omissions
-fail the real copied probe in both modes. Thirty-four public mdbook fixtures:
-24 positives match independent full-text constants, six missing-file/anchor/
-duplicate builds stop101 before expansion; four after-# spacing builds refuse2/
-stop101 after public baselines preserve literal text. Valid before-# and argument
-spacing/tabs expand. Eight actual public read/change faults
-refuse2/empty stdout with one injection each; controlled volume and post-read
-mutation controls qualify separately. Actual component runs before links across
-seven books:93 chapters/49 edges, all344 full output files equivalent normal/O.
-No new claim of general Markdown, universal mutation coverage or CPU acceptance.
-
-D66: LC0028's named capture/ledger producers were ignored. Pins preserve their
-observations but not producer durability. New tracked qualify_book_includes.py
-owns public capture, immutable whole/HTML-anchor projection, current component/
-output comparison, public fixtures/faults and copied mutation recipes. Local
-cad73f3 blobs copy byte/mode-exact into an owned non-Git workspace; Gitlinks stay
-opaque. GIT_NO_LAZY_FETCH=1; missing source refuses2. Both modes re-emit the exact
-80700B LC0028 ledger SHAb4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5:
-93 chapters/49 occurrences/48 targets/five other candidates,344 output files.
-Ten producer controls pass; four copied producer omissions and unavailable-source
-cases refuse2 normal/O. No historical toolchain/output retention is promised.
-Complete contracts, source/result/code pins and literal replay commands live in
- docs/tasks/artifacts/live-containment/include-source-validator.md; toolbox routed.
-
-Prepublication controls caught lexical corpus escape, omitted source field and
-unknown-action classification. Public captures/red controls also caught Python's
-splitlines/universal-CR mismatch; implementation now uses physical LF/CRLF rules.
-Two selector fixtures initially omitted their target; corrected fixture isolation.
-A fixture wrapper expected a nonexistent DEFECT label; actual error prefix read
-and wrapper corrected without changing validator verdict. Failed traces retained.
-
-The book had13B headroom. Copy/verify1179B of complete closed privilege/FP reader
-receipts into the new record before replacing one whole span with1185B of current
-component teaching, examples and direct retrieval. Whole-source inverse retained;
-book delta+6, aggregate524281/524288, index and prior archives unchanged. No cap or
-seal authority changes. Whole CH/DEV rollover/source/history/protected inverses,
-focused checks/seven books/rendered/literal reads and normal hooks close this unit.
-
-D67: actual public spacing probes showed two after-# forms stay literal while
-the component returned0 normal/O. Stop pending commit before HEAD changes,
-terminate its owned hook tree, retain staged sources/no index lock. New22nd
-control fails before repair; strict INCLUDE now refuses unsupported spelling2
-while broad candidate detection remains. Add tracked baseline/validated spacing
-fixtures and copied grammar omission; requalify all matrices and restart normal
-hooks. D67 fixed before publication; no current real book uses this spelling.
-
-Lesson promotion: declined — source-integrity contracts, concrete failed controls
-and reproducible durable diagnostics are already retained in canonical code and
-the owned evidence record; no additional cross-cutting principle established.
 

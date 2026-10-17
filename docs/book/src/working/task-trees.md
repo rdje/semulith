@@ -5,9 +5,8 @@
 
 ## What a leaf is
 
-A leaf is one signoff-quality slice, finished, verified and committed together.
-Its `docs/tasks/` tree holds goals/non-goals, acceptance, statuses/frontier,
-decisions/questions, verification and commit logs.
+One leaf is one verified commit. Its `docs/tasks/` owner holds goals, acceptance,
+frontier, decisions/questions and verification/commit logs.
 
 Statuses: `proposed` → `pending` → `active`/`in_progress` → `done`.
 Mark a stalled leaf `blocked` and name its blocker for the next reader.
@@ -31,12 +30,11 @@ cannot supply it. The gate checks presence, not truth; re-run the cited command.
 
 ## The pivot rule
 
-Before switching trees, finish/commit the leaf. Handoff-ready allows no modified/
-untracked files except its task-tree, even when asked to pivot immediately.
+Commit the leaf before switching trees. Only its task-tree may remain dirty,
+even when asked to pivot immediately.
 
-Cleanup follows the same ownership and commit rule. Its latest record is
-overwritten; censuses and retained-input checks stay in the recurring tree.
-Diagnostic evidence and dependency inputs are retained.
+Cleanup follows ownership/commit rules: overwrite its latest record; keep
+censuses/retained-input checks in its tree and retain evidence/dependencies.
 
 {{#include ../../../ARTIFACT_CLEANUP.md:latest}}
 
@@ -50,13 +48,12 @@ Diagnostic evidence and dependency inputs are retained.
 python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source
 ```
 
-D74/D75 fixed:22/0. Map failures refuse2, drift1; decision listings require real
-links outside comments/fences. Unavailable reads refuse2; knowledge links are
-independently checked. Scaffold retains all three repairs. Historical default17/11,
-`--extended`21/14; finite controls.
+D74/D75:22/0. Map/read failures refuse2, drift1; decision links exclude comments/
+fences. Knowledge links are checked; scaffold retains three repairs. Historical
+17/11, `--extended`21/14; finite controls.
 
-The term index scans raw SUMMARY chapters/glossary/acronyms without expanding
-includes. D73 read/write/launch refusals are fixed:
+The term index scans raw SUMMARY/glossary/acronyms; includes stay unexpanded.
+D73 read/write/launch refusals are fixed:
 
 ```sh
 python3 scripts/qualify_book_index.py --working-code --require-clean --output target/live-containment/orientation-verified/index
@@ -121,17 +118,16 @@ FRONTIER-SYNC requires one row per tree, in the index matching its status:
 
 {{#include ../../../TASK_TREE_CLOSED.md:closed}}
 
-Milestones quote `docs/EVIDENCE_AND_GATES.md`; leaves cite roadmap/card/rule/catalog
-sources. Assess the work against those requirements.
+Milestones quote `docs/EVIDENCE_AND_GATES.md`; assess leaves against their cited
+roadmap/card/rule/catalog requirements.
 
 The plan is the oracle; a citation is weaker than a test. No mechanical check
 proves a tree still matches the roadmap.
 
 ## Keeping verification receipts bounded
 
-Whole completed entries move to authenticated shards. Remove the new receipt/
-footer; concatenate live prefix and archived suffix to restore exact bytes/order.
-Earlier rows/seals, the48KiB ceiling and current worked examples stay fixed.
+Reassemble exact history by removing the new receipt/footer and joining live
+prefix/whole sharded suffix. Earlier rows/seals,48KiB cap and current examples stay.
 Complete c22a/c26a/c28a/c29b1/a42l1 receipts and source inverses are retained:
 
 ```sh
@@ -176,11 +172,9 @@ python3 scripts/task_history_preservation.py
 python3 scripts/probe_task_history_preservation.py
 ```
 
-Preservation exits0, changes1, unavailable evidence2. Git/read/unsafe/malformed
-failures refuse.43 controls run normally and with `python3 -O`. New files are
-allowed; originals stay exact. This does not judge first publication or truth.
-Correct in new records. The separate sealed reader owns12 files; future seals
-need owned transitions.
+Preservation0, changes1, unavailable2; Git/read/unsafe/malformed faults refuse.
+43 controls normal/O. Add files/corrections, preserve originals; this judges
+neither first publication nor truth. Separate12-file seals need owned transitions.
 
 Use a new owned output directory to test the full gate:
 
@@ -188,29 +182,27 @@ Use a new owned output directory to test the full gate:
 python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42l2/replay
 ```
 
-Exit0 means measurement completed; `gate_rc` is the verdict. The real views stay
-exact. A42k's altered receipt passed; the publishing guard now rejects it(1).
+Probe0 measures; `gate_rc` judges. Real views stay exact. A42k's edit passed;
+the publishing guard now rejects1.
 
 ### Preserve completed task receipts and live development history
 
-Full c29e1/c33c task receipts remain above; archives stay immutable.
+Full task receipts remain above; archives stay immutable.
 
 ### Retain book history while keeping current explanations live
 
-Full c30b/c33d book receipts remain above; current explanations/examples stay live.
+Full book receipts remain above; current examples stay live.
 
 ### Measure stored bytes, including UTF-8
 
-Measure `len(text.encode("utf-8"))` or the written file's `stat().st_size`,
-not character count: `"é"` is one character but two UTF-8 bytes.
-Use actual bytes for limits, space and inverses; the full c29d1 receipt remains above.
+Use `len(text.encode("utf-8"))` or `stat().st_size`: `"é"` is one character/two bytes.
+Limits/space/inverses use bytes; full c29d1 evidence remains above.
 
 ## Why this shape
 
-After a crash, reset or harness change, the frontier names the next step and
-the acceptance evidence lets a successor assess the completed work.
+After reset, the frontier selects work; acceptance evidence supports review.
 
-Complete privilege/FP receipts and source inverses remain here:
+Full privilege/FP receipts and inverses:
 
 ```sh
 cat docs/tasks/artifacts/live-containment/include-source-validator.md
@@ -240,9 +232,9 @@ Replay public/default qualification:
 cat docs/tasks/artifacts/live-containment/include-source-integration.md
 ```
 
-Count every tracked family member and owned addition, including `docs/book/book.toml`.
-The retained integration receipt corrects its earlier Markdown-only omission.
-Count, aggregate bytes and per-part bounds are separate checks.
+Count every tracked member/owned addition, including `docs/book/book.toml`.
+The integration receipt corrects its Markdown-only omission. Count/bytes/parts
+are separate bounds.
 
 ### Preserve older live entries
 
@@ -262,10 +254,9 @@ The first checks both views and the staged partition; the second previews a move
 ### Executed page-heading navigation
 
 LC0042 pins1226311: seven books/120 pages/1406 headings/589 entries. Independent
-Python/DOM readers reconcile full labels/markup, targets, nesting, roles and active
-parents. Nonpersistent WebKit executes scripts; strict Swift caches/temp stay on
-volume. Four JS/HTTP witnesses, three producer omissions/fallback cause discriminate
-normal/O.
+HTML/DOM readers reconcile labels/markup, targets, nesting, roles and active parents.
+Nonpersistent WebKit/strict Swift use local caches/temp. Four JS/HTTP witnesses,
+three omissions/fallback cause discriminate normal/O.
 
 ```sh
 python3 scripts/qualify_book_headings.py --output target/heading-replay
@@ -291,8 +282,22 @@ python3 scripts/qualify_heading_repair.py --require-clean --output target/headin
 
 `--verify-record`/`--self-test` query the retained full source/current matrices;
 seven damaged frames refuse. Immutable LC0042 remains one-defect evidence.
-D79 remains open: one concurrent print replay lacked Mark; strict refusal held.
-LC0044 owns delivery/dependency tracing; passing repeats do not close it.
+D79 remains open: a print replay lacked Mark/book enhancements. LC0044 streams
+HTTP receipt/write and resource/script outcomes even on refusal;960 selected
+browser witnesses restore from LC0043. Six actual controls/three boundary checks
+pass normal/O; seven damaged ledger frames refuse. An assembler trace loses ten
+resources before receipt; later paired queue5/32 runs expose only D80. Passing
+repeats do not establish cause. TCP counters return only zero; scoped BPF access
+is denied. Packet-level diagnosis needs authorized access.
+
+```sh
+python3 scripts/probe_book_dependency_trace.py --output target/dependency-controls
+python3 scripts/book_dependency_record.py --verify-record
+```
+
+Full verdict/script/error/delivery footprints and selected failures are retained;
+raw HTTP/DOM/timings stay diagnostic. Queries need pinned Git/producers. D80 owns
+seven 404 origin-root asset bases under shared serving. Earlier claim limits apply.
 
 ## Reading sealed history
 

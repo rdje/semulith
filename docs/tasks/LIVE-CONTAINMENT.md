@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d / LC0044 trace D79 missing Mark dependency after LC0043 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2 / LC0045 D79 packet evidence blocked on scoped BPF access after LC0044 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -971,68 +971,16 @@ No processor/graph/adoption credit. D78 is priority1, immediate LC0043 below.
 
 ###### .4i2b5b2r / SEMULITH-LC-0043 — repair authored-index active context (complete)
 
-Resolve D78 through owned public integration/configuration, preserving current
-URLs, body bytes, all seven books and first-chapter index aliases. No mdBook or
-Gitlink source/pin changes. Reproduce actual default DOM first; require current
-code0 wrong contracts normal/O, retain immutable source defects, and execute
-real copied repair omissions. Preserve whole published assessment/history/
-source/modes and fixed caps; book/live sync and normal COMMIT before search.
+D78 corrected:120 current page contracts/1408 headings/590 entries pass normal/O;
+all six aliases, source bodies and full source/current metadata remain exact.
+Three actual repair omissions/seven damaged frames discriminate. Complete
+assessment/failed D79 witness: include-source-validator record phase LC0043.
+Whole closed task record, including ownership/calibration/acceptance, is retained
+fromf3c5e81 in docs/tasks/artifacts/live-containment/reader-records-retention.md,
+LC0044 phase. D79 remains priority1, immediate owner below; concurrent-load,
+resource completeness, full graph/adoption and processor acceptance stay open.
 
-
-Owned on clean5c72864 after exact13-file/1481-identity postcheck, brief0 and
-host handoff0. Own docs/book/theme/active-chapter.js, its documented additional-js
-configuration in docs/book/book.toml and scripts/qualify_heading_repair.py before
-implementation. Use public generated artifacts and the supported HTML renderer
-integration, never mdBook/Gitlink internals. Independent LC0042 readers remain
-byte-pinned and immutable; build/reconcile all120 page roles on source5c72864,
-then the current two-file product overlay. Preserve all page bodies/headings/
-labels, seven-book membership and six unchanged unit aliases. Public supported
-main-book SUMMARY without authored Index must exercise the same repair's alias
-guard; actual configuration/script/guard omissions must fail the expected
-contracts. Retain source/current complete metadata and bounded corruption controls
-in the native include-source-validator record after its whole14406B prefix;
-link the existing LC0042 assessment. Retain the whole closed LC0042 task span,
-including calibration/ownership/evidence, and old/new book seams before bounded
-live-pointer compaction. No new task
-file, cap raise, published-prefix/seal rewrite or processor/adoption claim.
-Run normal/O, focused checks/seven books/full source/history/mode/cap/staged
-inverses and normal COMMIT before generated search.
-Public integration reference: https://rust-lang.github.io/mdBook/format/configuration/renderers.html#html-renderer-options
-
-
-Observed D79, priority1 owned by this LC0043 calibration before signoff: final
-optimized replay refuses one executed fixed page because its witness contains
-ReferenceError: Can't find variable: Mark, ready=true/native0/empty stderr.
-Final normal all120 passes; earlier optimized all120 passed before codec-only
-changes. Preserve target/live-containment/heading-repair/final-optimized/fixed-browser/page-045/dom.html
-and target/live-containment/heading-repair/D79-first.json; identify the
-actual path and public script/dependency/HTTP observations before classifying
-or retrying. Do not suppress the error or silently bless a concurrent-load
-failure. Qualifier refusal is correct; root cause is still unestablished.
-Sixteen actual print-page traces with four concurrent adapters pass: each Mark
-resource receives/writes200 with complete17320B and global Mark=function;
-module/exports/define are undefined. Default TCP backlog5 is observed, not
-established as cause. The original helper returns HTTP observations only after
-all page assessments succeed, leaving this refused run without HTTP delivery
-forensics. This verified diagnostic gap and the unresolved dependency failure
-are priority1, immediate LC0044 below after the bounded D78 repair COMMIT.
-Do not classify D79 resolved from passing repeats. Replay signoff records its
-actual concurrency and excludes resource-completeness/concurrent-load claims.
-
-Complete source/current matrices and full closed LC0042 task span are retained
-in docs/tasks/artifacts/live-containment/include-source-validator.md, phase LC0043.
-The final successful optimized replay runs alone, at most two adapters; the
-concurrent four-adapter failure stays explicit. Its whole browser witness is
-reconstructible from the retained normal print view and authenticated delta;
-raw DOM identity is retained, original HTTP delivery remains unknown.
-D78 selection repair is complete; D79 is neither closed nor classified away.
-
-- [x] **ROOT CAUSE** — `python3 target/live-containment/heading-repair/diagnose.py` rc=0: actual source1481/eight selected pages/all six aliases reproduce only D78; generated first-link root-index fallback conflicts with explicit Index. Public additional-js integration is documented and actual artifact order is observed.
-- [x] **ADDRESSED** — `python3 scripts/qualify_heading_repair.py --require-clean --jobs 2 --output target/live-containment/heading-repair/final-normal` rc=0; `python3 -O scripts/qualify_heading_repair.py --require-clean --jobs 2 --output target/live-containment/heading-repair/final-optimized-alone` rc=0: source120/1→current120/0,1408 headings/590 entries, six aliases exact. Supported main alias and three actual repair omissions discriminate. Record self-test normal/O rc=0: seven damaged frames refuse. D79 remains immediate LC0044, not a passed concurrent-load claim.
-- [x] **NO REGRESSION** — `python3 target/live-containment/heading-repair/verify.py` normal/O rc=0: exact13 files,1471 protected regular files/Gitlink, whole14406B prefix/7063B closed unit/two matrices/book inverses,21 old headings/all54 old commands and3242 rendered links; fresh120-page header/title parity exact. focused13/sharder12/seven books rc=0; all97 prior history entries/order/digest-updated refusals preserved. Full staged inverse/normal COMMIT finish publication. Caps/LIVE/CPU unchanged; original resource anomaly stays owned.
-- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree; generated index regenerated unchanged. promotion: declined; finite repair/retention and immediate D79 investigation have native owners. Search/resources/full graph/adoption/CPU/MCU/DSP/board remain open; no capacity or acceptance expansion.
-
-###### .4i2b5b2r.d / SEMULITH-LC-0044 — trace the missing Mark dependency (pending)
+###### .4i2b5b2r.d / SEMULITH-LC-0044 — trace the missing Mark dependency (complete finite forensic slice)
 
 Immediate priority1 D79 owner: preserve the actual failed print-page DOM and
 complete source/generated identities; add delivery/resource/error forensics that
@@ -1042,6 +990,58 @@ cause or the precise evidence/access blocker; no blind retry or error suppressio
 Keep strict refusal and existing capture/producer/source/history/mode/cap bytes
 exact. Bound this investigation separately from the verified authored-index
 selection repair. Book/live sync and normal COMMIT before generated search.
+
+
+Owned on cleanf3c5e81/1485 after exact postcheck/brief0/host0. Own
+scripts/trace_book_dependencies.py, scripts/probe_book_dependency_trace.py and
+scripts/book_dependency_record.py. Rebuild5c72864/1481 plus D78's two-file overlay;
+require the whole345-file LC0043 manifest, all selected roles/headers and frozen
+helpers exact. Stream receipt/write/resource/error/global evidence through refusal;
+exercise missing/empty-library controls and separate two-server/two-worker queue
+experiments without presuming cause. Retain full29198B native prefix/5729B closed
+LC0043 span, projected evidence, original ownership plan and old/new book/task
+seams in reader-records-retention.md. Preserve history/modes/seals/caps. No new
+task file, producer mutation, resource/processor/graph/adoption acceptance.
+Focused normal/O/seven-book/staged inverse and normal COMMIT precede search.
+
+Finite forensic delivery complete; D79 causal signoff remains blocked in LC0045.
+Canonical phase: docs/tasks/artifacts/live-containment/reader-records-retention.md,
+Dependency trace evidence — LC0044. Whole29198B prefix/5729B closed LC0043 unit,
+960 selected full heading witnesses, verdict/script/error/global/enhancement rows,
+complete per-path delivery footprints, selected full failures/access evidence,
+actual producer bytes and old/new source seams are retained. Raw ordered HTTP/
+non-script successful-load order/resource timings/DOM remain diagnostics; their
+profile/journal identities are retained. No resource-completeness/cause claim.
+
+- [x] **ROOT CAUSE** — `python3 scripts/probe_book_dependency_trace.py --output target/live-containment/mark-dependency/probe-normal` rc=0: six actual controls reproduce the original complete failed witness when Mark/book delivery is denied, and expose the Window-only load-observer gap. D79 original cause is not established; tcpdump's owned two-packet lo0 probe returns1, BPF Permission denied/0pcap bytes. Sourcef3c5e81/1485 and reproduction5c72864/1481 remain distinct.
+- [x] **ADDRESSED** — the same probe normal/O rc=0:6 controls/0 failures plus3 ownership/type boundaries; full journals and observations survive native/DOM/qualification refusal. `python3 scripts/book_dependency_record.py --self-test` normal/O rc=0:960 witnesses restore,7 damaged frames refuse. Four final queue5/32 normal/O comparisons measure only seven D80 cases each, no unjudgeable traces; an earlier assembler loses ten assets before receipt. Passing repeats do not close D79; immediate LC0045 owns the precise access blocker, LC0046 owns D80.
+- [x] **NO REGRESSION** — `python3 target/live-containment/mark-dependency/verify.py` rc=0: exact13 files,1476 protected regular files/Gitlink, whole prefixes/5729B unit/declared ledger/probes/book inverses,21 old headings/all55 commands/3242 links and fresh120-page header/title parity exact. Focused13/sharder12/seven books rc=0; all95 prior live history entries/order/digest-updated refusals exact. Full staged reverse patch and normal COMMIT finish publication. Fixed caps/LIVE/CPU unchanged.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree, generated index unchanged. promotion: declined; finite evidence and precise D79/D80 owners remain native. No new decision file, producer rewrite, cap raise or processor/full graph/adoption acceptance. Stop on the actual BPF access blocker after a clean committed handoff; do not mark D79 resolved.
+
+###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — obtain scoped D79 packet evidence (blocked)
+
+D79 remains priority1/open. Complete stream forensics now preserve refusal;
+actual combined missing-Mark/book response controls reproduce the whole original
+failed witness and enhancement state. One assembler workload loses ten assets
+before HTTP receipt, while later queue5/32 comparisons show only D80. Cause is
+not established. OS TCP counters all report0, including actual traffic; unusable
+for attribution. The owned two-packet/96-byte lo0 probe is denied by macOS:
+cannot open BPF device /dev/bpf0, Permission denied. No packet was captured.
+Need an approved means of read-only packet capture limited to the tracer's own
+loopback ports, with project-local output and no global permission changes.
+Preserve all existing evidence/old producers. Resume this precise causal test
+when that access exists; do not close D79 from passing repeats. D80 is next below.
+
+###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
+
+Priority1 D80: actual generated seven-book 404 pages use origin-root base URLs;
+shared collection serving requests css/scripts outside their book and gets404.
+Reproduce through the published serving/configuration interface; distinguish
+local file/shared-root/hosted fallback contracts and fix the owned integration.
+Do not alter mdBook/Gitlink internals or claim resource completeness from heading
+success. Keep all URLs/old captures/prefixes/history/modes/caps exact or record
+owned explicit transitions; book/live sync and normal COMMIT before search.
+Immediate after D79 tracing/repair; current owner .4i2b5c.404.
 
 ###### .4i2b5b3 — qualify generated search (pending)
 
@@ -1404,6 +1404,19 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Verification Log
 
+.4i2b5b2r.d: permanent probe normal/O rc=0:6 actual controls/3 boundary guards;
+combined Mark/book denial reproduces whole original failed witness/enhancements.
+Record reader normal/O rc=0:960 full witness restorations/7 damaged frames refuse.
+Four selected queue5/32 source-before-fixed runs each120+120; final faults only
+seven D80 cases. Earlier assembler loses ten assets before HTTP receipt. D79
+cause unestablished; scoped lo0 BPF probe denied1/0pcap, TCP counters all0.
+verify.py/focused13/sharder12/seven books rc=0:1476 protected regular files/
+Gitlink,29198B prefix/5729B closed unit/projected ledger/probes/source/book exact;
+21 old headings/55 commands/3242 links/fresh120 headers and fixed caps qualify.
+CH1363B→0332/1600B, DEV4660B→0333/4893B whole rollover;95 old entries exact.
+Full staged inverse/normal COMMIT required. LIVE1578/39/40/49 unchanged; precise
+D79 packet-access owner45 blocked, D80 repair46 pending, search afterward.
+
 .4i2b5b2r: final normal and optimized-alone --require-clean rc=0: source120/1,
 current120/0;1408 headings/590 entries/107 inputs, six unit aliases exact. Static
 inverse51 script insertions/293 unchanged outputs/new exact asset; supported
@@ -1646,6 +1659,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0044 (leaf LIVE-CONTAINMENT.4): preserve dependency failure forensics` — finite verified trace/evidence; D79 packet access blocked, D80 repair owned.
 
 `SEMULITH-LC-0043 (leaf LIVE-CONTAINMENT.4): repair authored-index active context` — D78 fixed with aliases intact; D79 delivery/dependency tracing immediately next.
 

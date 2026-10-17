@@ -6,6 +6,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `scripts/trace_book_dependencies.py` · `scripts/probe_book_dependency_trace.py` · `scripts/book_dependency_record.py` | do delivery/resource observations survive refusal? | `python3 scripts/probe_book_dependency_trace.py --output target/NEW`;6 actual controls/3 boundaries normal/O; record `--verify-record`/`--self-test`:7 refusals; D79 BPF access blocked, D80 owned |
 | `scripts/qualify_heading_repair.py` | does the owned Index repair preserve complete headings/context and aliases? | `python3 scripts/qualify_heading_repair.py --require-clean --output target/NEW`; `--verify-record`/`--self-test`:7 refusals normal/O;120 current contracts; D79 tracing next |
 | `scripts/qualify_book_headings.py` · `scripts/book_headings_webkit.swift` | do executed heading labels/targets/nesting and active parents agree? | `python3 scripts/qualify_book_headings.py --verify-record`; `--self-test`:9 refusals normal/O; seven books/120 pages; D78 repair next |
 | `scripts/qualify_book_toc.py` | do all seven chapter TOCs match pinned SUMMARY paths, labels, numbering and hierarchy? | `python3 scripts/qualify_book_toc.py --require-clean --output target/NEW`; normal/O,93 chapters/14 TOCs; three actual SUMMARY controls; page headings/search/resources remain open |
