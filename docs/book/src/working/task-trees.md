@@ -73,12 +73,9 @@ python3 scripts/qualify_book_index.py --working-code --require-clean --output ta
 
 Indexes keep dated questions; records retain receipts/corrections.
 D55 corrects the partial UART subtotal: 147 + 13 becomes 151 + 9; total 160 stands.
-D51: 61 = 27 tasks + one template + 9 archives +
-24 artifacts; at `d39092f`, 96 = 33 + 1 + 40 + 22. These are files, not active work.
-Classification alone changes no limit. A separate review authorizes count 107:
-33 tasks + template + 33 archive allowance + 40 artifacts. It is pooled capacity;
-40 archives already exceed that forecast. Health 64 remains warning debt.
-107 passes; 108 breaches. Byte/part caps stay fixed. Read:
+D51 distinguishes files from active work. A separate review authorizes107 pooled
+files;108 breaches. Health64 remains warning debt; byte/part caps stay fixed.
+Full classifications and derivations remain in the records:
 
 ```sh
 cat docs/decisions/INDEX.md
@@ -168,10 +165,9 @@ parts1–12 use the checked reader; choose the part, for example archive9:
 python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
 ```
 
-Ordinary part13 and named book receipts remain directly readable Markdown:
-Two LIVE-CONTAINMENT archives retain whole closed units; the second also
-retains the complete LC0027 checklist. Original task headings link to the full
-records. Read both archives below.
+Ordinary P4 parts and named receipts remain native Markdown. Two containment
+archives retain whole closed units, including LC0027's checklist. Original task
+headings link to them:
 
 ```sh
 cat docs/tasks/archive/P4-SYSTEM-13.md
@@ -273,14 +269,10 @@ Replay public/default qualification:
 cat docs/tasks/artifacts/live-containment/include-source-integration.md
 ```
 
-Containment measurements count every tracked family member, including
-`docs/book/book.toml`. A Markdown-only scratch census omitted its309bytes and
-reported extra room that the production routing guard did not grant. At the
-measured revision the full51-member book was523133bytes, leaving1155 under
-524288. Use `git ls-files` plus explicitly owned untracked additions for the
-same-volume byte census; keep file count, aggregate bytes and per-part caps
-as separate checks. The corrected planning receipt and inverse retain the
-measurement's source and scope.
+Measure every tracked family member, including `docs/book/book.toml`, plus
+explicitly owned untracked additions. A Markdown-only census once omitted that
+configuration and overstated room. Count, aggregate bytes and per-part bounds
+are separate checks. The retained integration record owns the corrected receipt.
 
 ### Preserve older live entries
 
@@ -318,7 +310,7 @@ member. A missing object, changed descriptor or bad member fails the same uncond
 freeze gate used locally and in CI. Restore the committed bytes when that happens.
 
 The manifests remain one partition; sharding never reuses retired names.
-Recheck the public consumers against all222 archived originals and six catalogues:
+Recheck the original P4/history terminals (222 originals) and six catalogues:
 
 ```sh
 python3 scripts/qualify_query_consumers.py --working-code --require-clean --output target/query-repair-replay
@@ -331,12 +323,8 @@ Immutable replay retains D76. Full containment adoption remains open.
 
 ### Reading closed P4 task histories
 
-The director approved the12-file task-history seal on2026-10-10. The base P4
-archive and parts2–12 retain every original byte in a tracked375,029-byte object,
-with12 navigation pages at their former paths and eight incoming section anchors.
-The active18-node graph and current evidence leaf remain directly readable.
-Historical links lead to a navigation page that gives the original identity and
-read command; the page discloses that the historical body is in the archive.
+The director approved the12-file P4 seal on2026-10-10. Original paths retain
+navigation pages and eight incoming anchors; the active graph stays native.
 
 ```sh
 python3 scripts/task_history_archive.py
@@ -346,25 +334,43 @@ python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-8.md
 bash scripts/check_task_history.sh
 ```
 
-Verification authenticates the whole terminal before printing any requested
-original. All12 originals (1,144,703bytes/15,055lines) and the original manifest
-are retained. The reader uses Python's standard library without Git, network or
-extraction; ordinary/shallow clones carry the tracked object. Ordinary tar also
-retrieves every original exactly. The descriptor is immutable and independently
-pinned, with bounded metadata, decompression and regular members. Missing,
-corrupt, extra, unsafe or oversized content and changed navigation fail closed.
-Restore the exact committed bytes on failure.46 permanent controls run under
-TASK-HISTORY, including relocated no-Git retrieval and malicious archive cases.
+Before output, all12 originals authenticate without Git/network/extraction;
+shallow clones carry the object. Bounded metadata/decompression, plain members
+and exact navigation fail closed on damaged/unsafe/excess content. Restore
+committed bytes. The [front door](../../../task-history/README.md) gives
+tar/search/failure instructions; `decision_task-history-seal-review.md` retains
+the source manifest/serialization. Original46 controls stay; future captures
+need owned transitions.
 
-The [terminal front door](../../../task-history/README.md) gives tar commands,
-search, retention and failure handling. The exact manifest and reproducible
-serialization remain in `docs/decisions/decision_task-history-seal-review.md`.
-The twelve navigation pages total7,040bytes; this transition releases1,137,663B
-from the existing task-family aggregate. Existing incoming link targets
-remain unchanged, and no earlier ceiling changes. The three-file terminal has a fixed387,317B bound derived
-from its immutable object plus bounded metadata. Nothing appends to it; a future
-capture needs its own owned, verified transition. Full containment adoption
-remains open under LIVE-CONTAINMENT.4. Archival grants no CPU acceptance credit.
+### Reading closed qualification records
+
+LC0041 applies the director's standing archive delegation to four completed
+qualification records: book-index consumer, graph/query census, include/navigation
+readers and orientation indexes. Their original paths preserve all20 heading
+aliases and give retrieval commands. The current inventory contract and live
+retention inputs remain native. Existing capacities stay fixed.
+
+```sh
+python3 scripts/qualification_history_archive.py
+python3 scripts/qualification_history_archive.py --list
+python3 scripts/qualification_history_archive.py --read docs/tasks/artifacts/live-containment/include-readers.md
+python3 scripts/qualification_history_archive.py --read docs/book/src/working/task-trees.md
+python3 scripts/qualification_history_preservation.py
+python3 scripts/probe_qualification_history.py
+```
+
+Five originals retain497850 bytes/modes/Git identities from968bc010: four
+records plus this chapter's whole prior unexpanded source; its successor stays
+live. Archive data/navigation authenticate before output, without Git/network/
+extraction. README content is bounded by the reader and frozen by publishing.
+Tar retrieves originals; shallow clones carry the object. First
+publication checks the source tree, originals and complete staged data/wiring.
+Later both views freeze against HEAD. Unavailable evidence refuses2; the reader
+refuses1 without original output.32 tests run normal/O. Damaged/unsafe/excess
+content fails closed; restore committed bytes. Corrections use new records.
+Historical replay still needs its declared sources/producers/tools; retained
+Markdown adds no raw-output or toolchain promise. Graph/adoption/CPU stay open.
+See `docs/qualification-history/README.md` for scope, tar and failure handling.
 
 ## Repository-volume temporary storage
 

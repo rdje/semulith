@@ -1,0 +1,99 @@
+{
+  "authority": "director-session-archive-delegation",
+  "compressed_bytes": 192354,
+  "kind": "sealed-qualification-history",
+  "manifest": "docs/qualification-history/source-manifest.json",
+  "manifest_bytes": 3328,
+  "manifest_sha256": "c86f1a243d48ab92bf14b30833f77a761b882a2a767f581f07985d4187960144",
+  "members": [
+    {
+      "anchors": [],
+      "bytes": 16672,
+      "git_oid": "16c59a4baf81d4f1db00e35dd0e2599f0f714765",
+      "lines": 371,
+      "mode": "100644",
+      "original_path": "docs/book/src/working/task-trees.md",
+      "role": "book-source-snapshot",
+      "sha256": "48dfc04746767ab6773ad70419e4a444788de76d1d2bf955468095ba111adc7b",
+      "stub_sha256": null
+    },
+    {
+      "anchors": [
+        "project-book-index-consumer--lc0032",
+        "complete-source-and-consumer-capture",
+        "complete-owned-source-inverse",
+        "lc0033--d73-public-refusal-repair"
+      ],
+      "bytes": 94264,
+      "git_oid": "8807b7c3589b2bdb6611d17333d743a9f0cfd15a",
+      "lines": 2502,
+      "mode": "100644",
+      "original_path": "docs/tasks/artifacts/live-containment/book-index-consumer.md",
+      "role": "qualification",
+      "sha256": "438b890428949149174649ffc0e02c340558245d9d00099cbab326fd60c5f0e1",
+      "stub_sha256": "18bf915a80765d11a2ac350fe99a5a69ad9afb72822a6476feb05199bda4bd39"
+    },
+    {
+      "anchors": [
+        "closed-graph-census-evidence--lc4i2a",
+        "immutable-source",
+        "fresh-rendered-evidence",
+        "replay-and-finite-qualification",
+        "remaining-owned-work",
+        "cataloguearchive-query-qualification--lc0036",
+        "d76-decompression-refusal-repair--lc0037"
+      ],
+      "bytes": 129625,
+      "git_oid": "b10056bccbb4afb5fc10c86119311c4abdb65186",
+      "lines": 217,
+      "mode": "100644",
+      "original_path": "docs/tasks/artifacts/live-containment/graph-census.md",
+      "role": "qualification",
+      "sha256": "dbd86d61245e94a9a8e6ef8c63df8fd737a4914b6d029c8f21c068f8f4be7d73",
+      "stub_sha256": "04377998783b43ded8bd19ac5fa51a2391328d9c0c129dc18937093c4b4b540e"
+    },
+    {
+      "anchors": [
+        "include-readers-and-source-validity-assessment--lc4i2b3a",
+        "closed-inputs-and-actual-consumers",
+        "complete-executed-edge-ledger",
+        "public-behavior-and-d65",
+        "reproduce-and-falsify",
+        "actual-navigation-consumer-assessment--lc0038",
+        "navigation-nesting-repair--lc0039"
+      ],
+      "bytes": 130686,
+      "git_oid": "2177c355edc206b3b5db593e3eb94f2b46e80c05",
+      "lines": 429,
+      "mode": "100644",
+      "original_path": "docs/tasks/artifacts/live-containment/include-readers.md",
+      "role": "qualification",
+      "sha256": "89cc2230942f01103e92b064ba183068880add3904423416d79f4916fe21ccd1",
+      "stub_sha256": "259f3b34821e5810ed82c5d64317129b8fdcb0354f342bd26a6fed7ffeaddbe0"
+    },
+    {
+      "anchors": [
+        "orientation-and-record-indexes--lc0034",
+        "lc0035--d74d75-repair-and-qualification"
+      ],
+      "bytes": 126603,
+      "git_oid": "d992380f656ed31b4fd6cda7c3519ac7a86ff97f",
+      "lines": 128,
+      "mode": "100644",
+      "original_path": "docs/tasks/artifacts/live-containment/orientation-indexes.md",
+      "role": "qualification",
+      "sha256": "bd971eab6460141219267222a29b58379eb50b438b5d66a9e9148bb95406163e",
+      "stub_sha256": "ebf57c39a25883e2549ddd84615bd2564fcc7190fdb477c3207d58789fda9eb9"
+    }
+  ],
+  "object": "docs/qualification-history/sealed/a9b549a8bd733603d1eba8726b8c18cc30c908f39dab86a50adf2379d0f215f9.tar.gz",
+  "recorded_on": "2026-10-17",
+  "schema_version": 1,
+  "sha256": "a9b549a8bd733603d1eba8726b8c18cc30c908f39dab86a50adf2379d0f215f9",
+  "source": "968bc0109682628609ae6b83bc7bf42b01fc9b2c",
+  "source_bytes": 497850,
+  "source_files": 5,
+  "source_lines": 3647,
+  "source_tree_sha256": "2a211bb7259ce9fe12c6dbd842af038d5788a4e88aa93845867bea9d3cda1209",
+  "tar_bytes": 512000
+}

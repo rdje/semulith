@@ -1,5 +1,60 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — finite lossless qualification-history transition (LIVE-CONTAINMENT.4i2b5b1h)
+
+LC0041 begins at968bc010/1469 identities, one opaque Gitlink. The107-file task
+family had3145560B/168B spare; book51/524256B/32B spare. Classification selects
+four completed source-pinned measurements: book-index consumer, graph/query
+census, include/navigation readers and orientation indexes. Keep maintained
+inventory/retention inputs, integration/validator teaching and task claims native.
+The director's standing “do whatever you see fit regarding the task history or
+archive” delegates the finite selection; it does not name this cohort or grant
+an overflow sink. The owning tree and terminal record the local decision. No
+existing seal, live task root or ordinary P4 archive joins this capture.
+
+Copy/verify/use/retire preserves five originals497850B/3647LF: four records and
+the whole16672B prior unexpanded task-tree book chapter. Independent immutable
+Git source bytes/modes, full-tree identity, Python reader and ordinary tar verify
+before retirement. All20 native mdBook heading IDs become navigation aliases;
+481178B originals become5016B stubs,476162B released. The separate192354B object
+plus bounded descriptor8192B/front door4096B gives a204642B terminal, exactly
+three files. All original bytes/order, Git OIDs/modes and SHA identities remain.
+Whole prior book source is queryable; current teaching/commands stay live while
+duplicated historical receipt prose is compacted. All existing caps stay fixed.
+
+The reader authenticates archive data/navigation before output, bounds metadata
+and decompression, rejects unsafe/nonregular/duplicate/noncanonical tar members,
+and verifies source SHA/GitOID/byte/LF identities. No-follow file-descriptor reads
+check stable dev/inode/mode/size/mtime/ctime; no Git/network/extraction. README
+content is reader-bounded and publishing-frozen; changed bounded prose still
+retrieves exact originals but fails publishing. A separate
+publishing guard authenticates immutable source provenance at first publication
+and requires complete staged data/wiring once any transition change is staged.
+Later it preserves the whole published terminal/navigation in both index and
+working views, requiring no old source in shallow clones. Git API calls disable
+lazy fetch themselves. Failed/unavailable evidence refuses. Corrections use new
+records; retained Markdown adds no producer/toolchain/raw-output replay promise.
+
+Initial full CI identified a metadata integration conflict: generic JSON
+path/sha256 pairs denote live record-relative files. The new historical schema
+now uses original_path, retaining the same five original/stub bytes through
+reserialization and the same independent source/publishing verification. No
+fingerprint-checker exclusion or changed original pin. The task receipt also
+names the actual command/rc required by the evidence-signature gate.
+
+All32 tests pass normal/O; all5 Python/tar retrievals agree in relocated no-Git
+fixtures, without extraction or writes. Six actual isolated guard omissions turn
+refusal into acceptance: staged preservation, working preservation, source-tree
+provenance, original source mode/bytes, descriptor pin and navigation identity.
+The initial omission selector missed computed reason strings; AST traversal now
+finds their literal prefix and requires one unique statement before compiling the
+owned copy. No production file was changed by those controls. The original46
+retrieval arms and two43-test ordinary publishing wrappers remain; two new32-test
+wrappers yield50 TASK-HISTORY arms. Re-derived global1578/40 routes;39 doctrines
+and49 book chapters remain. Source/history/mode/book/cap/staged inverses, focused
+checks and full milestone CI precede normal COMMIT. Heading/search/resources,
+full graph/adoption and every processor/board acceptance claim remain open.
+
 ## _(2026-10-16)_ — generated chapter contents qualification (LIVE-CONTAINMENT.4i2b5b1)
 
 LC0040 separates authored chapter contents from dynamic page-heading navigation,
@@ -651,42 +706,4 @@ this slice. Published history, registry/count107/health64 debt, guard1519 arms,
 other milestones/canonical/CPU stay exact. Normal COMMIT/postcheck/brief0/host0
 closes before the independently owned whole closed-unit history transition.
 promotion: declined (local assessment evidence and producer are task artifacts; no new policy authority).
-
-## _(2026-10-12)_ — explicit composition progress and discriminating count control (LIVE-CONTAINMENT.4i2b1)
-
-D58: actual public TREE-CLAIMS returned0 on LIVE_STATUS's In Progress/2/6
-composition row, while MODEL-COMPOSE metadata, all six statuses, frontier and
-closed register record done/6/6 on 2026-09-27. The guard recognizes explicit
-A-of-B-leaves, not bare ratios. Repair the live row to Done/6 of 6 leaves,
-accurately naming union/fragments, discharge, partial slots, materialization
-and per-instruction refinement. Tree closure grants no processor/board claim.
-
-The complete four-live-file candidate census exposed broader source decoding
-and ratio-binding preconditions. D59 is owned priority1 immediately next;
-archived summaries, bold statuses, slice-gated scope and later instruction/
-guest ratios need independent qualification before broad syntax enforcement.
-The book and doctrine describe these limits rather than claiming coverage.
-
-D60: the first copied A_OF_B-loop omission unexpectedly passed all12 old
-controls and accepted a wrong-done/same-total row0. Retain the initial stopped
-instrument and raw streams. Add one same-total/wrong-completed arm, preserving
-all12 old arms byte-exact;13 now pass. The copied omission now makes the actual
-public self-check refuse2/no stdout. Seven public cases/mode cover the original
-unsupported bare ratio0, explicit stale1, corrected0, wrong-done1, wrong-total1,
-later non-task ratio0 and append-history exclusion0. Normal/O agree; real1414
-HEAD/index/member identities remain exact across each batch. These are finite
-controls, not general Markdown or complete source-parser qualification.
-
-D61: actual normal/print HTML rendered12 of21 Foundation rows as literal
-pipe prose. Two blank lines split the only declared table; remove those two
-breaks without changing any cell. Reconcile every Foundation row against its
-rendered cells, not text presence. Initial instrumentation inserted inline-code
-spaces and overreported one label; corrected cell-text census retains all21.
-
-Whole-oldest DEV rollover retains every prior entry/source byte. Source/book/
-task/guard/doctrine/live inverses, all other regular files/modes/Gitlink, focused
-checks/seven books/rendered status and literal self-test qualify the slice.
-Derived arm count1518 becomes1519; other LIVE milestones and every cap remain
-exact. Normal COMMIT/postcheck/brief0/unrestricted handoff closes before D59.
-promotion: declined (local stale projection and test discriminator repair, with the broader parser obligation owned in its task tree).
 

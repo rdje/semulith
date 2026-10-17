@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b1h / LC0041 contain task-family byte pressure before heading/search |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2 / LC0042 qualify per-page heading navigation after LC0041 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -895,7 +895,7 @@ now sets the flag; codec.py rc=0 verifies the guard normal/O.
 - [x] **NO REGRESSION** — focused.sh/history.py/verify.py/rendered.py rc=0 normal/O where applicable:focused12/sharder12/seven books; whole prior source/history/modes/book/prefix/cap and staged inverses exact; normal COMMIT required. No Rust/LIVE/processor/adoption change.
 - [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/capture align; heading/search/resources remain open. promotion: declined (source-pinned generated-navigation record owns the scope).
 
-###### .4i2b5b1h / SEMULITH-LC-0041 — contain task-family byte pressure (pending)
+###### .4i2b5b1h / SEMULITH-LC-0041 — contain task-family byte pressure (complete)
 
 Before further heading/search captures, measure remaining107-file/3145728-byte
 capacity and classify the largest complete records against the local containment
@@ -904,6 +904,59 @@ and verified source/mode/order inverses; preserve every authored record and all
 current features. Existing capacities remain fixed. Check the director's standing
 archive authorization and local transition rules before any retirement; prepare
 a concrete reviewable transition if a further ruling is actually required.
+
+LC0041 uses the director's standing session delegation, “do whatever you see
+fit regarding the task history or archive”; the finite selection is our local
+implementation of that delegation, not a claim the director named these files.
+Source968bc010 has1469 identities/one opaque Gitlink. Task family107/3145560B
+left168B; book51/524256B left32B. Classify four completed source-pinned records
+as historical captures: book-index-consumer94264B, graph-census129625B,
+include-readers130686B and orientation-indexes126603B. Keep the active inventory
+contract, live retention-verifier input, integration/validator teaching and small
+task-claims record native. Maintained qualifiers read selected history from their
+immutable Git source; those replay contracts and existing12/210-file seals stay
+unchanged. No live root or ordinary P4 archive enters this capture.
+
+Copy/verify/use/retire: five originals497850B/3647LF include the whole16672B prior
+book source. Public Python/tar retrieval verifies every byte without Git/network/
+extraction, normal/O. Descriptor3918B pins Git968bc010 and full-tree SHA-256
+2a211bb7259ce9fe12c6dbd842af038d5788a4e88aa93845867bea9d3cda1209.
+Object192354B SHA-256a9b549a8bd733603d1eba8726b8c18cc30c908f39dab86a50adf2379d0f215f9
+retains sorted originals then canonical manifest. Independent source Git bytes,
+modes and identities verify before replacing only the four original paths with
+5016B navigation pages. All20 native heading IDs remain; source inverses recover
+all481178B retired records and the whole prior book chapter. Record retirement releases
+476162B; this unit’s receipts use part of it. Existing ceilings stay fixed. A separate three-file terminal
+has derived204642B bound =192354+8192 descriptor+4096 front door. Registry class:
+reader_navigation/archive_terminal. It is finite/immutable, never overflow.
+
+Reader validates bounded/stable no-follow reads, modes, schema/descriptor pin,
+whole-object digest, bounded expansion, canonical regular USTAR members,
+manifest, every original SHA/GitOID/byte/LF count and exact navigation before
+output. Publishing guard checks all original source bytes/modes and complete
+source-tree identity on first publication, plus atomic staged data/wiring.
+Later both index and working views must equal published HEAD; no old Git source
+or fetch is needed. Absent/failed evidence refuses; shallow/no-Git retrieval is
+separately tested. Markdown retention adds no historical replay toolchain or raw
+output promise. README/book give verification/list/read/tar/failure examples.
+
+Initial full CI exposed the generic fingerprint contract: JSON `path`/`sha256`
+means a live file relative to its record. Historical originals use the explicit
+`original_path` field instead; no checker exemption or changed original hash.
+Reserialized manifest/descriptor/object retain identical original/stub bytes.
+The root-cause receipt also now names its actual command/rc for SEAM-INTEGRITY.
+Both integration defects are resolved: focused13 and full `make ci` rc=0.
+The terminal front door retains the tested normal/O serialization recipe.
+Final review corrected the guarantee wording: the reader authenticates archive
+data/navigation and bounds README mode/size/coverage; the publishing guard
+freezes README content. A changed bounded README retrieves exact originals
+but fails the publishing control. Own this claim defect here;32 controls
+normal/O verify the boundary before the restarted normal COMMIT.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualification_history_preservation.py` rc=0 authenticates source968bc010; `target/live-containment/task-byte-retention/census.json` shows107 files/3145560B,168B spare; completed append-only captures consume byte capacity, sharding alone does not release aggregate bytes. Native mdBook captures all20 heading aliases before retirement.
+- [x] **ADDRESSED** — `python3 scripts/probe_qualification_history.py` normal/O rc=0:32 tests,0 failures/errors; all5 Python/tar originals exact in relocated no-Git/no-extraction fixture. `qualification_history_preservation.py` rc=0 authenticates first publication/source; combined TASK-HISTORY50/0. Exact source/mode/order and heading inverses retained.
+- [x] **NO REGRESSION** — `make ci` rc=0 (check/gate/bench/smoke-bench/seven books); focused13/sharder12 and `verify.py` rc=0:1450 protected regular files/opaque Gitlink, all99 prior history entries, five whole originals/book commands/19 headings/20 native aliases and3242 links exact. Full staged inverse and normal COMMIT required. CPU/MCU/DSP/board/full graph/adoption stay open.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/doctrine/route agree; prior book source fully retrievable. No new decision file needed: this finite delegated transition is owned here and by its terminal. Heading/search/resources remain open. promotion: declined (finite transition retained here and in its terminal).
 
 ###### .4i2b5b2 — qualify per-page heading navigation (pending)
 
@@ -1490,6 +1543,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0041 (leaf LIVE-CONTAINMENT.4): retain closed qualification history losslessly` — finite delegated capture/source/publishing checks; heading navigation next.
 
 `SEMULITH-LC-0040 (leaf LIVE-CONTAINMENT.4): qualify generated chapter contents` —93 chapters/14 TOCs, complete source/rows; byte-pressure remedy next.
 

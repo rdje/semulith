@@ -13,6 +13,7 @@ import sys
 from urllib.parse import unquote
 
 import task_history_archive as history
+import qualification_history_archive as qualifications
 
 
 def check_links(root, sources, row, originals):
@@ -47,6 +48,15 @@ def main():
     root = Path(__file__).resolve().parent.parent
     try:
         row, _, originals = history.load_terminal(root)
+        # Legacy probe fixtures have only the original P4 terminal. The real
+        # gate separately requires the qualification terminal unconditionally.
+        if (root / qualifications.INDEX).exists():
+            capture, members = qualifications.load_terminal(root)
+            row = dict(row, anchors=dict(row['anchors']))
+            row['anchors'].update({entry['original_path']: entry['anchors']
+                                   for entry in capture['members']
+                                   if entry['original_path'] in qualifications.RETIRED})
+            originals.update({name: members[name] for name in qualifications.RETIRED})
         paths = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode().split('\0')
         sources = {name: (root / name).read_bytes() for name in paths
                    if name.endswith('.md') and not name.startswith('vendor/')}

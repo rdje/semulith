@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0041 (leaf LIVE-CONTAINMENT.4) — retain closed qualification history losslessly
+
+- Apply the director's standing archive delegation to four completed qualification records and the whole prior task-tree book source. Preserve all497850B/3647LF, Git modes/identities/order and20 heading aliases from968bc010; Python/tar retrieve all5 originals without Git/extraction. Retire481178B to5016B navigation, releasing476162B under unchanged task-family limits.
+- Add a finite three-file terminal, independent descriptor pin, bounded stable no-follow reads/canonical archive verification and source-authenticated atomic first publication. Both publishing views freeze against HEAD afterward, without fetching. All32 tests pass normal/O, including six actual discriminating guard omissions; original12/210 seals and ordinary task histories stay exact. Live book/route/doctrine/toolbox sync; derived1578 arms/40 routes. Focused/full milestone checks and normal COMMIT qualify before heading navigation; CPU/MCU/DSP/board and full graph/adoption remain open.
+
 ## SEMULITH-LC-0040 (leaf LIVE-CONTAINMENT.4) — qualify generated chapter contents
 
 - Pin1466 source identities/107 inputs; all93 chapters/seven parts across seven books match independent SUMMARY hierarchy, labels, paths and numbering in captured metadata and14 TOCs normal/O. All344 output files remain capture-exact; three supported remove/rename/unnest SUMMARY controls build0 and fail complete original qualification1. Page headings/search/resources and330 other output candidates remain open.
@@ -399,15 +404,4 @@
 - Extend the existing references schema and single mapper with matched-GPR inputs/producers/observations/runs/controls/property scope. Preserve ordered invocation arguments and all243 existing dossier dictionaries; no new canonical capture.
 - DOSSIER-SCHEMA17/0, PROFILE-CONSISTENCY51/0, predecessor/lost-child/facet/qualification-guard controls, focused13/full five-leg CI/seven books and complete book example pass; Rust173/17/253. Qualification stays closed pending relationship/artifact evaluation. Derive747 named arms; CPU/P4/P5 states, protected data/archive and all caps unchanged.
 
-
-## SEMULITH-P4-0203 (leaf P4-SYSTEM.14) — declare the qualified matched-experiment contract
-
-- Declare the prospective matched-GPR v1 extension to existing experiments: pinned inputs, producers, observations, runs/repeats/controls, property scope, currentness and explicit unknown ancestry. Include the full contract and implementation/retention sequence in the GC book.
-- Focused9/seven books/rendered matrix/example/status and actual undeclared-field refusal pass. All code/schema/runtime/canonical/profile/frozen/history/archive/LIVE and ceilings remain exact; no capture or qualification credit. Shared schema/mapping/validator next, then bounded retention and fresh runs.
-
-## SEMULITH-P4-0202 (leaf P4-SYSTEM.14) — reject invalid experiment identities
-
-- Reproduce four false GREENs: unknown model, conflicting experiment IDs, repeated models and a self-paired independence row. Enforce identity/membership/distinctness through the existing checker; retain valid data and grammar.
-- PROFILE-CONSISTENCY50/0 (old46/4); four independently restored predicates each49/1; current five dossiers/focused13/seven books/protected scope pass. Correct stale schema count and three current-corpus descriptions; derive732arms.
-- Runtime/canonical/profile/frozen/fixtures/history/archive, existing caps and milestone states unchanged; CPU incomplete7axes/P4 13/18. Structured GC records and policy-derived statuses remain next.
 

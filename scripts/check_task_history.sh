@@ -18,6 +18,10 @@ self_test() {
         out="$(python3 scripts/probe_task_history_preservation.py 2>&1)"; rc=$? ;;
       ordinary-optimized)
         out="$(python3 -O scripts/probe_task_history_preservation.py 2>&1)"; rc=$? ;;
+      qualification-normal)
+        out="$(python3 scripts/probe_qualification_history.py 2>&1)"; rc=$? ;;
+      qualification-optimized)
+        out="$(python3 -O scripts/probe_qualification_history.py 2>&1)"; rc=$? ;;
       *) out="$(python3 scripts/probe_task_history.py --case "$1" 2>&1)"; rc=$? ;;
     esac
     if [ "$rc" -eq "$2" ] && printf '%s' "$out" | grep -qF "$3"; then
@@ -76,6 +80,8 @@ self_test() {
   arm "links-include" 1 "sealed narrative used as live include"
   arm "ordinary-normal" 0 "43 tests / 0 failures / 0 errors"
   arm "ordinary-optimized" 0 "43 tests / 0 failures / 0 errors"
+  arm "qualification-normal" 0 "32 tests / 0 failures / 0 errors"
+  arm "qualification-optimized" 0 "32 tests / 0 failures / 0 errors"
   printf 'TASK-HISTORY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
@@ -95,4 +101,5 @@ else
   python3 scripts/task_history_archive.py || exit $?
 fi
 python3 scripts/task_history_preservation.py || exit $?
+python3 scripts/qualification_history_preservation.py || exit $?
 python3 scripts/check_task_history_links.py
