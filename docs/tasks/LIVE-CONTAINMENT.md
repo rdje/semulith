@@ -1020,19 +1020,19 @@ profile/journal identities are retained. No resource-completeness/cause claim.
 
 ###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — one-command D79 tool complete; capture pending
 
-Owned clean8dedef7 before edits, per director's one-terminal-tool request.
-scripts/capture_book_dependencies.py owns pinned unprivileged preparation/replay,
-one sudo tcpdump on four reserved lo0 ports,96-byte packets, deadlines, cleanup
-and persistent evidence. Existing producers/evidence/caps stay exact; LC0044's
-retained record owns original failure/access facts. Native preparation exposed
-an output/tmp collision; separate environment-tmp fixes that exact public path.
-No global permission change or CPU/adoption credit. D79 remains priority1/open;
-user capture/analysis is next, before D80. promotion: declined (local tooling).
+LC0045 plan/fix/evidence: DEV_NOTES.md. Prior producers/caps exact; D79 open
+before D80. promotion: declined (local tooling/runtime evidence).
 
 - [x] **ROOT CAUSE** — `python3 scripts/capture_book_dependencies.py --self-test` rc=0; actual host sudo requires a password,0capture bytes.
 - [x] **ADDRESSED** — same command rc=0 normal/O,24 controls; `python3 scripts/capture_book_dependencies.py --check-preparation` rc=0, no sudo.
 - [x] **NO REGRESSION** — `bash scripts/check_readme_routes.sh` rc=0; focused13/seven books, old producer/history/source identities preserved; normal COMMIT required.
 - [x] **LOCKSTEP** — book/toolbox/MEM/CH/DEV agree; capture and causal signoff remain pending.
+
+LC0047 owns the final handoff blocker (2026-10-17): public census returns1;
+Kimi Code PID5950 holds AGENTS.md via read-only fds84/87 (`lsof -Ffan`).
+Priority2: app release or director disposition before clean handoff. Only the
+director may sanction apps; no closure/exemption authorized, app untouched.
+D79's single terminal tool remains ready. This is runtime state, not a tool bug.
 
 ###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
 
@@ -1661,6 +1661,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0047 (leaf LIVE-CONTAINMENT.4): record the application handoff blocker` — Kimi Code disposition pending.
 
 `SEMULITH-LC-0045 (leaf LIVE-CONTAINMENT.4): add one-command scoped dependency capture` — tool prepared; D79 capture/analysis pending.
 

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0047 (leaf LIVE-CONTAINMENT.4) — record the application handoff blocker
+
+- Final host census returns1: Kimi Code holds two read-only AGENTS.md handles, fds84/87 on PID5950. Leave the app untouched; clean handoff needs release or director disposition under the existing sanctioned-process rule. Record the owner/resume blocker and book-visible handoff boundary. The committed one-command capture tool, prior evidence, fixed limits and LIVE_STATUS remain unchanged.
+
 ## SEMULITH-LC-0045 (leaf LIVE-CONTAINMENT.4) — add one-command scoped dependency capture
 
 - Provide one terminal command for pinned preparation, nonpersistent WebKit replay and one administrator tcpdump limited to four owned loopback ports. Outputs remain user-owned under fresh target paths; bounded packets/deadline, independent pcap scope/drop checks and joined interrupt/refusal cleanup preserve diagnostics. Unprivileged controls pass normal/O; real preparation runs without sudo. Live capture and D79 causal analysis remain pending.

@@ -21,6 +21,8 @@
   One sudo tcpdump on owned lo0 ports; D80 is LC0046 afterward.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0045 normal COMMIT/postcheck.
+- in_flight_uncommitted: none after LC0047 normal COMMIT/postcheck; app blocker below.
 - blockers: terminal-authorized capture/analysis pending; D79 unresolved. Do not push below
   300 commits without the director's act (`COMMIT.md`).
+  Final census flags Kimi Code PID5950 reading AGENTS.md; release/director ruling
+  required for clean handoff. App left untouched; LC0047 owns this runtime blocker.

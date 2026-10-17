@@ -1,5 +1,15 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — application disposition blocks handoff (LIVE-CONTAINMENT.4i2b5b2r.d2)
+
+After dafb073, the actual host handoff census returns1 for Kimi Code PID5950.
+Scoped lsof -Ffan shows only AGENTS.md, read-only fds84/87. Read handles count
+under the published detector; this observation is not a detector/code defect.
+doctrine/sanctioned_processes.tsv reserves exemptions to the director. Closing
+another app could disrupt work, so no termination or exemption is authorized.
+LC0047 owns release/director disposition before clean handoff, priority2. The
+capture tool and D79 causal evidence stay unchanged and ready for terminal use.
+
 ## _(2026-10-17)_ — one terminal command for scoped packet evidence (LIVE-CONTAINMENT.4i2b5b2r.d2)
 
 The director requests a single terminal tool for the blocked D79 packet leg.

@@ -88,5 +88,7 @@ remain available even without a complete result. Exit0 means evidence was
 collected, and may include known D80 failures; it does not resolve D79.
 The tool's `--self-test` needs no administrator access. `--check-preparation`
 verifies real builds, WebKit and server cleanup without invoking `sudo`.
+The final handoff census remains separate: a clean Git tree does not waive an
+open project app. App closure or a sanctioned-process ruling needs its authority.
 
 <!-- ANCHOR_END: dependency-capture -->
