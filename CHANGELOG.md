@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0043 (leaf LIVE-CONTAINMENT.4) — repair authored-index active context
+
+- Fix D78 through the public additional-js integration: a unique explicit chapter wins before heading insertion; first-chapter aliases retain their fallback. Source5c72864/1481 identities: all120 current page contracts pass normal/O,1408 headings/590 navigation entries and all six unit aliases retained. Whole344-output comparison:51 exact script-tag insertions,293 unchanged outputs and one byte-exact owned asset; supported main alias and three actual repair omissions discriminate.
+- Preserve whole14406B validator prefix, full7063B closed LC0042 task span, both complete source/current matrices and old book teaching under fixed caps. Seven damaged frames refuse normal/O; focused/source/history/mode/book/staged inverses qualify publication. A concurrent print replay refused missing Mark; D79 remains open, priority1 immediate LC0044 delivery/dependency tracing, before search. Successful repeats do not close it. LIVE/processor/full graph/adoption claims unchanged.
+
 ## SEMULITH-LC-0042 (leaf LIVE-CONTAINMENT.4) — qualify executed page-heading navigation
 
 - Pin source1226311/1477 identities and107 book inputs; execute all120 HTML pages across seven books in nonpersistent OS WebKit. Independent Python/DOM readers reconcile1406 headings/589 navigation entries, complete labels/markup/targets/nesting, roles and active-parent bindings normal/O. Strict Swift6 compilation and four delayed-JS/blank/omitted/HTTP witnesses distinguish execution from exit0.
@@ -393,14 +398,4 @@
 
 - Reproduce/fix false agreement on extra instruction rows or witnessed deliveries. Validate the full declared budget before value comparison; preserve the finite GPR/delivery vocabulary.
 - Five tail/three exact-boundary cases and two check-removal controls pass, including optimized budget checks. Existing live atomic/timer diagnostics retain their expected results. Preserve two complete old notes through lossless sharding; no canonical qualification or CPU acceptance credit. Focused13/GUEST-GEN152/0/sharder12/0/seven books and334cached outcome-pair/protected-scope checks pass. Derive751 outer arms.
-
-## SEMULITH-P4-0206 (leaf P4-SYSTEM.14) — authenticate experiment file pins
-
-- Add descriptor-anchored, same-volume regular-file authentication for declared input/observation SHA256 and sizes, with matched/mismatch/unavailable/refused results. Refuse symlinks, nested Git boundaries, special files and concurrent replacement; bound streaming reads and close callbacks.
-- Pin39/0 (also optimized), graph63/0, profile53/0, twelve predicate removals, actual checker integration, focused13 and seven books/rendered reader pass. Matching pins remain unqualified pending comparison/policy evaluation. No capture/store, canonical/runtime/generated/archive/cap or CPU acceptance change; derive749 named outer arms.
-
-## SEMULITH-P4-0205 (leaf P4-SYSTEM.14) — validate experiment identities and declared edges
-
-- Validate raw v1 forms before mapping; check scoped requirements/effective obligations, child IDs, input/producer/run/control/observation/pair edges and lexical paths. Reuse the existing effective-contract selector; retain the pending artifact/comparison refusal.
-- Graph63/0 (also optimized), consistency52/0, nine predicate removals, actual checker integration, focused13 and seven books pass. Reproduce/fix C1 path-control acceptance. No canonical captures, runtime/profile/generated/archive/cap or CPU acceptance changes. Derive748 named outer arms.
 

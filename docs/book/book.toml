@@ -9,6 +9,7 @@ src = "src"
 default-theme = "rust"
 git-repository-url = ""
 no-section-label = false
+additional-js = ["theme/active-chapter.js"]
 
 [preprocessor.project-record-links]
 command = "python3 ../../scripts/book_navigation.py"

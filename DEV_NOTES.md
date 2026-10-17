@@ -1,5 +1,57 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — authored-index context repair and scoped replay (LIVE-CONTAINMENT.4i2b5b2r)
+
+D78's source5c72864/1481 identities still marks Introduction and authored Index
+active together. The generated public fallback assumes root index is an alias.
+The owned additional-js hook runs after sidebar creation, before DOMContentLoaded
+inserts heading links. It normalizes query/fragment, directory index and .html;
+a unique explicit chapter wins. No unique match preserves the existing alias/
+auxiliary state. No mdBook/Gitlink internals or pins, URLs, bodies or model-book
+configurations change. Public renderer configuration and actual generated outputs
+establish the integration; the asset stays under theme/ with content hashing.
+
+Final complete normal/O captures use strict Swift6/nonpersistent OS WebKit and
+public mdBook0.5.4. Each source120-page matrix has only D78; each current120-page
+matrix passes, retaining1408 headings/590 entries, all labels/inline ASTs/targets/
+nesting/roles/active parents/titles and107 source pins. Static inversion removes
+one exact script tag from51 main HTML files and reconstructs all original bytes;
+293 other original outputs remain exact, with one new byte-exact owned asset.
+All six model aliases pass. A supported main SUMMARY without authored Index
+exercises the guard directly. Actual active-class, alias-guard and integration-
+configuration omissions execute0 and fail qualification1. Four JS/HTTP witnesses
+still distinguish execution from exit0. Every process/server is waited/closed.
+
+One final optimized replay at four concurrent adapters refused print.html:
+ready=true/native0/empty stderr, ReferenceError missing global Mark. Final normal
+passes; the successful final optimized replay runs alone with at most two adapters.
+D79 remains open and priority1, immediate LC0044 before search. Sixteen traced
+print repeats deliver the complete17320B Mark resource200 and see Mark=function;
+module/exports/define stay undefined. Passing repeats do not explain the original
+failure. The existing helper returns HTTP observations only on successful page
+assessment, so original delivery cannot be reconstructed. That verified forensic
+gap and the unresolved dependency load have a dedicated next owner. No error is
+suppressed; no resource-completeness or concurrent-load correctness claim is made.
+
+The native validator record keeps its whole14406B prefix and the entire7063B
+closed LC0042 task span, including calibration/ownership/acceptance text, before
+the live root becomes a705B pointer. Full old/new book/task seams are retained.
+Source/current and normal/optimized metadata use exact replacement references;
+source rows and navigation oracles reconstruct before complete inverse comparison.
+The bounded XZ frame preserves all retained page/header/nav/input/check/manifest
+rows; seven outer/inner corruptions refuse normally and optimized. Codec changes
+precede fresh final producer execution; older captures remain diagnostic. Queries
+require pinned Git objects/producers with lazy fetch disabled. Raw DOM/HTTP streams
+and omitted-bundle tables remain diagnostics with fingerprints/request footprints.
+
+All old history entries/order and terminal bytes, protected source/modes, existing
+limits, focused checks/seven books and the complete staged reverse patch are checked
+before normal COMMIT. Book/current tools/live pointer agree; generated index is
+regenerated and unchanged. LIVE1578/39/40/49 and CPU/MCU/DSP/board acceptance stay
+unchanged. Click/scroll/layout, search/resources, full graph/adoption remain open.
+The finite repair/retention and next D79 investigation have native canonical owners;
+no new decision file or capacity increase is needed.
+
 ## _(2026-10-17)_ — executed heading-navigation qualification (LIVE-CONTAINMENT.4i2b5b2)
 
 LC0042 pins1226311/1477 identities, one opaque Gitlink. Immutable public builds
@@ -607,88 +659,4 @@ hooks. D67 fixed before publication; no current real book uses this spelling.
 Lesson promotion: declined — source-integrity contracts, concrete failed controls
 and reproducible durable diagnostics are already retained in canonical code and
 the owned evidence record; no additional cross-cutting principle established.
-
-## _(2026-10-12)_ — qualify actual include readers and source-validity boundary (LIVE-CONTAINMENT.4i2b3a)
-
-Immutable cad73f3 supplies1425 identities/473 Markdown/54 literal candidates.
-Fresh normal/O collector bytes agree; source-wire and JSON pins, all49 source/
-target/selection rows and replay recipe live in include-readers.md under
- docs/tasks/artifacts/live-containment. Relative to LC0023 source,14 additions,
-13 changed existing members/0 removals are fully pinned. Eleven new Markdown
-and one teaching marker explain population changes; Gitlink stays opaque.
-
-Fourteen public mdbook builds capture actual post-links chapter protocol before
-unchanged book_navigation. Wrapper forwards original stdin/stdout/stderr/status;
-all344 output files match independent fresh baseline normal/O. Seven consumers/
-93 chapters reconcile complete text with immutable physical/source/mode inputs:
-49 occurrences=42 whole+seven unique ordered anchors,48 regular targets. No
-target has a nested include prefix. Five other candidates are absent from all
-actual chapter/target inputs; other-reader coverage remains open. Ledger80700B
-SHAb4be9b9a4d1896f8439b94f2bf0b820b3d98f3a6758d805668407c960cc3cda5.
-
-Twelve public fixture cases/mode observe whole LF/no-LF/double-LF/CRLF,
-anchor/nested-anchor/whole-anchor, line range, fenced/nested includes and three
-failures. Whole selection normalizes CRLF/removes one final LF; selected anchor
-marker lines disappear, whole anchors remain; fences still expand. Range2:4
-selects lines2–4. Three actual diagnostic omissions fail population/full-text
-checks1 normal/O; finite instrument evidence, not a repaired integration gate.
-
-D65 priority1: missing file leaves token with ERROR/WARN but mdbook returns0;
-missing anchor emits nothing without warning/error, duplicate anchor selects
-first region. Actual unit_books.py and check_unit_books.sh return0 for all three
-cases in project/model books normal/O:24 bad interface evaluations; four valid
-selected-anchor greens. Existing guard self-tests pass first. Root cause is
-status-only build success plus navigation checks without include source/
-selection validity. UNIT-BOOKS promises catalogue/build/navigation, expressly
-separating completeness. New source-integrity ownership closes that uncovered
-requirement; stderr-only repair cannot detect silent anchor failures. Impact:
-included contracts can vanish/truncate while the director's book check is green.
-Current real include content matches. LC0029 repairs before wider graph review.
-
-Initial diagnostic corrections (sections→actual items API, one terminal LF,
-and a missing bracket before driver compilation) follow tools and preserve
-failed traces; no product verdict inferred. Other repositories, mdbook/Gitlink
-implementation, caps and archive authority untouched. Book advances current
-assessment in3 extra bytes, retaining historical collector example. Full
-source/task/book/pointer/history inverses, focused12/sharder12/seven books,
-normal/print teaching/literal reads and normal COMMIT qualify this assessment;
-D65 repair, graph/adoption/utility and CPU qualification remain open.
-
-## _(2026-10-12)_ — validate shared task-source and progress consumers (LIVE-CONTAINMENT.4i2b2b)
-
-D59 came from duplicated narrow parsers in TREE-CLAIMS/FRONTIER-SYNC: backtick
-statuses only and no explicit whole archived range. LC0025 measured truthful
-bold/archive counts rejected1, unknown statuses accepted0; LC0024 measured a
-stale leading bare ratio accepted0. D64 required the closing parenthesis right
-after complete, skipping actual semicolon-annotated closed counts. The same
-isolated twelve public cases/mode now return desired0/1/2 on both interfaces.
-
-New task_source.py supplies known UTF-8 backtick/bold statuses, duplicate ID/
-status refusal and actual disjoint completed archived populations. Missing,
-unsafe, unsupported and unavailable sources refuse2. Numeric declarations are
-the explicit contract; heading-based nested work and arbitrary Markdown are
-not silently counted. Metadata binds to the filename when declared; legacy
-synthetic fixtures without Tree ID retain filename binding. Regular files and
-archive directory components prevent symlink traversal. Both actual consumers
-use this one decoder; the historical immutable qualifier remains independent.
-
-Leading A/B immediately follows a known tree code/link ID, with optional dash/
-opening parenthesis. Each reference binds its own count; later bare instruction
-or observation ratios are excluded. FRONTIER checks semicolon/comma-annotated
-completed counts and every recognized count in a cell. Prior13/20 controls are
-retained byte-for-byte;17 new source controls per guard and8/4 progress controls
-give38/41, normal/O. Eleven actual predicate omissions across38 consumer/mode
-cases yield named selftest1/default2. Eight actual public root/archive read
-failures each inject once and refuse2/no stdout after default selftests pass.
-
-Separate LC0025 decoder agrees on33 roots/34 source pins/205 declarations:164 done,36 pending,
-2 proposed,2 active,1 slice-gated. Both real interfaces pass0; complete original
-guard/control inverses hold. Re-derived39 doctrines/1565 arms; only the arm
-count changes in LIVE. Book proposals above the fixed cap were refused; known-
-tree-ID wording avoids a measured29B lexical Oracle topic hit, and regenerated
-index remains exact. Three runnable commands retain historical assessment.
-Whole old CH/DEV entries and published archives/modes are preserved; focused/
-seven-book/rendered/source/history checks and normal hooks qualify completion.
-The decoders share explicit grammar; this is not independent semantic proof.
-No Rust, CPU/MCU/DSP/board semantics, qualification, milestone or cap changes.
 

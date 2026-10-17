@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r / LC0043 repair D78 authored-index active context after LC0042 COMMIT |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d / LC0044 trace D79 missing Mark dependency after LC0043 COMMIT |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -960,92 +960,16 @@ normal/O verify the boundary before the restarted normal COMMIT.
 
 ###### .4i2b5b2 / SEMULITH-LC-0042 — qualify per-page heading navigation (complete)
 
-After chapter TOC signoff, qualify generated/runtime heading navigation through
-public artifacts and interfaces, complete page/header membership/anchors,
-source contracts and actual omissions. Distinguish rendering from browser
-execution; retain explicit exclusions and own every observed defect.
+Complete assessment: docs/tasks/artifacts/live-containment/include-source-integration.md,
+phase LC0042. Immutable1226311/1477 identities:120 pages/1406 source headings/589
+navigation entries; normal/O exposes only D78. Four execution witnesses, three
+producer omissions/fallback cause and nine damaged-frame controls discriminate.
+The whole closed task record, including calibration/ownership/acceptance evidence,
+is retained byte-exact from5c72864 in the LC0043 phase of
+docs/tasks/artifacts/live-containment/include-source-validator.md.
+No processor/graph/adoption credit. D78 is priority1, immediate LC0043 below.
 
-
-Owned on clean1226311 after exact26-file postcheck/brief0/host0. Pin1477 source
-identities; one Gitlink remains opaque. Own scripts/qualify_book_headings.py
-and scripts/book_headings_webkit.swift (public nonpersistent WKWebView adapter)
-before implementation. Capture fresh
-seven-book public builds, full page/header membership, ordered labels/markup,
-unique targets, nesting and generated-script identities. Qualify actual runtime
-through an available public browser/toolchain interface where feasible; keep
-static rendering and execution claims separate. Record exact toolchain and
-project-local profiles/caches/temp paths. No third-party source/build inference.
-Execute supported source/configuration and actual copied-artifact omissions;
-name independent expected contracts, refusals and exclusions. Keep search and
-resource loading open. Append complete bounded metadata to the native
-include-source-integration record, preserving its whole LC0040 prefix; sealed
-qualification/P4/history terminals remain immutable. Retain old book teaching
-through authenticated source/seam inverses, preserve all old history/modes and
-existing family/part limits, run focused checks and normal COMMIT before search.
-No108th task file, cap raise, full graph/adoption or processor acceptance claim.
-
-Browser calibration owned here, priority1 before full qualification: the first
-Chrome155.0.8059.80 headless fixture returns0 and executes its inline JavaScript,
-but stderr1064B contains CVDisplayLink failure(-6670) and “Trying to load the
-allocator multiple times”. Keep complete DOM/stderr under page-headings/browser-smoke.
-No DYLD/Malloc/LD override exists in the launcher environment. Isolate with a
-blank page and another installed browser before judging impact; do not suppress
-unknown diagnostics or infer visual/layout correctness from successful DOM output.
-Public Chrome headless/profile/flags docs are read-only toolchain references:
-https://developer.chrome.com/docs/automation-and-testing/headless-cli
-https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md
-https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
-Browser executable is a required external read-only OS dependency, supplied at
-runtime; its version/identity and all generated profiles/cache/temp paths are
-recorded without persisting a checkout-specific or OS executable path.
-
-Calibration follow-up: blank Chrome returns0/40B and repeats allocator(1) and
-display(14) diagnostics before any project page. Edge returns0 and the same
-159B fixture DOM SHA as Chrome, without allocator warning but with additional
-Edge-specific diagnostics; it shares Chromium ancestry, not an independent
-engine oracle. Read-only CoreGraphics reports0 active displays/mainID1; direct
-CoreVideo link creation for1 succeeds0 and is immediately released. Thus a
-general CoreVideo failure is not established. Investigate headless virtual
-display mapping; retain these exact independent probe results. No fixture job
-remains (host census0). Current browser/engine identities are retained locally.
-
-The loopback host rule initially omitted127.0.0.1: Chrome returned0/empty DOM
-and ERR_NAME_NOT_RESOLVED. Explicit numeric-loopback exception and an HTTP
-calibration witness own that adapter defect. Strict diagnostics next exposed
-a Mac task-category policy rejection; public Chromium process_mac.cc identifies
-its scheduling-policy call. It is recorded separately, with scheduling unclaimed.
-Task-tree page data already matches33 headings/31 navigation rows independently.
-Chrome subsequently emits a graphics shared-image mailbox failure despite
-software-raster/backgrounding flags; retain and own that calibration limitation.
-Investigate the public nonpersistent WebKit adapter before full execution; keep
-Chrome observations explicit, never silently bless unknown graphics errors.
-
-Verified D78, priority1: public WebKit DOM on the authored project index.html
-marks both introduction.html and index.html active; source title/body are Index.
-The generated toc script connectedCallback uses an unconditional first-link
-fallback for root index URLs, then also marks the explicit Index link. This is
-ambiguous current-page navigation. Source1226311; owned sample.json retains
-all fields/empty stderr; task-tree33 headers/31 entries and print395 headers/0
-entries pass, while Index fails active_context. No browser script error.
-Owner/immediate next repair: .4i2b5b2r / LC0043, after this assessment's COMMIT.
-The fallback remains necessary for six unit-book first-chapter aliases; prove
-both authored-index correction and alias preservation through public outputs.
-
-Complete native assessment: docs/tasks/artifacts/live-containment/include-source-integration.md
-phase LC0042. All120 HTML roles/1406 headers/589 navigation entries and107 source
-pins are retained in both normal/O views, with344 baseline output identities.
-Four calibrated execution witnesses and three actual producer omissions plus
-the fallback cause control discriminate. WebKit22625.1.29.11.28 nonpersistent,
-Swift6 strict/warnings-as-errors rc=0/empty diagnostics; generated bytes exact.
-The immutable source has119 correct/one wrong contract, D78; assessment closure
-does not close that defect. The next leaf owns its immediate conditional repair.
-
-- [x] **ROOT CAUSE** — `python3 scripts/qualify_book_headings.py --verify-record` rc=0: source1226311,120 complete pages, one D78; public generated fallback and actual omission isolate authored-index ambiguity/alias dependence. Calibration limitations are recorded, not promoted into browser correctness.
-- [x] **ADDRESSED** — `python3 scripts/qualify_book_headings.py --self-test` normal/O rc=0: nine unconditional damaged-frame refusals; both whole metadata inverses, all page/header/nav rows and source/manifest/book seams agree. Four actual copied omissions discriminate. D78 remains priority1, immediate LC0043.
-- [x] **NO REGRESSION** — `python3 target/live-containment/page-headings/verify.py` rc=0: exact13-file scope,1467 protected regular files/opaque Gitlink, whole46333B published prefix,20 old book headings/all old commands and3242 rendered links exact; focused13/sharder12/seven books rc=0. All98 old live history entries/order and digest-updated corruption refusals verified. Full staged inverse and normal COMMIT finish publication; fixed caps and CPU/MCU/DSP/board/full graph/adoption unchanged.
-- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/generated index/toolbox agree; no new decision file needed for finite native assessment. promotion: declined; evidence and scheduled D78 repair have canonical owners. Search/resources remain open.
-
-###### .4i2b5b2r / SEMULITH-LC-0043 — repair authored-index active context (pending)
+###### .4i2b5b2r / SEMULITH-LC-0043 — repair authored-index active context (complete)
 
 Resolve D78 through owned public integration/configuration, preserving current
 URLs, body bytes, all seven books and first-chapter index aliases. No mdBook or
@@ -1053,6 +977,71 @@ Gitlink source/pin changes. Reproduce actual default DOM first; require current
 code0 wrong contracts normal/O, retain immutable source defects, and execute
 real copied repair omissions. Preserve whole published assessment/history/
 source/modes and fixed caps; book/live sync and normal COMMIT before search.
+
+
+Owned on clean5c72864 after exact13-file/1481-identity postcheck, brief0 and
+host handoff0. Own docs/book/theme/active-chapter.js, its documented additional-js
+configuration in docs/book/book.toml and scripts/qualify_heading_repair.py before
+implementation. Use public generated artifacts and the supported HTML renderer
+integration, never mdBook/Gitlink internals. Independent LC0042 readers remain
+byte-pinned and immutable; build/reconcile all120 page roles on source5c72864,
+then the current two-file product overlay. Preserve all page bodies/headings/
+labels, seven-book membership and six unchanged unit aliases. Public supported
+main-book SUMMARY without authored Index must exercise the same repair's alias
+guard; actual configuration/script/guard omissions must fail the expected
+contracts. Retain source/current complete metadata and bounded corruption controls
+in the native include-source-validator record after its whole14406B prefix;
+link the existing LC0042 assessment. Retain the whole closed LC0042 task span,
+including calibration/ownership/evidence, and old/new book seams before bounded
+live-pointer compaction. No new task
+file, cap raise, published-prefix/seal rewrite or processor/adoption claim.
+Run normal/O, focused checks/seven books/full source/history/mode/cap/staged
+inverses and normal COMMIT before generated search.
+Public integration reference: https://rust-lang.github.io/mdBook/format/configuration/renderers.html#html-renderer-options
+
+
+Observed D79, priority1 owned by this LC0043 calibration before signoff: final
+optimized replay refuses one executed fixed page because its witness contains
+ReferenceError: Can't find variable: Mark, ready=true/native0/empty stderr.
+Final normal all120 passes; earlier optimized all120 passed before codec-only
+changes. Preserve target/live-containment/heading-repair/final-optimized/fixed-browser/page-045/dom.html
+and target/live-containment/heading-repair/D79-first.json; identify the
+actual path and public script/dependency/HTTP observations before classifying
+or retrying. Do not suppress the error or silently bless a concurrent-load
+failure. Qualifier refusal is correct; root cause is still unestablished.
+Sixteen actual print-page traces with four concurrent adapters pass: each Mark
+resource receives/writes200 with complete17320B and global Mark=function;
+module/exports/define are undefined. Default TCP backlog5 is observed, not
+established as cause. The original helper returns HTTP observations only after
+all page assessments succeed, leaving this refused run without HTTP delivery
+forensics. This verified diagnostic gap and the unresolved dependency failure
+are priority1, immediate LC0044 below after the bounded D78 repair COMMIT.
+Do not classify D79 resolved from passing repeats. Replay signoff records its
+actual concurrency and excludes resource-completeness/concurrent-load claims.
+
+Complete source/current matrices and full closed LC0042 task span are retained
+in docs/tasks/artifacts/live-containment/include-source-validator.md, phase LC0043.
+The final successful optimized replay runs alone, at most two adapters; the
+concurrent four-adapter failure stays explicit. Its whole browser witness is
+reconstructible from the retained normal print view and authenticated delta;
+raw DOM identity is retained, original HTTP delivery remains unknown.
+D78 selection repair is complete; D79 is neither closed nor classified away.
+
+- [x] **ROOT CAUSE** — `python3 target/live-containment/heading-repair/diagnose.py` rc=0: actual source1481/eight selected pages/all six aliases reproduce only D78; generated first-link root-index fallback conflicts with explicit Index. Public additional-js integration is documented and actual artifact order is observed.
+- [x] **ADDRESSED** — `python3 scripts/qualify_heading_repair.py --require-clean --jobs 2 --output target/live-containment/heading-repair/final-normal` rc=0; `python3 -O scripts/qualify_heading_repair.py --require-clean --jobs 2 --output target/live-containment/heading-repair/final-optimized-alone` rc=0: source120/1→current120/0,1408 headings/590 entries, six aliases exact. Supported main alias and three actual repair omissions discriminate. Record self-test normal/O rc=0: seven damaged frames refuse. D79 remains immediate LC0044, not a passed concurrent-load claim.
+- [x] **NO REGRESSION** — `python3 target/live-containment/heading-repair/verify.py` normal/O rc=0: exact13 files,1471 protected regular files/Gitlink, whole14406B prefix/7063B closed unit/two matrices/book inverses,21 old headings/all54 old commands and3242 rendered links; fresh120-page header/title parity exact. focused13/sharder12/seven books rc=0; all97 prior history entries/order/digest-updated refusals preserved. Full staged inverse/normal COMMIT finish publication. Caps/LIVE/CPU unchanged; original resource anomaly stays owned.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree; generated index regenerated unchanged. promotion: declined; finite repair/retention and immediate D79 investigation have native owners. Search/resources/full graph/adoption/CPU/MCU/DSP/board remain open; no capacity or acceptance expansion.
+
+###### .4i2b5b2r.d / SEMULITH-LC-0044 — trace the missing Mark dependency (pending)
+
+Immediate priority1 D79 owner: preserve the actual failed print-page DOM and
+complete source/generated identities; add delivery/resource/error forensics that
+survive refusal, prove the diagnostic path with actual missing-Mark controls,
+and reproduce the original full-page/concurrent workload. Identify the original
+cause or the precise evidence/access blocker; no blind retry or error suppression.
+Keep strict refusal and existing capture/producer/source/history/mode/cap bytes
+exact. Bound this investigation separately from the verified authored-index
+selection repair. Book/live sync and normal COMMIT before generated search.
 
 ###### .4i2b5b3 — qualify generated search (pending)
 
@@ -1415,6 +1404,19 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Verification Log
 
+.4i2b5b2r: final normal and optimized-alone --require-clean rc=0: source120/1,
+current120/0;1408 headings/590 entries/107 inputs, six unit aliases exact. Static
+inverse51 script insertions/293 unchanged outputs/new exact asset; supported
+main alias and three real omissions discriminate. Seven damaged-frame refusals
+normal/O. verify.py/focused13/sharder12/seven books rc=0:1471 protected regular
+files/Gitlink,14406B prefix/7063B whole unit/two metadata matrices/book inverses,
+21 old headings/54 commands/3242 links and fresh120 header/title parity exact.
+CH1361B→0330/1598B and DEV5744B→0331/5977B whole rollover; all97 prior live
+entries/manifest prefix/seals/caps exact. D79's concurrent print missing-Mark
+refusal remains open;16 traced repeats pass without explaining it. Complete
+failed witness/DOM identity retained; HTTP forensic gap owned immediate LC0044.
+Full staged inverse/normal COMMIT required. LIVE1578/39/40/49/processor unchanged.
+
 .4i2b5b2: normal/O actual capture rc=0:120 pages/1406 source headers/589 navigation
 entries,107 inputs and344 baseline output identities; D78 sole wrong contract.
 Four JS/HTTP calibration witnesses and three producer omissions plus fallback
@@ -1644,6 +1646,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0043 (leaf LIVE-CONTAINMENT.4): repair authored-index active context` — D78 fixed with aliases intact; D79 delivery/dependency tracing immediately next.
 
 `SEMULITH-LC-0042 (leaf LIVE-CONTAINMENT.4): qualify executed page-heading navigation` — full runtime/source assessment retained; D78 conditional repair immediately next.
 

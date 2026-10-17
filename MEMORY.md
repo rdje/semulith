@@ -16,10 +16,10 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b5b2r / LC0043 — repair D78 authored-index active context.
-  LC0042 assessment retained; preserve six aliases. Search/graph/adoption open.
+- next_action: LC.4i2b5b2r.d / LC0044 — trace D79 missing Mark dependency.
+  LC0043 fixes D78; failed print witness retained. Search/graph/adoption open.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0042 normal COMMIT/postcheck.
+- in_flight_uncommitted: none after LC0043 normal COMMIT/postcheck.
 - blockers: none. Do not push below the 300-commit cadence without the
   director's act; authority and procedure: `COMMIT.md`.
