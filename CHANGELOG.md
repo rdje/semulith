@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0065 (leaf ARTIFACT-CLEANUP.8) — remove due incremental caches and preserve capture evidence
+
+- Remove18 verified disposable Cargo incremental caches/77596894B after complete preflight and a green host census; immediate residue0, all14220 retained diagnostic/reference/input files/131741041B byte/hash-exact. Four damaged-plan controls refuse normal/O; four nested repositories skipped, no input/source deletion. Original failed/native capture evidence stays intact.
+- Overwrite the latest receipt through the book's existing direct include; synchronize tree/index/live history and record that LC0047 app handles are no longer observed. No app termination or exemption. Focused13/seven books/source/history/cap/rendered checks and normal COMMIT qualify housekeeping; LIVE_STATUS unchanged, D79 terminal capture/analysis next.
+
 ## SEMULITH-LC-0048 (leaf LIVE-CONTAINMENT.4) — select pinned mdBook before terminal capture
 
 - Remove terminal PATH dependence: provision the existing checksum-verified project-local mdBook0.5.4 before pinned preparation; preserve the strict frozen version guard and global installations. Save setup/version/identity logs and early failure.json. Password prompting remains after successful preparation; the single user command stays unchanged.

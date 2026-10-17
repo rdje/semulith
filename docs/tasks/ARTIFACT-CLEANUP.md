@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -233,11 +233,55 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   sharder12/seven books, exact normal/print receipt, whole history/source/cap
   verification and normal COMMIT close the unit. Next LC0039 D77 repair.
 
+- ID: `ARTIFACT-CLEANUP.8` — **the 2026-10-17 recurring cleanup**
+  Status: `done` (`2026-10-17`, `SEMULITH-AC-0065`)
+  Goal: latest2026-10-16T21:24:43Z is over24h old. Own from clean cb39c69,
+  LC0048 normal hooks/brief0 verified, before cleanup scratch or deletion.
+  Use the existing .7 safe-cohort helper with only its owned output root changed
+  to target/artifact-cleanup-0065. Census target/.app-data without symlink,
+  nested-Git or foreign-device traversal. Delete only untracked known Cargo
+  incremental dep-graph/query-cache/work-products bins, after complete saved
+  path/device/inode/mtime/size/SHA and retained-data preflight. Recheck each
+  candidate immediately before unlink; prove immediate residue0 and retained
+  count/bytes/SHA exact. Preserve every diagnostic/reference log, dependency
+  fixture/input, native capture and unknown stray class. No source/cache-input
+  deletion or other-repository write. Test damaged identity/totals normal/O.
+  Run host census before deletion and verify no active build or cache handle.
+  LC0047's known app reads AGENTS.md only; if still present, record its separate
+  handoff blocker without terminating/exempting it. Read-only app handles cannot
+  use the selected incremental caches; do not misreport handoff as green.
+  Own LC0047 app-release witness in LIVE-CONTAINMENT, overwrite-only latest
+  receipt, book's existing direct include, tree/index/
+  MEM/CH/DEV sync and whole-oldest sharding if needed. Preserve all predecessor
+  source/history/modes/Gitlinks and fixed caps; focused gates/seven books,
+  rendered receipt/inverses and normal COMMIT before returning to terminal D79
+  capture. No Rust behavior, LIVE_STATUS, full CI or push change.
+  promotion: declined (standing safe-output/locality/ownership contracts).
+
+  Result: completed2026-10-17T22:50:22Z;18saved caches/77596894B removed,
+  immediate selected residue0. Six C-engine caches/46660990B and twelve
+  C-guest-image caches/30935904B. All14220retained files/131741041B size/SHA
+  exact; four nested Git roots skipped, release/deps strays0. Whole-cohort and
+  per-path identities revalidated before unlink; no tracked/input deletion.
+  Four damaged identity/totals controls refuse normal/O; both complete positive
+  preflights pass. An early census correctly refused while this slice's check
+  child still ran; after all checks joined, repeated actual census rc=0/handoff:
+  OK preceded deletion. No permission/exemption or other-app termination.
+  LC0047 app handles are no longer observed after cb39c69; record this release
+  witness in LIVE-CONTAINMENT and clear the stale resume blocker. This is an
+  observed census boundary, not a claim about the app's internal state.
+  External policy source hashes remain unchanged since the reviewed .7 check;
+  claim-verification source still matches the exact imported body. The existing
+  book include renders the latest receipt normal/print; source teaching stays
+  byte-exact. Focused13/seven books/source/history checks and normal COMMIT
+  qualify this housekeeping. Later hooks may regenerate caches or update logs;
+  this receipt describes the immediate measured event. LIVE_STATUS unchanged.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | all seven leaves done; next cleanup time-triggered (~24 h) |
+| — | — | — | all eight leaves done; next cleanup time-triggered (~24 h) |
 
 ## Decisions
 
@@ -344,6 +388,13 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 - [x] **NO REGRESSION** — focused.sh/history.py/verify.py rc=0 normal/O where applicable:focused12/sharder12/seven books, whole prior heads/task/index inverses and unrelated identities/modes/Gitlink exact. Required hooks/post-commit census close COMMIT. No source behavior, CPU, LIVE, archive or fixed-cap change.
 - [x] **LOCKSTEP** — latest record/tree/index/MEM/CH/DEV updated; unchanged book source directly includes the new receipt. Return to LC.4 D77 after committed clean handoff.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.8)
+
+- [x] **ROOT CAUSE** — `python3 target/artifact-cleanup-0065/cleanup.py --plan` rc=0: prior2026-10-16T21:24:43Z is over24h old;18safe caches/77596894B,14220retained/131741041B, four nested Git skips and0strays. Helper is the .7 public procedure with only its owned output root changed.
+- [x] **ADDRESSED** — `python3 target/artifact-cleanup-0065/cleanup.py --delete` rc=0 after joined normal/O checks and green actual pre-delete host census:18saved paths absent, selected residue0, all retained counts/bytes/SHA exact immediately. Four damaged identity/totals controls each refuse before deletion normal/O. Early active-check census refuses; no deletion until repeated census rc=0.
+- [x] **NO REGRESSION** — focused13/seven books and `python3 target/artifact-cleanup-0065/verify.py` normal/O rc=0: old source/history/modes/Gitlinks and original book teaching unchanged; latest receipt renders normal/print, fixed caps retained. Full normal COMMIT/postcheck closes the unit; no Rust behavior/full CI/push change.
+- [x] **LOCKSTEP** — latest record/tree/index/MEM/CH/DEV and book's direct include agree. LC0047 app-release witness is in LIVE-CONTAINMENT, no exemption or app action; final census still required. promotion: declined (standing safe-cohort/locality/ownership procedure). Next LC0048 terminal D79 capture/analysis; D80 follows.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
@@ -377,6 +428,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
+
+`SEMULITH-AC-0065 (leaf ARTIFACT-CLEANUP.8): remove due incremental caches and preserve capture evidence` —18/77596894B removed, immediate residue0;14220retained exact.
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |

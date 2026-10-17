@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2v / LC0048 version repair complete; due cleanup then terminal D79 capture/analysis |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2v / LC0048 version repair complete; terminal D79 capture/analysis next |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -1007,6 +1007,12 @@ Artifact cleanup is due; execute its owned slice after this clean commit.
 - [x] **ADDRESSED** — `python3 scripts/capture_book_dependencies.py --self-test` normal/O rc=0:33controls/0fail/0privileged; preserve original24. Version/setup/missing/symlink faults refuse with retained diagnostics, early setup/compiler failures write failure.json. Cargo-first `python3 scripts/capture_book_dependencies.py --check-preparation` host rc=0, selected project0.5.4, immutable builds/WebKit/four closures, no sudo; output packet-20261017T223050Z-6ac03d.
 - [x] **NO REGRESSION** — focused13/sharder12/seven books and target/live-containment/capture-version/verify.py normal/O rc=0 qualify source/history/whole closed-unit retention and normal/print teaching. Frozen strict version guard and earlier producers remain exact; setup uses the published pinned installer. Normal COMMIT/postcheck completes publication; no Rust changed or push.
 - [x] **LOCKSTEP** — MEM/CH/DEV/task/book's toolbox include agree, fixed caps and LIVE_STATUS unchanged. promotion: declined (scoped integration repair; existing tools-first/locality/pinned-version contracts suffice). D79 priority1/open, D80 afterward, LC0047 app disposition remains pending.
+
+LC0047 runtime update after cb39c69, owned by ARTIFACT-CLEANUP.8/AC0065:
+actual host census now rc=0/handoff: OK; the prior app handles are no longer
+observed. No app termination or sanctioned-process change was made. Original
+LC0047 witness stays retained; this external-state blocker is cleared at this
+measurement. Final census remains required; D79 terminal capture is next.
 
 ###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
 

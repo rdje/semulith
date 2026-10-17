@@ -16,14 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: due ARTIFACT-CLEANUP recurring slice after LC0048 clean COMMIT;
-  then user reruns `python3 scripts/capture_book_dependencies.py` for D79.
+- next_action: LC0048 repair and AC0065 due cleanup committed; user reruns `python3 scripts/capture_book_dependencies.py` for D79.
   Project-local pinned mdBook now avoids terminal PATH mismatch; native prep verified.
   One sudo tcpdump on owned lo0 ports; D80 is LC0046 afterward.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0048 normal COMMIT/postcheck; app blocker below.
+- in_flight_uncommitted: none after AC0065 normal COMMIT/postcheck.
 - blockers: terminal-authorized capture/analysis pending; D79 unresolved. Do not push below
   300 commits without the director's act (`COMMIT.md`).
-  Final census flags Kimi Code PID5950 reading AGENTS.md; release/director ruling
-  required for clean handoff. App left untouched; LC0047 owns this runtime blocker.
+  LC0047 app handles no longer observed after cb39c69; host census green,
+  no app action/exemption. AC0065 records the release witness and cleanup receipt.

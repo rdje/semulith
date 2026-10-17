@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-17)_ — due cleanup preserves terminal capture evidence (ARTIFACT-CLEANUP.8)
+
+After clean cb39c69/brief0/normal hooks, census finds18 disposable incremental
+caches/77596894B and14220retained files/131741041B. Reuse the .7 safe-cohort
+helper with only its owned scratch path changed. Whole-cohort preflight and
+per-path size/device/inode/mtime/SHA checks precede unlink. Skip four nested
+Git roots, symlinks and other volumes; preserve all inputs and diagnostics,
+including the original failed and corrected native preparation outputs. Four
+changed identity/totals cases refuse normal/O; both complete positive preflights
+pass. An early pre-delete census catches our still-running check child and
+correctly blocks deletion; all checks join before a repeated green census.
+
+Actual deletion completes2026-10-17T22:50:22Z:18saved paths absent, immediate
+selected residue0, retained count/bytes/SHA exact; no release/deps stray files.
+Six C-engine caches/46660990B and twelve C-guest-image caches/30935904B removed.
+Later gate builds may regenerate caches; the receipt describes this event.
+The original LC0047 app handles are no longer observed by the host census after
+cb39c69. Record the release witness in its owning tree; no app action, exemption
+or claim about application internals. Policy source hashes still match the
+reviewed package and exact imported claim-verification body. Overwrite only
+the latest receipt, already included by the book; original teaching/source,
+prior history/modes/Gitlinks and fixed limits stay exact. Focused13/seven books,
+normal/print receipt and inverse verification plus normal COMMIT qualify the
+housekeeping. LIVE_STATUS unchanged; next terminal D79 capture/causal analysis.
+
 ## _(2026-10-17)_ — select the reviewed terminal mdBook before preparation (LIVE-CONTAINMENT.4i2b5b2r.d2v)
 
 The user's packet-20261017T222353Z-1bef02 stops at the frozen public mdBook
