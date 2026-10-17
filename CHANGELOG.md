@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0048 (leaf LIVE-CONTAINMENT.4) — select pinned mdBook before terminal capture
+
+- Remove terminal PATH dependence: provision the existing checksum-verified project-local mdBook0.5.4 before pinned preparation; preserve the strict frozen version guard and global installations. Save setup/version/identity logs and early failure.json. Password prompting remains after successful preparation; the single user command stays unchanged.
+- Reproduce the0.5.2 refusal with Cargo-first PATH, then pass33 unprivileged controls normal/O and actual native preparation under that same PATH. Preserve whole closed LC0044/45/47 units and old history byte-exact; two oldest DEV entries roll to0335. Book/live/focused/seven-book sync; D79 causal capture/analysis and LC0047 app disposition remain open, LIVE_STATUS unchanged.
+
 ## SEMULITH-LC-0047 (leaf LIVE-CONTAINMENT.4) — record the application handoff blocker
 
 - Final host census returns1: Kimi Code holds two read-only AGENTS.md handles, fds84/87 on PID5950. Leave the app untouched; clean handoff needs release or director disposition under the existing sanctioned-process rule. Record the owner/resume blocker and book-visible handoff boundary. The committed one-command capture tool, prior evidence, fixed limits and LIVE_STATUS remain unchanged.

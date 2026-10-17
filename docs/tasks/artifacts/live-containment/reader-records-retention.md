@@ -704,3 +704,68 @@ HTML Standard script load/error events; W3C Resource Timing. Installed backlog5
 is an observation. Source5c72864 and currentf3c5e81 are distinct identities.
 
 ````
+
+## Terminal mdBook selection — LC0048
+
+Whole closed LC0045/47 task span, byte-exact from4c14bf7.
+UTF-8 bytes 1176, SHA256 a1c14a6c58f71acc3d287696f13aeedbe210d027592af3a9d6b35e2ea2b38293.
+
+###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — one-command D79 tool complete; capture pending
+
+LC0045 plan/fix/evidence: DEV_NOTES.md. Prior producers/caps exact; D79 open
+before D80. promotion: declined (local tooling/runtime evidence).
+
+- [x] **ROOT CAUSE** — `python3 scripts/capture_book_dependencies.py --self-test` rc=0; actual host sudo requires a password,0capture bytes.
+- [x] **ADDRESSED** — same command rc=0 normal/O,24 controls; `python3 scripts/capture_book_dependencies.py --check-preparation` rc=0, no sudo.
+- [x] **NO REGRESSION** — `bash scripts/check_readme_routes.sh` rc=0; focused13/seven books, old producer/history/source identities preserved; normal COMMIT required.
+- [x] **LOCKSTEP** — book/toolbox/MEM/CH/DEV agree; capture and causal signoff remain pending.
+
+LC0047 owns the final handoff blocker (2026-10-17): public census returns1;
+Kimi Code PID5950 holds AGENTS.md via read-only fds84/87 (`lsof -Ffan`).
+Priority2: app release or director disposition before clean handoff. Only the
+director may sanction apps; no closure/exemption authorized, app untouched.
+D79's single terminal tool remains ready. This is runtime state, not a tool bug.
+
+
+Whole closed LC0044 task span, byte-exact from4c14bf7.
+UTF-8 bytes 4149, SHA256 91aa51347dc55011e8b74b83753bc2d13698afd9c3fde5d7c10622fb8ff27a5c.
+
+###### .4i2b5b2r.d / SEMULITH-LC-0044 — trace the missing Mark dependency (complete finite forensic slice)
+
+Immediate priority1 D79 owner: preserve the actual failed print-page DOM and
+complete source/generated identities; add delivery/resource/error forensics that
+survive refusal, prove the diagnostic path with actual missing-Mark controls,
+and reproduce the original full-page/concurrent workload. Identify the original
+cause or the precise evidence/access blocker; no blind retry or error suppression.
+Keep strict refusal and existing capture/producer/source/history/mode/cap bytes
+exact. Bound this investigation separately from the verified authored-index
+selection repair. Book/live sync and normal COMMIT before generated search.
+
+
+Owned on cleanf3c5e81/1485 after exact postcheck/brief0/host0. Own
+scripts/trace_book_dependencies.py, scripts/probe_book_dependency_trace.py and
+scripts/book_dependency_record.py. Rebuild5c72864/1481 plus D78's two-file overlay;
+require the whole345-file LC0043 manifest, all selected roles/headers and frozen
+helpers exact. Stream receipt/write/resource/error/global evidence through refusal;
+exercise missing/empty-library controls and separate two-server/two-worker queue
+experiments without presuming cause. Retain full29198B native prefix/5729B closed
+LC0043 span, projected evidence, original ownership plan and old/new book/task
+seams in reader-records-retention.md. Preserve history/modes/seals/caps. No new
+task file, producer mutation, resource/processor/graph/adoption acceptance.
+Focused normal/O/seven-book/staged inverse and normal COMMIT precede search.
+
+Finite forensic delivery complete; D79 causal signoff remains blocked in LC0045.
+Canonical phase: docs/tasks/artifacts/live-containment/reader-records-retention.md,
+Dependency trace evidence — LC0044. Whole29198B prefix/5729B closed LC0043 unit,
+960 selected full heading witnesses, verdict/script/error/global/enhancement rows,
+complete per-path delivery footprints, selected full failures/access evidence,
+actual producer bytes and old/new source seams are retained. Raw ordered HTTP/
+non-script successful-load order/resource timings/DOM remain diagnostics; their
+profile/journal identities are retained. No resource-completeness/cause claim.
+
+- [x] **ROOT CAUSE** — `python3 scripts/probe_book_dependency_trace.py --output target/live-containment/mark-dependency/probe-normal` rc=0: six actual controls reproduce the original complete failed witness when Mark/book delivery is denied, and expose the Window-only load-observer gap. D79 original cause is not established; tcpdump's owned two-packet lo0 probe returns1, BPF Permission denied/0pcap bytes. Sourcef3c5e81/1485 and reproduction5c72864/1481 remain distinct.
+- [x] **ADDRESSED** — the same probe normal/O rc=0:6 controls/0 failures plus3 ownership/type boundaries; full journals and observations survive native/DOM/qualification refusal. `python3 scripts/book_dependency_record.py --self-test` normal/O rc=0:960 witnesses restore,7 damaged frames refuse. Four final queue5/32 normal/O comparisons measure only seven D80 cases each, no unjudgeable traces; an earlier assembler loses ten assets before receipt. Passing repeats do not close D79; immediate LC0045 owns the precise access blocker, LC0046 owns D80.
+- [x] **NO REGRESSION** — `python3 target/live-containment/mark-dependency/verify.py` rc=0: exact13 files,1476 protected regular files/Gitlink, whole prefixes/5729B unit/declared ledger/probes/book inverses,21 old headings/all55 commands/3242 links and fresh120-page header/title parity exact. Focused13/sharder12/seven books rc=0; all95 prior live history entries/order/digest-updated refusals exact. Full staged reverse patch and normal COMMIT finish publication. Fixed caps/LIVE/CPU unchanged.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree, generated index unchanged. promotion: declined; finite evidence and precise D79/D80 owners remain native. No new decision file, producer rewrite, cap raise or processor/full graph/adoption acceptance. Stop on the actual BPF access blocker after a clean committed handoff; do not mark D79 resolved.
+
+End of the byte-exact LC0044/45/47 task retention for LC0048.

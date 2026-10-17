@@ -16,12 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC.4i2b5b2r.d2 / LC0045 — user runs the one terminal command
-  `python3 scripts/capture_book_dependencies.py`; inspect its capture for D79.
+- next_action: due ARTIFACT-CLEANUP recurring slice after LC0048 clean COMMIT;
+  then user reruns `python3 scripts/capture_book_dependencies.py` for D79.
+  Project-local pinned mdBook now avoids terminal PATH mismatch; native prep verified.
   One sudo tcpdump on owned lo0 ports; D80 is LC0046 afterward.
   Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
   Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after LC0047 normal COMMIT/postcheck; app blocker below.
+- in_flight_uncommitted: none after LC0048 normal COMMIT/postcheck; app blocker below.
 - blockers: terminal-authorized capture/analysis pending; D79 unresolved. Do not push below
   300 commits without the director's act (`COMMIT.md`).
   Final census flags Kimi Code PID5950 reading AGENTS.md; release/director ruling

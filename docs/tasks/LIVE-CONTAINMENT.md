@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2 / LC0045 terminal tool prepared; user capture/analysis for D79 next |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2v / LC0048 version repair complete; due cleanup then terminal D79 capture/analysis |
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
@@ -982,57 +982,31 @@ resource completeness, full graph/adoption and processor acceptance stay open.
 
 ###### .4i2b5b2r.d / SEMULITH-LC-0044 — trace the missing Mark dependency (complete finite forensic slice)
 
-Immediate priority1 D79 owner: preserve the actual failed print-page DOM and
-complete source/generated identities; add delivery/resource/error forensics that
-survive refusal, prove the diagnostic path with actual missing-Mark controls,
-and reproduce the original full-page/concurrent workload. Identify the original
-cause or the precise evidence/access blocker; no blind retry or error suppression.
-Keep strict refusal and existing capture/producer/source/history/mode/cap bytes
-exact. Bound this investigation separately from the verified authored-index
-selection repair. Book/live sync and normal COMMIT before generated search.
+Whole closed LC0044 forensic unit from4c14bf7, including its complete plan
+and acceptance: docs/tasks/artifacts/live-containment/reader-records-retention.md,
+LC0048 phase. D79 capture/analysis stays open below; D80 follows.
 
+###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — tool delivery retained; capture pending
 
-Owned on cleanf3c5e81/1485 after exact postcheck/brief0/host0. Own
-scripts/trace_book_dependencies.py, scripts/probe_book_dependency_trace.py and
-scripts/book_dependency_record.py. Rebuild5c72864/1481 plus D78's two-file overlay;
-require the whole345-file LC0043 manifest, all selected roles/headers and frozen
-helpers exact. Stream receipt/write/resource/error/global evidence through refusal;
-exercise missing/empty-library controls and separate two-server/two-worker queue
-experiments without presuming cause. Retain full29198B native prefix/5729B closed
-LC0043 span, projected evidence, original ownership plan and old/new book/task
-seams in reader-records-retention.md. Preserve history/modes/seals/caps. No new
-task file, producer mutation, resource/processor/graph/adoption acceptance.
-Focused normal/O/seven-book/staged inverse and normal COMMIT precede search.
+Whole LC0045/47 unit from4c14bf7, including acceptance and app witness:
+docs/tasks/artifacts/live-containment/reader-records-retention.md, LC0048 phase.
 
-Finite forensic delivery complete; D79 causal signoff remains blocked in LC0045.
-Canonical phase: docs/tasks/artifacts/live-containment/reader-records-retention.md,
-Dependency trace evidence — LC0044. Whole29198B prefix/5729B closed LC0043 unit,
-960 selected full heading witnesses, verdict/script/error/global/enhancement rows,
-complete per-path delivery footprints, selected full failures/access evidence,
-actual producer bytes and old/new source seams are retained. Raw ordered HTTP/
-non-script successful-load order/resource timings/DOM remain diagnostics; their
-profile/journal identities are retained. No resource-completeness/cause claim.
+###### .4i2b5b2r.d2v / SEMULITH-LC-0048 — repair terminal mdBook selection (complete)
 
-- [x] **ROOT CAUSE** — `python3 scripts/probe_book_dependency_trace.py --output target/live-containment/mark-dependency/probe-normal` rc=0: six actual controls reproduce the original complete failed witness when Mark/book delivery is denied, and expose the Window-only load-observer gap. D79 original cause is not established; tcpdump's owned two-packet lo0 probe returns1, BPF Permission denied/0pcap bytes. Sourcef3c5e81/1485 and reproduction5c72864/1481 remain distinct.
-- [x] **ADDRESSED** — the same probe normal/O rc=0:6 controls/0 failures plus3 ownership/type boundaries; full journals and observations survive native/DOM/qualification refusal. `python3 scripts/book_dependency_record.py --self-test` normal/O rc=0:960 witnesses restore,7 damaged frames refuse. Four final queue5/32 normal/O comparisons measure only seven D80 cases each, no unjudgeable traces; an earlier assembler loses ten assets before receipt. Passing repeats do not close D79; immediate LC0045 owns the precise access blocker, LC0046 owns D80.
-- [x] **NO REGRESSION** — `python3 target/live-containment/mark-dependency/verify.py` rc=0: exact13 files,1476 protected regular files/Gitlink, whole prefixes/5729B unit/declared ledger/probes/book inverses,21 old headings/all55 commands/3242 links and fresh120-page header/title parity exact. Focused13/sharder12/seven books rc=0; all95 prior live history entries/order/digest-updated refusals exact. Full staged reverse patch and normal COMMIT finish publication. Fixed caps/LIVE/CPU unchanged.
-- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree, generated index unchanged. promotion: declined; finite evidence and precise D79/D80 owners remain native. No new decision file, producer rewrite, cap raise or processor/full graph/adoption acceptance. Stop on the actual BPF access blocker after a clean committed handoff; do not mark D79 resolved.
+Owned clean4c14bf7 before code changes. User's222353 run refuses before sudo
+with unreviewed mdBook version; early failure leaves no failure.json/version
+stdout. Census: project/Homebrew0.5.4, user Cargo0.5.2; exact terminal resolution
+was not recorded. Reproduce Cargo-first PATH, preserve strict frozen version
+checks, select verified project-local0.5.4 through the existing installer and
+retain setup/version/preparation failures. Own capture tool/tests, whole closed LC0044/45/47 units'
+exact retention, book/MEM/CH/DEV sync and normal COMMIT; no global shell/tool
+change. D79 stays priority1/open; D80 follows. LC0047 app disposition remains.
+Artifact cleanup is due; execute its owned slice after this clean commit.
 
-###### .4i2b5b2r.d2 / SEMULITH-LC-0045 — one-command D79 tool complete; capture pending
-
-LC0045 plan/fix/evidence: DEV_NOTES.md. Prior producers/caps exact; D79 open
-before D80. promotion: declined (local tooling/runtime evidence).
-
-- [x] **ROOT CAUSE** — `python3 scripts/capture_book_dependencies.py --self-test` rc=0; actual host sudo requires a password,0capture bytes.
-- [x] **ADDRESSED** — same command rc=0 normal/O,24 controls; `python3 scripts/capture_book_dependencies.py --check-preparation` rc=0, no sudo.
-- [x] **NO REGRESSION** — `bash scripts/check_readme_routes.sh` rc=0; focused13/seven books, old producer/history/source identities preserved; normal COMMIT required.
-- [x] **LOCKSTEP** — book/toolbox/MEM/CH/DEV agree; capture and causal signoff remain pending.
-
-LC0047 owns the final handoff blocker (2026-10-17): public census returns1;
-Kimi Code PID5950 holds AGENTS.md via read-only fds84/87 (`lsof -Ffan`).
-Priority2: app release or director disposition before clean handoff. Only the
-director may sanction apps; no closure/exemption authorized, app untouched.
-D79's single terminal tool remains ready. This is runtime state, not a tool bug.
+- [x] **ROOT CAUSE** — controlled Cargo-first `python3` version probe rc=0 records stdout0.5.2 and the frozen guard's exact refusal in target/live-containment/capture-version/before.json. Original222353 output has no sudo/capture directory; preparation precedes authentication and lay outside failure.json recording. Original terminal executable remains unknown; do not overclaim its identity.
+- [x] **ADDRESSED** — `python3 scripts/capture_book_dependencies.py --self-test` normal/O rc=0:33controls/0fail/0privileged; preserve original24. Version/setup/missing/symlink faults refuse with retained diagnostics, early setup/compiler failures write failure.json. Cargo-first `python3 scripts/capture_book_dependencies.py --check-preparation` host rc=0, selected project0.5.4, immutable builds/WebKit/four closures, no sudo; output packet-20261017T223050Z-6ac03d.
+- [x] **NO REGRESSION** — focused13/sharder12/seven books and target/live-containment/capture-version/verify.py normal/O rc=0 qualify source/history/whole closed-unit retention and normal/print teaching. Frozen strict version guard and earlier producers remain exact; setup uses the published pinned installer. Normal COMMIT/postcheck completes publication; no Rust changed or push.
+- [x] **LOCKSTEP** — MEM/CH/DEV/task/book's toolbox include agree, fixed caps and LIVE_STATUS unchanged. promotion: declined (scoped integration repair; existing tools-first/locality/pinned-version contracts suffice). D79 priority1/open, D80 afterward, LC0047 app disposition remains pending.
 
 ###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
 
@@ -1661,6 +1635,8 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 | `2026-10-06` | `.1` | the registry control vs the index census (22 of 31 rows completed); the CLOSURE rule that forbade obeying it; FRONTIER-SYNC extended (20/20; RED on the real pre-move index: 22 COMPLETED IN INDEX); the verbatim move; the register registered; the book's live includes | **met** — the index holds open trees only (4,053 B); completed trees have a gated home |
 
 ## Commit Log
+
+`SEMULITH-LC-0048 (leaf LIVE-CONTAINMENT.4): select pinned mdBook before terminal capture` — native prep verified; user capture/analysis pending.
 
 `SEMULITH-LC-0047 (leaf LIVE-CONTAINMENT.4): record the application handoff blocker` — Kimi Code disposition pending.
 

@@ -73,8 +73,12 @@ For the terminal capture, run this **single command as your ordinary user**:
 python3 scripts/capture_book_dependencies.py
 ```
 
-It prepares the pinned books and nonpersistent WebKit, reserves four loopback
-ports, then asks for your administrator password through `sudo` if needed.
+It provisions checksum-verified mdBook0.5.4 in `.app-data/ci-tools/bin` through
+the existing project installer, independently of your terminal's `PATH`; its
+release cache stays in `target/ci-tools`. It prepares the pinned books and
+nonpersistent WebKit, reserves four loopback ports, then asks for your
+administrator password through `sudo` if needed. A preparation refusal occurs
+before sudo, so it cannot prompt for a password.
 Only the system `tcpdump` runs as administrator. Its filter covers those owned
 ports on `lo0`, with 96 bytes per packet, a 200,000-packet ceiling and a
 600-second capture deadline. No system permissions are changed.
@@ -83,8 +87,9 @@ workers per server, stops capture and joins workers. Ctrl-C retains partial
 diagnostics and cancels queued pages. Output goes to a fresh automatically
 named `target/live-containment/packet-*` directory; the terminal prints its path.
 `result.json` joins the capture summary with HTTP journals and browser outcomes;
-`capture/traffic.pcap` retains packets. Preparation/authentication/refusal logs
-remain available even without a complete result. Exit0 means evidence was
+`capture/traffic.pcap` retains packets. `mdbook-setup.*`, `mdbook-version.*` and
+`mdbook-selected.json` retain setup/version/binary identity; `failure.json` also
+covers preparation refusal. Logs remain without a complete result. Exit0 means evidence was
 collected, and may include known D80 failures; it does not resolve D79.
 The tool's `--self-test` needs no administrator access. `--check-preparation`
 verifies real builds, WebKit and server cleanup without invoking `sudo`.

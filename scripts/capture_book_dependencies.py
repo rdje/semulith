@@ -36,6 +36,40 @@ DEADLINE = 600
 require = D.require
 
 
+def select_mdbook(output, *, root=ROOT):
+    """Use the project's checksum-verified release, independent of terminal PATH."""
+    installer = D.C.U.source_path(root, 'scripts/install_ci_mdbook.sh')
+    selected = D.C.U.source_path(root, '.app-data/ci-tools/bin/mdbook')
+    D.C.U.source_path(root, 'target/ci-tools')
+    # The published installer writes only these release/cache names. Refuse
+    # pre-existing links or nested repositories before it can follow them.
+    for target in ['aarch64-apple-darwin', 'x86_64-unknown-linux-gnu']:
+        for suffix in ['.tar.gz', '.tar.gz.part']:
+            D.C.U.source_path(root, 'target/ci-tools/mdbook-v0.5.4-' + target + suffix)
+    require(installer.is_file(), 'project mdBook installer is missing')
+    def logged(name, command):
+        with (output / (name + '.stdout.log')).open('xb') as stdout, \
+             (output / (name + '.stderr.log')).open('xb') as stderr:
+            result = subprocess.run(command, cwd=root, stdout=stdout, stderr=stderr)
+        D.N.write_json(output / (name + '.json'), {'returncode': result.returncode})
+        return result.returncode
+    code = logged('mdbook-setup', ['/bin/bash', str(installer)])
+    require(code == 0, 'pinned mdBook setup failed; inspect mdbook-setup.* in the output directory')
+    # Recheck after installation, before executing or fingerprinting the binary.
+    selected = D.C.U.source_path(root, '.app-data/ci-tools/bin/mdbook')
+    require(selected.is_file() and os.access(selected, os.X_OK), 'pinned mdBook executable is missing')
+    code = logged('mdbook-version', [str(selected), '--version'])
+    stdout = (output / 'mdbook-version.stdout.log').read_bytes()
+    stderr = (output / 'mdbook-version.stderr.log').read_bytes()
+    identity = {'path': '.app-data/ci-tools/bin/mdbook', **D.Q.external_identity(selected)}
+    D.N.write_json(output / 'mdbook-selected.json', identity)
+    require(code == 0 and stdout == b'mdbook v0.5.4\n' and stderr == b'',
+            'unreviewed project mdBook response ' + repr(stdout[:200])
+            + '; inspect mdbook-version.* in the output directory')
+    os.environ['PATH'] = str(selected.parent) + os.pathsep + os.environ.get('PATH', '')
+    return identity
+
+
 def capture_command(ports):
     require(isinstance(ports, list) and 1 <= len(ports) <= 4
             and all(type(port) is int and 1024 <= port <= 65535 for port in ports)
@@ -211,13 +245,14 @@ def run(*, check_preparation=False):
     os.environ['TMPDIR'] = str(output / 'environment-tmp')
     print('Preparing pinned books and nonpersistent WebKit; output: ' + relative, flush=True)
     D.N.write_json(output / 'working-before.json', before)
-    program, compiler = D.Q.compile_webkit(output)
-    mdbook = D.R.mdbook_version(program.parent / 'tmp')
-    engine = D.Q.browser_identity(program)
-    calibration = D.Q.calibrate(program, output)
-    baseline, original_cases, site, cases, inputs = D.prepare(output)
-    profiles = {}
     try:
+        selected = select_mdbook(output)
+        program, compiler = D.Q.compile_webkit(output)
+        mdbook = D.R.mdbook_version(program.parent / 'tmp')
+        engine = D.Q.browser_identity(program)
+        calibration = D.Q.calibrate(program, output)
+        baseline, original_cases, site, cases, inputs = D.prepare(output)
+        profiles = {}
         with contextlib.ExitStack() as stack:
             ports = []
             for phase, bundle, population in [('warmup', baseline, original_cases), ('profile', site, cases)]:
@@ -242,12 +277,15 @@ def run(*, check_preparation=False):
                 packets = capture.verify()
         require(D.Q.browser_identity(program) == engine and D.R.mdbook_version(program.parent / 'tmp') == mdbook,
                 'toolchain changed during capture')
+        require({'path': selected['path'], **D.Q.external_identity(
+                    D.C.U.source_path(ROOT, selected['path']))} == selected,
+                'selected mdBook binary changed during capture')
         require(D.C.working_snapshot([PRODUCER]) == before, 'source/index/modes changed during capture')
         D.N.write_json(output / 'working-after.json', before)
         if check_preparation:
             D.N.write_json(output / 'preparation.json', {'producer': D.C.file_identity(PRODUCER),
                            'inputs': inputs, 'compiler': compiler, 'engine': engine, 'mdbook': mdbook,
-                           'calibration': calibration, 'reserved_ports': ports,
+                           'mdbook_selected': selected, 'calibration': calibration, 'reserved_ports': ports,
                            'capture': 'not requested; no sudo executed'})
             print('Preparation verified; all four servers closed. No sudo or packet capture.', flush=True)
             return 0
@@ -257,7 +295,8 @@ def run(*, check_preparation=False):
                             'observations': profile['observations'],
                             'http': [journal.rows for journal in profile['journals']]}
         value = {'producer': D.C.file_identity(PRODUCER), 'inputs': inputs, 'compiler': compiler,
-                 'engine': engine, 'mdbook': mdbook, 'calibration': calibration, 'capture': packets,
+                 'engine': engine, 'mdbook': mdbook, 'mdbook_selected': selected,
+                 'calibration': calibration, 'capture': packets,
                  'profiles': saved, 'D79': 'unresolved; captured evidence requires causal analysis'}
         D.N.write_json(output / 'result.json', value)
         unjudgeable = sum(row.get('unjudgeable', False) for p in saved.values() for row in p['observations'])
@@ -386,6 +425,70 @@ def self_test():
         require(len(rows) == 4 and rows == sorted(streamed, key=lambda r: (r['server'], r['index'])),
                 'complete replay stream differs')
         tests.append('replay-stream')
+        # A Cargo-first terminal must still reach the frozen public version
+        # guard through the selected project binary. No installer/network/sudo
+        # is used here: an isolated installer supplies controlled executables.
+        fixture = directory / 'mdbook-fixture'
+        (fixture / 'scripts').mkdir(parents=True)
+        installer = fixture / 'scripts/install_ci_mdbook.sh'
+        installer.write_text('set -eu\n/bin/mkdir -p .app-data/ci-tools/bin\n'
+                             '/bin/cp release .app-data/ci-tools/bin/mdbook\n')
+        release = fixture / 'release'
+        release.write_text('#!/bin/sh\nprintf "mdbook v0.5.4\\n"\n')
+        release.chmod(0o755)
+        ambient = fixture / 'cargo-bin'
+        ambient.mkdir()
+        (ambient / 'mdbook').write_text('#!/bin/sh\n: > ambient-executed\nprintf "mdbook v0.5.2\\n"\n')
+        (ambient / 'mdbook').chmod(0o755)
+        with patch.dict(os.environ, {'PATH': str(ambient) + os.pathsep + os.environ.get('PATH', '')}):
+            local_output = directory / 'selected'
+            local_output.mkdir()
+            selected = select_mdbook(local_output, root=fixture)
+            require(D.R.mdbook_version(directory) == 'mdbook v0.5.4'
+                    and selected['sha256'] == D.C.digest(release.read_bytes())
+                    and not (fixture / 'ambient-executed').exists(),
+                    'ambient version escaped project-local selection')
+        tests.append('terminal-path-selection')
+        for name, body in [('wrong-version', '#!/bin/sh\nprintf "mdbook v0.5.2\\n"\n'),
+                           ('version-stderr', '#!/bin/sh\nprintf "mdbook v0.5.4\\n"\necho warning >&2\n'),
+                           ('version-status', '#!/bin/sh\nprintf "mdbook v0.5.4\\n"\nexit 1\n')]:
+            release.write_text(body)
+            local_output = directory / name
+            local_output.mkdir()
+            refused(name, lambda: select_mdbook(local_output, root=fixture))
+            require((local_output / 'mdbook-version.stdout.log').read_bytes()
+                    and (local_output / 'mdbook-version.json').is_file(), 'version failure lost diagnostics')
+        installer.write_text('echo controlled-setup-refusal >&2\nexit 3\n')
+        local_output = directory / 'setup-refusal'
+        local_output.mkdir()
+        refused('setup-refusal', lambda: select_mdbook(local_output, root=fixture))
+        require((local_output / 'mdbook-setup.stderr.log').read_text() == 'controlled-setup-refusal\n'
+                and json.loads((local_output / 'mdbook-setup.json').read_text())['returncode'] == 3,
+                'installer failure lost diagnostics')
+        binary = fixture / '.app-data/ci-tools/bin/mdbook'
+        binary.unlink()
+        binary.symlink_to(release)
+        refused('selected-symlink', lambda: select_mdbook(local_output, root=fixture))
+        binary.unlink()
+        installer.write_text('exit 0\n')
+        local_output = directory / 'missing-binary'
+        local_output.mkdir()
+        refused('missing-binary', lambda: select_mdbook(local_output, root=fixture))
+        import io
+        for stage in ['setup', 'compiler']:
+            with patch.object(sys, 'platform', 'darwin'), patch.object(os, 'geteuid', return_value=501), \
+                 patch.object(sys.modules[__name__], 'ROOT', fixture), patch.object(D, 'ROOT', fixture), \
+                 patch.dict(os.environ), patch.object(D.C, 'working_snapshot', return_value={}), \
+                 patch.object(sys.modules[__name__], 'select_mdbook',
+                              side_effect=ValueError('controlled setup') if stage == 'setup' else None), \
+                 patch.object(D.Q, 'compile_webkit', side_effect=ValueError('controlled compiler')), \
+                 patch.object(sys.modules[__name__], 'Capture', side_effect=AssertionError('unexpected capture')), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                refused('early-' + stage, lambda: run(check_preparation=True))
+            failures = list((fixture / 'target/live-containment').glob('packet-*/failure.json'))
+            require(len(failures) == (1 if stage == 'setup' else 2)
+                    and all(json.loads(p.read_text())['message'].startswith('controlled ') for p in failures),
+                    'early preparation failure lost failure.json')
     print(json.dumps({'controls': len(tests), 'failed': 0, 'privileged_processes': 0}))
     return 0
 
