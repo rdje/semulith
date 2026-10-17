@@ -79,6 +79,27 @@ impl Reservation {
     pub fn matches(&self, physical_address: u64, width: u8) -> bool {
         self.valid && self.physical_address == physical_address && self.width == width
     }
+
+    /// Preserve the complete owner, including the address/width after an SC clears it.
+    #[must_use]
+    pub fn snapshot(&self) -> (u64, u8, bool) {
+        (self.physical_address, self.width, self.valid)
+    }
+
+    /// Restore a cold, established or cleared laboratory reservation.
+    pub fn restore(physical_address: u64, width: u8, valid: bool) -> Result<Self, &'static str> {
+        if !matches!(width, 0 | 4 | 8)
+            || (width == 0 && (valid || physical_address != 0))
+            || (width != 0 && !physical_address.is_multiple_of(u64::from(width)))
+        {
+            return Err("invalid reservation address, width or validity");
+        }
+        Ok(Self {
+            physical_address,
+            width,
+            valid,
+        })
+    }
 }
 
 impl Default for Reservation {

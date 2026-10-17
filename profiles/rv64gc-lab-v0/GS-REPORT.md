@@ -18,7 +18,7 @@
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 2 of 5 required kinds evidenced — open: `external`, `workload`, `validator-mutation` | **incomplete** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
-| `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 1 of 4 required kinds evidenced — open: `snapshot`, `replay-bundle`, `reduction` | **incomplete** |
+| `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 2 of 4 required kinds evidenced — open: `replay-bundle`, `reduction` | **incomplete** |
 | `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | no release decision recorded; this report is generated from tracked inputs and gated for sync (GATE-REPORT); other axes open | **incomplete** |
 
 Fidelity is reported per axis. No sentence here says the profile is supported: a banner
@@ -33,7 +33,7 @@ is not a claim with a denominator.
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
-| `G-REPLAY` | `P4-SYSTEM.16` | Snapshots, replay bundles and the reducer are rv64i-only; the CLI refuses this unit for each by name. |
+| `G-REPLAY` | `P4-SYSTEM.16` | RV64GC snapshot/resume is implemented for bounded flat-memory laboratory runs. Replay bundles and reduction remain rv64i-only; their RV64GC CLI paths still refuse by name. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -51,7 +51,7 @@ is not a claim with a denominator.
 | `G-PORTABILITY` | `aarch64` | — | **none declared** |
 | `G-PORTABILITY` | `miri` | — | **none declared** |
 | `G-REPLAY` | `determinism` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_re_executes_identically_from_cold_reset` | yes |
-| `G-REPLAY` | `snapshot` | — | **none declared** |
+| `G-REPLAY` | `snapshot` | `crates/semulith-verify/src/snapshot_rv64gc/tests.rs` `every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches` | yes |
 | `G-REPLAY` | `replay-bundle` | — | **none declared** |
 | `G-REPLAY` | `reduction` | — | **none declared** |
 | `G-RELEASE` | `decision` | — | **none declared** |
@@ -66,7 +66,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 3d0e5cd84a7b3c6dd2f632ff2938482e263b4bcd26114ba1193e95fcb5b54224`
+  `sha256 c8b4489072aa54e0d3fa9eca23c9d9a7d85f30983f7fbc36bb4fe4ec2b78e52a`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

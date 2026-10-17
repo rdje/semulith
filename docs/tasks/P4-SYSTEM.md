@@ -269,11 +269,16 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: every mutation class detected on the rv64gc corpus; the external suite's verdicts
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `active` (snapshot/resume: `SEMULITH-P4-0249`; bundle/reduction pending)
   Goal: the snapshot (the privileged state, the TLB, the reservation, the wait), the replay
   bundle and the reducer over rv64gc — the CLI's named refusals lifted.
   Acceptance: every guest resumes identically from a mid-execution snapshot; a recorded
   divergence replays and reduces with its divergence retained.
+  .16a/0249, owned clean2a97c46:
+  - [x] **ROOT CAUSE** — `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0` rc=2 before: named refusal.
+  - [x] **ADDRESSED** — `cargo test -p semulith-verify snapshot_rv64gc` rc=0:167guests/501splits, parity.
+  - [x] **NO REGRESSION** — `make check` rc=0; CLI/wasm/books pass. promotion: declined (profile replay contract).
+
 - ID: `P4-SYSTEM.17` — **portability** — `G-PORTABILITY`
   Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
   Goal: the portability instrument's manifest over the rv64gc corpus; the x86-64 and AArch64
@@ -289,7 +294,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | remaining a42 closure/collector/policy adequacy; own the next finite slice |
+| 1 | `P4-SYSTEM.16` | `active` | snapshot delivered; bundle/reduction next |
 
 ## Decisions
 
@@ -1575,6 +1580,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.16a` | `SEMULITH-P4-0249` | snapshot/resume delivered; bundles next |
 | `.14` a42l2 | `SEMULITH-P4-0248 (leaf P4-SYSTEM.14): preserve published ordinary task history` | remaining a42 closure/collector/policy adequacy; own next finite slice on clean state |
 | `.14` a42l1 | `SEMULITH-P4-0247 (leaf P4-SYSTEM.14): contain completed workflow records before D49 repair` | priority1 a42l2 published ordinary working/index preservation and actual full-gate replay |
 | `.14` a42k | `SEMULITH-P4-0246 (leaf P4-SYSTEM.14): measure staged ordinary-history gate protection` | priority1 a42l D49 preservation repair, then remaining a42 adequacy |

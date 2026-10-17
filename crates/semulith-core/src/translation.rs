@@ -84,9 +84,8 @@ pub struct TlbEntry {
 
 /// The cache itself: the entries and the FIFO cursor. A pure function of the hart's
 /// own history by construction — cold-reset re-execution is trace-identical, and a
-/// snapshot that restores a cold cache restores a legal state (a miss is never
-/// wrong, only slower). The rv64gc path has no snapshot surface today (the CLI's
-/// snapshot/resume is rv64i-scoped by refusal); that consequence is recorded here.
+/// snapshot preserves the entries and FIFO position for an exact continuation,
+/// including its observable page-walk requests (`P4-SYSTEM.16`).
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub struct Tlb {
     entries: [TlbEntry; TLB_CAPACITY],
@@ -150,6 +149,26 @@ impl Tlb {
     #[must_use]
     pub fn occupied(&self) -> usize {
         self.entries.iter().filter(|e| e.valid).count()
+    }
+
+    /// The complete cache representation, including invalid slots retained by fences.
+    #[must_use]
+    pub fn snapshot(&self) -> ([TlbEntry; TLB_CAPACITY], usize) {
+        (self.entries, self.cursor)
+    }
+
+    /// Restore the recorded replacement position without replaying installations.
+    pub fn restore(entries: [TlbEntry; TLB_CAPACITY], cursor: usize) -> Result<Self, &'static str> {
+        if cursor >= TLB_CAPACITY {
+            return Err("TLB cursor is outside the cache");
+        }
+        if entries
+            .iter()
+            .any(|e| !(0..=2).contains(&e.level) || e.pa_base & 0xfff != 0)
+        {
+            return Err("TLB entry has an invalid level or physical page base");
+        }
+        Ok(Self { entries, cursor })
     }
 }
 

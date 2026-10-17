@@ -14,15 +14,15 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `LIVE-CONTAINMENT.4` → its Current Frontier.
+- active_work_unit: `P4-SYSTEM.16` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: LC0048 repair and AC0065 due cleanup committed; user reruns `python3 scripts/capture_book_dependencies.py` for D79.
-  Project-local pinned mdBook now avoids terminal PATH mismatch; native prep verified.
-  One sudo tcpdump on owned lo0 ports; D80 is LC0046 afterward.
-  Owner: docs/tasks/LIVE-CONTAINMENT.md current frontier.
-  Resume P4-SYSTEM.14 a42 adequacy after the containment prerequisite.
-- in_flight_uncommitted: none after AC0065 normal COMMIT/postcheck.
-- blockers: terminal-authorized capture/analysis pending; D79 unresolved. Do not push below
-  300 commits without the director's act (`COMMIT.md`).
-  LC0047 app handles no longer observed after cb39c69; host census green,
-  no app action/exemption. AC0065 records the release witness and cleanup receipt.
+- next_action: after P4-0249 normal COMMIT, continue RV64GC replay-bundle/reduction
+  in P4-SYSTEM.16; JSON snapshot/resume and the snapshot evidence kind are delivered.
+  P4.14 evidence qualification stays owned/open; CPU-SYSTEM remains incomplete.
+  Priority correction/captured D79 receipt: docs/tasks/LIVE-CONTAINMENT.md,
+  Delivery priority and capture handoff. Maintenance is scheduled separately.
+- in_flight_uncommitted: none after P4-0249 normal COMMIT/postcheck.
+- blockers: no terminal authorization needed; packet-20261017T225917Z-fbcd89
+  captured480observations/155525packets,0unjudgeable. D79 causal analysis/LC0046
+  D80 remain owned in LIVE-CONTAINMENT.4; no capture rerun is needed.
+  Do not push below300commits without the director's act (`COMMIT.md`).

@@ -29,12 +29,12 @@ use crate::guests_rv64gc::{Guest, Refusal, RefusalKind, GUESTS};
 /// (successful or faulted — a refused request still crossed the boundary). A C-enabled
 /// table issues one parcel for a compressed instruction and two for a 32-bit instruction,
 /// unless a fault or another delivery prevents a request.
-struct CountFetches<'a> {
-    inner: &'a mut Refusing<'a>,
+struct CountFetches<'a, E> {
+    inner: &'a mut E,
     fetches: u64,
 }
 
-impl Environment for CountFetches<'_> {
+impl<E: Environment> Environment for CountFetches<'_, E> {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         if matches!(request, Request::Fetch { .. } | Request::FetchParcel { .. }) {
             self.fetches += 1;
@@ -49,7 +49,7 @@ impl Environment for CountFetches<'_> {
 /// forwards untouched.
 struct Refusing<'a> {
     inner: &'a mut FlatMemory,
-    refusals: &'static [Refusal],
+    refusals: &'a [Refusal],
 }
 
 /// The bytes a request touches, and the refusal kind it answers to.
@@ -85,14 +85,13 @@ impl Environment for Refusing<'_> {
     }
 }
 
-/// One executed step: the pc the instruction was fetched at, the mode the hart was in,
-/// and the register CHANGES its effect produced (name, new value), in register order.
+/// One execution boundary: incoming PC, resulting privilege mode and the register
+/// CHANGES its effect produced (name, new value), in register order.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Step {
     /// The fetched pc.
     pub pc: u64,
-    /// The privilege mode the step executed in (the delivery composition's own
-    /// observation — a mode change is visible as control flow, never as a register write).
+    /// The mode after the boundary (including trap delivery or xRET).
     pub mode: semulith_core::privilege::PrivilegeMode,
     /// The step's register writes.
     pub writes: Vec<(u8, u64)>,
@@ -121,28 +120,46 @@ pub fn run_guest(guest: &Guest) -> (Trace, FlatMemory) {
     let mut env = FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
     env.load_image(0, guest.image);
     let mut state = ArchitecturalState::zeroed_at(guest.entry);
+    let trace = run_from_with_refusals(&mut env, &mut state, guest.executed_steps, guest.refusals);
+    (trace, env)
+}
+
+/// Continue the declared flat-memory laboratory from its current CPU state.
+#[must_use]
+pub fn run_from(env: &mut FlatMemory, state: &mut ArchitecturalState, budget: usize) -> Trace {
+    run_from_with_refusals(env, state, budget, &[])
+}
+
+/// Continue with the same typed fault-injection policy recorded by the guest or snapshot.
+#[must_use]
+pub fn run_from_with_refusals(
+    env: &mut FlatMemory,
+    state: &mut ArchitecturalState,
+    budget: usize,
+    refusals: &[Refusal],
+) -> Trace {
     let mut steps = Vec::new();
     let mut failed = None;
     let mut fetches = 0;
-    for _ in 0..guest.executed_steps {
+    for _ in 0..budget {
         let pc = state.pc();
         let before: Vec<u64> = (0..32).map(|i| state.read_x(i)).collect();
         let mut refusing = Refusing {
-            inner: &mut env,
-            refusals: guest.refusals,
+            inner: env,
+            refusals,
         };
         let mut counting = CountFetches {
             inner: &mut refusing,
             fetches: 0,
         };
-        let outcome = exec_rv64gc::step(&mut state, &mut counting);
+        let outcome = exec_rv64gc::step(state, &mut counting);
         fetches += counting.fetches;
         match outcome {
             StepRv64gc::Executed => {}
             StepRv64gc::ReservedDecode { at, word } => {
                 // D-RESERVED-DECODE: the diagnostic policy's conversion, one layer up —
                 // the delivered illegal-instruction cause, tval the offending word.
-                let handler = privilege::trap_deliver(&mut state, 2, u64::from(word), at);
+                let handler = privilege::trap_deliver(state, 2, u64::from(word), at);
                 state.set_pc(handler);
             }
             StepRv64gc::Failed(error) => {
@@ -163,14 +180,11 @@ pub fn run_guest(guest: &Guest) -> (Trace, FlatMemory) {
             writes,
         });
     }
-    (
-        Trace {
-            steps,
-            failed,
-            fetches,
-        },
-        env,
-    )
+    Trace {
+        steps,
+        failed,
+        fetches,
+    }
 }
 
 /// Find a tracked guest by name — the same lookup the base runner's tests use.

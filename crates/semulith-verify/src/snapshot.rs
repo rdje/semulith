@@ -210,6 +210,10 @@ impl Snapshot {
     /// naming the field — a partial state is not a snapshot, structurally.
     pub fn parse(text: &str) -> Result<Self, String> {
         let doc = json::parse(text).map_err(|e| format!("not JSON: {e}"))?;
+        Self::from_json(&doc)
+    }
+
+    pub(crate) fn from_json(doc: &json::Json) -> Result<Self, String> {
         let root = doc
             .as_obj()
             .ok_or("snapshot: the document is not an object")?;

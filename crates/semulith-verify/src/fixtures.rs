@@ -90,6 +90,12 @@ impl FlatMemory {
         &self.bytes
     }
 
+    /// Region facts captured with memory bytes by the snapshot writer.
+    #[must_use]
+    pub fn region(&self) -> (u64, usize) {
+        (self.base, self.bytes.len())
+    }
+
     /// Mutable byte view — the snapshot resume path (`P2-SCALAR.7`) rebuilds a region
     /// from a recorded sparse encoding. The writer must keep the region's length
     /// invariant; the digest check catches a content mismatch by name.

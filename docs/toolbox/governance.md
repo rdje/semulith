@@ -66,6 +66,8 @@ pass normal/O; seven damaged ledger frames refuse. An assembler trace loses ten
 resources before receipt; later paired queue5/32 runs expose only D80. Passing
 repeats do not establish cause. TCP counters return only zero; scoped BPF access
 is denied. Packet-level diagnosis needs authorized access.
+The user's2026-10-17 terminal run completed scoped capture with authorization.
+D79 causal analysis remains owned by LC0045/48; no rerun is needed for that record.
 
 For the terminal capture, run this **single command as your ordinary user**:
 

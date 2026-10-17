@@ -56,17 +56,18 @@
 //!   0 — minimized; 1 — the case has no first-divergence to retain (the census
 //!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
 //!   name.
-//! - `semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]` —
+//! - `semulith snapshot <elf> --at N [--profile NAME] [--steps N] [--base ADDR] [--size BYTES]` —
 //!   record the mid-execution state after N steps as a JSON snapshot record
 //!   (`P2-SCALAR.7`, G-REPLAY's second half): the definition-identity pins, the
 //!   region, the register file and pc, and the memory content sparse-encoded and
-//!   digested. The pending-state census (`state.sexp`) measured every hidden-state
-//!   candidate absent, so those three ARE the whole pending state for this profile;
-//!   anything more is not offered. Exit codes: 0 — recorded; 2 — usage, unreadable
-//!   inputs, or the run ended before N.
-//! - `semulith resume <file.json>` — resume from a recorded snapshot: identity and
+//!   digested. RV64I needs those owners; RV64GC additionally retains privilege,
+//!   FP/CSR storage, TLB slots/FIFO, reservation and wait state, with bounded
+//!   flat memory (P4-SYSTEM.16). Exit codes: 0 — recorded; 2 — usage, unreadable
+//!   inputs, invalid bounds or the run ended before N.
+//! - `semulith resume <file.json> [--profile NAME]` — resume from a recorded snapshot: identity and
 //!   memory digest checked first (a mismatch refuses by name), then the continuation
-//!   runs and prints in the `run` trace format. Exit codes: 0 — resumed; 2 — usage,
+//!   runs and prints in the `run` trace format. Exit codes: 0 — resumed;
+//!   1 — GC continuation model error; 2 — usage,
 //!   unreadable input, or a record refused.
 //! - `semulith bench [--iterations N] [--reps R] [--warmup W]` — the performance
 //!   baseline (`P1-LAB.11`, RUST-04): run the four workload mixes (arithmetic,
@@ -94,8 +95,7 @@ use semulith_verify::elf;
 /// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
 /// was). The commands whose machinery is rv64i-scoped today — bench (the workload
 /// mixes), bundle/reduce/replay (the replay identity pins the rv64i definition),
-/// snapshot/resume (the pending-state shape is registers+pc+memory, not the privileged
-/// file), and every mutation (the tables decode rv64i words) — REFUSE rv64gc-lab-v0 by
+/// every mutation (the tables decode rv64i words) — REFUSE rv64gc-lab-v0 by
 /// name rather than silently answering with the wrong engine.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Profile {
@@ -188,8 +188,8 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      \x20       semulith resume <file.json>\n\
                      \x20       semulith reduce --guest NAME --mutate NAME\n\
                      \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n\
-                     \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run and demo; the other\n\
-                     \x20       commands' machinery is rv64i-scoped and refuses the rv64gc profile by name)\n";
+                     \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run, demo, snapshot, resume;\n\
+                     \x20       other commands refuse the rv64gc profile by name; GC snapshots allow up to 64 MiB)\n";
 
 /// The process-wide counting allocator (`P1-LAB.11`): allocation counts are measured
 /// per benchmark cell by resetting around the timed run; for every other command the
@@ -475,6 +475,18 @@ fn run_guest_rv64gc(env: &mut FlatMemory, entry: u64, steps: usize) -> ExitCode 
     ExitCode::from(0)
 }
 
+fn format_gc_steps(steps: &[semulith_verify::run_rv64gc::Step], first: usize) -> String {
+    let mut out = String::new();
+    for (i, step) in steps.iter().enumerate() {
+        let n = first + i;
+        out.push_str(&format!("[{n}] [{:?}]: 0x{:016x}\n", step.mode, step.pc));
+        for (reg, value) in &step.writes {
+            out.push_str(&format!("x{reg} <- 0x{value:016x}\n"));
+        }
+    }
+    out
+}
+
 /// `semulith demo` — run a tracked guest under the real or a mutated model and print the
 /// trace with its judgement. The detector's verdicts are the exit code: a mutant that is
 /// caught exits 1 on purpose — that is the tool working, not an error.
@@ -741,26 +753,23 @@ fn format_steps(steps: &[semulith_verify::run::Step], first: usize) -> String {
 
 /// `semulith snapshot` — record the mid-execution state after `--at N` steps of a guest
 /// ELF as a JSON snapshot record on stdout (`P2-SCALAR.7`). The record carries the whole
-/// pending state this profile has — registers, pc, memory (the pinned hidden-state
-/// census admits nothing else) — plus the definition identity pins.
+/// pending state of the selected profile and its definition identity. RV64GC also
+/// retains privilege, FP, CSRs, TLB, reservation and wait owners (P4-SYSTEM.16).
 fn snapshot_cmd(args: &[String]) -> ExitCode {
     let (profile, args) = match profile_arg("snapshot", args) {
         Ok(parsed) => parsed,
         Err(code) => return code,
     };
-    if profile == Profile::Rv64gcLabV0 {
-        return rv64gc_not_wired(
-            "snapshot",
-            "the snapshot's pending state is registers+pc+memory (the base profile's own \
-             census); the privileged file's snapshot shape is a later leaf",
-        );
-    }
     let args = &args;
     let mut elf_path: Option<&str> = None;
     let mut steps = DEFAULT_STEPS;
     let mut at: Option<usize> = None;
     let mut base = DEFAULT_BASE;
-    let mut size = DEFAULT_SIZE;
+    let mut size = if profile == Profile::Rv64gcLabV0 {
+        semulith_verify::snapshot_rv64gc::MAX_MEMORY_BYTES
+    } else {
+        DEFAULT_SIZE
+    };
     for arg in args {
         if let Some(n) = arg.strip_prefix("--steps=") {
             steps = match n.parse() {
@@ -799,15 +808,31 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
     if at > steps {
         return usage("snapshot: --at exceeds --steps — the run never reaches the point");
     }
-    let bytes = match std::fs::read(elf_path) {
+    let read = if profile == Profile::Rv64gcLabV0 {
+        use std::io::Read;
+        let limit = semulith_verify::snapshot_rv64gc::MAX_MEMORY_BYTES + 1024 * 1024;
+        std::fs::File::open(elf_path).and_then(|f| {
+            let mut bytes = Vec::new();
+            f.take(limit + 1).read_to_end(&mut bytes)?;
+            if bytes.len() as u64 > limit {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    "RV64GC snapshot ELF exceeds 65 MiB",
+                ));
+            }
+            Ok(bytes)
+        })
+    } else {
+        std::fs::read(elf_path)
+    };
+    let bytes = match read {
         Ok(b) => b,
         Err(e) => {
             eprintln!("snapshot: cannot read {elf_path}: {e}");
             return ExitCode::from(2);
         }
     };
-    // snapshot is rv64i-only (the rv64gc refusal above): the rv64i profile's IALIGN.
-    let image = match elf::parse(&bytes, Profile::Rv64iLabV0.ialign_bits()) {
+    let image = match elf::parse(&bytes, profile.ialign_bits()) {
         Ok(image) => image,
         Err(why) => {
             eprintln!("snapshot: {elf_path}: refused — {why}");
@@ -818,7 +843,14 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
         eprintln!("snapshot: the region [{base:#018x}, +{size:#x}) wraps the address space");
         return ExitCode::from(2);
     };
-    let mut env = FlatMemory::new(base, size as usize);
+    if profile == Profile::Rv64gcLabV0
+        && (size == 0
+            || size > semulith_verify::snapshot_rv64gc::MAX_MEMORY_BYTES
+            || steps > semulith_verify::snapshot_rv64gc::MAX_STEPS)
+    {
+        return usage("snapshot: RV64GC supports 1..=64 MiB and at most 1000000 steps");
+    }
+    let mut env = FlatMemory::with_fetch_align(base, size as usize, profile.ialign_bits() / 8);
     for seg in &image.segments {
         let seg_end = seg.paddr.saturating_add(seg.memsz);
         if seg.paddr < base || seg_end > top {
@@ -832,6 +864,31 @@ fn snapshot_cmd(args: &[String]) -> ExitCode {
             (seg.paddr - base) as usize,
             &bytes[seg.offset..seg.offset + seg.filesz],
         );
+    }
+    if profile == Profile::Rv64gcLabV0 {
+        let mut state = semulith_core::state_rv64gc::ArchitecturalState::zeroed_at(image.entry);
+        let trace = semulith_verify::run_rv64gc::run_from(&mut env, &mut state, at);
+        if let Some(error) = trace.failed {
+            eprintln!("snapshot: model error before checkpoint: {error}");
+            return ExitCode::from(2);
+        }
+        return match semulith_verify::snapshot_rv64gc::SnapshotRv64gc::capture(
+            &env,
+            &mut state,
+            image.entry,
+            at,
+            steps,
+            &[],
+        ) {
+            Ok(snapshot) => {
+                println!("{}", snapshot.to_json());
+                ExitCode::from(0)
+            }
+            Err(error) => {
+                eprintln!("snapshot: {error}");
+                ExitCode::from(2)
+            }
+        };
     }
     let (trace, _crossings, state) = semulith_verify::run::run_state(
         &mut env,
@@ -859,13 +916,6 @@ fn resume_cmd(args: &[String]) -> ExitCode {
         Ok(parsed) => parsed,
         Err(code) => return code,
     };
-    if profile == Profile::Rv64gcLabV0 {
-        return rv64gc_not_wired(
-            "resume",
-            "a resume replays an rv64i snapshot against the rv64i engine; the privileged \
-             resume is a later leaf",
-        );
-    }
     let args = &args;
     let mut file: Option<&str> = None;
     for arg in args {
@@ -880,13 +930,46 @@ fn resume_cmd(args: &[String]) -> ExitCode {
     let Some(file) = file else {
         return usage("resume: a snapshot file is required");
     };
-    let text = match std::fs::read_to_string(file) {
+    let read = if profile == Profile::Rv64gcLabV0 {
+        use std::io::Read;
+        std::fs::File::open(file).and_then(|f| {
+            let mut text = String::new();
+            f.take(semulith_verify::snapshot_rv64gc::MAX_JSON_BYTES as u64 + 1)
+                .read_to_string(&mut text)?;
+            Ok(text)
+        })
+    } else {
+        std::fs::read_to_string(file)
+    };
+    let text = match read {
         Ok(text) => text,
         Err(e) => {
             eprintln!("resume: cannot read {file}: {e}");
             return ExitCode::from(2);
         }
     };
+    if profile == Profile::Rv64gcLabV0 {
+        let result = semulith_verify::snapshot_rv64gc::SnapshotRv64gc::parse(&text)
+            .and_then(|snap| snap.resume().map(|result| (snap.at_step(), result)));
+        return match result {
+            Ok((first, result)) => {
+                if let Some(error) = result.trace.failed {
+                    eprintln!("resume: model error: {error}");
+                    return ExitCode::from(1);
+                }
+                print!("{}", format_gc_steps(&result.trace.steps, first));
+                eprintln!(
+                    "resume: {} continuation step(s) from step {first}",
+                    result.trace.steps.len()
+                );
+                ExitCode::from(0)
+            }
+            Err(error) => {
+                eprintln!("resume: {file}: refused — {error}");
+                ExitCode::from(2)
+            }
+        };
+    }
     let snap = match Snapshot::parse(&text) {
         Ok(snap) => snap,
         Err(why) => {

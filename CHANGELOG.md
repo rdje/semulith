@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0249 (leaf P4-SYSTEM.16) — enable RV64GC snapshot and resume
+
+- Replace the named GC CLI refusal with versioned JSON checkpoints and exact continuations: integer/FP/CSR/privilege state, TLB slots/FIFO, reservation, wait state, memory and typed laboratory fault regions. Pin compiled definition/runtime and Cargo lock identities; bound memory, steps and artifact parsing. Keep the RV64I format and behavior supported.
+- Verify all167 current GC guests at three JSON split points, complete final state/memory/fetches, live reservation/wait effects, actual warm/cold TLB request differences and invalid records. Real ELF CLI tests cover four system cases and a halfword-aligned compressed program. Full Rust/focused/seven-book checks qualify the slice; G-REPLAY evidence1/4→2/4, CPU-SYSTEM stays incomplete and P4 remains13/18.
+- Record and correct delivery stagnation priority: resume product implementation, schedule book/containment work separately. Retain the successful user packet capture/its stable-Git hold witness; D79 analysis and D80 remain owned. Book/unit guide, generated gate, task/index/LIVE and resume pointer agree; no archive, submodule or capacity change.
+
 ## SEMULITH-AC-0065 (leaf ARTIFACT-CLEANUP.8) — remove due incremental caches and preserve capture evidence
 
 - Remove18 verified disposable Cargo incremental caches/77596894B after complete preflight and a green host census; immediate residue0, all14220 retained diagnostic/reference/input files/131741041B byte/hash-exact. Four damaged-plan controls refuse normal/O; four nested repositories skipped, no input/source deletion. Original failed/native capture evidence stays intact.

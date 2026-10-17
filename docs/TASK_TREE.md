@@ -49,7 +49,7 @@ on the same commit. One commit per completed leaf.
 <!-- ANCHOR: trees -->
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.14` — experiment validation and evidence records/status (13/18 leaves done; contract v2 frozen; CPU-SYSTEM `incomplete`, 7 of 10 axes open, each owned) | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.16` — snapshot/resume delivered, bundles/reduction next; `.14` evidence open (13/18 leaves done; CPU-SYSTEM `incomplete`) | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.5` — firmware probes, gated on the CPU's acceptance trajectory (10/12 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

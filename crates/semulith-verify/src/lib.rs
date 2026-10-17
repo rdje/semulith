@@ -46,5 +46,6 @@ pub mod run_rv64gc;
 pub mod schema;
 pub mod sha256;
 pub mod snapshot;
+pub mod snapshot_rv64gc;
 #[cfg(target_arch = "wasm32")]
 pub mod wasm;

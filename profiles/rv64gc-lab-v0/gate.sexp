@@ -19,6 +19,9 @@
 (evidence (axis G-REPLAY) (kind determinism)
   (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") (fn "every_guest_re_executes_identically_from_cold_reset"))
   (statement "Every guest re-executes identically from cold reset: the run is a function of the definition and the program."))
+(evidence (axis G-REPLAY) (kind snapshot)
+  (test (file "crates/semulith-verify/src/snapshot_rv64gc/tests.rs") (fn "every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches"))
+  (statement "Every tracked guest is split at three boundaries through JSON snapshots; continued steps, fetch totals, complete final CPU state and memory equal uninterrupted execution, with the same typed laboratory refusals. Reservation/wait effects, TLB slots/FIFO and corrupted/foreign/missing-state refusals have additional controls. This is laboratory snapshot evidence, not board/device or independent ISA validation."))
 
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
@@ -29,7 +32,7 @@
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
   (statement "No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite."))
 (open (axis G-REPLAY) (owner "P4-SYSTEM.16")
-  (statement "Snapshots, replay bundles and the reducer are rv64i-only; the CLI refuses this unit for each by name."))
+  (statement "RV64GC snapshot/resume is implemented for bounded flat-memory laboratory runs. Replay bundles and reduction remain rv64i-only; their RV64GC CLI paths still refuse by name."))
 (open (axis G-PORTABILITY) (owner "P4-SYSTEM.17")
   (statement "No portability record for this unit: the instrument's manifest is built from rv64i's guests."))
 (open (axis G-RELEASE) (owner "P4-SYSTEM.18")

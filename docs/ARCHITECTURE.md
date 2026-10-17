@@ -200,3 +200,66 @@ TestFloat ordinarily obtains DUT expected values from SoftFloat, so a direct Sof
 Capture the effective configuration after defaults and overrides, not merely the supplied fragment. Identity includes code and generator versions, compile features, numeric specialization, initial state, guest image, environment policy, reference adapters, external events, and relevant nondeterministic choices.
 
 Replay may initially restart from an initial fixture. A mid-execution snapshot must additionally capture all future-relevant pending state and validate compatibility. A seed without the generator version and event stream is insufficient.
+
+<!-- ANCHOR: rv64gc-snapshot -->
+### RV64GC laboratory snapshots
+
+`semulith snapshot` and `semulith resume` support `--profile=rv64gc-lab-v0`.
+The checkpoint is taken **after N execution boundaries**: instructions, delivered
+traps and waiting boundaries all count. It resumes from that point to the recorded
+total budget. A checkpoint at zero records reset state; one at the full budget
+has an empty continuation.
+Resume continues the recorded cold-started execution at its step index; the
+environment's cold-reset requirements apply at the original run entry.
+
+The versioned JSON format `semulith-rv64gc-snapshot-v1` retains all owners in this
+profile's state census: x0–x31 and PC, current privilege, f0–f31, all 26 CSR
+storage owners, all four TLB slots and their FIFO replacement position, the LR/SC
+physical address/width/valid reservation, ACTIVE/WAITING state, and the complete
+declared memory region. CSR aliases are reconstructed from their shared storage.
+Cleared reservation metadata and invalid TLB slots remain exact. The library
+also retains typed laboratory fault regions; the ELF CLI uses ordinary flat memory.
+This format covers the single-hart laboratory. Board/device state and external
+event streams need their own declared snapshot contract.
+
+For an ELF built at `target/guest.elf`, these commands record and resume a run
+with 64 KiB of memory. All paths are relative to the repository root:
+
+```sh
+cargo run -q -p semulith-cli -- snapshot target/guest.elf --profile=rv64gc-lab-v0 --at=12 --steps=60 --size=65536 > target/checkpoint.json
+cargo run -q -p semulith-cli -- resume target/checkpoint.json --profile=rv64gc-lab-v0
+```
+
+To inspect the uninterrupted run under the same environment:
+
+```sh
+cargo run -q -p semulith-cli -- run target/guest.elf --profile=rv64gc-lab-v0 --steps=60 --size=65536
+```
+
+The resumed output starts at `[12]` and matches the uninterrupted output from
+that boundary onward. ELF loading uses the profile's 2-byte instruction alignment,
+so compressed instructions and halfword-aligned entries are supported.
+
+RV64GC snapshots default to 64 MiB and accept explicitly declared regions from
+1 byte through 64 MiB without address wrap, and total budgets up to 1,000,000
+boundaries. Sparse 4 KiB chunks bound encoding overhead. JSON is limited to
+`2 × 64 MiB + 1 MiB`, nesting depth12 and 131072 structural tokens before parsing;
+these are artifact limits rather than exact process-RAM limits. The profile's
+address width is unchanged. The existing RV64I format and defaults remain supported.
+The RV64GC snapshot CLI bounds its ELF input to 65 MiB before parsing.
+
+Restoration checks the compiled definition pins, harness version, runtime-source
+fingerprint and Cargo lock identity before executing. It checks complete state
+shapes, TLB/reservation structure, ordered nonoverlapping memory runs and the
+digest of the entire rebuilt region, including zero bytes. A foreign runtime,
+missing state, corrupt memory or unsupported bound refuses with exit2; a model
+error during continuation exits1. Harness fetch totals describe the continuation.
+
+The snapshot proof splits every current RV64GC guest at three points through JSON,
+including the guest's fault policy, and checks continued steps, fetch totals,
+complete final CPU state and memory. Additional controls exercise live reservation
+and wait effects, retained TLB replacement state and malformed records. CLI tests
+compare ELF continuations for atomics, wait, translation and floating-point cases.
+This supplies the snapshot kind of `G-REPLAY`; replay bundles, reduction and the
+remaining CPU-SYSTEM acceptance work stay open.
+<!-- ANCHOR_END: rv64gc-snapshot -->

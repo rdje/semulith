@@ -119,7 +119,29 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `active` | .4i2b5b2r.d2v / LC0048 version repair complete; terminal D79 capture/analysis next |
+| 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
+
+### Delivery priority and capture handoff — P4-0249
+
+Director's2026-10-18 stall/resumption questions trigger this priority review.
+`git log -40 --format=%s` at cb39c69 lists only LC/AC subjects; CPU13/18 and
+board10/12 remain unchanged, no MCU is registered, DSP subset has not expanded.
+Own priority1 delivery-stagnation risk: maintenance became an open-ended serial
+prerequisite. Count prerequisite is already complete; P4's .16 runtime state
+contract does not depend on completing this containment graph or packet analysis.
+After clean2a97c46/brief0/host0, P4-SYSTEM.16a/SEMULITH-P4-0249 owns the concrete
+RV64GC snapshot/resume feature next. .14 evidence remains owned and open. Only
+an actual correctness/review blocker interrupts the scoped feature; other defects
+stay scheduled with owners. No quality/gate/history/locality rule is waived.
+
+Terminal capture packet-20261017T225917Z-fbcd89 is complete:480observations,
+155525packets/13015088B, all four owned ports,0unjudgeable; working-after saved.
+PCAP SHA25657caa0279593d78a39727321bfcb1e523222e6ecf5d1363b03e05ff53152c844.
+Only the pending Git parent was briefly SIGSTOP-held to preserve capture's
+source/index/HEAD guard, then SIGCONT-resumed after the capture exited; AC0065
+normal COMMIT and final host census passed. No rerun is needed. Packet access is
+unblocked; LC0045/48 retain D79 analysis, LC0046 D80, .4i full adoption. Captured
+packets/passing replays alone do not establish D79 cause or CPU acceptance.
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006
 
