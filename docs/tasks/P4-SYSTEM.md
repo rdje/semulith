@@ -247,57 +247,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: complete RV64GC snapshot, replay and reduction CLI.
   Acceptance: every guest resumes identically mid-execution; a recorded divergence
   replays and reduces with that divergence retained.
-  .16b/0250 — complete, owned clean1cf0673 before edits. Deliver self-contained
-  bounded RV64GC replay bundles/CLI for tracked guests, using the complete input
-  checkpoint, explicit no-external-event laboratory policy, typed fault regions,
-  recorded steps/mode/GPR changes/fetch total/model error and final-state receipt.
-  Pin bundler/runtime identity; reject foreign/partial/malformed/oversized inputs;
-  name actual first trace differences separately from final/aggregate mismatches.
-  Cover every guest through JSON and real CLI round trips/tampering. Retain the
-  .16 reduction boundary and incomplete CPU verdict; no ISA/board acceptance.
-  Own digest-escaping defect: snapshot writers interpolate runtime/memory digest
-  strings; parsed quote-containing identities can reserialize as invalid JSON.
-  Restore already refuses these invalid identities. Reproduce with permanent
-  Rust tests, then escape data without weakening restore checks. Priority: first
-  in this slice. The ad hoc preflight rlib probe failed to link and is unjudgeable;
-  use Cargo's actual test linkage for the before/after witness.
-  Capacity: retain all four whole a21 spans (3766B) in the existing reader record,
-  preserving root heading/source offsets/digests and old retention prefix. Exact
-  131036B owner inverse and four damaged-unit refusals pass before new growth;
-  root127897B/retention128023B stay below unchanged131072B ceilings. Protect all
-  published archives/canonical records/modes/Gitlinks. Own any oldest-whole CH/DEV
-  sharding, relevant book/live/gate sync, focused checks, Rust/wasm and COMMIT.
-  Evidence: target/p4-system-16/replay. promotion: declined (existing replay contract).
-  - [x] **ROOT CAUSE** — before CLI rc=2; Cargo digest controls1pass/2fail reproduce both unescaped writers.
-  - [x] **ADDRESSED** — `cargo test -p semulith-verify replay_rv64gc` rc=0:6tests/167guests; digest3/0, real CLI1/0 discriminate.
-  - [x] **NO REGRESSION** — make check/wasm/focused13/seven books rc=0; scope/inverse normal/O1479protected/93history/4damaged refusals.
-  .16d/0252 complete, owned clean224caa9 before edits. V2 records/replays
-  declared controls with pinned model/runtime, v1 production shape and identity
-  refusals; production defaults/limits retained. Reduction next. Full detail:
-  DEV_NOTES.md and ARCHITECTURE.md. Compact48 live nav labels/1516B only;
-  headings/targets/full owner inverse and historical bodies exact, caps fixed.
-  Evidence target/p4-system-16/replay-model; promotion declined (replay contract).
-  - [x] **ROOT CAUSE** — verify.py rc=0:224c v1 record lacks declared choice (bounded source census).
-  - [x] **ADDRESSED** — `make check` rc=0:277verify/4CLI; both declared controls and changed choices discriminate.
-  - [x] **NO REGRESSION** — wasm/focused13/books/C-image rc=0; scope normal/O1489files/88history/48nav exact.
-  .16e/0253: own GC mixed-width reduction/search receipts/CLI/tests/docs/gate,
-  oldest-whole DEV rollover, scalar word/step prose (12/13; scope-mem29words).
-  - [x] **ROOT CAUSE** — verify.py rc=0:f8b GC refusal; native word/step12/13,29/29.
-  - [x] **ADDRESSED** — make check rc=0:283verify/5CLI; exact reduction/replay controls.
-  - [x] **NO REGRESSION** — wasm/books/focused13 rc=0; scope normal/O1488files/90history exact.
-  .16f/0254 complete: owns scalar guard/count/minimality, p1 prose and16c retention;
-  own oldest-whole DEV rollover and derived RV64I G1 report sync.
-  Repro target/p4-system-16/scalar-cap/source_control_full.rs: cap100000,102534calls/102533reported;
-  outer-only guard and uncounted final call. Priority now; preserve exact divergence.
-  - [x] **ROOT CAUSE** — cargo test before rc=101/101; source cap100000 permits102534 calls.
-  - [x] **ADDRESSED** — make check rc=0:287verify/5CLI; native cap/count100000/100000.
-  - [x] **NO REGRESSION** — wasm/books/focused14 rc=0; verify.py normal/O1494files/89history/6damaged refuse.
-  promotion: declined (existing replay/budget contract).
-  .16c/0251 complete: [Record](artifacts/live-containment/reader-records-retention.md#p4-16c-retained).
-  .16a/0249, owned clean2a97c46:
-  - [x] **ROOT CAUSE** — `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0` rc=2 before: named refusal.
-  - [x] **ADDRESSED** — `cargo test -p semulith-verify snapshot_rv64gc` rc=0:167guests/501splits, parity.
-  - [x] **NO REGRESSION** — `make check` rc=0; CLI/wasm/books pass. promotion: declined (profile replay contract).
+  Completed execution records: [whole original technical history](artifacts/live-containment/task-claims.md#p4-a42x-p4-16-history).
 
 - ID: `P4-SYSTEM.17` — **portability** — `G-PORTABILITY`
   Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
@@ -314,7 +264,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | unit collector and shared budgets |
+| 1 | `P4-SYSTEM.14` | `active` | canonical closure and capture plan |
 
 ## Decisions
 
@@ -403,26 +353,35 @@ Closed records through `.12` are preserved verbatim in
 
 ### `.14` a42 — complete method adequacy and impact obligations (active)
 
-Remaining: closure/impact binding, source-grounded property/collector provenance,
-fresh process/output controls, bounded retention/predeclared captures and
-policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
-Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
+Remaining: complete canonical closure/impact/property/capture-provenance review;
+bounded retention/predeclared canonical captures and policy/status/mirrors.
+Existing byte/property/collection APIs do not qualify experiments. Source0192–
+0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### `.14` a42x — collect a bounded three-run unit (completed, SEMULITH-P4-0266)
+
+Own a frozen baseline/repeat/control collector, one128MiB allowance shared
+through process collection and receipt publication. Add bounded integer request
+limits and immutable charged-read reports to existing helpers; preserve defaults,
+old fields/positional constructors and all calibrated legacy outcomes. Charge
+failed/invalid reads conservatively, never refund unjudgeable work. Before first
+launch require12absent owned output names, preflight parents/protected inputs and
+prove actual namespace disjointness with exclusive reservations; no old capture
+overwrite. Freeze all requests before I/O; stop on failure, retain failed-process
+metadata, no comparison/canonical/qualification credit. Contract first in GC book;
+normal/O synthetic real-child/unit/budget/alias/failure controls and omissions,
+real Sail unit smoke, focused/books/history/scope and normal COMMIT. Whole w and
+closed .16 technical history5481B retained with complete owner/source inverse2,
+6damaged refusals; live .16 goal/status/acceptance and old artifact prefix exact.
+Evidence target/p4-system-14/a42x. Full closure/policy/retention remain pending.
+
+Verified verify.py normal/O:1521 protected files/1Gitlink/90history entries;
+whole source/owner inverse2,6damaged refusals;14focused checks/seven books pass.
+promotion: declined (existing bounded-read/provenance/history contracts).
 
 ### `.14` a42w — publish fresh receipts (completed, SEMULITH-P4-0265)
 
-Own capture_run_with_receipt: freeze request/host before reads, collect one fresh
-process, bind exact schema receipt to actual exit/three outputs and input pins;
-exclusive anchored publication, bounded rechecks and no partial success. Preserve
-failed exits, refuse aliases/replaced parents/output drift, keep old collector
-exact. No unit orchestration/canonical capture/qualification. Contract first in
-GC collector.md; normal/O synthetic controls plus omissions, legacy suite,
-focused/books/history/scope, whole-oldest CH/DEV rollover and normal COMMIT.
-Retained v/s/n2382B whole with exact source/owner inverse and6damaged refusals;
-old artifact prefix exact. Evidence target/p4-system-14/a42w. Priority now.
-
-Verified verify.py normal/O:1519 files/1Gitlink/91history entries exact;
-source/owner inverse2,6damaged refusals;14focused/7books/3348links pass.
-promotion: declined (existing receipt/provenance/history contracts).
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42x-a42w).
 
 ### `.14` a42v — collect one fresh bounded process (completed, SEMULITH-P4-0264)
 
@@ -600,6 +559,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42x **REPRODUCE / ISSUE**: before.py rc=0 normal/O:3 independent calls/46364B, no limit/charge/unit API.
+- [x] `.14` a42x **ROOT CAUSE**: run-controls.py rc=0: removed shared allowance reads beyond the smaller unit cap; failed reservations must remain charged.
+- [x] `.14` a42x **FIX**: freeze complete unit; reserve fresh namespace; share/refund bounded reads through helpers; preserve failed process receipts and prior captures.
+- [x] `.14` a42x **ADDRESSED**: run-controls.py rc=0 normal/O:26/0/0;16 omissions/0 errors; exact/short limits and real Sail unit discriminate.
+- [x] `.14` a42x **NO REGRESSION**: verify.py/focused.py rc=0 normal/O:1521files/1Gitlink/90history entries;62 legacy outcomes;14checks/7books.
+- [x] `.14` a42x **LOCKSTEP**: verify.py rc=0: whole source/owner inverse2,6damaged refusals; DEV0350 exact; fixed caps/seals/CPU unchanged. COMMIT applies.
 
 - [x] `.14` a42w **REPRODUCE / ISSUE**: before-legacy.json rc=0: base lacks receipt API; old collector18849B exact.
 - [x] `.14` a42w **ROOT CAUSE**: run-controls.py rc=0 normal/O: actual-exit omission loses2 failed-process cases; byte binding/publication absent at base.
@@ -1569,6 +1535,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42x | `SEMULITH-P4-0266` | canonical closure and capture plan |
 | `.14` a42w | `SEMULITH-P4-0265` | unit collector and shared budgets |
 | `.14` a42v | `SEMULITH-P4-0264` | receipt writer and unit collection |
 | `.14` a42u | `SEMULITH-P4-0263` | collector process/output controls |

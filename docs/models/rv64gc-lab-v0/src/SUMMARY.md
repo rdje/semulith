@@ -12,6 +12,7 @@
 [Reviewed expected authors](expected-author.md)
 [A source-grounded division witness](source-property.md)
 [Collecting a fresh reference process](collector.md)
+[Collecting a three-run unit](unit-collector.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)

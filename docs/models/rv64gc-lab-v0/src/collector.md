@@ -23,8 +23,8 @@ a caller mutation during reads cannot redirect execution or output cleanup.
 Authenticate the selected binary and eight input files before and after execution
 using the existing shared reader, at most8 MiB/file and128 MiB aggregate. The
 current pinned Mac-arm64 Sail binary is3801664B, within that existing bound.
-Accounting is per helper invocation; the pending unit orchestrator must enforce
-the shared experiment budget across all three runs.
+The [unit collector](unit-collector.md) shares an explicit allowance across all
+three runs; ordinary single-run calls retain their documented defaults.
 A missing, unsafe or changed pin refuses collection; hashes describe check-time
 bytes, not loaded-code attestation. Complete dependency adequacy remains caller
 review work. The helper cannot discover all dependencies of arbitrary code.
@@ -172,9 +172,9 @@ replacement rather than claiming a filesystem transaction across all inputs.
 The existing collector's per-call128 MiB read budget still applies. Publication
 adds at most two reads of each bounded trace/stream and one64 KiB receipt read
 (8,716,288 B), with no output payload retention. The serialized receipt is bounded
-separately to64 KiB. These per-helper bounds are not the pending shared experiment
-budget. Unit orchestration, canonical retention, closure/policy adequacy and
-qualification remain pending.
+separately to64 KiB. An explicit read limit shares collection/publication accounting; the
+[unit collector](unit-collector.md) carries the remainder across all three runs.
+Canonical retention, closure/policy adequacy and qualification remain pending.
 
 ## Complete receipt example
 

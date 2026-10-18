@@ -1844,6 +1844,37 @@ receipt-pin:2
 PUBLICATION_CASES
   done
 
+  # P4-SYSTEM.14 a42x: three fresh processes, one conservative read allowance.
+  local unit_capture_mode unit_capture_mutation unit_capture_losses
+  local -a unit_capture_python
+  for unit_capture_mode in normal optimized; do
+    unit_capture_python=(python3)
+    [ "$unit_capture_mode" = optimized ] && unit_capture_python+=(-O)
+    out="$("${unit_capture_python[@]}" scripts/probe_matched_gpr_unit_collector.py 2>&1)"; rc=$?
+    score "GREEN bounded unit collection $unit_capture_mode" "$rc" 0 "$out" "MATCHED-GPR-UNIT-COLLECTOR: 26 tests / 0 failures / 0 errors; synthetic unit processes, qualification closed"
+    while IFS=: read -r unit_capture_mutation unit_capture_losses; do
+      out="$("${unit_capture_python[@]}" scripts/probe_matched_gpr_unit_collector.py --mutation "$unit_capture_mutation" 2>&1)"; rc=$?
+      score "RED bounded unit collection $unit_capture_mutation $unit_capture_mode" "$rc" 1 "$out" "MATCHED-GPR-UNIT-COLLECTOR: 26 tests / $unit_capture_losses failures / 0 errors; synthetic unit processes, qualification closed"
+    done <<'UNIT_CAPTURE_CASES'
+unit-freeze:1
+unit-shared-limit:2
+unit-charge:3
+unit-accounting:2
+unit-output-binding:1
+unit-unique-pid:1
+unit-failed-exit:2
+unit-existing-output:12
+unit-exclusive-reservations:1
+unit-cleanup-identity:1
+unit-cleanup-boundary:1
+pin-charge:4
+observation-charge:4
+publication-process-charge:9
+publication-read-charge:3
+failed-pin-charge:1
+UNIT_CAPTURE_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

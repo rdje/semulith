@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0266 (leaf P4-SYSTEM.14) — collect a three-run unit within one read allowance
+
+Collect baseline/repeat/control with one conservative128MiB artifact-read budget.
+Freeze all requests and preflight twelve fresh names before execution; preserve
+older captures and foreign replacements. Helpers expose explicit limits and
+charged-read metadata while retaining their single-run defaults. Stop on failed
+processes; collection earns no comparison/qualification credit. Normal/O:26
+controls,16 discriminating omissions,62 legacy outcomes exact. One real Sail unit
+uses23314397/134217728B with three fresh receipts and AGREE/AGREE/DIVERGE.
+
 ## SEMULITH-P4-0265 (leaf P4-SYSTEM.14) — publish fresh bounded process receipts
 
 Add exclusive receipt publication over the fresh one-process collector. Bind actual

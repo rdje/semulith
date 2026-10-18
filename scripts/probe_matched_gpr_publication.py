@@ -403,8 +403,8 @@ class PublicationTests(unittest.TestCase):
 
 MUTATIONS = {
     "request-freeze": (
-        "        request = _freeze(request)\n        host = platform.uname()",
-        "        host = platform.uname()",
+        "        request = _freeze(request)\n        _need(\n            max_read_bytes is None",
+        "        _need(\n            max_read_bytes is None",
     ),
     "host-freeze": (
         "            host=host,",
@@ -440,8 +440,8 @@ MUTATIONS = {
         "if True:",
     ),
     "receipt-pin": (
-        '            pin = A.read_bounded_pin(root, "observation", record, max_bytes=limit)',
-        '            if "role" not in record: return\n            pin = A.read_bounded_pin(root, "observation", record, max_bytes=limit)',
+        '            pin = A.read_bounded_pin(root, "observation", record, max_bytes=cap)',
+        '            if "role" not in record: return\n            pin = A.read_bounded_pin(root, "observation", record, max_bytes=cap)',
     ),
 }
 

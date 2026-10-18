@@ -411,3 +411,86 @@ Verified: scope normal/O and15 focused checks pass;24 controls/22 omissions
 are discriminating without errors. Additional profile check/normal COMMIT pending.
 
 ````
+
+## P4 a42x — complete closed process and replay execution records
+
+```json
+{"schema":1,"revision":"e4aee6bc5643deb61368c0a67766c0750abb79f9","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130874,"source_sha256":"a18f79bcd986fb9d8c2477d058ebd9250794995d3bbdd967985921e4a893a770","owner_insert":{"base":"e4aee6bc5643deb61368c0a67766c0750abb79f9","offset":37030,"text":"### `.14` a42x \u2014 collect a bounded three-run unit (active)\n\nOwn unit collection/shared read accounting, controls, book/live sync and whole closed-record retention before growth.\n\n","source_bytes":130874,"source_sha256":"a18f79bcd986fb9d8c2477d058ebd9250794995d3bbdd967985921e4a893a770"},"owner_bytes":131055,"owner_sha256":"d10a79f29a42b0b5989cb92f54ab8a058eb9255853037a6248a2369882970efb","retired_bytes":125855,"retired_sha256":"4666c66c083d86646321e4e0f2bcba28ab5d4e0b847a6362a2ce5849201c6c3b","records":[{"unit":"p4-16-history","offset":28465,"bytes":4480,"lines":51,"sha256":"41209db553eece347c98770be6cf76f556a22443b2945cc9469e6b257f442773","replacement":"  Completed execution records: [whole original technical history](artifacts/live-containment/task-claims.md#p4-a42x-p4-16-history).\n"},{"unit":"a42w","offset":37211,"bytes":1001,"lines":16,"sha256":"2cc384f49e491d14dba43235f35f442aac89d70a0aa95f2d2564854714d84331","replacement":"### `.14` a42w \u2014 publish fresh receipts (completed, SEMULITH-P4-0265)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42x-a42w).\n\n"}]}
+```
+
+<a id="p4-a42x-p4-16-history"></a>
+
+````text
+  .16b/0250 — complete, owned clean1cf0673 before edits. Deliver self-contained
+  bounded RV64GC replay bundles/CLI for tracked guests, using the complete input
+  checkpoint, explicit no-external-event laboratory policy, typed fault regions,
+  recorded steps/mode/GPR changes/fetch total/model error and final-state receipt.
+  Pin bundler/runtime identity; reject foreign/partial/malformed/oversized inputs;
+  name actual first trace differences separately from final/aggregate mismatches.
+  Cover every guest through JSON and real CLI round trips/tampering. Retain the
+  .16 reduction boundary and incomplete CPU verdict; no ISA/board acceptance.
+  Own digest-escaping defect: snapshot writers interpolate runtime/memory digest
+  strings; parsed quote-containing identities can reserialize as invalid JSON.
+  Restore already refuses these invalid identities. Reproduce with permanent
+  Rust tests, then escape data without weakening restore checks. Priority: first
+  in this slice. The ad hoc preflight rlib probe failed to link and is unjudgeable;
+  use Cargo's actual test linkage for the before/after witness.
+  Capacity: retain all four whole a21 spans (3766B) in the existing reader record,
+  preserving root heading/source offsets/digests and old retention prefix. Exact
+  131036B owner inverse and four damaged-unit refusals pass before new growth;
+  root127897B/retention128023B stay below unchanged131072B ceilings. Protect all
+  published archives/canonical records/modes/Gitlinks. Own any oldest-whole CH/DEV
+  sharding, relevant book/live/gate sync, focused checks, Rust/wasm and COMMIT.
+  Evidence: target/p4-system-16/replay. promotion: declined (existing replay contract).
+  - [x] **ROOT CAUSE** — before CLI rc=2; Cargo digest controls1pass/2fail reproduce both unescaped writers.
+  - [x] **ADDRESSED** — `cargo test -p semulith-verify replay_rv64gc` rc=0:6tests/167guests; digest3/0, real CLI1/0 discriminate.
+  - [x] **NO REGRESSION** — make check/wasm/focused13/seven books rc=0; scope/inverse normal/O1479protected/93history/4damaged refusals.
+  .16d/0252 complete, owned clean224caa9 before edits. V2 records/replays
+  declared controls with pinned model/runtime, v1 production shape and identity
+  refusals; production defaults/limits retained. Reduction next. Full detail:
+  DEV_NOTES.md and ARCHITECTURE.md. Compact48 live nav labels/1516B only;
+  headings/targets/full owner inverse and historical bodies exact, caps fixed.
+  Evidence target/p4-system-16/replay-model; promotion declined (replay contract).
+  - [x] **ROOT CAUSE** — verify.py rc=0:224c v1 record lacks declared choice (bounded source census).
+  - [x] **ADDRESSED** — `make check` rc=0:277verify/4CLI; both declared controls and changed choices discriminate.
+  - [x] **NO REGRESSION** — wasm/focused13/books/C-image rc=0; scope normal/O1489files/88history/48nav exact.
+  .16e/0253: own GC mixed-width reduction/search receipts/CLI/tests/docs/gate,
+  oldest-whole DEV rollover, scalar word/step prose (12/13; scope-mem29words).
+  - [x] **ROOT CAUSE** — verify.py rc=0:f8b GC refusal; native word/step12/13,29/29.
+  - [x] **ADDRESSED** — make check rc=0:283verify/5CLI; exact reduction/replay controls.
+  - [x] **NO REGRESSION** — wasm/books/focused13 rc=0; scope normal/O1488files/90history exact.
+  .16f/0254 complete: owns scalar guard/count/minimality, p1 prose and16c retention;
+  own oldest-whole DEV rollover and derived RV64I G1 report sync.
+  Repro target/p4-system-16/scalar-cap/source_control_full.rs: cap100000,102534calls/102533reported;
+  outer-only guard and uncounted final call. Priority now; preserve exact divergence.
+  - [x] **ROOT CAUSE** — cargo test before rc=101/101; source cap100000 permits102534 calls.
+  - [x] **ADDRESSED** — make check rc=0:287verify/5CLI; native cap/count100000/100000.
+  - [x] **NO REGRESSION** — wasm/books/focused14 rc=0; verify.py normal/O1494files/89history/6damaged refuse.
+  promotion: declined (existing replay/budget contract).
+  .16c/0251 complete: [Record](artifacts/live-containment/reader-records-retention.md#p4-16c-retained).
+  .16a/0249, owned clean2a97c46:
+  - [x] **ROOT CAUSE** — `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0` rc=2 before: named refusal.
+  - [x] **ADDRESSED** — `cargo test -p semulith-verify snapshot_rv64gc` rc=0:167guests/501splits, parity.
+  - [x] **NO REGRESSION** — `make check` rc=0; CLI/wasm/books pass. promotion: declined (profile replay contract).
+````
+
+<a id="p4-a42x-a42w"></a>
+
+````text
+### `.14` a42w — publish fresh receipts (completed, SEMULITH-P4-0265)
+
+Own capture_run_with_receipt: freeze request/host before reads, collect one fresh
+process, bind exact schema receipt to actual exit/three outputs and input pins;
+exclusive anchored publication, bounded rechecks and no partial success. Preserve
+failed exits, refuse aliases/replaced parents/output drift, keep old collector
+exact. No unit orchestration/canonical capture/qualification. Contract first in
+GC collector.md; normal/O synthetic controls plus omissions, legacy suite,
+focused/books/history/scope, whole-oldest CH/DEV rollover and normal COMMIT.
+Retained v/s/n2382B whole with exact source/owner inverse and6damaged refusals;
+old artifact prefix exact. Evidence target/p4-system-14/a42w. Priority now.
+
+Verified verify.py normal/O:1519 files/1Gitlink/91history entries exact;
+source/owner inverse2,6damaged refusals;14focused/7books/3348links pass.
+promotion: declined (existing receipt/provenance/history contracts).
+
+````

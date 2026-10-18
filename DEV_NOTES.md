@@ -1,5 +1,72 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — collect three fresh runs under one allowance (P4-SYSTEM.14 a42x)
+
+At e4aee6b, three standalone process/receipt calls read46364B in the synthetic
+fixture, but the helpers exposed neither a per-call limit nor a charge and no
+unit collector existed. The old process helper resets remaining=TOTAL_BYTES on
+each call; publication has its separately bounded supplemental reads. This is a
+scoped collection gap, not evidence of an accepted experiment exceeding its cap.
+
+Add max_read_bytes and an appended default-zero charged_read_bytes result field.
+Validate integers/inclusive0..128MiB before I/O; retain original positional fields.
+The process helper still defaults128MiB. Publication defaults None to retain the
+original128MiB process plus8716288B supplemental allowance; an explicit integer
+shares that allowance across process and publication reads. Reserve before each
+bounded reader/delegation and refund only complete, validated matching metadata.
+Failures/invalid findings retain their full reservation because partial reader
+consumption is not always exposed. Exact-limit succeeds and one-byte-short
+refuses for the process, publication and complete unit, with independent measured
+reader totals. This budget covers artifact reads, not schema/runtime I/O or RAM.
+
+The new UnitRequest freezes all3requests before any artifact I/O. Require common
+binary/budget/seven inputs, identical baseline/repeat inputs, a distinct control
+expectation, nine principal IDs and twelve disjoint output identities/paths.
+Anchor every protected input and output parent; require all12output names absent.
+Reserve all names exclusively to catch actual case/normalization aliases across
+runs before any child. Remove only owned reservations; replacement inode survives.
+An observed new Git boundary revokes cleanup authority, leaving earlier empty
+reservations rather than deleting inside it. Existing captures refuse unchanged.
+
+Pass the remaining allowance through the three receipt-producing calls. Validate
+charged metadata, output identities/sizes/digests and distinct observed PIDs before
+refunding a delegate. Invalid findings consume its entire allowance. Keep reached
+process findings; a recorded nonzero/signal exit yields failed and stops before the
+next process, retaining the failed receipt. Missing output cannot reuse older
+success. Only three zero-exit processes/twelve outputs yield recorded; no trace
+comparison, complete closure, canonical experiment or qualification follows.
+A later combined collection/evaluation pipeline must carry this charge forward;
+retained-snapshot limits belong to that later stage.
+
+Probe26/0/0 normal/O and16 independent omissions lose1/2/3/2/1/1/2/12/1/1/1/4/4/9/3/1
+assertions without errors. The first malformed-limit check's helper comparison
+against a string/None produced harness errors; restrict that comparison to valid
+integer limits and require zero charge otherwise. An initial metadata-mutation
+subtest left its result assertion outside the subtest, causing UnboundLocalError;
+move the assertions into that same scope before counting discriminating results.
+All62 old collector/publication positive/omission outcomes remain exact; only two
+publication mutation source patterns follow the new allowance statements. All
+old assertions and old collector probe remain unchanged. Re-derived arms1602;
+39 doctrines, CPU14/18 and BOARD10/12 unchanged.
+
+Tracked optional --real-sail-smoke calls the unit collector once, delegating the
+existing owned smoke's public plan and declared output naming scheme. Match each
+subsequent comparison request to the complete frozen unit; do not launch another
+process for it. Normal/O: three fresh zero-exit process receipts,23314397 charged
+read bytes under134217728,2298B identical traces with unchanged
+SHA64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde,
+AGREE/AGREE/DIVERGE at step2/x7 -3 versus -4. Receipt bytes/pins checked; unique
+on-volume scratch removed. The prospective envelope still uses synthetic IDs and
+an incomplete dependency list, with no raw scoped-record/closure or CPU credit.
+
+Keep .16's live goal/status/acceptance and all native headings. Retain its complete
+closed technical suffix and the whole closed w design5481B in the existing task
+artifact; both complete source/owner inverses and6damaged controls pass. Preserve
+old artifact prefix. DEV's oldest whole a42m entry5227B moves to0350; exact ordered
+completeness and manifest-prefix checks apply. No ceiling/seal changes.
+Evidence target/p4-system-14/a42x; promotion: declined (existing bounded-reader,
+provenance, task-history and POSIX process contracts; no new cross-cutting policy).
+
 ## _(2026-10-18)_ — publish one fresh process receipt (P4-SYSTEM.14 a42w)
 
 At committed a7484ba, capture_run exists but no receipt publication API does;
@@ -610,78 +677,4 @@ example prints matched False/stale True. Preserve both inherited EOF-only Git
 whitespace diagnostics on the exact moved bodies; no new whitespace accepted.
 Additional profile check/normal COMMIT pending. Evidence:
 target/p4-system-14/a42n. No terminal command needed from the user.
-
-## _(2026-10-18)_ — bind caller-reviewed input inventories (P4-SYSTEM.14 a42m)
-
-P4-0255 starts after clean ca226b0, brief0/host0. Queued scope is committed
-before edits; replace only the active a42 planning field, preserving every
-remaining obligation and all closed records. Source fixes0192–0197 were already
-complete; a42/a42f identify the actual frontier. No sealed record is rewritten.
-Before proof compiles ca226b0's exact evaluator against unchanged public helpers:
-its declared files authenticate and the synthetic result remains pending. With
-a separate nine-principal review, the new path refuses its valid pinned but
-unreviewed dependency. This is a new opt-in check, not evidence that the old
-pending result qualified a capture. Normal/optimized before receipts agree.
-
-InputReview is current caller authority like Scope/candidate, not source review
-by copying record declarations. Freeze selected profile/experiment and copied
-plain InputBindings before artifact I/O; preserve space-containing child IDs.
-Validate a plain tuple9..73 before members (7 common roles+2 expectations+64
-manifest leaves), unique IDs/paths, plain text1..65536, canonical paths<=4096,
-lowercase64hex SHA256. Malformed/incomplete data raises ReviewError. No persisted
-format, loader, discovery or attestation is introduced.
-
-After manifest authentication and frozen-relation binding, compare all declared
-ID/role/path/digest values to the copied review. Before file-set reads, refuse
-mismatch with sorted missing/unreviewed/changed tuples and separate manifest
-finding. Append optional input_review to EvaluationCheck/finish; preserve every
-old position/default and all other findings. None keeps legacy behavior. Metadata
-matched can coexist with later stale files or coherent failed process evidence.
-Malformed authority refuses before artifact I/O; schema-tool reads remain the
-existing separate allowance. No snapshot-payload or artifact-read cap changes;
-metadata allocations are outside those payload bounds. Positive evaluation is
-still pending, not method adequacy or CPU acceptance.
-
-Twenty tests pass normal/O; fifteen omissions lose2/2/4/2/2/2/2/2/1/1/1/2/1/3/4
-assertions with zero errors in each mode. Genuine on-volume synthetic cases prove
-missing/extra/changed coverage even when all declared pins authenticate; nine
-principals and a dependency, twelve observations, dummy binary identity, no
-reference process. Explicit None/legacy behavior, field types/counts, independent
-staleness/process findings and before-read context mutation discriminate. The
-pure helper performs no artifact I/O or execution. All42 legacy evaluation cases
-remain green normal/O. The runnable book example prints its three exact lines.
-
-Initial new failed-process fixture left verdict AGREE with exit1; existing code
-correctly refused that contradiction. Set REFUSED to test coherent failed evidence.
-Initial review-frozen omission mutated its local fixture, cascading into IndexError;
-use fresh objects for the separate copy witness, retaining the two immutability
-assertion failures and eliminating the cascade. First full profile self-test is
-522pass/2fail: the old image-finding needle no longer matched the appended return
-field. Change only that mutation's before/after strings, retaining its exact
-source-image omission and all old test bodies/expectations. Image evaluation26/0;
-the omission still26/22/0 in both modes. Full profile self-test passes524/0.
-
-The new API/example lives in the GC References chapter; evaluator guide links
-there. Decision censuses compress only current implementation summaries; all
-normative clauses stay exact. Fixed decision aggregate262059/262144B; no cap
-increase or include edge. Knowledge Map generation is byte-exact unchanged.
-Recovery correction: current draft reused completed a42g/0242's identifier and
-scratch. Rename only new work to a42m/0255, retain the old scratch copy and all
-committed records, rerun controls under a42m. a42g already implements the pure
-impact engine; binding it to reviewed inputs/retained evaluation remains pending.
-Boundary correction: an earlier discovery rg used repository root without an
-explicit vendor/linkedspec exclusion; no submodule match was returned or used.
-That query scope was too broad. Restrict later searches to explicit project
-paths or regular Git blobs, excluding Gitlinks/symlink paths before access.
-The owned-search receipt verifies that exclusion; no submodule source or pin
-changes. This closes the process miss within .14's existing boundary ownership.
-Promotion: declined (existing scoped-authority and user black-box boundaries).
-LIVE arm count re-derived1580 (was1578); milestone states unchanged.
-P4 stays14/18, G-REPLAY4/4green and CPU-SYSTEM incomplete on six axes; full closure,
-old/new impact, source-grounded property/collector provenance, fresh capture and
-policy/status/mirror work remain. Evidence: target/p4-system-14/a42m.
-Scope normal/O:1495 protected files/89 prior entries exact;3 rendered views,
-all7 books/3270 links pass. Internal partition helper needs its documented
-arguments; use public check_changelog_shards.sh; miscall log retained.
-Hook1 refused3 boxes missing rc=0 signatures; add measured exits and retry.
 

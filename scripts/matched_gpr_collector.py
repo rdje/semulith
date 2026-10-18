@@ -65,6 +65,7 @@ class ProcessCapture:
     process_exit: int | None = None
     pid: int | None = None
     outputs: tuple[CapturedOutput, ...] = ()
+    charged_read_bytes: int = 0
 
 
 class CaptureError(ValueError):
@@ -313,9 +314,18 @@ def _stop_group(process):
         process.wait()
 
 
-def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
+def capture_run(
+    root: Path, *, request: CaptureRequest, max_read_bytes: int = TOTAL_BYTES
+) -> ProcessCapture:
     """Observe one fresh process and bounded outputs; never write a receipt or qualify."""
     pid = status = None
+    allowance = remaining = 0
+
+    def finish(disposition, reason, outputs=()):
+        return ProcessCapture(
+            disposition, reason, status, pid, outputs, allowance - remaining
+        )
+
     try:
         request = _freeze(request)
         _need(
@@ -324,7 +334,11 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
             "safe POSIX process collection unavailable",
         )
         root = Path(root)
-        remaining = TOTAL_BYTES
+        _need(
+            type(max_read_bytes) is int and 0 <= max_read_bytes <= TOTAL_BYTES,
+            "invalid process read allowance",
+        )
+        allowance = remaining = max_read_bytes
         binary = E.InputBinding(
             "reference-binary", "sail-riscv", request.binary_path, request.binary_sha256
         )
@@ -332,11 +346,13 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
         def pins():
             nonlocal remaining
             for item in (binary, *request.inputs):
+                cap = min(FILE_BYTES, remaining)
+                remaining -= cap
                 pin = A.read_bounded_pin(
                     root,
                     "input",
                     dict(id=item.input_id, path=item.path, sha256=item.sha256),
-                    max_bytes=min(FILE_BYTES, remaining),
+                    max_bytes=cap,
                 )
                 _need(
                     type(pin) is A.PinResult
@@ -351,16 +367,14 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
                     disposition = (
                         "stale" if pin.disposition == "mismatch" else pin.disposition
                     )
-                    return ProcessCapture(
-                        disposition, "input pin: " + pin.reason, status, pid
-                    )
+                    return finish(disposition, "input pin: " + pin.reason)
                 _need(
                     pin.sha256 == item.sha256
                     and type(pin.byte_size) is int
-                    and 0 <= pin.byte_size <= min(FILE_BYTES, remaining),
+                    and 0 <= pin.byte_size <= cap,
                     "invalid pin accounting",
                 )
-                remaining -= pin.byte_size
+                remaining += cap - pin.byte_size
             return None
 
         refused = pins()
@@ -456,12 +470,7 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
                 try:
                     status = process.wait(timeout=PROCESS_SECONDS)
                 except subprocess.TimeoutExpired:
-                    return ProcessCapture(
-                        "refused",
-                        "reference exceeded process time limit",
-                        process_exit=None,
-                        pid=pid,
-                    )
+                    return finish("refused", "reference exceeded process time limit")
             finally:
                 _stop_group(process)
             _check_parents(chain)
@@ -480,9 +489,9 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
                         "stream path replaced",
                     )
                 limit = TRACE_BYTES if output.role == "raw-gpr" else STREAM_BYTES
-                observed = A.observe_bounded_file(
-                    root, output.path, max_bytes=min(limit, remaining)
-                )
+                cap = min(limit, remaining)
+                remaining -= cap
+                observed = A.observe_bounded_file(root, output.path, max_bytes=cap)
                 _need(
                     type(observed) is A.ObservedFile
                     and observed.path == output.path
@@ -491,20 +500,16 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
                     "invalid output finding",
                 )
                 if observed.disposition != "observed":
-                    return ProcessCapture(
-                        observed.disposition, "output: " + observed.reason, status, pid
-                    )
+                    return finish(observed.disposition, "output: " + observed.reason)
                 _need(
                     _identity(before)
                     == _identity(os.stat(name, dir_fd=parent, follow_symlinks=False)),
                     "output changed during collection",
                 )
                 _need(
-                    type(observed.byte_size) is int
-                    and 0 <= observed.byte_size <= min(limit, remaining),
+                    type(observed.byte_size) is int and 0 <= observed.byte_size <= cap,
                     "invalid output accounting",
                 )
-                remaining -= observed.byte_size
                 outputs.append(
                     CapturedOutput(
                         output.role,
@@ -514,27 +519,23 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
                         _sha(observed.sha256),
                     )
                 )
+                remaining += cap - observed.byte_size
             _check_parents(chain)
-            return ProcessCapture(
+            return finish(
                 "recorded",
                 "fresh process/output metadata; comparison and qualification pending",
-                status,
-                pid,
                 tuple(outputs),
             )
     except (CaptureError, AttributeError, TypeError, ValueError) as exc:
-        return ProcessCapture("refused", str(exc), status, pid)
+        return finish("refused", str(exc))
     except OSError as exc:
         disposition = (
             "refused"
             if exc.errno in (errno.ELOOP, errno.ENOTDIR, errno.EEXIST)
             else "unavailable"
         )
-        return ProcessCapture(
-            disposition,
-            "process/output I/O: " + (exc.strerror or type(exc).__name__),
-            status,
-            pid,
+        return finish(
+            disposition, "process/output I/O: " + (exc.strerror or type(exc).__name__)
         )
 
 
@@ -544,10 +545,11 @@ class PublishedCapture:
     reason: str
     process: ProcessCapture | None = None
     receipt: CapturedOutput | None = None
+    charged_read_bytes: int = 0
 
 
 def capture_run_with_receipt(
-    root: Path, *, request: CaptureRequest
+    root: Path, *, request: CaptureRequest, max_read_bytes: int | None = None
 ) -> PublishedCapture:
     """Collect a fresh process and exclusively publish its bounded, bound receipt.
 
@@ -561,8 +563,25 @@ def capture_run_with_receipt(
     import matched_gpr_receipt as R
 
     process = None
+    allowance = remaining = 0
+
+    def finish(disposition, reason, receipt=None):
+        return PublishedCapture(
+            disposition, reason, process, receipt, allowance - remaining
+        )
+
     try:
         request = _freeze(request)
+        _need(
+            max_read_bytes is None
+            or (type(max_read_bytes) is int and 0 <= max_read_bytes <= TOTAL_BYTES),
+            "invalid publication read allowance",
+        )
+        allowance = remaining = (
+            TOTAL_BYTES + 2 * (TRACE_BYTES + 2 * STREAM_BYTES) + R.RECEIPT_BYTES
+            if max_read_bytes is None
+            else max_read_bytes
+        )
         host = platform.uname()
         host = dict(
             os=_text(host.system, "host OS"),
@@ -571,10 +590,18 @@ def capture_run_with_receipt(
         )
         python_version = _text(platform.python_version(), "Python version")
         root = Path(root)
-        process = capture_run(root, request=request)
-        _need(type(process) is ProcessCapture, "invalid process capture")
+        reserved = min(TOTAL_BYTES, remaining)
+        remaining -= reserved
+        process = capture_run(root, request=request, max_read_bytes=reserved)
+        _need(
+            type(process) is ProcessCapture
+            and type(process.charged_read_bytes) is int
+            and 0 <= process.charged_read_bytes <= reserved,
+            "invalid process capture accounting",
+        )
+        remaining += reserved - process.charged_read_bytes
         if process.disposition != "recorded":
-            return PublishedCapture(process.disposition, process.reason, process)
+            return finish(process.disposition, process.reason)
         _need(
             type(process.process_exit) is int
             and type(process.pid) is int
@@ -676,13 +703,18 @@ def capture_run_with_receipt(
             "invalid receipt byte finding",
         )
         if checked.disposition != "matched":
-            return PublishedCapture(checked.disposition, checked.reason, process)
+            return finish(checked.disposition, checked.reason)
 
         def authenticate(record, limit):
-            pin = A.read_bounded_pin(root, "observation", record, max_bytes=limit)
+            nonlocal remaining
+            cap = min(limit, remaining)
+            remaining -= cap
+            pin = A.read_bounded_pin(root, "observation", record, max_bytes=cap)
             _need(
                 type(pin) is A.PinResult
                 and pin.disposition == "matched"
+                and type(pin.byte_size) is int
+                and 0 <= pin.byte_size <= cap
                 and pin.record_kind == "observation"
                 and (pin.record_id, pin.path, pin.byte_size, pin.sha256)
                 == (
@@ -693,6 +725,7 @@ def capture_run_with_receipt(
                 ),
                 "publication artifact changed or unavailable",
             )
+            remaining += cap - pin.byte_size
 
         def outputs():
             for record in observations:
@@ -766,11 +799,8 @@ def capture_run_with_receipt(
                             os.unlink(name, dir_fd=parent)
                     except FileNotFoundError:
                         pass
-            return PublishedCapture(
-                "recorded",
-                "fresh receipt published; method credit pending",
-                process,
-                receipt,
+            return finish(
+                "recorded", "fresh receipt published; method credit pending", receipt
             )
     except (
         CaptureError,
@@ -780,13 +810,13 @@ def capture_run_with_receipt(
         TypeError,
         ValueError,
     ) as exc:
-        return PublishedCapture("refused", str(exc), process)
+        return finish("refused", str(exc))
     except OSError as exc:
         disposition = (
             "refused"
             if exc.errno in (errno.ELOOP, errno.ENOTDIR, errno.EEXIST)
             else "unavailable"
         )
-        return PublishedCapture(
-            disposition, "receipt I/O: " + (exc.strerror or type(exc).__name__), process
+        return finish(
+            disposition, "receipt I/O: " + (exc.strerror or type(exc).__name__)
         )
