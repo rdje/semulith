@@ -1,11 +1,10 @@
 # Authenticated Sail byte evaluation
 
-`evaluate_retained_unit` in `scripts/matched_gpr_evaluation.py` composes the
-existing scoped-record, declared-file, identity, receipt, byte-comparison and
-[source/image](image-binding.md#compose-authenticated-source-and-elf-snapshots) checks. It authenticates each declared artifact once, uses its exact snapshot,
-and reports the different findings separately. A positive byte composition is
-**pending complete method/policy adequacy**. It grants no qualification or CPU
-acceptance credit. The existing PROFILE-CONSISTENCY qualification refusal remains.
+`evaluate_retained_unit` in `scripts/matched_gpr_evaluation.py` composes scoped
+records, pinned files, identity, receipts, comparison and source/image/value checks.
+Each artifact authenticates once; findings stay separate. The result remains
+**pending complete method/policy adequacy**; no qualification or CPU acceptance.
+PROFILE-CONSISTENCY's qualification refusal remains.
 
 The caller supplies the trusted runtime root, one raw `experiment` form, a
 `experiment_verification.Scope`, and the current selected candidate dictionary:
@@ -56,9 +55,9 @@ analysis.
    complete ordered computed run set. Cross-check each recorded run verdict
    against its computed comparison or refusal. Declared verdict strings cannot
    replace observed outcomes.
-6. Failed/unsupported comparisons return before image construction. A satisfied
-   comparison binds the explicit expectation entry and checks complete source/ELF
-   snapshots through the public owners; return their separate metadata findings.
+6. Failed/unsupported comparisons stop before image construction. Success binds
+   explicit entry/source/ELF, then checks [source values](references.md#authenticated-source-value-composition-a42q).
+   Unsupported author scope stays pending without credit; findings stay separate.
 7. Return immutable findings and metadata. Release raw payloads from the returned
    authentication summary. A coherent failed process/control remains a valid
    record with failed observed evidence; it does not become a schema error.
@@ -90,7 +89,8 @@ declared method's reviewed collector/capture trust boundary still applies.
 | `identity` | Optional identity-byte check; its pin is `None` because authentication is separate. |
 | `receipts` | Ordered immutable `ReceiptBinding(run_id, run_kind, declared_verdict, check)` records reached before any terminal refusal. Byte checks have no pins. |
 | `comparison` | Optional public `ComparisonUnit` with the computed run comparisons/refusals. |
-| `source_image` | Appended optional `SourceImageCheck`: complete byte correspondence with frozen metadata only; absent before that check, including failed/unsupported comparisons. |
+| `source_image` | Optional public `SourceImageCheck`: complete source/ELF byte correspondence and frozen metadata. Absent before this phase. |
+| `source_values` | Optional `SourceExpectationCheck`: source-derived GPR/witness and image-context binding. Unsupported author scope earns no credit. |
 | `input_review` | Appended optional caller-review metadata finding: selected IDs, counts and missing/unreviewed/changed input IDs; absent without review or before manifest binding. No file/adequacy credit. |
 | `impact` | Optional reviewed-graph input binding and impact analysis. |
 

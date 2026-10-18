@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — authenticated source-value composition (P4-SYSTEM.14 a42q)
+
+Compose retained source/baseline snapshots through the existing value checker after byte/image success. Cross-bind metadata; retain independent findings and typed failures, with unsupported author scope still pending/uncredited. Verify19 controls/12 omissions and all55 affected legacy omissions normal/O. Preserve whole closed/history records and old positional APIs; teach a complete example. No qualification or CPU/board milestone changes.
+
 ## _(2026-10-18)_ — source-derived GPR value binding (P4-SYSTEM.14 a42p)
 
 Add bounded immutable-source/baseline comparison through the existing author and mapper: all GPR changes, copied typed witness, stock derivation and structured differences. Preserve byte-unit contracts; event/producer/property/qualification work remains explicit. Verify23 controls/19 omissions normal/O, legacy52/14 unchanged and125 canonical matches/3794 steps; preserve closed records and whole history entries within fixed caps. No CPU or board status promotion.

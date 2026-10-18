@@ -65,6 +65,7 @@ class EvaluationCheck:
     source_image: F.SourceImageCheck | None = None
     input_review: T.InputReviewCheck | None = None
     impact: H.InputImpactCheck | None = None
+    source_values: C.SourceExpectationCheck | None = None
 
 
 @dataclass(frozen=True)
@@ -191,9 +192,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     def finish(disposition: str, reason: str, *, identity: I.IdentityCheck | None = None,
                receipts: tuple[ReceiptBinding, ...] = (),
                comparison: C.ComparisonUnit | None = None,
-               source_image: F.SourceImageCheck | None = None) -> EvaluationCheck:
-        return EvaluationCheck(disposition, reason, record, manifest, authentication,
+               source_image: F.SourceImageCheck | None = None,
+               source_values: C.SourceExpectationCheck | None = None) -> EvaluationCheck:
+        result = EvaluationCheck(disposition, reason, record, manifest, authentication,
                                identity, receipts, comparison, source_image, input_review, impact)
+        return replace(result, source_values=source_values)
 
     if files.disposition != "matched":
         return finish(files.disposition, "files: " + files.reason)
@@ -241,14 +244,49 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     except C.UnitError as exc:
         return finish("refused", "image context: " + str(exc), identity=identity,
                       receipts=tuple(receipts), comparison=comparison)
+    source_bytes = _payload(files, "input", source_input.input_id)
     source_image = F.check_source_image(
-        _payload(files, "input", source_input.input_id),
+        source_bytes,
         _payload(files, "input", image_input.input_id),
         program=image_context.program, entry=image_context.entry)
     if source_image.disposition != "matched":
         return finish(source_image.disposition, "source/image: " + source_image.reason,
                       identity=identity, receipts=tuple(receipts), comparison=comparison,
                       source_image=source_image)
-    return finish("pending", "authenticated byte comparison binds; source/image match; complete method/policy adequacy pending",
+    source_values = C.compare_source_expectation(
+        source=source_bytes,
+        baseline_expectation=_payload(files, "input", execution.baseline_expectation.input_id),
+        instructions=execution.instructions, program=image_context.program,
+        witness=relations.plan.witness)
+    if (type(source_values) is not C.SourceExpectationCheck
+            or source_values.disposition not in ("matched", "failed", "refused", "unavailable", "unsupported")
+            or (source_values.disposition not in ("matched", "failed") and source_values.facts is not None)):
+        return finish("refused", "source values: invalid result shape or disposition",
+                      identity=identity, receipts=tuple(receipts), comparison=comparison,
+                      source_image=source_image)
+    if source_values.disposition in ("matched", "failed"):
+        if (type(source_values.facts) is not C.SourceExpectationFacts
+                or type(source_values.facts.derivation) is not C.Author.SnapshotDerivation
+                or type(source_image.facts) is not F.SourceImageFacts):
+            return finish("refused", "source values: incomplete source/image binding facts",
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image)
+        derived = source_values.facts.derivation
+        image_facts = source_image.facts
+        if ((derived.program, derived.entry, derived.encoding_path, derived.source_size,
+             derived.source_sha256, derived.payload_size, derived.payload_sha256) !=
+                (image_facts.program, image_facts.entry, image_facts.encoding_path, image_facts.source_size,
+                 image_facts.source_sha256, image_facts.payload_size, image_facts.payload_sha256)):
+            return finish("refused", "source values: derivation differs from source/image context",
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image)
+    if source_values.disposition in ("failed", "refused", "unavailable"):
+        return finish(source_values.disposition, "source values: " + source_values.reason,
+                      identity=identity, receipts=tuple(receipts), comparison=comparison,
+                      source_image=source_image, source_values=source_values)
+    value_scope = ("source values match" if source_values.disposition == "matched"
+                   else "source values unsupported by current author, no credit")
+    return finish("pending", "authenticated byte comparison binds; source/image match; " + value_scope
+                  + "; complete method/policy adequacy pending",
                   identity=identity, receipts=tuple(receipts), comparison=comparison,
-                  source_image=source_image)
+                  source_image=source_image, source_values=source_values)

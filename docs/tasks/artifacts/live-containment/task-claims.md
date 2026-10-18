@@ -128,3 +128,49 @@ records, guard1519 arms, other milestones and CPU are unchanged. Normal hooks,
 exact13-file postcheck, brief0/untracked and unrestricted host0 close the unit.
 A draft root receipt exceeded the part limit and was refused before writing;
 its redundant completion text was shortened. Owned whole-unit containment is next.
+
+## P4 a42q — complete closed source-value record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42q-p"></a>
+
+```json
+{"schema":1,"revision":"aad44b7d5b48d1a5c40d4487ed02812968eb0e8f","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130997,"source_sha256":"402ac36546af5d63050522aeeab174723e102444cf57ee9c5cf0fc2ec0313f3a","owner_insert":{"offset":37051,"text":"### `.14` a42q — retain/compose (active, SEMULITH-P4-0259)\n\n"},"owner_bytes":131059,"owner_sha256":"1bd99b59c4ecd641b0d6a8f8f58e582f1916c44b1cf319eddfe0928440f0a0f0","offset":37113,"record_bytes":2222,"record_lines":33,"record_sha256":"ebac5b54fe3a98f478f74eda92b9b4c12847e2ec175e87be096cfd16be650dc2","replacement":"### `.14` a42p — bind source-derived GPR values (completed, SEMULITH-P4-0258)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42q-p).\n\n","retired_bytes":128991,"retired_sha256":"493190e25a0cc7fcbdce90127fb40cab659b9deb9d6deaeb69e0517077d67909"}
+```
+
+````text
+### `.14` a42p — bind source-derived GPR values (completed, SEMULITH-P4-0258)
+
+Own snapshot/expectation value binding, controls, book sync and normal COMMIT;
+retain the complete closed a42o record first.
+
+Declare the pure comparison API in GC References before code. Reuse the sole
+expectation mapper and existing snapshot author; compare every in-budget GPR
+change as RV64 integers, not just the witness. Return frozen source/expectation
+identities, stock derivation and a structured first difference. Bind explicit
+fixed entry/program/budget and a copied typed witness. Preflight bytes/metadata
+before tool reads; no artifact reopening, outputs, reference process or new
+interpreter. Non-fetched boundaries need later event binding; no prose,
+producer ancestry, requirement meaning or qualification credit. Preserve all old
+byte-unit behavior. Own controls/before proof, canonical regression, docs and COMMIT.
+
+Capacity prerequisite complete: retain whole2690B closed a42o body in existing
+include-source-validator, old124482B prefix exact; artifact128375B, root128497B.
+Six damaged cases refuse. Metadata binds a979c20 source, owner insertion, full
+source/owner/retired hashes and body offset. Reconstruct by undoing only a42p's
+later block/acceptance/commit/frontier edits to the recorded retired root, replace
+the unique stub with retained body, verify owner hash, remove recorded insertion
+at offset, then verify full source length/hash. Original12 authority, all prior
+native headings/archives/seals, family count107 and fixed caps unchanged.
+Evidence: target/p4-system-14/a42p. Qualification remains closed.
+Own probe compatibility: two old comparator omission needles became ambiguous;
+source-reopen control initially23/27/2 (uncredited helper escapes). Keep old
+predicates exact, name new exclusions, make no-escape expectations explicit;
+require zero-error new and legacy omission matrices before COMMIT.
+Verified:23/19 and legacy52/14 normal/O;125 guests/3794 steps match.
+Full scope/focused/books pass; normal COMMIT next. Promotion declined.
+Own hook396/4: entry required-program/program-identity needles collide.
+Fixed; entry-matrix.py rc=0:25/16 normal/O,56 selectors singular. Red: red-entry-hook.log.
+
+````

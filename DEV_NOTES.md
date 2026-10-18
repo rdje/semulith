@@ -1,5 +1,62 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — compose authenticated source-derived values (P4-SYSTEM.14 a42q)
+
+P4-0259 starts after clean aad44b7, brief0/untracked and host census0. A minimal
+62B owner fits the root's75B headroom before changes. Retain the complete2222B
+closed a42p record in existing task-claims: old7446B assessment prefix exact,
+artifact10699B/root128991B. The appended record changes no old LC assessment,
+archive, native heading, seal, original12 authority or107-member family count.
+Source/owner/retired hashes, insertion and body offset support complete inverses;
+six independent damaged cases refuse. The active unit records the reconstruction.
+
+Declare the composition contract in GC References before code. Append optional
+EvaluationCheck.source_values after all existing fields. Preserve positional
+meaning and independent identity/receipt/authentication/comparison/image/review/
+impact findings. Use the shared source-value owner only after successful byte
+and source/ELF checks, with exact retained source/baseline and already frozen
+program/budget/witness. Cache source bytes once; no path reopening or added
+artifact reads. Bind all seven image/derivation axes: program, entry, encoding
+path, source size/SHA and initial payload size/SHA. Invalid/unknown source
+results or contradictory metadata refuse without retaining the invalid finding.
+Known failed/refused/unavailable values terminate with earlier findings intact;
+unsupported author/event scope remains pending with explicit no-credit finding.
+Matches still leave producer/property meaning, complete source/dependency review,
+collector/freshness, ancestry and full policy pending. Qualification stays closed.
+
+Reuse the existing64KiB temporary payload room after ELF reconstruction releases
+its bytes; author image<=32KiB. Artifact read128MiB/snapshot16MiB ceilings remain;
+objects/hart/steps are not exact RAM-bounded by those payload limits. No new
+format, loader, interpreter, raw-result payload, reference process or status credit.
+Before proof: coherent pins, receipts and all three traces/expectations claim9
+while retained source/ELF derive1. Committed old evaluator returns pending; new
+returns failed while comparison remains satisfied/image matched. This fills a
+known missing obligation; it does not allege the old pending contract qualified it.
+Permanent checks start2/2/0 then pass19/0/0 normal/O. An omission run initially
+shows19/1/1: assertions outside a suppressed subtest access unassigned checked.
+Own/fix their placement before credit; retain the red helper evidence. Final12
+omissions lose10/10/1/2/9/12/4/3/7/3/1/13 assertions, zero errors in both modes.
+
+All five legacy suites pass normal/O:42/26/20/24/23 tests. All55 affected
+omissions retain their exact registered losses;60 result rows match across modes.
+All99 mutation selectors across six consumers are singular. A first registration
+comparison assumed literal summaries; account for existing heredoc case pairs
+before credit. Source formatting uses project-local pinned black24.10 with an
+identical AST; no runtime dependency. Register26 runtime arms/two score sites;
+derived census1588. Registry prose names value composition, no new doctrine.
+
+Keep Evaluation's old examples complete: an over-cap32870B draft refuses before
+write, compact current introduction/field census to32730B under32768. References
+teaches a complete synthetic pending/failed example. Two whole oldest DEV entries
+(5325B) move verbatim to0345; old manifest prefix and partition remain required.
+Promotion declined: existing snapshot/value/adequacy principles, no new policy.
+P4 remains14/18, replay4/4green, BOARD10/12. Scope normal/O protects1503 other
+tracked files/85 prior entries; full source/owner inverse and six damaged cases
+pass.15 focused checks and7 books/3284 links pass; exact two-line example/stderr0.
+Sole Git whitespace diagnostic: inherited EOF on0345:82, full source retained.
+Normal COMMIT remains required next.
+Evidence: target/p4-system-14/a42q.
+
 ## _(2026-10-18)_ — bind source-derived GPR expectations (P4-SYSTEM.14 a42p)
 
 P4-0258 starts after clean a979c20, brief0/untracked and host census0. Own the
@@ -592,81 +649,4 @@ files,93 whole old head entries,4 retained spans/4 damaged refusals. The first
 commit hook rejects the abbreviated ADDRESSED bullet. Cancel that owned Git
 parent/eight descendants, verify process residue0, add the actual Cargo command
 and rc=0 to the bullet, then rerun acceptance and normal hooks.
-
-## _(2026-10-17)_ — RV64GC checkpoints resume the complete laboratory state (P4-SYSTEM.16)
-
-The director identifies delivery stagnation and requests product implementation.
-At cb39c69 the latest40subjects are all LC/AC, while CPU13/18 and board10/12
-remain unchanged. After clean2a97c46/brief0/host0, choose the independent .16
-snapshot capability ahead of remaining .14 qualification machinery. The latter
-stays owned/open; actual correctness/review blockers retain priority. Record the
-risk, scheduling correction and successful480-observation/155525-packet user
-capture in LIVE-CONTAINMENT. No authorization or further terminal command is
-needed. The capture's pending Git parent was held/resumed to keep its full
-source/index/HEAD window stable; its result/working-after and PCAP SHA survive.
-
-Before: the actual `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0`
-returns2 with the named unsupported-state refusal. Implement .16a as a complete
-CLI/library vertical slice: JSON checkpoint, structural/identity validation,
-state restoration and the continuation driver. The generated state's existing
-raw accessors remain the register/CSR owners. Add fixed-size TLB slot/cursor
-and reservation tuple inspection/restoration to their own core modules. Preserve
-invalidated slots and cleared-but-retained reservation metadata. The common GC
-corpus runner also drives checkpoint prefixes and continuations. The existing
-CLI run path stays byte-exact and supplies the integration-test comparison;
-trace mode is explicitly the resulting mode.
-The scalar snapshot parser shares only its decoded-value helper; old JSON stays
-byte-compatible. No handwritten instruction semantics or generated-state edit.
-
-The new format retains all SEM-08 owners and typed laboratory refusal regions.
-Compiled definition pins plus hashes of selected runtime/state/environment/reader
-sources and Cargo.lock reject changed execution machinery. A OnceLock caches the
-runtime hash without filesystem access, preserving the wasm build boundary.
-Memory is bounded to64MiB, total boundaries to1000000; fixed4KiB chunks bound
-sparse overhead. JSON bytes/depth/structural tokens are bounded before parsing;
-ELF input is bounded before reading beyond65MiB. These are artifact scopes, not
-exact RAM ceilings. Resume continues the recorded cold-started execution at its
-step index; frozen cold-reset/environment contracts remain unchanged.
-
-Eight API controls include all167guests/501 JSON continuations, exact final CPU/
-memory state and fetch totals, observable reservation/wait omissions, retained
-TLB slots/FIFO and a real warm-versus-cold page-walk request witness, corrupted/
-foreign/missing-state records, bounds and zero/final checkpoints. CLI integration
-covers four actual system ELF cases and an independently encoded compressed
-sequence at entry0x80000002. Strict clippy caught an unnecessary cast and Copy
-clone in the draft; both are corrected and the complete Rust checks rerun.
-
-Declare only the snapshot kind in gate.sexp and regenerate GS-REPORT: replay
-kinds1/4→2/4; seven axes remain open, CPU-SYSTEM incomplete, P4 total13/18.
-Architecture owns the commands/state/limits contract; both main and GC unit books
-include it, and the main overview states current replay scope. Focused gates,
-seven books, full Rust checks and normal COMMIT qualify the product slice.
-No feature/reference independence or processor release is inferred from replay
-agreement. Bundle/reduction implementation is the next .16 slice; .14 evidence,
-other CPU gates and board/MCU/DSP expansion remain separately scheduled.
-
-## _(2026-10-17)_ — due cleanup preserves terminal capture evidence (ARTIFACT-CLEANUP.8)
-
-After clean cb39c69/brief0/normal hooks, census finds18 disposable incremental
-caches/77596894B and14220retained files/131741041B. Reuse the .7 safe-cohort
-helper with only its owned scratch path changed. Whole-cohort preflight and
-per-path size/device/inode/mtime/SHA checks precede unlink. Skip four nested
-Git roots, symlinks and other volumes; preserve all inputs and diagnostics,
-including the original failed and corrected native preparation outputs. Four
-changed identity/totals cases refuse normal/O; both complete positive preflights
-pass. An early pre-delete census catches our still-running check child and
-correctly blocks deletion; all checks join before a repeated green census.
-
-Actual deletion completes2026-10-17T22:50:22Z:18saved paths absent, immediate
-selected residue0, retained count/bytes/SHA exact; no release/deps stray files.
-Six C-engine caches/46660990B and twelve C-guest-image caches/30935904B removed.
-Later gate builds may regenerate caches; the receipt describes this event.
-The original LC0047 app handles are no longer observed by the host census after
-cb39c69. Record the release witness in its owning tree; no app action, exemption
-or claim about application internals. Policy source hashes still match the
-reviewed package and exact imported claim-verification body. Overwrite only
-the latest receipt, already included by the book; original teaching/source,
-prior history/modes/Gitlinks and fixed limits stay exact. Focused13/seven books,
-normal/print receipt and inverse verification plus normal COMMIT qualify the
-housekeeping. LIVE_STATUS unchanged; next terminal D79 capture/causal analysis.
 

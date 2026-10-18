@@ -454,3 +454,95 @@ context retains 23/7, normally and optimized. Their selectors target the origina
 public guards explicitly; all 56 omission sites across the four comparator
 consumers are singular. An ambiguous selector is a harness refusal and earns no
 semantic-control credit.
+
+## Authenticated source-value composition (a42q)
+
+`evaluate_retained_unit` now calls `compare_source_expectation` after its
+successful three-run comparison and complete source/ELF correspondence. It uses
+the exact retained source/baseline snapshots and the existing frozen parent
+program, budget and witness. It neither reopens artifact paths nor runs another
+expected-result implementation. Existing identity, receipt, authentication,
+comparison, input-review, impact and image findings stay separate.
+
+Append optional `EvaluationCheck.source_values: SourceExpectationCheck | None`
+after all existing positional fields. It is absent before this phase, including
+failed/unsupported byte comparisons and unsuccessful source/image checks. Once
+reached, return the public source-value result with its frozen metadata and no
+raw payload. A returned matched/failed derivation must agree with the independent
+image finding's program, entry, encoding path, source size/SHA256 and initial
+payload size/SHA256. Contradictory contexts refuse. Actual retained ELF equality
+remains the image owner's check; this does not duplicate or replace that rule.
+
+Source-value `failed`, `refused` and `unavailable` results make evaluation return
+that disposition while retaining all earlier findings. The source API's ordinary
+fetched-boundary scope is narrower than the prospective complete method. Its
+`unsupported` result therefore leaves evaluation **pending**, with the explicit
+unsupported finding and no source-value credit. It does not turn a byte-supported
+historical record into a claim that the full method can never support it. Invalid
+or unknown source-result shapes refuse; an invalid/misbound source finding is not
+retained. Unexpected programming failures propagate.
+
+A source-value match also leaves evaluation **pending complete method/policy
+adequacy**. Frozen selection proves which declared witness was checked; it does
+not establish the meaning of a requirement, the declared producer's authenticity,
+complete dependency/source adequacy, collector provenance, ancestry or capture
+freshness. No stored success flag, canonical qualification, requirement status or
+CPU acceptance is added. PROFILE-CONSISTENCY's qualification refusal remains.
+
+Shared artifact-read and retained-payload ceilings stay 128 MiB and 16 MiB, with
+the existing per-role bounds. The author uses at most 32 KiB of temporary initial
+instruction bytes after the image reconstruction has released its at-most-64-KiB
+ELF. Reuse the existing reserved temporary payload room; do not add artifact reads
+or retain either rebuilt byte image in the result. Parsed objects, hart state,
+steps and immutable copies remain outside these payload-only bounds; they are
+not exact RAM ceilings. Canonical schema/assembler data reads remain explicit
+tool I/O with complete current dependency adequacy still separately required.
+
+This complete synthetic example makes every temporary artifact under the
+repository's `target` directory and removes it afterward. The existing fixture
+helper builds example pins/receipts; no reference executable is run and no
+capture is qualified.
+
+```bash
+python3 - <<'PY'
+from copy import deepcopy
+from pathlib import Path
+import sys
+import tempfile
+sys.path.insert(0, 'scripts')
+import matched_gpr_evaluation as E
+from probe_matched_gpr_evaluation import Fixture, PC
+
+scratch = Path('target/source-value-example')
+scratch.mkdir(parents=True, exist_ok=True)
+with tempfile.TemporaryDirectory(dir=scratch) as directory:
+    fixture = Fixture(Path(directory))
+    matched = E.evaluate_retained_unit(fixture.root, **fixture.arguments())
+    print(matched.disposition, matched.source_values.disposition,
+          matched.source_values.facts.witness_value)
+
+    fixture.base['step'][0]['writes']['x1'] = '0x9'
+    fixture.control = deepcopy(fixture.base)
+    fixture.control['step'][0]['writes']['x1'] = '0xa'
+    fixture.write(fixture.inputs['expectation'], PC.encode(fixture.base))
+    fixture.write(fixture.inputs['mutant-expectation'], PC.encode(fixture.control))
+    trace = (b'[0] [M]: 0x0000000080000000 (0x00100093) addi x1, x0, 1\n'
+             b'x1 <- 0x0000000000000009\n')
+    for kind in fixture.runs:
+        fixture.write(fixture.observation(kind, 'raw-gpr'), trace)
+    fixture.publish_receipts()
+    failed = E.evaluate_retained_unit(fixture.root, **fixture.arguments())
+    print(failed.disposition, failed.comparison.disposition,
+          failed.source_image.disposition, failed.source_values.difference.observed,
+          failed.source_values.difference.expected)
+PY
+```
+
+```text
+pending matched 1
+failed satisfied matched (('x1', 1),) (('x1', 9),)
+```
+
+The first result earns no complete-method credit. The second retains a satisfied
+three-run byte comparison and matching source/ELF bytes while the source-derived
+GPR values fail. The trace/expectation pair cannot supply its own source proof.

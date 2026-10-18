@@ -1627,6 +1627,33 @@ finding:4
 frozen-context:1
 INPUT_IMPACT_CASES
   done
+  # P4-SYSTEM.14 a42q: retained source-value composition; qualification stays pending.
+  local value_mode value_mutation value_losses
+  local -a value_python
+  for value_mode in normal optimized; do
+    value_python=(python3)
+    [ "$value_mode" = optimized ] && value_python+=(-O)
+    out="$("${value_python[@]}" scripts/probe_matched_gpr_value_evaluation.py 2>&1)"; rc=$?
+    score "GREEN source-value evaluation $value_mode" "$rc" 0 "$out" "MATCHED-GPR-VALUE-EVALUATION: 19 tests / 0 failures / 0 errors; synthetic only"
+    while IFS=: read -r value_mutation value_losses; do
+      out="$("${value_python[@]}" scripts/probe_matched_gpr_value_evaluation.py --mutation "$value_mutation" 2>&1)"; rc=$?
+      score "RED source-value evaluation $value_mutation $value_mode" "$rc" 1 "$out" "MATCHED-GPR-VALUE-EVALUATION: 19 tests / $value_losses failures / 0 errors; synthetic only"
+    done <<'VALUE_EVALUATION_CASES'
+source-values-selection:10
+baseline-values-selection:10
+source-values-reopen:1
+budget-forward:2
+witness-forward:9
+program-forward:12
+source-result-shape:4
+source-binding-shape:3
+source-context-binding:7
+source-status:3
+unsupported-credit:1
+source-finding:13
+VALUE_EVALUATION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

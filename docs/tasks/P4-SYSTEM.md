@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | source-value composition and producer/property binding |
+| 1 | `P4-SYSTEM.14` | `active` | producer/property review; source values composed |
 
 ## Decisions
 
@@ -408,38 +408,32 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42q — compose authenticated source values (completed, SEMULITH-P4-0259)
+
+Declare GC References contract before code. Compose after byte/image success
+using exact authenticated snapshots and pre-I/O frozen selection. Append optional
+source_values with old positional fields intact; bind image/derivation metadata
+and preserve independent findings. Failures terminal; unsupported author/event
+scope pending without credit. Matches stay pending producer/property/source,
+closure/collector/full-policy review. No new interpreter, artifact IO/reopens,
+format, cap or qualification. Reuse bounded temporary room; metadata-only output.
+Own before proof, ordering/copy/budget/metadata controls, all consumer omissions,
+docs/books and normal COMMIT/postconditions.
+
+Capacity prerequisite: whole2222B closed a42p retained in existing task-claims,
+old7446B assessment prefix exact; artifact10699B/root128991B; six damaged refusals.
+Separate appended work record changes no old assessment or original12 authority.
+Metadata binds aad44b7 source/owner/retired identities, insertion and body offset.
+Undo only a42q's later block/acceptance/commit/frontier edits to retired root;
+replace unique stub with retained body, verify owner hash, remove recorded
+insertion at offset, then verify full source length/hash. Old native headings,
+archives/seals, count107 and all ceilings unchanged. Evidence: target/p4-system-14/a42q.
+Fixed subtest helper after uncredited19/1/1; assertions scoped,12 omissions/0errors normal/O.
+Verified scope, legacy/99 sites, focused/books. Normal COMMIT next; promotion declined.
+
 ### `.14` a42p — bind source-derived GPR values (completed, SEMULITH-P4-0258)
 
-Own snapshot/expectation value binding, controls, book sync and normal COMMIT;
-retain the complete closed a42o record first.
-
-Declare the pure comparison API in GC References before code. Reuse the sole
-expectation mapper and existing snapshot author; compare every in-budget GPR
-change as RV64 integers, not just the witness. Return frozen source/expectation
-identities, stock derivation and a structured first difference. Bind explicit
-fixed entry/program/budget and a copied typed witness. Preflight bytes/metadata
-before tool reads; no artifact reopening, outputs, reference process or new
-interpreter. Non-fetched boundaries need later event binding; no prose,
-producer ancestry, requirement meaning or qualification credit. Preserve all old
-byte-unit behavior. Own controls/before proof, canonical regression, docs and COMMIT.
-
-Capacity prerequisite complete: retain whole2690B closed a42o body in existing
-include-source-validator, old124482B prefix exact; artifact128375B, root128497B.
-Six damaged cases refuse. Metadata binds a979c20 source, owner insertion, full
-source/owner/retired hashes and body offset. Reconstruct by undoing only a42p's
-later block/acceptance/commit/frontier edits to the recorded retired root, replace
-the unique stub with retained body, verify owner hash, remove recorded insertion
-at offset, then verify full source length/hash. Original12 authority, all prior
-native headings/archives/seals, family count107 and fixed caps unchanged.
-Evidence: target/p4-system-14/a42p. Qualification remains closed.
-Own probe compatibility: two old comparator omission needles became ambiguous;
-source-reopen control initially23/27/2 (uncredited helper escapes). Keep old
-predicates exact, name new exclusions, make no-escape expectations explicit;
-require zero-error new and legacy omission matrices before COMMIT.
-Verified:23/19 and legacy52/14 normal/O;125 guests/3794 steps match.
-Full scope/focused/books pass; normal COMMIT next. Promotion declined.
-Own hook396/4: entry required-program/program-identity needles collide.
-Fixed; entry-matrix.py rc=0:25/16 normal/O,56 selectors singular. Red: red-entry-hook.log.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42q-p).
 
 ### `.14` a42o — derive expectations from immutable source (completed, SEMULITH-P4-0257)
 
@@ -640,6 +634,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42q **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new failed; bytes satisfied/image matched,1 vs9; red2/2/0.
+- [x] `.14` a42q **ADDRESSED**: run-controls.py rc=0 normal/O:19/0/0;12 omissions discriminate/0 errors;55 legacy omissions exact,99 sites singular.
+- [x] `.14` a42q **NO REGRESSION**: verify.py/focused.py rc=0 normal/O:1503 files/85 entries;6 inverses;15 checks,7 books/3284 links; example exact.
 
 - [x] `.14` a42p **ROOT CAUSE**: before.py rc=0 normal/O: old byte satisfied/new source failed,1 vs9; red API2/2/0. No qualification.
 - [x] `.14` a42p **ADDRESSED**: run-controls.py rc=0 normal/O:23/0/0;19 omissions discriminate/0 errors; legacy52/14 exact.
@@ -1582,6 +1580,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42q | `SEMULITH-P4-0259` | producer/property review |
 | `.14` a42p | `SEMULITH-P4-0258` | source-value composition/producer binding |
 | `.14` a42o | `SEMULITH-P4-0257` | source-grounded property/producer binding |
 | `.14` a42n | `SEMULITH-P4-0256` | canonical closure/property/collector review next |
