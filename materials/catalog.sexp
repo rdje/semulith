@@ -19,7 +19,8 @@
 ; facts belong, and never in git.
 ;
 ; ⛔ A CACHE IS NOT A SOURCE OF TRUTH. `.materials/` is gitignored: these are large third-party
-; documents and the repository does not redistribute them. What IS tracked is this file — the
+; documents and the repository does not redistribute the complete fetched artifacts. The
+; scoped licensed DIV statement exception is materials/RVI_M_RETENTION.md. Tracked here are the
 ; identity, the revision, the digest and the licence — so a missing cache is a REFUSAL WITH
 ; INSTRUCTIONS rather than a wrong answer. Run `scripts/materials.py --fetch` to populate it.
 
@@ -672,10 +673,13 @@
     (kind snapshot)
     (manifest "SHA256SUMS")
     (pages 72)
-    (licence "unrecorded")
-    (licence-evidence "the served pages carry only \"Copyright © RISC-V International®\" and no
-                       CC-BY statement, unlike the GitHub PDF — read, not assumed. OQ-4 stays open
-                       for this rendering, which is why the snapshot is cached and not tracked.")
+    (licence "CC-BY-4.0 for manual text; complete website rendering unassessed")
+    (licence-evidence "The pinned unpriv/colophon.html preface to Version2.2 states CC-BY4.0
+                       for that manual and future versions; priv/priv-preface.html has the
+                       corresponding statement for its volume. The former no-statement claim
+                       was contradicted inside this snapshot. Scope, source pins and the one
+                       retained DIV statement decision: materials/RVI_M_RETENTION.md. The
+                       complete site rendering/assets remain unassessed and untracked.")
     (corpus "chipdoc")
     (corpus-path "risc-v/isa/pinned/v20260120")
     (cache-path "riscv/pinned-v20260120")

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — retain one licensed DIV statement (P4-SYSTEM.14 a42z)
+
+Correct the snapshot-wide no-CC-BY claim using two pinned prefaces. Record scoped manual-text terms and retain an exact182B statement in1576B of attributed/provenanced HTML. Add bounded source/licence-pinned emission, cache-free asset verification and20 controls/9 omissions normal/O; production profile gate checks the pin. Preserve the existing property case and its pending cache binding, old method logic/history, fixed caps and CPU/BOARD milestones. Regenerate GS provenance and correct its unsupported per-commit Rust-test claim; axes stay exact. No canonical capture or qualification.
+
 ## _(2026-10-18)_ — review the first DIV capture population (P4-SYSTEM.14 a42y)
 
 Add an independently selected bounded producer/import/data review and the proposed finite capture plan. Normal/O enumerate34 modules,27 exercised data files and62 proposed children;65 reviewed files/972963B. Verify22 controls/10 discriminating omissions in both modes, image/author agreement and complete old-source/history preservation. Keep canonical retention/entrypoint, policy binding and qualification pending. Whole-oldest DEV/CH0351/0352; fixed caps and CPU/BOARD milestones unchanged.

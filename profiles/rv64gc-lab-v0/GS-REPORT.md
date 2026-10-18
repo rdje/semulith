@@ -55,17 +55,17 @@ is not a claim with a denominator.
 | `G-REPLAY` | `reduction` | `crates/semulith-verify/src/reduce_rv64gc/tests.rs` `both_controls_reduce_and_replay_the_exact_original_paired_difference` | yes |
 | `G-RELEASE` | `decision` | — | **none declared** |
 
-A test function is verified to exist in a tracked file; it PASSES because `make check` runs
-`cargo test` before every commit. A record is verified to be tracked and, for a verdict-bearing
-kind, to carry a passing recorded verdict. What a declaration claims a test exercises is the
-reviewer's to judge — that much this report cannot measure.
+A test function is verified to exist in a tracked file; this report does not execute tests.
+Test results must come from an applicable recorded run. A record is verified to be tracked
+and, for a verdict-bearing kind, to carry a passing recorded verdict. What a declaration
+claims a test exercises is the reviewer's to judge — that much this report cannot measure.
 
 ## The versioned artifact
 
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 34dd776e7e8ec8e8887bf4f3a8c5ee8c71e2aab74dee0cf471c1daac96dd53f1`
+  `sha256 053d66650f247bb37e3c4bae78782d56f1ac7c5e283c339dac9192ccac7fdc14`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

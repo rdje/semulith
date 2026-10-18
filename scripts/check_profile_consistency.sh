@@ -1900,11 +1900,42 @@ byte-recheck:2
 DIV_REVIEW_CASES
   done
 
+  # P4-SYSTEM.14 a42z: bounded licensed statement curation, no property/capture credit.
+  local div_retention_mode div_retention_mutation div_retention_losses
+  local -a div_retention_python
+  for div_retention_mode in normal optimized; do
+    div_retention_python=(python3)
+    [ "$div_retention_mode" = optimized ] && div_retention_python+=(-O)
+    out="$("${div_retention_python[@]}" scripts/probe_div_statement_retention.py 2>&1)"; rc=$?
+    score "GREEN DIV statement retention $div_retention_mode" "$rc" 0 "$out" "DIV-STATEMENT-RETENTION: 20 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit"
+    while IFS=: read -r div_retention_mutation div_retention_losses; do
+      out="$("${div_retention_python[@]}" scripts/probe_div_statement_retention.py --mutation "$div_retention_mutation" 2>&1)"; rc=$?
+      score "RED DIV statement retention $div_retention_mutation $div_retention_mode" "$rc" 1 "$out" "DIV-STATEMENT-RETENTION: 20 tests / $div_retention_losses failures / 0 errors; synthetic curation controls, no capture credit"
+    done <<'DIV_RETENTION_CASES'
+input-pins:2
+input-bounds:2
+licence-statement:1
+unique-statement:1
+closing-span:1
+span-bound:1
+retained-bound:1
+exact-span:4
+retained-pin:1
+DIV_RETENTION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
 
 [ "${1:-}" = "--self-test" ] && { self_test; exit $?; }
+
+# The curated source is tracked: its pin check must not depend on acquired pages.
+div_retained_result="$(python3 scripts/retain_div_statement.py --verify 2>&1)"; div_retained_rc=$?
+if [ "$div_retained_rc" -ne 0 ]; then
+  printf 'PROFILE-CONSISTENCY: retained DIV statement refused: %s\n' "$div_retained_result" >&2
+  exit 1
+fi
 
 # P4-SYSTEM.2 slice (c1): probe the csr-set rule against a staged state document at a
 # scratch path (the rv64gc unit's own state.sexp is a route contradiction until the flip).

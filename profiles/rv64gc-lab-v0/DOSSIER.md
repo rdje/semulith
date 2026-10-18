@@ -99,8 +99,9 @@ implementation: earlier successful runs are not automatically requalified.
 ## Open questions
 
 - **OQ-1 — license/terms recording.** SRC-01 requires the actual applicable terms
-  recorded before relying on or shipping an artifact; the pinned artifacts are READ,
-  not redistributed, and "shipping" is not reached. Owned here, due at the first
+  recorded before relying on or shipping an artifact. One retained DIV statement
+  has a scoped CC-BY4.0 decision in `materials/RVI_M_RETENTION.md`; the full fetched
+  artifacts remain unredistributed and other terms open. Owned here, due at the first
   release candidate of this profile (the rv64i-lab-v0 OQ-4 precedent).
 - **OQ-2 — CLOSED (`2026-10-03`, P4-SYSTEM.3 slice a, D-SVADE): the profile implements
   Svade.** A translation needing an A or D PTE update raises a page fault instead of

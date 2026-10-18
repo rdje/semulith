@@ -7,7 +7,9 @@ cache-artifact declaration; it does not mean a successful web acquisition. At
 registration all24 source artifacts were authenticated against their unchanged
 hashes and byte lengths through the public cache routes. Acquisition grants no
 reuse terms, independence or conformance credit; release-time terms recording
-remains an owned dossier question.
+remains an owned dossier question. One licensed DIV statement has a scoped
+retention decision in `materials/RVI_M_RETENTION.md`; see the
+[capture plan](capture-plan.md#retain-licensed-text-with-its-own-identity).
 
 ## Pinned specifications
 

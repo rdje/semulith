@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/rv64gc-lab-v0/sources.sexp`  `78de0c75fe3059fc691ecd6c07224e2b3e4fea46f89ff98dce827fe29ecc2895`
+     `profiles/rv64gc-lab-v0/sources.sexp`  `0eb01f82ba9be00ec46fae525e389570d5c6388c87f5c19a536b0d626b28f641`
      Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 Pinned publication: **RISC-V Ratified Specifications Library (docs.riscv.org), pinned snapshot v20260120 — plus three catalog-cached artifacts declared in the comment above**, revision `v20260120`, retrieved 2026-10-02 — explicitly NOT github.com/riscv/riscv-isa-manual releases — different section numbering (the numbering trap).

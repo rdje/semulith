@@ -1,5 +1,78 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — curate a pinned statement under scoped terms (P4-SYSTEM.14 a42z)
+
+Canonical retention reaches SRC-01: the current case requires an acquired full M
+HTML page, but the catalogue says the served pages carry no CC-BY statement and
+sources describe read/no redistribution. Before copying anything, inspect actual
+terms and their scope. The old catalogue claim entered at3afd275. Its evidence
+names the website footer, but both pinned manual prefaces contain explicit
+CC-BY4.0 statements covering those manuals and future versions. Audit the complete
+72-row snapshot manifest via the public materials resolver; M page35588B and
+unprivileged colophon112487B match their manifest/source pins. Counterexamples
+are in this publication, not inferred from another PDF. The root is the claim's
+scope: footer evidence cannot establish absence across the snapshot. The history
+cannot prove which other pages the original investigator read; do not invent it.
+
+Record actual manual-text terms and a scoped redistribution decision in
+materials/RVI_M_RETENTION.md. Keep full website rendering/assets unassessed and
+untracked. The M division section has an external instruction diagram; retaining
+the full section would create another dependency. Copy only its exact182B
+norm:div_divu_op span, which states XLEN signed/unsigned division and rounding
+toward zero. Add an attribution/change wrapper, original publication and licence
+source URLs/digests, CC-BY4.0 link, publisher/original-author credit and extraction
+route. The1576B retained HTML has its own SHAbbe3ff9d…af1a58; it is not the original
+35588B page. It establishes neither instruction encoding nor other M coverage.
+
+retain_statement checks immutable input types/bounds before complete SHA checks,
+then the source-pinned licence statement, target uniqueness/termination, bounded
+exact span/UTF8 and bounded deterministic output. Direct limits64KiB source,
+128KiB licence evidence,1KiB selected span,4KiB retained output. --emit uses the
+existing anchored reader on the two acquired pages and writes only stdout.
+--verify reads the fixed tracked asset alone and reports byte identity. Add that
+cache-free check to the default PROFILE-CONSISTENCY gate. Actual regeneration
+matches; verification from a fresh on-volume root containing only the asset
+matches with no .materials directory. No reference process is launched.
+
+Synthetic20 controls and9 omissions normal/O lose2/2/1/1/1/1/1/4/1 assertions,
+zero errors. Pins changed outside the selected quote/terms must still refuse.
+Exercise inclusive/short input/span/output bounds, omitted/duplicate/unterminated
+targets, UTF8 preservation, attribution and missing/changed/symlinked retained
+inputs. Register only after RED; derive1606 arms/39doctrines. The existing source
+property case and old production logic stay exact outside the owned profile
+registration/asset check and report display literals. Adopt the excerpt's distinct identity and its producer
+in the following slice; retaining a new asset alone does not change the old
+case's required full-page input. Original publication authority must remain exact.
+
+The asset fits the existing profiles family, without changing caps; the complete
+capture output family still needs measured predeclaration. Correct the catalogue,
+GC source/dossier commentary, README licence scope and both unit-book statements; keep all24
+source record fields and source/property semantic authority unchanged. The materials gate caught the
+source-comment fingerprint drift: regenerate pinned-specifications.md through
+gen_model_book; only its source seal changes, all24 rows stay exact.
+
+The first commit attempt was correctly blocked by GATE-REPORT: the new tracked
+profile input plus source/dossier commentary change dossier_digest, which hashes
+all tracked source files under the profile and excludes derived reports. Save
+commit-attempt-1.log and regenerate GS-REPORT through its owner. Inspection also
+finds the GS producer's false claim that cargo test runs before every commit.
+COMMIT.md §2 is conditional on Rust changes; the pre-commit hook runs doctrines.
+Own the false execution inference as P1 and fix it now: report test presence and
+require an applicable recorded run for pass evidence. Only four display literals
+change in gate_report.py. Compare old/new builders on identical current inputs;
+all axes/verdict/data rows stay exact. Current GS output differs from the base
+only in that paragraph and the dossier seal. Existing contract/report controls
+verify currentness, determinism and deliberate tamper refusal; qualification and
+G-REPLAY4/4 do not change. Source/authority schemas and the extraction/evaluation
+code remain exact. The fixed generated report is included in the GC book.
+
+Whole closed x1444B retained in the existing task artifact, complete source/owner
+inverses and6damaged controls; no native heading disappears. DEV oldest whole
+entry moves to0353 with byte/order identity. Focused gates/seven books and old
+property controls verify; CPU14/18,BOARD10/12,qualification unchanged.
+promotion: declined (existing SRC-01/review/retention contracts; scoped source
+fact is canonical in materials/RVI_M_RETENTION.md). Evidence target/p4-system-14/a42z.
+
 ## _(2026-10-18)_ — inventory reviewed DIV producers and data loaders (P4-SYSTEM.14 a42y)
 
 The metadata InputReview boundary deliberately does not discover dependencies.
@@ -579,84 +652,4 @@ A sweep of all four comparator consumers checks56 selector sites, now singular.
 Entry25/16 and program23/7 matrices pass normal/O with identical assertion losses,
 zero errors; old52/14 and new23/19 stay unchanged. Normal COMMIT retry required.
 Evidence: target/p4-system-14/a42p.
-
-## _(2026-10-18)_ — derive immutable-source expectation snapshots (P4-SYSTEM.14 a42o)
-
-P4-0257 starts after clean b3b7af2, brief0/untracked and host census0. Own the
-snapshot bridge and capacity prerequisite first. The root had491B headroom;
-minimal ownership reached130904B. Retain the entire3334B completed a42l2 body
-in the existing include-source-integration artifact. Original126277B prefix
-stays exact; compact metadata binds complete source/owner/retired identities,
-ownership insertion, payload and stub. Six independent damaged/truncated/offset/
-shape/hash cases refuse before writes. Artifact130938B and retired root127748B
-stay under131072;107 task-family members, original12 authority and all prior
-archives/seals remain unchanged. Current unit records the full inverse procedure.
-No new collection, cap or source deletion; source/owner inverse is byte-exact.
-
-Declare the snapshot API in GC References before code. Reuse the existing
-spec-side numerical rules; extract shared prepare_guest_source and canonical
-assembler context in matched_gpr_image. Existing image builder delegates to
-those owners without changing its result/guard contracts. Legacy path parcel
-route delegates to the shared line runner with its original annotations,
-controls,10000-step ceiling and output. New route preflights immutable bytes
-1..1MiB,8192 lines, plain program1..65536 and instruction budget1..4096 before
-tool reads. It uses the canonical IALIGN16 profile, not DERIVE_ENCODING.
-Assembled lengths are bounded before joining/initializing the cold byte image.
-
-The existing byte runner records actual fetched bits/length, including updated
-instruction memory; missing complete fetches retain None. Image identity remains
-initial. Add immutable SnapshotDerivation/SnapshotStep records with copied sorted
-GPR changes and stock notes, fixed cold entry0x80000000/64KiB region. No mutable
-hart/step/image/source escapes. Ignore annotation authority on the snapshot route;
-reject never/refuse source controls, retain exact explicit budgets through loops,
-end markers, halt, delivery and runoff. No new numerical interpreter, reference
-execution, file output, source-path read or original-capture chronology claim.
-Canonical tool-data reads remain explicit, outside supplied-artifact bounds.
-This is bounded producer behavior, not complete source/property qualification.
-
-The permanent mixed-width API assertion fails before implementation (1/1/0).
-A second permanent case exposes initial AsmError escaping the promised boundary
-(2/1/0). Import/convert it to bounded SnapshotError; malformed source no longer
-leaks the assembler exception. SnapshotUnsupported remains distinct for source
-controls/semantic shapes, SnapshotUnavailable for canonical tools. Both fixes
-pass; all21 tests pass normal/O. Shape/count checks reject corrupt internal
-image/budget results. Replace the shared annotation assertion with explicit
-Refusal and account for missing/extra units; optimized execution cannot erase it.
-Initial selfmod fixture used conventional 0(x1), while this published assembler
-requires rs2,imm,rs1. The diagnostic proves that input mistake; fix the fixture
-and check seven hand-encoded initial words plus the actual patched instruction.
-
-Fifteen genuine omissions discriminate normally/optimized with zero errors;
-losses 6/15/1/12/1/2/2/2/2/3/8/1/1/3/33. Shared image33 controls/seventeen omissions retain
-identical normal/O losses after extraction. Direct canonical parity proves all
-167 parcel +41 historical word outputs byte/order exact against b3b7af2 (208
-serialized runs, zero refusals). Snapshot results match133 committed guests /
-4044 GPR boundaries;34 source-control guests explicitly unsupported. No canonical
-fixture is rewritten. Before proof: capture bytes for x1=5, replace the file with
-x1=9; old documented path API reads9, snapshot derives5. Normal/O match; this is
-new capability, not a claim the old path API violated its contract.
-
-Register actual21-test/15-omission summaries normal/O in GUEST-GEN. Static arm
-census re-derived1584. Whole-oldest DEV sharding moves one entry4316B to0343;
-old head reconstructs byte/order exact, prior manifest prefix and every earlier
-shard unchanged. Update current decision censuses only; normative clauses stay
-exact. Teach complete snapshot usage and limits in the GC book. P4 stays14/18,
-replay4/4green, CPU six axes open and BOARD10/12. Producer authenticity, full
-canonical closure/review, source-grounded property binding, collector/fresh runs,
-retention and policy/status derivation remain. Promotion declined: existing
-source/producer and bounded-snapshot principles, no new project policy.
-Scope normal/O protects1498 other tracked files/85 prior head entries;
-complete retained source/owner inverses and six damaged cases pass. Fifteen
-focused checks and7 books/3280 links pass; the literal five-line example is exact.
-The sole Git whitespace diagnostic is the inherited EOF blank on0343; retain
-its complete4316B source suffix. Staged history passes; normal COMMIT is next.
-Evidence: target/p4-system-14/a42o.
-
-Initial normal COMMIT refused GUEST-GEN353/7. Six temporary author mutants
-were unregistered in sys.modules: new dataclasses failed at import. One parcel
-source-end mutation still named the old program map and raised TypeError after
-the extraction. Own both before repair; register the module before execution
-and target program_units. Seventeen existing cases now retain their exact
-registered outcomes/reasons, including all seven failures; no unintended crash.
-Only these harness seams change. Full normal COMMIT retry remains required.
 

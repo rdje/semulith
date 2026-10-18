@@ -59,6 +59,55 @@ whole changing parent catalogue in that identity.
 
 ## Execution and retention still required
 
+### Retain licensed text with its own identity
+
+The source catalogue's former claim that the HTML snapshot contains no CC-BY
+statement was too broad. The [pinned unprivileged colophon](https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html), in its preface
+to Version2.2, states CC-BY4.0 applies to that manual and future versions. The
+privileged preface has a corresponding statement for its own volume. Website
+footers and specification text have different scopes; this does not establish
+rights to redistribute the complete website rendering or its assets.
+
+`scripts/retain_div_statement.py` derives one bounded retained input:
+`profiles/rv64gc-lab-v0/retained/div-statement.html`. It copies exactly the
+`norm:div_divu_op` span from the pinned M page, with a new attribution/provenance
+wrapper. The statement retains signed/unsigned XLEN division and rounding toward
+zero. It omits the diagrams, other operations, navigation, scripts and styles.
+Its identity is distinct from the original full-page identity. The wrapper names
+the original URL/digest, the licence-evidence URL/digest, RISC-V International,
+the CC-BY4.0 licence and the extraction/change notice. It grants no extra M
+coverage, execution, capture or qualification credit.
+
+The emitter requires the exact immutable M page and licence-evidence bytes,
+checks their pins and bounds before extraction, and writes only to stdout.
+The verifier checks the retained file's own fixed pin through the existing
+anchored reader, without opening either acquired source page:
+
+```bash
+python3 scripts/retain_div_statement.py --emit
+python3 scripts/retain_div_statement.py --verify
+python3 scripts/probe_div_statement_retention.py
+python3 -O scripts/probe_div_statement_retention.py
+```
+
+`--emit` needs the acquired snapshot; a missing input exits2. `--verify` can work
+in a fresh checkout and reports byte identity only. Synthetic controls require
+no acquired materials. Review the retained text at the source path above.
+
+This curation slice does not replace the property case's existing full-page
+input. That binding and its controls must change explicitly in the next slice,
+preserving the original publication digest as current semantic authority and
+using the excerpt's separate digest as a retained artifact input. Extend the
+reviewed producer population with the extraction tool before adopting it: the
+proposed child population then grows from62 to63, leaving one slot for the final
+entrypoint. The diagnostic's current cache-bound case still reports62.
+
+The asset belongs to the existing registered `profiles/` family; its measured
+addition must fit that family's unchanged count, aggregate and member caps.
+Final capture outputs still require their own measured retention declaration.
+
+### Complete the capture declaration
+
 Before any canonical run, commit the final entrypoint and exact manifest,
 property/author/impact authorities, output namespace and retention family. The
 retained file set must support repeatable offline evaluation without relying on

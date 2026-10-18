@@ -54,8 +54,8 @@ GitHub release PDF (a different publication *and* a different revision, catalogu
 `RVI-ISA-PDF-20260911`, `status reference-only`; it answers below as corroboration, never
 as the subject).
 
-**The fetch** (to the gitignored, on-volume cache — the repository does not redistribute
-third-party documents):
+**The fetch** (to the gitignored, on-volume cache; this complete fetched document
+remains untracked):
 
 ```
 $ curl -sS -o target/materials/riscv-unprivileged-v20260120.pdf -w '%{http_code} %{size_download}\n' \

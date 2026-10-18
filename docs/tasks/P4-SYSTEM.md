@@ -358,6 +358,22 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42z — retain one licensed DIV statement (completed, SEMULITH-P4-0268)
+
+Catalogue's snapshot-wide no-CC-BY claim (introduced3afd275) contradicted by both
+pinned prefaces. Audit72-page manifest and source/colophon pins; record scoped
+manual-text terms in materials/RVI_M_RETENTION.md, keeping full site untracked.
+Retain exact182B DIV/DIVU span in1576B attributed/provenanced HTML; emitter pins
+both bounded inputs, verifier authenticates tracked asset without acquired pages.
+Probe20/0/0 with9 omissions normal/O; actual regeneration/fresh-root verification.
+Production profile gate checks asset pin. Current property case/cache binding and
+method logic stays exact except report prose; next slice adopts separate excerpt identity.
+Whole closed x1444B retained with source/owner inverse2/6damaged refusals; old
+history, fixed caps and qualification refusal preserved. Evidence target/p4-system-14/a42z.
+P1 owned: GS falsely claims test passes per commit; COMMIT§2 is conditional.
+Repro gate_report.py --gate GS (base1a5d); fixed execution prose and regenerate, preserving axes.
+promotion: declined (existing SRC-01/review/retention contracts). COMMIT applies.
+
 ### `.14` a42y — review canonical capture dependencies (completed, SEMULITH-P4-0267)
 
 Source-reviewed collector/evaluator/author population:34 project modules,27 data
@@ -375,24 +391,7 @@ and source/property contracts; no new cross-cutting policy). COMMIT applies.
 
 ### `.14` a42x — collect a bounded three-run unit (completed, SEMULITH-P4-0266)
 
-Own a frozen baseline/repeat/control collector, one128MiB allowance shared
-through process collection and receipt publication. Add bounded integer request
-limits and immutable charged-read reports to existing helpers; preserve defaults,
-old fields/positional constructors and all calibrated legacy outcomes. Charge
-failed/invalid reads conservatively, never refund unjudgeable work. Before first
-launch require12absent owned output names, preflight parents/protected inputs and
-prove actual namespace disjointness with exclusive reservations; no old capture
-overwrite. Freeze all requests before I/O; stop on failure, retain failed-process
-metadata, no comparison/canonical/qualification credit. Contract first in GC book;
-normal/O synthetic real-child/unit/budget/alias/failure controls and omissions,
-real Sail unit smoke, focused/books/history/scope and normal COMMIT. Whole w and
-closed .16 technical history5481B retained with complete owner/source inverse2,
-6damaged refusals; live .16 goal/status/acceptance and old artifact prefix exact.
-Evidence target/p4-system-14/a42x. Full closure/policy/retention remain pending.
-
-Verified verify.py normal/O:1521 protected files/1Gitlink/90history entries;
-whole source/owner inverse2,6damaged refusals;14focused checks/seven books pass.
-promotion: declined (existing bounded-read/provenance/history contracts).
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42z-a42x).
 
 ### `.14` a42w — publish fresh receipts (completed, SEMULITH-P4-0265)
 
@@ -575,6 +574,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42z **REPRODUCE / ISSUE**: license-census.py rc=0: old no-statement claim has2 counterexamples in pinned72-page snapshot.
+- [x] `.14` a42z **ROOT CAUSE**: license-census.py/repair-report.py rc=0: footer scope omits prefaces; test presence cannot imply per-commit execution.
+- [x] `.14` a42z **FIX**: scoped terms and bounded exact-span curation/verification; separate artifact identity; presence-only report prose; case binding pending.
+- [x] `.14` a42z **ADDRESSED**: run-controls.py rc=0 normal/O:20/0/0,9 omissions; repair-report.py rc=0: axes exact; actual182B/1576B regeneration/cache-free verification.
+- [x] `.14` a42z **NO REGRESSION**: verify.py/focused.py rc=0: old logic/source fields/status exact; report prose/seal reviewed; focused gates/seven books.
+- [x] `.14` a42z **LOCKSTEP**: verify.py rc=0 normal/O: old x source/owner inverse2,6damaged refusals; whole-oldest DEV0353 exact; caps/CPU unchanged. COMMIT applies.
 - [x] `.14` a42y **REPRODUCE / ISSUE**: before.py rc=0: base lacks independently enumerated capture review; caller inventory only.
 - [x] `.14` a42y **ROOT CAUSE**: run-controls.py rc=0 normal/O: population omissions lose2/2 cases; declared inputs alone cannot discover omitted producers/data.
 - [x] `.14` a42y **FIX**: explicit source-reviewed module/data sets, bounded import census/exercised loaders and separate live authority/retention plan.
@@ -1556,6 +1561,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42z | `SEMULITH-P4-0268` | bind separate retained excerpt and review inventory |
 | `.14` a42y | `SEMULITH-P4-0267` | bounded canonical retention and entrypoint |
 | `.14` a42x | `SEMULITH-P4-0266` | canonical closure and capture plan |
 | `.14` a42w | `SEMULITH-P4-0265` | unit collector and shared budgets |

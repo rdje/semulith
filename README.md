@@ -67,4 +67,5 @@ rather than growing this file.
 
 ## License
 
-Dual-licensed under MIT or Apache-2.0.
+Project-authored work is dual-licensed under MIT or Apache-2.0.
+The [retained DIV statement](materials/RVI_M_RETENTION.md) keeps its CC-BY4.0 terms.

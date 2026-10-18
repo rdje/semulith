@@ -29,7 +29,9 @@
          "will report such rows UNREACHABLE — honest, and the same shape as the device"
          "dossiers' corpus-sourced rows."
          ""
-         "Terms: as rv64i-lab-v0 — the artifacts are READ, not redistributed; SRC-01's"
+         "Terms: fetched artifacts remain READ, not redistributed in full. One licensed"
+         "DIV statement is retained separately; scope/pins: materials/RVI_M_RETENTION.md."
+         "Other terms remain open. SRC-01's"
          "actual-terms recording is owned by DOSSIER.md's open question when shipping is"
          "reached.")
 

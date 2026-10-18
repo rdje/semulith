@@ -494,3 +494,35 @@ source/owner inverse2,6damaged refusals;14focused/7books/3348links pass.
 promotion: declined (existing receipt/provenance/history contracts).
 
 ````
+
+## P4 a42z — whole completed unit collection record
+
+```json
+{"schema":1,"revision":"1a5d1102ea8379611b94308b95cfe9e3229908af","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130127,"source_sha256":"15124fa76d5cdf9c68b275b3b42ef1d96d7887b5bc51bce74b99bb1ee965540a","owner_insert":{"base":"1a5d1102ea8379611b94308b95cfe9e3229908af","offset":32667,"text":"### `.14` a42z \u2014 resolve normative retention terms (active)\n\nOwn SRC-01 review before retaining the first DIV primary input. Catalogue terms\nare unrecorded; sources say read/not redistributed. Investigate actual primary\nterms and publication scope with tools; never infer HTML rights from a PDF.\nResolve a reviewable retention route, or record the exact authority/decision\nblocker. No canonical run or silent method weakening. Own complete source/history\npreservation, closed-x retention if needed, book/live sync and normal COMMIT.\nEvidence target/p4-system-14/a42z; existing caps/qualification guard stay fixed.\n\n","source_bytes":130127,"source_sha256":"15124fa76d5cdf9c68b275b3b42ef1d96d7887b5bc51bce74b99bb1ee965540a"},"owner_bytes":130744,"owner_sha256":"f5acc56c5b8d9361845b35710981a3cf8c6825458cf701ec8f86e0d31626ceaa","retired_bytes":129459,"retired_sha256":"d1363468fe89c7fb94172513cd633f1cfe550c853efc0aaa28de96d4a855b277","records":[{"unit":"a42x","offset":34357,"bytes":1444,"lines":21,"sha256":"33c3a0c0746c060a1fbcef702f3a85935730f45251ffe936eff26e2d235418c1","replacement":"### `.14` a42x \u2014 collect a bounded three-run unit (completed, SEMULITH-P4-0266)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42z-a42x).\n\n"}]}
+```
+
+<a id="p4-a42z-a42x"></a>
+
+````text
+### `.14` a42x — collect a bounded three-run unit (completed, SEMULITH-P4-0266)
+
+Own a frozen baseline/repeat/control collector, one128MiB allowance shared
+through process collection and receipt publication. Add bounded integer request
+limits and immutable charged-read reports to existing helpers; preserve defaults,
+old fields/positional constructors and all calibrated legacy outcomes. Charge
+failed/invalid reads conservatively, never refund unjudgeable work. Before first
+launch require12absent owned output names, preflight parents/protected inputs and
+prove actual namespace disjointness with exclusive reservations; no old capture
+overwrite. Freeze all requests before I/O; stop on failure, retain failed-process
+metadata, no comparison/canonical/qualification credit. Contract first in GC book;
+normal/O synthetic real-child/unit/budget/alias/failure controls and omissions,
+real Sail unit smoke, focused/books/history/scope and normal COMMIT. Whole w and
+closed .16 technical history5481B retained with complete owner/source inverse2,
+6damaged refusals; live .16 goal/status/acceptance and old artifact prefix exact.
+Evidence target/p4-system-14/a42x. Full closure/policy/retention remain pending.
+
+Verified verify.py normal/O:1521 protected files/1Gitlink/90history entries;
+whole source/owner inverse2,6damaged refusals;14focused checks/seven books pass.
+promotion: declined (existing bounded-read/provenance/history contracts).
+
+````
