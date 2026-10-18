@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — fresh bounded reference process (P4-SYSTEM.14 a42v)
+
+Add frozen process collection, pre/post pins, owned outputs, deadline/group cleanup and file limits. Fix physical path aliasing before cleanup; reserve every output exclusively. Observe fresh hashes through the shared reader without supplied-pin credit. Verify25 controls/18 omissions, legacy reader behavior and a real three-process Sail smoke normal/O. Teach API/examples; no canonical capture or qualification.
+
 ## _(2026-10-18)_ — authenticated finite-property composition (P4-SYSTEM.14 a42u)
 
 Bind optional current property authority to the actual selected raw property before reads, then compose the finite source finding after value/author success. Preserve earlier findings and old fields; refuse contradictions, with unsupported scope pending/uncredited. Verify22 controls/14 omissions and all80 affected legacy omissions normal/O. Separate simulated external-pin tests from an unmocked23-file cached-page smoke. Preserve whole records/caps and teach both examples; no primary redistribution, capture or qualification credit.

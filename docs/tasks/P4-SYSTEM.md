@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | collector process/output controls |
+| 1 | `P4-SYSTEM.14` | `active` | receipt writer and unit collection |
 
 ## Decisions
 
@@ -408,18 +408,23 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42v — collect one fresh bounded process (completed, SEMULITH-P4-0264)
+
+Own the shared bounded unpinned-file observation API and a first-method process
+collector. Contract first in GC collector.md: freeze public plan/output identities;
+check binary/eight input pins before/after; clear only four owned outputs; launch
+fresh no-shell reference argv, bound files/time and reap its process group. Keep
+empty stdout/stderr files and metadata; preserve failed exits without success
+credit. No receipt writer, canonical capture, closure/policy or qualification yet.
+Normal/O process/path/pin/limit controls, unchanged reader vectors, books/scope
+and normal COMMIT. Whole closed u896B retained, old21746B prefix exact; six
+inverses: target/p4-system-14/a42v/retention.json. No cap/seal changes.
+Physical-alias defect fixed: physical-alias-after.py rc=0 normal/O refuses before
+cleanup with input unchanged; before probe damaged only disposable fixtures.
+
 ### `.14` a42u — compose authenticated source properties (completed, SEMULITH-P4-0263)
 
-Own optional property_authority and appended source_property. Build/freeze context
-from the actual selected raw property/program before I/O; require author review.
-Bind after matched source values/author metadata, preserve prior findings, refuse
-invalid/misbound findings, leave unsupported pending/uncredited. No new artifact
-reads beyond the declared normative child. Preserve old fields/seams. Book-first;
-normal/O controls/affected legacy vectors, scope/books and normal COMMIT.
-Respect unredistributed primary documents: explicit external-pin doubles in CI,
-and a separate unmocked real cached-page smoke, not interchangeable evidence.
-Closed t1352B retained whole, old19368B prefix exact; full inverses/six refusals:
-target/p4-system-14/a42u/retention.json. Collector/retention/full policy follows.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42v-u).
 
 ### `.14` a42t — ground a finite signed-DIV property (completed, SEMULITH-P4-0262)
 
@@ -604,6 +609,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42v **ROOT CAUSE**: physical-alias-before.py rc=0 normal/O: case alias damaged fixture input before stale finding.
+- [x] `.14` a42v **ADDRESSED**: run-controls.py rc=0 normal/O:25/0/0;18 omissions/0 errors; reader14 outcomes exact; physical aliases preserve inputs.
+- [x] `.14` a42v **NO REGRESSION**: verify.py/focused.py rc=0:1518 files/89 entries;6 inverses;15 checks/7 books/3344 links; real Sail normal/O.
 
 - [x] `.14` a42u **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new refused on unrelated actual statement; values match.
 - [x] `.14` a42u **ADDRESSED**: run-controls.py rc=0 normal/O:22/0/0;14 omissions/0 errors;80 legacy omissions exact/112 sites.
@@ -1562,6 +1571,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42v | `SEMULITH-P4-0264` | receipt writer and unit collection |
 | `.14` a42u | `SEMULITH-P4-0263` | collector process/output controls |
 | `.14` a42t | `SEMULITH-P4-0262` | authenticated finite-property composition |
 | `.14` a42s | `SEMULITH-P4-0261` | source-grounded property review |

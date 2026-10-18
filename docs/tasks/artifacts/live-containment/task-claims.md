@@ -327,3 +327,29 @@ Reproduction: target/p4-system-14/a42t/status-cycle.json. Fixed before0262: stab
 semantic projection excludes outputs; actual file pins/impact remain exact.
 
 ````
+
+## P4 a42v — complete closed property-composition record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42v-u"></a>
+
+```json
+{"schema":1,"revision":"d169b8129a3473f875f109e115892c1c1efd966e","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130147,"source_sha256":"0109539d1c872e791e126b280469ea08cd1c70a0770754d6637113928ca11390","owner_insert":{"offset":37030,"text":"### `.14` a42v retain (SEMULITH-P4-0264)\n\n"},"owner_bytes":130189,"owner_sha256":"23dc2c6a8d4d754279e48b49b8e1d61e02ae886546802a5a9b86810e754e809b","offset":37072,"record_bytes":896,"record_lines":13,"record_sha256":"afcfe1e586b776bc2a2883b4eb9db58c1548abd89af2170f666af9821e35874a","replacement":"### `.14` a42u — compose authenticated source properties (completed, SEMULITH-P4-0263)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42v-u).\n\n","retired_bytes":129456,"retired_sha256":"e86a5e9fe59302f012ad2415705519cfacc497da9f745af066f98dbdc7317f56"}
+```
+
+````text
+### `.14` a42u — compose authenticated source properties (completed, SEMULITH-P4-0263)
+
+Own optional property_authority and appended source_property. Build/freeze context
+from the actual selected raw property/program before I/O; require author review.
+Bind after matched source values/author metadata, preserve prior findings, refuse
+invalid/misbound findings, leave unsupported pending/uncredited. No new artifact
+reads beyond the declared normative child. Preserve old fields/seams. Book-first;
+normal/O controls/affected legacy vectors, scope/books and normal COMMIT.
+Respect unredistributed primary documents: explicit external-pin doubles in CI,
+and a separate unmocked real cached-page smoke, not interchangeable evidence.
+Closed t1352B retained whole, old19368B prefix exact; full inverses/six refusals:
+target/p4-system-14/a42u/retention.json. Collector/retention/full policy follows.
+
+````

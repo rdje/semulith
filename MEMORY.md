@@ -16,19 +16,19 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 collector process/output controls, then bounded
-  retention/predeclared captures and complete policy/status/mirrors. P4-0263
-  composes the finite signed-DIV property from actual raw context after source
-  values/author review.22 controls/14 omissions,80 legacy omissions normal/O;
-  scope1514 files/89 old entries,112 old selectors exact. Simulated external-pin
-  CI is separate from unmocked23-file cached-page smoke. No capture credit.
-  m-div.s step2/x7: signed -7/2→-3 only. Authority fingerprints normalize
-  derived outputs; exact artifact/input/impact checks stay unfiltered. Current
-  canonical authority, complete input coverage and code identity remain caller
-  review obligations. Existing source/image/value/input/impact/author APIs done.
-  Full closure/review, collector, captures/retention, policy/status remain;
-  qualification closed, CPU14/18 and replay4/4green. No whole-M credit.
-- in_flight_uncommitted: none after P4-0263; verify Git state on read.
+- next_action: P4-SYSTEM.14 receipt writing/unit collection, then complete
+  closure/impact/policy binding and bounded retention/predeclared canonical
+  captures. P4-0264 implements one fresh bounded process and shared unpinned
+  observations;25 controls/18 omissions normal/O, original reader behavior exact.
+  Physical path aliases now refuse before cleanup; all output names reserve
+  exclusively. Reproduced/fixed case-insensitive input overwrite before signoff.
+  Real Sail smoke normal/O:3 fresh PIDs, exit0, AGREE/AGREE/DIVERGE, identical
+  2298B traces; step2/x7 -3 vs -4. Optional one-command smoke is reproducible;
+  no canonical capture/receipt/qualification. Per-call accounting is not the
+  pending shared experiment budget. Property/source/image/value/review/author
+  APIs exist; complete closure review, collector unit and policy remain.
+  CPU14/18, BOARD10/12, replay4/4green; qualification closed, no whole-M credit.
+- in_flight_uncommitted: none after P4-0264; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

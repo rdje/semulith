@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only file-pin authentication for declared matched-experiment artifacts.
+"""Read-only bounded file observations and supplied-pin artifact authentication.
 
 Results describe bytes at a repository-relative path during this check. They do
 not authenticate process execution, comparison correctness or evidence adequacy.
@@ -38,6 +38,17 @@ class Snapshot:
     data: bytes | None  # Available only after a bounded, successful authenticated read.
 
 
+@dataclass(frozen=True)
+class ObservedFile:
+    """Stable bounded file metadata, without a supplied-pin authentication claim."""
+
+    path: str
+    disposition: str  # observed / unavailable / refused
+    reason: str
+    byte_size: int | None = None
+    sha256: str | None = None
+
+
 class UnsafeArtifact(Exception):
     """The reader cannot establish a safe, stable project-owned file identity."""
 
@@ -56,7 +67,8 @@ def _git_boundary(directory_fd: int):
 
 
 def _read_pinned(root: Path, record_kind: str, record: dict,
-                 byte_limit: int | None = None, *, retain_payload: bool = False) -> Snapshot:
+                 byte_limit: int | None = None, *, retain_payload: bool = False,
+                 observe_only: bool = False) -> Snapshot:
     """Authenticate one input/observation pin without following symlinks.
 
     The caller supplies the trusted runtime repository root. Record shape normally
@@ -150,6 +162,8 @@ def _read_pinned(root: Path, record_kind: str, record: dict,
                     raise UnsafeArtifact("artifact parent replaced during reading")
                 _git_boundary(child_fd)
             observed = digest.hexdigest()
+            if observe_only:
+                digest_pin = observed
             if observed != digest_pin:
                 return result("mismatch", "SHA256 differs", before.st_size, observed)
             return result("matched", "file bytes match the declared pin", before.st_size, observed,
@@ -200,3 +214,38 @@ def check_files(root: Path, verification: dict) -> list[PinResult]:
     """Check schema/graph-validated records in declared order, with no success flag."""
     return [read_pinned(root, family, record)
             for family in ("input", "observation") for record in verification[family]]
+
+
+def observe_bounded_file(root: Path, path: str, *, max_bytes: int) -> ObservedFile:
+    """Hash a fresh file through the shared anchored/stable reader, without a pin.
+
+    There is deliberately no expected digest and no payload or PinResult in this
+    API. All existing authentication entrypoints keep observe_only disabled.
+    """
+    if (
+        type(path) is not str
+        or not 1 <= len(path) <= 65536
+        or type(max_bytes) is not int
+        or max_bytes < 0
+    ):
+        return ObservedFile(
+            path if type(path) is str else "",
+            "refused",
+            "invalid bounded observation request",
+        )
+    record = {"id": "fresh-output", "path": path, "sha256": "0" * 64}
+    pin = _read_pinned(
+        root, "input", record, byte_limit=max_bytes, observe_only=True
+    ).pin
+    if pin.disposition == "matched":
+        return ObservedFile(
+            path,
+            "observed",
+            "stable bounded file observed; no supplied pin",
+            pin.byte_size,
+            pin.sha256,
+        )
+    disposition = (
+        pin.disposition if pin.disposition in ("unavailable", "refused") else "refused"
+    )
+    return ObservedFile(path, disposition, pin.reason)

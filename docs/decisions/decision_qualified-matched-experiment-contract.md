@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42u, `SEMULITH-P4-0203`–`0263`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42v, `SEMULITH-P4-0203`–`0264`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,7 +15,7 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Implemented:** syntax, authenticated byte/image/value checks and frozen input/impact/author/property composition. API: GC unit book; qualification closed.
+**Implemented:** syntax, byte/image/value/review/property bindings and one-process collection. API: GC unit book; qualification closed.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
 `UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh

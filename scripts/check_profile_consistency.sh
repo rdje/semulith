@@ -1785,6 +1785,39 @@ actual-context-binding:1
 PROPERTY_EVALUATION_CASES
   done
 
+  # P4-SYSTEM.14 a42v: real synthetic children, observed files and owned cleanup.
+  local collector_mode collector_mutation collector_losses
+  local -a collector_python
+  for collector_mode in normal optimized; do
+    collector_python=(python3)
+    [ "$collector_mode" = optimized ] && collector_python+=(-O)
+    out="$("${collector_python[@]}" scripts/probe_matched_gpr_collector.py 2>&1)"; rc=$?
+    score "GREEN fresh process collector $collector_mode" "$rc" 0 "$out" "MATCHED-GPR-COLLECTOR: 25 tests / 0 failures / 0 errors; synthetic child processes, no Sail capture credit"
+    while IFS=: read -r collector_mutation collector_losses; do
+      out="$("${collector_python[@]}" scripts/probe_matched_gpr_collector.py --mutation "$collector_mutation" 2>&1)"; rc=$?
+      score "RED fresh process collector $collector_mutation $collector_mode" "$rc" 1 "$out" "MATCHED-GPR-COLLECTOR: 25 tests / $collector_losses failures / 0 errors; synthetic child processes, no Sail capture credit"
+    done <<'COLLECTOR_CASES'
+physical-input-alias:1
+physical-output-alias:1
+exclusive-reservations:1
+observation-mode:9
+output-finding:1
+request-freeze:1
+owned-clear:14
+pre-pins:9
+post-pins:2
+fixed-argv:1
+output-alias:1
+selected-outputs:1
+special-output:1
+nested-git:2
+stream-bound:1
+hard-file-bound:1
+group-cleanup:1
+deadline:1
+COLLECTOR_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
