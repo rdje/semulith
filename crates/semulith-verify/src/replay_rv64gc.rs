@@ -88,6 +88,14 @@ impl BundleRv64gc {
         self.model
     }
 
+    pub(crate) fn input(&self) -> &SnapshotRv64gc {
+        &self.input
+    }
+
+    pub(crate) fn recorded_trace(&self) -> &Trace {
+        &self.recorded
+    }
+
     /// Re-derive observations and every final CPU/memory owner from the saved input.
     pub fn replay(&self) -> Result<ReplayRv64gc, String> {
         if self.producer_sha256 != producer_identity() {

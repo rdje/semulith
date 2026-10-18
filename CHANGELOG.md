@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0253 (leaf P4-SYSTEM.16) — reduce and replay RV64GC divergences
+
+- Add bounded mixed-width reduction over both complete control models, preserving the exact original paired-step difference. Save original bytes, deterministic search receipt and complete reduced-run bundles; replay verifies the search, retained difference and both final-state receipts without the guest catalogue.
+- Cover halfword entry, mixed instructions/data, typed faults, bounded search, single-chunk minimality and damaged identities/receipts/inputs through library and CLI. Budget-limited results do not claim minimality; malformed or out-of-domain cases refuse explicitly. Correct scalar word/step and guest-size prose using measured cases.
+- Update both books and derive G-REPLAY4/4 green; CPU-SYSTEM remains incomplete on six other axes. P4 stays13/18 while the owned scalar cap follow-up remains. Retain three whole oldest DEV entries byte-exact in shard0339 under fixed caps.
+
 ## SEMULITH-P4-0252 (leaf P4-SYSTEM.16) — record declared RV64GC control models
 
 - Add v2 replay records with a required canonical model choice, pinned controller/runtime source and explicit selected-model continuation. Record/replay both wrong-model results through API and CLI; changing a valid choice exposes its changed GPR observations. Production defaults and finite limits stay supported.

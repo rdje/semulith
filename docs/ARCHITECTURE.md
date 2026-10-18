@@ -301,15 +301,62 @@ braces/brackets, commas and colons before parsing. Recorded GPR changes must be
 ordered unique x1–x31; model-error text is bounded to 4096 bytes. These artifact
 limits bound work without promising an exact process-RAM ceiling. The CLI bounds
 its file read before parsing. Its `--mutate=none` spelling selects production.
-Reduction and board/device/event replay remain open.
+Board/device/event replay remains outside this laboratory format.
 
 All current RV64GC guests round-trip and replay through this format. Controls
 alter PC, privilege, GPR changes, length, fetch/error/final receipts and identities;
 mid-execution and empty continuations also replay. CLI checks exercise atomics,
 wait/timer, translation and floating-point guests. This supplies the bundle kind
-of `G-REPLAY`; reduction and the remaining CPU-SYSTEM acceptance work stay open.
+of `G-REPLAY`; the remaining CPU-SYSTEM acceptance work stays open.
 Digest strings are escaped as JSON data, including rejected foreign identities;
 escaping does not weaken restoration's identity and memory checks.
+
+### RV64GC divergence reduction
+
+Reduce a deliberately wrong model against production, saving a replayable record:
+
+```sh
+cargo run -q -p semulith-cli -- reduce --profile=rv64gc-lab-v0 --guest=guest-control --mutate=zext-addi > target/addi-reduced.json
+cargo run -q -p semulith-cli -- replay target/addi-reduced.json --profile=rv64gc-lab-v0
+```
+
+Use `--mutate=jal-no-link` for the other control. JSON goes to stdout; the byte
+counts, evaluation count, retained boundary and minimality result go to stderr.
+Both controls retain their original difference (boundary 1/x1 and boundary 7/x5).
+An identical reduction replay exits0; this verifies reproducibility of the wrong
+result, not correctness of that model or independent ISA acceptance.
+
+The reducer reruns both complete tables from cold reset after each deletion.
+It deletes two-byte image chunks, with a final single data byte when present.
+Chunks can contain instructions or data; dynamic execution can skip or reuse
+encodings. Retention requires the original first differing paired step's index
+and both complete observations: incoming PC, resulting mode and all GPR changes.
+Deleting bytes can change addresses and control flow; a changed index or value
+is rejected. Model errors and length/fetch/final-state-only differences are
+outside this property; no paired difference exits1 with that scope named.
+
+The domain is a cold 64 KiB region based at entry, an image up to 65,536 bytes,
+at most 1,000 steps, and the same typed fault regions on both sides. The default
+512 property evaluations include the original and reserved final verification;
+`--evaluations=2` returns an unchanged retaining case with no minimality claim.
+A completed single-chunk deletion pass establishes **1-minimality in that deletion
+domain**, not a global minimum. A capped search labels minimality unestablished.
+
+`semulith-rv64gc-reduction-v1` stores the original bytes, reducer-source identity,
+search limit/count/minimality and two complete reduced-run bundles with identical
+cold input. Replay repeats the deterministic search, checks the resulting bytes
+and search receipt, replays every child receipt and verifies exact original/reduced
+difference retention. It does not require the guest catalogue. Identity, search
+or result failures exit1; malformed/unsupported records or usage exit2.
+
+Reduction JSON is bounded to 16 MiB, depth12 and 2,000,000 structural punctuation
+characters. The direct reduction reader checks this before parsing. The shared
+CLI replay reader applies the common 145 MiB replay guard before parsing the root
+format, then the 16 MiB bound for reduction records. Child states must be canonical
+cold checkpoints, with zeros after the declared image; arbitrary continuations
+use ordinary bundles. These limits bound work without defining a process RAM cap.
+This evidence completes the four laboratory `G-REPLAY` kinds; CPU-SYSTEM remains
+incomplete on its other axes. The full mutation campaign remains `.15` work.
 
 ### RV64GC detector controls
 

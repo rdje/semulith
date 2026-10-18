@@ -26,6 +26,10 @@
   (test (file "crates/semulith-verify/src/replay_rv64gc/tests.rs") (fn "every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts"))
   (statement "Every tracked guest records and replays a self-contained JSON bundle: complete CPU/memory/fault-policy input, explicit no-external-event policy, trace, fetch/model-error receipts and a digest of the complete final checkpoint. Additional controls discriminate trace fields, aggregate/final receipts, foreign identities, invalid states and bounds; four system cases use the real CLI. This demonstrates laboratory reproducibility, not independent ISA correctness or board/device replay."))
 
+(evidence (axis G-REPLAY) (kind reduction)
+  (test (file "crates/semulith-verify/src/reduce_rv64gc/tests.rs") (fn "both_controls_reduce_and_replay_the_exact_original_paired_difference"))
+  (statement "Both declared full-profile control models reduce with the exact original paired-step difference retained, then replay the deterministic search and both complete reduced-run receipts from self-contained JSON. Mixed 16/32-bit images, a trailing data byte, typed faults, capped search, single-chunk minimality witnesses and damaged record controls have additional tests; both models and capped records use the real CLI. This is bounded laboratory reproducibility, not independent ISA correctness or board/device replay."))
+
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
 (open (axis G-TRACE) (owner "P4-SYSTEM.14")
@@ -34,8 +38,6 @@
   (statement "Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5."))
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
   (statement "No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work."))
-(open (axis G-REPLAY) (owner "P4-SYSTEM.16")
-  (statement "RV64GC snapshot/resume and model-aware replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name."))
 (open (axis G-PORTABILITY) (owner "P4-SYSTEM.17")
   (statement "No portability record for this unit: the instrument's manifest is built from rv64i's guests."))
 (open (axis G-RELEASE) (owner "P4-SYSTEM.18")

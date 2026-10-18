@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (7 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-REPLAY`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (6 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
@@ -18,7 +18,7 @@
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 2 of 5 required kinds evidenced — open: `external`, `workload`, `validator-mutation` | **incomplete** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
-| `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 3 of 4 required kinds evidenced — open: `reduction` | **incomplete** |
+| `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 4 of 4 required kinds evidenced | **green** |
 | `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | no release decision recorded; this report is generated from tracked inputs and gated for sync (GATE-REPORT); other axes open | **incomplete** |
 
 Fidelity is reported per axis. No sentence here says the profile is supported: a banner
@@ -33,7 +33,6 @@ is not a claim with a denominator.
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
-| `G-REPLAY` | `P4-SYSTEM.16` | RV64GC snapshot/resume and model-aware replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -53,7 +52,7 @@ is not a claim with a denominator.
 | `G-REPLAY` | `determinism` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_re_executes_identically_from_cold_reset` | yes |
 | `G-REPLAY` | `snapshot` | `crates/semulith-verify/src/snapshot_rv64gc/tests.rs` `every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches` | yes |
 | `G-REPLAY` | `replay-bundle` | `crates/semulith-verify/src/replay_rv64gc/tests.rs` `every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts` | yes |
-| `G-REPLAY` | `reduction` | — | **none declared** |
+| `G-REPLAY` | `reduction` | `crates/semulith-verify/src/reduce_rv64gc/tests.rs` `both_controls_reduce_and_replay_the_exact_original_paired_difference` | yes |
 | `G-RELEASE` | `decision` | — | **none declared** |
 
 A test function is verified to exist in a tracked file; it PASSES because `make check` runs
@@ -66,7 +65,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 e4be817082e9b0fb6de67dc3317931ed3f2277d1495db29ed049524f2b0f99a4`
+  `sha256 34dd776e7e8ec8e8887bf4f3a8c5ee8c71e2aab74dee0cf471c1daac96dd53f1`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

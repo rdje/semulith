@@ -49,6 +49,13 @@ pub struct Resumed {
     pub memory: FlatMemory,
 }
 
+pub(crate) struct ColdImage {
+    pub entry: u64,
+    pub budget: usize,
+    pub refusals: Vec<Refusal>,
+    pub image: Vec<u8>,
+}
+
 fn algorithm() -> Algorithm {
     Algorithm {
         harness: concat!("semulith-verify ", env!("CARGO_PKG_VERSION")).into(),
@@ -165,6 +172,41 @@ impl SnapshotRv64gc {
 
     pub(crate) fn remaining_steps(&self) -> usize {
         self.common.budget - self.common.at_step
+    }
+
+    /// A reducer's narrower input domain: cold reset, memory based at entry, zero
+    /// outside the declared image. Check size before restoring untrusted memory.
+    pub(crate) fn cold_image(
+        &self,
+        region_size: usize,
+        image_len: usize,
+    ) -> Result<ColdImage, String> {
+        if self.common.size != region_size as u64
+            || self.common.base != self.common.entry
+            || self.common.at_step != 0
+            || image_len > region_size
+        {
+            return Err("RV64GC reduction: unsupported cold input layout".into());
+        }
+        let (_, memory) = self.restore()?;
+        let mut cold = ArchitecturalState::zeroed_at(self.common.entry);
+        let canonical = Self::capture(
+            &memory,
+            &mut cold,
+            self.common.entry,
+            0,
+            self.common.budget,
+            &self.refusals,
+        )?;
+        if *self != canonical || memory.bytes()[image_len..].iter().any(|b| *b != 0) {
+            return Err("RV64GC reduction: input is not canonical cold memory/state".into());
+        }
+        Ok(ColdImage {
+            entry: self.common.entry,
+            budget: self.common.budget,
+            refusals: self.refusals.clone(),
+            image: memory.bytes()[..image_len].to_vec(),
+        })
     }
 
     /// Bind the complete final owners with the same canonical checkpoint encoding.

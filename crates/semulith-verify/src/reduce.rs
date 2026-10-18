@@ -1,23 +1,16 @@
-//! The minimizer — `P1-LAB.10`, task card T008 (EVD-02's minimized discrepancy form:
-//! "every later difference may be a consequence of the first", so the retained artifact is
-//! the smallest input that still produces the ORIGINAL first divergence). P2 consumes this
-//! directly ("retain minimized discrepancies").
+//! The scalar minimizer — `P1-LAB.10`, task card T008. It implements the
+//! replay/reduction retention check in `docs/EVIDENCE_AND_GATES.md` §6.
 //!
-//! The input domain is the guest word sequence: ILEN is 32 for this profile, so one word
-//! is exactly one observation step, and a program is a `&[u32]`. The property under test
-//! is the differential's: run the model under test and the reference over the candidate
-//! and ask [`run::compare`] for the first divergence. **Retention is the original
-//! divergence exactly** — same step, same field description. Same-step retention makes
-//! the whole divergence byte-identical (the executed prefix is unchanged, so pc, values
-//! and tval come along); a removal that merely shifts the divergence or changes its field
-//! is correctly rejected, not mistaken for the retained case.
+//! The deletion domain is the guest's fixed-width u32 image encodings. Dynamic
+//! execution can revisit or skip words: a word count is not a step count. Each
+//! candidate reruns both tables with the same entry, memory size and step budget.
+//! Retention is exact equality of the original [`run::Divergence`]: the aligned
+//! step and the complete formatted field description, including reported values.
+//! The reducer does not infer an unchanged execution prefix from the step index.
 //!
-//! The algorithm is classic delta debugging (ddmin, Zeller & Hildebrandt): partition the
-//! remaining words into chunks, try removing each chunk, keep a removal only while the
-//! property retains, shrink the chunks when no removal does. Every accepted removal
-//! preserves the property by construction, so the result **always** retains the original
-//! divergence — the invariant is structural, not hoped for, and [`Reduction::retained`]
-//! is re-derived from the final words rather than assumed.
+//! Delta debugging removes chunks only when that property retains. The final
+//! witness is re-derived from the retained words. A completed single-word deletion
+//! pass establishes 1-minimality in this deletion domain, not a global minimum.
 //!
 //! Named boundary: a case whose observations do not first-diverge has nothing to retain
 //! and is refused [`ReduceError::NoDivergence`] — the `.9` suite's phantom-load arm is
@@ -31,10 +24,8 @@ use crate::fixtures::FlatMemory;
 use crate::replay::image_bytes;
 use crate::run::{self, Divergence, Trace};
 
-/// Runaway guard for the candidate-evaluation loop. The tracked guests are ≤ 13 words, so
-/// ddmin finishes in tens of evaluations; the cap exists so a pathological future input
-/// bounds its own cost. Hitting it is not an error: every accepted removal preserved the
-/// property, so the current candidate retains regardless of why the loop stopped.
+/// Runaway guard for the outer candidate-evaluation loop. Guest sizes vary;
+/// accepted removals retain the original property even if the search stops early.
 const EVALUATION_CAP: usize = 100_000;
 
 /// The differential under reduction: the model under test (e.g. a `.9` mutant table) and

@@ -40,6 +40,7 @@ pub mod model_rv64gc;
 pub mod mutate;
 pub mod pattern;
 pub mod reduce;
+pub mod reduce_rv64gc;
 pub mod replay;
 pub mod replay_rv64gc;
 pub mod report;

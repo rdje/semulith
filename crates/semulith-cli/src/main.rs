@@ -53,12 +53,13 @@
 //!   the image digest — and a drifted result is reported at the first differing
 //!   observation. Exit codes: 0 — the replay is identical; 1 — a named mismatch or
 //!   a refused identity; 2 — usage, unreadable input, or a malformed bundle.
-//! - `semulith reduce --guest NAME --mutate NAME` — minimize the guest against the
+//! - `semulith reduce --guest NAME --mutate NAME [--profile NAME]` — minimize the guest against the
 //!   differential while retaining the original first divergence exactly (EVD-02),
 //!   and print the minimized program with its retained divergence. Exit codes:
 //!   0 — minimized; 1 — the case has no first-divergence to retain (the census
 //!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
-//!   name.
+//!   name. RV64GC writes a replayable JSON pair to stdout and a summary to stderr;
+//!   `--evaluations=2..512` bounds search, including original/final verification.
 //! - `semulith snapshot <elf> --at N [--profile NAME] [--steps N] [--base ADDR] [--size BYTES]` —
 //!   record the mid-execution state after N steps as a JSON snapshot record
 //!   (`P2-SCALAR.7`, G-REPLAY's second half): the definition-identity pins, the
@@ -97,8 +98,8 @@ use semulith_verify::elf;
 /// definition was statically rv64i's until the flip; now `run` and `demo` take
 /// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
 /// was). The commands whose machinery is rv64i-scoped today — bench (the workload
-/// mixes) and reduce refuse rv64gc-lab-v0 by name. Its text demo has two named
-/// full-profile fault controls, which its replay bundles can also record.
+/// mixes) refuses rv64gc-lab-v0 by name. Its text demo has two named
+/// full-profile fault controls, which its replay bundles and reducer also record.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Profile {
     Rv64iLabV0,
@@ -188,7 +189,7 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      \x20       semulith replay <file.json> [--profile NAME]\n\
                      \x20       semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]\n\
                      \x20       semulith resume <file.json>\n\
-                     \x20       semulith reduce --guest NAME --mutate NAME\n\
+                     \x20       semulith reduce --guest NAME --mutate NAME [--profile NAME] [--evaluations N]\n\
                      \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n\
                      \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run, demo, snapshot, resume, bundle, replay;\n\
                      \x20       other commands refuse the rv64gc profile by name; GC snapshots allow up to 64 MiB)\n";
@@ -1112,12 +1113,28 @@ fn replay(args: &[String]) -> ExitCode {
         }
     };
     if profile == Profile::Rv64gcLabV0 {
-        use semulith_verify::replay_rv64gc::{BundleRv64gc, ReplayRv64gc};
-        let bundle = match BundleRv64gc::parse(&text) {
+        use semulith_verify::reduce_rv64gc::ReplayRecord;
+        use semulith_verify::replay_rv64gc::ReplayRv64gc;
+        let record = match ReplayRecord::parse(&text) {
             Ok(bundle) => bundle,
             Err(error) => {
                 eprintln!("replay: {file}: refused — {error}");
                 return ExitCode::from(2);
+            }
+        };
+        let bundle = match record {
+            ReplayRecord::Run(bundle) => bundle,
+            ReplayRecord::Reduced(record) => {
+                return match record.replay() {
+                    Ok(difference) => {
+                        println!("replay: identical reduction — original difference retained at boundary {} and both complete run receipts re-derived", difference.at);
+                        ExitCode::from(0)
+                    }
+                    Err(error) => {
+                        println!("replay: refused — {error}");
+                        ExitCode::from(1)
+                    }
+                }
             }
         };
         return match bundle.replay() {
@@ -1185,11 +1202,7 @@ fn reduce_cmd(args: &[String]) -> ExitCode {
         Err(code) => return code,
     };
     if profile == Profile::Rv64gcLabV0 {
-        return rv64gc_not_wired(
-            "reduce",
-            "the reducer's differential runs the rv64i mutation tables; an rv64gc reducer \
-             is a later leaf",
-        );
+        return reduce_rv64gc_cmd(&args);
     }
     let args = &args;
     let (guest_name, mutation) = match parse_guest_mutation(args, "reduce") {
@@ -1233,6 +1246,73 @@ fn reduce_cmd(args: &[String]) -> ExitCode {
                 "reduce: no first-divergence to retain — {} under '{}' agrees on the observations; a census-class wrong behaviour is not reducible on the trace",
                 guest.name, mutation
             );
+            ExitCode::from(1)
+        }
+    }
+}
+
+/// RV64GC reductions write a self-contained JSON reproducer to stdout.
+fn reduce_rv64gc_cmd(args: &[String]) -> ExitCode {
+    use semulith_verify::model_rv64gc::Model;
+    use semulith_verify::reduce_rv64gc::{Case, ReduceError, Reproducer, MAX_EVALUATIONS};
+    let mut guest = None;
+    let mut model = Model::Production;
+    let mut evaluation_limit = MAX_EVALUATIONS;
+    for arg in args {
+        if let Some(name) = arg.strip_prefix("--guest=") {
+            guest = Some(name);
+        } else if let Some(name) = arg.strip_prefix("--mutate=") {
+            model = match Model::from_mutation(name) {
+                Ok(model) => model,
+                Err(error) => return usage(&format!("reduce: {error}")),
+            };
+        } else if let Some(value) = arg.strip_prefix("--evaluations=") {
+            evaluation_limit = match value.parse::<usize>() {
+                Ok(value) if (2..=MAX_EVALUATIONS).contains(&value) => value,
+                _ => return usage("reduce: --evaluations wants 2..=512"),
+            };
+        } else {
+            return usage(&format!("reduce: unknown RV64GC option/operand {arg}"));
+        }
+    }
+    let Some(name) = guest else {
+        return usage("reduce: a --guest=NAME is required for RV64GC");
+    };
+    let Some(guest) = semulith_verify::guests_rv64gc::GUESTS
+        .iter()
+        .find(|g| g.name == name)
+    else {
+        return usage(&format!("reduce: unknown RV64GC guest '{name}'"));
+    };
+    let case = Case {
+        entry: guest.entry,
+        budget: guest.executed_steps,
+        refusals: guest.refusals,
+        model,
+        evaluation_limit,
+    };
+    match Reproducer::record(&case, guest.image) {
+        Ok((record, reduction)) => {
+            eprintln!(
+                "reduce: {} under {} — {} -> {} bytes; {} evaluations; {}; retained boundary {}",
+                guest.name,
+                model.name(),
+                guest.image.len(),
+                reduction.image.len(),
+                reduction.evaluations,
+                if reduction.one_minimal {
+                    "1-minimal in chunk-deletion domain"
+                } else {
+                    "budget-limited; minimality not established"
+                },
+                reduction.retained.at
+            );
+            println!("{}", record.to_json());
+            ExitCode::from(0)
+        }
+        Err(ReduceError::Invalid(error)) => usage(&format!("reduce: {error}")),
+        Err(error) => {
+            eprintln!("reduce: {error}");
             ExitCode::from(1)
         }
     }

@@ -13,7 +13,7 @@ locator, and the dependency closure is measured against the pinned publication.
 > F/D use the qualified Rust backend (`P4-SYSTEM.7`); C bound at `.12` slice e2c.
 > This is finite laboratory evidence. The generated [CPU-SYSTEM report](GS-REPORT.md)
 > owns the current acceptance verdict. Instruction composition and realized
-> environment checks do not close evidence, regression, replay, portability or
+> environment checks do not close evidence, regression, portability or
 > release obligations. Resolution-era declarations below retain their history;
 > effective membership and supersessions are defined in contract.sexp.
 

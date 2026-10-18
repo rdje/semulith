@@ -269,7 +269,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: every mutation class detected on the rv64gc corpus; the external suite's verdicts
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
-  Status: `active` (snapshots0249/bundles0250; reduction next)
+  Status: `active` (GC replay delivered; scalar cap follow-up next)
   Goal: complete RV64GC snapshot, replay and reduction CLI.
   Acceptance: every guest resumes identically mid-execution; a recorded divergence
   replays and reduces with that divergence retained.
@@ -306,6 +306,12 @@ This gate authorises the planned next engineering stage: board implementation.
   - [x] **ROOT CAUSE** — verify.py rc=0:224c v1 record lacks declared choice (bounded source census).
   - [x] **ADDRESSED** — `make check` rc=0:277verify/4CLI; both declared controls and changed choices discriminate.
   - [x] **NO REGRESSION** — wasm/focused13/books/C-image rc=0; scope normal/O1489files/88history/48nav exact.
+  .16e/0253: own GC mixed-width reduction/search receipts/CLI/tests/docs/gate,
+  oldest-whole DEV rollover, scalar word/step prose (12/13; scope-mem29words).
+  - [x] **ROOT CAUSE** — verify.py rc=0:f8b GC refusal; native word/step12/13,29/29.
+  - [x] **ADDRESSED** — make check rc=0:283verify/5CLI; exact reduction/replay controls.
+  - [x] **NO REGRESSION** — wasm/books/focused13 rc=0; scope normal/O1488files/90history exact.
+  .16f next: verify scalar outer-loop cap across a whole inner pass; repair if reproduced.
   .16c/0251 complete after5c42e3a, queued task-only dirt/host0 before code.
   Own cached full-GC zext-addi/jal-no-link control tables, common runner/demo,
   shape refusals, untouched-row/production parity and first-difference controls.
@@ -338,7 +344,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.16` | `active` | snapshot/bundle delivered; reduction next |
+| 1 | `P4-SYSTEM.16` | `active` | GC replay delivered; scalar cap follow-up |
 
 ## Decisions
 
@@ -1580,6 +1586,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.16e` | `SEMULITH-P4-0253` | GC reduction/replay verified; scalar cap next |
 | `.16d` | `SEMULITH-P4-0252` | declared-model replay verified; reduction next |
 | `.16c` | `SEMULITH-P4-0251` | controls/demo verified; model-aware bundles next |
 | `.16b` | `SEMULITH-P4-0250` | bundles/replay verified; reduction next |
