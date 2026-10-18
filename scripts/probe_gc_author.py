@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 from pathlib import Path
+import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
@@ -97,6 +98,7 @@ def main():
         path.write_text(source.replace(old, new))
         spec = importlib.util.spec_from_file_location('author_control', path)
         module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
         spec.loader.exec_module(module)
         module.REPO = REPO
         module.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'

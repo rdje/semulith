@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | canonical closure/property/collector review; impact binding complete |
+| 1 | `P4-SYSTEM.14` | `active` | source-grounded property/producer binding; snapshot author available |
 
 ## Decisions
 
@@ -407,6 +407,46 @@ Remaining: closure/impact binding, source-grounded property/collector provenance
 fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
+
+### `.14` a42o — derive expectations from immutable source (completed, SEMULITH-P4-0257)
+
+Own a bounded snapshot API through the existing spec-side author, not a second
+numerical interpreter. Reuse byte/line preflight and canonical assembler context;
+consume the supplied immutable source, preserve exact legacy file-route output,
+and return frozen GPR-change observations/provenance under the existing rules.
+Declare API/bounds/stock-annotation scope in GC References before code. Own
+preflight/path-independence, mixed-width/fault/loop/copying and normal/O omission
+controls, books/live sync and normal COMMIT. Qualification remains closed.
+
+Capacity prerequisite complete: whole3334B a42l2 retained in the existing
+include-source-integration artifact, old126277B prefix exact; six damaged cases
+refuse. Metadata binds the b3b7af2 source, ownership insertion, payload offset and
+complete source/owner/retired identities. To reconstruct, undo only this unit's
+later ownership/acceptance/verification/commit/frontier edits to the recorded
+retired view; verify retired hash, replace its unique stub with the exact body
+at offset, verify owner hash, remove owner_insert.text at its offset, then
+verify source length/hash. No prior archive, seal, native heading or cap changes.
+Evidence: target/p4-system-14/a42o. Reader authority remains the original12.
+
+Owned initial defect: unknown assembly lets AsmError escape the declared
+SnapshotError boundary. Reproduce with not_an_instruction; callers cannot
+handle the promised exception. red-classification.json/log:2tests/1failure,
+0errors. Typed conversion fixed it:2/0/0; no numeric expectation changes.
+
+Verified:21 controls/15 omissions normal/O,33 shared-image controls/17 omissions;
+all losses assert without errors. Legacy208 outputs exact;133 supported guests /
+4044 steps match,34 source-control guests explicitly unsupported. Scope protects
+1498 other files/85 prior entries;15 focused checks,7 books/3280 links and literal
+example pass. No qualification/status promotion; normal COMMIT required next.
+
+Own hook regression before repair: GUEST-GEN353/7. Six author mutants load a
+dataclass module without sys.modules registration; explicit-budget mutant still
+targets old program-map naming and raises TypeError. Reproduce: old registered
+probe commands in target/guest-gen/self-test.log. Impact: semantic negative
+controls crash instead of discriminating. Fix both existing probe loaders/sites,
+retain all seven intended normal-mode reasons; rerun full GUEST-GEN and COMMIT.
+Fixed: register author mutants before execution and target program_units.
+legacy-controls.py rc=0:17 existing cases retain exact verdict/reason; no crashes.
 
 ### `.14` a42n — bind retained inputs to old/new impact (completed, SEMULITH-P4-0256)
 
@@ -538,50 +578,7 @@ cadence. promotion: declined (existing exact-history containment rules; measured
 
 ### `.14` a42l2 — preserve published ordinary histories (completed, SEMULITH-P4-0248)
 
-Priority1 D49 repair follows committed a42l1. Add a separate publishing guard
-for published archive Markdown, comparing complete working and proposed-index
-bytes/modes to HEAD; failed or malformed Git reads refuse. New ordinary parts
-may be added; existing records stay exact. Original closed12 retrieval authority
-and seal remain unchanged. Own independent damaged working/index, omission,
-read-failure and optimization controls, actual full-gate receipt replay, current
-book/toolbox/doctrine teaching, focused checks and COMMIT. No qualification credit.
-
-Owned on clean8237f71 after all9 committed hashes/modes, brief0 and unrestricted
-host census0. D49 primary before-result remains a42k on505dd74: actual full gate0
-with isolated staged part18 receipt3196→3197; actual files/index exact. Read
-published TASK-HISTORY shell, closed12 reader/probe, predecessor guard/control
-patterns, current history/book/doctrine/toolbox and derived-count contracts.
-
-Implement scripts/task_history_preservation.py as a separate publishing guard,
-leaving original reader/descriptor/terminal/probes byte-exact. Public no-argument
-CLI returns0 for both views exact,1 for changed published history,2 when reads
-cannot support a verdict. Closed HEAD/index Git inventories and bounded blob
-reads cover archive Markdown/navigation; failed/stderr/malformed/empty baseline
-reads refuse. Compare complete old bytes and Git modes in index and working
-files; reject missing/changed/nonregular/symlink/off-volume/Git-boundary inputs.
-New archive files may be added; this does not validate their first publication
-or prove historical claims true. All scratch stays under target/p4-system-14/a42l2.
-
-Own first-class scripts/probe_task_history_preservation.py, independent fixtures
-without secondary real Git repos, normal/O and omission controls for each view,
-mode and failed/malformed reads. Integrate two normal/O wrapper arms into the
-existing TASK-HISTORY self-test; retain all46 old controls and original finite12
-reader authority. Re-derive current count/mirrors after registering, updating
-LIVE_STATUS count only if measured; preserve old historical count receipts.
-Actual existing first-class gate probe replays the same part18 edit with scoped
-real Git delegation and isolated index; require full gate rejection naming the
-new index guard, real index/all tracked working identities/proposed index exact,
-owned index residue0, and independently pin both new module hashes before/after.
-
-Update current main-book reading/gate teaching, toolbox and doctrine mirrors;
-keep old bodies/commands byte-exact except explicitly current teaching seams.
-Protect all other tracked code/data/records/modes/Gitlinks, all40 published
-archive files and original seals; no canonical/CPU/qualification change. Existing
-fixed caps and task file96/96 stay fixed. Own any needed whole-oldest DEV/CH
-sharding before use, whole-source inverses/both guards/real receipt+digest
-controls. Focused checks, normal+print/seven books/navigation, actual full-gate
-replay and mandatory COMMIT hooks precede the next slice. Full CI before push;
-no push below cadence. promotion: declined (existing publishing/failed-read doctrine; measured repair and independent controls remain in this leaf).
+[Complete record](artifacts/live-containment/include-source-integration.md#p4-a42o-l2).
 
 ### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
 
@@ -646,6 +643,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42o **ROOT CAUSE**: before.py rc=0 normal/O proves source-file9 vs captured5; red-classification records2/1/0 before typed repair,2/0/0 after.
+- [x] `.14` a42o **ADDRESSED**: run-controls.py rc=0 normal/O:21 tests/0 failures/0 errors;15 omissions discriminate, shared-image33/17 unchanged;208 legacy outputs exact,133 snapshot guests/4044 steps match; legacy-controls.py rc=0 restores17 reasons.
+- [x] `.14` a42o **NO REGRESSION**: verify.py/focused.py rc=0 normal/O:1498 protected files/85 prior entries; six damaged inverse controls,15 focused checks,7 books/3280 links; literal example exact.
 
 - [x] `.14` a42n **ROOT CAUSE**: before.py rc=0 normal/O: old pending/authenticated vs new stale/input-review matched; synthetic, no qualification.
 - [x] `.14` a42n **ADDRESSED**: run-controls.py rc=0 normal/O:24 tests/0 failures/0 errors;22 semantic omissions each lose assertions/0 errors.
@@ -1580,6 +1581,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42o | `SEMULITH-P4-0257` | source-grounded property/producer binding |
 | `.14` a42n | `SEMULITH-P4-0256` | canonical closure/property/collector review next |
 | a42m | `SEMULITH-P4-0255` | closure/impact binding next |
 | `.16f` | `SEMULITH-P4-0254` | scalar cap verified; .16 complete, .14 next |

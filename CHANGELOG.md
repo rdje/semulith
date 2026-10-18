@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0257 (leaf P4-SYSTEM.14) — derive expectation snapshots from immutable source
+
+- Add a bounded frozen-observation API through the existing spec-side author. Reuse canonical source/context validation, consume supplied bytes without reopening a program path, retain actual modified instruction bits and initial image identity, and keep stock notes and explicit budgets. Source controls explicitly unsupported on this route; legacy file behavior stays exact.
+- Verify21 tests and15 discriminating omissions normal/optimized; all167 parcel and41 word outputs remain byte-exact. Snapshot observations match133 canonical guests/4044 boundaries;34 source-control guests refuse explicitly. Repair the initial leaked assembler exception with a permanent failed-before control.
+- Retain the complete3334B closed reader record with exact source inverses, preserve126277B prior artifact content and move one whole DEV entry to0343. Fixed caps and CPU/BOARD milestones stay unchanged. Document the API/examples and remaining unqualified boundaries.
+
 ## SEMULITH-P4-0256 (leaf P4-SYSTEM.14) — bind retained inputs to old/new impact
 
 - Compose the existing dependency-impact engine with optional frozen caller graphs and current reviewed inputs. Bind full old/current input metadata and evidence reachability before file-set reads; distinguish invalid context from selected stale evidence. Preserve legacy defaults and independent file/process findings; qualification remains closed.

@@ -898,6 +898,35 @@ PYCODE
   arm "RED toolchain identity cannot be bypassed" "$rc" 1 "$out" "CONTROL-MISSED: C/wrong-clang"
 
   rm -rf "$t"
+  # P4-SYSTEM.14 a42o: immutable source through the existing spec-side author.
+  local snapshot_mode snapshot_mutation snapshot_failures
+  local -a snapshot_command
+  for snapshot_mode in normal optimized; do
+    snapshot_command=(python3)
+    [ "$snapshot_mode" = optimized ] && snapshot_command+=(-O)
+    out="$("${snapshot_command[@]}" scripts/probe_gc_snapshot_author.py 2>&1)"; rc=$?
+    arm "GREEN $snapshot_mode snapshot author controls" "$rc" 0 "$out" "GC-SNAPSHOT-AUTHOR: 21 tests / 0 failures / 0 errors; no reference execution"
+    while IFS=: read -r snapshot_mutation snapshot_failures; do
+      out="$("${snapshot_command[@]}" scripts/probe_gc_snapshot_author.py --mutation "$snapshot_mutation" 2>&1)"; rc=$?
+      arm "RED $snapshot_mode omitted snapshot guard $snapshot_mutation" "$rc" 1 "$out" "GC-SNAPSHOT-AUTHOR: 21 tests / $snapshot_failures failures / 0 errors; no reference execution"
+    done <<'SNAPSHOT_AUTHOR_CASES'
+budget:6
+source-preflight:15
+canonical-context:1
+budget-forward:12
+stock-notes:1
+source-controls:2
+complete-result:2
+raw-bits:2
+source-fingerprint:2
+payload-fingerprint:3
+writes-copy:8
+result-frozen:1
+step-frozen:1
+program-label:3
+source-reopen:33
+SNAPSHOT_AUTHOR_CASES
+  done
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

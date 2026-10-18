@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42n, `SEMULITH-P4-0203`–`0256`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42o, `SEMULITH-P4-0203`–`0257`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -20,7 +20,7 @@ complete-budget comparison, duplicate-write refusal and typed witness/baseline;
 a26 dependency/receipt formats; a29–a42d3b bounded byte comparison, identity/
 receipt/execution/relations/manifest bindings, shared-budget file authentication,
 expectation context and full source/ELF correspondence. A42m–n add optional frozen
-input and graph impact reviews. API/findings: `docs/models/rv64gc-lab-v0/src/evaluation.md`.
+input and graph impact reviews; a42o adds snapshot authoring. API: `docs/models/rv64gc-lab-v0/src/evaluation.md`.
 Metadata equality does not prove complete dependency coverage.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as

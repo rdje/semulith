@@ -25,6 +25,8 @@ Interpolation keys {old}/{new}/{addr}/{code} come from the spec-side computation
 from __future__ import annotations
 
 import sys
+from dataclasses import dataclass
+import hashlib
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -32,7 +34,8 @@ import sexp as _sexp  # noqa: E402
 import records_sexp as R  # noqa: E402 — canonical prose escaping
 import dossier_sexp as D  # noqa: E402
 from expectations_text import with_fetches  # noqa: E402
-from riscv_asm import Assembler  # noqa: E402
+from riscv_asm import Assembler, AsmError  # noqa: E402
+import matched_gpr_image as G  # noqa: E402 — shared source/context validation
 
 REPO = Path(__file__).resolve().parent.parent
 import os  # noqa: E402
@@ -57,6 +60,46 @@ class Refusal(Exception):
 
 class ReservedInstruction(Refusal):
     """Independently identified reserved bits, before any target effect."""
+
+
+class SnapshotError(ValueError):
+    """Malformed snapshot metadata/source or refused assembly; no source echo."""
+
+
+class SnapshotUnsupported(Refusal):
+    """A source control or semantic shape exceeds the bounded snapshot route."""
+
+
+class SnapshotUnavailable(RuntimeError):
+    """The current canonical assembler context cannot be constructed."""
+
+
+@dataclass(frozen=True)
+class SnapshotStep:
+    n: int
+    pc: int
+    instruction_bits: int | None
+    instruction_length: int | None
+    fetches: int
+    writes: tuple[tuple[int, int], ...]
+    derivation: str
+    source: str
+
+
+@dataclass(frozen=True)
+class SnapshotDerivation:
+    program: str
+    author_path: str
+    encoding_path: str
+    route: str
+    entry: int
+    region_bytes: int
+    source_size: int
+    source_sha256: str
+    payload_size: int
+    payload_sha256: str
+    instructions: int
+    steps: tuple[SnapshotStep, ...]
 
 
 def sx(v: int) -> str:
@@ -560,6 +603,8 @@ class Step:
         self.deriv = ""
         self.source = ""
         self.fetch = 1        # actual requests: legacy word route 0/1; parcel route 0/1/2
+        self.instruction_bits = None
+        self.instruction_length = None
 
 
 def strip_labels(code: str) -> str:
@@ -713,9 +758,10 @@ def run_guest(path: Path, asm: Assembler) -> tuple[str, int]:
 class ParcelRun:
     """Independent guest observations and final hart, retained for offline controls."""
 
-    def __init__(self, hart, steps, never, refusals):
+    def __init__(self, hart, steps, never, refusals, image=b''):
         self.hart, self.steps = hart, steps
         self.never, self.refusals = never, refusals
+        self.image = image
 
 
 def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
@@ -728,18 +774,28 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
     if type(budget) is not int or not 1 <= budget <= 10000:
         raise Refusal('parcel guest budget must be an integer in 1..10000')
     lines = path.read_text().splitlines()
+    return _derive_parcel_lines(lines, asm, budget, program=path.name)
+
+
+def _derive_parcel_lines(lines, asm, budget, *, program, annotations=True,
+                         controls=True, payload_limit=REGION):
+    """Shared execution rules; callers own preflight and route-specific limits."""
     units = asm.assemble_units(lines, ENTRY)
+    if sum(unit.length for unit in units) > payload_limit:
+        raise Refusal(f'{program}: byte image exceeds the declared {payload_limit}-byte region')
     image = b''.join(unit.value.to_bytes(unit.length, 'little') for unit in units)
-    if len(image) > REGION:
-        raise Refusal(f'{path.name}: byte image exceeds the declared {REGION}-byte region')
-    program = {unit.pc: unit for unit in units}
+    program_units = {unit.pc: unit for unit in units}
     directives, never, refusals = {}, [], []
     source_units = iter(units)
     for raw in lines:
         if raw.strip().startswith('#|never:'):
+            if not controls:
+                raise Refusal('snapshot route does not support never-written controls')
             never = [reg.strip() for reg in raw.split(':', 1)[1].split(',') if reg.strip()]
             continue
         if raw.strip().startswith('#|refuse:'):
+            if not controls:
+                raise Refusal('snapshot route does not support source refusal injection')
             fields = raw.split(':', 1)[1].split()
             if len(fields) != 3 or fields[0] not in ('fetch', 'load', 'store', 'walk'):
                 raise Refusal('parcel refusal needs KIND BASE SIZE (fetch/load/store/walk)')
@@ -755,14 +811,20 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
         code = strip_labels(raw.split('#', 1)[0].strip())
         if not code:
             continue
-        unit = next(source_units)
-        assert unit.text == code, 'source annotations must follow the assembled units'
-        if '#:' in raw:
+        try:
+            unit = next(source_units)
+        except StopIteration:
+            raise Refusal('source annotations exceed the assembled units') from None
+        if unit.text != code:
+            raise Refusal('source annotations must follow the assembled units')
+        if annotations and '#:' in raw:
             directive = raw.split('#:', 1)[1].split('#|end', 1)[0]
             derivation, _, source = directive.partition('|')
             if not derivation.strip():
                 raise Refusal(f'parcel directive at pc {unit.pc:#x}: derivation is empty')
             directives[unit.pc] = (derivation.strip(), source.strip())
+    if next(source_units, None) is not None:
+        raise Refusal('assembled units exceed source annotations')
 
     hart = Hart()
     hart.refusals = refusals
@@ -771,7 +833,7 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
     steps = []
     for _ in range(budget):
         pc = hart.pc
-        unit = program.get(pc)
+        unit = program_units.get(pc)
         step = Step(pc, unit.text if unit else '<memory instruction>')
         step.fetch = 0
         hart.trapped = False
@@ -803,6 +865,8 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
                     'source': 'RVP-SUPERVISOR §11.1.3.2; RVP-MACHINE §2.1.1.14/§2.1.1.16'}
         else:
             _, bits, length = fetched
+            step.instruction_bits = bits
+            step.instruction_length = length
             if unit is None or (unit.value, unit.length) != (bits, length):
                 step.insn = f'.{"half" if length == 2 else "word"} {bits:#0{length * 2 + 2}x}'
             if length == 2:
@@ -838,13 +902,50 @@ def derive_parcel_guest(path: Path, asm: Assembler, budget: int) -> ParcelRun:
             source = source.replace('{' + key + '}', str(value))
         step.deriv, step.source = derivation, source
         steps.append(step)
-    return ParcelRun(hart, steps, never, refusals)
+    return ParcelRun(hart, steps, never, refusals, image)
 
 
 def run_parcel_guest(path: Path, asm: Assembler, budget: int) -> tuple[str, int]:
     run = derive_parcel_guest(path, asm, budget)
     return emit(path, run.steps, len(run.steps), run.never, run.refusals,
                 route='parcels'), len(run.steps)
+
+
+def derive_snapshot(source: bytes, *, program: str, instructions: int) -> SnapshotDerivation:
+    """Derive frozen stock observations from supplied source, without a path reopen.
+
+    This is the existing bounded author at its fixed cold entry/reset, not a new
+    interpreter or qualification. Canonical project tool-data I/O is explicit;
+    caller source paths, file outputs and reference processes are never accessed.
+    """
+    if type(instructions) is not int or not 1 <= instructions <= 4096:
+        raise SnapshotError('snapshot instruction budget must be an integer in 1..4096')
+    try:
+        lines = G.prepare_guest_source(source, program=program, entry=ENTRY)
+    except G.ImageError as exc:
+        raise SnapshotError(str(exc)) from None
+    try:
+        assembler = G.canonical_guest_assembler()
+    except G.ImageUnavailable:
+        raise SnapshotUnavailable('canonical GC author context is unavailable or invalid') from None
+    try:
+        run = _derive_parcel_lines(lines, assembler, instructions, program=program,
+                                   annotations=False, controls=False,
+                                   payload_limit=G.PAYLOAD_BYTES)
+    except Refusal:
+        raise SnapshotUnsupported('source controls or semantics exceed the snapshot author') from None
+    except (AsmError, ValueError, TypeError, KeyError, IndexError, OverflowError):
+        raise SnapshotError('source derivation refuses') from None
+    if (type(run.image) is not bytes or len(run.image) > G.PAYLOAD_BYTES
+            or len(run.steps) != instructions):
+        raise SnapshotError('author returned an invalid image or incomplete budget')
+    steps = tuple(SnapshotStep(n, step.pc, step.instruction_bits, step.instruction_length,
+                               step.fetch, tuple(sorted(step.writes.items())),
+                               step.deriv, step.source) for n, step in enumerate(run.steps))
+    return SnapshotDerivation(program, 'scripts/derive_rv64gc_expectations.py', G.ENCODING_PATH,
+                              'snapshot-parcels-v1', ENTRY, REGION, len(source),
+                              hashlib.sha256(source).hexdigest(), len(run.image),
+                              hashlib.sha256(run.image).hexdigest(), instructions, steps)
 
 
 def execute_c(h: Hart, parcel: int) -> tuple[int, dict]:

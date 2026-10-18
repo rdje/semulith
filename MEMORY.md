@@ -16,14 +16,14 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after P4-0256 normal COMMIT, resume P4-SYSTEM.14 a42:
-  source-grounded GPR property/expected-producer binding is the next bounded
-  implementation. Read the matched-GPR contracts and spec-side author first.
-  The a42g impact engine and a42m/n optional input/graph bindings exist;
-  do not rebuild them. Full canonical closure/review, collector provenance,
-  fresh captures/retention and policy/status derivation remain. Qualification
-  stays closed. P4 14/18; G-REPLAY4/4green; CPU incomplete on six axes.
-- in_flight_uncommitted: none after normal P4-0256 COMMIT and checks.
+- next_action: P4-SYSTEM.14 source-grounded property/producer binding. P4-0257
+  exposes the bounded immutable-source expectation author:21 controls/15 omissions,
+  208 byte-exact legacy outputs,133 canonical guests/4044 steps. Use that API;
+  bind derived observations to authenticated baseline/witness/declared producer.
+  Source, input and impact bindings are implemented; do not repeat those slices.
+  Full canonical closure/review, property/collector adequacy, captures/retention
+  and policy/status remain. Qualification closed; P4 14/18; replay4/4green.
+- in_flight_uncommitted: none after P4-0257 normal COMMIT and postconditions.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

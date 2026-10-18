@@ -211,7 +211,7 @@ def main():
             mutations = {
                 'byte-directives': ('directives[unit.pc] =', 'directives[Q_ENTRY + 4 * units.index(unit)] ='),
                 'padded-image': ("unit.value.to_bytes(unit.length, 'little')", "unit.value.to_bytes(4, 'little')"),
-                'source-end': ('for _ in range(budget):\n        pc = hart.pc', 'for _ in range(budget):\n        if hart.pc not in program:\n            break\n        pc = hart.pc'),
+                'source-end': ('for _ in range(budget):\n        pc = hart.pc', 'for _ in range(budget):\n        if hart.pc not in program_units:\n            break\n        pc = hart.pc'),
                 'fetch-count': ("step.fetch = sum(record[0] == 'fetch' for record in hart.log[log_start:])", 'step.fetch = 1'),
                 'fault-retirement': ('if not hart.trapped:', 'if True:'),
                 'head-pending': ('pending = hart.pending()', 'pending = None'),

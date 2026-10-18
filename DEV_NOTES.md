@@ -1,5 +1,85 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — derive immutable-source expectation snapshots (P4-SYSTEM.14 a42o)
+
+P4-0257 starts after clean b3b7af2, brief0/untracked and host census0. Own the
+snapshot bridge and capacity prerequisite first. The root had491B headroom;
+minimal ownership reached130904B. Retain the entire3334B completed a42l2 body
+in the existing include-source-integration artifact. Original126277B prefix
+stays exact; compact metadata binds complete source/owner/retired identities,
+ownership insertion, payload and stub. Six independent damaged/truncated/offset/
+shape/hash cases refuse before writes. Artifact130938B and retired root127748B
+stay under131072;107 task-family members, original12 authority and all prior
+archives/seals remain unchanged. Current unit records the full inverse procedure.
+No new collection, cap or source deletion; source/owner inverse is byte-exact.
+
+Declare the snapshot API in GC References before code. Reuse the existing
+spec-side numerical rules; extract shared prepare_guest_source and canonical
+assembler context in matched_gpr_image. Existing image builder delegates to
+those owners without changing its result/guard contracts. Legacy path parcel
+route delegates to the shared line runner with its original annotations,
+controls,10000-step ceiling and output. New route preflights immutable bytes
+1..1MiB,8192 lines, plain program1..65536 and instruction budget1..4096 before
+tool reads. It uses the canonical IALIGN16 profile, not DERIVE_ENCODING.
+Assembled lengths are bounded before joining/initializing the cold byte image.
+
+The existing byte runner records actual fetched bits/length, including updated
+instruction memory; missing complete fetches retain None. Image identity remains
+initial. Add immutable SnapshotDerivation/SnapshotStep records with copied sorted
+GPR changes and stock notes, fixed cold entry0x80000000/64KiB region. No mutable
+hart/step/image/source escapes. Ignore annotation authority on the snapshot route;
+reject never/refuse source controls, retain exact explicit budgets through loops,
+end markers, halt, delivery and runoff. No new numerical interpreter, reference
+execution, file output, source-path read or original-capture chronology claim.
+Canonical tool-data reads remain explicit, outside supplied-artifact bounds.
+This is bounded producer behavior, not complete source/property qualification.
+
+The permanent mixed-width API assertion fails before implementation (1/1/0).
+A second permanent case exposes initial AsmError escaping the promised boundary
+(2/1/0). Import/convert it to bounded SnapshotError; malformed source no longer
+leaks the assembler exception. SnapshotUnsupported remains distinct for source
+controls/semantic shapes, SnapshotUnavailable for canonical tools. Both fixes
+pass; all21 tests pass normal/O. Shape/count checks reject corrupt internal
+image/budget results. Replace the shared annotation assertion with explicit
+Refusal and account for missing/extra units; optimized execution cannot erase it.
+Initial selfmod fixture used conventional 0(x1), while this published assembler
+requires rs2,imm,rs1. The diagnostic proves that input mistake; fix the fixture
+and check seven hand-encoded initial words plus the actual patched instruction.
+
+Fifteen genuine omissions discriminate normally/optimized with zero errors;
+losses 6/15/1/12/1/2/2/2/2/3/8/1/1/3/33. Shared image33 controls/seventeen omissions retain
+identical normal/O losses after extraction. Direct canonical parity proves all
+167 parcel +41 historical word outputs byte/order exact against b3b7af2 (208
+serialized runs, zero refusals). Snapshot results match133 committed guests /
+4044 GPR boundaries;34 source-control guests explicitly unsupported. No canonical
+fixture is rewritten. Before proof: capture bytes for x1=5, replace the file with
+x1=9; old documented path API reads9, snapshot derives5. Normal/O match; this is
+new capability, not a claim the old path API violated its contract.
+
+Register actual21-test/15-omission summaries normal/O in GUEST-GEN. Static arm
+census re-derived1584. Whole-oldest DEV sharding moves one entry4316B to0343;
+old head reconstructs byte/order exact, prior manifest prefix and every earlier
+shard unchanged. Update current decision censuses only; normative clauses stay
+exact. Teach complete snapshot usage and limits in the GC book. P4 stays14/18,
+replay4/4green, CPU six axes open and BOARD10/12. Producer authenticity, full
+canonical closure/review, source-grounded property binding, collector/fresh runs,
+retention and policy/status derivation remain. Promotion declined: existing
+source/producer and bounded-snapshot principles, no new project policy.
+Scope normal/O protects1498 other tracked files/85 prior head entries;
+complete retained source/owner inverses and six damaged cases pass. Fifteen
+focused checks and7 books/3280 links pass; the literal five-line example is exact.
+The sole Git whitespace diagnostic is the inherited EOF blank on0343; retain
+its complete4316B source suffix. Staged history passes; normal COMMIT is next.
+Evidence: target/p4-system-14/a42o.
+
+Initial normal COMMIT refused GUEST-GEN353/7. Six temporary author mutants
+were unregistered in sys.modules: new dataclasses failed at import. One parcel
+source-end mutation still named the old program map and raised TypeError after
+the extraction. Own both before repair; register the module before execution
+and target program_units. Seventeen existing cases now retain their exact
+registered outcomes/reasons, including all seven failures; no unintended crash.
+Only these harness seams change. Full normal COMMIT retry remains required.
+
 ## _(2026-10-18)_ — bind retained inputs to reviewed old/new impact (P4-SYSTEM.14 a42n)
 
 P4-0256 starts after clean7ccb265, brief0/untracked and host census0. Own the
@@ -611,64 +691,4 @@ file, capacity increase or acceptance claim. D79 remains open until the user's
 authorized terminal capture and causal analysis; passing repeats cannot close it.
 Six whole oldest CH entries roll to0334 with exact byte/order reconstruction;
 focused gates/seven books and normal COMMIT qualify tool delivery only.
-
-## _(2026-10-17)_ — persistent dependency forensics and explicit evidence blocker (LIVE-CONTAINMENT.4i2b5b2r.d)
-
-LC0044 owns the diagnostic gap after D79's missing-Mark print refusal. Pin current
-f3c5e81/1485 identities and reproduction5c72864/1481 separately. Public mdBook0.5.4
-rebuilds all345 fixed output identities exactly from the original source plus the
-two-file D78 overlay. Frozen Q/R/Swift/reader/helper bytes and Gitlink remain exact.
-The new owned tracer streams linked received/response/written/failure records and
-page observations even when native/DOM/qualification refuses. Every handler has
-bounded reads and shutdown joins all workers; process/source/index snapshots stay
-stable. Separate normal/O processes with two workers each reproduce four-adapter
-source-before-fixed workloads. Nonpersistent WebKit/strict Swift6 and execution
-witnesses retain their actual boundaries and on-volume data locality.
-
-The first window-load observer misses descendant resource loads: DOM's document
-parent is null for load events. Use document capture and independent declaration/
-load-or-error membership. An actual omitted-document-listener control refuses2
-with intact journals. The source URL oracle also initially ignored base href=/
-on404 pages; corrected static/browser base reconciliation makes those actual
-resource failures observable rather than unjudgeable. All seven 404 assets route
-outside their book under shared serving, a verified D80 priority1 owned by LC0046.
-
-Six real controls pass normally/optimized, plus three mutation/type boundaries:
-positive; Mark404; Mark200empty; Mark+book404; omitted load observer; absent native
-adapter. Receipt/delivery/observation streams reconcile fully even on refusal.
-Mark-only failures keep1917 highlighted nodes/155 spans/97 copy buttons. Combined
-denial removes all enhancements and reproduces the entire original failed heading
-witness. This is a sufficient symptom mechanism, not proof of original cause.
-
-Four selected normal/O queue5/32 comparisons retain960 complete source/fixed
-heading witnesses and all verdict/check/script/error/global/enhancement rows.
-Full per-path delivery/status/byte/count footprints reconcile every event. Final
-profiles expose only seven D80 cases each. An earlier optimized queue5 assembler
-trace loses ten assets before application receipt: two styles and eight scripts
-emit resource-error, globals/late enhancements absent; other styles/fonts arrive.
-Full selected failure forensics and page-linked delivery rows are retained. Later
-passing queue5/32 repeats do not close D79 or establish a listen-backlog cause.
-OS TCP counters all report0 including observed traffic, so cannot attribute loss.
-A strictly owned lo0 port/two-packet/96-byte tcpdump probe is denied opening BPF;
-no packet/other-app traffic was captured. Immediate LC0045 is blocked on approved
-read-only capture of the tracer's own ports, without global permission changes.
-
-The native reader-retention record preserves its whole29198B prefix and5729B
-closed LC0043 unit before a bounded live pointer is used. Bounded XZ references
-restore all selected full witnesses from immutable LC0043 bases, with complete
-source/current/probe verdicts, selected failures/access evidence, producer bytes
-and old/new book/task seams. Both actual collector source versions are retained;
-the sole difference is an unused posixpath import, verified by execution AST.
-Current code passes permanent native controls normal/O; seven damaged evidence
-frames refuse. Whole projected data equals the capture-derived projection. Raw
-ordered HTTP/non-script successful-load order/resource timings/DOM remain generated
-diagnostics with profile/journal identities, not a new raw-output archive promise.
-Pinned Git/producers are required with lazy fetch disabled. No resource-completeness,
-concurrent-load, original-cause, full graph/adoption or processor acceptance claim.
-
-Book/toolbox/live pointers and exact earlier history/source/modes stay aligned.
-Focused checks/seven books and the full staged reverse patch precede normal COMMIT.
-Existing caps and LIVE1578/39/40/49 remain fixed. No new decision file is needed:
-finite evidence, the exact access blocker and D80 repair have native canonical
-owners. This slice delivers verified forensics; D79 remains explicitly open.
 

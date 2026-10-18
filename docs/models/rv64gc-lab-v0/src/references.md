@@ -225,3 +225,118 @@ changed inventories refuse even when every declared file pin matches. Additional
 controls check context copying, bounds/types, coherent failed processes, legacy
 behavior and guard omissions in normal/optimized Python. Run them with
 `python3 scripts/probe_matched_gpr_input_review.py`; no reference process runs.
+
+## Snapshot expectation author contract (a42o)
+
+P4-0257 implements this API under a contract declared before implementation.
+It reuses the existing bounded spec-side author; it introduces no second numerical interpreter or canonical
+capture. `derive_snapshot(source, program=..., instructions=...)` in
+`scripts/derive_rv64gc_expectations.py` accepts plain immutable UTF-8 bytes
+(1–1,048,576), at most 8,192 `splitlines` lines, a plain nonempty program
+label (1–65,536 characters) and a plain integer budget (1–4,096). Invalid input
+must refuse before canonical tool-data reads. The program is an opaque exact
+label; it is never opened as a source path.
+
+Use the current canonical RV64GC assembler with IALIGN16, independent of the
+legacy pre-bind `DERIVE_ENCODING` override. Share source preflight/context owners
+with image construction. Execute the exact assembled initial bytes, at most
+32 KiB, for exactly the budget; branches, modified instruction memory and
+compressed parcels use the existing rules. The selected author starts cold at
+`0x80000000` in its 64 KiB region and declared laboratory reset/time state. This
+API supports that fixed author domain, not arbitrary entry/reset configuration.
+Running off, `#|end`, halt or delivery does not silently shorten the budget.
+
+Snapshot observations use the stock numeric rules and their stock derivation/
+source notes. `#:` annotations cannot supply evidence or overwrite those notes;
+they are ignored on this route. Source-side `#|refuse:` and `#|never:` controls
+are unsupported here and must explicitly refuse. This does not alter either
+legacy file route's supported annotations, controls or 10,000-boundary limit.
+Unknown valid instruction shapes remain unsupported rather than fabricated traps;
+reserved behavior retains the author's selected, source-located laboratory rule.
+
+The result is a frozen `SnapshotDerivation`: exact program, author/encoding paths,
+route `snapshot-parcels-v1`, entry/region, source size/SHA256, initial payload
+size/SHA256, instruction count and an immutable tuple of `SnapshotStep` facts.
+Each step has index, starting PC, actual fetched instruction bits/length when
+available, fetch count, sorted immutable GPR `(register, value)` changes, stock
+derivation and source note. Delivery/halt/fetch-fault steps have no complete
+instruction bits/length. GPR changes preserve the existing unchanged-value/x0
+elision; they are not a write-count, memory, FP or full-state observation.
+
+Do not return the mutable hart/step records, source bytes or initial image.
+The facts make no original-capture chronology claim. Metadata comes from this
+producer; its authenticity, correctness, complete dependency/source review and
+relationship to a claimed requirement remain separate obligations. A numeric
+match alone does not qualify an experiment, establish implementation ancestry or
+advance CPU status. Full source-grounded property binding and reviewed fresh
+collection still follow.
+
+`SnapshotError` distinguishes malformed metadata/source or assembly refusal,
+`SnapshotUnsupported` a control or semantic shape outside this bounded route,
+and `SnapshotUnavailable` unavailable/invalid current canonical tools. Diagnostics
+must not echo arbitrary source. The API performs no source-path reads/writes or
+reference execution; canonical project tool-data reads remain explicit. Bounds
+cover supplied source, initial image and step count, not exact process RAM/time.
+
+### Complete snapshot-author example
+
+From the repository root, this derives observations from supplied bytes. It reads
+current canonical project tool data, creates no source/output file and executes
+no reference or production CPU engine:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_SNAPSHOT_AUTHOR'
+from derive_rv64gc_expectations import derive_snapshot, SnapshotError, SnapshotUnsupported
+source = b"addi x1, x0, 5\nc.addi x1, 1\n"
+run = derive_snapshot(source, program="example.s", instructions=2)
+print(run.route, run.instructions, run.payload_size)
+for step in run.steps:
+    print(step.n, hex(step.pc), hex(step.instruction_bits),
+          step.instruction_length, step.fetches, step.writes)
+try:
+    derive_snapshot(bytearray(source), program="example.s", instructions=2)
+except SnapshotError:
+    print("mutable source refused")
+try:
+    derive_snapshot(b"#|never: x31\n" + source, program="example.s", instructions=2)
+except SnapshotUnsupported:
+    print("source control unsupported")
+PY_SNAPSHOT_AUTHOR
+```
+
+It prints:
+
+```text
+snapshot-parcels-v1 2 6
+0 0x80000000 0x500093 4 2 ((1, 5),)
+1 0x80000004 0x85 2 1 ((1, 6),)
+mutable source refused
+source control unsupported
+```
+
+The payload identity describes the initial assembled image. A later store into
+instruction memory changes the actual recorded instruction bits, not that initial
+fingerprint. Halt/delivery/fetch-fault facts preserve their absence of a complete
+instruction. A repeated same-value destination and x0 produce no GPR change.
+These are the author's existing rules, not new model semantics or evidence for
+unobserved effects.
+
+Normal and optimized controls run with `python3 scripts/probe_gc_snapshot_author.py`
+and `python3 -O scripts/probe_gc_snapshot_author.py`. They check immutable input,
+preflight before tool reads, fixed canonical context, exact budget, source-path
+independence, stock notes, explicit unsupported controls, actual modified bytes,
+copying/immutability and named failures. The initial API's leaked assembler
+exception is fixed: malformed assembly now gives the declared bounded
+`SnapshotError`. Its permanent assertion failed before conversion and passes after.
+
+The old 167 parcel and 41 historical word routes reproduce their prior complete
+serialized output byte for byte. The snapshot route matches 133 canonical guests'
+4,044 GPR boundaries and explicitly refuses 34 source-control guests. These are
+regression/capability checks, not new reference runs, original-capture chronology,
+source proof for every claimed property, or CPU acceptance. Existing files are
+never regenerated or rewritten by the snapshot API.
+
+Legacy controls also preserve their intended failure reasons for reserved bits,
+division rounding, page permissions and explicit budgets past the source end.
+The temporary mutant loaders and map target follow the shared author's new shape;
+an import/type crash cannot substitute for a discriminating semantic failure.

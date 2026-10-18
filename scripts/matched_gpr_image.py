@@ -64,14 +64,8 @@ def _source_lines(text: str) -> list[str]:
     return text.splitlines()
 
 
-def build_guest_image(source: bytes, *, program: str, entry: int) -> GuestImage:
-    """Build at most 64 KiB of ELF from 1..1 MiB / 8192 lines of GC source.
-
-    Exact bytes/identifier metadata are construction facts, not authentication or
-    source semantics. No raw source is retained. Bounds are not exact RAM/time
-    limits. ImageError diagnostics are fixed strings and never echo source text;
-    unavailable/malformed canonical tools raise ImageUnavailable separately.
-    """
+def prepare_guest_source(source: bytes, *, program: str, entry: int) -> list[str]:
+    """Validate bounded immutable UTF-8 source/metadata without any tool I/O."""
     if type(source) is not bytes or not 1 <= len(source) <= SOURCE_BYTES:
         raise ImageError("source must be immutable bytes of 1..1048576 bytes")
     if type(program) is not str or not 1 <= len(program) <= 65536:
@@ -83,6 +77,11 @@ def build_guest_image(source: bytes, *, program: str, entry: int) -> GuestImage:
     except UnicodeError:
         raise ImageError("source must be UTF-8") from None
     lines = _source_lines(text)
+    return lines
+
+
+def canonical_guest_assembler() -> A.Assembler:
+    """Load the current canonical IALIGN16 context; project tool-data I/O only."""
     encoding = ROOT / ENCODING_PATH
     try:
         if not encoding.is_file() or encoding.resolve() != encoding:
@@ -93,6 +92,19 @@ def build_guest_image(source: bytes, *, program: str, entry: int) -> GuestImage:
     except (OSError, A.AsmError, D.DossierError, S.SexpError, ValueError,
             TypeError, KeyError, IndexError, RecursionError):
         raise ImageUnavailable("canonical GC assembler context is unavailable or invalid") from None
+    return assembler
+
+
+def build_guest_image(source: bytes, *, program: str, entry: int) -> GuestImage:
+    """Build at most 64 KiB of ELF from 1..1 MiB / 8192 lines of GC source.
+
+    Exact bytes/identifier metadata are construction facts, not authentication or
+    source semantics. No raw source is retained. Bounds are not exact RAM/time
+    limits. ImageError diagnostics are fixed strings and never echo source text;
+    unavailable/malformed canonical tools raise ImageUnavailable separately.
+    """
+    lines = prepare_guest_source(source, program=program, entry=entry)
+    assembler = canonical_guest_assembler()
     try:
         payload = assembler.assemble_image(lines, base=entry)
         if type(payload) is not bytes:
