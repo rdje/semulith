@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — review the first DIV capture population (P4-SYSTEM.14 a42y)
+
+Add an independently selected bounded producer/import/data review and the proposed finite capture plan. Normal/O enumerate34 modules,27 exercised data files and62 proposed children;65 reviewed files/972963B. Verify22 controls/10 discriminating omissions in both modes, image/author agreement and complete old-source/history preservation. Keep canonical retention/entrypoint, policy binding and qualification pending. Whole-oldest DEV/CH0351/0352; fixed caps and CPU/BOARD milestones unchanged.
+
 ## SEMULITH-P4-0266 (leaf P4-SYSTEM.14) — collect a three-run unit within one read allowance
 
 Collect baseline/repeat/control with one conservative128MiB artifact-read budget.
@@ -407,9 +411,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Public immutable context binders run before artifact I/O; identity/receipt byte checks share legacy raw schema/sole mapper/binding owners and consume exact snapshots without reopens or authentication credit. Preserve optional identity presence, receipt argv/exit/inventories and coherent failed-process facts; full method qualification stays closed.
 - Fix draft accepted-context string-subclass refusal; exact draft loses3 assertions normal/O, repaired22 controls pass and14 omissions fail without errors. Thirty new arms: PROFILE314/0,39 doctrines1137 arms; old identity40/receipt43 and19 omissions retained. Link complete byte-binding teaching in a new bounded chapter, preserving old26543B exactly. Focused17/sharder12/0/seven books/3104 links/all9 examples and full source/history/canonical checks pass;100 prior entries/1320 other files protected, actual receipt+digest edits refuse. DEV17=15+2/5031B into0249; full CI green on preceding c84bb7b (443 Rust tests/smoke53/seven books). Fixed caps/seals/CPU unchanged; next a40 evaluation.
-
-## SEMULITH-P4-0229 (leaf P4-SYSTEM.14) — authenticate the declared file set within shared budgets
-
-- Freeze/bind the complete declared input/output set before I/O; reuse manifest pin, authenticate remaining distinct files once within128MiB read/16MiB live-snapshot budgets, inspect transient children first and retain only required comparison payloads. Conservative failure charges/terminal reads/frozen partial facts; no complete closure, source semantics or method credit.
-- Fix draft omitted manifest snapshot peak217B; exact previous draft loses3 assertions normal/O.49 controls/31 omissions pass/discriminate without errors; PROFILE284/0,39 doctrines/1107 arms. Actual128MiB inclusive/plus-one refusal consume at most134217728B. Focused17/sharder12/0/seven books/3090 links/all8 examples and complete predecessor/canonical checks pass. DEV18=16+2/3340B into0248;100 prior entries/1319 other files protected, actual receipt+digest edits refuse. Final COMMIT checks/full CI on clean milestone next; next byte consumers/evaluator, fixed caps/seals/canonical/CPU unchanged.
 

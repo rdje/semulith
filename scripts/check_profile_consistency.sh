@@ -1875,6 +1875,31 @@ failed-pin-charge:1
 UNIT_CAPTURE_CASES
   done
 
+  # P4-SYSTEM.14 a42y: independently selected producer/data population.
+  local div_review_mode div_review_mutation div_review_losses
+  local -a div_review_python
+  for div_review_mode in normal optimized; do
+    div_review_python=(python3)
+    [ "$div_review_mode" = optimized ] && div_review_python+=(-O)
+    out="$("${div_review_python[@]}" scripts/probe_div_capture_review.py 2>&1)"; rc=$?
+    score "GREEN DIV dependency review $div_review_mode" "$rc" 0 "$out" "DIV-CAPTURE-REVIEW: 22 tests / 0 failures / 0 errors; synthetic population controls, no capture credit"
+    while IFS=: read -r div_review_mutation div_review_losses; do
+      out="$("${div_review_python[@]}" scripts/probe_div_capture_review.py --mutation "$div_review_mutation" 2>&1)"; rc=$?
+      score "RED DIV dependency review $div_review_mutation $div_review_mode" "$rc" 1 "$out" "DIV-CAPTURE-REVIEW: 22 tests / $div_review_losses failures / 0 errors; synthetic population controls, no capture credit"
+    done <<'DIV_REVIEW_CASES'
+module-population:2
+dynamic-import:2
+external-import:1
+data-population:2
+child-bound:1
+symlink:2
+git-boundary:1
+file-bound:1
+aggregate-bound:1
+byte-recheck:2
+DIV_REVIEW_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

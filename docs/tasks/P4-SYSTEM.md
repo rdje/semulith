@@ -358,6 +358,21 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42y — review canonical capture dependencies (completed, SEMULITH-P4-0267)
+
+Source-reviewed collector/evaluator/author population:34 project modules,27 data
+files (75 exercised reads), pinned M page/policy and review tool. Derive62 proposed
+children, not by echoing a future manifest. Bound direct reads1MiB/file/8MiB/pass,
+check paths/locality/Git boundaries and exact before/after bytes. Review normal/O:
+65files/972963B; image4416B/payload108B and27 source-derived boundaries agree.
+Probe22/0/0 and10 omissions discriminate in both modes. No process/canonical run.
+GC capture-plan declares exact finite DIV/control scope, external runtime/current
+semantic authority separation, status-hash cycle avoidance and retention/entrypoint
+steps still required. Qualification stays closed; all old production owners exact.
+Whole-oldest DEV/CH0351/0352 preserve complete history; no cap/seal/milestone change.
+Evidence target/p4-system-14/a42y. promotion: declined (existing review/closure
+and source/property contracts; no new cross-cutting policy). COMMIT applies.
+
 ### `.14` a42x — collect a bounded three-run unit (completed, SEMULITH-P4-0266)
 
 Own a frozen baseline/repeat/control collector, one128MiB allowance shared
@@ -560,6 +575,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42y **REPRODUCE / ISSUE**: before.py rc=0: base lacks independently enumerated capture review; caller inventory only.
+- [x] `.14` a42y **ROOT CAUSE**: run-controls.py rc=0 normal/O: population omissions lose2/2 cases; declared inputs alone cannot discover omitted producers/data.
+- [x] `.14` a42y **FIX**: explicit source-reviewed module/data sets, bounded import census/exercised loaders and separate live authority/retention plan.
+- [x] `.14` a42y **ADDRESSED**: run-controls.py rc=0 normal/O:22/0/0,10 omissions/0 errors; review65files/972963B,62children; image/author agree.
+- [x] `.14` a42y **NO REGRESSION**: verify.py rc=0 normal/O; focused.py rc=0: old tracked bytes/modes and history exact;15checks/seven books; fixed caps.
+- [x] `.14` a42y **LOCKSTEP**: verify.py rc=0: whole DEV/CH0351/0352 inverses, old gate exact outside registration, CPU/qualification unchanged. COMMIT applies.
 - [x] `.14` a42x **REPRODUCE / ISSUE**: before.py rc=0 normal/O:3 independent calls/46364B, no limit/charge/unit API.
 - [x] `.14` a42x **ROOT CAUSE**: run-controls.py rc=0: removed shared allowance reads beyond the smaller unit cap; failed reservations must remain charged.
 - [x] `.14` a42x **FIX**: freeze complete unit; reserve fresh namespace; share/refund bounded reads through helpers; preserve failed process receipts and prior captures.
@@ -1535,6 +1556,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42y | `SEMULITH-P4-0267` | bounded canonical retention and entrypoint |
 | `.14` a42x | `SEMULITH-P4-0266` | canonical closure and capture plan |
 | `.14` a42w | `SEMULITH-P4-0265` | unit collector and shared budgets |
 | `.14` a42v | `SEMULITH-P4-0264` | receipt writer and unit collection |

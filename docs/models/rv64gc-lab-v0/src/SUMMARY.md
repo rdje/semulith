@@ -13,6 +13,7 @@
 [A source-grounded division witness](source-property.md)
 [Collecting a fresh reference process](collector.md)
 [Collecting a three-run unit](unit-collector.md)
+[Predeclaring the first division capture](capture-plan.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)
