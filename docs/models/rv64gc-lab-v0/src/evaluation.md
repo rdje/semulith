@@ -15,9 +15,11 @@ checked = evaluate_retained_unit(
     root, raw_experiment=raw_form, scope=scope, current_candidate=candidate)
 ```
 
-The optional `reviewed_inputs=InputReview(...)` argument checks declared coverage
-against separate frozen caller authority. See the [inventory contract and runnable
-example](references.md#reviewed-input-inventory). It does not grant qualification.
+Optional `reviewed_inputs=InputReview(...)` checks declared coverage against
+frozen caller authority ([inventory API](references.md#reviewed-input-inventory)).
+Optional `impact_review=ImpactReview(...)` binds old/current graph impact;
+see its [contract/examples](impact.md#retained-input-impact-contract-a42n).
+Neither grants qualification.
 
 The raw form is in-memory data from the current parent, not another artifact
 path to reopen. Scope supplies the profile's declared candidate, requirement and
@@ -35,10 +37,10 @@ analysis.
 2. Bind execution/relations using their public owners. Generic record validity
    is separate from whether this particular method supports those declarations.
    Freeze the candidate's execution values/presence, all three selected receipt
-   contexts, run verdicts, observation records and optional caller review before
+   contexts, run verdicts, observation records and optional caller reviews before
    artifact I/O.
 3. Authenticate the bounded manifest, check that its relations equal the frozen
-   selection. When supplied, compare the frozen caller inventory before file-set
+   selection. When supplied, check frozen inventory and graph impact before file-set
    reads. Then authenticate the complete declared set through the shared reader. Reuse the manifest seed without reopening it. Apply the fixed 128 MiB
    cumulative artifact-read and 16 MiB live snapshot-payload budgets, with the
    existing per-role bounds and terminal failure behavior. Request source/image
@@ -90,6 +92,7 @@ declared method's reviewed collector/capture trust boundary still applies.
 | `comparison` | Optional public `ComparisonUnit` with the computed run comparisons/refusals. |
 | `source_image` | Appended optional `SourceImageCheck`: complete byte correspondence with frozen metadata only; absent before that check, including failed/unsupported comparisons. |
 | `input_review` | Appended optional caller-review metadata finding: selected IDs, counts and missing/unreviewed/changed input IDs; absent without review or before manifest binding. No file/adequacy credit. |
+| `impact` | Optional reviewed-graph input binding and impact analysis. |
 
 The record disposition is `valid` after raw schema/scoped graph checks,
 `refused` after their findings or a malformed record, and `unchecked` when an

@@ -1591,6 +1591,42 @@ plan-binding:3
 review-freeze:4
 INPUT_REVIEW_CASES
   done
+  # P4-SYSTEM.14 a42n: graph/input bindings remain conditional caller review.
+  local impact_mode impact_mutation impact_failures
+  local -a impact_command
+  for impact_mode in normal optimized; do
+    impact_command=(python3)
+    [ "$impact_mode" = optimized ] && impact_command+=(-O)
+    out="$("${impact_command[@]}" "$ROOT/scripts/probe_matched_gpr_impact.py" 2>&1)"; rc=$?
+    score "GREEN $impact_mode retained-input impact controls" "$rc" 0 "$out" "MATCHED-GPR-IMPACT: 24 tests / 0 failures / 0 errors; synthetic only"
+    while IFS=: read -r impact_mutation impact_failures; do
+      out="$("${impact_command[@]}" "$ROOT/scripts/probe_matched_gpr_impact.py" --mutation "$impact_mutation" 2>&1)"; rc=$?
+      score "RED $impact_mode omitted impact guard $impact_mutation" "$rc" 1 "$out" "MATCHED-GPR-IMPACT: 24 tests / $impact_failures failures / 0 errors; synthetic only"
+    done <<'INPUT_IMPACT_CASES'
+role-fingerprint:2
+digest-fingerprint:2
+profile:1
+experiment:2
+input-path:3
+input-fingerprint:2
+input-kind:2
+input-profile:1
+old-evidence:1
+evidence-kind:1
+reachability:1
+graph-copy:2
+node-envelope:1
+edge-envelope:1
+profile-envelope:1
+result-frozen:1
+context-frozen:1
+binding-status:1
+stale-status:1
+current-review:1
+finding:4
+frozen-context:1
+INPUT_IMPACT_CASES
+  done
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

@@ -23,6 +23,7 @@ import matched_gpr_receipt as R
 import matched_gpr_relations as B
 import matched_gpr_source_image as F
 import matched_gpr_input_review as T
+import matched_gpr_impact as H
 import sexp as S
 
 
@@ -63,6 +64,7 @@ class EvaluationCheck:
     comparison: C.ComparisonUnit | None = None
     source_image: F.SourceImageCheck | None = None
     input_review: T.InputReviewCheck | None = None
+    impact: H.InputImpactCheck | None = None
 
 
 @dataclass(frozen=True)
@@ -91,7 +93,8 @@ def _payload(files: Q.FileSetCheck, kind: str, rid: str) -> bytes | None:
 
 def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                            current_candidate: dict,
-                           reviewed_inputs: T.InputReview | None = None) -> EvaluationCheck:
+                           reviewed_inputs: T.InputReview | None = None,
+                           impact_review: H.ImpactReview | None = None) -> EvaluationCheck:
     """Validate the scoped record, authenticate once and compute byte comparisons.
 
     Fixed 128 MiB total artifact reads/16 MiB live snapshot payload are owned by
@@ -101,6 +104,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     comparison remains pending source-grounded property/closure/impact/provenance and
     full policy adequacy. Optional reviewed_inputs is separate caller authority;
     matching it checks declared coverage, not the completeness of that review.
+    Optional impact_review binds supplied old/current graphs to those inventories;
+    the caller still owns graph completeness, metadata and change review.
     It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -147,6 +152,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         review_context = (None if reviewed_inputs is None else
                           T.freeze_review(reviewed_inputs, profile_id=scope.profile_id,
                                           experiment_id=experiment["id"]))
+        if impact_review is not None and review_context is None:
+            raise ValueError("impact review requires current input review")
+        impact_context = (None if impact_review is None else
+                          H.freeze_review(impact_review, profile_id=scope.profile_id,
+                                          experiment_id=experiment["id"]))
     except (I.IdentityError, R.BindingError, D.DossierError, KeyError, IndexError,
             TypeError, ValueError, RecursionError) as exc:
         return EvaluationCheck("refused", f"cannot bind selected context: {exc}", record)
@@ -157,14 +167,23 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     if manifest.plan.relations != relations.plan:
         return EvaluationCheck("refused", "manifest differs from frozen relations", record, manifest)
     input_review = None
+    impact = None
     if review_context is not None:
         try:
             input_review = T.compare_inputs(review_context, manifest.plan.inputs)
         except T.ReviewError as exc:
             return EvaluationCheck("refused", f"input review: {exc}", record, manifest)
+        if impact_context is not None:
+            impact = H.check_inputs(impact_context, manifest.plan.inputs, review_context.inputs)
+            if impact.disposition == "refused":
+                return EvaluationCheck("refused", "impact: " + impact.reason, record, manifest,
+                                       input_review=input_review, impact=impact)
         if input_review.disposition != "matched":
             return EvaluationCheck("refused", "input review: " + input_review.reason,
-                                   record, manifest, input_review=input_review)
+                                   record, manifest, input_review=input_review, impact=impact)
+        if impact is not None and impact.disposition == "stale":
+            return EvaluationCheck("stale", "impact: " + impact.reason, record, manifest,
+                                   input_review=input_review, impact=impact)
     files = Q.read_declared_files(root, manifest=manifest, observations=observations,
                                   retain_source_image=True)
     authentication = _summary(files)
@@ -174,7 +193,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                comparison: C.ComparisonUnit | None = None,
                source_image: F.SourceImageCheck | None = None) -> EvaluationCheck:
         return EvaluationCheck(disposition, reason, record, manifest, authentication,
-                               identity, receipts, comparison, source_image, input_review)
+                               identity, receipts, comparison, source_image, input_review, impact)
 
     if files.disposition != "matched":
         return finish(files.disposition, "files: " + files.reason)

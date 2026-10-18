@@ -12,8 +12,9 @@ load a dossier, discover imports, read files, run a reference or update a record
 The caller must construct a complete relevant projection from canonical sources,
 authenticate its inputs and supply the actual change inventory. No persisted
 graph format or second canonical parser is introduced. The retained-experiment
-evaluator does not yet consume this API; complete closure, source-grounded property
-adequacy, collector provenance and qualification remain pending.
+evaluator optionally consumes reviewed graphs through the retained-input contract
+below. Complete canonical closure, source-grounded property adequacy, collector
+provenance and qualification remain pending.
 
 ## Inputs and edge direction
 
@@ -179,3 +180,125 @@ omission or a universal proof.
 Neither that observation nor any passing helper result permits missing canonical
 dependencies, invented fingerprints or reuse of invalidated evidence. The
 existing policy's broad campaigns and full applicable release gate still apply.
+
+## Retained-input impact contract (a42n)
+
+P4-0256 implements this opt-in integration under a contract declared before
+implementation. No canonical capture or qualification is created. `ImpactReview(profile_id, experiment_id, previous, current,
+changed_paths=(), uncertain=False)` supplies separately reviewed old/current
+`DependencyGraph` values to `evaluate_retained_unit(..., reviewed_inputs=...,
+impact_review=...)`. Supplying impact review requires the current `InputReview`.
+The caller still owns complete relevant graph construction, actual fingerprints,
+change inventory and source review. Input binding does not authenticate the
+remaining graph metadata or prove that the projection is complete.
+
+`project_inputs(InputReview(...))` returns a frozen `InputProjection` with
+`evidence_key` and `nodes`. It validates/copies the input review through its
+existing owner. Every projected leaf has kind `implementation` (conservative
+profile broadening), its canonical file path and selected profile membership.
+Keys are `experiment:` followed by compact ASCII JSON `[profile, experiment]`,
+and `input:` followed by `[profile, experiment, input_id]`. JSON uses
+`ensure_ascii=True` and separators `(',', ':')`; this distinguishes delimiters
+inside IDs. No name is truncated. Keys must fit the graph's 1,024-character
+limit and profile IDs its 128-character limit; otherwise this optional method
+refuses. It does not narrow the existing standalone InputReview API.
+
+A leaf fingerprint is SHA256 of ASCII compact JSON
+`["matched-gpr-input-v1", role, input_id, path, sha256]`, with the same JSON
+options. It identifies the entire input metadata record, including role, rather
+than pretending to be the file digest itself. Use this public projector when
+constructing the reviewed graphs. Additional profile memberships are permitted
+on a shared projected leaf; its key, kind, path and fingerprint must match.
+The graph's evidence node at `evidence_key` has kind `evidence` and includes the
+selected profile. Its actual metadata fingerprint remains the caller's
+responsibility; `None` means unknown and broadens validation, as above.
+
+Freeze all graph/node values and the change inventory before artifact I/O;
+validate through `analyze_impact`, forwarding both versions, changed paths and
+uncertainty. After manifest authentication, bind every captured input to the old
+projection and every current reviewed input to the new projection. Each must be
+reachable by following dependent-to-dependency edges from its evidence node.
+Both graphs contain the selected profile. The old evidence node is required;
+removal of the current evidence node is a stale-evidence case. Missing or
+inconsistent projected metadata/edges refuses instead of implying no impact.
+Graphs can carry additional reviewed nodes and edges; this is no automatic
+producer or authentication of those declarations.
+
+The appended optional `impact` finding contains `matched`/`stale`/`refused`,
+reason, selected profile/experiment and the existing frozen `ChangeImpact`
+analysis (absent for an invalid binding). `stale` means that analysis selects the
+experiment's evidence key. An unchanged supplied graph can only yield a
+conditional metadata match. It never establishes full currentness or adequacy.
+Malformed context refuses before artifact reads; an unavailable/invalid manifest
+leaves the finding absent. A valid context that cannot bind its inputs refuses
+before file-set reads. A selected stale result also stops before those reads.
+
+The existing input-review mismatch keeps its `refused` disposition; an attached
+impact analysis can independently report `stale`. When input review matches,
+a stale impact finding makes evaluation `stale`. Otherwise normal artifact
+checks continue, preserving independent file/process/comparison findings. Both
+optional arguments omitted preserve legacy behavior; every complete positive
+still remains `pending`. There is no qualification or status advancement.
+
+The pure public composition is `freeze_review(ImpactReview(...), profile_id=...,
+experiment_id=...)`, followed by `check_inputs(context, previous_inputs,
+current_inputs)`. These perform no artifact reads, dependency discovery or
+execution. They inherit the graph/count limits above and the input review's
+9–73 bindings. Metadata copies and traversal are outside the unchanged retained
+artifact 128 MiB read/16 MiB snapshot ledger; no exact process RAM/time ceiling
+is claimed. Full canonical closure/review, source-grounded property and collector
+provenance, fresh collection, retention and policy/status derivation remain open.
+
+### Complete input-binding example
+
+This **synthetic metadata example** opens no artifact files and executes no
+reference. Every digest is illustrative. It neither reviews a real dependency
+graph nor authenticates a capture. The extra node stands for reviewed parent
+configuration metadata; changing it selects evidence even when input pins match.
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_REVIEW_IMPACT'
+from dataclasses import replace
+from change_impact import DependencyNode as Node, DependencyGraph as Graph
+from matched_gpr_input_review import InputReview, InputBinding
+from matched_gpr_impact import ImpactReview, project_inputs, freeze_review, check_inputs
+
+pins = tuple(InputBinding("implementation", f"pin-{n}", f"inputs/{n}.dat", "a" * 64)
+             for n in range(10))
+review = InputReview("example", "unit", pins)
+projection = project_inputs(review)
+evidence = Node(projection.evidence_key, "evidence", ("example",), "d" * 64)
+parent = Node("parent-context", "configuration", ("example",), "b" * 64)
+nodes = (*projection.nodes, evidence, parent)
+edges = tuple((evidence.key, node.key) for node in (*projection.nodes, parent))
+old = Graph(("example",), nodes, edges)
+new = replace(old, nodes=tuple(replace(node, fingerprint="c" * 64)
+                              if node.key == parent.key else node for node in old.nodes))
+for current in (old, new):
+    context = freeze_review(ImpactReview("example", "unit", old, current),
+                            profile_id="example", experiment_id="unit")
+    checked = check_inputs(context, pins, pins)
+    print(checked.disposition, evidence.key in checked.analysis.stale_evidence_ids)
+PY_REVIEW_IMPACT
+```
+
+It prints `matched False`, then `stale True`. To compose an actually reviewed
+old/current graph pair with retained-file evaluation, supply both authorities:
+
+```python
+from matched_gpr_evaluation import evaluate_retained_unit
+from matched_gpr_impact import ImpactReview
+checked = evaluate_retained_unit(
+    root, raw_experiment=raw_form, scope=scope, current_candidate=candidate,
+    reviewed_inputs=current_input_review,
+    impact_review=ImpactReview(scope.profile_id, experiment_id,
+                               previous_graph, current_graph,
+                               changed_paths=changed_paths, uncertain=uncertain))
+```
+
+Run `python3 scripts/probe_matched_gpr_impact.py` and its `python3 -O` counterpart
+for synthetic controls over real on-volume fixtures. They distinguish stale
+reviewed context, invalid old/new input metadata and closure, changed/deleted
+identities, bounded copying, cycles, late artifact staleness and coherent process
+failure. Deliberate omitted guards must lose assertions with zero test errors;
+none of these fixtures is a reference run or a canonical qualification capture.

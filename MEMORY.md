@@ -16,15 +16,14 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after P4-0255 normal COMMIT, continue P4-SYSTEM.14 a42:
-  conservative old/new input-impact binding through the existing a42g change_impact
-  public API is next; its pure engine is complete. Reviewed inventory exists;
-  review completeness,
-  source-grounded property/collector provenance, fresh captures/retention and
-  policy/status/mirror derivation remain. Read a42 and the matched-GPR contracts.
-  Qualification stays closed; full mutation campaign .15. P4 remains14/18,
-  G-REPLAY4/4green, CPU incomplete on six axes. Source fixes0192–0197 are done.
-- in_flight_uncommitted: none after normal P4-0255 COMMIT.
+- next_action: after P4-0256 normal COMMIT, resume P4-SYSTEM.14 a42:
+  source-grounded GPR property/expected-producer binding is the next bounded
+  implementation. Read the matched-GPR contracts and spec-side author first.
+  The a42g impact engine and a42m/n optional input/graph bindings exist;
+  do not rebuild them. Full canonical closure/review, collector provenance,
+  fresh captures/retention and policy/status derivation remain. Qualification
+  stays closed. P4 14/18; G-REPLAY4/4green; CPU incomplete on six axes.
+- in_flight_uncommitted: none after normal P4-0256 COMMIT and checks.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

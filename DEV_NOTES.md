@@ -1,5 +1,83 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — bind retained inputs to reviewed old/new impact (P4-SYSTEM.14 a42n)
+
+P4-0256 starts after clean7ccb265, brief0/untracked and host census0. Own the
+finite integration before edits. Replace only .14's current operational census:
+C29e/C30/C32/C33d source repairs a1–a7/0192–0198 and the six-unit materials/book
+registration a10/0201 are complete. Their full closed records stay unchanged.
+Preserve the original Goal/Acceptance and remaining a42 obligations; ownership
+map binds exact before/after current-plan bytes. This recovers1978B without
+retiring records, adding a task-family member or changing its fixed ceiling.
+
+Declare the optional API/projection contract in the GC Impact chapter before
+implementation. InputProjection copies/validates through InputReview's owner;
+namespace keys use compact ASCII JSON of profile/experiment/input IDs. Full
+metadata fingerprints hash version/role/ID/path/file SHA, not merely file bytes.
+Every input leaf is implementation-kind, conservatively broadening its profile.
+Graph keys<=1024 and profiles<=128 inherit the published graph bounds; long
+valid standalone reviews explicitly refuse this optional projection, never
+truncate. Additional shared memberships are permitted, selected membership
+required. No new persisted graph format, loader, discovery or review attestation.
+
+Freeze ImpactReview's selected labels and both bounded Graph/Node copies before
+artifact reads. Check containers before member copying; call the existing public
+analyze_impact with both versions, changed paths and uncertainty. Validate full
+graph shape there. Bind old authenticated-manifest inputs and current reviewed
+inputs to exact projected metadata and evidence-to-input reachability. Cycles
+terminate; old evidence is required, current evidence removal stays stale.
+Caller owns the remaining graph metadata/fingerprints, actual change inventory
+and complete source review. The helper does not authenticate that authority.
+
+Append optional impact_review and impact without moving old argument/finding
+positions. Require current InputReview; freeze before manifest I/O. Invalid
+bindings refuse, selected stale evidence stops before shared file reads. Existing
+input-review mismatch remains refused with its separate stale analysis when
+applicable. A graph metadata match does not mask actual stale files or coherent
+failed processes. Legacy/None behavior and every other finding remain intact;
+complete positives still pending. No artifact byte/payload budget, source policy,
+reference cache/implementation, canonical record or CPU milestone changes.
+
+Before proof compiles exact7ccb265 evaluator source against unchanged public
+helpers. Synthetic on-volume artifact pins authenticate and the prior evaluator
+returns pending; changed reviewed parent-context metadata with identical input
+pins now returns stale/input-review matched before file-set reads. Normal/O
+receipts match. Dummy identities/observations are not reference execution or
+qualified evidence. No prior pending result is alleged to have been qualified.
+
+24 tests pass normal/O;22 omissions discriminate with zero errors, losses
+2/2/1/2/3/2/2/1/1/1/1/2/1/1/1/1/1/1/1/1/4/1. Cases include full metadata/namespace, both graph versions,
+removed evidence, missing/wrong input fields/scopes/edges, cyclic/transitive
+reachability, inclusive512node/4096edge bounds, envelope-before-member witnesses,
+copying/immutability, early context refusal, legacy behavior and independent
+artifact/process findings. Pure helpers perform no artifact I/O or execution.
+Adapt only the existing image-finding mutation's return needle; its26/22/0
+normal result remains. Full profile check also covers optimized compatibility.
+
+The first new projection probe caught a tuple-minus-set default at leaf nodes;
+use an empty set, then pass direct/cyclic/inclusive cases. The first finding
+omission produced3 assertion failures +1 incidental None dereference; explicitly
+assert the finding before reading it, yielding4 failures/0 errors. The initial
+before-read omission returned the wrong context representation; do not count
+those9 incidental failures. Replace it with a valid late re-freeze/use of caller
+graphs, discriminated by the before-artifact node-mutation witness (1failure).
+Retain failed/earlier logs; no control expectation or production guard weakened.
+
+Whole-entry sharding: two oldest DEV entries7440B to0341 and six oldest CH
+entries5163B to0342; both complete old heads reconstruct byte/order exact.
+Earlier manifest prefix and every published shard remain unchanged. Root and
+family caps stay fixed. LIVE's static arm census re-derived1582, not a running
+total; milestone states unchanged: P4 14/18, replay4/4green, CPU six axes open,
+BOARD10/12. Full canonical closure/review, source-grounded property/collector,
+fresh collection/retention and policy/status derivation remain. Promotion:
+declined (existing scoped-authority/currentness contract, no new project policy).
+Verification: scope normal/O protects1496 other files/91 complete old entries;
+15 focused checks pass,7 fresh books/3276 links and3 rendered API views. Literal
+example prints matched False/stale True. Preserve both inherited EOF-only Git
+whitespace diagnostics on the exact moved bodies; no new whitespace accepted.
+Additional profile check/normal COMMIT pending. Evidence:
+target/p4-system-14/a42n. No terminal command needed from the user.
+
 ## _(2026-10-18)_ — bind caller-reviewed input inventories (P4-SYSTEM.14 a42m)
 
 P4-0255 starts after clean ca226b0, brief0/host0. Queued scope is committed
@@ -593,109 +671,4 @@ Focused checks/seven books and the full staged reverse patch precede normal COMM
 Existing caps and LIVE1578/39/40/49 remain fixed. No new decision file is needed:
 finite evidence, the exact access blocker and D80 repair have native canonical
 owners. This slice delivers verified forensics; D79 remains explicitly open.
-
-## _(2026-10-17)_ — authored-index context repair and scoped replay (LIVE-CONTAINMENT.4i2b5b2r)
-
-D78's source5c72864/1481 identities still marks Introduction and authored Index
-active together. The generated public fallback assumes root index is an alias.
-The owned additional-js hook runs after sidebar creation, before DOMContentLoaded
-inserts heading links. It normalizes query/fragment, directory index and .html;
-a unique explicit chapter wins. No unique match preserves the existing alias/
-auxiliary state. No mdBook/Gitlink internals or pins, URLs, bodies or model-book
-configurations change. Public renderer configuration and actual generated outputs
-establish the integration; the asset stays under theme/ with content hashing.
-
-Final complete normal/O captures use strict Swift6/nonpersistent OS WebKit and
-public mdBook0.5.4. Each source120-page matrix has only D78; each current120-page
-matrix passes, retaining1408 headings/590 entries, all labels/inline ASTs/targets/
-nesting/roles/active parents/titles and107 source pins. Static inversion removes
-one exact script tag from51 main HTML files and reconstructs all original bytes;
-293 other original outputs remain exact, with one new byte-exact owned asset.
-All six model aliases pass. A supported main SUMMARY without authored Index
-exercises the guard directly. Actual active-class, alias-guard and integration-
-configuration omissions execute0 and fail qualification1. Four JS/HTTP witnesses
-still distinguish execution from exit0. Every process/server is waited/closed.
-
-One final optimized replay at four concurrent adapters refused print.html:
-ready=true/native0/empty stderr, ReferenceError missing global Mark. Final normal
-passes; the successful final optimized replay runs alone with at most two adapters.
-D79 remains open and priority1, immediate LC0044 before search. Sixteen traced
-print repeats deliver the complete17320B Mark resource200 and see Mark=function;
-module/exports/define stay undefined. Passing repeats do not explain the original
-failure. The existing helper returns HTTP observations only on successful page
-assessment, so original delivery cannot be reconstructed. That verified forensic
-gap and the unresolved dependency load have a dedicated next owner. No error is
-suppressed; no resource-completeness or concurrent-load correctness claim is made.
-
-The native validator record keeps its whole14406B prefix and the entire7063B
-closed LC0042 task span, including calibration/ownership/acceptance text, before
-the live root becomes a705B pointer. Full old/new book/task seams are retained.
-Source/current and normal/optimized metadata use exact replacement references;
-source rows and navigation oracles reconstruct before complete inverse comparison.
-The bounded XZ frame preserves all retained page/header/nav/input/check/manifest
-rows; seven outer/inner corruptions refuse normally and optimized. Codec changes
-precede fresh final producer execution; older captures remain diagnostic. Queries
-require pinned Git objects/producers with lazy fetch disabled. Raw DOM/HTTP streams
-and omitted-bundle tables remain diagnostics with fingerprints/request footprints.
-
-All old history entries/order and terminal bytes, protected source/modes, existing
-limits, focused checks/seven books and the complete staged reverse patch are checked
-before normal COMMIT. Book/current tools/live pointer agree; generated index is
-regenerated and unchanged. LIVE1578/39/40/49 and CPU/MCU/DSP/board acceptance stay
-unchanged. Click/scroll/layout, search/resources, full graph/adoption remain open.
-The finite repair/retention and next D79 investigation have native canonical owners;
-no new decision file or capacity increase is needed.
-
-## _(2026-10-17)_ — executed heading-navigation qualification (LIVE-CONTAINMENT.4i2b5b2)
-
-LC0042 pins1226311/1477 identities, one opaque Gitlink. Immutable public builds
-produce344 files across seven books; SUMMARY/config/chapter oracle107 inputs
-defines93 chapters, six index aliases and seven each print/toc/404 pages. All120
-HTML pages execute through public nonpersistent WKWebView. Independent Python
-HTML parsing and DOM serialization retain1406 full source/runtime headings and
-589 navigation entries, labels/inline ASTs, target uniqueness, nesting, roles,
-title, chapter context and actual active-parent binding. An observational script
-is injected by the owned numeric-loopback server; generated bytes stay exact.
-
-Calibration first refused Chrome155 graphics/display/allocator diagnostics.
-Blank probes repeat them before project input; Edge shares Chromium ancestry,
-so its agreement is not an independent engine oracle. Direct public CoreVideo
-accepts actual display1 but rejects synthetic2000; the installed call path is
-not traced, so virtual/native display mismatch remains an inference. Further
-graphics-mailbox errors remain unblessed. Required external OS tools are read
-only; profiles/module caches/temp/output stay on volume. A loopback resolver
-omission produced exit0/empty DOM; an explicit HTTP witness prevents recurrence.
-The public WebKit adapter uses nonpersistent website data and no personal profile.
-Swift6.4/driver1.168.6 strict Swift6/warnings-as-errors compilation succeeds with
-empty diagnostics. WebKit22625.1.29.11.28 on macOS27.0.1/26A434 produces empty
-stderr. Positive delayed-JS/HTTP witnesses pass; script-omitted/blank pages exit0
-but fail execution qualification. Every process/server is waited and closed.
-
-Both complete normal/O captures show one wrong contract: D78, authored Index
-marks both Introduction and Index active. Public generated connectedCallback
-applies its first-link root-index fallback despite an explicit Index match.
-Removing that branch corrects authored Index but breaks the unit first-chapter
-alias. Immediate priority1 LC0043 owns a conditional public-integration repair;
-six aliases must survive. Three real copied omissions (heading insertion, h2
-selection, inline-label copy) complete native execution0 and fail independent
-qualification1. The fourth cause control demonstrates both sides of D78.
-
-Full normal/optimized metadata,107 inputs, every page/header/nav/check,344-file
-baseline manifest, toolchain/calibrations and omission outcomes are retained in
-the native integration record after its exact46333B prefix. Bounded XZ/base64
-references authenticate the immutable source census and whole LC0040 predecessor
-manifest; optimized replacements reconstruct the complete second view. The old
-task-tree book teaching survives as exact old/new source seams, all shell commands
-remain live. Nine outer/inner corruptions refuse normal/O, including re-hashed
-member/source/type/trailing-data changes. Decoder assertions are unconditional.
-Queries require pinned Git objects/producers, disabling lazy fetch; raw DOM/HTTP
-streams and alternate bundle tables are generated diagnostics with retained
-fingerprints/request footprints. No no-Git replay or complete resource claim.
-
-Whole old history entries/order, published terminal bytes, source/modes, seven
-books, focused checks and staged full-patch inverse precede normal COMMIT. Existing
-caps remain fixed; live progress1578 arms/39 doctrines/40 routes/49 chapters stays
-unchanged. Click/scroll/layout/search/resources, full graph/adoption and every
-processor/board acceptance claim remain open. No new decision file is needed:
-the finite assessment and scheduled defect have canonical native ownership.
 

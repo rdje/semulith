@@ -225,41 +225,15 @@ This gate authorises the planned next engineering stage: board implementation.
   independence rows, its runner tracked; the unit's predeclared verification policy (EVD-03);
   each requirement's `implementation_status` derived from its evidence by a rule a gate
   re-checks, never typed; the mirrored records' lockstep with rv64i resolved.
-  Register rv64gc-lab-v0 in materials/units.sexp with its required-category
-  dispositions and dedicated generated book; validate the six-unit census and
-  every registry/book consequence before evidence signoff (owned e2c finding).
-  Sweep maintained knowledge/plans for dependency assumptions based on submodule
-  internals; replace them with public-contract evidence (owned e2d finding).
-  C29e prerequisite census names active reference_softfloat-shared-ancestry
-  decision/INDEX, reference_fp-model-layer-acceptance record,
-  zero-hits-absence-or-blindness card, closed .7 task rationale
-  and canonical rv64i
-  six-pair reference rows plus GC candidate lineage. Address these first in
-  the .14 sweep; P0/P4 overview and LIVE repair remains c29e. Schema/consistency
-  check only require declared pair/evidence/consequence and legal verdict;
-  gate_report renders verdicts without authenticating implementation ancestry.
-  Preserve historical bytes and withdraw unsupported current-use assumptions,
-  with public-contract evidence; no independence inferred from agreement.
-  C30 prerequisite review additionally encounters state.sexp's HART_WAITING
-  internal precedent and privilege.rs's FP/counter/mstatus implementation-source
-  comments. Own these in the same priority-first .14 provenance sweep before
-  evidence signoff; current counter witnesses derive from authenticated ISA and
-  selected laboratory policies, not those rationales.
-  C32 source census additionally finds current fp.rs.resolve_rm's internal Sail
-  function rationale and two generator note templates still calling signaling-NaN
-  conversions "the backend's deviation (ii)". Root99475c13 retained these notes;
-  qualification amendment d3 withdraws that alleged backend defect, but 3
-  generated vector notes still repeat it. Reproduce with generator/templates and
-  vector note census; priority before .14 evidence signoff, owned repair of prose
-  and exact note-only published regeneration, preserving all numeric bits/flags.
-  C33d's public syntax review additionally finds scripts/riscv_asm.py's live
-  module docstring claiming Sail/Spike encoding ancestry and semantic independence.
-  git blame lines42–46 pins rootb8d09f53. Reproduce by reading that own-script
-  paragraph; impact is unsupported maintained evidence rationale, no observed
-  encoding fault. Own correction with the priority-first .14 provenance sweep
-  before evidence signoff, using public artifacts/contracts and explicit lineage
-  limits. Canonical Assembler(profile/encoding.sexp) returns before the upstream
-  table-directory fallback; current witnesses do not inspect dependency source.
+  The six-unit materials registry/book prerequisite is complete (a10/0201);
+  keep its catalogue, materials and generated-book checks in force.
+  The C29e/C30/C32/C33d provenance prerequisites are complete in a1–a7
+  (0192–0198): vector notes, rounding/privilege/wait/assembler rationales,
+  state citations, maintained ancestry/card claims and canonical reference rows.
+  Full censuses, root causes and verification remain in
+  [completed evidence records](archive/P4-SYSTEM-13.md). Preserve their history,
+  numeric bits/flags and public-contract boundaries. No implementation ancestry
+  or independence credit follows from agreement or a negative source search.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
@@ -340,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | remaining a42 closure/impact binding and method adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | canonical closure/property/collector review; impact binding complete |
 
 ## Decisions
 
@@ -433,6 +407,21 @@ Remaining: closure/impact binding, source-grounded property/collector provenance
 fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
+
+### `.14` a42n — bind retained inputs to old/new impact (completed, SEMULITH-P4-0256)
+
+Own opt-in frozen graph context, input metadata projection/closure binding and
+existing change_impact composition. Bind declared old pins and current reviewed
+inventory before file-set reads; distinguish invalid context from stale selected
+evidence. Copy before artifact I/O; preserve legacy defaults/independent findings.
+Existing graph/count and payload bounds stay fixed; qualification stays closed.
+Declare projection/API in the GC Impact chapter before implementation. Own
+normal/O probes, discriminating omissions, evaluator integration, live-plan
+currency repair, whole-entry sharding as needed and normal COMMIT. Evidence:
+target/p4-system-14/a42n. Full canonical closure/property/collector/policy remains.
+
+Verified: scope normal/O and15 focused checks pass;24 controls/22 omissions
+are discriminating without errors. Additional profile check/normal COMMIT pending.
 
 ### `.14` a42m — bind reviewed input coverage (completed, SEMULITH-P4-0255)
 
@@ -657,6 +646,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42n **ROOT CAUSE**: before.py rc=0 normal/O: old pending/authenticated vs new stale/input-review matched; synthetic, no qualification.
+- [x] `.14` a42n **ADDRESSED**: run-controls.py rc=0 normal/O:24 tests/0 failures/0 errors;22 semantic omissions each lose assertions/0 errors.
+- [x] `.14` a42n **NO REGRESSION**: verify.py/focused.py rc=0 normal/O:1496 protected files/91 prior entries;15 focused checks,7 books/3276 links; literal example exact.
 
 - [x] `.14` a42m **ROOT CAUSE**: before.py rc=0 old pending/unreviewed child; normal/O.
 - [x] `.14` a42m **ADDRESSED**: run-controls.py rc=0 20/0;15 omissions fail without errors.
@@ -1587,6 +1580,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42n | `SEMULITH-P4-0256` | canonical closure/property/collector review next |
 | a42m | `SEMULITH-P4-0255` | closure/impact binding next |
 | `.16f` | `SEMULITH-P4-0254` | scalar cap verified; .16 complete, .14 next |
 | `.16e` | `SEMULITH-P4-0253` | GC reduction/replay verified; scalar cap next |

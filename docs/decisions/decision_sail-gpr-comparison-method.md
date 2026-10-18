@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-11`
 - **Status:** `active` — authenticated byte evaluation exists; complete adequacy/collection pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42m, `SEMULITH-P4-0210`–`0255`; GC policy/public Sail adapter
+- **Owner / source:** `P4-SYSTEM.14` a19–a42n, `SEMULITH-P4-0210`–`0256`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -15,8 +15,8 @@ one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
 optional witness/baseline grammar and scoped checks exist. A26 adds artifact
 syntax; a29–a42d3b implement bounded byte/identity/receipt/execution/relations/
-manifest/file checks, frozen contexts and source/image binding. A42m checks
-caller input inventories; see the GC References chapter's API/examples.
+manifest/file checks, frozen contexts and source/image binding. A42m–n bind
+caller input inventories and reviewed graph impact; see the GC References chapter's API/examples.
 Full adequacy/collection remain pending; qualification closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
