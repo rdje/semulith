@@ -173,7 +173,7 @@ class ValueEvaluationTests(unittest.TestCase):
         self.assertIs(checked.source_image, image)
         self.assertIsNone(checked.source_values)
         self.assertEqual(
-            [field.name for field in fields(checked)][-4:],
+            [field.name for field in fields(checked)][8:12],
             ["source_image", "input_review", "impact", "source_values"],
         )
 

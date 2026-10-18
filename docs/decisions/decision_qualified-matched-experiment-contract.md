@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42r, `SEMULITH-P4-0203`–`0260`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42s, `SEMULITH-P4-0203`–`0261`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -18,7 +18,7 @@ that its evidence is adequate or current.
 **Implemented:** grammar/scoped edges, bounded pins/snapshots/comparison,
 identity/receipt/execution/relations/manifest/files, expectation context and
 source/ELF correspondence. A42m–q add input/impact and source/value APIs;
-a42r binds reviewed-author metadata. API: GC unit book. Metadata equality does
+a42r–s bind and compose reviewed-author metadata. API: GC unit book. Metadata equality does
 not establish complete coverage or execution attestation.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as

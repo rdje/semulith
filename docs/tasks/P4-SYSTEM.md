@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | optional author composition; pure binding complete |
+| 1 | `P4-SYSTEM.14` | `active` | source-grounded property review |
 
 ## Decisions
 
@@ -408,19 +408,17 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42s — compose author binding (completed, SEMULITH-P4-0261)
+
+Freeze optional author_review before reads; bind its inventory and append
+expected_author after matched source values. Preserve findings/APIs/seams.
+Refuse contradictions; unsupported stays pending, no extra reads/qualification.
+Book-first; normal/O, scope/books and COMMIT. Closed r962B retained whole,
+old13330B prefix exact; six inverses: target/p4-system-14/a42s/retention.json.
+
 ### `.14` a42r — bind reviewed expected authors (completed, SEMULITH-P4-0260)
 
-Own a pure API selecting one expected-author leaf from a separately reviewed full
-InputReview, freezing authority before future I/O. Bind exact manifest inventory,
-child membership, `sha256:<author digest>` producer version, source/manifest
-consumption, snapshot route/path, source SHA and budget. Matched is metadata only:
-no authentication, loaded-code attestation, independence, property or qualification
-claim. Reuse existing typed plans/review/snapshot; preserve legacy evaluator.
-Predeclare the GC book contract before code. Normal/O positive and genuine
-omission controls, scope/history inverses, fixed caps and normal COMMIT required.
-Next: optional authenticated composition, then property/collector/policy adequacy.
-Closed a42q retained whole1603B in task-claims; old10699B prefix exact, full
-source/owner inverses/six refusals: target/p4-system-14/a42r/retention.json.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42s-r).
 
 ### `.14` a42q — compose authenticated source values (completed, SEMULITH-P4-0259)
 
@@ -630,6 +628,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42s **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new refused; unreviewed version.
+- [x] `.14` a42s **ADDRESSED**: run-controls.py rc=0 normal/O:19/0/0;13 omissions/0 errors.
+- [x] `.14` a42s **NO REGRESSION**: verify.py/focused.py rc=0:1507 files/87 entries;6 inverses;15 checks/7 books/3306 links.
 - [x] `.14` a42r **ROOT CAUSE**: red-caller-alias.log rc=1:21/2/0 source/manifest aliases; copied inventory fixes both.
 - [x] `.14` a42r **ADDRESSED**: run-controls.py rc=0 normal/O:21/0/0;16 omissions assertion losses/0 errors; legacy API exact.
 - [x] `.14` a42r **NO REGRESSION**: verify.py/focused.py rc=0: scope/history/inverses;15 checks,7 books/3300 links; exact example.
@@ -1578,6 +1579,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42s | `SEMULITH-P4-0261` | source-grounded property review |
 | `.14` a42r | `SEMULITH-P4-0260` | authenticated author composition |
 | `.14` a42q | `SEMULITH-P4-0259` | producer/property review |
 | `.14` a42p | `SEMULITH-P4-0258` | source-value composition/producer binding |

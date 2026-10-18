@@ -112,5 +112,58 @@ matched snapshot-parcels-v1
 refused expected author: expected producer version differs from reviewed author digest
 ```
 
-Authenticated evaluator composition follows in a separate owned slice. This pure
-API grants no CPU or board milestone credit.
+## Authenticated composition contract (a42s)
+
+`evaluate_retained_unit(..., author_review=...)`
+freezes the optional review before any artifact read. Its full inventory supplies
+`reviewed_inputs` when that argument is absent; when both are supplied, the two
+frozen inventories must agree exactly. It can also provide the current inventory
+required by `impact_review`. A mismatched authority refuses before manifest I/O.
+
+Append `EvaluationCheck.expected_author` after every existing field, preserving
+all old positional meanings and default behavior. With a supplied author review,
+invoke the pure binder once after a matched source-value finding, passing the
+frozen scope, authenticated manifest plan and retained source derivation. Earlier
+file, identity, receipt, comparison, image, review, impact and value findings remain
+available. Reuse the authenticated bytes; add no artifact reads or retained payload.
+
+A typed author refusal terminates evaluation as refused with the earlier findings.
+Invalid result types/dispositions/fact shapes or facts contradicting the frozen
+author/source/manifest/version/route/budget refuse without retaining the invalid
+author finding. A match remains pending complete method/policy adequacy. Earlier
+failures skip author binding. Unsupported source scope also skips it and stays
+pending without author credit. The optional finding is absent when no review is
+supplied, before this phase, or when the source author cannot supply facts.
+
+No artifact authentication, loaded-code attestation, capture freshness, independent
+ancestry, property meaning or full review adequacy follows from metadata agreement.
+This composition grants no CPU or board milestone credit.
+
+
+## Complete authenticated example
+
+Run the complete synthetic example above with this replacement after constructing
+and freezing `review` (replace its manifest read, `bind` helper and prints):
+
+```python
+import matched_gpr_evaluation as E
+checked = E.evaluate_retained_unit(f.root, **f.arguments(), author_review=review)
+print(checked.disposition, checked.source_values.disposition,
+      checked.expected_author.disposition)
+for producer in f.graph['producer'][1:]:
+    producer['version'] = 'unreviewed-version'
+checked = E.evaluate_retained_unit(f.root, **f.arguments(), author_review=review)
+print(checked.disposition, checked.source_values.disposition,
+      checked.expected_author.disposition)
+```
+
+Output:
+
+```text
+pending matched matched
+refused matched refused
+```
+
+Both calls authenticate22 declared files once. The first binds producer metadata;
+the second retains matched source values and the author refusal. These synthetic
+fixtures demonstrate composition only. Their author bytes are never executed.

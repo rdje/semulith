@@ -1,10 +1,9 @@
 # Authenticated Sail byte evaluation
 
-`evaluate_retained_unit` in `scripts/matched_gpr_evaluation.py` composes scoped
-records, pinned files, identity, receipts, comparison and source/image/value checks.
-Each artifact authenticates once; findings stay separate. The result remains
-**pending complete method/policy adequacy**; no qualification or CPU acceptance.
-PROFILE-CONSISTENCY's qualification refusal remains.
+`scripts/matched_gpr_evaluation.py` composes record checks and authenticated
+file, receipt, comparison and source/image/value findings. Artifacts authenticate
+once. Results remain **pending complete method/policy adequacy**, with no CPU
+acceptance; PROFILE-CONSISTENCY still refuses qualification.
 
 The caller supplies the trusted runtime root, one raw `experiment` form, a
 `experiment_verification.Scope`, and the current selected candidate dictionary:
@@ -18,7 +17,7 @@ Optional `reviewed_inputs=InputReview(...)` checks declared coverage against
 frozen caller authority ([inventory API](references.md#reviewed-input-inventory)).
 Optional `impact_review=ImpactReview(...)` binds old/current graph impact;
 see its [contract/examples](impact.md#retained-input-impact-contract-a42n).
-Neither grants qualification.
+Neither grants qualification. Optional `author_review`: [contract](expected-author.md#authenticated-composition-contract-a42s).
 
 The raw form is in-memory data from the current parent, not another artifact
 path to reopen. Scope supplies the profile's declared candidate, requirement and
@@ -38,13 +37,12 @@ analysis.
    Freeze the candidate's execution values/presence, all three selected receipt
    contexts, run verdicts, observation records and optional caller reviews before
    artifact I/O.
-3. Authenticate the bounded manifest, check that its relations equal the frozen
-   selection. When supplied, check frozen inventory and graph impact before file-set
-   reads. Then authenticate the complete declared set through the shared reader. Reuse the manifest seed without reopening it. Apply the fixed 128 MiB
-   cumulative artifact-read and 16 MiB live snapshot-payload budgets, with the
-   existing per-role bounds and terminal failure behavior. Request source/image
-   retention: seventeen snapshots and 64 KiB unused rebuilt-ELF room inside the
-   snapshot ceiling; the public reader default still retains fifteen.
+3. Bind the authenticated manifest to frozen relations and optional inventory/
+   impact reviews before file-set reads. The shared reader authenticates the whole
+   declared set, reusing the manifest seed. Fixed ceilings:128 MiB cumulative
+   reads,16 MiB live snapshot payload, per-role bounds and terminal failures.
+   Source/image retention uses seventeen snapshots plus64 KiB unused rebuild room
+   within that ceiling; the public default retains fifteen.
 4. Consume the exact retained identity and receipt bytes through the public
    [frozen byte consumers](byte-bindings.md). Bind each receipt's run/argv/exit,
    candidate/collector and input/output inventories. No legacy one-file reader
@@ -57,7 +55,8 @@ analysis.
    replace observed outcomes.
 6. Failed/unsupported comparisons stop before image construction. Success binds
    explicit entry/source/ELF, then checks [source values](references.md#authenticated-source-value-composition-a42q).
-   Unsupported author scope stays pending without credit; findings stay separate.
+   Bind optional reviewed-author metadata after source-value success. Unsupported
+   source scope stays pending without credit; findings stay separate.
 7. Return immutable findings and metadata. Release raw payloads from the returned
    authentication summary. A coherent failed process/control remains a valid
    record with failed observed evidence; it does not become a schema error.
@@ -93,6 +92,7 @@ declared method's reviewed collector/capture trust boundary still applies.
 | `source_values` | Optional `SourceExpectationCheck`: source-derived GPR/witness and image-context binding. Unsupported author scope earns no credit. |
 | `input_review` | Appended optional caller-review metadata finding: selected IDs, counts and missing/unreviewed/changed input IDs; absent without review or before manifest binding. No file/adequacy credit. |
 | `impact` | Optional reviewed-graph input binding and impact analysis. |
+| `expected_author` | Optional reviewed-author metadata after source-value success. No execution attestation. |
 
 The record disposition is `valid` after raw schema/scoped graph checks,
 `refused` after their findings or a malformed record, and `unchecked` when an

@@ -16,16 +16,15 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 optional authenticated author composition.
-  P4-0260 adds pure reviewed-author binding;21 controls/16 omissions normal/O.
-  Freeze full reviewed inventory before reads; bind selected leaf, digest-version,
-  consumed source/manifest and snapshot path/route/source/budget metadata.
-  Matched remains metadata only, with no execution attestation or qualification.
-  Integrate through retained evaluator next, then source-grounded property meaning.
+- next_action: P4-SYSTEM.14 source-grounded property review.
+  P4-0261 composes optional author_review before reads and expected_author after
+  source-value success.19 controls/13 omissions normal/O; six old suites/67
+  omissions keep exact vectors across73 rows;99 old selectors singular.
+  Producer metadata binding is implemented, with no loaded-code attestation.
   Source/image, input/impact and snapshot/value APIs are implemented; do not repeat.
   Full canonical closure/review, property/collector adequacy, captures/retention
   and policy/status remain. Qualification closed; P4 14/18; replay4/4green.
-- in_flight_uncommitted: none after P4-0260 normal COMMIT and postconditions.
+- in_flight_uncommitted: none after P4-0261 normal COMMIT and postconditions.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

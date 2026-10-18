@@ -1685,6 +1685,34 @@ metadata-finding:4
 EXPECTED_AUTHOR_CASES
   done
 
+  # P4-SYSTEM.14 a42s: retained reviewed-author composition; qualification pending.
+  local author_eval_mode author_eval_mutation author_eval_losses
+  local -a author_eval_python
+  for author_eval_mode in normal optimized; do
+    author_eval_python=(python3)
+    [ "$author_eval_mode" = optimized ] && author_eval_python+=(-O)
+    out="$("${author_eval_python[@]}" scripts/probe_matched_gpr_author_evaluation.py 2>&1)"; rc=$?
+    score "GREEN expected-author evaluation $author_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-AUTHOR-EVALUATION: 19 tests / 0 failures / 0 errors; synthetic only"
+    while IFS=: read -r author_eval_mutation author_eval_losses; do
+      out="$("${author_eval_python[@]}" scripts/probe_matched_gpr_author_evaluation.py --mutation "$author_eval_mutation" 2>&1)"; rc=$?
+      score "RED expected-author evaluation $author_eval_mutation $author_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-AUTHOR-EVALUATION: 19 tests / $author_eval_losses failures / 0 errors; synthetic only"
+    done <<'AUTHOR_EVALUATION_CASES'
+author-freeze:6
+current-inventory:12
+review-agreement:1
+frozen-scope:1
+author-scope:12
+manifest-reopen:2
+derivation-selection:1
+author-order:1
+author-result-shape:8
+author-fact-binding:9
+author-status:3
+author-finding:12
+unsupported-credit:1
+AUTHOR_EVALUATION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

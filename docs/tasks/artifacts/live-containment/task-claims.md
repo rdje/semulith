@@ -210,3 +210,30 @@ Fixed subtest helper after uncredited19/1/1; assertions scoped,12 omissions/0err
 Verified scope, legacy/99 sites, focused/books. Normal COMMIT next; promotion declined.
 
 ````
+
+## P4 a42s — complete closed reviewed-author binding record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42s-r"></a>
+
+```json
+{"schema":1,"revision":"2f2da09e2317cd7b29ec3539097e85412434addd","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130986,"source_sha256":"7fa54af0e811d9cf4c49396eab4727bff1637ebfff6584e2d38a766148d8983b","owner_insert":{"offset":37047,"text":"### `.14` a42s retain (SEMULITH-P4-0261)\n\n"},"owner_bytes":131028,"owner_sha256":"ddf972a01472df9c5531c8952d9727d4f03af22f9baa867a5b9c62681e020d93","offset":37089,"record_bytes":962,"record_lines":14,"record_sha256":"5736ab8b2d68ddd8af5a0615cf04d4493ec1dd33e8a36aa01200aa9a54b8079b","replacement":"### `.14` a42r — bind reviewed expected authors (completed, SEMULITH-P4-0260)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42s-r).\n\n","retired_bytes":130220,"retired_sha256":"038ada4659ee9d2c26e6537d60d24dbac7828b04e0e77b99d3b2fbd80fef7eb5"}
+```
+
+````text
+### `.14` a42r — bind reviewed expected authors (completed, SEMULITH-P4-0260)
+
+Own a pure API selecting one expected-author leaf from a separately reviewed full
+InputReview, freezing authority before future I/O. Bind exact manifest inventory,
+child membership, `sha256:<author digest>` producer version, source/manifest
+consumption, snapshot route/path, source SHA and budget. Matched is metadata only:
+no authentication, loaded-code attestation, independence, property or qualification
+claim. Reuse existing typed plans/review/snapshot; preserve legacy evaluator.
+Predeclare the GC book contract before code. Normal/O positive and genuine
+omission controls, scope/history inverses, fixed caps and normal COMMIT required.
+Next: optional authenticated composition, then property/collector/policy adequacy.
+Closed a42q retained whole1603B in task-claims; old10699B prefix exact, full
+source/owner inverses/six refusals: target/p4-system-14/a42r/retention.json.
+
+````

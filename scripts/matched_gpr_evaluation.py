@@ -24,6 +24,7 @@ import matched_gpr_relations as B
 import matched_gpr_source_image as F
 import matched_gpr_input_review as T
 import matched_gpr_impact as H
+import matched_gpr_expected_author as U
 import sexp as S
 
 
@@ -66,6 +67,7 @@ class EvaluationCheck:
     input_review: T.InputReviewCheck | None = None
     impact: H.InputImpactCheck | None = None
     source_values: C.SourceExpectationCheck | None = None
+    expected_author: U.ExpectedAuthorCheck | None = None
 
 
 @dataclass(frozen=True)
@@ -95,7 +97,8 @@ def _payload(files: Q.FileSetCheck, kind: str, rid: str) -> bytes | None:
 def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                            current_candidate: dict,
                            reviewed_inputs: T.InputReview | None = None,
-                           impact_review: H.ImpactReview | None = None) -> EvaluationCheck:
+                           impact_review: H.ImpactReview | None = None,
+                           author_review: U.ExpectedAuthorReview | None = None) -> EvaluationCheck:
     """Validate the scoped record, authenticate once and compute byte comparisons.
 
     Fixed 128 MiB total artifact reads/16 MiB live snapshot payload are owned by
@@ -107,6 +110,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     matching it checks declared coverage, not the completeness of that review.
     Optional impact_review binds supplied old/current graphs to those inventories;
     the caller still owns graph completeness, metadata and change review.
+    Optional author_review supplies or agrees with that inventory, then binds
+    expected-author metadata after source-value success; it attests no execution.
     It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -153,6 +158,14 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         review_context = (None if reviewed_inputs is None else
                           T.freeze_review(reviewed_inputs, profile_id=scope.profile_id,
                                           experiment_id=experiment["id"]))
+        author_context = (None if author_review is None else
+                          U.freeze_review(author_review, profile_id=scope.profile_id,
+                                          experiment_id=experiment["id"]))
+        if author_context is not None:
+            if review_context is None:
+                review_context = author_context.inventory
+            elif review_context != author_context.inventory:
+                raise ValueError("author review differs from current input review")
         if impact_review is not None and review_context is None:
             raise ValueError("impact review requires current input review")
         impact_context = (None if impact_review is None else
@@ -193,9 +206,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                receipts: tuple[ReceiptBinding, ...] = (),
                comparison: C.ComparisonUnit | None = None,
                source_image: F.SourceImageCheck | None = None,
-               source_values: C.SourceExpectationCheck | None = None) -> EvaluationCheck:
+               source_values: C.SourceExpectationCheck | None = None,
+               expected_author: U.ExpectedAuthorCheck | None = None) -> EvaluationCheck:
         result = EvaluationCheck(disposition, reason, record, manifest, authentication,
                                identity, receipts, comparison, source_image, input_review, impact)
+        result = replace(result, expected_author=expected_author)
         return replace(result, source_values=source_values)
 
     if files.disposition != "matched":
@@ -284,9 +299,47 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         return finish(source_values.disposition, "source values: " + source_values.reason,
                       identity=identity, receipts=tuple(receipts), comparison=comparison,
                       source_image=source_image, source_values=source_values)
+    expected_author = None
+    if author_context is not None and source_values.disposition == "matched":
+        expected_author = U.bind_expected_author(
+            author_context, profile_id=author_context.inventory.profile_id,
+            experiment_id=author_context.inventory.experiment_id,
+            manifest=manifest.plan, derivation=source_values.facts.derivation)
+        author_disposition = getattr(expected_author, "disposition", None)
+        author_facts = getattr(expected_author, "facts", None)
+        if (type(expected_author) is not U.ExpectedAuthorCheck
+                or type(getattr(expected_author, "reason", None)) is not str
+                or author_disposition not in ("matched", "refused")
+                or (author_disposition == "refused" and author_facts is not None)
+                or (author_disposition == "matched" and type(author_facts) is not U.ExpectedAuthorFacts)):
+            return finish("refused", "expected author: invalid result shape or disposition",
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image, source_values=source_values)
+        if author_disposition == "matched":
+            metadata = tuple(getattr(author_facts, key, None) for key in
+                             ("author", "source", "manifest", "version", "route", "instructions"))
+            selected_author = next(item for item in author_context.inventory.inputs
+                                   if item.input_id == author_context.author_input_id)
+            if (any(type(item) is not U.E.InputBinding for item in metadata[:3])
+                    or type(metadata[3]) is not str or type(metadata[4]) is not str
+                    or type(metadata[5]) is not int
+                    or metadata != (selected_author, source_input, principals["dependency-manifest"],
+                                    relations.plan.expected_version, author_context.route, execution.instructions)):
+                return finish("refused", "expected author: facts differ from frozen selection",
+                              identity=identity, receipts=tuple(receipts), comparison=comparison,
+                              source_image=source_image, source_values=source_values)
+        else:
+            return finish("refused", "expected author: " + expected_author.reason,
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image, source_values=source_values,
+                          expected_author=expected_author)
     value_scope = ("source values match" if source_values.disposition == "matched"
                    else "source values unsupported by current author, no credit")
+    if author_context is not None:
+        value_scope += ("; reviewed author metadata binds" if expected_author is not None
+                        else "; author binding not reached, no credit")
     return finish("pending", "authenticated byte comparison binds; source/image match; " + value_scope
                   + "; complete method/policy adequacy pending",
                   identity=identity, receipts=tuple(receipts), comparison=comparison,
-                  source_image=source_image, source_values=source_values)
+                  source_image=source_image, source_values=source_values,
+                  expected_author=expected_author)

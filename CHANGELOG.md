@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — authenticated expected-author composition (P4-SYSTEM.14 a42s)
+
+Compose the optional frozen author review through authenticated retained evaluation. Bind current inventory and producer metadata after source-value success; retain prior findings and refuse contradictions without execution-attestation or qualification credit. Cover19 controls/13 omissions normal/O, preserve99 old selector sites and positional contracts, and teach the complete example. Retain whole closed/history records within fixed caps. CPU/BOARD milestones unchanged.
+
 ## _(2026-10-18)_ — reviewed expected-author binding (P4-SYSTEM.14 a42r)
 
 Add a pure frozen review/binding API for the full inventory, selected author leaf, producer version and consumed source/manifest, plus snapshot path/route/source/budget metadata. Verify21 controls/16 discriminating omissions normal/O, fix two caller aliases and teach a complete synthetic example. Preserve the evaluator and historical records; authentication, execution attestation and qualification remain pending. Static arm count1590; CPU/BOARD milestones unchanged.
