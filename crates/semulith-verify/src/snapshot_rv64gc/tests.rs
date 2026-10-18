@@ -1,6 +1,27 @@
 use super::*;
 use crate::guests_rv64gc::{Guest, GUESTS};
 
+#[test]
+fn foreign_runtime_digest_reserializes_as_json_data_and_still_refuses_restore() {
+    let (_, mut snapshot) = checkpoint(&GUESTS[0], 0);
+    snapshot.runtime_sha256 = "foreign\"\\\n\u{1}".into();
+    let text = snapshot.to_json();
+    let parsed = SnapshotRv64gc::parse(&text).expect("digest is JSON string data");
+    assert_eq!(parsed, snapshot);
+    assert!(parsed.restore().is_err());
+}
+
+#[test]
+fn foreign_memory_digest_reserializes_as_json_data_and_still_refuses_restore() {
+    let (_, mut snapshot) = checkpoint(&GUESTS[0], 0);
+    snapshot.common.memory_sha256 = "foreign\"\\\n\u{1}".into();
+    let scalar = snapshot.common.to_json();
+    assert_eq!(Snapshot::parse(&scalar).unwrap(), snapshot.common);
+    let parsed = SnapshotRv64gc::parse(&snapshot.to_json()).expect("digest is JSON string data");
+    assert_eq!(parsed, snapshot);
+    assert!(parsed.restore().is_err());
+}
+
 fn environment(guest: &Guest) -> FlatMemory {
     let mut env = FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
     env.load_image(0, guest.image);

@@ -76,6 +76,7 @@ fn runtime_identity() -> &'static str {
             include_str!("snapshot_rv64gc.rs"),
             include_str!("snapshot.rs"),
             include_str!("replay.rs"),
+            include_str!("report.rs"),
             include_str!("json.rs"),
             include_str!("sha256.rs"),
             include_str!("run_rv64gc.rs"),
@@ -161,6 +162,23 @@ impl SnapshotRv64gc {
         self.common.at_step
     }
 
+    pub(crate) fn remaining_steps(&self) -> usize {
+        self.common.budget - self.common.at_step
+    }
+
+    /// Bind the complete final owners with the same canonical checkpoint encoding.
+    pub(crate) fn result_sha256(&self, result: &mut Resumed) -> Result<String, String> {
+        let final_snapshot = Self::capture(
+            &result.memory,
+            &mut result.state,
+            self.common.entry,
+            self.common.at_step + result.trace.steps.len(),
+            self.common.budget,
+            &self.refusals,
+        )?;
+        Ok(sha256_hex(final_snapshot.to_json().as_bytes()))
+    }
+
     /// Restore the exact checkpoint without advancing a boundary.
     pub fn restore(&self) -> Result<(ArchitecturalState, FlatMemory), String> {
         if self.common.algorithm != algorithm() || self.runtime_sha256 != runtime_identity() {
@@ -227,8 +245,14 @@ impl SnapshotRv64gc {
     /// Deterministic JSON; fixed memory chunks bound the output to MAX_JSON_BYTES.
     #[must_use]
     pub fn to_json(&self) -> String {
-        let mut out = format!("{{\"format\":\"{FORMAT}\",\"runtime_sha256\":\"{}\",\"common\":{},\"mode\":{},\"waiting\":{},\"fregs\":[",
-                              self.runtime_sha256, self.common.to_json(), self.mode.code(), self.waiting);
+        let mut out = format!("{{\"format\":\"{FORMAT}\",\"runtime_sha256\":\"");
+        crate::report::push_escaped(&mut out, &self.runtime_sha256);
+        out.push_str(&format!(
+            "\",\"common\":{},\"mode\":{},\"waiting\":{},\"fregs\":[",
+            self.common.to_json(),
+            self.mode.code(),
+            self.waiting
+        ));
         push_words(&mut out, &self.fregs);
         out.push_str("],\"csrs\":[");
         push_words(&mut out, &self.csrs);
@@ -264,9 +288,13 @@ impl SnapshotRv64gc {
 
     /// Parse all state owners. Size and nesting limits precede the shared JSON reader.
     pub fn parse(text: &str) -> Result<Self, String> {
-        check_json(text)?;
+        check_json_limits(text, MAX_JSON_BYTES, 131072, "RV64GC snapshot")?;
         let doc = json::parse(text).map_err(|e| format!("RV64GC snapshot: {e}"))?;
-        let obj = object(&doc)?;
+        Self::from_json(&doc)
+    }
+
+    pub(crate) fn from_json(doc: &Json) -> Result<Self, String> {
+        let obj = object(doc)?;
         if field(obj, "format")?.as_str() != Some(FORMAT) {
             return Err("RV64GC snapshot: unsupported format".into());
         }
@@ -419,9 +447,14 @@ fn push_words(out: &mut String, values: &[u64]) {
         out.push_str(&format!("\"0x{value:016x}\""));
     }
 }
-fn check_json(text: &str) -> Result<(), String> {
-    if text.len() > MAX_JSON_BYTES {
-        return Err("RV64GC snapshot: JSON byte limit exceeded".into());
+pub(crate) fn check_json_limits(
+    text: &str,
+    max_bytes: usize,
+    max_structure: usize,
+    kind: &str,
+) -> Result<(), String> {
+    if text.len() > max_bytes {
+        return Err(format!("{kind}: JSON byte limit exceeded"));
     }
     let (mut depth, mut string, mut escaped, mut structure) = (0usize, false, false, 0usize);
     for byte in text.bytes() {
@@ -436,8 +469,8 @@ fn check_json(text: &str) -> Result<(), String> {
         } else {
             if matches!(byte, b'[' | b'{' | b',' | b':') {
                 structure += 1;
-                if structure > 131072 {
-                    return Err("RV64GC snapshot: JSON structure limit exceeded".into());
+                if structure > max_structure {
+                    return Err(format!("{kind}: JSON structure limit exceeded"));
                 }
             }
             match byte {
@@ -445,7 +478,7 @@ fn check_json(text: &str) -> Result<(), String> {
                 b'[' | b'{' => {
                     depth += 1;
                     if depth > 12 {
-                        return Err("RV64GC snapshot: JSON nesting limit exceeded".into());
+                        return Err(format!("{kind}: JSON nesting limit exceeded"));
                     }
                 }
                 b']' | b'}' => depth = depth.saturating_sub(1),

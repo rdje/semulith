@@ -40,12 +40,13 @@
 //!   humans; `--json` emits the same shape the browser bench consumes. Exit
 //!   codes: 0 — expectations met; 1 — a designated mutant broke them (the
 //!   detector working, not an error); 2 — usage or an unknown name.
-//! - `semulith bundle --guest NAME [--mutate NAME]` — record the replay bundle
+//! - `semulith bundle --guest NAME [--mutate NAME] [--profile NAME]` — record the replay bundle
 //!   (`P1-LAB.10`): run the guest under the named model and write the input bundle
 //!   JSON (algorithm pins, platform, image digest, the recorded event choice, the
 //!   step bound, and the recorded result) to stdout. Exit codes: 0 — recorded;
-//!   2 — usage or an unknown name.
-//! - `semulith replay <file.json>` — re-derive a recorded bundle's result from its
+//!   2 — usage or an unknown name. RV64GC records a complete input checkpoint,
+//!   trace and final CPU/environment receipt; it supports production guests only.
+//! - `semulith replay <file.json> [--profile NAME]` — re-derive a recorded bundle's result from its
 //!   recorded inputs (G-REPLAY). Identity is checked first — definition pins, then
 //!   the image digest — and a drifted result is reported at the first differing
 //!   observation. Exit codes: 0 — the replay is identical; 1 — a named mismatch or
@@ -94,8 +95,8 @@ use semulith_verify::elf;
 /// definition was statically rv64i's until the flip; now `run` and `demo` take
 /// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
 /// was). The commands whose machinery is rv64i-scoped today — bench (the workload
-/// mixes), bundle/reduce/replay (the replay identity pins the rv64i definition),
-/// every mutation (the tables decode rv64i words) — REFUSE rv64gc-lab-v0 by
+/// mixes), reduce and nonproduction mutations (the tables decode rv64i words)
+/// — REFUSE rv64gc-lab-v0 by
 /// name rather than silently answering with the wrong engine.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Profile {
@@ -182,13 +183,13 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
                      \x20       semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]\n\
                      \x20       semulith demo [--profile NAME] [--guest NAME] [--mutate NAME] [--json]\n\
-                     \x20       semulith bundle --guest NAME [--mutate NAME]\n\
-                     \x20       semulith replay <file.json>\n\
+                     \x20       semulith bundle --guest NAME [--mutate NAME] [--profile NAME]\n\
+                     \x20       semulith replay <file.json> [--profile NAME]\n\
                      \x20       semulith snapshot <elf> --at N [--steps N] [--base ADDR] [--size BYTES]\n\
                      \x20       semulith resume <file.json>\n\
                      \x20       semulith reduce --guest NAME --mutate NAME\n\
                      \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n\
-                     \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run, demo, snapshot, resume;\n\
+                     \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run, demo, snapshot, resume, bundle, replay;\n\
                      \x20       other commands refuse the rv64gc profile by name; GC snapshots allow up to 64 MiB)\n";
 
 /// The process-wide counting allocator (`P1-LAB.11`): allocation counts are measured
@@ -690,11 +691,7 @@ fn bundle(args: &[String]) -> ExitCode {
         Err(code) => return code,
     };
     if profile == Profile::Rv64gcLabV0 {
-        return rv64gc_not_wired(
-            "bundle",
-            "the replay bundle's identity pins the rv64i definition and image digest; an \
-             rv64gc replay is a later leaf",
-        );
+        return bundle_rv64gc(&args);
     }
     let args = &args;
     let (guest_name, mutation) = match parse_guest_mutation(args, "bundle") {
@@ -719,6 +716,55 @@ fn bundle(args: &[String]) -> ExitCode {
         }
         Err(why) => {
             eprintln!("bundle: {why}");
+            ExitCode::from(2)
+        }
+    }
+}
+
+fn bundle_rv64gc(args: &[String]) -> ExitCode {
+    use semulith_verify::replay_rv64gc::BundleRv64gc;
+    use semulith_verify::snapshot_rv64gc::SnapshotRv64gc;
+    let mut guest = None;
+    for arg in args {
+        if let Some(name) = arg.strip_prefix("--guest=") {
+            guest = Some(name);
+        } else if arg == "--mutate=none" {
+            // The existing command vocabulary's production spelling.
+        } else if arg.starts_with("--mutate=") {
+            return usage("bundle: RV64GC mutation models are not implemented");
+        } else {
+            return usage(&format!("bundle: unknown RV64GC option/operand {arg}"));
+        }
+    }
+    let Some(name) = guest else {
+        return usage("bundle: a --guest=NAME is required for RV64GC");
+    };
+    let Some(guest) = semulith_verify::guests_rv64gc::GUESTS
+        .iter()
+        .find(|g| g.name == name)
+    else {
+        return usage(&format!("bundle: unknown RV64GC guest '{name}'"));
+    };
+    let mut memory =
+        semulith_verify::fixtures::FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
+    memory.load_image(0, guest.image);
+    let mut state = semulith_core::state_rv64gc::ArchitecturalState::zeroed_at(guest.entry);
+    let result = SnapshotRv64gc::capture(
+        &memory,
+        &mut state,
+        guest.entry,
+        0,
+        guest.executed_steps,
+        guest.refusals,
+    )
+    .and_then(BundleRv64gc::record);
+    match result {
+        Ok(bundle) => {
+            println!("{}", bundle.to_json());
+            ExitCode::from(0)
+        }
+        Err(error) => {
+            eprintln!("bundle: {error}");
             ExitCode::from(2)
         }
     }
@@ -1001,13 +1047,6 @@ fn replay(args: &[String]) -> ExitCode {
         Ok(parsed) => parsed,
         Err(code) => return code,
     };
-    if profile == Profile::Rv64gcLabV0 {
-        return rv64gc_not_wired(
-            "replay",
-            "the replay identity pins the rv64i definition and image digest; an rv64gc \
-             replay is a later leaf",
-        );
-    }
     let args = &args;
     let mut file: Option<&str> = None;
     for arg in args {
@@ -1022,13 +1061,51 @@ fn replay(args: &[String]) -> ExitCode {
     let Some(file) = file else {
         return usage("replay: a bundle file is required");
     };
-    let text = match std::fs::read_to_string(file) {
+    let read = if profile == Profile::Rv64gcLabV0 {
+        use std::io::Read;
+        std::fs::File::open(file).and_then(|f| {
+            let mut text = String::new();
+            f.take(semulith_verify::replay_rv64gc::MAX_JSON_BYTES as u64 + 1)
+                .read_to_string(&mut text)?;
+            Ok(text)
+        })
+    } else {
+        std::fs::read_to_string(file)
+    };
+    let text = match read {
         Ok(text) => text,
         Err(e) => {
             eprintln!("replay: cannot read {file}: {e}");
             return ExitCode::from(2);
         }
     };
+    if profile == Profile::Rv64gcLabV0 {
+        use semulith_verify::replay_rv64gc::{BundleRv64gc, ReplayRv64gc};
+        let bundle = match BundleRv64gc::parse(&text) {
+            Ok(bundle) => bundle,
+            Err(error) => {
+                eprintln!("replay: {file}: refused — {error}");
+                return ExitCode::from(2);
+            }
+        };
+        return match bundle.replay() {
+            Ok(ReplayRv64gc::Identical) => {
+                println!("replay: identical — {} boundaries and the final CPU/environment receipt re-derived", bundle.recorded_steps());
+                ExitCode::from(0)
+            }
+            Ok(ReplayRv64gc::Mismatch { boundary, what }) => {
+                match boundary {
+                    Some(at) => println!("replay: MISMATCH at boundary {at}: {what}"),
+                    None => println!("replay: MISMATCH in {what}"),
+                }
+                ExitCode::from(1)
+            }
+            Err(error) => {
+                println!("replay: refused — {error}");
+                ExitCode::from(1)
+            }
+        };
+    }
     let bundle = match ReplayBundle::parse(&text) {
         Ok(bundle) => bundle,
         Err(why) => {

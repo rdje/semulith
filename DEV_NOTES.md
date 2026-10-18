@@ -1,5 +1,62 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — complete RV64GC replay records (P4-SYSTEM.16)
+
+P4-0250 starts from clean1cf0673, brief0/untracked and a green host census.
+The actual GC bundle CLI refuses2 before. Add the fs-free BundleRv64gc API
+and explicit-profile bundle/replay routes. Input is a complete snapshot; its
+CPU, memory, typed fault regions and runtime/definition/lock identity travel
+with an explicit flat-memory/no-external-events policy. CLI recording selects
+tracked production guests from reset; API recording also supports checkpoints.
+Producer-source pins bind the replay machinery and string encoder. These are
+reproducibility identities, not an external author's authenticity signature.
+
+Compare incoming PC, resulting mode and ordered GPR changes at their first
+absolute boundary, then independently compare boundary count, model-error and
+fetch receipts and SHA256 of the complete canonical final checkpoint. Aggregate
+receipts do not pretend to locate the first instruction responsible. Identical
+model-error reproduction is successful replay, not a correct CPU verdict.
+Keep reduction/nonproduction GC mutation models out of this slice. Bounds:
+10000 continuation boundaries, existing64MiB memory, 145MiB JSON, depth12,
+2000000 structural punctuation and4096B model-error text; fail before parsing
+or execution at the applicable boundary. Artifact limits are not exact RAM caps.
+
+Review also finds both snapshot writers interpolate digest text unescaped.
+Permanent Cargo tests reproduce runtime and memory quote/control-character
+serialization failures independently (1pass/2fail before), then pass3/0 after
+using the existing JSON string encoder. Restore continues refusing both foreign
+identities. The earlier manual rlib probe could not link; its output is not a
+behavior witness. Include the encoder source in the conservative runtime pins.
+No valid digest bytes or scalar replay behavior change. CLI tests retain the
+actual scalar catalogue/default route as well as four GC system cases.
+
+Own necessary bounded retention in the product slice: all four complete a21
+reader-unit spans (3766B) move into the existing mutable reader record. Preserve
+its121386B old prefix and every published archive. Source offsets/digests plus
+unique root stubs yield the exact131036B owner inverse; four independently
+damaged payloads refuse. Root127897B/retention128023B before new growth stay
+under the existing131072B ceilings. Preserve the original root heading and
+link the full retained decision/acceptance/verification/commit bytes. No capacity
+raise, new task file, canonical record or qualification change.
+
+Evidence: target/p4-system-16/replay. All167 corpus bundles round-trip/replay;
+mid-execution/empty continuations and changed PC/mode/GPR/length/fetch/error/final
+receipts discriminate, as do missing/foreign/invalid inputs and step bounds.
+Four real CLI cases cover atomics, wait/timer, translation and floating point;
+usage/malformed2, changed/refused1, identical0. G-REPLAY gains only the bundle
+kind (3/4); CPU-SYSTEM remains incomplete, P4 remains13/18 and .14 stays open.
+The first manifest used kind bundle; the gate refused it by name. Correct to
+the existing required kind replay-bundle without changing the gate. Focused
+publication, Rust/wasm and book checks precede the normal COMMIT. The route
+gate catches the new LIVE row6B over its fixed cap; concise current wording
+fits. Correct the print probe to require the gate table in its actual GC book
+owner; both main-book guide views remain explicitly checked. Focused13, make check,
+wasm, seven books and source/inverse checks pass normal/O:1479 protected
+files,93 whole old head entries,4 retained spans/4 damaged refusals. The first
+commit hook rejects the abbreviated ADDRESSED bullet. Cancel that owned Git
+parent/eight descendants, verify process residue0, add the actual Cargo command
+and rc=0 to the bullet, then rerun acceptance and normal hooks.
+
 ## _(2026-10-17)_ — RV64GC checkpoints resume the complete laboratory state (P4-SYSTEM.16)
 
 The director identifies delivery stagnation and requests product implementation.

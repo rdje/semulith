@@ -260,6 +260,55 @@ including the guest's fault policy, and checks continued steps, fetch totals,
 complete final CPU state and memory. Additional controls exercise live reservation
 and wait effects, retained TLB replacement state and malformed records. CLI tests
 compare ELF continuations for atomics, wait, translation and floating-point cases.
-This supplies the snapshot kind of `G-REPLAY`; replay bundles, reduction and the
-remaining CPU-SYSTEM acceptance work stay open.
+This supplies the snapshot kind of `G-REPLAY`.
+
+### RV64GC replay bundles
+
+`bundle` and `replay` also accept `--profile=rv64gc-lab-v0`. For example, record
+the tracked LR/SC guest and reproduce its complete result:
+
+```sh
+cargo run -q -p semulith-cli -- bundle --profile=rv64gc-lab-v0 --guest=a-lrsc-pair > target/lrsc-replay.json
+cargo run -q -p semulith-cli -- replay target/lrsc-replay.json --profile=rv64gc-lab-v0
+```
+
+The format `semulith-rv64gc-replay-v1` contains a complete input checkpoint,
+including memory bytes and typed fault regions; the guest catalogue is not needed
+to replay it. The CLI records production guests from reset with 64 KiB of memory.
+The library can instead record a continuation from any supported checkpoint.
+Each record explicitly selects the flat-memory laboratory with no external event
+stream. A producer-source identity accompanies the checkpoint's definition,
+runtime and dependency identities. These identify the experiment; they are not
+signatures authenticating an external author's claims.
+
+The recorded result includes each boundary's incoming PC, resulting privilege
+mode and ordered GPR changes, the total fetch requests, any model error, and a
+SHA256 receipt of the complete canonical final checkpoint. The final receipt
+covers FP/CSR/privilege/TLB/reservation/wait owners and memory, including changes
+that the printed GPR trace cannot show. Replay restores the saved input and
+recomputes every receipt. An identical replay exits0, including reproduction of
+a recorded model error; that establishes reproducibility, not CPU correctness.
+
+A changed trace reports its first differing boundary and field, such as
+`MISMATCH at boundary 0: PC`. A fetch-count, model-error or final-state mismatch
+names its aggregate receipt without claiming to locate the original instruction.
+Mismatches and refused producer/runtime/memory identities exit1. Usage, unreadable
+files, malformed records and unsupported formats/event policies exit2.
+
+Bundle continuations are limited to 10,000 boundaries, with the snapshot memory
+bound of 64 MiB. JSON is limited to 145 MiB, nesting depth12 and 2,000,000 opening
+braces/brackets, commas and colons before parsing. Recorded GPR changes must be
+ordered unique x1–x31; model-error text is bounded to 4096 bytes. These artifact
+limits bound work without promising an exact process-RAM ceiling. The CLI bounds
+its file read before parsing. Its `--mutate=none` spelling selects production;
+RV64GC mutation models, reduction and board/device/event replay remain outside
+this slice.
+
+All current RV64GC guests round-trip and replay through this format. Controls
+alter PC, privilege, GPR changes, length, fetch/error/final receipts and identities;
+mid-execution and empty continuations also replay. CLI checks exercise atomics,
+wait/timer, translation and floating-point guests. This supplies the bundle kind
+of `G-REPLAY`; reduction and the remaining CPU-SYSTEM acceptance work stay open.
+Digest strings are escaped as JSON data, including rejected foreign identities;
+escaping does not weaken restoration's identity and memory checks.
 <!-- ANCHOR_END: rv64gc-snapshot -->

@@ -22,6 +22,9 @@
 (evidence (axis G-REPLAY) (kind snapshot)
   (test (file "crates/semulith-verify/src/snapshot_rv64gc/tests.rs") (fn "every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches"))
   (statement "Every tracked guest is split at three boundaries through JSON snapshots; continued steps, fetch totals, complete final CPU state and memory equal uninterrupted execution, with the same typed laboratory refusals. Reservation/wait effects, TLB slots/FIFO and corrupted/foreign/missing-state refusals have additional controls. This is laboratory snapshot evidence, not board/device or independent ISA validation."))
+(evidence (axis G-REPLAY) (kind replay-bundle)
+  (test (file "crates/semulith-verify/src/replay_rv64gc/tests.rs") (fn "every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts"))
+  (statement "Every tracked guest records and replays a self-contained JSON bundle: complete CPU/memory/fault-policy input, explicit no-external-event policy, trace, fetch/model-error receipts and a digest of the complete final checkpoint. Additional controls discriminate trace fields, aggregate/final receipts, foreign identities, invalid states and bounds; four system cases use the real CLI. This demonstrates laboratory reproducibility, not independent ISA correctness or board/device replay."))
 
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
@@ -32,7 +35,7 @@
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
   (statement "No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite."))
 (open (axis G-REPLAY) (owner "P4-SYSTEM.16")
-  (statement "RV64GC snapshot/resume is implemented for bounded flat-memory laboratory runs. Replay bundles and reduction remain rv64i-only; their RV64GC CLI paths still refuse by name."))
+  (statement "RV64GC snapshot/resume and replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name."))
 (open (axis G-PORTABILITY) (owner "P4-SYSTEM.17")
   (statement "No portability record for this unit: the instrument's manifest is built from rv64i's guests."))
 (open (axis G-RELEASE) (owner "P4-SYSTEM.18")

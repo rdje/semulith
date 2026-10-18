@@ -769,3 +769,149 @@ profile/journal identities are retained. No resource-completeness/cause claim.
 - [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox agree, generated index unchanged. promotion: declined; finite evidence and precise D79/D80 owners remain native. No new decision file, producer rewrite, cap raise or processor/full graph/adoption acceptance. Stop on the actual BPF access blocker after a clean committed handoff; do not mark D79 resolved.
 
 End of the byte-exact LC0044/45/47 task retention for LC0048.
+
+## P4 pin-reader record — P4-0250 retention
+
+<a id="p4-a21-retained"></a>
+
+The complete closed P4.14 a21 reader unit moves here before replay work grows
+the capped live root. All four original spans and the root heading survive;
+this ordinary retained reader record changes no historical claim or gate.
+Owner/source identities and source offsets below authenticate the exact bytes.
+At the retirement boundary, replace each unique live stub with its matching
+payload to reconstruct the pre-retirement owner root. Reverse the three
+explicit ownership edits below to reconstruct the original source. P4.16b
+completion then changes its own plan, current status/frontier and commit row;
+reverse those scoped changes before applying this finite boundary proof. Existing archive files and this file’s old prefix
+remain exact; fixed ceilings do not increase.
+
+```json
+{
+  "owner": "P4-SYSTEM.16b / SEMULITH-P4-0250",
+  "source_commit": "1cf0673218e7b199b096d292549457751f30c58c",
+  "source_bytes": 131057,
+  "source_sha256": "8440bfe2d44c24ad039dd3e69d2692971bc4213fdcd94e0db19fca62ff55cf04",
+  "owner_bytes": 131036,
+  "owner_sha256": "925d4a8ad7d574aa6dbff659e00dabd3eadff2d5837f447cfdcb5640cd9ac1ab",
+  "retired_bytes": 127897,
+  "retired_sha256": "038bfb9bad267c09f529b3a62d883f7e0979d72e161b19700f06cd37b117308c",
+  "spans": [
+    {
+      "label": "decision",
+      "source_offset": 45213,
+      "owner_offset": 45192,
+      "bytes": 2489,
+      "sha256": "386324f2a6e8e8dfe66c1ce1cca6b87eaff3df517850052a2f006ec8a7d25134",
+      "replacement": "### `.14` a21 \u2014 bound pin-only authentication (completed, SEMULITH-P4-0212)\n\nComplete original decision, acceptance, verification and commit: [retained reader record](artifacts/live-containment/reader-records-retention.md#p4-a21-retained).\n\n"
+    },
+    {
+      "label": "acceptance",
+      "source_offset": 82929,
+      "owner_offset": 82908,
+      "bytes": 697,
+      "sha256": "68b5bbc8ff4288728a8ae33cb02d7c8d16dfc00a3ee9e653a190e30ddc2eb637",
+      "replacement": "Completed .14 a21 acceptance: [complete original record](artifacts/live-containment/reader-records-retention.md#p4-a21-retained).\n\n"
+    },
+    {
+      "label": "verification",
+      "source_offset": 119011,
+      "owner_offset": 118990,
+      "bytes": 391,
+      "sha256": "e463d65d0ffc9396ad1fc264bb953da4ead7ea5882fabbe7d628241cfa4fe574",
+      "replacement": "\na21: [complete original verification](artifacts/live-containment/reader-records-retention.md#p4-a21-retained).\n\n"
+    },
+    {
+      "label": "commit",
+      "source_offset": 126745,
+      "owner_offset": 126724,
+      "bytes": 189,
+      "sha256": "ad8b6beb9a2a89af5fe754a5e50178deba9c94238593b5e5af022e1bc4a79af9",
+      "replacement": "| `.14` a21 | `SEMULITH-P4-0212` | [complete original commit row](artifacts/live-containment/reader-records-retention.md#p4-a21-retained) |\n"
+    }
+  ],
+  "ownership_edits": [
+    {
+      "before": "  Status: `active` (snapshot/resume: `SEMULITH-P4-0249`; bundle/reduction pending)",
+      "after": "  Status: `active` (snapshot/resume0249; bundle/reduction next)"
+    },
+    {
+      "before": "  Goal: the snapshot (the privileged state, the TLB, the reservation, the wait), the replay\n  bundle and the reducer over rv64gc \u2014 the CLI's named refusals lifted.",
+      "after": "  Goal: RV64GC snapshots, replay bundles and reduction; lift named CLI refusals."
+    },
+    {
+      "before": "",
+      "after": "  .16b/0250: bundle/replay; own digest-escaping fix and exact a21 retention first.\n"
+    }
+  ]
+}
+```
+
+<!-- P40250 decision -->
+````text
+### `.14` a21 — bound pin-only authentication (completed, SEMULITH-P4-0212)
+
+Owned on clean5e9253b, brief0/untracked and actual process census OK, before edits.
+Add an explicit bounded metadata-only pin API
+sharing the authenticated traversal and cleanup owner, as the declared method
+requires. Preserve legacy pin calls and snapshot semantics; test pre-read bounds,
+invalid limits, races, partial I/O/cleanup and no retained payload, including
+independent omitted-bound controls under optimization. Review exact read limits
+before claiming them. before.py rc=0 measures the documented old snapshot growth
+sentinel: limit3 reads[3,1]/consumes4, then refuses growth with no payload/leak.
+This is not false agreement; the prospective method's hard read budget is stricter.
+Own separating payload retention from byte limits and bounding all bytes consumed;
+strengthen snapshot reads at the exact cap while preserving successful bytes and
+legacy unbounded pin behavior. When no sentinel fits, final descriptor/path
+metadata checks must still refuse growth/replacement. Retain all existing controls.
+Own the a21 snapshot-probe false RED: short-read-before.log rc=0 shows summing
+requested bytes rejects legitimate partial reads. Count consumed bytes instead;
+permanently run the complete snapshot suite through a short-read stream. This is
+an uncommitted test-instrument defect, not a reader failure; fix before signoff.
+
+Artifact schemas/mappings and bounded evaluator follow.
+Own focused checks, public API/book/live sync, protected scope and COMMIT workflow.
+If live-task capacity requires it, own a lossless whole-completed-unit partition
+with exact source inverse and preserved links; no history rewrite or ceiling rise.
+No partition needed in a21; a22 owns it before further growth. Bounded pins and
+snapshots now consume at most the call cap; legacy pin behavior retained.
+Limits53/0 (also optimized), four omissions6/5/10/3 failures (also optimized),
+old pins39/snapshots24 and17 old predicate omissions pass. Actual cap3 growth
+reads3 instead of4; refuses with no payload/leak. Correct the requested-byte
+meter and permanently exercise the snapshot suite with legitimate short reads;
+restoring that meter yields52/1 with the exact named regression.
+Focused13/profile62/0/schema25/0/seven books/public book helper/rendered/protected
+scope pass. No canonical/qualification/cap/status advance; derive768outer arms.
+Evidence target/p4-system-14/a21; latest full CI remains a18 green.
+
+
+
+````
+
+<!-- P40250 acceptance -->
+````text
+- [x] `.14` a21 — **ROOT CAUSE**: before.py/proof.py rc=0 measure the old
+  documented sentinel consuming4 at cap3; short-read-before.log rc=0 isolates
+  the requested-byte meter's false RED, distinct from reader correctness.
+- [x] `.14` a21 — **ADDRESSED**: limits53/0/optimized53/0/proof.py rc=0;
+  four omissions lose6/5/10/3 cases also optimized; wrong meter52/1 discriminates;
+  actual bounded book helper and cap3 read census pass with fixture/fd cleanup.
+- [x] `.14` a21 — **NO REGRESSION**: focused13/profile62/0/schema25/0,
+  pins39/snapshots24/17 old predicate controls/seven books rc=0; rendered checks
+  and scope.py rc=0 protect every other tracked file and existing ceilings.
+
+````
+
+<!-- P40250 verification -->
+````text
+
+a21: limits53/0 also optimized; four mutants6/5/10/3, also optimized;
+old pins39/snapshots24/17 omissions; exact cap3 consumed3 vs old4, book helper,
+wrong-meter52/1, focused13/profile62/0/schema25/0/seven books/rendered/protected
+scope rc=0. Fix the new short-read test instrument before signoff. No capture
+or qualification credit; per-call bounds leave aggregate method budgets pending.
+````
+
+<!-- P40250 commit -->
+````text
+| `.14` a21 | `SEMULITH-P4-0212 (leaf P4-SYSTEM.14): bound pin-only reads and snapshot probes` | a22 completed-unit containment, artifact mappings/evaluator, retention and fresh captures |
+````

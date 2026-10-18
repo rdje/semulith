@@ -190,7 +190,7 @@ impl Snapshot {
         out.push_str("],\"pc\":\"");
         replay::push_hex64(&mut out, self.pc);
         out.push_str("\",\"memory_sha256\":\"");
-        out.push_str(&self.memory_sha256);
+        crate::report::push_escaped(&mut out, &self.memory_sha256);
         out.push_str("\",\"runs\":[");
         for (i, (offset, bytes)) in self.runs.iter().enumerate() {
             if i > 0 {

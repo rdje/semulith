@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0250 (leaf P4-SYSTEM.16) — record and replay complete RV64GC runs
+
+- Add self-contained versioned RV64GC replay bundles/CLI with complete checkpoint inputs, explicit environment/fault policy, trace and final-state receipts, identity checks and bounded work. All167 guests round-trip/replay; four real CLI system cases and deliberate result/identity/shape/budget changes discriminate.
+- Fix both snapshot writers' digest-string escaping: two permanent tests fail before and pass after; invalid identities still refuse restoration. Keep the existing scalar replay path supported.
+- Teach commands, receipts, limits and exit codes in both books; G-REPLAY advances2/4→3/4, reduction remains open and CPU-SYSTEM stays incomplete. Retain all four closed a21 reader spans verbatim with exact full-owner inverse, four damaged-unit refusals and fixed caps.
+
 ## SEMULITH-P4-0249 (leaf P4-SYSTEM.16) — enable RV64GC snapshot and resume
 
 - Replace the named GC CLI refusal with versioned JSON checkpoints and exact continuations: integer/FP/CSR/privilege state, TLB slots/FIFO, reservation, wait state, memory and typed laboratory fault regions. Pin compiled definition/runtime and Cargo lock identities; bound memory, steps and artifact parsing. Keep the RV64I format and behavior supported.
