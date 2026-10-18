@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | producer/property review; source values composed |
+| 1 | `P4-SYSTEM.14` | `active` | optional author composition; pure binding complete |
 
 ## Decisions
 
@@ -408,28 +408,23 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42r — bind reviewed expected authors (completed, SEMULITH-P4-0260)
+
+Own a pure API selecting one expected-author leaf from a separately reviewed full
+InputReview, freezing authority before future I/O. Bind exact manifest inventory,
+child membership, `sha256:<author digest>` producer version, source/manifest
+consumption, snapshot route/path, source SHA and budget. Matched is metadata only:
+no authentication, loaded-code attestation, independence, property or qualification
+claim. Reuse existing typed plans/review/snapshot; preserve legacy evaluator.
+Predeclare the GC book contract before code. Normal/O positive and genuine
+omission controls, scope/history inverses, fixed caps and normal COMMIT required.
+Next: optional authenticated composition, then property/collector/policy adequacy.
+Closed a42q retained whole1603B in task-claims; old10699B prefix exact, full
+source/owner inverses/six refusals: target/p4-system-14/a42r/retention.json.
+
 ### `.14` a42q — compose authenticated source values (completed, SEMULITH-P4-0259)
 
-Declare GC References contract before code. Compose after byte/image success
-using exact authenticated snapshots and pre-I/O frozen selection. Append optional
-source_values with old positional fields intact; bind image/derivation metadata
-and preserve independent findings. Failures terminal; unsupported author/event
-scope pending without credit. Matches stay pending producer/property/source,
-closure/collector/full-policy review. No new interpreter, artifact IO/reopens,
-format, cap or qualification. Reuse bounded temporary room; metadata-only output.
-Own before proof, ordering/copy/budget/metadata controls, all consumer omissions,
-docs/books and normal COMMIT/postconditions.
-
-Capacity prerequisite: whole2222B closed a42p retained in existing task-claims,
-old7446B assessment prefix exact; artifact10699B/root128991B; six damaged refusals.
-Separate appended work record changes no old assessment or original12 authority.
-Metadata binds aad44b7 source/owner/retired identities, insertion and body offset.
-Undo only a42q's later block/acceptance/commit/frontier edits to retired root;
-replace unique stub with retained body, verify owner hash, remove recorded
-insertion at offset, then verify full source length/hash. Old native headings,
-archives/seals, count107 and all ceilings unchanged. Evidence: target/p4-system-14/a42q.
-Fixed subtest helper after uncredited19/1/1; assertions scoped,12 omissions/0errors normal/O.
-Verified scope, legacy/99 sites, focused/books. Normal COMMIT next; promotion declined.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42r-q).
 
 ### `.14` a42p — bind source-derived GPR values (completed, SEMULITH-P4-0258)
 
@@ -635,6 +630,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42r **ROOT CAUSE**: red-caller-alias.log rc=1:21/2/0 source/manifest aliases; copied inventory fixes both.
+- [x] `.14` a42r **ADDRESSED**: run-controls.py rc=0 normal/O:21/0/0;16 omissions assertion losses/0 errors; legacy API exact.
+- [x] `.14` a42r **NO REGRESSION**: verify.py/focused.py rc=0: scope/history/inverses;15 checks,7 books/3300 links; exact example.
 - [x] `.14` a42q **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new failed; bytes satisfied/image matched,1 vs9; red2/2/0.
 - [x] `.14` a42q **ADDRESSED**: run-controls.py rc=0 normal/O:19/0/0;12 omissions discriminate/0 errors;55 legacy omissions exact,99 sites singular.
 - [x] `.14` a42q **NO REGRESSION**: verify.py/focused.py rc=0 normal/O:1503 files/85 entries;6 inverses;15 checks,7 books/3284 links; example exact.
@@ -1580,6 +1578,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42r | `SEMULITH-P4-0260` | authenticated author composition |
 | `.14` a42q | `SEMULITH-P4-0259` | producer/property review |
 | `.14` a42p | `SEMULITH-P4-0258` | source-value composition/producer binding |
 | `.14` a42o | `SEMULITH-P4-0257` | source-grounded property/producer binding |

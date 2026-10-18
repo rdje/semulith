@@ -174,3 +174,39 @@ Own hook396/4: entry required-program/program-identity needles collide.
 Fixed; entry-matrix.py rc=0:25/16 normal/O,56 selectors singular. Red: red-entry-hook.log.
 
 ````
+
+## P4 a42r — complete closed source-value composition record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42r-q"></a>
+
+```json
+{"schema":1,"revision":"f1ef8f90ed834a1df95757fd6d37ab59265b7124","source":"docs/tasks/P4-SYSTEM.md","source_bytes":131017,"source_sha256":"a2f6d3d46f2bffb8492aa84c3e9eacec8a50444c09cf254d82dcfd673d7f8fb1","owner_insert":{"offset":37045,"text":"### `.14` a42r retain (SEMULITH-P4-0260)\n\n"},"owner_bytes":131059,"owner_sha256":"cb898cfc0c582eb659eb6f9a12295f41946d51f8c72d2af98f56e1eaaf10ac9e","offset":37087,"record_bytes":1603,"record_lines":23,"record_sha256":"7520a5028dea188a6e6f28fa6fdef0fc9852da91a1c98d6ebfefe889929196fe","replacement":"### `.14` a42q — compose authenticated source values (completed, SEMULITH-P4-0259)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42r-q).\n\n","retired_bytes":129615,"retired_sha256":"81a35bd52f2d8847f3954b866e0d4eccf783b856f891eee42616eb5cca8d43dc"}
+```
+
+````text
+### `.14` a42q — compose authenticated source values (completed, SEMULITH-P4-0259)
+
+Declare GC References contract before code. Compose after byte/image success
+using exact authenticated snapshots and pre-I/O frozen selection. Append optional
+source_values with old positional fields intact; bind image/derivation metadata
+and preserve independent findings. Failures terminal; unsupported author/event
+scope pending without credit. Matches stay pending producer/property/source,
+closure/collector/full-policy review. No new interpreter, artifact IO/reopens,
+format, cap or qualification. Reuse bounded temporary room; metadata-only output.
+Own before proof, ordering/copy/budget/metadata controls, all consumer omissions,
+docs/books and normal COMMIT/postconditions.
+
+Capacity prerequisite: whole2222B closed a42p retained in existing task-claims,
+old7446B assessment prefix exact; artifact10699B/root128991B; six damaged refusals.
+Separate appended work record changes no old assessment or original12 authority.
+Metadata binds aad44b7 source/owner/retired identities, insertion and body offset.
+Undo only a42q's later block/acceptance/commit/frontier edits to retired root;
+replace unique stub with retained body, verify owner hash, remove recorded
+insertion at offset, then verify full source length/hash. Old native headings,
+archives/seals, count107 and all ceilings unchanged. Evidence: target/p4-system-14/a42q.
+Fixed subtest helper after uncredited19/1/1; assertions scoped,12 omissions/0errors normal/O.
+Verified scope, legacy/99 sites, focused/books. Normal COMMIT next; promotion declined.
+
+````

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — reviewed expected-author binding (P4-SYSTEM.14 a42r)
+
+Add a pure frozen review/binding API for the full inventory, selected author leaf, producer version and consumed source/manifest, plus snapshot path/route/source/budget metadata. Verify21 controls/16 discriminating omissions normal/O, fix two caller aliases and teach a complete synthetic example. Preserve the evaluator and historical records; authentication, execution attestation and qualification remain pending. Static arm count1590; CPU/BOARD milestones unchanged.
+
 ## _(2026-10-18)_ — authenticated source-value composition (P4-SYSTEM.14 a42q)
 
 Compose retained source/baseline snapshots through the existing value checker after byte/image success. Cross-bind metadata; retain independent findings and typed failures, with unsupported author scope still pending/uncredited. Verify19 controls/12 omissions and all55 affected legacy omissions normal/O. Preserve whole closed/history records and old positional APIs; teach a complete example. No qualification or CPU/board milestone changes.

@@ -9,6 +9,7 @@
 [Frozen context and snapshot checks](byte-bindings.md)
 [Authenticated byte evaluation](evaluation.md)
 [Explicit image context](image-binding.md)
+[Reviewed expected authors](expected-author.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)

@@ -1654,6 +1654,37 @@ source-finding:13
 VALUE_EVALUATION_CASES
   done
 
+  # P4-SYSTEM.14 a42r: reviewed-author metadata, no execution attestation.
+  local author_mode author_mutation author_losses
+  local -a author_python
+  for author_mode in normal optimized; do
+    author_python=(python3)
+    [ "$author_mode" = optimized ] && author_python+=(-O)
+    out="$("${author_python[@]}" scripts/probe_matched_gpr_expected_author.py 2>&1)"; rc=$?
+    score "GREEN reviewed expected author $author_mode" "$rc" 0 "$out" "MATCHED-GPR-EXPECTED-AUTHOR: 21 tests / 0 failures / 0 errors; synthetic only"
+    while IFS=: read -r author_mutation author_losses; do
+      out="$("${author_python[@]}" scripts/probe_matched_gpr_expected_author.py --mutation "$author_mutation" 2>&1)"; rc=$?
+      score "RED reviewed expected author $author_mutation $author_mode" "$rc" 1 "$out" "MATCHED-GPR-EXPECTED-AUTHOR: 21 tests / $author_losses failures / 0 errors; synthetic only"
+    done <<'EXPECTED_AUTHOR_CASES'
+authority-shape:1
+authority-scope:6
+authority-copy:4
+author-selection:3
+review-route:3
+inventory-binding:5
+child-membership:1
+principal-binding:3
+producer-version:4
+source-consumption:1
+manifest-consumption:1
+snapshot-author:3
+snapshot-source:1
+snapshot-budget:4
+frozen-results:3
+metadata-finding:4
+EXPECTED_AUTHOR_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42q, `SEMULITH-P4-0203`–`0259`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42r, `SEMULITH-P4-0203`–`0260`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,13 +15,11 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Implemented:** a13–a21 grammar/mapping, scoped edges, safe pins/snapshots,
-complete-budget comparison, duplicate-write refusal and typed witness/baseline;
-a26 dependency/receipt formats; a29–a42d3b bounded byte comparison, identity/
-receipt/execution/relations/manifest bindings, shared-budget file authentication,
-expectation context and full source/ELF correspondence. A42m–n add optional frozen
-input/graph reviews; a42o–q add source authoring/value composition. API: GC Evaluation/References.
-Metadata equality does not prove complete dependency coverage.
+**Implemented:** grammar/scoped edges, bounded pins/snapshots/comparison,
+identity/receipt/execution/relations/manifest/files, expectation context and
+source/ELF correspondence. A42m–q add input/impact and source/value APIs;
+a42r binds reviewed-author metadata. API: GC unit book. Metadata equality does
+not establish complete coverage or execution attestation.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
 `UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh
