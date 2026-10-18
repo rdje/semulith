@@ -358,36 +358,26 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42aa — bind the retained DIV excerpt (completed, SEMULITH-P4-0269)
+
+v2 authenticates the separate excerpt; original publication/semantic authority
+and guest/witness/control exact. Old page substitution and v1 selection refuse/
+unsupported. Reviewed extractor plus35modules/27data/63children;66files/946190B
+copy works cache-free normal/O. Actual23-file authentication, synthetic traces.
+Controls28/29,22/14,25/13 (tests/omissions),118 runs/0 errors. Focused16/books7/
+examples3;1535other files/1Gitlink/92old entries exact. Whole y/z2247B retained;
+inverse2/6damaged refusals. Caps/status/qualification guard unchanged.
+Evidence target/p4-system-14/a42aa; promotion declined (existing source contracts).
+Draft duplicate new-head title refused/fixed.
+COMMIT applies; canonical entrypoint/retention/policy next.
+
 ### `.14` a42z — retain one licensed DIV statement (completed, SEMULITH-P4-0268)
 
-Catalogue's snapshot-wide no-CC-BY claim (introduced3afd275) contradicted by both
-pinned prefaces. Audit72-page manifest and source/colophon pins; record scoped
-manual-text terms in materials/RVI_M_RETENTION.md, keeping full site untracked.
-Retain exact182B DIV/DIVU span in1576B attributed/provenanced HTML; emitter pins
-both bounded inputs, verifier authenticates tracked asset without acquired pages.
-Probe20/0/0 with9 omissions normal/O; actual regeneration/fresh-root verification.
-Production profile gate checks asset pin. Current property case/cache binding and
-method logic stays exact except report prose; next slice adopts separate excerpt identity.
-Whole closed x1444B retained with source/owner inverse2/6damaged refusals; old
-history, fixed caps and qualification refusal preserved. Evidence target/p4-system-14/a42z.
-P1 owned: GS falsely claims test passes per commit; COMMIT§2 is conditional.
-Repro gate_report.py --gate GS (base1a5d); fixed execution prose and regenerate, preserving axes.
-promotion: declined (existing SRC-01/review/retention contracts). COMMIT applies.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42aa-a42z).
 
 ### `.14` a42y — review canonical capture dependencies (completed, SEMULITH-P4-0267)
 
-Source-reviewed collector/evaluator/author population:34 project modules,27 data
-files (75 exercised reads), pinned M page/policy and review tool. Derive62 proposed
-children, not by echoing a future manifest. Bound direct reads1MiB/file/8MiB/pass,
-check paths/locality/Git boundaries and exact before/after bytes. Review normal/O:
-65files/972963B; image4416B/payload108B and27 source-derived boundaries agree.
-Probe22/0/0 and10 omissions discriminate in both modes. No process/canonical run.
-GC capture-plan declares exact finite DIV/control scope, external runtime/current
-semantic authority separation, status-hash cycle avoidance and retention/entrypoint
-steps still required. Qualification stays closed; all old production owners exact.
-Whole-oldest DEV/CH0351/0352 preserve complete history; no cap/seal/milestone change.
-Evidence target/p4-system-14/a42y. promotion: declined (existing review/closure
-and source/property contracts; no new cross-cutting policy). COMMIT applies.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42aa-a42y).
 
 ### `.14` a42x — collect a bounded three-run unit (completed, SEMULITH-P4-0266)
 
@@ -574,6 +564,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42aa **REPRODUCE / ISSUE**: before.json rc=0: v1 requires the acquired35588B page; curated input unbound.
+- [x] `.14` a42aa **ROOT CAUSE**: run-controls.py rc=0: publication/input identity alias; wrong authority omission loses28 assertions.
+- [x] `.14` a42aa **FIX**: explicit v2 excerpt pin/original authority; reviewed extractor and actual fixture authentication.
+- [x] `.14` a42aa **ADDRESSED**: run-controls.py/cache-free.py rc=0 normal/O:118 runs,56 omissions;66-file cache-free review and changed/missing refusals.
+- [x] `.14` a42aa **NO REGRESSION**: verify.py/focused.py rc=0: all other case facts/1535files/92entries exact;16 checks/seven books/three examples.
+- [x] `.14` a42aa **LOCKSTEP**: verify.py rc=0 normal/O: source/owner inverse2,6damaged refusals; CH0354 exact; fixed caps/statuses. COMMIT applies.
 - [x] `.14` a42z **REPRODUCE / ISSUE**: license-census.py rc=0: old no-statement claim has2 counterexamples in pinned72-page snapshot.
 - [x] `.14` a42z **ROOT CAUSE**: license-census.py/repair-report.py rc=0: footer scope omits prefaces; test presence cannot imply per-commit execution.
 - [x] `.14` a42z **FIX**: scoped terms and bounded exact-span curation/verification; separate artifact identity; presence-only report prose; case binding pending.
@@ -1060,6 +1056,7 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
+a42aa: controls118/focused16/books7/examples3 and whole-source/history inverses rc=0 normal/O.
 a42l2: actual full gate replay on8237f71 rc=1, names TASK-PRESERVATION index
 changed part18; before a42k/505dd74 gate0. Same33982B source SHA256
 9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59 and
@@ -1561,6 +1558,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42aa | `SEMULITH-P4-0269` | entrypoint/retention/shared charge |
 | `.14` a42z | `SEMULITH-P4-0268` | bind separate retained excerpt and review inventory |
 | `.14` a42y | `SEMULITH-P4-0267` | bounded canonical retention and entrypoint |
 | `.14` a42x | `SEMULITH-P4-0266` | canonical closure and capture plan |

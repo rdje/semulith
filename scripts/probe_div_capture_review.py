@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
+import hashlib
 from pathlib import Path
 import sys
 import tempfile
@@ -12,6 +14,8 @@ import unittest
 from unittest.mock import patch
 
 import review_div_capture as R
+import matched_gpr_property as P
+import retain_div_statement as Retain
 
 ROOT = Path(__file__).resolve().parent.parent
 MUTATIONS = {
@@ -29,6 +33,19 @@ MUTATIONS = {
     "file-bound": ("0 <= info.st_size <= FILE_BYTES", "True", 1),
     "aggregate-bound": ("self.total + info.st_size <= TOTAL_BYTES", "True", 1),
     "byte-recheck": ("self.read(path) == data", "True", 1),
+    "retained-identity": (
+        "(primary.role, primary.input_id, primary.path, primary.sha256)\n"
+        '        == ("normative-source", "RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA)',
+        "True",
+        1,
+    ),
+    "publication-authority": (
+        'case.authority.source_id == "RVI-M"\n'
+        "        and case.authority.source_sha256 == Retain.SOURCE_SHA",
+        "True",
+        1,
+    ),
+    "retained-pin": ("hashlib.sha256(data).hexdigest() == primary.sha256", "True", 1),
 }
 
 
@@ -111,15 +128,66 @@ class ReviewTests(unittest.TestCase):
 
     def test_child_population_and_inclusive_bound(self):
         children = R.child_paths(R.REVIEWED_MODULES)
-        self.assertEqual(len(children), 62)
+        self.assertEqual(len(children), 63)
         self.assertFalse(set(children) & R.PRINCIPAL_CODE)
         self.assertIn(R.SELF, children)
         self.assertIn(R.PRIMARY, children)
-        self.assertEqual(
-            len(R.child_paths(R.REVIEWED_MODULES | {"extra_a", "extra_b"})), 64
-        )
+        self.assertIn("retain_div_statement", R.ROOT_MODULES)
+        self.assertIn("scripts/retain_div_statement.py", children)
+        self.assertEqual(len(R.child_paths(R.REVIEWED_MODULES | {"extra_a"})), 64)
         with self.assertRaises(R.ReviewError):
-            R.child_paths(R.REVIEWED_MODULES | {"extra_a", "extra_b", "extra_c"})
+            R.child_paths(R.REVIEWED_MODULES | {"extra_a", "extra_b"})
+
+    def retained_case(self, data):
+        case = P.signed_division_case()
+        pin = replace(case.required_inputs[0], sha256=hashlib.sha256(data).hexdigest())
+        return replace(case, required_inputs=(pin,))
+
+    def test_retained_identity_and_population_are_exact(self):
+        data = b"synthetic retained statement"
+        case = self.retained_case(data)
+        with patch.object(Retain, "RETAINED_SHA", case.required_inputs[0].sha256):
+            R.check_retained_input(case, data)
+            for change in [
+                dict(role="implementation"),
+                dict(input_id="RVI-M"),
+                dict(path="other/statement.html"),
+                dict(sha256="a" * 64),
+            ]:
+                with self.subTest(change=change), self.assertRaises(R.ReviewError):
+                    R.check_retained_input(
+                        replace(
+                            case,
+                            required_inputs=(
+                                replace(case.required_inputs[0], **change),
+                            ),
+                        ),
+                        data,
+                    )
+            for pins in [(), case.required_inputs * 2]:
+                with self.subTest(count=len(pins)), self.assertRaises(R.ReviewError):
+                    R.check_retained_input(replace(case, required_inputs=pins), data)
+
+    def test_original_publication_authority_cannot_be_replaced_by_excerpt(self):
+        data = b"synthetic retained statement"
+        case = self.retained_case(data)
+        with patch.object(Retain, "RETAINED_SHA", case.required_inputs[0].sha256):
+            for change in [
+                dict(source_id="RVI-M-DIV-STATEMENT"),
+                dict(source_sha256=case.required_inputs[0].sha256),
+            ]:
+                with self.subTest(change=change), self.assertRaises(R.ReviewError):
+                    R.check_retained_input(
+                        replace(case, authority=replace(case.authority, **change)), data
+                    )
+
+    def test_changed_retained_bytes_refuse(self):
+        data = b"synthetic retained statement"
+        case = self.retained_case(data)
+        with patch.object(
+            Retain, "RETAINED_SHA", case.required_inputs[0].sha256
+        ), self.assertRaises(R.ReviewError):
+            R.check_retained_input(case, data + b" changed")
 
     def test_read_and_recheck(self):
         self.write("input", b"checked")

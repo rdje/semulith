@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Property composition controls with explicitly simulated external-page authentication."""
+"""Finite property composition controls authenticating the actual retained excerpt."""
 from __future__ import annotations
 
 import argparse
@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 class Fixture(B.Fixture):
-    """Real tracked guest/expectation data; no reference process or source-page copy."""
+    """Real tracked guest/expectation/excerpt data; synthetic observations, no process."""
 
     def __init__(self, root):
         super().__init__(root)
@@ -82,6 +82,7 @@ class Fixture(B.Fixture):
             path=required.path,
             sha256=required.sha256,
         )
+        self.install_retained_excerpt((ROOT / required.path).read_bytes())
         self.write(
             self.inputs["dependency-manifest"],
             B.F.encode_dependencies(
@@ -140,49 +141,13 @@ class Fixture(B.Fixture):
             inventory, self.child["id"], "snapshot-parcels-v1"
         )
 
-    def simulated_page(self, original, disposition="matched"):
-        """A declared external-input double; not primary-document authentication."""
-
-        def read(root, kind, record, *, max_bytes):
-            if kind == "input" and record["id"] == self.normative["id"]:
-                if disposition != "matched":
-                    return E.A.Snapshot(
-                        E.A.PinResult(
-                            kind,
-                            record["id"],
-                            record["path"],
-                            disposition,
-                            "simulated external-page refusal",
-                        ),
-                        None,
-                    )
-                size = 35588
-                data = b"<synthetic external-page authentication fixture>".ljust(
-                    size, b" "
-                )
-                return E.A.Snapshot(
-                    E.A.PinResult(
-                        kind,
-                        record["id"],
-                        record["path"],
-                        "matched",
-                        "SIMULATED external-page authentication",
-                        size,
-                        self.normative["sha256"],
-                    ),
-                    data,
-                )
-            return original(root, kind, record, max_bytes=max_bytes)
-
-        return read
-
-    def install_real_page(self, data):
+    def install_retained_excerpt(self, data):
         if (
             type(data) is not bytes
-            or len(data) != 35588
+            or len(data) != 1576
             or hashlib.sha256(data).hexdigest() != self.normative["sha256"]
         ):
-            raise ValueError("real primary page does not match reviewed bytes")
+            raise ValueError("retained excerpt does not match reviewed bytes")
         path = self.root / self.normative["path"]
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(data)
@@ -199,10 +164,7 @@ class PropertyEvaluationTests(unittest.TestCase):
     def evaluate(self, **changes):
         args = self.f.arguments()
         args.update(changes)
-        with mock.patch.object(
-            E.A, "read_snapshot", side_effect=self.f.simulated_page(E.A.read_snapshot)
-        ):
-            return E.evaluate_retained_unit(self.f.root, **args)
+        return E.evaluate_retained_unit(self.f.root, **args)
 
     def outcome(self, disposition="pending", reason=None, finding="matched", **changes):
         try:
@@ -241,6 +203,16 @@ class PropertyEvaluationTests(unittest.TestCase):
         self.assertEqual(checked.source_values.disposition, "matched")
         self.assertEqual(checked.expected_author.disposition, "matched")
         self.assertEqual(checked.source_property.facts.observed_value, (1 << 64) - 3)
+        self.assertFalse((self.f.root / ".materials").exists())
+        pin = next(
+            item.pin
+            for item in checked.authentication.files
+            if item.record_id == self.f.normative["id"]
+        )
+        self.assertEqual(
+            (pin.disposition, pin.byte_size, pin.sha256),
+            ("matched", 1576, self.f.normative["sha256"]),
+        )
 
     def test_default_preserves_old_fields_and_appends_property_finding(self):
         checked = self.outcome(finding=None, property_authority=None)
@@ -389,9 +361,9 @@ class PropertyEvaluationTests(unittest.TestCase):
         self.assertIs(call.call_args.kwargs["manifest"], checked.manifest.plan)
         self.assertIs(call.call_args.kwargs["source_values"], checked.source_values)
 
-    def test_declared_set_is_read_once_including_explicitly_simulated_primary_pin(self):
+    def test_declared_set_is_read_once_including_actual_retained_excerpt(self):
         snapshots = []
-        read = self.f.simulated_page(E.A.read_snapshot)
+        read = E.A.read_snapshot
 
         def track(root, kind, record, **kwargs):
             snapshots.append(record["path"])
@@ -412,16 +384,15 @@ class PropertyEvaluationTests(unittest.TestCase):
         )
         self.assertLessEqual(checked.authentication.snapshot_bytes, 16 * 1024 * 1024)
 
-    def test_failed_external_pin_stops_before_property_binding(self):
-        for disposition, expected in [
-            ("unavailable", "unavailable"),
-            ("mismatch", "stale"),
-        ]:
-            with self.subTest(disposition=disposition), mock.patch.object(
-                E.A,
-                "read_snapshot",
-                side_effect=self.f.simulated_page(E.A.read_snapshot, disposition),
-            ), mock.patch.object(
+    def test_failed_retained_pin_stops_before_property_binding(self):
+        path = self.f.root / self.f.normative["path"]
+        data = path.read_bytes()
+        for damaged, expected in [(None, "unavailable"), (data + b"changed", "stale")]:
+            if damaged is None:
+                path.unlink()
+            else:
+                path.write_bytes(damaged)
+            with self.subTest(expected=expected), mock.patch.object(
                 E.G,
                 "bind_source_property",
                 side_effect=AssertionError("property called"),
@@ -429,6 +400,7 @@ class PropertyEvaluationTests(unittest.TestCase):
                 checked = E.evaluate_retained_unit(self.f.root, **self.f.arguments())
                 self.assertEqual(checked.disposition, expected, checked.reason)
                 self.assertIsNone(checked.source_property)
+        path.write_bytes(data)
 
     def test_failed_values_and_refused_author_stop_before_property(self):
         good = self.outcome().source_values
@@ -554,7 +526,11 @@ class PropertyEvaluationTests(unittest.TestCase):
 
     def test_canned_authority_pin_must_belong_to_authenticated_manifest(self):
         good = self.outcome().source_property
+        previous = self.f.root / self.f.normative["path"]
         self.f.normative["path"] = "source/relocated.html"
+        relocated = self.f.root / self.f.normative["path"]
+        relocated.parent.mkdir(parents=True, exist_ok=True)
+        previous.rename(relocated)
         self.f.refresh_manifest_and_review()
         with mock.patch.object(E.G, "bind_source_property", return_value=good):
             self.outcome("refused", "facts differ", finding=None)
@@ -620,39 +596,29 @@ MUTATIONS = {
 }
 
 
-def real_primary_smoke():
-    """Unmocked optional check; absent acquired material is unavailable, never green."""
-    import materials as M
-
-    try:
-        relative = M.resolve(
-            M.load(ROOT / "materials/catalog.sexp"), "RVI-PINNED-V20260120", repo=ROOT
-        )
-        page = ROOT / relative / "unpriv/m-st-ext.html"
-        if (
-            not page.resolve().is_relative_to(ROOT)
-            or page.stat().st_dev != ROOT.stat().st_dev
-        ):
-            raise ValueError("primary page is outside the repository volume")
-        data = page.read_bytes()
-    except (M.MaterialError, OSError, ValueError) as exc:
-        print("REAL PRIMARY SMOKE: UNAVAILABLE: " + str(exc))
-        return 2
-    base = ROOT / "target/p4-system-14/a42u/real-fixtures"
+def retained_excerpt_smoke():
+    """Unmocked, cache-free authentication; observations remain synthetic."""
+    base = ROOT / "target/p4-system-14/a42aa/retained-fixtures"
     base.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=base) as directory:
-        f = Fixture(Path(directory))
-        f.install_real_page(data)
+        try:
+            f = Fixture(Path(directory))
+        except OSError as exc:
+            print("RETAINED EXCERPT SMOKE: UNAVAILABLE: " + str(exc))
+            return 2
+        except ValueError as exc:
+            print("RETAINED EXCERPT SMOKE: REFUSED: " + str(exc))
+            return 1
         checked = E.evaluate_retained_unit(f.root, **f.arguments())
         if (
             checked.disposition != "pending"
             or checked.source_property is None
             or checked.source_property.disposition != "matched"
         ):
-            print("REAL PRIMARY SMOKE: FAILED: " + checked.reason)
+            print("RETAINED EXCERPT SMOKE: FAILED: " + checked.reason)
             return 1
         print(
-            "REAL PRIMARY SMOKE: pending / finite property matched / "
+            "RETAINED EXCERPT SMOKE: pending / finite property matched / "
             + str(len(checked.authentication.files))
             + " authenticated files / "
             + hex(checked.source_property.facts.observed_value)
@@ -665,12 +631,12 @@ def main():
     global E
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mutation", choices=MUTATIONS)
-    parser.add_argument("--real-primary-smoke", action="store_true")
+    parser.add_argument("--retained-excerpt-smoke", action="store_true")
     args = parser.parse_args()
-    if args.real_primary_smoke:
+    if args.retained_excerpt_smoke:
         if args.mutation:
             parser.error("real smoke cannot use a mutation")
-        return real_primary_smoke()
+        return retained_excerpt_smoke()
     if args.mutation:
         source = Path(E.__file__).read_text()
         before, after = MUTATIONS[args.mutation]
@@ -688,7 +654,7 @@ def main():
     )
     print(
         f"MATCHED-GPR-PROPERTY-EVALUATION: {result.testsRun} tests / {len(result.failures)} failures / "
-        f"{len(result.errors)} errors; simulated external pin, no capture credit"
+        f"{len(result.errors)} errors; actual retained excerpt, synthetic observations, no capture credit"
     )
     return 0 if result.wasSuccessful() else 1
 

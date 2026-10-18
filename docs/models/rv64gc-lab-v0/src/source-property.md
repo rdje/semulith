@@ -1,9 +1,9 @@
 # A source-grounded signed-division witness
 
 This finite property and pure API were declared by P4-SYSTEM.14 before their
-implementation and before any new canonical capture. The pure API is implemented;
-authenticated composition follows separately. Existing experiments
-retain their historical scope. No requirement status or CPU gate changes here.
+implementation and before any new canonical capture. Both the pure API and
+authenticated composition are implemented. Existing experiments retain their
+historical scope. No requirement status or CPU gate changes here.
 
 ## Reviewed source and scope
 
@@ -11,15 +11,17 @@ The pinned RISC-V Ratified Specifications Library v20260120, M version2.0,
 RVI-M §11.1.2 defines signed DIV as division rounding toward zero. The verified
 35588-byte page has SHA256
 `85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716`.
-Its published materials resolver supplies the offline snapshot; the optional
-fetched working directory need not exist. No submodule implementation is read.
+That original publication digest remains the selected source authority. Runtime
+property authentication uses the separately pinned retained excerpt described
+below; it does not need the acquired full page. No submodule implementation is read.
 
 The canonical catalogue classifies REQ-GC-M as `defined`, risk `medium`, and maps
 it to OB-GC-M in contract rv64gc-lab-env-v2/version2. The obligation covers all13
 M forms and their boundary behavior. This case supports **one finite quotient
 observation**. It does not discharge the whole requirement or obligation.
 
-Case `rv64gc-signed-div-truncation-v1` uses the existing `m-div.s` unchanged:
+Case `rv64gc-signed-div-truncation-v2` supersedes the pre-capture v1 full-page
+binding. It uses the existing `m-div.s` unchanged:
 2512 source bytes, SHA256
 `a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f`.
 The whole guest has27 boundaries. The witnessed prefix is:
@@ -84,11 +86,24 @@ bounded per supplied record to4096 nodes, depth16,1MiB UTF8 string payload,
 strings<=65536 characters and integers<=128 bits; malformed inputs raise
 PropertyError. Copy dictionaries in key order so mapped parameter order is stable.
 
-The manifest must also declare this exact flat normative-source child:
+The manifest must declare this exact flat normative-source child, whose
+identity differs from the original publication:
 
 | Input ID / role | Repository-relative path | SHA256 |
 | --- | --- | --- |
-| RVI-M / normative-source | `.materials/riscv/pinned-v20260120/unpriv/m-st-ext.html` | `85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716` |
+| RVI-M-DIV-STATEMENT / normative-source | `profiles/rv64gc-lab-v0/retained/div-statement.html` | `bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58` |
+
+The1576-byte artifact retains the exact182-byte `norm:div_divu_op` span, with
+attribution, source/licence pins and an extraction notice. The scoped terms and
+curation decision are in `materials/RVI_M_RETENTION.md`; the bounded extractor is
+`scripts/retain_div_statement.py`. The excerpt supplies the rounding rule for
+this finite witness. It grants no acceptance for the other M instructions.
+
+`v2` rejects the old full-page child as a substitute, including a correct old
+page digest under the old ID. It also refuses changed excerpt role, ID, path,
+digest or child membership. The source authority still requires `RVI-M` with
+the original full-page digest; substituting the excerpt digest there refuses.
+An explicit v1 case selection is unsupported. No canonical capture used v1.
 
 This authority projection does **not** normalize artifact pins or suppress input
 impact. Actual producer inputs retain exact full-byte authentication and complete
@@ -108,16 +123,16 @@ requirement_id, obligation_ids, statement, the existing `GprWitness`, and the
 copied PropertyAuthority.
 `freeze_context(context, profile_id=..., experiment_id=...)` validates bounded
 plain metadata and copies it before future artifact I/O. Canonical raw property
-schema/scoped graph validation remains the existing owner's responsibility. Construct the context
-from the actual selected property and parent program; the pure API cannot recover
-fields absent from RelationPlan. Authenticated composition will bind those fields
-before reads.
+schema/scoped graph validation remains the existing owner's responsibility.
+Construct the context from the actual selected property and parent program; the
+pure API cannot recover fields absent from RelationPlan. Authenticated composition
+binds those fields before reads.
 Strings are1..65536 characters, obligation IDs form a plain unique tuple of1..64,
 and the copied witness uses step0..4095 and x1..x31. Malformed context raises
 `PropertyError`; this is not a second canonical loader.
 
 `bind_source_property(context, profile_id=..., experiment_id=..., manifest=...,
-source_values=..., case_id='rv64gc-signed-div-truncation-v1')` re-freezes context
+source_values=..., case_id='rv64gc-signed-div-truncation-v2')` re-freezes context
 for direct calls, then binds the public ManifestPlan and SourceExpectationCheck.
 It copies inventory metadata through the existing input-review owner, without
 creating independent review authority. Current semantic authority must equal the
@@ -137,7 +152,7 @@ file authentication, expected-author provenance, actual collection/control,
 review completeness, full policy and requirement-status derivation remain separate.
 No file, binary or process is opened. Existing raw schema, manifest, source-value
 and snapshot owners retain their contracts; this API does not reinterpret source
-code or introduce an arithmetic engine. Authenticated composition follows later.
+code or introduce an arithmetic engine.
 
 
 ## Complete synthetic example
@@ -145,7 +160,7 @@ code or introduce an arithmetic engine. Authenticated composition follows later.
 Run from the repository root. The fixture reads the tracked canonical guest,
 expectation and mapped catalogues and constructs public-owner metadata facts.
 The checker opens no files. This does not authenticate the declared normative
-page or run a reference process; it demonstrates finite source meaning and the
+excerpt or run a reference process; it demonstrates finite source meaning and the
 status-cycle repair, with no capture/qualification credit.
 
 ```bash
@@ -213,27 +228,26 @@ pins refuse without retaining the invalid property finding. A typed refusal
 terminates refused; a typed unsupported result stays pending without credit.
 Earlier failures skip this phase. Matches remain pending full method/policy.
 
-The repository keeps acquired primary documents out of Git; a fresh clone may
-have no materials cache. Permanent orchestration tests must identify simulated
-external-page authentication explicitly and earn no primary-authentication or
-capture credit. A separate real smoke uses the public authenticated materials
-resolver, verifies/copies the actual35588B page into an on-volume temporary
-fixture and evaluates without that double. Both forms test distinct boundaries;
-never describe simulated authentication as an unmocked primary-source run.
-No primary document is redistributed by these tests.
+The permanent composition controls copy the actual tracked1576-byte excerpt into
+an owned temporary fixture and authenticate it with the real bounded reader.
+No primary-page authentication double or acquired materials cache is used. The
+23 declared files are read once each; the excerpt contributes its own exact byte
+charge and pin. Missing excerpt bytes return unavailable, changed bytes return
+stale, and both stop before property binding. The observations and expected-author
+identity in this fixture remain synthetic; these controls run no reference process
+and grant no canonical capture or qualification credit.
 
 
 ## Composition examples
 
-This self-contained example uses a clearly labeled external-page authentication
-double. All other fixture files go through the real reader. It exercises
-orchestration, not authentication of a primary document or a reference capture.
+This self-contained example authenticates the real retained excerpt alongside
+the other fixture files. The observations remain synthetic. It exercises
+orchestration and byte authentication, without a reference capture.
 
 ```bash
 python3 - <<'PYCODE'
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest import mock
 import sys
 sys.path.insert(0, str(Path('scripts').resolve()))
 import matched_gpr_evaluation as E
@@ -243,14 +257,13 @@ base = Path('target/property-composition-example')
 base.mkdir(parents=True, exist_ok=True)
 with TemporaryDirectory(dir=base) as directory:
     f = P.Fixture(Path(directory))
-    with mock.patch.object(E.A, 'read_snapshot', side_effect=f.simulated_page(E.A.read_snapshot)):
-        checked = E.evaluate_retained_unit(f.root, **f.arguments())
-        print(checked.disposition, checked.expected_author.disposition,
-              checked.source_property.disposition)
-        f.graph['property'][0]['statement'] = 'an unrelated claim'
-        checked = E.evaluate_retained_unit(f.root, **f.arguments())
-        print(checked.disposition, checked.source_values.disposition,
-              checked.source_property.disposition)
+    checked = E.evaluate_retained_unit(f.root, **f.arguments())
+    print(checked.disposition, checked.expected_author.disposition,
+          checked.source_property.disposition)
+    f.graph['property'][0]['statement'] = 'an unrelated claim'
+    checked = E.evaluate_retained_unit(f.root, **f.arguments())
+    print(checked.disposition, checked.source_values.disposition,
+          checked.source_property.disposition)
 PYCODE
 ```
 
@@ -265,20 +278,19 @@ The second call binds the actual changed raw statement and refuses its property
 claim while retaining matched source values. Supplying a known authority does not
 replace that statement.
 
-For an **unmocked** smoke using the acquired source snapshot:
+Run the cache-free retained-excerpt smoke directly:
 
 ```bash
-python3 scripts/probe_matched_gpr_property_evaluation.py --real-primary-smoke
+python3 scripts/probe_matched_gpr_property_evaluation.py --retained-excerpt-smoke
 ```
 
-With the verified35588B page available, it prints:
+It prints:
 
 ```text
-REAL PRIMARY SMOKE: pending / finite property matched / 23 authenticated files / 0xfffffffffffffffd; no capture credit
+RETAINED EXCERPT SMOKE: pending / finite property matched / 23 authenticated files / 0xfffffffffffffffd; no capture credit
 ```
 
-No source-page double is installed on this path. The fixture copies the verified
-page into an owned on-volume temporary directory and removes that directory at
-exit. Missing acquired material returns2/UNAVAILABLE, not a green assertion.
-The checker still runs no reference process and grants no whole-M or qualification
-credit. This optional smoke is separate from the self-contained CI controls.
+The fixture copies the tracked excerpt into an owned on-volume temporary directory
+and removes the directory at exit. Missing bytes return2/UNAVAILABLE; a changed
+pin refuses. The checker runs no reference process and grants no whole-M or
+qualification credit. This supersedes the v1 optional acquired-page smoke.

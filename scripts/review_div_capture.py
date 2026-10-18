@@ -28,6 +28,7 @@ ROOT_MODULES = frozenset(
         "matched_gpr_unit_collector",
         "matched_gpr_evaluation",
         "derive_rv64gc_expectations",
+        "retain_div_statement",
     }
 )
 REVIEWED_MODULES = frozenset(
@@ -39,7 +40,7 @@ REVIEWED_MODULES = frozenset(
     matched_gpr_input_review matched_gpr_leaf matched_gpr_manifest
     matched_gpr_property matched_gpr_receipt matched_gpr_relations
     matched_gpr_source_image matched_gpr_unit_collector record_catalog records_sexp
-    riscv_asm run_rv64gc_sail sexp spec_c specfp""".split()
+    retain_div_statement riscv_asm run_rv64gc_sail sexp spec_c specfp""".split()
 )
 REVIEWED_EXTERNALS = frozenset(
     """__future__ argparse collections contextlib copy csv dataclasses decimal errno
@@ -68,7 +69,7 @@ DATA_PATHS = frozenset(
     ]
 )
 GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"
-PRIMARY = ".materials/riscv/pinned-v20260120/unpriv/m-st-ext.html"
+PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"
 POLICY = "profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md"
 SELF = "scripts/review_div_capture.py"
 PRINCIPAL_CODE = frozenset(
@@ -302,6 +303,28 @@ def exercise_loaders(source, snapshots):
     }
 
 
+def check_retained_input(case, data):
+    """Bind the curated bytes and their distinct original publication identity."""
+    import retain_div_statement as Retain
+
+    require(len(case.required_inputs) == 1, "normative source population changed")
+    primary = case.required_inputs[0]
+    require(
+        (primary.role, primary.input_id, primary.path, primary.sha256)
+        == ("normative-source", "RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA),
+        "retained source identity changed",
+    )
+    require(
+        case.authority.source_id == "RVI-M"
+        and case.authority.source_sha256 == Retain.SOURCE_SHA,
+        "original publication authority changed",
+    )
+    require(
+        hashlib.sha256(data).hexdigest() == primary.sha256,
+        "retained source pin differs",
+    )
+
+
 def review():
     snapshots = Snapshots(ROOT)
     modules, edges, external = import_census(snapshots)
@@ -315,16 +338,7 @@ def review():
         hashlib.sha256(snapshots.data[GUEST]).hexdigest() == P._SOURCE_SHA,
         "guest differs from reviewed case",
     )
-    require(len(case.required_inputs) == 1, "normative source population changed")
-    primary = case.required_inputs[0]
-    require(
-        primary.path == PRIMARY and primary.input_id == "RVI-M",
-        "normative source identity changed",
-    )
-    require(
-        hashlib.sha256(snapshots.data[PRIMARY]).hexdigest() == primary.sha256,
-        "normative source pin differs",
-    )
+    check_retained_input(case, snapshots.data[PRIMARY])
     exercised = exercise_loaders(snapshots.data[GUEST], snapshots)
     snapshots.recheck()
     files = [

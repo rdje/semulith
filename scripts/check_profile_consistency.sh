@@ -1720,11 +1720,12 @@ AUTHOR_EVALUATION_CASES
     source_property_python=(python3)
     [ "$source_property_mode" = optimized ] && source_property_python+=(-O)
     out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py 2>&1)"; rc=$?
-    score "GREEN finite source property $source_property_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY: 26 tests / 0 failures / 0 errors; synthetic metadata, finite source witness only"
+    score "GREEN finite source property $source_property_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY: 28 tests / 0 failures / 0 errors; synthetic metadata, finite source witness only"
     while IFS=: read -r source_property_mutation source_property_losses; do
       out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py --mutation "$source_property_mutation" 2>&1)"; rc=$?
-      score "RED finite source property $source_property_mutation $source_property_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY: 26 tests / $source_property_losses failures / 0 errors; synthetic metadata, finite source witness only"
+      score "RED finite source property $source_property_mutation $source_property_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY: 28 tests / $source_property_losses failures / 0 errors; synthetic metadata, finite source witness only"
     done <<'SOURCE_PROPERTY_CASES'
+publication-authority:28
 record-roundtrip:1
 authority-string-bound:1
 authority-byte-bound:1
@@ -1733,7 +1734,7 @@ authority-shape:1
 claim-binding:5
 semantic-authority:9
 relation-binding:2
-normative-pin:4
+normative-pin:6
 guest-source:1
 baseline-binding:1
 witness-value:2
@@ -1749,10 +1750,10 @@ obligation-meaning:4
 context-copy:3
 source-fact-copy:1
 authority-fact-copy:1
-case-selection:1
+case-selection:2
 source-unsupported:1
 frozen-results:5
-finite-finding:7
+finite-finding:8
 SOURCE_PROPERTY_CASES
   done
 
@@ -1763,10 +1764,10 @@ SOURCE_PROPERTY_CASES
     property_eval_python=(python3)
     [ "$property_eval_mode" = optimized ] && property_eval_python+=(-O)
     out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py 2>&1)"; rc=$?
-    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / 0 failures / 0 errors; simulated external pin, no capture credit"
+    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / 0 failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     while IFS=: read -r property_eval_mutation property_eval_losses; do
       out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py --mutation "$property_eval_mutation" 2>&1)"; rc=$?
-      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / $property_eval_losses failures / 0 errors; simulated external pin, no capture credit"
+      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / $property_eval_losses failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     done <<'PROPERTY_EVALUATION_CASES'
 author-prerequisite:1
 obligation-bound:1
@@ -1882,10 +1883,10 @@ UNIT_CAPTURE_CASES
     div_review_python=(python3)
     [ "$div_review_mode" = optimized ] && div_review_python+=(-O)
     out="$("${div_review_python[@]}" scripts/probe_div_capture_review.py 2>&1)"; rc=$?
-    score "GREEN DIV dependency review $div_review_mode" "$rc" 0 "$out" "DIV-CAPTURE-REVIEW: 22 tests / 0 failures / 0 errors; synthetic population controls, no capture credit"
+    score "GREEN DIV dependency review $div_review_mode" "$rc" 0 "$out" "DIV-CAPTURE-REVIEW: 25 tests / 0 failures / 0 errors; synthetic population controls, no capture credit"
     while IFS=: read -r div_review_mutation div_review_losses; do
       out="$("${div_review_python[@]}" scripts/probe_div_capture_review.py --mutation "$div_review_mutation" 2>&1)"; rc=$?
-      score "RED DIV dependency review $div_review_mutation $div_review_mode" "$rc" 1 "$out" "DIV-CAPTURE-REVIEW: 22 tests / $div_review_losses failures / 0 errors; synthetic population controls, no capture credit"
+      score "RED DIV dependency review $div_review_mutation $div_review_mode" "$rc" 1 "$out" "DIV-CAPTURE-REVIEW: 25 tests / $div_review_losses failures / 0 errors; synthetic population controls, no capture credit"
     done <<'DIV_REVIEW_CASES'
 module-population:2
 dynamic-import:2
@@ -1897,6 +1898,9 @@ git-boundary:1
 file-bound:1
 aggregate-bound:1
 byte-recheck:2
+retained-identity:3
+publication-authority:2
+retained-pin:1
 DIV_REVIEW_CASES
   done
 

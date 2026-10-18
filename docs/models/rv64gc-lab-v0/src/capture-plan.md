@@ -1,6 +1,6 @@
 # Predeclaring the first division capture
 
-The proposed first canonical case is `rv64gc-signed-div-truncation-v1`, owned by
+The proposed first canonical case is `rv64gc-signed-div-truncation-v2`, owned by
 `scripts/matched_gpr_property.py`. It runs `m-div.s` for27 boundaries. The finite
 claim is the x7 change at boundary2: signed `-7 / 2` produces `-3`. The negative
 control changes only that expected value to `-4`. Baseline, repeat and control
@@ -13,8 +13,8 @@ does not accept all M instructions or close `REQ-GC-M`/`OB-GC-M`.
 as JSON on stdout. Redirect it into an owned directory under `target/` when a
 local receipt is useful. It launches no reference process and writes no files.
 
-The source review starts at the unit collector, retained evaluator and expected
-author. It conservatively follows every ordinary project-local Python import,
+The source review starts at the unit collector, retained evaluator, expected
+author and retained-statement extractor. It conservatively follows every ordinary project-local Python import,
 including function-local imports, and checks the result against an explicit
 reviewed module set. Unknown external imports, relative/dynamic imports, changed
 population and unsafe paths refuse. Python's standard library and interpreter
@@ -31,8 +31,8 @@ discover an arbitrary new reader that bypasses them. Changes to reviewed source
 require another source review even when the population is unchanged.
 
 Inputs are read with finite per-file/aggregate bounds, regular same-volume
-repository paths, and before/after byte checks. The pinned guest and normative
-M page must match the reviewed case. An absent primary page reports unavailable,
+repository paths, and before/after byte checks. The pinned guest and retained
+DIV excerpt must match the reviewed case. An absent retained excerpt reports unavailable,
 never success. The report includes file sizes/digests, import edges, exercised
 data paths and runtime identity. A successful review remains `pending`; it
 supplies neither an experiment manifest nor qualification.
@@ -40,9 +40,9 @@ supplies neither an experiment manifest nor qualification.
 ## Proposed flat input population
 
 The collector and public Sail adapter are two of the existing nine principals.
-The proposed dependency children are the other32 imported project modules,
-27 exercised data files, the normative M page, the profile evidence policy and
-the review tool itself:62 children before a future capture entrypoint is added.
+The proposed dependency children are the other33 imported project modules,
+27 exercised data files, the retained DIV excerpt, the profile evidence policy and
+the review tool itself:63 children before a future capture entrypoint is added.
 The diagnostic derives these counts from path sets and refuses overflow of the
 existing64-child limit. Its JSON lists the complete paths; the manifest must be
 built from this reviewed population, rather than treating its own declarations
@@ -94,13 +94,21 @@ python3 -O scripts/probe_div_statement_retention.py
 in a fresh checkout and reports byte identity only. Synthetic controls require
 no acquired materials. Review the retained text at the source path above.
 
-This curation slice does not replace the property case's existing full-page
-input. That binding and its controls must change explicitly in the next slice,
-preserving the original publication digest as current semantic authority and
-using the excerpt's separate digest as a retained artifact input. Extend the
-reviewed producer population with the extraction tool before adopting it: the
-proposed child population then grows from62 to63, leaving one slot for the final
-entrypoint. The diagnostic's current cache-bound case still reports62.
+The v2 property binding now authenticates this excerpt under the separate
+`RVI-M-DIV-STATEMENT` input ID. Current semantic authority retains the original
+`RVI-M` publication digest; the excerpt cannot replace that authority. The v1
+full-page input cannot substitute for the v2 excerpt. The property statement,
+guest,27-boundary budget, quotient and negative control are unchanged. No
+canonical capture used v1, and explicit v1 selection is unsupported.
+
+The reviewed producer population includes the extractor, even though the capture
+route consumes the already curated bytes and does not rerun extraction. Neither
+the full source page nor its licence-evidence page is a runtime input on that
+route. Their exact provenance remains in the retained artifact and terms record.
+The diagnostic checks the excerpt's metadata/bytes and original publication
+identity independently. Its35 modules and63 children leave one slot for the final
+entrypoint, under the unchanged64-child ceiling. A copied reviewed input set can
+run the diagnostic with no `.materials` directory; success still stays pending.
 
 The asset belongs to the existing registered `profiles/` family; its measured
 addition must fit that family's unchanged count, aggregate and member caps.
@@ -111,8 +119,8 @@ Final capture outputs still require their own measured retention declaration.
 Before any canonical run, commit the final entrypoint and exact manifest,
 property/author/impact authorities, output namespace and retention family. The
 retained file set must support repeatable offline evaluation without relying on
-an acquired reference cache. Resolve the normative page's retained location and
-binding explicitly. The binary remains a separately pinned replay dependency;
+an acquired reference cache. The retained excerpt supplies the normative input;
+its original publication remains separate current authority. The binary remains a separately pinned replay dependency;
 offline observation checking and reference replay have different availability.
 
 Measure and register the actual retained family with its fixed count/byte caps.
@@ -130,12 +138,12 @@ python3 scripts/probe_div_capture_review.py
 python3 -O scripts/probe_div_capture_review.py
 ```
 
-Run the current population review with the already acquired pinned M page:
+Run the current population review using only tracked inputs:
 
 ```bash
 python3 scripts/review_div_capture.py --review
 ```
 
 Its changing digests and byte totals are derived output, not constants to copy
-into this chapter. A missing primary source exits2; a refused review exits1;
+into this chapter. A missing retained excerpt exits2; a refused review exits1;
 `pending` exits0 and still grants no canonical capture or method credit.

@@ -16,13 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 adopt the curated DIV excerpt as a separate property
-  input, preserving original publication authority; extend reviewed inventory
-  with its extraction producer, then final entrypoint/capture retention/policy.
-  P4-0268 corrects the no-CC-BY claim; scoped terms in materials/RVI_M_RETENTION.md.
-  Exact182B quote/1576B artifact;20controls/9omissions normal/O. Current case still
-  cache-bound; no canonical run/qualification. CPU14/18,BOARD10/12,replay4/4green.
-- in_flight_uncommitted: none after P4-0268; verify Git state on read.
+- next_action: P4-SYSTEM.14 finalize the canonical DIV capture entrypoint,
+  immutable selected reference identity, full output/retention declaration and
+  shared collection/evaluation read charge, then predeclare exact manifest and
+  policy before canonical execution. P4-0269 binds v2 to the tracked excerpt,
+  preserving original RVI-M authority; review35modules/27data/63children works
+  cache-free. No canonical capture/qualification. CPU14/18,BOARD10/12,replay4/4green.
+- in_flight_uncommitted: none after P4-0269; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

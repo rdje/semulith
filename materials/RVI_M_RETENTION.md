@@ -64,10 +64,13 @@ profile release questions remain open. No reference binary is redistributed.
 
 ## Integration frontier
 
-The existing property case still requires its original full-page cache input.
-Do not relabel the excerpt with that page's digest, or claim the case works in a
-fresh checkout yet. A following owned slice must bind the excerpt separately,
-retain the original publication digest as semantic authority, extend the reviewed
-producer inventory with the extraction tool and verify all affected controls.
-The canonical capture, full retention family and policy qualification remain
-pending. The source/artefact distinction changes no current requirement status.
+P4-SYSTEM.14 a42aa adopts the retained excerpt in
+`rv64gc-signed-div-truncation-v2`, under `RVI-M-DIV-STATEMENT` with its own path
+and digest. Current source authority keeps `RVI-M` and the original publication
+digest. The binding refuses substitution in either direction. The reviewed
+population includes the extraction producer; composition controls authenticate
+the actual tracked excerpt without an acquired materials cache. The source text,
+wrapper and licence decision above are unchanged by this integration.
+
+Canonical capture, the full retention family and policy qualification remain
+pending. This finite source/artifact binding changes no requirement status.

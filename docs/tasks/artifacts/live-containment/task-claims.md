@@ -526,3 +526,52 @@ whole source/owner inverse2,6damaged refusals;14focused checks/seven books pass.
 promotion: declined (existing bounded-read/provenance/history contracts).
 
 ````
+
+## P4 a42aa: complete superseded DIV preparation records
+
+Source/owner/retirement inverse metadata; the bodies remain byte-exact.
+
+```json
+{"schema":1,"revision":"df7e048b68193b877a7a58289f0f2c959292335a","source":"docs/tasks/P4-SYSTEM.md","source_bytes":131051,"source_sha256":"e6bab38c368fd6a6efe5b983405a577dbdbab48314abb8b734c14239d3c05135","owner_insert":{"offset":32667,"text":"### `.14` a42aa \u2014 bind the retained DIV excerpt (active)\n\nOwn P4-0269: version the finite property input as v2, preserving original RVI-M\npublication/requirement/obligation authority and exact guest/witness/control.\nAdopt the curated excerpt's own ID/path/pin; reject the old page as its substitute.\nReview the extraction producer, cache-free population and all identity controls;\nuse actual excerpt authentication in composition controls. Preserve complete\nclosed y/z records, old history, fixed caps, books/live docs and COMMIT workflow.\nNo canonical reference capture, whole-M or qualification credit.\nEvidence target/p4-system-14/a42aa; promotion declined (existing source contracts).\n\n"},"owner_bytes":131743,"owner_sha256":"24ddf2e4223c80823fb2e9a95959db6ccac64088fae086a495fc73e6cdc8b09d","retired_bytes":129822,"retired_sha256":"6caff07e4d671b71ce1cade610d740f4fa36e2376ca82802e2bac0b1392afb18","records":[{"unit":"a42z","offset":33359,"bytes":1174,"lines":16,"sha256":"fe7da6595bf25c95d481716647eb28054ccf036a42b744bad7b3db8d39d35cbe","replacement":"### `.14` a42z \u2014 retain one licensed DIV statement (completed, SEMULITH-P4-0268)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42aa-a42z).\n\n"},{"unit":"a42y","offset":34533,"bytes":1073,"lines":15,"sha256":"e66a1811aa0f88324088a69fc970e7e0f4a5a248be3ca18e0197e52ccab64fd2","replacement":"### `.14` a42y \u2014 review canonical capture dependencies (completed, SEMULITH-P4-0267)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42aa-a42y).\n\n"}]}
+```
+
+<a id="p4-a42aa-a42z"></a>
+
+````text
+### `.14` a42z — retain one licensed DIV statement (completed, SEMULITH-P4-0268)
+
+Catalogue's snapshot-wide no-CC-BY claim (introduced3afd275) contradicted by both
+pinned prefaces. Audit72-page manifest and source/colophon pins; record scoped
+manual-text terms in materials/RVI_M_RETENTION.md, keeping full site untracked.
+Retain exact182B DIV/DIVU span in1576B attributed/provenanced HTML; emitter pins
+both bounded inputs, verifier authenticates tracked asset without acquired pages.
+Probe20/0/0 with9 omissions normal/O; actual regeneration/fresh-root verification.
+Production profile gate checks asset pin. Current property case/cache binding and
+method logic stays exact except report prose; next slice adopts separate excerpt identity.
+Whole closed x1444B retained with source/owner inverse2/6damaged refusals; old
+history, fixed caps and qualification refusal preserved. Evidence target/p4-system-14/a42z.
+P1 owned: GS falsely claims test passes per commit; COMMIT§2 is conditional.
+Repro gate_report.py --gate GS (base1a5d); fixed execution prose and regenerate, preserving axes.
+promotion: declined (existing SRC-01/review/retention contracts). COMMIT applies.
+
+````
+
+<a id="p4-a42aa-a42y"></a>
+
+````text
+### `.14` a42y — review canonical capture dependencies (completed, SEMULITH-P4-0267)
+
+Source-reviewed collector/evaluator/author population:34 project modules,27 data
+files (75 exercised reads), pinned M page/policy and review tool. Derive62 proposed
+children, not by echoing a future manifest. Bound direct reads1MiB/file/8MiB/pass,
+check paths/locality/Git boundaries and exact before/after bytes. Review normal/O:
+65files/972963B; image4416B/payload108B and27 source-derived boundaries agree.
+Probe22/0/0 and10 omissions discriminate in both modes. No process/canonical run.
+GC capture-plan declares exact finite DIV/control scope, external runtime/current
+semantic authority separation, status-hash cycle avoidance and retention/entrypoint
+steps still required. Qualification stays closed; all old production owners exact.
+Whole-oldest DEV/CH0351/0352 preserve complete history; no cap/seal/milestone change.
+Evidence target/p4-system-14/a42y. promotion: declined (existing review/closure
+and source/property contracts; no new cross-cutting policy). COMMIT applies.
+
+````

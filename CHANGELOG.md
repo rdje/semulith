@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0269 (leaf P4-SYSTEM.14) — bind the retained DIV excerpt
+
+Version the finite property as v2: authenticate RVI-M-DIV-STATEMENT with its own
+retained path/pin while preserving the original publication's RVI-M authority.
+Reject the old page as a substitute. Authenticate the real excerpt in composition
+controls; observations remain synthetic. Review35 modules/27 data/63 children,
+including the extraction producer; copied66-file review needs no materials cache.
+Preserve guest/witness/control, qualification refusal, fixed caps and old history.
+
+Validation:28 property controls/29 omissions,22 composition controls/14 omissions,
+25 review controls/13 omissions;118 normal/O runs,0 errors. Focused16/seven books/
+three complete examples pass.1535 other files/1Gitlink/92 old history entries and
+all other case facts exact; source/owner inverse2,6 damaged refusals. CH0354 keeps
+two whole-oldest entries; fixed caps and all gate statuses preserved.
+
 ## _(2026-10-18)_ — retain one licensed DIV statement (P4-SYSTEM.14 a42z)
 
 Correct the snapshot-wide no-CC-BY claim using two pinned prefaces. Record scoped manual-text terms and retain an exact182B statement in1576B of attributed/provenanced HTML. Add bounded source/licence-pinned emission, cache-free asset verification and20 controls/9 omissions normal/O; production profile gate checks the pin. Preserve the existing property case and its pending cache binding, old method logic/history, fixed caps and CPU/BOARD milestones. Regenerate GS provenance and correct its unsupported per-commit Rust-test claim; axes stay exact. No canonical capture or qualification.
@@ -405,14 +420,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Validate one raw scoped record, freeze selected context before reads, authenticate the declared set once and bind exact identity/receipt/expectation/trace snapshots into observed comparisons. Preserve independent record/authentication/content/comparison findings and coherent failed-process evidence; return metadata without raw payloads. Successful composition remains pending complete adequacy/qualification.
 - 42 controls/29 omissions pass/discriminate normal/O without errors; fix initial failed-process probe representation, no production defect/false credit. Sixty new arms: PROFILE374/0,39 doctrines1197 arms; complete runnable eight-outcome book example. Focused17/sharder12/0/seven books/3122 links/all10 examples/full inverses pass;102 old entries/1326 other files protected, actual receipt+digest edits refuse. DEV17=15+2/5355B into0250. COMMIT then full CI on clean composition milestone and a42 complete adequacy. Old APIs/normative method/caps/seals/canonical/CPU unchanged.
-
-## SEMULITH-P4-0231 (leaf P4-SYSTEM.14) — contain completed authentication-unit designs
-
-- Move nine whole a30–a38 designs46529B and prior book receipt499B into ordinary unsealed part16; retain exact live headings/anchor routes and a direct book read. Ten marked bodies47028B reconstruct both complete committed sources; no historical byte/count corrections or seal/cap extension.
-- 34 independent damaged-body/map/receipt/route/guide controls refuse normal/O, including an actual receipt edit with updated digests. Fix stale diagnostic undo clause caught by whole-source comparison; no tracked predecessor damage. Focused12/sharder12/0/seven books/3104 links/full normal+print guide/literal cat pass;100 previous entries/1334 other files exact, actual original/published receipt+digest edits refuse. No shard/manifest change; COMMIT next; no code/canonical/CPU change, then a41 evaluator/composition.
-
-## SEMULITH-P4-0230 (leaf P4-SYSTEM.14) — freeze context and consume identity/receipt bytes
-
-- Public immutable context binders run before artifact I/O; identity/receipt byte checks share legacy raw schema/sole mapper/binding owners and consume exact snapshots without reopens or authentication credit. Preserve optional identity presence, receipt argv/exit/inventories and coherent failed-process facts; full method qualification stays closed.
-- Fix draft accepted-context string-subclass refusal; exact draft loses3 assertions normal/O, repaired22 controls pass and14 omissions fail without errors. Thirty new arms: PROFILE314/0,39 doctrines1137 arms; old identity40/receipt43 and19 omissions retained. Link complete byte-binding teaching in a new bounded chapter, preserving old26543B exactly. Focused17/sharder12/0/seven books/3104 links/all9 examples and full source/history/canonical checks pass;100 prior entries/1320 other files protected, actual receipt+digest edits refuse. DEV17=15+2/5031B into0249; full CI green on preceding c84bb7b (443 Rust tests/smoke53/seven books). Fixed caps/seals/CPU unchanged; next a40 evaluation.
 

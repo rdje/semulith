@@ -83,9 +83,9 @@ def fixture():
     execution = relations.plan.execution
     normative = G.E.InputBinding(
         "normative-source",
-        "RVI-M",
-        ".materials/riscv/pinned-v20260120/" + source["file"],
-        source["sha256"],
+        "RVI-M-DIV-STATEMENT",
+        "profiles/rv64gc-lab-v0/retained/div-statement.html",
+        "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
     )
     manifest = G.M.ManifestPlan(
         relations.plan,
@@ -223,6 +223,49 @@ class PropertyTests(unittest.TestCase):
             frozenset({"OB-GC-M"}),
         )
         self.assertEqual(V.check_experiment(raw, scope), [])
+
+    def test_v2_separates_retained_input_from_original_publication_authority(self):
+        checked = self.outcome()
+        case = checked.facts.case
+        self.assertEqual(case.case_id, "rv64gc-signed-div-truncation-v2")
+        self.assertEqual(case.authority.source_id, "RVI-M")
+        self.assertEqual(
+            case.authority.source_sha256,
+            "85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716",
+        )
+        self.assertEqual(
+            case.required_inputs,
+            (
+                G.E.InputBinding(
+                    "normative-source",
+                    "RVI-M-DIV-STATEMENT",
+                    "profiles/rv64gc-lab-v0/retained/div-statement.html",
+                    "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
+                ),
+            ),
+        )
+        self.assertNotEqual(
+            case.authority.source_sha256, case.required_inputs[0].sha256
+        )
+        self.assertEqual(checked.facts.authority_inputs, case.required_inputs)
+        self.outcome("unsupported", case_id="rv64gc-signed-div-truncation-v1")
+
+    def test_original_full_page_cannot_substitute_for_the_curated_input(self):
+        old = G.E.InputBinding(
+            "normative-source",
+            "RVI-M",
+            ".materials/riscv/pinned-v20260120/unpriv/m-st-ext.html",
+            self.f.source["sha256"],
+        )
+        self.outcome(
+            "refused",
+            "pins",
+            manifest=replace(
+                self.f.manifest,
+                inputs=(*self.f.manifest.inputs[:-1], old),
+                child_input_ids=(old.input_id,),
+            ),
+        )
 
     def test_prefix_words_independently_encode_operands_and_signed_div(self):
         steps = self.f.values.facts.derivation.steps
@@ -444,12 +487,17 @@ class PropertyTests(unittest.TestCase):
         original = self.f.manifest.inputs
         for change in [
             dict(role="implementation"),
+            dict(input_id="RVI-M"),
             dict(path="source/wrong.html"),
             dict(sha256="a" * 64),
         ]:
             with self.subTest(change=change):
                 inputs = tuple(
-                    replace(item, **change) if item.input_id == "RVI-M" else item
+                    (
+                        replace(item, **change)
+                        if item.input_id == "RVI-M-DIV-STATEMENT"
+                        else item
+                    )
                     for item in original
                 )
                 self.outcome(
@@ -643,12 +691,15 @@ class PropertyTests(unittest.TestCase):
             checked.facts.source.sha256, self.f.values.facts.derivation.source_sha256
         )
         normative = next(
-            item for item in self.f.manifest.inputs if item.input_id == "RVI-M"
+            item
+            for item in self.f.manifest.inputs
+            if item.input_id == "RVI-M-DIV-STATEMENT"
         )
         self.assertIsNot(checked.facts.authority_inputs[0], normative)
         object.__setattr__(normative, "sha256", "a" * 64)
         self.assertEqual(
-            checked.facts.authority_inputs[0].sha256, self.f.source["sha256"]
+            checked.facts.authority_inputs[0].sha256,
+            "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
         )
         first = G.signed_division_case()
         object.__setattr__(first.required_inputs[0], "sha256", "a" * 64)
@@ -687,6 +738,10 @@ class PropertyTests(unittest.TestCase):
 
 
 MUTATIONS = {
+    "publication-authority": (
+        "            _PUBLICATION_SHA,",
+        "            _REQUIRED_INPUT_ROWS[0][3],",
+    ),
     "record-roundtrip": (
         '_require(\n        str(form[0]) == family and Records.form_to_dict(form) == record,\n        "authority record does not round-trip through its canonical owner",\n    )',
         "_require(True, 'authority record does not round-trip through its canonical owner')",

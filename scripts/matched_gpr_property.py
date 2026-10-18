@@ -18,18 +18,20 @@ import matched_gpr_relations as R
 import records_sexp as Records
 
 
-CASE_ID = "rv64gc-signed-div-truncation-v1"
+CASE_ID = "rv64gc-signed-div-truncation-v2"
 _SOURCE_SHA = "a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f"
+_PUBLICATION_SHA = "85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716"
 _STATEMENT = (
     "For signed DIV with x5 = -7 and x6 = 2, the x7 change at boundary 2 "
     "is -3 (rounding toward zero)."
 )
-_AUTHORITY_ROWS = (
+# The curated input is authenticated separately from current publication authority.
+_REQUIRED_INPUT_ROWS = (
     (
         "normative-source",
-        "RVI-M",
-        ".materials/riscv/pinned-v20260120/unpriv/m-st-ext.html",
-        "85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716",
+        "RVI-M-DIV-STATEMENT",
+        "profiles/rv64gc-lab-v0/retained/div-statement.html",
+        "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
     ),
 )
 _REQUIREMENT_SEMANTICS = (
@@ -286,9 +288,9 @@ def signed_division_case() -> ReviewedPropertyCase:
             "OB-GC-M",
             _OBLIGATION_SEMANTICS,
             "RVI-M",
-            _AUTHORITY_ROWS[0][3],
+            _PUBLICATION_SHA,
         ),
-        tuple(E.InputBinding(*row) for row in _AUTHORITY_ROWS),
+        tuple(E.InputBinding(*row) for row in _REQUIRED_INPUT_ROWS),
     )
 
 
