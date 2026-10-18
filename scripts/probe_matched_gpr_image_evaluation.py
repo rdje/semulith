@@ -334,7 +334,7 @@ MUTATIONS = {
     "entry-forward": ('program=image_context.program, entry=image_context.entry)', 'program=image_context.program, entry=0x80000000)'),
     "image-label": ('program=image_context.program, entry=image_context.entry)', 'program="synthetic.s", entry=image_context.entry)'),
     "image-status": ('if source_image.disposition != "matched":', 'if False:'),
-    "image-finding": ('identity, receipts, comparison, source_image)', 'identity, receipts, comparison, None)'),
+    "image-finding": ('identity, receipts, comparison, source_image, input_review)', 'identity, receipts, comparison, None, input_review)'),
     "comparison-order": P.MUTATIONS["comparison-status"],
 }
 

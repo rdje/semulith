@@ -154,3 +154,74 @@ At composition checkpoint `3e5a3ea`, full local CI passed all 443 Rust tests,
 doctrines, browser bench, 53 smoke controls and seven book builds. All 1,370
 tracked files/modes/submodule pins remained unchanged. This regression checkpoint
 provides no experiment qualification or CPU acceptance credit.
+
+## Reviewed input inventory
+
+A42m adds an optional `reviewed_inputs` argument to `evaluate_retained_unit`.
+It supplies a separate current `InputReview(profile_id, experiment_id, inputs)`
+from `scripts/matched_gpr_input_review.py`. The caller selects and owns that
+review, just as it owns the current scope/candidate. Copying the experiment's
+own declaration into this argument supplies no independent coverage review.
+There is no new serialized format, review producer or canonical capture here.
+
+Before artifact reads, the evaluator validates the selected profile/experiment
+and copies every input binding. After authenticating the manifest, it compares
+its complete declared inventory with this frozen review before reading the file
+set. Equality covers input ID, role, canonical path and SHA256; ordering does not
+matter. Missing reviewed IDs, unreviewed declared IDs and changed identities
+return separate sorted `missing_ids`, `unreviewed_ids` and `changed_ids` tuples.
+A mismatch makes evaluation `refused` with `authentication=None`; the independent
+manifest finding remains available.
+
+The appended optional `input_review` finding has `matched`/`refused`, reason,
+profile/experiment IDs, both inventory counts and those three tuples. `matched`
+means metadata equality, not file authentication or complete source coverage.
+It can coexist with later stale files or failed process evidence. Malformed
+review context refuses before artifact I/O; a manifest failure leaves this
+finding absent. Omitting the argument preserves the existing API and yields
+`input_review=None`. Every positive complete evaluation still remains `pending`;
+PROFILE-CONSISTENCY continues to refuse qualification.
+
+The boundary accepts plain frozen `InputReview` and `InputBinding` objects with
+plain tuples of 9–73 unique IDs/paths: nine principals plus at most 64 distinct
+manifest children. Role/ID and selected profile/experiment text is nonempty,
+at most 65,536 characters; canonical paths at most 4,096 characters, and digests
+are lowercase 64-hex SHA256. Existing child IDs may contain spaces. Bounds apply
+before member indexing/copying. Returned facts contain no artifact payloads.
+This validates the declared set against caller authority; relevance/completeness
+of that review, conservative old/new impact, source-grounded properties,
+collector provenance and full policy adequacy remain separate obligations.
+
+This complete **synthetic metadata example** opens no artifact files and runs
+no reference process. Its dummy digests confer no authentication or qualification:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_REVIEW'
+from matched_gpr_execution import COMMON_ROLES, InputBinding
+from matched_gpr_input_review import InputReview, freeze_review, compare_inputs
+roles = (*COMMON_ROLES, "expectation", "expectation", "implementation")
+pins = tuple(InputBinding(role, f"pin-{i}", f"inputs/{i}.dat", "a" * 64)
+             for i, role in enumerate(roles))
+review = freeze_review(InputReview("example", "unit", pins),
+                       profile_id="example", experiment_id="unit")
+for declared in (tuple(reversed(pins)), pins[:-1],
+                 pins + (InputBinding("source", "extra", "inputs/extra", "b" * 64),)):
+    result = compare_inputs(review, declared)
+    print(result.disposition, result.missing_ids, result.unreviewed_ids)
+PY_REVIEW
+```
+
+It prints `matched () ()`, `refused ('pin-9',) ()`, then
+`refused () ('extra',)`. To use a genuinely reviewed inventory in evaluation:
+
+```python
+checked = evaluate_retained_unit(root, raw_experiment=raw_form, scope=scope,
+                                current_candidate=candidate, reviewed_inputs=review)
+```
+
+The library performs no dependency discovery or review attestation. Tests use
+separate synthetic authority and real on-volume artifact files; missing/extra/
+changed inventories refuse even when every declared file pin matches. Additional
+controls check context copying, bounds/types, coherent failed processes, legacy
+behavior and guard omissions in normal/optimized Python. Run them with
+`python3 scripts/probe_matched_gpr_input_review.py`; no reference process runs.

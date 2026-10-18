@@ -1562,6 +1562,35 @@ EOF
   score "RED optimized omitted change-impact guard edge-scope" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_change_impact.py" --mutation result-frozen 2>&1)"; rc=$?
   score "RED optimized omitted change-impact guard result-frozen" "$rc" 1 "$out" "CHANGE-IMPACT: 34 tests / 1 failures / 0 errors; synthetic only"
+  # P4-SYSTEM.14 a42m: caller-reviewed inventory is a separate authority.
+  local review_mode review_mutation review_failures
+  local -a review_command
+  for review_mode in normal optimized; do
+    review_command=(python3)
+    [ "$review_mode" = optimized ] && review_command+=(-O)
+    out="$("${review_command[@]}" "$ROOT/scripts/probe_matched_gpr_input_review.py" 2>&1)"; rc=$?
+    score "GREEN $review_mode reviewed-input controls" "$rc" 0 "$out" "MATCHED-GPR-INPUT-REVIEW: 20 tests / 0 failures / 0 errors; synthetic only"
+    while IFS=: read -r review_mutation review_failures; do
+      out="$("${review_command[@]}" "$ROOT/scripts/probe_matched_gpr_input_review.py" --mutation "$review_mutation" 2>&1)"; rc=$?
+      score "RED $review_mode omitted input-review guard $review_mutation" "$rc" 1 "$out" "MATCHED-GPR-INPUT-REVIEW: 20 tests / $review_failures failures / 0 errors; synthetic only"
+    done <<'INPUT_REVIEW_CASES'
+missing:2
+unreviewed:2
+changed:4
+profile:2
+experiment:2
+bindings-copy:2
+input-bound:2
+input-type:2
+id-unique:1
+path-unique:1
+result-frozen:1
+review-frozen:2
+declared-validation:1
+plan-binding:3
+review-freeze:4
+INPUT_REVIEW_CASES
+  done
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

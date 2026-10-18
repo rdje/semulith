@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42f, `SEMULITH-P4-0203`–`0241`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42m, `SEMULITH-P4-0203`–`0255`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,13 +15,13 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Current implementation:** a13–a21 add grammar/mapping, scoped edges, safe
-pins/snapshots, complete-budget comparison, duplicate-write refusal and typed
-witness/baseline fields. a26 adds dependency/receipt formats. a29–a42d3b implement
-bounded byte comparison, identity/receipt/execution/relations/manifest bindings,
-shared-budget file authentication, selected expectation context and complete
-source/ELF correspondence. The GC book's authenticated evaluation chapter
-(`docs/models/rv64gc-lab-v0/src/evaluation.md`) documents the composed API and findings.
+**Implemented:** a13–a21 grammar/mapping, scoped edges, safe pins/snapshots,
+complete-budget comparison, duplicate-write refusal and typed witness/baseline;
+a26 dependency/receipt formats; a29–a42d3b bounded byte comparison, identity/
+receipt/execution/relations/manifest bindings, shared-budget file authentication,
+expectation context and full source/ELF correspondence. A42m adds optional frozen
+caller input review. API/findings: `docs/models/rv64gc-lab-v0/src/evaluation.md`.
+Metadata equality does not prove complete dependency coverage.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
 `UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh

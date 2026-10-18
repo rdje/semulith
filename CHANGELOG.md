@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0255 (leaf P4-SYSTEM.14) — bind caller-reviewed input inventories
+
+- Add an opt-in frozen InputReview to retained matched-GPR evaluation. Bind its selected profile/experiment and exact ID/role/path/digest inventory before file-set reads; report missing, unreviewed and changed inputs separately. Preserve legacy defaults, independent artifact/process findings and the unqualified result boundary.
+- Cover valid pinned files with mismatched coverage, metadata/shape/bounds, copied caller context, stale files and failed processes. Twenty synthetic tests pass normally/optimized; all fifteen deliberate omissions discriminate with zero test errors. Adapt the existing image-finding mutation to the appended result field, preserving its22 failures in both modes.
+- Teach the API and runnable metadata example in the GC References chapter and evaluator guide. Update active a42 planning/resume state; complete closure/impact/property/collector and fresh qualification remain open. No canonical capture, store, cap or CPU milestone change.
+
 ## SEMULITH-P4-0254 (leaf P4-SYSTEM.16) — enforce scalar reduction budgets and close replay work
 
 - Fix the scalar reducer checking its evaluation cap only between whole passes and omitting the final call from its count. Check before each candidate, reserve/count final verification, preserve the exact original comparator divergence, and report whether a complete single-word deletion pass established 1-minimality.

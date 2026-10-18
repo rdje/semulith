@@ -340,7 +340,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | a42g reviewed inputs, then remaining method adequacy |
+| 1 | `P4-SYSTEM.14` | `active` | remaining a42 closure/impact binding and method adequacy |
 
 ## Decisions
 
@@ -429,17 +429,14 @@ Closed records through `.12` are preserved verbatim in
 
 ### `.14` a42 — complete method adequacy and impact obligations (active)
 
-Start clean after a41 and its full CI. Resolve explicit parent-program/source/
-image correspondence, complete relevant dependency closure and conservative
-old/new impact obligations through finite owned public interfaces and controls.
-Computed byte agreement alone does not lift qualification. Reviewed collector,
-fresh process/output controls, retention budget, predeclared cases/captures and
-full policy/status/mirror derivation follow. Preserve all legacy records and
-published APIs; declare any genuinely new contract before affected runs.
+Remaining: closure/impact binding, source-grounded property/collector provenance,
+fresh process/output controls, bounded retention/predeclared captures and
+policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
+Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
-Queued a42g/0255: opt-in caller-reviewed input inventory, frozen context,
-missing/extra/changed checks, evaluator/probes/books and resume correction.
-Source fixes0192–0197 are complete; resume a42 closure/impact/property/provenance.
+### `.14` a42m — bind reviewed input coverage (completed, SEMULITH-P4-0255)
+
+20controls/15omissions normal/O; frozen caller review; qualification closed.
 
 ### `.14` a42a — bind expectations to the parent program (completed, SEMULITH-P4-0233)
 
@@ -660,6 +657,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42m **ROOT CAUSE**: before.py rc=0 old pending/unreviewed child; normal/O.
+- [x] `.14` a42m **ADDRESSED**: run-controls.py rc=0 20/0;15 omissions fail without errors.
+- [x] `.14` a42m **NO REGRESSION**: verify.py rc=0/focused checks/books; profile524/0.
 
 - [x] `.14` a42l2 — **REPRODUCE / ISSUE**: a42k assessment/result.json rc=0 records actual full gate0 accepting the same isolated staged part18 receipt3196→3197; source/index stayed exact.
 - [x] `.14` a42l2 — **ROOT CAUSE**: proof.py rc=0 retains original46 sealed controls/reader; ordinary archive preservation is a separate publishing obligation. replay-post.py rc=0 names the new index guard on the same counterexample.
@@ -1586,6 +1587,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| a42m | `SEMULITH-P4-0255` | closure/impact binding next |
 | `.16f` | `SEMULITH-P4-0254` | scalar cap verified; .16 complete, .14 next |
 | `.16e` | `SEMULITH-P4-0253` | GC reduction/replay verified; scalar cap next |
 | `.16d` | `SEMULITH-P4-0252` | declared-model replay verified; reduction next |
