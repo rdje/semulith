@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## _(2026-10-18 UTC)_ — remove due incremental caches and retain evidence (ARTIFACT-CLEANUP.9)
+
+Remove177 known untracked Cargo incremental caches/674371444B after six normal/O
+preflights and actual host census OK. Immediate selected residue0; retain16764
+input/evidence bin/log files/145405416B byte/hash-exact. Preserve four nested Git
+roots, all tracked code/data/statuses and fixed caps. Overwrite the single latest
+record; existing book include renders it without changing source teaching. Return
+to P4-SYSTEM.14 shared read allowance before canonical capture integration.
+
+Validation:13 focused checks/seven books and whole-source/history/cap/rendered
+proof normal/O pass.1545 other files/1Gitlink/92 prior entries preserved; exact
+task/index inverses and latest normal/print receipt. DEV0355 retains one complete
+oldest4336B entry; fixed caps, source teaching and all statuses unchanged.
+
 ## SEMULITH-P4-0269 (leaf P4-SYSTEM.14) — bind the retained DIV excerpt
 
 Version the finite property as v2: authenticate RVI-M-DIV-STATEMENT with its own

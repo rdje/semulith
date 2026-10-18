@@ -16,13 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 finalize the canonical DIV capture entrypoint,
-  immutable selected reference identity, full output/retention declaration and
-  shared collection/evaluation read charge, then predeclare exact manifest and
-  policy before canonical execution. P4-0269 binds v2 to the tracked excerpt,
-  preserving original RVI-M authority; review35modules/27data/63children works
-  cache-free. No canonical capture/qualification. CPU14/18,BOARD10/12,replay4/4green.
-- in_flight_uncommitted: none after P4-0269; verify Git state on read.
+- next_action: P4-SYSTEM.14 bound the initial manifest and later evaluation
+  reads with the remaining collection allowance, then finalize canonical capture
+  entrypoint/selected reference identity/output retention and exact predeclared
+  manifest/policy. P4-0269 committed9274231 binds v2 to the tracked excerpt with
+  original RVI-M authority; AC-0066 cleaned due caches. CPU14/18,BOARD10/12,
+  replay4/4green; no canonical capture/qualification. See owning task frontiers.
+- in_flight_uncommitted: none after AC-0066; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.
