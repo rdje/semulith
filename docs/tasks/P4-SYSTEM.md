@@ -269,7 +269,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: every mutation class detected on the rv64gc corpus; the external suite's verdicts
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
-  Status: `active` (GC replay delivered; scalar cap follow-up next)
+  Status: `done` (SEMULITH-P4-0254; G-REPLAY4/4green)
   Goal: complete RV64GC snapshot, replay and reduction CLI.
   Acceptance: every guest resumes identically mid-execution; a recorded divergence
   replays and reduces with that divergence retained.
@@ -311,19 +311,15 @@ This gate authorises the planned next engineering stage: board implementation.
   - [x] **ROOT CAUSE** — verify.py rc=0:f8b GC refusal; native word/step12/13,29/29.
   - [x] **ADDRESSED** — make check rc=0:283verify/5CLI; exact reduction/replay controls.
   - [x] **NO REGRESSION** — wasm/books/focused13 rc=0; scope normal/O1488files/90history exact.
-  .16f next: verify scalar outer-loop cap across a whole inner pass; repair if reproduced.
-  .16c/0251 complete after5c42e3a, queued task-only dirt/host0 before code.
-  Own cached full-GC zext-addi/jal-no-link control tables, common runner/demo,
-  shape refusals, untouched-row/production parity and first-difference controls.
-  Fix demo --profile=rv64gc-lab-v0 --guest=guest-control --json: rc=0/nonJSON
-  (demo-json-before.stdout): named unsupported-format refusal, CLI coverage.
-  Full mutation campaign stays .15; bundles production-only; reduction next.
-  Own whole CH/DEV rollover, book/live/report sync, Rust/wasm/focused/COMMIT.
-  Evidence target/p4-system-16/controls; promotion declined (existing EVD-09).
-  Own C-fixture model-module closure and C chapter's stale open-v2 status; details DEV_NOTES.md.
-  - [x] **ROOT CAUSE** — native demo mutation rc=2; --json rc=0/nonJSON (before logs).
-  - [x] **ADDRESSED** — `cargo test -p semulith-verify model_rv64gc` rc=0:5tests/167guests; real CLI1/0.
-  - [x] **NO REGRESSION** — `make check`/wasm rc=0; focused13/books/scope normal/O pass; GUEST-GEN328/0.
+  .16f/0254 complete: owns scalar guard/count/minimality, p1 prose and16c retention;
+  own oldest-whole DEV rollover and derived RV64I G1 report sync.
+  Repro target/p4-system-16/scalar-cap/source_control_full.rs: cap100000,102534calls/102533reported;
+  outer-only guard and uncounted final call. Priority now; preserve exact divergence.
+  - [x] **ROOT CAUSE** — cargo test before rc=101/101; source cap100000 permits102534 calls.
+  - [x] **ADDRESSED** — make check rc=0:287verify/5CLI; native cap/count100000/100000.
+  - [x] **NO REGRESSION** — wasm/books/focused14 rc=0; verify.py normal/O1494files/89history/6damaged refuse.
+  promotion: declined (existing replay/budget contract).
+  .16c/0251 complete: [Record](artifacts/live-containment/reader-records-retention.md#p4-16c-retained).
   .16a/0249, owned clean2a97c46:
   - [x] **ROOT CAUSE** — `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0` rc=2 before: named refusal.
   - [x] **ADDRESSED** — `cargo test -p semulith-verify snapshot_rv64gc` rc=0:167guests/501splits, parity.
@@ -344,7 +340,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.16` | `active` | GC replay delivered; scalar cap follow-up |
+| 1 | `P4-SYSTEM.14` | `active` | a42g reviewed inputs, then remaining method adequacy |
 
 ## Decisions
 
@@ -440,6 +436,10 @@ Computed byte agreement alone does not lift qualification. Reviewed collector,
 fresh process/output controls, retention budget, predeclared cases/captures and
 full policy/status/mirror derivation follow. Preserve all legacy records and
 published APIs; declare any genuinely new contract before affected runs.
+
+Queued a42g/0255: opt-in caller-reviewed input inventory, frozen context,
+missing/extra/changed checks, evaluator/probes/books and resume correction.
+Source fixes0192–0197 are complete; resume a42 closure/impact/property/provenance.
 
 ### `.14` a42a — bind expectations to the parent program (completed, SEMULITH-P4-0233)
 
@@ -1586,6 +1586,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.16f` | `SEMULITH-P4-0254` | scalar cap verified; .16 complete, .14 next |
 | `.16e` | `SEMULITH-P4-0253` | GC reduction/replay verified; scalar cap next |
 | `.16d` | `SEMULITH-P4-0252` | declared-model replay verified; reduction next |
 | `.16c` | `SEMULITH-P4-0251` | controls/demo verified; model-aware bundles next |

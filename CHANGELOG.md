@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0254 (leaf P4-SYSTEM.16) — enforce scalar reduction budgets and close replay work
+
+- Fix the scalar reducer checking its evaluation cap only between whole passes and omitting the final call from its count. Check before each candidate, reserve/count final verification, preserve the exact original comparator divergence, and report whether a complete single-word deletion pass established 1-minimality.
+- Two permanent tests fail before the repair and pass after; tight limits, single-word cases, actual guest reductions and CLI output remain covered. Correct the matching book's word/step and unchanged-prefix claims. Retain the complete closed control-model task record byte-exact under unchanged caps.
+- Close P4-SYSTEM.16: all167 GC guests resume identically, both controls reduce/replay the original difference, and all four G-REPLAY kinds are green. P4 advances14/18; CPU-SYSTEM remains incomplete on six axes. Resume the owned .14 evidence/provenance work next; BOARD stays10/12.
+
 ## SEMULITH-P4-0253 (leaf P4-SYSTEM.16) — reduce and replay RV64GC divergences
 
 - Add bounded mixed-width reduction over both complete control models, preserving the exact original paired-step difference. Save original bytes, deterministic search receipt and complete reduced-run bundles; replay verifies the search, retained difference and both final-state receipts without the guest catalogue.

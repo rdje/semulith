@@ -26,7 +26,7 @@ generator has no code path to `passed` while one is.
 
 The recorded input bundle (`replay.rs`) and the minimizer (`reduce.rs`) exist as
 tracked code; the CLI wires 3/3 commands (`bundle`, `replay`,
-`reduce`); the suites carry 15 replay and 6 reduction arms,
+`reduce`); the suites carry 15 replay and 10 reduction arms,
 run by the commit gate on every commit.
 
 **Status: met.**

@@ -24,8 +24,8 @@ use crate::fixtures::FlatMemory;
 use crate::replay::image_bytes;
 use crate::run::{self, Divergence, Trace};
 
-/// Runaway guard for the outer candidate-evaluation loop. Guest sizes vary;
-/// accepted removals retain the original property even if the search stops early.
+/// Property-evaluation budget, including original and final verification. Accepted
+/// removals retain the original property even when the search stops early.
 const EVALUATION_CAP: usize = 100_000;
 
 /// The differential under reduction: the model under test (e.g. a `.9` mutant table) and
@@ -39,13 +39,16 @@ pub struct Case<'a> {
     pub budget: usize,
 }
 
-/// The minimized artifact: the retained divergence, re-derived from the minimized words,
+/// A retaining artifact: the divergence re-derived from the retained words,
 /// and how many candidate evaluations the search spent.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Reduction {
     pub words: Vec<u32>,
     pub retained: Divergence,
     pub evaluations: usize,
+    /// A complete single-word deletion pass found no retaining deletion. A capped
+    /// search has no such witness; neither result claims a global minimum.
+    pub one_minimal: bool,
 }
 
 /// Why a reduction could not run.
@@ -61,15 +64,38 @@ pub enum ReduceError {
 /// divergence exactly. Returns the minimized words with the divergence re-derived from
 /// them. `Err` when the original input does not first-diverge.
 pub fn reduce(case: &Case, words: &[u32]) -> Result<Reduction, ReduceError> {
-    let original = divergence(case, words).ok_or(ReduceError::NoDivergence)?;
+    reduce_by(words, EVALUATION_CAP, |candidate| {
+        divergence(case, candidate)
+    })
+}
+
+// The property is injected only to test the search budget independently of CPU
+// execution cost. Production always uses the exact differential above.
+fn reduce_by(
+    words: &[u32],
+    evaluation_limit: usize,
+    mut observe: impl FnMut(&[u32]) -> Option<Divergence>,
+) -> Result<Reduction, ReduceError> {
+    assert!(
+        evaluation_limit >= 2,
+        "reserve original and final evaluations"
+    );
+    if words.is_empty() {
+        return Err(ReduceError::NoDivergence);
+    }
+    let original = observe(words).ok_or(ReduceError::NoDivergence)?;
     let mut current: Vec<u32> = words.to_vec();
     let mut evaluations = 1;
     let mut chunks = 2usize;
-    while current.len() >= 2 && evaluations < EVALUATION_CAP {
+    let mut one_minimal = false;
+    'search: loop {
         let width = current.len().div_ceil(chunks);
         let mut removed = false;
         let mut start = 0;
         while start < current.len() {
+            if evaluations >= evaluation_limit - 1 {
+                break 'search; // reserve the final retention verification
+            }
             let end = (start + width).min(current.len());
             let candidate: Vec<u32> = current[..start]
                 .iter()
@@ -77,7 +103,8 @@ pub fn reduce(case: &Case, words: &[u32]) -> Result<Reduction, ReduceError> {
                 .cloned()
                 .collect();
             evaluations += 1;
-            if retains(case, &candidate, &original) {
+            let found = observe(&candidate);
+            if !candidate.is_empty() && found.as_ref() == Some(&original) {
                 current = candidate;
                 chunks = chunks.saturating_sub(1).max(2);
                 removed = true;
@@ -87,27 +114,22 @@ pub fn reduce(case: &Case, words: &[u32]) -> Result<Reduction, ReduceError> {
         }
         if !removed {
             if width == 1 {
+                one_minimal = true;
                 break; // no single-word removal retains: the candidate is 1-minimal
             }
             chunks = (chunks * 2).min(current.len());
         }
     }
+    evaluations += 1;
     let retained =
-        divergence(case, &current).expect("the invariant: only retaining candidates were accepted");
+        observe(&current).expect("the invariant: only retaining candidates were accepted");
+    assert_eq!(retained, original, "final verification must retain exactly");
     Ok(Reduction {
         words: current,
         retained,
         evaluations,
+        one_minimal,
     })
-}
-
-/// Does the candidate still produce the original first divergence — same step, same
-/// field description?
-fn retains(case: &Case, candidate: &[u32], original: &Divergence) -> bool {
-    match divergence(case, candidate) {
-        Some(d) => d == *original,
-        None => false,
-    }
 }
 
 /// The candidate's first divergence between the reference and the model under test, in

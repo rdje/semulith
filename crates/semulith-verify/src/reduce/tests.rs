@@ -33,6 +33,7 @@ fn reduce_guest(mutation: &str, guest_name: &str) -> Result<Reduction, ReduceErr
 /// The witness that makes "minimized" a claim with evidence: deleting any single word of
 /// the result loses the retained divergence.
 fn assert_one_minimal(case: &Case, reduction: &Reduction) {
+    assert!(reduction.one_minimal);
     for i in 0..reduction.words.len() {
         let candidate: Vec<u32> = reduction.words[..i]
             .iter()
@@ -66,7 +67,7 @@ fn zext_addi_minimizes_to_the_divergent_prefix() {
     );
     assert!(
         reduction.evaluations < 1_000,
-        "ddmin on 13 words is tens of evaluations, not {} — {}",
+        "ddmin on the tracked guest takes tens of evaluations, not {} — {}",
         reduction.evaluations,
         "the guard documents the expected shape"
     );
@@ -153,4 +154,67 @@ fn an_empty_input_has_no_divergence_to_retain() {
         reduce(&case, &[]).expect_err("empty input"),
         ReduceError::NoDivergence
     );
+}
+
+// The all-words-needed property exercises long rejection passes without spending
+// CPU interpreter time. These controls judge search accounting, not ISA semantics.
+fn budget_fixture(limit: usize) -> (Reduction, usize) {
+    let words = [0u32; 16];
+    let calls = std::cell::Cell::new(0);
+    let reduction = reduce_by(&words, limit, |candidate| {
+        calls.set(calls.get() + 1);
+        (candidate == words).then(|| Divergence {
+            at: 0,
+            what: "all words needed".into(),
+        })
+    })
+    .unwrap();
+    (reduction, calls.get())
+}
+
+#[test]
+fn search_never_exceeds_budget_during_a_rejected_candidate_pass() {
+    let (_, calls) = budget_fixture(8);
+    assert!(calls <= 8, "cap8 allowed {calls} property calls");
+}
+
+#[test]
+fn reported_evaluations_include_the_final_retention_verification() {
+    let (reduction, calls) = budget_fixture(8);
+    assert_eq!(reduction.evaluations, calls);
+}
+
+#[test]
+fn tight_budgets_preserve_the_witness_without_claiming_minimality() {
+    for limit in [2, 3, 8, 31] {
+        let (reduction, calls) = budget_fixture(limit);
+        assert_eq!(calls, limit);
+        assert_eq!(reduction.evaluations, calls);
+        assert_eq!(reduction.words, [0; 16]);
+        assert_eq!(reduction.retained.what, "all words needed");
+        assert!(!reduction.one_minimal);
+    }
+    let (reduction, calls) = budget_fixture(32);
+    assert_eq!(calls, 32);
+    assert_eq!(reduction.evaluations, calls);
+    assert!(reduction.one_minimal);
+}
+
+#[test]
+fn a_single_word_needs_its_deletion_witness_before_claiming_minimality() {
+    for (limit, expected) in [(2, false), (3, true)] {
+        let calls = std::cell::Cell::new(0);
+        let reduction = reduce_by(&[7], limit, |words| {
+            calls.set(calls.get() + 1);
+            (words == [7]).then(|| Divergence {
+                at: 0,
+                what: "one word".into(),
+            })
+        })
+        .unwrap();
+        assert_eq!(calls.get(), limit);
+        assert_eq!(reduction.evaluations, calls.get());
+        assert_eq!(reduction.words, [7]);
+        assert_eq!(reduction.one_minimal, expected);
+    }
 }

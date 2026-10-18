@@ -915,3 +915,29 @@ or qualification credit; per-call bounds leave aggregate method budgets pending.
 ````text
 | `.14` a21 | `SEMULITH-P4-0212 (leaf P4-SYSTEM.14): bound pin-only reads and snapshot probes` | a22 completed-unit containment, artifact mappings/evaluator, retention and fresh captures |
 ````
+
+## P4 control record — P4-0254 retention
+
+<a id="p4-16c-retained"></a>
+
+Complete .16c body. At this boundary, replace the unique stub with this payload,
+then reverse owner_edit. Undo later .16f completion first.
+
+```json
+{"schema":1,"source":"docs/tasks/P4-SYSTEM.md","source_commit":"226e71dfdd023d93f880906143361a0d73fa5aba","source_bytes":131008,"source_lines":1666,"source_sha256":"e65e4571c337adc435f8c22d400f241c5bd975868180007302c96d0e7e0f4b73","owner_edit":{"before":"  .16f next: verify scalar outer-loop cap across a whole inner pass; repair if reproduced.\n","after":"  .16f/0254 owns scalar guard/count/minimality, p1 prose and16c retention.\n"},"owner_bytes":130992,"owner_sha256":"626f57838be4ad994bdcc6305b2eeb6c35154044e831f551d77beb0bf06cd4ec","offset":33840,"record_lines":12,"record_bytes":1025,"record_sha256":"3d88c5e00fe7625e8d3e74408772580dff74da8c47bb1fe1681884760da2398f","replacement":"  .16c/0251 complete: [Record](artifacts/live-containment/reader-records-retention.md#p4-16c-retained).\n","retired_bytes":130071,"retired_sha256":"536f7bf3698822c44dc2932a13819d6b3283842b8484ae179d34af3a64e141b8"}
+```
+
+````text
+  .16c/0251 complete after5c42e3a, queued task-only dirt/host0 before code.
+  Own cached full-GC zext-addi/jal-no-link control tables, common runner/demo,
+  shape refusals, untouched-row/production parity and first-difference controls.
+  Fix demo --profile=rv64gc-lab-v0 --guest=guest-control --json: rc=0/nonJSON
+  (demo-json-before.stdout): named unsupported-format refusal, CLI coverage.
+  Full mutation campaign stays .15; bundles production-only; reduction next.
+  Own whole CH/DEV rollover, book/live/report sync, Rust/wasm/focused/COMMIT.
+  Evidence target/p4-system-16/controls; promotion declined (existing EVD-09).
+  Own C-fixture model-module closure and C chapter's stale open-v2 status; details DEV_NOTES.md.
+  - [x] **ROOT CAUSE** — native demo mutation rc=2; --json rc=0/nonJSON (before logs).
+  - [x] **ADDRESSED** — `cargo test -p semulith-verify model_rv64gc` rc=0:5tests/167guests; real CLI1/0.
+  - [x] **NO REGRESSION** — `make check`/wasm rc=0; focused13/books/scope normal/O pass; GUEST-GEN328/0.
+````

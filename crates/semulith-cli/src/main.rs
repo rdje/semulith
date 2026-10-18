@@ -55,7 +55,7 @@
 //!   a refused identity; 2 — usage, unreadable input, or a malformed bundle.
 //! - `semulith reduce --guest NAME --mutate NAME [--profile NAME]` — minimize the guest against the
 //!   differential while retaining the original first divergence exactly (EVD-02),
-//!   and print the minimized program with its retained divergence. Exit codes:
+//!   and print the retaining program, divergence and search status. Exit codes:
 //!   0 — minimized; 1 — the case has no first-divergence to retain (the census
 //!   class: a wrong behaviour observations cannot see); 2 — usage or an unknown
 //!   name. RV64GC writes a replayable JSON pair to stdout and a summary to stderr;
@@ -1235,7 +1235,15 @@ fn reduce_cmd(args: &[String]) -> ExitCode {
                 "retained FIRST DIVERGENCE at aligned step {}: {}",
                 reduction.retained.at, reduction.retained.what
             );
-            println!("minimized program (entry {:#018x}):", guest.entry);
+            println!(
+                "search: {}",
+                if reduction.one_minimal {
+                    "1-minimal in word-deletion domain"
+                } else {
+                    "budget-limited; minimality not established"
+                }
+            );
+            println!("retaining program (entry {:#018x}):", guest.entry);
             for (n, word) in reduction.words.iter().enumerate() {
                 println!("  [{n}] 0x{word:08x}");
             }

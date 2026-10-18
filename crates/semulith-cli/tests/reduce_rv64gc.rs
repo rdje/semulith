@@ -118,5 +118,6 @@ fn real_cli_reduces_and_replays_both_gc_controls_and_budget_limited_records() {
     let scalar = cli(&["reduce", "--guest=guest-control", "--mutate=zext-addi"]);
     assert!(scalar.status.success());
     assert!(String::from_utf8_lossy(&scalar.stdout).contains("retained FIRST DIVERGENCE"));
+    assert!(String::from_utf8_lossy(&scalar.stdout).contains("1-minimal in word-deletion domain"));
     std::fs::remove_dir_all(work).unwrap();
 }

@@ -16,15 +16,15 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.16` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after P4-0253 normal COMMIT, take P4-SYSTEM.16f: reproduce
-  the scalar reducer's outer-only evaluation-cap concern with a bounded probe,
-  repair if demonstrated, then close .16. GC snapshots, model-aware bundles,
-  controls and exact-divergence reduction/replay are delivered; G-REPLAY4/4 green.
-  Full mutation campaign stays .15, evidence qualification .14; CPU incomplete.
-  Priority/captured D79 receipt: docs/tasks/LIVE-CONTAINMENT.md,
+- next_action: after P4-0254 normal COMMIT, take P4-SYSTEM.14 a42g:
+  bind declared inputs to a separate caller-reviewed inventory, freeze context,
+  reject missing/extra/changed entries and preserve unqualified status.
+  Read a42/a42f and the matched-GPR contract/evaluator. Source fixes0192–0197
+  are complete. Remaining method work: closure/impact/property/provenance,
+  fresh captures/retention and policy/status/mirror derivation; full mutation .15.
+  P4.16 is complete, G-REPLAY4/4green, P4 now14/18; CPU incomplete on six axes.
+- in_flight_uncommitted: none after P4-0254 normal COMMIT/postcheck.
+- blockers: none for implementation; no terminal command needed.
+  LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.
-- in_flight_uncommitted: none after P4-0253 normal COMMIT/postcheck.
-- blockers: no terminal authorization needed; packet-20261017T225917Z-fbcd89
-  captured480observations/155525packets,0unjudgeable. D79 causal analysis/LC0046
-  D80 remain owned in LIVE-CONTAINMENT.4; no capture rerun is needed.
-  Do not push below300commits without the director's act (`COMMIT.md`).
+  No push below300commits without the director's act (COMMIT.md).
