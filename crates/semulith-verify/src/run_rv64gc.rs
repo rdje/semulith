@@ -24,6 +24,8 @@ use semulith_core::state_rv64gc::ArchitecturalState;
 
 use crate::fixtures::FlatMemory;
 use crate::guests_rv64gc::{Guest, Refusal, RefusalKind, GUESTS};
+use crate::model_rv64gc::Model;
+use semulith_core::definition_rv64gc::{InsnDef, INSNS};
 
 /// The fetch-request witness: forwards every crossing and counts fetch REQUESTS
 /// (successful or faulted — a refused request still crossed the boundary). A C-enabled
@@ -117,10 +119,25 @@ pub struct Trace {
 /// IALIGN=16 with C), exactly `executed_steps` steps.
 #[must_use]
 pub fn run_guest(guest: &Guest) -> (Trace, FlatMemory) {
+    run_guest_over(guest, INSNS)
+}
+
+/// Run a deliberately selected control model over the complete profile.
+pub fn run_guest_with_model(guest: &Guest, model: Model) -> Result<(Trace, FlatMemory), String> {
+    Ok(run_guest_over(guest, model.table()?))
+}
+
+fn run_guest_over(guest: &Guest, table: &[InsnDef]) -> (Trace, FlatMemory) {
     let mut env = FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
     env.load_image(0, guest.image);
     let mut state = ArchitecturalState::zeroed_at(guest.entry);
-    let trace = run_from_with_refusals(&mut env, &mut state, guest.executed_steps, guest.refusals);
+    let trace = run_from_over(
+        &mut env,
+        &mut state,
+        guest.executed_steps,
+        guest.refusals,
+        table,
+    );
     (trace, env)
 }
 
@@ -138,6 +155,27 @@ pub fn run_from_with_refusals(
     budget: usize,
     refusals: &[Refusal],
 ) -> Trace {
+    run_from_over(env, state, budget, refusals, INSNS)
+}
+
+/// Continue with an explicitly named full-profile control overlay.
+pub fn run_from_with_model(
+    env: &mut FlatMemory,
+    state: &mut ArchitecturalState,
+    budget: usize,
+    refusals: &[Refusal],
+    model: Model,
+) -> Result<Trace, String> {
+    Ok(run_from_over(env, state, budget, refusals, model.table()?))
+}
+
+fn run_from_over(
+    env: &mut FlatMemory,
+    state: &mut ArchitecturalState,
+    budget: usize,
+    refusals: &[Refusal],
+    table: &[InsnDef],
+) -> Trace {
     let mut steps = Vec::new();
     let mut failed = None;
     let mut fetches = 0;
@@ -152,7 +190,7 @@ pub fn run_from_with_refusals(
             inner: &mut refusing,
             fetches: 0,
         };
-        let outcome = exec_rv64gc::step(state, &mut counting);
+        let outcome = exec_rv64gc::step_over(state, &mut counting, table);
         fetches += counting.fetches;
         match outcome {
             StepRv64gc::Executed => {}

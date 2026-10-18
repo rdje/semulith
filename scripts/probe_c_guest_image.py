@@ -99,7 +99,7 @@ def main():
         src = root / 'src'
         src.mkdir()
         (src / 'guests_rv64gc.rs').write_text(generator.emit(data, unit / 'encoding.sexp', 'bytes'))
-        for name in ('fixtures.rs', 'run_rv64gc.rs'):
+        for name in ('fixtures.rs', 'model_rv64gc.rs', 'run_rv64gc.rs'):
             shutil.copyfile(REPO / 'crates/semulith-verify/src' / name, src / name)
         shutil.copytree(REPO / 'crates/semulith-verify/src/fixtures', src / 'fixtures')
         if args.mutation == 'runner-offset':
@@ -108,7 +108,11 @@ def main():
             old = 'env.load_image(0, guest.image);'
             assert source.count(old) == 1, 'runner mutation must match once'
             path.write_text(source.replace(old, 'env.load_image(2, guest.image);'))
-        (src / 'lib.rs').write_text('pub mod fixtures;\npub mod guests_rv64gc;\npub mod run_rv64gc;\n')
+        (src / 'lib.rs').write_text('pub mod fixtures;\npub mod guests_rv64gc;\n'
+                                    'pub mod model_rv64gc;\npub mod run_rv64gc;\n')
+        (src / 'model_rv64gc').mkdir()
+        (src / 'model_rv64gc/tests.rs').write_text(
+            '// Workspace tests own the control-model suite; this fixture tests its production runner.\n')
         (src / 'run_rv64gc').mkdir()
         (src / 'run_rv64gc/tests.rs').write_text('''
 use super::{assert_guest_observations, guest, run_guest};

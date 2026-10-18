@@ -33,7 +33,7 @@
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")
   (statement "Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5."))
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
-  (statement "No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite."))
+  (statement "No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work."))
 (open (axis G-REPLAY) (owner "P4-SYSTEM.16")
   (statement "RV64GC snapshot/resume and replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name."))
 (open (axis G-PORTABILITY) (owner "P4-SYSTEM.17")

@@ -270,9 +270,9 @@ This gate authorises the planned next engineering stage: board implementation.
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
   Status: `active` (snapshots0249/bundles0250; reduction next)
-  Goal: RV64GC snapshots, replay bundles and reduction; lift named CLI refusals.
-  Acceptance: every guest resumes identically from a mid-execution snapshot; a recorded
-  divergence replays and reduces with its divergence retained.
+  Goal: complete RV64GC snapshot, replay and reduction CLI.
+  Acceptance: every guest resumes identically mid-execution; a recorded divergence
+  replays and reduces with that divergence retained.
   .16b/0250 — complete, owned clean1cf0673 before edits. Deliver self-contained
   bounded RV64GC replay bundles/CLI for tracked guests, using the complete input
   checkpoint, explicit no-external-event laboratory policy, typed fault regions,
@@ -297,6 +297,18 @@ This gate authorises the planned next engineering stage: board implementation.
   - [x] **ROOT CAUSE** — before CLI rc=2; Cargo digest controls1pass/2fail reproduce both unescaped writers.
   - [x] **ADDRESSED** — `cargo test -p semulith-verify replay_rv64gc` rc=0:6tests/167guests; digest3/0, real CLI1/0 discriminate.
   - [x] **NO REGRESSION** — make check/wasm/focused13/seven books rc=0; scope/inverse normal/O1479protected/93history/4damaged refusals.
+  .16c/0251 complete after5c42e3a, queued task-only dirt/host0 before code.
+  Own cached full-GC zext-addi/jal-no-link control tables, common runner/demo,
+  shape refusals, untouched-row/production parity and first-difference controls.
+  Fix demo --profile=rv64gc-lab-v0 --guest=guest-control --json: rc=0/nonJSON
+  (demo-json-before.stdout): named unsupported-format refusal, CLI coverage.
+  Full mutation campaign stays .15; bundles production-only; reduction next.
+  Own whole CH/DEV rollover, book/live/report sync, Rust/wasm/focused/COMMIT.
+  Evidence target/p4-system-16/controls; promotion declined (existing EVD-09).
+  Own C-fixture model-module closure and C chapter's stale open-v2 status; details DEV_NOTES.md.
+  - [x] **ROOT CAUSE** — native demo mutation rc=2; --json rc=0/nonJSON (before logs).
+  - [x] **ADDRESSED** — `cargo test -p semulith-verify model_rv64gc` rc=0:5tests/167guests; real CLI1/0.
+  - [x] **NO REGRESSION** — `make check`/wasm rc=0; focused13/books/scope normal/O pass; GUEST-GEN328/0.
   .16a/0249, owned clean2a97c46:
   - [x] **ROOT CAUSE** — `cargo run -p semulith-cli -- snapshot --profile=rv64gc-lab-v0` rc=2 before: named refusal.
   - [x] **ADDRESSED** — `cargo test -p semulith-verify snapshot_rv64gc` rc=0:167guests/501splits, parity.
@@ -1559,6 +1571,7 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.16c` | `SEMULITH-P4-0251` | controls/demo verified; model-aware bundles next |
 | `.16b` | `SEMULITH-P4-0250` | bundles/replay verified; reduction next |
 | `.16a` | `SEMULITH-P4-0249` | snapshot/resume delivered; bundles next |
 | `.14` a42l2 | `SEMULITH-P4-0248 (leaf P4-SYSTEM.14): preserve published ordinary task history` | remaining a42 closure/collector/policy adequacy; own next finite slice on clean state |

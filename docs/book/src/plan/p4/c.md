@@ -132,10 +132,10 @@ changed observations, incorrect extents, stale exceptions and borrowed capture
 headers. The STCE-aware timer program and source-contract qualifications are
 explained in [the runtime chapter](contract-runtime.md#explicit-comparator-setup-before-fallback-repair).
 
-Open v2 includes C's instruction guarantee and exact two-byte physical fetch
+Frozen v2 includes C's instruction guarantee and exact two-byte physical fetch
 supply with their executable positive/negative pairs. Frozen v0/v1 remain exact.
 The compressed fault/interrupt-return matrix retains its declared degeneracies;
-CPU acceptance still depends on the remaining contract and evidence work.
+CPU acceptance still depends on the remaining processor-gate work.
 [The current contract summary](contract-v2.md#runtime-guarantee-witnesses)
 owns the realization measure. Public reference observations and their comparison
 limits follow below.

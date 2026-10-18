@@ -40,6 +40,8 @@
 //!   humans; `--json` emits the same shape the browser bench consumes. Exit
 //!   codes: 0 — expectations met; 1 — a designated mutant broke them (the
 //!   detector working, not an error); 2 — usage or an unknown name.
+//!   The RV64GC demo supports text and two control models; its `--json` path
+//!   refuses explicitly because the structured demo report is scalar-scoped.
 //! - `semulith bundle --guest NAME [--mutate NAME] [--profile NAME]` — record the replay bundle
 //!   (`P1-LAB.10`): run the guest under the named model and write the input bundle
 //!   JSON (algorithm pins, platform, image digest, the recorded event choice, the
@@ -95,9 +97,8 @@ use semulith_verify::elf;
 /// definition was statically rv64i's until the flip; now `run` and `demo` take
 /// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
 /// was). The commands whose machinery is rv64i-scoped today — bench (the workload
-/// mixes), reduce and nonproduction mutations (the tables decode rv64i words)
-/// — REFUSE rv64gc-lab-v0 by
-/// name rather than silently answering with the wrong engine.
+/// mixes) and reduce refuse rv64gc-lab-v0 by name. Its text demo has two named
+/// full-profile fault controls; GC bundle recording still selects production.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Profile {
     Rv64iLabV0,
@@ -513,7 +514,7 @@ fn demo(args: &[String]) -> ExitCode {
         }
     }
     if profile == Profile::Rv64gcLabV0 {
-        return demo_rv64gc(guest, mutation);
+        return demo_rv64gc(guest, mutation, json_out);
     }
     let guest = match guest {
         Some(name) => name,
@@ -554,16 +555,20 @@ fn demo(args: &[String]) -> ExitCode {
 
 /// The rv64gc `demo` path (`P4-SYSTEM.2` slice h): run a tracked rv64gc guest through
 /// the tracked engine and judge it against its specification-derived expectations — the
-/// same assertions the verify-side corpus tests carry, printed for a human. Mutations
-/// refuse by name (the tables decode rv64i words).
-fn demo_rv64gc(guest: Option<&str>, mutation: &str) -> ExitCode {
-    if mutation != "none" {
+/// same assertions the verify-side corpus tests carry, printed for a human.
+/// Named control models perturb the complete GC table; JSON refuses explicitly.
+fn demo_rv64gc(guest: Option<&str>, mutation: &str, json_out: bool) -> ExitCode {
+    use semulith_verify::model_rv64gc::Model;
+    if json_out {
         return rv64gc_not_wired(
-            "demo",
-            "the mutation tables are the rv64i engine's (they decode rv64i words); an \
-             rv64gc mutation suite is a later leaf",
+            "demo --json",
+            "a structured RV64GC demo report is not implemented; this demo emits text",
         );
     }
+    let model = match Model::from_mutation(mutation) {
+        Ok(model) => model,
+        Err(error) => return usage(&format!("demo: {error}")),
+    };
     let Some(name) = guest else {
         return usage(&format!(
             "demo: --guest is required (one of: {})",
@@ -581,8 +586,14 @@ fn demo_rv64gc(guest: Option<&str>, mutation: &str) -> ExitCode {
         eprintln!("demo: unknown rv64gc guest '{name}'");
         return ExitCode::from(2);
     };
-    let (trace, _env) = semulith_verify::run_rv64gc::run_guest(g);
+    let (trace, _env) = match semulith_verify::run_rv64gc::run_guest_with_model(g, model) {
+        Ok(result) => result,
+        Err(error) => return usage(&format!("demo: {error}")),
+    };
     let mut out = String::new();
+    if model != Model::Production {
+        out.push_str(&format!("model: {}\n", model.name()));
+    }
     for (n, step) in trace.steps.iter().enumerate() {
         out.push_str(&format!("[{n}] [{:?}]: 0x{:016x}\n", step.mode, step.pc));
         for (reg, value) in &step.writes {
@@ -613,6 +624,24 @@ fn demo_rv64gc(guest: Option<&str>, mutation: &str) -> ExitCode {
     ));
     if let Some(error) = &trace.failed {
         out.push_str(&format!("model error: {error}\n"));
+    }
+    if model != Model::Production {
+        let reference = semulith_verify::run_rv64gc::run_guest(g).0;
+        match reference
+            .steps
+            .iter()
+            .zip(&trace.steps)
+            .enumerate()
+            .find(|(_, (a, b))| a != b)
+        {
+            Some((at, (reference, actual))) => {
+                out.push_str(&format!("first difference at boundary {at}\nproduction:\n"));
+                out.push_str(&format_gc_steps(std::slice::from_ref(reference), at));
+                out.push_str(&format!("{}:\n", model.name()));
+                out.push_str(&format_gc_steps(std::slice::from_ref(actual), at));
+            }
+            None => out.push_str("no differing paired boundary in this guest's trace\n"),
+        }
     }
     print!("{out}");
     if met {

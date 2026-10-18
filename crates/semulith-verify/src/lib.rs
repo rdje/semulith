@@ -36,6 +36,7 @@ pub mod guests;
 pub mod guests_rv64gc;
 pub mod json;
 pub mod m_vectors;
+pub mod model_rv64gc;
 pub mod mutate;
 pub mod pattern;
 pub mod reduce;

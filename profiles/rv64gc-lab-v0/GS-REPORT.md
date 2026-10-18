@@ -31,7 +31,7 @@ is not a claim with a denominator.
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-TRACE` | `P4-SYSTEM.14` | The nine Sail matched experiments (P4-SYSTEM.2 to .8, .11's M corpus and .12's C corpus) are recorded as prose inside references.sexp's matched_scope, not as experiment records; no control or independence row is judged for them. The spec-side author and live Sail adapter are now tracked, but their existence does not substitute for experiment records. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
-| `G-REGRESSION` | `P4-SYSTEM.15` | No external directed suite has run against this unit; the validator-mutation suite decodes rv64i's tables only; no workload suite. |
+| `G-REGRESSION` | `P4-SYSTEM.15` | No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
 | `G-REPLAY` | `P4-SYSTEM.16` | RV64GC snapshot/resume and replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
@@ -66,7 +66,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 de46c8d053832b25c0c2e20e2fca39c9d2744cfadba38a8dbc7fce7d0d8920a4`
+  `sha256 5e88481a7320e954e77987caeb48195acab86cfa2cb6459d3ac538c2c6548fa7`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

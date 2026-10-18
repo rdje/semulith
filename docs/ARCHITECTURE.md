@@ -301,8 +301,8 @@ braces/brackets, commas and colons before parsing. Recorded GPR changes must be
 ordered unique x1–x31; model-error text is bounded to 4096 bytes. These artifact
 limits bound work without promising an exact process-RAM ceiling. The CLI bounds
 its file read before parsing. Its `--mutate=none` spelling selects production;
-RV64GC mutation models, reduction and board/device/event replay remain outside
-this slice.
+GC bundle mutation recording, reduction and board/device/event replay remain
+outside this slice.
 
 All current RV64GC guests round-trip and replay through this format. Controls
 alter PC, privilege, GPR changes, length, fetch/error/final receipts and identities;
@@ -311,4 +311,49 @@ wait/timer, translation and floating-point guests. This supplies the bundle kind
 of `G-REPLAY`; reduction and the remaining CPU-SYSTEM acceptance work stay open.
 Digest strings are escaped as JSON data, including rejected foreign identities;
 escaping does not weaken restoration's identity and memory checks.
+
+### RV64GC detector controls
+
+The text demo exposes two deliberately wrong models over the complete RV64GC
+instruction table. They perturb the canonical effect data consumed by the same
+evaluator; they provide detector controls rather than alternative ISA authorities.
+
+| Mutation | Deliberate fault | `guest-control` first difference |
+| --- | --- | --- |
+| `zext-addi` | 32-bit ADDI zero-extends its immediate | boundary1, x1 |
+| `jal-no-link` | 32-bit JAL suppresses the link-register write | boundary7, x5 |
+
+```sh
+cargo run -q -p semulith-cli -- demo --profile=rv64gc-lab-v0 --guest=guest-control --mutate=zext-addi
+cargo run -q -p semulith-cli -- demo --profile=rv64gc-lab-v0 --guest=guest-control --mutate=jal-no-link
+```
+
+Both examples intentionally exit1: the designated wrong behavior fails the
+specification-derived guest expectations. The output identifies the model and
+prints both observations at the first differing paired boundary. `--mutate=none`
+selects production. A mutation may leave an unaffected guest's trace identical;
+this is a finite detector experiment, not a verdict over the whole model.
+
+The overlays retain every other row, encoding, operand, length and compressed
+expansion. In particular, C.JALR and C.ADDI retain their own generated effects:
+
+```sh
+cargo run -q -p semulith-cli -- demo --profile=rv64gc-lab-v0 --guest=c-links --mutate=jal-no-link
+```
+
+That case meets its expectations and exits0. The library's
+`model_rv64gc::Model::from_mutation` resolves the same names; `Model::table`
+returns the complete table. `run_rv64gc::run_guest_with_model` and
+`run_from_with_model` run a selected control with the existing memory/fault policy.
+Each control table is cached once with a bounded rebuilt effect spine. Unexpected
+canonical effect shapes refuse by name instead of silently building a different
+fault. Every current guest checks production trace, fetch, final CPU state and
+memory parity through the named API.
+
+The RV64GC demo emits text. Its `--json` flag now refuses with exit2 and an explicit
+unsupported-report message; previously that flag silently printed text with a
+successful exit. Scalar demo JSON remains available. Unknown GC control names
+also refuse2. GC replay bundles currently record production; model-aware bundle
+recording and reduction follow in P4.16. The complete validator mutation campaign
+remains P4.15's work, and CPU-SYSTEM acceptance remains incomplete.
 <!-- ANCHOR_END: rv64gc-snapshot -->
