@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — finite source-grounded signed division (P4-SYSTEM.14 a42t)
+
+Add a reviewed pure property binder for m-div.s step2/x7: signed -7/2 rounds toward zero to -3. Bind source/prefix/witness and current semantic authority with26 controls/28 omissions normal/O. Catch and fix derived-status self-invalidation in the draft: authority fingerprints exclude derived outputs while exact artifact/input checks remain strict. Preserve whole closed/history records and fixed caps; teach the source proof and complete example. No whole-obligation, capture or qualification credit; CPU/BOARD milestones unchanged.
+
 ## _(2026-10-18)_ — authenticated expected-author composition (P4-SYSTEM.14 a42s)
 
 Compose the optional frozen author review through authenticated retained evaluation. Bind current inventory and producer metadata after source-value success; retain prior findings and refuse contradictions without execution-attestation or qualification credit. Cover19 controls/13 omissions normal/O, preserve99 old selector sites and positional contracts, and teach the complete example. Retain whole closed/history records within fixed caps. CPU/BOARD milestones unchanged.

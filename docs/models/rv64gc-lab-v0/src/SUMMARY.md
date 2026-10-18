@@ -10,6 +10,7 @@
 [Authenticated byte evaluation](evaluation.md)
 [Explicit image context](image-binding.md)
 [Reviewed expected authors](expected-author.md)
+[A source-grounded division witness](source-property.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)

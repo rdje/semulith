@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | source-grounded property review |
+| 1 | `P4-SYSTEM.14` | `active` | authenticated finite-property composition |
 
 ## Decisions
 
@@ -407,6 +407,26 @@ Remaining: closure/impact binding, source-grounded property/collector provenance
 fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
+
+### `.14` a42t — ground a finite signed-DIV property (completed, SEMULITH-P4-0262)
+
+Own a pure reviewed-case binder for m-div.s, signed -7/2 truncation at step2/x7.
+Read verified RVI-M §11.1.2 and canonical REQ-GC-M/OB-GC-M: defined/medium,
+contract v2. Freeze bounded typed property context; bind actual relation, source
+snapshot, witness/value and manually reviewed three-word prefix. Require exact
+normative-page pin and stable canonical semantic authority. This supports one
+finite observation, not the whole13-form obligation or qualification. No new
+format/parser/interpreter or file I/O. Predeclare case/API/book before code;
+normal/O positive/omission controls, corpus/inverses/books and normal COMMIT.
+Evaluator composition follows separately. Closed l1 retained whole3029B in
+existing task-claims, old15313B prefix exact; full source/owner inverses/six
+refusals: target/p4-system-14/a42t/retention.json. Fixed caps/seals unchanged.
+
+Resolved priority1 design risk: full requirement-file pin includes derived status.
+Changing only implementation_status changes its SHA, so publishing derived status
+would invalidate the draft case input despite identical source/property meaning.
+Reproduction: target/p4-system-14/a42t/status-cycle.json. Fixed before0262: stable
+semantic projection excludes outputs; actual file pins/impact remain exact.
 
 ### `.14` a42s — compose author binding (completed, SEMULITH-P4-0261)
 
@@ -518,47 +538,7 @@ a42l1 preserves complete prior records; original12 reader authority stays fixed.
 
 ### `.14` a42l1 — contain completed workflow records (completed, SEMULITH-P4-0247)
 
-Owned on clean e10b83a after all10 hashes/modes, brief0 and host census0.
-Move whole completed a42h/i/j/k designs and three whole book receipt spans to
-ordinary part19; bind complete source inverses, independent damage controls,
-all prior bytes/modes, active a42/a42l plans and fixed caps. Own scratch under
-target/p4-system-14/a42l1, necessary whole-oldest DEV/CH sharding, book/live
-sync and COMMIT before a42l2. D49 remains open; no feature change.
-
-Containment prerequisite only: no guard/feature code or qualification changes.
-Read task setup/caps, .14/a42 requirements and current task/history/book contracts;
-D49's measured full-gate case remains priority1. The committed source130798B
-had274B room; ownership activation reached131052B before any mover/scratch.
-Four whole completed designs h/i/j/k total13508B. Three whole book spans
-(a42h, c29e1/c33c and c30b/c33d receipts) total4098B. Preserve every old count,
-diagnostic and command; keep all original book headings and command fences,
-adding only the literal cat part19 guide. Current rules, active a42/a42l,
-current diagnostic teaching and remaining adequacy requirements stay live.
-
-Part19 binds e10b83a complete source lengths/SHA256, each byte range/body
-length/hash and exact inverse replacement. Original fragment navigation gets
-an explicit wrapper route to the source book. All seven whole bodies17606B
-produce ordinary part19 24496B SHA256
- a1b220bc9a676e775956620c5f7763f942e0642d15764d15e781e50cf91e584f.
-Complete task130798B SHA93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d
-and book17160B SHAd7206011a9d36d789698796988416aadff75852df3b04d0e6f2f489a94aec35c
-must reconstruct after undoing only this unit's seams. Independently damage
-all seven bodies/markers/omissions, actual moved receipt plus new digest,
-source identity/range, route, guide and active plans; explicit conditions
-normal/O. An initial control selected a nonexistent3212 token in j; it refused
-before classification. Corrected to the actual k3196→3197 receipt; both runs
-now pass28 required refusals. No source record was changed by that control.
-
-Protect every other tracked file/mode/Gitlink without traversing submodules,
-all earlier ordinary and sealed histories, code, canonical inputs and LIVE.
-Family count reaches96/96; full containment adoption remains LIVE-CONTAINMENT.4.
-Own whole-oldest DEV/CH moves using the published sharder, complete old-head
-inverses and both permanent guards with genuine moved/published receipt edits
-plus updated digests. Focused12/sharder/seven books/fresh+actual local links,
-normal+print and literal new cat command must pass; then exact COMMIT hashes/
-modes/brief0/unrestricted census. Full hooks apply; no redundant Rust run for
-this doc-only unit. a42l2 repair follows clean committed state; no push below
-cadence. promotion: declined (existing exact-history containment rules; measured inverses and controls remain in this owned unit).
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42t-l1).
 
 ### `.14` a42l2 — preserve published ordinary histories (completed, SEMULITH-P4-0248)
 
@@ -628,6 +608,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42t **ROOT CAUSE**: status-cycle.py rc=0 normal/O: status-only SHA changes; all other selected record fields equal.
+- [x] `.14` a42t **ADDRESSED**: run-controls.py rc=0 normal/O:26/0/0;28 omissions/0 errors; stable outputs, semantic changes refuse.
+- [x] `.14` a42t **NO REGRESSION**: verify.py/focused.py rc=0:1513 files/87 entries;6 inverses;15 checks/7 books/3322 links; example exact.
 - [x] `.14` a42s **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new refused; unreviewed version.
 - [x] `.14` a42s **ADDRESSED**: run-controls.py rc=0 normal/O:19/0/0;13 omissions/0 errors.
 - [x] `.14` a42s **NO REGRESSION**: verify.py/focused.py rc=0:1507 files/87 entries;6 inverses;15 checks/7 books/3306 links.
@@ -1579,6 +1562,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42t | `SEMULITH-P4-0262` | authenticated finite-property composition |
 | `.14` a42s | `SEMULITH-P4-0261` | source-grounded property review |
 | `.14` a42r | `SEMULITH-P4-0260` | authenticated author composition |
 | `.14` a42q | `SEMULITH-P4-0259` | producer/property review |

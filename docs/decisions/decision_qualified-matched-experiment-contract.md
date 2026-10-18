@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-10`
 - **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42s, `SEMULITH-P4-0203`–`0261`; existing GC verification policy and evidence-graph requirements
+- **Owner / source:** `P4-SYSTEM.14` a12–a42t, `SEMULITH-P4-0203`–`0262`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,11 +15,7 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Implemented:** grammar/scoped edges, bounded pins/snapshots/comparison,
-identity/receipt/execution/relations/manifest/files, expectation context and
-source/ELF correspondence. A42m–q add input/impact and source/value APIs;
-a42r–s bind and compose reviewed-author metadata. API: GC unit book. Metadata equality does
-not establish complete coverage or execution attestation.
+**Implemented:** syntax, authenticated byte/image/value checks and frozen input/impact/author/property views. API: GC unit book; qualification closed.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
 `UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh
@@ -223,3 +219,16 @@ Authenticated comparison and invocation binding exist. Fresh process provenance,
 complete dependency adequacy and full policy remain pending. Pin matches establish
 check-time bytes; no stored flag can assert qualification on its own.
 <!-- ANCHOR_END: contract -->
+
+
+## Source-property authority (a42t)
+
+answers: Why must property authority exclude derived requirement outputs?
+
+Current validated canonical records supply semantic authority. Only requirement
+implementation_status, implementation_refs and evidence_ids normalize to
+planned/[]/[] in its fingerprint, using records_sexp's renderer. This private
+projection rewrites no source and is not artifact authentication. Statement,
+source, risk, scope and effective-obligation changes invalidate the reviewed
+case. Exact file pins and complete input/impact checks remain unfiltered.
+Never derive current authority from a capture's own claims.

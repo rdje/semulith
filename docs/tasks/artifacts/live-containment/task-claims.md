@@ -237,3 +237,60 @@ Closed a42q retained whole1603B in task-claims; old10699B prefix exact, full
 source/owner inverses/six refusals: target/p4-system-14/a42r/retention.json.
 
 ````
+
+## P4 a42t — complete closed workflow containment record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42t-l1"></a>
+
+```json
+{"schema":1,"revision":"378d1a65b026ddc9babda63dbbb4ed12e918b158","source":"docs/tasks/P4-SYSTEM.md","source_bytes":131006,"source_sha256":"4113c22655ac21195beb31aaec2495433713e73aa58949dee6c92232e94a1120","owner_insert":{"offset":37028,"text":"### `.14` a42t retain (SEMULITH-P4-0262)\n\n"},"owner_bytes":131048,"owner_sha256":"7f4ddc4edd0e1e00eed3447e3a58d56687e87e0968e5712365954277e1309a90","offset":41567,"record_bytes":3029,"record_lines":44,"record_sha256":"e8220b2eecad48fa69fe6619970facd58fc04f331e61bfe5bedc0c10932898bd","replacement":"### `.14` a42l1 — contain completed workflow records (completed, SEMULITH-P4-0247)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42t-l1).\n\n","retired_bytes":128179,"retired_sha256":"0817dfe0040c6ad22a7922110f7788d86cc6a54acaa36eb20f2c7db6834e343a"}
+```
+
+````text
+### `.14` a42l1 — contain completed workflow records (completed, SEMULITH-P4-0247)
+
+Owned on clean e10b83a after all10 hashes/modes, brief0 and host census0.
+Move whole completed a42h/i/j/k designs and three whole book receipt spans to
+ordinary part19; bind complete source inverses, independent damage controls,
+all prior bytes/modes, active a42/a42l plans and fixed caps. Own scratch under
+target/p4-system-14/a42l1, necessary whole-oldest DEV/CH sharding, book/live
+sync and COMMIT before a42l2. D49 remains open; no feature change.
+
+Containment prerequisite only: no guard/feature code or qualification changes.
+Read task setup/caps, .14/a42 requirements and current task/history/book contracts;
+D49's measured full-gate case remains priority1. The committed source130798B
+had274B room; ownership activation reached131052B before any mover/scratch.
+Four whole completed designs h/i/j/k total13508B. Three whole book spans
+(a42h, c29e1/c33c and c30b/c33d receipts) total4098B. Preserve every old count,
+diagnostic and command; keep all original book headings and command fences,
+adding only the literal cat part19 guide. Current rules, active a42/a42l,
+current diagnostic teaching and remaining adequacy requirements stay live.
+
+Part19 binds e10b83a complete source lengths/SHA256, each byte range/body
+length/hash and exact inverse replacement. Original fragment navigation gets
+an explicit wrapper route to the source book. All seven whole bodies17606B
+produce ordinary part19 24496B SHA256
+ a1b220bc9a676e775956620c5f7763f942e0642d15764d15e781e50cf91e584f.
+Complete task130798B SHA93c5caf581002086288ae529f5b7a0b32d384715ce500d7f55ad348a7b30016d
+and book17160B SHAd7206011a9d36d789698796988416aadff75852df3b04d0e6f2f489a94aec35c
+must reconstruct after undoing only this unit's seams. Independently damage
+all seven bodies/markers/omissions, actual moved receipt plus new digest,
+source identity/range, route, guide and active plans; explicit conditions
+normal/O. An initial control selected a nonexistent3212 token in j; it refused
+before classification. Corrected to the actual k3196→3197 receipt; both runs
+now pass28 required refusals. No source record was changed by that control.
+
+Protect every other tracked file/mode/Gitlink without traversing submodules,
+all earlier ordinary and sealed histories, code, canonical inputs and LIVE.
+Family count reaches96/96; full containment adoption remains LIVE-CONTAINMENT.4.
+Own whole-oldest DEV/CH moves using the published sharder, complete old-head
+inverses and both permanent guards with genuine moved/published receipt edits
+plus updated digests. Focused12/sharder/seven books/fresh+actual local links,
+normal+print and literal new cat command must pass; then exact COMMIT hashes/
+modes/brief0/unrestricted census. Full hooks apply; no redundant Rust run for
+this doc-only unit. a42l2 repair follows clean committed state; no push below
+cadence. promotion: declined (existing exact-history containment rules; measured inverses and controls remain in this owned unit).
+
+````

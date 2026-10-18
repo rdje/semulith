@@ -1713,6 +1713,49 @@ unsupported-credit:1
 AUTHOR_EVALUATION_CASES
   done
 
+  # P4-SYSTEM.14 a42t: finite source meaning and noncircular semantic authority.
+  local source_property_mode source_property_mutation source_property_losses
+  local -a source_property_python
+  for source_property_mode in normal optimized; do
+    source_property_python=(python3)
+    [ "$source_property_mode" = optimized ] && source_property_python+=(-O)
+    out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py 2>&1)"; rc=$?
+    score "GREEN finite source property $source_property_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY: 26 tests / 0 failures / 0 errors; synthetic metadata, finite source witness only"
+    while IFS=: read -r source_property_mutation source_property_losses; do
+      out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py --mutation "$source_property_mutation" 2>&1)"; rc=$?
+      score "RED finite source property $source_property_mutation $source_property_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY: 26 tests / $source_property_losses failures / 0 errors; synthetic metadata, finite source witness only"
+    done <<'SOURCE_PROPERTY_CASES'
+record-roundtrip:1
+authority-string-bound:1
+authority-byte-bound:1
+context-scope:1
+authority-shape:1
+claim-binding:5
+semantic-authority:9
+relation-binding:2
+normative-pin:4
+guest-source:1
+baseline-binding:1
+witness-value:2
+budget-binding:2
+source-identity:5
+prefix-proof:8
+authority-node-bound:1
+authority-depth-bound:1
+derived-status:2
+derived-links:1
+requirement-meaning:6
+obligation-meaning:4
+context-copy:3
+source-fact-copy:1
+authority-fact-copy:1
+case-selection:1
+source-unsupported:1
+frozen-results:5
+finite-finding:7
+SOURCE_PROPERTY_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

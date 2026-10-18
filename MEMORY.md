@@ -16,15 +16,16 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 source-grounded property review.
-  P4-0261 composes optional author_review before reads and expected_author after
-  source-value success.19 controls/13 omissions normal/O; six old suites/67
-  omissions keep exact vectors across73 rows;99 old selectors singular.
-  Producer metadata binding is implemented, with no loaded-code attestation.
-  Source/image, input/impact and snapshot/value APIs are implemented; do not repeat.
-  Full canonical closure/review, property/collector adequacy, captures/retention
-  and policy/status remain. Qualification closed; P4 14/18; replay4/4green.
-- in_flight_uncommitted: none after P4-0261 normal COMMIT and postconditions.
+- next_action: P4-SYSTEM.14 authenticated finite-property composition.
+  P4-0262 implements m-div.s step2/x7: signed -7/2→-3, reviewed prefix/source
+  and current semantic authority.26 controls/28 omissions normal/O; scope1513
+  files/87 old entries. Derived-status cycle fixed; normalize outputs only in
+  authority fingerprints. Exact artifact/input/impact checks stay unfiltered.
+  Build context from the actual selected raw property before reads. Existing
+  source/image/value, input/impact and expected-author APIs are implemented.
+  Full closure/review, collector, captures/retention, policy/status remain;
+  qualification closed, CPU14/18 and replay4/4green. No whole-M credit.
+- in_flight_uncommitted: none after P4-0262 normal COMMIT and postconditions.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.
