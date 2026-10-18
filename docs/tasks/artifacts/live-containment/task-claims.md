@@ -294,3 +294,36 @@ this doc-only unit. a42l2 repair follows clean committed state; no push below
 cadence. promotion: declined (existing exact-history containment rules; measured inverses and controls remain in this owned unit).
 
 ````
+
+## P4 a42u — complete closed finite source-property record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42u-t"></a>
+
+```json
+{"schema":1,"revision":"2cde18a5f322a1bce562c9081e25f76998fbb9a3","source":"docs/tasks/P4-SYSTEM.md","source_bytes":129981,"source_sha256":"2536eb58af3033ac1c2c646ab55d7e461adb601f90c5931f4941b8e1fb90cf47","owner_insert":{"offset":37038,"text":"### `.14` a42u retain (SEMULITH-P4-0263)\n\n"},"owner_bytes":130023,"owner_sha256":"ae7aa0dc8bf673fdb5d4a180c19030d980fb5caf7464373fd14353c8908c1123","offset":37080,"record_bytes":1352,"record_lines":20,"record_sha256":"bc1ae0e12f356448f69cb8565746b1973d72782002426e18f4053a0d135c7c90","replacement":"### `.14` a42t — ground a finite signed-DIV property (completed, SEMULITH-P4-0262)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42u-t).\n\n","retired_bytes":128830,"retired_sha256":"b52836cb968d7da5dd0e1467093e54e3e1d17941c29e8ad28edcdfcb1314b6d5"}
+```
+
+````text
+### `.14` a42t — ground a finite signed-DIV property (completed, SEMULITH-P4-0262)
+
+Own a pure reviewed-case binder for m-div.s, signed -7/2 truncation at step2/x7.
+Read verified RVI-M §11.1.2 and canonical REQ-GC-M/OB-GC-M: defined/medium,
+contract v2. Freeze bounded typed property context; bind actual relation, source
+snapshot, witness/value and manually reviewed three-word prefix. Require exact
+normative-page pin and stable canonical semantic authority. This supports one
+finite observation, not the whole13-form obligation or qualification. No new
+format/parser/interpreter or file I/O. Predeclare case/API/book before code;
+normal/O positive/omission controls, corpus/inverses/books and normal COMMIT.
+Evaluator composition follows separately. Closed l1 retained whole3029B in
+existing task-claims, old15313B prefix exact; full source/owner inverses/six
+refusals: target/p4-system-14/a42t/retention.json. Fixed caps/seals unchanged.
+
+Resolved priority1 design risk: full requirement-file pin includes derived status.
+Changing only implementation_status changes its SHA, so publishing derived status
+would invalidate the draft case input despite identical source/property meaning.
+Reproduction: target/p4-system-14/a42t/status-cycle.json. Fixed before0262: stable
+semantic projection excludes outputs; actual file pins/impact remain exact.
+
+````

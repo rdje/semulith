@@ -1756,6 +1756,35 @@ finite-finding:7
 SOURCE_PROPERTY_CASES
   done
 
+  # P4-SYSTEM.14 a42u: actual-property context and retained finite source findings.
+  local property_eval_mode property_eval_mutation property_eval_losses
+  local -a property_eval_python
+  for property_eval_mode in normal optimized; do
+    property_eval_python=(python3)
+    [ "$property_eval_mode" = optimized ] && property_eval_python+=(-O)
+    out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py 2>&1)"; rc=$?
+    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / 0 failures / 0 errors; simulated external pin, no capture credit"
+    while IFS=: read -r property_eval_mutation property_eval_losses; do
+      out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py --mutation "$property_eval_mutation" 2>&1)"; rc=$?
+      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / $property_eval_losses failures / 0 errors; simulated external pin, no capture credit"
+    done <<'PROPERTY_EVALUATION_CASES'
+author-prerequisite:1
+obligation-bound:1
+actual-statement:2
+actual-requirement:1
+actual-obligations:1
+actual-program:1
+property-order:1
+property-finding:14
+property-status:4
+unsupported-credit:2
+context-freeze:7
+property-result-shape:15
+property-fact-binding:13
+actual-context-binding:1
+PROPERTY_EVALUATION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

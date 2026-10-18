@@ -25,6 +25,7 @@ import matched_gpr_source_image as F
 import matched_gpr_input_review as T
 import matched_gpr_impact as H
 import matched_gpr_expected_author as U
+import matched_gpr_property as G
 import sexp as S
 
 
@@ -68,6 +69,7 @@ class EvaluationCheck:
     impact: H.InputImpactCheck | None = None
     source_values: C.SourceExpectationCheck | None = None
     expected_author: U.ExpectedAuthorCheck | None = None
+    source_property: G.SourcePropertyCheck | None = None
 
 
 @dataclass(frozen=True)
@@ -98,7 +100,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                            current_candidate: dict,
                            reviewed_inputs: T.InputReview | None = None,
                            impact_review: H.ImpactReview | None = None,
-                           author_review: U.ExpectedAuthorReview | None = None) -> EvaluationCheck:
+                           author_review: U.ExpectedAuthorReview | None = None,
+                           property_authority: G.PropertyAuthority | None = None) -> EvaluationCheck:
     """Validate the scoped record, authenticate once and compute byte comparisons.
 
     Fixed 128 MiB total artifact reads/16 MiB live snapshot payload are owned by
@@ -112,6 +115,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     the caller still owns graph completeness, metadata and change review.
     Optional author_review supplies or agrees with that inventory, then binds
     expected-author metadata after source-value success; it attests no execution.
+    Optional property_authority grounds one reviewed finite property from the
+    actual selected record; author review is required and qualification stays closed.
     It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -166,6 +171,19 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                 review_context = author_context.inventory
             elif review_context != author_context.inventory:
                 raise ValueError("author review differs from current input review")
+        property_context = None
+        if property_authority is not None:
+            if author_context is None:
+                raise ValueError("source property requires expected author review")
+            selected_property = graph["property"][0]
+            obligations = selected_property["obligation_ids"]
+            if type(obligations) is not list or not 1 <= len(obligations) <= 64:
+                raise ValueError("source property requires 1..64 bounded obligation IDs")
+            property_context = G.freeze_context(G.PropertyContext(
+                scope.profile_id, experiment["id"], program, selected_property["id"],
+                selected_property["requirement_id"], tuple(obligations), selected_property["statement"],
+                relations.plan.witness, property_authority),
+                profile_id=scope.profile_id, experiment_id=experiment["id"])
         if impact_review is not None and review_context is None:
             raise ValueError("impact review requires current input review")
         impact_context = (None if impact_review is None else
@@ -207,9 +225,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                comparison: C.ComparisonUnit | None = None,
                source_image: F.SourceImageCheck | None = None,
                source_values: C.SourceExpectationCheck | None = None,
-               expected_author: U.ExpectedAuthorCheck | None = None) -> EvaluationCheck:
+               expected_author: U.ExpectedAuthorCheck | None = None,
+               source_property: G.SourcePropertyCheck | None = None) -> EvaluationCheck:
         result = EvaluationCheck(disposition, reason, record, manifest, authentication,
                                identity, receipts, comparison, source_image, input_review, impact)
+        result = replace(result, source_property=source_property)
         result = replace(result, expected_author=expected_author)
         return replace(result, source_values=source_values)
 
@@ -333,13 +353,64 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                           identity=identity, receipts=tuple(receipts), comparison=comparison,
                           source_image=source_image, source_values=source_values,
                           expected_author=expected_author)
+    source_property = None
+    if property_context is not None and source_values.disposition == "matched":
+        source_property = G.bind_source_property(
+            property_context, profile_id=property_context.profile_id,
+            experiment_id=property_context.experiment_id, manifest=manifest.plan,
+            source_values=source_values)
+        property_disposition = getattr(source_property, "disposition", None)
+        property_facts = getattr(source_property, "facts", None)
+        if (type(source_property) is not G.SourcePropertyCheck
+                or type(getattr(source_property, "reason", None)) is not str
+                or property_disposition not in ("matched", "refused", "unsupported")
+                or (property_disposition != "matched" and property_facts is not None)
+                or (property_disposition == "matched" and type(property_facts) is not G.SourcePropertyFacts)):
+            return finish("refused", "source property: invalid result shape or disposition",
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image, source_values=source_values, expected_author=expected_author)
+        if property_disposition == "matched":
+            case = getattr(property_facts, "case", None)
+            selected_case = G.signed_division_case()
+            authority_inputs = getattr(property_facts, "authority_inputs", None)
+            try:
+                property_bound = not (type(case) is not G.ReviewedPropertyCase or case != selected_case
+                        or (case.profile_id, case.program, case.requirement_id, case.obligation_ids,
+                            case.statement, case.witness, case.authority) !=
+                           (property_context.profile_id, property_context.program, property_context.requirement_id,
+                            property_context.obligation_ids, property_context.statement, property_context.witness,
+                            property_context.authority)
+                        or getattr(property_facts, "property_id", None) != property_context.property_id
+                        or type(getattr(property_facts, "source", None)) is not G.E.InputBinding
+                        or property_facts.source != source_input
+                        or type(getattr(property_facts, "observed_value", None)) is not int
+                        or property_facts.observed_value != case.expected_value
+                        or property_facts.observed_value != source_values.facts.witness_value
+                        or type(authority_inputs) is not tuple or authority_inputs != case.required_inputs
+                        or not all(type(pin) is G.E.InputBinding and pin in manifest.plan.inputs
+                                   and pin.input_id in manifest.plan.child_input_ids for pin in authority_inputs))
+            except (AttributeError, TypeError, ValueError):
+                property_bound = False
+            if not property_bound:
+                return finish("refused", "source property: facts differ from frozen selection",
+                              identity=identity, receipts=tuple(receipts), comparison=comparison,
+                              source_image=source_image, source_values=source_values, expected_author=expected_author)
+        elif property_disposition == "refused":
+            return finish("refused", "source property: " + source_property.reason,
+                          identity=identity, receipts=tuple(receipts), comparison=comparison,
+                          source_image=source_image, source_values=source_values,
+                          expected_author=expected_author, source_property=source_property)
     value_scope = ("source values match" if source_values.disposition == "matched"
                    else "source values unsupported by current author, no credit")
     if author_context is not None:
         value_scope += ("; reviewed author metadata binds" if expected_author is not None
                         else "; author binding not reached, no credit")
+    if property_context is not None:
+        value_scope += ("; finite source property binds" if source_property is not None
+                        and source_property.disposition == "matched"
+                       else "; source property unsupported or not reached, no credit")
     return finish("pending", "authenticated byte comparison binds; source/image match; " + value_scope
                   + "; complete method/policy adequacy pending",
                   identity=identity, receipts=tuple(receipts), comparison=comparison,
                   source_image=source_image, source_values=source_values,
-                  expected_author=expected_author)
+                  expected_author=expected_author, source_property=source_property)

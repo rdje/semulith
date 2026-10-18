@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-11`
 - **Status:** `active` — authenticated byte evaluation exists; complete adequacy/collection pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42t, `SEMULITH-P4-0210`–`0262`; GC policy/public Sail adapter
+- **Owner / source:** `P4-SYSTEM.14` a19–a42u, `SEMULITH-P4-0210`–`0263`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -13,7 +13,7 @@ Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
-optional witness/baseline grammar; scoped bindings, bounded file/byte/image/value checks, frozen reviews and finite source properties. API: GC unit book. Qualification closed.
+optional witness/baseline grammar; scoped bindings, bounded file/byte/image/value checks, frozen reviews and finite-property composition. API: GC unit book. Qualification closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.

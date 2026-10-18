@@ -189,3 +189,96 @@ The first line supports the declared finite quotient. The second leaves source
 meaning stable when derived output changes; it does not grant that output's
 status. The third refuses a changed risk disposition, which needs different
 policy evidence. No other M form is credited by these lines.
+
+
+## Authenticated composition contract (a42u)
+
+`evaluate_retained_unit(..., property_authority=...)`
+requires `author_review`. Build PropertyContext from the **actual selected**
+validated raw property's ID, requirement, obligations and statement, the frozen
+parent program, scoped IDs and relation witness. Bound obligations before tuple
+copying. Freeze context and its supplied current canonical authority before the
+manifest or any artifact read. Caller-supplied context text cannot replace the
+selected raw property.
+
+Append EvaluationCheck.source_property after all old fields. After matched
+source values and reviewed-author metadata, invoke the pure owner once with the
+frozen context, authenticated manifest plan and retained source-value finding.
+Reuse existing bytes; the declared normative child is authenticated through the
+same file-set ledger. No source reopening or additional checker reads. Preserve
+all earlier record, authentication, receipt, comparison, image, value and author
+findings. Invalid result types/dispositions/reasons/facts or facts contradicting
+the reviewed case, actual context, selected source/value or authenticated authority
+pins refuse without retaining the invalid property finding. A typed refusal
+terminates refused; a typed unsupported result stays pending without credit.
+Earlier failures skip this phase. Matches remain pending full method/policy.
+
+The repository keeps acquired primary documents out of Git; a fresh clone may
+have no materials cache. Permanent orchestration tests must identify simulated
+external-page authentication explicitly and earn no primary-authentication or
+capture credit. A separate real smoke uses the public authenticated materials
+resolver, verifies/copies the actual35588B page into an on-volume temporary
+fixture and evaluates without that double. Both forms test distinct boundaries;
+never describe simulated authentication as an unmocked primary-source run.
+No primary document is redistributed by these tests.
+
+
+## Composition examples
+
+This self-contained example uses a clearly labeled external-page authentication
+double. All other fixture files go through the real reader. It exercises
+orchestration, not authentication of a primary document or a reference capture.
+
+```bash
+python3 - <<'PYCODE'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest import mock
+import sys
+sys.path.insert(0, str(Path('scripts').resolve()))
+import matched_gpr_evaluation as E
+import probe_matched_gpr_property_evaluation as P
+
+base = Path('target/property-composition-example')
+base.mkdir(parents=True, exist_ok=True)
+with TemporaryDirectory(dir=base) as directory:
+    f = P.Fixture(Path(directory))
+    with mock.patch.object(E.A, 'read_snapshot', side_effect=f.simulated_page(E.A.read_snapshot)):
+        checked = E.evaluate_retained_unit(f.root, **f.arguments())
+        print(checked.disposition, checked.expected_author.disposition,
+              checked.source_property.disposition)
+        f.graph['property'][0]['statement'] = 'an unrelated claim'
+        checked = E.evaluate_retained_unit(f.root, **f.arguments())
+        print(checked.disposition, checked.source_values.disposition,
+              checked.source_property.disposition)
+PYCODE
+```
+
+Output:
+
+```text
+pending matched matched
+refused matched refused
+```
+
+The second call binds the actual changed raw statement and refuses its property
+claim while retaining matched source values. Supplying a known authority does not
+replace that statement.
+
+For an **unmocked** smoke using the acquired source snapshot:
+
+```bash
+python3 scripts/probe_matched_gpr_property_evaluation.py --real-primary-smoke
+```
+
+With the verified35588B page available, it prints:
+
+```text
+REAL PRIMARY SMOKE: pending / finite property matched / 23 authenticated files / 0xfffffffffffffffd; no capture credit
+```
+
+No source-page double is installed on this path. The fixture copies the verified
+page into an owned on-volume temporary directory and removes that directory at
+exit. Missing acquired material returns2/UNAVAILABLE, not a green assertion.
+The checker still runs no reference process and grants no whole-M or qualification
+credit. This optional smoke is separate from the self-contained CI controls.

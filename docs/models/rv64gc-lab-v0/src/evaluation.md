@@ -18,6 +18,7 @@ frozen caller authority ([inventory API](references.md#reviewed-input-inventory)
 Optional `impact_review=ImpactReview(...)` binds old/current graph impact;
 see its [contract/examples](impact.md#retained-input-impact-contract-a42n).
 Neither grants qualification. Optional `author_review`: [contract](expected-author.md#authenticated-composition-contract-a42s).
+Optional `property_authority` requires author review: [finite property](source-property.md#authenticated-composition-contract-a42u).
 
 The raw form is in-memory data from the current parent, not another artifact
 path to reopen. Scope supplies the profile's declared candidate, requirement and
@@ -55,18 +56,16 @@ analysis.
    replace observed outcomes.
 6. Failed/unsupported comparisons stop before image construction. Success binds
    explicit entry/source/ELF, then checks [source values](references.md#authenticated-source-value-composition-a42q).
-   Bind optional reviewed-author metadata after source-value success. Unsupported
-   source scope stays pending without credit; findings stay separate.
+   After source-value success, bind optional author and finite-property findings.
+   Unsupported scope stays pending without credit.
 7. Return immutable findings and metadata. Release raw payloads from the returned
    authentication summary. A coherent failed process/control remains a valid
    record with failed observed evidence; it does not become a schema error.
 
-The shared reader checks the declared flat dependency set, including disguised
-nested manifests. This establishes the declared bytes at the check, not that the
-set covers every relevant dependency. Source-grounded expected properties,
-complete closure adequacy, old/new impact, collector provenance and the full
-source/risk/feature policy remain mandatory work. The evaluator deliberately
-does not turn a successful comparison into a successful complete method.
+The shared reader authenticates declared flat dependencies, refusing disguised
+nested manifests. Complete coverage, property scope, impact, collector provenance
+and full source/risk/feature policy remain mandatory; successful comparisons
+never become complete-method success by themselves.
 
 All used fields freeze before reads, including the receipt exit status absent
 from the execution plan. Changing the caller's dictionaries during a read cannot
@@ -84,15 +83,16 @@ declared method's reviewed collector/capture trust boundary still applies.
 | `disposition`, `reason` | Current evaluation finding; the positive byte case is `pending`, not qualified. |
 | `record` | `RecordCheck(disposition, issues)`: raw schema/scoped graph validity only. |
 | `manifest` | Optional public manifest check, retaining its independent pin and frozen plan. |
-| `authentication` | Optional declared-set summary: disposition/reason, manifest pin, metadata-only file facts and byte accounting. |
+| `authentication` | Declared-set disposition/reason, pin, metadata-only facts and byte accounting. |
 | `identity` | Optional identity-byte check; its pin is `None` because authentication is separate. |
-| `receipts` | Ordered immutable `ReceiptBinding(run_id, run_kind, declared_verdict, check)` records reached before any terminal refusal. Byte checks have no pins. |
+| `receipts` | Ordered `ReceiptBinding(run_id, run_kind, declared_verdict, check)` reached before termination; byte checks have no pins. |
 | `comparison` | Optional public `ComparisonUnit` with the computed run comparisons/refusals. |
 | `source_image` | Optional public `SourceImageCheck`: complete source/ELF byte correspondence and frozen metadata. Absent before this phase. |
 | `source_values` | Optional `SourceExpectationCheck`: source-derived GPR/witness and image-context binding. Unsupported author scope earns no credit. |
 | `input_review` | Appended optional caller-review metadata finding: selected IDs, counts and missing/unreviewed/changed input IDs; absent without review or before manifest binding. No file/adequacy credit. |
 | `impact` | Optional reviewed-graph input binding and impact analysis. |
 | `expected_author` | Optional reviewed-author metadata after source-value success. No execution attestation. |
+| `source_property` | Optional reviewed finite-property binding; partial scope, with full qualification pending. |
 
 The record disposition is `valid` after raw schema/scoped graph checks,
 `refused` after their findings or a malformed record, and `unchecked` when an

@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | authenticated finite-property composition |
+| 1 | `P4-SYSTEM.14` | `active` | collector process/output controls |
 
 ## Decisions
 
@@ -408,25 +408,22 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42u — compose authenticated source properties (completed, SEMULITH-P4-0263)
+
+Own optional property_authority and appended source_property. Build/freeze context
+from the actual selected raw property/program before I/O; require author review.
+Bind after matched source values/author metadata, preserve prior findings, refuse
+invalid/misbound findings, leave unsupported pending/uncredited. No new artifact
+reads beyond the declared normative child. Preserve old fields/seams. Book-first;
+normal/O controls/affected legacy vectors, scope/books and normal COMMIT.
+Respect unredistributed primary documents: explicit external-pin doubles in CI,
+and a separate unmocked real cached-page smoke, not interchangeable evidence.
+Closed t1352B retained whole, old19368B prefix exact; full inverses/six refusals:
+target/p4-system-14/a42u/retention.json. Collector/retention/full policy follows.
+
 ### `.14` a42t — ground a finite signed-DIV property (completed, SEMULITH-P4-0262)
 
-Own a pure reviewed-case binder for m-div.s, signed -7/2 truncation at step2/x7.
-Read verified RVI-M §11.1.2 and canonical REQ-GC-M/OB-GC-M: defined/medium,
-contract v2. Freeze bounded typed property context; bind actual relation, source
-snapshot, witness/value and manually reviewed three-word prefix. Require exact
-normative-page pin and stable canonical semantic authority. This supports one
-finite observation, not the whole13-form obligation or qualification. No new
-format/parser/interpreter or file I/O. Predeclare case/API/book before code;
-normal/O positive/omission controls, corpus/inverses/books and normal COMMIT.
-Evaluator composition follows separately. Closed l1 retained whole3029B in
-existing task-claims, old15313B prefix exact; full source/owner inverses/six
-refusals: target/p4-system-14/a42t/retention.json. Fixed caps/seals unchanged.
-
-Resolved priority1 design risk: full requirement-file pin includes derived status.
-Changing only implementation_status changes its SHA, so publishing derived status
-would invalidate the draft case input despite identical source/property meaning.
-Reproduction: target/p4-system-14/a42t/status-cycle.json. Fixed before0262: stable
-semantic projection excludes outputs; actual file pins/impact remain exact.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42u-t).
 
 ### `.14` a42s — compose author binding (completed, SEMULITH-P4-0261)
 
@@ -608,6 +605,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42u **ROOT CAUSE**: before.py rc=0 normal/O: old pending/new refused on unrelated actual statement; values match.
+- [x] `.14` a42u **ADDRESSED**: run-controls.py rc=0 normal/O:22/0/0;14 omissions/0 errors;80 legacy omissions exact/112 sites.
+- [x] `.14` a42u **NO REGRESSION**: verify.py/focused.py rc=0:1514 files/89 entries;6 inverses;15 checks/7 books/3328 links; real23-file smoke.
 - [x] `.14` a42t **ROOT CAUSE**: status-cycle.py rc=0 normal/O: status-only SHA changes; all other selected record fields equal.
 - [x] `.14` a42t **ADDRESSED**: run-controls.py rc=0 normal/O:26/0/0;28 omissions/0 errors; stable outputs, semantic changes refuse.
 - [x] `.14` a42t **NO REGRESSION**: verify.py/focused.py rc=0:1513 files/87 entries;6 inverses;15 checks/7 books/3322 links; example exact.
@@ -1562,6 +1562,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42u | `SEMULITH-P4-0263` | collector process/output controls |
 | `.14` a42t | `SEMULITH-P4-0262` | authenticated finite-property composition |
 | `.14` a42s | `SEMULITH-P4-0261` | source-grounded property review |
 | `.14` a42r | `SEMULITH-P4-0260` | authenticated author composition |

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — authenticated finite-property composition (P4-SYSTEM.14 a42u)
+
+Bind optional current property authority to the actual selected raw property before reads, then compose the finite source finding after value/author success. Preserve earlier findings and old fields; refuse contradictions, with unsupported scope pending/uncredited. Verify22 controls/14 omissions and all80 affected legacy omissions normal/O. Separate simulated external-pin tests from an unmocked23-file cached-page smoke. Preserve whole records/caps and teach both examples; no primary redistribution, capture or qualification credit.
+
 ## _(2026-10-18)_ — finite source-grounded signed division (P4-SYSTEM.14 a42t)
 
 Add a reviewed pure property binder for m-div.s step2/x7: signed -7/2 rounds toward zero to -3. Bind source/prefix/witness and current semantic authority with26 controls/28 omissions normal/O. Catch and fix derived-status self-invalidation in the draft: authority fingerprints exclude derived outputs while exact artifact/input checks remain strict. Preserve whole closed/history records and fixed caps; teach the source proof and complete example. No whole-obligation, capture or qualification credit; CPU/BOARD milestones unchanged.
