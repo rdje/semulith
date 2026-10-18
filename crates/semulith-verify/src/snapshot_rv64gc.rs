@@ -80,6 +80,7 @@ fn runtime_identity() -> &'static str {
             include_str!("json.rs"),
             include_str!("sha256.rs"),
             include_str!("run_rv64gc.rs"),
+            include_str!("model_rv64gc.rs"),
             include_str!("fixtures.rs"),
             include_str!("../../../Cargo.lock"),
             include_str!("../../semulith-core/src/lib.rs"),
@@ -228,13 +229,22 @@ impl SnapshotRv64gc {
 
     /// Identity and memory integrity are checked before executing a continuation.
     pub fn resume(&self) -> Result<Resumed, String> {
+        self.resume_with_model(crate::model_rv64gc::Model::Production)
+    }
+
+    /// A bundle records this additional choice; the checkpoint pins base-state compatibility.
+    pub(crate) fn resume_with_model(
+        &self,
+        model: crate::model_rv64gc::Model,
+    ) -> Result<Resumed, String> {
         let (mut state, mut memory) = self.restore()?;
-        let trace = run_rv64gc::run_from_with_refusals(
+        let trace = run_rv64gc::run_from_with_model(
             &mut memory,
             &mut state,
             self.common.budget - self.common.at_step,
             &self.refusals,
-        );
+            model,
+        )?;
         Ok(Resumed {
             trace,
             state,

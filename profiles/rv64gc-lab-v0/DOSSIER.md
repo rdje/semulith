@@ -122,7 +122,7 @@ The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 33 names, main memory, four TLB entries plus FIFO position, reservation and
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
 Requirement statuses remain .14's work. P4.16 provides bounded laboratory JSON
-snapshot/resume and replay bundles, including all census owners; reduction stays open.
+snapshot/resume and model-aware replay bundles, including all census owners; reduction stays open.
 Two named full-table fault controls exercise the text demo; the complete mutation
 campaign remains .15 work.
 

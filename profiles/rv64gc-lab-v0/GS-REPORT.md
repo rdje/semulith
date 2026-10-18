@@ -33,7 +33,7 @@ is not a claim with a denominator.
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
 | `G-REGRESSION` | `P4-SYSTEM.15` | No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
-| `G-REPLAY` | `P4-SYSTEM.16` | RV64GC snapshot/resume and replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name. |
+| `G-REPLAY` | `P4-SYSTEM.16` | RV64GC snapshot/resume and model-aware replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -66,7 +66,7 @@ reviewer's to judge — that much this report cannot measure.
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 5e88481a7320e954e77987caeb48195acab86cfa2cb6459d3ac538c2c6548fa7`
+  `sha256 e4be817082e9b0fb6de67dc3317931ed3f2277d1495db29ed049524f2b0f99a4`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

@@ -19,6 +19,77 @@ fn bundle() -> BundleRv64gc {
 }
 
 #[test]
+fn recorded_control_models_replay_their_own_wrong_result_and_detect_changed_choice() {
+    let guest = run_rv64gc::guest("guest-control");
+    let production = BundleRv64gc::record(input(guest, 0, guest.executed_steps)).unwrap();
+    for (model, at) in [(Model::ZextAddi, 1), (Model::JalNoLink, 7)] {
+        let wrong =
+            BundleRv64gc::record_with_model(input(guest, 0, guest.executed_steps), model).unwrap();
+        assert_ne!(wrong.recorded, production.recorded);
+        let parsed = BundleRv64gc::parse(&wrong.to_json()).unwrap();
+        assert_eq!(parsed.model(), model);
+        assert_eq!(parsed, wrong);
+        assert_eq!(parsed.replay().unwrap(), ReplayRv64gc::Identical);
+        let altered = change_string(&wrong.to_json(), "model", model.name(), "production");
+        let parsed = BundleRv64gc::parse(&altered).unwrap();
+        assert_eq!(
+            parsed.replay().unwrap(),
+            ReplayRv64gc::Mismatch {
+                boundary: Some(at),
+                what: "GPR changes".into()
+            }
+        );
+    }
+}
+
+#[test]
+fn model_choice_is_required_and_v1_means_production_without_upgrading_identities() {
+    let original = bundle();
+    let text = original.to_json();
+    for replacement in [
+        "\"model\":true,",
+        "\"model\":\"none\",",
+        "\"model\":\"mutant:none\",",
+        "",
+    ] {
+        let altered = text.replacen("\"model\":\"production\",", replacement, 1);
+        assert!(BundleRv64gc::parse(&altered).unwrap_err().contains("model"));
+    }
+    let oversized = text.replacen(
+        "\"model\":\"production\",",
+        &format!("\"model\":\"{}\",", "x".repeat(65)),
+        1,
+    );
+    assert!(BundleRv64gc::parse(&oversized)
+        .unwrap_err()
+        .contains("bounded canonical name"));
+    let legacy = text.replacen(
+        &format!("\"format\":\"{FORMAT}\",\"model\":\"production\","),
+        &format!("\"format\":\"{LEGACY_FORMAT}\","),
+        1,
+    );
+    let parsed = BundleRv64gc::parse(&legacy).unwrap();
+    assert_eq!(parsed, original);
+    assert_eq!(parsed.replay().unwrap(), ReplayRv64gc::Identical);
+    assert!(parsed.to_json().contains(FORMAT));
+    let foreign = change_string(
+        &legacy,
+        "producer_sha256",
+        &original.producer_sha256,
+        &"0".repeat(64),
+    );
+    assert!(BundleRv64gc::parse(&foreign)
+        .unwrap()
+        .replay()
+        .unwrap_err()
+        .contains("producer identity"));
+    let ambiguous = text.replacen(FORMAT, LEGACY_FORMAT, 1);
+    assert!(BundleRv64gc::parse(&ambiguous)
+        .unwrap_err()
+        .contains("v1 has no model choice"));
+}
+
+#[test]
 fn every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts() {
     for guest in GUESTS {
         let bundle = BundleRv64gc::record(input(guest, 0, guest.executed_steps)).unwrap();

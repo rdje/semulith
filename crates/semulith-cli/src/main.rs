@@ -47,7 +47,7 @@
 //!   JSON (algorithm pins, platform, image digest, the recorded event choice, the
 //!   step bound, and the recorded result) to stdout. Exit codes: 0 — recorded;
 //!   2 — usage or an unknown name. RV64GC records a complete input checkpoint,
-//!   trace and final CPU/environment receipt; it supports production guests only.
+//!   trace and final CPU/environment receipt for production or a declared control model.
 //! - `semulith replay <file.json> [--profile NAME]` — re-derive a recorded bundle's result from its
 //!   recorded inputs (G-REPLAY). Identity is checked first — definition pins, then
 //!   the image digest — and a drifted result is reported at the first differing
@@ -98,7 +98,7 @@ use semulith_verify::elf;
 /// `--profile=NAME`, defaulting to rv64i-lab-v0 (whose behavior is byte-exact what it
 /// was). The commands whose machinery is rv64i-scoped today — bench (the workload
 /// mixes) and reduce refuse rv64gc-lab-v0 by name. Its text demo has two named
-/// full-profile fault controls; GC bundle recording still selects production.
+/// full-profile fault controls, which its replay bundles can also record.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Profile {
     Rv64iLabV0,
@@ -751,16 +751,19 @@ fn bundle(args: &[String]) -> ExitCode {
 }
 
 fn bundle_rv64gc(args: &[String]) -> ExitCode {
+    use semulith_verify::model_rv64gc::Model;
     use semulith_verify::replay_rv64gc::BundleRv64gc;
     use semulith_verify::snapshot_rv64gc::SnapshotRv64gc;
     let mut guest = None;
+    let mut model = Model::Production;
     for arg in args {
         if let Some(name) = arg.strip_prefix("--guest=") {
             guest = Some(name);
-        } else if arg == "--mutate=none" {
-            // The existing command vocabulary's production spelling.
-        } else if arg.starts_with("--mutate=") {
-            return usage("bundle: RV64GC mutation models are not implemented");
+        } else if let Some(name) = arg.strip_prefix("--mutate=") {
+            model = match Model::from_mutation(name) {
+                Ok(model) => model,
+                Err(error) => return usage(&format!("bundle: {error}")),
+            };
         } else {
             return usage(&format!("bundle: unknown RV64GC option/operand {arg}"));
         }
@@ -786,7 +789,7 @@ fn bundle_rv64gc(args: &[String]) -> ExitCode {
         guest.executed_steps,
         guest.refusals,
     )
-    .and_then(BundleRv64gc::record);
+    .and_then(|snapshot| BundleRv64gc::record_with_model(snapshot, model));
     match result {
         Ok(bundle) => {
             println!("{}", bundle.to_json());
@@ -1119,6 +1122,9 @@ fn replay(args: &[String]) -> ExitCode {
         };
         return match bundle.replay() {
             Ok(ReplayRv64gc::Identical) => {
+                if bundle.model() != semulith_verify::model_rv64gc::Model::Production {
+                    println!("replay model: {}", bundle.model().name());
+                }
                 println!("replay: identical — {} boundaries and the final CPU/environment receipt re-derived", bundle.recorded_steps());
                 ExitCode::from(0)
             }

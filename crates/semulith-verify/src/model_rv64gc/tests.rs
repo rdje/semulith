@@ -168,3 +168,15 @@ fn unknown_names_and_changed_effect_shapes_refuse() {
         assert_eq!(Model::from_mutation(name).unwrap(), model);
     }
 }
+
+#[test]
+fn canonical_recorded_names_roundtrip_and_reject_cli_aliases() {
+    for model in [Model::Production, Model::ZextAddi, Model::JalNoLink] {
+        assert_eq!(Model::from_name(model.name()).unwrap(), model);
+    }
+    for name in ["none", "zext-addi", "mutant:none", "unknown", ""] {
+        assert!(Model::from_name(name)
+            .unwrap_err()
+            .contains("unknown RV64GC replay model"));
+    }
+}

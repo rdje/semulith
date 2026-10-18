@@ -297,6 +297,15 @@ This gate authorises the planned next engineering stage: board implementation.
   - [x] **ROOT CAUSE** — before CLI rc=2; Cargo digest controls1pass/2fail reproduce both unescaped writers.
   - [x] **ADDRESSED** — `cargo test -p semulith-verify replay_rv64gc` rc=0:6tests/167guests; digest3/0, real CLI1/0 discriminate.
   - [x] **NO REGRESSION** — make check/wasm/focused13/seven books rc=0; scope/inverse normal/O1479protected/93history/4damaged refusals.
+  .16d/0252 complete, owned clean224caa9 before edits. V2 records/replays
+  declared controls with pinned model/runtime, v1 production shape and identity
+  refusals; production defaults/limits retained. Reduction next. Full detail:
+  DEV_NOTES.md and ARCHITECTURE.md. Compact48 live nav labels/1516B only;
+  headings/targets/full owner inverse and historical bodies exact, caps fixed.
+  Evidence target/p4-system-16/replay-model; promotion declined (replay contract).
+  - [x] **ROOT CAUSE** — verify.py rc=0:224c v1 record lacks declared choice (bounded source census).
+  - [x] **ADDRESSED** — `make check` rc=0:277verify/4CLI; both declared controls and changed choices discriminate.
+  - [x] **NO REGRESSION** — wasm/focused13/books/C-image rc=0; scope normal/O1489files/88history/48nav exact.
   .16c/0251 complete after5c42e3a, queued task-only dirt/host0 before code.
   Own cached full-GC zext-addi/jal-no-link control tables, common runner/demo,
   shape refusals, untouched-row/production parity and first-difference controls.
@@ -338,83 +347,83 @@ Closed records through `.12` are preserved verbatim in
 
 ### `.14` a22 — contain completed evidence-unit records (completed, SEMULITH-P4-0213)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a22).
+[Record](archive/P4-SYSTEM-15.md#a22).
 
 ### `.14` a23 — resolve main-book record navigation (completed, SEMULITH-P4-0214)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a23).
+[Record](archive/P4-SYSTEM-15.md#a23).
 
 ### `.14` a24 — resolve cross-unit navigation and catalogue drift (completed, SEMULITH-P4-0215)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a24).
+[Record](archive/P4-SYSTEM-15.md#a24).
 
 ### `.14` a25 — preserve live append-history predecessors (completed, SEMULITH-P4-0216)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a25).
+[Record](archive/P4-SYSTEM-15.md#a25).
 
 ### `.14` a26 — carry prospective artifact schemas and mapping (completed, SEMULITH-P4-0217)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a26).
+[Record](archive/P4-SYSTEM-15.md#a26).
 
 ### `.14` a27 — close existing schema end-anchor facets (completed, SEMULITH-P4-0218)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a27).
+[Record](archive/P4-SYSTEM-15.md#a27).
 
 ### `.14` a28 — expose structured Sail GPR differences (completed, SEMULITH-P4-0219)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a28).
+[Record](archive/P4-SYSTEM-15.md#a28).
 
 ### `.14` a29 — implement bounded Sail comparison unit (completed, SEMULITH-P4-0220)
 
-Complete historical record: [ordinary part15](archive/P4-SYSTEM-15.md#a29).
+[Record](archive/P4-SYSTEM-15.md#a29).
 
 ### `.14` a30 — authenticate retained reference identity (completed, SEMULITH-P4-0221)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a30).
+[Record](archive/P4-SYSTEM-16.md#a30).
 
 ### `.14` a31 — bind authenticated Sail process receipts (completed, SEMULITH-P4-0222)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a31).
+[Record](archive/P4-SYSTEM-16.md#a31).
 
 ### `.14` a32 — bind Sail execution inputs and invocations (completed, SEMULITH-P4-0223)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a32).
+[Record](archive/P4-SYSTEM-16.md#a32).
 
 ### `.14` a33 — bind first-method property/control/derivation/pairs (completed, SEMULITH-P4-0224)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a33).
+[Record](archive/P4-SYSTEM-16.md#a33).
 
 ### `.14` a34 — authenticate and bind the dependency manifest (completed, SEMULITH-P4-0225)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a34).
+[Record](archive/P4-SYSTEM-16.md#a34).
 
 ### `.14` a35 — normalize shared-reader refusals (completed, SEMULITH-P4-0226)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a35).
+[Record](archive/P4-SYSTEM-16.md#a35).
 
 ### `.14` a36 — contain completed method-unit designs (completed, SEMULITH-P4-0227)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a36).
+[Record](archive/P4-SYSTEM-16.md#a36).
 
 ### `.14` a37 — bounded dependency leaf inspection (completed, SEMULITH-P4-0228)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a37).
+[Record](archive/P4-SYSTEM-16.md#a37).
 
 ### `.14` a38 — aggregate authentication and snapshot budgets (completed, SEMULITH-P4-0229)
 
-Complete historical record: [ordinary part16](archive/P4-SYSTEM-16.md#a38).
+[Record](archive/P4-SYSTEM-16.md#a38).
 
 ### `.14` a39 — freeze context and consume identity/receipt bytes (completed, SEMULITH-P4-0230)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a39).
+[Record](archive/P4-SYSTEM-17.md#a39).
 
 ### `.14` a40 — contain completed authentication-unit designs (completed, SEMULITH-P4-0231)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a40).
+[Record](archive/P4-SYSTEM-17.md#a40).
 
 ### `.14` a41 — compose authenticated byte evaluation (completed, SEMULITH-P4-0232)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a41).
+[Record](archive/P4-SYSTEM-17.md#a41).
 
 ### `.14` a42 — complete method adequacy and impact obligations (active)
 
@@ -428,63 +437,63 @@ published APIs; declare any genuinely new contract before affected runs.
 
 ### `.14` a42a — bind expectations to the parent program (completed, SEMULITH-P4-0233)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a42a).
+[Record](archive/P4-SYSTEM-17.md#a42a).
 
 ### `.14` a42b — repair ELF layout before source/image extension (completed, SEMULITH-P4-0234)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a42b).
+[Record](archive/P4-SYSTEM-17.md#a42b).
 
 ### `.14` a42c — build a bounded image from source snapshot bytes (completed, SEMULITH-P4-0235)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a42c).
+[Record](archive/P4-SYSTEM-17.md#a42c).
 
 ### `.14` a42d1 — bind supplied source/image bytes (completed, SEMULITH-P4-0236)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a42d1).
+[Record](archive/P4-SYSTEM-17.md#a42d1).
 
 ### `.14` a42d2 — retain source/image within the shared ledger (completed, SEMULITH-P4-0237)
 
-Complete historical record: [ordinary part17](archive/P4-SYSTEM-17.md#a42d2).
+[Record](archive/P4-SYSTEM-17.md#a42d2).
 
 ### `.14` a42e — contain completed byte/image designs (completed, SEMULITH-P4-0238)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42e).
+[Record](archive/P4-SYSTEM-18.md#a42e).
 
 ### `.14` a42d3 — compose authenticated source/image correspondence (completed, SEMULITH-P4-0239/0240)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42d3).
+[Record](archive/P4-SYSTEM-18.md#a42d3).
 
 ### `.14` a42d3a — expose validated expectation image context (completed, SEMULITH-P4-0239)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42d3a).
+[Record](archive/P4-SYSTEM-18.md#a42d3a).
 
 ### `.14` a42d3b — compose authenticated source/image checks (completed, SEMULITH-P4-0240)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42d3b).
+[Record](archive/P4-SYSTEM-18.md#a42d3b).
 
 ### `.14` a42f — align implemented-method review surfaces (completed, SEMULITH-P4-0241)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42f).
+[Record](archive/P4-SYSTEM-18.md#a42f).
 
 ### `.14` a42g — bounded conservative old/new impact (completed, SEMULITH-P4-0242)
 
-Complete historical record: [ordinary part18](archive/P4-SYSTEM-18.md#a42g).
+[Record](archive/P4-SYSTEM-18.md#a42g).
 
 ### `.14` a42h — contain completed adequacy designs (completed, SEMULITH-P4-0243)
 
-Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42h).
+[Record](archive/P4-SYSTEM-19.md#a42h).
 
 ### `.14` a42i — fail closed on unavailable handoff census (completed, SEMULITH-P4-0244)
 
-Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42i).
+[Record](archive/P4-SYSTEM-19.md#a42i).
 
 ### `.14` a42j — retain the local census repair during scaffold sync (completed, SEMULITH-P4-0245)
 
-Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42j).
+[Record](archive/P4-SYSTEM-19.md#a42j).
 
 ### `.14` a42k — assess staged ordinary-history protection (completed, SEMULITH-P4-0246)
 
-Complete historical record: [ordinary part19](archive/P4-SYSTEM-19.md#a42k).
+[Record](archive/P4-SYSTEM-19.md#a42k).
 
 ### `.14` a42l — preserve published ordinary histories (completed, SEMULITH-P4-0247/0248)
 
@@ -624,9 +633,9 @@ example and protected scope pass; derive763outer arms. No canonical/cap/status
 advance. Evidence target/p4-system-14/a20. Next a21 bounded metadata-only reads.
 
 
-Completed .14 a1–a19 designs: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#decisions).
+Completed .14 a1–a19 designs: [Record](archive/P4-SYSTEM-13.md#decisions).
 
-Closed .13 designs: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#designs).
+Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Open Questions
 
@@ -1064,9 +1073,9 @@ Completed .14 a21 acceptance: [complete original record](artifacts/live-containm
   seven books/rendered.py/proof.py rc=0; all243canonical dictionaries exact,
   literal syntax accepted without credit; scope.py rc=0 protects all other bytes.
 
-Completed .14 a1–a19 acceptance: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#acceptance).
+Completed .14 a1–a19 acceptance: [Record](archive/P4-SYSTEM-13.md#acceptance).
 
-Closed .13 acceptance: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#acceptance).
+Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
@@ -1557,20 +1566,21 @@ seven books/eleven rendered boundaries/literal syntax/protected scope rc=0.
 Correct two test-instrument assumptions before drawing results; no new capture,
 qualified record or acceptance advance. Global arm enumeration763, no cap changes.
 
-Completed .14 a1–a19 verification prose: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#verification).
+Completed .14 a1–a19 verification prose: [Record](archive/P4-SYSTEM-13.md#verification).
 
-Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#verification).
+Prior rows: [Record](archive/P4-SYSTEM-11.md#verification).
 
-Completed .14 a1–a19 verification rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#verification-table).
+Completed .14 a1–a19 verification rows: [Record](archive/P4-SYSTEM-13.md#verification-table).
 
-Closed .13 verification: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#verification).
+Closed .13 verification: [Record](archive/P4-SYSTEM-12.md#verification).
 
 ## Commit Log
 
-Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
+Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.16d` | `SEMULITH-P4-0252` | declared-model replay verified; reduction next |
 | `.16c` | `SEMULITH-P4-0251` | controls/demo verified; model-aware bundles next |
 | `.16b` | `SEMULITH-P4-0250` | bundles/replay verified; reduction next |
 | `.16a` | `SEMULITH-P4-0249` | snapshot/resume delivered; bundles next |
@@ -1613,9 +1623,9 @@ Prior rows: [archive/P4-SYSTEM-11.md](archive/P4-SYSTEM-11.md#commits).
 | `.14` a21 | `SEMULITH-P4-0212` | [complete original commit row](artifacts/live-containment/reader-records-retention.md#p4-a21-retained) |
 | `.14` a20 | `SEMULITH-P4-0211 (leaf P4-SYSTEM.14): carry typed GPR witnesses and control baselines` | a21 bounded pin-only reads, artifact mappings/evaluator, retention and first canonical capture |
 
-Completed .14 a1–a19 commit rows: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#commits).
+Completed .14 a1–a19 commit rows: [Record](archive/P4-SYSTEM-13.md#commits).
 
-Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
+Closed .13 commits: [Record](archive/P4-SYSTEM-12.md#commits).
 
 ## Changelog
 
@@ -1644,6 +1654,6 @@ Closed .13 commits: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#commits).
 
 - `2026-10-11`: `.14` a22 (SEMULITH-P4-0213): preserve88967 task/1462 book bytes in part13, exact two-source and DEV30==28+2 inverses;21 damaged refusals/focused10/seven books green; fixed caps and active feature explanations retained.
 
-Completed .14 a1–a19 changelog: [archive/P4-SYSTEM-13.md](archive/P4-SYSTEM-13.md#changelog).
+Completed .14 a1–a19 changelog: [Record](archive/P4-SYSTEM-13.md#changelog).
 
-Closed .13 changelog: [archive/P4-SYSTEM-12.md](archive/P4-SYSTEM-12.md#changelog).
+Closed .13 changelog: [Record](archive/P4-SYSTEM-12.md#changelog).

@@ -8,13 +8,15 @@
 use semulith_core::privilege::PrivilegeMode;
 
 use crate::json::{self, Json};
+use crate::model_rv64gc::Model;
 use crate::replay::{hex_u64, int_usize};
 use crate::report::push_escaped;
 use crate::run_rv64gc::{Step, Trace};
 use crate::sha256::sha256_hex;
 use crate::snapshot_rv64gc::{check_json_limits, SnapshotRv64gc};
 
-const FORMAT: &str = "semulith-rv64gc-replay-v1";
+const FORMAT: &str = "semulith-rv64gc-replay-v2";
+const LEGACY_FORMAT: &str = "semulith-rv64gc-replay-v1";
 const ENVIRONMENT: &str = "flat-memory-no-external-events-v1";
 /// Replay records have a smaller continuation bound than standalone snapshots.
 pub const MAX_BOUNDARIES: usize = 10_000;
@@ -24,6 +26,7 @@ pub const MAX_JSON_BYTES: usize = crate::snapshot_rv64gc::MAX_JSON_BYTES + 16 * 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BundleRv64gc {
     producer_sha256: String,
+    model: Model,
     input: SnapshotRv64gc,
     recorded: Trace,
     final_sha256: String,
@@ -44,9 +47,10 @@ fn producer_identity() -> &'static str {
     static IDENTITY: std::sync::OnceLock<String> = std::sync::OnceLock::new();
     IDENTITY.get_or_init(|| {
         let pins = format!(
-            "{}{}",
+            "{}{}{}",
             sha256_hex(include_str!("replay_rv64gc.rs").as_bytes()),
-            sha256_hex(include_str!("report.rs").as_bytes())
+            sha256_hex(include_str!("report.rs").as_bytes()),
+            sha256_hex(include_str!("model_rv64gc.rs").as_bytes())
         );
         sha256_hex(pins.as_bytes())
     })
@@ -56,12 +60,18 @@ impl BundleRv64gc {
     /// Execute the recorded checkpoint and retain the result, including model errors.
     /// Identity and memory integrity are checked before execution by the checkpoint.
     pub fn record(input: SnapshotRv64gc) -> Result<Self, String> {
+        Self::record_with_model(input, Model::Production)
+    }
+
+    /// Record a declared, pinned control overlay over the same base-state inventory.
+    pub fn record_with_model(input: SnapshotRv64gc, model: Model) -> Result<Self, String> {
         check_budget(&input)?;
-        let mut result = input.resume()?;
+        let mut result = input.resume_with_model(model)?;
         check_trace(&result.trace, input.remaining_steps())?;
         let final_sha256 = input.result_sha256(&mut result)?;
         Ok(Self {
             producer_sha256: producer_identity().into(),
+            model,
             input,
             recorded: result.trace,
             final_sha256,
@@ -73,13 +83,18 @@ impl BundleRv64gc {
         self.recorded.steps.len()
     }
 
+    #[must_use]
+    pub fn model(&self) -> Model {
+        self.model
+    }
+
     /// Re-derive observations and every final CPU/memory owner from the saved input.
     pub fn replay(&self) -> Result<ReplayRv64gc, String> {
         if self.producer_sha256 != producer_identity() {
             return Err("RV64GC bundle: producer identity mismatch".into());
         }
         check_budget(&self.input)?;
-        let mut result = self.input.resume()?;
+        let mut result = self.input.resume_with_model(self.model)?;
         for (i, (recorded, actual)) in self
             .recorded
             .steps
@@ -132,7 +147,8 @@ impl BundleRv64gc {
     #[must_use]
     pub fn to_json(&self) -> String {
         let mut out = format!(
-            "{{\"format\":\"{FORMAT}\",\"environment\":\"{ENVIRONMENT}\",\"producer_sha256\":\""
+            "{{\"format\":\"{FORMAT}\",\"model\":\"{}\",\"environment\":\"{ENVIRONMENT}\",\"producer_sha256\":\"",
+            self.model.name()
         );
         push_escaped(&mut out, &self.producer_sha256);
         out.push_str(&format!(
@@ -177,15 +193,31 @@ impl BundleRv64gc {
     pub fn parse(text: &str) -> Result<Self, String> {
         check_json_limits(text, MAX_JSON_BYTES, 2_000_000, "RV64GC bundle")?;
         let doc = json::parse(text).map_err(|e| format!("RV64GC bundle: {e}"))?;
-        if field(&doc, "format")?.as_str() != Some(FORMAT) {
-            return Err("RV64GC bundle: unsupported format".into());
-        }
-        if field(&doc, "environment")?.as_str() != Some(ENVIRONMENT) {
+        Self::from_json(&doc)
+    }
+
+    pub(crate) fn from_json(doc: &Json) -> Result<Self, String> {
+        let model = match field(doc, "format")?.as_str() {
+            Some(FORMAT) => Model::from_name(
+                field(doc, "model")?
+                    .as_str()
+                    .filter(|s| s.len() <= 64)
+                    .ok_or("RV64GC bundle: model must be a bounded canonical name")?,
+            )?,
+            Some(LEGACY_FORMAT) => {
+                if doc.get("model").is_some() {
+                    return Err("RV64GC bundle: v1 has no model choice".into());
+                }
+                Model::Production
+            }
+            _ => return Err("RV64GC bundle: unsupported format".into()),
+        };
+        if field(doc, "environment")?.as_str() != Some(ENVIRONMENT) {
             return Err("RV64GC bundle: unsupported environment/event policy".into());
         }
-        let input = SnapshotRv64gc::from_json(field(&doc, "input")?)?;
+        let input = SnapshotRv64gc::from_json(field(doc, "input")?)?;
         check_budget(&input)?;
-        let raw = field(&doc, "recorded")?;
+        let raw = field(doc, "recorded")?;
         let nodes = field(raw, "steps")?
             .as_arr()
             .filter(|v| v.len() <= MAX_BOUNDARIES)
@@ -234,10 +266,11 @@ impl BundleRv64gc {
         };
         check_trace(&recorded, input.remaining_steps())?;
         Ok(Self {
-            producer_sha256: digest(field(&doc, "producer_sha256")?)?,
+            producer_sha256: digest(field(doc, "producer_sha256")?)?,
+            model,
             input,
             recorded,
-            final_sha256: digest(field(&doc, "final_sha256")?)?,
+            final_sha256: digest(field(doc, "final_sha256")?)?,
         })
     }
 }

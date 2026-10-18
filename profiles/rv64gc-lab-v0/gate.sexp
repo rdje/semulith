@@ -35,7 +35,7 @@
 (open (axis G-REGRESSION) (owner "P4-SYSTEM.15")
   (statement "No external directed or workload suite has run against this unit. Two deliberately wrong full-table GC models are available as detector controls, but the complete validator mutation campaign remains P4-SYSTEM.15 work."))
 (open (axis G-REPLAY) (owner "P4-SYSTEM.16")
-  (statement "RV64GC snapshot/resume and replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name."))
+  (statement "RV64GC snapshot/resume and model-aware replay bundles are implemented for bounded flat-memory laboratory runs. Reduction remains rv64i-only; the RV64GC reduce CLI path still refuses by name."))
 (open (axis G-PORTABILITY) (owner "P4-SYSTEM.17")
   (statement "No portability record for this unit: the instrument's manifest is built from rv64i's guests."))
 (open (axis G-RELEASE) (owner "P4-SYSTEM.18")

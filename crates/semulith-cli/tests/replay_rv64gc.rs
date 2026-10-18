@@ -124,3 +124,52 @@ fn real_cli_gc_bundles_replay_and_distinguish_mismatch_refusal_and_usage() {
     std::fs::write(&file, scalar.stdout).unwrap();
     assert!(cli(&["replay", path]).status.success());
 }
+
+#[test]
+fn real_cli_records_and_replays_each_declared_gc_control_model() {
+    // A distinct directory keeps parallel test cases independent in this test binary.
+    let executable = std::env::current_exe().unwrap();
+    let root = executable
+        .ancestors()
+        .find(|p| p.join("Cargo.toml").is_file() && p.join("crates/semulith-cli").is_dir())
+        .unwrap();
+    let parent = root.join("target/cli-replay-control-tests");
+    std::fs::create_dir_all(&parent).unwrap();
+    let work = Workspace(parent.join(format!("run-{}", std::process::id())));
+    std::fs::create_dir(&work.0).unwrap();
+    let file = work.0.join("control.json");
+    for mutation in ["zext-addi", "jal-no-link"] {
+        let recorded = cli(&[
+            "bundle",
+            "--profile=rv64gc-lab-v0",
+            "--guest=guest-control",
+            &format!("--mutate={mutation}"),
+        ]);
+        assert!(
+            recorded.status.success(),
+            "{}",
+            String::from_utf8_lossy(&recorded.stderr)
+        );
+        let text = String::from_utf8(recorded.stdout).unwrap();
+        assert!(text.contains("semulith-rv64gc-replay-v2"));
+        assert!(text.contains(&format!("\"model\":\"mutant:{mutation}\"")));
+        std::fs::write(&file, &text).unwrap();
+        let result = cli(&["replay", file.to_str().unwrap(), "--profile=rv64gc-lab-v0"]);
+        assert!(
+            result.status.success(),
+            "{}",
+            String::from_utf8_lossy(&result.stdout)
+        );
+        assert!(String::from_utf8_lossy(&result.stdout)
+            .contains(&format!("replay model: mutant:{mutation}")));
+        let altered = text.replacen(
+            &format!("\"model\":\"mutant:{mutation}\""),
+            "\"model\":\"production\"",
+            1,
+        );
+        std::fs::write(&file, altered).unwrap();
+        let mismatch = cli(&["replay", file.to_str().unwrap(), "--profile=rv64gc-lab-v0"]);
+        assert_eq!(mismatch.status.code(), Some(1));
+        assert!(String::from_utf8_lossy(&mismatch.stdout).contains("GPR changes"));
+    }
+}

@@ -16,13 +16,14 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.16` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after P4-0251 normal COMMIT, add model-aware RV64GC replay
-  bundles, then reduction in P4-SYSTEM.16. Snapshots, production bundles and
-  two full-table detector controls are delivered; demo --json now refuses by name.
+- next_action: after P4-0252 normal COMMIT, implement RV64GC reduction in
+  P4-SYSTEM.16. Snapshots, model-aware v2 bundles and two full-table detector
+  controls are delivered. Preserve exact first divergence and record replayable
+  reduced evidence; the complete mutation campaign stays .15.
   P4.14 evidence qualification stays owned/open; CPU-SYSTEM remains incomplete.
   Priority correction/captured D79 receipt: docs/tasks/LIVE-CONTAINMENT.md,
   Delivery priority and capture handoff. Maintenance is scheduled separately.
-- in_flight_uncommitted: none after P4-0251 normal COMMIT/postcheck.
+- in_flight_uncommitted: none after P4-0252 normal COMMIT/postcheck.
 - blockers: no terminal authorization needed; packet-20261017T225917Z-fbcd89
   captured480observations/155525packets,0unjudgeable. D79 causal analysis/LC0046
   D80 remain owned in LIVE-CONTAINMENT.4; no capture rerun is needed.

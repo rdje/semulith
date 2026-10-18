@@ -16,6 +16,16 @@ pub enum Model {
 }
 
 impl Model {
+    /// Canonical recorded model identity, distinct from the CLI's mutation spelling.
+    pub fn from_name(name: &str) -> Result<Self, String> {
+        match name {
+            "production" => Ok(Self::Production),
+            "mutant:zext-addi" => Ok(Self::ZextAddi),
+            "mutant:jal-no-link" => Ok(Self::JalNoLink),
+            _ => Err(format!("unknown RV64GC replay model '{name}'")),
+        }
+    }
+
     pub fn from_mutation(name: &str) -> Result<Self, String> {
         match name {
             "none" => Ok(Self::Production),

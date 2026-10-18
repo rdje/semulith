@@ -272,9 +272,9 @@ cargo run -q -p semulith-cli -- bundle --profile=rv64gc-lab-v0 --guest=a-lrsc-pa
 cargo run -q -p semulith-cli -- replay target/lrsc-replay.json --profile=rv64gc-lab-v0
 ```
 
-The format `semulith-rv64gc-replay-v1` contains a complete input checkpoint,
+The current format `semulith-rv64gc-replay-v2` contains a complete input checkpoint,
 including memory bytes and typed fault regions; the guest catalogue is not needed
-to replay it. The CLI records production guests from reset with 64 KiB of memory.
+to replay it. The CLI records guests from reset with 64 KiB of memory.
 The library can instead record a continuation from any supported checkpoint.
 Each record explicitly selects the flat-memory laboratory with no external event
 stream. A producer-source identity accompanies the checkpoint's definition,
@@ -300,9 +300,8 @@ bound of 64 MiB. JSON is limited to 145 MiB, nesting depth12 and 2,000,000 openi
 braces/brackets, commas and colons before parsing. Recorded GPR changes must be
 ordered unique x1–x31; model-error text is bounded to 4096 bytes. These artifact
 limits bound work without promising an exact process-RAM ceiling. The CLI bounds
-its file read before parsing. Its `--mutate=none` spelling selects production;
-GC bundle mutation recording, reduction and board/device/event replay remain
-outside this slice.
+its file read before parsing. Its `--mutate=none` spelling selects production.
+Reduction and board/device/event replay remain open.
 
 All current RV64GC guests round-trip and replay through this format. Controls
 alter PC, privilege, GPR changes, length, fetch/error/final receipts and identities;
@@ -353,7 +352,43 @@ memory parity through the named API.
 The RV64GC demo emits text. Its `--json` flag now refuses with exit2 and an explicit
 unsupported-report message; previously that flag silently printed text with a
 successful exit. Scalar demo JSON remains available. Unknown GC control names
-also refuse2. GC replay bundles currently record production; model-aware bundle
-recording and reduction follow in P4.16. The complete validator mutation campaign
+also refuse2. Replay bundles can record these same named controls, as described
+below. Reduction follows in P4.16. The complete validator mutation campaign
 remains P4.15's work, and CPU-SYSTEM acceptance remains incomplete.
+
+### Recording a declared control model
+
+V2 records a mandatory canonical `model`: `production`, `mutant:zext-addi` or
+`mutant:jal-no-link`. That outer field selects the continuation's effect table.
+The input checkpoint pins compatibility with the base production definition and
+state inventory; it is input data rather than proof of how that state originated.
+The producer and runtime identities also pin the controller source. Standalone
+snapshot resume continues to select production.
+
+For example, record the deliberately wrong ADDI control and replay its result:
+
+```sh
+cargo run -q -p semulith-cli -- bundle --profile=rv64gc-lab-v0 --guest=guest-control --mutate=zext-addi > target/addi-control.json
+cargo run -q -p semulith-cli -- replay target/addi-control.json --profile=rv64gc-lab-v0
+```
+
+Both commands exit0. Replay identifies `mutant:zext-addi` and reproduces that
+model's recorded wrong result; the demo's production comparison still detects
+the boundary1/x1 difference. `--mutate=jal-no-link` similarly records and replays
+the boundary7/x5 control. The Rust API offers `BundleRv64gc::record_with_model`
+and a typed `model()` accessor. Model choice is explicit, and all state, fault,
+trace and final-receipt checks still apply.
+
+Changing a valid recorded choice causes re-execution under that choice, exposing
+any changed observations. A missing v2 choice, unknown canonical name, non-string
+or name longer than64bytes refuses2. CLI mutation names use `none`, `zext-addi`
+and `jal-no-link`; recorded names use the canonical forms above.
+
+The parser recognizes the previous v1 production shape, which has no outer model
+field. A v1 record carrying that reserved choice refuses2. Parsing supplies its
+production meaning and writing emits v2, while keeping its recorded identities.
+It cannot make an old source identity current: foreign producer/runtime pins
+still refuse1 before continuation. The format's finite limits are unchanged.
+Production corpus round trips, both wrong-model round trips, changed-choice
+controls, legacy shape/identity checks and the real CLI exercise this boundary.
 <!-- ANCHOR_END: rv64gc-snapshot -->

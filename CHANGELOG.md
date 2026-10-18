@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0252 (leaf P4-SYSTEM.16) — record declared RV64GC control models
+
+- Add v2 replay records with a required canonical model choice, pinned controller/runtime source and explicit selected-model continuation. Record/replay both wrong-model results through API and CLI; changing a valid choice exposes its changed GPR observations. Production defaults and finite limits stay supported.
+- Recognize legacy v1 production shape with its recorded identities; reject reserved choices, missing/unknown/malformed v2 choices and foreign identities by name. Teach model/state compatibility, commands, expected success and identity limits in both books. Reduction remains open, CPU-SYSTEM incomplete and LIVE_STATUS unchanged.
+- Compact48 current navigation labels before task growth: save1516B while preserving every heading, outgoing target and full historical record, with a complete owner inverse and fixed ceilings.
+
 ## SEMULITH-P4-0251 (leaf P4-SYSTEM.16) — expose RV64GC detector controls
 
 - Add cached zext-addi/jal-no-link control overlays over the complete GC table and common runner/demo routes. Detect the designated first differences against specification-derived expectations; preserve every other row/expansion and production trace/fetch/full-state/memory parity across167 guests.
