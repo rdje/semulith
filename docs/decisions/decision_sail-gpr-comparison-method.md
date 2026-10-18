@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-10-11`
 - **Status:** `active` — authenticated byte evaluation exists; complete adequacy/collection pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42v, `SEMULITH-P4-0210`–`0264`; GC policy/public Sail adapter
+- **Owner / source:** `P4-SYSTEM.14` a19–a42w, `SEMULITH-P4-0210`–`0265`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -13,7 +13,7 @@ Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. The
-optional witness/baseline grammar; scoped byte/image/value/review/property bindings and bounded one-process collection. API: GC unit book. Qualification closed.
+optional witness/baseline grammar; scoped byte/image/value/review/property bindings and bounded one-process collection/receipt publication. API: GC unit book. Qualification closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.
@@ -147,7 +147,7 @@ the wrong-value control. Keep project temporary work on the repository volume.
 
 The receipt is a versioned S-expression observation (`sail-gpr-capture-v1`), not a
 second editable source of experiment truth. Its schema and single dossier mapping
-are implemented at a26; fresh-process collection is partial. Required content: run ID/kind, ordered
+are implemented at a26; one-process collection/receipt publication exists. Required content: run ID/kind, ordered
 exact argv, process exit, reference candidate/binary SHA256, collector input ID,
 input-ID/digest inventory, trace/stdout/stderr identity/size/digests and observed
 host/tool versions. Cross-check all of it against the canonical run and its pins.

@@ -536,3 +536,257 @@ def capture_run(root: Path, *, request: CaptureRequest) -> ProcessCapture:
             status,
             pid,
         )
+
+
+@dataclass(frozen=True)
+class PublishedCapture:
+    disposition: str  # recorded means receipt publication, never comparison success
+    reason: str
+    process: ProcessCapture | None = None
+    receipt: CapturedOutput | None = None
+
+
+def capture_run_with_receipt(
+    root: Path, *, request: CaptureRequest
+) -> PublishedCapture:
+    """Collect a fresh process and exclusively publish its bounded, bound receipt.
+
+    Parent validation, dependency review and aggregate experiment budgeting remain
+    caller obligations. A coherent failed process can have a recorded receipt.
+    Existing receipt files are cleared only by capture_run before fresh execution.
+    """
+    import platform
+
+    import matched_gpr_artifacts as F
+    import matched_gpr_receipt as R
+
+    process = None
+    try:
+        request = _freeze(request)
+        host = platform.uname()
+        host = dict(
+            os=_text(host.system, "host OS"),
+            kernel=_text(host.release, "host kernel"),
+            arch=_text(host.machine, "host architecture"),
+        )
+        python_version = _text(platform.python_version(), "Python version")
+        root = Path(root)
+        process = capture_run(root, request=request)
+        _need(type(process) is ProcessCapture, "invalid process capture")
+        if process.disposition != "recorded":
+            return PublishedCapture(process.disposition, process.reason, process)
+        _need(
+            type(process.process_exit) is int
+            and type(process.pid) is int
+            and process.pid > 0,
+            "invalid captured process identity",
+        )
+        _need(
+            type(process.outputs) is tuple and len(process.outputs) == 3,
+            "expected three captured outputs",
+        )
+        targets = {item.role: item for item in request.outputs}
+        for output, role in zip(process.outputs, E.OUTPUT_ROLES[:3]):
+            _need(
+                type(output) is CapturedOutput and output.role == role,
+                "invalid captured output role",
+            )
+            target = targets[role]
+            _need(
+                (output.observation_id, output.path)
+                == (target.observation_id, target.path),
+                "captured output identity differs",
+            )
+            limit = TRACE_BYTES if role == "raw-gpr" else STREAM_BYTES
+            _need(
+                type(output.byte_size) is int and 0 <= output.byte_size <= limit,
+                "invalid captured output size",
+            )
+            _sha(output.sha256)
+        target = targets["process-receipt"]
+        collector = next(item for item in request.inputs if item.role == "collector")
+        observations = [
+            dict(
+                id=item.observation_id,
+                role=item.role,
+                path=item.path,
+                byte_size=item.byte_size,
+                sha256=item.sha256,
+            )
+            for item in process.outputs
+        ]
+        doc = dict(
+            format_version="sail-gpr-capture-v1",
+            run_id=request.run_id,
+            run_kind=request.run_kind,
+            argv=list(request.argv),
+            process_exit=process.process_exit,
+            reference_candidate_id="sail-riscv",
+            reference_binary_sha256=request.binary_sha256,
+            collector_input_id=collector.input_id,
+            input=[
+                dict(id=item.input_id, sha256=item.sha256) for item in request.inputs
+            ],
+            observation=observations,
+            host=host,
+            tool=[
+                dict(id="collector", version="sha256:" + collector.sha256),
+                dict(id="reference", version="sha256:" + request.binary_sha256),
+                dict(id="python", version=python_version),
+            ],
+        )
+        payload = F.encode_capture(doc, path=target.path)
+        _need(
+            type(payload) is bytes and 0 < len(payload) <= R.RECEIPT_BYTES,
+            "receipt exceeds publication bound",
+        )
+        context = R.bind_receipt_context(
+            run=dict(
+                id=request.run_id,
+                kind=request.run_kind,
+                argv=list(request.argv),
+                process_exit=process.process_exit,
+                input_ids=[item.input_id for item in request.inputs],
+                observation_ids=[item.observation_id for item in request.outputs],
+            ),
+            inputs=[
+                dict(
+                    id=item.input_id, role=item.role, path=item.path, sha256=item.sha256
+                )
+                for item in request.inputs
+            ],
+            observations=[
+                *observations,
+                dict(
+                    id=target.observation_id,
+                    role=target.role,
+                    path=target.path,
+                    byte_size=0,
+                    sha256="0" * 64,
+                ),
+            ],
+            current_candidate=dict(
+                id="sail-riscv", binary_sha256=request.binary_sha256
+            ),
+        )
+        checked = R.check_receipt_bytes(payload, context=context)
+        _need(
+            type(checked) is R.ReceiptCheck
+            and checked.disposition in ("matched", "refused", "unavailable"),
+            "invalid receipt byte finding",
+        )
+        if checked.disposition != "matched":
+            return PublishedCapture(checked.disposition, checked.reason, process)
+
+        def authenticate(record, limit):
+            pin = A.read_bounded_pin(root, "observation", record, max_bytes=limit)
+            _need(
+                type(pin) is A.PinResult
+                and pin.disposition == "matched"
+                and pin.record_kind == "observation"
+                and (pin.record_id, pin.path, pin.byte_size, pin.sha256)
+                == (
+                    record["id"],
+                    record["path"],
+                    record["byte_size"],
+                    record["sha256"],
+                ),
+                "publication artifact changed or unavailable",
+            )
+
+        def outputs():
+            for record in observations:
+                limit = TRACE_BYTES if record["role"] == "raw-gpr" else STREAM_BYTES
+                authenticate(record, limit)
+
+        outputs()
+        with ExitStack() as resources:
+            anchors, chain = _parents(root, (target,), resources)
+            _check_parents(chain)
+            parent, name = anchors[target.role]
+            fd = os.open(
+                name,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                0o600,
+                dir_fd=parent,
+            )
+            resources.callback(os.close, fd)
+            created = os.fstat(fd)
+            complete = False
+            try:
+                offset = 0
+                while offset < len(payload):
+                    written = os.write(fd, payload[offset:])
+                    _need(
+                        type(written) is int and 0 < written <= len(payload) - offset,
+                        "receipt write made no progress",
+                    )
+                    offset += written
+                os.fsync(fd)
+                _check_parents(chain)
+                _need(
+                    _identity(os.stat(name, dir_fd=parent, follow_symlinks=False))
+                    == _identity(os.fstat(fd)),
+                    "receipt path replaced",
+                )
+                import hashlib
+
+                receipt = CapturedOutput(
+                    target.role,
+                    target.observation_id,
+                    target.path,
+                    len(payload),
+                    hashlib.sha256(payload).hexdigest(),
+                )
+                authenticate(
+                    dict(
+                        id=receipt.observation_id,
+                        path=receipt.path,
+                        byte_size=receipt.byte_size,
+                        sha256=receipt.sha256,
+                    ),
+                    R.RECEIPT_BYTES,
+                )
+                outputs()
+                _check_parents(chain)
+                _need(
+                    _identity(os.stat(name, dir_fd=parent, follow_symlinks=False))
+                    == _identity(os.fstat(fd)),
+                    "receipt path replaced",
+                )
+                complete = True
+            finally:
+                if not complete:
+                    try:
+                        info = os.stat(name, dir_fd=parent, follow_symlinks=False)
+                        if (info.st_dev, info.st_ino) == (
+                            created.st_dev,
+                            created.st_ino,
+                        ):
+                            os.unlink(name, dir_fd=parent)
+                    except FileNotFoundError:
+                        pass
+            return PublishedCapture(
+                "recorded",
+                "fresh receipt published; method credit pending",
+                process,
+                receipt,
+            )
+    except (
+        CaptureError,
+        F.ArtifactError,
+        R.BindingError,
+        AttributeError,
+        TypeError,
+        ValueError,
+    ) as exc:
+        return PublishedCapture("refused", str(exc), process)
+    except OSError as exc:
+        disposition = (
+            "refused"
+            if exc.errno in (errno.ELOOP, errno.ENOTDIR, errno.EEXIST)
+            else "unavailable"
+        )
+        return PublishedCapture(
+            disposition, "receipt I/O: " + (exc.strerror or type(exc).__name__), process
+        )

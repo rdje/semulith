@@ -16,19 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 receipt writing/unit collection, then complete
-  closure/impact/policy binding and bounded retention/predeclared canonical
-  captures. P4-0264 implements one fresh bounded process and shared unpinned
-  observations;25 controls/18 omissions normal/O, original reader behavior exact.
-  Physical path aliases now refuse before cleanup; all output names reserve
-  exclusively. Reproduced/fixed case-insensitive input overwrite before signoff.
-  Real Sail smoke normal/O:3 fresh PIDs, exit0, AGREE/AGREE/DIVERGE, identical
-  2298B traces; step2/x7 -3 vs -4. Optional one-command smoke is reproducible;
-  no canonical capture/receipt/qualification. Per-call accounting is not the
-  pending shared experiment budget. Property/source/image/value/review/author
-  APIs exist; complete closure review, collector unit and policy remain.
-  CPU14/18, BOARD10/12, replay4/4green; qualification closed, no whole-M credit.
-- in_flight_uncommitted: none after P4-0264; verify Git state on read.
+- next_action: P4-SYSTEM.14 unit collector with shared experiment budgets,
+  then complete closure/impact/policy binding and bounded canonical retention.
+  P4-0265 adds one-process receipt publication:23 controls/11 omissions normal/O;
+  38 legacy outcomes exact. Real Sail normal/O produces3 fresh processes/receipts,
+  AGREE/AGREE/DIVERGE; no canonical capture/closure/qualification credit.
+  CPU14/18, BOARD10/12, replay4/4green; no whole-M acceptance.
+- in_flight_uncommitted: none after P4-0265; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

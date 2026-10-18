@@ -353,3 +353,61 @@ Closed t1352B retained whole, old19368B prefix exact; full inverses/six refusals
 target/p4-system-14/a42u/retention.json. Collector/retention/full policy follows.
 
 ````
+
+## P4 a42w — complete closed collection and binding designs
+
+```json
+{"schema":1,"revision":"a7484ba21db8e7049b0d43b9e4e5a483fd6e372c","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130873,"source_sha256":"57330c79cf6291c7c40d67768194f5b7e3aff7ae30951f340742f7f68e7d4e7d","owner_insert":{"base":"a7484ba21db8e7049b0d43b9e4e5a483fd6e372c","offset":37031,"text":"### `.14` a42w \u2014 publish fresh receipts (active)\n\nOwn bounded receipt writing, controls, book/live sync and whole-record retention before growth.\n\n","source_bytes":130873,"source_sha256":"57330c79cf6291c7c40d67768194f5b7e3aff7ae30951f340742f7f68e7d4e7d"},"owner_bytes":131022,"owner_sha256":"10f7964c1d82f3b732d90591666275f4cb537997f48724a9e2dd75df8e80abc2","retired_bytes":129114,"retired_sha256":"c70aa5866df9b72cddd3c095595215cb51612ac1f1989d757d8c262bcf74d328","records":[{"unit":"a42v","offset":37180,"bytes":960,"lines":14,"sha256":"18c98fb1c3b327445cb19bfa107868e9cc95489f9d6e69f92642a73ee1aab543","replacement":"### `.14` a42v \u2014 collect one fresh bounded process (completed, SEMULITH-P4-0264)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42v).\n\n"},{"unit":"a42s","offset":38462,"bytes":457,"lines":8,"sha256":"c9662179948e615f27fc554ad81404b3d30f1c80cf811ad8d35c8e81792330d5","replacement":"### `.14` a42s \u2014 compose author binding (completed, SEMULITH-P4-0261)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42s).\n\n"},{"unit":"a42n","offset":39564,"bytes":965,"lines":15,"sha256":"89e694d46dce700c580c8f66d023c05a72d41356b16d3b3bb9131cf9559e56d7","replacement":"### `.14` a42n \u2014 bind retained inputs to old/new impact (completed, SEMULITH-P4-0256)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42n).\n\n"}]}
+```
+
+<a id="p4-a42w-a42v"></a>
+
+````text
+### `.14` a42v — collect one fresh bounded process (completed, SEMULITH-P4-0264)
+
+Own the shared bounded unpinned-file observation API and a first-method process
+collector. Contract first in GC collector.md: freeze public plan/output identities;
+check binary/eight input pins before/after; clear only four owned outputs; launch
+fresh no-shell reference argv, bound files/time and reap its process group. Keep
+empty stdout/stderr files and metadata; preserve failed exits without success
+credit. No receipt writer, canonical capture, closure/policy or qualification yet.
+Normal/O process/path/pin/limit controls, unchanged reader vectors, books/scope
+and normal COMMIT. Whole closed u896B retained, old21746B prefix exact; six
+inverses: target/p4-system-14/a42v/retention.json. No cap/seal changes.
+Physical-alias defect fixed: physical-alias-after.py rc=0 normal/O refuses before
+cleanup with input unchanged; before probe damaged only disposable fixtures.
+
+````
+
+<a id="p4-a42w-a42s"></a>
+
+````text
+### `.14` a42s — compose author binding (completed, SEMULITH-P4-0261)
+
+Freeze optional author_review before reads; bind its inventory and append
+expected_author after matched source values. Preserve findings/APIs/seams.
+Refuse contradictions; unsupported stays pending, no extra reads/qualification.
+Book-first; normal/O, scope/books and COMMIT. Closed r962B retained whole,
+old13330B prefix exact; six inverses: target/p4-system-14/a42s/retention.json.
+
+````
+
+<a id="p4-a42w-a42n"></a>
+
+````text
+### `.14` a42n — bind retained inputs to old/new impact (completed, SEMULITH-P4-0256)
+
+Own opt-in frozen graph context, input metadata projection/closure binding and
+existing change_impact composition. Bind declared old pins and current reviewed
+inventory before file-set reads; distinguish invalid context from stale selected
+evidence. Copy before artifact I/O; preserve legacy defaults/independent findings.
+Existing graph/count and payload bounds stay fixed; qualification stays closed.
+Declare projection/API in the GC Impact chapter before implementation. Own
+normal/O probes, discriminating omissions, evaluator integration, live-plan
+currency repair, whole-entry sharding as needed and normal COMMIT. Evidence:
+target/p4-system-14/a42n. Full canonical closure/property/collector/policy remains.
+
+Verified: scope normal/O and15 focused checks pass;24 controls/22 omissions
+are discriminating without errors. Additional profile check/normal COMMIT pending.
+
+````

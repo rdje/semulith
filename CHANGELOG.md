@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0265 (leaf P4-SYSTEM.14) — publish fresh bounded process receipts
+
+Add exclusive receipt publication over the fresh one-process collector. Bind actual
+exit/argv and input/output inventories through the existing codec/byte checker;
+recheck bounded outputs and preserve foreign replacements on cleanup. Failed
+exits remain failed data. Normal/O:23 controls and11 discriminating omissions;
+real Sail smoke publishes3 transient receipts with AGREE/AGREE/DIVERGE. Preserve
+legacy capture checks/history and keep unit closure/qualification pending.
+
 ## _(2026-10-18)_ — fresh bounded reference process (P4-SYSTEM.14 a42v)
 
 Add frozen process collection, pre/post pins, owned outputs, deadline/group cleanup and file limits. Fix physical path aliasing before cleanup; reserve every output exclusively. Observe fresh hashes through the shared reader without supplied-pin credit. Verify25 controls/18 omissions, legacy reader behavior and a real three-process Sail smoke normal/O. Teach API/examples; no canonical capture or qualification.
@@ -393,14 +402,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Freeze/bind the complete declared input/output set before I/O; reuse manifest pin, authenticate remaining distinct files once within128MiB read/16MiB live-snapshot budgets, inspect transient children first and retain only required comparison payloads. Conservative failure charges/terminal reads/frozen partial facts; no complete closure, source semantics or method credit.
 - Fix draft omitted manifest snapshot peak217B; exact previous draft loses3 assertions normal/O.49 controls/31 omissions pass/discriminate without errors; PROFILE284/0,39 doctrines/1107 arms. Actual128MiB inclusive/plus-one refusal consume at most134217728B. Focused17/sharder12/0/seven books/3090 links/all8 examples and complete predecessor/canonical checks pass. DEV18=16+2/3340B into0248;100 prior entries/1319 other files protected, actual receipt+digest edits refuse. Final COMMIT checks/full CI on clean milestone next; next byte consumers/evaluator, fixed caps/seals/canonical/CPU unchanged.
-
-## SEMULITH-P4-0228 (leaf P4-SYSTEM.14) — inspect one authenticated dependency leaf
-
-- Authenticate one selected declared child within0..8MiB; frozen pin/content facts, no retained bytes or aggregate/method credit. Reuse published64KiB raw schema/single mapper for nested-document detection; fix draft valid-Python false positive and preserve unavailable schema tools.
-- 50 controls pass normal/O; fifteen omissions4/2/2/2/7/4/8/4/11/7/6/1/3/8/2 fail without errors; PROFILE220/0,39 doctrines/1043 arms. Legacy36 controls/byte-bound3 failures retained. Focused17/sharder12/0/seven books/3088 links/all7 examples and full predecessor/canonical checks pass. Complete5822B manifest teaching moved unchanged; DEV19=17+2/2832B into0247;100 old entries/1312 other files protected, actual receipt+digest edits refuse. Final hooks/brief0/census required. Next aggregate ledger/evaluation; caps/seals/canonical/CPU unchanged.
-
-## SEMULITH-P4-0227 (leaf P4-SYSTEM.14) — contain completed method-unit designs
-
-- Preserve eight whole closed designs31998B and one book receipt709B in ordinary unsealed part15. Keep eight live headings; nine authenticated inverse bodies reconstruct both complete committed sources.31 damaged-body/map/receipt/route/guide controls refuse normal/O; sealed reader scope stays12 originals.
-- Full CI all five legs green on exacte048616 (443 Rust tests/smoke53/seven books). DEV21=18+3/3939B into0246; focused12/sharder12/0/seven books/3076 links/normal+print/literal read and1321 other files/101 old entries/full predecessors pass. No code/canonical/cap/seal/CPU change; a37 bounded leaf inspection follows.
 

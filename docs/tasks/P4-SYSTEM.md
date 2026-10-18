@@ -314,7 +314,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | receipt writer and unit collection |
+| 1 | `P4-SYSTEM.14` | `active` | unit collector and shared budgets |
 
 ## Decisions
 
@@ -408,19 +408,25 @@ fresh process/output controls, bounded retention/predeclared captures and
 policy/status/mirrors. Preserve legacy APIs/records; predeclare contracts.
 Byte matches do not qualify. Source/image:a42d3b; impact engine:a42g; source0192–0197 done.
 
+### `.14` a42w — publish fresh receipts (completed, SEMULITH-P4-0265)
+
+Own capture_run_with_receipt: freeze request/host before reads, collect one fresh
+process, bind exact schema receipt to actual exit/three outputs and input pins;
+exclusive anchored publication, bounded rechecks and no partial success. Preserve
+failed exits, refuse aliases/replaced parents/output drift, keep old collector
+exact. No unit orchestration/canonical capture/qualification. Contract first in
+GC collector.md; normal/O synthetic controls plus omissions, legacy suite,
+focused/books/history/scope, whole-oldest CH/DEV rollover and normal COMMIT.
+Retained v/s/n2382B whole with exact source/owner inverse and6damaged refusals;
+old artifact prefix exact. Evidence target/p4-system-14/a42w. Priority now.
+
+Verified verify.py normal/O:1519 files/1Gitlink/91history entries exact;
+source/owner inverse2,6damaged refusals;14focused/7books/3348links pass.
+promotion: declined (existing receipt/provenance/history contracts).
+
 ### `.14` a42v — collect one fresh bounded process (completed, SEMULITH-P4-0264)
 
-Own the shared bounded unpinned-file observation API and a first-method process
-collector. Contract first in GC collector.md: freeze public plan/output identities;
-check binary/eight input pins before/after; clear only four owned outputs; launch
-fresh no-shell reference argv, bound files/time and reap its process group. Keep
-empty stdout/stderr files and metadata; preserve failed exits without success
-credit. No receipt writer, canonical capture, closure/policy or qualification yet.
-Normal/O process/path/pin/limit controls, unchanged reader vectors, books/scope
-and normal COMMIT. Whole closed u896B retained, old21746B prefix exact; six
-inverses: target/p4-system-14/a42v/retention.json. No cap/seal changes.
-Physical-alias defect fixed: physical-alias-after.py rc=0 normal/O refuses before
-cleanup with input unchanged; before probe damaged only disposable fixtures.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42v).
 
 ### `.14` a42u — compose authenticated source properties (completed, SEMULITH-P4-0263)
 
@@ -432,11 +438,7 @@ cleanup with input unchanged; before probe damaged only disposable fixtures.
 
 ### `.14` a42s — compose author binding (completed, SEMULITH-P4-0261)
 
-Freeze optional author_review before reads; bind its inventory and append
-expected_author after matched source values. Preserve findings/APIs/seams.
-Refuse contradictions; unsupported stays pending, no extra reads/qualification.
-Book-first; normal/O, scope/books and COMMIT. Closed r962B retained whole,
-old13330B prefix exact; six inverses: target/p4-system-14/a42s/retention.json.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42s).
 
 ### `.14` a42r — bind reviewed expected authors (completed, SEMULITH-P4-0260)
 
@@ -456,18 +458,7 @@ old13330B prefix exact; six inverses: target/p4-system-14/a42s/retention.json.
 
 ### `.14` a42n — bind retained inputs to old/new impact (completed, SEMULITH-P4-0256)
 
-Own opt-in frozen graph context, input metadata projection/closure binding and
-existing change_impact composition. Bind declared old pins and current reviewed
-inventory before file-set reads; distinguish invalid context from stale selected
-evidence. Copy before artifact I/O; preserve legacy defaults/independent findings.
-Existing graph/count and payload bounds stay fixed; qualification stays closed.
-Declare projection/API in the GC Impact chapter before implementation. Own
-normal/O probes, discriminating omissions, evaluator integration, live-plan
-currency repair, whole-entry sharding as needed and normal COMMIT. Evidence:
-target/p4-system-14/a42n. Full canonical closure/property/collector/policy remains.
-
-Verified: scope normal/O and15 focused checks pass;24 controls/22 omissions
-are discriminating without errors. Additional profile check/normal COMMIT pending.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42w-a42n).
 
 ### `.14` a42m — bind reviewed input coverage (completed, SEMULITH-P4-0255)
 
@@ -609,6 +600,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - `P2-SCALAR` gate `CPU-LAB`.
 
 ## Acceptance Checklist (filled per leaf at execution time)
+
+- [x] `.14` a42w **REPRODUCE / ISSUE**: before-legacy.json rc=0: base lacks receipt API; old collector18849B exact.
+- [x] `.14` a42w **ROOT CAUSE**: run-controls.py rc=0 normal/O: actual-exit omission loses2 failed-process cases; byte binding/publication absent at base.
+- [x] `.14` a42w **FIX**: capture_run_with_receipt uses existing codec/binder, exclusive bounded writes/rechecks and inode-safe cleanup.
+- [x] `.14` a42w **ADDRESSED**: run-controls.py rc=0 normal/O:23/0/0;11 omissions/0 errors; real Sail3fresh receipts/expected control.
+- [x] `.14` a42w **NO REGRESSION**: focused.py rc=0:14 checks/7books; legacy-controls.py38 exact outcomes; old collector/book/gate/history inverses.
+- [x] `.14` a42w **LOCKSTEP**: source/owner inverse2/6damaged refusals; whole-oldest CH/DEV0348/0349, caps/seals/CPU unchanged; COMMIT applies.
 
 - [x] `.14` a42v **ROOT CAUSE**: physical-alias-before.py rc=0 normal/O: case alias damaged fixture input before stale finding.
 - [x] `.14` a42v **ADDRESSED**: run-controls.py rc=0 normal/O:25/0/0;18 omissions/0 errors; reader14 outcomes exact; physical aliases preserve inputs.
@@ -1571,6 +1569,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42w | `SEMULITH-P4-0265` | unit collector and shared budgets |
 | `.14` a42v | `SEMULITH-P4-0264` | receipt writer and unit collection |
 | `.14` a42u | `SEMULITH-P4-0263` | collector process/output controls |
 | `.14` a42t | `SEMULITH-P4-0262` | authenticated finite-property composition |

@@ -805,6 +805,12 @@ def main():
     if args.mutation:
         owner = C.A if args.mutation == "observation-mode" else C
         source = Path(owner.__file__).read_text()
+        # These mutations own the original one-process API. Receipt publication
+        # has its own independently calibrated probe and repeats some idioms.
+        if owner is C:
+            source = source.partition(
+                "\n\n@dataclass(frozen=True)\nclass PublishedCapture:"
+            )[0]
         before, after = MUTATIONS[args.mutation]
         if source.count(before) != 1:
             raise RuntimeError(

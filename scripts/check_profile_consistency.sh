@@ -1818,6 +1818,32 @@ deadline:1
 COLLECTOR_CASES
   done
 
+  # P4-SYSTEM.14 a42w: fresh receipt publication, including failed-process data.
+  local publication_mode publication_mutation publication_losses
+  local -a publication_python
+  for publication_mode in normal optimized; do
+    publication_python=(python3)
+    [ "$publication_mode" = optimized ] && publication_python+=(-O)
+    out="$("${publication_python[@]}" scripts/probe_matched_gpr_publication.py 2>&1)"; rc=$?
+    score "GREEN fresh receipt publication $publication_mode" "$rc" 0 "$out" "MATCHED-GPR-PUBLICATION: 23 tests / 0 failures / 0 errors; synthetic process receipts, qualification closed"
+    while IFS=: read -r publication_mutation publication_losses; do
+      out="$("${publication_python[@]}" scripts/probe_matched_gpr_publication.py --mutation "$publication_mutation" 2>&1)"; rc=$?
+      score "RED fresh receipt publication $publication_mutation $publication_mode" "$rc" 1 "$out" "MATCHED-GPR-PUBLICATION: 23 tests / $publication_losses failures / 0 errors; synthetic process receipts, qualification closed"
+    done <<'PUBLICATION_CASES'
+request-freeze:2
+host-freeze:1
+actual-exit:2
+receipt-bound:1
+byte-binding:2
+pre-outputs:1
+post-outputs:2
+exclusive-write:1
+partial-cleanup:4
+cleanup-identity:1
+receipt-pin:2
+PUBLICATION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
