@@ -927,6 +927,40 @@ program-label:3
 source-reopen:33
 SNAPSHOT_AUTHOR_CASES
   done
+  # P4-SYSTEM.14 a42p: complete source-derived GPR values, never qualification.
+  local derivation_mode derivation_mutation derivation_losses
+  local -a derivation_python
+  for derivation_mode in normal optimized; do
+    derivation_python=(python3)
+    [ "$derivation_mode" = optimized ] && derivation_python+=(-O)
+    out="$("${derivation_python[@]}" scripts/probe_matched_gpr_derivation.py 2>&1)"; rc=$?
+    arm "GREEN source-derived GPR values $derivation_mode" "$rc" 0 "$out" "MATCHED-GPR-DERIVATION: 23 tests / 0 failures / 0 errors; no qualification"
+    while IFS=: read -r derivation_mutation derivation_losses; do
+      out="$("${derivation_python[@]}" scripts/probe_matched_gpr_derivation.py --mutation "$derivation_mutation" 2>&1)"; rc=$?
+      arm "RED source-derived GPR $derivation_mutation $derivation_mode" "$rc" 1 "$out" "MATCHED-GPR-DERIVATION: 23 tests / $derivation_losses failures / 0 errors; no qualification"
+    done <<'SOURCE_EXPECTATION_CASES'
+source-preflight:2
+expectation-bounds:4
+witness-copy:1
+program:1
+fixed-entry:1
+exclusions:3
+declared-events:3
+source-forward:21
+budget-forward:12
+source-reopen:29
+context-program:1
+unfetched:2
+whole-budget:2
+value-comparison:6
+witness-change:1
+zero-value:1
+baseline-fingerprint:1
+facts-frozen:1
+check-frozen:1
+SOURCE_EXPECTATION_CASES
+  done
+
   printf 'GUEST-GEN --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

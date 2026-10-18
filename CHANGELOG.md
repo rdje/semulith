@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## _(2026-10-18)_ — source-derived GPR value binding (P4-SYSTEM.14 a42p)
+
+Add bounded immutable-source/baseline comparison through the existing author and mapper: all GPR changes, copied typed witness, stock derivation and structured differences. Preserve byte-unit contracts; event/producer/property/qualification work remains explicit. Verify23 controls/19 omissions normal/O, legacy52/14 unchanged and125 canonical matches/3794 steps; preserve closed records and whole history entries within fixed caps. No CPU or board status promotion.
+
 ## SEMULITH-P4-0257 (leaf P4-SYSTEM.14) — derive expectation snapshots from immutable source
 
 - Add a bounded frozen-observation API through the existing spec-side author. Reuse canonical source/context validation, consume supplied bytes without reopening a program path, retain actual modified instruction bits and initial image identity, and keep stock notes and explicit budgets. Source controls explicitly unsupported on this route; legacy file behavior stays exact.

@@ -1,5 +1,65 @@
 # DEV_NOTES.md
 
+## _(2026-10-18)_ — bind source-derived GPR expectations (P4-SYSTEM.14 a42p)
+
+P4-0258 starts after clean a979c20, brief0/untracked and host census0. Own the
+consumer before edits. Minimal ownership reaches131009B; retain the whole2690B
+closed a42o body in existing include-source-validator, old124482B prefix exact.
+Artifact128375B/root128497B stay within fixed caps and107-member task family.
+Metadata binds full source/owner/retired identities, insertion, body offset and
+exact inverse; six damaged cases refuse. The active unit records the inverse
+procedure; original12 authority, old headings/archives/seals remain unchanged.
+
+Declare API in GC References before code. Add compare_source_expectation through
+the existing comparator mapper and snapshot author, not another numeric engine.
+Preflight source/expectation bytes<=1MiB, source UTF8/8192 lines, exact program,
+1..4096 budget and copied canonical typed witness before tool reads. Require
+explicit fixed entry, complete ordered expectation and complete returned context.
+Compare every GPR change as RV64 integers, not just the witness. Return frozen
+source/expectation identities, stock derivation and structured first difference;
+a zero-valued change remains a witness. No artifact reopening, outputs/reference
+processes, raw payload escape or original-capture chronology claim. Unsupported
+source controls/semantics, exclusions and event/unfetched boundaries stay explicit.
+Prose, fetch counts and negative metadata earn no additional semantic credit.
+Producer/property/collector/full-policy review and evaluator composition remain.
+
+Before proof: supplied trace/expectation both claim9 while source derives1;
+old byte-unit contract is satisfied, new source check fails with exact sets. This
+extends an explicitly incomplete boundary; it is not an old qualification bug.
+Permanent API checks first fail2/2/0 and then pass. Initial fixture mistakenly
+called sexp.render_forms:1failure/1error, uncredited; use records_sexp's owner.
+Initial source-reopen omission escapes two direct positive helpers (23/27/2);
+make their no-escape contract an assertion, retain the existing-file wrong-source
+counterexample, and credit only the final zero-error matrix. Two old comparator
+omission needles became ambiguous; preserve their predicates exactly and use
+named exclusions/explicit None in the new consumer. All old bodies stay exact.
+Format the new probe with black24.10.0 installed only under this task's target;
+cache/temp/pycache stay on-volume. AST before/after is identical; no runtime or
+project dependency added.
+
+Normal/O:23 tests/0 failures/0 errors,19 omissions all assertion losses; vectors
+2/4/1/1/1/3/3/21/12/29/1/2/2/6/1/1/1/1/1. Legacy52 tests/14 omissions retain identical
+losses normal/O (6/1/8/1/3/1/10/6/1/1/7/6/5/4). Canonical capability census:167
+accounted,125 match/3794 steps,41 unsupported (17 source,17 declared event,7
+exclusion); min-fencei has no changing GPR witness and earns no method credit.
+No fixture rewritten or qualified. Register40 runtime arms; derived literal arm
+census1586. Three whole oldest DEV entries (5680B) shard unchanged to0344; exact partition and
+manifest prefix checks remain required. P4 stays14/18, replay4/4green, BOARD10/12.
+Promotion declined: existing source/value/snapshot contracts, no new policy.
+Scope normal/O protects1502 other files/86 prior entries and the complete retained
+source/owner inverses;15 focused checks,7 books/3282 links and the three-line
+example pass. Scope tool initially selected its own heading twice; bounded delta
+diagnostic proves that marker typo, repaired before credit. The sole Git whitespace
+diagnostic is inherited EOF on0344:87; preserve full source suffix. Normal COMMIT next.
+The first normal hook refused GUEST-GEN396/4: old entry-context required-program
+and program-identity needles also matched the new API, normal/O. Focused scope
+had missed this consumer. Own before repair; anchor only those two probe selectors
+to their original public function's clauses. All production bodies remain exact.
+A sweep of all four comparator consumers checks56 selector sites, now singular.
+Entry25/16 and program23/7 matrices pass normal/O with identical assertion losses,
+zero errors; old52/14 and new23/19 stay unchanged. Normal COMMIT retry required.
+Evidence: target/p4-system-14/a42p.
+
 ## _(2026-10-18)_ — derive immutable-source expectation snapshots (P4-SYSTEM.14 a42o)
 
 P4-0257 starts after clean b3b7af2, brief0/untracked and host census0. Own the
@@ -609,86 +669,4 @@ the latest receipt, already included by the book; original teaching/source,
 prior history/modes/Gitlinks and fixed limits stay exact. Focused13/seven books,
 normal/print receipt and inverse verification plus normal COMMIT qualify the
 housekeeping. LIVE_STATUS unchanged; next terminal D79 capture/causal analysis.
-
-## _(2026-10-17)_ — select the reviewed terminal mdBook before preparation (LIVE-CONTAINMENT.4i2b5b2r.d2v)
-
-The user's packet-20261017T222353Z-1bef02 stops at the frozen public mdBook
-version guard before sudo. It has working-before/compiler records but neither
-version stdout nor failure.json: the initial preparation was outside the failure
-recorder. Census finds project/Homebrew0.5.4 and user Cargo0.5.2. The original
-terminal resolution was not recorded, so its exact executable is unknown.
-Cargo-first PATH independently reproduces the same refusal with stdout0.5.2.
-
-The capture entrypoint now runs the existing install_ci_mdbook.sh, which checks
-the pinned release archive checksum and installs only under .app-data/ci-tools.
-Validate owned cache/binary paths against links, Git boundaries and other volumes
-before setup; retain setup stdout/stderr/status, exact version response and
-selected binary SHA. Only that invocation's PATH receives the local bin prefix.
-Keep the original exact0.5.4 guard and all old forensic producers byte-exact.
-Check the selected binary identity again after the workload. Move compilation,
-version/calibration and immutable preparation inside the failure recorder.
-No shell profile, global mdBook, permission or sudo policy is changed.
-
-All33 controls pass normal/O: original24 remain, plus old-first selection through
-the actual frozen guard, wrong/stderr/nonzero version, failed installer, missing/
-symlink binary and early setup/compiler failure persistence. Controls use an
-isolated unprivileged installer; the real checksum installer is verified by the
-native check. Cargo-first --check-preparation rc=0 rebuilds fixed inputs, runs
-WebKit calibration and closes four servers with no sudo. Selected binary SHA
-49f163c7a5a9d0a4fc9cacf34bd0b96b11801458effddb1b7e951377af909d8e.
-Raw evidence: target/live-containment/capture-version and packet-20261017T223050Z-6ac03d.
-
-Retain whole closed LC0044/45/47 task spans from4c14bf7 byte-exact in the existing
-reader-records-retention.md LC0048 phase, preserving headings/pointers and fixed
-caps. Two oldest whole DEV entries move to0335; prior head/shard bytes and order
-remain recoverable. The book's canonical include explains automatic version
-selection, logs and why this failure cannot ask for a password. Focused gates,
-seven books, source/history/retention verification and normal COMMIT qualify
-this repair. D79 remains priority1/open pending terminal capture/causal analysis;
-D80 follows. LC0047 app disposition and due cleanup remain separately owned.
-
-## _(2026-10-17)_ — application disposition blocks handoff (LIVE-CONTAINMENT.4i2b5b2r.d2)
-
-After dafb073, the actual host handoff census returns1 for Kimi Code PID5950.
-Scoped lsof -Ffan shows only AGENTS.md, read-only fds84/87. Read handles count
-under the published detector; this observation is not a detector/code defect.
-doctrine/sanctioned_processes.tsv reserves exemptions to the director. Closing
-another app could disrupt work, so no termination or exemption is authorized.
-LC0047 owns release/director disposition before clean handoff, priority2. The
-capture tool and D79 causal evidence stay unchanged and ready for terminal use.
-
-## _(2026-10-17)_ — one terminal command for scoped packet evidence (LIVE-CONTAINMENT.4i2b5b2r.d2)
-
-The director requests a single terminal tool for the blocked D79 packet leg.
-capture_book_dependencies.py prepares immutable LC0044 inputs through existing
-public helpers, calibrates nonpersistent WebKit and reserves all four origins
-before one sudo tcpdump starts. Only that system binary gains privilege; Python,
-builds, journals, packet file descriptors and browser workers stay user-owned.
-The IPv4 TCP filter requires both endpoints127.0.0.1 and a reserved owned port;
-96-byte snapshots,200000 packets and600seconds bound capture. Native startup
-acknowledgement precedes replay. Source/current phases each run two servers with
-two workers. SIGINT/TERM/HUP unwinds cleanup; pending pages cancel, active pages
-join, sudo relays the stop signal to tcpdump, and the child is waited. A stopped
-capture, missing/drop counters, out-of-scope/truncated pcap or changed source
-refuses rather than reporting complete evidence. Raw journals survive refusal.
-
-Normal/O controls use real unprivileged substitute children and an independent
-offline system tcpdump oracle: malformed scope/pcap, missing ports, counter/drop
-faults, authentication denial, startup/deadline, interruption, pending cancellation
-and whole observation streaming. They do not claim actual privileged capture.
-The real native preparation path initially exposed a tmp-name collision with the
-frozen builder. Use environment-tmp for caller defaults, preserving the builder's
-own tmp allocation. --check-preparation validates the corrected actual public path
-and four server closures without sudo. Initial sandbox WebKit refusal is separated
-from the host-native check; no browser diagnostic is suppressed or blessed.
-
-Existing tracers/producers/retained captures remain unchanged. The book includes
-the toolbox's bounded capture contract, preserving its previous D79 paragraph
-byte-exact in that canonical anchor. The draft duplicate exceeded the book
-aggregate; inclusion restores room without raising a cap. The contract explains
-the sole user command and generated paths. No permission changes, new decision
-file, capacity increase or acceptance claim. D79 remains open until the user's
-authorized terminal capture and causal analysis; passing repeats cannot close it.
-Six whole oldest CH entries roll to0334 with exact byte/order reconstruction;
-focused gates/seven books and normal COMMIT qualify tool delivery only.
 

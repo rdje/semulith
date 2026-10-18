@@ -9,7 +9,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [Exact token facets](decision_exact-token-facets.md) | `decision` | strict token ends, generic searches;91 field controls |
 | [Append-history predecessors](decision_append-history-predecessors.md) | `decision` | exact old bodies/order through sharding; staged and working proofs; failed Git reads refuse |
 | [Book record navigation](decision_book-record-navigation.md) | `decision` | included and cross-unit links; fresh catalogue/path/fragment gate; shared viewing root |
-| [Sail GPR comparison](decision_sail-gpr-comparison-method.md) | `decision` | Sail GPR: byte/image, input/impact findings and snapshot author; complete adequacy/collection pending |
+| [Sail GPR comparison](decision_sail-gpr-comparison-method.md) | `decision` | Sail GPR: byte/image, input/impact and source-value checks; complete adequacy/collection pending |
 | [Matched experiment contract](decision_qualified-matched-experiment-contract.md) | `decision` | matched-GPR syntax, authenticated evaluation and input/impact review; qualification/retention pending |
 | [Obligation parts](decision_obligation-catalog-parts.md) | `decision` | explicit root-relative parts share one expansion owner; frozen bytes/order and fixed caps survive partition |
 | [`decision_claim-verification-adopted.md`](decision_claim-verification-adopted.md) | `decision` | "checked" means re-derived, falsified and durable; a missing leg is named, never omitted |

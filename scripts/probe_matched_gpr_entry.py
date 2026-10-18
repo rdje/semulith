@@ -176,7 +176,9 @@ class EntryTests(unittest.TestCase):
 
 
 MUTATIONS = {
-    "required-program": ('if program is None:', 'if False:'),
+    "required-program": (
+        'if program is None:\n        raise UnitError("image context requires an explicit parent program")',
+        'if False:\n        raise UnitError("image context requires an explicit parent program")'),
     "program-type": ('if program is not None and (type(program) is not str or not 1 <= len(program) <= 65536):', 'if False:'),
     "budget-cap": P.MUTATIONS["budget-cap"],
     "byte-bounds": P.MUTATIONS["byte-bounds"],
@@ -187,7 +189,9 @@ MUTATIONS = {
     "raw-schema": P.MUTATIONS["raw-schema"],
     "root-count": P.MUTATIONS["root-count"],
     "step-sequence": P.MUTATIONS["step-sequence"],
-    "program-identity": ('if doc["program"] != program:', 'if False:'),
+    "program-identity": (
+        'doc = _expectation(payload, instructions, "image expectation")\n    if doc["program"] != program:',
+        'doc = _expectation(payload, instructions, "image expectation")\n    if False:'),
     "explicit-entry": ('if type(entry) is not str:', 'if False:'),
     "rv64-range": P.MUTATIONS["rv64-range"],
     "entry-forward": ('_rv64(entry, "image expectation entry")', '_rv64("0x0", "image expectation entry")'),

@@ -395,3 +395,56 @@ This is an open defect, not evidence of resource correctness or a retained raw D
 ```json
 {"schema_version":1,"original_path":"docs/book/book/print.html","source":"5c72864f071b2b097a392c352d842f76c6096edf","base":"LC0043 normal fixed print browser metadata","base_fingerprint":{"canonical_bytes":151728,"canonical_sha256":"2d28b9c88d5a516179bdc505474736b92d9636efd9ed3d3ec77fcb145496e5cd"},"witness_fingerprint":{"canonical_bytes":151805,"canonical_sha256":"1474b159a99d32b742e5f21a8b67f16807a4881a26a7ab9042d46c4835f1b725"},"witness_changes":[[["errors"],[{"message":"ReferenceError: Can't find variable: Mark","line":12,"column":14}]]],"dom_bytes":979929,"dom_sha256":"aa1e984be66949e599750f6f22d94b9127f90b188147c2b529f2b20f9f75b2ea","stderr_bytes":0,"stderr_sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","refusal":"browser witness reports an incomplete or failed script run","dependency_delivery":"unknown; original HTTP observations were not returned on refusal","status":"open; immediate priority1 SEMULITH-LC-0044"}
 ```
+
+## P4 a42p — complete closed snapshot-author record
+
+Source/owner/full inverse below; original prefix unchanged. No archive seal or cap changes.
+
+<a id="p4-a42p-o"></a>
+
+```json
+{"schema":1,"revision":"a979c201f0f1ba637fbd2bfa254db95202325fd6","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130805,"source_sha256":"90f34603bcca9fc2f59fc18e616333d48c92b4b395094bd09e7448eab06f7ae0","owner_insert":{"offset":37065,"text":"### `.14` a42p — bind source-derived GPR values (active, SEMULITH-P4-0258)\n\nOwn snapshot/expectation value binding, controls, book sync and normal COMMIT;\nretain the complete closed a42o record first.\n\n"},"owner_bytes":131009,"owner_sha256":"eff7ccd2f494441346689c943761a09e24f9e67215ea6729e24c71540f968bf0","offset":37269,"record_bytes":2690,"record_lines":40,"record_sha256":"863a616e13f5a1632185a852efef45d4d637de0c2012afab935547e7bb003ba1","replacement":"### `.14` a42o — derive expectations from immutable source (completed, SEMULITH-P4-0257)\n\n[Complete record](artifacts/live-containment/include-source-validator.md#p4-a42p-o).\n\n","retired_bytes":128497,"retired_sha256":"c2c0121a362962e3cfbf597dffd2ea74cc9584dd222cd96a36e8175ebf491b88"}
+```
+
+````text
+### `.14` a42o — derive expectations from immutable source (completed, SEMULITH-P4-0257)
+
+Own a bounded snapshot API through the existing spec-side author, not a second
+numerical interpreter. Reuse byte/line preflight and canonical assembler context;
+consume the supplied immutable source, preserve exact legacy file-route output,
+and return frozen GPR-change observations/provenance under the existing rules.
+Declare API/bounds/stock-annotation scope in GC References before code. Own
+preflight/path-independence, mixed-width/fault/loop/copying and normal/O omission
+controls, books/live sync and normal COMMIT. Qualification remains closed.
+
+Capacity prerequisite complete: whole3334B a42l2 retained in the existing
+include-source-integration artifact, old126277B prefix exact; six damaged cases
+refuse. Metadata binds the b3b7af2 source, ownership insertion, payload offset and
+complete source/owner/retired identities. To reconstruct, undo only this unit's
+later ownership/acceptance/verification/commit/frontier edits to the recorded
+retired view; verify retired hash, replace its unique stub with the exact body
+at offset, verify owner hash, remove owner_insert.text at its offset, then
+verify source length/hash. No prior archive, seal, native heading or cap changes.
+Evidence: target/p4-system-14/a42o. Reader authority remains the original12.
+
+Owned initial defect: unknown assembly lets AsmError escape the declared
+SnapshotError boundary. Reproduce with not_an_instruction; callers cannot
+handle the promised exception. red-classification.json/log:2tests/1failure,
+0errors. Typed conversion fixed it:2/0/0; no numeric expectation changes.
+
+Verified:21 controls/15 omissions normal/O,33 shared-image controls/17 omissions;
+all losses assert without errors. Legacy208 outputs exact;133 supported guests /
+4044 steps match,34 source-control guests explicitly unsupported. Scope protects
+1498 other files/85 prior entries;15 focused checks,7 books/3280 links and literal
+example pass. No qualification/status promotion; normal COMMIT required next.
+
+Own hook regression before repair: GUEST-GEN353/7. Six author mutants load a
+dataclass module without sys.modules registration; explicit-budget mutant still
+targets old program-map naming and raises TypeError. Reproduce: old registered
+probe commands in target/guest-gen/self-test.log. Impact: semantic negative
+controls crash instead of discriminating. Fix both existing probe loaders/sites,
+retain all seven intended normal-mode reasons; rerun full GUEST-GEN and COMMIT.
+Fixed: register author mutants before execution and target program_units.
+legacy-controls.py rc=0:17 existing cases retain exact verdict/reason; no crashes.
+
+````

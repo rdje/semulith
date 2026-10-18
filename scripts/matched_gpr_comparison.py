@@ -9,11 +9,14 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import dataclass
 from functools import lru_cache
+import hashlib
 from pathlib import Path
 import re
 
+import derive_rv64gc_expectations as Author
 import check_sexp_schema as K
 import dossier_sexp as D
+import matched_gpr_image as G
 import run_rv64gc_sail as Sail
 import sexp as S
 
@@ -211,3 +214,96 @@ def compare_unit(*, instructions: int, witness: GprWitness,
         return failed("control must diverge at exactly the witnessed complete GPR change sets")
     return ComparisonUnit(
         "satisfied", "finite supplied-byte comparison satisfied; authentication and qualification pending", runs)
+
+
+@dataclass(frozen=True)
+class SourceExpectationFacts:
+    derivation: Author.SnapshotDerivation
+    expectation_size: int
+    expectation_sha256: str
+    witness: GprWitness
+    witness_value: int | None
+
+
+@dataclass(frozen=True)
+class SourceExpectationCheck:
+    disposition: str  # matched / failed / refused / unavailable / unsupported
+    reason: str
+    facts: SourceExpectationFacts | None = None
+    difference: Sail.GprDifference | None = None
+
+
+def compare_source_expectation(*, source: bytes, baseline_expectation: bytes,
+                               instructions: int, program: str,
+                               witness: GprWitness) -> SourceExpectationCheck:
+    """Bind complete supplied GPR expectations to the existing snapshot author.
+
+    This ordinary-fetched-boundary consumer checks values and a typed witness.
+    Authentication, producer/property review, event binding and qualification are
+    separate. Canonical schema/tool reads remain explicit; no artifact is reopened.
+    """
+    try:
+        if program is None:
+            raise UnitError("source expectation requires an explicit parent program")
+        _parent_context(instructions, program)
+        _bounded(source, G.SOURCE_BYTES, "source", empty=False)
+        _bounded(baseline_expectation, EXPECTATION_BYTES, "baseline expectation", empty=False)
+        if (type(witness) is not GprWitness or type(witness.step_n) is not int
+                or not 0 <= witness.step_n < instructions or type(witness.register) is not str
+                or _REGISTER.fullmatch(witness.register) is None):
+            raise UnitError("witness must name an in-budget boundary and canonical x1..x31")
+        selected = GprWitness(witness.step_n, witness.register)
+        G.prepare_guest_source(source, program=program, entry=Author.ENTRY)
+    except UnitError as exc:
+        return SourceExpectationCheck("refused", str(exc))
+    except G.ImageError:
+        return SourceExpectationCheck("refused", "source preflight refuses")
+    try:
+        doc = _expectation(baseline_expectation, instructions, "baseline expectation")
+        if doc["program"] != program:
+            raise UnitError("expectation program differs from parent")
+        if type(doc.get("entry")) is not str:
+            raise UnitError("source expectation requires an explicit string entry")
+        entry = _rv64(doc["entry"], "source expectation entry")
+    except UnitError as exc:
+        return SourceExpectationCheck("refused", str(exc))
+    if entry != Author.ENTRY:
+        return SourceExpectationCheck("unsupported", "entry exceeds the snapshot author's fixed cold context")
+    excluded = doc.get("cross_model") is False or "expect_divergence" in doc or "refuse" in doc
+    if excluded:
+        return SourceExpectationCheck("unsupported", "expectation exclusions need another method")
+    if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"])
+           or Sail.DECLARED_INTERRUPT.match(step["derivation"]) for step in doc["step"]):
+        return SourceExpectationCheck("unsupported", "declared event boundaries need typed event binding")
+    try:
+        derived = Author.derive_snapshot(source, program=program, instructions=instructions)
+    except Author.SnapshotUnsupported:
+        return SourceExpectationCheck("unsupported", "source exceeds the snapshot author's supported semantics")
+    except Author.SnapshotUnavailable:
+        return SourceExpectationCheck("unavailable", "canonical snapshot author context is unavailable")
+    except Author.SnapshotError:
+        return SourceExpectationCheck("refused", "source derivation refuses")
+    if (type(derived) is not Author.SnapshotDerivation or derived.program != program
+            or type(derived.instructions) is not int or derived.instructions != instructions
+            or derived.entry != entry or derived.source_size != len(source)
+            or derived.source_sha256 != hashlib.sha256(source).hexdigest()
+            or type(derived.steps) is not tuple or len(derived.steps) != instructions
+            or any(type(step) is not Author.SnapshotStep or type(step.n) is not int or step.n != n
+                   for n, step in enumerate(derived.steps))):
+        return SourceExpectationCheck("refused", "snapshot author result differs from requested context")
+    if any(step.instruction_bits is None or step.instruction_length is None for step in derived.steps):
+        return SourceExpectationCheck("unsupported", "unfetched boundaries need typed event binding")
+    value = dict(derived.steps[selected.step_n].writes).get(int(selected.register[1:]))
+    facts = SourceExpectationFacts(derived, len(baseline_expectation),
+                                   hashlib.sha256(baseline_expectation).hexdigest(), selected, value)
+    for step, expected in zip(derived.steps, doc["step"]):
+        observed = tuple(sorted((f"x{reg}", val) for reg, val in step.writes))
+        wanted = tuple(sorted((reg, int(val, 16)) for reg, val in expected["writes"].items()))
+        if observed != wanted:
+            return SourceExpectationCheck(
+                "failed", f"baseline GPR changes differ from source at step {step.n}", facts,
+                Sail.GprDifference(step.n, observed, wanted))
+    if value is None:
+        return SourceExpectationCheck("failed", "witness is not an actual derived register change", facts)
+    return SourceExpectationCheck(
+        "matched", "complete source-derived GPR changes and witness match; qualification pending", facts)

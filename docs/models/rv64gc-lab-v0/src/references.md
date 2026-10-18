@@ -340,3 +340,117 @@ Legacy controls also preserve their intended failure reasons for reserved bits,
 division rounding, page permissions and explicit budgets past the source end.
 The temporary mutant loaders and map target follow the shared author's new shape;
 an import/type crash cannot substitute for a discriminating semantic failure.
+
+## Source-derived GPR expectation binding (a42p)
+
+The pure byte API `compare_source_expectation` in
+`scripts/matched_gpr_comparison.py` implements this bounded value check:
+
+```python
+checked = compare_source_expectation(
+    source=source_bytes, baseline_expectation=expectation_bytes,
+    instructions=3, program="division.s", witness=GprWitness(2, "x3"))
+```
+
+Both payloads must be plain immutable bytes, nonempty and at most 1 MiB.
+The program is an exact plain string of 1–65,536 characters; the instruction
+budget is an exact integer of 1–4,096. The copied typed witness names an in-budget
+step and canonical `x1`–`x31`. Preflight source UTF-8/8,192 lines and all supplied
+shapes/bounds before schema or assembler tool reads. There is no artifact path,
+source reopen, output or reference process. Tool/schema reads are explicit; payload
+bounds are not exact RAM or time limits. The caller owns authentication and the
+aggregate read/payload budgets when composing this API.
+
+The existing expectation mapper validates exactly one complete ordered baseline
+document and RV64 GPR values; no second loader is introduced. Require the exact
+program/budget and an explicit RV64 entry. A valid entry outside the snapshot
+author's fixed cold context is unsupported. Cross-model exclusions, declared
+profile divergence and fault injection remain unsupported. Declared delivery/wait
+labels or derivation markers, and any source boundary without a complete fetched
+instruction, need a later typed event binding. This first consumer therefore
+credits ordinary fetched GPR changes only, including mixed widths and changed
+instruction memory. Source directives cannot override the stock numerical rules.
+
+Derive once through `derive_snapshot`; bind its complete context/step sequence
+to the request. Compare every step's complete GPR change set as RV64 integers,
+including missing/extra changes, before accepting the named witness. Matching
+only the witness is insufficient. The witness must actually change its selected
+register; x0 and unchanged-register invariants need another observation method.
+Expectation instruction labels and source/derivation prose confer no semantic
+authority. Fetch-count and negative-observation metadata earn no additional credit.
+
+The frozen `SourceExpectationCheck` has `disposition`, `reason`, optional `facts`
+and optional structured `difference`. `facts` contains the frozen public snapshot
+derivation, baseline byte size/SHA256, copied witness and its derived RV64 value
+(`None` when the register does not change).
+The snapshot includes source/payload identities, actual instruction bits/PCs and
+stock source/derivation text. It contains no raw source or expectation bytes.
+A difference records the first step and complete derived/expected GPR sets;
+matched and failed value checks retain their independent derivation facts.
+
+`matched` means the supplied source derives all these GPR changes and the witness;
+`failed` means coherent GPR data differs or the witness is not an actual change.
+Malformed inputs or contradictory returned context are `refused`; unavailable
+canonical author context is `unavailable`; unsupported source/event/context is
+`unsupported`. Existing schema-tool failure classification stays with the shared
+expectation decoder. Unexpected programming failures propagate. No result grants
+artifact authenticity, original-capture chronology, producer authenticity or
+ancestry, source/requirement adequacy, reference PC/encoding equality, full method
+qualification or CPU acceptance. The existing three-run and retained-evaluator
+APIs keep their contracts; composition is a later owned slice.
+
+Run this complete synthetic example from the repository root. It derives both
+boundaries, then detects a changed value in the supplied expectation; no reference
+process or capture is involved.
+
+```bash
+python3 - <<'PY'
+import sys
+sys.path.insert(0, 'scripts')
+import dossier_sexp as D
+import records_sexp as R
+from matched_gpr_comparison import GprWitness, compare_source_expectation
+
+source = b'addi x1, x0, 5\nc.addi x1, 1\n'
+doc = dict(program='example.s', entry='0x80000000', instructions=2, step=[
+    dict(n=n, insn='example', writes={'x1': hex(value)},
+         derivation='synthetic example', source='illustration')
+    for n, value in enumerate((5, 6))])
+
+def compare():
+    return compare_source_expectation(
+        source=source, baseline_expectation=R.render_forms([D.expectations_to_form(doc)]).encode(),
+        program='example.s', instructions=2, witness=GprWitness(1, 'x1'))
+
+matched = compare()
+print(matched.disposition, matched.facts.witness.step_n,
+      matched.facts.witness.register, matched.facts.witness_value)
+doc['step'][1]['writes']['x1'] = '0x7'
+failed = compare()
+print(failed.disposition, failed.difference.step_n,
+      failed.difference.observed, failed.difference.expected)
+doc['entry'] = '0x80000002'
+print(compare().disposition)
+PY
+```
+
+```text
+matched 1 x1 6
+failed 1 (('x1', 6),) (('x1', 7),)
+unsupported
+```
+
+`python3 scripts/probe_matched_gpr_derivation.py` and its `python3 -O` variant
+each pass 23 tests; 19 omissions each lose assertions with zero errors. Existing
+52-test byte-comparison controls and 14 omissions retain identical normal/optimized
+results. Canonical capability checks account for all 167 guests: 125 match over
+3,794 steps, 41 are explicitly unsupported (17 source-control/semantic, 17 event-boundary,
+seven expectation-exclusion cases). `min-fencei.s` has no changing GPR witness and
+gets no credit from this method. Those checks neither regenerate the fixtures nor
+qualify a capture, requirement or processor.
+
+The original entry-context probes retain 25 tests/16 omissions, and program
+context retains 23/7, normally and optimized. Their selectors target the original
+public guards explicitly; all 56 omission sites across the four comparator
+consumers are singular. An ambiguous selector is a harness refusal and earns no
+semantic-control credit.
