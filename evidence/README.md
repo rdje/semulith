@@ -4,7 +4,8 @@ This bounded index owns one prepared case:
 `evidence/rv64gc-signed-div-truncation-v2/`. P4-SYSTEM.14 a42af curates its inputs;
 the [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md) explains their
 producers, exact identities and verification. No canonical observations or
-qualification are supplied by preparing these files.
+qualification are supplied by preparing these files. P4-SYSTEM.14 a42al now retains
+the exact native declarations described in the [capture plan](../docs/models/rv64gc-lab-v0/src/capture-plan.md#retained-native-predeclarations).
 
 ## Declared files and lifecycle
 
@@ -12,15 +13,20 @@ qualification are supplied by preparing these files.
 | --- | --- | --- |
 | Prepared inputs | `guest.elf`, `reference-config.json`, `baseline.expected.sexp`, `control.expected.sexp` | 4 |
 | Fresh observations, still pending | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
-| Capture declaration/results, still pending | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp`, `measured-experiment.sexp`, `verification.json` | 5 |
+| Retained declarations | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp` | 3 |
+| Results, still pending | `measured-experiment.sexp`, `verification.json` | 2 |
 | Family index | This file, outside the case directory | 1 |
 
-Only the four prepared inputs and this index exist at this slice. Before a
-canonical run, commit the final entrypoint, exact manifest/authorities and planned
-record naming the twelve fresh outputs above. Collection must use the existing
-combined allowance protocol. Existing output names refuse reuse; failed and
-partial observations remain historical failure data. Never replace them to make
-a comparison pass. A corrected capture needs a separately owned declaration.
+The four prepared inputs, three declarations and this index are retained:8 files.
+The planned record's zero output hashes/sizes and process exits are placeholders;
+its AGREE/DIVERGE words are targets, not observations. There are no retained
+canonical traces, process receipts or measured results yet. Commit this exact
+declaration and the reviewed entrypoint before launching a canonical process.
+The command controls compare all three native files with the current generator;
+a source/input change therefore requires fresh declarations before execution.
+Collection uses the combined allowance protocol. Existing output names refuse
+reuse; failed/partial observations remain historical data. Never replace them to
+make a comparison pass. A corrected capture needs a separately owned declaration.
 
 S-expression remains the project's source-of-truth format. The JSON configuration
 and ELF image are reproducible interoperability artifacts for the reference's

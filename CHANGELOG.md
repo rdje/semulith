@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0280 (leaf P4-SYSTEM.14) — retain exact DIV capture predeclarations
+
+Retain the planned record,64-child manifest and73-input/author/impact declaration:
+41514B across three native documents, independently regenerated and pin-checked.
+Keep the8-file evidence family inside its fixed22-file/16MiB envelope; no Sail
+observations, measured results, qualification or CPU/board credit.
+
+Gate actual declaration currentness through18 controls normal/O, preserving the
+seven omission losses. Eighteen87-file copy outcomes bind or refuse before an
+explicit mocked collector; status/prose changes preserve the non-cyclic identity.
+Correct stale adjacent book teaching, preserve old examples and whole closed
+records3534B/inverses2/nine refusals; CH0371 whole1303B retained.
+Focused17/books7/examples4/surfaces5/scope pass; capacities fixed.
+Next fresh canonical processes after this declaration commit; full policy remains.
+
 ## SEMULITH-P4-0279 (leaf P4-SYSTEM.14) — compose the finite DIV command
 
 Compose the fixed DIV plan,64-child manifest and separate73-input/author/impact
@@ -563,9 +578,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Remove24untracked Cargo incremental caches/155683881B after complete identity/safety preflight and unrestricted idle-host census. Immediate residue0, all9225retained input/evidence files/128863947B byte/hash-exact; four nested Git roots skipped. Altered SHA/totals refuse normal/O; no code/input deletion.
 - Include the overwritten latest record directly in book normal/print; source shrinks within fixed cap. Focused12/sharder12/seven books/navigation and complete task/book/head/history/scope invariants pass; LIVE/canonical/CPU unchanged. D48 scaffold-retention risk owned next in P4 a42j/0245; no fullCI/push for housekeeping.
-
-## SEMULITH-P4-0244 (leaf P4-SYSTEM.14) — fail closed on unavailable handoff census
-
-- Fix D47: ps/lsof errors, stderr and empty/whitespace snapshots return2 without handoff OK; preserve successful detection/advisory/authority rules. Clean owned on-volume stderr on normal/refusal and catchable exits; actual restricted ps exit126 now refuses, host-view census passes. Restore complete help and single-option arity.
-- 19 synthetic subprocess cases pass normal/O; parent loses11, independent status/stderr/empty/TERM omissions lose2/2/4/1 with zero errors. Read-only/outside-cwd and named-checkout detection, advisories, real existing exemption data, usage and checkpointed TERM cleanup covered. Makefile gate/CI run the exact synthetic normal/O commands, keeping host census explicit; README/book sync,39 doctrines/1439 arms unchanged. Focused12/sharder12/seven books/3212 fresh+actual links/full normal+print/literal host example pass; whole source/task/CI inverses, history100/scope1367 bytes/modes/Gitlinks exact normal/O, real receipt+digest edits refuse. Whole DEV3180B to0270/CH647B to0271;63live+210sealed273logical. Locality57/57 normal/O/SEAM19 pass after correcting isolated REPO_ROOT binding; full hooks retry next. Cleanup due after this commit; canonical/GC/CPU/qualification unchanged.
 

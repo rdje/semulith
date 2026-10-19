@@ -486,7 +486,7 @@ def review():
             "loader trace covers only declared route",
             "current authority views are not flat execution inputs",
             "public authority snapshots/tool I/O remain separate from outer snapshots",
-            "native predeclaration, canonical execution and full policy pending",
+            "native declarations, reference execution and full policy require separate verification",
         ],
     }
 

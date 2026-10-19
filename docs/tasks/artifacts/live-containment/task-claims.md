@@ -1290,3 +1290,72 @@ a42aj: 31x2/38 matrix outcomes; legacy18x2+omissions/copy79/focused17/books7/exa
 ````text
 | `.14` a42aj | `SEMULITH-P4-0278` | final execution source/manifest/planned record/input-author-impact/capture/policy |
 ````
+
+## P4 a42al: retain complete closed composition records
+
+Whole source/owner reconstruction metadata and records follow.
+
+```json
+{"revision":"1609b05de17fe523cada0c5504a896dfe1f4c978","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130776,"source_sha256":"660f157f6ef8fd62f24d04bf751b394ffea35c410819a8f2f58f3c4bf9066acb","owner_insert":{"offset":32667,"text":"### .14 a42al / SEMULITH-P4-0280: retain DIV declaration (active)\n\n"},"owner_bytes":130843,"owner_sha256":"c4b05be07b914107ed31337f46b30fec511e6ae0a9b4fca7811a9a42f0660e8e","retired_bytes":127908,"retired_sha256":"83f6eca8133d4513bebd6c59de4652f2bc1709c26223c1b1d6a4c133332bc787","records":[{"unit":"a42ak","offset":32734,"bytes":1598,"lines":22,"sha256":"59029408fabb52ad77a23767cca68384754933c3f4cc0d6313dc9a08473935ed","anchor":"p4-a42al-a42ak-decision","replacement":"### .14 a42ak / SEMULITH-P4-0279: compose DIV command (completed)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-decision).\n\n"},{"unit":"a42ak","offset":44916,"bytes":805,"lines":6,"sha256":"a69a2c12fd29e0eafa57e444cd96b24fcfb7cbb1e6c154ca49897ddb28b4f8ec","anchor":"p4-a42al-a42ak-acceptance","replacement":"- [x] `.14` a42ak: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-acceptance).\n"},{"unit":"a42y","offset":47116,"bytes":907,"lines":6,"sha256":"93b9aff480ea14f0c71d08192d75a0511347c4fcfb58267ab8e622e78c69182c","anchor":"p4-a42al-a42y-acceptance","replacement":"- [x] `.14` a42y: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42al-a42y-acceptance).\n"},{"unit":"a42ak","offset":86254,"bytes":127,"lines":1,"sha256":"9e741fd98ba2bc1ddeb52e8989309bebff1a81daebd6ce8befa1982ed1d904f5","anchor":"p4-a42al-a42ak-verification","replacement":"a42ak: [complete verification](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-verification).\n"},{"unit":"a42ak","offset":117739,"bytes":97,"lines":1,"sha256":"b6b0d9ec863a95af15f28dfbfee884d98a0244ac5b3931aca3bea7956311a381","anchor":"p4-a42al-a42ak-commit","replacement":"| `.14` a42ak | `SEMULITH-P4-0279` | [complete record](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-commit) |\n"}]}
+```
+
+### p4-a42al-a42ak-decision
+
+````text
+### .14 a42ak / SEMULITH-P4-0279: compose DIV command (completed)
+
+Read-only native declaration and exact-predeclaration capture delegate existing
+owners:37 modules/64 children,73 independent inputs, selected identity, source
+property, snapshot author and conservative equal initial influence projections.
+No previous capture or independence claim. Three native documents each fit64KiB;
+preparation/tool I/O stays separate from combined128MiB/16MiB limits. Operator
+commits source/declarations first; returned measured findings stay unqualified.
+Seventeen copied84-file controls normal/O;16 exact matrix outcomes (omissions
+6/1/1/1/2/1/1,0 errors), legacy8+38 outcomes, focused17/books7/examples3/surfaces5.
+Six whole closed records3566B/source-owner inverses2/ten damaged refusals; whole
+DEV/CH entries5666B retained0369/0370. All caps fixed; CPU14/18/BOARD10/12 unchanged.
+Prototype fixture lacked binary before reuse check (controls-first.log rc=1);
+fixed with synthetic identity; exit7 and binary-free offline paths pass. Subcase
+cleanup moved to finally; injected assertion failures cannot contaminate later
+cases. Unavailable pin results preserve owner reason via CaptureUnavailable,
+without inventing errno; permission-denied control passes. These issues are closed.
+Evidence target/p4-system-14/a42ak; promotion declined (existing source-closure,
+bounded-reader and reviewed-authority rules). Next curate/commit exact native
+predeclarations, then three fresh Sail processes/full policy; no canonical output
+or qualification in this slice. Normal COMMIT required. Runtime P2 remains in ab.
+
+````
+
+### p4-a42al-a42ak-acceptance
+
+````text
+- [x] `.14` a42ak **REPRODUCE / ISSUE**: controls-first.log rc=1: missing binary preceded reuse; source lacked canonical composition.
+- [x] `.14` a42ak **ROOT CAUSE**: source-review.json/verify.py rc=0:37 modules/64 children, separate current views/73 inputs.
+- [x] `.14` a42ak **FIX**: run-controls.py rc=0:17 tests x2,16 outcomes; seven omissions lose6/1/1/1/2/1/1,0 errors.
+- [x] `.14` a42ak **ADDRESSED**: controls-normal.log rc=0:3 fresh synthetic PIDs, all27 values, binary-free offline pending, reuse/exit7 preserved.
+- [x] `.14` a42ak **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples3/surfaces5; legacy authority8/review38 exact.
+- [x] `.14` a42ak **LOCKSTEP**: verify.py rc=0 normal/O:6 whole records3566B/inverses2/ten refusals; whole history5666B/caps fixed; no credit.
+````
+
+### p4-a42al-a42y-acceptance
+
+````text
+- [x] `.14` a42y **REPRODUCE / ISSUE**: before.py rc=0: base lacks independently enumerated capture review; caller inventory only.
+- [x] `.14` a42y **ROOT CAUSE**: run-controls.py rc=0 normal/O: population omissions lose2/2 cases; declared inputs alone cannot discover omitted producers/data.
+- [x] `.14` a42y **FIX**: explicit source-reviewed module/data sets, bounded import census/exercised loaders and separate live authority/retention plan.
+- [x] `.14` a42y **ADDRESSED**: run-controls.py rc=0 normal/O:22/0/0,10 omissions/0 errors; review65files/972963B,62children; image/author agree.
+- [x] `.14` a42y **NO REGRESSION**: verify.py rc=0 normal/O; focused.py rc=0: old tracked bytes/modes and history exact;15checks/seven books; fixed caps.
+- [x] `.14` a42y **LOCKSTEP**: verify.py rc=0: whole DEV/CH0351/0352 inverses, old gate exact outside registration, CPU/qualification unchanged. COMMIT applies.
+````
+
+### p4-a42al-a42ak-verification
+
+````text
+a42ak: 17x2/16 matrix outcomes; legacy8+38; focused17/books7/examples3/surfaces5; whole-source/history inverses rc=0 normal/O.
+````
+
+### p4-a42al-a42ak-commit
+
+````text
+| `.14` a42ak | `SEMULITH-P4-0279` | exact native predeclarations, then fresh Sail/full policy |
+````

@@ -220,7 +220,7 @@ def report(context):
                      "trusted quiescent runtime; no atomic-view or RAM guarantee",
                      "view hashes are provenance, not execution input pins",
                      "catalogue/contract integrity remains a repository gate obligation",
-                     "exact native declaration, canonical runs and full policy pending"])
+                     "native declarations, reference runs and full policy require separate verification"])
 
 
 @dataclass(frozen=True)

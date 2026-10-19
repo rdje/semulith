@@ -58,7 +58,7 @@ rather than reset its allowance for that evaluation. The evaluator now accepts
 that [remaining allowance](read-allowance.md). The public
 [capture_and_evaluate composition](unit-evaluation.md) now carries it across
 both stages. The [composed command](capture-plan.md#the-composed-div-command) delegates it;
-native predeclaration/publication and full adequacy remain pending.
+native predeclarations are retained; canonical publication and full adequacy remain pending.
 
 ## Results and failures
 

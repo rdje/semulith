@@ -126,8 +126,8 @@ outputs still need measurement against those bounds.
 Before any canonical run, commit the final entrypoint and exact manifest,
 property/author/impact authorities, output namespace and retention family. The
 prepared input pins, output namespace and retention family are now declared;
-the composed entrypoint now emits exact native declarations; curating and
-committing that manifest, planned record and authorities remains pending. The
+the composed entrypoint and its exact native manifest, planned record and
+authorities are retained. Commit them before canonical execution. The
 retained file set must support repeatable offline evaluation without relying on
 an acquired reference cache. The retained excerpt supplies the normative input;
 its original publication remains separate current authority. The binary remains a separately pinned replay dependency;
@@ -378,9 +378,9 @@ each lose one assertion with zero errors in both modes; existing thirteen guard
 omissions retain their measured losses. PROFILE-CONSISTENCY registers all outcomes.
 A copied 79-file runtime gives the same file facts and populations in both modes,
 with the valid parent checkout available as its working directory and no copied
-binary or `.materials` directory. It writes no canonical output. Final execution
-composition, exact manifest/planned record, independent inventory/author/impact
-reviews, three fresh captures and full policy/status evaluation remain pending.
+binary or `.materials` directory. It writes no canonical output. The composed
+entrypoint and native predeclarations are now retained; three fresh captures and
+full policy/status evaluation remain pending.
 
 ## The composed DIV command
 
@@ -447,9 +447,8 @@ PY_DIV_COMMAND
 
 It prints `64 73 snapshot-parcels-v1`, `matched`, then `3 True`.
 
-Before a canonical run, curate the three emitted documents at those exact native
-paths and commit them together with the reviewed entrypoint. These documents are
-not supplied by this source-composition slice. `capture_div.capture()` and CLI
+The three emitted documents are now retained at those exact native paths; commit
+them with the reviewed entrypoint before a canonical run. `capture_div.capture()` and CLI
 `--capture` regenerate the current declaration and authenticate every native
 predeclaration against its exact expected bytes before delegating collection.
 The operator owns the committed-predeclaration workflow; the command does not
@@ -484,7 +483,8 @@ python3 scripts/probe_div_command.py
 python3 -O scripts/probe_div_command.py
 ```
 
-Each mode runs17 tests with zero failures/errors. Controls cover missing/changed
+Each mode runs18 tests with zero failures/errors, including actual native-file
+currentness against the published package. Controls cover missing/changed
 native documents, prepared pins/sizes/links/Git boundaries, selected identity,
 authority drift, raw-schema-before-mapping, immutable facts, output reuse,
 failed-process preservation and CLI exit status. Injected assertion failures also
@@ -492,3 +492,47 @@ prove declaration subcases clean their fixtures before the next case. Guard
 omissions independently exercise declaration reads, authority stability, retained
 identity, raw schema and author/impact/property delegation. Their failure counts
 are registered in PROFILE-CONSISTENCY after being measured in both modes.
+
+## Retained native predeclarations
+
+P4-SYSTEM.14 a42al retains the exact three documents under
+`evidence/rv64gc-signed-div-truncation-v2/`. Each fits its64KiB bound; the command
+below derives the current byte sizes from the complete retained payloads. The
+evidence family now has8 files; its22-file/16MiB envelope and other caps stay fixed.
+No observation, measured experiment or verification result is supplied here.
+
+Verify the complete current native bytes without a binary or reference process:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_DIV_DECLARATION'
+import hashlib
+from capture_div import prepare_capture, declaration_files, PREFIX, ROOT
+from experiment_artifacts import read_snapshot
+
+d = prepare_capture()
+for name, payload in declaration_files(d):
+    record = dict(id=name, role="declaration", path=PREFIX + "/" + name,
+                  sha256=hashlib.sha256(payload).hexdigest())
+    snapshot = read_snapshot(ROOT, "input", record, max_bytes=65536)
+    if snapshot.pin.disposition != "matched" or snapshot.data != payload:
+        raise ValueError("native declaration differs: " + name)
+    print(name, len(snapshot.data), snapshot.data == payload)
+PY_DIV_DECLARATION
+```
+
+It prints all three names with their measured byte sizes and `True`. The command controls
+perform this actual-package comparison in both Python modes; changing producer
+code or a selected input makes stale declarations fail even before a Sail run.
+After observations exist, preserve their original declarations; an affected
+change needs a separately owned capture/revalidation workflow.
+The emitted JSON remains transport; these retained documents remain native
+S-expression. Planned output hashes/sizes/exits are unmeasured placeholders and
+AGREE/DIVERGE values remain claims to test.
+
+An87-file runtime copy also verifies the exact published declarations with no
+Git, acquired cache or executable. Its final collector is explicitly replaced by
+a recording delegate: no reference process runs. Six missing/changed native-file
+variants stop before that delegate. Derived requirement-status or unrelated
+parent-prose edits change current view hashes while preserving declaration bytes
+and the selected semantic identity; the status-output cycle stays excluded.
+The actual fresh baseline/repeat/control processes and full policy remain next.

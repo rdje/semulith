@@ -358,27 +358,29 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42al / SEMULITH-P4-0280: retain DIV declaration (completed)
+
+Exactly three native records41514B retained from current public generators;
+raw planned scope/64-child codec/73-input inventory and post-publication anchored
+pins/re-preparation pass. Fixed evidence family8files/68017B, all capacities fixed.
+Actual-package currentness control expands command suite17→18;16 outcomes retain
+losses6/1/1/1/2/1/1,0 errors. Source implementation changes only two diagnostic
+pending statements to stable separate-verification obligations. Legacy authority8/
+producer38/prepared4 outcomes exact. Copied87-file runtime:18 outcomes normal/O,
+no Git/materials/binary, valid parent cwd; explicit final mock only. Valid/status/
+prose bind; six missing/changed native states stop before delegation, no cycles.
+Adjacent book paragraph falsely kept final composition pending after0279; fixed,
+current declaration state synchronized, all old examples preserved. Seven books/
+five surfaces/four complete examples and focused17 pass. Five whole ak/y records
+3534B/source-owner inverses2/nine damaged refusals, whole CH0371 entry1303B exact.
+No canonical process, observations, measured result, qualification or CPU credit.
+Evidence target/p4-system-14/a42al; promotion declined (existing source-closure,
+currentness/bounded-retention rules). Next three fresh Sail processes, retain/
+evaluate outputs, then full policy. Normal COMMIT first; runtime P2 remains in ab.
+
 ### .14 a42ak / SEMULITH-P4-0279: compose DIV command (completed)
 
-Read-only native declaration and exact-predeclaration capture delegate existing
-owners:37 modules/64 children,73 independent inputs, selected identity, source
-property, snapshot author and conservative equal initial influence projections.
-No previous capture or independence claim. Three native documents each fit64KiB;
-preparation/tool I/O stays separate from combined128MiB/16MiB limits. Operator
-commits source/declarations first; returned measured findings stay unqualified.
-Seventeen copied84-file controls normal/O;16 exact matrix outcomes (omissions
-6/1/1/1/2/1/1,0 errors), legacy8+38 outcomes, focused17/books7/examples3/surfaces5.
-Six whole closed records3566B/source-owner inverses2/ten damaged refusals; whole
-DEV/CH entries5666B retained0369/0370. All caps fixed; CPU14/18/BOARD10/12 unchanged.
-Prototype fixture lacked binary before reuse check (controls-first.log rc=1);
-fixed with synthetic identity; exit7 and binary-free offline paths pass. Subcase
-cleanup moved to finally; injected assertion failures cannot contaminate later
-cases. Unavailable pin results preserve owner reason via CaptureUnavailable,
-without inventing errno; permission-denied control passes. These issues are closed.
-Evidence target/p4-system-14/a42ak; promotion declined (existing source-closure,
-bounded-reader and reviewed-authority rules). Next curate/commit exact native
-predeclarations, then three fresh Sail processes/full policy; no canonical output
-or qualification in this slice. Normal COMMIT required. Runtime P2 remains in ab.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-decision).
 
 ### `.14` a42aj — review current authority loaders (completed, SEMULITH-P4-0278)
 
@@ -613,12 +615,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42ak **REPRODUCE / ISSUE**: controls-first.log rc=1: missing binary preceded reuse; source lacked canonical composition.
-- [x] `.14` a42ak **ROOT CAUSE**: source-review.json/verify.py rc=0:37 modules/64 children, separate current views/73 inputs.
-- [x] `.14` a42ak **FIX**: run-controls.py rc=0:17 tests x2,16 outcomes; seven omissions lose6/1/1/1/2/1/1,0 errors.
-- [x] `.14` a42ak **ADDRESSED**: controls-normal.log rc=0:3 fresh synthetic PIDs, all27 values, binary-free offline pending, reuse/exit7 preserved.
-- [x] `.14` a42ak **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples3/surfaces5; legacy authority8/review38 exact.
-- [x] `.14` a42ak **LOCKSTEP**: verify.py rc=0 normal/O:6 whole records3566B/inverses2/ten refusals; whole history5666B/caps fixed; no credit.
+- [x] `.14` a42al **REPRODUCE / ISSUE**: publication.json/old book paragraph: three native declarations absent; stale composition-state teaching.
+- [x] `.14` a42al **ROOT CAUSE**: verify.py rc=0: independent37-module/64-child source set determines73 input identities and41514B.
+- [x] `.14` a42al **FIX**: curate.py/run-controls.py rc=0: exclusive/pin/re-preparation,18 controls x2/16 outcomes/0 errors.
+- [x] `.14` a42al **ADDRESSED**: copied.py rc=0:18 exact87-file outcomes, six native omissions/changes before mock, status/prose stable.
+- [x] `.14` a42al **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples4/surfaces5; legacy8+38+4 exact.
+- [x] `.14` a42al **LOCKSTEP**: verify.py rc=0 normal/O:5 whole records3534B/inverses2/nine refusals; CH0371 whole1303B/all caps fixed.
+- [x] `.14` a42ak: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-acceptance).
 - [x] `.14` a42aj: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-acceptance).
 - [x] `.14` a42ai: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-acceptance).
 - [x] `.14` a42ah: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-acceptance).
@@ -630,12 +633,7 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - [x] `.14` a42ab: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-acceptance).
 - [x] `.14` a42aa: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42aa-acceptance).
 - [x] `.14` a42z: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42z-acceptance).
-- [x] `.14` a42y **REPRODUCE / ISSUE**: before.py rc=0: base lacks independently enumerated capture review; caller inventory only.
-- [x] `.14` a42y **ROOT CAUSE**: run-controls.py rc=0 normal/O: population omissions lose2/2 cases; declared inputs alone cannot discover omitted producers/data.
-- [x] `.14` a42y **FIX**: explicit source-reviewed module/data sets, bounded import census/exercised loaders and separate live authority/retention plan.
-- [x] `.14` a42y **ADDRESSED**: run-controls.py rc=0 normal/O:22/0/0,10 omissions/0 errors; review65files/972963B,62children; image/author agree.
-- [x] `.14` a42y **NO REGRESSION**: verify.py rc=0 normal/O; focused.py rc=0: old tracked bytes/modes and history exact;15checks/seven books; fixed caps.
-- [x] `.14` a42y **LOCKSTEP**: verify.py rc=0: whole DEV/CH0351/0352 inverses, old gate exact outside registration, CPU/qualification unchanged. COMMIT applies.
+- [x] `.14` a42y: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42al-a42y-acceptance).
 - [x] `.14` a42x **REPRODUCE / ISSUE**: before.py rc=0 normal/O:3 independent calls/46364B, no limit/charge/unit API.
 - [x] `.14` a42x **ROOT CAUSE**: run-controls.py rc=0: removed shared allowance reads beyond the smaller unit cap; failed reservations must remain charged.
 - [x] `.14` a42x **FIX**: freeze complete unit; reserve fresh namespace; share/refund bounded reads through helpers; preserve failed process receipts and prior captures.
@@ -1110,7 +1108,8 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42ak: 17x2/16 matrix outcomes; legacy8+38; focused17/books7/examples3/surfaces5; whole-source/history inverses rc=0 normal/O.
+a42al: 18x2/16 matrix outcomes; copy87/18 outcomes; legacy8+38+4; focused17/books7/examples4/surfaces5; scope/inverses rc=0 normal/O.
+a42ak: [complete verification](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-verification).
 a42aj: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-verification).
 a42ai: [complete verification](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-verification).
 a42ah: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-verification).
@@ -1555,7 +1554,8 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
-| `.14` a42ak | `SEMULITH-P4-0279` | exact native predeclarations, then fresh Sail/full policy |
+| `.14` a42al | `SEMULITH-P4-0280` | three fresh Sail processes, measured retention/evaluation, full policy |
+| `.14` a42ak | `SEMULITH-P4-0279` | [complete record](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-commit) |
 | `.14` a42aj | `SEMULITH-P4-0278` | [complete record](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-commit) |
 | `.14` a42ai | `SEMULITH-P4-0277` | full reviewed entrypoint/manifest/planned record/input-author-impact/capture/policy |
 | `.14` a42ah | `SEMULITH-P4-0276` | validated authorities/entrypoint/manifest/inventory/impact/capture/full policy |

@@ -159,11 +159,12 @@ independent expected-result producer.
 
 The bounded `evidence/README.md` index declares one finite case with22 total
 slots: this family index, four prepared inputs, twelve future observations and
-five future declaration/result records. Future runs use `baseline`, `repeat`
+five declaration/result slots. Future runs use `baseline`, `repeat`
 and `control`, each with `.trace`, `.stdout`, `.stderr` and `.receipt.sexp`.
 The metadata names are `planned-experiment.sexp`, `dependencies.sexp`,
 `authorities.sexp`, `measured-experiment.sexp` and `verification.json`.
-Those seventeen future files are not supplied by this input-preparation slice.
+The three native declarations are now [retained](capture-plan.md#retained-native-predeclarations);
+twelve observations and two measured/result files remain pending.
 
 The registry caps the family at22 files,16 MiB aggregate and4 MiB per member.
 Three traces at the collector's4 MiB bound, six streams and three receipts at
@@ -172,9 +173,9 @@ most13,766,656 bytes. The index also has an80-line ceiling. Existing family caps
 the128 MiB combined artifact-read allowance and16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
-The [capture declaration](capture-plan.md#complete-the-capture-declaration) still
-needs the final tracked entrypoint, exact manifest and selected authorities
-committed before reference execution. It must use the combined allowance API,
+The [capture declaration](capture-plan.md#complete-the-capture-declaration) and
+composed entrypoint are now retained; commit the exact native files before
+reference execution. Collection must use the combined allowance API,
 refuse existing output names and preserve real failed/partial observations.
 Offline retained evaluation must work without an acquired reference cache;
 fresh replay separately needs the actual pinned binary. Full method/policy

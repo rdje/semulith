@@ -222,6 +222,19 @@ class CommandTests(unittest.TestCase):
         self.assertFalse((self.runtime / ".materials").exists())
         self.assertEqual(len(list((self.runtime / A.PREFIX).iterdir())), 4)
 
+    def test_retained_native_declarations_match_the_current_actual_package(self):
+        from unittest.mock import patch
+
+        with patch.object(subprocess, "Popen", side_effect=AssertionError("unexpected declaration process")):
+            declaration = A.prepare_capture()
+            for name, payload in A.declaration_files(declaration):
+                with self.subTest(name=name):
+                    record = dict(id=name, role="declaration", path=A.PREFIX + "/" + name,
+                                  sha256=hashlib.sha256(payload).hexdigest())
+                    snapshot = A.Artifacts.read_snapshot(ROOT, "input", record, max_bytes=65536)
+                    self.assertEqual(snapshot.pin.disposition, "matched", snapshot.pin.reason)
+                    self.assertEqual(snapshot.data, payload)
+
     def test_three_fresh_synthetic_processes_offline_evaluation_and_preserved_reuse(self):
         self.synthetic_reference()
         result = self.inspect("integration")
