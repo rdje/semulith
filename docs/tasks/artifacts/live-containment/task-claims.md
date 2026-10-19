@@ -970,3 +970,74 @@ Controller P2 remains owned in ab. Normal COMMIT applies.
 ````text
 a42ag: controls4x2/omissions3each/copy74/contract13/gate24/focused17/books7/example1; inverses rc=0 normal/O.
 ````
+
+## P4 a42ai: complete prior root/allowance records
+
+Whole existing records; earlier full ab design remains linked from its original stub.
+
+```json
+{"revision":"1769e7d2fc7bec58bbed2a71d2a696eca5e4399a","source":"docs/tasks/P4-SYSTEM.md","source_bytes":131036,"source_sha256":"c810c7020d75dec2ef1dc3913fc5db757d67a477dca4d34349c306322b806d20","owner_insert":{"offset":32667,"text":"### `.14` a42ai \u2014 select current DIV capture authorities (active)\n\nOwn P4-0277 before changes. Add capture_div.py with only a read-only current-\nauthority review command, no execution/publication flag. Reuse public snapshot,\nraw-schema, catalogue expansion, canonical mapping, effective-scope, identity and\nproperty owners. Predeclare thirteen current views/tool sources: seven catalogue/\ncontract files, five schemas, one registry. Bound direct snapshots1MiB/member,\n8MiB/pass, two passes; public tool I/O remains separate under a trusted quiescent\nruntime, with before/after byte checks, no atomic-set or process-RAM promise.\nReject undeclared includes before expansion, invalid raw shape before mapping,\nduplicate IDs before indexing, foreign/missing/superseded selections and changed\nDIV semantic authority. Return frozen scope/selected identity/property/provenance;\nretain derived-status normalization and exclude changing parent prose from selected\nidentity. Exercise real copied views normal/O, missing/unsafe/oversized/malformed\nand stale semantic contexts, raw-before-map and immutable/no-process behavior.\nNo binary read, capture, authority-file publication, manifest or qualification.\nFinal inventory/impact/entrypoint composition and exact manifest stay next. Retain\nwhole closed ah/ab records with inverses; contain whole history, sync live docs/book\nand normal COMMIT. Evidence target/p4-system-14/a42ai; promotion declined (existing\ncanonical authority, bounded snapshot and isolation contracts).\n\n"},"owner_bytes":132551,"owner_sha256":"a61c8bd04dbf801adf2300a9fb70f726deca7977a86639d7b9ef33e7affb5236","retired_bytes":130200,"retired_sha256":"321060022ea3cc0ab970de956442c482292c7dc768ceec822b54af1deaf8ff35","records":[{"unit":"a42ah-decision","offset":34182,"bytes":1074,"sha256":"3eef633b92943510cf13c330387d953a70f51a93f47dd6143fbdd8265477d588","replacement":"### `.14` a42ah \u2014 anchor gate reporting to its runtime tree (completed, SEMULITH-P4-0276)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-decision).\n\n"},{"unit":"a42ab-decision","offset":36149,"bytes":187,"sha256":"113cc892795af64f5736d268a316986b28106ccc95e94756d46fcc241e1023fe","replacement":"### `.14` a42ab \u2014 delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-decision).\n\n"},{"unit":"a42ah-acceptance","offset":45321,"bytes":837,"sha256":"522e04108b8a61916be57375fd6a3cec81f0a44b5c829be0382f53e7fcba5d33","replacement":"- [x] `.14` a42ah: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-acceptance).\n"},{"unit":"a42ab-acceptance","offset":46889,"bytes":842,"sha256":"17b3f75738e0aef20cc54a6fd3a6bea454ee9438ac9d43284438ffbec20eefa4","replacement":"- [x] `.14` a42ab: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-acceptance).\n"},{"unit":"a42ah-verification","offset":88646,"bytes":107,"sha256":"5b83d0d98f9b2755667201a69c303759f86264a3cc02dd74ec2502c49c9f3a9a","replacement":"a42ah: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-verification).\n"},{"unit":"a42ab-verification","offset":89268,"bytes":90,"sha256":"388035dcde7d246c5c5fb25d53ebd9c2435563d8a7a9e704dfed79d8e61aafec","replacement":"a42ab: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-verification).\n"}]}
+```
+
+<a id="p4-a42ai-a42ah-decision"></a>
+
+````text
+### `.14` a42ah — anchor gate reporting to its runtime tree (completed, SEMULITH-P4-0276)
+
+P1: copied gate code chose parent ROOT/modules via import-time Git and credited
+114/114 with its registry absent. Source-derived ROOT now keeps all five modules
+local, no import process; identical fixture reports unavailable. Six controls
+normal/O; Git-root omission loses5 assertions/0 errors. Gate24/wrapper20/old
+ancestry matrix/17 focused checks/seven books/one two-mode example/three rendered
+surfaces pass.1564 other files/1Gitlink/92whole entries and all old probes exact;
+production changes only ROOT/registration. Three whole ag records2311B/inverses2/
+seven damaged refusals; DEV0364 retains whole5213B entry. Old caps/statuses fixed;
+42routes/1619arms only. Promotion: docs/knowledge/a-locality-claim-covers-every-reader-of-the-store.md
+and INDEX answer. No capture/qualification. Next validated authority selection/
+entrypoint/manifest/inventory/impact/capture/full policy. Evidence
+target/p4-system-14/a42ah. Controller P2 remains owned in ab. Normal COMMIT applies.
+
+````
+
+<a id="p4-a42ai-a42ab-decision"></a>
+
+````text
+### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
+
+[Complete record; P1/P2 follow-ups](artifacts/live-containment/task-claims.md#p4-a42ac-a42ab).
+
+````
+
+<a id="p4-a42ai-a42ah-acceptance"></a>
+
+````text
+- [x] `.14` a42ah **REPRODUCE / ISSUE**: reproduce-root.py rc=0:71-file copy, registry absent, parent modules and114/114 realized pairs.
+- [x] `.14` a42ah **ROOT CAUSE**: reproduce-root.py rc=0/root-before.json: import-time Git selected parent ROOT and prepended parent scripts.
+- [x] `.14` a42ah **FIX**: PY_FIXED_ROOT_AH rc=0/root-fixed.json: same fixture unavailable, five local modules, zero import commands.
+- [x] `.14` a42ah **ADDRESSED**: probe_gate_runtime_root.py rc=0 normal/O:6 controls; Git-root omission rc=1:5 failures/0 errors.
+- [x] `.14` a42ah **NO REGRESSION**: verify.py/focused.py rc=0:1564files/1Gitlink/92entries; gate24/wrapper20/legacy matrix,17 checks/books7/example1.
+- [x] `.14` a42ah **LOCKSTEP**: verify.py rc=0:3 whole records2311B/inverses2/seven damaged refusals; DEV0364 whole5213B, fixed caps/statuses.
+````
+
+<a id="p4-a42ai-a42ab-acceptance"></a>
+
+````text
+- [x] `.14` a42ab **REPRODUCE / ISSUE**: delegation-before.log rc=0: both old signatures reject a delegated zero allowance.
+- [x] `.14` a42ab **ROOT CAUSE**: run-controls.py rc=0: initial/file allowance omissions lose3/4 assertions; seed subtraction loses2.
+- [x] `.14` a42ab **FIX**: optional strict limits, initial clamping and unchanged aggregate passed to the seed-owning ledger.
+- [x] `.14` a42ab **ADDRESSED**: allowance-controls.py rc=0 normal/O:15 controls/ten omissions; actual bytes and preledger-zero counter edge covered.
+- [x] `.14` a42ab **NO REGRESSION**: verify.py/focused.py rc=0:130 runs,16 checks/seven books/ten examples; whole old production/legacy losses exact.
+- [x] `.14` a42ab **LOCKSTEP**: verify.py rc=0 normal/O:3 closed records3428B/inverse2/seven damaged refusals; DEV0356/CH0357 exact; caps/statuses preserved.
+````
+
+<a id="p4-a42ai-a42ah-verification"></a>
+
+````text
+a42ah: root6x2/omission5/cycle matrix6/gate24/wrapper20/focused17/books7/example1; inverses rc=0 normal/O.
+````
+
+<a id="p4-a42ai-a42ab-verification"></a>
+
+````text
+a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
+````

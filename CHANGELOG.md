@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0277 (leaf P4-SYSTEM.14) — select current DIV capture authorities
+
+Add a read-only current-authority command using existing snapshot/schema/catalogue/
+scope/identity/property owners. Freeze13 view identities and selected metadata;
+raw validation precedes mapping, and duplicate/unknown/superseded/changed selections
+refuse. Keep direct1MiB/member,8MiB/pass/two-pass bounds; public tool I/O separate.
+Fix the prototype's undeclared alternate-registry read before delegation. Eighteen
+controls pass normal/O; raw/registry/semantic omissions lose3/1/3 assertions,0 errors.
+No binary/reference process, authority-file publication, capture or qualification.
+Final reviewed entrypoint/exact manifest/inventory/impact/full policy remain next.
+
+Validation:17 focused checks/seven books/two examples/three rendered surfaces;
+1569 protected files/1Gitlink/93 old entries and all old production/probes exact
+except registration. Six whole records3137B/inverses2/ten damaged refusals;
+CH0365 keeps one whole1104B entry. All caps fixed. LIVE derives1621arms only;
+42routes,CPU14/18,BOARD10/12,replay4/4green unchanged.
+
 ## SEMULITH-P4-0276 (leaf P4-SYSTEM.14) — anchor gate reporting to its runtime tree
 
 Fix reproduced P1 parent-context fallback: copied gate code could credit114/114
@@ -517,9 +534,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D46: distinguish implemented authenticated byte/source-image checks from pending full adequacy in contract/index/book; document existing optional fields/program API. Update PROFILE refusal reason/label, retaining category, unconditional closure, predicates and all counts.
 - Clean3e5a3ea full CI passes all5 legs/443 Rust/smoke53/seven books,1370 tracked files/modes/Gitlinks exact; jobs closed. Preserve102 prior entries; whole DEV3018B to0265/CH868B to0266. Focused13/full PROFILE/sharder12/seven books/3196 links/normal+print pass. Whole source/task inverses,17 examples exact, actual gate prefixes33/0 normal/O; history102/scope1358 and receipt+digest refusals pass. D46 closed; no canonical/CPU/qualification/cap change.
-
-## SEMULITH-P4-0240 (leaf P4-SYSTEM.14) — compose authenticated source and ELF findings
-
-- Append metadata-only source_image findings after legacy result fields. Consume opt-in17 authenticated snapshots/reserved rebuild and explicit selected expectation entry through existing owners, with no artifact reopen. Failed/unsupported comparisons return before reconstruction; retain separate authentication/comparison/content findings. Positive remains pending full adequacy.
-- 26 controls/14 omissions pass/discriminate normal/O with zero errors; old42/29 and23/seven outcomes/counts exact. Add30 PROFILE arms (454; GUEST328;39 doctrines1401), honest bounded source/ELF fixture and complete runnable teaching. Whole source/probe/checker/method/book/task inverses; focused17/sharder12/seven books/3186 links/all17 examples/normal+print/history/scope/canonical/corpus pass;1349 other files/modes/Gitlinks exact, real receipt+digest rewrites refuse. Preserve102 prior entries; whole DEV3121B to0263/CH870B to0264, fixed caps/seals/canonical/CPU unchanged. COMMIT then full CI on clean composition milestone.
 

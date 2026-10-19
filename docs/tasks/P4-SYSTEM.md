@@ -358,20 +358,24 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42ai — select current DIV capture authorities (completed, SEMULITH-P4-0277)
+
+Read-only frozen scope/identity/property authority and13 view facts. Direct
+1MiB/member,8MiB/pass,two passes; public tools separate, trusted quiescent tree.
+Raw-before-map/unique IDs/effective scope/semantics bind. Prototype alternate
+registry acceptance now refuses before delegation.18 controls normal/O;
+omissions3/1/3,0 errors. Outer-comment fixture corrected; error log retained.
+Copied50-file views,17 focused checks/seven books/two examples/three rendered
+surfaces pass. Preservation/containment evidence is in the checklist below.
+All caps/statuses fixed;42routes/1621arms only. No capture/publication/qualification.
+Old producer route still needs final-entrypoint review. Next reviewed entrypoint,
+manifest/planned record and independent input/author/impact before capture/policy.
+Evidence target/p4-system-14/a42ai; promotion declined (existing authority/reader/
+isolation rules). Controller P2 in ab. Normal COMMIT applies.
+
 ### `.14` a42ah — anchor gate reporting to its runtime tree (completed, SEMULITH-P4-0276)
 
-P1: copied gate code chose parent ROOT/modules via import-time Git and credited
-114/114 with its registry absent. Source-derived ROOT now keeps all five modules
-local, no import process; identical fixture reports unavailable. Six controls
-normal/O; Git-root omission loses5 assertions/0 errors. Gate24/wrapper20/old
-ancestry matrix/17 focused checks/seven books/one two-mode example/three rendered
-surfaces pass.1564 other files/1Gitlink/92whole entries and all old probes exact;
-production changes only ROOT/registration. Three whole ag records2311B/inverses2/
-seven damaged refusals; DEV0364 retains whole5213B entry. Old caps/statuses fixed;
-42routes/1619arms only. Promotion: docs/knowledge/a-locality-claim-covers-every-reader-of-the-store.md
-and INDEX answer. No capture/qualification. Next validated authority selection/
-entrypoint/manifest/inventory/impact/capture/full policy. Evidence
-target/p4-system-14/a42ah. Controller P2 remains owned in ab. Normal COMMIT applies.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-decision).
 
 ### `.14` a42ag — terminate cyclic contract ancestry (completed, SEMULITH-P4-0275)
 
@@ -395,7 +399,7 @@ target/p4-system-14/a42ah. Controller P2 remains owned in ab. Normal COMMIT appl
 
 ### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
 
-[Complete record; P1/P2 follow-ups](artifacts/live-containment/task-claims.md#p4-a42ac-a42ab).
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-decision).
 
 ### `.14` a42aa — bind the retained DIV excerpt (completed, SEMULITH-P4-0269)
 
@@ -594,23 +598,19 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42ah **REPRODUCE / ISSUE**: reproduce-root.py rc=0:71-file copy, registry absent, parent modules and114/114 realized pairs.
-- [x] `.14` a42ah **ROOT CAUSE**: reproduce-root.py rc=0/root-before.json: import-time Git selected parent ROOT and prepended parent scripts.
-- [x] `.14` a42ah **FIX**: PY_FIXED_ROOT_AH rc=0/root-fixed.json: same fixture unavailable, five local modules, zero import commands.
-- [x] `.14` a42ah **ADDRESSED**: probe_gate_runtime_root.py rc=0 normal/O:6 controls; Git-root omission rc=1:5 failures/0 errors.
-- [x] `.14` a42ah **NO REGRESSION**: verify.py/focused.py rc=0:1564files/1Gitlink/92entries; gate24/wrapper20/legacy matrix,17 checks/books7/example1.
-- [x] `.14` a42ah **LOCKSTEP**: verify.py rc=0:3 whole records2311B/inverses2/seven damaged refusals; DEV0364 whole5213B, fixed caps/statuses.
+- [x] `.14` a42ai **REPRODUCE / ISSUE**: reproduce-registry.py rc=0: copied50 files, alternate registry accepted outside listed13 views.
+- [x] `.14` a42ai **ROOT CAUSE**: reproduce-registry.py rc=0/registry-before.json: missing predelegation registry-path binding.
+- [x] `.14` a42ai **FIX**: PY_FIX_REG_AI rc=0/registry-fixed.json: same alternate-registry fixture returns1/refused; actual read guard binds.
+- [x] `.14` a42ai **ADDRESSED**: run-controls.py rc=0 normal/O:18 controls, omissions3/1/3 failures,0 errors; copied50-file views/closed reads.
+- [x] `.14` a42ai **NO REGRESSION**: verify.py/focused.py rc=0:1569files/1Gitlink/93entries, old production/probes exact;17 checks/books7/examples2.
+- [x] `.14` a42ai **LOCKSTEP**: verify.py rc=0:6 whole records3137B/inverses2/ten damaged refusals; CH0365 whole1104B, fixed caps/statuses.
+- [x] `.14` a42ah: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-acceptance).
 - [x] `.14` a42ag: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-acceptance).
 - [x] `.14` a42af: controls16/focused19/books7/examples3 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-acceptance).
 - [x] `.14` a42ae: controls76/focused18/books7/examples6 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-acceptance).
 - [x] `.14` a42ad: controls86/focused18/books7/examples4 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-acceptance).
 - [x] `.14` a42ac: controls74/focused18/books7/examples5 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-acceptance).
-- [x] `.14` a42ab **REPRODUCE / ISSUE**: delegation-before.log rc=0: both old signatures reject a delegated zero allowance.
-- [x] `.14` a42ab **ROOT CAUSE**: run-controls.py rc=0: initial/file allowance omissions lose3/4 assertions; seed subtraction loses2.
-- [x] `.14` a42ab **FIX**: optional strict limits, initial clamping and unchanged aggregate passed to the seed-owning ledger.
-- [x] `.14` a42ab **ADDRESSED**: allowance-controls.py rc=0 normal/O:15 controls/ten omissions; actual bytes and preledger-zero counter edge covered.
-- [x] `.14` a42ab **NO REGRESSION**: verify.py/focused.py rc=0:130 runs,16 checks/seven books/ten examples; whole old production/legacy losses exact.
-- [x] `.14` a42ab **LOCKSTEP**: verify.py rc=0 normal/O:3 closed records3428B/inverse2/seven damaged refusals; DEV0356/CH0357 exact; caps/statuses preserved.
+- [x] `.14` a42ab: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-acceptance).
 - [x] `.14` a42aa **REPRODUCE / ISSUE**: before.json rc=0: v1 requires the acquired35588B page; curated input unbound.
 - [x] `.14` a42aa **ROOT CAUSE**: run-controls.py rc=0: publication/input identity alias; wrong authority omission loses28 assertions.
 - [x] `.14` a42aa **FIX**: explicit v2 excerpt pin/original authority; reviewed extractor and actual fixture authentication.
@@ -1103,13 +1103,14 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42ah: root6x2/omission5/cycle matrix6/gate24/wrapper20/focused17/books7/example1; inverses rc=0 normal/O.
+a42ai: controls18x2/omissions3,1,3/copy50/focused17/books7/examples2; inverses rc=0 normal/O.
+a42ah: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-verification).
 a42ag: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-verification).
 a42af: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-verification).
 a42ae: [complete verification](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-verification).
 a42ad: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-verification).
 a42ac: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-verification).
-a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
+a42ab: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-verification).
 a42aa: controls118/focused16/books7/examples3 and whole-source/history inverses rc=0 normal/O.
 a42l2: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42l2-verification).
 
@@ -1545,6 +1546,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42ai | `SEMULITH-P4-0277` | full reviewed entrypoint/manifest/planned record/input-author-impact/capture/policy |
 | `.14` a42ah | `SEMULITH-P4-0276` | validated authorities/entrypoint/manifest/inventory/impact/capture/full policy |
 | `.14` a42ag | `SEMULITH-P4-0275` | validated authorities/final entrypoint/manifest/inventory/impact/capture/full policy |
 | `.14` a42af | `SEMULITH-P4-0274` | final entrypoint/exact manifest/authorities, then capture/full policy |

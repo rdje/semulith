@@ -224,3 +224,110 @@ making fallback observable. Restoring Git-root selection loses five assertions
 with 0 errors in both modes. GATE-REPORT registers these controls and the omission.
 This is a selected runtime-boundary check, with no reference run, capture,
 arbitrary dependency-completeness proof or qualification credit.
+
+## Selecting current authority views
+
+`scripts/capture_div.py --review-authorities` is the read-only preparation command
+for the finite DIV case. It selects current authority through the existing schema,
+catalogue, mapping, effective-contract, identity and property owners. It has no
+execution or publication flag. No binary, acquired page, retained trace or guest
+image is opened, and no reference process runs. The selected binary path and SHA
+are declarations from the current candidate; this command does not verify them
+against an executable or the separately retained descriptor.
+
+The declared population contains exactly thirteen repository-relative views:
+
+| Group | Files and purpose |
+| --- | --- |
+| Seven catalogue/contract views | `profiles/rv64gc-lab-v0/requirements.sexp`, `profiles/rv64gc-lab-v0/contract-obligations.sexp`, `profiles/rv64gc-lab-v0/contract-v0.obligations.sexp`, `profiles/rv64gc-lab-v0/contract-v1.obligations.sexp`, `profiles/rv64gc-lab-v0/contract.sexp`, `profiles/rv64gc-lab-v0/sources.sexp`, `profiles/rv64gc-lab-v0/references.sexp` |
+| Five schema tools | `schema/requirements.sexp`, `schema/contract-obligations.sexp`, `schema/contract.sexp`, `schema/sources.sexp`, `schema/references.sexp` |
+| One registry tool | `crates/semulith-verify/src/contract_checks_rv64gc.rs`, read by the public effective-contract owner |
+
+The bounded review reader takes stable, regular, same-volume snapshots before
+the canonical tools run. Each direct snapshot is at most 1 MiB; one shared pass
+permits at most 8 MiB. A second bounded pass checks that every declared view still
+has the same bytes. These direct reads total at most 16 MiB. Public schema,
+catalogue and scope tools retain their own I/O, separately from these snapshots
+and from the later collector/evaluator's 128 MiB artifact allowance. The command
+assumes a trusted, quiescent runtime. Its checks do not make all views one atomic
+snapshot or promise a total process-RAM limit.
+
+Every raw catalogue source validates before any record mapper runs. Included
+obligations expand through `record_catalog.text`, with original part bytes checked
+against the snapshots. Only the two declared parts may be included, and the sole
+registry path must equal the declared registry before scope delegation. The first
+prototype accepted an alternate valid registry while still listing the original
+thirteen views; the actual binding now refuses it before that file can be read.
+Raw field validation and unique record IDs are separate checks. Duplicate IDs
+refuse before constructing the selected indexes.
+
+The command selects `REQ-GC-M`, its effective `OB-GC-M`, source `RVI-M` and candidate
+`sail-riscv`. The public scope owner supplies candidate, requirement and effective
+obligation sets, including inherited members and supersession. Missing, foreign
+or superseded selected authority refuses. The property projection must equal the
+independently reviewed v2 case: changing its risk, obligation statement or original
+publication digest refuses. Canonical catalogue/contract integrity remains the
+existing repository gates' responsibility; this is no replacement for those gates
+or the full evidence policy.
+
+Derived requirement status/references remain excluded only from the semantic
+authority projection. A status-only edit therefore changes the diagnostic view
+SHA while preserving that authority. Unrelated parent prose likewise changes the
+references view SHA without changing the selected execution identity. Changing
+the candidate's binary pin changes that identity, without opening the binary.
+Do not turn these whole changing view hashes into the experiment's own execution
+inputs: that would restore the status/parent-output cycle this design avoids.
+
+Run a complete review and its normal/optimized controls from the repository root:
+
+```bash
+set -euo pipefail
+python3 scripts/capture_div.py --review-authorities | python3 -c 'import json,sys; r=json.load(sys.stdin); print(r["disposition"], len(r["views"]), r["canonical_capture"], r["qualification"])'
+python3 scripts/probe_div_authorities.py
+python3 -O scripts/probe_div_authorities.py
+```
+
+The first line prints `pending 13 False False`; each probe reports 18 tests with
+zero failures and errors. Its fifty-file copied runtime contains no `.materials`
+or reference binary. It observes the actual view reads, process absence, raw-before-
+mapping order, direct aggregate bound, duplicate/missing/unsafe/oversized views,
+semantic changes, supersession/cycles, closed include/registry selection and late
+view drift. Three independent omissions lose 3/1/3 assertions in both modes,
+with zero test errors. PROFILE-CONSISTENCY runs every outcome.
+
+The Python API returns frozen `CurrentAuthorities`: the public immutable `Scope`,
+`ReferenceIdentity`, `PropertyAuthority` and a tuple of `ViewIdentity` facts
+(`path`, role, byte size and SHA256). It retains no raw view payloads. The mutable
+diagnostic dictionary returned by `report` is detached from those facts:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_DIV_AUTHORITIES'
+from dataclasses import FrozenInstanceError
+from capture_div import review_authorities, report
+
+context = review_authorities()
+diagnostic = report(context)
+print(diagnostic["disposition"], len(context.views),
+      context.property_authority.requirement_id)
+diagnostic["reference_identity"]["binary_sha256"] = "0" * 64
+print(dict(context.reference.fields)["binary_sha256"] != "0" * 64)
+try:
+    context.views = ()
+except FrozenInstanceError:
+    print("frozen")
+PY_DIV_AUTHORITIES
+```
+
+It prints `pending 13 REQ-GC-M`, `True`, then `frozen`. Direct Python callers retain
+the component owners' typed exceptions; the CLI emits JSON `pending` with exit0,
+`refused` with exit1 for expected invalid views, and `unavailable` with exit2 for
+I/O failure. Wrong usage also exits2 on stderr. Unexpected programming exceptions
+propagate. Redirect diagnostic output only into an owned on-volume work directory
+when a local receipt is needed; it is no canonical authority-file publication.
+
+This selects current context only. The final capture entrypoint, exact manifest,
+independent input/author review and old/current impact projection remain pending,
+as do reference execution, retained evaluation and full policy/status integration.
+The existing producer review's 35-module/27-data route does not yet cover this
+future final entrypoint; that route must be re-reviewed before its manifest is
+committed. No selected authority context grants capture or qualification credit.

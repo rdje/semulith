@@ -16,13 +16,13 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 select current validated DIV capture authorities,
-  then final tracked entrypoint/exact manifest/inventory/impact, capture and full
-  policy. P4-0276 anchors gate roots to loaded code;0275 terminates cycles.
-  Prepared inputs/retention and identity retained; use0272's one allowance.
+- next_action: P4-SYSTEM.14 finish the canonical capture entrypoint and re-review
+  its complete route, then commit exact manifest/planned record and independent
+  inventory/author/impact authorities before capture/full policy.0277 selects
+  current views read-only;0276 anchors roots,0275 stops cycles; use0272 allowance.
   P2 runtime-continuation observation remains owned in preceding records.
   CPU14/18,BOARD10/12,replay4/4green; no canonical capture/qualification.
-- in_flight_uncommitted: none after P4-0276; verify Git state on read.
+- in_flight_uncommitted: none after P4-0277; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

@@ -2042,6 +2042,22 @@ UNIT_EVALUATION_CASES
     score "RED omitted actual DIV layout $div_inputs_mode" "$rc" 1 "$out" "DIV-CAPTURE-INPUTS: 16 tests / 5 failures / 0 errors; prepared artifacts, no reference process or capture credit"
   done
 
+  # P4-SYSTEM.14 a42ai: current semantic views, no capture or qualification.
+  local div_authority_mode div_authority_mutation div_authority_losses
+  local -a div_authority_python
+  for div_authority_mode in normal optimized; do
+    div_authority_python=(python3)
+    [ "$div_authority_mode" = optimized ] && div_authority_python+=(-O)
+    out="$("${div_authority_python[@]}" scripts/probe_div_authorities.py 2>&1)"; rc=$?
+    score "GREEN current DIV authorities $div_authority_mode" "$rc" 0 "$out" "DIV-AUTHORITIES: 18 tests / 0 failures / 0 errors; current views, no capture credit"
+    for div_authority_mutation in raw-validation registry-binding authority-binding; do
+      div_authority_losses=3
+      [ "$div_authority_mutation" = registry-binding ] && div_authority_losses=1
+      out="$("${div_authority_python[@]}" scripts/probe_div_authorities.py --mutation "$div_authority_mutation" 2>&1)"; rc=$?
+      score "RED omitted DIV authority $div_authority_mutation $div_authority_mode" "$rc" 1 "$out" "DIV-AUTHORITIES: 18 tests / $div_authority_losses failures / 0 errors; current views, no capture credit"
+    done
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
