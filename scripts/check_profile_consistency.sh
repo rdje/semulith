@@ -2020,6 +2020,16 @@ unsupported-finding:1
 UNIT_EVALUATION_CASES
   done
 
+  # P4-SYSTEM.14 a42ae: published selected descriptor, cache-free current binding.
+  local retained_identity_mode
+  local -a retained_identity_python
+  for retained_identity_mode in normal optimized; do
+    retained_identity_python=(python3)
+    [ "$retained_identity_mode" = optimized ] && retained_identity_python+=(-O)
+    out="$("${retained_identity_python[@]}" scripts/probe_retained_sail_identity.py 2>&1)"; rc=$?
+    score "GREEN published Sail identity $retained_identity_mode" "$rc" 0 "$out" "RETAINED-SAIL-IDENTITY: 11 tests / 0 failures / 0 errors; published descriptor, offline, no capture credit"
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

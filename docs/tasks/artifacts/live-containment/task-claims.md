@@ -728,3 +728,74 @@ provenance; no canonical/CPU/cap/seal changes. COMMIT hooks/brief0/censuses then
 clean a42b public source/image correspondence and remaining adequacy.
 
 ````
+
+## P4 a42ae: complete closed combined-unit and verification records
+
+Complete original bodies; source/owner/retirement inverses.
+
+```json
+{"schema":1,"revision":"6c00d3c76b8e5481412a1773672d25453b85bb61","source":"docs/tasks/P4-SYSTEM.md","source_bytes":131060,"source_sha256":"14fa12adc36486e9262769c5463d02ef7b66a55cd2f89b2f97a6303a8f0fe745","owner_insert":{"offset":32667,"text":"### `.14` a42ae \u2014 publish the selected canonical Sail descriptor (active)\n\nOwn P4-0273 before changes: publish one bounded schema-valid selected Sail\nidentity under the retained profile inputs, through the existing emitter and\ncurrent separately validated parent. Explicit publication metadata must make no\nacquisition/run/ancestry claim. Verify exact deterministic projection, pin and\ncurrent identity offline; parent assessment/prose remains outside execution\nidentity. Exercise real tracked descriptor/current parent in normal/O controls,\nwith changed identity/pin and unrelated prose controls; preserve existing APIs\nand synthetic results. No binary access or process launch, no canonical capture\nor qualification. Keep unchanged family caps and source-reviewed population.\nRetain whole prior ad decision/acceptance/verification before adding this record;\nsource/owner inverses, old sources/history, books/live docs and normal COMMIT.\nThen final entrypoint/output retention/exact manifest/policy; controller P2 stays\nowned in ab. Evidence target/p4-system-14/a42ae; promotion declined (established\nselected-projection contract).\n\n"},"owner_bytes":132196,"owner_sha256":"330903f84d705e81e95dd0880bbe83b997b05a6929b0f23d33f3b24c57c6cd93","retired_bytes":129117,"retired_sha256":"78de66b6b276085a9447ce9d879b3b63400c023a9039cb90b72cbb6365f2719b","records":[{"unit":"a42ad-decision","offset":33803,"bytes":788,"lines":13,"sha256":"774f50872a0d0b3338f1cde226a6a90e6773021a133b7e3bbf320815f26c038e","replacement":"### `.14` a42ad \u2014 compose collection and retained evaluation (completed, SEMULITH-P4-0272)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-decision).\n\n"},{"unit":"a42ad-acceptance","offset":43929,"bytes":975,"lines":6,"sha256":"06d7fa577912f388bc6865fdd5abc5b2d8c52f33e52abf86a606e4de087e8d4a","replacement":"- [x] `.14` a42ad: controls86/focused18/books7/examples4 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-acceptance).\n"},{"unit":"a42ad-verification","offset":87512,"bytes":104,"lines":1,"sha256":"c8ff2feee76fb8fa9e9a7f4bd03877612c3e7a6e184ae9085b12f67659d6215c","replacement":"a42ad: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-verification).\n"},{"unit":"a42l2-verification","offset":87899,"bytes":1755,"lines":23,"sha256":"54b80b5f9976eead7cbd26699cfdf5e77ec3925e26e09724ff7b1836940c784a","replacement":"a42l2: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42l2-verification).\n\n"}]}
+```
+
+<a id="p4-a42ae-a42ad-decision"></a>
+
+````text
+### `.14` a42ad — compose collection and retained evaluation (completed, SEMULITH-P4-0272)
+
+Freeze bounded planned bytes/authorities; collect three fresh runs, bind measured
+metadata and evaluate with one remaining allowance. P1 seed-inclusive accounting
+and failed reservations implemented; canonical entrypoint must use this protocol.
+86 normal/O outcomes; four example blocks pass. Initial defects fixed; old
+collector/tests exact. Review35/27/63/66files965026B cache-free; complete scope/
+history/inverse evidence below.
+LIVE derived1612; fixed caps/statuses exact. No canonical publication/qualification.
+Next identity/entrypoint/retention/manifest/policy; P2 controller remains in ab.
+Evidence target/p4-system-14/a42ad; promotion: declined (existing contracts).
+COMMIT applies.
+
+````
+
+<a id="p4-a42ae-a42ad-acceptance"></a>
+
+````text
+- [x] `.14` a42ad **REPRODUCE / ISSUE**: before.json/smoke.json rc=0: collection-only API; new prototype174273 actual bytes/charge with three synthetic processes.
+- [x] `.14` a42ad **ROOT CAUSE**: initial-controls.log/unsupported-before.json rc=1/0: bad components attached, unsupported collapsed; guarded attachment/status fixed.
+- [x] `.14` a42ad **FIX**: bounded frozen plan, actual metadata binding and remaining-allowance evaluation; seed-inclusive refunds and full failed reservations.
+- [x] `.14` a42ad **ADDRESSED**: run-controls.py rc=0 normal/O:29 controls/25 omissions,86 outcomes/0 errors; real preledger-zero case charged conservatively.
+- [x] `.14` a42ad **NO REGRESSION**: verify.py/focused.py rc=0:26/16 legacy losses and old collector code exact;1544files/93entries,16 checks/seven books/four examples.
+- [x] `.14` a42ad **LOCKSTEP**: verify.py rc=0 normal/O:2 whole records2143B/inverse2/six damaged refusals; DEV0359/CH0360 exact; caps/statuses preserved.
+````
+
+<a id="p4-a42ae-a42ad-verification"></a>
+
+````text
+a42ad: controls86/focused16/books7/examples4; old code/history and source/owner inverses rc=0 normal/O.
+````
+
+<a id="p4-a42ae-a42l2-verification"></a>
+
+````text
+a42l2: actual full gate replay on8237f71 rc=1, names TASK-PRESERVATION index
+changed part18; before a42k/505dd74 gate0. Same33982B source SHA256
+9b94c6439688c3c366d9c911162dce802fb7176f357275f56fcb9df38c7abd59 and
+3196→3197 proposed SHAedbce28a8f1820aff8723ed694e1ca4eb8736b9f7ed59c871c824a62d40940b5.
+Real index SHA7fbbb196247f7e5244231a86728a11a78554762a4485b1686fc8111ca5de1be8,
+1392 tracked working identities including Gitlink and proposed index exact;
+249scoped reads/115delegations/no facade refusal; owned index residue0.
+Independent source/index/ordinary hashes exact after replay. Guard SHA256
+f217da5aa9bb1b5394e6ca50bf69f565212f1fa562c9b16581c88fdec7f0e097;
+probe SHA3aeec34dc1cea01512692f0311643c95a8d4f29a63094789165baacaa1dcacda;
+unchanged instrument SHA9208de86687e4c95aca6315be16cea3c05dab066cc0acc521b6921e32c9fec71.
+Final43 controls normal/O rc=0; nine independent omissions lose6/8/2/1/1/1/1/1/1
+assertions, zero errors. An initial blob-identity omission reached a later working
+mismatch error; corrected the control to isolate snapshot identity, retaining
+initial-error log. Initial guessed43 controller count refused actual42; derived
+from loader, then added SHA256 case and re-derived43 before final controls.
+TASK-HISTORY48/0 retains all46 old arms; closed12 reader exact. Real guard
+normal/O0 checks40 published files/1070409B. Derived total1441; only current
+LIVE count changes, CPU/canonical/qualification exact. Final focused12/sharder12/seven books/3206 fresh+actual links and all3 literal
+commands pass; complete current teaching normal+print. All95 prior entries/whole
+heads/manifest/seals and1380 other tracked files/modes/Gitlinks exact normal/O.
+D49 fixed/verified; COMMIT applies. Evidence target/p4-system-14/a42l2.
+
+````

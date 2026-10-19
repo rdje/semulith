@@ -57,8 +57,9 @@ also selection authority, not an execution input. Capture an immutable reference
 identity document with only the selected execution identity. Do not pin the
 whole changing parent catalogue in that identity.
 The [bounded identity emitter](retained-method.md#emitting-a-selected-execution-descriptor)
-now constructs and verifies that selected projection; canonical publication and
-its capture metadata still need to be committed before execution.
+constructs and verifies that selected projection. The [canonical descriptor and
+its publication metadata](selected-identity.md) are now retained; the remaining
+capture declaration must still be committed before execution.
 
 ## Execution and retention still required
 

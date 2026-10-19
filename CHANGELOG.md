@@ -1,5 +1,24 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0273 (leaf P4-SYSTEM.14) — publish the selected canonical Sail descriptor
+
+Retain the711B selected Sail identity with explicit publication metadata and
+verify exact bytes/current binding offline. Add11 publication controls and a
+complete book example; preserve all old Python/probes and their omission losses.
+Final entrypoint/output retention/manifest/policy remain pending. No canonical
+capture or qualification.
+
+First hook exposed a stage-sensitive GS digest; regenerate through its owner,
+repeat the staged report check and retain the whole oldest DEV entry in0361.
+
+Validation:76 normal/O outcomes/0 errors, old omission losses exact; copied69-file
+runtime/data set gives12 expected outcomes, no acquired binary/materials.
+16 focused checks/seven books/six complete examples/six rendered surfaces pass.
+1549 other files/1Gitlink/92 prior entries exact; four whole records3622B,
+source-owner inverses2/eight damaged refusals. Source review35/27/63/66files965026B
+unchanged; profiles524files3142395B fits unchanged caps. LIVE derived1613 only;
+CPU14/18,BOARD10/12,replay4/4green. No canonical capture/qualification.
+
 ## SEMULITH-P4-0272 (leaf P4-SYSTEM.14) — share one allowance across collection and evaluation
 
 Compose three fresh process receipts and retained evaluation in the existing unit

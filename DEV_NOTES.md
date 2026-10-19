@@ -1,5 +1,49 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — publish the selected canonical Sail descriptor (P4-SYSTEM.14 a42ae)
+
+The retained identity was absent although the bounded producer/consumer existed.
+Publish one711B selected references document through that emitter after raw
+parent-schema validation. Its SHA256 is
+b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77.
+Retain exactly Sail id/origin/kind/binary/binary digest/release; exclude unrelated
+parent prose/records. Explicit2026-10-19 publication metadata uses the observed
+Darwin27.0.0/arm64/Apple clang21 identity and states no binary acquisition or run
+attestation. Compiler-version discovery was a real tool invocation; no reference
+process or binary read occurred. Existing production Python and all old probes
+remain byte-exact; no new production import/manifest child.
+
+Add11 actual-publication controls: exact bytes/metadata/schema, frozen current
+context, changed identity versus changed pin, optional presence, excluded prose,
+malformed/missing inputs, raw validation before mapping and a minimal three-file
+offline copy. All76 old/new normal/O outcomes pass with old omission losses exact.
+A copied69-file script/data set succeeds with neither binary nor.materials;
+four damaged identities/metadata/documents/current-parent cases refuse in both
+modes, unrelated parent assessment prose still passes. Source review stays
+35modules/27data/63children/66files965026B, normal/O and copied cache-free.
+This publishes a future principal only; final capture declaration and full
+policy/qualification remain pending. Promotion declined in the owning leaf:
+this instantiates the established selected-projection contract.
+
+First mandatory hook refused GS-REPORT currentness. Its public dossier_digest
+owner enumerates git ls-files, so the pre-stage focused check missed the new
+source. Diagnostic removes only that delegated listing member (no index edit):
+352 digest sources reproduce old053d6665;353 give6d77a115. The tracked listing
+counts353→354 include the excluded generated report. Public regeneration
+changes only the GS digest line; capability verdicts stay exact. Refresh the report
+check after final staging and verify the new digest in rendered evidence/print.
+Existing [population census lesson](docs/knowledge/zero-hits-absence-or-blindness.md)
+applies. Preserve first failure/diagnostic; retry normal hooks. Whole oldest DEV
+entry4214B retained in shard0361 with ordered inverse; no cap or guard change.
+
+Validation:76 normal/O outcomes/0 errors, old omission losses exact; copied69-file
+runtime/data set gives12 expected outcomes, no acquired binary/materials.
+16 focused checks/seven books/six complete examples/six rendered surfaces pass.
+1549 other files/1Gitlink/92 prior entries exact; four whole records3622B,
+source-owner inverses2/eight damaged refusals. Source review35/27/63/66files965026B
+unchanged; profiles524files3142395B fits unchanged caps. LIVE derived1613 only;
+CPU14/18,BOARD10/12,replay4/4green. No canonical capture/qualification.
+
 ## _(2026-10-19)_ — combine fresh collection and retained evaluation (P4-SYSTEM.14 a42ad)
 
 Add capture_and_evaluate beside the existing unit collector, leaving one final
@@ -605,63 +649,4 @@ both whole history heads;1514 other files/modes and89 old entries remain exact.
 Six retention damage controls refuse. Focused15 checks, seven books/3328 links
 and literal examples pass; fixed family/head/part caps,107 task files, original
 seals and Gitlink metadata unchanged. Normal hook workflow follows; no bypass.
-
-## _(2026-10-18)_ — ground a finite signed-DIV property (P4-SYSTEM.14 a42t)
-
-P4-0262 starts after clean378d1a6, brief0/untracked and host census0. The42B
-owner fits66B headroom before changes. Retain the whole3029B closed a42l1
-record in existing task-claims: old15313B prefix exact, artifact19368B/root128179B.
-Full source/owner/retired inverses and six independent damaged refusals; native
-headings, archives/seals, original12 authority and107 task members stay intact.
-This recovers room for product work without a separate maintenance commit.
-
-Review the normative page through the published materials resolver, not a
-submodule implementation. Optional fetched work_dir is absent; authenticated
-.materials snapshot resolves offline. Verify35588 bytes/SHA85e1db6c… at RVI-M
-§11.1.2, M2.0/v20260120. Read canonical REQ-GC-M and OB-GC-M via records_sexp:
-defined/medium, contract rv64gc-lab-env-v2/version2. Predeclare source proof,
-limits, exact pins and API in the new GC Source Property chapter before code.
-
-Add pure frozen PropertyContext/PropertyAuthority and one reviewed case,
-rv64gc-signed-div-truncation-v1. Source m-div.s stays byte-exact2512B/a7cbbe8c…;
-complete budget27, observed quotient at step2/x7. Independently review the first
-three words: ff900293 sets x5=-7,00200313 sets x6=2,0262c3b3 is signed DIV x7,x5,x6.
-Source rounding toward zero gives -3/fffffffffffffffd, not floor -4/fffffffffffffffc.
-The wrong-floor value is prospective control data, not an executed control.
-Bind typed context, actual relation/property/witness, selected baseline/source,
-program/route/entry/budget, normative child and all prefix word/width/PC/fetch/
-write axes. Ignore source/derivation labels. Return copied finite facts only;
-no file/process I/O, new format/parser/interpreter, whole-obligation or CPU credit.
-
-Priority1 design risk found and fixed before commit/capture: whole live
-requirement-file SHA includes derived implementation_status. Changing only
-planned→partial changes0f006fa9…→63e49d3d… while every other selected record field
-is identical (status-cycle.json). A live-file authority pin would make publishing
-status invalidate its own evidence. Replace draft catalogue pins with current
-canonical semantic authority. Bounded plain record copies round-trip through
-records_sexp, then use its canonical renderer with a versioned fingerprint domain.
-Normalize requirement implementation_status to planned and implementation_refs/
-evidence_ids to[] only in the hashing copy; obligations stay full. No source is
-rewritten; exact artifact pins/actual input impact remain unfiltered. Current
-source descriptor binds the normative page. Caller owns current canonical raw
-schema/scoped authority, never the capture's own labels. Document this boundary
-in the contract decision, with an answers: entry; existing knowledge-map route stays
-unchanged after regeneration. Shrink only mutable implementation censuses to keep
-the decision family under262144; all old normative bytes stay preserved. The first
-routing check refuses the draft method record16702B/cap16384. Move only the new
-section into the existing contract record, retaining both fixed part ceilings.
-
-The26-control suite now passes normal/O. All28 omissions lose assertions/0 errors,
-including output stability versus semantic changes, exact prefix/quotient,
-canonical round trips/bounds, context/fact copies and unknown-scope no credit.
-The literal example prints finite matched quotient, matched/True after derived
-outputs, then refused after a risk change. Only static arms1592→1594; CPU14/18,
-BOARD10/12 and qualification remain unchanged. Authenticated composition must
-construct context from the actual selected raw property before reads; it follows
-as a separate finite slice. Scope1513 protected files/87 prior head entries and
-six damaged inverses pass; four legacy suites52/23/21/19 green normal/O. Fifteen
-focused checks, seven books/3322 links and exact three-line example pass. The
-seam gate first refuses ROOT CAUSE without an executable signature: retain and
-run status-cycle.py rc=0 normal/O, declare that signature and rerun the unchanged
-gate green. No guard is weakened. Normal COMMIT remains mandatory.
 

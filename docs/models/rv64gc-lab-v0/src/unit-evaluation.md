@@ -4,7 +4,8 @@
 collector and retained evaluator. It freezes the planned record and caller
 metadata, collects fresh baseline/repeat/control outputs, binds their measured
 metadata into the record, and evaluates with the remaining artifact-read allowance.
-A positive result is **pending complete method/policy adequacy**. Canonical capture
+A positive result is **pending complete method/policy adequacy**. The selected
+[reference descriptor](selected-identity.md) is published; canonical capture
 publication, retention and the final entrypoint still require predeclaration.
 
 ## Supply a planned record and explicit authorities

@@ -6,6 +6,7 @@
 [From sources to checked behavior](methodology.md)
 [References and comparison limits](references.md)
 [Retained Sail method checks](retained-method.md)
+[The published selected Sail identity](selected-identity.md)
 [Frozen context and snapshot checks](byte-bindings.md)
 [Authenticated byte evaluation](evaluation.md)
 [Delegating the read allowance](read-allowance.md)
