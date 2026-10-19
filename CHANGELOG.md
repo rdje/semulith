@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0067 (leaf ARTIFACT-CLEANUP.10) — remove due caches and retain method evidence
+
+Remove18 known untracked Cargo incremental caches/78250724B after six normal/O
+preflights and actual host census OK. Immediate selected residue0;18121 retained
+input/evidence files/152718645B byte/hash-exact. Four nested Git roots skipped;
+all tracked code/data/statuses and fixed capacities preserved. Overwrite the
+latest receipt, rendered through the existing book include without source growth.
+Focused13/books7/normal-print receipt and whole-source/history proof pass;
+CH0377 retains636B exactly. Return to full P4 policy/status after normal COMMIT.
+
 ## SEMULITH-P4-0283 (leaf P4-SYSTEM.14) — check retained finite method adequacy
 
 Compose reviewed declaration/input/influence authorities and authenticated retained
@@ -594,9 +604,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Add separate HEAD/index/working archive byte/mode preservation. All43 controls pass normal/O; nine omissions lose6/8/2/1/1/1/1/1/1 assertions with zero errors. Retain original46 sealed controls and reader; TASK-HISTORY48, derived total1441.
 - Actual full-gate replay rejects the same staged part18 receipt accepted before repair; real index/1392 working identities/proposed index and pinned sources stay exact, owned index residue0. Sync current teaching/counts; preserve historical bytes and fixed caps, with no CPU or qualification credit.
-
-## SEMULITH-P4-0247 (leaf P4-SYSTEM.14) — contain completed workflow records before D49 repair
-
-- Retain four whole completed designs and three whole book receipts in ordinary part19 (17606 payload B/24496B); exact full task/book inverses and28 damaged controls pass normal/O. All original headings/commands, active plans and prior archives stay exact; caps fixed.
-- Verify focused12/sharder12/seven books/3206 links, all99 old history entries and1382 protected files/modes exact; own whole-oldest DEV/CH sharding. D49 stays open priority1 a42l2 for working/index preservation and actual-gate replay; no CPU or qualification credit.
 

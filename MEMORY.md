@@ -14,17 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` → complete source/risk/feature policy and status integration.
+- active_work_unit: `P4-SYSTEM.14` full source/risk/feature policy and status integration.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after0283 normal COMMIT/brief0/exact postconditions/host census,
-  own the next finite policy/status slice on clean state. Read P4-SYSTEM.14,
-  EVIDENCE_POLICY and method-adequacy model chapter. review_div_method checks
-  finite method satisfied, full policy pending/replay not checked; original lower
-  evaluator remains pending. Preserve original37 producer modules, native3 and
-  the one actual capture. Never rerun or overwrite historical observations.
-- in_flight_uncommitted: verify Git on read;0283 owns normal commit workflow
-  under target/p4-system-14/a42ao. No reference process; all fixtures on-volume.
-- blockers: none requiring director input. CPU14/18,board10/12,GC replay4/4green.
-  D79/D80 remain LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab. No push below300
-  without director's act (COMMIT.md). Always use repository target/tmp as TMPDIR.
-  Cleanup next due2026-10-19T23:00:27Z; run at the next clean boundary when due.
+- next_action: after AC0067 normal COMMIT/brief0/exact postconditions/actual host
+  census, own the next safe P4 policy/status slice on clean state. Read P4 a42,
+  EVIDENCE_POLICY and model method-adequacy chapter. P4-0283 committed59e210a:
+  finite method satisfied/full policy pending/replay not checked by the consumer.
+  Preserve original37 producer modules/native3/all canonical observations/results;
+  never rerun historical names. Review task-family/head capacity before ownership.
+- in_flight_uncommitted: derive Git on read; AC0067 owns normal commit workflow
+  under target/artifact-cleanup-0067.18 caches removed/78250724B; immediate
+  residue0 and18121 retained files exact. No deletion remains to repeat.
+- blockers: none requiring director input. CPU14/18,board10/12,replay4/4green;
+  D79/D80 remain LIVE-CONTAINMENT.4, runtime P2 in P4 a42ab. No push below300
+  without director's act; cadence238 before this cleanup commit. Always derive
+  TMPDIR from repository target/tmp. Latest cleanup timestamp is in its record.

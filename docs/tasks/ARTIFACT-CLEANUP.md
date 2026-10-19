@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -310,11 +310,43 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Fixed caps/LIVE/book teaching unchanged; normal COMMIT closes the unit;
   resume P4-SYSTEM.14 shared manifest/evaluation allowance before canonical driver.
 
+- ID: `ARTIFACT-CLEANUP.10` — **the 2026-10-19 UTC recurring cleanup**
+  Status: `done` (`2026-10-19` UTC, `SEMULITH-AC-0067`)
+  Goal: prior2026-10-18T23:00:27Z is over24h old. Own from clean59e210a,
+  P4-0283 normal hooks/exact20 files/brief0/actual host census verified.
+  Read standing scope, .9 helper, task/book/latest record before this ownership.
+  Reuse .9 helper with only owned output root target/artifact-cleanup-0067.
+  Census target/.app-data without following symlinks, nested Git roots or other
+  devices. Delete only known untracked Cargo incremental dep-graph/query-cache/
+  work-products bins. Preserve every input, source fixture, retained capture,
+  reference/diagnostic log and unknown class. Save path/device/inode/mtime/size/
+  SHA identities and complete retained counts/hashes; require whole-cohort and
+  per-path preflight, six normal/O positive/damaged checks and joined jobs plus
+  actual pre-delete host census before unlink. Prove immediate residue0 and
+  retained count/bytes/hash equality; later gates may regenerate/update outputs.
+  Own latest one-entry receipt, tree/index/MEM/DEV/CH, existing book direct
+  include/rendering, whole-history/source inverses, focused checks/seven books
+  and normal COMMIT. Keep every fixed cap, unrelated code/data/mode/Gitlink and
+  LIVE/CPU/board/replay state. No other repository write or full CI/push.
+  Return to P4-SYSTEM.14 full source/risk/feature policy and status integration;
+  preserve original capture. Promotion declined: existing safe-cohort doctrine.
+
+  Result: completed2026-10-19T23:07:45.637459Z; exactly18 saved caches/78250724B removed.
+  Six normal/O preflights: four damaged identity/totals plans refuse before
+  deletion; both intact plans pass. Exact original plan restored, all jobs joined
+  and actual pre-delete host census OK before whole-cohort/per-path revalidation.
+  Immediate selected residue0;18121 retained files/152718645B size/SHA exact.
+  Four nested Git roots skipped/0strays; no tracked/input or other-volume write.
+  QA: early controls ran before plan completion and refused missing plan; join
+  census before restart, no deletion then. Prior helper is byte-exact apart from
+  owned output root. Latest normal/print receipt and focused13/seven books/source-history proof pass.
+  Later builds may regenerate caches/update logs; this is the immediate event.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | all nine leaves done; next cleanup time-triggered (~24 h) |
+| — | — | — | all ten leaves done; next cleanup time-triggered (~24 h) |
 
 ## Decisions
 
@@ -435,10 +467,18 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 - [x] **NO REGRESSION** — focused.py/verify.py rc=0 normal/O where applicable:13 focused checks/seven books;1545 other files/1Gitlink/92 old entries and complete original task/index/head inverses exact; latest receipt in normal/print. Full hooks/actual handoff close COMMIT.
 - [x] **LOCKSTEP** — verify.py rc=0:latest record/task/index/MEM/CH/DEV and existing book include agree; source teaching/LIVE/caps exact. DEV0355 keeps one whole-oldest4336B entry. promotion: declined (standing safe-cohort/locality/history contracts).
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.10)
+
+- [x] **ROOT CAUSE** — cleanup.py --plan/check rc=0 normal/O: prior2026-10-18T23:00:27Z over24h;18 safe caches/78250724B,18121 retained/152718645B; four nested-Git skips/0strays.
+- [x] **ADDRESSED** — cleanup.py --delete rc=0 after six joined preflights/actual host census:18 saved paths absent, selected residue0, retained bytes/SHA exact immediately; four damaged-plan refusals precede deletion.
+- [x] **NO REGRESSION** — focused.py/verify.py rc=0:13 focused checks/seven books;1452 protected files/1Gitlink/97 predecessor entries exact, task/index inverses2 and normal/print latest receipt. Normal COMMIT/actual census follow.
+- [x] **LOCKSTEP** — verify.py rc=0:latest record/task/index/MEM/CH/DEV/book include agree; source teaching/LIVE/caps unchanged. Native0377 retains636B whole predecessor; promotion declined: standing safe-cohort/locality/history contracts.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-19` UTC | `.10` | saved-cohort plan/check/delete; six normal/O controls; pre-delete actual census |18/78250724B removed; immediate residue0;18121/152718645B retained exact; focused13/books7/source-history/rendered receipt verified |
 | `2026-10-18` UTC | `.9` | cleanup.py plan/check/delete; six normal/O preflights; actual pre-delete census |177/674371444B removed, immediate residue0;16764/145405416B retained exact; focused13/seven books/source-history inverses/normal-print receipt rc=0 |
 | `2026-10-16` | `.7` | cleanup.py plan/check/delete; four normal/O refusal controls; actual pre-delete census; focused12/sharder12/seven books; whole source/history/cap/rendered verification |18/77596881B removed, immediate residue0;10701/131474223B retained byte/hash-exact; original book source and latest normal/print receipt verified |
 | `2026-10-11` | `.6` | cleanup.py plan/check/delete; pre-delete host census; four damaged-input refusals normal/O; focused12/sharder12/seven books; history/verify normal/O |24/155683881B removed, immediate residue0;9225/128863947B retained byte/hash-exact; latest book include and complete source/history/scope inverses rc=0 |
@@ -470,6 +510,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ## Commit Log
 
+`SEMULITH-AC-0067 (leaf ARTIFACT-CLEANUP.10): remove due incremental caches and retain method evidence` —18/78250724B removed, immediate residue0;18121 retained exact.
+
 `SEMULITH-AC-0066 (leaf ARTIFACT-CLEANUP.9): remove due incremental caches and retain capture evidence` —177/674371444B removed, immediate residue0;16764retained exact.
 
 `SEMULITH-AC-0065 (leaf ARTIFACT-CLEANUP.8): remove due incremental caches and preserve capture evidence` —18/77596894B removed, immediate residue0;14220retained exact.
@@ -493,6 +535,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `ARTIFACT-CLEANUP.1` | `SEMULITH-AC-0050 (leaf ARTIFACT-CLEANUP.1): …` | first §8 cleanup; record + registry row in the creating commit |
 
 ## Changelog
+
+- `2026-10-19` UTC: `.10` cleanup event completed;18 caches/78250724B removed, immediate residue0;18121 retained hashes exact. Focused13/books7/whole source-history inverses/normal-print receipt pass; normal COMMIT closes the unit.
 
 - `2026-10-18` UTC: `.9` cleanup completed;177caches/674371444B removed, immediate residue0;16764retained hashes exact. Existing book include/source and fixed caps preserved; next P4-SYSTEM.14 shared read allowance.
 

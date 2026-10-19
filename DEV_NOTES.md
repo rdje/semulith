@@ -1,5 +1,41 @@
 # DEV_NOTES.md
 
+## _(2026-10-19 UTC)_ — retain method evidence during due cleanup (ARTIFACT-CLEANUP.10)
+
+Prior2026-10-18T23:00:27Z is over24h old. Own .10 from clean59e210a after
+P4-0283 exact20 files/message/normal hooks/brief0 and actual host census OK.
+Read standing exclusions/task/book/latest record before ownership. Reuse .9
+helper with only output root target/artifact-cleanup-0067 changed. Census
+project target/.app-data without symlink, nested-Git or foreign-device traversal.
+Select only untracked single-link Cargo incremental dep-graph/query-cache/
+work-products bins. Retain all diagnostic/reference/capture logs, dependency
+source fixtures and unknown classes; no other repository write or input deletion.
+
+Saved plan18files/78250724B: C-engine6/46717790B and C-guest-image12/31532934B.
+Retained18121bin/log files/152718645B, four nested-Git skips/0strays. Both normal
+and optimized intact-plan preflights pass; each damaged identity/totals plan
+refuses before deletion. The first control invocation preceded plan completion
+and refused FileNotFoundError. Join census before restart; no deletion or plan
+mutation then. Six complete controls joined, original plan restored exactly,
+actual pre-delete host census green. Complete cohort/retained identities checked
+again, then each path/device/inode/mtime/size/SHA revalidated before unlink.
+At2026-10-19T23:07:45.637459Z,18saved paths removed, immediate selected residue0,
+retained counts/bytes/SHA exact. All native observations/results and source inputs
+remain protected. Later hooks may regenerate caches or update diagnostic logs;
+this record describes the immediate measured cleanup event.
+
+Overwrite the single anchored latest record. Existing book direct include carries
+it; original teaching and all fixed caps stay exact. Own task/index/MEM/CH/DEV,
+whole-oldest entry rollover if needed, complete task/index/head inverses, focused
+checks/seven books/normal-print latest receipt and normal COMMIT/actual final
+host census. Focused13/books7/normal-print receipt and whole task/index/head inverse proof pass.
+Scope8/protected1452/1Gitlink/97 old entries; CH0377 retains636B whole.
+The active index shorthand was refused by FRONTIER-SYNC; correct to the full
+leaf ID before verification, then retire it only after completion. LIVE42routes/39doctrines/1625arms,CPU14/18,
+BOARD10/12,replay4/4green unchanged. Next full source/risk/feature policy and
+status integration; preserve the canonical capture. No full CI or push.
+Promotion declined: existing safe-cohort/locality/retention contracts apply.
+
 ## _(2026-10-19)_ — check the retained finite DIV method (P4-SYSTEM.14 a42ao)
 
 Tools-first baseline: the actual lower evaluator binds85 files/1048756B and all
