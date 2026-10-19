@@ -8,8 +8,8 @@ A positive result is **pending complete method/policy adequacy**. The selected
 [reference descriptor](selected-identity.md) and [prepared retention family](prepared-inputs.md)
 are declared. The [composed command](capture-plan.md#the-composed-div-command) now delegates
 this helper. Its [exact native declarations](capture-plan.md#retained-native-predeclarations)
-are retained; commit them before canonical execution. Capture publication and
-full policy remain pending.
+and the [canonical results](canonical-division.md) are retained. Full policy remains
+pending; the finite positive still grants no qualification.
 
 ## Supply a planned record and explicit authorities
 

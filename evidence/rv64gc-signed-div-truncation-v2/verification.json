@@ -1,0 +1,208 @@
+{
+  "format_version": "div-capture-verification-v1",
+  "case_id": "rv64gc-signed-div-truncation-v2",
+  "profile_id": "rv64gc-lab-v0",
+  "source_declaration_commit": "b160c66e183dee267ebf12edf25066412fe96ff6",
+  "disposition": "pending",
+  "reason": "fresh collection and retained findings; complete policy/qualification pending",
+  "canonical_capture_attempted": true,
+  "complete_canonical_capture": true,
+  "qualification": false,
+  "policy_disposition": "pending complete source/risk/feature policy",
+  "charged_read_bytes": 24337600,
+  "combined_limit": 134217728,
+  "collection": "recorded",
+  "evaluation": "pending",
+  "record": {
+    "disposition": "valid",
+    "issues": []
+  },
+  "findings": {
+    "manifest": "matched",
+    "identity": "matched",
+    "comparison": "satisfied",
+    "source_image": "matched",
+    "input_review": "matched",
+    "impact": "matched",
+    "source_values": "matched",
+    "expected_author": "matched",
+    "source_property": "matched"
+  },
+  "comparison": {
+    "disposition": "satisfied",
+    "reason": "finite supplied-byte comparison satisfied; authentication and qualification pending",
+    "runs": [
+      {
+        "run_kind": "baseline",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "27 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "repeat",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "27 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "control",
+        "comparison": {
+          "verdict": "DIVERGE",
+          "detail": "step 2 (div x7, x5, x6): Sail {'x7': 18446744073709551613}, expectations {'x7': 18446744073709551612}",
+          "gpr_difference": {
+            "step_n": 2,
+            "observed": [
+              [
+                "x7",
+                18446744073709551613
+              ]
+            ],
+            "expected": [
+              [
+                "x7",
+                18446744073709551612
+              ]
+            ]
+          }
+        },
+        "refusal": null
+      }
+    ]
+  },
+  "runs": [
+    {
+      "kind": "recorded",
+      "pid": 39909,
+      "exit": 0,
+      "charge": 7763227,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "baseline-raw-gpr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/baseline.trace",
+          "byte_size": 2298,
+          "sha256": "64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "baseline-process-stdout",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/baseline.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "baseline-process-stderr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/baseline.stderr",
+          "byte_size": 128,
+          "sha256": "20e021b7179b4b84b30605674e6c86c1ad03867b717ac831b7fb575d746a092b"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "baseline-process-receipt",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/baseline.receipt.sexp",
+          "byte_size": 2501,
+          "sha256": "e678b38ca32ea55df7303e04ea91030a6ad7ad03e510b9d98a6a0c338e433e0d"
+        }
+      ]
+    },
+    {
+      "kind": "recorded",
+      "pid": 39914,
+      "exit": 0,
+      "charge": 7763203,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "repeat-raw-gpr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/repeat.trace",
+          "byte_size": 2298,
+          "sha256": "64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "repeat-process-stdout",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/repeat.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "repeat-process-stderr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/repeat.stderr",
+          "byte_size": 126,
+          "sha256": "7d3322b10bdb64a41616c75765bf326cdbb346014ddc761c2030f0028b77828f"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "repeat-process-receipt",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/repeat.receipt.sexp",
+          "byte_size": 2483,
+          "sha256": "8c2da7f314a8e414c7d48a10183ff913a454d6c244c0a2b2358e8924fe17283b"
+        }
+      ]
+    },
+    {
+      "kind": "recorded",
+      "pid": 39918,
+      "exit": 0,
+      "charge": 7762414,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "control-raw-gpr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/control.trace",
+          "byte_size": 2298,
+          "sha256": "64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "control-process-stdout",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/control.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "control-process-stderr",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/control.stderr",
+          "byte_size": 127,
+          "sha256": "7c3c1f9e0a25876c2aa293e58fed46cd69b2109a3092f9c6d5edfb41981f8b16"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "control-process-receipt",
+          "object": "evidence/rv64gc-signed-div-truncation-v2/control.receipt.sexp",
+          "byte_size": 2499,
+          "sha256": "a99a3a8bb09780ad1edc70e3bd3d3e80ba7860c9b31ee1d380da5adf750a5cac"
+        }
+      ]
+    }
+  ],
+  "authentication": {
+    "disposition": "matched",
+    "files": 85,
+    "authenticated_bytes": 1048756,
+    "charged_read_bytes": 1048756,
+    "snapshot_bytes": 33759,
+    "snapshot_limit": 16777216
+  },
+  "limitations": [
+    "one finite signed-DIV quotient witness, not all M or CPU acceptance",
+    "before/after byte checks under a trusted quiescent runtime, not an atomic input set",
+    "preparation/schema/runtime I/O and process RAM are outside the combined artifact-read allowance"
+  ],
+  "measured_experiment": {
+    "id": "measured-experiment",
+    "role": "measured-record",
+    "object": "evidence/rv64gc-signed-div-truncation-v2/measured-experiment.sexp",
+    "byte_size": 9928,
+    "sha256": "2cb6c7041be5a6e52213c57fe7b1507ad096e76aebcc8323884679526fc6b29e"
+  }
+}

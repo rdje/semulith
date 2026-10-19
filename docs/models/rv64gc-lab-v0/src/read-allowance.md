@@ -36,7 +36,7 @@ bytes; evaluation cannot read beyond those 17728 bytes. This subtraction needs
 validated, immutable collection metadata, not a caller's guessed byte total.
 The public [combined unit helper](unit-evaluation.md) now implements that
 reservation and refund protocol. The [composed command](capture-plan.md#the-composed-div-command)
-now delegates it. Native declarations are retained; canonical capture and full policy remain pending.
+now delegates it. Native declarations and the [canonical capture](canonical-division.md) are retained; full policy remains pending.
 
 Reserve the whole delegated allowance before calling evaluation. Refund only
 after validating the returned accounting: a plain integer charge within the

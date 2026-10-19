@@ -235,6 +235,59 @@ class CommandTests(unittest.TestCase):
                     self.assertEqual(snapshot.pin.disposition, "matched", snapshot.pin.reason)
                     self.assertEqual(snapshot.data, payload)
 
+    def test_actual_canonical_capture_evaluates_offline_without_a_process(self):
+        from unittest.mock import patch
+
+        with patch.object(subprocess, "Popen", side_effect=AssertionError("unexpected retained-check process")):
+            path = A.PREFIX + "/verification.json"
+            observed = A.Artifacts.observe_bounded_file(ROOT, path, max_bytes=65536)
+            self.assertEqual(observed.disposition, "observed", observed.reason)
+            snapshot = A.Artifacts.read_snapshot(
+                ROOT, "input", dict(id="verification", path=path, sha256=observed.sha256), max_bytes=65536)
+            self.assertEqual(snapshot.pin.disposition, "matched", snapshot.pin.reason)
+            report = json.loads(snapshot.data)
+            self.assertEqual(report["format_version"], "div-capture-verification-v1")
+            self.assertFalse(report["qualification"])
+            self.assertTrue(report["complete_canonical_capture"])
+            outputs = [item for run in report["runs"] for item in run["outputs"]]
+            self.assertEqual(len(outputs), 12)
+            self.assertEqual({item["object"] for item in outputs}, {
+                A.PREFIX + "/" + kind + suffix
+                for kind in ("baseline", "repeat", "control")
+                for suffix in (".trace", ".stdout", ".stderr", ".receipt.sexp")})
+            for item in outputs:
+                with self.subTest(observation=item["observation_id"]):
+                    record = {**item, "id": item["observation_id"], "path": item["object"]}
+                    bound = A.Unit.C.TRACE_BYTES if item["role"] == "raw-gpr" else A.Unit.C.STREAM_BYTES
+                    observed = A.Artifacts.read_snapshot(ROOT, "observation", record, max_bytes=bound)
+                    self.assertEqual(observed.pin.disposition, "matched", observed.pin.reason)
+                    self.assertEqual(len(observed.data), item["byte_size"])
+            retained = report["measured_experiment"]
+            pin = {**retained, "path": retained["object"]}
+            self.assertEqual(pin["path"], A.PREFIX + "/measured-experiment.sexp")
+            measured = A.Artifacts.read_snapshot(ROOT, "observation", pin, max_bytes=65536)
+            self.assertEqual(measured.pin.disposition, "matched", measured.pin.reason)
+            forms = [form for form in A.S.parse(measured.data.decode()) if form[0] != "comment"]
+            self.assertEqual(len(forms), 1)
+            declaration = A.prepare_capture()
+            self.assertEqual(A.V.check_experiment(forms[0], declaration.authorities.scope), [])
+            checked = A.Unit.Evaluation.evaluate_retained_unit(
+                ROOT, raw_experiment=forms[0], scope=declaration.authorities.scope,
+                current_candidate=dict(declaration.authorities.reference.fields),
+                reviewed_inputs=declaration.inventory, author_review=declaration.author,
+                impact_review=declaration.impact, property_authority=declaration.authorities.property_authority)
+            self.assertEqual(checked.disposition, "pending", checked.reason)
+            self.assertEqual(checked.record.disposition, "valid")
+            self.assertEqual(checked.comparison.disposition, "satisfied")
+            self.assertEqual([run.comparison.verdict for run in checked.comparison.runs],
+                             ["AGREE", "AGREE", "DIVERGE"])
+            for name in ("identity", "source_image", "input_review", "impact", "source_values",
+                         "expected_author", "source_property"):
+                self.assertEqual(getattr(checked, name).disposition, "matched", name)
+            self.assertEqual(len(checked.authentication.files), 85)
+            self.assertLessEqual(checked.authentication.snapshot_bytes, 16777216)
+            self.assertTrue(all(item.data is None for item in checked.authentication.files))
+
     def test_three_fresh_synthetic_processes_offline_evaluation_and_preserved_reuse(self):
         self.synthetic_reference()
         result = self.inspect("integration")

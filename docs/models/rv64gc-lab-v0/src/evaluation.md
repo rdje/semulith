@@ -244,9 +244,9 @@ the public byte owner correctly returned `comparison=None` plus a process-refusa
 reason. The corrected control checks that representation and the separate valid
 record/failed evaluation. No implementation success was credited from the error.
 
-Full CI passed on the clean composition milestone. Complete adequacy, reviewed fresh
-collection, retention/case/capture declarations and full policy/status derivation
-remain subsequent owned work. No canonical capture or CPU acceptance changes here.
+Full CI passed on the earlier composition milestone. Reviewed collection and the
+[first canonical capture](canonical-division.md) are now retained. Complete adequacy
+and full policy/status derivation remain open; CPU acceptance is unchanged.
 
 ## Bind the parent program identifier
 

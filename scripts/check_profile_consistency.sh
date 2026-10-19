@@ -2070,10 +2070,10 @@ UNIT_EVALUATION_CASES
     div_command_python=(python3)
     [ "$div_command_mode" = optimized ] && div_command_python+=(-O)
     out="$("${div_command_python[@]}" scripts/probe_div_command.py 2>&1)"; rc=$?
-    score "GREEN composed DIV command $div_command_mode" "$rc" 0 "$out" "DIV-COMMAND: 18 tests / 0 failures / 0 errors; synthetic processes, no Sail or qualification"
+    score "GREEN composed DIV command $div_command_mode" "$rc" 0 "$out" "DIV-COMMAND: 19 tests / 0 failures / 0 errors; synthetic processes, no Sail or qualification"
     while IFS=: read -r div_command_mutation div_command_losses; do
       out="$("${div_command_python[@]}" scripts/probe_div_command.py --mutation "$div_command_mutation" 2>&1)"; rc=$?
-      score "RED omitted DIV command $div_command_mutation $div_command_mode" "$rc" 1 "$out" "DIV-COMMAND: 18 tests / $div_command_losses failures / 0 errors; synthetic processes, no Sail or qualification"
+      score "RED omitted DIV command $div_command_mutation $div_command_mode" "$rc" 1 "$out" "DIV-COMMAND: 19 tests / $div_command_losses failures / 0 errors; synthetic processes, no Sail or qualification"
     done <<'DIV_COMMAND_CASES'
 native-declarations:6
 authority-stability:1

@@ -1,11 +1,13 @@
 # Predeclaring the first division capture
 
-The proposed first canonical case is `rv64gc-signed-div-truncation-v2`, owned by
+The first canonical case is `rv64gc-signed-div-truncation-v2`, owned by
 `scripts/matched_gpr_property.py`. It runs `m-div.s` for27 boundaries. The finite
 claim is the x7 change at boundary2: signed `-7 / 2` produces `-3`. The negative
 control changes only that expected value to `-4`. Baseline, repeat and control
 must use three fresh reference processes with identical executed inputs. This
-does not accept all M instructions or close `REQ-GC-M`/`OB-GC-M`.
+does not accept all M instructions or close `REQ-GC-M`/`OB-GC-M`. The
+[first retained canonical capture](canonical-division.md) now supplies these finite
+observations; full policy/qualification remains pending.
 
 ## Review the producers before declaring their inputs
 
@@ -379,8 +381,8 @@ omissions retain their measured losses. PROFILE-CONSISTENCY registers all outcom
 A copied 79-file runtime gives the same file facts and populations in both modes,
 with the valid parent checkout available as its working directory and no copied
 binary or `.materials` directory. It writes no canonical output. The composed
-entrypoint and native predeclarations are now retained; three fresh captures and
-full policy/status evaluation remain pending.
+entrypoint, predeclarations and [canonical observations](canonical-division.md)
+are now retained; full policy/status evaluation remains pending.
 
 ## The composed DIV command
 
@@ -483,8 +485,8 @@ python3 scripts/probe_div_command.py
 python3 -O scripts/probe_div_command.py
 ```
 
-Each mode runs18 tests with zero failures/errors, including actual native-file
-currentness against the published package. Controls cover missing/changed
+Each mode runs19 tests with zero failures/errors, including actual native-file
+currentness and process-free retained-capture evaluation. Controls cover missing/changed
 native documents, prepared pins/sizes/links/Git boundaries, selected identity,
 authority drift, raw-schema-before-mapping, immutable facts, output reuse,
 failed-process preservation and CLI exit status. Injected assertion failures also
@@ -498,8 +500,8 @@ are registered in PROFILE-CONSISTENCY after being measured in both modes.
 P4-SYSTEM.14 a42al retains the exact three documents under
 `evidence/rv64gc-signed-div-truncation-v2/`. Each fits its64KiB bound; the command
 below derives the current byte sizes from the complete retained payloads. The
-evidence family now has8 files; its22-file/16MiB envelope and other caps stay fixed.
-No observation, measured experiment or verification result is supplied here.
+evidence family now has22 files after the [canonical capture](canonical-division.md),
+within its22-file/16MiB envelope. That chapter reports the measured findings.
 
 Verify the complete current native bytes without a binary or reference process:
 
@@ -535,4 +537,5 @@ a recording delegate: no reference process runs. Six missing/changed native-file
 variants stop before that delegate. Derived requirement-status or unrelated
 parent-prose edits change current view hashes while preserving declaration bytes
 and the selected semantic identity; the status-output cycle stays excluded.
-The actual fresh baseline/repeat/control processes and full policy remain next.
+The actual baseline/repeat/control results are [retained](canonical-division.md);
+full policy remains next.

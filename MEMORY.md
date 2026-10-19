@@ -14,16 +14,16 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` → canonical DIV capture.
+- active_work_unit: `P4-SYSTEM.14` → complete source/risk/feature policy and status integration.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after0280 normal COMMIT/brief0/exact postconditions/host census,
-  own the canonical capture unit, then run the composed command's three fresh
-  Sail baseline/repeat/control processes. Retain measured experiment/verification,
-  evaluate all27 boundaries/repeat/control, then full source/risk/feature policy.
-  Read P4-SYSTEM.14 and capture-plan/prepared-inputs first. The exact three native
-  declarations are retained; never overwrite failed/partial observations or retry.
-- in_flight_uncommitted: verify Git state on read;0280 owns unfinished workflow.
-- blockers: none requiring director input.0279 source committed1609b05d with all
-  mandatory doctrines/postconditions/brief0/host census green before this slice.
-  D79/D80 stay scheduled separately in LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab.
-  No push below300commits without the director's act (COMMIT.md).
+- next_action: after0281 normal COMMIT/brief0/exact postconditions/host census,
+  own the next finite policy-adequacy slice on clean state. Read P4-SYSTEM.14,
+  EVIDENCE_POLICY.md and model canonical-division/capture-plan teaching. Preserve
+  b160c66e native declarations and all actual retained observations/results.
+  Do not rerun canonical capture or overwrite historical data. Complete policy/
+  qualification, status derivation and remaining evidence stay open; no CPU credit.
+- in_flight_uncommitted: verify Git state on read;0281 owns unfinished commit
+  workflow under target/p4-system-14/a42am. Capture_calls=1: never retry after reset.
+- blockers: none requiring director input. Canonical capture complete, independent
+  and copied offline checks pass. D79/D80 remain in LIVE-CONTAINMENT.4;
+  runtime P2 in P4 a42ab. No push below300 without director's act (COMMIT.md).

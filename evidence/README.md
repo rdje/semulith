@@ -1,31 +1,31 @@
 # Retained finite evidence
 
-This bounded index owns one prepared case:
-`evidence/rv64gc-signed-div-truncation-v2/`. P4-SYSTEM.14 a42af curates its inputs;
-the [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md) explains their
-producers, exact identities and verification. No canonical observations or
-qualification are supplied by preparing these files. P4-SYSTEM.14 a42al now retains
-the exact native declarations described in the [capture plan](../docs/models/rv64gc-lab-v0/src/capture-plan.md#retained-native-predeclarations).
+This bounded index owns one retained case:
+`evidence/rv64gc-signed-div-truncation-v2/`. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
+explains its prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
+records the actual observations collected on2026-10-19. Baseline/repeat AGREE and
+the wrong-quotient control DIVERGE across27 boundaries. Complete policy and
+qualification remain pending; this does not close the M obligation or CPU gate.
 
 ## Declared files and lifecycle
 
 | Population | Names under the case directory | Maximum count |
 | --- | --- | --- |
 | Prepared inputs | `guest.elf`, `reference-config.json`, `baseline.expected.sexp`, `control.expected.sexp` | 4 |
-| Fresh observations, still pending | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
+| Retained observations | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Retained declarations | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp` | 3 |
-| Results, still pending | `measured-experiment.sexp`, `verification.json` | 2 |
+| Retained results | `measured-experiment.sexp`, `verification.json` | 2 |
 | Family index | This file, outside the case directory | 1 |
 
-The four prepared inputs, three declarations and this index are retained:8 files.
-The planned record's zero output hashes/sizes and process exits are placeholders;
-its AGREE/DIVERGE words are targets, not observations. There are no retained
-canonical traces, process receipts or measured results yet. Commit this exact
-declaration and the reviewed entrypoint before launching a canonical process.
-The command controls compare all three native files with the current generator;
-a source/input change therefore requires fresh declarations before execution.
+All22 declared files are retained. Commit `b160c66e` held the exact source,
+prepared inputs and three native declarations before execution. Planned zero
+hashes/sizes/exits remain unmeasured targets. The measured record replaces only
+observation sizes/hashes and checked exits; verification.json is a derived receipt
+with qualification false. The three fresh canonical processes exited zero.
+Native currentness controls still compare declarations with the public generator;
+an affected source/input change requires fresh declarations before execution.
 Collection uses the combined allowance protocol. Existing output names refuse
-reuse; failed/partial observations remain historical data. Never replace them to
+reuse; failed/partial observations remain historical data. Never rerun this capture or replace retained bytes to
 make a comparison pass. A corrected capture needs a separately owned declaration.
 
 S-expression remains the project's source-of-truth format. The JSON configuration

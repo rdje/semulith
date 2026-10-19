@@ -18,6 +18,7 @@
 [Collecting a three-run unit](unit-collector.md)
 [Combining collection and evaluation](unit-evaluation.md)
 [Predeclaring the first division capture](capture-plan.md)
+[The first canonical division capture](canonical-division.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)

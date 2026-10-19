@@ -1,0 +1,2 @@
+using evidence/rv64gc-signed-div-truncation-v2/control.trace for trace output.
+Unable to locate tohost symbol; disabling HTIF.

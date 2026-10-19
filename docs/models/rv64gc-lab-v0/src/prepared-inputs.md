@@ -164,7 +164,7 @@ and `control`, each with `.trace`, `.stdout`, `.stderr` and `.receipt.sexp`.
 The metadata names are `planned-experiment.sexp`, `dependencies.sexp`,
 `authorities.sexp`, `measured-experiment.sexp` and `verification.json`.
 The three native declarations are now [retained](capture-plan.md#retained-native-predeclarations);
-twelve observations and two measured/result files remain pending.
+the twelve observations and two result files are now [retained](canonical-division.md).
 
 The registry caps the family at22 files,16 MiB aggregate and4 MiB per member.
 Three traces at the collector's4 MiB bound, six streams and three receipts at
@@ -179,4 +179,4 @@ reference execution. Collection must use the combined allowance API,
 refuse existing output names and preserve real failed/partial observations.
 Offline retained evaluation must work without an acquired reference cache;
 fresh replay separately needs the actual pinned binary. Full method/policy
-adequacy, canonical observations and qualification remain pending.
+adequacy and qualification remain pending; canonical observations are retained.

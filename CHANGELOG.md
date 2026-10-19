@@ -1,5 +1,18 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0281 (leaf P4-SYSTEM.14) — retain the first canonical DIV capture
+
+One composed capture after committed source/declarations: three fresh zero-exit
+Sail processes,12 observations, measured native record and derived verification.
+Baseline/repeat agree across27 boundaries; wrong quotient diverges at step2 x7.
+All traces identical; independent normal/O retained evaluation agrees without a
+process. Charge24337600B;85 files/1048756 authenticated bytes/33759 snapshot bytes.
+Add actual offline regression: command19 tests x2/same omission losses; ten101-file
+copy outcomes and legacy controls pass. Four whole closed al records2498B retained.
+Focused17/books7/examples6/surfaces8/scope pass; whole history5007B retained.
+All retention caps fixed. Full policy and
+qualification pending; CPU/board/status unchanged. Next complete policy integration.
+
 ## SEMULITH-P4-0280 (leaf P4-SYSTEM.14) — retain exact DIV capture predeclarations
 
 Retain the planned record,64-child manifest and73-input/author/impact declaration:
@@ -573,9 +586,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 - Expanded existing probe22/0/0 normal/O preserves19 old cases; parent/overwrite/no-sync/cleanup controls fail2/2/3/3, zero errors, old census omissions2/2/4/1 retained. Owned copies/controlled Git, normal copies/input preservation/scratch cleanup verified. Existing gate/CI wiring unchanged; focused12/sharder12/seven books/navigation/source/history/scope checks, book+60B within63B room and new runnable example. LIVE/CPU/canonical/caps unchanged; full COMMIT then ordinary-part actual-gate assessment.
 - Final checks:3212fresh+actual links/normal+print/literal example,100old entries/1374protected files exact normal/O; whole DEV3486B→0274/CH1219B→0275,67live+210sealed277logical, receipt+digest edits refuse; fixed book cap524285/524288.
 
-
-## SEMULITH-AC-0063 (leaf ARTIFACT-CLEANUP.6) — clean incremental caches and include the latest book receipt
-
-- Remove24untracked Cargo incremental caches/155683881B after complete identity/safety preflight and unrestricted idle-host census. Immediate residue0, all9225retained input/evidence files/128863947B byte/hash-exact; four nested Git roots skipped. Altered SHA/totals refuse normal/O; no code/input deletion.
-- Include the overwritten latest record directly in book normal/print; source shrinks within fixed cap. Focused12/sharder12/seven books/navigation and complete task/book/head/history/scope invariants pass; LIVE/canonical/CPU unchanged. D48 scaffold-retention risk owned next in P4 a42j/0245; no fullCI/push for housekeeping.
 

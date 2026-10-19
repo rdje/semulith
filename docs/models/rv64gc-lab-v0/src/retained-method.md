@@ -170,7 +170,7 @@ invocations, reference-producer version, other inputs/observations or the comple
 dependency closure. Offline retained evidence does not depend on a transient
 binary cache; fresh replay separately needs the actual pinned executable through
 its public acquisition/build route. The [shared evaluation allowance](read-allowance.md) and reviewed collection APIs
-are implemented; canonical retention and complete policy adequacy remain pending. No ancestry,
+are implemented; the [first canonical capture](canonical-division.md) is retained. Complete policy adequacy remains pending. No ancestry,
 independence, qualification or CPU acceptance credit follows from a match.
 
 ## Authenticating and binding a process receipt

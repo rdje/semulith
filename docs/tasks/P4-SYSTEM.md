@@ -358,25 +358,30 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42am / SEMULITH-P4-0281: capture canonical DIV (completed)
+
+Committedb160c66e source/native declarations precede one capture. Pinned public
+Sail3801664B; fresh PIDs39909/39914/39918 exit0. Twelve observations14830B,
+measured9928B/derived7093B retained;27 boundaries AGREE/AGREE/DIVERGE, only step2
+x7(-3 actual/-4 expected). Three traces2298B/hash64551458…exact. Independent
+normal/O reconstruction restores only measured metadata; all separate findings
+bind, charge24337600B/128MiB,85files1048756B/33759 snapshot bytes. No retry.
+Command19x2/16 outcomes preserve7losses6/1/1/1/2/1/1,0errors; actual offline
+regression authenticates13root object pins, launches no process. Ten101-file
+copies cover valid/missing/stale/refused states without Git/materials/binary.
+Derived JSON path-root mismatch reproduced by fingerprint tool; existing .4
+object convention fixes format, not observations/native records or generic gate.
+Legacy8+38+4 exact; focused17/books7/examples6/surfaces8 pass. Four whole al
+records2498B/inverses2/eight damaged refusals, two whole predecessor entries5007B
+retained0372/0373; all caps fixed, every other file/native pin unchanged.
+Evidence target/p4-system-14/a42am; promotion declined under existing bounded
+capture/retention/independent-findings doctrine. Full policy/qualification and
+REQ/OB-GC-M/CPU closure pending; next complete source/risk/feature adequacy and
+status integration. Normal COMMIT first; runtime P2 remains scheduled in a42ab.
+
 ### .14 a42al / SEMULITH-P4-0280: retain DIV declaration (completed)
 
-Exactly three native records41514B retained from current public generators;
-raw planned scope/64-child codec/73-input inventory and post-publication anchored
-pins/re-preparation pass. Fixed evidence family8files/68017B, all capacities fixed.
-Actual-package currentness control expands command suite17→18;16 outcomes retain
-losses6/1/1/1/2/1/1,0 errors. Source implementation changes only two diagnostic
-pending statements to stable separate-verification obligations. Legacy authority8/
-producer38/prepared4 outcomes exact. Copied87-file runtime:18 outcomes normal/O,
-no Git/materials/binary, valid parent cwd; explicit final mock only. Valid/status/
-prose bind; six missing/changed native states stop before delegation, no cycles.
-Adjacent book paragraph falsely kept final composition pending after0279; fixed,
-current declaration state synchronized, all old examples preserved. Seven books/
-five surfaces/four complete examples and focused17 pass. Five whole ak/y records
-3534B/source-owner inverses2/nine damaged refusals, whole CH0371 entry1303B exact.
-No canonical process, observations, measured result, qualification or CPU credit.
-Evidence target/p4-system-14/a42al; promotion declined (existing source-closure,
-currentness/bounded-retention rules). Next three fresh Sail processes, retain/
-evaluate outputs, then full policy. Normal COMMIT first; runtime P2 remains in ab.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42am-a42al-decision).
 
 ### .14 a42ak / SEMULITH-P4-0279: compose DIV command (completed)
 
@@ -615,12 +620,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42al **REPRODUCE / ISSUE**: publication.json/old book paragraph: three native declarations absent; stale composition-state teaching.
-- [x] `.14` a42al **ROOT CAUSE**: verify.py rc=0: independent37-module/64-child source set determines73 input identities and41514B.
-- [x] `.14` a42al **FIX**: curate.py/run-controls.py rc=0: exclusive/pin/re-preparation,18 controls x2/16 outcomes/0 errors.
-- [x] `.14` a42al **ADDRESSED**: copied.py rc=0:18 exact87-file outcomes, six native omissions/changes before mock, status/prose stable.
-- [x] `.14` a42al **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples4/surfaces5; legacy8+38+4 exact.
-- [x] `.14` a42al **LOCKSTEP**: verify.py rc=0 normal/O:5 whole records3534B/inverses2/nine refusals; CH0371 whole1303B/all caps fixed.
+- [x] `.14` a42am **REPRODUCE / ISSUE**: preflight.py rc=0:73 committed inputs/native3, fresh12+2 names; fingerprint root mismatch reproduced.
+- [x] `.14` a42am **ROOT CAUSE**: independent.py rc=0 normal/O:27 boundaries/only measured metadata; root object convention resolves derived format.
+- [x] `.14` a42am **FIX**: capture-once.py rc=0 once:3 real zero exits/12 observations14830B/measured9928B; no retry/qualification.
+- [x] `.14` a42am **ADDRESSED**: offline.py/run-controls.py rc=0:ten101-file outcomes;19x2/16 exact guard outcomes/13root pins.
+- [x] `.14` a42am **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples6/surfaces8; legacy8+38+4 exact.
+- [x] `.14` a42am **LOCKSTEP**: verify.py rc=0 normal/O:4 whole records2498B/inverses2/eight refusals; whole history5007B/caps fixed.
+- [x] `.14` a42al: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42am-a42al-acceptance).
 - [x] `.14` a42ak: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-acceptance).
 - [x] `.14` a42aj: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-acceptance).
 - [x] `.14` a42ai: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-acceptance).
@@ -1108,7 +1114,8 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42al: 18x2/16 matrix outcomes; copy87/18 outcomes; legacy8+38+4; focused17/books7/examples4/surfaces5; scope/inverses rc=0 normal/O.
+a42am: one real3-run capture; independent normal/O; command19x2/16 outcomes; offline101/10; legacy8+38+4; focused17/books7/examples6/surfaces8; scope/inverses normal/O.
+a42al: [complete verification](artifacts/live-containment/task-claims.md#p4-a42am-a42al-verification).
 a42ak: [complete verification](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-verification).
 a42aj: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-verification).
 a42ai: [complete verification](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-verification).
@@ -1554,7 +1561,8 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
-| `.14` a42al | `SEMULITH-P4-0280` | three fresh Sail processes, measured retention/evaluation, full policy |
+| `.14` a42am | `SEMULITH-P4-0281` | full source/risk/feature adequacy and status integration; no capture retry |
+| `.14` a42al | `SEMULITH-P4-0280` | [complete record](artifacts/live-containment/task-claims.md#p4-a42am-a42al-commit) |
 | `.14` a42ak | `SEMULITH-P4-0279` | [complete record](artifacts/live-containment/task-claims.md#p4-a42al-a42ak-commit) |
 | `.14` a42aj | `SEMULITH-P4-0278` | [complete record](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-commit) |
 | `.14` a42ai | `SEMULITH-P4-0277` | full reviewed entrypoint/manifest/planned record/input-author-impact/capture/policy |

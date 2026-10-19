@@ -1359,3 +1359,59 @@ a42ak: 17x2/16 matrix outcomes; legacy8+38; focused17/books7/examples3/surfaces5
 ````text
 | `.14` a42ak | `SEMULITH-P4-0279` | exact native predeclarations, then fresh Sail/full policy |
 ````
+
+## P4 a42am: retain complete closed predeclaration records
+
+Whole source/owner reconstruction metadata and records follow.
+
+```json
+{"revision":"b160c66e183dee267ebf12edf25066412fe96ff6","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130339,"source_sha256":"6b48b41aa08533c982c47cdf2352fe335354f0168492632e06c93a1dba3d521f","owner_insert":{"offset":32667,"text":"### .14 a42am / SEMULITH-P4-0281: capture canonical DIV (active)\n\n"},"owner_bytes":130405,"owner_sha256":"02dd18057bd03fbb70a6af946a798f2387fbe06575fa114f626bd2066134c767","retired_bytes":128400,"retired_sha256":"fe1a0302d9999b55923b54f5fa6fc8f025423c50542d58b6038cfa2ff651f0d7","records":[{"unit":"a42al","offset":32733,"bytes":1455,"lines":20,"sha256":"3316fda248d09d34c8e5a684c7db1e41d3fa11dcad7bb8d4d115d81d1e977e38","anchor":"p4-a42am-a42al-decision","replacement":"### .14 a42al / SEMULITH-P4-0280: retain DIV declaration (completed)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42am-a42al-decision).\n\n"},{"unit":"a42al","offset":44926,"bytes":799,"lines":6,"sha256":"5ebc0d865bbbdd1622c43b6951b1b6320ecd6856f3bc9fe8aaf4d23364510a7c","anchor":"p4-a42am-a42al-acceptance","replacement":"- [x] `.14` a42al: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42am-a42al-acceptance).\n"},{"unit":"a42al","offset":85571,"bytes":134,"lines":1,"sha256":"c1541bd9190b581a6beb791221d6cff18bad6a26b452d063f697911d0032a717","anchor":"p4-a42am-a42al-verification","replacement":"a42al: [complete verification](artifacts/live-containment/task-claims.md#p4-a42am-a42al-verification).\n"},{"unit":"a42al","offset":117166,"bytes":110,"lines":1,"sha256":"83884751fa13560652e64182d4d014350e868f1e274903693f4ece18e84f45cd","anchor":"p4-a42am-a42al-commit","replacement":"| `.14` a42al | `SEMULITH-P4-0280` | [complete record](artifacts/live-containment/task-claims.md#p4-a42am-a42al-commit) |\n"}]}
+```
+
+### p4-a42am-a42al-decision
+
+````text
+### .14 a42al / SEMULITH-P4-0280: retain DIV declaration (completed)
+
+Exactly three native records41514B retained from current public generators;
+raw planned scope/64-child codec/73-input inventory and post-publication anchored
+pins/re-preparation pass. Fixed evidence family8files/68017B, all capacities fixed.
+Actual-package currentness control expands command suite17→18;16 outcomes retain
+losses6/1/1/1/2/1/1,0 errors. Source implementation changes only two diagnostic
+pending statements to stable separate-verification obligations. Legacy authority8/
+producer38/prepared4 outcomes exact. Copied87-file runtime:18 outcomes normal/O,
+no Git/materials/binary, valid parent cwd; explicit final mock only. Valid/status/
+prose bind; six missing/changed native states stop before delegation, no cycles.
+Adjacent book paragraph falsely kept final composition pending after0279; fixed,
+current declaration state synchronized, all old examples preserved. Seven books/
+five surfaces/four complete examples and focused17 pass. Five whole ak/y records
+3534B/source-owner inverses2/nine damaged refusals, whole CH0371 entry1303B exact.
+No canonical process, observations, measured result, qualification or CPU credit.
+Evidence target/p4-system-14/a42al; promotion declined (existing source-closure,
+currentness/bounded-retention rules). Next three fresh Sail processes, retain/
+evaluate outputs, then full policy. Normal COMMIT first; runtime P2 remains in ab.
+
+````
+
+### p4-a42am-a42al-acceptance
+
+````text
+- [x] `.14` a42al **REPRODUCE / ISSUE**: publication.json/old book paragraph: three native declarations absent; stale composition-state teaching.
+- [x] `.14` a42al **ROOT CAUSE**: verify.py rc=0: independent37-module/64-child source set determines73 input identities and41514B.
+- [x] `.14` a42al **FIX**: curate.py/run-controls.py rc=0: exclusive/pin/re-preparation,18 controls x2/16 outcomes/0 errors.
+- [x] `.14` a42al **ADDRESSED**: copied.py rc=0:18 exact87-file outcomes, six native omissions/changes before mock, status/prose stable.
+- [x] `.14` a42al **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples4/surfaces5; legacy8+38+4 exact.
+- [x] `.14` a42al **LOCKSTEP**: verify.py rc=0 normal/O:5 whole records3534B/inverses2/nine refusals; CH0371 whole1303B/all caps fixed.
+````
+
+### p4-a42am-a42al-verification
+
+````text
+a42al: 18x2/16 matrix outcomes; copy87/18 outcomes; legacy8+38+4; focused17/books7/examples4/surfaces5; scope/inverses rc=0 normal/O.
+````
+
+### p4-a42am-a42al-commit
+
+````text
+| `.14` a42al | `SEMULITH-P4-0280` | three fresh Sail processes, measured retention/evaluation, full policy |
+````

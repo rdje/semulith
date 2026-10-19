@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — retain the first canonical DIV capture (P4-SYSTEM.14 a42am)
+
+Committedb160c66e source/declarations and all73 input pins precede the one capture.
+Public bounded executable pin matched3801664B. Fresh PIDs39909/39914/39918 exited0;
+12 observations14830B, measured record9928B, derived verification7093B retained.
+All27 source/GPR boundaries: baseline/repeat AGREE, control DIVERGE only step2 x7
+(-3 actual/-4 expected). Three2298B traces hash64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde.
+Independent normal/O checks restore only measured metadata to the exact plan,
+authenticate all observations and reproduce separate matched findings offline.
+Charge24337600B within128MiB;85 authenticated files1048756B/33759B snapshots.
+
+Add one real-retained, process-denied command test:19 normal/O; seven omission
+losses unchanged6/1/1/1/2/1/1,0 errors. Ten101-file offline-copy outcomes cover
+valid/missing/stale/refused raw data with no Git/materials/binary. All producer
+logic/native declarations remain byte-exact. Family22files/fixed caps. Complete
+policy/qualification/REQ-GC-M/OB-GC-M/CPU closure remain pending; no broader credit.
+Derived receipt initially collided with generic record-relative path fingerprints.
+Tool reproduction and existing .4 precedent establish root cause: name root-relative
+identities object, map explicitly for native readers; no exclusion or cap change.
+Focused17/books7/examples6/surfaces8/scope pass normal/O; legacy8+38+4 exact.
+Whole predecessor entries5007B retained0372/0373. Evidence target/p4-system-14/a42am.
+Four whole al records2498B/inverses2/eight damaged refusals; promotion
+declined under existing bounded-capture/retention/independent-findings doctrine.
+Never rerun or overwrite historical outputs; next full source/risk/feature policy.
+
 ## _(2026-10-19)_ — retain exact DIV predeclarations (P4-SYSTEM.14 a42al)
 
 Curate planned-experiment.sexp9901B, dependencies.sexp14488B and authorities.sexp
@@ -648,64 +673,4 @@ entry moves to0353 with byte/order identity. Focused gates/seven books and old
 property controls verify; CPU14/18,BOARD10/12,qualification unchanged.
 promotion: declined (existing SRC-01/review/retention contracts; scoped source
 fact is canonical in materials/RVI_M_RETENTION.md). Evidence target/p4-system-14/a42z.
-
-## _(2026-10-18)_ — inventory reviewed DIV producers and data loaders (P4-SYSTEM.14 a42y)
-
-The metadata InputReview boundary deliberately does not discover dependencies.
-At0335505 the canonical closure review remained open; the successful three-run
-smoke had an explicitly incomplete inventory. Review the actual selected route
-before producing a canonical manifest, rather than copying a manifest into its
-own authority. The read-only diagnostic roots are the unit collector, retained
-evaluator and snapshot expected author. A conservative AST traversal includes
-function-local imports:34 project modules. Unreviewed/relative/dynamic imports
-refuse; explicitly reviewed standard-library modules belong to runtime identity.
-A local package cannot impersonate an allowed standard-library import. This
-census does not prove arbitrary Python has no hidden dependencies; source edits
-still need review even when the import population remains the same.
-
-Source review of the canonical assembler route confirms composition resolves
-project fragments, semantic register-file declarations, compressed predicates,
-IALIGN and CSR names. Its canonical branch returns before the legacy external
-instruction-table route. Exercise the canonical image builder and snapshot
-expected author with the pinned m-div source, plus four schema loader functions.
-Record all75 sexp.read_file calls:27 unique data paths, comprising ten encoding
-and ten semantic fragments, encoding/profile/state and four schemas. Refuse an
-extra read before delegation or a missing population member after execution.
-This trace covers those loaders and this case; an arbitrary bypassing reader is
-outside its completeness claim. Compare whole image payload hash/size with the
-independent source derivation,27 boundaries and exact step2/x7=-3 witness.
-
-Direct reviewed snapshots use same-volume regular canonical paths, no symlink
-or nested Git traversal (even dangling markers),1MiB/file and8MiB per pass. Read
-only the reserved stat size and reject changes in inode/size/timestamps; a second
-bounded pass checks exact bytes. Imports and schema/author runtime I/O remain
-explicitly outside these direct-read limits. The result holds metadata only;
-internal bounded snapshots are released on return. Current normal/O reports
-agree exactly:65 files/972963B,34 modules,27 data,62 proposed manifest children;
-image4416B/payload108B, source-derived27 boundaries. No Sail process is launched.
-
-The collector and public Sail adapter are principals, so remaining32 modules,
-27 data files, primary M page, evidence policy and review tool make62 children.
-The final canonical entrypoint will consume another slot; do not raise64 to fit
-unreviewed dependencies. Current requirements/obligations/sources are validated
-live authority views, not indiscriminately hashed changing status outputs. The
-existing property projection avoids that cycle; capture a separate immutable
-reference identity rather than the whole future parent catalogue. The GC book
-predeclares the exact DIV witness and wrong-value control, and leaves the exact
-retained primary location, registered family/measurements, final entrypoint,
-manifest/author/impact authorities and shared collection/evaluation allowance as
-explicit next steps. No canonical record, policy adequacy or CPU credit follows.
-
-Probe22 controls and10 omissions normal/O lose2/2/1/2/1/2/1/1/1/2 assertions with
-zero errors. The symlink omission changes both path lstat calls to stat; removing
-only the explicit symlink predicate is redundant with directory/inode checks and
-would not discriminate. Mutation patterns select expression bytes after source
-formatting. Register the complete positive/omission matrices in both Python
-modes only after RED; derived arm total1604,39 doctrines. All old production
-scripts remain exact except the added diagnostic registration. Seven books,
-focused gates and scope/history preservation close this slice. Whole-oldest
-DEV a42n5420B to0351 and CH P4-0229 1079B to0352 preserve every previous byte and
-entry order; caps and old shard prefix remain exact. No task history is retired.
-promotion: declined (existing review/closure/property contracts).
-Evidence target/p4-system-14/a42y; canonical retention and policy remain pending.
 
