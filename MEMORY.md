@@ -16,15 +16,15 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` → complete source/risk/feature policy and status integration.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after0282 normal COMMIT/brief0/exact postconditions/host census,
-  own the next finite adequacy/policy slice on clean state. Read P4-SYSTEM.14,
-  profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md and canonical decision/model chapters.
-  c91d08f5 retains the first actual DIV capture; teaching is synchronized. Preserve
-  native declarations, all observations/results and historical records. Never rerun
-  or overwrite that capture. Complete policy/qualification/status remain open.
-- in_flight_uncommitted: verify Git state on read;0282 owns unfinished normal
-  commit workflow under target/p4-system-14/a42an. No reference process this slice.
-- blockers: none requiring director input. GC replay4/4green/.16 complete;
-  CPU14/18 remains incomplete. D79/D80 remain in LIVE-CONTAINMENT.4; runtime P2
-  in P4 a42ab. No push below300 without director's act (COMMIT.md).
-  Cleanup next due2026-10-19T23:00:27Z.
+- next_action: after0283 normal COMMIT/brief0/exact postconditions/host census,
+  own the next finite policy/status slice on clean state. Read P4-SYSTEM.14,
+  EVIDENCE_POLICY and method-adequacy model chapter. review_div_method checks
+  finite method satisfied, full policy pending/replay not checked; original lower
+  evaluator remains pending. Preserve original37 producer modules, native3 and
+  the one actual capture. Never rerun or overwrite historical observations.
+- in_flight_uncommitted: verify Git on read;0283 owns normal commit workflow
+  under target/p4-system-14/a42ao. No reference process; all fixtures on-volume.
+- blockers: none requiring director input. CPU14/18,board10/12,GC replay4/4green.
+  D79/D80 remain LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab. No push below300
+  without director's act (COMMIT.md). Always use repository target/tmp as TMPDIR.
+  Cleanup next due2026-10-19T23:00:27Z; run at the next clean boundary when due.

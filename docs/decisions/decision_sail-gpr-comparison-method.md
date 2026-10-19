@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — first finite capture retained; complete adequacy/policy pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42am, `SEMULITH-P4-0210`–`0281`; GC policy/public Sail adapter
+- **Status:** `active` — finite method checked; full policy pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a42ao, `SEMULITH-P4-0210`–`0283`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -15,7 +15,7 @@ one explicit GPR witness, one baseline, one repeat and one wrong-expectation
 control. Implement this contract before recording a canonical capture. Its
 grammar, scoped bindings and
 bounded three-run collection are implemented. The first DIV capture is retained
-(2026-10-19, `c91d08f5`); complete policy qualification remains closed.
+(2026-10-19, `c91d08f5`); finite method checked, full policy qualification closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.

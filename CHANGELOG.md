@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0283 (leaf P4-SYSTEM.14) — check retained finite method adequacy
+
+Compose reviewed declaration/input/influence authorities and authenticated retained
+findings for the first DIV capture. Bind only measured metadata changes, exact
+selected artifacts and curated historical origin; require typed complete findings.
+Read-only/no Sail/Git/cache/binary; finite method satisfied, full policy pending,
+replay not checked; no requirement/CPU/ancestry credit. Native/evaluation charge
+1100198B within128MiB; separate snapshot/preparation/source limits preserved.
+Twenty tests x2 and14 independently discriminated omissions x2:30 exact outcomes;
+103-file runtime refuses missing/stale/forged data and late checker drift. Register
+two literal score sites; derived1625 arms. Original producer/capture bytes exact.
+Retain four whole closed records2184B in the existing task-claims artifact; fixed capacities. New model teaching and
+canonical include/toolbox sync. Focused17/books7/rendered5/examples3/scope normal/O pass; whole history6009B retained0375/0376; source-owner inverses2/eight damaged refusals.
+
 ## SEMULITH-P4-0282 (leaf P4-SYSTEM.14) — synchronize capture and replay teaching
 
 Correct nine current teaching/index owners: canonical decision includes, adjacent
@@ -585,9 +599,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Retain four whole completed designs and three whole book receipts in ordinary part19 (17606 payload B/24496B); exact full task/book inverses and28 damaged controls pass normal/O. All original headings/commands, active plans and prior archives stay exact; caps fixed.
 - Verify focused12/sharder12/seven books/3206 links, all99 old history entries and1382 protected files/modes exact; own whole-oldest DEV/CH sharding. D49 stays open priority1 a42l2 for working/index preservation and actual-gate replay; no CPU or qualification credit.
-
-## SEMULITH-P4-0246 (leaf P4-SYSTEM.14) — measure staged ordinary-history gate protection
-
-- Confirm D49: unchanged full enforcer accepts altered staged part18 receipt3196→3197. Real index/1387working identities/proposed index exact;243scoped reads/115delegations/no refusal, owned index residue0. All real ordinary/sealed bodies unchanged; one measured counterexample, no global absence claim.
-- Add first-class isolated-index diagnostic:8controls pass normal/O, unscoped/missing/discovery omissions fail2/1/3 with zero errors. Scoped real Git delegation preserves child fixtures and command status/stderr. Book/toolbox/live/task/source/history verification aligned; fixed caps/CPU/canonical/LIVE unchanged. D49 remains open, priority1 a42l repair next after full COMMIT.
 

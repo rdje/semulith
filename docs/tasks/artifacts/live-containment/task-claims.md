@@ -1472,3 +1472,41 @@ a42am: one real3-run capture; independent normal/O; command19x2/16 outcomes; off
 ````text
 | `.14` a42am | `SEMULITH-P4-0281` | full source/risk/feature adequacy and status integration; no capture retry |
 ````
+
+## p4-a42ao-a42an
+
+docs/tasks/P4-SYSTEM.md records in span order. Insert owner text into source; restore these
+complete spans at the four live pointers. Pairs are [bytes,SHA256]; spans are
+[offset,bytes,lines]. All three complete source/owner/retired inverses must match.
+
+```json
+{"revision":"4c746a0bfb5c42ba7965dbc4754512ccd83e213b","source":[131010,"0a5bee0d99e9be0e434668e442b931113f2e59206262dee7f755ed7e3f3b41ec"],"owner":[131061,"eb457c89ee745425e4aec68063906ee69a1725a56a7cf9feaecaaba190a1b14f"],"retired":[129329,"92385c272709bf16f9ab5c3c7936f4facdf6e40f1e25f3beb6acb534dff1ac32"],"insert":[32667,"### .14 a42ao / SEMULITH-P4-0283: method (active)\n\n"],"spans":[[32718,1190,17],[44959,762,6],[85789,135,1],[117591,97,1]]}
+```
+
+````text
+### .14 a42an / SEMULITH-P4-0282: sync capture teaching (completed)
+
+Nine current teaching/index owners still described completed capture or replay
+as pending: canonical decision includes, adjacent method chapters, GC gaps and
+main/architecture replay prose. Scoped source/native/GS census establishes root
+cause: completion updates missed those owners. Case v2 uses matched-gpr-v1;
+first capture retained, full qualification still closed. GC .16/G-REPLAY4/4green.
+Correct status only; dated census framed historically. Preserve original protocol,
+all46 complete examples, dates and every code/evidence byte. Clarify low-level
+owned-output clearing versus canonical absent-name preflight. Focused17/books7/
+rendered9/scope normal/O pass; native3 still regenerates41514B exactly.
+Scope16/protected1437/opaque1; whole closed am4records2574B, source-owner inverses2/
+eight damaged refusals; CH0374 retains1107B whole history. Initial50/244B family
+overruns caught by guard, new prose shortened; every bound unchanged. Evidence
+target/p4-system-14/a42an. Promotion declined: existing canonical-owner lockstep.
+Next full adequacy/policy/status integration; normal COMMIT first. No new capture.
+
+- [x] `.14` a42an **REPRODUCE / ISSUE**: stale-census.json/GS-report.md: nine stale owners; casev2/envelopev1, G-REPLAY4/4green.
+- [x] `.14` a42an **ROOT CAUSE**: verify.py rc=0: completion state missed canonical includes/index/adjacent capture and replay teaching.
+- [x] `.14` a42an **FIX**: rendered.py rc=0: nine review surfaces correct; full policy/qualification remains pending.
+- [x] `.14` a42an **ADDRESSED**: verify.py rc=0 normal/O:16 files,1437 protected/1Gitlink/native3 unchanged;46 examples exact.
+- [x] `.14` a42an **NO REGRESSION**: focused.py/book rc=0:17 checks/seven books; all code/evidence/status/policy unchanged.
+- [x] `.14` a42an **LOCKSTEP**: verify.py rc=0 normal/O:4 whole records2574B/inverses2/eight refusals; CH1107B/all caps fixed.
+a42an: nine-source census/GS4of4; focused17/books7/rendered9;46 examples exact; scope/inverses normal/O; native3 unchanged/no capture.
+| `.14` a42an | `SEMULITH-P4-0282` | full adequacy/policy/status integration; preserve capture |
+````

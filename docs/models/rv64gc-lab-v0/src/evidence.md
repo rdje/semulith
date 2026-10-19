@@ -91,8 +91,8 @@ fail the legacy test in both modes; explicit checks prevent `-O` false credit.
 
 The complete declaration below is included from its authoritative decision.
 [Authenticated evaluation](evaluation.md) composes declared-file, comparison
-and source/ELF checks. Full method/policy adequacy remains pending; qualification
-stays closed and the current gate report is unchanged.
+and source/ELF checks. [Finite method](method-adequacy.md) is checked; full policy
+and qualification remain pending. The gate is unchanged.
 
 {{#include ../../../decisions/decision_qualified-matched-experiment-contract.md:contract}}
 

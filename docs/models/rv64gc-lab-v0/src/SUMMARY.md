@@ -19,6 +19,7 @@
 [Combining collection and evaluation](unit-evaluation.md)
 [Predeclaring the first division capture](capture-plan.md)
 [The first canonical division capture](canonical-division.md)
+[Checking finite method adequacy](method-adequacy.md)
 [Dependency manifest and leaf inspection](closure.md)
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)

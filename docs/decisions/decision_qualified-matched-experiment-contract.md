@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — first finite capture retained; full adequacy/qualification pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42am, `SEMULITH-P4-0203`–`0281`; existing GC verification policy and evidence-graph requirements
+- **Status:** `active` — finite method checked; full policy/qualification pending
+- **Owner / source:** `P4-SYSTEM.14` a12–a42ao, `SEMULITH-P4-0203`–`0283`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,8 +15,8 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Implemented:** syntax/bindings, three-run collection and first retained DIV capture
-(2026-10-19, `c91d08f5`). Qualification closed.
+**Implemented:** bindings, collection, retained DIV capture (`c91d08f5`) and finite
+method review (`review_div_method.py`). Full policy/qualification pending.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
 `UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy remains

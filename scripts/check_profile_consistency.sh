@@ -2085,6 +2085,35 @@ property-delegation:1
 DIV_COMMAND_CASES
   done
 
+  # P4-SYSTEM.14 a42ao: retained finite method, with no reference process.
+  local div_method_mode div_method_mutation div_method_losses
+  local -a div_method_python
+  for div_method_mode in normal optimized; do
+    div_method_python=(python3)
+    [ "$div_method_mode" = optimized ] && div_method_python+=(-O)
+    out="$("${div_method_python[@]}" scripts/probe_div_method.py 2>&1)"; rc=$?
+    score "GREEN retained DIV method $div_method_mode" "$rc" 0 "$out" "DIV-METHOD: 20 tests / 0 failures / 0 errors; retained finite method, no Sail or policy credit"
+    while IFS=: read -r div_method_mutation div_method_losses; do
+      out="$("${div_method_python[@]}" scripts/probe_div_method.py --mutation "$div_method_mutation" 2>&1)"; rc=$?
+      score "RED omitted DIV method $div_method_mutation $div_method_mode" "$rc" 1 "$out" "DIV-METHOD: 1 tests / $div_method_losses failures / 0 errors; retained finite method, no Sail or policy credit"
+    done <<'DIV_METHOD_CASES'
+declaration-binding:4
+capture-origin:1
+record-binding:4
+influence-selection:2
+finding-completeness:2
+evaluation-selection:1
+artifact-selection:2
+typed-findings:1
+shared-budget:3
+evaluation-accounting:4
+checker-census:1
+checker-recheck:1
+runtime-root:1
+native-envelope:1
+DIV_METHOD_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
