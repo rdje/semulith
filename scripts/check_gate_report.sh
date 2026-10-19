@@ -45,6 +45,28 @@ self_test() {
   # this count, so a measure that stopped discriminating would sync perfectly and still lie.
   if python3 scripts/gate_report.py --self-test >/dev/null 2>&1; then pass=$((pass+1))
   else fail=$((fail+1)); echo "GATE-REPORT self-test MISS: the contract measure's controls failed (scripts/gate_report.py --self-test)" >&2; fi
+  arm() {
+    if [ "$#" -ne 5 ]; then
+      fail=$((fail+1)); echo "GATE-REPORT self-test HARNESS: arm expected five arguments" >&2; return 1
+    fi
+    if [ "$2" = "$3" ] && printf '%s' "$4" | grep -qF -- "$5"; then
+      pass=$((pass+1))
+    else
+      fail=$((fail+1)); printf 'GATE-REPORT self-test MISS: %s — rc=%s, expected %s\n%s\n' "$1" "$2" "$3" "$4" >&2
+    fi
+  }
+  local root_mode root_out root_rc
+  local -a root_python
+  for root_mode in normal optimized; do
+    root_python=(python3)
+    [ "$root_mode" = optimized ] && root_python+=(-O)
+    root_out="$("${root_python[@]}" scripts/probe_gate_runtime_root.py 2>&1)"; root_rc=$?
+    arm "GREEN copied runtime root $root_mode" "$root_rc" 0 "$root_out" \
+      "GATE-RUNTIME-ROOT: 6 tests / 0 failures / 0 errors; local authority, no capture credit"
+    root_out="$("${root_python[@]}" scripts/probe_gate_runtime_root.py --mutation git-root 2>&1)"; root_rc=$?
+    arm "RED parent Git root fallback $root_mode" "$root_rc" 1 "$root_out" \
+      "GATE-RUNTIME-ROOT: 6 tests / 5 failures / 0 errors; local authority, no capture credit"
+  done
   # The controls run against the REAL profiles, because the generator reads a profile directory
   # and a synthetic one would be a different function. A profile with no report is skipped by the
   # real run too, so it is not a control.

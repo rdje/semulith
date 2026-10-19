@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0276 (leaf P4-SYSTEM.14) — anchor gate reporting to its runtime tree
+
+Fix reproduced P1 parent-context fallback: copied gate code could credit114/114
+realized contract pairs with its local registry absent. Derive ROOT from loaded
+source, keeping dependency imports and registry selection local with no import
+process. Six controls pass normal/O; restoring Git-root selection loses five
+assertions/0 errors. Existing gate24/wrapper20 and legacy ancestry matrix pass.
+Promote the copied-runtime isolation lesson to the existing locality card.
+Current validated authority entrypoint/exact manifest, capture/full policy remain
+pending; no qualification or acceptance credit.
+
+Validation:17 focused checks/seven books/one two-mode example/three rendered
+surfaces;1564 protected files/1Gitlink/92 whole entries and all old probes exact.
+Three whole task records2311B/inverses2/seven damaged refusals; DEV0364 retains
+whole5213B entry. All caps fixed. LIVE derives1619arms only;42routes,CPU14/18,
+BOARD10/12,replay4/4green unchanged. Production changes only ROOT/registration.
+
 ## SEMULITH-P4-0275 (leaf P4-SYSTEM.14) — terminate cyclic contract ancestry
 
 Fix a reproduced P1 hang in CONTRACT-FREEZE and public effective-contract

@@ -192,3 +192,35 @@ deadline, kills and joins a hung process group, and removes its fixtures under
 `target/`. This deadline protects the regression harness; it is no production
 runtime guarantee. These are contract-reader controls, with no reference run,
 canonical capture or CPU acceptance credit.
+
+## Gate roots follow the loaded source
+
+The public effective-contract owner now derives its repository root from
+`gate_report.py`'s source location. Importing it launches no Git process. A copied
+runtime therefore imports its own record/dossier/parser modules and reads its own
+declared registry, even when launched with the valid parent checkout as its
+working directory. Report operations that enumerate tracked files still use Git;
+this is a statement about import and the selected contract-measure path.
+
+Before this repair, import-time Git discovery selected the surrounding checkout.
+A copied module then credited 114/114 realized pairs while its own registry was
+absent. The tracked current checkout's report counts were not changed by that
+fixture; the failure concerned attribution in the copied context. Merely copying
+files and omitting `.materials` did not prove complete isolation from parent data.
+
+Run the complete controls from the repository root:
+
+```bash
+python3 scripts/probe_gate_runtime_root.py
+python3 -O scripts/probe_gate_runtime_root.py
+```
+
+Each reports 6 tests, 0 failures and 0 errors. The fixture contains five copied
+runtime modules, the real contract, an expanded obligation catalogue and its
+registry: eight files under a temporary directory on the repository volume.
+It checks source/module roots, process-free import, missing/malformed/empty local
+registries and unchanged complete results. The valid parent stays available,
+making fallback observable. Restoring Git-root selection loses five assertions
+with 0 errors in both modes. GATE-REPORT registers these controls and the omission.
+This is a selected runtime-boundary check, with no reference run, capture,
+arbitrary dependency-completeness proof or qualification credit.

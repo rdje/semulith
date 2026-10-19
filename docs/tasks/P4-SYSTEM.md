@@ -358,24 +358,24 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42ah — anchor gate reporting to its runtime tree (completed, SEMULITH-P4-0276)
+
+P1: copied gate code chose parent ROOT/modules via import-time Git and credited
+114/114 with its registry absent. Source-derived ROOT now keeps all five modules
+local, no import process; identical fixture reports unavailable. Six controls
+normal/O; Git-root omission loses5 assertions/0 errors. Gate24/wrapper20/old
+ancestry matrix/17 focused checks/seven books/one two-mode example/three rendered
+surfaces pass.1564 other files/1Gitlink/92whole entries and all old probes exact;
+production changes only ROOT/registration. Three whole ag records2311B/inverses2/
+seven damaged refusals; DEV0364 retains whole5213B entry. Old caps/statuses fixed;
+42routes/1619arms only. Promotion: docs/knowledge/a-locality-claim-covers-every-reader-of-the-store.md
+and INDEX answer. No capture/qualification. Next validated authority selection/
+entrypoint/manifest/inventory/impact/capture/full policy. Evidence
+target/p4-system-14/a42ah. Controller P2 remains owned in ab. Normal COMMIT applies.
+
 ### `.14` a42ag — terminate cyclic contract ancestry (completed, SEMULITH-P4-0275)
 
-P1: schema-valid v0→v1→v0 made both real owners exceed2s; killed/joined.
-Order diagnostics/unique numbers left ancestry unguarded. Visited sets return
-EXTENDS CYCLE/CONTRACT CYCLE on the identical fixture. Four controls normal/O;
-each owner omission loses3 assertions/0 errors. Existing contract13/0/gate24/0,
-copied74-file views two modes,17 focused checks/seven books/one complete two-mode
-example/three rendered surfaces pass. All old probes/1564other files/1Gitlink/
-91old entries exact; production unchanged outside two guards/registration.
-Six whole af/ac records3112B/inverse stages3/eight damaged refusals; DEV0363 keeps
-one whole oldest3810B entry. Correct ac retrieval summary to receipt's five examples.
-New complete teaching1768B resides in bounded capture-plan; old main/evidence
-chapters restored exact, all caps fixed. Counts42routes/1617arms, statuses exact.
-Monitor decoding issue from af closed by synthetic strict/replacement regression.
-No capture/qualification. Next validated authority selection/final entrypoint/
-manifest/inventory/impact/full policy. Evidence target/p4-system-14/a42ag;
-promotion declined (existing bounded-walk/canonical-authority/observer contracts).
-Controller P2 remains owned in ab. Normal COMMIT applies.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-decision).
 
 ### `.14` a42af — retain bounded prepared DIV capture inputs (completed, SEMULITH-P4-0274)
 
@@ -594,12 +594,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42ag **REPRODUCE / ISSUE**: reproduce-cycle.py rc=0: schema-valid cycle timed out both real owners at2s; killed/joined.
-- [x] `.14` a42ag **ROOT CAUSE**: reproduce-cycle.py rc=0/cycle-before.json: version-order/unique-number diagnostics did not terminate ancestry loops.
-- [x] `.14` a42ag **FIX**: verify-fixed.py rc=0: identical fixture returns1/EXTENDS CYCLE and1/CONTRACT CYCLE; monitor regression rc=0.
-- [x] `.14` a42ag **ADDRESSED**: run-controls.py rc=0 normal/O:4 controls, two omissions each3 losses/0 errors; copied74-file views pass.
-- [x] `.14` a42ag **NO REGRESSION**: verify.py/focused.py rc=0:1564files/1Gitlink/91entries; contract13/gate24,17 checks/seven books/example pass.
-- [x] `.14` a42ag **LOCKSTEP**: verify.py rc=0:6 whole records3112B/inverse stages3/eight damaged refusals; DEV0363 whole3810B, old caps/statuses exact.
+- [x] `.14` a42ah **REPRODUCE / ISSUE**: reproduce-root.py rc=0:71-file copy, registry absent, parent modules and114/114 realized pairs.
+- [x] `.14` a42ah **ROOT CAUSE**: reproduce-root.py rc=0/root-before.json: import-time Git selected parent ROOT and prepended parent scripts.
+- [x] `.14` a42ah **FIX**: PY_FIXED_ROOT_AH rc=0/root-fixed.json: same fixture unavailable, five local modules, zero import commands.
+- [x] `.14` a42ah **ADDRESSED**: probe_gate_runtime_root.py rc=0 normal/O:6 controls; Git-root omission rc=1:5 failures/0 errors.
+- [x] `.14` a42ah **NO REGRESSION**: verify.py/focused.py rc=0:1564files/1Gitlink/92entries; gate24/wrapper20/legacy matrix,17 checks/books7/example1.
+- [x] `.14` a42ah **LOCKSTEP**: verify.py rc=0:3 whole records2311B/inverses2/seven damaged refusals; DEV0364 whole5213B, fixed caps/statuses.
+- [x] `.14` a42ag: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-acceptance).
 - [x] `.14` a42af: controls16/focused19/books7/examples3 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-acceptance).
 - [x] `.14` a42ae: controls76/focused18/books7/examples6 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-acceptance).
 - [x] `.14` a42ad: controls86/focused18/books7/examples4 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-acceptance).
@@ -1102,7 +1103,8 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42ag: controls4x2/omissions3each/copy74/contract13/gate24/focused17/books7/example1; inverses rc=0 normal/O.
+a42ah: root6x2/omission5/cycle matrix6/gate24/wrapper20/focused17/books7/example1; inverses rc=0 normal/O.
+a42ag: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-verification).
 a42af: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-verification).
 a42ae: [complete verification](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-verification).
 a42ad: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-verification).
@@ -1543,6 +1545,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42ah | `SEMULITH-P4-0276` | validated authorities/entrypoint/manifest/inventory/impact/capture/full policy |
 | `.14` a42ag | `SEMULITH-P4-0275` | validated authorities/final entrypoint/manifest/inventory/impact/capture/full policy |
 | `.14` a42af | `SEMULITH-P4-0274` | final entrypoint/exact manifest/authorities, then capture/full policy |
 | `.14` a42ae | `SEMULITH-P4-0273` | final entrypoint/output retention/manifest/authorities/policy |

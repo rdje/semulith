@@ -21,6 +21,26 @@ saw it.
 - Prove it with the tool's own answer (`cargo metadata`'s `manifest_path`) and a control
   with the routing removed; leave a shared global cache alone — stop consulting it.
 
+## A copied runtime also needs an observed root
+
+A copied file set without an acquired cache does not prove isolation from its
+parent checkout. At P4-SYSTEM.14 a42ah, importing a copied `gate_report.py` ran
+Git root discovery and inserted the parent checkout's scripts into `sys.path`.
+The public contract measure credited 114/114 realized pairs while the copied
+registry was absent. The copied module's presence alone concealed the fallback.
+
+Derive the runtime root from the loaded source location when that is the declared
+owner. Observe dependency module locations as well as the top-level module's
+location. Remove and corrupt the copied registry while the valid parent remains
+available; the local absence must refuse. An empty local registry must realize
+zero checks. Block process creation during import to expose hidden root discovery.
+Keep Git-based tracked-file queries separate where the actual report needs them.
+
+`scripts/probe_gate_runtime_root.py` exercises these boundaries in normal and
+optimized Python. Its parent-root omission fails five of six controls with no
+test errors. This proves this selected reader boundary, not arbitrary Python
+dependency completeness, execution provenance or qualification.
+
 ## Evidence
 
 - `docs/tasks/P4-SYSTEM.md` — the `2026-10-06` slice (c4) part 1 decision and checklist.
