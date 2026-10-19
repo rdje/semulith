@@ -74,9 +74,10 @@ The supplied-byte checks start no process and perform no artifact reopen;
 canonical schema/assembler data remain explicit tool dependencies. A separate
 75-file copied runtime/data set passes with neither the binary nor `.materials`.
 Ten damaged or missing input/authority/layout cases refuse in normal and optimized
-Python. The production source-review population stays35 modules/27 exercised
-data files/63 proposed children; preparation's canonical override/schema and
-baseline are curation inputs, separate from that declared execution-loader trace.
+Python. The current [producer review](capture-plan.md#reviewing-the-authority-loader-within-the-producer-route)
+covers37 modules,27 execution-data files,13 current views and64 proposed children.
+Preparation's canonical override/schema and baseline remain curation inputs,
+separate from that declared execution-loader trace.
 The final manifest must still be constructed from the complete reviewed route.
 
 ## Reproduce the four files in a disposable directory

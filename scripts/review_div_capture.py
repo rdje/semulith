@@ -16,6 +16,7 @@ import os
 from pathlib import Path, PurePosixPath
 import platform
 import stat
+import subprocess
 import sys
 from unittest.mock import patch
 
@@ -29,10 +30,11 @@ ROOT_MODULES = frozenset(
         "matched_gpr_evaluation",
         "derive_rv64gc_expectations",
         "retain_div_statement",
+        "capture_div",
     }
 )
 REVIEWED_MODULES = frozenset(
-    """change_impact check_sexp_schema compare_traces derive_rv64gc_expectations
+    """capture_div change_impact check_sexp_schema compare_traces derive_rv64gc_expectations
     dossier_sexp expectations_text experiment_artifacts experiment_verification
     gate_report matched_gpr_artifacts matched_gpr_collector matched_gpr_comparison
     matched_gpr_evaluation matched_gpr_execution matched_gpr_expected_author
@@ -40,12 +42,12 @@ REVIEWED_MODULES = frozenset(
     matched_gpr_input_review matched_gpr_leaf matched_gpr_manifest
     matched_gpr_property matched_gpr_receipt matched_gpr_relations
     matched_gpr_source_image matched_gpr_unit_collector record_catalog records_sexp
-    retain_div_statement riscv_asm run_rv64gc_sail sexp spec_c specfp""".split()
+    retain_div_statement review_div_capture riscv_asm run_rv64gc_sail sexp spec_c specfp""".split()
 )
 REVIEWED_EXTERNALS = frozenset(
-    """__future__ argparse collections contextlib copy csv dataclasses decimal errno
+    """__future__ argparse ast collections contextlib copy csv dataclasses decimal errno
     fractions functools hashlib itertools json math os pathlib platform re shutil
-    signal stat struct subprocess sys tempfile tomllib""".split()
+    signal stat struct subprocess sys tempfile tomllib unittest""".split()
 )
 FRAGMENTS = ("a", "c", "d", "f", "m", "rv64i", "system", "zicntr", "zicsr", "zifencei")
 DATA_PATHS = frozenset(
@@ -67,6 +69,22 @@ DATA_PATHS = frozenset(
             "sail-gpr-capture",
         )
     ]
+)
+AUTHORITY_PATHS = frozenset(
+    [
+        f"profiles/rv64gc-lab-v0/{name}.sexp"
+        for name in (
+            "requirements", "contract-obligations", "contract-v0.obligations",
+            "contract-v1.obligations", "contract", "sources", "references",
+        )
+    ]
+    + [
+        f"schema/{name}.sexp"
+        for name in (
+            "requirements", "contract-obligations", "contract", "sources", "references",
+        )
+    ]
+    + ["crates/semulith-verify/src/contract_checks_rv64gc.rs"]
 )
 GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"
 PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"
@@ -325,11 +343,93 @@ def check_retained_input(case, data):
     )
 
 
+def exercise_authorities(snapshots):
+    """Review the selected current-view loader without making its views inputs.
+
+    The public authority owner keeps its own snapshot/tool-I/O contract. This
+    trace covers its ordinary Path.open calls and process boundary, not arbitrary
+    Python I/O. The independently reviewed namespace is checked before opens.
+    """
+    import capture_div as A
+    import matched_gpr_property as P
+
+    require(
+        set(A.VIEW_PATHS) == AUTHORITY_PATHS,
+        "authority view declaration differs from reviewed set",
+    )
+    observed = []
+    original = Path.open
+
+    def opened(path, *args, **kwargs):
+        try:
+            relative = Path(path).relative_to(snapshots.root).as_posix()
+        except ValueError:
+            raise ReviewError("authority open leaves reviewed root") from None
+        require(relative in AUTHORITY_PATHS, "unreviewed authority read: " + relative)
+        mode = args[0] if args else kwargs.get("mode", "r")
+        require(not any(flag in mode for flag in "wax+"), "authority write refused")
+        # All reviewed views were pinned before tracing; this is a cached lookup.
+        snapshots.pin(relative)
+        observed.append(relative)
+        return original(path, *args, **kwargs)
+
+    def denied_process(*args, **kwargs):
+        raise ReviewError("authority review attempted a process")
+
+    with patch.object(Path, "open", opened), patch.object(
+        subprocess, "Popen", denied_process
+    ):
+        context = A.review_authorities()
+    require(set(observed) == AUTHORITY_PATHS, "authority read population differs")
+    require(
+        type(context) is A.CurrentAuthorities and type(context.views) is tuple
+        and len(context.views) == len(AUTHORITY_PATHS), "invalid authority facts",
+    )
+    require(
+        all(type(view) is A.ViewIdentity for view in context.views),
+        "invalid authority view fact type",
+    )
+    require(
+        type(context.scope) is A.V.Scope
+        and type(context.reference) is A.I.ReferenceIdentity
+        and type(context.property_authority) is A.P.PropertyAuthority,
+        "invalid selected authority component types",
+    )
+    require(
+        {view.path for view in context.views} == AUTHORITY_PATHS,
+        "returned authority view population differs",
+    )
+    for view in context.views:
+        expected_role = (
+            "schema-tool" if view.path.startswith("schema/") else
+            "registry-tool" if view.path.endswith(".rs") else "current-catalogue"
+        )
+        require(
+            type(view.byte_size) is int
+            and view.byte_size == len(snapshots.data[view.path])
+            and view.sha256 == hashlib.sha256(snapshots.data[view.path]).hexdigest()
+            and view.role == expected_role,
+            "authority view pin differs from reviewed snapshot",
+        )
+    require(
+        context.property_authority == P.signed_division_case().authority,
+        "authority facts differ from reviewed DIV case",
+    )
+    result = A.report(context)
+    require(
+        result["canonical_capture"] is False and result["qualification"] is False,
+        "authority report claimed execution or qualification",
+    )
+    return dict(
+        data_paths=sorted(set(observed)), open_calls=len(observed), context=result
+    )
+
+
 def review():
     snapshots = Snapshots(ROOT)
     modules, edges, external = import_census(snapshots)
     children = child_paths(modules)
-    for path in (*children, GUEST):
+    for path in (*children, GUEST, *sorted(AUTHORITY_PATHS)):
         snapshots.pin(path)
     import matched_gpr_property as P
 
@@ -340,6 +440,7 @@ def review():
     )
     check_retained_input(case, snapshots.data[PRIMARY])
     exercised = exercise_loaders(snapshots.data[GUEST], snapshots)
+    authorities = exercise_authorities(snapshots)
     snapshots.recheck()
     files = [
         {"path": path, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
@@ -355,10 +456,13 @@ def review():
         "import_edges": edges,
         "external_imports": external,
         "exercised": exercised,
+        "authorities": authorities,
         "proposed_children": children,
         "counts": {
             "modules": len(modules),
             "data_files": len(DATA_PATHS),
+            "authority_files": len(AUTHORITY_PATHS),
+            "all_data_files": len(DATA_PATHS | AUTHORITY_PATHS),
             "children": len(children),
             "child_limit": 64,
             "reviewed_files": len(files),
@@ -380,8 +484,9 @@ def review():
         "limitations": [
             "source review still required after code edits",
             "loader trace covers only declared route",
-            "current semantic authorities selected separately",
-            "retention and canonical entrypoint pending",
+            "current authority views are not flat execution inputs",
+            "public authority snapshots/tool I/O remain separate from outer snapshots",
+            "final execution composition, manifest and policy pending",
         ],
     }
 

@@ -14,7 +14,7 @@ as JSON on stdout. Redirect it into an owned directory under `target/` when a
 local receipt is useful. It launches no reference process and writes no files.
 
 The source review starts at the unit collector, retained evaluator, expected
-author and retained-statement extractor. It conservatively follows every ordinary project-local Python import,
+author, retained-statement extractor and current-authority entrypoint. It conservatively follows every ordinary project-local Python import,
 including function-local imports, and checks the result against an explicit
 reviewed module set. Unknown external imports, relative/dynamic imports, changed
 population and unsafe paths refuse. Python's standard library and interpreter
@@ -40,9 +40,9 @@ supplies neither an experiment manifest nor qualification.
 ## Proposed flat input population
 
 The collector and public Sail adapter are two of the existing nine principals.
-The proposed dependency children are the other33 imported project modules,
-27 exercised data files, the retained DIV excerpt, the profile evidence policy and
-the review tool itself:63 children before a future capture entrypoint is added.
+The proposed dependency children are the other35 imported project modules,
+27 exercised execution-data files, the retained DIV excerpt and the profile evidence
+policy:64 children, including the review tool and current-authority entrypoint.
 The diagnostic derives these counts from path sets and refuses overflow of the
 existing64-child limit. Its JSON lists the complete paths; the manifest must be
 built from this reviewed population, rather than treating its own declarations
@@ -110,8 +110,9 @@ route consumes the already curated bytes and does not rerun extraction. Neither
 the full source page nor its licence-evidence page is a runtime input on that
 route. Their exact provenance remains in the retained artifact and terms record.
 The diagnostic checks the excerpt's metadata/bytes and original publication
-identity independently. Its35 modules and63 children leave one slot for the final
-entrypoint, under the unchanged64-child ceiling. A copied reviewed input set can
+identity independently. Its37 modules and64 children reach the unchanged64-child
+ceiling. The final execution composition must fit this reviewed population or
+receive another bounded design review before execution. A copied reviewed input set can
 run the diagnostic with no `.materials` directory; success still stays pending.
 
 The asset belongs to the existing registered `profiles/` family; its measured
@@ -328,6 +329,54 @@ when a local receipt is needed; it is no canonical authority-file publication.
 This selects current context only. The final capture entrypoint, exact manifest,
 independent input/author review and old/current impact projection remain pending,
 as do reference execution, retained evaluation and full policy/status integration.
-The existing producer review's 35-module/27-data route does not yet cover this
-future final entrypoint; that route must be re-reviewed before its manifest is
-committed. No selected authority context grants capture or qualification credit.
+The producer review now covers this read-only entrypoint and its current-view
+loader. The future execution composition still requires source review before its
+manifest is committed. No selected context grants capture or qualification credit.
+
+## Reviewing the authority loader within the producer route
+
+The producer review also calls `capture_div.review_authorities()` through its
+public API. An independently written thirteen-path set must match the owner's
+declaration before delegation. The review traces ordinary `Path.open` calls,
+refuses unknown paths before opening them, rejects write modes and prevents
+`subprocess.Popen` within this selected call. It checks the complete observed
+view population and the returned frozen fact types, roles, byte sizes and digests
+against its preloaded snapshots. The selected property authority must still equal
+the reviewed DIV case. A changed declaration, unknown read, contradictory fact or
+process attempt refuses; success remains `pending` with both credit flags false.
+
+These are scoped observations of reviewed Python, not an operating-system sandbox
+or proof about arbitrary I/O. The outer diagnostic retains its original 1 MiB
+member and 8 MiB shared pass, with two passes totaling at most 16 MiB of direct
+reads. The nested public authority loader retains its separate 16 MiB direct
+snapshot contract and separate schema/catalogue/scope I/O. Runtime import I/O is
+also separate. Neither contract promises a combined process-I/O or RAM cap.
+
+The report now derives 37 project modules, 27 execution-data files, 13 current
+view files and 39 unique data/view paths. `schema/references.sexp` belongs to both
+sets. Including the guest, retained excerpt and policy, the review snapshots
+79 unique files. The proposed flat execution children remain exactly 64: the
+current requirements, source/parent catalogues and registry are observed authority
+views, not additional flat capture inputs. Their whole-file hashes stay diagnostic
+provenance. Relevant semantic/schema influence must be carried by the separately
+reviewed current/old impact projection, avoiding derived-status cycles.
+
+Run the complete current route and controls:
+
+```bash
+set -euo pipefail
+python3 scripts/review_div_capture.py --review | python3 -c 'import json,sys; r=json.load(sys.stdin); c=r["counts"]; print(r["disposition"], c["modules"], c["data_files"], c["authority_files"], c["all_data_files"], c["children"], c["reviewed_files"]); print(r["canonical_capture"], r["qualification"])'
+python3 scripts/probe_div_capture_review.py
+python3 -O scripts/probe_div_capture_review.py
+```
+
+The report prints `pending 37 27 13 39 64 79`, then `False False`. Each probe
+reports 31 tests with zero failures and errors. The five authority guard omissions
+(declaration, pre-open namespace, read-only mode, returned view pin and process)
+each lose one assertion with zero errors in both modes; existing thirteen guard
+omissions retain their measured losses. PROFILE-CONSISTENCY registers all outcomes.
+A copied 79-file runtime gives the same file facts and populations in both modes,
+with the valid parent checkout available as its working directory and no copied
+binary or `.materials` directory. It writes no canonical output. Final execution
+composition, exact manifest/planned record, independent inventory/author/impact
+reviews, three fresh captures and full policy/status evaluation remain pending.

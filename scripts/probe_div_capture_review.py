@@ -7,6 +7,7 @@ import argparse
 from dataclasses import replace
 import hashlib
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import types
@@ -16,6 +17,7 @@ from unittest.mock import patch
 import review_div_capture as R
 import matched_gpr_property as P
 import retain_div_statement as Retain
+import capture_div as A
 
 ROOT = Path(__file__).resolve().parent.parent
 MUTATIONS = {
@@ -46,6 +48,20 @@ MUTATIONS = {
         1,
     ),
     "retained-pin": ("hashlib.sha256(data).hexdigest() == primary.sha256", "True", 1),
+    "authority-declaration": ("set(A.VIEW_PATHS) == AUTHORITY_PATHS", "True", 1),
+    "authority-preopen": ("relative in AUTHORITY_PATHS", "True", 1),
+    "authority-readonly": ('not any(flag in mode for flag in "wax+")', "True", 1),
+    "authority-view-pin": (
+        'type(view.byte_size) is int\n'
+        '            and view.byte_size == len(snapshots.data[view.path])\n'
+        '            and view.sha256 == hashlib.sha256(snapshots.data[view.path]).hexdigest()\n'
+        '            and view.role == expected_role',
+        "True", 1,
+    ),
+    "authority-process": (
+        'subprocess, "Popen", denied_process',
+        'subprocess, "Popen", subprocess.Popen', 1,
+    ),
 }
 
 
@@ -128,15 +144,126 @@ class ReviewTests(unittest.TestCase):
 
     def test_child_population_and_inclusive_bound(self):
         children = R.child_paths(R.REVIEWED_MODULES)
-        self.assertEqual(len(children), 63)
+        self.assertEqual(len(children), 64)
         self.assertFalse(set(children) & R.PRINCIPAL_CODE)
         self.assertIn(R.SELF, children)
         self.assertIn(R.PRIMARY, children)
         self.assertIn("retain_div_statement", R.ROOT_MODULES)
         self.assertIn("scripts/retain_div_statement.py", children)
-        self.assertEqual(len(R.child_paths(R.REVIEWED_MODULES | {"extra_a"})), 64)
+        self.assertIn("capture_div", R.ROOT_MODULES)
+        self.assertEqual(len(R.child_paths(R.REVIEWED_MODULES - {"capture_div"})), 63)
         with self.assertRaises(R.ReviewError):
-            R.child_paths(R.REVIEWED_MODULES | {"extra_a", "extra_b"})
+            R.child_paths(R.REVIEWED_MODULES | {"extra_a"})
+
+    def authority_fixture(self):
+        """Use current tracked views; substitute only the public owner's action."""
+        snapshots = R.Snapshots(ROOT)
+        for path in R.AUTHORITY_PATHS:
+            snapshots.pin(path)
+        context = A.review_authorities()
+
+        def owner():
+            for path in sorted(R.AUTHORITY_PATHS):
+                with (ROOT / path).open("rb") as stream:
+                    stream.read(1)
+            return context
+
+        return snapshots, context, owner
+
+    def test_authority_declaration_population_is_checked_before_owner_call(self):
+        snapshots, _, owner = self.authority_fixture()
+        with patch.object(A, "VIEW_PATHS", (*A.VIEW_PATHS, "extra")), \
+                patch.object(A, "review_authorities", side_effect=owner) as invoked:
+            with self.assertRaises(R.ReviewError):
+                R.exercise_authorities(snapshots)
+            invoked.assert_not_called()
+
+    def test_unknown_authority_open_refuses_before_the_real_open(self):
+        snapshots, _, owner = self.authority_fixture()
+        unknown = self.root / "unreviewed"
+        unknown.write_bytes(b"owned unknown data")
+        snapshots.pin(unknown.relative_to(ROOT).as_posix())
+        opened = []
+        original = Path.open
+
+        def observed(path, *args, **kwargs):
+            opened.append(Path(path))
+            return original(path, *args, **kwargs)
+
+        def extra_owner():
+            with unknown.open("rb") as stream:
+                stream.read(1)
+            return owner()
+
+        with patch.object(Path, "open", observed), \
+                patch.object(A, "review_authorities", side_effect=extra_owner):
+            with self.assertRaises(R.ReviewError):
+                R.exercise_authorities(snapshots)
+        self.assertNotIn(unknown, opened)
+
+    def test_contradictory_authority_view_pin_refuses(self):
+        snapshots, context, owner = self.authority_fixture()
+        view = replace(context.views[0], sha256="0" * 64)
+        changed = replace(context, views=(view, *context.views[1:]))
+
+        def wrong_owner():
+            owner()
+            return changed
+
+        with patch.object(A, "review_authorities", side_effect=wrong_owner), \
+                self.assertRaises(R.ReviewError):
+            R.exercise_authorities(snapshots)
+
+    def test_authority_write_mode_refuses_before_the_real_open(self):
+        snapshots, context, owner = self.authority_fixture()
+        original = Path.open
+        write_opens = []
+
+        def observed(path, mode="r", *args, **kwargs):
+            if any(flag in mode for flag in "wax+"):
+                write_opens.append(Path(path))
+                # Observe a forbidden delegation without modifying tracked data.
+                mode = "rb"
+            return original(path, mode, *args, **kwargs)
+
+        def writing_owner():
+            with (ROOT / sorted(R.AUTHORITY_PATHS)[0]).open("r+b"):
+                pass
+            return owner()
+
+        with patch.object(Path, "open", observed), \
+                patch.object(A, "review_authorities", side_effect=writing_owner):
+            with self.assertRaises(R.ReviewError):
+                R.exercise_authorities(snapshots)
+        self.assertEqual(write_opens, [])
+
+    def test_malformed_authority_view_fact_refuses_without_attribute_error(self):
+        snapshots, context, owner = self.authority_fixture()
+        changed = replace(context, views=(None, *context.views[1:]))
+
+        def wrong_owner():
+            owner()
+            return changed
+
+        with patch.object(A, "review_authorities", side_effect=wrong_owner), \
+                self.assertRaises(R.ReviewError):
+            R.exercise_authorities(snapshots)
+
+    def test_authority_process_attempt_refuses_before_launch(self):
+        snapshots, context, owner = self.authority_fixture()
+
+        def process_owner():
+            owner()
+            process = subprocess.Popen(
+                [sys.executable, "-c", "pass"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            )
+            process.communicate(timeout=10)
+            return context
+
+        with patch.object(A, "review_authorities", side_effect=process_owner), \
+                self.assertRaises(R.ReviewError):
+            R.exercise_authorities(snapshots)
 
     def retained_case(self, data):
         case = P.signed_division_case()

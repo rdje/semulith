@@ -1041,3 +1041,48 @@ a42ah: root6x2/omission5/cycle matrix6/gate24/wrapper20/focused17/books7/example
 ````text
 a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
 ````
+
+## P4 a42aj: complete prior current-authority records
+
+Whole original records; source/owner/retirement inverses.
+
+```json
+{"revision":"c6b5d09c8a4ceee1368747cb364ed51eb813702e","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130768,"source_sha256":"0c10b0e96494af6911c3c6833f2c0b8d010a852dbbc0ef6ab178747ee5517607","owner_insert":{"offset":32667,"text":"### `.14` a42aj \u2014 review the current authority-selection route (active)\n\nOwn P4-0278 before changes. Extend the independent source-reviewed module set to\ncapture_div/review_div_capture, including ordinary ast/unittest standard-library\nimports. Exercise the actual current-authority API through observed file opens,\nwith an explicit independently reviewed13-view population. Keep execution data27\nand current authority views separate: live requirement/parent hashes are diagnostic\nprovenance, never flat execution children. Derive37 modules/64 children under the\nunchanged64 ceiling and review the union of actual code/data files. Preserve the\nexisting schema/image/author and retained-source controls. Outer source snapshots\nkeep1MiB/file,8MiB/pass,two passes; the public authority tool retains its separately\ndeclared snapshot/tool-I/O contract. Do not claim a combined process-I/O/RAM cap.\nActual selected loader reads must stay in the reviewed namespace and read-only;\nunknown paths/populations and contradictory returned view facts refuse. Controls\nnormal/O and copied-runtime/data, full examples/books, whole old-record retention\nand focused checks. Final execution composition/manifest/planned record and\nindependent inventory/author/impact remain pending; no capture/qualification.\nEvidence target/p4-system-14/a42aj; promotion declined (existing source-closure,\ncurrent-authority and bounded-reader contracts). Whole prior ai records retained\nwith source/owner inverses; contain whole history, sync live docs/book, normal COMMIT.\n\n"},"owner_bytes":132309,"owner_sha256":"48b1a853e95b783c9a363b89b1c449a14a92463e847f0917225ee71872828c29","retired_bytes":130740,"retired_sha256":"3782a6bc74283b89c13f53d0e5855b402a88ef2350f9b99979917ac95f10a2b5","records":[{"unit":"a42ai-decision","offset":34208,"bytes":1026,"sha256":"d0b1ae8348c6df260a9764b0d44e721c3cd027aea90c35e5087795272111ae79","replacement":"### `.14` a42ai \u2014 select current DIV capture authorities (completed, SEMULITH-P4-0277)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-decision).\n\n"},{"unit":"a42ai-acceptance","offset":45470,"bytes":840,"sha256":"3804f0a6f996f2e629ee9d1a896b72b6164e568c3631ac4a0484d026cd40eadc","replacement":"- [x] `.14` a42ai: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-acceptance).\n"},{"unit":"a42ai-verification","offset":88178,"bytes":94,"sha256":"86a55b8aae902448af2f8ebe2e90a41c4b0837d1a06d53c3cb83d49a74491125","replacement":"a42ai: [complete verification](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-verification).\n"}]}
+```
+
+<a id="p4-a42aj-a42ai-decision"></a>
+
+````text
+### `.14` a42ai — select current DIV capture authorities (completed, SEMULITH-P4-0277)
+
+Read-only frozen scope/identity/property authority and13 view facts. Direct
+1MiB/member,8MiB/pass,two passes; public tools separate, trusted quiescent tree.
+Raw-before-map/unique IDs/effective scope/semantics bind. Prototype alternate
+registry acceptance now refuses before delegation.18 controls normal/O;
+omissions3/1/3,0 errors. Outer-comment fixture corrected; error log retained.
+Copied50-file views,17 focused checks/seven books/two examples/three rendered
+surfaces pass. Preservation/containment evidence is in the checklist below.
+All caps/statuses fixed;42routes/1621arms only. No capture/publication/qualification.
+Old producer route still needs final-entrypoint review. Next reviewed entrypoint,
+manifest/planned record and independent input/author/impact before capture/policy.
+Evidence target/p4-system-14/a42ai; promotion declined (existing authority/reader/
+isolation rules). Controller P2 in ab. Normal COMMIT applies.
+
+````
+
+<a id="p4-a42aj-a42ai-acceptance"></a>
+
+````text
+- [x] `.14` a42ai **REPRODUCE / ISSUE**: reproduce-registry.py rc=0: copied50 files, alternate registry accepted outside listed13 views.
+- [x] `.14` a42ai **ROOT CAUSE**: reproduce-registry.py rc=0/registry-before.json: missing predelegation registry-path binding.
+- [x] `.14` a42ai **FIX**: PY_FIX_REG_AI rc=0/registry-fixed.json: same alternate-registry fixture returns1/refused; actual read guard binds.
+- [x] `.14` a42ai **ADDRESSED**: run-controls.py rc=0 normal/O:18 controls, omissions3/1/3 failures,0 errors; copied50-file views/closed reads.
+- [x] `.14` a42ai **NO REGRESSION**: verify.py/focused.py rc=0:1569files/1Gitlink/93entries, old production/probes exact;17 checks/books7/examples2.
+- [x] `.14` a42ai **LOCKSTEP**: verify.py rc=0:6 whole records3137B/inverses2/ten damaged refusals; CH0365 whole1104B, fixed caps/statuses.
+````
+
+<a id="p4-a42aj-a42ai-verification"></a>
+
+````text
+a42ai: controls18x2/omissions3,1,3/copy50/focused17/books7/examples2; inverses rc=0 normal/O.
+````
