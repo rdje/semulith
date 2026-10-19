@@ -144,7 +144,7 @@ records exercise readers only and confer no execution or CPU acceptance credit.
 `PROFILE-CONSISTENCY` now passes each new verification experiment's raw form to
 the schema checker **before mapping it**. A duplicated singular field is refused
 before the dictionary could collapse its two values. Legacy records retain their
-existing checks. There are no canonical v1 captures yet.
+existing checks. The [retained DIV case](canonical-division.md) uses this v1 envelope.
 
 `scripts/experiment_verification.py` owns these relationship checks. The caller
 supplies the parent profile's candidate inventory; requirements are filtered by
@@ -445,8 +445,8 @@ It prints `satisfied ['AGREE', 'AGREE', 'DIVERGE']`. All 52 tests and fourteen
 independent omissions run under GUEST-GEN in normal/optimized Python, including
 the inclusive payload and 4096-boundary limits. [Evaluation](evaluation.md) now
 composes identity/receipt/comparison and source/ELF checks; the [shared reader](closure.md#authenticating-the-declared-file-set-within-shared-budgets) owns aggregate accounting.
-Complete closure/impact/property/provenance, full policy, collection and canonical
-captures remain pending. This byte unit grants no qualification.
+The [capture](canonical-division.md) is retained. Full policy adequacy remains
+pending; this byte unit grants no qualification.
 
 ## Authenticating a pin with a total read bound
 

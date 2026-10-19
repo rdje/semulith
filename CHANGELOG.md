@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0282 (leaf P4-SYSTEM.14) — synchronize capture and replay teaching
+
+Correct nine current teaching/index owners: canonical decision includes, adjacent
+evidence chapters, GC gaps and main P4/architecture replay state. First finite DIV
+capture is retained in the matched-gpr-v1 envelope; complete policy/qualification
+remains pending. GC snapshot/replay/reduction completed .16, G-REPLAY4/4green.
+Preserve dated planning history, exact protocols/examples and all code/evidence.
+Retain four whole closed am records2574B; all capacities fixed. Book/focused/scope
+verification pass: focused17/books7/rendered9/scope normal/O,46 examples exact;
+CH0374 whole1107B/inverses2/eight refusals. CPU/board/status unchanged.
+
 ## SEMULITH-P4-0281 (leaf P4-SYSTEM.14) — retain the first canonical DIV capture
 
 One composed capture after committed source/declarations: three fresh zero-exit
@@ -579,11 +590,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Confirm D49: unchanged full enforcer accepts altered staged part18 receipt3196→3197. Real index/1387working identities/proposed index exact;243scoped reads/115delegations/no refusal, owned index residue0. All real ordinary/sealed bodies unchanged; one measured counterexample, no global absence claim.
 - Add first-class isolated-index diagnostic:8controls pass normal/O, unscoped/missing/discovery omissions fail2/1/3 with zero errors. Scoped real Git delegation preserves child fixtures and command status/stderr. Book/toolbox/live/task/source/history verification aligned; fixed caps/CPU/canonical/LIVE unchanged. D49 remains open, priority1 a42l repair next after full COMMIT.
-
-## SEMULITH-P4-0245 (leaf P4-SYSTEM.14) — retain the repaired handoff census during scaffold sync
-
-- Fix D48: remove only the locally repaired census from automatic neutral replacement; other updater behavior stays exact. Public local-input reproduction3/2/0 normal/O pinpoints replaced repair despite rc0; newer upstream changes require deliberate review.
-- Expanded existing probe22/0/0 normal/O preserves19 old cases; parent/overwrite/no-sync/cleanup controls fail2/2/3/3, zero errors, old census omissions2/2/4/1 retained. Owned copies/controlled Git, normal copies/input preservation/scratch cleanup verified. Existing gate/CI wiring unchanged; focused12/sharder12/seven books/navigation/source/history/scope checks, book+60B within63B room and new runnable example. LIVE/CPU/canonical/caps unchanged; full COMMIT then ordinary-part actual-gate assessment.
-- Final checks:3212fresh+actual links/normal+print/literal example,100old entries/1374protected files exact normal/O; whole DEV3486B→0274/CH1219B→0275,67live+210sealed277logical, receipt+digest edits refuse; fixed book cap524285/524288.
-
 

@@ -76,7 +76,7 @@ Controls must execute real synthetic child processes, separately identified from
 Sail. Discriminate stale output, missing trace, empty streams, failed/signal exits,
 wrong/changed pins, unsafe targets, aliasing, overflow, deadline/group cleanup and
 frozen context in both normal and optimized Python. Real Sail collection remains
-separate from these synthetic process controls and any future canonical capture.
+separate from these synthetic controls; the [first canonical capture](canonical-division.md) is retained.
 
 ## Complete synthetic example
 
@@ -174,7 +174,7 @@ adds at most two reads of each bounded trace/stream and one64 KiB receipt read
 (8,716,288 B), with no output payload retention. The serialized receipt is bounded
 separately to64 KiB. An explicit read limit shares collection/publication accounting; the
 [unit collector](unit-collector.md) carries the remainder across all three runs.
-Canonical retention, closure/policy adequacy and qualification remain pending.
+The [first canonical capture](canonical-division.md) is retained. Complete closure/policy adequacy and qualification remain pending.
 
 ## Complete receipt example
 

@@ -400,7 +400,8 @@ The RV64GC demo emits text. Its `--json` flag now refuses with exit2 and an expl
 unsupported-report message; previously that flag silently printed text with a
 successful exit. Scalar demo JSON remains available. Unknown GC control names
 also refuse2. Replay bundles can record these same named controls, as described
-below. Reduction follows in P4.16. The complete validator mutation campaign
+below. Finite divergence reduction completed P4.16 (see the reduction section
+above). The complete validator mutation campaign
 remains P4.15's work, and CPU-SYSTEM acceptance remains incomplete.
 
 ### Recording a declared control model

@@ -142,9 +142,9 @@ graphs, typed witnesses/baselines, bounded pin/snapshot readers and these artifa
 formats and a [bounded byte comparison](evidence.md#bounded-three-run-byte-comparison)
 and retained reference-identity authentication, [receipt binding](retained-method.md#authenticating-and-binding-a-process-receipt)
 and [execution binding](retained-method.md#binding-the-declared-sail-invocations) exist. The composed evaluator also binds
-source/ELF bytes. Complete closure/impact/source-grounded property/provenance and
-policy adequacy, reviewed fresh collection, measured capture retention and canonical
-captures remain pending. PROFILE-CONSISTENCY continues
+source/ELF bytes, input/impact reviews and a finite source-grounded property.
+Reviewed fresh collection and the [first retained DIV capture](canonical-division.md)
+now exist. Complete adequacy/policy remains pending. PROFILE-CONSISTENCY continues
 to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
 implementation and is prospective; this book does not backdate it. Candidate
 availability, a successful book build and syntax checks do not advance requirement

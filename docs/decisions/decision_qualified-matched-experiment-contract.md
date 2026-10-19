@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — authenticated byte/source-image checks implemented; full adequacy/collection/retention pending
-- **Owner / source:** `P4-SYSTEM.14` a12–a42x, `SEMULITH-P4-0203`–`0266`; existing GC verification policy and evidence-graph requirements
+- **Status:** `active` — first finite capture retained; full adequacy/qualification pending
+- **Owner / source:** `P4-SYSTEM.14` a12–a42am, `SEMULITH-P4-0203`–`0281`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
 ## The fact / decision
@@ -15,11 +15,12 @@ records intact. The block carries typed identities and relationships for
 inputs, producers, observations, runs and controls; its presence will not mean
 that its evidence is adequate or current.
 
-**Implemented:** syntax, byte/image/value/review/property bindings and three-run collection/receipt publication. API: GC unit book; qualification closed.
+**Implemented:** syntax/bindings, three-run collection and first retained DIV capture
+(2026-10-19, `c91d08f5`). Qualification closed.
 
 DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
-`UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy and fresh
-collection remain pending. Legacy checks/records stay intact; no GC record is
+`UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy remains
+pending. Legacy checks/records stay intact; no GC record is
 qualified. The original declaration remains prospective for fresh qualification;
 it neither backdates historical experiments nor weakens the GC verification policy.
 
@@ -38,7 +39,7 @@ single dossier mapping owner rather than introducing a second source format.
 The `matched-gpr-v1` envelope carries GPR-change and witnessed-delivery observations.
 The prospective first comparison rule, `sail-gpr-change-v1`, credits GPR witnesses;
 its exact controls, closure, bounds and replay limits are declared in
-`docs/decisions/decision_sail-gpr-comparison-method.md`. Authenticated byte/source-image checks exist; complete method/policy adequacy and collection remain pending.
+`docs/decisions/decision_sail-gpr-comparison-method.md`. Authenticated byte/source-image checks and collection exist; complete method/policy adequacy remains pending.
 It cannot establish unrecorded FP registers, memory, CSRs, request counts or full
 architectural equivalence. Other observation methods need their own explicit
 versioned contract before they receive credit.
@@ -101,7 +102,7 @@ under this method until explicitly requalified.
    consumers remain exact, and exercise the new nested fields with positive and
    malformed/lost-child controls.
 2. Declared identities, pins and authenticated byte/source-image evaluation
-   are implemented; complete adequacy and collection remain pending. Retain
+   and collection are implemented; complete adequacy remains pending. Retain
    controls for wrong results, missing/extra observations, stale inputs, failed
    processes, truncated traces, duplicate/conflicting IDs and broken producer edges.
    Demonstrate each control's intended reason; deleting a predicate must expose it.
@@ -120,9 +121,9 @@ under this method until explicitly requalified.
    gate/policy criteria are actually met. Preserve old records and explicit successor
    edges; do not rewrite a historical capture to appear freshly executed.
 
-Complete closure/impact/property/provenance, policy qualification and capture retention remain. This decision
-does not create an artifact store, change a cap, retire a source, run a reference,
-change a requirement status or close a CPU-SYSTEM axis.
+The first finite capture is retained; complete adequacy/policy qualification remains.
+This original declaration created no store or cap, retired no source and ran no
+reference. Requirement status and CPU-SYSTEM acceptance remain unchanged.
 
 ### Implemented syntax and review commands
 
@@ -215,8 +216,8 @@ and losslessness. a14 additionally checks scoped identities, declared edges,
 nonnegative observation sizes and lexical relative-path form, as documented in
 the GC book. a15 checks physical paths, same-volume regular files, hashes and
 observation sizes, with explicit matched/mismatch/unavailable/refused results.
-Authenticated comparison and invocation binding exist. Fresh process provenance,
-complete dependency adequacy and full policy remain pending. Pin matches establish
+Authenticated comparison, invocation binding and trusted-collector fresh process
+receipts exist. Complete dependency adequacy and full policy remain pending. Pin matches establish
 check-time bytes; no stored flag can assert qualification on its own.
 <!-- ANCHOR_END: contract -->
 

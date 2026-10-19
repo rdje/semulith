@@ -1415,3 +1415,60 @@ a42al: 18x2/16 matrix outcomes; copy87/18 outcomes; legacy8+38+4; focused17/book
 ````text
 | `.14` a42al | `SEMULITH-P4-0280` | three fresh Sail processes, measured retention/evaluation, full policy |
 ````
+
+## P4 a42an: retain complete closed canonical-capture records
+
+Whole source/owner reconstruction metadata and records follow.
+
+```json
+{"revision":"c91d08f52a2c8027092f2014e93f0e47ca4df557","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130908,"source_sha256":"b9b667b6a6657f26509ce3d2c3a1fb5ffe51053bdfb018664b919ac13587e5a9","owner_insert":{"offset":32667,"text":"### .14 a42an / SEMULITH-P4-0282: sync capture teaching (active)\n\n"},"owner_bytes":130974,"owner_sha256":"08e565148d4b4795823992f42e353ab8e9efe5e5a7566bda5adc8d65bc862d3c","retired_bytes":128892,"retired_sha256":"8d832831fe54c83d3d51ef2057c065d4d1211bc3fd3daade3abdeb8792d2132d","records":[{"unit":"a42am","offset":32733,"bytes":1482,"lines":21,"sha256":"1cdb48ae5b4c2af5fa1247198e094eda2649865946f867bb152d1f8bec201962","anchor":"p4-a42an-a42am-decision","replacement":"### .14 a42am / SEMULITH-P4-0281: capture canonical DIV (completed)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42an-a42am-decision).\n\n"},{"unit":"a42am","offset":45110,"bytes":809,"lines":6,"sha256":"0d6c03de5e6b9c0c746f200b0ad79f7674bbc55327482a4946e2d034ea21b70c","anchor":"p4-a42an-a42am-acceptance","replacement":"- [x] `.14` a42am: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42an-a42am-acceptance).\n"},{"unit":"a42am","offset":85876,"bytes":169,"lines":1,"sha256":"beb26a5aa2410a1c54a2d59adb4da01203d754564656f4606362a75cd833362e","anchor":"p4-a42an-a42am-verification","replacement":"a42am: [complete verification](artifacts/live-containment/task-claims.md#p4-a42an-a42am-verification).\n"},{"unit":"a42am","offset":117609,"bytes":114,"lines":1,"sha256":"8fca7dd87863a5d463d8f2c77a0fa830ab0317ad9363ce7f54901a5aaed1fd59","anchor":"p4-a42an-a42am-commit","replacement":"| `.14` a42am | `SEMULITH-P4-0281` | [complete record](artifacts/live-containment/task-claims.md#p4-a42an-a42am-commit) |\n"}]}
+```
+
+### p4-a42an-a42am-decision
+
+````text
+### .14 a42am / SEMULITH-P4-0281: capture canonical DIV (completed)
+
+Committedb160c66e source/native declarations precede one capture. Pinned public
+Sail3801664B; fresh PIDs39909/39914/39918 exit0. Twelve observations14830B,
+measured9928B/derived7093B retained;27 boundaries AGREE/AGREE/DIVERGE, only step2
+x7(-3 actual/-4 expected). Three traces2298B/hash64551458…exact. Independent
+normal/O reconstruction restores only measured metadata; all separate findings
+bind, charge24337600B/128MiB,85files1048756B/33759 snapshot bytes. No retry.
+Command19x2/16 outcomes preserve7losses6/1/1/1/2/1/1,0errors; actual offline
+regression authenticates13root object pins, launches no process. Ten101-file
+copies cover valid/missing/stale/refused states without Git/materials/binary.
+Derived JSON path-root mismatch reproduced by fingerprint tool; existing .4
+object convention fixes format, not observations/native records or generic gate.
+Legacy8+38+4 exact; focused17/books7/examples6/surfaces8 pass. Four whole al
+records2498B/inverses2/eight damaged refusals, two whole predecessor entries5007B
+retained0372/0373; all caps fixed, every other file/native pin unchanged.
+Evidence target/p4-system-14/a42am; promotion declined under existing bounded
+capture/retention/independent-findings doctrine. Full policy/qualification and
+REQ/OB-GC-M/CPU closure pending; next complete source/risk/feature adequacy and
+status integration. Normal COMMIT first; runtime P2 remains scheduled in a42ab.
+
+````
+
+### p4-a42an-a42am-acceptance
+
+````text
+- [x] `.14` a42am **REPRODUCE / ISSUE**: preflight.py rc=0:73 committed inputs/native3, fresh12+2 names; fingerprint root mismatch reproduced.
+- [x] `.14` a42am **ROOT CAUSE**: independent.py rc=0 normal/O:27 boundaries/only measured metadata; root object convention resolves derived format.
+- [x] `.14` a42am **FIX**: capture-once.py rc=0 once:3 real zero exits/12 observations14830B/measured9928B; no retry/qualification.
+- [x] `.14` a42am **ADDRESSED**: offline.py/run-controls.py rc=0:ten101-file outcomes;19x2/16 exact guard outcomes/13root pins.
+- [x] `.14` a42am **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples6/surfaces8; legacy8+38+4 exact.
+- [x] `.14` a42am **LOCKSTEP**: verify.py rc=0 normal/O:4 whole records2498B/inverses2/eight refusals; whole history5007B/caps fixed.
+````
+
+### p4-a42an-a42am-verification
+
+````text
+a42am: one real3-run capture; independent normal/O; command19x2/16 outcomes; offline101/10; legacy8+38+4; focused17/books7/examples6/surfaces8; scope/inverses normal/O.
+````
+
+### p4-a42an-a42am-commit
+
+````text
+| `.14` a42am | `SEMULITH-P4-0281` | full source/risk/feature adequacy and status integration; no capture retry |
+````

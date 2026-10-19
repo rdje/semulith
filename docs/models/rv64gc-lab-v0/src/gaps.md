@@ -47,10 +47,11 @@ REQ-D-ECALL-EBREAK retains its partial OQ-5 disposition. Historical mirrored
 requirements and supersessions need mechanical reconciliation; requirement
 statuses remain unpromoted. Structured matched experiments, controls, producer
 relationships and prospective policy adequacy remain .14 work. Full external,
-workload and validator-mutation regression is .15; GC snapshot/replay/reduction
-is .16; host/portable qualification is .17; release decision is .18.
+workload and validator-mutation regression is .15; host/portable qualification is
+.17; release decision is .18. GC snapshot/replay/reduction completed .16, with
+G-REPLAY green at 4/4; this does not close the other CPU-SYSTEM axes.
 
-The scalar laboratory already has operational snapshot/replay facilities. Their
-existence does not remove the explicit GC CLI refusals. Likewise the netboard's
+The GC CLI now supports snapshots, replay bundles and finite divergence reduction;
+the architecture contract gives commands, bounds and refusal cases. The netboard's
 devices are separately registered units; they do not become this processor's
 platform simply because the directories coexist.

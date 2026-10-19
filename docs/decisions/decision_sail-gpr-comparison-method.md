@@ -2,8 +2,8 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-11`
-- **Status:** `active` — authenticated byte evaluation exists; complete adequacy/collection pending
-- **Owner / source:** `P4-SYSTEM.14` a19–a42x, `SEMULITH-P4-0210`–`0266`; GC policy/public Sail adapter
+- **Status:** `active` — first finite capture retained; complete adequacy/policy pending
+- **Owner / source:** `P4-SYSTEM.14` a19–a42am, `SEMULITH-P4-0210`–`0281`; GC policy/public Sail adapter
 answers: Which Sail GPR checks exist, what remains for authentication/evaluation, and which claims remain unqualified?
 
 ## The fact / decision
@@ -12,8 +12,10 @@ answers: Which Sail GPR checks exist, what remains for authentication/evaluation
 Declare comparison rule `sail-gpr-change-v1` within the existing
 `matched-gpr-v1` verification envelope. Its first supported unit is one property,
 one explicit GPR witness, one baseline, one repeat and one wrong-expectation
-control. Implement this contract before recording a canonical capture. The
-optional witness/baseline grammar; scoped byte/image/value/review/property bindings and bounded three-run collection/receipt publication. API: GC unit book. Qualification closed.
+control. Implement this contract before recording a canonical capture. Its
+grammar, scoped bindings and
+bounded three-run collection are implemented. The first DIV capture is retained
+(2026-10-19, `c91d08f5`); complete policy qualification remains closed.
 
 The rule establishes a finite comparison and its declared capture protocol. It
 cannot, alone, satisfy the GC policy for every source category, risk or feature.
@@ -58,8 +60,8 @@ Other honestly recorded outcomes remain valid historical data without this
 method's success credit.
 
 The schema and single mapper accept the following typed syntax. These placeholder
-IDs are illustrative; no capture has been executed or qualified. Generic validation
-does not yet enforce this method's mandatory fields or exact value discrimination:
+IDs are illustrative and unexecuted. Generic validation checks shape/edges;
+the method owners additionally enforce mandatory fields and value discrimination:
 
 ```lisp
 (property (id "quotient") (requirement_id "REQ-example")
@@ -140,8 +142,9 @@ mutation changes comparison input, not the executed guest/configuration.
 
 Each run owns exactly one `raw-gpr`, `process-stdout`, `process-stderr` and
 `process-receipt` observation. Keep empty stdout/stderr as real separately named
-files. Before execution remove only that run's owned output paths, so old output
-cannot stand in for a new run. Use a fresh child process for each run. Every process
+files. The low-level collector clears only that run's owned paths before execution;
+the canonical command first requires absent names and refuses historical reuse.
+Use a fresh child process for each run. Every process
 must exit zero; missing output, signal/nonzero exit or parse refusal cannot satisfy
 the wrong-value control. Keep project temporary work on the repository volume.
 
@@ -205,8 +208,8 @@ artifacts are unavailable; changed dependency pins are stale. Neither yields
 current success. A satisfied method remains only finite evidence for its witness;
 full source/risk/feature policy and requirement status derivation follow separately.
 
-The present blanket PROFILE-CONSISTENCY refusal remains until the evaluator and
-its controls exist. Then integrate valid failed/stale/unavailable captures without
+The blanket PROFILE-CONSISTENCY refusal remains pending complete adequacy/policy
+integration. Integrate valid failed/stale/unavailable captures without
 misreporting them as successful or making honest historical records syntactically
 invalid. G-TRACE/G-OBLIGATIONS must consume computed dispositions rather than just
 an experiment ID/verdict. Keep tracked review reports reproducible from retained
