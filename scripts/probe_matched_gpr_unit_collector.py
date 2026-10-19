@@ -773,13 +773,17 @@ def main():
         owner, before, after = MUTATIONS[args.mutation]
         original = C if owner == "collector" else U
         source = Path(original.__file__).read_text()
-        if source.count(before) != 1:
+        end = (source.index("\n\n@dataclass(frozen=True)\nclass UnitEvaluation:")
+               if owner == "unit" else len(source))
+        selected = source[:end]
+        if selected.count(before) != 1:
             raise SystemExit("mutation seam not singular: " + args.mutation)
+        changed = selected.replace(before, after, 1) + source[end:]
         module = types.ModuleType("unit_collector_mutant")
         module.__file__ = original.__file__
         sys.modules[module.__name__] = module
         exec(
-            compile(source.replace(before, after, 1), original.__file__, "exec"),
+            compile(changed, original.__file__, "exec"),
             module.__dict__,
         )
         if owner == "collector":

@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0272 (leaf P4-SYSTEM.14) — share one allowance across collection and evaluation
+
+Compose three fresh process receipts and retained evaluation in the existing unit
+module. Freeze a bounded planned record/authorities, bind measured metadata and
+preserve structured comments. Carry only the remaining128MiB allowance; validate
+seed-inclusive pending accounting and retain failed stage reservations. Preserve
+legacy APIs/16MiB snapshots, old records and caps. Add actual synthetic-process/
+read controls and book examples; canonical entrypoint/retention/policy remain
+pending, with no canonical capture or qualification.
+
+Validation:86 normal/O outcomes;29 combined controls/25 omissions and unchanged
+26/16 legacy losses,0 harness errors.16 focused checks/seven books/four complete
+cache-free example blocks pass.1544 other files/1Gitlink/93 prior entries exact;
+whole collector implementation/test bodies preserved. Two closed task records
+2143B/source-owner inverse2/six damaged refusals; DEV0359 keeps3443B/one oldest
+entry and CH0360 keeps2143B/two. Fixed caps and CPU/BOARD/replay statuses unchanged;
+LIVE static arm count freshly derived1612. No canonical capture/qualification.
+
 ## SEMULITH-P4-0271 (leaf P4-SYSTEM.14) — emit one bounded selected identity
 
 Emit one schema-valid descriptor from frozen Sail execution fields and explicit
@@ -453,14 +471,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Compare supplied complete ELF bytes to the sole bounded source reconstruction, including unloaded headers/padding/sections. Frozen metadata-only facts preserve both fingerprints on mismatch; bounded invalid/unavailable findings remain separate. Caller owns authentication, selected context, tool adequacy and aggregate reservation; no source-property/qualification credit.
 - 24 controls/seventeen omissions pass/discriminate normal/O with zero errors; payload-only comparison loses9 assertions. All167 GC pairs/216 repaired images exact; preserve old33/17,15/eight and258 GUEST arms, add36 (294/0;39 doctrines1303). Focused17/sharder12/0/seven books/3142 links/all14 examples/full guards green;104 old entries/1338 other files protected. DEV4040B to0255/CH800B to0256, real receipt+digest edits refuse; caps/seals fixed. Final COMMIT. Next d2 shared-ledger retention/d3 authenticated composition; CPU/canonical unchanged.
-
-## SEMULITH-P4-0235 (leaf P4-SYSTEM.14) — construct bounded GC images from source bytes
-
-- Extract one pure ELF encoder; preserve legacy writer API/order and all216 repaired ELF bytes. Bounded immutable source-byte builder freezes exact program/route/entry/IALIGN and sizes/hashes, retains only imagebytes, separates invalid source from unavailable canonical context. No source reopen/write/process/authentication/qualification; caller owns current tool adequacy.
-- 33 controls/seventeen omissions pass/discriminate normal/O without errors; fix D44 draft output-method lookup before validation, exact draft loses1 assertion. All167 GC source builds exact; retain old15/eight and222 GUEST arms, add36 (258;39 doctrines1267 arms). Focused17/sharder12/0/seven books/3140 links/all13 examples/full inverses green;104 old entries/1332 other files protected, actual receipt+digest edits refuse. DEV4006B to0253/CH771B to0254; fixed caps/seals unchanged, draft book overflow corrected. Final docs/hooks/hashes/brief0/censuses; no CPU/canonical change. Preceding93525ac full CI green (443 Rust/smoke53/seven books). Next authenticated correspondence/remaining adequacy.
-
-## SEMULITH-P4-0234 (leaf P4-SYSTEM.14) — repair ELF alignment and compressed flags
-
-- Repair inherited load/file congruence, natural section-table alignment, profile text alignment and RVC flags. Preserve exact loaded bytes/addresses, sections/RWX and public write API; refuse invalid IALIGN/unsigned64 entry/load extent before writes. Correct synthetic Rust parser-fixture scope/name.
-- Exact old writer reproduces four ABI defects normal/O. Fifteen controls/eight omissions discriminate without errors;49 RV64I/167 GC payloads and complete original ELF inverses match. Keep204 GUEST-GEN arms, add18 (222/0;39 doctrines1231). Rust443/two public CLI profiles/focused17/sharder12/0/seven books/3138 links/all12 examples/full inverses green. Preserve103 history entries/1330 other files; DEV2722B into0252, real receipt+digest rewrites refuse. Initial diagnostic/index/link errors corrected before signoff. COMMIT then full CI before a42c; canonical/CPU/caps/seals unchanged.
 

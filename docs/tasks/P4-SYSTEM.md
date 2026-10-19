@@ -358,18 +358,22 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42ad — compose collection and retained evaluation (completed, SEMULITH-P4-0272)
+
+Freeze bounded planned bytes/authorities; collect three fresh runs, bind measured
+metadata and evaluate with one remaining allowance. P1 seed-inclusive accounting
+and failed reservations implemented; canonical entrypoint must use this protocol.
+86 normal/O outcomes; four example blocks pass. Initial defects fixed; old
+collector/tests exact. Review35/27/63/66files965026B cache-free; complete scope/
+history/inverse evidence below.
+LIVE derived1612; fixed caps/statuses exact. No canonical publication/qualification.
+Next identity/entrypoint/retention/manifest/policy; P2 controller remains in ab.
+Evidence target/p4-system-14/a42ad; promotion: declined (existing contracts).
+COMMIT applies.
+
 ### `.14` a42ac — emit a selected execution descriptor (completed, SEMULITH-P4-0271)
 
-Emit frozen fields/copied metadata through existing writer/byte verification;
-no parent prose or binary/process.19/twelve new controls,74 normal/O runs;
-40/eight and22/fourteen legacy losses exact. First hook refused: three byte
-mutation seams duplicated by new guards. Scope their original consumer; old tests
-exact. Buffered phase progress is not signoff; require terminal green. All scope,
-history/retention/book evidence below; review35/27/63/66files950922B cache-free.
-LIVE derived1610; caps/statuses unchanged. No canonical publication/capture or
-qualification. Driver/identity/retention/policy follow; P1 accounting/P2 controller
-remain in ab. Evidence target/p4-system-14/a42ac. COMMIT applies.
-promotion: declined (existing identity/schema/locality contracts).
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ad-a42ac).
 
 ### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
 
@@ -572,6 +576,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42ad **REPRODUCE / ISSUE**: before.json/smoke.json rc=0: collection-only API; new prototype174273 actual bytes/charge with three synthetic processes.
+- [x] `.14` a42ad **ROOT CAUSE**: initial-controls.log/unsupported-before.json rc=1/0: bad components attached, unsupported collapsed; guarded attachment/status fixed.
+- [x] `.14` a42ad **FIX**: bounded frozen plan, actual metadata binding and remaining-allowance evaluation; seed-inclusive refunds and full failed reservations.
+- [x] `.14` a42ad **ADDRESSED**: run-controls.py rc=0 normal/O:29 controls/25 omissions,86 outcomes/0 errors; real preledger-zero case charged conservatively.
+- [x] `.14` a42ad **NO REGRESSION**: verify.py/focused.py rc=0:26/16 legacy losses and old collector code exact;1544files/93entries,16 checks/seven books/four examples.
+- [x] `.14` a42ad **LOCKSTEP**: verify.py rc=0 normal/O:2 whole records2143B/inverse2/six damaged refusals; DEV0359/CH0360 exact; caps/statuses preserved.
 - [x] `.14` a42ac **REPRODUCE / ISSUE**: before.json rc=0: retained reader exists but no selected identity emitter.
 - [x] `.14` a42ac **ROOT CAUSE**: bytes-seam-diagnostic.json rc=0: context/path/count match2 locations; consumer scoping restores singularity.
 - [x] `.14` a42ac **FIX**: frozen selected descriptor emission with explicit metadata, pre-text/output limits and existing byte verification.
@@ -1076,6 +1086,7 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
+a42ad: controls86/focused16/books7/examples4; old code/history and source/owner inverses rc=0 normal/O.
 a42ac: controls74/focused16/books7/examples5; complete old reader/history inverses rc=0 normal/O.
 a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
 a42aa: controls118/focused16/books7/examples3 and whole-source/history inverses rc=0 normal/O.
@@ -1331,23 +1342,7 @@ a42c: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab
 
 a42b: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab-a42b-verification).
 
-a42a: Verified:23/0/0 normal/O, seven omissions7/13/5/1/1/1/1 fail without
-errors; D42 exact draft10140B/7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
-loses1 assertion/no errors normal/O. Rule selection now precedes its program
-bound, all used context freezes before artifact I/O. Initial22-case gates passed
-before this combined control; repeated focused17/sharder12/0/seven books/3124
-links/all11 literal examples/normal+print teaching rc=0 on corrected source.
-PROFILE390/0,39 doctrines1213 arms; legacy52/42 and old omissions retained.
-Contract/history/canonical/scope rc=0 normal/O: whole old implementations/checker/
-method/book/task inverse exact;340 raw forms/243 maps,102 old entries/1329 other
-files protected. Actual original/moved/published receipt+digest edits refuse.
-DEV16=15+1/2262B into0251 (2495B/
-dbff2bb0274d826c2884f03d2e1a9df35d50c3d953db058ca7307b0de4a0b042),
-43live+210sealed253logical. Preceding clean03ed501 full CI all5 legs443 Rust/
-smoke53/seven books green,18 sources exact and both censuses green. Positive
-byte/identifier evidence stays pending actual source/image/closure/impact/
-provenance; no canonical/CPU/cap/seal changes. COMMIT hooks/brief0/censuses then
-clean a42b public source/image correspondence and remaining adequacy.
+a42a: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ad-a42a-verification).
 
 a41: Verified: evaluation42/0/0 and29 omissions normal/O rc=0 for expected
 signatures, no errors. Initial38-case failed-process instrument error corrected;
@@ -1550,6 +1545,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42ad | `SEMULITH-P4-0272` | canonical identity/entrypoint/retention/policy |
 | `.14` a42ac | `SEMULITH-P4-0271` | canonical identity/driver/retention/policy |
 | `.14` a42ab | `SEMULITH-P4-0270` | bounded driver/retention/policy; runtime P2 |
 | `.14` a42aa | `SEMULITH-P4-0269` | entrypoint/retention/shared charge |

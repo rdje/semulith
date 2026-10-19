@@ -1,5 +1,53 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — combine fresh collection and retained evaluation (P4-SYSTEM.14 a42ad)
+
+Add capture_and_evaluate beside the existing unit collector, leaving one final
+manifest slot free. Bound immutable planned bytes to64KiB; raw scoped checks and
+public execution/authority freezing precede artifact I/O. Use the existing
+mapper/binders, collect three fresh zero-exit processes and bind actual output
+sizes/digests/exits into a private raw-form copy. Preserve all other fields and
+structured comment annotations; canonical rendering is separately bounded64KiB.
+Planned verdicts remain caller claims checked by the retained evaluator.
+
+Share one128MiB allowance. Reserve each stage before calling; validate complete
+collection metadata and conservative charges before returning unused room. Pass
+only that remainder to evaluation, including its manifest seed once. Refund only
+pending metadata with matching seed identity and plain seed-inclusive accounting;
+failed/invalid findings keep their entire active reservation. This closes the P1
+preledger-zero refund hole from a42ab at the reusable composition boundary. The
+final canonical entrypoint must use this protocol.16MiB snapshot limits unchanged.
+
+Initial synthetic run:174273 parent artifact bytes exactly equal its charge,
+135869 collection+38404 evaluation; three fresh processes/finite property matched,
+over correlated synthetic observations, never Sail/canonical evidence. Negative
+controls exposed invalid helper objects attached before validation (four failures)
+and unsupported planning collapsed to refusal. Validate before attaching findings
+and preserve unsupported status/zero charge before collection. A guard omission
+also exposed a missing positive-presence assertion in the short-budget control;
+fix the harness so omission outcomes fail without errors. Unexpected programming
+exceptions propagate, retaining caller reservations. No retry/overwrite/qualification.
+
+Preserve old collection APIs/implementation. Scope legacy unit mutations to that
+old prefix before the new composition, avoiding the module-wide seam ambiguity
+measured at a42ac. New controls exercise actual children/parent read payloads,
+exact/short/zero budgets, malformed metadata/accounting, frozen candidate/scope/
+inventory/author/property/impact, source/schema failures, comments and record caps.
+Review35modules/27data/63children/66files965026B from a materials-free copy. Update
+book contracts and complete examples; preserve whole closed-ac and verification-a
+records2143B with source/owner inverses, old history and unchanged fixed caps.
+Canonical identity/entrypoint/retention/exact manifest/full policy remain pending;
+P2 controller observation stays owned in ab. promotion: declined (existing
+budget/owner/locality contracts; no new qualification doctrine).
+
+Validation:86 normal/O outcomes;29 combined controls/25 omissions and unchanged
+26/16 legacy losses,0 harness errors.16 focused checks/seven books/four complete
+cache-free example blocks pass.1544 other files/1Gitlink/93 prior entries exact;
+whole collector implementation/test bodies preserved. Two closed task records
+2143B/source-owner inverse2/six damaged refusals; DEV0359 keeps3443B/one oldest
+entry and CH0360 keeps2143B/two. Fixed caps and CPU/BOARD/replay statuses unchanged;
+LIVE static arm count freshly derived1612. No canonical capture/qualification.
+
 ## _(2026-10-19)_ — emit one bounded selected identity (P4-SYSTEM.14 a42ac)
 
 The reader already binds one retained execution identity; canonical declaration
@@ -616,55 +664,4 @@ focused checks, seven books/3322 links and exact three-line example pass. The
 seam gate first refuses ROOT CAUSE without an executable signature: retain and
 run status-cycle.py rc=0 normal/O, declare that signature and rerun the unchanged
 gate green. No guard is weakened. Normal COMMIT remains mandatory.
-
-## _(2026-10-18)_ — compose authenticated expected authors (P4-SYSTEM.14 a42s)
-
-P4-0261 starts after clean2f2da09, brief0/untracked and host census0. Own42B
-before changes. Preserve the whole962B closed a42r record in task-claims,
-old13330B prefix exact, full source/owner/retired inverses and six damaged
-refusals. Fixed caps, archives, seals, native headings and original12 authority
-stay intact. Whole DEV entries8767B move to0346 with exact head inverse,
-11 prior entries=9 kept+2 moved and old manifest prefix preserved.
-
-Predeclare the authenticated composition contract in GC Expected Author.
-Add optional author_review frozen before artifact I/O. Its copied inventory
-supplies current review when absent or must agree with explicit frozen review;
-it can supply impact review too. Append expected_author after all old fields.
-Call the pure owner once after matched source values, with frozen profile/parent,
-authenticated manifest plan and retained derivation. No extra artifact reads,
-source reopening or retained raw payload;22 distinct file authentications and
-128MiB/16MiB payload limits remain. Preserve all earlier findings. Typed author
-refusal terminates refused; invalid finding types/dispositions/reasons/facts or
-contradictory author/source/manifest/version/route/budget refuse without storing
-the invalid finding. Failed source values skip it; unsupported scope stays
-pending without author credit. Matches leave full method/policy pending.
-
-Before proof normal/O: the committed evaluator remains pending on matched
-values and unreviewed-version; the new optional review refuses while retaining
-matched source values. This is the next prospective obligation, not a claim the
-old pending contract granted producer credit. An old value-probe suffix check
-initially fails19/1/0 because it assumes four fields are forever last. Change
-only that selector from[-4:] to[8:12], preserving the four exact positional
-names and all existing mutation clauses. All99 old selectors remain singular.
-
-The new19-control suite covers copied authority/scope during reads, dual reviews,
-impact supply, pin staleness, earlier failures/unsupported scope, exact public
-owner arguments, zero additional reads, malformed/incomplete findings and each
-returned fact axis. Include boolean snapshot budget True despite integer1 equality.
-Thirteen genuine omissions lose assertions with zero errors normal/O; all six
-legacy suites/67 omissions retain exact registered vectors across73 rows.
-All99 old selectors remain singular.
-The complete authenticated example prints pending/matched/matched then
-refused/matched/refused. Synthetic author leaf bytes never execute; metadata
-agreement supplies no loaded-code attestation, independence, property meaning,
-fresh capture or qualification. Source-grounded property review is next.
-
-Compact only current Evaluation prose to fit32767B/cap32768; preserve all old
-examples and record five exact reversible edits. An over-cap32795B draft was
-refused before writing. Format only the new probe with project-local black24.10.0;
-AST unchanged, no runtime dependency. New production call line wrapping also
-preserves AST. Scope1507 protected files/87 old head entries, whole evaluator/
-old-probe/decision/book inverses and six damaged refusals pass. Fifteen focused
-checks, seven books/3306 links and literal example pass. Static arms1590→1592;
-CPU14/18 and BOARD10/12 unchanged. Normal hooks remain mandatory.
 

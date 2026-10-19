@@ -679,3 +679,52 @@ handles polled within this turn. Evidence target/p4-system-14/a42ab.
 promotion: declined (existing budget/source contracts; runtime cause unproved).
 
 ````
+
+## P4 a42ad: complete prior emitter and verification records
+
+Source/owner/retirement inverses; complete original bodies retained.
+
+```json
+{"schema":1,"revision":"7b90cfbdba7c973a65f2bebc772fc216d18aafc9","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130982,"source_sha256":"8a23a9b3b69857fcb053977c34ddac8934a85108756be0897ba7bf70df0b170a","owner_insert":{"offset":32667,"text":"### `.14` a42ad \u2014 compose collection and retained evaluation (active)\n\nOwn P4-0272 before code: add capture_and_evaluate to the existing unit module,\nleaving the final manifest slot free. Bound one immutable planned experiment to\n64KiB; raw schema/scoped checks, public execution/authority freezing precede\nartifact I/O. Collect three fresh processes, bind actual output/exit metadata and\nevaluate with only the remaining128MiB allowance;16MiB snapshots stay fixed.\nP1: validate seed-inclusive pending accounting; failed/invalid stage findings\nretain their full reservation. Preserve caller fields/comments and old APIs;\nreturn independent immutable findings/bounded record bytes, never qualification.\nTest actual synthetic children/read bytes, exact/short budgets, zero/invalid\nlimits, malformed findings, failed processes, stale inputs, preledger zero charge,\nmetadata/authority freezing and no overwrites normal/O. Scope legacy unit mutation\ncontrols to the old source prefix as the new stage repeats budget guard text;\npreserve all existing outcomes. Review changed producers, book/live docs, whole\nclosed-ac/verification-a retention and history with inverse controls; normal\nCOMMIT per slice. Canonical declaration/identity publication/output retention/\nfull policy remain pending; P2 controller observation remains owned in ab.\nEvidence target/p4-system-14/a42ad; promotion: declined (existing owner contracts).\n\n"},"owner_bytes":132403,"owner_sha256":"45340de5ee7a148226fd73bc4337a131a2a6eedc9587936758460d9c70f696b7","retired_bytes":130528,"retired_sha256":"9d86eca60c6ad0622c01d4c8cdcc3af8ff914b8a88e50f3853f0cf8b6f5f77b4","records":[{"unit":"a42ac","offset":34088,"bytes":859,"lines":13,"sha256":"9bc6f730f8ccfdb7116cfd19581767cb6615b2a6be84499de505013ca69593b5","replacement":"### `.14` a42ac \u2014 emit a selected execution descriptor (completed, SEMULITH-P4-0271)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ad-a42ac).\n\n"},{"unit":"a42a-verification","offset":105541,"bytes":1284,"lines":18,"sha256":"d9f3be2ea9524778f1be410826ca3d77ef24f2fcbd30c406db4c84dbadba0566","replacement":"a42a: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ad-a42a-verification).\n\n"}]}
+```
+
+<a id="p4-a42ad-a42ac"></a>
+
+````text
+### `.14` a42ac — emit a selected execution descriptor (completed, SEMULITH-P4-0271)
+
+Emit frozen fields/copied metadata through existing writer/byte verification;
+no parent prose or binary/process.19/twelve new controls,74 normal/O runs;
+40/eight and22/fourteen legacy losses exact. First hook refused: three byte
+mutation seams duplicated by new guards. Scope their original consumer; old tests
+exact. Buffered phase progress is not signoff; require terminal green. All scope,
+history/retention/book evidence below; review35/27/63/66files950922B cache-free.
+LIVE derived1610; caps/statuses unchanged. No canonical publication/capture or
+qualification. Driver/identity/retention/policy follow; P1 accounting/P2 controller
+remain in ab. Evidence target/p4-system-14/a42ac. COMMIT applies.
+promotion: declined (existing identity/schema/locality contracts).
+
+````
+
+<a id="p4-a42ad-a42a-verification"></a>
+
+````text
+a42a: Verified:23/0/0 normal/O, seven omissions7/13/5/1/1/1/1 fail without
+errors; D42 exact draft10140B/7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
+loses1 assertion/no errors normal/O. Rule selection now precedes its program
+bound, all used context freezes before artifact I/O. Initial22-case gates passed
+before this combined control; repeated focused17/sharder12/0/seven books/3124
+links/all11 literal examples/normal+print teaching rc=0 on corrected source.
+PROFILE390/0,39 doctrines1213 arms; legacy52/42 and old omissions retained.
+Contract/history/canonical/scope rc=0 normal/O: whole old implementations/checker/
+method/book/task inverse exact;340 raw forms/243 maps,102 old entries/1329 other
+files protected. Actual original/moved/published receipt+digest edits refuse.
+DEV16=15+1/2262B into0251 (2495B/
+dbff2bb0274d826c2884f03d2e1a9df35d50c3d953db058ca7307b0de4a0b042),
+43live+210sealed253logical. Preceding clean03ed501 full CI all5 legs443 Rust/
+smoke53/seven books green,18 sources exact and both censuses green. Positive
+byte/identifier evidence stays pending actual source/image/closure/impact/
+provenance; no canonical/CPU/cap/seal changes. COMMIT hooks/brief0/censuses then
+clean a42b public source/image correspondence and remaining adequacy.
+
+````

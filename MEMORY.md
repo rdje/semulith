@@ -17,12 +17,12 @@
 - active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
 - next_action: P4-SYSTEM.14 finalize canonical identity publication, capture
-  driver/output retention and exact predeclared manifest/policy. P4-0271 adds
-  bounded selected-identity emission; P4-0270 carries remaining read allowances.
-  The next driver must validate seed-inclusive accounting; preceding task records
-  also own the P2 runtime-continuation observation. CPU14/18,BOARD10/12,
-  replay4/4green; no canonical capture/qualification.
-- in_flight_uncommitted: none after P4-0271; verify Git state on read.
+  entrypoint/output retention and exact predeclared manifest/policy. P4-0272
+  composes fresh collection and retained evaluation with one allowance; its
+  seed-inclusive accounting closes the reusable P1 boundary. The final entrypoint
+  must use it. P2 runtime-continuation observation remains in preceding records.
+  CPU14/18,BOARD10/12,replay4/4green; no canonical capture/qualification.
+- in_flight_uncommitted: none after P4-0272; verify Git state on read.
 - blockers: none for implementation; no terminal command needed.
   LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
   Delivery priority and capture handoff. Maintenance remains scheduled separately.

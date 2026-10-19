@@ -1980,6 +1980,46 @@ round-trip:2
 IDENTITY_EMISSION_CASES
   done
 
+  # P4-SYSTEM.14 a42ad: fresh unit collection and evaluation share one allowance.
+  local unit_eval_mode unit_eval_mutation unit_eval_losses
+  local -a unit_eval_python
+  for unit_eval_mode in normal optimized; do
+    unit_eval_python=(python3)
+    [ "$unit_eval_mode" = optimized ] && unit_eval_python+=(-O)
+    out="$("${unit_eval_python[@]}" scripts/probe_matched_gpr_unit_evaluation.py 2>&1)"; rc=$?
+    score "GREEN combined collection/evaluation $unit_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-UNIT-EVALUATION: 29 tests / 0 failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
+    while IFS=: read -r unit_eval_mutation unit_eval_losses; do
+      out="$("${unit_eval_python[@]}" scripts/probe_matched_gpr_unit_evaluation.py --mutation "$unit_eval_mutation" 2>&1)"; rc=$?
+      score "RED combined collection/evaluation $unit_eval_mutation $unit_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-UNIT-EVALUATION: 29 tests / $unit_eval_losses failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
+    done <<'UNIT_EVALUATION_CASES'
+planned-bound:2
+scope-envelope:2
+scope-freeze:1
+raw-schema:1
+candidate-freeze:1
+author-freeze:3
+property-freeze:1
+impact-freeze:1
+collection-limit:2
+collection-debit:5
+captured-pid:1
+captured-output:1
+captured-charge:2
+measured-bound:1
+evaluation-limit:2
+evaluation-debit:2
+seed-accounting:1
+evaluation-envelope:1
+snapshot-envelope:1
+failed-collection-refund:3
+failed-evaluation-refund:2
+attach-invalid-collection:15
+attach-invalid-evaluation:13
+structured-comments:2
+unsupported-finding:1
+UNIT_EVALUATION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
