@@ -121,6 +121,38 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
 
+### .4j / SEMULITH-LC-0049 — second finite history seal (verified; directly approved)
+
+Owned after clean a5bf4579/brief0/host0. Required whole3787B DEV rollover exceeded
+ordinary-family3677B room; no partial-entry or cap bypass. Standing archive
+delegation supports this exact source a5bf4579:158 closed shards + manifest,
+159 originals782755B/11200LF. Two serializations, independent source tree/mode/blob
+and all159 Python/tar comparisons pass. Published276917B object adds to the exact
+old284500B seal. Relocated normal/O authenticates368 shards; corruption/old-entry
+changes refuse. Retire only verified158 originals, residue0/unretained bytes0.
+Separate LC0049-CAPACITY record in task-claims reviews this finite terminal
+expansion:4 files/565623B health/581897B ceiling. Old object/descriptor and all
+ordinary/head/other caps, reader code/limits and remaining features stay fixed.
+New live0367/0368 retain numbering and4747B whole predecessors. Complete LC0041
+record5552B retained with source/owner inverses2/seven damaged refusals.
+17 focused/seven books/four examples/three surfaces, history44/0 and original-
+context263 queries x2/0 defects pass.1415 protected files/1Gitlink/95 old entries
+and all implementation/probes/prior seal objects exact. Book family shrinks8B;
+old examples preserved. Source identity, semantic closure, live dimensions and
+residue are separately verified. No CPU/board/replay/qualification credit.
+Next P4-SYSTEM.14 final execution/manifest/planned record/input-author-impact,
+then capture/full policy; D79/D80 remain scheduled. Normal COMMIT required.
+Automatic approval review twice refused the local commit because recorded
+standing delegation was not direct trusted user approval. On2026-10-19 the
+director answered “Approve LC0049 and continue” to the explicit request covering
+all158 verified shard retirements, the finite archive bound and local commit
+without push. This resolves that authority blocker for LC0049 only; normal hooks
+and postconditions remain required. Director requests prominent approval alerts
+with the reason. The app-control safety boundary prevented changing its selector;
+no permission setting was altered. Latest parent a5bf45798255bca41d73f284bfe6987f48fc351f.
+Evidence target/live-containment/history-rollover; promotion declined (existing
+finite archive, bounded-reader/source-preservation contracts).
+
 ### Delivery priority and capture handoff — P4-0249
 
 Director's2026-10-18 stall/resumption questions trigger this priority review.
@@ -919,66 +951,7 @@ now sets the flag; codec.py rc=0 verifies the guard normal/O.
 
 ###### .4i2b5b1h / SEMULITH-LC-0041 — contain task-family byte pressure (complete)
 
-Before further heading/search captures, measure remaining107-file/3145728-byte
-capacity and classify the largest complete records against the local containment
-contract. Own a lossless, authenticated retention remedy with published retrieval
-and verified source/mode/order inverses; preserve every authored record and all
-current features. Existing capacities remain fixed. Check the director's standing
-archive authorization and local transition rules before any retirement; prepare
-a concrete reviewable transition if a further ruling is actually required.
-
-LC0041 uses the director's standing session delegation, “do whatever you see
-fit regarding the task history or archive”; the finite selection is our local
-implementation of that delegation, not a claim the director named these files.
-Source968bc010 has1469 identities/one opaque Gitlink. Task family107/3145560B
-left168B; book51/524256B left32B. Classify four completed source-pinned records
-as historical captures: book-index-consumer94264B, graph-census129625B,
-include-readers130686B and orientation-indexes126603B. Keep the active inventory
-contract, live retention-verifier input, integration/validator teaching and small
-task-claims record native. Maintained qualifiers read selected history from their
-immutable Git source; those replay contracts and existing12/210-file seals stay
-unchanged. No live root or ordinary P4 archive enters this capture.
-
-Copy/verify/use/retire: five originals497850B/3647LF include the whole16672B prior
-book source. Public Python/tar retrieval verifies every byte without Git/network/
-extraction, normal/O. Descriptor3918B pins Git968bc010 and full-tree SHA-256
-2a211bb7259ce9fe12c6dbd842af038d5788a4e88aa93845867bea9d3cda1209.
-Object192354B SHA-256a9b549a8bd733603d1eba8726b8c18cc30c908f39dab86a50adf2379d0f215f9
-retains sorted originals then canonical manifest. Independent source Git bytes,
-modes and identities verify before replacing only the four original paths with
-5016B navigation pages. All20 native heading IDs remain; source inverses recover
-all481178B retired records and the whole prior book chapter. Record retirement releases
-476162B; this unit’s receipts use part of it. Existing ceilings stay fixed. A separate three-file terminal
-has derived204642B bound =192354+8192 descriptor+4096 front door. Registry class:
-reader_navigation/archive_terminal. It is finite/immutable, never overflow.
-
-Reader validates bounded/stable no-follow reads, modes, schema/descriptor pin,
-whole-object digest, bounded expansion, canonical regular USTAR members,
-manifest, every original SHA/GitOID/byte/LF count and exact navigation before
-output. Publishing guard checks all original source bytes/modes and complete
-source-tree identity on first publication, plus atomic staged data/wiring.
-Later both index and working views must equal published HEAD; no old Git source
-or fetch is needed. Absent/failed evidence refuses; shallow/no-Git retrieval is
-separately tested. Markdown retention adds no historical replay toolchain or raw
-output promise. README/book give verification/list/read/tar/failure examples.
-
-Initial full CI exposed the generic fingerprint contract: JSON `path`/`sha256`
-means a live file relative to its record. Historical originals use the explicit
-`original_path` field instead; no checker exemption or changed original hash.
-Reserialized manifest/descriptor/object retain identical original/stub bytes.
-The root-cause receipt also now names its actual command/rc for SEAM-INTEGRITY.
-Both integration defects are resolved: focused13 and full `make ci` rc=0.
-The terminal front door retains the tested normal/O serialization recipe.
-Final review corrected the guarantee wording: the reader authenticates archive
-data/navigation and bounds README mode/size/coverage; the publishing guard
-freezes README content. A changed bounded README retrieves exact originals
-but fails the publishing control. Own this claim defect here;32 controls
-normal/O verify the boundary before the restarted normal COMMIT.
-
-- [x] **ROOT CAUSE** — `python3 scripts/qualification_history_preservation.py` rc=0 authenticates source968bc010; `target/live-containment/task-byte-retention/census.json` shows107 files/3145560B,168B spare; completed append-only captures consume byte capacity, sharding alone does not release aggregate bytes. Native mdBook captures all20 heading aliases before retirement.
-- [x] **ADDRESSED** — `python3 scripts/probe_qualification_history.py` normal/O rc=0:32 tests,0 failures/errors; all5 Python/tar originals exact in relocated no-Git/no-extraction fixture. `qualification_history_preservation.py` rc=0 authenticates first publication/source; combined TASK-HISTORY50/0. Exact source/mode/order and heading inverses retained.
-- [x] **NO REGRESSION** — `make ci` rc=0 (check/gate/bench/smoke-bench/seven books); focused13/sharder12 and `verify.py` rc=0:1450 protected regular files/opaque Gitlink, all99 prior history entries, five whole originals/book commands/19 headings/20 native aliases and3242 links exact. Full staged inverse and normal COMMIT required. CPU/MCU/DSP/board/full graph/adoption stay open.
-- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/doctrine/route agree; prior book source fully retrievable. No new decision file needed: this finite delegated transition is owned here and by its terminal. Heading/search/resources remain open. promotion: declined (finite transition retained here and in its terminal).
+[Complete record and standing archive delegation](artifacts/live-containment/task-claims.md#lc0049-lc0041).
 
 ###### .4i2b5b2 / SEMULITH-LC-0042 — qualify per-page heading navigation (complete)
 
@@ -1207,6 +1180,12 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
 
+- [x] .4j **REPRODUCE / ISSUE** — `prepare.py` rc=0 at a5bf4579: whole3787B rollover exceeds3677B family room; DEV17B spare.
+- [x] .4j **ROOT CAUSE** — `prepare.py` rc=0/preparation.json: sharding preserves aggregate; exactly158 closed shards plus manifest,782755B.
+- [x] .4j **FIX** — `verify-prototype.py` rc=0 normal/O:159 Python/tar originals exact; relocated368-shard read, corruption/old descriptor refusals.
+- [x] .4j **ADDRESSED** — `apply.py` rc=0/application.json: published copy verified before158-source retirement, residue0; finite capacity authority separate.
+- [x] .4j **NO REGRESSION** — `verify.py`/focused.py rc=0:1415files/1Gitlink/95 entries, old code/seals exact;44 controls/263queries x2/seven books/4examples/3surfaces.
+- [x] .4j **LOCKSTEP** — `verify.py` rc=0: LC0041 whole5552B/inverses2/seven damaged refusals, whole live4747B rolled0367/8; all other caps fixed.
 `LIVE-CONTAINMENT.4` slice (e), `SEMULITH-LC-0008`:
 
 - [x] **ROOT CAUSE** — `git show 1146d1b:docs/book/src/working/task-trees.md`
@@ -1408,6 +1387,7 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Verification Log
 
+LC0049: verify.py rc=0 normal/O; source159/782755B, residue0; copy/tar/relocated normal/O, focused17/books7/examples4/surfaces3, history44/query263x2; inverses2/seven refusals.
 .4i2b5b2r.d: permanent probe normal/O rc=0:6 actual controls/3 boundary guards;
 combined Mark/book denial reproduces whole original failed witness/enhancements.
 Record reader normal/O rc=0:960 full witness restorations/7 damaged frames refuse.
@@ -1664,6 +1644,7 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 
 ## Commit Log
 
+`SEMULITH-LC-0049 (leaf LIVE-CONTAINMENT.4): seal the second finite history segment` — verified finite rollover; next P4.14 delivery.
 `SEMULITH-LC-0048 (leaf LIVE-CONTAINMENT.4): select pinned mdBook before terminal capture` — native prep verified; user capture/analysis pending.
 
 `SEMULITH-LC-0047 (leaf LIVE-CONTAINMENT.4): record the application handoff blocker` — Kimi Code disposition pending.

@@ -295,22 +295,25 @@ seven 404 origin-root asset bases under shared serving. Earlier claim limits app
 
 ## Reading sealed history
 
-The query-first terminal retains210 older CH/DEV shards and their manifest
-byte-exact in an immutable tracked object. Recent shards/live heads stay native.
-This approved transition restored aggregate room when sharding could not.
+Two tracked seals retain368 CH/DEV shards plus manifests:210 atff75610 and
+158 ata5bf4579. New shards/live heads stay native; sealing releases aggregate.
 
 ```sh
 python3 scripts/history_archive.py
 python3 scripts/history_archive.py --read docs/changelog/shard-0001.md
 ```
 
-Verify checks all identities; read prints the original. Both work in ordinary/
-shallow clones without fetch/extraction. docs/history/archives.json pins source,
-counts and content-addressed object; the SHA manifest authenticates every member.
-Missing/changed inputs fail the unconditional freeze gate. Restore committed bytes.
+Verify authenticates all members; read emits original bytes. Both work in shallow
+clones without Git/fetch/extraction. docs/history/archives.json pins captures,
+counts and digests. Missing/changed data fail the unconditional freeze gate;
+restore committed bytes. Retired shard names are never reused.
 
-The manifests remain one partition; sharding never reuses retired names.
-Recheck the original P4/history terminals (222 originals) and six catalogues:
+```sh
+python3 scripts/history_archive.py --read docs/changelog/shard-0366.md
+```
+
+The finite581897B bound covers both fixed objects and bounded index/front door.
+The original-context qualifier below stays at23fdb8:222 originals/six catalogues:
 
 ```sh
 python3 scripts/qualify_query_consumers.py --working-code --require-clean --output target/query-repair-replay

@@ -1086,3 +1086,138 @@ isolation rules). Controller P2 in ab. Normal COMMIT applies.
 ````text
 a42ai: controls18x2/omissions3,1,3/copy50/focused17/books7/examples2; inverses rc=0 normal/O.
 ````
+
+## LC0049: retain the complete earlier finite-seal decision
+
+Capture a5bf45798255bca41d73f284bfe6987f48fc351f; whole source/owner inverse metadata. This is historical
+retention; the next finite transition has its own current ownership.
+
+```json
+{"revision":"a5bf45798255bca41d73f284bfe6987f48fc351f","source":"docs/tasks/LIVE-CONTAINMENT.md","source_bytes":130654,"source_sha256":"9ff957a7f8c5e0bd131b11d5a1c115147ef40c6889fbf7af6a32fd68dbea9341","owner_insert":{"offset":7713,"text":"### .4j / SEMULITH-LC-0049 \u2014 second finite history seal (active)\n\nOwned on clean a5bf4579/brief0/host0 before changes. Priority1 rollout blocker:\nordinary history159 files/782755B leaves3677B of786432; DEV49135/49152 leaves17B.\nIts oldest complete3787B entry alone exceeds that room. Reproduce with public\nsharder dry-run and exact corpus census; no cap bypass or partial-entry rewrite.\nClassify exactly158 closed shards plus their manifest at this source boundary.\nUse the standing director delegation retained in LC0041: do whatever fits task\nhistory/archive. Add one immutable content-addressed segment through the existing\npublic reader. Preserve the first object/descriptor exactly; approve only this\nfinite terminal expansion through a separate measured decision record, keeping\nall ordinary-history/head and other capacities fixed. No automatic future seals.\nCopy/verify/use/retire: verify source Git identities, byte/LF/mode/count coverage,\nindependent deterministic serializations, public Python/tar retrieval of every\nmember, old/new logical partition and predecessor preservation before removing\nexactly the captured sources. Reader must work relocated without Git/network/\nextraction. Keep new live receipts native and preserve retired shard numbering.\nContain this root by retaining the complete closed LC0041 record with inverse\nmetadata in existing task-claims. Sync current/archive index, book, MEMORY, live\nhistory and registry; focused/current controls, seven books and normal COMMIT.\nNo runtime/qualification/CPU/board credit; D79/D80 remain scheduled, not expanded.\nNext P4-SYSTEM.14 final execution/manifest/authorities after clean handoff.\nEvidence target/live-containment/history-rollover; promotion declined (existing\nfinite archive, bounded-reader and whole-source preservation contracts).\n\n"},"owner_bytes":132472,"owner_sha256":"3bd5630aee441a18ddd118cea92934cf64aa6c593e16b7012eead39fe7b04d44","retired_bytes":127115,"retired_sha256":"0f1d88dfd2ac94fb3ecd7fd5c8c7c205b734e465afc380335119ab50edd0c55a","records":[{"unit":"LC0041","offset":72106,"bytes":5552,"lines":63,"sha256":"6abbf243013fd1743350f762e3cd7f9a45749fda0f285d016fecc0c0ecd93956","replacement":"###### .4i2b5b1h / SEMULITH-LC-0041 \u2014 contain task-family byte pressure (complete)\n\n[Complete record and standing archive delegation](artifacts/live-containment/task-claims.md#lc0049-lc0041).\n\n"}]}
+```
+
+<a id="lc0049-lc0041"></a>
+
+### Complete closed LC0041 record
+
+````text
+###### .4i2b5b1h / SEMULITH-LC-0041 — contain task-family byte pressure (complete)
+
+Before further heading/search captures, measure remaining107-file/3145728-byte
+capacity and classify the largest complete records against the local containment
+contract. Own a lossless, authenticated retention remedy with published retrieval
+and verified source/mode/order inverses; preserve every authored record and all
+current features. Existing capacities remain fixed. Check the director's standing
+archive authorization and local transition rules before any retirement; prepare
+a concrete reviewable transition if a further ruling is actually required.
+
+LC0041 uses the director's standing session delegation, “do whatever you see
+fit regarding the task history or archive”; the finite selection is our local
+implementation of that delegation, not a claim the director named these files.
+Source968bc010 has1469 identities/one opaque Gitlink. Task family107/3145560B
+left168B; book51/524256B left32B. Classify four completed source-pinned records
+as historical captures: book-index-consumer94264B, graph-census129625B,
+include-readers130686B and orientation-indexes126603B. Keep the active inventory
+contract, live retention-verifier input, integration/validator teaching and small
+task-claims record native. Maintained qualifiers read selected history from their
+immutable Git source; those replay contracts and existing12/210-file seals stay
+unchanged. No live root or ordinary P4 archive enters this capture.
+
+Copy/verify/use/retire: five originals497850B/3647LF include the whole16672B prior
+book source. Public Python/tar retrieval verifies every byte without Git/network/
+extraction, normal/O. Descriptor3918B pins Git968bc010 and full-tree SHA-256
+2a211bb7259ce9fe12c6dbd842af038d5788a4e88aa93845867bea9d3cda1209.
+Object192354B SHA-256a9b549a8bd733603d1eba8726b8c18cc30c908f39dab86a50adf2379d0f215f9
+retains sorted originals then canonical manifest. Independent source Git bytes,
+modes and identities verify before replacing only the four original paths with
+5016B navigation pages. All20 native heading IDs remain; source inverses recover
+all481178B retired records and the whole prior book chapter. Record retirement releases
+476162B; this unit’s receipts use part of it. Existing ceilings stay fixed. A separate three-file terminal
+has derived204642B bound =192354+8192 descriptor+4096 front door. Registry class:
+reader_navigation/archive_terminal. It is finite/immutable, never overflow.
+
+Reader validates bounded/stable no-follow reads, modes, schema/descriptor pin,
+whole-object digest, bounded expansion, canonical regular USTAR members,
+manifest, every original SHA/GitOID/byte/LF count and exact navigation before
+output. Publishing guard checks all original source bytes/modes and complete
+source-tree identity on first publication, plus atomic staged data/wiring.
+Later both index and working views must equal published HEAD; no old Git source
+or fetch is needed. Absent/failed evidence refuses; shallow/no-Git retrieval is
+separately tested. Markdown retention adds no historical replay toolchain or raw
+output promise. README/book give verification/list/read/tar/failure examples.
+
+Initial full CI exposed the generic fingerprint contract: JSON `path`/`sha256`
+means a live file relative to its record. Historical originals use the explicit
+`original_path` field instead; no checker exemption or changed original hash.
+Reserialized manifest/descriptor/object retain identical original/stub bytes.
+The root-cause receipt also now names its actual command/rc for SEAM-INTEGRITY.
+Both integration defects are resolved: focused13 and full `make ci` rc=0.
+The terminal front door retains the tested normal/O serialization recipe.
+Final review corrected the guarantee wording: the reader authenticates archive
+data/navigation and bounds README mode/size/coverage; the publishing guard
+freezes README content. A changed bounded README retrieves exact originals
+but fails the publishing control. Own this claim defect here;32 controls
+normal/O verify the boundary before the restarted normal COMMIT.
+
+- [x] **ROOT CAUSE** — `python3 scripts/qualification_history_preservation.py` rc=0 authenticates source968bc010; `target/live-containment/task-byte-retention/census.json` shows107 files/3145560B,168B spare; completed append-only captures consume byte capacity, sharding alone does not release aggregate bytes. Native mdBook captures all20 heading aliases before retirement.
+- [x] **ADDRESSED** — `python3 scripts/probe_qualification_history.py` normal/O rc=0:32 tests,0 failures/errors; all5 Python/tar originals exact in relocated no-Git/no-extraction fixture. `qualification_history_preservation.py` rc=0 authenticates first publication/source; combined TASK-HISTORY50/0. Exact source/mode/order and heading inverses retained.
+- [x] **NO REGRESSION** — `make ci` rc=0 (check/gate/bench/smoke-bench/seven books); focused13/sharder12 and `verify.py` rc=0:1450 protected regular files/opaque Gitlink, all99 prior history entries, five whole originals/book commands/19 headings/20 native aliases and3242 links exact. Full staged inverse and normal COMMIT required. CPU/MCU/DSP/board/full graph/adoption stay open.
+- [x] **LOCKSTEP** — task/MEM/CH/DEV/book/toolbox/doctrine/route agree; prior book source fully retrievable. No new decision file needed: this finite delegated transition is owned here and by its terminal. Heading/search/resources remain open. promotion: declined (finite transition retained here and in its terminal).
+
+````
+
+<a id="lc0049-capacity-authority"></a>
+
+## LC0049-CAPACITY — reviewed finite second history segment
+
+Type: finite archive-capacity decision. Owner LIVE-CONTAINMENT.4 .4j;
+reviewed2026-10-19 under the standing archive delegation retained above.
+This is a separate authority record for the one transition, not permission
+for subsequent appends, additional seals or ordinary-history cap increases.
+No new cross-cutting lifecycle or reader architecture is introduced.
+
+At source a5bf45798255bca41d73f284bfe6987f48fc351f the ordinary family has
+159 files/782755B against786432B. DEV has49135/49152B; its next required whole
+entry is3787B before wrapper/manifest, already larger than the remaining3677B.
+Sharding cannot remove aggregate bytes. The declared cold-history topology and
+standing delegation authorize one copy/verify/use/retire transition.
+
+Classify exactly the158 closed immutable shards and their complete15010B
+manifest at that source. These159 originals total782755B/11200LF. Independent
+Git tree membership, immutable blob/mode/pin checks and two serializations bind
+that complete population. The new USTAR/gzip object is276917B with SHA256
+89ad7214ebbf637cc48dc4468f3d43fb7d0f2eb08a43fa5c4ab42118ba8df2b5.
+Manifest SHA256ef6bebe01e3f6835f7c630d74904f8bcd8e9dc176326a7d72e84262d4e2e4403.
+Public Python/tar retrieval reproduces every original; relocated normal/O CLI
+reads authenticate both segments without a local Git repository or extraction.
+New corruption and changes to the prior descriptor refuse.
+
+The existing terminal's user contract expands from one exact segment to these
+two exact segments. Its original object284500B and descriptor remain unchanged;
+append the new descriptor through the existing strict reader. The archive family
+therefore has exactly4 files: two fixed objects, one index and one front door.
+Its reviewed ceiling is581897B =284500+276917+16384 index+4096 front door.
+Metadata bounds and all reader resource limits stay fixed. Health bytes derive
+from the complete deliberately retained four-file working surface at application;
+health and ceiling counts are both4. Ordinary-history/head and all other ceilings
+stay fixed. A third segment needs a new separately reviewed finite authority.
+
+The368 logical shard names are disjoint between the two segments. Each includes
+its own manifest snapshot at its own capture boundary; those two metadata
+snapshots share a former logical path and are not one current manifest.
+Remove only the158 originals after complete verification; regenerate the current
+live manifest and preserve retired numbering. Keep new live receipts native.
+Complete-source identity, semantic closure, live dimensions and unretained
+residue are checked independently: no source bytes may become unretained.
+
+Consumer census at the capture finds two textual references outside the retired
+family. One is a historical review table; the other is an explicitly excluded
+query in the qualifier's immutable23fdb8 source context. Neither opens the current
+shard as an integration input. Keep both bodies exact and verify the existing
+source-pinned query controls. Existing read/list/tar/failure contracts remain;
+the book and front door disclose the enlarged finite capture.
+
+This record governs only the exact atomic transition and must be checked against
+its source, object and resulting registry by the slice's preservation proof.
+The first seal, task/qualification seals, implementation/probes, active task graph,
+CPU/board/replay and evidence qualification receive no changed authority.

@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0049 (leaf LIVE-CONTAINMENT.4) — seal the second finite history segment
+
+Seal158 closed shards plus manifest from a5bf4579:159 originals782755B/11200LF,
+retained in one276917B immutable object. Preserve the earlier object/descriptor;
+public Python/tar reproduces every source, relocated normal/O reads both segments,
+and corrupt new data/changed old descriptor refuse. Verified copy precedes exact
+158-source retirement; residue0. Current receipts stay native and numbering holds.
+
+Standing archive delegation and the separate LC0049-CAPACITY record own exactly
+this finite expansion:4-file terminal/581897B ceiling, existing metadata/reader and
+all ordinary-history/head/other caps fixed. Retain full LC0041 record5552B with
+inverses; synchronize front door/book/recovery/registry. Main book shrinks8B and
+keeps prior examples. No runtime, CPU/board/replay or qualification change.
+Verification:17 focused/seven books/4 examples/3 surfaces; history44/0,
+queries263x2/0 defects, source/owner inverses2/seven damaged refusals and protected
+scope pass. Director2026-10-19 explicitly approved LC0049.
+Then return to P4-SYSTEM.14 final execution/manifest/authorities/capture/full policy.
+
 ## SEMULITH-P4-0278 (leaf P4-SYSTEM.14) — review the current authority-selection route
 
 Extend producer review to37 modules and the public13-view authority loader.
@@ -540,9 +558,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Preserve six whole completed designs and prior book receipt (seven27984B bodies) in ordinary part18,33982B with exact inverse map. Both whole committed sources reconstruct;26 independent damage/map/receipt/route/guide/active-plan controls refuse normal/O. Retain active a42/direct anchors/original12 reader; book shrinks15B.
 - Clarify two loop-free census seams; all31 Bash fences/18 complete examples, code/arms/LIVE/canonical/CPU/caps/seals unchanged. Kimi absent after authorized shutdown instruction, unrestricted handoff green, no exemption. Own D47 priority1 next: sandbox-denied ps is suppressed by census and can false-green. Focused12/sharder12/seven books/3212 fresh+actual links/normal+print/literal read pass. History99/scope1369 bytes/modes/Gitlinks exact normal/O, real receipt+new-digest edits refuse. Whole DEV3668B/one entry to0269;61live+210sealed271logical, no CH shard. COMMIT next.
-
-## SEMULITH-P4-0242 (leaf P4-SYSTEM.14) — conservative old/new dependency impact
-
-- Add pure bounded frozen graph impact: reverse old/new union, deleted evidence, changed-edge seeds, unknown/unmapped/shared broadening and stable profile expansion. Caller owns complete projection, actual pins/inventory and status updates; no qualification integration or canonical change.
-- 34 controls/18 discriminating omissions pass normal/O with zero errors;4096 graph pairs checked, separate32768 redundancy census, draft unmapped-lookup defect fixed. Preserve454 PROFILE arms/source; add38 (492; GUEST328; global1439). Focused13/full PROFILE/sharder12/seven books/3212 fresh+actual links/normal+print and exact example pass; whole source/task/history/scope inverses,17 old examples and1360 other files/modes/Gitlinks exact; real receipt+digest rewrites refuse. COMMIT next; whole DEV5788B to0267/CH2250B to0268,102 predecessor entries and fixed caps/seals protected.
 

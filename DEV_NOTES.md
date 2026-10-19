@@ -1,5 +1,56 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — seal a second finite history segment (LIVE-CONTAINMENT.4 .4j)
+
+LC0049 interrupts the next feature slice only for measured rollover failure:
+ordinary history159 files/782755B leaves3677B, while DEV leaves17B and its
+oldest whole entry3787B already exceeds family room before wrapper/manifest.
+Use standing archive delegation retained from LC0041; the existing finite
+archive topology and public reader suffice. No runtime implementation changes.
+
+Capture exactly158 closed shards and their15010B manifest from a5bf45798255bca41d73f284bfe6987f48fc351f:
+159 originals782755B/11200LF. Independent Git tree/mode/blob checks, two identical
+serializations and all159 Python/tar member comparisons bind complete source.
+The new276917B object SHA89ad7214ebbf637cc48dc4468f3d43fb7d0f2eb08a43fa5c4ab42118ba8df2b5
+is a distinct immutable segment. Old284500B object and descriptor stay exact.
+Relocated normal/O public CLI authenticates368 shards across two objects without
+local Git/materials/extraction. New corruption and old descriptor changes refuse.
+Only after published-copy comparison retire exactly158 known sources; residue0.
+
+Separate bounded LC0049-CAPACITY record in task-claims reviews this one expanded
+finite terminal:4 files,565623B health,581897B ceiling = two fixed objects561417B
+plus existing index16384/front4096 bounds. The old finite contract covered one
+segment; this exact source-defined addition expands only that archive contract.
+Ordinary/history-head and all other capacities and reader limits stay fixed.
+No new decision file or general lifecycle change: this is a finite implementation
+of the standing delegation. Future seals require fresh ownership/review.
+
+The two manifest snapshots share a former logical path at distinct capture
+boundaries; logical shard sets are disjoint. Complete-source identity, semantic
+closure, live dimensions and unretained residue are separate products. No source
+bytes are lost. Current live receipts remain native; numbering starts0367 after
+retired0366. Two external textual references are historical/source-pinned, with
+no live integration read. Existing263-outcome query qualification remains pinned
+to23fdb8 and its original222 members; current two-object proof is separate.
+
+Retain the complete closed LC0041 record5552B in existing task-claims with source/
+owner inverses; keep its standing authority recoverable. Main book changes only
+current archive teaching, preserves old examples and adds the new-segment read;
+its family shrinks8B. Public reader/partition/probes remain byte-exact.17 focused,
+44 history controls,263 source-pinned queries x2/0 defects, seven books/four complete
+examples/three rendered surfaces pass. Scope1415 protected files/1Gitlink/95 prior
+live entries; whole4747B live predecessor rollover, full LC0041 source/owner
+inverses2/seven damaged refusals. All other caps fixed; normal COMMIT required.
+Automatic approval review twice rejected the commit: recorded delegation did not
+supply trusted user approval for158 retirements. Director2026-10-19 explicitly
+answered “Approve LC0049 and continue” to the158-source verified archive migration,
+finite terminal bound and local commit without push. That scope is now directly
+authorized; normal COMMIT/postconditions remain required. The app-control safety
+boundary prevented changing its permission selector; no setting was altered.
+After COMMIT return to P4.14 execution/authorities.
+Evidence target/live-containment/history-rollover; promotion declined (existing
+finite archive, bounded-reader and source-preservation contracts).
+
 ## _(2026-10-19)_ — review current authority loaders (P4-SYSTEM.14 a42aj)
 
 Review the public authority API alongside the producer route:37 modules,27
@@ -655,59 +706,4 @@ old artifact prefix. DEV's oldest whole a42m entry5227B moves to0350; exact orde
 completeness and manifest-prefix checks apply. No ceiling/seal changes.
 Evidence target/p4-system-14/a42x; promotion: declined (existing bounded-reader,
 provenance, task-history and POSIX process contracts; no new cross-cutting policy).
-
-## _(2026-10-18)_ — publish one fresh process receipt (P4-SYSTEM.14 a42w)
-
-At committed a7484ba, capture_run exists but no receipt publication API does;
-the collector source is retained as an exact18849B prefix. The new wrapper freezes
-request and actual host observations before collection, uses that existing fresh
-process path, and encodes the existing sail-gpr-capture-v1 schema through the
-single dossier codec. The separate byte binder checks actual exit/ordered argv,
-selected candidate/collector, all8input pins and3output identities/sizes/digests.
-A receipt never embeds its own hash. Nonzero/signal exits remain failed data.
-
-Authenticate outputs again before publication. Anchor the receipt's existing
-same-volume parent, refuse nested Git boundaries, create exclusively and handle
-short writes; fsync and authenticate the receipt, then recheck all3outputs and
-parent/path identities. Failure removes only the created inode; a replaced path
-survives unchanged. Supplemental read bound8716288B, receipt serialization64KiB;
-this is not the still-pending shared experiment budget or a hostile-filesystem
-transaction. Schema I/O remains unavailable, contradiction refused. No canonical
-capture or qualification follows from publication.
-
-Probe23/0/0 normal/O;11independent omissions lose2/1/2/1/2/1/2/1/4/1/2 assertions,
-zero errors. Actual child processes cover empty streams, exit7 and signal-15,
-missing trace, immutable context/host, drift before/after write, receipt conflict,
-symlink/nested repository refusal, short/no-progress/partial writes, replacement
-preservation, damaged receipt bytes, encoder/schema/binder failures and exact read
-limits/no retained output payloads. The first mutation attempt was unjudgeable:
-mutant CaptureRequest types differed from the shared fixture's original types,
-causing22blanket failures. Bind the fixture to the active module before counting;
-the corrected actual-exit omission loses precisely the two failed-process cases.
-An omitted local output-identity guard remained protected by the existing binder;
-that redundant omission is excluded from the discriminating count.
-
-Appending publication repeats idioms in the old collector's literal mutation
-seams. Limit that probe's mutation source to its original API region; all old
-assertions, requests, synthetic child,18seams and CLI remain exact. Verify every
-normal/O legacy outcome against the prior measured matrix. New publication has
-its own separately calibrated probe/11seams, registered under PROFILE-CONSISTENCY.
-Re-derived static arm total1600; milestone statuses and CPU14/18 remain unchanged.
-
-Optional tracked --real-sail-smoke delegates the existing pinned public guest
-smoke through the new wrapper. Normal/O:3distinct fresh PIDs, exit0,3receipts,
-AGREE/AGREE/DIVERGE at step2/x7 -3 versus -4; identical2298B traces with unchanged
-SHA64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde.
-Receipt bytes, ordered argv and exits checked before unique on-volume scratch
-removal. The prospective envelope/partial dependency list remains explicitly
-unqualified; no retained canonical artifact or complete closure credit.
-
-Retain three whole completed task designs v/s/n2382B at exact source offsets in
-the existing task-claims artifact, keeping original prefix and native headings.
-Both complete source/owner inverses and6damaged refusal controls pass. Oldest-whole
-DEV4686B and CH1629B roll into0348/0349; the sharder proves ordered completeness,
-manifest prefix unchanged. Caps/seals remain fixed. External README/containment
-neutral bodies equal local copies; claim-verification source digest unchanged.
-Evidence: target/p4-system-14/a42w. promotion: declined (existing receipt,
-bounded-reader, provenance and history contracts; no new cross-cutting policy).
 

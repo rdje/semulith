@@ -14,16 +14,15 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` → its Current Frontier.
+- active_work_unit: `P4-SYSTEM.14` → final execution/manifest composition.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: P4-SYSTEM.14 finish the canonical execution entrypoint, then
-  re-review its source and commit exact manifest/planned record plus independent
-  inventory/author/impact authorities before capture/full policy.0278 reviews
-  read-only current authority route:37modules/64children/79files;0272 owns allowance.
-  P2 runtime-continuation observation remains owned in preceding records.
-  CPU14/18,BOARD10/12,replay4/4green; no canonical capture/qualification.
-- in_flight_uncommitted: none after P4-0278; verify Git state on read.
-- blockers: none for implementation; no terminal command needed.
-  LIVE-CONTAINMENT.4 owns captured D79 analysis and D80; see that tree's
-  Delivery priority and capture handoff. Maintenance remains scheduled separately.
+- next_action: after LC0049 normal COMMIT/brief0/exact postconditions/host census,
+  return to P4-SYSTEM.14 final execution/manifest/planned record/input-author-impact,
+  then capture/full policy. Read that leaf's current frontier and affected contracts.
+  Do not add another prerequisite-only review loop without a concrete delivery need.
+- LC0049: director2026-10-19 directly approved the verified158-shard migration,
+  exact finite archive bound and local commit without push after two automatic
+  review refusals. See LIVE-CONTAINMENT.4 .4j; target/live-containment/history-rollover.
+- blockers: LC0049 approval resolved; normal commit/handoff checks still required.
+  LIVE-CONTAINMENT.4 owns captured D79 analysis and D80, scheduled separately.
   No push below300commits without the director's act (COMMIT.md).

@@ -262,7 +262,11 @@ docs/task-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4c; immut
 # LC0041: standing archive delegation; finite four-record plus book-source capture.
 # Object192354B + descriptor8192B + front door4096B =204642B; no cap increase.
 docs/qualification-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4i2b5b1h; finite immutable capture and navigation; TASK-HISTORY authenticates	3	200000	3	204642	0
-docs/history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4 slice (a); finite sealed object, descriptor and retrieval front door; SHARD-FREEZE authenticates	3	288000	3	304980	0
+# LC0049: finite second158-shard capture under standing archive delegation.
+# Separate capacity authority: docs/tasks/artifacts/live-containment/task-claims.md#lc0049-capacity-authority.
+# Exactly4 files; fixed objects284500+276917 plus existing index16384/front4096 =581897B.
+# Old object/descriptor remain exact; ordinary-history/head and reader caps unchanged.
+docs/history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4 .4j / LC0049-CAPACITY in task-claims; two exact finite segments, immutable descriptors/objects; SHARD-FREEZE authenticates	4	565623	4	581897	0
 DEV_NOTES.md	author_overflow	append_history	lessons are promoted to docs/knowledge/; shard when the ceiling fires	0	36864	0	49152	0
 # Derivation, PUSH-DISCIPLINE.3 (2026-09-29), when the approval ledger got its home:
 #   docs/push-approvals.md  1,045 B at adoption (the header alone; zero entries today).
