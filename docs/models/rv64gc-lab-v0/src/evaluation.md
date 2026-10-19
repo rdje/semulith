@@ -40,8 +40,8 @@ analysis.
    artifact I/O.
 3. Bind the authenticated manifest to frozen relations and optional inventory/
    impact reviews before file-set reads. The shared reader authenticates the whole
-   declared set, reusing the manifest seed. Fixed ceilings:128 MiB cumulative
-   reads,16 MiB live snapshot payload, per-role bounds and terminal failures.
+   declared set, counting the seed once. [Limits](read-allowance.md)
+   default to128 MiB, with16 MiB snapshots, role caps and terminal failures.
    Source/image retention uses seventeen snapshots plus64 KiB unused rebuild room
    within that ceiling; the public default retains fifteen.
 4. Consume the exact retained identity and receipt bytes through the public
@@ -96,7 +96,7 @@ declared method's reviewed collector/capture trust boundary still applies.
 
 The record disposition is `valid` after raw schema/scoped graph checks,
 `refused` after their findings or a malformed record, and `unchecked` when an
-invalid scope or unavailable schema tool prevents judging it. `valid` does not
+invalid scope/allowance or unavailable schema tool prevents judging it. `valid` does not
 mean every method requirement holds, every declaration is true or every artifact
 exists. Record issues are immutable named findings from the existing validator.
 

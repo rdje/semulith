@@ -125,7 +125,9 @@ offline observation checking and reference replay have different availability.
 
 Measure and register the actual retained family with its fixed count/byte caps.
 Keep the existing128 MiB aggregate read and16 MiB snapshot envelopes; a combined
-collector/evaluator must carry the collection charge forward. Then capture the
+collector/evaluator must carry the collection charge forward. Evaluation now
+accepts a [delegated remainder](read-allowance.md), including its manifest seed;
+the combined driver remains to be finalized. Then capture the
 three processes, authenticate every retained input/output and evaluate all27
 boundaries, exact repeat bytes and the intended control. Only after that may the
 full source/risk/feature policy and derived statuses be integrated. The blanket

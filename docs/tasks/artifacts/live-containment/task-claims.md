@@ -575,3 +575,73 @@ Evidence target/p4-system-14/a42y. promotion: declined (existing review/closure
 and source/property contracts; no new cross-cutting policy). COMMIT applies.
 
 ````
+
+## P4 a42ab: complete closed property and verification records
+
+Source/owner/retirement inverse metadata; original bodies remain byte-exact.
+
+```json
+{"schema":1,"revision":"fe51dbbb19c6e0b189dd2195ce774f63f058cc41","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130955,"source_sha256":"b353bb464e187f482a4852433c856379beb575d924daf268ea9ace5bd7fa0e1d","owner_insert":{"offset":32667,"text":"### `.14` a42ab \u2014 delegate a bounded evaluation allowance (active)\n\nOwn P4-0270: expose an inclusive plain-int read allowance before manifest I/O,\ncarry the same remaining allowance into the file ledger and count its seed once.\nKeep defaults,16MiB snapshots, case/authority and legacy findings exact. Test\ninvalid/zero/exact/short limits, actual bytes and failed-read accounting normal/O;\nreview changed producers and update book/live docs without increasing caps.\nOwn whole closed-aa and verification-b/c retention, history and normal COMMIT.\nNo canonical capture/qualification; final driver/retention/policy still follow.\nP2 runtime follow-up after0270: get_goal reported blocked at2026-10-19T04:06Z\nalthough the cleanup commit succeeded and the repository can progress. Cause is\nunestablished; keep polling live handles within this turn. Controller diagnostics/\nreactivation are needed to resolve automatic continuation; no repo defect inferred.\nEvidence target/p4-system-14/a42ab; promotion declined (existing budget contracts;\nruntime observation is not a proven new doctrine).\n\n"},"owner_bytes":132041,"owner_sha256":"5180dbbd5795fbc57c3c9cd4a9ab2597610b5d33b2ec05e1c01c221a6844d026","retired_bytes":128976,"retired_sha256":"62fadfbc48044f1b18e13e278b221633f0170c083b5f651522795cf2826728b9","records":[{"unit":"a42aa","offset":33753,"bytes":824,"lines":13,"sha256":"4add47e066621368e8cc94d725c2f059bde88dab5b3db4f8018f001f494803a7","replacement":"### `.14` a42aa \u2014 bind the retained DIV excerpt (completed, SEMULITH-P4-0269)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ab-a42aa).\n\n"},{"unit":"a42c-verification","offset":102740,"bytes":1343,"lines":17,"sha256":"c5aa29f828c4d58d492c486be61d0b5164902ddb5679746c5160f73fb446a40e","replacement":"a42c: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab-a42c-verification).\n\n"},{"unit":"a42b-verification","offset":104083,"bytes":1261,"lines":17,"sha256":"ae4bf85615c76d35f08015cfe9b2e2abef17e630d6be0ea0e42e5d50aeb0b975","replacement":"a42b: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab-a42b-verification).\n\n"}]}
+```
+
+<a id="p4-a42ab-a42aa"></a>
+
+````text
+### `.14` a42aa — bind the retained DIV excerpt (completed, SEMULITH-P4-0269)
+
+v2 authenticates the separate excerpt; original publication/semantic authority
+and guest/witness/control exact. Old page substitution and v1 selection refuse/
+unsupported. Reviewed extractor plus35modules/27data/63children;66files/946190B
+copy works cache-free normal/O. Actual23-file authentication, synthetic traces.
+Controls28/29,22/14,25/13 (tests/omissions),118 runs/0 errors. Focused16/books7/
+examples3;1535other files/1Gitlink/92old entries exact. Whole y/z2247B retained;
+inverse2/6damaged refusals. Caps/status/qualification guard unchanged.
+Evidence target/p4-system-14/a42aa; promotion declined (existing source contracts).
+Draft duplicate new-head title refused/fixed.
+COMMIT applies; canonical entrypoint/retention/policy next.
+
+````
+
+<a id="p4-a42ab-a42c-verification"></a>
+
+````text
+a42c: Verified33/0/0 normal/O, all17 omissions discriminate without errors;
+D44 old/draft method-lookup regression reproduced, exact draft51834B/hash inverse
+and1 assertion failure in both modes; repaired legacy order preserved. Whole
+repaired assembler/checker222 arms/method normative/book/task inverses exact.
+All216 repaired ELF bytes and167 GC source builds exact normal/O; old15/eight
+preserved.36 literal arms registered: GUEST258/0, PROFILE390/0,39 doctrines1267.
+Focused17/sharder12/0/seven books/3140 links/all13 literal examples/normal+print trust/bounds/
+D44 teaching pass. Initial54B main-book overflow refused/corrected; no cap bump.
+History/canonical/scope rc=0 normal/O:104 old entries,340 raw forms/243 maps,
+1332 other files/modes/Gitlinks exact; actual original/moved/published receipt
+rewrites refuse even with updated digests. DEV4006B to0253(4239B/9bde028021b6d96fae40dc7a178960ea18c2111fc10f9eacea6b98949e568646),
+CH771B to0254(1008B/692a564a4cda7f1dc955b944bc7fedd5ab5cebabb6c361d12ad97fd1288f00ee);
+46live+210sealed256logical. Only inherited shard EOF blanks get ephemeral Git
+whitespace exception. Fixed caps/seals/canonical/CPU/qualification unchanged.
+Latest full CI clean93525ac all5 legs443 Rust/smoke53/seven books,18 hashes exact;
+no Rust source change here. Final docs/hooks/hashes/brief0/censuses then a42d.
+
+````
+
+<a id="p4-a42ab-a42b-verification"></a>
+
+````text
+a42b: Verified:15/0/0 normal/O, eight omissions1/2/1/1/1/9/6/1 fail without
+errors; exact old writer reproduces four header defects and invalid IALIGN0.
+All49 RV64I/167 GC payloads and complete old ELF inverses exact normal/O.
+make check443 Rust/public CLI two profiles with exact PC/write observations;
+initial GC diagnostic used the wrong scalar parser, corrected against the explicit
+public GC PC/write format. Generated index drift and cross-book source-link
+failures were caught and corrected; final focused17/sharder12/0/seven books/3138
+links/all12 literal examples/normal+print scope/limits rc=0. GUEST222/0 preserves
+204 old arms and adds18; PROFILE390/0,39 doctrines1231 arms. Complete original
+assembler/checker/Rust fixture/book/task inverses and history/canonical/scope
+rc=0 normal/O:340 raw forms/243 maps,103 old entries/1330 other files exact.
+Actual original/moved/published receipt+digest edits refuse. DEV16=15+1/2722B
+into0252 (2955B/49a4796d11355d281fa5a7751ba5126a83e0f6eadfc53dd34079732b5ec985bb),
+44live+210sealed254logical. Fixed caps/seals/canonical/CPU acceptance unchanged;
+full CI on the clean repair commit before a42c. COMMIT hashes/hooks/brief0/
+censuses next. Last full CI remains03ed501 all5 legs443 Rust/smoke53/seven books.
+
+````

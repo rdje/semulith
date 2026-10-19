@@ -80,8 +80,16 @@ def _bind(context: _Context, document: dict) -> ManifestPlan:
                         tuple(by_id[rid] for rid in sorted(by_id)), tuple(sorted(children)))
 
 
-def read_dependency_manifest(root: Path, *, experiment: dict, current_candidate: dict) -> ManifestCheck:
-    """Read one bounded authenticated manifest and bind its flat declarations."""
+def read_dependency_manifest(root: Path, *, experiment: dict, current_candidate: dict,
+                             max_read_bytes: int = F.DOCUMENT_BYTES) -> ManifestCheck:
+    """Read one manifest within an inclusive allowance, at most the document cap.
+
+    Invalid limits refuse before binding or I/O. Zero permits no payload bytes.
+    A caller sharing a larger budget must reserve this allowance before the call;
+    a failed finding does not report every possible partial read.
+    """
+    if type(max_read_bytes) is not int or not 0 <= max_read_bytes <= F.DOCUMENT_BYTES:
+        return ManifestCheck("refused", "invalid manifest read allowance")
     relations = R.bind_relations(experiment, current_candidate)
     if relations.disposition != "matched":
         return ManifestCheck(relations.disposition, "relations: " + relations.reason)
@@ -91,7 +99,7 @@ def read_dependency_manifest(root: Path, *, experiment: dict, current_candidate:
         return ManifestCheck("refused", f"malformed selected context: {type(exc).__name__}")
     manifest = context.manifest
     record = dict(id=manifest.input_id, role=manifest.role, path=manifest.path, sha256=manifest.sha256)
-    snapshot = A.read_snapshot(root, "input", record, max_bytes=F.DOCUMENT_BYTES)
+    snapshot = A.read_snapshot(root, "input", record, max_bytes=max_read_bytes)
     pin = snapshot.pin
     if pin.disposition != "matched":
         disposition = "stale" if pin.disposition == "mismatch" else pin.disposition

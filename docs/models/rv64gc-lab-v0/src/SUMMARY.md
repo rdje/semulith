@@ -8,6 +8,7 @@
 [Retained Sail method checks](retained-method.md)
 [Frozen context and snapshot checks](byte-bindings.md)
 [Authenticated byte evaluation](evaluation.md)
+[Delegating the read allowance](read-allowance.md)
 [Explicit image context](image-binding.md)
 [Reviewed expected authors](expected-author.md)
 [A source-grounded division witness](source-property.md)

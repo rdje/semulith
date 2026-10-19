@@ -15,6 +15,7 @@ import check_sexp_schema as K
 import dossier_sexp as D
 import experiment_artifacts as A
 import experiment_verification as V
+import matched_gpr_artifacts as Artifacts
 import matched_gpr_comparison as C
 import matched_gpr_files as Q
 import matched_gpr_identity as I
@@ -101,11 +102,14 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                            reviewed_inputs: T.InputReview | None = None,
                            impact_review: H.ImpactReview | None = None,
                            author_review: U.ExpectedAuthorReview | None = None,
-                           property_authority: G.PropertyAuthority | None = None) -> EvaluationCheck:
+                           property_authority: G.PropertyAuthority | None = None,
+                           max_read_bytes: int = Q.MAX_READ_BYTES) -> EvaluationCheck:
     """Validate the scoped record, authenticate once and compute byte comparisons.
 
-    Fixed 128 MiB total artifact reads/16 MiB live snapshot payload are owned by
-    M's bounded manifest seed and Q's shared ledger. All used canonical context
+    At most 128 MiB total artifact reads/16 MiB live snapshot payload are owned by
+    M's bounded manifest seed and Q's shared ledger. An explicit max_read_bytes
+    delegates a smaller inclusive allowance to both phases, counting the seed once.
+    All used canonical context
     freezes before either reads. No artifact is reopened, no binary/process is
     accessed, and returned summaries release raw payloads. A fully bound positive
     comparison remains pending source-grounded property/closure/impact/provenance and
@@ -121,6 +125,8 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     """
     if type(scope) is not V.Scope:
         return EvaluationCheck("refused", "expected scoped record context", RecordCheck("unchecked"))
+    if type(max_read_bytes) is not int or not 0 <= max_read_bytes <= Q.MAX_READ_BYTES:
+        return EvaluationCheck("refused", "invalid evaluation read allowance", RecordCheck("unchecked"))
     try:
         issues = tuple(V.check_experiment(raw_experiment, scope))
     except OSError as exc:
@@ -193,7 +199,9 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
             TypeError, ValueError, RecursionError) as exc:
         return EvaluationCheck("refused", f"cannot bind selected context: {exc}", record)
 
-    manifest = M.read_dependency_manifest(root, experiment=experiment, current_candidate=candidate)
+    manifest = M.read_dependency_manifest(
+        root, experiment=experiment, current_candidate=candidate,
+        max_read_bytes=min(max_read_bytes, Artifacts.DOCUMENT_BYTES))
     if manifest.disposition != "matched":
         return EvaluationCheck(manifest.disposition, "manifest: " + manifest.reason, record, manifest)
     if manifest.plan.relations != relations.plan:
@@ -217,7 +225,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
             return EvaluationCheck("stale", "impact: " + impact.reason, record, manifest,
                                    input_review=input_review, impact=impact)
     files = Q.read_declared_files(root, manifest=manifest, observations=observations,
-                                  retain_source_image=True)
+                                  max_read_bytes=max_read_bytes, retain_source_image=True)
     authentication = _summary(files)
 
     def finish(disposition: str, reason: str, *, identity: I.IdentityCheck | None = None,

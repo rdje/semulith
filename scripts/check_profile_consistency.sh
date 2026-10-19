@@ -1928,6 +1928,31 @@ retained-pin:1
 DIV_RETENTION_CASES
   done
 
+  # P4-SYSTEM.14 a42ab: delegate one allowance through manifest and evaluation.
+  local allowance_mode allowance_mutation allowance_losses
+  local -a allowance_python
+  for allowance_mode in normal optimized; do
+    allowance_python=(python3)
+    [ "$allowance_mode" = optimized ] && allowance_python+=(-O)
+    out="$("${allowance_python[@]}" scripts/probe_matched_gpr_read_allowance.py 2>&1)"; rc=$?
+    score "GREEN delegated read allowance $allowance_mode" "$rc" 0 "$out" "MATCHED-GPR-READ-ALLOWANCE: 15 tests / 0 failures / 0 errors; actual bounded reads, synthetic observations, no capture credit"
+    while IFS=: read -r allowance_mutation allowance_losses; do
+      out="$("${allowance_python[@]}" scripts/probe_matched_gpr_read_allowance.py --mutation "$allowance_mutation" 2>&1)"; rc=$?
+      score "RED delegated read allowance $allowance_mutation $allowance_mode" "$rc" 1 "$out" "MATCHED-GPR-READ-ALLOWANCE: 15 tests / $allowance_losses failures / 0 errors; actual bounded reads, synthetic observations, no capture credit"
+    done <<'READ_ALLOWANCE_CASES'
+evaluation-type:6
+evaluation-domain:3
+manifest-type:6
+manifest-domain:3
+initial-allowance:3
+manifest-envelope:2
+file-allowance:4
+seed-double-charge:2
+manifest-read-cap:5
+manifest-extra-byte:4
+READ_ALLOWANCE_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

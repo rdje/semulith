@@ -247,7 +247,7 @@ class ManifestTests(unittest.TestCase):
 
 MUTATIONS = {
     "pin-status": ('if pin.disposition != "matched":', 'if False:'),
-    "read-bound": ('max_bytes=F.DOCUMENT_BYTES)', 'max_bytes=F.DOCUMENT_BYTES + 1)'),
+    "read-bound": ('max_bytes=max_read_bytes)', 'max_bytes=max_read_bytes + 1)'),
     "manifest-codec": ('document = F.parse_dependencies(snapshot.data, path=manifest.path)',
                        'document = _unchecked_manifest(snapshot.data, manifest.path)'),
     "principal-overlap": ('child == by_id[child.input_id],', 'True,'),

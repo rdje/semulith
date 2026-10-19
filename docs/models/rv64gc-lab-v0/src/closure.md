@@ -8,6 +8,9 @@ file identities. The caller first validates the raw parent schema and scoped
 graph and supplies the trusted runtime project root. The helper reuses the
 relation binder, freezes the nine principal bindings and twelve output paths,
 then reads exactly one authenticated manifest snapshot bounded to 64 KiB.
+Optional `max_read_bytes` lowers that inclusive cap to a plain integer from zero
+to65536. Invalid values refuse before binding/I/O; the default is unchanged.
+See [delegated allowances and failed-read charging](read-allowance.md).
 
 The existing codec validates raw syntax before its single mapping, permits 1–64
 children and rejects duplicate child IDs/paths, unsafe paths, lexical self and

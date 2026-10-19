@@ -1,5 +1,48 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — carry one allowance through evaluation (P4-SYSTEM.14 a42ab)
+
+The three-run collector exposes a conservative charge, but the evaluator's
+manifest seed and later ledger used independent fixed defaults. Add optional
+inclusive plain-int max_read_bytes before record/schema or manifest binding I/O.
+Evaluation accepts0..128MiB, delegates min(remaining,64KiB) to the manifest, then
+passes the same aggregate allowance to the file ledger. Its existing seed charge
+counts once. Defaults,16MiB snapshots, per-role limits, findings and frozen public
+result fields stay exact. Invalid limits refuse with an unchecked record.
+
+A caller reserves its delegated allowance before evaluation. Detailed ledger
+charges cover failed-read reservations; before that ledger is available, retain
+the full reservation. A schema-valid oversized trace declaration reproduces433B
+of actual manifest reads with a zero authentication charge: file-set preflight
+refuses before its ledger starts. Validate seed-inclusive accounting before any
+refund, even when an authentication summary exists. Preserve this legacy result;
+add a control and own the validation as P1 for the next combined driver. No new
+early-failure counter or combined driver is claimed.
+The tracked probe counts actual os.read payloads over23 real fixture files,
+including the real DIV excerpt/guest/expectations and synthetic observations.
+It checks exact/short/zero and invalid limits, clamping/document ceilings, stale/
+missing children, unchanged defaults and modeled collection-charge subtraction.
+Initial mutation harness sentinels escaped as errors; catch type escapes and use
+caught I/O/binding sentinels with numeric no-call checks. All ten omissions now
+fail cleanly. Legacy manifest/evaluator mutation seams follow the new call syntax.
+
+The source-reviewed capture remains35modules/27data/63children/66files; changed
+producer pins total947184B and work from a copy with no materials cache. Preserve
+three complete closed task records/3428B with source/owner inverses, old history
+and fixed caps. Add a bounded book chapter and executable examples without losing
+existing examples. Canonical driver/reference identity/output retention, exact
+predeclared manifest and full policy remain pending; no capture/qualification.
+Promotion declined: existing budget/source/locality contracts apply. Runtime
+controller blocked-state observation is separately owned P2 in the task; cause
+unestablished, repository implementation continues.
+
+Validation:130 normal/O control runs;15 allowance controls/ten omissions and
+33/42/22 legacy matrices retain exact findings.16 focused checks/seven books/ten
+complete examples pass. 1535 other files/1Gitlink/93 old entries exact;
+three whole task records3428B, source/owner inverse2/seven damaged refusals.
+Whole-oldest DEV3993B to0356 and CH2211B to0357; fixed caps and CPU/BOARD/replay
+statuses preserved. LIVE's static arm count is freshly derived1608.
+
 ## _(2026-10-18 UTC)_ — verify the saved cleanup cohort before unlinking (ARTIFACT-CLEANUP.9)
 
 The latest cleanup2026-10-17T22:50:22Z is over24h old. Start from clean9274231
@@ -617,61 +660,4 @@ Four existing suites20/39/42/19 remain green normal/O. Fifteen focused gates,
 seven freshly built books/3300 rendered links and literal two-line example pass.
 Scope verifies every other tracked blob/mode, complete old head entries, full
 source/owner inverses and six damaged refusals; normal hooks remain mandatory.
-
-## _(2026-10-18)_ — compose authenticated source-derived values (P4-SYSTEM.14 a42q)
-
-P4-0259 starts after clean aad44b7, brief0/untracked and host census0. A minimal
-62B owner fits the root's75B headroom before changes. Retain the complete2222B
-closed a42p record in existing task-claims: old7446B assessment prefix exact,
-artifact10699B/root128991B. The appended record changes no old LC assessment,
-archive, native heading, seal, original12 authority or107-member family count.
-Source/owner/retired hashes, insertion and body offset support complete inverses;
-six independent damaged cases refuse. The active unit records the reconstruction.
-
-Declare the composition contract in GC References before code. Append optional
-EvaluationCheck.source_values after all existing fields. Preserve positional
-meaning and independent identity/receipt/authentication/comparison/image/review/
-impact findings. Use the shared source-value owner only after successful byte
-and source/ELF checks, with exact retained source/baseline and already frozen
-program/budget/witness. Cache source bytes once; no path reopening or added
-artifact reads. Bind all seven image/derivation axes: program, entry, encoding
-path, source size/SHA and initial payload size/SHA. Invalid/unknown source
-results or contradictory metadata refuse without retaining the invalid finding.
-Known failed/refused/unavailable values terminate with earlier findings intact;
-unsupported author/event scope remains pending with explicit no-credit finding.
-Matches still leave producer/property meaning, complete source/dependency review,
-collector/freshness, ancestry and full policy pending. Qualification stays closed.
-
-Reuse the existing64KiB temporary payload room after ELF reconstruction releases
-its bytes; author image<=32KiB. Artifact read128MiB/snapshot16MiB ceilings remain;
-objects/hart/steps are not exact RAM-bounded by those payload limits. No new
-format, loader, interpreter, raw-result payload, reference process or status credit.
-Before proof: coherent pins, receipts and all three traces/expectations claim9
-while retained source/ELF derive1. Committed old evaluator returns pending; new
-returns failed while comparison remains satisfied/image matched. This fills a
-known missing obligation; it does not allege the old pending contract qualified it.
-Permanent checks start2/2/0 then pass19/0/0 normal/O. An omission run initially
-shows19/1/1: assertions outside a suppressed subtest access unassigned checked.
-Own/fix their placement before credit; retain the red helper evidence. Final12
-omissions lose10/10/1/2/9/12/4/3/7/3/1/13 assertions, zero errors in both modes.
-
-All five legacy suites pass normal/O:42/26/20/24/23 tests. All55 affected
-omissions retain their exact registered losses;60 result rows match across modes.
-All99 mutation selectors across six consumers are singular. A first registration
-comparison assumed literal summaries; account for existing heredoc case pairs
-before credit. Source formatting uses project-local pinned black24.10 with an
-identical AST; no runtime dependency. Register26 runtime arms/two score sites;
-derived census1588. Registry prose names value composition, no new doctrine.
-
-Keep Evaluation's old examples complete: an over-cap32870B draft refuses before
-write, compact current introduction/field census to32730B under32768. References
-teaches a complete synthetic pending/failed example. Two whole oldest DEV entries
-(5325B) move verbatim to0345; old manifest prefix and partition remain required.
-Promotion declined: existing snapshot/value/adequacy principles, no new policy.
-P4 remains14/18, replay4/4green, BOARD10/12. Scope normal/O protects1503 other
-tracked files/85 prior entries; full source/owner inverse and six damaged cases
-pass.15 focused checks and7 books/3284 links pass; exact two-line example/stderr0.
-Sole Git whitespace diagnostic: inherited EOF on0345:82, full source retained.
-Normal COMMIT remains required next.
-Evidence: target/p4-system-14/a42q.
 

@@ -54,7 +54,8 @@ output observations, receipt reads and publication rechecks. Schema/tool/runtime
 I/O and process RAM are separate from this artifact-read budget. Collection
 retains no trace/expectation payloads; the16 MiB retained-snapshot budget belongs
 to subsequent evaluation. A combined pipeline must carry this charge forward
-rather than reset its allowance for that evaluation.
+rather than reset its allowance for that evaluation. The evaluator now accepts
+that [remaining allowance](read-allowance.md); the combined driver is pending.
 
 ## Results and failures
 

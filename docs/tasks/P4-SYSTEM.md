@@ -358,18 +358,30 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
+
+Optional plain-int0..128MiB evaluation/0..64KiB manifest limits refuse before I/O;
+clamped seed and later ledger share one allowance. Defaults/16MiB/results exact.
+15 controls/ten omissions,130 normal/O runs; legacy33/8,42/29,22/14 losses exact.
+Preledger edge: oversized trace metadata refuses after433B seed but charge0;
+ledger preflight has not started. Control/book fixed; preserve legacy counters.
+P1 next combined driver: validate seed-inclusive bounded accounting before
+refunds; absent/inconsistent metadata consumes the full delegated reservation.
+Probe sentinels/type escapes fixed; omissions fail without harness errors.
+Review35modules/27data/63children/66files/947184B works cache-free normal/O.
+Focused16/books7/examples10; complete aa/b/c3428B retained with inverse2/seven
+corruption refusals; DEV0356/CH0357 whole oldest records. Caps/CPU/BOARD exact;
+LIVE count re-derived1608. No canonical capture/qualification; driver/retention/
+identity/exact predeclared manifest/policy follow. COMMIT applies.
+P2 runtime follow-up: get_goal reported blocked at2026-10-19T04:06Z despite
+successful cleanup commit and continued repository progress. Cause unknown;
+controller diagnostics/reactivation needed, no repo defect inferred. Keep live
+handles polled within this turn. Evidence target/p4-system-14/a42ab.
+promotion: declined (existing budget/source contracts; runtime cause unproved).
+
 ### `.14` a42aa — bind the retained DIV excerpt (completed, SEMULITH-P4-0269)
 
-v2 authenticates the separate excerpt; original publication/semantic authority
-and guest/witness/control exact. Old page substitution and v1 selection refuse/
-unsupported. Reviewed extractor plus35modules/27data/63children;66files/946190B
-copy works cache-free normal/O. Actual23-file authentication, synthetic traces.
-Controls28/29,22/14,25/13 (tests/omissions),118 runs/0 errors. Focused16/books7/
-examples3;1535other files/1Gitlink/92old entries exact. Whole y/z2247B retained;
-inverse2/6damaged refusals. Caps/status/qualification guard unchanged.
-Evidence target/p4-system-14/a42aa; promotion declined (existing source contracts).
-Draft duplicate new-head title refused/fixed.
-COMMIT applies; canonical entrypoint/retention/policy next.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ab-a42aa).
 
 ### `.14` a42z — retain one licensed DIV statement (completed, SEMULITH-P4-0268)
 
@@ -564,6 +576,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42ab **REPRODUCE / ISSUE**: delegation-before.log rc=0: both old signatures reject a delegated zero allowance.
+- [x] `.14` a42ab **ROOT CAUSE**: run-controls.py rc=0: initial/file allowance omissions lose3/4 assertions; seed subtraction loses2.
+- [x] `.14` a42ab **FIX**: optional strict limits, initial clamping and unchanged aggregate passed to the seed-owning ledger.
+- [x] `.14` a42ab **ADDRESSED**: allowance-controls.py rc=0 normal/O:15 controls/ten omissions; actual bytes and preledger-zero counter edge covered.
+- [x] `.14` a42ab **NO REGRESSION**: verify.py/focused.py rc=0:130 runs,16 checks/seven books/ten examples; whole old production/legacy losses exact.
+- [x] `.14` a42ab **LOCKSTEP**: verify.py rc=0 normal/O:3 closed records3428B/inverse2/seven damaged refusals; DEV0356/CH0357 exact; caps/statuses preserved.
 - [x] `.14` a42aa **REPRODUCE / ISSUE**: before.json rc=0: v1 requires the acquired35588B page; curated input unbound.
 - [x] `.14` a42aa **ROOT CAUSE**: run-controls.py rc=0: publication/input identity alias; wrong authority omission loses28 assertions.
 - [x] `.14` a42aa **FIX**: explicit v2 excerpt pin/original authority; reviewed extractor and actual fixture authentication.
@@ -1056,6 +1074,7 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
+a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
 a42aa: controls118/focused16/books7/examples3 and whole-source/history inverses rc=0 normal/O.
 a42l2: actual full gate replay on8237f71 rc=1, names TASK-PRESERVATION index
 changed part18; before a42k/505dd74 gate0. Same33982B source SHA256
@@ -1305,39 +1324,9 @@ No cap/seal/canonical/CPU/qualification change. Latest full CI93525ac443 Rust/
 smoke53/seven books; no Rust change here. Final docs/hooks/hashes/brief0/censuses
 then d2 opt-in ledger snapshots and d3 authenticated composition.
 
-a42c: Verified33/0/0 normal/O, all17 omissions discriminate without errors;
-D44 old/draft method-lookup regression reproduced, exact draft51834B/hash inverse
-and1 assertion failure in both modes; repaired legacy order preserved. Whole
-repaired assembler/checker222 arms/method normative/book/task inverses exact.
-All216 repaired ELF bytes and167 GC source builds exact normal/O; old15/eight
-preserved.36 literal arms registered: GUEST258/0, PROFILE390/0,39 doctrines1267.
-Focused17/sharder12/0/seven books/3140 links/all13 literal examples/normal+print trust/bounds/
-D44 teaching pass. Initial54B main-book overflow refused/corrected; no cap bump.
-History/canonical/scope rc=0 normal/O:104 old entries,340 raw forms/243 maps,
-1332 other files/modes/Gitlinks exact; actual original/moved/published receipt
-rewrites refuse even with updated digests. DEV4006B to0253(4239B/9bde028021b6d96fae40dc7a178960ea18c2111fc10f9eacea6b98949e568646),
-CH771B to0254(1008B/692a564a4cda7f1dc955b944bc7fedd5ab5cebabb6c361d12ad97fd1288f00ee);
-46live+210sealed256logical. Only inherited shard EOF blanks get ephemeral Git
-whitespace exception. Fixed caps/seals/canonical/CPU/qualification unchanged.
-Latest full CI clean93525ac all5 legs443 Rust/smoke53/seven books,18 hashes exact;
-no Rust source change here. Final docs/hooks/hashes/brief0/censuses then a42d.
+a42c: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab-a42c-verification).
 
-a42b: Verified:15/0/0 normal/O, eight omissions1/2/1/1/1/9/6/1 fail without
-errors; exact old writer reproduces four header defects and invalid IALIGN0.
-All49 RV64I/167 GC payloads and complete old ELF inverses exact normal/O.
-make check443 Rust/public CLI two profiles with exact PC/write observations;
-initial GC diagnostic used the wrong scalar parser, corrected against the explicit
-public GC PC/write format. Generated index drift and cross-book source-link
-failures were caught and corrected; final focused17/sharder12/0/seven books/3138
-links/all12 literal examples/normal+print scope/limits rc=0. GUEST222/0 preserves
-204 old arms and adds18; PROFILE390/0,39 doctrines1231 arms. Complete original
-assembler/checker/Rust fixture/book/task inverses and history/canonical/scope
-rc=0 normal/O:340 raw forms/243 maps,103 old entries/1330 other files exact.
-Actual original/moved/published receipt+digest edits refuse. DEV16=15+1/2722B
-into0252 (2955B/49a4796d11355d281fa5a7751ba5126a83e0f6eadfc53dd34079732b5ec985bb),
-44live+210sealed254logical. Fixed caps/seals/canonical/CPU acceptance unchanged;
-full CI on the clean repair commit before a42c. COMMIT hashes/hooks/brief0/
-censuses next. Last full CI remains03ed501 all5 legs443 Rust/smoke53/seven books.
+a42b: [Complete verification](artifacts/live-containment/task-claims.md#p4-a42ab-a42b-verification).
 
 a42a: Verified:23/0/0 normal/O, seven omissions7/13/5/1/1/1/1 fail without
 errors; D42 exact draft10140B/7638908c041e80cd627ed397cbd2e2d4f4ba96c52e5dd45ae80959765b0180d6
@@ -1558,6 +1547,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42ab | `SEMULITH-P4-0270` | bounded driver/retention/policy; runtime P2 |
 | `.14` a42aa | `SEMULITH-P4-0269` | entrypoint/retention/shared charge |
 | `.14` a42z | `SEMULITH-P4-0268` | bind separate retained excerpt and review inventory |
 | `.14` a42y | `SEMULITH-P4-0267` | bounded canonical retention and entrypoint |
