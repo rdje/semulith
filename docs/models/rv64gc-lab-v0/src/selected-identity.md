@@ -100,8 +100,8 @@ dossier digest, with every capability verdict unchanged.
 The descriptor belongs to the existing bounded `profiles/` family. It is a
 future `reference-identity` principal, separate from dependency children and the
 original publication authority for the retained DIV statement. Publishing it
-does not finish the capture declaration. The [final entrypoint, exact manifest,
-author/property/impact authorities and output retention](capture-plan.md#complete-the-capture-declaration)
+does not finish the capture declaration. The [prepared retention family](prepared-inputs.md)
+is declared; the [final entrypoint, exact manifest and selected authorities](capture-plan.md#complete-the-capture-declaration)
 still need commitment before a canonical run. Fresh replay separately needs the
 actual pinned executable. Full method/policy adequacy and qualification remain
 pending.

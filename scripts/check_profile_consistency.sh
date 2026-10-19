@@ -2030,6 +2030,18 @@ UNIT_EVALUATION_CASES
     score "GREEN published Sail identity $retained_identity_mode" "$rc" 0 "$out" "RETAINED-SAIL-IDENTITY: 11 tests / 0 failures / 0 errors; published descriptor, offline, no capture credit"
   done
 
+  # P4-SYSTEM.14 a42af: prepared finite DIV inputs, no reference process.
+  local div_inputs_mode
+  local -a div_inputs_python
+  for div_inputs_mode in normal optimized; do
+    div_inputs_python=(python3)
+    [ "$div_inputs_mode" = optimized ] && div_inputs_python+=(-O)
+    out="$("${div_inputs_python[@]}" scripts/probe_div_capture_inputs.py 2>&1)"; rc=$?
+    score "GREEN prepared DIV capture inputs $div_inputs_mode" "$rc" 0 "$out" "DIV-CAPTURE-INPUTS: 16 tests / 0 failures / 0 errors; prepared artifacts, no reference process or capture credit"
+    out="$("${div_inputs_python[@]}" scripts/probe_div_capture_inputs.py --mutation actual-layout 2>&1)"; rc=$?
+    score "RED omitted actual DIV layout $div_inputs_mode" "$rc" 1 "$out" "DIV-CAPTURE-INPUTS: 16 tests / 5 failures / 0 errors; prepared artifacts, no reference process or capture credit"
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

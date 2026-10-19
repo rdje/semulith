@@ -38,8 +38,8 @@ output with `check_reference_identity_bytes`. It introduces no alternate reader
 or schema. A descriptor match still needs separate pin authentication. It does
 not verify that the binary exists or ran, establish complete dependencies or
 qualify evidence. The [selected canonical descriptor](selected-identity.md) is
-now published. The exact capture manifest, output retention family and final
-driver remain pending.
+now published. The [prepared input/retention family](prepared-inputs.md) is
+declared; the exact capture manifest and final driver remain pending.
 
 This complete example emits synthetic metadata in memory. Dummy binary digests
 are declarations; it creates no file, binary, process or canonical capture:

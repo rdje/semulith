@@ -421,3 +421,9 @@ materials/	reader_navigation	partitioned	the primary-source catalogue; one recor
 docs/upstream/	reader_navigation	partitioned	upstream issue tracker; one directory per project, one per issue, each self-contained	60	262144	150	1048576	32768
 # LC.4g: exact neutral body20208B/343lines + local-note allowance2048B/40lines.
 LIVE_DOCUMENT_SIZE_CONTAINMENT.md	reader_navigation	normative	local neutral containment contract; LC.4g import, full inventory/checker adoption remains LC.4	0	0	383	22256	0
+# P4-SYSTEM.14 a42af: one finite DIV case, before canonical execution.22 slots =
+# four prepared inputs + twelve observations + five metadata files + bounded index.
+# At most3*(4MiB+3*64KiB)+9*64KiB+4KiB =13,766,656B, below16MiB;
+# actual prepared payloads23,315B. These are retention limits, not read/RAM budgets.
+evidence/	reader_navigation	partitioned	P4-SYSTEM.14 a42af; one finite first-DIV case; bounded evidence/README.md index and declared lifecycle; ordinary capture refuses existing outputs	20	14680064	22	16777216	4194304
+evidence/README.md	reader_navigation	hot_live	P4-SYSTEM.14 a42af; bounded index for the finite retained case	64	3072	80	4096	0

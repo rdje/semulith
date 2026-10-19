@@ -358,21 +358,23 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42af — retain bounded prepared DIV capture inputs (completed, SEMULITH-P4-0274)
+
+Four inputs totaling23315B; public source/image/config checks and sole wrong value
+verified without reference execution. Declare22-slot/16MiB family and fixed output
+names. P1 subset acceptance reproduced, then fixed by actual-loader member/type/
+volume/role checks; omission loses five assertions normal/O,0 errors.
+16 controls/two modes,22 copied outcomes,17 focused checks/seven books/three examples.
+Production/probes1551files/93 prior entries exact; three whole records2055B retained.
+CH0362 keeps four oldest entries3787B. Counts42routes/1615arms; old caps/statuses
+unchanged. Final entrypoint/manifest/authorities/capture/full policy remain pending.
+No canonical observations/qualification. Controller P2 remains owned in ab.
+Evidence target/p4-system-14/a42af; promotion declined (established retention and
+population-census contracts). COMMIT applies.
+
 ### `.14` a42ae — publish the selected canonical Sail descriptor (completed, SEMULITH-P4-0273)
 
-Retain711B selected Sail descriptor with explicit publication metadata; exact
-projection and current pin/identity verified without binary/materials. All old
-Python/probes exact;76 matrix outcomes,12 copied-data outcomes, six examples.
-Source review35/27/63/66files965026B unchanged; caps/statuses unchanged except
-LIVE derived1613. Complete four closed records3622B/inverses below.
-Next final entrypoint/output retention/manifest/authorities/policy; no canonical
-capture or qualification. Controller P2 remains owned in ab.
-P1 owned: first hook refuses GS digest after staging descriptor; owner diagnostic
-proves352→353 digest sources (tracked353→354). Public regeneration changes only
-digest; staged report check and rendered evidence/print pass. Whole oldest DEV
-entry4214B retained in0361; fixed caps. Evidence commit-attempt-1.log/diagnostic.
-Evidence target/p4-system-14/a42ae; promotion declined (established projection).
-COMMIT applies.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-decision).
 
 ### `.14` a42ad — compose collection and retained evaluation (completed, SEMULITH-P4-0272)
 
@@ -583,12 +585,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42ae **REPRODUCE / ISSUE**: before.json rc=0: selected retained descriptor absent; parent already names pinned Sail identity.
-- [x] `.14` a42ae **ROOT CAUSE**: fingerprint-diagnostic.json rc=0: staging adds one source,352→353; pre-stage GS check missed that population.
-- [x] `.14` a42ae **FIX**: publish711B selected descriptor via existing owners; regenerate GS digest after staging and repeat report check.
-- [x] `.14` a42ae **ADDRESSED**: run-controls.py/copy-identity.py rc=0 normal/O:76 outcomes/11 new controls; four damaged cases refuse, unrelated prose passes.
-- [x] `.14` a42ae **NO REGRESSION**: verify.py/focused.py rc=0:1549files/1Gitlink/92entries and old Python/probes exact;16 checks/seven books/six examples.
-- [x] `.14` a42ae **LOCKSTEP**: verify.py rc=0 normal/O: four records3622B/inverses2/eight refusals; DEV0361 keeps4214B, GS only digest; fixed caps/qualification.
+- [x] `.14` a42af **REPRODUCE / ISSUE**: before.json/layout-before.json rc=0: prepared namespace absent; subset probe accepted an undeclared sibling below generic caps.
+- [x] `.14` a42af **ROOT CAUSE**: layout-before.log rc=0: four prepared pins/index bounds checked; actual finite member/role envelope omitted.
+- [x] `.14` a42af **FIX**: public curation plus bounded family; apply closed member/type/volume/role census before pin loading, no unknown descent.
+- [x] `.14` a42af **ADDRESSED**: controls/copy-inputs.py rc=0 normal/O:16 controls, omission5 losses/0 errors;22 copy outcomes, ten damaged cases refuse.
+- [x] `.14` a42af **NO REGRESSION**: verify.py/focused.py rc=0:1551files/1Gitlink/93entries and old production/probes exact;17 checks/seven books/three examples.
+- [x] `.14` a42af **LOCKSTEP**: verify.py rc=0 normal/O: three records2055B/inverses2/seven damaged refusals; CH0362 four entries3787B, old caps/statuses exact.
+- [x] `.14` a42ae: controls76/focused18/books7/examples6 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-acceptance).
 - [x] `.14` a42ad: controls86/focused18/books7/examples4 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-acceptance).
 - [x] `.14` a42ac **REPRODUCE / ISSUE**: before.json rc=0: retained reader exists but no selected identity emitter.
 - [x] `.14` a42ac **ROOT CAUSE**: bytes-seam-diagnostic.json rc=0: context/path/count match2 locations; consumer scoping restores singularity.
@@ -1094,7 +1097,8 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42ae: controls76/copy12/focused16/books7/examples6; whole history/source-owner inverses rc=0 normal/O.
+a42af: controls16x2/omission5/copy22/focused17/books7/examples3; source/history inverses rc=0 normal/O.
+a42ae: [complete verification](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-verification).
 a42ad: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-verification).
 a42ac: controls74/focused16/books7/examples5; complete old reader/history inverses rc=0 normal/O.
 a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
@@ -1533,6 +1537,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42af | `SEMULITH-P4-0274` | final entrypoint/exact manifest/authorities, then capture/full policy |
 | `.14` a42ae | `SEMULITH-P4-0273` | final entrypoint/output retention/manifest/authorities/policy |
 | `.14` a42ad | `SEMULITH-P4-0272` | canonical identity/entrypoint/retention/policy |
 | `.14` a42ac | `SEMULITH-P4-0271` | canonical identity/driver/retention/policy |

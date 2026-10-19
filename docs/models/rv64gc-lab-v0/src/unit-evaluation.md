@@ -5,8 +5,9 @@ collector and retained evaluator. It freezes the planned record and caller
 metadata, collects fresh baseline/repeat/control outputs, binds their measured
 metadata into the record, and evaluates with the remaining artifact-read allowance.
 A positive result is **pending complete method/policy adequacy**. The selected
-[reference descriptor](selected-identity.md) is published; canonical capture
-publication, retention and the final entrypoint still require predeclaration.
+[reference descriptor](selected-identity.md) and [prepared retention family](prepared-inputs.md)
+are declared. The final entrypoint, manifest and authorities must be committed
+before canonical execution; capture publication and full policy remain pending.
 
 ## Supply a planned record and explicit authorities
 

@@ -799,3 +799,49 @@ heads/manifest/seals and1380 other tracked files/modes/Gitlinks exact normal/O.
 D49 fixed/verified; COMMIT applies. Evidence target/p4-system-14/a42l2.
 
 ````
+
+## P4 a42af: complete prior selected-publication records
+
+Complete original bodies; source/owner/retirement inverses.
+
+```json
+{"schema":1,"revision":"2d91ff31cd948f2f451f7550641c702a5eacf03d","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130137,"source_sha256":"a708dff5c99bf174b1a9bfadd57c13d92b7f4948ccbc86339e92eccdbc35e6c9","owner_insert":{"offset":32667,"text":"### `.14` a42af \u2014 retain bounded prepared DIV capture inputs (active)\n\nOwn P4-0274 before changes: curate the exact guest ELF, foreign-tool JSON config,\nbaseline expectation and sole wrong-quotient expectation through existing public\nimage/author/dossier/schema owners, without reference execution. Register one\nfinite first-case evidence family: bounded index, explicit paths/lifecycle,\ncount/aggregate/member caps derived from existing three-run artifact envelopes.\nKeep source-of-truth S-expressions canonical; retained JSON/ELF are reproducible\ninterop artifacts. Measure bytes/pins and independently verify all27 source\nboundaries, image correspondence, current config equality and only x7 boundary2\nchanging -3\u2192-4. Actual/corrupted/missing inputs and copied cache-free controls\nnormal/O; preserve existing production APIs, reviewed population and all caps.\nDocument full curation/verification examples and pending output namespace; no\ncanonical observations, qualification or binary acquisition. Final tracked\nentrypoint/exact manifest/authorities/policy must be committed before capture.\nRetain whole prior ae decision/acceptance/verification with source/owner inverses;\ncontain whole oldest history entries as needed. Live docs/book and normal COMMIT.\nController P2 remains owned in ab. Evidence target/p4-system-14/a42af;\npromotion declined (established preparation/retention contracts).\n\n"},"owner_bytes":131539,"owner_sha256":"f675900989b771471b02e428c0cf76024c951fac13078bbff06fa34fd5292c74","retired_bytes":129927,"retired_sha256":"5bb1ae67e34325ea7de12270918494f5e182bb5a4bda8bf625ce8596d6ed9409","records":[{"unit":"a42ae-decision","offset":34069,"bytes":1047,"lines":16,"sha256":"025dcd65313bb95c294803a63da6483b4a949354e97e3a50f39639cef599ec35","replacement":"### `.14` a42ae \u2014 publish the selected canonical Sail descriptor (completed, SEMULITH-P4-0273)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-decision).\n\n"},{"unit":"a42ae-acceptance","offset":44635,"bytes":904,"lines":6,"sha256":"8ad2bb9428d7d35c3cdf662f3ed116c3446c989d28baf70daf9e0b24ba466793","replacement":"- [x] `.14` a42ae: controls76/focused18/books7/examples6 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-acceptance).\n"},{"unit":"a42ae-verification","offset":88302,"bytes":104,"lines":1,"sha256":"1a3ade94fbbf43dce9e282dc3b942dd1eae47ff97796250dfda0e71780c913b4","replacement":"a42ae: [complete verification](artifacts/live-containment/task-claims.md#p4-a42af-a42ae-verification).\n"}]}
+```
+
+<a id="p4-a42af-a42ae-decision"></a>
+
+````text
+### `.14` a42ae — publish the selected canonical Sail descriptor (completed, SEMULITH-P4-0273)
+
+Retain711B selected Sail descriptor with explicit publication metadata; exact
+projection and current pin/identity verified without binary/materials. All old
+Python/probes exact;76 matrix outcomes,12 copied-data outcomes, six examples.
+Source review35/27/63/66files965026B unchanged; caps/statuses unchanged except
+LIVE derived1613. Complete four closed records3622B/inverses below.
+Next final entrypoint/output retention/manifest/authorities/policy; no canonical
+capture or qualification. Controller P2 remains owned in ab.
+P1 owned: first hook refuses GS digest after staging descriptor; owner diagnostic
+proves352→353 digest sources (tracked353→354). Public regeneration changes only
+digest; staged report check and rendered evidence/print pass. Whole oldest DEV
+entry4214B retained in0361; fixed caps. Evidence commit-attempt-1.log/diagnostic.
+Evidence target/p4-system-14/a42ae; promotion declined (established projection).
+COMMIT applies.
+
+````
+
+<a id="p4-a42af-a42ae-acceptance"></a>
+
+````text
+- [x] `.14` a42ae **REPRODUCE / ISSUE**: before.json rc=0: selected retained descriptor absent; parent already names pinned Sail identity.
+- [x] `.14` a42ae **ROOT CAUSE**: fingerprint-diagnostic.json rc=0: staging adds one source,352→353; pre-stage GS check missed that population.
+- [x] `.14` a42ae **FIX**: publish711B selected descriptor via existing owners; regenerate GS digest after staging and repeat report check.
+- [x] `.14` a42ae **ADDRESSED**: run-controls.py/copy-identity.py rc=0 normal/O:76 outcomes/11 new controls; four damaged cases refuse, unrelated prose passes.
+- [x] `.14` a42ae **NO REGRESSION**: verify.py/focused.py rc=0:1549files/1Gitlink/92entries and old Python/probes exact;16 checks/seven books/six examples.
+- [x] `.14` a42ae **LOCKSTEP**: verify.py rc=0 normal/O: four records3622B/inverses2/eight refusals; DEV0361 keeps4214B, GS only digest; fixed caps/qualification.
+````
+
+<a id="p4-a42af-a42ae-verification"></a>
+
+````text
+a42ae: controls76/copy12/focused16/books7/examples6; whole history/source-owner inverses rc=0 normal/O.
+````

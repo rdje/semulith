@@ -116,12 +116,16 @@ run the diagnostic with no `.materials` directory; success still stays pending.
 
 The asset belongs to the existing registered `profiles/` family; its measured
 addition must fit that family's unchanged count, aggregate and member caps.
-Final capture outputs still require their own measured retention declaration.
+The [prepared capture inputs and bounded evidence family](prepared-inputs.md)
+now declare the first case's output names and retention envelope. Actual fresh
+outputs still need measurement against those bounds.
 
 ### Complete the capture declaration
 
 Before any canonical run, commit the final entrypoint and exact manifest,
 property/author/impact authorities, output namespace and retention family. The
+prepared input pins, output namespace and retention family are now declared;
+the final entrypoint, exact manifest and authorities remain pending. The
 retained file set must support repeatable offline evaluation without relying on
 an acquired reference cache. The retained excerpt supplies the normative input;
 its original publication remains separate current authority. The binary remains a separately pinned replay dependency;

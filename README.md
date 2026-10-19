@@ -30,6 +30,7 @@ execute and validate them against.
 | --- | --- |
 | `crates/` | the Rust workspace |
 | `profiles/` | one directory per processor profile — its dossier, pinned sources, and decisions |
+| `evidence/` | bounded retained inputs and finite capture artifacts; [index](evidence/README.md) |
 | `schemas/` · `examples/` | starter data contracts and their synthetic, explicitly planned fixtures |
 | `docs/tasks/` · [`docs/TASK_TREE.md`](docs/TASK_TREE.md) | task-trees — every change is owned by a leaf **before** it is made |
 | [`docs/decisions/`](docs/decisions/) | durable cross-cutting decisions and facts (memory layer C) |
