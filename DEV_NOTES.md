@@ -1,5 +1,55 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — emit one bounded selected identity (P4-SYSTEM.14 a42ac)
+
+The reader already binds one retained execution identity; canonical declaration
+still needs a producer that excludes the changing parent catalogue. Add
+encode_reference_identity over its public frozen context plus explicit descriptor
+metadata. Keep required/optional execution fields and optional empty presence;
+add only fixed descriptive role/status/lineage labels, with no acquisition,
+execution or independence claim. Use the sole dossier writer and existing byte
+consumer/schema to verify one candidate/no experiments before returning bytes.
+
+Validate finite context shape/names and explicit host metadata before binding or
+serialization. Freeze copied metadata; reject unsafe work/diagnostic paths.
+Descriptor value text totals at most65536 characters before escaping, diagnostic
+path separately at most65536, encoded output at most65536 bytes. These are input/
+artifact limits, not RAM ceilings. UTF-8/escaping expansion and invalid surrogates
+refuse without partial output. Schema unavailability follows the existing byte
+consumer's refusal contract. No artifact, binary or process access.
+
+19 controls/twelve omissions normal/O cover exact/extra-byte limits, malformed
+requests before tools, unknown field names before rebinding, aggregate text,
+optional presence, deterministic projection, metadata freezing, output drift and
+schema failure. Positive omission-induced refusals initially escaped as harness
+errors; make successful-emission expectations explicit while negative controls
+still require IdentityError. Legacy40 controls/eight losses remain exact. Review
+35modules/27data/63children/66files/950922B from a copy with no materials cache;
+no new producer module is added. Fix stale book pending-consumer wording and add
+one complete example while preserving every existing one and prior records.
+
+Canonical identity publication, capture driver/retention/exact manifest and full
+policy remain pending. P1 next driver must validate seed-inclusive accounting;
+P2 runtime-continuation observation remains owned in the preceding record. No
+canonical capture or qualification. promotion: declined (existing identity,
+schema, bounded artifact and locality contracts).
+
+First normal hook refused PROFILE-CONSISTENCY: three byte-consumer mutation
+seams were no longer unique module-wide after the new producer. The positive22
+controls still pass; context/path/count each have two matches. Scope the six
+consumer mutations to check_reference_identity_bytes, preserving their original
+meaning and every old test body;22 controls/fourteen losses remain exact normal/O.
+The outer project runner buffers failures: phase advancement did not prove green,
+contrary to an earlier progress update. Signoff requires the final hook verdict.
+
+Validation:74 normal/O outcomes;19 emission controls/twelve omissions and legacy
+40/eight identity and22/fourteen byte-consumer losses exact;0 errors.16 focused
+checks/seven books/five complete examples pass;1544 other files/1Gitlink/92 prior
+entries and whole legacy reader
+implementation exact. Whole-ab1488B retained with inverse2/five damaged refusals;
+DEV0358 keeps one oldest2820B entry. Fixed caps and CPU/BOARD/replay statuses exact;
+LIVE's static arm count freshly derived1610. Canonical capture remains pending.
+
 ## _(2026-10-19)_ — carry one allowance through evaluation (P4-SYSTEM.14 a42ab)
 
 The three-run collector exposes a conservative charge, but the evaluator's
@@ -617,47 +667,4 @@ preserves AST. Scope1507 protected files/87 old head entries, whole evaluator/
 old-probe/decision/book inverses and six damaged refusals pass. Fifteen focused
 checks, seven books/3306 links and literal example pass. Static arms1590→1592;
 CPU14/18 and BOARD10/12 unchanged. Normal hooks remain mandatory.
-
-## _(2026-10-18)_ — bind reviewed expected authors (P4-SYSTEM.14 a42r)
-
-P4-0260 starts from clean f1ef8f9, brief0/untracked and host census0.
-The42B owner fits55B headroom. Preserve the whole1603B closed a42q record
-in existing task-claims, old10699B prefix exact; full source/owner/retired
-inverses and six independent damaged refusals. No archive, native heading,
-seal, original12 authority, cap or107-member task-family count changes.
-
-Predeclare the GC Expected Author chapter before code. Add a pure optional
-ExpectedAuthorReview with the existing full InputReview, selected author ID
-and snapshot-parcels-v1 route. Freeze and copy through the sole inventory
-owner; exactly one expected-author role must match the selected ID. Bind full
-manifest inventory and flat child membership, source/manifest principal
-identities, expected-version sha256:<reviewed author digest>, both consumed
-principals, snapshot author path/route/source SHA and exact plain budget.
-Reuse validated public ManifestPlan/RelationPlan/ExecutionPlan and existing
-SnapshotDerivation facts. No new format, interpreter, loader or artifact I/O.
-Invalid authority is bounded AuthorReviewError at freeze, refusal at binding;
-unexpected programming failures propagate. Return frozen metadata facts only.
-
-The21-control suite initially exposed two caller aliases in source/manifest
-result bindings (21/2/0, red-caller-alias.log). Reuse all three copied bindings
-from the frozen inventory; the permanent alias witness now passes. Normal/O
-positives21/0/0 and all16 omissions discriminate with zero errors and identical
-loss vector:1,6,4,3,3,5,1,3,4,1,1,3,1,4,3,4. Three dataclass declarations are the
-explicit frozen-results control scope; every other needle is singular. New
-probe formatting uses project-local black24.10.0, with identical before/after
-AST; no runtime dependency added. Existing evaluator/author code stays exact.
-
-Book example creates and removes synthetic on-volume fixtures, freezes a
-separate caller inventory before the public manifest read, then prints a
-metadata match and an unreviewed-version refusal. Its opaque author bytes
-never execute: hashes cannot attest loaded code or the provenance of old
-outputs. Authentication, review completeness, property meaning, independence,
-collector/fresh captures, full method/policy adequacy remain separate owners.
-Optional evaluator composition is the next finite slice; no qualification or
-CPU/BOARD milestone advances. Only static arm census1588→1590 changes.
-
-Four existing suites20/39/42/19 remain green normal/O. Fifteen focused gates,
-seven freshly built books/3300 rendered links and literal two-line example pass.
-Scope verifies every other tracked blob/mode, complete old head entries, full
-source/owner inverses and six damaged refusals; normal hooks remain mandatory.
 

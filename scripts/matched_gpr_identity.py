@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Authenticate a retained Sail execution descriptor, without opening its binary.
+"""Bind and emit bounded retained Sail descriptors without accessing the binary.
 
-This finite dependency of the future method evaluator checks one input, not an
-experiment. The caller owns raw parent-schema/graph validation and currentness of
-the wider dependency closure. Candidate dictionaries are already caller-owned;
-the 64 KiB bound applies to the retained descriptor, not total process memory.
+Readers authenticate one input or consume its already authenticated bytes. The
+emitter uses frozen selected fields and explicit descriptor metadata. Callers own
+raw parent-schema/graph validation and wider dependency currentness. The 64 KiB
+descriptor ceiling is an artifact bound, not a total process-memory guarantee.
 """
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ import re
 import check_sexp_schema as K
 import dossier_sexp as D
 import experiment_artifacts as A
+import records_sexp as R
 from experiment_verification import is_canonical_path
 import sexp as S
 
@@ -155,3 +156,63 @@ def read_reference_identity(root: Path, record: dict, current_candidate: dict) -
         disposition = "stale" if pin.disposition == "mismatch" else pin.disposition
         return IdentityCheck(disposition, pin.reason, pin)
     return _check_identity(snapshot.data, record["path"], current, pin)
+
+
+def encode_reference_identity(context: ReferenceIdentity, *, profile: str,
+                              retrieved: str, work_dir: str, host: dict,
+                              path: str) -> bytes:
+    """Emit one bounded selected descriptor, never a parent catalogue or artifact.
+
+    Metadata describes this descriptor, not execution attestation. Freeze explicit
+    metadata and the canonical execution fields before serialization/schema I/O.
+    Descriptor value text totals at most 65536 characters; encoded output is at
+    most 65536 bytes. The diagnostic path has a separate 65536-character bound.
+    Caller allocation, escaping and parsed objects are separate RAM costs.
+    IdentityError refuses invalid/unverifiable output. No partial bytes escape.
+    """
+    if type(context) is not ReferenceIdentity or type(context.fields) is not tuple:
+        raise IdentityError("expected a frozen reference identity")
+    fields = context.fields
+    if (not len(REQUIRED_FIELDS) <= len(fields) <=
+            len(REQUIRED_FIELDS) + len(OPTIONAL_FIELDS) or
+            any(type(pair) is not tuple or len(pair) != 2 or
+                any(type(value) is not str for value in pair) for pair in fields)):
+        raise IdentityError("invalid descriptor execution fields")
+    if any(key not in REQUIRED_FIELDS + OPTIONAL_FIELDS for key, _ in fields):
+        raise IdentityError("unknown descriptor execution field")
+    if (type(host) is not dict or not 4 <= len(host) <= 5 or
+            any(type(key) is not str for key in host) or
+            not {"os", "kernel", "arch", "cxx"} <= set(host) <=
+            {"os", "kernel", "arch", "cxx", "note"}):
+        raise IdentityError("expected explicit bounded descriptor host metadata")
+    metadata = dict(profile=profile, retrieved=retrieved, work_dir=work_dir,
+                    host=dict(host))
+    required_text = (profile, retrieved, work_dir,
+                     *(metadata["host"][key] for key in ("os", "kernel", "arch", "cxx")))
+    if any(type(value) is not str or not value for value in required_text):
+        raise IdentityError("descriptor metadata requires nonempty plain strings")
+    note = metadata["host"].get("note", "")
+    if type(note) is not str:
+        raise IdentityError("descriptor host note requires a plain string")
+    text = (*required_text, note, *(value for _, value in fields))
+    if sum(len(value) for value in text) > IDENTITY_BYTES:
+        raise IdentityError("descriptor input text exceeds 65536 characters")
+    if (type(path) is not str or not 1 <= len(path) <= IDENTITY_BYTES or
+            not is_canonical_path(path) or not is_canonical_path(work_dir)):
+        raise IdentityError("descriptor paths must be canonical and repository-relative")
+    if bind_reference_identity(dict(fields)) != context:
+        raise IdentityError("noncanonical descriptor execution fields")
+    selected = dict(fields)
+    selected.update(role="selected execution identity", status="retained descriptor",
+                    lineage="unexamined; no ancestry or independence credit")
+    document = dict(metadata, candidate=[selected])
+    try:
+        payload = R.render_forms([D.references_to_form(document)]).encode("utf-8")
+    except (UnicodeError, D.DossierError, ValueError, TypeError, RecursionError) as exc:
+        raise IdentityError(f"cannot encode descriptor: {exc}") from exc
+    if not 1 <= len(payload) <= IDENTITY_BYTES:
+        raise IdentityError("encoded descriptor exceeds 65536 bytes")
+    checked = check_reference_identity_bytes(payload, path=path, context=context)
+    if checked.disposition != "matched":
+        raise IdentityError("emitted descriptor cannot bind: " + checked.reason)
+    return payload

@@ -1,9 +1,85 @@
 # Retained Sail method checks
 
 These partial checks support the declared [comparison method](evidence.md#first-comparison-method--contract-and-implementation-boundary).
-Complete authenticated evaluation and collection remain pending.
+The [evaluator](evaluation.md) and [three-run collector](unit-collector.md) now
+compose these partial boundaries; complete method/policy adequacy remains pending.
 For snapshots already authenticated as a declared set, use the
 [frozen byte consumers](byte-bindings.md#binding-authenticated-bytes-to-context-frozen-before-reads).
+
+## Emitting a selected execution descriptor
+
+`encode_reference_identity(context, *, profile, retrieved, work_dir, host, path)`
+in `scripts/matched_gpr_identity.py` emits immutable UTF-8 bytes for one selected
+Sail identity. Obtain `context` through `bind_reference_identity` from the current,
+separately validated parent candidate. Supply descriptor metadata explicitly;
+this API reads no parent catalogue, binary or artifact and launches no process.
+It loads the existing project schema as needed and writes no file.
+
+| Input or result | Contract |
+| --- | --- |
+| `context` | Public frozen `ReferenceIdentity`; canonical required/optional execution fields, including optional absence versus empty presence. Malformed, duplicated, reordered or unknown fields refuse. |
+| `profile`, `retrieved` | Nonempty plain strings describing this descriptor; the caller supplies truthful metadata. No clock or host discovery occurs. |
+| `work_dir`, `path` | Canonical repository-relative paths. `path` is a diagnostic location, separately bounded to65536 characters; it is not opened or embedded in the document. |
+| `host` | Exact dictionary with nonempty plain-string `os`, `kernel`, `arch`, `cxx`, plus optional plain-string `note`. Unknown keys refuse. Copied before serialization/schema I/O. |
+| Text budget | Supplied descriptor value text totals at most65536 characters before serialization; field names/counts are separately bounded. Caller allocation and escaping/parsing intermediates are outside a RAM guarantee. |
+| Output | One schema-valid `references` document, one candidate, no experiments or other parent records;1..65536 encoded bytes, inclusive. UTF-8 and escaping expansion must fit that byte ceiling. |
+| Refusal | `IdentityError` for invalid context/metadata, unsafe paths, excess text/bytes, invalid UTF-8 or output the existing identity byte consumer cannot bind. No partial bytes return; identity schema unavailability also refuses. |
+
+The candidate contains the exact execution fields and fixed descriptive labels:
+role `selected execution identity`, status `retained descriptor`, lineage
+`unexamined; no ancestry or independence credit`. Those labels make no acquisition
+or execution claim. Host/retrieval metadata describe the descriptor, not an
+attested reference run. Unrelated matching-scope, assessment and acquisition prose
+from the parent is excluded. Changing that prose does not change emitted bytes
+when the frozen identity and explicit metadata are unchanged.
+
+The emitter reuses the existing dossier serializer and verifies its bounded
+output with `check_reference_identity_bytes`. It introduces no alternate reader
+or schema. A descriptor match still needs separate pin authentication. It does
+not verify that the binary exists or ran, establish complete dependencies or
+qualify evidence. Publishing the canonical identity, exact capture manifest,
+output retention family and final driver remain separate pending work.
+
+This complete example emits synthetic metadata in memory. Dummy binary digests
+are declarations; it creates no file, binary, process or canonical capture:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_EMIT_IDENTITY'
+from matched_gpr_identity import (
+    IdentityError, bind_reference_identity, check_reference_identity_bytes,
+    encode_reference_identity,
+)
+
+candidate = dict(id="sail-riscv", kind="executable",
+                 origin="https://example.invalid/sail", binary="reference/bin/sail",
+                 binary_sha256="a" * 64, version="")
+context = bind_reference_identity(candidate)
+metadata = dict(profile="illustration", retrieved="2026-10-19", work_dir="captures",
+                host=dict(os="example", kernel="example", arch="example", cxx="example"),
+                path="captures/identity.sexp")
+payload = encode_reference_identity(context, **metadata)
+checked = check_reference_identity_bytes(payload, path=metadata["path"], context=context)
+print(checked.disposition, 1 <= len(payload) <= 65536)
+candidate.update(binary_sha256="b" * 64, matched_scope="changed parent prose")
+print(encode_reference_identity(context, **metadata) == payload)
+print(check_reference_identity_bytes(payload, path=metadata["path"],
+      context=bind_reference_identity(candidate)).disposition)
+for change in [dict(work_dir="/outside"), dict(profile="x" * 65536)]:
+    try:
+        encode_reference_identity(context, **dict(metadata, **change))
+    except IdentityError as error:
+        print(type(error).__name__)
+PY_EMIT_IDENTITY
+python3 scripts/probe_reference_identity_emission.py
+python3 -O scripts/probe_reference_identity_emission.py
+```
+
+It prints `matched True`, `True`, `stale`, then `IdentityError` twice. Frozen
+context survives later parent changes; rebinding detects the changed binary
+identity. The diagnostic covers the exact64KiB edge, UTF-8/escaping expansion,
+optional presence, deterministic projection, copied metadata, malformed requests,
+schema failure and output drift through the existing reader. It grants no capture
+or qualification credit.
 
 ## Authenticating a retained reference identity
 
@@ -92,8 +168,8 @@ This boundary does not authenticate the executable, execution, receipts,
 invocations, reference-producer version, other inputs/observations or the complete
 dependency closure. Offline retained evidence does not depend on a transient
 binary cache; fresh replay separately needs the actual pinned executable through
-its public acquisition/build route. Full method and aggregate-budget evaluation,
-reviewed collection, retention and policy consumers remain pending. No ancestry,
+its public acquisition/build route. The [shared evaluation allowance](read-allowance.md) and reviewed collection APIs
+are implemented; canonical retention and complete policy adequacy remain pending. No ancestry,
 independence, qualification or CPU acceptance credit follows from a match.
 
 ## Authenticating and binding a process receipt

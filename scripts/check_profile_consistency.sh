@@ -1953,6 +1953,33 @@ manifest-extra-byte:4
 READ_ALLOWANCE_CASES
   done
 
+  # P4-SYSTEM.14 a42ac: bounded selected identity emission, no capture credit.
+  local identity_emission_mode identity_emission_mutation identity_emission_losses
+  local -a identity_emission_python
+  for identity_emission_mode in normal optimized; do
+    identity_emission_python=(python3)
+    [ "$identity_emission_mode" = optimized ] && identity_emission_python+=(-O)
+    out="$("${identity_emission_python[@]}" scripts/probe_reference_identity_emission.py 2>&1)"; rc=$?
+    score "GREEN selected identity emission $identity_emission_mode" "$rc" 0 "$out" "REFERENCE-IDENTITY-EMISSION: 19 tests / 0 failures / 0 errors; synthetic descriptor metadata, no capture credit"
+    while IFS=: read -r identity_emission_mutation identity_emission_losses; do
+      out="$("${identity_emission_python[@]}" scripts/probe_reference_identity_emission.py --mutation "$identity_emission_mutation" 2>&1)"; rc=$?
+      score "RED selected identity emission $identity_emission_mutation $identity_emission_mode" "$rc" 1 "$out" "REFERENCE-IDENTITY-EMISSION: 19 tests / $identity_emission_losses failures / 0 errors; synthetic descriptor metadata, no capture credit"
+    done <<'IDENTITY_EMISSION_CASES'
+context-type:2
+context-shape:2
+unknown-field:1
+host-shape:1
+metadata-type:16
+text-bound:2
+path-bound:3
+canonical-fields:6
+host-freeze:1
+optional-emission:2
+encoded-bound:2
+round-trip:2
+IDENTITY_EMISSION_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

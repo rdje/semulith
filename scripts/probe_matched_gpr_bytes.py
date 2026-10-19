@@ -311,10 +311,18 @@ def main():
     if args.mutation:
         name, before, after = MUTATIONS[args.mutation]; original = globals()[name]
         source = Path(original.__file__).read_text()
-        if source.count(before) != 1: raise SystemExit("mutation seam is not singular")
+        start, end = 0, len(source)
+        if name == "I" and args.mutation in {
+                "identity-context", "identity-path", "identity-fields",
+                "identity-count", "identity-canonical", "identity-parser"}:
+            start = source.index("def check_reference_identity_bytes(")
+            end = source.index("\n\ndef read_reference_identity(", start)
+        selected = source[start:end]
+        if selected.count(before) != 1: raise SystemExit("mutation seam is not singular")
+        changed = source[:start] + selected.replace(before, after, 1) + source[end:]
         module = types.ModuleType("mutated_bytes_" + name); module.__file__ = original.__file__
         sys.modules[module.__name__] = module
-        exec(compile(source.replace(before, after), module.__file__, "exec"), module.__dict__)
+        exec(compile(changed, module.__file__, "exec"), module.__dict__)
         globals()[name] = module
     result = unittest.TextTestRunner(verbosity=1).run(unittest.defaultTestLoader.loadTestsFromTestCase(ByteTests))
     print(f"MATCHED-GPR-BYTES: {result.testsRun} tests / {len(result.failures)} failures / "

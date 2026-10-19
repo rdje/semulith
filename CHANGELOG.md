@@ -1,5 +1,26 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0271 (leaf P4-SYSTEM.14) — emit one bounded selected identity
+
+Emit one schema-valid descriptor from frozen Sail execution fields and explicit
+metadata, excluding changing parent records/prose. Preserve optional presence,
+legacy readers and64KiB limits; bound text before encoding and verify encoded
+bytes through the existing owner.19 controls/twelve omissions and the40-control
+legacy matrix run normal/O. Update book contracts/examples and reviewed pins,
+retain complete prior ownership/history, and keep canonical publication/capture,
+retention, full policy and qualification pending.
+
+Scope byte-consumer mutations to their original function after new guard text
+made three module-wide seams ambiguous; preserve the22-control legacy matrix.
+
+Validation:74 normal/O outcomes;19 emission controls/twelve omissions and legacy
+40/eight identity and22/fourteen byte-consumer losses exact;0 errors.16 focused
+checks/seven books/five complete examples pass;1544 other files/1Gitlink/92 prior
+entries and whole legacy reader
+implementation exact. Whole-ab1488B retained with inverse2/five damaged refusals;
+DEV0358 keeps one oldest2820B entry. Fixed caps and CPU/BOARD/replay statuses exact;
+LIVE's static arm count freshly derived1610. Canonical capture remains pending.
+
 ## SEMULITH-P4-0270 (leaf P4-SYSTEM.14) — delegate a bounded evaluation allowance
 
 Expose optional inclusive read limits through the initial manifest and subsequent

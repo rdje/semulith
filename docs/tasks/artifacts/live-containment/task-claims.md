@@ -645,3 +645,37 @@ full CI on the clean repair commit before a42c. COMMIT hashes/hooks/brief0/
 censuses next. Last full CI remains03ed501 all5 legs443 Rust/smoke53/seven books.
 
 ````
+
+## P4 a42ac: complete prior allowance record
+
+Source/owner/retirement inverse metadata; open P1/P2 follow-ups remain owned.
+
+```json
+{"schema":1,"revision":"0d4b2d77dc304e3c2ebcb519ace13c4efbe94994","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130393,"source_sha256":"0bf9be2ddf4c8abdf0e1a3f083c6f02be95277f49fe416f8c98efcf06b6a2603","owner_insert":{"offset":32667,"text":"### `.14` a42ac \u2014 emit a selected execution descriptor (active)\n\nOwn P4-0271 before code: add bounded descriptor emission from the frozen selected\nSail identity and explicit descriptive metadata. Reuse schema/serializer/reader;\ncopy no parent catalogue, experiment or acquisition/assessment prose. Preserve\noptional presence/value, legacy readers/defaults and the64KiB descriptor cap.\nTest malformed contexts/metadata, pre-render bounds, UTF-8/escaping, deterministic\nprojection, current/stale round trips and schema unavailability normal/O. Review\nchanged producers cache-free; synchronize book/live docs and normal COMMIT.\nOwn small retained-method doc drift: implemented evaluation/collection links must\nreplace stale pending-consumer wording; full adequacy remains pending. Preserve\nall existing examples and old records. Retain whole closed-ab record with inverse\nmetadata and history within fixed caps; no canonical artifact/capture/qualification.\nNext driver still owns P1 seed-inclusive accounting validation from a42ab. P2\ncontroller observation remains open there: goal status still blocked after0270\ncompleted; cause unproved, repository progress continues. Keep future handles\npolled to terminal. Evidence target/p4-system-14/a42ac.\npromotion: declined (existing selected-identity/schema/locality contracts).\n\n"},"owner_bytes":131717,"owner_sha256":"efb4ba4203b2c3ada124a313bc6ab6225a2127339aa338307171c83127e80345","retired_bytes":130416,"retired_sha256":"3f0f07941fa3cb86cb5018313857f5bc829608a4543a14ee86145fc287ddc9c3","records":[{"unit":"a42ab","offset":33991,"bytes":1488,"lines":21,"sha256":"b7b8b669b692a15da5b643e44d48db086b1a7cf5ab96c65ecce356758da7e77b","replacement":"### `.14` a42ab \u2014 delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)\n\n[Complete record; P1/P2 follow-ups](artifacts/live-containment/task-claims.md#p4-a42ac-a42ab).\n\n"}]}
+```
+
+<a id="p4-a42ac-a42ab"></a>
+
+````text
+### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
+
+Optional plain-int0..128MiB evaluation/0..64KiB manifest limits refuse before I/O;
+clamped seed and later ledger share one allowance. Defaults/16MiB/results exact.
+15 controls/ten omissions,130 normal/O runs; legacy33/8,42/29,22/14 losses exact.
+Preledger edge: oversized trace metadata refuses after433B seed but charge0;
+ledger preflight has not started. Control/book fixed; preserve legacy counters.
+P1 next combined driver: validate seed-inclusive bounded accounting before
+refunds; absent/inconsistent metadata consumes the full delegated reservation.
+Probe sentinels/type escapes fixed; omissions fail without harness errors.
+Review35modules/27data/63children/66files/947184B works cache-free normal/O.
+Focused16/books7/examples10; complete aa/b/c3428B retained with inverse2/seven
+corruption refusals; DEV0356/CH0357 whole oldest records. Caps/CPU/BOARD exact;
+LIVE count re-derived1608. No canonical capture/qualification; driver/retention/
+identity/exact predeclared manifest/policy follow. COMMIT applies.
+P2 runtime follow-up: get_goal reported blocked at2026-10-19T04:06Z despite
+successful cleanup commit and continued repository progress. Cause unknown;
+controller diagnostics/reactivation needed, no repo defect inferred. Keep live
+handles polled within this turn. Evidence target/p4-system-14/a42ab.
+promotion: declined (existing budget/source contracts; runtime cause unproved).
+
+````

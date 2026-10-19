@@ -358,26 +358,22 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### `.14` a42ac — emit a selected execution descriptor (completed, SEMULITH-P4-0271)
+
+Emit frozen fields/copied metadata through existing writer/byte verification;
+no parent prose or binary/process.19/twelve new controls,74 normal/O runs;
+40/eight and22/fourteen legacy losses exact. First hook refused: three byte
+mutation seams duplicated by new guards. Scope their original consumer; old tests
+exact. Buffered phase progress is not signoff; require terminal green. All scope,
+history/retention/book evidence below; review35/27/63/66files950922B cache-free.
+LIVE derived1610; caps/statuses unchanged. No canonical publication/capture or
+qualification. Driver/identity/retention/policy follow; P1 accounting/P2 controller
+remain in ab. Evidence target/p4-system-14/a42ac. COMMIT applies.
+promotion: declined (existing identity/schema/locality contracts).
+
 ### `.14` a42ab — delegate a bounded evaluation allowance (completed, SEMULITH-P4-0270)
 
-Optional plain-int0..128MiB evaluation/0..64KiB manifest limits refuse before I/O;
-clamped seed and later ledger share one allowance. Defaults/16MiB/results exact.
-15 controls/ten omissions,130 normal/O runs; legacy33/8,42/29,22/14 losses exact.
-Preledger edge: oversized trace metadata refuses after433B seed but charge0;
-ledger preflight has not started. Control/book fixed; preserve legacy counters.
-P1 next combined driver: validate seed-inclusive bounded accounting before
-refunds; absent/inconsistent metadata consumes the full delegated reservation.
-Probe sentinels/type escapes fixed; omissions fail without harness errors.
-Review35modules/27data/63children/66files/947184B works cache-free normal/O.
-Focused16/books7/examples10; complete aa/b/c3428B retained with inverse2/seven
-corruption refusals; DEV0356/CH0357 whole oldest records. Caps/CPU/BOARD exact;
-LIVE count re-derived1608. No canonical capture/qualification; driver/retention/
-identity/exact predeclared manifest/policy follow. COMMIT applies.
-P2 runtime follow-up: get_goal reported blocked at2026-10-19T04:06Z despite
-successful cleanup commit and continued repository progress. Cause unknown;
-controller diagnostics/reactivation needed, no repo defect inferred. Keep live
-handles polled within this turn. Evidence target/p4-system-14/a42ab.
-promotion: declined (existing budget/source contracts; runtime cause unproved).
+[Complete record; P1/P2 follow-ups](artifacts/live-containment/task-claims.md#p4-a42ac-a42ab).
 
 ### `.14` a42aa — bind the retained DIV excerpt (completed, SEMULITH-P4-0269)
 
@@ -576,6 +572,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
+- [x] `.14` a42ac **REPRODUCE / ISSUE**: before.json rc=0: retained reader exists but no selected identity emitter.
+- [x] `.14` a42ac **ROOT CAUSE**: bytes-seam-diagnostic.json rc=0: context/path/count match2 locations; consumer scoping restores singularity.
+- [x] `.14` a42ac **FIX**: frozen selected descriptor emission with explicit metadata, pre-text/output limits and existing byte verification.
+- [x] `.14` a42ac **ADDRESSED**: run-controls.py rc=0 normal/O:19/twelve new controls,74 outcomes/0 errors;22/fourteen byte controls exact.
+- [x] `.14` a42ac **NO REGRESSION**: verify.py/focused.py rc=0:40/eight and22/fourteen losses exact;16 checks/seven books/five examples,1544files/92entries preserved.
+- [x] `.14` a42ac **LOCKSTEP**: verify.py rc=0 normal/O: whole-ab1488B/inverse2/five damaged refusals; DEV0358 exact, caps/statuses preserved.
 - [x] `.14` a42ab **REPRODUCE / ISSUE**: delegation-before.log rc=0: both old signatures reject a delegated zero allowance.
 - [x] `.14` a42ab **ROOT CAUSE**: run-controls.py rc=0: initial/file allowance omissions lose3/4 assertions; seed subtraction loses2.
 - [x] `.14` a42ab **FIX**: optional strict limits, initial clamping and unchanged aggregate passed to the seed-owning ledger.
@@ -1074,6 +1076,7 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
+a42ac: controls74/focused16/books7/examples5; complete old reader/history inverses rc=0 normal/O.
 a42ab: controls130/focused16/books7/examples10 and source/history inverses rc=0 normal/O.
 a42aa: controls118/focused16/books7/examples3 and whole-source/history inverses rc=0 normal/O.
 a42l2: actual full gate replay on8237f71 rc=1, names TASK-PRESERVATION index
@@ -1547,6 +1550,7 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
+| `.14` a42ac | `SEMULITH-P4-0271` | canonical identity/driver/retention/policy |
 | `.14` a42ab | `SEMULITH-P4-0270` | bounded driver/retention/policy; runtime P2 |
 | `.14` a42aa | `SEMULITH-P4-0269` | entrypoint/retention/shared charge |
 | `.14` a42z | `SEMULITH-P4-0268` | bind separate retained excerpt and review inventory |
