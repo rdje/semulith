@@ -169,7 +169,7 @@ class AuthorityTests(unittest.TestCase):
         self.assertEqual(events.count("validate"), 8)
         self.assertEqual(events[:events.index("map")], ["validate"] * 8)
 
-    def test_only_readonly_command_is_exposed(self):
+    def test_authority_review_and_unavailable_undeclared_capture(self):
         command = [sys.executable, *(["-O"] if sys.flags.optimize else []), "scripts/capture_div.py"]
         result = subprocess.run([*command, "--review-authorities"], cwd=self.runtime,
                                 capture_output=True, text=True, timeout=10)
@@ -178,6 +178,7 @@ class AuthorityTests(unittest.TestCase):
         result = subprocess.run([*command, "--capture"], cwd=self.runtime,
                                 capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 2)
+        self.assertEqual(json.loads(result.stdout)["disposition"], "unavailable")
 
     def test_missing_required_view_is_unavailable(self):
         (self.runtime / "schema/requirements.sexp").unlink()

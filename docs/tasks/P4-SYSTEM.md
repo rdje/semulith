@@ -358,16 +358,31 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42ak / SEMULITH-P4-0279: compose DIV command (completed)
+
+Read-only native declaration and exact-predeclaration capture delegate existing
+owners:37 modules/64 children,73 independent inputs, selected identity, source
+property, snapshot author and conservative equal initial influence projections.
+No previous capture or independence claim. Three native documents each fit64KiB;
+preparation/tool I/O stays separate from combined128MiB/16MiB limits. Operator
+commits source/declarations first; returned measured findings stay unqualified.
+Seventeen copied84-file controls normal/O;16 exact matrix outcomes (omissions
+6/1/1/1/2/1/1,0 errors), legacy8+38 outcomes, focused17/books7/examples3/surfaces5.
+Six whole closed records3566B/source-owner inverses2/ten damaged refusals; whole
+DEV/CH entries5666B retained0369/0370. All caps fixed; CPU14/18/BOARD10/12 unchanged.
+Prototype fixture lacked binary before reuse check (controls-first.log rc=1);
+fixed with synthetic identity; exit7 and binary-free offline paths pass. Subcase
+cleanup moved to finally; injected assertion failures cannot contaminate later
+cases. Unavailable pin results preserve owner reason via CaptureUnavailable,
+without inventing errno; permission-denied control passes. These issues are closed.
+Evidence target/p4-system-14/a42ak; promotion declined (existing source-closure,
+bounded-reader and reviewed-authority rules). Next curate/commit exact native
+predeclarations, then three fresh Sail processes/full policy; no canonical output
+or qualification in this slice. Normal COMMIT required. Runtime P2 remains in ab.
+
 ### `.14` a42aj — review current authority loaders (completed, SEMULITH-P4-0278)
 
-Reviewed37 modules/27 execution data/13 views/39 unique data/64 children/79 files.
-31 controls x2/38 outcomes, legacy18/copy79 pass; I/O contracts/caps fixed.
-17 focused/seven books/one example/four surfaces. Three whole ai records1960B,
-inverses2/seven damage refusals; CH0366 whole819B. Adjacent prepared-input teaching
-still claimed35/63 after population changed; fixed37/64, rendered check added.
-No capture/qualification. Next final execution/manifest/planned record/input-
-author-impact/capture/full policy. Evidence target/p4-system-14/a42aj; promotion
-declined (existing reader/source-closure rules). P2 in ab. Normal COMMIT.
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-decision).
 
 ### `.14` a42ai — select current DIV capture authorities (completed, SEMULITH-P4-0277)
 
@@ -598,12 +613,13 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [x] `.14` a42aj **REPRODUCE / ISSUE**: run-controls.py rc=0:31 controls x2; explicit route requires new authority review, no canonical claim.
-- [x] `.14` a42aj **ROOT CAUSE**: verify.py rc=0: independently selected13-view population, distinct from27 execution data.
-- [x] `.14` a42aj **FIX**: run-controls.py rc=0: namespace/write/pin/process/declaration omissions each lose1,0 errors in both modes.
-- [x] `.14` a42aj **ADDRESSED**: copied-runtime.py rc=0:79-file reports match both modes, parent cwd available/no binary/materials.
-- [x] `.14` a42aj **NO REGRESSION**: focused.py/verify.py rc=0:17 checks/legacy outcomes/seven books/one example/three surfaces; old functions exact.
-- [x] `.14` a42aj **LOCKSTEP**: verify.py rc=0:3 whole records1960B/inverses2/seven damaged refusals; CH0366 whole819B/caps fixed.
+- [x] `.14` a42ak **REPRODUCE / ISSUE**: controls-first.log rc=1: missing binary preceded reuse; source lacked canonical composition.
+- [x] `.14` a42ak **ROOT CAUSE**: source-review.json/verify.py rc=0:37 modules/64 children, separate current views/73 inputs.
+- [x] `.14` a42ak **FIX**: run-controls.py rc=0:17 tests x2,16 outcomes; seven omissions lose6/1/1/1/2/1/1,0 errors.
+- [x] `.14` a42ak **ADDRESSED**: controls-normal.log rc=0:3 fresh synthetic PIDs, all27 values, binary-free offline pending, reuse/exit7 preserved.
+- [x] `.14` a42ak **NO REGRESSION**: focused.py/rendered.py rc=0:17 checks/books7/examples3/surfaces5; legacy authority8/review38 exact.
+- [x] `.14` a42ak **LOCKSTEP**: verify.py rc=0 normal/O:6 whole records3566B/inverses2/ten refusals; whole history5666B/caps fixed; no credit.
+- [x] `.14` a42aj: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-acceptance).
 - [x] `.14` a42ai: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-acceptance).
 - [x] `.14` a42ah: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-acceptance).
 - [x] `.14` a42ag: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-acceptance).
@@ -612,18 +628,8 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - [x] `.14` a42ad: controls86/focused18/books7/examples4 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ae-a42ad-acceptance).
 - [x] `.14` a42ac: controls74/focused18/books7/examples5 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-acceptance).
 - [x] `.14` a42ab: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ai-a42ab-acceptance).
-- [x] `.14` a42aa **REPRODUCE / ISSUE**: before.json rc=0: v1 requires the acquired35588B page; curated input unbound.
-- [x] `.14` a42aa **ROOT CAUSE**: run-controls.py rc=0: publication/input identity alias; wrong authority omission loses28 assertions.
-- [x] `.14` a42aa **FIX**: explicit v2 excerpt pin/original authority; reviewed extractor and actual fixture authentication.
-- [x] `.14` a42aa **ADDRESSED**: run-controls.py/cache-free.py rc=0 normal/O:118 runs,56 omissions;66-file cache-free review and changed/missing refusals.
-- [x] `.14` a42aa **NO REGRESSION**: verify.py/focused.py rc=0: all other case facts/1535files/92entries exact;16 checks/seven books/three examples.
-- [x] `.14` a42aa **LOCKSTEP**: verify.py rc=0 normal/O: source/owner inverse2,6damaged refusals; CH0354 exact; fixed caps/statuses. COMMIT applies.
-- [x] `.14` a42z **REPRODUCE / ISSUE**: license-census.py rc=0: old no-statement claim has2 counterexamples in pinned72-page snapshot.
-- [x] `.14` a42z **ROOT CAUSE**: license-census.py/repair-report.py rc=0: footer scope omits prefaces; test presence cannot imply per-commit execution.
-- [x] `.14` a42z **FIX**: scoped terms and bounded exact-span curation/verification; separate artifact identity; presence-only report prose; case binding pending.
-- [x] `.14` a42z **ADDRESSED**: run-controls.py rc=0 normal/O:20/0/0,9 omissions; repair-report.py rc=0: axes exact; actual182B/1576B regeneration/cache-free verification.
-- [x] `.14` a42z **NO REGRESSION**: verify.py/focused.py rc=0: old logic/source fields/status exact; report prose/seal reviewed; focused gates/seven books.
-- [x] `.14` a42z **LOCKSTEP**: verify.py rc=0 normal/O: old x source/owner inverse2,6damaged refusals; whole-oldest DEV0353 exact; caps/CPU unchanged. COMMIT applies.
+- [x] `.14` a42aa: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42aa-acceptance).
+- [x] `.14` a42z: [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ak-a42z-acceptance).
 - [x] `.14` a42y **REPRODUCE / ISSUE**: before.py rc=0: base lacks independently enumerated capture review; caller inventory only.
 - [x] `.14` a42y **ROOT CAUSE**: run-controls.py rc=0 normal/O: population omissions lose2/2 cases; declared inputs alone cannot discover omitted producers/data.
 - [x] `.14` a42y **FIX**: explicit source-reviewed module/data sets, bounded import census/exercised loaders and separate live authority/retention plan.
@@ -1104,7 +1110,8 @@ Closed .13 acceptance: [Record](archive/P4-SYSTEM-12.md#acceptance).
 
 ## Verification Log
 
-a42aj: 31x2/38 matrix outcomes; legacy18x2+omissions/copy79/focused17/books7/example1/surfaces4; drift fixed; inverses rc=0 normal/O.
+a42ak: 17x2/16 matrix outcomes; legacy8+38; focused17/books7/examples3/surfaces5; whole-source/history inverses rc=0 normal/O.
+a42aj: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-verification).
 a42ai: [complete verification](artifacts/live-containment/task-claims.md#p4-a42aj-a42ai-verification).
 a42ah: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ai-a42ah-verification).
 a42ag: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ah-a42ag-verification).
@@ -1548,7 +1555,8 @@ Prior rows: [Record](archive/P4-SYSTEM-11.md#commits).
 
 | Leaf | Subject | Next |
 | --- | --- | --- |
-| `.14` a42aj | `SEMULITH-P4-0278` | final execution source/manifest/planned record/input-author-impact/capture/policy |
+| `.14` a42ak | `SEMULITH-P4-0279` | exact native predeclarations, then fresh Sail/full policy |
+| `.14` a42aj | `SEMULITH-P4-0278` | [complete record](artifacts/live-containment/task-claims.md#p4-a42ak-a42aj-commit) |
 | `.14` a42ai | `SEMULITH-P4-0277` | full reviewed entrypoint/manifest/planned record/input-author-impact/capture/policy |
 | `.14` a42ah | `SEMULITH-P4-0276` | validated authorities/entrypoint/manifest/inventory/impact/capture/full policy |
 | `.14` a42ag | `SEMULITH-P4-0275` | validated authorities/final entrypoint/manifest/inventory/impact/capture/full policy |

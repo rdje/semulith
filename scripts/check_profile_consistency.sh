@@ -2063,6 +2063,28 @@ UNIT_EVALUATION_CASES
     done
   done
 
+  # P4-SYSTEM.14 a42ak: copied command and synthetic execution, never Sail.
+  local div_command_mode div_command_mutation div_command_losses
+  local -a div_command_python
+  for div_command_mode in normal optimized; do
+    div_command_python=(python3)
+    [ "$div_command_mode" = optimized ] && div_command_python+=(-O)
+    out="$("${div_command_python[@]}" scripts/probe_div_command.py 2>&1)"; rc=$?
+    score "GREEN composed DIV command $div_command_mode" "$rc" 0 "$out" "DIV-COMMAND: 17 tests / 0 failures / 0 errors; synthetic processes, no Sail or qualification"
+    while IFS=: read -r div_command_mutation div_command_losses; do
+      out="$("${div_command_python[@]}" scripts/probe_div_command.py --mutation "$div_command_mutation" 2>&1)"; rc=$?
+      score "RED omitted DIV command $div_command_mutation $div_command_mode" "$rc" 1 "$out" "DIV-COMMAND: 17 tests / $div_command_losses failures / 0 errors; synthetic processes, no Sail or qualification"
+    done <<'DIV_COMMAND_CASES'
+native-declarations:6
+authority-stability:1
+retained-identity:1
+planned-schema:1
+author-delegation:2
+impact-delegation:1
+property-delegation:1
+DIV_COMMAND_CASES
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }

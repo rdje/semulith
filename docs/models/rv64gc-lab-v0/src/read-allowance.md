@@ -35,8 +35,8 @@ evaluation. For example, a collection charge of `134200000` leaves `17728`
 bytes; evaluation cannot read beyond those 17728 bytes. This subtraction needs
 validated, immutable collection metadata, not a caller's guessed byte total.
 The public [combined unit helper](unit-evaluation.md) now implements that
-reservation and refund protocol. The canonical entrypoint and capture remain
-pending.
+reservation and refund protocol. The [composed command](capture-plan.md#the-composed-div-command)
+now delegates it; native declarations, canonical capture and full policy remain pending.
 
 Reserve the whole delegated allowance before calling evaluation. Refund only
 after validating the returned accounting: a plain integer charge within the

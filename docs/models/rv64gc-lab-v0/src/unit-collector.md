@@ -57,7 +57,8 @@ to subsequent evaluation. A combined pipeline must carry this charge forward
 rather than reset its allowance for that evaluation. The evaluator now accepts
 that [remaining allowance](read-allowance.md). The public
 [capture_and_evaluate composition](unit-evaluation.md) now carries it across
-both stages; canonical entrypoint/publication and full adequacy remain pending.
+both stages. The [composed command](capture-plan.md#the-composed-div-command) delegates it;
+native predeclaration/publication and full adequacy remain pending.
 
 ## Results and failures
 

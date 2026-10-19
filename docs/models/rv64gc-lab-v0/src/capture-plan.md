@@ -126,7 +126,8 @@ outputs still need measurement against those bounds.
 Before any canonical run, commit the final entrypoint and exact manifest,
 property/author/impact authorities, output namespace and retention family. The
 prepared input pins, output namespace and retention family are now declared;
-the final entrypoint, exact manifest and authorities remain pending. The
+the composed entrypoint now emits exact native declarations; curating and
+committing that manifest, planned record and authorities remains pending. The
 retained file set must support repeatable offline evaluation without relying on
 an acquired reference cache. The retained excerpt supplies the normative input;
 its original publication remains separate current authority. The binary remains a separately pinned replay dependency;
@@ -137,8 +138,8 @@ Keep the existing128 MiB aggregate read and16 MiB snapshot envelopes; a combined
 collector/evaluator must carry the collection charge forward. Evaluation now
 accepts a [delegated remainder](read-allowance.md), including its manifest seed;
 the [combined unit helper](unit-evaluation.md) now carries that allowance and
-validates seed-inclusive accounting. The canonical entrypoint remains to be
-finalized. Then capture the
+validates seed-inclusive accounting. The [composed command](#the-composed-div-command)
+now delegates that helper. Commit its exact native declarations, then capture the
 three processes, authenticate every retained input/output and evaluate all27
 boundaries, exact repeat bytes and the intended control. Only after that may the
 full source/risk/feature policy and derived statuses be integrated. The blanket
@@ -231,7 +232,7 @@ arbitrary dependency-completeness proof or qualification credit.
 `scripts/capture_div.py --review-authorities` is the read-only preparation command
 for the finite DIV case. It selects current authority through the existing schema,
 catalogue, mapping, effective-contract, identity and property owners. It has no
-execution or publication flag. No binary, acquired page, retained trace or guest
+execution or publication side effect in this mode. No binary, acquired page, retained trace or guest
 image is opened, and no reference process runs. The selected binary path and SHA
 are declarations from the current candidate; this command does not verify them
 against an executable or the separately retained descriptor.
@@ -326,12 +327,12 @@ I/O failure. Wrong usage also exits2 on stderr. Unexpected programming exception
 propagate. Redirect diagnostic output only into an owned on-volume work directory
 when a local receipt is needed; it is no canonical authority-file publication.
 
-This selects current context only. The final capture entrypoint, exact manifest,
-independent input/author review and old/current impact projection remain pending,
-as do reference execution, retained evaluation and full policy/status integration.
-The producer review now covers this read-only entrypoint and its current-view
-loader. The future execution composition still requires source review before its
-manifest is committed. No selected context grants capture or qualification credit.
+This mode selects current context only. The composed command below now binds
+its input/author review and conservative input influence projection. Native
+predeclarations, canonical reference execution and full policy/status integration
+remain pending. The producer review covers the module population and selected
+loaders; source review after an edit remains a separate engineering obligation.
+No selected context grants capture or qualification credit.
 
 ## Reviewing the authority loader within the producer route
 
@@ -380,3 +381,114 @@ with the valid parent checkout available as its working directory and no copied
 binary or `.materials` directory. It writes no canonical output. Final execution
 composition, exact manifest/planned record, independent inventory/author/impact
 reviews, three fresh captures and full policy/status evaluation remain pending.
+
+## The composed DIV command
+
+`capture_div.prepare_capture()` now composes the finite v2 case from the current
+validated authorities and independently reviewed producer/data population. It
+returns frozen `CaptureDeclaration` facts. It launches no reference process and
+writes no artifact. `--declare` prints three native S-expression documents as
+strings in one JSON envelope; it does not create their files:
+
+```bash
+set -euo pipefail
+python3 scripts/capture_div.py --declare | python3 -c 'import json,sys; r=json.load(sys.stdin); print(r["disposition"], len(r["files"]), r["qualification"]); print(all(0 < len(p.encode()) <= 65536 for p in r["files"].values()))'
+```
+
+The output is `pending 3 False`, then `True`. The JSON envelope transports text;
+S-expression remains the declaration format. The three fixed names under
+`evidence/rv64gc-signed-div-truncation-v2/` are:
+
+| Document | Meaning |
+| --- | --- |
+| `planned-experiment.sexp` | Nine principals,27 boundaries, three runs, twelve fresh output targets, the typed boundary2/x7 witness and the single wrong quotient. Zero output hashes/sizes and zero exits are explicitly unmeasured placeholders. Collection replaces them with actual metadata. Baseline/repeat AGREE and control DIVERGE are targets to test. |
+| `dependencies.sexp` | Exactly64 flat children from the independently enumerated source/data review, with current file pins. The retained normative input keeps its public ID. The snapshot expected author has the sole `expected-author` role. |
+| `authorities.sexp` | A native declaration of selected reference/property identities, the separate73-input inventory, expected-author route and conservative influence choice. It is checked for exact generated bytes before capture; it is not another authority loader. |
+
+The input review is constructed from the separately selected nine principals and
+64 reviewed children before manifest consumption. Matching a manifest against a
+copy of its own input list would supply no independent coverage check. The public
+input/author owners freeze this inventory and select `snapshot-parcels-v1`.
+The public impact owner projects each reviewed input's full metadata and checks
+a conservative edge from the planned evidence to every input. Initial old/new
+projections are equal because no earlier canonical capture is claimed. This is a
+reviewed finite input-influence projection, not the complete source/risk/feature
+policy or an automatic general dependency analysis.
+
+Whole changing catalogue/view hashes stay outside execution inputs and the native
+authority declaration. Preparation compares its independently read current-view
+facts with the producer review's view facts to reject between-review drift.
+Later derived status/prose changes can change those diagnostic hashes without
+changing the selected semantic authority. The retained execution descriptor must
+match the current selected binary identity; no executable is needed to declare.
+The prepared image pin must match the public image reconstruction.
+
+Direct producer/authority reviews retain their separate snapshot bounds and
+canonical-tool I/O contracts. Five curated principals are additionally read twice
+through the anchored reader at64KiB each: at most640KiB, outside the later combined
+artifact allowance. Capture also reads at most three64KiB native declarations.
+These bounds neither combine all tool I/O into one budget nor promise atomic
+views or total process RAM. The runtime must remain trusted and quiescent.
+
+The pure declarations can be inspected without acquired materials or a binary:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_DIV_COMMAND'
+from capture_div import prepare_capture, declaration_files, F, PREFIX, Impact, PROFILE, P
+
+d = prepare_capture()
+manifest = F.parse_dependencies(d.dependencies, path=PREFIX + "/dependencies.sexp")
+context = Impact.freeze_review(d.impact, profile_id=PROFILE, experiment_id=P.CASE_ID)
+print(len(manifest["input"]), len(d.inventory.inputs), d.author.route)
+print(Impact.check_inputs(context, d.inventory.inputs, d.inventory.inputs).disposition)
+print(len(declaration_files(d)), all(len(payload) <= 65536 for _, payload in declaration_files(d)))
+PY_DIV_COMMAND
+```
+
+It prints `64 73 snapshot-parcels-v1`, `matched`, then `3 True`.
+
+Before a canonical run, curate the three emitted documents at those exact native
+paths and commit them together with the reviewed entrypoint. These documents are
+not supplied by this source-composition slice. `capture_div.capture()` and CLI
+`--capture` regenerate the current declaration and authenticate every native
+predeclaration against its exact expected bytes before delegating collection.
+The operator owns the committed-predeclaration workflow; the command does not
+launch Git to attest it. Missing declarations report unavailable; changed, unsafe
+or oversized declarations refuse before the combined helper can run.
+
+Execution delegates the existing `capture_and_evaluate` with current scope,
+selected candidate, separate input/author/impact reviews and property authority.
+It grants exactly one128MiB combined artifact-read allowance; the evaluator's
+16MiB snapshot ceiling stays fixed. The helper exclusively creates the twelve
+observation files and rejects output reuse. Failed/partial historical outputs are
+preserved without retry. The returned measured record and independent findings
+remain pending complete policy; the caller must retain them under the declared
+result names. CLI stdout is a JSON receipt with optional measured S-expression,
+not an automatic result-file publisher. It returns0 for pending,2 for unavailable
+and1 for other terminal findings. Unexpected programming exceptions propagate.
+
+The package-copy controls use84 tracked runtime/data/principal files, keep the
+valid parent checkout available as cwd and have no Git or acquired cache. The
+end-to-end fixture installs its own explicitly synthetic executable, changes its
+owned parent/descriptor pins and imports the copied code fresh. Three fresh
+processes, actual retained authentication, all27 source expectations, exact repeat,
+wrong quotient and the separate review findings are exercised together. A repeat
+call preserves outputs and refuses. The executable is then removed and the public
+retained evaluator still returns pending. A synthetic exit7 leaves its real
+baseline receipt and stops before repeat. None of this is a Sail observation.
+
+Run the complete synthetic controls from the repository root:
+
+```bash
+python3 scripts/probe_div_command.py
+python3 -O scripts/probe_div_command.py
+```
+
+Each mode runs17 tests with zero failures/errors. Controls cover missing/changed
+native documents, prepared pins/sizes/links/Git boundaries, selected identity,
+authority drift, raw-schema-before-mapping, immutable facts, output reuse,
+failed-process preservation and CLI exit status. Injected assertion failures also
+prove declaration subcases clean their fixtures before the next case. Guard
+omissions independently exercise declaration reads, authority stability, retained
+identity, raw schema and author/impact/property delegation. Their failure counts
+are registered in PROFILE-CONSISTENCY after being measured in both modes.

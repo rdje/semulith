@@ -6,8 +6,9 @@ metadata, collects fresh baseline/repeat/control outputs, binds their measured
 metadata into the record, and evaluates with the remaining artifact-read allowance.
 A positive result is **pending complete method/policy adequacy**. The selected
 [reference descriptor](selected-identity.md) and [prepared retention family](prepared-inputs.md)
-are declared. The final entrypoint, manifest and authorities must be committed
-before canonical execution; capture publication and full policy remain pending.
+are declared. The [composed command](capture-plan.md#the-composed-div-command) now delegates
+this helper; its exact native declarations must be committed before canonical
+execution. Capture publication and full policy remain pending.
 
 ## Supply a planned record and explicit authorities
 

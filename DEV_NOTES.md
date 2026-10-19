@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — compose the finite DIV command (P4-SYSTEM.14 a42ak)
+
+capture_div now composes the exact native plan/dependencies/authority declaration
+from current validated views and the independently enumerated37-module/64-child
+source/data review. Nine principals plus64 children supply the separate73-input
+inventory; existing input/author/impact owners freeze it. One conservative edge
+per input reaches planned evidence; initial old/new projections are equal, with
+no earlier canonical capture claim. Selected retained identity and prepared image
+bind separately; live status/view hashes stay outside execution inputs.
+
+Raw schema/scoped graph precedes mapping/binding. Three native documents remain
+within64KiB each; --declare writes none and launches no reference. Five curated
+principals read twice at64KiB each, plus three64KiB declaration reads for capture,
+stay separate from existing review/tool I/O and combined128MiB/16MiB envelopes.
+--capture requires all exact native predeclarations before delegating the existing
+combined helper with input/author/impact/property authorities. Operator commits
+source and declarations first; no Git attestation is invented. Measured record/
+findings return to the caller for bounded retention, with no qualification.
+
+The84-file copied runtime keeps parent cwd available. Synthetic executable pins
+are explicit fixture identities, not Sail. Three fresh processes, all27 source
+values, repeat bytes, wrong quotient, separate review findings and executable-
+absent offline evaluation compose successfully. Reuse refuses/preserves bytes;
+exit7 keeps a real baseline receipt and stops before repeat. First output-reuse
+fixture lacked its binary and correctly returned unavailable before freshness;
+install the synthetic binary before asserting reuse refusal. Declaration subcase
+cleanup now runs in finally; injected assertion failures prove independence.
+Unavailable input findings use CaptureUnavailable/OSError and retain the owner
+reason; do not infer a missing file from permission-denied or other I/O failures.
+
+17 controls x2/16 exact outcomes; omissions lose6/1/1/1/2/1/1,0 errors. Focused17,
+books7/examples3/surfaces5, legacy8+38 and scope/inverses pass normal/O. Six complete
+closed aj/aa/z records3566B retain source/owner inverses2/ten damaged refusals;
+whole DEV/CH entries5666B retained0369/0370. Evidence target/p4-system-14/a42ak.
+All caps fixed; no canonical outputs/reference run or CPU/board acceptance.
+Next curate/commit three exact native declarations, then fresh Sail/full policy.
+Promotion declined in leaf: existing source-closure/bounded-reader/authority rules.
+
 ## _(2026-10-19)_ — seal a second finite history segment (LIVE-CONTAINMENT.4 .4j)
 
 LC0049 interrupts the next feature slice only for measured rollover failure:
@@ -639,71 +677,4 @@ DEV a42n5420B to0351 and CH P4-0229 1079B to0352 preserve every previous byte an
 entry order; caps and old shard prefix remain exact. No task history is retired.
 promotion: declined (existing review/closure/property contracts).
 Evidence target/p4-system-14/a42y; canonical retention and policy remain pending.
-
-## _(2026-10-18)_ — collect three fresh runs under one allowance (P4-SYSTEM.14 a42x)
-
-At e4aee6b, three standalone process/receipt calls read46364B in the synthetic
-fixture, but the helpers exposed neither a per-call limit nor a charge and no
-unit collector existed. The old process helper resets remaining=TOTAL_BYTES on
-each call; publication has its separately bounded supplemental reads. This is a
-scoped collection gap, not evidence of an accepted experiment exceeding its cap.
-
-Add max_read_bytes and an appended default-zero charged_read_bytes result field.
-Validate integers/inclusive0..128MiB before I/O; retain original positional fields.
-The process helper still defaults128MiB. Publication defaults None to retain the
-original128MiB process plus8716288B supplemental allowance; an explicit integer
-shares that allowance across process and publication reads. Reserve before each
-bounded reader/delegation and refund only complete, validated matching metadata.
-Failures/invalid findings retain their full reservation because partial reader
-consumption is not always exposed. Exact-limit succeeds and one-byte-short
-refuses for the process, publication and complete unit, with independent measured
-reader totals. This budget covers artifact reads, not schema/runtime I/O or RAM.
-
-The new UnitRequest freezes all3requests before any artifact I/O. Require common
-binary/budget/seven inputs, identical baseline/repeat inputs, a distinct control
-expectation, nine principal IDs and twelve disjoint output identities/paths.
-Anchor every protected input and output parent; require all12output names absent.
-Reserve all names exclusively to catch actual case/normalization aliases across
-runs before any child. Remove only owned reservations; replacement inode survives.
-An observed new Git boundary revokes cleanup authority, leaving earlier empty
-reservations rather than deleting inside it. Existing captures refuse unchanged.
-
-Pass the remaining allowance through the three receipt-producing calls. Validate
-charged metadata, output identities/sizes/digests and distinct observed PIDs before
-refunding a delegate. Invalid findings consume its entire allowance. Keep reached
-process findings; a recorded nonzero/signal exit yields failed and stops before the
-next process, retaining the failed receipt. Missing output cannot reuse older
-success. Only three zero-exit processes/twelve outputs yield recorded; no trace
-comparison, complete closure, canonical experiment or qualification follows.
-A later combined collection/evaluation pipeline must carry this charge forward;
-retained-snapshot limits belong to that later stage.
-
-Probe26/0/0 normal/O and16 independent omissions lose1/2/3/2/1/1/2/12/1/1/1/4/4/9/3/1
-assertions without errors. The first malformed-limit check's helper comparison
-against a string/None produced harness errors; restrict that comparison to valid
-integer limits and require zero charge otherwise. An initial metadata-mutation
-subtest left its result assertion outside the subtest, causing UnboundLocalError;
-move the assertions into that same scope before counting discriminating results.
-All62 old collector/publication positive/omission outcomes remain exact; only two
-publication mutation source patterns follow the new allowance statements. All
-old assertions and old collector probe remain unchanged. Re-derived arms1602;
-39 doctrines, CPU14/18 and BOARD10/12 unchanged.
-
-Tracked optional --real-sail-smoke calls the unit collector once, delegating the
-existing owned smoke's public plan and declared output naming scheme. Match each
-subsequent comparison request to the complete frozen unit; do not launch another
-process for it. Normal/O: three fresh zero-exit process receipts,23314397 charged
-read bytes under134217728,2298B identical traces with unchanged
-SHA64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde,
-AGREE/AGREE/DIVERGE at step2/x7 -3 versus -4. Receipt bytes/pins checked; unique
-on-volume scratch removed. The prospective envelope still uses synthetic IDs and
-an incomplete dependency list, with no raw scoped-record/closure or CPU credit.
-
-Keep .16's live goal/status/acceptance and all native headings. Retain its complete
-closed technical suffix and the whole closed w design5481B in the existing task
-artifact; both complete source/owner inverses and6damaged controls pass. Preserve
-old artifact prefix. DEV's oldest whole a42m entry5227B moves to0350; exact ordered
-completeness and manifest-prefix checks apply. No ceiling/seal changes.
-Evidence target/p4-system-14/a42x; promotion: declined (existing bounded-reader,
-provenance, task-history and POSIX process contracts; no new cross-cutting policy).
 

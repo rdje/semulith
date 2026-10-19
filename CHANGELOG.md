@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0279 (leaf P4-SYSTEM.14) — compose the finite DIV command
+
+Compose the fixed DIV plan,64-child manifest and separate73-input/author/impact
+reviews in capture_div. Read-only --declare emits three bounded native documents;
+--capture authenticates exact predeclarations before the existing combined helper.
+Keep128MiB/16MiB envelopes and separate preparation/tool I/O. Whole changing view
+hashes stay outside execution pins. No automatic result-file publication or credit.
+
+Copied84-file synthetic runtime exercises three fresh processes, all27 source
+values, exact repeat, wrong quotient, separate bindings and binary-free retained
+evaluation. Existing outputs preserve/refuse; failed process leaves its receipt.
+17 controls x2/16 outcomes; focused17/books7/examples3/surfaces5 and scope pass.
+Six closed records3566B retained whole; all family/member/head caps fixed.
+Next commit exact native declarations before Sail; full policy still pending.
+
 ## SEMULITH-LC-0049 (leaf LIVE-CONTAINMENT.4) — seal the second finite history segment
 
 Seal158 closed shards plus manifest from a5bf4579:159 originals782755B/11200LF,
@@ -553,9 +568,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D47: ps/lsof errors, stderr and empty/whitespace snapshots return2 without handoff OK; preserve successful detection/advisory/authority rules. Clean owned on-volume stderr on normal/refusal and catchable exits; actual restricted ps exit126 now refuses, host-view census passes. Restore complete help and single-option arity.
 - 19 synthetic subprocess cases pass normal/O; parent loses11, independent status/stderr/empty/TERM omissions lose2/2/4/1 with zero errors. Read-only/outside-cwd and named-checkout detection, advisories, real existing exemption data, usage and checkpointed TERM cleanup covered. Makefile gate/CI run the exact synthetic normal/O commands, keeping host census explicit; README/book sync,39 doctrines/1439 arms unchanged. Focused12/sharder12/seven books/3212 fresh+actual links/full normal+print/literal host example pass; whole source/task/CI inverses, history100/scope1367 bytes/modes/Gitlinks exact normal/O, real receipt+digest edits refuse. Whole DEV3180B to0270/CH647B to0271;63live+210sealed273logical. Locality57/57 normal/O/SEAM19 pass after correcting isolated REPO_ROOT binding; full hooks retry next. Cleanup due after this commit; canonical/GC/CPU/qualification unchanged.
-
-## SEMULITH-P4-0243 (leaf P4-SYSTEM.14) — contain completed adequacy designs
-
-- Preserve six whole completed designs and prior book receipt (seven27984B bodies) in ordinary part18,33982B with exact inverse map. Both whole committed sources reconstruct;26 independent damage/map/receipt/route/guide/active-plan controls refuse normal/O. Retain active a42/direct anchors/original12 reader; book shrinks15B.
-- Clarify two loop-free census seams; all31 Bash fences/18 complete examples, code/arms/LIVE/canonical/CPU/caps/seals unchanged. Kimi absent after authorized shutdown instruction, unrestricted handoff green, no exemption. Own D47 priority1 next: sandbox-denied ps is suppressed by census and can false-green. Focused12/sharder12/seven books/3212 fresh+actual links/normal+print/literal read pass. History99/scope1369 bytes/modes/Gitlinks exact normal/O, real receipt+new-digest edits refuse. Whole DEV3668B/one entry to0269;61live+210sealed271logical, no CH shard. COMMIT next.
 

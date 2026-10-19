@@ -14,15 +14,15 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` → final execution/manifest composition.
+- active_work_unit: `P4-SYSTEM.14` → exact native DIV predeclarations.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after LC0049 normal COMMIT/brief0/exact postconditions/host census,
-  return to P4-SYSTEM.14 final execution/manifest/planned record/input-author-impact,
-  then capture/full policy. Read that leaf's current frontier and affected contracts.
-  Do not add another prerequisite-only review loop without a concrete delivery need.
-- LC0049: director2026-10-19 directly approved the verified158-shard migration,
-  exact finite archive bound and local commit without push after two automatic
-  review refusals. See LIVE-CONTAINMENT.4 .4j; target/live-containment/history-rollover.
-- blockers: LC0049 approval resolved; normal commit/handoff checks still required.
-  LIVE-CONTAINMENT.4 owns captured D79 analysis and D80, scheduled separately.
+- next_action: after P4-0279 normal COMMIT/brief0/exact postconditions/host census,
+  curate/commit the composed command's three exact native declarations before
+  three fresh canonical Sail processes/full policy. Source command has17 controls
+  x2/seven omissions and84-file synthetic/offline controls; no canonical output.
+  Read the active leaf and capture-plan/prepared-inputs before declarations.
+- in_flight_uncommitted: verify Git state on read;0279 owns any unfinished workflow.
+- blockers: none requiring director input. LC0049 migration directly approved
+  and committed095f3ceb; host census/brief0/clean verified before this task.
+  D79/D80 remain scheduled separately in LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab.
   No push below300commits without the director's act (COMMIT.md).
