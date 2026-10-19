@@ -845,3 +845,79 @@ COMMIT applies.
 ````text
 a42ae: controls76/copy12/focused16/books7/examples6; whole history/source-owner inverses rc=0 normal/O.
 ````
+
+## P4 a42ag: complete prior prepared-input records
+
+Original complete bodies; source/owner/retirement inverses.
+
+```json
+{"revision":"fc420fec85c2fb6482565c26339b69321e7a1ae6","source":"docs/tasks/P4-SYSTEM.md","source_bytes":130631,"source_sha256":"0cf8b08bebd766917b5d2eb521c14d4f05701ab470b477e06befd92f9273de2d","owner_insert":{"offset":32667,"text":"### `.14` a42ag \u2014 select current DIV capture authorities (active)\n\nOwn P4-0275 before changes: add a bounded read-only capture preparation entrypoint\nthat validates current raw requirement/expanded obligation/contract/source/reference\nviews through existing schemas before their sole canonical mappers, checks unique\nselected identities and effective scope through the public contract owner, and\nfreezes the selected Sail execution identity and reviewed DIV property authority.\nKeep current semantic views distinct from pinned execution inputs; report exact\nview provenance without running/reference-reading a binary or granting qualification.\nExercise missing/duplicate/malformed/stale semantic selections, inherited/superseded\nscope, status-only normalization, immutable results, bounded same-volume reads and\ncache-free copied views normal/O. No execution flag or manifest publication yet;\nfinal driver/exact manifest/inventory/impact authorities remain next. Preserve old\nproduction/probe contracts and reviewed producer population until final route review.\nContain whole closed records/history as needed; sync live docs/book and normal COMMIT.\nResolved instrument defect: a42af monitor decoded global ps strictly as UTF-8;\nbyte0xe9 raised UnicodeDecodeError, leaving the hook unaffected. The ignored\nread-only monitor now decodes with errors=replace, preserves ASCII PID/command\nmatching, and resumed successfully. Own a focused synthetic regression and close\nthis local validation-instrument issue here. Evidence target/p4-system-14/a42ag;\npromotion declined (existing canonical schema/current authority and observer rules).\n\n"},"owner_bytes":132265,"owner_sha256":"26de2279aa593d6b64b79d179bfc77a84b6f0506bb39b05685f68baf20cd43e1","retired_bytes":130707,"retired_sha256":"3e52c3356bb41a43f0248229ef2fac8667d112ccc83782b6fb489b8a05cb1f2d","records":[{"unit":"a42af-decision","offset":34301,"bytes":956,"sha256":"dc9e1f573ea63b14df97aa3c893402260ea28d0e4afcbaefc5870762ed0ce855","replacement":"### `.14` a42af \u2014 retain bounded prepared DIV capture inputs (completed, SEMULITH-P4-0274)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-decision).\n\n"},{"unit":"a42af-acceptance","offset":44961,"bytes":937,"sha256":"e90782ec699b1ee91b9dc2880f488a2084fc47adfee90e8b7ba3ef229feece93","replacement":"- [x] `.14` a42af: controls16/focused19/books7/examples3 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-acceptance).\n"},{"unit":"a42af-verification","offset":88816,"bytes":104,"sha256":"3a1e2940df1cdc46aa6df7d900d1ae78239c4b16fc2e96bfacce4595e487e356","replacement":"a42af: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ag-a42af-verification).\n"}]}
+```
+
+<a id="p4-a42ag-a42af-decision"></a>
+
+````text
+### `.14` a42af — retain bounded prepared DIV capture inputs (completed, SEMULITH-P4-0274)
+
+Four inputs totaling23315B; public source/image/config checks and sole wrong value
+verified without reference execution. Declare22-slot/16MiB family and fixed output
+names. P1 subset acceptance reproduced, then fixed by actual-loader member/type/
+volume/role checks; omission loses five assertions normal/O,0 errors.
+16 controls/two modes,22 copied outcomes,17 focused checks/seven books/three examples.
+Production/probes1551files/93 prior entries exact; three whole records2055B retained.
+CH0362 keeps four oldest entries3787B. Counts42routes/1615arms; old caps/statuses
+unchanged. Final entrypoint/manifest/authorities/capture/full policy remain pending.
+No canonical observations/qualification. Controller P2 remains owned in ab.
+Evidence target/p4-system-14/a42af; promotion declined (established retention and
+population-census contracts). COMMIT applies.
+
+````
+
+<a id="p4-a42ag-a42af-acceptance"></a>
+
+````text
+- [x] `.14` a42af **REPRODUCE / ISSUE**: before.json/layout-before.json rc=0: prepared namespace absent; subset probe accepted an undeclared sibling below generic caps.
+- [x] `.14` a42af **ROOT CAUSE**: layout-before.log rc=0: four prepared pins/index bounds checked; actual finite member/role envelope omitted.
+- [x] `.14` a42af **FIX**: public curation plus bounded family; apply closed member/type/volume/role census before pin loading, no unknown descent.
+- [x] `.14` a42af **ADDRESSED**: controls/copy-inputs.py rc=0 normal/O:16 controls, omission5 losses/0 errors;22 copy outcomes, ten damaged cases refuse.
+- [x] `.14` a42af **NO REGRESSION**: verify.py/focused.py rc=0:1551files/1Gitlink/93entries and old production/probes exact;17 checks/seven books/three examples.
+- [x] `.14` a42af **LOCKSTEP**: verify.py rc=0 normal/O: three records2055B/inverses2/seven damaged refusals; CH0362 four entries3787B, old caps/statuses exact.
+````
+
+<a id="p4-a42ag-a42af-verification"></a>
+
+````text
+a42af: controls16x2/omission5/copy22/focused17/books7/examples3; source/history inverses rc=0 normal/O.
+````
+
+## P4 a42ag: complete selected-emitter records
+
+```json
+{"source":"docs/tasks/P4-SYSTEM.md","before_bytes":130707,"before_sha256":"3e52c3356bb41a43f0248229ef2fac8667d112ccc83782b6fb489b8a05cb1f2d","after_bytes":130023,"after_sha256":"6ce7cdab320b4b815de03b65618e40873365ab844742992a77e9706ff3c2882e","records":[{"unit":"a42ac-decision","offset":34848,"bytes":166,"sha256":"e5faa2e06aa60fb65bf3dfe293ce10ffe6d0430ad1453d5068d9857606c55ef2","replacement":"### `.14` a42ac - emit a selected execution descriptor (completed, SEMULITH-P4-0271)\n\n[Complete record](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-decision).\n\n"},{"unit":"a42ac-acceptance","offset":44651,"bytes":851,"sha256":"6ea81c66119da1cb6fb2a1128e7356618b9060eeba21f3a25c62e8ca2939e88f","replacement":"- [x] `.14` a42ac: controls74/focused18/books7/examples5 rc=0; [complete acceptance](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-acceptance).\n"},{"unit":"a42ac-verification","offset":87568,"bytes":98,"sha256":"41ab3cb61d2b89167c7a15c52c5a7ad342b7b50071003ec4dbfd1c9a1181fccd","replacement":"a42ac: [complete verification](artifacts/live-containment/task-claims.md#p4-a42ag-a42ac-verification).\n"}]}
+```
+
+<a id="p4-a42ag-a42ac-decision"></a>
+
+````text
+### `.14` a42ac — emit a selected execution descriptor (completed, SEMULITH-P4-0271)
+
+[Complete record](artifacts/live-containment/task-claims.md#p4-a42ad-a42ac).
+
+````
+
+<a id="p4-a42ag-a42ac-acceptance"></a>
+
+````text
+- [x] `.14` a42ac **REPRODUCE / ISSUE**: before.json rc=0: retained reader exists but no selected identity emitter.
+- [x] `.14` a42ac **ROOT CAUSE**: bytes-seam-diagnostic.json rc=0: context/path/count match2 locations; consumer scoping restores singularity.
+- [x] `.14` a42ac **FIX**: frozen selected descriptor emission with explicit metadata, pre-text/output limits and existing byte verification.
+- [x] `.14` a42ac **ADDRESSED**: run-controls.py rc=0 normal/O:19/twelve new controls,74 outcomes/0 errors;22/fourteen byte controls exact.
+- [x] `.14` a42ac **NO REGRESSION**: verify.py/focused.py rc=0:40/eight and22/fourteen losses exact;16 checks/seven books/five examples,1544files/92entries preserved.
+- [x] `.14` a42ac **LOCKSTEP**: verify.py rc=0 normal/O: whole-ab1488B/inverse2/five damaged refusals; DEV0358 exact, caps/statuses preserved.
+````
+
+<a id="p4-a42ag-a42ac-verification"></a>
+
+````text
+a42ac: controls74/focused16/books7/examples5; complete old reader/history inverses rc=0 normal/O.
+````

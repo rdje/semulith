@@ -110,7 +110,14 @@ def contract_measure(d: Path, obs: list[dict]) -> tuple[list[tuple[str, str]], l
                              f"most one registry — this measure cannot judge it")
         v = next(v for v in versions.values() if v["version"] == numbers[-1])
         members, superseded = [], set()
+        ancestry = set()
         while v is not None:
+            # Version numbers were checked unique above; a repeated number
+            # therefore revisits the same version rather than adding ancestry.
+            if v["version"] in ancestry:
+                raise SystemExit(f"gate_report: {cdoc.relative_to(ROOT)}: CONTRACT CYCLE: "
+                                 f"revisits version {v['version']}")
+            ancestry.add(v["version"])
             members += v["members"]
             superseded |= v["sups"]
             v = versions.get(v["extends"]) if v["extends"] else None

@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0275 (leaf P4-SYSTEM.14) — terminate cyclic contract ancestry
+
+Fix a reproduced P1 hang in CONTRACT-FREEZE and public effective-contract
+measurement: schema-valid cyclic extends now terminates with named refusals.
+Preserve valid frozen/inherited/superseded behavior. Four controls pass normal/O;
+each of two guard omissions loses three assertions with0 errors. Existing
+contract13/0 and gate-report24/0 controls pass; copied74-file runtime/views pass
+both modes without binary/materials. Close the a42af monitor-decoding instrument
+issue with a synthetic regression. Canonical authority selection/entrypoint,
+exact manifest, capture and full policy remain pending; no qualification credit.
+
+Validation:17 focused checks/seven books/one two-mode example/three rendered
+surfaces pass.1564 protected files/1Gitlink/91 prior entries and all old probes
+exact; production differs only by two guards/registration. Six whole task records
+3112B/three inverse stages/eight damaged refusals; DEV0363 retains whole3810B entry.
+Teaching fits the bounded capture-plan; all old caps fixed. LIVE derives1617arms
+only;42routes,CPU14/18,BOARD10/12,replay4/4green unchanged.
+
 ## SEMULITH-P4-0274 (leaf P4-SYSTEM.14) — retain bounded prepared DIV capture inputs
 
 Retain four inputs totaling23315B through public image/schema/author owners: complete ELF,

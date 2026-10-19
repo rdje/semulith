@@ -1,5 +1,50 @@
 # DEV_NOTES.md
 
+## _(2026-10-19)_ — terminate cyclic contract ancestry (P4-SYSTEM.14 a42ag)
+
+P1 found while reviewing the next DIV authority-selection prerequisite. A raw
+schema-valid backward extends edge v0→v1, with v1 already inheriting v0, made
+both the real CONTRACT-FREEZE judge and public gate_report.contract_measure
+exceed a two-second reproduction deadline. Kill/join both owned process groups;
+retain the exact changed contract and before-owner commit/digests. The freeze
+judge recorded a VERSION GAP but continued an unguarded walk. The public measure
+checked unique version numbers but also walked the cyclic chain indefinitely.
+
+Add a visited-version set to each owner. CONTRACT-FREEZE returns EXTENDS CYCLE
+while retaining other findings; the selected effective-contract walk raises its
+existing SystemExit refusal with CONTRACT CYCLE before registry measurement.
+The identical original fixture now returns1/named refusal from both owners.
+Valid inheritance, frozen pins, supersession and realized pairs remain unchanged.
+Four controls exercise the real judge/public measure with three schema-valid
+cycle shapes and an independently recounted acyclic baseline, normal/O. Each
+guard omission loses exactly three assertions with0 errors. The diagnostic's
+three-second deadline kills and joins a hanging omission; it is not a production
+runtime guarantee. Existing CONTRACT-FREEZE self-test13/0 and gate-report24/0
+pass. Copied74-file runtime/views pass both modes without binary or.materials.
+
+Resolved local observer defect from a42af: strict UTF-8 decoding of global ps
+output raised on an unrelated byte0xe9. The ignored read-only monitor now uses
+replacement decoding; a focused synthetic regression confirms owned ASCII
+PID/command selection and reproduces strict-decoding failure without processes
+or changing the previous receipt. This instrument issue is closed.
+
+Keep the canonical authority entrypoint/manifest/inventory/impact work next;
+no capture, qualification or acceptance credit. Reviewed producer population
+remains35modules/27data/63children/66files; changed gate-report bytes require the
+normal later source review. Promotion declined: existing bounded traversal,
+canonical authority and observer rules. Retain whole closed task/history records;
+caps stay fixed. An initial book placement exceeded known family/member ceilings;
+move the complete new1768B teaching to the bounded capture-plan chapter and restore
+both old chapters byte-exact. No cap raised. Correct a new retrieval summary from
+six to the original emitter receipt's five examples; full retained bodies unchanged.
+
+Validation:17 focused checks, seven books, one complete two-mode example and three
+rendered surfaces pass.1564 protected files/1Gitlink/91 complete prior entries exact;
+production differs only by two guards/registration, all old probes exact. Six
+whole af/ac records3112B retained with3 inverse stages/eight damaged refusals;
+DEV0363 preserves one oldest3810B entry. LIVE derives1617arms only;42routes,
+CPU14/18,BOARD10/12,replay4/4green unchanged. Normal COMMIT applies.
+
 ## _(2026-10-19)_ — retain bounded prepared DIV capture inputs (P4-SYSTEM.14 a42af)
 
 Curate four inputs under evidence/rv64gc-signed-div-truncation-v2: complete ELF
@@ -637,59 +682,4 @@ whole old reader/decision/history inverses, six retention refusals, fixed caps,
 107 task members and Gitlink metadata exact. Fifteen focused checks, seven books/
 3344 links and literal examples pass. Physical-alias defect closed with25 controls/
 18 omissions/0 errors and unchanged input hashes. Normal hook commit follows.
-
-## _(2026-10-18)_ — compose authenticated finite source properties (P4-SYSTEM.14 a42u)
-
-P4-0263 starts after clean2cde18a, brief0/untracked and host census0. Own42B,
-then retain the whole1352B closed a42t record in task-claims: old19368B prefix
-exact, artifact21746B/root128830B; full source/owner inverses and six damaged
-refusals. Preserve native headings, seals, original12 authority and107 members.
-Move two whole DEV entries7685B into0347;11=9 kept+2 moved, old manifest prefix
-and full head inverse exact. No cap is raised.
-
-Predeclare composition in GC Source Property. Add optional property_authority,
-requiring author_review. Construct context from the actual selected mapped raw
-property's ID/requirement/obligations/statement, frozen program/scope and relation
-witness. Bound1..64 obligations before tuple copying. Freeze authority/context
-before manifest I/O. Append source_property after every old field; preserve112
-old selector sites and all old constructor meanings. Bind once after matched
-source values/author findings with the existing plan and retained source finding.
-Refuse malformed findings without retaining them; cross-bind the reviewed case,
-actual context, selected source/value and authority pins in the authenticated
-manifest. Typed refusal retains earlier findings; unsupported remains pending
-without property credit. Earlier failures skip the phase. No new artifact reads
-by the property checker or raw result payload; full qualification stays pending.
-
-The22-control suite passes normal/O;14 omissions discriminate/0 errors. The
-initial obligation-count omission loses no assertion because the observer captured
-the validator's first mapped document, not the evaluator's second. Observe every
-mapped candidate and actual tuple identity: the omission now loses the explicit
-no-unbounded-copy assertion. Both recorded matrices use the repaired observer;
-no production guard or registered expected count is weakened. Seven legacy
-suites42/26/20/24/23/19/19 and80 omissions retain exact vectors across87 rows
-normal/O;112 old selectors remain singular. New probe formatting uses project-local
-black24.10.0 with identical AST, no runtime dependency.
-
-Respect .gitignore's unredistributed primary-material policy. The self-contained
-CI fixture explicitly simulates only the external35588B normative-page snapshot
-and pin; all other files use the real reader. Its footer/doc example earn no
-primary-source authentication or capture credit. Separately run an unmocked
-smoke normal/O through the public authenticated materials resolver: actual35588B
-page SHA85e1db6c…, copied into an owned temporary fixture,23 files authenticated,
-finite quotient fffffffffffffffd matched, evaluation pending. Real/simulated
-checks are separately labeled and reported; no primary document enters Git.
-An optional --real-primary-smoke CLI returns2/UNAVAILABLE for absent acquired
-material. No reference process is run on either path.
-
-Keep current Evaluation prose/table under32768 via six reversible edits; all old
-examples remain exact. Complete simulated composition example prints pending/
-matched/matched then refused/matched/refused on an unrelated actual statement.
-Real smoke is a distinct documented command. Only static arms1594→1596;
-CPU14/18, BOARD10/12 and qualification unchanged. Collector/process controls,
-actual retention and predeclared canonical captures follow after this slice.
-Final scope verification normal/O reconstructs every old evaluator block and
-both whole history heads;1514 other files/modes and89 old entries remain exact.
-Six retention damage controls refuse. Focused15 checks, seven books/3328 links
-and literal examples pass; fixed family/head/part caps,107 task files, original
-seals and Gitlink metadata unchanged. Normal hook workflow follows; no bypass.
 

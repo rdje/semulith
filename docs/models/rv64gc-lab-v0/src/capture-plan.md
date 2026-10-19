@@ -159,3 +159,36 @@ python3 scripts/review_div_capture.py --review
 Its changing digests and byte totals are derived output, not constants to copy
 into this chapter. A missing retained excerpt exits2; a refused review exits1;
 `pending` exits0 and still grants no canonical capture or method credit.
+
+## Rejecting cyclic version ancestry
+
+A contract version inherits through `extends`. The declaration must terminate:
+`v0 -> v1 -> v0` cannot supply an effective contract, even when each individual
+form passes the raw schema. The version-order check can report a gap without
+making an unguarded ancestry walk terminate.
+
+`scripts/check_contract_freeze.sh` now remembers the versions visited for each
+declared version. A repeat returns exit1 with `EXTENDS CYCLE`. The public
+`gate_report.contract_measure` similarly refuses a repeat on the selected latest
+version's ancestry with `CONTRACT CYCLE`, through its existing `SystemExit`
+refusal channel. Scope loading and gate generation reuse that measure. Neither
+owner returns partial effective-contract credit for a cycle. Valid inheritance,
+supersession, frozen-record pins and realized check bindings keep their meanings.
+
+The regression uses the current complete catalogues and adds self, two-version
+and complete-ancestry cycles. Every changed contract passes raw schema checking.
+The acyclic control independently recounts effective pairs and checks frozen
+records. Run from the repository root:
+
+```bash
+python3 scripts/probe_contract_ancestry.py
+python3 -O scripts/probe_contract_ancestry.py
+```
+
+Each command reports4 tests,0 failures and0 errors. CONTRACT-FREEZE registers both
+modes and two independent guard omissions; removing either guard loses three
+assertions with0 errors. The diagnostic gives each real owner a three-second
+deadline, kills and joins a hung process group, and removes its fixtures under
+`target/`. This deadline protects the regression harness; it is no production
+runtime guarantee. These are contract-reader controls, with no reference run,
+canonical capture or CPU acceptance credit.

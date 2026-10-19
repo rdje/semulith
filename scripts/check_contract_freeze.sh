@@ -88,7 +88,12 @@ for cdoc in sorted(root.glob("profiles/*/contract.sexp")):
                 findings.append(f"VERSION GAP {unit} [{vid}]: version {v['version']} extends "
                                 f"{parent['version']}")
         inherited, p = set(), v["extends"]
+        ancestry = {vid}
         while p in versions:
+            if p in ancestry:
+                findings.append(f"EXTENDS CYCLE {unit} [{vid}]: revisits {p}")
+                break
+            ancestry.add(p)
             inherited |= {oid for oid, _ in versions[p]["members"]}
             p = versions[p]["extends"]
         own = {oid for oid, _ in v["members"]}
@@ -159,6 +164,20 @@ self_test() {
   out="$(cd "$t" && judge "$t" 2>&1)"; rc=$?
   arm "RED an extension of no version is refused" "$rc" 1 "$out" "EXTENDS NOTHING"
   arm "RED a supersession of a record not inherited is refused" "$rc" 1 "$out" "SUPERSEDES NOTHING"
+  local ancestry_mode ancestry_mutation
+  local -a ancestry_python
+  for ancestry_mode in normal optimized; do
+    ancestry_python=(python3)
+    [ "$ancestry_mode" = optimized ] && ancestry_python+=(-O)
+    out="$("${ancestry_python[@]}" scripts/probe_contract_ancestry.py 2>&1)"; rc=$?
+    arm "GREEN bounded real contract ancestry $ancestry_mode" "$rc" 0 "$out" \
+      "CONTRACT-ANCESTRY: 4 tests / 0 failures / 0 errors; finite contract owners, no capture credit"
+    for ancestry_mutation in freeze-cycle scope-cycle; do
+      out="$("${ancestry_python[@]}" scripts/probe_contract_ancestry.py --mutation "$ancestry_mutation" 2>&1)"; rc=$?
+      arm "RED omitted contract ancestry $ancestry_mutation $ancestry_mode" "$rc" 1 "$out" \
+        "CONTRACT-ANCESTRY: 4 tests / 3 failures / 0 errors; finite contract owners, no capture credit"
+    done
+  done
   rm -rf "$t"
   printf 'CONTRACT-FREEZE --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
