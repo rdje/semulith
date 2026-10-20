@@ -82,7 +82,7 @@ index them regardless of what happens here afterwards. So the two acts are gover
   order.** First the cadence (below) — a push the cadence refuses never burns the suite. Then the
   **named full local suite**, `make ci` = `check` (fmt + clippy `-D warnings` + all tests) +
   `gate` (every doctrine, incl. the wasm build and all self-tests) + `bench` + `smoke-bench` +
-  `book` (both books) — the server workflows' content plus the bench and the books, on BOTH
+  `book` (project and unit books) — the server workflows' content plus the bench and the books, on BOTH
   paths (cadence push and approved exceptional push alike). The live three-way smoke is
   deliberately not in it (it needs the untracked, network-acquired reference binaries). A red
   suite refuses the push, naming the failing leg; a green one leaves `target/push/last-green.txt`

@@ -1,5 +1,39 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — version support-source records (ARTIFACT-CLEANUP.22)
+
+AC0075 follows 43f07ab with normal hooks, exact 17-file scope, empty untracked
+brief and actual host census OK. Split the support-source interface from .21's
+publication transaction so the old record contract stays independently testable.
+The tracked --support-contract diagnostic loads current or exact committed codec
+initializers through bounded read-only Git. At 43f07ab it reports support_field
+false, captured_selector false and no fixed sources; current code reports both
+true and the exact Cargo runner/census paths. It performs no build or capture.
+
+Version 1 keeps the original serialized field set and exact roundtrip bytes.
+Version 2 adds zero or two closed support-source records: artifact_cargo.py and
+artifact_cleanup.py, ordered exactly. Zero explicitly retains an unbound legacy
+row in a mixed ledger. require_captured=True rejects such rows and checks both
+support identities against current anchored sources. Legacy read-only matching
+remains available. This is a record/source/file predicate, not an attestation
+that a process ran; .21 must still provide actual successful observations and
+.17 must require strict selection before any mutation authority exists.
+
+Thirty-one provenance tests cover v1/v2 roundtrips, mixed-ledger preservation,
+strict legacy refusal, each changed support source, closed names/order/shapes,
+plain boolean selection and cold copied readers for both formats. Sixteen
+individually failing guard omissions run normal/O, including three new ones.
+The complete artifact gate has 100 outcomes; literal guard sites remain 1637.
+No actual ledger publication, candidate selection, cache unlink or cleanup event
+changes. Existing source/file/root/bounds controls remain intact.
+
+D11 closes in the same documentation sync: COMMIT.md said "both books", while
+Makefile52-54 builds the project and every unit book. Replace the stale count
+with that stable contract. The public target, suite and push policy are exact.
+Shared CLI teaching in the book, toolbox and doctrine row describe the new
+version boundary. Current LIVE_STATUS is reviewed and unchanged: CPU 14/18,
+board 10/12, replay 4/4 green; full processor qualification remains pending.
+
 ## _(2026-10-20 UTC)_ — bind public Cargo invocations (ARTIFACT-CLEANUP.20)
 
 AC0074 splits .17 at a safe command boundary. The actual producer launch
@@ -645,45 +679,5 @@ probes exact except regression registration. Six complete prior ah/ab records313
 retain source/owner inverses2/ten damaged refusals; CH0365 preserves one whole oldest
 1104B entry. All caps fixed. LIVE derives1621arms only;42routes,CPU14/18,BOARD10/12,
 replay4/4green unchanged. Final route/manifest/reviews/capture/policy remain pending.
-Normal COMMIT applies.
-
-## _(2026-10-19)_ — anchor gate reporting to its runtime tree (P4-SYSTEM.14 a42ah)
-
-P1 found while reviewing the current DIV authority route. The public gate module
-selected ROOT by running Git at import time, then prepended that root's scripts.
-In an owned71-file copied context under this checkout, a copied gate_report.py
-therefore imported records/catalogue/dossier/parser code from the parent. With
-the copied registry absent, contract_measure still credited114/114 realized
-pairs through the parent registry. Preserve the actual module/root/process trace;
-prior cache-free smoke results did not establish this missing isolation boundary.
-
-Derive ROOT from the loaded source path, as the other selected runtime owners do.
-Normal checkout reports stay unchanged; import needs no process and copied roots
-select copied dependencies/registry. On the identical missing-registry fixture,
-all five module roots are now local, import commands empty, and the required
-registry is unavailable. This does not remove Git queries from report operations
-that enumerate tracked files.
-
-Six real copied-runtime controls pass normal/O. Restore only the old Git-root
-expression in the copied module: five assertions fail with0 errors in both modes.
-Controls keep the parent registry available while checking missing/malformed/empty
-local registries, no-import-process, module roots and unchanged complete results.
-Each fixture contains eight actual runtime/data files under an owned temporary
-directory, without acquired materials or reference execution. Existing gate-report
-24/0 and wrapper20/0 controls pass. Legacy ancestry matrix stays four controls and
-three losses for each omitted owner guard, normal/O,0 errors. Producer review
-remains35modules/27data/63children/66files965337B; no manifest or capture credit.
-
-Promote the isolation lesson to the existing locality knowledge card and its
-INDEX answer: observe imported dependency roots and make missing local inputs
-fail while the parent remains available. A copied file population alone is not
-an isolation proof. Source/owner inverses retain the whole prior ag records;
-history containment keeps complete oldest entries and all existing caps.
-Validation:17 focused checks/seven books/one complete two-mode example/three
-rendered surfaces pass.1564 protected files/1Gitlink/92 whole old entries and all
-old probes exact; production differs only by ROOT and regression registration.
-Three whole ag records2311B retain source/owner inverses2/seven damaged refusals;
-DEV0364 keeps one complete oldest5213B entry. All old caps preserved. LIVE derives
-1619arms only;42routes,CPU14/18,BOARD10/12,replay4/4green unchanged.
 Normal COMMIT applies.
 

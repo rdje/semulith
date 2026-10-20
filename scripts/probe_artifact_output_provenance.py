@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict, replace
+from dataclasses import asdict, fields, replace
 import hashlib
 import importlib.util
+import inspect
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
+from types import ModuleType
 import unittest
 from unittest.mock import patch
 
@@ -39,6 +42,9 @@ SEAMS = {
     "return-root": ('    _root_guard(owned)\n    return Authority(sha(raw),',
                     '    return Authority(sha(raw),'),
     "profile-binding": ('parts[0] == "debug"', 'parts[0] in {"debug", "release"}'),
+    "captured-binding": ('(not require_captured or bool(row.supporting_sources))', 'True'),
+    "support-pin": ('all(sources[dependency.object] == dependency for dependency in row.supporting_sources)', 'True'),
+    "support-objects": ('not supporting or tuple(row.object for row in supporting) == SUPPORTING_OBJECTS', 'True'),
 }
 TARGETS = {
     "changed-digest": "test_unchanged_unowned_inputs_cannot_establish_generation",
@@ -54,6 +60,9 @@ TARGETS = {
     "root-mapping": "test_renamed_runtime_root_cannot_borrow_the_old_descriptor",
     "return-root": "test_root_changed_during_source_read_refuses_before_authority_returns",
     "profile-binding": "test_host_test_command_cannot_claim_release_or_cross_target_outputs",
+    "captured-binding": "test_legacy_bytes_stay_exact_but_cannot_supply_captured_authority",
+    "support-pin": "test_each_changed_support_source_loses_authority",
+    "support-objects": "test_support_sources_have_closed_names_shapes_and_order",
 }
 
 
@@ -111,9 +120,85 @@ class ProvenanceTests(unittest.TestCase):
         self.fixture.file(self.m.LEDGER, data)
         return data
 
-    def authorize(self, current=None, tracked=frozenset()):
+    def authorize(self, current=None, tracked=frozenset(), *, require_captured=False):
         with self.a.OwnedRoot(self.root) as owned:
-            return self.m.authorize(owned, (self.fact(),) if current is None else current, tracked_paths=tracked)
+            return self.m.authorize(owned, (self.fact(),) if current is None else current,
+                                    tracked_paths=tracked, require_captured=require_captured)
+
+    def captured(self):
+        self.fixture.file("scripts/artifact_cargo.py", b"owned Cargo command helper\n")
+        return replace(self.observation(), supporting_sources=tuple(self.source(name) for name in self.m.SUPPORTING_OBJECTS))
+
+    def captured_raw(self, row):
+        return self.m.encode(self.m.Ledger(self.m.CAPTURE_FORMAT, (row,)))
+
+    def test_versioned_support_sources_roundtrip_and_match_strict_authority(self):
+        row = self.captured();raw = self.captured_raw(row)
+        self.fixture.file(self.m.LEDGER, raw)
+        self.assertEqual(self.m.decode(raw), self.m.Ledger(self.m.CAPTURE_FORMAT, (row,)))
+        result = self.authorize(require_captured=True)
+        self.assertEqual(result.approved, frozenset({self.output}))
+        self.assertEqual(len(result.current_sources), 4)
+
+    def test_legacy_bytes_stay_exact_but_cannot_supply_captured_authority(self):
+        row = self.observation();raw = self.save(row)
+        self.assertNotIn(b"supporting_sources", raw)
+        self.assertEqual(self.m.encode(self.m.decode(raw)), raw)
+        self.assertEqual(self.authorize().approved, frozenset({self.output}))
+        self.assertEqual(self.authorize(require_captured=True).approved, frozenset())
+
+    def test_mixed_v2_ledger_retains_legacy_rows_without_upgrading_their_authority(self):
+        legacy = self.observation()
+        captured = self.captured()
+        path = self.output.replace("dep-graph.bin", "query-cache.bin")
+        self.fixture.file(path, b"another newly observed output")
+        captured = replace(captured, after=self.fact(path))
+        ledger = self.m.Ledger(self.m.CAPTURE_FORMAT, (legacy, captured))
+        raw = self.m.encode(ledger)
+        self.fixture.file(self.m.LEDGER, raw)
+        self.assertEqual(self.m.decode(raw), ledger)
+        current = (legacy.after, captured.after)
+        self.assertEqual(self.authorize(current).approved, frozenset({self.output, path}))
+        self.assertEqual(self.authorize(current, require_captured=True).approved, frozenset({path}))
+
+    def test_each_changed_support_source_loses_authority(self):
+        row = self.captured();self.fixture.file(self.m.LEDGER, self.captured_raw(row))
+        observed = []
+        for support in row.supporting_sources:
+            path = self.root / support.object;before = path.read_bytes()
+            try:
+                path.write_bytes(before + b"\n# changed support source\n")
+                observed.append(self.authorize(require_captured=True).approved)
+            finally:
+                path.write_bytes(before)
+        self.assertEqual(observed, [frozenset(), frozenset()])
+
+    def test_support_sources_have_closed_names_shapes_and_order(self):
+        row = self.captured();value = json.loads(self.captured_raw(row))
+        first, second = value["outputs"][0]["supporting_sources"]
+        bad = [None, "not an array", [first], [first, second, first], [second, first],
+               [first, first], [{**first, "object": "scripts/unknown.py"}, second],
+               [{**first, "byte_size": True}, second], [{**first, "extra": 0}, second]]
+        refused = []
+        for index, supports in enumerate(bad):
+            value["outputs"][0]["supporting_sources"] = supports
+            raw = (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode()
+            try:
+                self.m.decode(raw)
+            except self.m.ProvenanceError:
+                refused.append(index)
+        self.assertEqual(refused, list(range(len(bad))))
+
+    def test_legacy_cannot_hide_supports_and_selection_is_plain_boolean(self):
+        row = self.captured()
+        with self.assertRaises(self.m.ProvenanceError):
+            self.raw(row)
+        raw = self.captured_raw(row).replace(self.m.CAPTURE_FORMAT.encode(), self.m.FORMAT.encode())
+        with self.assertRaises(self.m.ProvenanceError):
+            self.m.decode(raw)
+        for selected in (0, 1, "true", None):
+            with self.assertRaises(self.m.ProvenanceError):
+                self.authorize(require_captured=selected)
 
     def test_new_file_observation_roundtrips_and_matches_current_sources(self):
         row = self.observation();raw = self.save(row)
@@ -287,15 +372,16 @@ class ProvenanceTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(), original)
 
     def test_cold_copied_reader_needs_no_git_or_producer_execution(self):
-        self.save(self.observation())
         code = ('import sys;sys.dont_write_bytecode=True;sys.path.insert(0,sys.argv[1]);'
                 'import artifact_cleanup as A,artifact_output_provenance as O;'
                 'from pathlib import Path;'
                 'owned=A.OwnedRoot(O.ROOT);'
                 '\nwith owned: raw,ledger=O.load(owned);print(len(ledger.outputs))')
-        result = subprocess.run([sys.executable, "-B", "-c", code, str(self.root / "scripts")],
-                                cwd=ROOT.parent, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=30)
-        self.assertEqual((result.returncode, result.stdout), (0, "1\n"), result.stderr)
+        for raw in (self.raw(self.observation()), self.captured_raw(self.captured())):
+            self.fixture.file(self.m.LEDGER, raw)
+            result = subprocess.run([sys.executable, "-B", "-c", code, str(self.root / "scripts")],
+                                    cwd=ROOT.parent, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=30)
+            self.assertEqual((result.returncode, result.stdout), (0, "1\n"), result.stderr)
 
 
 def cargo_contract():
@@ -321,12 +407,46 @@ def cargo_contract():
         print("Cargo dry-run: cache-shaped toy and profile input listed; three inputs exact; no real cleanup")
 
 
+def support_contract(revision):
+    """Report the record/reader interface of current or exact committed codec code."""
+    import artifact_cleanup as A
+    import artifact_output_provenance as O
+    if revision:
+        if not re.fullmatch(r"[0-9a-f]{7,40}", revision):
+            raise ValueError("support revision must be a Git object abbreviation")
+        A.tracked_paths(ROOT)
+        raw = A._git(ROOT, ["show", revision + ":" + OBJECT], O.SOURCE_BYTES)
+        name = "support_contract_" + hashlib.sha256(raw).hexdigest()
+        module = ModuleType(name);module.__file__ = str(ROOT / OBJECT)
+        sys.modules[name] = module
+        try:
+            exec(compile(raw, OBJECT, "exec"), module.__dict__)
+            emit_support_contract(module)
+        finally:
+            sys.modules.pop(name, None)
+    else:
+        emit_support_contract(O)
+
+
+def emit_support_contract(module):
+    print("OUTPUT-SUPPORT: " + json.dumps(dict(
+        support_field="supporting_sources" in {field.name for field in fields(module.Observation)},
+        captured_selector="require_captured" in inspect.signature(module.authorize).parameters,
+        fixed_sources=getattr(module, "SUPPORTING_OBJECTS", ())), sort_keys=True))
+
+
 def main():
     global MUTATION
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mutation", choices=sorted(SEAMS))
     parser.add_argument("--cargo-contract", action="store_true")
+    parser.add_argument("--support-contract", action="store_true")
+    parser.add_argument("--revision")
     args = parser.parse_args();MUTATION = args.mutation
+    if args.support_contract:
+        if MUTATION or args.cargo_contract:parser.error("support interface cannot use another mode")
+        support_contract(args.revision);return 0
+    if args.revision:parser.error("revision requires --support-contract")
     if args.cargo_contract:
         if MUTATION:parser.error("Cargo observation cannot use a source omission")
         cargo_contract();return 0

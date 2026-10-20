@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0075 (leaf ARTIFACT-CLEANUP.22) — version support-source pins without rewriting legacy records
+
+Keep exact v1 serialization and add v2 runner/census pins. Strict matching denies
+unbound legacy rows and stale support sources; mixed ledgers retain both row
+classes without upgrading old authority. No capture, publication or selection
+changes yet. 31 tests normal/O and 16 omissions per mode pass; artifact gate 100
+outcomes. Shared book/help/toolbox updated. D11 replaces COMMIT's stale book
+count with the project/unit contract. LIVE_STATUS and all old evidence unchanged.
+
 ## SEMULITH-AC-0074 (leaf ARTIFACT-CLEANUP.20) — bind public Cargo commands and output roots
 
 Both C producers use explicit unchanged Cargo target/intermediate roots, relative
@@ -636,9 +645,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Confirm D56 through the actual public CLI: seven registry consumers/14 failed-status or diagnostic cases still return green0, normal/O. Preserve unique raw streams/traces, pinned programs/facades and real HEAD/index/all1402 identities.
 - Own priority1 repair next, before capacity authority. Book and LIVE routing closure now disclose the gap (Mostly Done); keep code, caps, canonical records and CPU exact. Preserve105 prior entries through whole DEV3990B/CH1330B rollover and verify full inverses/focused/seven books/literal reads.
-
-## SEMULITH-LC-0017 (leaf LIVE-CONTAINMENT.4) — correct the five-unit composition receipt
-
-- Fix D55 by retaining the complete original authority and appending its source-pinned correction:151 prior+9 LAN files=160/845819B. The147 subtotal came from partial UART staging; every original bound and raise rationale stands.
-- Verify four closed inventories/complete member deltas, real1402 identities, source/history/protected inverses and genuine receipt refusals normal/O; focused/seven books and three literal reads pass. Index/book/pointer agree; LIVE/CPU unchanged, separate capacity review next.
 

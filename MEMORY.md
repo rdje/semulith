@@ -14,22 +14,21 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `ARTIFACT-CLEANUP` → `.21`, successful build capture/publication.
-- last_unit: `ARTIFACT-CLEANUP.20` / `SEMULITH-AC-0074`, explicit Cargo command boundary.
-- next_action: bind anchored before/after facts and complete recorder/helper/producer
-  source identities to successful real public builds; publish bounded merged ledgers
-  atomically, preserving unknown/unchanged inputs and existing output paths. Then .17
-  strict current-plan selection, .16 journal/core and .14 host CLI before P4 policy/status.
+- active_work_unit: `ARTIFACT-CLEANUP` → `.21` (pending; actual capture/publication).
+- pnt_status: stopped at the director-requested checkpoint (`2026-10-20`);
+  resume work only on a new instruction.
+- last_unit: `.22` / `SEMULITH-AC-0075` — versioned support-source records.
+- next_action: bind successful actual Cargo builds to anchored before/after facts
+  and the complete v2 source tuple, then atomically publish bounded merged ledgers.
+  Preserve unchanged unowned inputs and existing output paths. Read the tree's
+  `.21` goal before code; `.17` strict selection follows, then `.16` core/`.14` CLI.
 - in_flight_uncommitted: none after the normal commit workflow.
-- blockers: none requiring director input. P1 remains open until .17 is verified;
-  no supported mutation API or new cleanup event. Historical plans/evidence unchanged.
-- evidence: `target/artifact-cleanup-0074`; bound commands/actual engine18 and guest2
-  pass. Seventeen fixture tests normal/O and eight omissions per mode discriminate;
-  cold copied Cargo preserves an unchanged cache-shaped input. No output authority
-  is published by this slice. Source/manifest checks and bounded process-group join
-  are command observations, not loaded-code/race attestation.
-- continuity: AC0073 retained ledger/source and all completed live history stay exact.
-  Read `docs/artifact-cleanup-history/README.md` for both Markdown products. Current
-  cleanup is derived from `docs/ARTIFACT_CLEANUP.md`; original37/native3/capture exact.
-  CPU14/18, BOARD10/12, replay4/4green; full qualification remains pending.
-  Use target/tmp as TMPDIR; push cadence derives with `scripts/check_push_cadence.sh --status`.
+- blockers: none requiring director input. Cleanup input-ownership finding P1
+  remains open until `.17`; no supported mutation API or new cleanup event.
+- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0075`.
+- continuity: historical plans/ledger bytes, immutable task/history terminals and
+  the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
+  for canonical progress; return to P4 full policy/status after cleanup readiness.
+- environment: use `target/tmp` as TMPDIR. Read cleanup currency from
+  `docs/ARTIFACT_CLEANUP.md`; derive push cadence with
+  `scripts/check_push_cadence.sh --status`.

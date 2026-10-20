@@ -58,9 +58,9 @@ The gate requires 26 passing tests in normal and optimized Python, plus ten
 targeted guard omissions per mode, each losing one assertion with zero errors.
 Five additional historical-helper tests and a source-pin omission run in both
 modes: 26 planning/history outcomes. Journal coverage adds26 tests and ten
-omissions per mode. Output-provenance25 tests and thirteen omissions per mode
-add28 outcomes. Bound Cargo17 tests and eight omissions per mode bring the
-gate to94 outcomes. No real project cleanup occurs.
+omissions per mode. Output-provenance31 tests and sixteen omissions per mode
+add34 outcomes. Bound Cargo17 tests and eight omissions per mode bring the
+gate to100 outcomes. No real project cleanup occurs.
 
 The original AC0067 helper is retained byte-exact as passive input in
 `scripts/fixtures/artifact_cleanup_0067.py.txt`. Its 5,815 bytes retain their

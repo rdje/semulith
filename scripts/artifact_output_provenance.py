@@ -19,6 +19,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OBJECT = "scripts/artifact_output_provenance.py"
 LEDGER = "target/artifact-cleanup/output-provenance.json"
 FORMAT = "artifact-output-provenance-v1"
+CAPTURE_FORMAT = "artifact-output-provenance-v2"
+SUPPORTING_OBJECTS = ("scripts/artifact_cargo.py", "scripts/artifact_cleanup.py")
 MAX_BYTES = 16 * 1024 * 1024
 MAX_RECORDS = 65536
 MAX_RECORD_BYTES = 32768
@@ -41,7 +43,7 @@ before/after observations. Only a new file or changed digest can be recorded;
 touching an unchanged unowned input cannot establish generation.
 
 The record protocol covers the C-engine and C-guest-image producers' existing
-roots and debug outputs; actual producer integration is still pending. Its
+roots and debug outputs; actual capture/publication is still pending. Its
 command must explicitly bind both target and intermediate build directories.
 Unknown roots, aliases, tracked names and stale source/file
 identities cannot gain current authority. Records describe observations under
@@ -58,9 +60,18 @@ malformed or unsafe provenance refuses rather than silently authorizing files.
 Historical records can still be decoded after a source changes, but stale
 records cannot match current authority.
 
-This slice provides a record codec and anchored reader only. Actual producer
-capture and planner selection remain owned by ARTIFACT-CLEANUP.17; guarded
-deletion and the host-bound operator workflow follow. No cache is removed here.
+Version 1 retains its exact serialized shape. Version 2 adds a closed tuple
+binding `scripts/artifact_cargo.py` and `scripts/artifact_cleanup.py`, the
+command runner and census support. Historical rows may remain explicitly
+unbound in a mixed v2 ledger. The reader's `require_captured=True` selector
+requires both current support pins; legacy read-only matching remains available
+without that selector. This checks record shape and current source/file facts;
+it does not independently attest that an invocation occurred.
+
+This slice provides a versioned record codec and anchored reader only. Actual
+capture/publication remains owned by ARTIFACT-CLEANUP.21 and strict planner
+selection by .17; guarded deletion and the host-bound operator workflow follow.
+No cache is removed here.
 
 Run the disposable-fixture controls:
 
@@ -68,12 +79,23 @@ Run the disposable-fixture controls:
 python3 -B scripts/probe_artifact_output_provenance.py
 ```
 
-The suite has25 tests normal/O and thirteen individually failing guard omissions
+The suite has 31 tests normal/O and sixteen individually failing guard omissions
 per mode. An optional public Cargo diagnostic preserves three owned inputs:
 
 ```sh
 python3 -B scripts/probe_artifact_output_provenance.py --cargo-contract
 ```
+
+Inspect the support-source interface, including its committed predecessor:
+
+```sh
+python3 -B scripts/probe_artifact_output_provenance.py --support-contract
+python3 -B scripts/probe_artifact_output_provenance.py --support-contract --revision 43f07ab
+```
+
+The revision diagnostic loads only this repository's bounded codec source
+initializer through read-only Git; it performs no build or capture. It needs
+that local object. Ordinary current/v1/v2 readers need no Git history.
 
 Public contracts: [Cargo build directories](https://doc.rust-lang.org/cargo/reference/build-cache.html),
 [Cargo metadata](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html),
@@ -144,6 +166,7 @@ class Observation:
     return_code: int
     before: Fact | None
     after: Fact
+    supporting_sources: tuple[Source, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -197,7 +220,12 @@ def output_class(item, producer):
             and parts[1] == "incremental" and parts[-1] in CACHE_NAMES)
 
 
-def observation(value):
+def observation(value, version=FORMAT):
+    need(type(version) is str and version in {FORMAT, CAPTURE_FORMAT}, "unsupported observation format")
+    if version == FORMAT:
+        need(type(value) is dict and "supporting_sources" not in value,
+             "invalid Observation fields")
+        value = {**value, "supporting_sources": []}
     item = record(Observation, value)
     stamp = item.created_utc
     need(type(stamp) is str and len(stamp) <= 64
@@ -222,13 +250,25 @@ def observation(value):
                 "--target-dir", root, "--config", 'build.build-dir="' + root + '"',
                 "--lib", test_filter, "--", "--nocapture")
     need(tuple(item.argv) == expected, "build command/root binding")
-    return Observation(stamp, recorder, producer, expected, item.tool_version, 0, before, after)
+    need(type(item.supporting_sources) is list and len(item.supporting_sources) in {0, 2},
+         "support source count/type bound")
+    supporting = tuple(source(row) for row in item.supporting_sources)
+    need(not supporting or tuple(row.object for row in supporting) == SUPPORTING_OBJECTS,
+         "support source objects/order differ")
+    return Observation(stamp, recorder, producer, expected, item.tool_version, 0, before, after, supporting)
 
 
 def encode(ledger):
     need(type(ledger) is Ledger, "plain ledger required")
+    need(type(ledger.format) is str and ledger.format in {FORMAT, CAPTURE_FORMAT}, "unsupported ledger format")
     try:
-        raw = (json.dumps(asdict(ledger), ensure_ascii=True, allow_nan=False,
+        value = asdict(ledger)
+        if ledger.format == FORMAT:
+            need(all(not row.supporting_sources for row in ledger.outputs),
+                 "legacy format cannot store support sources")
+            for row in value["outputs"]:
+                del row["supporting_sources"]
+        raw = (json.dumps(value, ensure_ascii=True, allow_nan=False,
                           sort_keys=True, separators=(",", ":")) + "\n").encode("ascii")
     except (TypeError, ValueError, RecursionError) as error:
         raise ProvenanceError("unencodable ledger") from error
@@ -250,16 +290,16 @@ def decode(raw):
         value = json.loads(raw.decode("ascii"), object_pairs_hook=pairs,
                            parse_constant=lambda unused: need(False, "nonfinite JSON"))
         ledger = record(Ledger, value)
-        need(ledger.format == FORMAT and type(ledger.outputs) is list
+        need(ledger.format in {FORMAT, CAPTURE_FORMAT} and type(ledger.outputs) is list
              and len(ledger.outputs) <= MAX_RECORDS, "ledger format/count bound")
         outputs = []
         for row in ledger.outputs:
             need(len(json.dumps(row, ensure_ascii=True, sort_keys=True,
                                 separators=(",", ":")).encode("ascii")) <= MAX_RECORD_BYTES, "record byte bound")
-            outputs.append(observation(row))
+            outputs.append(observation(row, ledger.format))
         paths = [row.after.path for row in outputs]
         need(paths == sorted(paths) and len(paths) == len(set(map(key, paths))), "output order/alias collision")
-        result = Ledger(FORMAT, tuple(outputs))
+        result = Ledger(ledger.format, tuple(outputs))
         need(encode(result) == raw, "noncanonical ledger")
         return result
     except (TypeError, ValueError, KeyError, AttributeError, UnicodeError, RecursionError) as error:
@@ -296,8 +336,9 @@ def load(owned):
     return raw, decode(raw)
 
 
-def authorize(owned, current, *, tracked_paths):
+def authorize(owned, current, *, tracked_paths, require_captured=False):
     """Match recorded observations against current sources and file facts only."""
+    need(type(require_captured) is bool, "plain captured-observation selection required")
     need(type(current) is tuple and len(current) <= MAX_RECORDS
          and all(type(item) is Fact for item in current), "bounded plain current facts required")
     need(type(tracked_paths) is frozenset and len(tracked_paths) <= MAX_RECORDS,
@@ -315,7 +356,9 @@ def authorize(owned, current, *, tracked_paths):
         return Authority(None, (recorder,), frozenset())
     raw, ledger = saved
     sources = {OBJECT: recorder}
-    for name in sorted({row.producer.object for row in ledger.outputs}):
+    dependencies = {row.producer.object for row in ledger.outputs}
+    dependencies.update(source.object for row in ledger.outputs for source in row.supporting_sources)
+    for name in sorted(dependencies):
         sources[name] = _source(owned, name)
     observed = {row.after.path: row for row in ledger.outputs}
     approved = set()
@@ -323,7 +366,9 @@ def authorize(owned, current, *, tracked_paths):
         row = observed.get(item.path)
         if (row is not None and key(item.path) not in tracked_keys and item.links == 1
                 and row.after == item and row.recorder == recorder
-                and row.producer == sources[row.producer.object]):
+                and row.producer == sources[row.producer.object]
+                and (not require_captured or bool(row.supporting_sources))
+                and all(sources[dependency.object] == dependency for dependency in row.supporting_sources)):
             approved.add(item.path)
     _root_guard(owned)
     return Authority(sha(raw), tuple(sources[name] for name in sorted(sources)), frozenset(approved))

@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -344,7 +344,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ### Priority1 activity — make cleanup instruments durable
   Status: `active`
-  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`
+  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`
   Goal: fix the verified workflow defect before returning to P4 policy/status.
   Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
   rc=1; tracked scripts/*cleanup* census empty; cache-name search in scripts/
@@ -563,11 +563,42 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   stale/alias/interruption/partial publication/cold runtime before .17 selection.
   Unchanged unowned inputs receive no authority; no cleanup mutation/event.
 
+  Owned D11 (priority3, fixed by .22 documentation sync): COMMIT.md line85
+  calls the full-suite book leg "both books". Reproduce with grep -n in
+  COMMIT.md/Makefile: Makefile52-54 builds docs/book and every registered
+  docs/models/*/book.toml; the current actual make book log has7 builds.
+  Replace the stale cardinality with the stable project-and-unit-books
+  contract. No suite or push policy changes; verify against the public target.
+
+- ID: `ARTIFACT-CLEANUP.22` — **bind support sources without rewriting legacy records**
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0075`)
+  Goal: AC0075 after43f07ab normal hooks, exact17 committed files, brief0 and
+  actual host census OK. The .20 command boundary adds two relevant sources:
+  artifact_cargo.py and the artifact_cleanup.py census. Extend the closed
+  record codec with a versioned, bounded support-source tuple before .21
+  publication. Preserve v1 decode/re-encode bytes and historical read-only
+  matching; strict captured-observation matching must reject unbound v1 rows
+  and require both current support identities for v2. Unknown/duplicate/malformed
+  support names and stale support code must refuse authority. No actual capture,
+  publication, candidate reclassification or cache deletion in this leaf.
+  Cover normal/O, old controls plus targeted omission controls, and cold copied
+  readers; sync shared book/help/toolbox and normal COMMIT. Keep all prior
+  task/history/evidence bytes and fixed caps. Resolve the already owned D11
+  book wording in this leaf's documentation sync; make book's target is authority.
+  Evidence: target/artifact-cleanup-0075. Then .21 capture/publication, .17 strict
+  selection, .16 core and .14 host workflow; cleanup input-ownership P1 stays open.
+  promotion: declined (implements existing source-identity/backward-read contracts).
+
+  Handoff instruction (`2026-10-20`): the director requested the next
+  handoff-ready checkpoint. Finish .22's existing normal commit workflow,
+  clear the brief and verify clean Git/no jobs, then stop. .21 stays unstarted;
+  MEMORY.md records the stopped PNT state and selected resume action.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.21` | `pending` | actual build capture/publication before .17 strict selection |
+| 1 | `ARTIFACT-CLEANUP.21` | `pending` | actual capture/publication with complete v2 support pins |
 
 ## Decisions
 
@@ -590,6 +621,32 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-2e8
 The [whole predecessor](../artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.22)
+
+- [x] **REPRODUCE / ISSUE** — --support-contract --revision 43f07ab reports
+  both support_field/captured_selector false and fixed_sources empty. The new
+  command/census helpers need named pins before .21 records actual observations.
+- [x] **ROOT CAUSE (WHY + WHERE)** — python3 -B scripts/probe_artifact_output_provenance.py
+  --support-contract --revision 43f07ab: OUTPUT-SUPPORT: support_field=false,
+  captured_selector=false, fixed_sources=[]. The old Observation fields and
+  authorize signature bind the codec/actor, with no runner/census source tuple.
+- [x] **FIX** — versioned closed support tuple, exact legacy encoding,
+  strict matching selector and tracked predecessor/current interface diagnostic.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
+  rc=0:100 pass/0 fail.31 provenance tests normal/O and16 omissions per mode,
+  each1 failure/0 errors. V1 exact bytes/mixed v2/cold copied readers pass;
+  strict selection denies unbound legacy rows and either stale support source.
+- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0;
+  focused18 checks, seven fresh books and original native3/41514 bytes pass.
+  Scope14/protected1481/1 opaque Gitlink, complete old history and task-prefix
+  inverse verified; planner implementation/LIVE_STATUS exact. Normal hook applies.
+- [x] **LOCKSTEP** — shared book/help/toolbox/doctrine/MEM/DEV/CH/index sync.
+  D11 fixes only COMMIT's book wording, verified against Makefile52-54;
+  LIVE_STATUS reviewed unchanged. No capture/selection/deletion or new event.
+
+Verification: target/artifact-cleanup-0075; .21 still owns actual capture and
+atomic publication, .17 strict planning. Cleanup finding P1 remains open.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.20)
 
@@ -696,10 +753,13 @@ the unchanged normal hook. All defects in this slice are verified closed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.22` | 31 tests normal/O; 16 omissions per mode; artifact100 | exact v1 bytes, mixed v2 and strict support pins; D11 book wording fixed |
 | `2026-10-20` UTC | `.20` | 17 tests normal/O; 8 omissions per mode; actual engine18/guest2; focused18/books7 | 94 artifact outcomes; original native3/41514B and all old history exact; unchanged seeded input preserved |
 | `2026-10-20` UTC | `.19` |40 tests normal/O/18 omissions; focused17/books7/native3/scope |21 files/protected1468/97 old entries;7210B whole0388/0389; predecessor76937B/suffix38046B overlap, unretained0; all19 nodes live |
 
 ## Commit Log
+
+`SEMULITH-AC-0075 (leaf ARTIFACT-CLEANUP.22): bind versioned support-source pins in output records` — old bytes preserved, strict complete-source predicate verified; .21 actual publication next.
 
 `SEMULITH-AC-0074 (leaf ARTIFACT-CLEANUP.20): bind public Cargo commands and output roots` — explicit old roots, bounded process capture/join, actual builds verified; .21 capture/publication next.
 
@@ -707,5 +767,6 @@ the unchanged normal hook. All defects in this slice are verified closed.
 
 ## Changelog
 
+- `2026-10-20` UTC: .22 verified; versioned support pins and exact legacy reads. No capture/selection/deletion authority added.
 - `2026-10-20` UTC: .20 verified; bound both actual public build invocations. No ledger/selection/deletion authority or cleanup event added.
 - `2026-10-20` UTC: .19 verified; complete predecessor/suffix retained as Markdown and full graph stays live. No old ceiling or terminal changes. Normal COMMIT before .17.
