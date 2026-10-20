@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OBJECT = "scripts/artifact_cleanup_journal.py"
 NAME = "attempt.jsonl"
 FORMAT = "artifact-cleanup-journal-v1"
+SELECTED_FORMAT = "artifact-cleanup-journal-v2"
+MAX_APPROVED = 4096
 JOURNAL_BYTES = 16 * 1024 * 1024
 RECORD_BYTES = 32768
 EVENT_BYTES = 64
@@ -43,8 +45,12 @@ Candidate indices follow the plan's sorted list. The allowed sequence is:
 begin → intent(0) → removed(0) → intent(1) → removed(1) → finish
 ```
 
-Only a finish claiming `complete` after all recorded returns and a `verified`
-stage can produce `recorded-complete`. Failed/interrupted attempts retain
+A version-2 begin record also binds the strict selection's digest and the
+sorted plan indices it approved (at most4,096); intents must then follow those
+indices in order and `complete` requires every approved return, so an attempt
+can never record more than its selection. Legacy version-1 records stay
+readable. Only a finish claiming `complete` after all recorded returns and a
+`verified` stage can produce `recorded-complete`. Failed/interrupted attempts retain
 their stage and bounded error. A valid prefix without a finish is incomplete;
 a durable intent without a recorded return stays unresolved. A torn final
 line is retained as a byte count/digest, never interpreted as success.
@@ -148,6 +154,8 @@ class Header:
     candidates: int
     recorder: A.Source
     actor: A.Source
+    selection_sha256: str | None = None
+    approved: tuple[int, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -173,8 +181,10 @@ def transition(progress: Progress, record: dict, plan: A.Plan) -> Progress:
     kind = record["kind"]
     count = len(plan.candidates)
     if progress.header is None:
-        fields(record, "kind format created_utc plan_sha256 candidates recorder actor")
-        need(kind == "begin" and record["format"] == FORMAT, "begin format")
+        need(kind == "begin" and record.get("format") in {FORMAT, SELECTED_FORMAT}, "begin format")
+        selected = record["format"] == SELECTED_FORMAT
+        fields(record, "kind format created_utc plan_sha256 candidates recorder actor"
+               + (" selection_sha256 approved" if selected else ""))
         stamp = record["created_utc"]
         need(type(stamp) is str and len(stamp) <= 64
              and datetime.datetime.fromisoformat(stamp).utcoffset() == datetime.timedelta(), "begin UTC time")
@@ -182,14 +192,26 @@ def transition(progress: Progress, record: dict, plan: A.Plan) -> Progress:
         need(record["plan_sha256"] == digest(A.encode_plan(plan)), "plan digest binding")
         recorder, actor = source(record["recorder"]), source(record["actor"])
         need(recorder.object == OBJECT, "recorder object")
-        return replace(progress, header=Header(stamp, record["plan_sha256"], count, recorder, actor))
+        selection, approved = None, None
+        if selected:
+            selection, approved = record["selection_sha256"], record["approved"]
+            need(type(selection) is str and re.fullmatch("[0-9a-f]{64}", selection), "selection digest")
+            need(type(approved) is list and 0 < len(approved) <= MAX_APPROVED
+                 and all(type(index) is int and 0 <= index < count for index in approved)
+                 and approved == sorted(set(approved)), "approved index set")
+            approved = tuple(approved)
+        return replace(progress, header=Header(stamp, record["plan_sha256"], count, recorder, actor, selection, approved))
+    allowed = progress.header.approved
+    total = count if allowed is None else len(allowed)
     if kind in {"intent", "removed"}:
         fields(record, "kind index")
         index = record["index"]
         need(type(index) is int and 0 <= index < count, "candidate index")
         need(len(encode(record)) <= EVENT_BYTES, "event byte bound")
         if kind == "intent":
-            need(progress.pending is None and index == progress.removed, "intent sequence")
+            expected = (progress.removed if allowed is None else
+                        allowed[progress.removed] if progress.removed < total else -1)
+            need(progress.pending is None and index == expected, "intent sequence")
             return replace(progress, pending=index)
         need(progress.pending == index, "return without matching intent")
         return replace(progress, removed=progress.removed + 1, pending=None)
@@ -197,7 +219,7 @@ def transition(progress: Progress, record: dict, plan: A.Plan) -> Progress:
     need(kind == "finish" and record["result"] in {"complete", "failed", "interrupted"}, "terminal result")
     need(type(record["stage"]) is str and record["stage"] in STAGES, "terminal stage")
     if record["result"] == "complete":
-        need(progress.pending is None and progress.removed == count and record["stage"] == "verified"
+        need(progress.pending is None and progress.removed == total and record["stage"] == "verified"
              and record["failure"] is None, "incomplete terminal success")
         problem = None
     else:
@@ -344,8 +366,12 @@ class Writer:
 
 
 @contextmanager
-def start(root: Path, workdir: str, *, actor_object: str):
-    """Reserve once, persist the plan/path/frame, then yield a metadata-only writer."""
+def start(root: Path, workdir: str, *, actor_object: str, selection=None):
+    """Reserve once, persist the plan/path/frame, then yield a metadata-only writer.
+
+    `selection` binds a strict selection: its canonical digest and the sorted plan
+    indices it approved. Without it the legacy version-1 record is written.
+    """
     root = bound_root(root)
     A._selection(workdir, A.DEFAULT_SCOPES)
     with A.OwnedRoot(root) as owned, owned.directory(workdir) as parent:
@@ -356,6 +382,9 @@ def start(root: Path, workdir: str, *, actor_object: str):
                      created_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                      plan_sha256=digest(A.encode_plan(plan)), candidates=len(plan.candidates),
                      recorder=asdict(_source(owned, OBJECT)), actor=asdict(_source(owned, actor_object)))
+        if selection is not None:
+            need(type(selection) is tuple and len(selection) == 2, "selection binding shape")
+            begin.update(format=SELECTED_FORMAT, selection_sha256=selection[0], approved=list(selection[1]))
         need(len(encode(begin)) + 2 * len(plan.candidates) * EVENT_BYTES + RECORD_BYTES <= JOURNAL_BYTES,
              "planned journal exceeds bound")
         plan_fd = os.open("plan.json", os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=parent)
@@ -392,11 +421,14 @@ def report(plan: A.Plan, finding: Inspection) -> dict:
     progress = finding.progress
     state = ("unestablished" if progress.header is None else
              "incomplete" if progress.result is None else "recorded-" + progress.result)
-    return dict(recorded_state=state, binding_established=progress.header is not None,
-                header=asdict(progress.header) if progress.header is not None else None,
+    header = progress.header
+    recorded = (plan.candidates[:progress.removed] if header is None or header.approved is None else
+                [plan.candidates[index] for index in header.approved[:progress.removed]])
+    return dict(recorded_state=state, binding_established=header is not None,
+                header=asdict(header) if header is not None else None,
                 recorded_unlink_returns=progress.removed,
-                recorded_paths=[f.path for f in plan.candidates[:progress.removed]],
-                planned_bytes_for_recorded_returns=sum(f.byte_size for f in plan.candidates[:progress.removed]),
+                recorded_paths=[f.path for f in recorded],
+                planned_bytes_for_recorded_returns=sum(f.byte_size for f in recorded),
                 unresolved_intent=progress.pending, stage=progress.stage,
                 failure=asdict(progress.failure) if progress.failure is not None else None,
                 tail_bytes=finding.tail_bytes, tail_sha256=finding.tail_sha256,

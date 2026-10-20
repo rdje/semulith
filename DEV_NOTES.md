@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — guarded deletion core (ARTIFACT-CLEANUP.16)
+
+AC0079 from clean 6740f24. Three records existed and nothing bound them at the
+moment of mutation. The journal's sequence rule expected intents over the whole
+plan, so an attempt restricted to the strict selection could never record
+`complete`; a version-2 begin now carries the selection digest and the sorted
+approved plan indices, intents must follow those indices and completion needs
+every approved return. Legacy version-1 journals stay readable.
+
+The guarded core is the repository's only unlink path. Its preflight re-runs
+strict selection (fresh census, tracked inventory, ledger and pins) and requires
+equality with the saved selection, so authority is current at the moment of
+use. Each approved file is then reopened through its parent descriptor, which
+refuses symlink, foreign-volume and nested-Git ancestors; the candidate must
+still be untracked and its device, inode, mode, single link, size, mtime, ctime
+and digest must equal the plan's fact. The intent is flushed before the unlink,
+the return recorded after, and the file must be absent. A refusal, an unlink
+error or residue finishes the journal as failed at its stage with the count
+already removed; an interruption is recorded and propagates. The after-state
+must equal the plan minus the approved files, named by the same difference()
+that now makes stale verdicts explain themselves (D14).
+
+The identity check before unlink is defense in depth: the descriptor snapshot
+already refuses on any identity change, so the discriminating seam removes
+both lines together. Twelve tests and four omissions cover unlink errors,
+residue, a rewritten retained file during the attempt, a parent replaced by a
+symlink, a failed durable intent, interruption, an empty selection and the
+cold dry-run CLI, which has no delete option. Only owned fixture caches are
+ever removed; the supported act with the fresh host census is .14.
+
 ## _(2026-10-20 UTC)_ — select strictly against the published ledger (ARTIFACT-CLEANUP.17)
 
 AC0078 from clean 962c91c. The baseline at b18971e was measured before any
@@ -646,42 +676,4 @@ Focused17/books7/examples4/surfaces5/scope pass normal/O.
 Evidence target/p4-system-14/a42al. Promotion declined: existing source-closure,
 currentness and bounded-retention rules. Next commit declarations, then fresh
 Sail baseline/repeat/control, retain/evaluate outputs and complete full policy.
-
-## _(2026-10-19)_ — compose the finite DIV command (P4-SYSTEM.14 a42ak)
-
-capture_div now composes the exact native plan/dependencies/authority declaration
-from current validated views and the independently enumerated37-module/64-child
-source/data review. Nine principals plus64 children supply the separate73-input
-inventory; existing input/author/impact owners freeze it. One conservative edge
-per input reaches planned evidence; initial old/new projections are equal, with
-no earlier canonical capture claim. Selected retained identity and prepared image
-bind separately; live status/view hashes stay outside execution inputs.
-
-Raw schema/scoped graph precedes mapping/binding. Three native documents remain
-within64KiB each; --declare writes none and launches no reference. Five curated
-principals read twice at64KiB each, plus three64KiB declaration reads for capture,
-stay separate from existing review/tool I/O and combined128MiB/16MiB envelopes.
---capture requires all exact native predeclarations before delegating the existing
-combined helper with input/author/impact/property authorities. Operator commits
-source and declarations first; no Git attestation is invented. Measured record/
-findings return to the caller for bounded retention, with no qualification.
-
-The84-file copied runtime keeps parent cwd available. Synthetic executable pins
-are explicit fixture identities, not Sail. Three fresh processes, all27 source
-values, repeat bytes, wrong quotient, separate review findings and executable-
-absent offline evaluation compose successfully. Reuse refuses/preserves bytes;
-exit7 keeps a real baseline receipt and stops before repeat. First output-reuse
-fixture lacked its binary and correctly returned unavailable before freshness;
-install the synthetic binary before asserting reuse refusal. Declaration subcase
-cleanup now runs in finally; injected assertion failures prove independence.
-Unavailable input findings use CaptureUnavailable/OSError and retain the owner
-reason; do not infer a missing file from permission-denied or other I/O failures.
-
-17 controls x2/16 exact outcomes; omissions lose6/1/1/1/2/1/1,0 errors. Focused17,
-books7/examples3/surfaces5, legacy8+38 and scope/inverses pass normal/O. Six complete
-closed aj/aa/z records3566B retain source/owner inverses2/ten damaged refusals;
-whole DEV/CH entries5666B retained0369/0370. Evidence target/p4-system-14/a42ak.
-All caps fixed; no canonical outputs/reference run or CPU/board acceptance.
-Next curate/commit three exact native declarations, then fresh Sail/full policy.
-Promotion declined in leaf: existing source-closure/bounded-reader/authority rules.
 

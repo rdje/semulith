@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0079 (leaf ARTIFACT-CLEANUP.16) — unlink only what plan, selection and journal agree on
+
+New artifact_cleanup_guarded.py: preflight re-decides the strict selection,
+a version-2 journal binds the selection digest and approved indices, every
+file is revalidated through its parent descriptor immediately before unlink
+with the intent flushed first and absence required after, and the after-state
+must equal the plan minus the approved files. D14: stale verdicts name the
+first differing member. Guarded 12 tests/4 omissions, journal 29/11, planner
+27 normal/O; artifact gate 138 outcomes; literal arms 1641. CLI dry-run only;
+the operator act with the host census is .14. No real cleanup event.
+
 ## SEMULITH-AC-0078 (leaf ARTIFACT-CLEANUP.17) — select strictly against the published ledger
 
 New artifact_cleanup_selection.py re-censuses a published plan, intersects its
@@ -655,9 +666,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Pin complete1408 source identities and39 existing destinations; durable read-only replay and12 deliberate refusals pass normal/O. Publish a local graph/utility/field/debt/checker integration contract; complete semantic coverage and full adoption remain pending.
 - Retain caps/count107/health64 debt, canonical/profile/CPU and sealed histories. Book gains the contract read with only bounded duplicate navigation shortened; preserve whole old CH/DEV entries, source inverses and modes. Focused12/sharder12/seven books/rendered/literal checks and normal COMMIT required; .4i2 graph inventory next.
-
-## SEMULITH-LC-0021 (leaf LIVE-CONTAINMENT.4) — apply reviewed task count authority
-
-- Fresh same33 IDs/typed96 match the separate authority; two omissions refuse normal/O. Change only count96→107 plus a dated registry pointer; health64 warning debt/all other bounds stay fixed. Original107 breach1 becomes0; new108 breach1/65 advisory0.
-- Public guard green0 normal/O, enclosing real1407 exact; guard94 byte-identical. Whole DEV4026B→0290 retains104 prior entries; full source/history/protected inverses, focused12/sharder12/seven books/four reads/rendered pass. Book/owner/pointer agree; LIVE/CPU unchanged, full .4i containment adoption next.
 

@@ -214,6 +214,19 @@ class CohortTests(unittest.TestCase):
         p = self.plan(); self.file("target/debug/incremental/a/s/query-cache.bin")
         self.assertEqual(self.m.check_plan(self.root, p).disposition, "stale")
 
+    def test_stale_reason_names_the_first_differing_member(self):
+        cache = self.file("target/debug/incremental/a/s/dep-graph.bin", b"old")
+        retained = self.file("target/refs/reference.log", b"reference")
+        p = self.plan(); retained.write_bytes(b"changed!!")
+        finding = self.m.check_plan(self.root, p)
+        self.assertEqual(finding.disposition, "stale")
+        self.assertIn("retained: 0 gone, 0 new, 1 changed; first changed target/refs/reference.log (", finding.reason)
+        self.assertIn("sha256", finding.reason)
+        cache.unlink()  # Only this test's disposable fixture; the instrument has no delete API.
+        self.assertIn("candidates: 1 gone, 0 new, 0 changed; first gone target/debug/incremental/a/s/dep-graph.bin",
+                      self.m.check_plan(self.root, p).reason)
+        self.assertEqual(self.m.difference(p, p), "")
+
     def test_after_state_observes_fixture_removal_without_attribution(self):
         cache = self.file("target/release/incremental/a/s/dep-graph.bin")
         retained = self.file("target/release/reference.log")

@@ -25,9 +25,13 @@ SOURCE = ROOT / "scripts/artifact_cleanup_journal.py"
 MUTATION = None
 SEAMS = {
     "plan-binding": ('        need(record["plan_sha256"] == digest(A.encode_plan(plan)), "plan digest binding")\n', ''),
-    "intent-sequence": ('            need(progress.pending is None and index == progress.removed, "intent sequence")\n', ''),
-    "terminal": ('''        need(progress.pending is None and progress.removed == count and record["stage"] == "verified"
+    "intent-sequence": ('            need(progress.pending is None and index == expected, "intent sequence")\n', ''),
+    "terminal": ('''        need(progress.pending is None and progress.removed == total and record["stage"] == "verified"
              and record["failure"] is None, "incomplete terminal success")
+''', ''),
+    "approved-range": ('''            need(type(approved) is list and 0 < len(approved) <= MAX_APPROVED
+                 and all(type(index) is int and 0 <= index < count for index in approved)
+                 and approved == sorted(set(approved)), "approved index set")
 ''', ''),
     "exclusive": ('os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_APPEND',
                   'os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW | os.O_APPEND'),
@@ -57,6 +61,7 @@ TARGETS = {
     "poison": "test_zero_write_failure_poison_prevents_retry",
     "byte-bound": "test_oversized_bytes_refuse_before_framing",
     "terminal-tail": "test_tail_after_terminal_is_not_success",
+    "approved-range": "test_selection_bound_begin_shape_refuses",
 }
 
 
@@ -119,6 +124,50 @@ class JournalTests(unittest.TestCase):
         self.assertIn("not attested", report["claim_scope"])
         for fact in self.plan.candidates:
             self.assertEqual((self.root / fact.path).read_bytes(), b"retained fixture cache")
+
+    def test_selection_bound_attempt_follows_approved_indices_only(self):
+        binding = ("ab" * 32, (1,))
+        with self.j.start(self.root, self.work, actor_object=self.object, selection=binding) as writer:
+            self.assertEqual(self.outcome(writer.intent, 0)[0], "refused")
+            writer.intent(1); writer.removed(1)
+            self.assertEqual(self.outcome(writer.intent, 0)[0], "refused")
+            writer.finish("complete", "verified")
+        result = self.parsed()
+        report = self.j.report(self.plan, result)
+        self.assertEqual((result.progress.header.selection_sha256, result.progress.header.approved), ("ab" * 32, (1,)))
+        self.assertEqual((report["recorded_state"], report["recorded_paths"], report["recorded_unlink_returns"]),
+                         ("recorded-complete", [self.plan.candidates[1].path], 1))
+        self.assertEqual(report["planned_bytes_for_recorded_returns"], self.plan.candidates[1].byte_size)
+        for fact in self.plan.candidates:
+            self.assertEqual((self.root / fact.path).read_bytes(), b"retained fixture cache")
+
+    def test_selection_bound_begin_shape_refuses(self):
+        begin = json.loads(json.dumps(self.frames()[0]))
+        begin.update(format=self.j.SELECTED_FORMAT, selection_sha256="ab" * 32, approved=[0, 1])
+        self.assertEqual(self.outcome(self.j.decode, self.raw([begin]), self.plan)[0], "ok")
+        variants = []
+        for tag in ("digest", "empty", "range", "order", "duplicate", "type", "legacy-fields"):
+            record = json.loads(json.dumps(begin))
+            if tag == "digest": record["selection_sha256"] = "bad"
+            elif tag == "empty": record["approved"] = []
+            elif tag == "range": record["approved"] = [0, 2]
+            elif tag == "order": record["approved"] = [1, 0]
+            elif tag == "duplicate": record["approved"] = [0, 0]
+            elif tag == "type": record["approved"] = [0, True]
+            else: record["format"] = self.j.FORMAT
+            variants.append(self.outcome(self.j.decode, self.raw([record]), self.plan)[0])
+        self.assertEqual(variants, ["refused"] * 7)
+
+    def test_selection_bound_complete_requires_every_approved_return(self):
+        begin = json.loads(json.dumps(self.frames()[0]))
+        begin.update(format=self.j.SELECTED_FORMAT, selection_sha256="ab" * 32, approved=[0, 1])
+        raw = self.raw([begin, dict(kind="intent", index=0), dict(kind="removed", index=0),
+                        dict(kind="finish", result="complete", stage="verified", failure=None)])
+        self.assertEqual(self.outcome(self.j.decode, raw, self.plan)[0], "refused")
+        raw = self.raw([begin, dict(kind="intent", index=0), dict(kind="removed", index=0),
+                        dict(kind="intent", index=1), dict(kind="removed", index=1),
+                        dict(kind="finish", result="complete", stage="verified", failure=None)])
+        self.assertEqual(self.j.decode(raw, self.plan).progress.result, "complete")
 
     def test_pending_intent_and_missing_finish_remain_incomplete(self):
         with self.start() as writer: writer.intent(0)

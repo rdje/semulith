@@ -14,20 +14,20 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `ARTIFACT-CLEANUP` → `.16` (pending; guarded deletion core).
+- active_work_unit: `ARTIFACT-CLEANUP` → `.14` (pending; host-bound operator act).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `.17` / `SEMULITH-AC-0078` — strict selection beside the plan; P1 closed.
-- next_action: `.16` guarded deletion core: bind plan.json, selection.json and
-  the attempt journal; revalidate whole cohort and each file (identity, SHA,
-  tracked, same-volume non-Git parent) immediately before every unlink; retained/
-  residue post-checks and truthful partial outcomes; owned fixtures only, no
-  operator CLI or real cleanup until `.14`. Read the tree's `.16` goal first.
+- last_unit: `.16` / `SEMULITH-AC-0079` — guarded core, journal v2, D14 fixed.
+- next_action: `.14`: bind explicit caller quiescence and a fresh bounded
+  invocation of the public host census (`scripts/check_no_background_jobs.sh`,
+  UID/exemption/observation limits preserved) around the guarded core; add the
+  supported operator act (plan → select → census → remove → inspect) with truthful
+  partial/error outcomes and recovery examples; owned fixtures, no real event
+  needed. Then close the priority1 activity and return to P4 policy/status.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none requiring director input. The next narrative rollover is a
   new generation through the same transition contract.
-- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0078`
-  (D12/D13 baseline, actual selection `target/artifact-cleanup/AC0078-c`);
+- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0079`;
   the real ledger is `target/artifact-cleanup/output-provenance.json`.
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

@@ -23,7 +23,7 @@ self_test() {
     local python=(python3 -B)
     [ "$mode" = normal ] || python+=(-O)
     out="$("${python[@]}" scripts/probe_artifact_cleanup.py 2>&1)"; rc=$?
-    score "GREEN $mode cohort controls" "$rc" 0 "$out" '26 tests / 0 failures / 0 errors'
+    score "GREEN $mode cohort controls" "$rc" 0 "$out" '27 tests / 0 failures / 0 errors'
     for mutation in release-strays tracked-ownership hash-budget root-binding plan-shape \
                     exclusive-output head-inventory directory-recheck volume-before-open git-volume-before-read; do
       out="$("${python[@]}" scripts/probe_artifact_cleanup.py --mutation "$mutation" 2>&1)"; rc=$?
@@ -34,8 +34,8 @@ self_test() {
     out="$("${python[@]}" scripts/probe_legacy_artifact_cleanup.py --mutation source-pin 2>&1)"; rc=$?
     score "RED $mode historical source pin" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     out="$("${python[@]}" scripts/probe_artifact_cleanup_journal.py 2>&1)"; rc=$?
-    score "GREEN $mode attempt journal" "$rc" 0 "$out" '26 tests / 0 failures / 0 errors'
-    for mutation in plan-binding intent-sequence terminal exclusive parent file barrier poison byte-bound terminal-tail; do
+    score "GREEN $mode attempt journal" "$rc" 0 "$out" '29 tests / 0 failures / 0 errors'
+    for mutation in plan-binding intent-sequence terminal exclusive parent file barrier poison byte-bound terminal-tail approved-range; do
       out="$("${python[@]}" scripts/probe_artifact_cleanup_journal.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode journal $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
@@ -61,6 +61,12 @@ self_test() {
       out="$("${python[@]}" scripts/probe_artifact_cleanup_selection.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode selection $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
+    out="$("${python[@]}" scripts/probe_artifact_cleanup_guarded.py 2>&1)"; rc=$?
+    score "GREEN $mode guarded core" "$rc" 0 "$out" '12 tests / 0 failures / 0 errors'
+    for mutation in guard-revalidate guard-residue guard-postcheck guard-intent; do
+      out="$("${python[@]}" scripts/probe_artifact_cleanup_guarded.py --mutation "$mutation" 2>&1)"; rc=$?
+      score "RED $mode guarded $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
+    done
   done
   printf 'ARTIFACT-COHORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -75,6 +81,7 @@ git ls-files --error-unmatch -- scripts/artifact_cleanup.py scripts/probe_artifa
   scripts/artifact_output_provenance.py scripts/probe_artifact_output_provenance.py \
   scripts/artifact_cargo.py scripts/probe_artifact_cargo.py \
   scripts/artifact_cleanup_selection.py scripts/probe_artifact_cleanup_selection.py \
+  scripts/artifact_cleanup_guarded.py scripts/probe_artifact_cleanup_guarded.py \
   scripts/probe_c_engine.py scripts/probe_c_guest_image.py >/dev/null 2>&1 || {
   echo 'ARTIFACT-COHORT: REFUSED — instrument and controls must be tracked' >&2; exit 2; }
 echo 'ARTIFACT-COHORT: bounded planning/checking controls green; no real cleanup'

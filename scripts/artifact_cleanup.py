@@ -104,7 +104,8 @@ Plans include immutable file identities/digests, scoped exclusions, current
 instrument identity and tracked-path inventory digest. Checking re-enumerates
 the complete declared cohort. `--check-after` observes that selected files are
 absent and retained bytes/identities remain; it does not establish who acted.
-Changed or missing cohort members cannot establish successful equality.
+Changed or missing cohort members cannot establish successful equality; a
+stale verdict names the first differing group, member and fields.
 
 The fixed ceilings are 65,536 recorded files/exclusions, 262,144 directories,
 4,194,304 visited entries, depth 96, 512 MiB per hashed file and 32 GiB of
@@ -621,18 +622,35 @@ def decode_plan(raw: bytes) -> Plan:
         raise CleanupError("refused", "invalid plan: " + type(error).__name__) from error
 
 
+def difference(expected: Plan, actual: Plan) -> str:
+    """Name the first way two plans differ, ignoring creation time; empty when equal."""
+    actual = replace(actual, created_utc=expected.created_utc)
+    if actual == expected:
+        return ""
+    for name in ("format", "workdir", "scopes", "limits", "device", "tracked_sha256", "instrument", "strays"):
+        if getattr(expected, name) != getattr(actual, name):
+            return name + " differs"
+    for group in ("candidates", "retained", "excluded"):
+        before = {item.path: item for item in getattr(expected, group)}
+        after = {item.path: item for item in getattr(actual, group)}
+        gone, new = sorted(set(before) - set(after)), sorted(set(after) - set(before))
+        changed = sorted(path for path in before if path in after and before[path] != after[path])
+        if gone or new or changed:
+            kind, first = (("gone", gone[0]) if gone else ("new", new[0]) if new else ("changed", changed[0]))
+            detail = ("" if kind != "changed" else " (" + ",".join(
+                f.name for f in fields(before[first]) if getattr(before[first], f.name) != getattr(after[first], f.name)) + ")")
+            return f"{group}: {len(gone)} gone, {len(new)} new, {len(changed)} changed; first {kind} {first}{detail}"
+    return "plans differ"
+
+
 def check_plan(root: Path, plan: Plan, *, phase="before") -> Finding:
     try:
         need(phase in {"before", "after"}, "invalid check phase")
         plan = decode_plan(encode_plan(plan))
         fresh = make_plan(root, workdir=plan.workdir, scopes=plan.scopes, limits=plan.limits)
-        if phase == "before":
-            matched = replace(fresh, created_utc=plan.created_utc) == plan
-        else:
-            matched = (not fresh.candidates and fresh.retained == plan.retained and fresh.excluded == plan.excluded
-                       and fresh.device == plan.device and fresh.tracked_sha256 == plan.tracked_sha256
-                       and fresh.instrument == plan.instrument and fresh.strays == plan.strays)
-        need(matched, "scoped cohort or authority changed", "stale")
+        expected = plan if phase == "before" else replace(plan, candidates=())
+        detail = difference(expected, fresh)
+        need(not detail, "scoped cohort or authority changed: " + detail, "stale")
         return _summary(plan, reason="scoped " + phase + " state matches; no process attribution")
     except CleanupError as error:
         return Finding(error.disposition, error.reason)

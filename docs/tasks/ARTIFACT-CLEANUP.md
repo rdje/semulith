@@ -506,7 +506,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   at highest priority for deletion readiness. No submodule implementation use.
 
 - ID: `ARTIFACT-CLEANUP.16` — **anchored guarded deletion and journal integration**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0079`)
   Goal: after .17 bound output ownership, add whole-cohort/per-file SHA/identity/tracked
   and same-volume/non-Git parent revalidation immediately before each unlink.
   Connect durable intent/outcome records; retained/residue post-checks and known
@@ -517,6 +517,15 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   selections went stale on one growing run log inside the census scope and only
   an ad-hoc plan diff showed it. Make check_plan report the first differing member
   and count, with a control, before .16's unlink path relies on stale verdicts.
+
+  Result (`2026-10-20` UTC, `SEMULITH-AC-0079`): artifact_cleanup_guarded.py is
+  the only unlink path: its preflight re-decides the strict selection and must
+  match the saved one; a version-2 journal binds the selection digest and the
+  approved indices; each file is revalidated through its parent descriptor
+  (identity, digest, single link, tracked state) immediately before unlink with
+  the intent flushed first and absence required after; the after-state must
+  equal the plan minus the approved files. D14 fixed: stale verdicts name the
+  first differing member. Only --dry-run is public; the operator act is .14.
 
 - ID: `ARTIFACT-CLEANUP.17` — **bind real build observations and plan selection**
   Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0078`)
@@ -633,7 +642,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.16` | `pending` | guarded deletion core bound to plan, selection and journal |
+| 1 | `ARTIFACT-CLEANUP.14` | `pending` | bind the fresh host census and publish the supported operator act around the guarded core |
 
 ## Decisions
 
@@ -656,6 +665,33 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.16)
+
+- [x] **REPRODUCE / ISSUE** — grep -c "os.unlink" scripts/artifact_cleanup.py
+  scripts/artifact_cleanup_journal.py scripts/artifact_cleanup_selection.py at
+  6740f24 = 0 each: plan, selection and journal existed with no unlink path
+  binding them, and a stale verdict named nothing (D14).
+- [x] **ROOT CAUSE (WHY + WHERE)** — git show 6740f24:scripts/artifact_cleanup_journal.py
+  | grep -c "index == progress.removed" = 1: intents were bound to the whole
+  plan's order, so a selection-restricted attempt could never finish `complete`;
+  git show 6740f24:scripts/artifact_cleanup.py | grep -c '"scoped cohort or
+  authority changed"' = 1: check_plan's stale reason was that constant
+  (actual-selection-quiescent.log).
+- [x] **FIX** — journal v2 begin binds selection digest and approved indices;
+  guarded core re-decides the selection, revalidates per file through the
+  parent descriptor, flushes intent before unlink, requires absence and a
+  plan-minus-approved census; difference() names the first stale member.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
+  rc=0: ARTIFACT-COHORT --self-test: 138 pass / 0 fail. Guarded 12 tests
+  normal/O with 4 omissions, journal 29 with 11, planner 27 with 10, each
+  omission 1 failures / 0 errors; fixture removals leave legacy rows, inputs
+  and logs byte-exact and the journal recorded-complete at verified.
+- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
+  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
+  literal self-test arms 1639 → 1641 re-derived by DERIVED-COUNTS.
+- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
+  tree (frontier .14), index, MEM/DEV/CH; history heads sharded.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.17)
 
@@ -719,10 +755,13 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.16` | guarded 12 tests normal/O; 4 omissions; journal 29/11; planner 27; artifact138 | fixture unlinks exact, journaled and verified; D14 fixed; dry-run only public |
 | `2026-10-20` UTC | `.17` | selection 11 tests normal/O; 5 omissions; artifact128; actual select | 9 approved / 10 unrecorded on the real tree; D12/D13 fixed; P1 closed |
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0079 (leaf ARTIFACT-CLEANUP.16): unlink only what plan, selection and journal agree on` — guarded core, journal v2, D14; .14 operator act next.
 
 `SEMULITH-AC-0078 (leaf ARTIFACT-CLEANUP.17): select strictly against the published ledger` — selection record beside the plan, D12/D13 fixed, P1 closed; .16 guarded core next.
 
@@ -730,5 +769,6 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-20` UTC: .16 verified; guarded core and selection-bound journal land, dry-run only; no operator deletion yet.
 - `2026-10-20` UTC: .17 verified; strict selection publishes beside the plan; no deletion authority added.
 - `2026-10-20` UTC: .23 verified; second ledger generation retained, live narrative reset. No cleanup authority changed.
