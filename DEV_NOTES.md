@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — bind public Cargo invocations (ARTIFACT-CLEANUP.20)
+
+AC0074 splits .17 at a safe command boundary. The actual producer launch
+extractor observes both old commands: absolute manifest, CARGO_TARGET_DIR only,
+no explicit build.build-dir. The new control fails1/0errors before integration.
+The shared helper now emits the exact13-argument public command accepted by the
+existing per-file record protocol. Both target and intermediate paths retain
+c-engine-build/c-guest-image-build; no historical output path is moved.
+
+The helper validates runtime agreement, the public Git root/inventory boundary,
+source/manifest snapshots and source/input/output/store/temp ancestors before
+launch. Ambient Cargo/compiler/Git overrides are removed; Cargo home and temp
+stay on-volume. Project Cargo configuration/build inputs remain trusted, and
+the installed Rust toolchain is a necessary read-only external dependency.
+No arbitrary configuration interpreter or build sandbox is claimed. Descriptor
+and source/manifest checks repeat after the child; caller quiescence remains a
+precondition. Each pipe is capped8MiB, elapsed time300seconds. The owned session
+is killed and its leader joined after ordinary completion and every interrupted,
+overflowing or timed-out run, including closed-pipe children. Partial captured
+bytes cannot become a successful returned observation.
+
+Controls:17 tests normal/O, eight targeted omissions each1failure/0errors;18
+new outcomes bring ARTIFACT-COHORT to94. A cold copied actual Cargo build generates
+incremental outputs and preserves a seeded cache-shaped input byte-exact, while
+publishing no provenance. Both actual repository producers pass: engine18 tests,
+guest2 tests. The descendant test uses an owned start/completion witness rather
+than ps, which the restricted environment refuses; removing the group kill lets
+that child publish its completion witness and loses one assertion. Its finally
+block terminates exactly the observed owned child. Two pipe subcases aggregate
+into one failure for the gate's singular-omission contract. Initial incomplete
+control attempts remain diagnostic; the final complete94-outcome run is green.
+
+No ledger, candidate-selection or deletion operation changes here. .21 owns
+anchored before/after capture, complete helper/producer pins and atomic current
+ledger publication; .17 then fixes P1 with strict plan selection. .16 journal/core
+and .14 fresh host workflow still precede operator mutation. Historical source,
+plans, events and original native capture remain unchanged. External policy
+review: README/containment/guide diff21f4d3d..HEAD empty; claim source SHA9f99df25
+unchanged. No source policy adoption is needed in this slice.
+
 ## _(2026-10-20 UTC)_ — retain the completed cleanup ledger (ARTIFACT-CLEANUP.19)
 
 Own AC0073 after clean839e931/brief0/actual host census OK. The task family has
@@ -646,49 +686,4 @@ Three whole ag records2311B retain source/owner inverses2/seven damaged refusals
 DEV0364 keeps one complete oldest5213B entry. All old caps preserved. LIVE derives
 1619arms only;42routes,CPU14/18,BOARD10/12,replay4/4green unchanged.
 Normal COMMIT applies.
-
-## _(2026-10-19)_ — terminate cyclic contract ancestry (P4-SYSTEM.14 a42ag)
-
-P1 found while reviewing the next DIV authority-selection prerequisite. A raw
-schema-valid backward extends edge v0→v1, with v1 already inheriting v0, made
-both the real CONTRACT-FREEZE judge and public gate_report.contract_measure
-exceed a two-second reproduction deadline. Kill/join both owned process groups;
-retain the exact changed contract and before-owner commit/digests. The freeze
-judge recorded a VERSION GAP but continued an unguarded walk. The public measure
-checked unique version numbers but also walked the cyclic chain indefinitely.
-
-Add a visited-version set to each owner. CONTRACT-FREEZE returns EXTENDS CYCLE
-while retaining other findings; the selected effective-contract walk raises its
-existing SystemExit refusal with CONTRACT CYCLE before registry measurement.
-The identical original fixture now returns1/named refusal from both owners.
-Valid inheritance, frozen pins, supersession and realized pairs remain unchanged.
-Four controls exercise the real judge/public measure with three schema-valid
-cycle shapes and an independently recounted acyclic baseline, normal/O. Each
-guard omission loses exactly three assertions with0 errors. The diagnostic's
-three-second deadline kills and joins a hanging omission; it is not a production
-runtime guarantee. Existing CONTRACT-FREEZE self-test13/0 and gate-report24/0
-pass. Copied74-file runtime/views pass both modes without binary or.materials.
-
-Resolved local observer defect from a42af: strict UTF-8 decoding of global ps
-output raised on an unrelated byte0xe9. The ignored read-only monitor now uses
-replacement decoding; a focused synthetic regression confirms owned ASCII
-PID/command selection and reproduces strict-decoding failure without processes
-or changing the previous receipt. This instrument issue is closed.
-
-Keep the canonical authority entrypoint/manifest/inventory/impact work next;
-no capture, qualification or acceptance credit. Reviewed producer population
-remains35modules/27data/63children/66files; changed gate-report bytes require the
-normal later source review. Promotion declined: existing bounded traversal,
-canonical authority and observer rules. Retain whole closed task/history records;
-caps stay fixed. An initial book placement exceeded known family/member ceilings;
-move the complete new1768B teaching to the bounded capture-plan chapter and restore
-both old chapters byte-exact. No cap raised. Correct a new retrieval summary from
-six to the original emitter receipt's five examples; full retained bodies unchanged.
-
-Validation:17 focused checks, seven books, one complete two-mode example and three
-rendered surfaces pass.1564 protected files/1Gitlink/91 complete prior entries exact;
-production differs only by two guards/registration, all old probes exact. Six
-whole af/ac records3112B retained with3 inverse stages/eight damaged refusals;
-DEV0363 preserves one oldest3810B entry. LIVE derives1617arms only;42routes,
-CPU14/18,BOARD10/12,replay4/4green unchanged. Normal COMMIT applies.
 

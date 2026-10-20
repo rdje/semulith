@@ -8,7 +8,6 @@ replaces only the evaluator with a committed predecessor for the RED control.
 from __future__ import annotations
 
 import argparse
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -16,6 +15,7 @@ import tempfile
 import tomllib
 
 import gen_definition as G
+import artifact_cargo
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -72,11 +72,7 @@ def main():
         assert isinstance(dep, str), 'probe must follow the core dependency declaration'
         (root / 'Cargo.toml').write_text('[package]\nname = "c-engine-probe"\nversion = "0.0.0"\nedition = "2021"\n'
                                       '[workspace]\n[dependencies]\nrustc_apfloat = "' + dep + '"\n')
-        env = dict(os.environ, CARGO_HOME=str(REPO / '.app-data/cargo-home'),
-                   CARGO_TARGET_DIR=str(parent / 'c-engine-build'), TMPDIR=str(parent))
-        run = subprocess.run(['cargo', 'test', '--offline', '--manifest-path', str(root / 'Cargo.toml'),
-                              '--lib', 'c_engine::', '--', '--nocapture'], cwd=REPO, env=env,
-                             capture_output=True, text=True)
+        run = artifact_cargo.run('scripts/probe_c_engine.py', root / 'Cargo.toml')
         print(run.stdout)
         if run.returncode:
             print(run.stderr)

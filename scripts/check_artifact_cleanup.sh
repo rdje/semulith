@@ -46,6 +46,12 @@ self_test() {
       out="$("${python[@]}" scripts/probe_artifact_output_provenance.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode provenance $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
+    out="$("${python[@]}" scripts/probe_artifact_cargo.py 2>&1)"; rc=$?
+    score "GREEN $mode Cargo boundary" "$rc" 0 "$out" '17 tests / 0 failures / 0 errors'
+    for mutation in build-root environment root-binding source-recheck manifest-recheck pipe-bound group-join group-kill; do
+      out="$("${python[@]}" scripts/probe_artifact_cargo.py --mutation "$mutation" 2>&1)"; rc=$?
+      score "RED $mode Cargo $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
+    done
   done
   printf 'ARTIFACT-COHORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -57,6 +63,8 @@ self_test || { echo 'ARTIFACT-COHORT: REFUSED — self-test stopped discriminati
 git ls-files --error-unmatch -- scripts/artifact_cleanup.py scripts/probe_artifact_cleanup.py \
   scripts/probe_legacy_artifact_cleanup.py scripts/fixtures/artifact_cleanup_0067.py.txt \
   scripts/artifact_cleanup_journal.py scripts/probe_artifact_cleanup_journal.py \
-  scripts/artifact_output_provenance.py scripts/probe_artifact_output_provenance.py >/dev/null 2>&1 || {
+  scripts/artifact_output_provenance.py scripts/probe_artifact_output_provenance.py \
+  scripts/artifact_cargo.py scripts/probe_artifact_cargo.py \
+  scripts/probe_c_engine.py scripts/probe_c_guest_image.py >/dev/null 2>&1 || {
   echo 'ARTIFACT-COHORT: REFUSED — instrument and controls must be tracked' >&2; exit 2; }
 echo 'ARTIFACT-COHORT: bounded planning/checking controls green; no real cleanup'

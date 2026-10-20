@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -22,6 +21,7 @@ import gen_definition as G
 import gen_guests as Q
 import records_sexp as R
 from riscv_asm import Assembler
+import artifact_cargo
 
 REPO = Path(__file__).resolve().parent.parent
 MIXED = ['c.li x1, -32', 'addi x2, x1, 1', 'c.addi x2, 1',
@@ -146,11 +146,7 @@ fn a_word_image_keeps_its_bytes_and_reads_two_parcels_when_c_binds() {
                                        '[dependencies]\nrustc_apfloat="' + dep + '"\n')
         (root / 'Cargo.toml').write_text('[package]\nname="c-guest-image-probe"\nversion="0.0.0"\nedition="2021"\n'
                                        '[workspace]\n[dependencies]\nsemulith-core={path="core"}\n')
-        env = dict(os.environ, CARGO_HOME=str(REPO / '.app-data/cargo-home'),
-                   CARGO_TARGET_DIR=str(parent / 'c-guest-image-build'), TMPDIR=str(parent))
-        run = subprocess.run(['cargo', 'test', '--offline', '--manifest-path', str(root / 'Cargo.toml'),
-                              '--lib', 'run_rv64gc::tests::', '--', '--nocapture'],
-                             cwd=REPO, env=env, capture_output=True, text=True)
+        run = artifact_cargo.run('scripts/probe_c_guest_image.py', root / 'Cargo.toml')
         print(run.stdout)
         if run.returncode:
             print(run.stderr)

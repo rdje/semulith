@@ -14,28 +14,22 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.19` / SEMULITH-AC-0073 verified retention.
-- **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: .17 binds successful actual public Cargo observations to .15
-  provenance and strict current plan selection. P1 remains open: path/name is
-  not generation. Preserve unknown inputs, existing output paths and historical
-  plans; read current producers/codec/planner/journal/probes and shared book first.
-  Split safe direct numeric leaves if needed. Then .16 core/journal, .14 host CLI,
-  P4 full policy/status; method satisfied, full qualification still pending.
-- evidence: target/artifact-cleanup-0073; four immutable plain-Markdown/descriptor
-  files119258B retain source839e931/76937B and exact38046B suffix (overlap, loss0).
-  Root-relative object locators/one pointer/all19 nodes; raw narrative bounds,
-  source/prefix and both publishing views; completed live history preserved.
-  40 tests normal/O/18 omissions each1 failure/0 errors,38 outcomes; D6-D10 closed.
-  D9 fixed new descriptor/fixture addressing; generic guard unchanged. D10's two
-  old DEV counters restored from committed source. Keep later edits within the
-  new unit entry; prove every old byte/order. Failed first hook retained as
-  commit-attempt-1.log; normal hooks stay mandatory, with no old cap raise.
-  Focused17/books7/native3/scope21/protected1468/1Gitlink/97 old entries;7210B
-  whole0388/0389. Read docs/artifact-cleanup-history/README.md for both products.
-- blockers: none requiring director input. No mutation API/new cleanup event.
-  Original37/native3/41514B/canonical observations/events exact. CPU14/18,
-  BOARD10/12,replay4/4green;40 doctrines/1635 arms/44 destinations.
-  D79/D80 LC.4; runtime P2 P4 a42ab. No push below300;244 before AC0073.
-  Always target/tmp as TMPDIR. Latest cleanup2026-10-19T23:07:45.637459Z unchanged.
-  New narrative:16KiB health/32KiB ceiling,75% warning/90% rollover-before-growth.
+- active_work_unit: `ARTIFACT-CLEANUP` → `.21`, successful build capture/publication.
+- last_unit: `ARTIFACT-CLEANUP.20` / `SEMULITH-AC-0074`, explicit Cargo command boundary.
+- next_action: bind anchored before/after facts and complete recorder/helper/producer
+  source identities to successful real public builds; publish bounded merged ledgers
+  atomically, preserving unknown/unchanged inputs and existing output paths. Then .17
+  strict current-plan selection, .16 journal/core and .14 host CLI before P4 policy/status.
+- in_flight_uncommitted: none after the normal commit workflow.
+- blockers: none requiring director input. P1 remains open until .17 is verified;
+  no supported mutation API or new cleanup event. Historical plans/evidence unchanged.
+- evidence: `target/artifact-cleanup-0074`; bound commands/actual engine18 and guest2
+  pass. Seventeen fixture tests normal/O and eight omissions per mode discriminate;
+  cold copied Cargo preserves an unchanged cache-shaped input. No output authority
+  is published by this slice. Source/manifest checks and bounded process-group join
+  are command observations, not loaded-code/race attestation.
+- continuity: AC0073 retained ledger/source and all completed live history stay exact.
+  Read `docs/artifact-cleanup-history/README.md` for both Markdown products. Current
+  cleanup is derived from `docs/ARTIFACT_CLEANUP.md`; original37/native3/capture exact.
+  CPU14/18, BOARD10/12, replay4/4green; full qualification remains pending.
+  Use target/tmp as TMPDIR; push cadence derives with `scripts/check_push_cadence.sh --status`.

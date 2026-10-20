@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0074 (leaf ARTIFACT-CLEANUP.20) — bind public Cargo commands and output roots
+
+Both C producers use explicit unchanged Cargo target/intermediate roots, relative
+manifests and isolated on-volume storage. Bounded capture/deadline and owned
+process-group termination/join cover completion, interruption and failures;
+source/manifest/root/ancestor checks surround each invocation.17 tests normal/O,
+eight failing omissions per mode and actual engine18/guest2 pass. Cold Cargo
+preserves an unchanged cache-shaped input. ARTIFACT-COHORT94 outcomes;40 doctrines,
+1637 literal arms. Capture/publication .21 and strict selection .17 remain; P1
+open, no new deletion authority/event, CPU/board/replay unchanged.
+
 ## SEMULITH-AC-0073 (leaf ARTIFACT-CLEANUP.19) — retain the completed cleanup ledger in bounded Markdown
 
 Retain the full76937B predecessor and exact38046B completed ledger as directly
@@ -630,9 +641,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D55 by retaining the complete original authority and appending its source-pinned correction:151 prior+9 LAN files=160/845819B. The147 subtotal came from partial UART staging; every original bound and raise rationale stands.
 - Verify four closed inventories/complete member deltas, real1402 identities, source/history/protected inverses and genuine receipt refusals normal/O; focused/seven books and three literal reads pass. Index/book/pointer agree; LIVE/CPU unchanged, separate capacity review next.
-
-## SEMULITH-LC-0016 (leaf LIVE-CONTAINMENT.4) — contain navigation before capacity authority
-
-- Shorten nine duplicated summaries after complete canonical reads/27 clause comparisons; INDEX15526→13122B recovers2404B, leaving2674B for separately reviewed authority. Keep every target/type/order, corrected D51 row and canonical record exact; no cap change.
-- Preserve104 prior entries through whole DEV3668B/CH1417B rollover and combined damaged-receipt refusals; verify full inverses, protected identities, focused/seven books and literal reads. Own D55's stale147+13 composition as immediate next correction: committed sources prove151+9=160. LIVE/CPU unchanged.
 
