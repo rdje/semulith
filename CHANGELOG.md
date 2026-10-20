@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0050 (leaf LIVE-CONTAINMENT.4) — re-derive the decisions-family bound a second time
+
+Slice (k), routed in from ARTIFACT-CLEANUP.23: the byte axis fired again with
+only an index row added, after 26 records in eleven days and none in eight
+while two units withheld records to fit. Reviewed authority
+`docs/decisions/decision_decisions-family-second-rederivation.md` lands with
+the registry row: 160 files / 524,288 B, health 64 / 278,528, per-part 16,384
+unchanged; the index's per-part ceiling is the next bite. Evidence
+target/live-containment/lc0050. Next: P4-SYSTEM retention capacity.
+
 ## SEMULITH-AC-0081 (leaf ARTIFACT-CLEANUP.24) — the first recurring cleanup through the supported act
 
 Plan, strict selection, `--delete` under a fresh host census and `--inspect` in
@@ -669,10 +679,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Immutable5bdaa14:33 roots/34 source pins/205 numeric declarations; actual archived range checked.14 refusals normal/O and two copied omissions/failed-source refusals. Twelve actual public cases/mode qualify D59 source decoding and D64 punctuated-count repair; current guard code unchanged.
 - D62 live method18/18 becomes19/19; D63 live/closed P3 eight/eight becomes six done plus one conditional. Source tasks/archives/caps/CPU unchanged. Whole history/source/protected inverses and focused/seven-book/rendered checks required; preserve closed task units for headroom before code repair.
-
-## SEMULITH-LC-0024 (leaf LIVE-CONTAINMENT.4) — correct live composition progress
-
-- D58: composition closed six leaves on 2026-09-27; repair the stale In Progress/2/6 row to Done with explicit guarded progress. Tree closure claims no accepted processor or board.
-- D61: join two Foundation table breaks; all21 rows must render as table cells in normal and print output, rather than12 rows of literal pipe prose.
-- D60: same-total/wrong-completed control closes a measured omission gap; 12 prior arms preserved, 13 pass, derived project total1519. Seven public cases/mode and copied omission qualify normal/O; D59 broader source/ratio repair is priority1 next. Whole history/protected/book inverses and focused checks required; caps/CPU unchanged.
 

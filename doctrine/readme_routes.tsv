@@ -348,7 +348,16 @@ docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives 
 #               STAYS 16,384 — a record becoming a monolith is still the bite signal.
 #               Reviewed decision:
 #               docs/decisions/decision_decisions-family-aggregate-rederivation.md.
-docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	48	163840	80	262144	16384
+# Re-derivation, LIVE-CONTAINMENT.4 slice (k) / SEMULITH-LC-0050 (2026-10-20), when the AGGREGATE
+#   axis fired again at 262,242 > 262,144 with only an index row added (ARTIFACT-CLEANUP.23's
+#   withdrawn record): docs/decisions/ 61 files / 262,031 B at b70b2f5 — 26 records landed
+#   2026-10-02..12 and none for eight days after, two units withholding or editing records to
+#   fit. Measured alternatives: superseded partition (2 records, both superseded in part,
+#   8,829 B), a second terminal (layer C forks), duplicates (none). Both axes 2× again;
+#   health just above the 62 / 265,307 B measurement. PER-PART STAYS 16,384 — the index
+#   (13,234 B / 59 rows) is the member that bites next, by its own partition. Reviewed decision:
+#               docs/decisions/decision_decisions-family-second-rederivation.md.
+docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	64	278528	160	524288	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
 docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
 # Derivation, MODEL-BOOKS.1 (2026-09-29), when the per-unit model books got their home:

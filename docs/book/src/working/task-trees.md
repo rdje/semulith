@@ -43,7 +43,7 @@ even when asked to pivot immediately.
 
 `KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.
 `MEMORY.md` selects the next action. Source-pinned checks cover33 tasks,
-59 decisions and29 lesson cards. Fresh current replay:
+60 decisions and29 lesson cards. Fresh current replay:
 
 ```sh
 python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source

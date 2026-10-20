@@ -92,6 +92,7 @@
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
 - [`decision_decisions-family-aggregate-rederivation.md`](docs/decisions/decision_decisions-family-aggregate-rederivation.md)
+- [`decision_decisions-family-second-rederivation.md`](docs/decisions/decision_decisions-family-second-rederivation.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_derived-members-of-bounded-families.md`](docs/decisions/decision_derived-members-of-bounded-families.md)
 - [`decision_device-applicability-by-declared-vehicle.md`](docs/decisions/decision_device-applicability-by-declared-vehicle.md)

@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — the decisions family re-derived a second time (LIVE-CONTAINMENT.4k)
+
+LC0050 after b70b2f5, clean tree and `handoff: OK`. The routed-in finding
+reproduced exactly: with only the new record's index row added, the route
+checker reported OVER CEILING docs/decisions/: 262287 > 262144. The census
+behind the decision: 59 records, 26 of them landed 2026-10-02..12 and none in
+the eight days since, while two units withheld or edited records to fit —
+the cap was already suppressing layer C. The alternatives the routing asked
+for were measured before the 2× re-derivation: the two superseded records are
+superseded in part (8,829 B, still cited), a second terminal forks layer C,
+and no duplicate exists. The lesson is not new; it is the first record's
+grounds observed a second time, so it stays in the tree (promotion declined).
+What is new is the measurement that the next bite is the index's per-part
+ceiling (13,234 B at 59 rows), which an index partition must answer, and the
+next containment unit is the P4 tree's own retention capacity: its file,
+its complete-records artifact and the task family are all within 200 B or
+0 files of their ceilings, so P4.14 a42ap cannot record itself yet.
+
 ## _(2026-10-20 UTC)_ — the first cleanup through the supported act (ARTIFACT-CLEANUP.24)
 
 AC0081 after cfca1c2, clean tree and `handoff: OK`, at 23 h under the roughly
