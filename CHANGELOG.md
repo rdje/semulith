@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0068 (leaf ARTIFACT-CLEANUP.11) — track bounded cleanup plans
+
+Add a bounded immutable cache planner/checker with exclusive output, fixed root,
+public HEAD/index protection and descriptor boundary checks. Release caches are
+separate from retained strays; no cache deletion API in this slice.24 fixture
+tests normal/O plus ten independently failing omissions per mode:22 outcomes.
+Register ARTIFACT-COHORT, toolbox and shared CLI/book usage; derive40 doctrines
+and1627 literal arms. Preserve original capture and cleanup event identities;
+guarded deletion/partial results remain .12. Focused16/books7/normal-print/
+actual read-only plan-check and complete source/history/scope proof pass; whole
+0378/0379 retain3504B. No latest-cleanup receipt change.
+
 ## SEMULITH-AC-0067 (leaf ARTIFACT-CLEANUP.10) — remove due caches and retain method evidence
 
 Remove18 known untracked Cargo incremental caches/78250724B after six normal/O
@@ -599,9 +611,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Correct D50: generated map retains all33 task links under "Task-tree files"; metadata derives six active trees. Generator/map/book inverses preserve all other bytes.
 - Restore MEMORY to a selected action and canonical routes; audit removed detail to eight existing homes. Keep all old history entries, archive bytes, fixed caps and LIVE/CPU state exact. Full containment inventory/adoption and capacity remedy remain LC.4.
-
-## SEMULITH-P4-0248 (leaf P4-SYSTEM.14) — preserve published ordinary task history
-
-- Add separate HEAD/index/working archive byte/mode preservation. All43 controls pass normal/O; nine omissions lose6/8/2/1/1/1/1/1/1 assertions with zero errors. Retain original46 sealed controls and reader; TASK-HISTORY48, derived total1441.
-- Actual full-gate replay rejects the same staged part18 receipt accepted before repair; real index/1392 working identities/proposed index and pinned sources stay exact, owned index residue0. Sync current teaching/counts; preserve historical bytes and fixed caps, with no CPU or qualification credit.
 

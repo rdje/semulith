@@ -14,18 +14,20 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` full source/risk/feature policy and status integration.
+- last_unit: `ARTIFACT-CLEANUP.11` / SEMULITH-AC-0068 bounded planning/checking.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: after AC0067 normal COMMIT/brief0/exact postconditions/actual host
-  census, own the next safe P4 policy/status slice on clean state. Read P4 a42,
-  EVIDENCE_POLICY and model method-adequacy chapter. P4-0283 committed59e210a:
-  finite method satisfied/full policy pending/replay not checked by the consumer.
-  Preserve original37 producer modules/native3/all canonical observations/results;
-  never rerun historical names. Review task-family/head capacity before ownership.
-- in_flight_uncommitted: derive Git on read; AC0067 owns normal commit workflow
-  under target/artifact-cleanup-0067.18 caches removed/78250724B; immediate
-  residue0 and18121 retained files exact. No deletion remains to repeat.
-- blockers: none requiring director input. CPU14/18,board10/12,replay4/4green;
-  D79/D80 remain LIVE-CONTAINMENT.4, runtime P2 in P4 a42ab. No push below300
-  without director's act; cadence238 before this cleanup commit. Always derive
-  TMPDIR from repository target/tmp. Latest cleanup timestamp is in its record.
+- next_action: complete .12 guarded deletion/partial results in the tracked tool,
+  with actual public host-census precondition and owned fixture controls only.
+  Read .11/.12 and shared CLI/book usage; no real cleanup event needed. Commit
+  separately before full P4 policy/status. Durable-instrument activity remains
+  priority1 until .12 closes; never relabel historical AC0067 helper/receipt.
+- last_evidence: target/artifact-cleanup-0068.26 tests normal/O,22 guard outcomes,
+  focused16/books7/source-history proof and actual read-only plan/check pass.
+  Native3/41514B exact; scope18/protected1447/1Gitlink/98 whole old entries.
+  Native0378/0379 retain3504B; all caps fixed. No cache delete API yet.
+- blockers: none requiring director input. Preserve original37 producer modules,
+  native3 and canonical observations. Finite method satisfied/policy pending;
+  no consumer replay/requirement credit. CPU14/18,BOARD10/12,GC replay4/4green.
+  D79/D80 remain LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab. No push below300;
+  239 before AC0068. Always repository target/tmp as TMPDIR. Latest cleanup time
+  is in docs/ARTIFACT_CLEANUP.md; this instrument unit does not reset its timer.

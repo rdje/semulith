@@ -1,5 +1,54 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — durable bounded cleanup plans (ARTIFACT-CLEANUP.11)
+
+The AC0067 helper and controls existed only in ignored target, contrary to
+TOOLBOX first-class instrument requirements. Own the priority1 repair before
+P4 policy. The exact legacy helper on an owned release-cache fixture selected
+one file and simultaneously labeled it stray; deleting it made the retained
+stray post-check fail without a result receipt. AC0067 had debug caches only;
+its historical event/helper/receipt remains exact. Plan/check slice .11 first;
+anchored delete/partial outcomes .12 next, without another real cleanup event.
+
+Add stdlib artifact_cleanup and tracked copied-fixture probe/gate. Bound the
+complete selected bin/log projection, paths/counts/depth/hash bytes/JSON/source
+and public Git reads. Fix runtime root before Git and publication; use both HEAD
+and index tracked inventories, Unicode/case aliases and hard-link protection.
+Descriptor traversal checks same-device/non-symlink/non-Git boundaries before
+and after operations. Source identity is current file bytes, not loaded-code
+attestation; no atomic snapshot/peak RAM claim. Immutable closed plan and
+exclusive output in reserved target/artifact-cleanup, excluded from census.
+Unknown files retained; release/deps strays belong only to the retained set.
+No deletion operation yet. After-state equality observes state, not its actor.
+
+Review controls found a test-only os.stat patch missing the runtime capability
+set; fix the fixture, retain the production check. Add pre-traversal depth
+checks, descriptor-close-error coverage and canonical shared-ancestor exclusions.
+Public progress reader accepts direct numeric IDs; nested .11.1/.11.2 refused
+foreign leaf. Use .11/.12 under the owned activity, leave the reader unchanged.
+26 tests normal/O and ten separately failing guard omissions per mode yield
+22 exact outcomes. No actual cache/input/repository metadata is modified by tests.
+
+D2 review: a declared foreign-device fixture opened one directory before
+refusal. Stop the owned pending commit terminal143; HEAD568234a unchanged.
+Move device rejection before open; retain after-open identity/device checks.
+The new copied control sees0 opens; omitting it loses1 assertion/0 errors.
+Known foreign Git markers also refuse before any public query, independently controlled.
+All26 tests normal/O and22 outcomes reverified before recommit.
+
+Register ARTIFACT-COHORT and all mirrors. Public enumeration derives40 doctrines
+and1627 literal self-test sites, not the22 expanded outcomes. Book adds only a
+shared source include plus a compact doctrine row:524281/524288 authored bytes.
+Toolbox near-cap row points to full help/book; old text and fixed caps preserved.
+Focused16 checks pass; seven fresh books/normal-print new and old teaching exact.
+Actual CLI plan/check matched18 candidates/78250715B and18219 retained files/
+152775548B, plan6836479B. Early check refused missing plan; join planner before
+repeat. Scope18/protected1447/1 opaque Gitlink/98 whole old entries;0378/0379
+retain3504B. Full task/index inverses2, book inverses2/governance inverses4; all
+capacities/native capture/input bytes exact. Staged checks then normal COMMIT.
+Final Git-marker scope:6/46717788B match; current source identity exact.
+Promotion declined: existing policies apply.
+
 ## _(2026-10-19 UTC)_ — retain method evidence during due cleanup (ARTIFACT-CLEANUP.10)
 
 Prior2026-10-18T23:00:27Z is over24h old. Own .10 from clean59e210a after
@@ -656,46 +705,4 @@ Validation:13 focused checks/seven books and whole-source/history/cap/rendered
 proof normal/O pass.1545 other files/1Gitlink/92 prior entries preserved; exact
 task/index inverses and latest normal/print receipt. DEV0355 retains one complete
 oldest4336B entry; fixed caps, source teaching and all statuses unchanged.
-
-## _(2026-10-18)_ — separate retained input and publication authority (P4-SYSTEM.14 a42aa)
-
-The v1 property case authenticated the whole acquired M page and derived current
-source authority from the same input row. P4-0268 curated the exact licensed DIV
-span under a separate pin, but integration was deliberately pending. Split these
-identities explicitly: v2 keeps RVI-M/original35588B publication SHA as semantic
-authority and requires RVI-M-DIV-STATEMENT/1576B retained HTML as its normative
-child. Guest,27 boundaries, prefix words, -3 quotient/-4 control, requirement and
-obligation fingerprints stay exact. Unknown/v1 selection is unsupported; the old
-full page cannot replace the excerpt. No canonical run used v1.
-
-Extend the independently reviewed capture roots with retain_div_statement, whose
-ordinary import closure is already reviewed. The route consumes the retained
-asset; it does not run extraction or need its original source/licence cache pages.
-Check case input metadata against the extractor's retained pin and check the
-original publication authority separately. Review35 modules,27 exercised data,
-63 proposed children and66 files/946190B. Copy exactly that set to an on-volume
-root without .materials: normal/O reports agree; changed bytes refuse1, missing
-bytes are unavailable2. The64-child ceiling stays fixed, with one entrypoint slot.
-
-The composition fixture now copies/authenticates the actual tracked excerpt,
-using the real bounded reader for all23 files; remove the primary-page double.
-Observations and expected-author fixture identity remain synthetic. Missing or
-changed excerpt bytes stop before property binding. Each declared file is read
-once, with existing128MiB read/16MiB snapshot limits. The new cache-free smoke
-prints pending/matched/x7=-3; no reference process is run. Draft assertion used
-FileFact.id; correct it to record_id and its nested pin before verification.
-
-Preserve complete closed y/z records in the existing task-claims partition, with
-source/owner inverses and damaged-refusal controls; keep all old history and
-source fields/statuses exact. Update current book contracts/examples and toolbox.
-Canonical manifest/entrypoint/retained output family, carried collection read
-charge, complete policy and qualification remain the next work. No CPU/BOARD
-advance;39doctrines/1606 literal arms unchanged. Promotion declined: existing
-source-identity, review, authentication and retention contracts already apply.
-
-Validation:28 property controls/29 omissions,22 composition controls/14 omissions,
-25 review controls/13 omissions;118 normal/O runs,0 errors. Focused16/seven books/
-three complete examples pass.1535 other files/1Gitlink/92 old history entries and
-all other case facts exact; source/owner inverse2,6 damaged refusals. CH0354 keeps
-two whole-oldest entries; fixed caps and all gate statuses preserved.
 

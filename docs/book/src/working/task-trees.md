@@ -38,6 +38,8 @@ censuses/retained-input checks in its tree and retain evidence/dependencies.
 
 {{#include ../../../ARTIFACT_CLEANUP.md:latest}}
 
+{{#include ../../../../scripts/artifact_cleanup.py:usage}}
+
 ## Orientation and the selected next action
 
 `KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.

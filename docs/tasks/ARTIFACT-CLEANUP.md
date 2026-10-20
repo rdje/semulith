@@ -5,7 +5,7 @@
 - Tree ID: `ARTIFACT-CLEANUP`
 - Status: `active`
 - Roadmap lane: cross-cutting maintenance; session-directive §8 (cleanup ~every 24 h, tracked in `docs/ARTIFACT_CLEANUP.md`)
-- Gate: none of its own — housekeeping kept honest by the doctrine enforcer and the census it records
+- Gate: ARTIFACT-COHORT checks bounded planning; actual cleanup still requires its separately recorded census/preflight workflow
 - Created: `2026-09-26`
 - Owner: repo-local workflow
 
@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -342,11 +342,95 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   owned output root. Latest normal/print receipt and focused13/seven books/source-history proof pass.
   Later builds may regenerate caches/update logs; this is the immediate event.
 
+### Priority1 activity — make cleanup instruments durable
+  Status: `active`
+  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`
+  Goal: fix the verified workflow defect before returning to P4 policy/status.
+  Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
+  rc=1; tracked scripts/*cleanup* census empty; cache-name search in scripts/
+  .githooks/docs/toolbox has no canonical implementation. The reused5815B helper
+  SHA0396e669f9b798f010dcbe67b5f3462497afbcff478d353c7d989b9b2bd307e9
+  and its normal/O controls live only in ignored target. Fresh checkout cannot
+  execute the documented protocol. Root cause: recurring scratch copies were
+  reused without promoting first-class instruments under TOOLBOX.md lines13/31.
+  Own from clean568234a, AC0067 exact8 files/normal hooks/brief0/actual census OK.
+  Read public cleanup/task/claim/locality/book/toolbox/gate interfaces before code.
+  Add a tracked bounded same-volume safe-cohort tool and fixture controls; retain
+  complete cohort/per-file preflight, no symlink/nested-Git/foreign-device walks,
+  untracked known Cargo incremental class only, and unknown/input preservation.
+  Malformed/stale plans must refuse before deletion; preserve distinct failures
+  and measured partial outcomes. Separate read-only planning/checking from an
+  explicit delete action. Tests use owned on-volume fixtures; no new real cleanup
+  event is needed. Register public usage/toolbox/book and appropriate focused/CI
+  checks, normal/O discriminating controls and cold copied-runtime validation.
+  Preserve old event/receipts: AC0067 was run with its original helper, not a later
+  implementation. Keep producer37/native3/canonical capture/statuses/fixed caps
+  exact; no submodule or other-repository write. Own all activity under
+  target/artifact-cleanup-0068, scope/history/retention/live docs and normal COMMIT.
+  Split safe subunits if interface review requires it, commit each before next.
+  promotion: declined (existing tools-first/reproducibility policy; repairs adoption).
+
+  Owned defect D1 (reproduced2026-10-20): legacy release incremental caches
+  are both selected and stray. reproduce-release.py rc=0: one owned fixture
+  selected=stray=1; --delete unlinks it, then raises post-delete census differs,
+  with no result receipt. safe() admits release/incremental, while census()
+  records every release descendant as stray; the post-check expects that list
+  unchanged. Fix classification disjointness and preserve explicit partial
+  outcomes. Actual AC0067 contained only debug caches; its event stays unchanged.
+
+- ID: `ARTIFACT-CLEANUP.11` — **tracked bounded planning and checking**
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0068`)
+  Goal: AC0068 first safe slice: scripts/artifact_cleanup.py read-only cache
+  planning/checking plus an owned plan output, tracked fixture probe and gate.
+  Explicit bounded counts/bytes/depth/path/JSON/Git reads; one repository volume,
+  descriptor traversal, no symlink or nested-Git inspection; complete tracked-file
+  inventory from public Git with exact runtime-root match, no parent fallback.
+  Snapshot file identities/digests and disjoint selected/retained populations;
+  release-cache D1 must discriminate. Strict immutable plan decoding and source
+  identity, pre/post-state checking, exclusive repository-relative plan output.
+  No cache deletion API or command in this slice. CI uses on-volume owned fixtures
+  only; normal/O positives/guard omissions/cold copied CLI. Register one focused
+  artifact-cohort gate, toolbox and shared book/CLI teaching; derive live counts.
+  Preserve all old producer/capture bytes and original task/history/caps; normal
+  COMMIT before .12. Output target/artifact-cleanup-0068, no real cleanup event.
+  Public task_source.py accepts direct numeric leaves only; initial .11.1/.11.2
+  refused foreign leaf before judgment. Use direct .11/.12 without weakening it.
+  Owned D2: volume-open-before.log rc=0 measured one unnecessary directory open
+  for a declared simulated foreign-device scope, before identity refusal. WHERE:
+  OwnedRoot.directory checks device only after os.open/fstat. Repair .11 now:
+  reject before.st_dev before opening, retain after-open race/identity checks;
+  add a discriminating copied-fixture control. No real foreign data was read.
+  Stopped only this pending commit and its descendants before publication,
+  terminal143; HEAD remains568234a. Reverify current leaf before normal COMMIT.
+  Fixed:26 tests normal/O pass; all22 outcomes exact. Each device-order guard
+  omission loses one assertion/0 errors. Positive fixtures perform no foreign
+  directory open or public query; retain later race/device checks too.
+  Same D2 at public Git: git-volume-before.log rc=0 measured one metadata
+  query despite a known foreign-device .git marker. Add marker-device check
+  before public Git queries; preserve later indirect metadata-path validation.
+  Own the additional copied fixture and guard omission in this same leaf.
+  Final source-bound real narrow plan/check:6 candidates/46717788B matched;
+  all six file facts are exact from the earlier default-cohort observation.
+
+- ID: `ARTIFACT-CLEANUP.12` — **guarded deletion and measured partial outcomes**
+  Status: `pending`
+  Goal: after .11 clean commit, add explicit deletion through anchored parent
+  descriptors, whole-cohort/per-file identity revalidation, retained-data and
+  selected-residue post-checks. Bind caller quiescence to the public host census
+  workflow; preserve known removed paths and failure state on partial outcomes.
+  Complete CLI/book examples and tests for release caches, changed/missing data,
+  process/identity failures and interrupted operation. Never relabel old events
+  or delete real cache data merely to test the new implementation. Retain the
+  original5815B AC0067 helper as an authenticated passive fixture for historical
+  review and exact release-D1 reproduction; distinguish it from the new API.
+  Own separate safe slice(s), verification and normal COMMIT; then close the
+  durable-instrument activity and return to P4.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| — | — | — | all ten leaves done; next cleanup time-triggered (~24 h) |
+| 1 | `ARTIFACT-CLEANUP.12` | `pending` | guarded deletion/partial results complete the priority1 repair |
 
 ## Decisions
 
@@ -474,10 +558,49 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 - [x] **NO REGRESSION** — focused.py/verify.py rc=0:13 focused checks/seven books;1452 protected files/1Gitlink/97 predecessor entries exact, task/index inverses2 and normal/print latest receipt. Normal COMMIT/actual census follow.
 - [x] **LOCKSTEP** — verify.py rc=0:latest record/task/index/MEM/CH/DEV/book include agree; source teaching/LIVE/caps unchanged. Native0377 retains636B whole predecessor; promotion declined: standing safe-cohort/locality/history contracts.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.11)
+
+- [x] **REPRODUCE / ISSUE** — git ls-files --error-unmatch
+  target/artifact-cleanup-0067/cleanup.py rc=1; tracked cleanup census empty.
+  The legacy release fixture selected=stray=1, then unlinked and failed its
+  post-check without a receipt. reproduce-release.py rc=0 owns this observation;
+  tracked probe test_release_cache_is_not_a_retained_stray preserves the case.
+- [x] **ROOT CAUSE (WHY + WHERE)** — TOOLBOX.md requires tracked instruments.
+  Legacy safe() selects release caches while census() labels all release bins
+  as retained strays. Release D1 is disjoint in artifact_cleanup.make_plan;
+  deletion/partial-outcome repair stays explicitly ARTIFACT-CLEANUP.12.
+  bash scripts/check_artifact_cleanup.sh --self-test checks this classification.
+- [x] **FIX** — tracked immutable bounded planning/checking and exclusive plan
+  publication only. Fixed runtime root; public HEAD/index inventory protects
+  tracked aliases; descriptor traversal refuses boundary changes. Explicit
+  per-pass limits, strict JSON, source identity and retained/selected separation.
+  Ten copied-source guard omissions fail their own assertion without errors;
+  no production mutation switch and no delete API. Shared CLI/book usage.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh
+  --self-test:22 pass/0 fail, normal/O26 tests each; ten targeted omissions
+  each1 failure/0 errors. Copied CLI uses valid parent cwd and no local Git
+  metadata, refuses parent fallback; fake public Git exercises success without
+  creating/modifying another repository. Actual CLI plan/check matched18 caches/
+  78250715B and18219 retained files/152775548B;6836479B plan; no deletion.
+- [x] **NO REGRESSION** — focused16 checks rc=0, including scripts/check_seam_integrity.sh
+  and normal/O ARTIFACT-COHORT. Native3/41514B exact; seven books built, normal/
+  print teaching verified. Scope18/protected1447/1 opaque Gitlink;98 whole old
+  entries preserved, native0378/0379 retain3504B. Complete task/index inverses2,
+  book inverses2/governance inverses4; fixed capacities and original inputs exact.
+  D2 pre-open device check reverified26 tests normal/O/22 exact outcomes.
+  Final Git-marker scoped CLI plan/check6/46717788B matches the current source
+  and six earlier default-plan file facts. Staged checks follow before commit.
+- [x] **LOCKSTEP** — task/index/MEM/CH/DEV/LIVE, governance/toolbox mirrors and
+  shared book usage synchronized. Derived40 doctrines/1627 literal arms;42 routes,
+  CPU14/18/BOARD10/12/replay4/4green unchanged. Normal COMMIT closes the unit.
+  No latest-cleanup overwrite:
+  this is an instrument change, not a new cleanup event.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.11` | focused16;26 tests normal/O/ten omissions each; actual plan/check; books7; whole source/history inverses |22 exact outcomes; scope18/protected1447/1Gitlink/98 old entries;3504B whole0378/0379; no real deletion; staged checks and normal COMMIT follow |
 | `2026-10-19` UTC | `.10` | saved-cohort plan/check/delete; six normal/O controls; pre-delete actual census |18/78250724B removed; immediate residue0;18121/152718645B retained exact; focused13/books7/source-history/rendered receipt verified |
 | `2026-10-18` UTC | `.9` | cleanup.py plan/check/delete; six normal/O preflights; actual pre-delete census |177/674371444B removed, immediate residue0;16764/145405416B retained exact; focused13/seven books/source-history inverses/normal-print receipt rc=0 |
 | `2026-10-16` | `.7` | cleanup.py plan/check/delete; four normal/O refusal controls; actual pre-delete census; focused12/sharder12/seven books; whole source/history/cap/rendered verification |18/77596881B removed, immediate residue0;10701/131474223B retained byte/hash-exact; original book source and latest normal/print receipt verified |
@@ -509,6 +632,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
+
+`SEMULITH-AC-0068 (leaf ARTIFACT-CLEANUP.11): track bounded cleanup planning` —26 fixture tests normal/O,22 guard outcomes, actual read-only plan/check; no new cleanup event. Guarded deletion/partial results remain .12.
 
 `SEMULITH-AC-0067 (leaf ARTIFACT-CLEANUP.10): remove due incremental caches and retain method evidence` —18/78250724B removed, immediate residue0;18121 retained exact.
 
@@ -590,3 +715,5 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 - `2026-09-26`: Created. First leaf opened the same day, because the record file §8 names did not
   exist — the trigger condition "file does not exist → run a cleanup during this session" fired.
+
+- `2026-10-20` UTC: `.11` bounded planning/checking verified, full original task/history/source retained. Early actual check refused missing plan while planning still ran; joined planner before repeat, then actual cohort matched. No cache deletion. Initial os.stat capability fixture and direct numeric task syntax corrected without weakening production guards. Complete staged checks/normal COMMIT; .12 stays next before P4.

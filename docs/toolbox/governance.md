@@ -15,6 +15,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 | `scripts/qualify_query_consumers.py` | do catalogue/history queries preserve whole source bytes, membership, reads and refusals? | `python3 scripts/qualify_query_consumers.py --output target/NEW`; normal/O, `--working-code --require-clean`; graph-census artifact retains all263 outcomes and3+7 controls plus working catch omission |
 | `scripts/qualify_orientation_indexes.py` | do map/index readers retain complete members and failure verdicts; do real repair omissions fail? | `python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/PATH`; normal/O; legacy replay remains explicit |
 | `scripts/check_doctrines.sh` | which doctrine is breached, and where? (the whole registry, one verdict per rule) | `make gate` |
+| `scripts/artifact_cleanup.py` | cache cohort? | `--help`; book task-trees |
 | `scripts/check_delivery_provenance.sh` | has a delivered file drifted from the bytes we were given, and is every manifest row's treatment declared? | `scripts/check_delivery_provenance.sh` |
 | `scripts/check_fixture_fingerprints.sh` | does every pinned `sha256` still describe the file it names? | `scripts/check_fixture_fingerprints.sh` |
 | `scripts/check_readme_routes.sh` | are routed destinations governed and bounded; do reads refuse unavailable evidence and registry rows reject bad arity, paths or numeric limits? | `scripts/check_readme_routes.sh` |
