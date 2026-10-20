@@ -17,16 +17,18 @@
 - active_work_unit: `ARTIFACT-CLEANUP` → `.17` (pending; strict plan selection).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `.21` / `SEMULITH-AC-0076` — anchored capture, atomic publication.
+- last_unit: `.23` / `SEMULITH-AC-0077` — second ledger generation, narrative reset.
 - next_action: make the planner consult the published ledger through
   `authorize(require_captured=True)` so only recorded generated outputs become
   candidates (closes cleanup finding P1); historical plans stay readable with
   no new mutation authority; cover absent/stale/legacy ledgers, cold CLI,
-  omissions normal/O. Read the tree's `.17` goal first; then `.16` core, `.14` CLI.
+  omissions normal/O; fix D12 (failed builds retire absent rows) and D13 (ctime
+  drift from rustc hard-link seeding) first. Then `.16` core, `.14` CLI.
 - in_flight_uncommitted: none after the normal commit workflow.
-- blockers: none requiring director input. `.23` owns the live-narrative
-  rollover when the reader's 75% warning fires.
-- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0076`;
+- blockers: none requiring director input. The next narrative rollover is a
+  new generation through the same transition contract.
+- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0077`,
+  D12/D13 measurements `target/artifact-cleanup-0078`;
   the real ledger is `target/artifact-cleanup/output-provenance.json`.
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

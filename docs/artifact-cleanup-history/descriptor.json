@@ -1,28 +1,57 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "kind": "artifact-cleanup-ledger",
-  "source": "839e9313d79105a079ac73e2259011c761c2d5ce",
-  "source_path": "docs/tasks/ARTIFACT-CLEANUP.md",
-  "source_mode": "100644",
-  "source_git_oid": "31d99d8689a4403c39c0f4b5d274d21a130ae2c8",
-  "recorded_on": "2026-10-20",
-  "owner": "ARTIFACT-CLEANUP.19",
-  "predecessor": {
-    "object": "docs/artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md",
-    "bytes": 76937,
-    "lines": 942,
-    "sha256": "b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471"
-  },
-  "retired_suffix": {
-    "object": "docs/artifact-cleanup-history/ledger-2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055.md",
-    "bytes": 38046,
-    "lines": 384,
-    "sha256": "2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055"
-  },
-  "suffix_offset": 38891,
-  "unretained_bytes": 0,
-  "front_sha256": "f3e9c105f09cb205c29bd7ccb062c5522ad6a6f030bca817cd65bd75b4ffc770",
   "live_path": "docs/tasks/ARTIFACT-CLEANUP.md",
+  "generations": [
+    {
+      "source": "839e9313d79105a079ac73e2259011c761c2d5ce",
+      "source_path": "docs/tasks/ARTIFACT-CLEANUP.md",
+      "source_mode": "100644",
+      "source_git_oid": "31d99d8689a4403c39c0f4b5d274d21a130ae2c8",
+      "recorded_on": "2026-10-20",
+      "owner": "ARTIFACT-CLEANUP.19",
+      "predecessor": {
+        "object": "docs/artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md",
+        "bytes": 76937,
+        "lines": 942,
+        "sha256": "b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471"
+      },
+      "retired_suffix": {
+        "object": "docs/artifact-cleanup-history/ledger-2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055.md",
+        "bytes": 38046,
+        "lines": 384,
+        "sha256": "2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055"
+      },
+      "suffix_offset": 38891,
+      "unretained_bytes": 0,
+      "front_sha256": "f3e9c105f09cb205c29bd7ccb062c5522ad6a6f030bca817cd65bd75b4ffc770",
+      "predecessor_pointer": null
+    },
+    {
+      "source": "b18971eeea61fdcce6f428693916f4f00b145ba6",
+      "source_path": "docs/tasks/ARTIFACT-CLEANUP.md",
+      "source_mode": "100644",
+      "source_git_oid": "5d231fe14d4d4f9e1840b1a22e24c729a910e243",
+      "recorded_on": "2026-10-20",
+      "owner": "ARTIFACT-CLEANUP.23",
+      "predecessor": {
+        "object": "docs/artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md",
+        "bytes": 58246,
+        "lines": 826,
+        "sha256": "ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4"
+      },
+      "retired_suffix": {
+        "object": "docs/artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md",
+        "bytes": 13433,
+        "lines": 186,
+        "sha256": "db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63"
+      },
+      "suffix_offset": 44813,
+      "unretained_bytes": 0,
+      "front_sha256": "1881b17c6eb22de95c36deac96bb325373eda6158c253b79c6c568952c552806",
+      "predecessor_pointer": "7838ebec414f4fb29cf3181da3c1e4b97658712acc78785d07ba27629f7e975f"
+    }
+  ],
   "narrative_health_bytes": 16384,
   "narrative_ceiling_bytes": 32768,
   "section_ceiling_bytes": {

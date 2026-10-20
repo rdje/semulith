@@ -1,5 +1,43 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — second ledger generation (ARTIFACT-CLEANUP.23)
+
+AC0077 from clean b18971e. The reader reported 12,947 live narrative bytes with the
+75% warning raised, and the next checklist would have crossed the 90% line where
+ordinary growth refuses. The generation-1 design pinned one source, one owner and
+one descriptor digest and froze the four-file directory, so a rollover was
+structurally impossible without an owned transition.
+
+The descriptor becomes schema 2 with a generations list. Each entry keeps the
+generation-1 fields plus its own front-page digest and a predecessor_pointer: the
+digest of the descriptor it superseded, which the reader re-derives from the
+retained entries (`encoding`) rather than storing old descriptors. A later
+generation's retired suffix must begin with the previous generation's exact pointer
+and its predecessor prefix must preserve the earlier graph, so the chain
+authenticates itself without Git. The current descriptor must equal its canonical
+encoding. The publisher accepts exactly one new generation per transition: HEAD is
+the source, HEAD's live task is the predecessor, earlier objects stay byte-exact in
+staged and working views, and the owner's state plus the frontier are the only
+prefix changes. Generation 2 retains the b18971e predecessor (58,246 B) and its
+13,433 B suffix; the live narrative resets to this leaf's own records.
+
+Controls: 45 tests normal/O and 20 omissions, each one failure and zero errors; the
+new seams are the canonical-encoding check and the one-generation count rule. A
+first earlier-generation freeze seam could not discriminate because the chain
+digest and object digests already pin every earlier object; it was removed. The registry row is re-derived to 6 files / 192,801 B under
+this leaf's authority; the per-part bound stays 76,937. A decision record was
+drafted first and withdrawn: README-ROUTING-CLOSURE fired OVER CEILING on
+docs/decisions/ (262,242 > 262,144 B with only its index row added), the family
+is past its warning with no owner, and raising a ceiling to land content is the
+failure the registry header names. The pressure is routed to LIVE-CONTAINMENT.4
+slice (k); the trimmed draft is retained in target/artifact-cleanup-0077.
+
+Owned for .17, measured after AC0076's commit: D12, the hook's deliberately failing
+mutation builds publish nothing while rustc still garbage-collects recorded session
+directories, so the ledger names files that no longer exist; D13, rustc hard-links
+the previous session's files into the next one, moving ctime on unchanged recorded
+inodes so exact-fact matching rejects them. Evidence: target/artifact-cleanup-0078.
+
 ## _(2026-10-20 UTC)_ — capture and atomically publish bound build outputs (ARTIFACT-CLEANUP.21)
 
 AC0076 resumes PNT from clean 47d69ef on the director's instruction. The
@@ -657,17 +695,4 @@ boundary prevented changing its permission selector; no setting was altered.
 After COMMIT return to P4.14 execution/authorities.
 Evidence target/live-containment/history-rollover; promotion declined (existing
 finite archive, bounded-reader and source-preservation contracts).
-
-## _(2026-10-19)_ — review current authority loaders (P4-SYSTEM.14 a42aj)
-
-Review the public authority API alongside the producer route:37 modules,27
-execution data,13 current views/39 unique data,64 children,79 files. Trace
-Path.open before delegation, reject writes/processes, bind returned view facts.
-Keep live views outside flat execution pins; outer and nested snapshot/tool I/O
-contracts stay separate.31 controls pass normal/O;18 guard omissions discriminate
-with0 errors (five new guards lose1 each). Copied79-file reports match both modes;
-legacy authority18/three omissions remain exact. Whole history/task records and
-Fix adjacent prepared-input35/63 teaching drift to37/64; rendered check added.
-No capture/qualification.17 focused/seven books/one example/four surfaces and scope
-pass. target/p4-system-14/a42aj; normal COMMIT.
 

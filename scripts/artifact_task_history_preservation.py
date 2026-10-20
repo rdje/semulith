@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Authenticate first publication; preserve immutable and live history in both views.
+"""Authenticate each generation transition; preserve immutable and live history in both views.
 
 Only this publishing gate uses Git. Published terminal identity is compared to
 HEAD, so later checks work in shallow clones without fetching the source commit.
+A transition adds exactly one generation: HEAD must be its source, HEAD's live task
+its predecessor, every earlier object stays byte-exact and the live prefix survives.
 """
 from __future__ import annotations
 
@@ -19,7 +21,7 @@ WIRING = ('scripts/artifact_task_history.py',
           'scripts/probe_artifact_task_history.py', 'scripts/check_task_history.sh',
           'doctrine/readme_routes.tsv', 'docs/book/src/working/task-trees.md',
           'docs/toolbox/artifacts.md', 'docs/doctrines/governance.md')
-MAX_FILES = 16
+MAX_FILES = 32
 MAX_BLOB = 262144
 MAX_BYTES = 1048576
 require = A.require
@@ -97,17 +99,17 @@ def snapshot(root, revision):
     return result
 
 
-def original_prefix(raw, row):
-    exact = A.pointer(row)
+def original_prefix(raw, entry):
+    exact = A.pointer(entry)
     require(raw.count(exact) == 1, 'cleanup publishing pointer differs')
     return raw.split(exact)[0]
 
 
-def first_transition(source, current, row):
-    """Everything before the retired suffix survives, except owned state/frontier."""
-    old = source[:row['suffix_offset']]
-    now = original_prefix(current, row)
-    pattern = rb'(- ID: `ARTIFACT-CLEANUP\.19`\n  Status: )[^\n]+\n'
+def first_transition(source, current, entry):
+    """Everything before the retired suffix survives, except the owner's state and the frontier."""
+    old = source[:entry['suffix_offset']]
+    now = original_prefix(current, entry)
+    pattern = rb'(- ID: `' + re.escape(entry['owner']).encode() + rb'`[^\n]*\n  Status: )[^\n]+\n'
     require(len(re.findall(pattern, now)) == 1, 'cleanup transition owner is ambiguous')
     now = re.sub(pattern, rb'\g<1>`pending`\n', now, count=1)
     start, end = b'## Current Frontier\n', b'## Decisions\n'
@@ -119,9 +121,9 @@ def first_transition(source, current, row):
     require(now == old, 'cleanup transition lost or changed predecessor prefix')
 
 
-def preserve_ledger(before, after, row):
+def preserve_ledger(before, after, entry):
     """New entries prepend; completed acceptance/log bytes stay exact and ordered."""
-    exact = A.pointer(row)
+    exact = A.pointer(entry)
     previous, proposed = before.split(exact)[1], after.split(exact)[1]
 
     def split(raw):
@@ -143,37 +145,45 @@ def preserve_ledger(before, after, row):
         require(new_lines[:lines] == old_lines[:lines]
                 and b''.join(new_lines[lines:]).endswith(b''.join(old_lines[lines:])),
                 'published cleanup ' + kind + ' history changed')
-    A.preserve_graph(original_prefix(before, row), original_prefix(after, row))
+    A.preserve_graph(original_prefix(before, entry), original_prefix(after, entry))
 
 
 def judge(previous, proposed, working, wiring_previous, wiring_proposed, wiring_working):
+    """Return True for a generation transition, False for an ordinary published commit."""
     terminal = lambda view: {name: value for name, value in view.items() if name.startswith(A.PREFIX)}
     row, bodies = A.validate_terminal(terminal(working))
+    latest, count = row['generations'][-1], len(row['generations'])
     require(A.LIVE in working and working[A.LIVE][0] == '100644',
             'working cleanup live task missing/mode differs')
-    A.validate_live(working[A.LIVE][1], row, bodies['predecessor'])
-    birth = A.INDEX not in previous
-    if not birth:
-        A.validate_terminal(terminal(previous))
+    A.validate_live(working[A.LIVE][1], row, bodies)
+    held = terminal(previous)
+    previous_count = A.generation_count(held[A.INDEX][1]) if A.INDEX in held else 0
+    require(previous_count in {count, count - 1}, 'cleanup generation count differs from the committed terminal')
+    transition = previous_count == count - 1
+    if not transition:
+        A.validate_terminal(held)
         require(A.LIVE in previous and previous[A.LIVE][0] == '100644',
                 'published cleanup live task missing/mode differs')
-        A.validate_live(previous[A.LIVE][1], row, bodies['predecessor'])
-        require(terminal(proposed) == terminal(previous), 'published cleanup staged terminal changed')
-        require(terminal(working) == terminal(previous), 'published cleanup working terminal changed')
+        A.validate_live(previous[A.LIVE][1], row, bodies)
+        require(terminal(proposed) == held, 'published cleanup staged terminal changed')
+        require(terminal(working) == held, 'published cleanup working terminal changed')
         for label, view in [('staged', proposed), ('working', working)]:
             require(A.LIVE in view and view[A.LIVE][0] == '100644', label + ' cleanup live task missing/mode differs')
-            A.validate_live(view[A.LIVE][1], row, bodies['predecessor'])
-            preserve_ledger(previous[A.LIVE][1], view[A.LIVE][1], row)
+            A.validate_live(view[A.LIVE][1], row, bodies)
+            preserve_ledger(previous[A.LIVE][1], view[A.LIVE][1], latest)
     else:
-        require(previous.get(A.LIVE) == (row['source_mode'], bodies['predecessor']),
+        if previous_count:
+            # Every earlier object is pinned by the chain the working terminal already passed.
+            A.validate_terminal(held, pin=latest['predecessor_pointer'], generations=previous_count, front=False)
+        require(previous.get(A.LIVE) == (latest['source_mode'], bodies[-1]['predecessor']),
                 'cleanup first publication source bytes/mode differ')
-        first_transition(bodies['predecessor'], working[A.LIVE][1], row)
+        first_transition(bodies[-1]['predecessor'], working[A.LIVE][1], latest)
         changed = proposed != previous or wiring_proposed != wiring_previous
         if changed:
             require(proposed == working, 'cleanup first publication staged/working views differ')
             require(set(wiring_proposed) == set(WIRING) and wiring_proposed == wiring_working,
                     'cleanup first publication wiring incomplete or differs')
-    return birth
+    return transition
 
 
 def check(root):
@@ -185,26 +195,27 @@ def check(root):
     working_wiring = {name: A.Q.read_file(root, name, MAX_BLOB) for name in WIRING}
     data = lambda view: {name: value for name, value in view.items() if name not in WIRING}
     wiring = lambda view: {name: value for name, value in view.items() if name in WIRING}
-    birth = judge(data(previous_all), data(proposed_all), working,
-                  wiring(previous_all), wiring(proposed_all), working_wiring)
-    if birth:
-        require(head == A.SOURCE, 'cleanup first publication source commit differs')
-        require(previous_all.get(A.LIVE) == (row['source_mode'], bodies['predecessor']),
+    transition = judge(data(previous_all), data(proposed_all), working,
+                       wiring(previous_all), wiring(proposed_all), working_wiring)
+    if transition:
+        latest = row['generations'][-1]
+        require(head == latest['source'], 'cleanup first publication source commit differs')
+        require(previous_all.get(A.LIVE) == (latest['source_mode'], bodies[-1]['predecessor']),
                 'cleanup committed predecessor differs')
     require(git_read(root, 'rev-parse', '--verify', 'HEAD').decode().strip() == head,
             'cleanup publishing HEAD changed during check')
-    return birth
+    return transition
 
 
 def main():
     try:
         require(len(sys.argv) == 1, 'unknown cleanup publishing arguments')
-        birth = check(A.PROJECT)
+        transition = check(A.PROJECT)
     except (A.Refused, OSError, UnicodeError, ValueError, subprocess.SubprocessError) as error:
         print('CLEANUP-TASK-PRESERVATION: REFUSED — ' + str(error), file=sys.stderr)
         return 2
     print('CLEANUP-TASK-PRESERVATION: exact ' +
-          ('first publication/source/prefix' if birth else 'published terminal and both live histories'))
+          ('generation transition/source/prefix' if transition else 'published terminal and both live histories'))
     return 0
 
 

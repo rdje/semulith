@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0077 (leaf ARTIFACT-CLEANUP.23) — retire the completed-checklist suffix into a second ledger generation
+
+The cleanup retention terminal becomes a generational chain: generation 2 retains
+the b18971e predecessor and its exact suffix, each retained entry re-derives the
+descriptor it superseded, and the publisher accepts one generation per owned
+transition. Live narrative 12,947 → 2,198 B. Retention probe 45 tests/20 omissions
+normal/O; registry row 6 files / 192,801 B under the leaf's authority; docs/decisions/ ceiling pressure routed to LIVE-CONTAINMENT.4 (k). D12/D13 (stale session
+rows, ctime drift) logged for .17. No cleanup authority changed.
+
 ## SEMULITH-AC-0076 (leaf ARTIFACT-CLEANUP.21) — capture and atomically publish bound build outputs
 
 Each actual producer build is surrounded by an anchored census of its
@@ -646,9 +655,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Re-derive closed task inventories27/1/9/24→33/1/40/22, six creation/scope pins and independent107 equations; four typed/two metadata controls refuse normal/O, real1405 states exact. Record separate authority; application pending, health64 debt and every cap unchanged.
 - Preserve original records/D51/D55 teaching/four literal reads; compare three duplicate contract-intro clauses before shortening the pointer, retain full include. Whole CH1863B/three-entry rollover retains105 old entries; source/history/protected inverses, focused12/sharder12/seven books/rendered pass. LIVE/CPU unchanged; fresh preconditions before .4h6c4 application.
-
-## SEMULITH-LC-0019 (leaf LIVE-CONTAINMENT.4) — refuse unavailable or malformed registry policy
-
-- Fix D56/D57: validate the complete registry before projecting destinations/README caps/count; reject failed status, diagnostics, malformed arity/paths/limits. Preserve68 original controls;94 pass,17 omissions detected/all26 new controls discriminate normal/O.
-- Public18 cases/mode: three reader faults refuse2/no stdout; seven unchecked consumers are removed. Five original malformed fixtures0→2; real1404 identities/pins exact. Whole DEV rollover retains104 prior entries; focused12/sharder12/seven books/three reads and scaffold24 normal/O pass. LIVE routing Done/1518arms; caps/CPU unchanged, separate authority review next.
 

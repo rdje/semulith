@@ -259,7 +259,15 @@ docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG
 # exactly3 tracked files. TASK-HISTORY enforces identities, coverage and retrieval.
 # Navigation stays in docs/tasks/ and its existing aggregate; no existing cap grows.
 docs/task-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4c; immutable finite capture, descriptor and retrieval front door; TASK-HISTORY authenticates	3	385000	3	387317	0
-docs/artifact-cleanup-history/	reader_navigation	archive_terminal	ARTIFACT-CLEANUP.19; four immutable plain Markdown/descriptor files, complete predecessor and exact ledger; TASK-HISTORY authenticates	4	119258	4	119258	76937
+# ARTIFACT-CLEANUP.23 / SEMULITH-AC-0077 (2026-10-20): second ledger generation. The b18971e
+#   predecessor (58,246 B) and its exact suffix (13,433 B) join the four generation-1 files;
+#   the descriptor (2,585 B) and front door (3,554 B) are rewritten within their 8,192/4,096
+#   bounds: exactly 6 files / 192,801 B, per-part unchanged at 76,937. One generation per owned
+#   rollover; the chain re-derives each superseded descriptor. Reviewed in the owning task
+#   leaf (docs/tasks/ARTIFACT-CLEANUP.md, ARTIFACT-CLEANUP.23): docs/decisions/ stood at
+#   262,242/262,144 B when its record was drafted, so the authority stays in the leaf and the
+#   decisions-family pressure is owned by LIVE-CONTAINMENT.4 slice (k).
+docs/artifact-cleanup-history/	reader_navigation	archive_terminal	ARTIFACT-CLEANUP.19/.23; one generation per owned rollover: immutable plain Markdown predecessors/ledgers plus the generational descriptor and front door; TASK-HISTORY authenticates the chain	6	192801	6	192801	76937
 # LC0041: standing archive delegation; finite four-record plus book-source capture.
 # Object192354B + descriptor8192B + front door4096B =204642B; no cap increase.
 docs/qualification-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4i2b5b1h; finite immutable capture and navigation; TASK-HISTORY authenticates	3	200000	3	204642	0

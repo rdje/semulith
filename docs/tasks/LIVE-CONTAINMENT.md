@@ -121,6 +121,15 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
 
+### .4k — docs/decisions/ family capacity (pending; routed in from ARTIFACT-CLEANUP.23)
+
+Routed in `2026-10-20` by SEMULITH-AC-0077: README-ROUTING-CLOSURE fired OVER CEILING
+docs/decisions/: 262242 aggregate bytes > 262144 when one index row was added (61 files,
+health 163,840, per-part 16,384); the family is past its warning with no owned remediation.
+Own the measurement, examine superseded-record partition or a finite terminal before any
+re-derivation, and land the reviewed authority together with the registry row. No cleanup
+file is involved; the withdrawn draft is retained in target/artifact-cleanup-0077.
+
 ### .4j / SEMULITH-LC-0049 — second finite history seal (verified; directly approved)
 
 Owned after clean a5bf4579/brief0/host0. Required whole3787B DEV rollover exceeded

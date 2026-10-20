@@ -608,7 +608,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   PNT resumed `2026-10-20` on the director's instruction; .21 followed.
 
 - ID: `ARTIFACT-CLEANUP.23` — **retire the next completed-checklist suffix**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0077`)
   Goal: own the live-narrative rollover before ordinary growth stops at 90% of
   the 16,384 B health target (the reader warns at 75%): seal the completed
   .19–.22 checklists and their log rows into a second finite ledger terminal
@@ -638,189 +638,51 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 - None.
 
-<!-- ARTIFACT-CLEANUP-LEDGER: 7838ebec414f4fb29cf3181da3c1e4b97658712acc78785d07ba27629f7e975f -->
-Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055.md).
-The [whole predecessor](../artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md) and
+<!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
+Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).
+The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
 
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.21)
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.23)
 
-- [x] **REPRODUCE / ISSUE** — at 47d69ef no producer run could publish:
-  `ls target/artifact-cleanup` lists no output-provenance.json and the
-  strict reader approves nothing without rows.
-- [x] **ROOT CAUSE (WHY + WHERE)** — python3 -B scripts/probe_artifact_output_provenance.py
-  --publication-contract --revision 47d69ef: OUTPUT-PUBLICATION: census=false,
-  observe=false, merge=false, publish=false; grep -c "def publish" over the
-  recorder and runner gave 0/0. artifact_cargo.run returned the process and
-  rechecked sources but never observed the output root; the recorder had a
-  codec and a reader, no census or publication.
-- [x] **FIX** — census/observe/merge/publish in the recorder; _invoke/capture/
-  tool_version/describe in the runner; both producers call capture.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0: ARTIFACT-COHORT --self-test: 116 pass / 0 fail. Provenance 42 tests
-  normal/O with 22 omissions and Cargo 23 tests normal/O with 10 omissions,
-  each omission 1 failures / 0 errors. --publication-contract now reports
-  census/observe/merge/publish true; the actual engine and guest runs
-  published a v2 ledger of 9 records, every row captured.
-- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0;
-  focused 18 checks rc=0, seven fresh books, original native3/41514 bytes.
-  Normal hook applies; literal self-test sites stay 1637, LIVE_STATUS exact.
-- [x] **LOCKSTEP** — shared usage/toolbox/doctrine row/book include, tree,
-  index, MEM/DEV/CH; both history heads sharded within their ceilings.
-
-Verification: target/artifact-cleanup-0076; .17 strict selection next, then
-.16 core and .14 host workflow. Cleanup finding P1 remains open until .17.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.22)
-
-- [x] **REPRODUCE / ISSUE** — --support-contract --revision 43f07ab reports
-  both support_field/captured_selector false and fixed_sources empty. The new
-  command/census helpers need named pins before .21 records actual observations.
-- [x] **ROOT CAUSE (WHY + WHERE)** — python3 -B scripts/probe_artifact_output_provenance.py
-  --support-contract --revision 43f07ab: OUTPUT-SUPPORT: support_field=false,
-  captured_selector=false, fixed_sources=[]. The old Observation fields and
-  authorize signature bind the codec/actor, with no runner/census source tuple.
-- [x] **FIX** — versioned closed support tuple, exact legacy encoding,
-  strict matching selector and tracked predecessor/current interface diagnostic.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0:100 pass/0 fail.31 provenance tests normal/O and16 omissions per mode,
-  each1 failure/0 errors. V1 exact bytes/mixed v2/cold copied readers pass;
-  strict selection denies unbound legacy rows and either stale support source.
-- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0;
-  focused18 checks, seven fresh books and original native3/41514 bytes pass.
-  Scope14/protected1481/1 opaque Gitlink, complete old history and task-prefix
-  inverse verified; planner implementation/LIVE_STATUS exact. Normal hook applies.
-- [x] **LOCKSTEP** — shared book/help/toolbox/doctrine/MEM/DEV/CH/index sync.
-  D11 fixes only COMMIT's book wording, verified against Makefile52-54;
-  LIVE_STATUS reviewed unchanged. No capture/selection/deletion or new event.
-
-Verification: target/artifact-cleanup-0075; .21 still owns actual capture and
-atomic publication, .17 strict planning. Cleanup finding P1 remains open.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.20)
-
-- [x] **REPRODUCE / ISSUE** — python3 -B scripts/probe_artifact_cargo.py
-  --producer-contract observes both original commands: only CARGO_TARGET_DIR,
-  no explicit intermediate build root. Before integration, the15-test population
-  had1 failure/0 errors; targeted producer binding loses1.
-- [x] **ROOT CAUSE (WHY + WHERE)** — python3 -B scripts/probe_artifact_cargo.py
-  --producer-contract: each actual main() Cargo assignment supplies absolute
-  manifest and env-only target; inherited build-dir can differ. The extractor
-  executes those exact launch AST nodes with a recording child, without a build.
-  git show 7804bc4:scripts/probe_c_engine.py | grep -n -A6: env owns only
-  CARGO_HOME/CARGO_TARGET_DIR/TMPDIR; the subprocess argv omits --target-dir
-  and --config build.build-dir. The guest producer has the same mechanism.
-- [x] **FIX** — shared bound command/runtime/process helper, both producer call
-  sites and permanent copied-runtime/actual-build/guard-omission controls.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0: ARTIFACT-COHORT --self-test:94 pass/0 fail. Seventeen tests normal/O,
-  eight omissions per mode each1failure/0errors; actual owned Cargo generates
-  incremental output while preserving unchanged input and publishing no ledger.
-  Actual probe_c_engine.py18 tests and probe_c_guest_image.py2 tests pass.
-- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0;
-  focused18 checks all pass, including ARTIFACT-COHORT94 and seven fresh books.
-  Original native3/41514 bytes exact; source/history/scope verified separately.
-  Normal mandatory hook applies at COMMIT; no hook bypass.
-- [x] **LOCKSTEP** — shared CLI teaching included by the existing book/task page,
-  toolbox/doctrine mirror/MEM/DEV/CH/index updated; LIVE changes only literal
-  guard sites1635→1637. CPU14/18/BOARD10/12/replay4/4green unchanged.
-
-Verification: target/artifact-cleanup-0074. Initial ps-dependent descendant
-control refused under the sandbox; replace with owned start/completion witness,
-no permission widening. Initial pipe omission produced2failures; aggregate both
-pipe verdicts into one assertion. Final94 outcomes discriminate. Capture and
-publication remain .21; no current planner authority or real cleanup changes.
-
-Commit: `SEMULITH-AC-0074 (leaf ARTIFACT-CLEANUP.20): bind public Cargo commands and output roots`.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.19)
-
-- [x] **REPRODUCE / ISSUE** — source839e931 task family3145649/3145728;
-  root76937B, completed ledger38046B. Only79B remains for ordinary work.
-- [x] **ROOT CAUSE (WHY + WHERE)** — python3 scripts/artifact_task_history.py rc=0:
-  CLEANUP-TASK-HISTORY: exact predecessor/suffix, unique live pointer and complete
-  graph. Descriptor offset38891 retains the graph; thirteen completed acceptance
-  sections plus verification/commit/changelog history form the38046B suffix.
-- [x] **FIX** — retain whole predecessor and exact suffix as ordinary Markdown
-  in one finite immutable terminal; bind one live pointer and raw narrative caps.
-- [x] **ADDRESSED (verified)** — python3 scripts/artifact_task_history_preservation.py rc=0:
-  CLEANUP-TASK-PRESERVATION: exact first publication/source/prefix. Probe40 tests/
-  0 failures/0 errors normal/O;18 omissions each1 failure/0 errors.
-  Cold reads/no-output refusal/direct Markdown bytes exact; all19 nodes retained.
-- [x] **NO REGRESSION** — bash scripts/check_task_history.sh rc=0; focused17/
-  seven books/native3/41514B;21 files/protected1468/1Gitlink/97 old entries.
-  Whole7210B retained in0388/0389; complete prefix/source/teaching/caps verified.
-- [x] **LOCKSTEP** — task/index/MEM/DEV/CH/LIVE/book/registry/toolbox sync;
-  44 destinations/40 doctrines/1635 literal arms. CPU/board/replay unchanged;
-  .17 next after normal COMMIT. No cache deletion or earlier seal change.
-
-promotion: declined (implements the existing task-ledger containment contract).
-
-QA defects owned here, priority1/immediate: D6's tracked parent-symlink control
-observed one directory census before refusal (33 tests/1 failure/0 errors).
-`read_terminal` checked the terminal inode before validating ancestor paths.
-D7's pure publishing controls accepted an executable live view and raised a
-KeyError for a missing published live root (35 tests/2 failures/1 error,
-including D6). The host reader already guards its working mode; the pure judge
-must enforce its own complete input contract. Fixed; final39 tests normal/O pass.
-All reproductions use disposable on-volume fixtures; no foreign repository or
-project evidence was changed. Logs: target/artifact-cleanup-0073/probe-before*.
-D8 is owned here, priority1/immediate: a final malformed-ledger case appended an
-invalid UTF-8 byte and passed the reader (39 tests/1 failure/0 errors). Prefix
-decoding validated graph text only; authenticate the complete live task's UTF-8
-before returning retained originals. Fixed;39 tests normal/O and18 omissions per
-mode verify D6/D7/D8 guards. All defects in this slice are closed.
-
-D9 owned here, priority1/immediate: the normal full hook refused the commit;
-HEAD stays839e931. FIXTURE-FINGERPRINT interprets JSON `path`/`sha256` pairs
-relative to their record's directory (check_fixture_fingerprints.sh, target
-resolution). This new descriptor used repository-root-relative object names
-under `path`; joining the record directory duplicated the directory prefix.
-Both real originals exist and the specialized reader verifies them. Rename
-this unpublished schema's locator to `object`, preserve the generic fixture
-contract and all original bytes, and add that gate to the focused set. Record
-strict field rejection and re-run before retrying the normal commit. No hook
-bypass, weakened guard or old terminal/bound change is authorized or needed.
-Evidence: target/artifact-cleanup-0073/fingerprint-addressing.json and commit-attempt-1.log.
-
-D10 owned/fixed here, priority1/immediate: an overbroad replacement changing
-new focused16→17 evidence also changed two previous DEV_NOTES counters. The
-retained-history diff pinpointed both lines before staging the repair. Rebuild
-all old retained entries from committed839e931 minus the exact0388 suffix,
-keeping only the new .19 entry. The inverse now reproduces every original byte
-and order. No commit contains this editing error. Continue full history proof;
-limit further edits to this unit's first entry. Evidence: d10-before.diff.
-
-D9/D10 closure: FIXTURE-FINGERPRINT now re-derives its original fixture pin;
-all40 specialized tests pass normal/O,18 omissions per mode discriminate, and
-focused17/books7/complete source-history inverses pass. Retained metadata uses
-root-relative objects. Both original Markdown products and all old caps stay
-exact. The first failed hook is retained in commit-attempt-1.log; retry uses
-the unchanged normal hook. All defects in this slice are verified closed.
+- [x] **REPRODUCE / ISSUE** — python3 scripts/artifact_task_history.py at b18971e:
+  CLEANUP-TASK-HISTORY: 12947 live narrative bytes; warning: owned rollover due.
+  The .17 checklist alone would cross 90% of 16,384 B, where ordinary growth stops.
+- [x] **ROOT CAUSE (WHY + WHERE)** — grep -n "len(found) < 4\|SOURCE = \|== terminal(previous)"
+  scripts/artifact_task_history.py scripts/artifact_task_history_preservation.py: the
+  reader pinned one four-file generation (one SOURCE, owner .19, one descriptor
+  digest) and the publisher froze that terminal, so no second generation could land.
+- [x] **FIX** — generational descriptor whose retained entries re-derive each
+  superseded descriptor byte-exactly; generation 2 retains the b18971e predecessor
+  and its exact suffix, which begins with the first pointer; the publisher accepts
+  exactly one new generation per transition and freezes every earlier object.
+- [x] **ADDRESSED (verified)** — python3 scripts/artifact_task_history.py:
+  CLEANUP-TASK-HISTORY: 2 generations; 2724 live narrative bytes; within
+  health target. python3 -B scripts/probe_artifact_task_history.py: 45 tests
+  / 0 failures / 0 errors normal/O; 20 omissions each 1 failures / 0 errors.
+- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0:
+  TASK-HISTORY --self-test: 52 pass / 0 fail; focused checks rc=0; seven books.
+- [x] **LOCKSTEP** — descriptor/front/objects; registry row re-derived under this
+  leaf (6 files / 192,801 B, per-part 76,937); toolbox/doctrine/book, tree/index/
+  MEM/DEV/CH; both history heads within ceilings.
+- **ROUTING EVIDENCE** — a decision record for the row was drafted and withdrawn:
+  bash scripts/check_readme_routes.sh with only its index row added reports
+  OVER CEILING docs/decisions/: 262242 aggregate bytes > 262144 (61 files, health
+  163,840, no registered owner). The pressure reproduces with no cleanup file
+  involved, so LIVE-CONTAINMENT.4 slice (k) owns the family's re-derivation or
+  partition; the routing is wrong only if that family already had an owner.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| `2026-10-20` UTC | `.21` | 42/23 tests normal/O; 22+10 omissions; artifact116; actual engine/guest | v2 ledger published atomically, 9 records; previous preserved on every failure; focused18/books7 |
-| `2026-10-20` UTC | `.22` | 31 tests normal/O; 16 omissions per mode; artifact100 | exact v1 bytes, mixed v2 and strict support pins; D11 book wording fixed |
-| `2026-10-20` UTC | `.20` | 17 tests normal/O; 8 omissions per mode; actual engine18/guest2; focused18/books7 | 94 artifact outcomes; original native3/41514B and all old history exact; unchanged seeded input preserved |
-| `2026-10-20` UTC | `.19` |40 tests normal/O/18 omissions; focused17/books7/native3/scope |21 files/protected1468/97 old entries;7210B whole0388/0389; predecessor76937B/suffix38046B overlap, unretained0; all19 nodes live |
+| `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
 
-`SEMULITH-AC-0076 (leaf ARTIFACT-CLEANUP.21): capture and atomically publish bound build outputs` — anchored census, lock-serialized merge, temporary+rename, read-back; .17 strict selection next.
-
-`SEMULITH-AC-0075 (leaf ARTIFACT-CLEANUP.22): bind versioned support-source pins in output records` — old bytes preserved, strict complete-source predicate verified; .21 actual publication next.
-
-`SEMULITH-AC-0074 (leaf ARTIFACT-CLEANUP.20): bind public Cargo commands and output roots` — explicit old roots, bounded process capture/join, actual builds verified; .21 capture/publication next.
-
-`SEMULITH-AC-0073 (leaf ARTIFACT-CLEANUP.19): retain the completed cleanup ledger in bounded Markdown` — exact plaintext retention,40 tests normal/O/18 omissions, source/prefix and both publishing views verified. Normal COMMIT closes .19; .17 next.
+`SEMULITH-AC-0077 (leaf ARTIFACT-CLEANUP.23): retire the completed-checklist suffix into a second ledger generation` — chain-verified transition; .17 strict selection next.
 
 ## Changelog
 
-- `2026-10-20` UTC: .21 verified; actual builds publish v2 records atomically. No selection/deletion authority added.
-- `2026-10-20` UTC: .22 verified; versioned support pins and exact legacy reads. No capture/selection/deletion authority added.
-- `2026-10-20` UTC: .20 verified; bound both actual public build invocations. No ledger/selection/deletion authority or cleanup event added.
-- `2026-10-20` UTC: .19 verified; complete predecessor/suffix retained as Markdown and full graph stays live. No old ceiling or terminal changes. Normal COMMIT before .17.
+- `2026-10-20` UTC: .23 verified; second ledger generation retained, live narrative reset. No cleanup authority changed.

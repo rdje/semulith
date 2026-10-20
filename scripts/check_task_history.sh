@@ -86,8 +86,8 @@ self_test() {
   arm "ordinary-optimized" 0 "43 tests / 0 failures / 0 errors"
   arm "qualification-normal" 0 "32 tests / 0 failures / 0 errors"
   arm "qualification-optimized" 0 "32 tests / 0 failures / 0 errors"
-  arm "cleanup-normal" 0 "40 tests / 0 failures / 0 errors"
-  arm "cleanup-optimized" 0 "40 tests / 0 failures / 0 errors"
+  arm "cleanup-normal" 0 "45 tests / 0 failures / 0 errors"
+  arm "cleanup-optimized" 0 "45 tests / 0 failures / 0 errors"
   printf 'TASK-HISTORY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
