@@ -1,5 +1,35 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — retain the historical cleanup producer (ARTIFACT-CLEANUP.12)
+
+Continue from clean847be8c exact18/message/diff/brief0 and actual host census OK.
+Split the remaining activity into historical retention/replay .12, guarded core/
+journal .13, and host-census/CLI .14; all detailed before code. Original AC0067
+helper still lived only in ignored target. Preserve its5815 bytes as passive
+scripts/fixtures/artifact_cleanup_0067.py.txt, SHA0396e669f9b798f010dcbe67b5f3462497afbcff478d353c7d989b9b2bd307e9.
+A tracked8KiB descriptor reader authenticates it before copied execution.
+
+Five tests normal/O show debug success and release-D1: original helper unlinks
+the fixture cache, then rejects its stray post-check without a receipt. Retained
+input bytes survive, caller cwd restored; only public Git root/inventory reads
+mocked. No real cache cleanup. Changed/oversized/linked/nested-Git inputs refuse;
+pin omission in a copied reader loses one assertion/zero errors per mode. Cold
+three-file CLI, no Git/valid parent cwd, passes both modes. Historical event and
+instrument identities remain distinct from the later planner and future delete.
+
+Expand ARTIFACT-COHORT:26 gate outcomes total, original26 planner tests/10 guard
+omissions plus5 legacy tests/one pin omission per mode. Public enumeration derives
+1629 literal sites,40 doctrines/42 routes unchanged. Partition the exact existing
+78B tool row into a bounded artifact family; preserve all older toolbox text and
+add its root index link. Book table grows4B, full new teaching stays in shared
+CLI usage; fixed capacities and all prior examples preserved. Focused/source/
+history/rendered verification and normal COMMIT follow before .13. Original37
+producer modules/native3/capture remain exact; CPU/board/replay state unchanged.
+Focused16/books7/normal-print and scope normal/O pass.18 files/protected1452/
+1Gitlink/98 whole old entries; native0380/0381 retain3172B. Task/index inverses2,
+planner code/gate preserved;78B row moved verbatim. Staged checks/normal COMMIT.
+Promotion declined: repairs adoption of existing source-durability/claim policies.
+
 ## _(2026-10-20 UTC)_ — durable bounded cleanup plans (ARTIFACT-CLEANUP.11)
 
 The AC0067 helper and controls existed only in ignored target, contrary to
@@ -665,44 +695,4 @@ complete examples pass. 1535 other files/1Gitlink/93 old entries exact;
 three whole task records3428B, source/owner inverse2/seven damaged refusals.
 Whole-oldest DEV3993B to0356 and CH2211B to0357; fixed caps and CPU/BOARD/replay
 statuses preserved. LIVE's static arm count is freshly derived1608.
-
-## _(2026-10-18 UTC)_ — verify the saved cleanup cohort before unlinking (ARTIFACT-CLEANUP.9)
-
-The latest cleanup2026-10-17T22:50:22Z is over24h old. Start from clean9274231
-with P4-0269 exact message/17 files/brief0/actual host census verified. Own .9
-before census/helper creation. Reuse .8's helper with only the output root
-changed to target/artifact-cleanup-0066; no production-code change. Walk target
-and .app-data without following symlinks, nested Git roots or other devices.
-Known untracked single-link Cargo incremental dep-graph/query-cache/work-products
-bins are the only candidates. Preserve source fixtures, reference/capture and
-diagnostic evidence and unknown stray classes.
-
-Saved plan:177files/674371444B across four incremental roots: debug123/438325068B,
-wasm36/157795648B, C-engine6/46717790B and C-guest-image12/31532938B. Retained
-16764bin/log inputs/evidence files/145405416B; four nested Git skips/0strays.
-A preliminary commentary count was wrong and corrected from the saved plan;
-no plan or deletion scope changed. Evidence comes from complete saved records.
-
-Normal/O checks each re-census the complete cohort/retained data. Four corrupted
-identity/totals plans refuse before deletion; both complete positive preflights
-pass. Restore exact original plan, join every check, then run the actual host
-census:handoff OK/no owned jobs. Before any unlink, preflight the whole cohort
-again; revalidate each path/device/inode/mtime/size/SHA immediately before its
-unlink. Exact177files removed at2026-10-18T23:00:27.051789Z; immediate selected
-residue0 and retained count/bytes/SHA unchanged. No tracked file, dependency input,
-foreign repo or other-volume write. The cleanup event is distinct from later
-verification, which may regenerate caches/update diagnostic logs.
-
-Overwrite the latest anchored one-line record. The existing book includes it
-directly; preserve source teaching unchanged and verify normal/print output.
-Preserve all older task/index/head records through complete inverses and whole
-oldest-entry sharding when needed. Focused documentation and seven-book gates,
-normal hooks and actual post-commit census close this maintenance slice. No
-Rust behavior, LIVE_STATUS, CPU/BOARD status, capacity, full CI or push change.
-Promotion declined: existing safe-cohort/locality/history contracts apply.
-
-Validation:13 focused checks/seven books and whole-source/history/cap/rendered
-proof normal/O pass.1545 other files/1Gitlink/92 prior entries preserved; exact
-task/index inverses and latest normal/print receipt. DEV0355 retains one complete
-oldest4336B entry; fixed caps, source teaching and all statuses unchanged.
 

@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0069 (leaf ARTIFACT-CLEANUP.12) — retain the historical cleanup helper
+
+Preserve original5815B helper as passive authenticated input. Five tests normal/O
+replay debug success and release-D1 failure/no receipt inside fresh owned fixtures;
+source-pin omission loses1 assertion/0 errors. Cold three-file CLI passes from a
+valid parent cwd without Git. Expand focused gate to26 outcomes/derive1629 literal
+sites, add bounded artifact-toolbox family and shared book teaching. No real
+cleanup or historical event change. Guarded core/journal .13 and host/CLI .14 follow.
+Focused16/books7/scope pass;0380/0381 retain3172B whole.
+
 ## SEMULITH-AC-0068 (leaf ARTIFACT-CLEANUP.11) — track bounded cleanup plans
 
 Add a bounded immutable cache planner/checker with exclusive output, fixed root,
@@ -606,9 +616,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Import the exact20208B/343-line neutral body with a bounded local authority/frontier note; wire bootstrap, README policy, routing and complete book teaching. Derived routes39; existing limits/seals and CPU qualification unchanged.
 - Full graph inventory, field classification, local declarations/checker and migrations remain LC.4. D51's source terminology correction and capacity review are owned next; no count raise in this slice.
-
-## SEMULITH-LC-0009 (leaf LIVE-CONTAINMENT.4) — make orientation describe its sources
-
-- Correct D50: generated map retains all33 task links under "Task-tree files"; metadata derives six active trees. Generator/map/book inverses preserve all other bytes.
-- Restore MEMORY to a selected action and canonical routes; audit removed detail to eight existing homes. Keep all old history entries, archive bytes, fixed caps and LIVE/CPU state exact. Full containment inventory/adoption and capacity remedy remain LC.4.
 

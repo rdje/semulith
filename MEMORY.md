@@ -14,20 +14,19 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.11` / SEMULITH-AC-0068 bounded planning/checking.
+- last_unit: `ARTIFACT-CLEANUP.12` / SEMULITH-AC-0069 historical helper retention.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: complete .12 guarded deletion/partial results in the tracked tool,
-  with actual public host-census precondition and owned fixture controls only.
-  Read .11/.12 and shared CLI/book usage; no real cleanup event needed. Commit
-  separately before full P4 policy/status. Durable-instrument activity remains
-  priority1 until .12 closes; never relabel historical AC0067 helper/receipt.
-- last_evidence: target/artifact-cleanup-0068.26 tests normal/O,22 guard outcomes,
-  focused16/books7/source-history proof and actual read-only plan/check pass.
-  Native3/41514B exact; scope18/protected1447/1Gitlink/98 whole old entries.
-  Native0378/0379 retain3504B; all caps fixed. No cache delete API yet.
+- next_action: .13 guarded deletion core/journal, then .14 actual host-census and
+  supported CLI/recovery. Read .11-.14 and current tool/help/probes first; no real
+  cleanup needed for tests. Parent repair remains priority1 before P4 policy.
+- last_evidence: target/artifact-cleanup-0069. Original5815B helper passive/SHA
+  exact; five legacy tests normal/O, pin omission1 failure/0 errors each mode.
+  Cold3/noGit/valid-parent CLI,26 gate outcomes, focused16/books7/source-history
+  and normal-print checks pass. Scope18/protected1452/1Gitlink/98 old entries;
+  native0380/0381 retain3172B; all caps fixed. Planner behavior remains read-only.
 - blockers: none requiring director input. Preserve original37 producer modules,
-  native3 and canonical observations. Finite method satisfied/policy pending;
-  no consumer replay/requirement credit. CPU14/18,BOARD10/12,GC replay4/4green.
-  D79/D80 remain LIVE-CONTAINMENT.4; runtime P2 in P4 a42ab. No push below300;
-  239 before AC0068. Always repository target/tmp as TMPDIR. Latest cleanup time
-  is in docs/ARTIFACT_CLEANUP.md; this instrument unit does not reset its timer.
+  native3/41514B/canonical observations and historical event/helper identities.
+  Full P4 policy/status follows repair; finite method satisfied/policy pending,
+  CPU14/18,BOARD10/12,GC replay4/4green. D79/D80 LC.4; runtime P2 P4 a42ab.
+ 40 doctrines/1629 literal sites/42 routes. No push below300;240 before AC0069.
+  Always target/tmp as TMPDIR; latest cleanup timestamp unchanged in its record.

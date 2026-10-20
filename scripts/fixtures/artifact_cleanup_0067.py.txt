@@ -1,0 +1,72 @@
+from pathlib import Path
+import collections,datetime,hashlib,json,os,stat,subprocess,sys
+WORK=Path('target/artifact-cleanup-0067')
+ROOT=Path.cwd().resolve()
+DEVICE=ROOT.stat().st_dev
+TRACKED=set(subprocess.check_output(['git','ls-files','-z']).decode().split('\0'))
+CACHE_NAMES={'dep-graph.bin','query-cache.bin','work-products.bin'}
+def require(ok,reason):
+ if not ok:raise RuntimeError(reason)
+require(Path(subprocess.check_output(['git','rev-parse','--show-toplevel'],text=True).strip()).resolve()==ROOT,'run from repository root')
+def digest(path):
+ h=hashlib.sha256()
+ with path.open('rb') as stream:
+  for chunk in iter(lambda:stream.read(1024*1024),b''):h.update(chunk)
+ return h.hexdigest()
+def safe(path):
+ parts=path.parts
+ if not parts or path.is_symlink() or not path.is_file() or path.name not in CACHE_NAMES or str(path) in TRACKED:return False
+ if parts[0]=='target':pass
+ elif parts[:2]==('.app-data','target'):pass
+ else:return False
+ if not any(parts[i]=='incremental' and i>0 and parts[i-1] in {'debug','release'} for i in range(len(parts))):return False
+ info=path.stat()
+ return (stat.S_ISREG(info.st_mode) and info.st_dev==DEVICE and info.st_nlink==1
+         and ROOT in path.resolve().parents and all(not p.is_symlink() for p in [path,*path.parents])
+         and not any((p/'.git').exists() for p in path.parents if p!=Path('.')))
+def census():
+ candidates=[];kept={};skips=[];groups=collections.defaultdict(lambda:[0,0]);strays=[]
+ for scope in [Path('target'),Path('.app-data')]:
+  if not scope.exists():continue
+  require(scope.is_dir() and not scope.is_symlink() and scope.stat().st_dev==DEVICE,'unsafe census root '+str(scope))
+  for current,dirs,files in os.walk(scope,followlinks=False):
+   directory=Path(current)
+   if '.git' in dirs or '.git' in files:
+    skips.append(str(directory));dirs[:]=[];continue
+   dirs[:]=[name for name in dirs if not (directory/name).is_symlink() and (directory/name).stat().st_dev==DEVICE and directory/name!=WORK]
+   for name in files:
+    path=directory/name
+    if path.suffix not in {'.bin','.log'} or path.is_symlink() or not path.is_file():continue
+    info=path.stat();require(info.st_dev==DEVICE,'foreign-volume file '+str(path))
+    record=dict(path=str(path),bytes=info.st_size,device=info.st_dev,inode=info.st_ino,mtime_ns=info.st_mtime_ns,sha256=digest(path))
+    if safe(path):
+     candidates.append(record);index=path.parts.index('incremental');group=str(Path(*path.parts[:index+1]));groups[group][0]+=1;groups[group][1]+=info.st_size
+    else:kept[str(path)]={key:record[key] for key in ['bytes','sha256']}
+    if any(str(path).startswith(prefix+'/') for prefix in ['target/release','target/debug/deps','.app-data/target/release','.app-data/target/debug/deps']):strays.append(str(path))
+ return dict(candidates=sorted(candidates,key=lambda row:row['path']),kept=kept,skipped_nested_repositories=sorted(skips),groups=dict(sorted(groups.items())),stray_paths=sorted(strays))
+def preflight(data):
+ require(DEVICE==data['repo_device'],'repository device changed')
+ fresh=census()
+ for key in ['candidates','kept','stray_paths','skipped_nested_repositories','groups']:require(fresh[key]==data[key],'census changed: re-plan before deletion ('+key+')')
+ require(data['total_files']==len(data['candidates']) and data['total_bytes']==sum(row['bytes'] for row in data['candidates']),'plan totals differ')
+ for row in data['candidates']:
+  path=Path(row['path']);require(safe(path),'unsafe candidate '+str(path));info=path.stat()
+  require([info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns]==[row['device'],row['inode'],row['bytes'],row['mtime_ns']] and digest(path)==row['sha256'],'candidate changed '+str(path))
+ return fresh
+if sys.argv[1:]==['--plan']:
+ data=census();data.update(created_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),repo_device=DEVICE,total_files=len(data['candidates']),total_bytes=sum(row['bytes'] for row in data['candidates']))
+ (WORK/'plan.json').write_text(json.dumps(data,indent=2)+'\n')
+ print(json.dumps({key:data[key] for key in ['created_utc','total_files','total_bytes','groups','stray_paths']},indent=2))
+ print('Retained',len(data['kept']),sum(row['bytes'] for row in data['kept'].values()),'bytes; skipped nested repositories',len(data['skipped_nested_repositories']))
+elif sys.argv[1:] in [['--check'],['--delete']]:
+ data=json.loads((WORK/'plan.json').read_text());preflight(data)
+ if sys.argv[1]=='--check':print('complete safe-cohort and retained-data preflight rc=0');raise SystemExit(0)
+ for row in data['candidates']:
+  path=Path(row['path']);require(safe(path),'candidate became unsafe '+str(path));info=path.stat()
+  require([info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns]==[row['device'],row['inode'],row['bytes'],row['mtime_ns']] and digest(path)==row['sha256'],'candidate changed before unlink '+str(path));path.unlink()
+ after=census()
+ require(not after['candidates'] and after['kept']==data['kept'] and after['stray_paths']==data['stray_paths'] and after['skipped_nested_repositories']==data['skipped_nested_repositories'],'post-delete census differs')
+ require(all(not Path(row['path']).exists() for row in data['candidates']),'saved candidate residue')
+ result=dict(completed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),deleted_files=data['total_files'],deleted_bytes=data['total_bytes'],residue=0,retained_files=len(after['kept']),retained_bytes=sum(row['bytes'] for row in after['kept'].values()),groups=data['groups'],strays_preserved=len(after['stray_paths']),nested_repositories_skipped=len(after['skipped_nested_repositories']),helper_sha256=digest(Path(__file__)))
+ (WORK/'result.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))
+else:raise SystemExit('usage: cleanup.py --plan | --check | --delete')
