@@ -110,7 +110,7 @@ These ship with the discipline spine and are project-neutral:
 | `GATE-REPORT` | the tracked gate report is still what the generator derives from its inputs |
 | `SHARD-FREEZE` | authenticate live/sealed history and predecessor rows; preserve full old live entry bytes/order through published sharding in index/working views; judge the complete staged partition too. Refuse failed Git reads, changed descriptors, unsafe/corrupt data and duplicate headings/paths. |
 | `TASK-HISTORY` | finite P4/qualification captures; original46 controls,43 ordinary publishing tests and32 qualification reader/publishing tests normal/O. Atomic source-authenticated qualification publication; both views freeze against HEAD;50 arms on commit/CI |
-| `ARTIFACT-COHORT` | plans, legacy, journals |
+| `ARTIFACT-COHORT` | plans, journals, provenance |
 | `PORT-WEB` | the crate skeleton builds for the browser target — the workspace compiles for `wasm32-unknown-unknown`, so a host-only API cannot slip into the engine unnoticed |
 | `STATE-GEN` | the generated state module is still what the state descriptor generates — drift is refused, and the generator refuses shapes it cannot emit rather than silently guessing |
 | `DEF-GEN` | the generated definition module is still what the canonical definition generates — decode tables, lowered semantics trees, and the OWN-03 manifest with definition, generator, configuration and source fingerprints; drift is refused, the generator refuses shapes it cannot emit rather than silently guessing, and a check that cannot judge refuses rather than passing |

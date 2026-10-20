@@ -1,5 +1,19 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0071 (leaf ARTIFACT-CLEANUP.15) — bind per-file output-provenance records
+
+Add a closed bounded provenance codec and anchored reader: successful bound host
+Cargo command, exact new/changed output observations, source pins and current
+supplied file facts. Unknown/unchanged inputs, stale sources, aliases and wrong
+root/profile claims cannot gain authority.25 tests normal/O/13 omissions each:
+28 outcomes; focused gate76, derived1633 sites. Tracked public Cargo dry-run
+probe preserves three owned inputs and shows profile scope is not generation.
+D3 root mapping/D5 profile controls repaired; D4 task prefix fully restored
+before publication. P1 remains open for actual producer/planner integration .17;
+core .16 and host/CLI .14 follow. No cache deletion or historical event change.
+
+Focused16/books7/scope pass;3844B whole0384/0385 retained.
+
 ## SEMULITH-AC-0070 (leaf ARTIFACT-CLEANUP.13) — record recoverable cleanup intent
 
 Add bounded exclusive plan/source-bound attempt records and readonly inspection.
@@ -612,9 +626,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D52: one checked NUL Git inventory and validated size table feed count/aggregate/part bounds. Failed/diagnostic/malformed inventories or unsafe/unmeasurable members refuse2 without a green banner; health and derived exemptions retain their rules.
 - Keep original17 controls; add15 with independent status/stderr, boundary and path failures. Verify normal/O, omission mutations, public CLI replay, whole history/source inverses and focused/seven-book checks. No cap, archive-body or CPU change; D51 capacity review follows.
-
-## SEMULITH-LC-0012 (leaf LIVE-CONTAINMENT.4) — qualify capacity inputs before authority review
-
-- Reproduce D52 through the public checker: baseline0; failed73 inventory and partial listing+stderr both incorrectly return0 with the green banner. Real HEAD/index/all1397 tracked identities stay exact.
-- Own priority1 repair next, before D51 capacity review. Sync the observed limitation in the book; no checker, cap, authority, archive or CPU change; LIVE routing closure marked Mostly Done for D52.
 

@@ -39,7 +39,7 @@ matches your question:
 | Family | Holds |
 | --- | --- |
 | [governance](docs/toolbox/governance.md) | Repository discipline — the doctrine enforcer, mirrors, routing, history, push, provenance |
-| [artifacts](docs/toolbox/artifacts.md) | Bounded cleanup planning, authenticated historical helper and owned-fixture replay |
+| [artifacts](docs/toolbox/artifacts.md) | Cleanup plans, recovery journals, output provenance and historical helper replay |
 | [definition](docs/toolbox/definition.md) | The canonical definition — S-expressions, schemas, fragments, semantics, generators, citations |
 | [guest evidence](docs/toolbox/guest-evidence.md) | Independent guest authoring, staged observations/counts, and public reference probes |
 | [composition](docs/toolbox/composition.md) | Composition and the board — records, assumptions, composed units, the board, its platform export |

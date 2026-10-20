@@ -36,7 +36,7 @@ USAGE = """# ANCHOR: usage
 
 The tracked instrument lists incremental cache candidates by path/name and
 checks a saved cohort. Regenerable build-output ownership is pending
-`ARTIFACT-CLEANUP.15` before deletion readiness. Supported cache deletion is
+`ARTIFACT-CLEANUP.17` before deletion readiness. Supported cache deletion is
 pending `ARTIFACT-CLEANUP.14`; this version never removes a cache. Historical
 cleanup receipts keep their original scope.
 
@@ -58,7 +58,8 @@ The gate requires 26 passing tests in normal and optimized Python, plus ten
 targeted guard omissions per mode, each losing one assertion with zero errors.
 Five additional historical-helper tests and a source-pin omission run in both
 modes: 26 planning/history outcomes. Journal coverage adds26 tests and ten
-omissions per mode,48 gate outcomes altogether. No real project cleanup occurs.
+omissions per mode. Output-provenance25 tests and thirteen omissions per mode
+add28 outcomes,76 gate outcomes altogether. No real project cleanup occurs.
 
 The original AC0067 helper is retained byte-exact as passive input in
 `scripts/fixtures/artifact_cleanup_0067.py.txt`. Its 5,815 bytes retain their

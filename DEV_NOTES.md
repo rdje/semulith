@@ -1,5 +1,57 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — bounded per-file output provenance (ARTIFACT-CLEANUP.15)
+
+From clean7f732ab/brief0/host census OK, isolate the provenance record/reader
+before producer/plan integration .17, guarded core .16 and host/operator .14.
+P1 remains open: legacy metadata planning can select an input solely by cache
+name/path. No cache-unlink API or new project cleanup event is introduced here.
+
+The tracked probe's --cargo-contract invokes only public Cargo clean --dry-run
+--verbose --offline --profile dev in a disposable owned workspace. Cargo lists
+both a cache-shaped toy and a profile input; the third input outside that profile
+is not listed, and all three bytes remain exact. Metadata/root/profile scope
+therefore cannot attest per-file generation. The earlier owned five-input
+Cargo1.95.0/metadata/dry-run observation is retained in cargo-contract.json.
+
+Add artifact_output_provenance: closed canonical bounded ledger/observations
+with UTC time, current-file recorder/producer identities, fixed host test command,
+explicit target/intermediate roots, successful plain-zero exit, and exact
+before/after facts. Only absent-before or changed-digest outputs qualify. An
+unchanged unknown input cannot gain authority from timestamp/inode churn.
+Known C-engine/C-guest roots are only the future protocol; producers are not yet
+connected. Unknown namespaces, release/cross-target paths, aliases and malformed
+records refuse. Current approval matches supplied anchored census facts, tracked
+case/Unicode aliases, recorder/actor source snapshots and a single-link output.
+It does not reopen supplied outputs or attest loaded code/independent origin;
+caller quiescence and later per-file mutation revalidation remain necessary.
+
+Ledger16MiB/65,536 sorted unique outputs; record32KiB, source1MiB, file512MiB.
+Absent ledger grants no outputs; unsafe/malformed reads refuse. Historical
+source records decode after changes but cannot match current approval. Root
+pathname/device/inode guards surround reads and precede authority return.
+
+QA controls caught two implementation gaps before publication: D3 accepted an
+old root descriptor after an owned fixture rename (23 tests/1 failure/0 errors),
+fixed by before/after root guards with separate start/return omissions. D5
+accepted release output for the fixed host cargo-test command (25/1/0), fixed by
+the debug-only contract. D4 was an inline documentation editor reusing a leaf-local
+offset for the full-document prefix. Restore the complete saved predecessor
+prefix and retain new spans; all old nodes/history inverses are verified. The
+truncated working copy was never committed; no source history was lost.
+
+25 tests normal/O and13 copied-source omissions each1 failure/0 errors give28
+exact outcomes; gate76 and derived1633 literal arms. Early controls demonstrated
+why whole-codec reconstruction could mask a missing stage guard: command/return
+controls now target that stage directly; oversized decode asserts no JSON parse.
+Current-fact omission uses one failing unit rather than five subtest failures.
+Cold copied reader needs no Git or producer execution. Focused/source/history/
+capacity/rendered checks and normal COMMIT follow. Promotion declined: existing
+output-only, locality, claim and tools-first policies govern this repair.
+
+Final focused16/books7/native3/scope pass:18 files/protected1460/97 old entries,
+3844B whole0384/0385; all prior task text and caps retained. Staged checks follow.
+
 ## _(2026-10-20 UTC)_ — record recoverable cleanup intent (ARTIFACT-CLEANUP.13)
 
 From clean e9b4532/brief0/actual host census OK, split journal-only .13 before
@@ -648,54 +700,4 @@ whole collector implementation/test bodies preserved. Two closed task records
 2143B/source-owner inverse2/six damaged refusals; DEV0359 keeps3443B/one oldest
 entry and CH0360 keeps2143B/two. Fixed caps and CPU/BOARD/replay statuses unchanged;
 LIVE static arm count freshly derived1612. No canonical capture/qualification.
-
-## _(2026-10-19)_ — emit one bounded selected identity (P4-SYSTEM.14 a42ac)
-
-The reader already binds one retained execution identity; canonical declaration
-still needs a producer that excludes the changing parent catalogue. Add
-encode_reference_identity over its public frozen context plus explicit descriptor
-metadata. Keep required/optional execution fields and optional empty presence;
-add only fixed descriptive role/status/lineage labels, with no acquisition,
-execution or independence claim. Use the sole dossier writer and existing byte
-consumer/schema to verify one candidate/no experiments before returning bytes.
-
-Validate finite context shape/names and explicit host metadata before binding or
-serialization. Freeze copied metadata; reject unsafe work/diagnostic paths.
-Descriptor value text totals at most65536 characters before escaping, diagnostic
-path separately at most65536, encoded output at most65536 bytes. These are input/
-artifact limits, not RAM ceilings. UTF-8/escaping expansion and invalid surrogates
-refuse without partial output. Schema unavailability follows the existing byte
-consumer's refusal contract. No artifact, binary or process access.
-
-19 controls/twelve omissions normal/O cover exact/extra-byte limits, malformed
-requests before tools, unknown field names before rebinding, aggregate text,
-optional presence, deterministic projection, metadata freezing, output drift and
-schema failure. Positive omission-induced refusals initially escaped as harness
-errors; make successful-emission expectations explicit while negative controls
-still require IdentityError. Legacy40 controls/eight losses remain exact. Review
-35modules/27data/63children/66files/950922B from a copy with no materials cache;
-no new producer module is added. Fix stale book pending-consumer wording and add
-one complete example while preserving every existing one and prior records.
-
-Canonical identity publication, capture driver/retention/exact manifest and full
-policy remain pending. P1 next driver must validate seed-inclusive accounting;
-P2 runtime-continuation observation remains owned in the preceding record. No
-canonical capture or qualification. promotion: declined (existing identity,
-schema, bounded artifact and locality contracts).
-
-First normal hook refused PROFILE-CONSISTENCY: three byte-consumer mutation
-seams were no longer unique module-wide after the new producer. The positive22
-controls still pass; context/path/count each have two matches. Scope the six
-consumer mutations to check_reference_identity_bytes, preserving their original
-meaning and every old test body;22 controls/fourteen losses remain exact normal/O.
-The outer project runner buffers failures: phase advancement did not prove green,
-contrary to an earlier progress update. Signoff requires the final hook verdict.
-
-Validation:74 normal/O outcomes;19 emission controls/twelve omissions and legacy
-40/eight identity and22/fourteen byte-consumer losses exact;0 errors.16 focused
-checks/seven books/five complete examples pass;1544 other files/1Gitlink/92 prior
-entries and whole legacy reader
-implementation exact. Whole-ab1488B retained with inverse2/five damaged refusals;
-DEV0358 keeps one oldest2820B entry. Fixed caps and CPU/BOARD/replay statuses exact;
-LIVE's static arm count freshly derived1610. Canonical capture remains pending.
 

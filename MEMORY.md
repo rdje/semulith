@@ -14,20 +14,23 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.13` / SEMULITH-AC-0070 attempt journal.
+- last_unit: `ARTIFACT-CLEANUP.15` / SEMULITH-AC-0071 provenance records/reader.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: .15 first fixes P1 input ownership: a retained-input fixture can
-  match cache names/path without Cargo output provenance. Bind regenerable
-  build-output ownership before any mutation, then anchored core/journal; .14
-  host-bound operator CLI last. Read .11-.15 and tool/probes/book first.
-- last_evidence: target/artifact-cleanup-0070. Journal26 tests normal/O/10 guard
-  omissions each1 failure/0 errors,22 outcomes; total gate48. Actual metadata-only
-  source-bound plan/full-sync/read smoke: intent0/returns0, owned dummy intact.
-  Focused16/books7/normal-print/scope;18 files/protected1456/1Gitlink/98 old entries,
-  4030B whole0382/0383. Plan logic unchanged; no cache unlink API. All caps fixed.
+- next_action: .17 binds actual successful public Cargo observations and strict
+  plan selection to .15 provenance. P1 remains open: legacy names/path metadata
+  is not generation. Then .16 anchored core/journal and .14 host/operator CLI.
+  Read .11-.17, current code/probes/shared book before changes; preserve old plans.
+- last_evidence: target/artifact-cleanup-0071. Provenance25 tests normal/O/13
+  omissions each1 failure/0 errors,28 outcomes; gate76. Public Cargo dry-run
+  preserves three owned inputs and lists a profile input too. D3 root/D5 profile
+  guards repaired; D4 complete task prefix/node/history inverse restored.
+  Focused16/books7/normal-print/scope:18 files/protected1460/1Gitlink/97 old
+  entries;3844B whole0384/0385. No producer integration or cache-mutation API.
 - blockers: none requiring director input. Original37/native3/41514B/canonical
-  observations and original events stay exact. P4 policy/status follows repair;
-  method satisfied/policy pending;CPU14/18,BOARD10/12,GC replay4/4green.
-  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1631 literal sites/42 routes.
-  No push below300;241 before AC0070. Always target/tmp as TMPDIR. Last cleanup
-  timestamp unchanged in its record; no real event required by journal testing.
+  observations/events exact. P4 full policy/status follows repair; method
+  satisfied/policy pending; CPU14/18,BOARD10/12,GC replay4/4green unchanged.
+  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1633 literal sites/42 routes.
+  All fixed caps retained; task family has little headroom: verify before each
+  slice and preserve complete nodes/history during containment. No push below300;
+  242 before AC0071. Always target/tmp as TMPDIR. Latest cleanup record unchanged;
+  instrument tests are not a new cleanup event.

@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -344,7 +344,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ### Priority1 activity — make cleanup instruments durable
   Status: `active`
-  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`
+  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`
   Goal: fix the verified workflow defect before returning to P4 policy/status.
   Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
   rc=1; tracked scripts/*cleanup* census empty; cache-name search in scripts/
@@ -456,7 +456,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 - ID: `ARTIFACT-CLEANUP.14` — **bind host census and publish operator workflow**
   Status: `pending`
-  Goal: after .15 guarded core, bind explicit caller quiescence and a fresh bounded
+  Goal: after .16 guarded core, bind explicit caller quiescence and a fresh bounded
   invocation of the public host-census workflow before cache mutation. Preserve
   UID, exemptions and observation limits; census remains outside the doctrine.
   Add supported delete/inspect CLI, truthful partial/error outcomes and recovery
@@ -465,16 +465,37 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Sync help/book/toolbox/live docs, focused checks and normal COMMIT; close the
   priority1 durable-instrument activity, then return to full P4 policy/status.
 
-- ID: `ARTIFACT-CLEANUP.15` — **anchored guarded deletion and journal integration**
-  Status: `pending`
-  Goal: after .13, add whole-cohort/per-file revalidation and same-volume/non-Git
-  parent validation immediately before each unlink; retained/residue post-checks.
-  Connect durable intent/outcome records; preserve known progress and failure
-  after partial operation, including the unresolved unlink/record window.
-  Cover release-D1, stale/missing data, inode/alias/parent changes, output errors
-  and interruption in owned fixtures only. Supported deletion CLI stays pending
-  .14; no incomplete operator path or real cleanup merely for testing.
-  Own/document/verify/commit each safe slice before .14 host-census/CLI.
+- ID: `ARTIFACT-CLEANUP.15` — **bounded per-file output-provenance records**
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0071`)
+  Goal: AC0071 from clean7f732ab/brief0/host census OK. Establish closed bounded
+  per-file output-provenance records/reader first: successful public build,
+  recorder/producer source pins, exact before/after facts, fixed output roots.
+  Unknown or unchanged unowned input cannot gain authority from cache names.
+  Fresh anchored current-source/file matching reports only recorded generation;
+  no loaded-code attestation. Cover malformed/stale/forged-scope/alias/source
+  refusals and normal/O omissions in owned copies. No mutation API or planner
+  reclassification yet: .17 binds actual builds and selection; .16 core/.14 CLI
+  follow. Preserve historical plans/journals, producer37/native3/capture/caps.
+  Sync gate/toolbox/shared teaching/live records; normal COMMIT per slice.
+  Output target/artifact-cleanup-0071; P1 stays open until .17 integration verified.
+  Owned D3: root-mapping-before.log23 tests/1 failure/0 errors shows a renamed
+  fixture root can borrow its old descriptor. WHERE load() compared only path
+  spelling. Add pathname/device/inode guards before/after reads and return;
+  restore fixture mapping before close. No real project path was renamed.
+  QA D4: task-root-before.json finds lost old nodes after a leaf-local offset
+  was reused for the document prefix. Restore the saved predecessor prefix and
+  retain new leaf spans; verify old node/history inverses. Truncated work was
+  never committed; no source history is lost.
+  Owned D5: profile-binding-before.log25 tests/1 failure/0 errors accepts a
+  release output for the fixed host cargo-test command. Restrict to debug and
+  add a discriminating profile guard; cross-target outputs remain unclaimed.
+  promotion: declined (implements existing output-only/input-preservation policy).
+  Public-interface observation: cargo-contract.json (Cargo1.95.0) dry-run/dev
+  lists both a cache-shaped toy and an input under target/debug/input-fixtures;
+  all five fixture inputs remain byte-exact. Cargo metadata/root/profile scope
+  cannot establish per-file generation. Require changed/new output observations
+  from a bound successful build; unknown/unchanged unowned inputs stay retained.
+  promotion: declined (implements existing output-only/input-preservation policy).
   Owned P1 input-ownership finding: input-candidate.log rc=0 shows a retained
   fixture under target/retained-fixture-inputs/debug/incremental selected solely
   by basename/path; no Cargo build-output provenance exists. candidate() checks
@@ -484,11 +505,29 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Metadata-only planning/journal has deleted no such input; .15 owns the fix
   at highest priority for deletion readiness. No submodule implementation use.
 
+- ID: `ARTIFACT-CLEANUP.16` — **anchored guarded deletion and journal integration**
+  Status: `pending`
+  Goal: after .17 bound output ownership, add whole-cohort/per-file SHA/identity/tracked
+  and same-volume/non-Git parent revalidation immediately before each unlink.
+  Connect durable intent/outcome records; retained/residue post-checks and known
+  partial failure/uncertain window. Cover D1/staleness/aliases/parent changes,
+  output errors and interruption in owned fixtures only. No supported operator
+  mutation until .14 host binding; no real cleanup merely for testing. Normal COMMIT.
+
+- ID: `ARTIFACT-CLEANUP.17` — **bind real build observations and plan selection**
+  Status: `pending`
+  Goal: use .15 records around bound public Cargo invocations; preserve exact
+  existing output paths and protect unchanged unowned inputs. Bind actual
+  source/root/command/return facts, bounded atomic merge/publication and current
+  cohort selection; historical plans remain readable but grant no new mutation
+  authority. Exercise actual owned builds, malformed/stale receipts, source and
+  output changes, interruptions and cold CLI. Verify P1 fixed before .16 core.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.15` | `pending` | P1 output-ownership guard and anchored core before supported CLI |
+| 1 | `ARTIFACT-CLEANUP.17` | `pending` | bind actual builds and plan selection before .16 core/.14 CLI |
 
 ## Decisions
 
@@ -721,10 +760,27 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Derived1631 sites;40 doctrines/42 routes/CPU14/18/BOARD10/12/replay4/4green
   unchanged. Book524076/524288B; normal COMMIT before .15 P1 ownership/core.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.15)
+
+- [x] **REPRODUCE / ISSUE** — scripts/probe_artifact_output_provenance.py
+  --cargo-contract rc=0: profile input is listed; three owned inputs remain exact.
+- [x] **ROOT CAUSE (WHY + WHERE)** — candidate() infers class from names;
+  profile scope cannot show generation. D3 load() lacked root identity; D5
+  output_class() admitted release for a host test. Probe25 tests rc=0 after fixes.
+- [x] **FIX** — bounded closed per-file observations; strict command/profile,
+  before/after source/root/fact matching. No cache mutation; .17 integration next.
+- [x] **ADDRESSED (verified)** — scripts/check_artifact_cleanup.sh --self-test
+  rc=0:76 outcomes;25 tests normal/O/13 omissions each1 failure/0 errors.
+- [x] **NO REGRESSION** — focused16 rc=0; native3/41514B, books7/normal-print;
+  scope18/protected1460/1Gitlink/97 old entries;3844B whole0384/0385; all caps fixed.
+- [x] **LOCKSTEP** — task/index/live/book/toolbox sync;1633 sites/40 doctrines/42
+  routes; CPU14/18/BOARD10/12/replay4/4green unchanged. Normal COMMIT before .17.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.15` |25 tests normal/O/13 omissions, gate76/focused16/books7/scope |18 files/protected1460/1Gitlink/97 old entries;3844B whole0384/0385; no cache mutation; P1 integration .17 |
 | `2026-10-20` UTC | `.13` |26 tests normal/O/10 omissions, actual metadata/full-sync smoke, gate48/focused16/books7/scope |18 files/protected1456/1Gitlink;98 old entries/4030B whole0382/0383; no cache unlink; P1 ownership fix .15 |
 | `2026-10-20` UTC | `.12` | five legacy tests normal/O/pin omission, cold3, gate26, focused16/books7/scope |18 files/protected1452/1Gitlink;98 whole old entries,3172B native0380/0381; no real cleanup; staged checks/normal COMMIT follow |
 | `2026-10-20` UTC | `.11` | focused16;26 tests normal/O/ten omissions each; actual plan/check; books7; whole source/history inverses |22 exact outcomes; scope18/protected1447/1Gitlink/98 old entries;3504B whole0378/0379; no real deletion; staged checks and normal COMMIT follow |
@@ -759,6 +815,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
+
+`SEMULITH-AC-0071 (leaf ARTIFACT-CLEANUP.15): bind per-file output-provenance records` —25 tests normal/O/28 provenance outcomes; gate76; actual Cargo dry-run witness; no cache mutation. .17 next.
 
 `SEMULITH-AC-0070 (leaf ARTIFACT-CLEANUP.13): record recoverable cleanup intent` — bounded metadata journal/inspection,26 tests normal/O/22 journal outcomes, gate48 and actual barrier smoke; no cache unlink. P1 ownership/core .15 next.
 
