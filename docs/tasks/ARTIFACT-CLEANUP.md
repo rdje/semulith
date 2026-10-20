@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -649,7 +649,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   .16 or .14 need the capacity; it adds no cleanup authority.
 
 - ID: `ARTIFACT-CLEANUP.24` — **the first recurring cleanup through the supported act**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0081`)
   Goal: when `docs/ARTIFACT_CLEANUP.md` is more than 24 h old (after
   2026-10-20T23:07Z), run the four acts in one fresh work directory under
   target/artifact-cleanup with the run log inside it: plan, strict select,
@@ -658,11 +658,28 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   byte-exact. Overwrite the one-entry record with the receipt's counts, keep the
   work directory as evidence, sync tree/index/MEM/DEV/CH and normal COMMIT.
 
+  Result (`2026-10-20T22:11Z`, `SEMULITH-AC-0081`): run at 23 h under the
+  "roughly 24 h" cadence, after cfca1c2 with a clean tree and `handoff: OK`,
+  in target/artifact-cleanup/AC0081 with run.log inside it. Plan: 19 candidates
+  (78,250,756 B), 18,724 retained files (153,136,400 B). Strict selection: 6
+  approved (15,766,463 B, the latest captured engine/guest/core sessions), 13
+  unrecorded (the .13 smoke-input fixture and sessions left by failed mutation
+  builds). The act's fresh census returned `handoff: OK`; the guarded core
+  removed exactly the 6, residue 0, journal `recorded-complete` at `verified`;
+  `--inspect` confirms plan, selection and journal with current pins. The
+  one-entry record is overwritten. No unrecorded candidate, input or log moved.
+
+- ID: `ARTIFACT-CLEANUP.25` — **the next recurring cleanup**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-10-21T22:11Z), repeat the four acts in a fresh work directory with the
+  log inside it; overwrite the record from the receipt; sync and normal COMMIT.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.24` | `pending` | the next recurring cleanup, first through the supported act; due after 2026-10-20T23:07Z, otherwise P4-SYSTEM.14 resumes |
+| 1 | `ARTIFACT-CLEANUP.25` | `pending` | the next recurring cleanup, due after 2026-10-21T22:11Z; until then P4-SYSTEM.14 resumes |
 
 ## Decisions
 
@@ -798,12 +815,15 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.24` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 19 candidates removed (15,766,463 B), residue 0, 13 unrecorded and 18,724 retained kept |
 | `2026-10-20` UTC | `.14` | operator 10 tests normal/O; 3 omissions; artifact146 | census bound before the core; receipts truthful; activity closed |
 | `2026-10-20` UTC | `.16` | guarded 12 tests normal/O; 4 omissions; journal 29/11; planner 27; artifact138 | fixture unlinks exact, journaled and verified; D14 fixed; dry-run only public |
 | `2026-10-20` UTC | `.17` | selection 11 tests normal/O; 5 omissions; artifact128; actual select | 9 approved / 10 unrecorded on the real tree; D12/D13 fixed; P1 closed |
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0081 (leaf ARTIFACT-CLEANUP.24): the first recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten.
 
 `SEMULITH-AC-0080 (leaf ARTIFACT-CLEANUP.14): bind the host census into the supported cleanup act` — operator act, receipts, recovery; priority1 activity closed; .24 next when due.
 
@@ -815,6 +835,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-20` UTC: .24 done; first cleanup event through the act, 6 outputs removed, record overwritten.
 - `2026-10-20` UTC: .14 verified; the supported act binds a fresh host census before the guarded core; activity closed.
 - `2026-10-20` UTC: .16 verified; guarded core and selection-bound journal land, dry-run only; no operator deletion yet.
 - `2026-10-20` UTC: .17 verified; strict selection publishes beside the plan; no deletion authority added.

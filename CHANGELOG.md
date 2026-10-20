@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0081 (leaf ARTIFACT-CLEANUP.24) — the first recurring cleanup through the supported act
+
+Plan, strict selection, `--delete` under a fresh host census and `--inspect` in
+target/artifact-cleanup/AC0081: 6 captured Cargo incremental outputs removed
+(15,766,463 B), residue 0, journal recorded-complete/verified; 13 unrecorded
+candidates, every input and log untouched. `docs/ARTIFACT_CLEANUP.md` overwritten.
+Next cleanup after 2026-10-21T22:11Z; P4-SYSTEM.14 resumes meanwhile.
+
 ## SEMULITH-AC-0080 (leaf ARTIFACT-CLEANUP.14) — bind the host census into the supported cleanup act
 
 New artifact_cleanup_operator.py is the single deleting command: a bounded
@@ -667,9 +675,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 - D58: composition closed six leaves on 2026-09-27; repair the stale In Progress/2/6 row to Done with explicit guarded progress. Tree closure claims no accepted processor or board.
 - D61: join two Foundation table breaks; all21 rows must render as table cells in normal and print output, rather than12 rows of literal pipe prose.
 - D60: same-total/wrong-completed control closes a measured omission gap; 12 prior arms preserved, 13 pass, derived project total1519. Seven public cases/mode and copied omission qualify normal/O; D59 broader source/ratio repair is priority1 next. Whole history/protected/book inverses and focused checks required; caps/CPU unchanged.
-
-## SEMULITH-LC-0023 (leaf LIVE-CONTAINMENT.4) — collect closed graph inventory evidence
-
-- Source28920c6:1411 identities/462 Markdown/53 literal include candidates; seven fresh books expose120 HTML pages/3244 anchor links. Retain2076 resource candidates and338 Markdown paths outside book source directories for review; complete graph/adoption remains pending.
-- Durable source-read-only collector,22 finite refusals normal/O, full source/blob and before/after input/output checks; whole prior history/source/protected inverses and focused/seven-book/rendered checks required. Book teaches replay within unchanged bounds; registry/canonical/LIVE/CPU unchanged. .4i2b transitive reader review next.
 

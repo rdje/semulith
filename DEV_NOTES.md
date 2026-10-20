@@ -1,5 +1,22 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — the first cleanup through the supported act (ARTIFACT-CLEANUP.24)
+
+AC0081 after cfca1c2, clean tree and `handoff: OK`, at 23 h under the roughly
+24 h cadence. The four acts ran in target/artifact-cleanup/AC0081 with the run
+log inside the work directory, so the plan stayed exact. Plan: 19 cache-named
+candidates and 18,724 retained files. Strict selection approved 6 (the latest
+captured engine, guest and core sessions) and left 13 unrecorded: the .13
+smoke-input fixture and the sessions the pre-commit hook's failing mutation
+builds leave behind, which capture never records and rustc garbage-collects on
+the next successful build. The act's own census returned `handoff: OK`, the
+guarded core revalidated and removed exactly the six, residue 0, and the
+journal finished `recorded-complete` at `verified`. `--inspect` reads plan,
+selection and journal back with current pins. The one-entry record is
+overwritten from the receipt. This is the first event whose every step is a
+tracked instrument with its own controls; the old scratch helper and its
+receipts keep their historical identity.
+
 ## _(2026-10-20 UTC)_ — the supported cleanup act (ARTIFACT-CLEANUP.14)
 
 AC0080 from clean 1ed7cbe. The host census was a handoff ritual the unlink
@@ -671,35 +688,4 @@ Whole predecessor entries5007B retained0372/0373. Evidence target/p4-system-14/a
 Four whole al records2498B/inverses2/eight damaged refusals; promotion
 declined under existing bounded-capture/retention/independent-findings doctrine.
 Never rerun or overwrite historical outputs; next full source/risk/feature policy.
-
-## _(2026-10-19)_ — retain exact DIV predeclarations (P4-SYSTEM.14 a42al)
-
-Curate planned-experiment.sexp9901B, dependencies.sexp14488B and authorities.sexp
-17125B from the composed public owners before canonical execution:41514B total.
-Validate raw planned schema/scoped graph,64-child codec and73-input inventory;
-check native authority grammar, fresh names/parents, exclusive complete writes,
-then anchored pin/size/equality and independent re-preparation. No Sail process.
-The evidence family now holds8 files within unchanged22/16MiB/4MiB bounds.
-
-Add actual retained-package comparison to the command controls, so stale native
-files fail before execution. Suite18 normal/O; same seven omission losses
-6/1/1/1/2/1/1 with0 errors. The source/authority reports now describe separate
-verification obligations without falsely claiming whether external data exists.
-An87-file copy with parent cwd available and no Git/materials/binary delegates
-only to an explicit recording mock. Valid/status/prose cases bind73 inputs and
-all separate reviews; six missing/changed native states stop before delegation.
-Eighteen copied outcomes pass across both modes. These are not Sail observations.
-
-Adjacent capture-plan text still said final execution composition/inventory were
-pending after0279 implemented them; source/book comparison reproduced the stale
-paragraph. Correct that section and all current declaration-state teaching;
-preserve every old example and add actual native verification. Declarations are
-readiness claims, not observed successes. Once observations exist, keep their
-original declarations; affected source changes need separately owned revalidation.
-Retain five complete closed ak/y records3534B with source/owner inverse metadata
-inside task-claims, inverses2/nine damaged refusals; CH0371 whole1303B retained.
-Focused17/books7/examples4/surfaces5/scope pass normal/O.
-Evidence target/p4-system-14/a42al. Promotion declined: existing source-closure,
-currentness and bounded-retention rules. Next commit declarations, then fresh
-Sail baseline/repeat/control, retain/evaluate outputs and complete full policy.
 
