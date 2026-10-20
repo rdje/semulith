@@ -67,6 +67,12 @@ self_test() {
       out="$("${python[@]}" scripts/probe_artifact_cleanup_guarded.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode guarded $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
+    out="$("${python[@]}" scripts/probe_artifact_cleanup_operator.py 2>&1)"; rc=$?
+    score "GREEN $mode operator act" "$rc" 0 "$out" '10 tests / 0 failures / 0 errors'
+    for mutation in op-census-run op-census-rc op-census-verdict; do
+      out="$("${python[@]}" scripts/probe_artifact_cleanup_operator.py --mutation "$mutation" 2>&1)"; rc=$?
+      score "RED $mode operator $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
+    done
   done
   printf 'ARTIFACT-COHORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -82,6 +88,7 @@ git ls-files --error-unmatch -- scripts/artifact_cleanup.py scripts/probe_artifa
   scripts/artifact_cargo.py scripts/probe_artifact_cargo.py \
   scripts/artifact_cleanup_selection.py scripts/probe_artifact_cleanup_selection.py \
   scripts/artifact_cleanup_guarded.py scripts/probe_artifact_cleanup_guarded.py \
+  scripts/artifact_cleanup_operator.py scripts/probe_artifact_cleanup_operator.py \
   scripts/probe_c_engine.py scripts/probe_c_guest_image.py >/dev/null 2>&1 || {
   echo 'ARTIFACT-COHORT: REFUSED — instrument and controls must be tracked' >&2; exit 2; }
 echo 'ARTIFACT-COHORT: bounded planning/checking controls green; no real cleanup'

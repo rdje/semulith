@@ -14,20 +14,19 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `ARTIFACT-CLEANUP` → `.14` (pending; host-bound operator act).
+- active_work_unit: `ARTIFACT-CLEANUP` → `.24` (pending; next recurring cleanup, due after 2026-10-20T23:07Z); otherwise `P4-SYSTEM` → `.14`.
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `.16` / `SEMULITH-AC-0079` — guarded core, journal v2, D14 fixed.
-- next_action: `.14`: bind explicit caller quiescence and a fresh bounded
-  invocation of the public host census (`scripts/check_no_background_jobs.sh`,
-  UID/exemption/observation limits preserved) around the guarded core; add the
-  supported operator act (plan → select → census → remove → inspect) with truthful
-  partial/error outcomes and recovery examples; owned fixtures, no real event
-  needed. Then close the priority1 activity and return to P4 policy/status.
+- last_unit: `.14` / `SEMULITH-AC-0080` — the supported act; priority1 activity closed.
+- next_action: if `docs/ARTIFACT_CLEANUP.md` is older than 24 h, run `.24`: plan,
+  select, `artifact_cleanup_operator.py --delete`, `--inspect` in one fresh
+  work directory with the log inside it, overwrite the record, commit. Otherwise
+  resume `P4-SYSTEM.14` (full source/risk/feature policy and status integration)
+  from that tree's frontier and goal text.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none requiring director input. The next narrative rollover is a
   new generation through the same transition contract.
-- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0079`;
+- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0080`;
   the real ledger is `target/artifact-cleanup/output-provenance.json`.
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

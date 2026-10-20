@@ -1,5 +1,31 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — the supported cleanup act (ARTIFACT-CLEANUP.14)
+
+AC0080 from clean 1ed7cbe. The host census was a handoff ritual the unlink
+path could not prove had run. The operator module is now the single deleting
+command. `--delete` starts the public census script as a bounded child of the
+repository root in its own session (GIT_* stripped, on-volume TMPDIR, 60 s
+deadline, 1 MiB output bound, group kill on timeout) and proceeds only on exit
+0 with the `handoff: OK` verdict line. Exit 1 refuses as project work running;
+exit 2, a timeout, empty or oversized output or a missing verdict refuse as
+unavailable, because an absent snapshot is not an empty process set. The
+census keeps its own user, sanctioned exemptions and observation limits; this
+act does not reimplement or wrap its judgement, only its moment. Then the
+guarded core runs and one JSON receipt reports disposition, stage, counts,
+failure and the journal path; `--inspect` reports plan, selection and journal
+without a census or mutation. Exit codes: 0 complete/nothing, 1 stale or
+partial, 2 refused, 130 interrupted with the journal written.
+
+Controls stub the census script inside the fixture with a case file, so green,
+running, unavailable, empty, oversized, timed-out and verdict-less censuses and
+partial/interrupted attempts are exercised without touching the host process
+table or any real cache: 10 tests normal/O and three omissions. A second act
+on the same work directory refuses as stale and, thanks to D14, names the
+first gone member; the usage text says to plan and select into a new directory
+instead. The priority1 durable-instrument activity closes; .24 is the first
+recurring cleanup through the act, due after 2026-10-20T23:07Z.
+
 ## _(2026-10-20 UTC)_ — guarded deletion core (ARTIFACT-CLEANUP.16)
 
 AC0079 from clean 6740f24. Three records existed and nothing bound them at the

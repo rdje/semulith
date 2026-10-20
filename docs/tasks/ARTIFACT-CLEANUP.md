@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -343,7 +343,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Later builds may regenerate caches/update logs; this is the immediate event.
 
 ### Priority1 activity — make cleanup instruments durable
-  Status: `active`
+  Status: `done` (`2026-10-20` UTC; closed by `ARTIFACT-CLEANUP.14`, `SEMULITH-AC-0080`)
   Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`
   Goal: fix the verified workflow defect before returning to P4 policy/status.
   Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
@@ -455,7 +455,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   promotion: declined (implements existing durable-source/partial-outcome policy).
 
 - ID: `ARTIFACT-CLEANUP.14` — **bind host census and publish operator workflow**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0080`)
   Goal: after .16 guarded core, bind explicit caller quiescence and a fresh bounded
   invocation of the public host-census workflow before cache mutation. Preserve
   UID, exemptions and observation limits; census remains outside the doctrine.
@@ -464,6 +464,16 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   and cold copied runtime in owned fixtures; no real cleanup event needed.
   Sync help/book/toolbox/live docs, focused checks and normal COMMIT; close the
   priority1 durable-instrument activity, then return to full P4 policy/status.
+
+  Result (`2026-10-20` UTC, `SEMULITH-AC-0080`): artifact_cleanup_operator.py is
+  the single deleting command. `--delete` runs the public handoff census as a
+  bounded child (same user, sanctioned exemptions and limits, 60 s, 1 MiB) and
+  proceeds only on exit 0 with the `handoff: OK` verdict; exit 1 refuses, and
+  exit 2, timeout, empty, oversized or verdict-less output refuse as unavailable.
+  Then the guarded core runs and one JSON receipt names disposition, stage,
+  counts, failure and journal; `--inspect` reports plan, selection and journal
+  without a census. Recovery is documented: never reuse a work directory. The
+  priority1 activity closes; every cleanup event from .24 on runs through it.
 
 - ID: `ARTIFACT-CLEANUP.15` — **bounded per-file output-provenance records**
   Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0071`)
@@ -638,11 +648,21 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   publishing views. Becomes the frontier when the warning fires or when .17,
   .16 or .14 need the capacity; it adds no cleanup authority.
 
+- ID: `ARTIFACT-CLEANUP.24` — **the first recurring cleanup through the supported act**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is more than 24 h old (after
+  2026-10-20T23:07Z), run the four acts in one fresh work directory under
+  target/artifact-cleanup with the run log inside it: plan, strict select,
+  `--delete` (fresh host census, guarded core, receipt), `--inspect`. Only
+  approved captured outputs may go; unrecorded candidates, inputs and logs stay
+  byte-exact. Overwrite the one-entry record with the receipt's counts, keep the
+  work directory as evidence, sync tree/index/MEM/DEV/CH and normal COMMIT.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.14` | `pending` | bind the fresh host census and publish the supported operator act around the guarded core |
+| 1 | `ARTIFACT-CLEANUP.24` | `pending` | the next recurring cleanup, first through the supported act; due after 2026-10-20T23:07Z, otherwise P4-SYSTEM.14 resumes |
 
 ## Decisions
 
@@ -665,6 +685,29 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.14)
+
+- [x] **REPRODUCE / ISSUE** — grep -c "check_no_background_jobs" scripts/artifact_cleanup_guarded.py
+  at 1ed7cbe = 0: the guarded core had no supported deleting command and nothing
+  bound the host census to a mutation.
+- [x] **ROOT CAUSE (WHY + WHERE)** — bash scripts/check_no_background_jobs.sh --help
+  rc=0 documents exit 0/1/2 and the `handoff: OK` verdict, and
+  scripts/artifact_cleanup_guarded.py exposed only `--dry-run`; the census was a
+  handoff ritual, never a precondition the unlink path could prove it had run.
+- [x] **FIX** — artifact_cleanup_operator.py: bounded fresh census child, green
+  verdict required, then the guarded core; one receipt; inspect; recovery text.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
+  rc=0: ARTIFACT-COHORT --self-test: 146 pass / 0 fail. Operator 10 tests
+  normal/O with 3 omissions, each 1 failures / 0 errors: running work refuses,
+  unavailable/empty/oversized/timed-out/verdict-less censuses refuse, partial
+  and interrupted attempts receipt their stage, a second act on the same
+  directory is stale and names the gone member.
+- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
+  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
+  literal self-test arms 1641 → 1643 re-derived by DERIVED-COUNTS.
+- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
+  tree (activity closed, .24 opened, frontier), index, MEM/DEV/CH; shards.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.16)
 
@@ -755,11 +798,14 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.14` | operator 10 tests normal/O; 3 omissions; artifact146 | census bound before the core; receipts truthful; activity closed |
 | `2026-10-20` UTC | `.16` | guarded 12 tests normal/O; 4 omissions; journal 29/11; planner 27; artifact138 | fixture unlinks exact, journaled and verified; D14 fixed; dry-run only public |
 | `2026-10-20` UTC | `.17` | selection 11 tests normal/O; 5 omissions; artifact128; actual select | 9 approved / 10 unrecorded on the real tree; D12/D13 fixed; P1 closed |
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0080 (leaf ARTIFACT-CLEANUP.14): bind the host census into the supported cleanup act` — operator act, receipts, recovery; priority1 activity closed; .24 next when due.
 
 `SEMULITH-AC-0079 (leaf ARTIFACT-CLEANUP.16): unlink only what plan, selection and journal agree on` — guarded core, journal v2, D14; .14 operator act next.
 
@@ -769,6 +815,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-20` UTC: .14 verified; the supported act binds a fresh host census before the guarded core; activity closed.
 - `2026-10-20` UTC: .16 verified; guarded core and selection-bound journal land, dry-run only; no operator deletion yet.
 - `2026-10-20` UTC: .17 verified; strict selection publishes beside the plan; no deletion authority added.
 - `2026-10-20` UTC: .23 verified; second ledger generation retained, live narrative reset. No cleanup authority changed.

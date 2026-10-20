@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0080 (leaf ARTIFACT-CLEANUP.14) — bind the host census into the supported cleanup act
+
+New artifact_cleanup_operator.py is the single deleting command: a bounded
+fresh run of the public handoff census must give its green verdict immediately
+before the guarded core; running work refuses, failed or absent censuses refuse
+as unavailable, and one JSON receipt names disposition, stage, counts, failure
+and journal. `--inspect` reports plan, selection and journal. Operator 10
+tests/3 omissions normal/O; artifact gate 146 outcomes; literal arms 1643. The
+priority1 durable-instrument activity closes; .24 runs the next cleanup
+through the act. No real cleanup event in this unit.
+
 ## SEMULITH-AC-0079 (leaf ARTIFACT-CLEANUP.16) — unlink only what plan, selection and journal agree on
 
 New artifact_cleanup_guarded.py: preflight re-decides the strict selection,
@@ -661,9 +672,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Source28920c6:1411 identities/462 Markdown/53 literal include candidates; seven fresh books expose120 HTML pages/3244 anchor links. Retain2076 resource candidates and338 Markdown paths outside book source directories for review; complete graph/adoption remains pending.
 - Durable source-read-only collector,22 finite refusals normal/O, full source/blob and before/after input/output checks; whole prior history/source/protected inverses and focused/seven-book/rendered checks required. Book teaches replay within unchanged bounds; registry/canonical/LIVE/CPU unchanged. .4i2b transitive reader review next.
-
-## SEMULITH-LC-0022 (leaf LIVE-CONTAINMENT.4) — qualify containment inventory inputs
-
-- Pin complete1408 source identities and39 existing destinations; durable read-only replay and12 deliberate refusals pass normal/O. Publish a local graph/utility/field/debt/checker integration contract; complete semantic coverage and full adoption remain pending.
-- Retain caps/count107/health64 debt, canonical/profile/CPU and sealed histories. Book gains the contract read with only bounded duplicate navigation shortened; preserve whole old CH/DEV entries, source inverses and modes. Focused12/sharder12/seven books/rendered/literal checks and normal COMMIT required; .4i2 graph inventory next.
 
