@@ -1,5 +1,20 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0073 (leaf ARTIFACT-CLEANUP.19) — retain the completed cleanup ledger in bounded Markdown
+
+Retain the full76937B predecessor and exact38046B completed ledger as directly
+readable Markdown in a finite119258B terminal. Keep all19 live nodes and child
+relationships, one authenticated history pointer and independently bounded new
+narrative. First publication proves the source/prefix and both publishing views;
+subsequent checks freeze terminal bytes and preserve completed live history.
+Reader uses no Git/network/extraction.40 tests normal/O pass;18 guard omissions
+each give1 failure/0 errors. D6 ancestor-census and D7 pure-judge presence/mode
+guards fixed before signoff. Book shares usage;44 routes/1635 literal sites,
+40 doctrines and CPU/board/replay unchanged. P1 actual-build integration remains
+.17, followed by core/host binding. No cleanup event or push.
+D9 aligns root-relative object locators with the separate fixture-path contract.
+Generic guard unchanged; both originals remain byte-exact.
+
 ## SEMULITH-AC-0072 (leaf ARTIFACT-CLEANUP.18) — bound workflow guidance and align the template
 
 Move complete template evidence/general guidance into a separately bounded setup
@@ -620,14 +635,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Shorten nine duplicated summaries after complete canonical reads/27 clause comparisons; INDEX15526→13122B recovers2404B, leaving2674B for separately reviewed authority. Keep every target/type/order, corrected D51 row and canonical record exact; no cap change.
 - Preserve104 prior entries through whole DEV3668B/CH1417B rollover and combined damaged-receipt refusals; verify full inverses, protected identities, focused/seven books and literal reads. Own D55's stale147+13 composition as immediate next correction: committed sources prove151+9=160. LIVE/CPU unchanged.
-
-## SEMULITH-LC-0015 (leaf LIVE-CONTAINMENT.4) — correct the count receipt classification
-
-- Fix D51 without rewriting its historical receipt:61 files are27 task instances+one template+nine archives+24 artifacts. Current96 is33+1+40+22; six instances added, none removed. Append the typed correction to the canonical authority and registry; align index/book.
-- Verify pinned inventories, metadata negatives, real state and whole source/history/protected identities, focused/seven-book checks and literal reads. All limits, archives, LIVE and CPU unchanged; separate capacity review follows.
-
-## SEMULITH-LC-0014 (leaf LIVE-CONTAINMENT.4) — refuse unavailable routing evidence
-
-- Fix D53/D54: check file metrics, README parsing, forced-red hints and provider counts; require literal policy names. Emit family totals directly and retain the repaired README guard/helper across scaffold sync. Failed reads refuse2 without green.
-- Preserve original32 controls;36 additions pass68/0 normal/O, fourteen omissions discriminate and public failure replay agrees. Preserve all101 prior entries through whole DEV rollover; sync book/derived1492 arms. Existing caps, archives and CPU qualification unchanged; D51 review follows.
 

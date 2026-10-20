@@ -22,6 +22,10 @@ self_test() {
         out="$(python3 scripts/probe_qualification_history.py 2>&1)"; rc=$? ;;
       qualification-optimized)
         out="$(python3 -O scripts/probe_qualification_history.py 2>&1)"; rc=$? ;;
+      cleanup-normal)
+        out="$(python3 -B scripts/probe_artifact_task_history.py 2>&1)"; rc=$? ;;
+      cleanup-optimized)
+        out="$(python3 -O -B scripts/probe_artifact_task_history.py 2>&1)"; rc=$? ;;
       *) out="$(python3 scripts/probe_task_history.py --case "$1" 2>&1)"; rc=$? ;;
     esac
     if [ "$rc" -eq "$2" ] && printf '%s' "$out" | grep -qF "$3"; then
@@ -82,6 +86,8 @@ self_test() {
   arm "ordinary-optimized" 0 "43 tests / 0 failures / 0 errors"
   arm "qualification-normal" 0 "32 tests / 0 failures / 0 errors"
   arm "qualification-optimized" 0 "32 tests / 0 failures / 0 errors"
+  arm "cleanup-normal" 0 "40 tests / 0 failures / 0 errors"
+  arm "cleanup-optimized" 0 "40 tests / 0 failures / 0 errors"
   printf 'TASK-HISTORY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
@@ -102,4 +108,5 @@ else
 fi
 python3 scripts/task_history_preservation.py || exit $?
 python3 scripts/qualification_history_preservation.py || exit $?
+python3 -B scripts/artifact_task_history_preservation.py || exit $?
 python3 scripts/check_task_history_links.py

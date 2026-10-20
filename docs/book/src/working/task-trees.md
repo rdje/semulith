@@ -37,6 +37,8 @@ even when asked to pivot immediately.
 
 {{#include ../../../toolbox/artifacts.md:workflow}}
 
+{{#include ../../../artifact-cleanup-history/README.md:usage}}
+
 ## Orientation and the selected next action
 
 `KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.

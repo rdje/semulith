@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "kind": "artifact-cleanup-ledger",
+  "source": "839e9313d79105a079ac73e2259011c761c2d5ce",
+  "source_path": "docs/tasks/ARTIFACT-CLEANUP.md",
+  "source_mode": "100644",
+  "source_git_oid": "31d99d8689a4403c39c0f4b5d274d21a130ae2c8",
+  "recorded_on": "2026-10-20",
+  "owner": "ARTIFACT-CLEANUP.19",
+  "predecessor": {
+    "object": "docs/artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md",
+    "bytes": 76937,
+    "lines": 942,
+    "sha256": "b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471"
+  },
+  "retired_suffix": {
+    "object": "docs/artifact-cleanup-history/ledger-2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055.md",
+    "bytes": 38046,
+    "lines": 384,
+    "sha256": "2e841602eb6f3766f0c7ae8e841d4fa4d19b874ccf2e361fa53c287f965b6055"
+  },
+  "suffix_offset": 38891,
+  "unretained_bytes": 0,
+  "front_sha256": "f3e9c105f09cb205c29bd7ccb062c5522ad6a6f030bca817cd65bd75b4ffc770",
+  "live_path": "docs/tasks/ARTIFACT-CLEANUP.md",
+  "narrative_health_bytes": 16384,
+  "narrative_ceiling_bytes": 32768,
+  "section_ceiling_bytes": {
+    "acceptance": 16384,
+    "verification": 8192,
+    "commits": 4096,
+    "changelog": 4096
+  },
+  "warning_percent": 75,
+  "rollover_percent": 90
+}

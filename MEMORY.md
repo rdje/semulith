@@ -14,25 +14,28 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.18` / SEMULITH-AC-0072 workflow guidance/template.
+- last_unit: `ARTIFACT-CLEANUP.19` / SEMULITH-AC-0073 verified retention.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: .19 retains the completed task ledger before .17 can grow.
-  Preserve complete predecessor and exact retired narrative in a checked finite
-  terminal; keep all live nodes/current graph and history retrieval. Re-census
-  consumers/anchors and existing preservation contracts first; no old cap raise.
-  Then .17 actual successful builds/provenance selection, .16 core, .14 host CLI.
-- last_evidence: target/artifact-cleanup-0072. Template3414→1804B; all old guidance
-  reconstructed through finite guide4259B/78lines (cap6144B/128lines), shared
-  book examples visible. Six labels match normative checklist; copied template
-  parses; direct IDs work, nested .2.1 refused; source reader unchanged.
-  Focused16/books7/native3/scope:13 files/protected1467/1Gitlink/97 old entries;
-  4001B whole0386/0387. Old tree/index/registry/book inverses; prior caps retained.
-- blockers: task family has79B left (3145649/3145728); .19 is required
-  before ordinary ledger growth. No director input presently required.
-  P1 input ownership remains open until .17; .15 records/reader have25 normal/O
-  tests/13 omissions each,28 outcomes; artifact gate76. No deletion API exists.
-  Original37/native3/41514B/canonical observations/events exact. P4 policy/status
-  follows repair; method satisfied/policy pending; CPU14/18,BOARD10/12,replay4/4green.
-  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1633 literal sites/43 routes.
-  No push below300;243 before AC0072. Always target/tmp as TMPDIR. Latest cleanup
-  record unchanged; instrument/documentation work is not a new cleanup event.
+- next_action: .17 binds successful actual public Cargo observations to .15
+  provenance and strict current plan selection. P1 remains open: path/name is
+  not generation. Preserve unknown inputs, existing output paths and historical
+  plans; read current producers/codec/planner/journal/probes and shared book first.
+  Split safe direct numeric leaves if needed. Then .16 core/journal, .14 host CLI,
+  P4 full policy/status; method satisfied, full qualification still pending.
+- evidence: target/artifact-cleanup-0073; four immutable plain-Markdown/descriptor
+  files119258B retain source839e931/76937B and exact38046B suffix (overlap, loss0).
+  Root-relative object locators/one pointer/all19 nodes; raw narrative bounds,
+  source/prefix and both publishing views; completed live history preserved.
+  40 tests normal/O/18 omissions each1 failure/0 errors,38 outcomes; D6-D10 closed.
+  D9 fixed new descriptor/fixture addressing; generic guard unchanged. D10's two
+  old DEV counters restored from committed source. Keep later edits within the
+  new unit entry; prove every old byte/order. Failed first hook retained as
+  commit-attempt-1.log; normal hooks stay mandatory, with no old cap raise.
+  Focused17/books7/native3/scope21/protected1468/1Gitlink/97 old entries;7210B
+  whole0388/0389. Read docs/artifact-cleanup-history/README.md for both products.
+- blockers: none requiring director input. No mutation API/new cleanup event.
+  Original37/native3/41514B/canonical observations/events exact. CPU14/18,
+  BOARD10/12,replay4/4green;40 doctrines/1635 arms/44 destinations.
+  D79/D80 LC.4; runtime P2 P4 a42ab. No push below300;244 before AC0073.
+  Always target/tmp as TMPDIR. Latest cleanup2026-10-19T23:07:45.637459Z unchanged.
+  New narrative:16KiB health/32KiB ceiling,75% warning/90% rollover-before-growth.

@@ -1,5 +1,89 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — retain the completed cleanup ledger (ARTIFACT-CLEANUP.19)
+
+Own AC0073 after clean839e931/brief0/actual host census OK. The task family has
+79 bytes left. Source root76937B/942 lines contains a38891B current graph prefix
+and38046B/384-line completed checklist/log suffix. Thirteen acceptance sections
+plus verification, commit and changelog history are the scaling term. Preserve
+all19 nodes, child groups, goals, decisions, questions, blockers and frontier.
+
+The all-owned tracked reference census names this root only in KNOWLEDGE_MAP
+and the task index: two external records, no anchored links or live includes.
+Generic progress/acceptance readers still consume the complete live node graph.
+Store both the complete committed predecessor and exact removed suffix as plain
+Markdown under a new finite terminal. All content stays directly browsable;
+there is no compressed-only narrative, Git-history dependency or extraction.
+The two products overlap: suffix is part of predecessor. Unretained bytes zero;
+source identity, extracted history and current working set are separate measures.
+Earlier P4/qualification/changelog seals and all their bounds remain unchanged.
+
+The four-file terminal is119258B: two content-addressed Markdown originals, a
+closed descriptor1300B and bounded retention page2975B. Its exact registry
+ceiling permits no append. The descriptor binds source839e931, source Git blob
+and mode, each original's SHA/bytes/lines, suffix offset38891, retention owner,
+current path and independent raw narrative/section limits. The pinned reader
+checks complete coverage, modes, identities, extraction equality and one live
+pointer before output. Every old node/order/completed status/child group remains
+live. New narrative counts embedded markup:16KiB health/32KiB ceiling, named
+section ceilings,75% warning and90% rollover-required before ordinary growth.
+This is the narrow ledger transition, not full containment-doctrine adoption.
+
+The separate publishing gate uses bounded read-only Git queries. First publish
+requires the exact committed source, complete prefix inverse apart from owned
+.19 state/frontier, matching staged/working data and all wiring. Later checks
+freeze the terminal against HEAD, retain completed live ledger entries and
+node progress in both views, and need no source fetch in a shallow clone.
+The checked reader itself uses neither Git nor network. Cold copied CLI reads
+both originals with PATH empty, leaves all files unchanged, and refuses a bad
+pointer before any original output. Independent direct Markdown bytes agree.
+
+QA: the first probe had an invalid non-ASCII bytes literal; use explicit UTF-8
+encoding before running controls. D6 then reproduced a parent symlink traversed
+before refusal:33 tests/1 failure/0 errors. Validate every ancestor before the
+first directory census. D7's pure publishing judge accepted an executable live
+view and crashed on a missing published live root:35 tests/2 failures/1 error,
+including D6. Give that judge its own complete mode/presence contracts. The host
+reader's working-mode guard was already present. All cases use disposable owned
+fixtures; no foreign repository or canonical evidence is touched. Fixed40 tests
+normal/O pass;18 omissions per mode each give exactly1 failure/0 errors,38 total
+outcomes. Physical missing-member, extra-directory and leaf-symlink cases join
+the final guard set. These controls remain tracked; two wrappers join TASK-HISTORY (52 arms).
+
+Book usage is included from the retention page. LIVE changes only43→44 governed
+routes and1633→1635 literal sites;40 doctrines/CPU14/18/BOARD10/12/replay4/4green
+remain. Native3/original37/capture/events and previous teaching must stay exact.
+Focused checks, whole-source/history inverses, staged checks and normal COMMIT
+follow. P1 remains owned by .17 actual build/provenance selection, then .16 core
+and .14 host CLI before P4 policy/status. No cache deletion or push here.
+D8 then accepted invalid UTF-8 in the new ledger (39 tests/1 failure/0 errors):
+only the graph prefix was decoded. Validate the complete live task before any
+original output; the final malformed-input and guard-omission controls cover it.
+Initial focused routing check correctly rejected the new row in governance:
+16827B exceeded its16384B part cap. Route this cleanup-specific tool to the
+existing artifacts toolbox instead; old rows/limits remain intact.
+Final focused17/books7/native3/source-history proof:21 files/protected1468/
+1Gitlink/97 old entries;7210B whole0388/0389. Full predecessor and suffix remain
+exact; live graph and all earlier teaching/captures/bounds are retained.
+D9: the normal full hook refused FIXTURE-FINGERPRINT before creating a commit.
+I used `path` with root-relative locators, but the established fixture contract
+resolves that field beside its JSON record. The join duplicated the directory;
+both real originals were present. This unpublished descriptor now uses explicit
+root-relative `object` locators, rejected legacy-field controls and the existing
+specialized digest verifier. Generic fixture code stays exact. Add its gate to
+the focused set;40 tests normal/O/18 omissions and all data identities must pass
+before normal commit retry. Metadata1300B/page2975B give exact terminal119258B;
+only this new unpublished declaration changes size, no old ceiling increases.
+D10: a broad focused-count replacement changed two prior DEV counters. Rebuild
+all retained prior entries from839e931 minus the exact0388 suffix, preserving
+only this new entry. The full inverse proves original bytes/order restored;
+future edits stay inside this first section. No commit contains that error.
+D9/D10 final verification: expanded focused17, fingerprint re-derivation,
+40 tests normal/O/18 omissions, seven books and complete source/history proofs
+pass. The first failed hook remains in commit-attempt-1.log. Retry the normal
+hook with exact21 files and all old source bytes/ceilings retained.
+Promotion declined: applies the adopted task-ledger transition contract.
+
 ## _(2026-10-20 UTC)_ — bound workflow guidance and align the template (ARTIFACT-CLEANUP.18)
 
 From clean70516a7/brief0/actual host census OK, the task family has352B of
@@ -607,91 +691,4 @@ production differs only by two guards/registration, all old probes exact. Six
 whole af/ac records3112B retained with3 inverse stages/eight damaged refusals;
 DEV0363 preserves one oldest3810B entry. LIVE derives1617arms only;42routes,
 CPU14/18,BOARD10/12,replay4/4green unchanged. Normal COMMIT applies.
-
-## _(2026-10-19)_ — retain bounded prepared DIV capture inputs (P4-SYSTEM.14 a42af)
-
-Curate four inputs under evidence/rv64gc-signed-div-truncation-v2: complete ELF
-4416B, public-interop config JSON7609B, canonical baseline5847B and wrong quotient
-control5443B, total23315B. Public image/source-value owners match every image byte
-and all27 source-derived GPR boundaries. Restore only boundary2 x7 -4→-3 and the
-mapped control equals baseline; retain its correct derivation text with an explicit
-wrong-control comment. Config bytes equal the existing public materialization
-from raw-schema-validated canonical override. No reference process or binary read;
-Git metadata was queried separately before guarded child-free curation.
-
-Register a finite22-slot/16MiB/4MiB-member family and4KiB/80-line index before any
-canonical observation. Derive maximum13766656B from current public collector
-trace/stream and artifact-document limits plus prepared/metadata slots. Preparation
-is repeatable interop output; S-expression source authorities remain canonical.
-Actual16 controls pass normal/O. A refinement initially named a nonexistent receipt
-constant; bind the actual public DOCUMENT_BYTES instead and preserve both failure
-logs. Corrected controls also authenticate a repinned changed ELF before its
-source-correspondence refusal. Copied75-file runtime/data verifies without binary
-or.materials; ten damaged/missing/authority/layout cases refuse both modes.
-Review reproduced an undeclared sibling accepted by the initial subset probe.
-Bind a finite layout/role-bound census before pin loading; refuse links and
-unknown members without descending. Isolated package controls detect omission of
-that actual loader call: five assertion losses normal/O,0 errors. Preserve the
-before acceptance and copied after refusals; namespace/output limits stay fixed.
-
-Source-review population/bytes stay35modules/27data/63children/66files965026B.
-
-Declare the exact future output names and remaining final-entrypoint/manifest/
-authority prerequisites in the book. No canonical trace, reference negative-control run,
-independence or qualification credit. Promotion declined in leaf: established
-curation/retention contracts. Source/owner inverses retain complete prior ae
-records; oldest whole CH entries move through the standard sharder, no raised cap.
-
-Validation:16 positive controls/two modes and actual-loader omission5 losses/0
-errors; copied75-file runtime/data gives22 expected outcomes, no binary/materials.
-17 focused checks/seven books/three complete examples/eight rendered surfaces pass.
-1551 other files/1Gitlink/93 prior entries and all existing production/probes exact.
-Three task records2055B/source-owner inverses2/seven damaged refusals; CH0362 keeps
-four whole oldest entries3787B. New family five files25990B fits declared bounds;
-all old caps preserved. LIVE derives42 routes/1615arms only; CPU14/18,BOARD10/12,
-replay4/4green. No canonical capture/qualification.
-
-## _(2026-10-19)_ — publish the selected canonical Sail descriptor (P4-SYSTEM.14 a42ae)
-
-The retained identity was absent although the bounded producer/consumer existed.
-Publish one711B selected references document through that emitter after raw
-parent-schema validation. Its SHA256 is
-b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77.
-Retain exactly Sail id/origin/kind/binary/binary digest/release; exclude unrelated
-parent prose/records. Explicit2026-10-19 publication metadata uses the observed
-Darwin27.0.0/arm64/Apple clang21 identity and states no binary acquisition or run
-attestation. Compiler-version discovery was a real tool invocation; no reference
-process or binary read occurred. Existing production Python and all old probes
-remain byte-exact; no new production import/manifest child.
-
-Add11 actual-publication controls: exact bytes/metadata/schema, frozen current
-context, changed identity versus changed pin, optional presence, excluded prose,
-malformed/missing inputs, raw validation before mapping and a minimal three-file
-offline copy. All76 old/new normal/O outcomes pass with old omission losses exact.
-A copied69-file script/data set succeeds with neither binary nor.materials;
-four damaged identities/metadata/documents/current-parent cases refuse in both
-modes, unrelated parent assessment prose still passes. Source review stays
-35modules/27data/63children/66files965026B, normal/O and copied cache-free.
-This publishes a future principal only; final capture declaration and full
-policy/qualification remain pending. Promotion declined in the owning leaf:
-this instantiates the established selected-projection contract.
-
-First mandatory hook refused GS-REPORT currentness. Its public dossier_digest
-owner enumerates git ls-files, so the pre-stage focused check missed the new
-source. Diagnostic removes only that delegated listing member (no index edit):
-352 digest sources reproduce old053d6665;353 give6d77a115. The tracked listing
-counts353→354 include the excluded generated report. Public regeneration
-changes only the GS digest line; capability verdicts stay exact. Refresh the report
-check after final staging and verify the new digest in rendered evidence/print.
-Existing [population census lesson](docs/knowledge/zero-hits-absence-or-blindness.md)
-applies. Preserve first failure/diagnostic; retry normal hooks. Whole oldest DEV
-entry4214B retained in shard0361 with ordered inverse; no cap or guard change.
-
-Validation:76 normal/O outcomes/0 errors, old omission losses exact; copied69-file
-runtime/data set gives12 expected outcomes, no acquired binary/materials.
-16 focused checks/seven books/six complete examples/six rendered surfaces pass.
-1549 other files/1Gitlink/92 prior entries exact; four whole records3622B,
-source-owner inverses2/eight damaged refusals. Source review35/27/63/66files965026B
-unchanged; profiles524files3142395B fits unchanged caps. LIVE derived1613 only;
-CPU14/18,BOARD10/12,replay4/4green. No canonical capture/qualification.
 

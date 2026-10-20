@@ -259,6 +259,7 @@ docs/changelog/	author_overflow	append_history	sharded append-history (CHANGELOG
 # exactly3 tracked files. TASK-HISTORY enforces identities, coverage and retrieval.
 # Navigation stays in docs/tasks/ and its existing aggregate; no existing cap grows.
 docs/task-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4c; immutable finite capture, descriptor and retrieval front door; TASK-HISTORY authenticates	3	385000	3	387317	0
+docs/artifact-cleanup-history/	reader_navigation	archive_terminal	ARTIFACT-CLEANUP.19; four immutable plain Markdown/descriptor files, complete predecessor and exact ledger; TASK-HISTORY authenticates	4	119258	4	119258	76937
 # LC0041: standing archive delegation; finite four-record plus book-source capture.
 # Object192354B + descriptor8192B + front door4096B =204642B; no cap increase.
 docs/qualification-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4i2b5b1h; finite immutable capture and navigation; TASK-HISTORY authenticates	3	200000	3	204642	0
@@ -324,7 +325,7 @@ docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed 
 #   preconditions checked at573a706. Count107 is pooled33+1+33+40; health64 warning
 #   debt and all byte/part bounds stay fixed. Separate reviewed authority:
 #   docs/decisions/decision_task-family-six-activity-count.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed-leaf evidence archived in-tree	64	1153433	107	3145728	131072
+docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives use owned finite retention transitions	64	1153433	107	3145728	131072
 # Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
 #   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice
 #   checklists are the designed growth; per-part (128 KiB) and count (96) did not fire.
