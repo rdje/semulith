@@ -40,16 +40,18 @@ self_test() {
       score "RED $mode journal $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
     out="$("${python[@]}" scripts/probe_artifact_output_provenance.py 2>&1)"; rc=$?
-    score "GREEN $mode output provenance" "$rc" 0 "$out" '31 tests / 0 failures / 0 errors'
+    score "GREEN $mode output provenance" "$rc" 0 "$out" '42 tests / 0 failures / 0 errors'
     for mutation in changed-digest successful-build command-root recorder-pin producer-pin current-fact \
                     tracked-alias closed-fields byte-bound root-binding root-mapping return-root profile-binding \
-                    captured-binding support-pin support-objects; do
+                    captured-binding support-pin support-objects census-class observe-unchanged observe-tracked \
+                    publish-lock publish-pins publish-readback; do
       out="$("${python[@]}" scripts/probe_artifact_output_provenance.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode provenance $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
     out="$("${python[@]}" scripts/probe_artifact_cargo.py 2>&1)"; rc=$?
-    score "GREEN $mode Cargo boundary" "$rc" 0 "$out" '17 tests / 0 failures / 0 errors'
-    for mutation in build-root environment root-binding source-recheck manifest-recheck pipe-bound group-join group-kill; do
+    score "GREEN $mode Cargo boundary" "$rc" 0 "$out" '23 tests / 0 failures / 0 errors'
+    for mutation in build-root environment root-binding source-recheck manifest-recheck pipe-bound group-join group-kill \
+                    capture-success capture-version; do
       out="$("${python[@]}" scripts/probe_artifact_cargo.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode Cargo $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done

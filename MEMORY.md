@@ -14,21 +14,23 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `ARTIFACT-CLEANUP` → `.21` (pending; actual capture/publication).
-- pnt_status: stopped at the director-requested checkpoint (`2026-10-20`);
-  resume work only on a new instruction.
-- last_unit: `.22` / `SEMULITH-AC-0075` — versioned support-source records.
-- next_action: bind successful actual Cargo builds to anchored before/after facts
-  and the complete v2 source tuple, then atomically publish bounded merged ledgers.
-  Preserve unchanged unowned inputs and existing output paths. Read the tree's
-  `.21` goal before code; `.17` strict selection follows, then `.16` core/`.14` CLI.
+- active_work_unit: `ARTIFACT-CLEANUP` → `.17` (pending; strict plan selection).
+- pnt_status: running (resumed `2026-10-20` on the director's instruction);
+  continue until the activities are exhausted or the director pauses it.
+- last_unit: `.21` / `SEMULITH-AC-0076` — anchored capture, atomic publication.
+- next_action: make the planner consult the published ledger through
+  `authorize(require_captured=True)` so only recorded generated outputs become
+  candidates (closes cleanup finding P1); historical plans stay readable with
+  no new mutation authority; cover absent/stale/legacy ledgers, cold CLI,
+  omissions normal/O. Read the tree's `.17` goal first; then `.16` core, `.14` CLI.
 - in_flight_uncommitted: none after the normal commit workflow.
-- blockers: none requiring director input. Cleanup input-ownership finding P1
-  remains open until `.17`; no supported mutation API or new cleanup event.
-- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0075`.
+- blockers: none requiring director input. `.23` owns the live-narrative
+  rollover when the reader's 75% warning fires.
+- evidence: `docs/tasks/ARTIFACT-CLEANUP.md`; diagnostics `target/artifact-cleanup-0076`;
+  the real ledger is `target/artifact-cleanup/output-provenance.json`.
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress; return to P4 full policy/status after cleanup readiness.
 - environment: use `target/tmp` as TMPDIR. Read cleanup currency from
-  `docs/ARTIFACT_CLEANUP.md`; derive push cadence with
-  `scripts/check_push_cadence.sh --status`.
+  `docs/ARTIFACT_CLEANUP.md` (last run `2026-10-19T23:07:45Z`, due 24 h later);
+  derive push cadence with `scripts/check_push_cadence.sh --status`.

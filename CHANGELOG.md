@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0076 (leaf ARTIFACT-CLEANUP.21) — capture and atomically publish bound build outputs
+
+Each actual producer build is surrounded by an anchored census of its
+incremental caches; new or changed-digest files become v2 records with all
+four source pins. Publication is lock-serialized, merged (replace/retire/keep),
+written to a unique temporary, synchronized, renamed over the ledger and read
+back; every failure keeps the previous ledger exact. Provenance 42 tests/22
+omissions and Cargo 23 tests/10 omissions normal/O; artifact gate 116 outcomes,
+1637 literal arms unchanged. Real ledger published by both producers. Strict
+selection .17, core .16 and host workflow .14 remain; no deletion authority.
+
 ## SEMULITH-AC-0075 (leaf ARTIFACT-CLEANUP.22) — version support-source pins without rewriting legacy records
 
 Keep exact v1 serialization and add v2 runner/census pins. Strict matching denies
@@ -640,9 +651,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D56/D57: validate the complete registry before projecting destinations/README caps/count; reject failed status, diagnostics, malformed arity/paths/limits. Preserve68 original controls;94 pass,17 omissions detected/all26 new controls discriminate normal/O.
 - Public18 cases/mode: three reader faults refuse2/no stdout; seven unchecked consumers are removed. Five original malformed fixtures0→2; real1404 identities/pins exact. Whole DEV rollover retains104 prior entries; focused12/sharder12/seven books/three reads and scaffold24 normal/O pass. LIVE routing Done/1518arms; caps/CPU unchanged, separate authority review next.
-
-## SEMULITH-LC-0018 (leaf LIVE-CONTAINMENT.4) — qualify remaining registry projections
-
-- Confirm D56 through the actual public CLI: seven registry consumers/14 failed-status or diagnostic cases still return green0, normal/O. Preserve unique raw streams/traces, pinned programs/facades and real HEAD/index/all1402 identities.
-- Own priority1 repair next, before capacity authority. Book and LIVE routing closure now disclose the gap (Mostly Done); keep code, caps, canonical records and CPU exact. Preserve105 prior entries through whole DEV3990B/CH1330B rollover and verify full inverses/focused/seven books/literal reads.
 

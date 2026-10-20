@@ -1,23 +1,30 @@
 #!/usr/bin/env python3
 """Closed records of changed outputs from two repository-owned Cargo producers.
 
-This reader grants no deletion operation. Producer/plan integration is separate.
+This module records and publishes observations; it grants no deletion operation.
+Plan selection against the published ledger is separate.
 """
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, fields
 import datetime
+import fcntl
 import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import sys
+import time
 import unicodedata
 
 ROOT = Path(__file__).resolve().parent.parent
 OBJECT = "scripts/artifact_output_provenance.py"
-LEDGER = "target/artifact-cleanup/output-provenance.json"
+WORKSPACE = "target/artifact-cleanup"
+NAME = "output-provenance.json"
+LOCK_NAME = "output-provenance.lock"
+LEDGER = WORKSPACE + "/" + NAME
 FORMAT = "artifact-output-provenance-v1"
 CAPTURE_FORMAT = "artifact-output-provenance-v2"
 SUPPORTING_OBJECTS = ("scripts/artifact_cargo.py", "scripts/artifact_cleanup.py")
@@ -26,6 +33,7 @@ MAX_RECORDS = 65536
 MAX_RECORD_BYTES = 32768
 SOURCE_BYTES = 1024 * 1024
 FILE_BYTES = 512 * 1024 * 1024
+MAX_ENTRIES = 4 * MAX_RECORDS
 PRODUCERS = {
     "scripts/probe_c_engine.py": ("target/p4-system-12/c-engine-build", "c_engine::"),
     "scripts/probe_c_guest_image.py": ("target/p4-system-12/c-guest-image-build", "run_rv64gc::tests::"),
@@ -43,8 +51,8 @@ before/after observations. Only a new file or changed digest can be recorded;
 touching an unchanged unowned input cannot establish generation.
 
 The record protocol covers the C-engine and C-guest-image producers' existing
-roots and debug outputs; actual capture/publication is still pending. Its
-command must explicitly bind both target and intermediate build directories.
+roots and debug outputs. Its command must explicitly bind both target and
+intermediate build directories.
 Unknown roots, aliases, tracked names and stale source/file
 identities cannot gain current authority. Records describe observations under
 caller quiescence; they do not attest loaded code or exclude every race.
@@ -68,10 +76,25 @@ requires both current support pins; legacy read-only matching remains available
 without that selector. This checks record shape and current source/file facts;
 it does not independently attest that an invocation occurred.
 
-This slice provides a versioned record codec and anchored reader only. Actual
-capture/publication remains owned by ARTIFACT-CLEANUP.21 and strict planner
-selection by .17; guarded deletion and the host-bound operator workflow follow.
-No cache is removed here.
+Capture pairs an anchored census of one producer's `debug/incremental` cache
+files taken immediately before and after the bound invocation. A file that is
+new, or whose digest changed, becomes one v2 record carrying the recorder,
+producer and both support pins; an unchanged file, a tracked alias or a
+hard-linked file receives no record. A failed build publishes nothing.
+
+Publication serializes on `target/artifact-cleanup/output-provenance.lock`
+(a held lock refuses rather than waits, because quiescence is a caller
+precondition), merges into the current ledger under read-only pins, writes a
+uniquely named temporary file, synchronizes it, renames it over the ledger
+and reads the result back. Same-path rows are replaced, this producer's rows
+for files absent from the fresh census are retired, every other row is kept
+unchanged, and legacy rows stay unbound. The previous ledger is never opened
+for writing: a build, source, census, bound or write failure leaves it exact
+and retains the partial temporary file under its reported name as evidence.
+
+Strict planner selection against the published ledger remains owned by
+ARTIFACT-CLEANUP.17; guarded deletion and the host-bound operator workflow
+follow. No cache is removed here.
 
 Run the disposable-fixture controls:
 
@@ -79,22 +102,26 @@ Run the disposable-fixture controls:
 python3 -B scripts/probe_artifact_output_provenance.py
 ```
 
-The suite has 31 tests normal/O and sixteen individually failing guard omissions
-per mode. An optional public Cargo diagnostic preserves three owned inputs:
+The suite has 42 tests normal/O and twenty-two individually failing guard
+omissions per mode. An optional public Cargo diagnostic preserves three owned
+inputs:
 
 ```sh
 python3 -B scripts/probe_artifact_output_provenance.py --cargo-contract
 ```
 
-Inspect the support-source interface, including its committed predecessor:
+Inspect the support-source and publication interfaces, including a committed
+predecessor, and the current ledger's presence:
 
 ```sh
 python3 -B scripts/probe_artifact_output_provenance.py --support-contract
 python3 -B scripts/probe_artifact_output_provenance.py --support-contract --revision 43f07ab
+python3 -B scripts/probe_artifact_output_provenance.py --publication-contract
+python3 -B scripts/probe_artifact_output_provenance.py --publication-contract --revision 47d69ef
 ```
 
-The revision diagnostic loads only this repository's bounded codec source
-initializer through read-only Git; it performs no build or capture. It needs
+The revision diagnostics load only this repository's bounded codec source
+initializer through read-only Git; they perform no build or capture and need
 that local object. Ordinary current/v1/v2 readers need no Git history.
 
 Public contracts: [Cargo build directories](https://doc.rust-lang.org/cargo/reference/build-cache.html),
@@ -180,6 +207,19 @@ class Authority:
     ledger_sha256: str | None
     current_sources: tuple[Source, ...]
     approved: frozenset[str]
+
+
+@dataclass(frozen=True)
+class Publication:
+    ledger_sha256: str | None
+    previous_sha256: str | None
+    written: bool
+    records: int
+    byte_size: int
+    added: int
+    replaced: int
+    retired: int
+    retained: int
 
 
 def record(cls, value):
@@ -372,3 +412,152 @@ def authorize(owned, current, *, tracked_paths, require_captured=False):
             approved.add(item.path)
     _root_guard(owned)
     return Authority(sha(raw), tuple(sources[name] for name in sorted(sources)), frozenset(approved))
+
+
+def census(owned, producer):
+    """Observe every current output-class file under one producer's root, in path order."""
+    need(type(producer) is str and producer in PRODUCERS, "unknown Cargo producer")
+    _root_guard(owned)
+    base = PRODUCERS[producer][0] + "/debug/incremental"
+    facts, entries = [], 0
+
+    def listing(directory):
+        nonlocal entries
+        rows = []
+        with os.scandir(directory) as scan:
+            for entry in scan:
+                entries += 1
+                need(entries <= MAX_ENTRIES, "output census entry bound")
+                rows.append((entry.name, os.stat(entry.name, dir_fd=directory, follow_symlinks=False)))
+        return sorted(rows)
+
+    try:
+        os.stat(base, dir_fd=owned.fd, follow_symlinks=False)
+    except FileNotFoundError:
+        _root_guard(owned)
+        return ()
+    with owned.directory(base) as incremental:
+        for crate, info in listing(incremental):
+            if not stat.S_ISDIR(info.st_mode):
+                continue
+            with owned.directory(base + "/" + crate) as sessions:
+                for session, info in listing(sessions):
+                    if not stat.S_ISDIR(info.st_mode):
+                        continue
+                    path = base + "/" + crate + "/" + session
+                    with owned.directory(path) as outputs:
+                        for leaf, info in listing(outputs):
+                            if leaf not in CACHE_NAMES or not stat.S_ISREG(info.st_mode):
+                                continue
+                            item, _ = owned.snapshot(outputs, leaf, path + "/" + leaf, FILE_BYTES)
+                            facts.append(fact(asdict(item)))
+                            need(len(facts) <= MAX_RECORDS, "output census record bound")
+    _root_guard(owned)
+    paths = [item.path for item in facts]
+    need(len(paths) == len(set(map(key, paths))), "output alias collision")
+    return tuple(sorted(facts, key=lambda item: item.path))
+
+
+def observe(stamp, recorder, producer, argv, tool_version, return_code, supporting, before, after, *, tracked_paths):
+    """Pair anchored before/after facts; only a new file or a changed digest becomes a record."""
+    need(type(before) is tuple and type(after) is tuple and all(type(item) is Fact for item in (*before, *after))
+         and type(tracked_paths) is frozenset and len(tracked_paths) <= MAX_RECORDS, "plain bounded census facts required")
+    tracked_keys = frozenset(key(relative(path)) for path in tracked_paths)
+    prior = {item.path: item for item in before}
+    rows, unclaimed = [], 0
+    for item in after:
+        if key(item.path) in tracked_keys or item.links != 1:
+            unclaimed += 1
+            continue
+        old = prior.get(item.path)
+        if old is not None and old.sha256 == item.sha256:
+            continue
+        row = Observation(stamp, recorder, producer, tuple(argv), tool_version, return_code, old, item, tuple(supporting))
+        rows.append(observation(json.loads(json.dumps(asdict(row))), CAPTURE_FORMAT))
+    need(all(row.supporting_sources for row in rows), "captured observations require support pins")
+    return tuple(rows), unclaimed
+
+
+def merge(previous, rows, producer, present):
+    """Replace same-path rows, retire this producer's rows absent from the fresh census, keep the rest."""
+    root = PRODUCERS[producer][0] + "/"
+    fresh = {row.after.path for row in rows}
+    kept, counts = [], dict(added=0, replaced=0, retired=0, retained=0)
+    for row in (previous.outputs if previous is not None else ()):
+        if row.after.path in fresh:
+            counts["replaced"] += 1
+        elif row.after.path.startswith(root) and row.after.path not in present:
+            counts["retired"] += 1
+        else:
+            kept.append(row)
+            counts["retained"] += 1
+    counts["added"] = len(rows) - counts["replaced"]
+    ledger = Ledger(CAPTURE_FORMAT, tuple(sorted((*kept, *rows), key=lambda row: row.after.path)))
+    return decode(encode(ledger)), counts
+
+
+def _flush(descriptor):
+    os.fsync(descriptor)
+    if sys.platform == "darwin":
+        flag = getattr(fcntl, "F_FULLFSYNC", None)
+        need(type(flag) is int, "F_FULLFSYNC unavailable")
+        fcntl.fcntl(descriptor, flag)
+
+
+def publish(owned, rows, producer, present):
+    """Serialize one bounded merge and replace the current ledger atomically; never rewrite it in place."""
+    need(type(rows) is tuple and all(type(row) is Observation for row in rows) and type(present) is frozenset
+         and all(type(path) is str for path in present), "plain captured rows and census paths required")
+    need(type(producer) is str and producer in PRODUCERS, "unknown Cargo producer")
+    _root_guard(owned)
+    sources = {name: _source(owned, name) for name in (OBJECT, producer, *SUPPORTING_OBJECTS)}
+    need(all(row.recorder == sources[OBJECT] and row.producer == sources[producer]
+             and row.supporting_sources == tuple(sources[name] for name in SUPPORTING_OBJECTS)
+             for row in rows), "publication requires current recorder, producer and support pins")
+    with owned.directory(WORKSPACE, create=True) as directory:
+        lock = os.open(LOCK_NAME, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=directory)
+        try:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError as error:
+                raise ProvenanceError("another publication holds the ledger lock") from error
+            held = os.fstat(lock)
+            need(stat.S_ISREG(held.st_mode) and held.st_dev == owned.device, "ledger lock is not an owned regular file")
+            saved = load(owned)
+            previous_raw, previous = saved if saved is not None else (None, None)
+            previous_sha = None if previous_raw is None else sha(previous_raw)
+            if not rows and previous is None:
+                return Publication(None, None, False, 0, 0, 0, 0, 0, 0)
+            ledger, counts = merge(previous, rows, producer, present)
+            raw = encode(ledger)
+            if previous_raw == raw:
+                return Publication(previous_sha, previous_sha, False, len(ledger.outputs), len(raw), **counts)
+            temp = NAME + "." + str(os.getpid()) + "." + str(time.monotonic_ns()) + ".tmp"
+            descriptor = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC,
+                                 0o600, dir_fd=directory)
+            try:
+                cursor = 0
+                while cursor < len(raw):
+                    written = os.write(descriptor, raw[cursor:])
+                    need(0 < written <= len(raw) - cursor, "ledger write made no valid progress")
+                    cursor += written
+                _flush(descriptor)
+                opened = os.fstat(descriptor)
+                located = os.stat(temp, dir_fd=directory, follow_symlinks=False)
+                need(opened.st_size == len(raw) and opened.st_nlink == 1 and opened.st_dev == owned.device
+                     and (opened.st_dev, opened.st_ino) == (located.st_dev, located.st_ino),
+                     "temporary ledger changed before publication")
+                _root_guard(owned)
+                os.rename(temp, NAME, src_dir_fd=directory, dst_dir_fd=directory)
+            except Exception as error:
+                raise ProvenanceError("publication failed; previous ledger preserved, partial retained as "
+                                      + WORKSPACE + "/" + temp) from error
+            finally:
+                os.close(descriptor)
+            os.fsync(directory)
+            check = load(owned)
+            need(check is not None and check[0] == raw, "published ledger does not read back")
+        finally:
+            os.close(lock)
+    _root_guard(owned)
+    return Publication(sha(raw), previous_sha, True, len(ledger.outputs), len(raw), **counts)

@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -555,7 +555,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   promotion: declined (implements standing storage/explicit-command contracts).
 
 - ID: `ARTIFACT-CLEANUP.21` — **observe and atomically publish bound build outputs**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0076`)
   Goal: after .20 command/runtime boundary, bind successful actual builds to
   exact anchored before/after file facts and recorder/producer identities.
   Serialize current-ledger merge/publication and preserve old ledger on build,
@@ -569,6 +569,18 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   docs/models/*/book.toml; the current actual make book log has7 builds.
   Replace the stale cardinality with the stable project-and-unit-books
   contract. No suite or push policy changes; verify against the public target.
+
+  Result (`2026-10-20` UTC, `SEMULITH-AC-0076`): `capture` surrounds each bound
+  build with an anchored census of the producer's debug/incremental caches;
+  only a new file or a changed digest becomes a v2 row carrying recorder,
+  producer, runner and census pins, all rechecked at publication. Publication
+  refuses a held lock, merges (same path replaced, this producer's absent rows
+  retired, every other row kept as it was), writes a unique temporary, applies
+  F_FULLFSYNC, renames it over the ledger and reads it back. A nonzero build,
+  failed version query, changed source or write error publishes nothing and
+  keeps the previous ledger exact; a partial temporary is retained as evidence.
+  Both producers publish; `run` stays the bare boundary. Actual engine and
+  guest runs published the first real v2 ledger. Evidence: target/artifact-cleanup-0076.
 
 - ID: `ARTIFACT-CLEANUP.22` — **bind support sources without rewriting legacy records**
   Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0075`)
@@ -593,12 +605,22 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   handoff-ready checkpoint. Finish .22's existing normal commit workflow,
   clear the brief and verify clean Git/no jobs, then stop. .21 stays unstarted;
   MEMORY.md records the stopped PNT state and selected resume action.
+  PNT resumed `2026-10-20` on the director's instruction; .21 followed.
+
+- ID: `ARTIFACT-CLEANUP.23` — **retire the next completed-checklist suffix**
+  Status: `pending`
+  Goal: own the live-narrative rollover before ordinary growth stops at 90% of
+  the 16,384 B health target (the reader warns at 75%): seal the completed
+  .19–.22 checklists and their log rows into a second finite ledger terminal
+  under the .19 descriptor contract, keep the whole graph live and verify both
+  publishing views. Becomes the frontier when the warning fires or when .17,
+  .16 or .14 need the capacity; it adds no cleanup authority.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.21` | `pending` | actual capture/publication with complete v2 support pins |
+| 1 | `ARTIFACT-CLEANUP.17` | `pending` | strict plan selection against the published ledger closes cleanup finding P1 |
 
 ## Decisions
 
@@ -621,6 +643,34 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-2e8
 The [whole predecessor](../artifact-cleanup-history/predecessor-b8c8f29c713329815ec51c72c0ddaa15a3cee4350ac474801218b760e4a42471.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.21)
+
+- [x] **REPRODUCE / ISSUE** — at 47d69ef no producer run could publish:
+  `ls target/artifact-cleanup` lists no output-provenance.json and the
+  strict reader approves nothing without rows.
+- [x] **ROOT CAUSE (WHY + WHERE)** — python3 -B scripts/probe_artifact_output_provenance.py
+  --publication-contract --revision 47d69ef: OUTPUT-PUBLICATION: census=false,
+  observe=false, merge=false, publish=false; grep -c "def publish" over the
+  recorder and runner gave 0/0. artifact_cargo.run returned the process and
+  rechecked sources but never observed the output root; the recorder had a
+  codec and a reader, no census or publication.
+- [x] **FIX** — census/observe/merge/publish in the recorder; _invoke/capture/
+  tool_version/describe in the runner; both producers call capture.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
+  rc=0: ARTIFACT-COHORT --self-test: 116 pass / 0 fail. Provenance 42 tests
+  normal/O with 22 omissions and Cargo 23 tests normal/O with 10 omissions,
+  each omission 1 failures / 0 errors. --publication-contract now reports
+  census/observe/merge/publish true; the actual engine and guest runs
+  published a v2 ledger of 9 records, every row captured.
+- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0;
+  focused 18 checks rc=0, seven fresh books, original native3/41514 bytes.
+  Normal hook applies; literal self-test sites stay 1637, LIVE_STATUS exact.
+- [x] **LOCKSTEP** — shared usage/toolbox/doctrine row/book include, tree,
+  index, MEM/DEV/CH; both history heads sharded within their ceilings.
+
+Verification: target/artifact-cleanup-0076; .17 strict selection next, then
+.16 core and .14 host workflow. Cleanup finding P1 remains open until .17.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.22)
 
@@ -753,11 +803,14 @@ the unchanged normal hook. All defects in this slice are verified closed.
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.21` | 42/23 tests normal/O; 22+10 omissions; artifact116; actual engine/guest | v2 ledger published atomically, 9 records; previous preserved on every failure; focused18/books7 |
 | `2026-10-20` UTC | `.22` | 31 tests normal/O; 16 omissions per mode; artifact100 | exact v1 bytes, mixed v2 and strict support pins; D11 book wording fixed |
 | `2026-10-20` UTC | `.20` | 17 tests normal/O; 8 omissions per mode; actual engine18/guest2; focused18/books7 | 94 artifact outcomes; original native3/41514B and all old history exact; unchanged seeded input preserved |
 | `2026-10-20` UTC | `.19` |40 tests normal/O/18 omissions; focused17/books7/native3/scope |21 files/protected1468/97 old entries;7210B whole0388/0389; predecessor76937B/suffix38046B overlap, unretained0; all19 nodes live |
 
 ## Commit Log
+
+`SEMULITH-AC-0076 (leaf ARTIFACT-CLEANUP.21): capture and atomically publish bound build outputs` — anchored census, lock-serialized merge, temporary+rename, read-back; .17 strict selection next.
 
 `SEMULITH-AC-0075 (leaf ARTIFACT-CLEANUP.22): bind versioned support-source pins in output records` — old bytes preserved, strict complete-source predicate verified; .21 actual publication next.
 
@@ -767,6 +820,7 @@ the unchanged normal hook. All defects in this slice are verified closed.
 
 ## Changelog
 
+- `2026-10-20` UTC: .21 verified; actual builds publish v2 records atomically. No selection/deletion authority added.
 - `2026-10-20` UTC: .22 verified; versioned support pins and exact legacy reads. No capture/selection/deletion authority added.
 - `2026-10-20` UTC: .20 verified; bound both actual public build invocations. No ledger/selection/deletion authority or cleanup event added.
 - `2026-10-20` UTC: .19 verified; complete predecessor/suffix retained as Markdown and full graph stays live. No old ceiling or terminal changes. Normal COMMIT before .17.

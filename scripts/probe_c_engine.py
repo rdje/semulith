@@ -72,12 +72,14 @@ def main():
         assert isinstance(dep, str), 'probe must follow the core dependency declaration'
         (root / 'Cargo.toml').write_text('[package]\nname = "c-engine-probe"\nversion = "0.0.0"\nedition = "2021"\n'
                                       '[workspace]\n[dependencies]\nrustc_apfloat = "' + dep + '"\n')
-        run = artifact_cargo.run('scripts/probe_c_engine.py', root / 'Cargo.toml')
+        capture = artifact_cargo.capture('scripts/probe_c_engine.py', root / 'Cargo.toml')
+        run = capture.result
         print(run.stdout)
         if run.returncode:
             print(run.stderr)
             print('C engine probe: FAIL')
             return 1
+        print(artifact_cargo.describe(capture))
         print('C engine probe: exact parcel and expansion execution checks passed')
         return 0
 

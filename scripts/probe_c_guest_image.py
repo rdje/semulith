@@ -146,12 +146,14 @@ fn a_word_image_keeps_its_bytes_and_reads_two_parcels_when_c_binds() {
                                        '[dependencies]\nrustc_apfloat="' + dep + '"\n')
         (root / 'Cargo.toml').write_text('[package]\nname="c-guest-image-probe"\nversion="0.0.0"\nedition="2021"\n'
                                        '[workspace]\n[dependencies]\nsemulith-core={path="core"}\n')
-        run = artifact_cargo.run('scripts/probe_c_guest_image.py', root / 'Cargo.toml')
+        capture = artifact_cargo.capture('scripts/probe_c_guest_image.py', root / 'Cargo.toml')
+        run = capture.result
         print(run.stdout)
         if run.returncode:
             print(run.stderr)
             print('C guest image probe: FAIL')
             return 1
+        print(artifact_cargo.describe(capture))
         print('C guest image probe: mixed bytes, labels, writes and parcel counts passed')
     return 0
 

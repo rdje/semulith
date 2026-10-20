@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import ast
+from dataclasses import asdict
 import hashlib
 import importlib.util
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -29,6 +31,8 @@ SEAMS = {
     "group-join": ('            _stop(child)\n            return subprocess.CompletedProcess',
                    '            return subprocess.CompletedProcess'),
     "group-kill": ('        os.killpg(child.pid, signal.SIGKILL)', '        pass'),
+    "capture-success": ('    if result.returncode != 0:\n        return Capture(result, len(later), 0, 0, None)\n', ''),
+    "capture-version": ('    O.need(result.returncode == 0, "Cargo version query failed")\n', ''),
 }
 TARGETS = {
     "build-root": "test_exact_command_matches_the_closed_provenance_protocol",
@@ -39,6 +43,8 @@ TARGETS = {
     "pipe-bound": "test_each_pipe_overflow_refuses_and_joins",
     "group-join": "test_even_success_joins_the_owned_process_group",
     "group-kill": "test_a_descendant_closing_pipes_cannot_outlive_the_invocation",
+    "capture-success": "test_failed_build_publishes_nothing_and_preserves_the_ledger",
+    "capture-version": "test_failed_or_unbounded_version_query_refuses_capture",
 }
 
 
@@ -50,22 +56,27 @@ def producer_commands():
         tree = ast.parse((ROOT / producer).read_text())
         main = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "main")
         block = next(node for node in main.body if isinstance(node, ast.With))
-        run = next(node for node in block.body if isinstance(node, ast.Assign)
-                   and any(isinstance(t, ast.Name) and t.id == "run" for t in node.targets))
+        launch = next(node for node in block.body if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call)
+                      and any(isinstance(t, ast.Name) and t.id in {"run", "capture"} for t in node.targets))
         seen = []
         class Runner:
             @staticmethod
             def run(*args, **kwargs):
                 seen.append((args, kwargs))
                 return None
+
+            @staticmethod
+            def capture(*args, **kwargs):
+                seen.append((args, kwargs))
+                return None
         env_nodes = [node for node in block.body if isinstance(node, ast.Assign)
                      and any(isinstance(t, ast.Name) and t.id == "env" for t in node.targets)]
         # The old launch's env assignment is executed to reproduce the missing
-        # intermediate-root binding; the repaired launch delegates to run().
+        # intermediate-root binding; the repaired launch delegates to capture().
         namespace = dict(REPO=ROOT, parent=ROOT / "target/p4-system-12",
                          root=ROOT / "target/p4-system-12/fixture-input", os=os,
                          subprocess=Runner, artifact_cargo=Runner)
-        ast.fix_missing_locations(tree := ast.Module(body=env_nodes + [run], type_ignores=[]))
+        ast.fix_missing_locations(tree := ast.Module(body=env_nodes + [launch], type_ignores=[]))
         exec(compile(tree, producer, "exec"), namespace)
         args, kwargs = seen[0]
         rows.append((producer, root, args, kwargs))
@@ -108,6 +119,111 @@ class CargoTests(unittest.TestCase):
         with patch.object(self.c, "_process", side_effect=child) as process:
             result = self.c.run(self.producer, self.manifest)
         return result, process
+
+    def capture_bound(self, effect=None, *, version=(0, "cargo 1.0.0 (fixture)")):
+        def child(argv, *args, **kwargs):
+            if argv[1] == "--version":
+                return subprocess.CompletedProcess(argv, version[0], version[1] + "\n", "")
+            if effect:effect()
+            return subprocess.CompletedProcess(argv, 0, "fixture stdout", "fixture stderr")
+        with patch.object(self.c, "_process", side_effect=child):
+            return self.c.capture(self.producer, self.manifest)
+
+    def outcome(self, function, *args, **kwargs):
+        try:
+            return "ok", function(*args, **kwargs)
+        except (self.o.ProvenanceError, self.a.CleanupError, self.a.Boundary, OSError) as error:
+            return "refused", str(error)
+
+    def source(self, name):
+        data = (self.root / name).read_bytes()
+        return self.o.Source(name, len(data), hashlib.sha256(data).hexdigest())
+
+    @property
+    def incremental(self):
+        return self.o.PRODUCERS[self.producer][0] + "/debug/incremental"
+
+    def test_capture_records_new_and_changed_outputs_with_complete_pins(self):
+        base = self.incremental
+        self.fixture.file(base + "/kept-1/s-1/dep-graph.bin", b"unchanged owned input")
+        changing = self.fixture.file(base + "/probe-1/s-1/query-cache.bin", b"old cache")
+        def build():
+            changing.write_bytes(b"regenerated cache")
+            self.fixture.file(base + "/probe-1/s-1/work-products.bin", b"new output")
+        capture = self.capture_bound(build)
+        self.assertEqual((capture.result.returncode, capture.observed, capture.recorded, capture.unclaimed), (0, 3, 2, 0))
+        self.assertEqual((capture.publication.written, capture.publication.added, capture.publication.records), (True, 2, 2))
+        raw = (self.root / self.o.LEDGER).read_bytes();ledger = self.o.decode(raw)
+        self.assertEqual(ledger.format, self.o.CAPTURE_FORMAT)
+        self.assertEqual([(row.after.path, row.before is None) for row in ledger.outputs],
+                         [(base + "/probe-1/s-1/query-cache.bin", False), (base + "/probe-1/s-1/work-products.bin", True)])
+        pins = tuple(self.source(name) for name in self.o.SUPPORTING_OBJECTS)
+        self.assertTrue(all(row.supporting_sources == pins and row.recorder == self.source(self.o.OBJECT)
+                            and row.producer == self.source(self.producer) and row.tool_version == "cargo 1.0.0 (fixture)"
+                            and row.argv == self.c.command(self.producer, self.manifest.relative_to(self.root).as_posix())
+                            for row in ledger.outputs))
+        self.assertIn("recorded 2 of 3 observed outputs (0 unclaimed); ledger 2 records", self.c.describe(capture))
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), capture.publication.ledger_sha256)
+
+    def test_run_publishes_no_provenance(self):
+        self.run_bound(lambda: self.fixture.file(self.incremental + "/probe-1/s-1/dep-graph.bin", b"new output"))
+        self.assertFalse((self.root / self.o.WORKSPACE).exists(), "command binding grants no provenance")
+
+    def test_failed_build_publishes_nothing_and_preserves_the_ledger(self):
+        base = self.incremental
+        self.capture_bound(lambda: self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"first build"))
+        before = (self.root / self.o.LEDGER).read_bytes()
+        def failing(argv, *args, **kwargs):
+            if argv[1] == "--version":
+                return subprocess.CompletedProcess(argv, 0, "cargo 1.0.0 (fixture)\n", "")
+            self.fixture.file(base + "/probe-1/s-2/dep-graph.bin", b"partial output of a failed build")
+            return subprocess.CompletedProcess(argv, 42, "", "failure")
+        with patch.object(self.c, "_process", side_effect=failing):
+            disposition, capture = self.outcome(self.c.capture, self.producer, self.manifest)
+        self.assertEqual(disposition, "ok", capture)
+        self.assertEqual((capture.result.returncode, capture.observed, capture.recorded, capture.publication), (42, 2, 0, None))
+        self.assertEqual((self.root / self.o.LEDGER).read_bytes(), before)
+        self.assertIn("recorded 0 of 2 observed outputs (0 unclaimed); ledger unchanged", self.c.describe(capture))
+
+    def test_source_change_after_the_build_refuses_before_publication(self):
+        base = self.incremental
+        original = self.c._invoke
+        def invoke(*args, **kwargs):
+            outcome = original(*args, **kwargs)
+            path = self.root / "scripts/artifact_cleanup.py";path.write_bytes(path.read_bytes() + b"\n# changed after the build\n")
+            return outcome
+        with patch.object(self.c, "_invoke", side_effect=invoke):
+            disposition, detail = self.outcome(self.capture_bound, lambda: self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"new"))
+        self.assertEqual(disposition, "refused", detail);self.assertIn("current recorder, producer and support pins", detail)
+        self.assertFalse((self.root / self.o.WORKSPACE).exists())
+
+    def test_failed_or_unbounded_version_query_refuses_capture(self):
+        base = self.incremental
+        effect = lambda: self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"new")
+        disposition, detail = self.outcome(self.capture_bound, effect, version=(1, "cargo 1.0.0 (fixture)"))
+        self.assertEqual(disposition, "refused", detail);self.assertIn("version query failed", detail)
+        self.assertFalse((self.root / self.o.WORKSPACE).exists())
+        refused = []
+        for text in ("", "x" * 1025, "two\nlines"):
+            disposition, detail = self.outcome(self.capture_bound, effect, version=(0, text))
+            if disposition == "refused" and "tool version bound" in detail:refused.append(text)
+        self.assertEqual(len(refused), 3)
+
+    def test_capture_retires_absent_rows_when_nothing_changes(self):
+        base = self.incremental
+        def build():
+            self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"a");self.fixture.file(base + "/probe-1/s-1/query-cache.bin", b"b")
+        first = self.capture_bound(build)
+        self.assertEqual((first.recorded, first.publication.records), (2, 2))
+        (self.root / base / "probe-1/s-1/query-cache.bin").unlink()  # Only this test's disposable fixture.
+        second = self.capture_bound()
+        publication = second.publication
+        self.assertEqual((second.recorded, publication.written, publication.added, publication.retired, publication.retained, publication.records),
+                         (0, True, 0, 1, 1, 1))
+        third = self.capture_bound()
+        self.assertEqual((third.recorded, third.publication.written, third.publication.records), (0, False, 1))
+        self.assertIn("ledger unchanged (1 records, sha256 " + publication.ledger_sha256[:16] + ")", self.c.describe(third))
+        self.assertEqual(self.o.decode((self.root / self.o.LEDGER).read_bytes()).outputs[0].after.path, base + "/probe-1/s-1/dep-graph.bin")
 
     def test_exact_command_matches_the_closed_provenance_protocol(self):
         for producer in self.o.PRODUCERS:
@@ -225,22 +341,34 @@ class CargoTests(unittest.TestCase):
             self.c._process([sys.executable, "-B", "-c",
                 "import os,time;os.close(1);os.close(2);time.sleep(10)"], self.c.environment(), timeout=0.05)
 
-    def test_actual_cargo_build_in_cold_copy_preserves_cache_shaped_input(self):
-        retained = self.fixture.file(self.o.PRODUCERS[self.producer][0] +
-            "/debug/incremental/retained-fixture/s/dep-graph.bin", b"unchanged owned fixture input")
+    def test_actual_cargo_build_in_cold_copy_publishes_provenance_and_preserves_input(self):
+        name = self.incremental + "/retained-fixture/s/dep-graph.bin"
+        retained = self.fixture.file(name, b"unchanged owned fixture input")
         before = retained.read_bytes()
         env = dict(os.environ, **self.fixture.fake_git())
-        code = ("import sys;sys.dont_write_bytecode=True;sys.path.insert(0,sys.argv[1]);"
-                "import artifact_cargo as C;from pathlib import Path;"
-                "r=C.run('scripts/probe_c_engine.py',C.ROOT/'target/p4-system-12/fixture-input/Cargo.toml');"
-                "print(r.stdout);print(r.stderr);raise SystemExit(r.returncode)")
+        code = ("import json,sys;sys.dont_write_bytecode=True;sys.path.insert(0,sys.argv[1]);"
+                "import artifact_cargo as C;from dataclasses import asdict;"
+                "c=C.capture('scripts/probe_c_engine.py',C.ROOT/'target/p4-system-12/fixture-input/Cargo.toml');"
+                "print(json.dumps(dict(stdout=c.result.stdout,observed=c.observed,recorded=c.recorded,unclaimed=c.unclaimed,"
+                "publication=None if c.publication is None else asdict(c.publication),line=C.describe(c))));"
+                "raise SystemExit(c.result.returncode)")
         result = subprocess.run([sys.executable, "-B", "-c", code, str(self.root / "scripts")],
             cwd=ROOT.parent, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("1 passed", result.stdout);self.assertEqual(retained.read_bytes(), before)
-        caches = list((self.root / self.o.PRODUCERS[self.producer][0]).glob("debug/incremental/*/*/query-cache.bin"))
+        report = json.loads(result.stdout)
+        self.assertIn("1 passed", report["stdout"]);self.assertEqual(retained.read_bytes(), before)
+        caches = list((self.root / self.incremental).glob("*/*/query-cache.bin"))
         self.assertTrue(caches, "actual public Cargo must generate observed incremental output")
-        self.assertFalse((self.root / self.o.LEDGER).exists(), "command binding grants no provenance")
+        publication = report["publication"]
+        self.assertTrue(report["recorded"] >= 1 and publication["written"] and publication["added"] == report["recorded"]
+                        and report["observed"] == report["recorded"] + 1 and report["unclaimed"] == 0, report)
+        ledger = self.o.decode((self.root / self.o.LEDGER).read_bytes())
+        pins = tuple(self.source(name) for name in self.o.SUPPORTING_OBJECTS)
+        self.assertEqual((ledger.format, len(ledger.outputs)), (self.o.CAPTURE_FORMAT, report["recorded"]))
+        self.assertNotIn(name, [row.after.path for row in ledger.outputs])
+        self.assertTrue(all(row.supporting_sources == pins and row.before is None and row.tool_version.startswith("cargo ")
+                            and row.recorder == self.source(self.o.OBJECT) for row in ledger.outputs))
+        self.assertIn("output provenance: recorded " + str(report["recorded"]) + " of ", report["line"])
 
 
 def main():
