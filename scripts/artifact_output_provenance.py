@@ -6,7 +6,7 @@ Plan selection against the published ledger is separate.
 """
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, fields, replace
 import datetime
 import fcntl
 import hashlib
@@ -57,7 +57,10 @@ Unknown roots, aliases, tracked names and stale source/file
 identities cannot gain current authority. Records describe observations under
 caller quiescence; they do not attest loaded code or exclude every race.
 The caller supplies current file facts from its anchored census; this reader
-reopens the ledger and sources, not each supplied output. The guarded core must
+reopens the ledger and sources, not each supplied output. Matching tolerates a
+changed `ctime_ns` alone: rustc seeds each new session by hard-linking the
+previous session's files, which moves ctime on an unchanged inode; device,
+inode, mode, size, mtime, digest and a link count of one stay exact. The guarded core must
 revalidate files immediately before any later mutation. Root pathname/device/
 inode mapping is checked around reads and before authority returns.
 
@@ -405,7 +408,7 @@ def authorize(owned, current, *, tracked_paths, require_captured=False):
     for item in current:
         row = observed.get(item.path)
         if (row is not None and key(item.path) not in tracked_keys and item.links == 1
-                and row.after == item and row.recorder == recorder
+                and replace(row.after, ctime_ns=item.ctime_ns) == item and row.recorder == recorder
                 and row.producer == sources[row.producer.object]
                 and (not require_captured or bool(row.supporting_sources))
                 and all(sources[dependency.object] == dependency for dependency in row.supporting_sources)):

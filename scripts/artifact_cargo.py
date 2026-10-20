@@ -52,9 +52,11 @@ the producer's `debug/incremental` caches before and after the invocation, and
 publication of the changed outputs with the recorder, producer, runner and
 census pins, all rechecked immediately before publication. The producer prints
 one `output provenance:` line: recorded/observed/unclaimed counts and the ledger
-outcome. A nonzero build, a changed source, a census boundary or a publication
-error publishes nothing and leaves the previous ledger exact. `run` remains the
-bare command boundary and publishes nothing.
+outcome. A nonzero build records nothing; it can only retire rows whose files
+it removed, because rustc garbage-collects earlier sessions even when a build
+fails. A changed source, a census boundary or a publication error publishes
+nothing and leaves the previous ledger exact. `run` remains the bare command
+boundary and publishes nothing.
 
 Strict selection is owned by ARTIFACT-CLEANUP.17, guarded deletion by .16 and
 the host-bound operator workflow by .14. Existing plans and receipts retain
@@ -190,11 +192,12 @@ def capture(producer: str, manifest: Path) -> Capture:
     version = tool_version()
     stamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     result, snapshots, tracked, prior, later = _invoke(producer, manifest, census=lambda owned: O.census(owned, producer))
-    if result.returncode != 0:
-        return Capture(result, len(later), 0, 0, None)
-    rows, unclaimed = O.observe(stamp, snapshots[O.OBJECT], snapshots[producer], result.args, version,
-                                result.returncode, tuple(snapshots[name] for name in O.SUPPORTING_OBJECTS),
-                                prior, later, tracked_paths=tracked)
+    if result.returncode == 0:
+        rows, unclaimed = O.observe(stamp, snapshots[O.OBJECT], snapshots[producer], result.args, version,
+                                    result.returncode, tuple(snapshots[name] for name in O.SUPPORTING_OBJECTS),
+                                    prior, later, tracked_paths=tracked)
+    else:
+        rows, unclaimed = (), 0  # a failed build records nothing; publication may still retire absent rows
     with A.OwnedRoot(ROOT) as owned:
         publication = O.publish(owned, rows, producer, frozenset(item.path for item in later))
     return Capture(result, len(later), len(rows), unclaimed, publication)

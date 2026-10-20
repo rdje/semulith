@@ -513,15 +513,28 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   partial failure/uncertain window. Cover D1/staleness/aliases/parent changes,
   output errors and interruption in owned fixtures only. No supported operator
   mutation until .14 host binding; no real cleanup merely for testing. Normal COMMIT.
+  Owned D14 (priority3, from AC0078): a stale verdict names no member; two real
+  selections went stale on one growing run log inside the census scope and only
+  an ad-hoc plan diff showed it. Make check_plan report the first differing member
+  and count, with a control, before .16's unlink path relies on stale verdicts.
 
 - ID: `ARTIFACT-CLEANUP.17` — **bind real build observations and plan selection**
-  Status: `pending`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0078`)
   Goal: use .15 records around bound public Cargo invocations; preserve exact
   existing output paths and protect unchanged unowned inputs. Bind actual
   source/root/command/return facts, bounded atomic merge/publication and current
   cohort selection; historical plans remain readable but grant no new mutation
   authority. Exercise actual owned builds, malformed/stale receipts, source and
   output changes, interruptions and cold CLI. Verify P1 fixed before .16 core.
+
+  Result (`2026-10-20` UTC, `SEMULITH-AC-0078`): strict selection lands as
+  artifact_cleanup_selection.py: re-census the plan, intersect its candidates
+  with captured current authority, publish selection.json exclusively beside
+  the plan. Owned D12 (a failed build records nothing but retires rows whose
+  files rustc garbage-collected) and D13 (a ctime-only change from rustc
+  hard-link seeding is not a changed output), both measured at b18971e in
+  target/artifact-cleanup-0078 before the fix. P1 closed: a cache-named input
+  is never approved. .16 binds plan, selection and journal before any unlink.
 
 - ID: `ARTIFACT-CLEANUP.18`
   Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0072`)
@@ -620,7 +633,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.17` | `pending` | strict plan selection against the published ledger closes cleanup finding P1 |
+| 1 | `ARTIFACT-CLEANUP.16` | `pending` | guarded deletion core bound to plan, selection and journal |
 
 ## Decisions
 
@@ -643,6 +656,35 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.17)
+
+- [x] **REPRODUCE / ISSUE** — target/artifact-cleanup-0078/selection-before.log at
+  b18971e: SELECTION-BEFORE: candidates 19, approved_strict 0, approved_legacy 0;
+  the plan selected a smoke-input fixture by name and no current file matched.
+- [x] **ROOT CAUSE (WHY + WHERE)** — grep -c "^NO-ROW" target/artifact-cleanup-0078/
+  ledger-vs-candidates.log = 13 and grep -c "ctime_ns" = 6: 13 candidates had no
+  row (D12: the hook's failing mutation builds returned early in
+  artifact_cargo.capture while rustc garbage-collected the recorded sessions)
+  and 6 rows differed only in ctime_ns (D13: rustc hard-link seeding, rejected
+  by exact Fact equality in artifact_output_provenance.authorize); candidate()
+  in artifact_cleanup.py never consulted the ledger (P1).
+- [x] **FIX** — capture retires absent rows after a failed build; authorize
+  tolerates ctime alone; artifact_cleanup_selection.py re-censuses a plan and
+  exclusively publishes the strict approved/unrecorded partition beside it.
+- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
+  rc=0: ARTIFACT-COHORT --self-test: 128 pass / 0 fail. Selection 11 tests
+  normal/O with 5 omissions, each 1 failures / 0 errors; Cargo 23 and
+  provenance 42 pass with their reworked controls. Actual run: both producers
+  captured, then --select on the real tree approved 9 latest-session
+  outputs and left 10 unrecorded, the smoke-input fixture among them. Two
+  earlier attempts went stale because a growing run log sat inside the census
+  scope; plan-diff.log named that single member (target/artifact-cleanup/AC0078-c).
+- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
+  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
+  literal self-test arms 1637 → 1639 re-derived by DERIVED-COUNTS.
+- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
+  tree (frontier .16), index, MEM/DEV/CH; history heads sharded.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.23)
 
@@ -677,12 +719,16 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.17` | selection 11 tests normal/O; 5 omissions; artifact128; actual select | 9 approved / 10 unrecorded on the real tree; D12/D13 fixed; P1 closed |
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0078 (leaf ARTIFACT-CLEANUP.17): select strictly against the published ledger` — selection record beside the plan, D12/D13 fixed, P1 closed; .16 guarded core next.
 
 `SEMULITH-AC-0077 (leaf ARTIFACT-CLEANUP.23): retire the completed-checklist suffix into a second ledger generation` — chain-verified transition; .17 strict selection next.
 
 ## Changelog
 
+- `2026-10-20` UTC: .17 verified; strict selection publishes beside the plan; no deletion authority added.
 - `2026-10-20` UTC: .23 verified; second ledger generation retained, live narrative reset. No cleanup authority changed.

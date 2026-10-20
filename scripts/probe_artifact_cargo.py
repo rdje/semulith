@@ -31,7 +31,7 @@ SEAMS = {
     "group-join": ('            _stop(child)\n            return subprocess.CompletedProcess',
                    '            return subprocess.CompletedProcess'),
     "group-kill": ('        os.killpg(child.pid, signal.SIGKILL)', '        pass'),
-    "capture-success": ('    if result.returncode != 0:\n        return Capture(result, len(later), 0, 0, None)\n', ''),
+    "capture-success": ('    if result.returncode == 0:\n', '    if True:\n'),
     "capture-version": ('    O.need(result.returncode == 0, "Cargo version query failed")\n', ''),
 }
 TARGETS = {
@@ -43,7 +43,7 @@ TARGETS = {
     "pipe-bound": "test_each_pipe_overflow_refuses_and_joins",
     "group-join": "test_even_success_joins_the_owned_process_group",
     "group-kill": "test_a_descendant_closing_pipes_cannot_outlive_the_invocation",
-    "capture-success": "test_failed_build_publishes_nothing_and_preserves_the_ledger",
+    "capture-success": "test_failed_build_records_nothing_and_retires_only_absent_rows",
     "capture-version": "test_failed_or_unbounded_version_query_refuses_capture",
 }
 
@@ -169,21 +169,29 @@ class CargoTests(unittest.TestCase):
         self.run_bound(lambda: self.fixture.file(self.incremental + "/probe-1/s-1/dep-graph.bin", b"new output"))
         self.assertFalse((self.root / self.o.WORKSPACE).exists(), "command binding grants no provenance")
 
-    def test_failed_build_publishes_nothing_and_preserves_the_ledger(self):
+    def test_failed_build_records_nothing_and_retires_only_absent_rows(self):
         base = self.incremental
-        self.capture_bound(lambda: self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"first build"))
-        before = (self.root / self.o.LEDGER).read_bytes()
+        def first():
+            self.fixture.file(base + "/probe-1/s-1/dep-graph.bin", b"first build")
+            self.fixture.file(base + "/probe-1/s-1/query-cache.bin", b"first build cache")
+        self.assertEqual(self.capture_bound(first).publication.records, 2)
         def failing(argv, *args, **kwargs):
             if argv[1] == "--version":
                 return subprocess.CompletedProcess(argv, 0, "cargo 1.0.0 (fixture)\n", "")
+            (self.root / base / "probe-1/s-1/query-cache.bin").unlink(missing_ok=True)  # rustc GC of a recorded session; fixture only
             self.fixture.file(base + "/probe-1/s-2/dep-graph.bin", b"partial output of a failed build")
             return subprocess.CompletedProcess(argv, 42, "", "failure")
         with patch.object(self.c, "_process", side_effect=failing):
             disposition, capture = self.outcome(self.c.capture, self.producer, self.manifest)
         self.assertEqual(disposition, "ok", capture)
-        self.assertEqual((capture.result.returncode, capture.observed, capture.recorded, capture.publication), (42, 2, 0, None))
-        self.assertEqual((self.root / self.o.LEDGER).read_bytes(), before)
-        self.assertIn("recorded 0 of 2 observed outputs (0 unclaimed); ledger unchanged", self.c.describe(capture))
+        publication = capture.publication
+        self.assertEqual((capture.result.returncode, capture.observed, capture.recorded, publication.written,
+                          publication.added, publication.retired, publication.retained, publication.records), (42, 2, 0, True, 0, 1, 1, 1))
+        ledger = self.o.decode((self.root / self.o.LEDGER).read_bytes())
+        self.assertEqual([row.after.path for row in ledger.outputs], [base + "/probe-1/s-1/dep-graph.bin"])
+        self.assertIn("recorded 0 of 2 observed outputs (0 unclaimed); ledger 1 records", self.c.describe(capture))
+        with patch.object(self.c, "_process", side_effect=failing):
+            self.assertFalse(self.c.capture(self.producer, self.manifest).publication.written, "nothing further to retire")
 
     def test_source_change_after_the_build_refuses_before_publication(self):
         base = self.incremental

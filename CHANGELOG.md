@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0078 (leaf ARTIFACT-CLEANUP.17) — select strictly against the published ledger
+
+New artifact_cleanup_selection.py re-censuses a published plan, intersects its
+candidates with captured current authority and exclusively publishes the
+approved/unrecorded partition beside the plan; cache-named inputs stay
+unrecorded (P1 closed). D12: a failed build retires rows whose files rustc
+removed. D13: ctime-only drift no longer rejects unchanged recorded outputs.
+Selection 11 tests/5 omissions normal/O; artifact gate 128 outcomes; literal
+arms 1639. Actual selection on the real tree recorded. No deletion authority.
+
 ## SEMULITH-AC-0077 (leaf ARTIFACT-CLEANUP.23) — retire the completed-checklist suffix into a second ledger generation
 
 The cleanup retention terminal becomes a generational chain: generation 2 retains
@@ -650,9 +660,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fresh same33 IDs/typed96 match the separate authority; two omissions refuse normal/O. Change only count96→107 plus a dated registry pointer; health64 warning debt/all other bounds stay fixed. Original107 breach1 becomes0; new108 breach1/65 advisory0.
 - Public guard green0 normal/O, enclosing real1407 exact; guard94 byte-identical. Whole DEV4026B→0290 retains104 prior entries; full source/history/protected inverses, focused12/sharder12/seven books/four reads/rendered pass. Book/owner/pointer agree; LIVE/CPU unchanged, full .4i containment adoption next.
-
-## SEMULITH-LC-0020 (leaf LIVE-CONTAINMENT.4) — review separate six-activity count authority
-
-- Re-derive closed task inventories27/1/9/24→33/1/40/22, six creation/scope pins and independent107 equations; four typed/two metadata controls refuse normal/O, real1405 states exact. Record separate authority; application pending, health64 debt and every cap unchanged.
-- Preserve original records/D51/D55 teaching/four literal reads; compare three duplicate contract-intro clauses before shortening the pointer, retain full include. Whole CH1863B/three-entry rollover retains105 old entries; source/history/protected inverses, focused12/sharder12/seven books/rendered pass. LIVE/CPU unchanged; fresh preconditions before .4h6c4 application.
 

@@ -1,5 +1,45 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — select strictly against the published ledger (ARTIFACT-CLEANUP.17)
+
+AC0078 from clean 962c91c. The baseline at b18971e was measured before any
+code change: a real plan held 19 candidates and the strict reader approved
+none. The comparison log pinpointed two causes. D12: the pre-commit hook runs
+the producers' mutation controls, whose builds fail by design; capture returned
+early and published nothing while rustc garbage-collected the recorded session
+directories, so rows named files that no longer existed. D13: rustc seeds each
+new session by hard-linking the previous session's files, which moves ctime on
+an unchanged inode, and exact Fact equality rejected those rows.
+
+Fixes: a failed build now records nothing but still publishes a merge whose
+only effect can be retiring rows for files it removed; the reader compares
+every identity field except ctime_ns and still requires one link. Both have
+discriminating controls. The planner itself is unchanged: selection is a new
+module beside it. decide() re-censuses the plan's scopes and refuses a stale
+plan or a changed tracked inventory, then intersects the candidates with
+authorize(require_captured=True) and records the approved/unrecorded partition,
+byte totals, plan/tracked/ledger digests and the selector, planner and reader
+source identities. publish() exclusively creates selection.json beside the
+still-identical plan; inspect() decodes it against the plan and reports whether
+the pinned sources are current. A forged ledger row for a cache-named input
+refuses the whole ledger, so P1 closes: a name never grants ownership.
+
+Controls: 11 tests normal/O and five omissions, each one failure and zero
+errors; the gate has 128 outcomes and the literal arm count is 1639. A first
+partition seam did not discriminate because the byte-sum checks caught the
+same variants; the variants now keep byte sums consistent so only the partition
+rule catches them. Actual engine and guest captures followed by plan and
+selection on the real tree are in target/artifact-cleanup-0078. Guarded
+deletion (.16) must bind plan, selection and journal and revalidate every
+file immediately before unlink; the host-bound operator workflow is .14.
+
+Two real selections went stale first. The verdict named nothing; a plan diff
+showed exactly one retained member changed: the run log I was writing under
+target/artifact-cleanup-0078, inside the census scope, growing between plan
+and selection. Run logs belong in the selected workdir, as the planner's usage
+already says; the third run kept its log there and selected 9 of 19. The
+nameless stale verdict is owned as D14 under .16.
+
 ## _(2026-10-20 UTC)_ — second ledger generation (ARTIFACT-CLEANUP.23)
 
 AC0077 from clean b18971e. The reader reported 12,947 live narrative bytes with the
@@ -644,55 +684,4 @@ whole DEV/CH entries5666B retained0369/0370. Evidence target/p4-system-14/a42ak.
 All caps fixed; no canonical outputs/reference run or CPU/board acceptance.
 Next curate/commit three exact native declarations, then fresh Sail/full policy.
 Promotion declined in leaf: existing source-closure/bounded-reader/authority rules.
-
-## _(2026-10-19)_ — seal a second finite history segment (LIVE-CONTAINMENT.4 .4j)
-
-LC0049 interrupts the next feature slice only for measured rollover failure:
-ordinary history159 files/782755B leaves3677B, while DEV leaves17B and its
-oldest whole entry3787B already exceeds family room before wrapper/manifest.
-Use standing archive delegation retained from LC0041; the existing finite
-archive topology and public reader suffice. No runtime implementation changes.
-
-Capture exactly158 closed shards and their15010B manifest from a5bf45798255bca41d73f284bfe6987f48fc351f:
-159 originals782755B/11200LF. Independent Git tree/mode/blob checks, two identical
-serializations and all159 Python/tar member comparisons bind complete source.
-The new276917B object SHA89ad7214ebbf637cc48dc4468f3d43fb7d0f2eb08a43fa5c4ab42118ba8df2b5
-is a distinct immutable segment. Old284500B object and descriptor stay exact.
-Relocated normal/O public CLI authenticates368 shards across two objects without
-local Git/materials/extraction. New corruption and old descriptor changes refuse.
-Only after published-copy comparison retire exactly158 known sources; residue0.
-
-Separate bounded LC0049-CAPACITY record in task-claims reviews this one expanded
-finite terminal:4 files,565623B health,581897B ceiling = two fixed objects561417B
-plus existing index16384/front4096 bounds. The old finite contract covered one
-segment; this exact source-defined addition expands only that archive contract.
-Ordinary/history-head and all other capacities and reader limits stay fixed.
-No new decision file or general lifecycle change: this is a finite implementation
-of the standing delegation. Future seals require fresh ownership/review.
-
-The two manifest snapshots share a former logical path at distinct capture
-boundaries; logical shard sets are disjoint. Complete-source identity, semantic
-closure, live dimensions and unretained residue are separate products. No source
-bytes are lost. Current live receipts remain native; numbering starts0367 after
-retired0366. Two external textual references are historical/source-pinned, with
-no live integration read. Existing263-outcome query qualification remains pinned
-to23fdb8 and its original222 members; current two-object proof is separate.
-
-Retain the complete closed LC0041 record5552B in existing task-claims with source/
-owner inverses; keep its standing authority recoverable. Main book changes only
-current archive teaching, preserves old examples and adds the new-segment read;
-its family shrinks8B. Public reader/partition/probes remain byte-exact.17 focused,
-44 history controls,263 source-pinned queries x2/0 defects, seven books/four complete
-examples/three rendered surfaces pass. Scope1415 protected files/1Gitlink/95 prior
-live entries; whole4747B live predecessor rollover, full LC0041 source/owner
-inverses2/seven damaged refusals. All other caps fixed; normal COMMIT required.
-Automatic approval review twice rejected the commit: recorded delegation did not
-supply trusted user approval for158 retirements. Director2026-10-19 explicitly
-answered “Approve LC0049 and continue” to the158-source verified archive migration,
-finite terminal bound and local commit without push. That scope is now directly
-authorized; normal COMMIT/postconditions remain required. The app-control safety
-boundary prevented changing its permission selector; no setting was altered.
-After COMMIT return to P4.14 execution/authorities.
-Evidence target/live-containment/history-rollover; promotion declined (existing
-finite archive, bounded-reader and source-preservation contracts).
 

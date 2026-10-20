@@ -29,9 +29,11 @@ SEAMS = {
     "changed-digest": ('and before.sha256 != after.sha256,', 'and True,'),
     "successful-build": ('type(item.return_code) is int and item.return_code == 0', 'True'),
     "command-root": ('tuple(item.argv) == expected', 'True'),
-    "recorder-pin": ('and row.after == item and row.recorder == recorder', 'and row.after == item'),
+    "recorder-pin": ('and replace(row.after, ctime_ns=item.ctime_ns) == item and row.recorder == recorder',
+                     'and replace(row.after, ctime_ns=item.ctime_ns) == item'),
     "producer-pin": ('and row.producer == sources[row.producer.object]', 'and True'),
-    "current-fact": ('and row.after == item and row.recorder == recorder', 'and row.recorder == recorder'),
+    "current-fact": ('and replace(row.after, ctime_ns=item.ctime_ns) == item and row.recorder == recorder',
+                     'and row.recorder == recorder'),
     "tracked-alias": ('key(item.path) not in tracked_keys', 'True'),
     "closed-fields": ('type(value) is dict and set(value) == {f.name for f in fields(cls)}', 'type(value) is dict'),
     "byte-bound": ('need(type(raw) is bytes and 0 < len(raw) <= MAX_BYTES,',
@@ -431,9 +433,11 @@ class ProvenanceTests(unittest.TestCase):
 
     def test_each_changed_current_fact_loses_authority(self):
         row = self.observation();self.save(row)
-        for name in ("inode", "byte_size", "mtime_ns", "ctime_ns", "sha256"):
+        for name in ("inode", "byte_size", "mtime_ns", "sha256", "mode"):
             value = "0" * 64 if name == "sha256" else getattr(row.after, name) + 1
             self.assertEqual(self.authorize((replace(row.after, **{name: value}),)).approved, frozenset())
+        drifted = replace(row.after, ctime_ns=row.after.ctime_ns + 1)
+        self.assertEqual(self.authorize((drifted,)).approved, frozenset({self.output}), "ctime alone is not a change")
 
     def test_tracked_alias_and_output_hardlink_are_protected(self):
         row = self.observation();self.save(row)
