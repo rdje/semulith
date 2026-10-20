@@ -55,7 +55,7 @@ PROJECT_DOCTRINES=(
   "CONTRACT-FREEZE|an environment contract is versioned, not edited in place — every obligation record belongs to exactly one version of its unit's contract.sexp, of that version, and a frozen version's records still match their sha256 pins; a wrong statement is superseded by a later version, never rewritten|scripts/check_contract_freeze.sh"
   "M-VECTORS|the M extension's instruction vectors (run through the engine) are still the byte-exact output of the spec-side exact-integer reference, and that reference still obeys the chapter's own stated identities (dividend = divisor × quotient + remainder, the remainder's magnitude and sign, Table 1's zero-divisor and overflow rows, the 2·XLEN product split, the word forms' sign extension) — an expected value edited by hand is DRIFT|scripts/check_m_vectors.sh"
   "TASK-HISTORY|finite P4 and qualification captures authenticate originals without Git or extraction; publishing guards preserve bytes/modes in both views and authenticate the qualification source at first publication; failed reads refuse|scripts/check_task_history.sh"
-  "ARTIFACT-COHORT|bounded same-volume cache planning/checking protects tracked inputs, source identity, retained populations and exclusive output; normal/O owned-fixture guard omissions discriminate; no real cleanup|scripts/check_artifact_cleanup.sh"
+  "ARTIFACT-COHORT|bounded planning/history/journal checks protect inputs, source identity, retained populations and exclusive output; ordered attempt records preserve unresolved progress; normal/O owned-fixture guard omissions discriminate; no project cleanup|scripts/check_artifact_cleanup.sh"
 )
 
 fails=0

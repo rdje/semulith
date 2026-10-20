@@ -1,5 +1,16 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0070 (leaf ARTIFACT-CLEANUP.13) — record recoverable cleanup intent
+
+Add bounded exclusive plan/source-bound attempt records and readonly inspection.
+Ordered plan/ancestor/frame barriers, Darwin full-sync, identity checks and poisoned
+writer refusal protect metadata. Torn prefixes remain uncertain; no cache unlink
+or current-state/actor attestation.26 tests normal/O/ten omissions each:22 outcomes;
+expanded gate48, derived1631 sites. Actual smoke keeps owned dummy cache intact.
+Move complete old teaching into bounded shared fragment; all original examples
+preserved, book524076/524288B. Guarded core .15 and host/CLI .14 remain pending.
+Focused16/books7/scope pass;4030B whole history retained0382/0383.
+
 ## SEMULITH-AC-0069 (leaf ARTIFACT-CLEANUP.12) — retain the historical cleanup helper
 
 Preserve original5815B helper as passive authenticated input. Five tests normal/O
@@ -606,14 +617,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Reproduce D52 through the public checker: baseline0; failed73 inventory and partial listing+stderr both incorrectly return0 with the green banner. Real HEAD/index/all1397 tracked identities stay exact.
 - Own priority1 repair next, before D51 capacity review. Sync the observed limitation in the book; no checker, cap, authority, archive or CPU change; LIVE routing closure marked Mostly Done for D52.
-
-## SEMULITH-LC-0011 (leaf LIVE-CONTAINMENT.4) — contain duplicate decision-index summaries
-
-- Compare five summaries with their complete canonical records, then retain targets/types/order with dated topic labels and reader questions. INDEX16379→15656B; source records and D51's affected row stay exact, no cap or LIVE change.
-- Own whole-oldest CH/DEV rollover and exact head/history inverses, focused/book checks and canonical read examples. The separate .4h2 authority/capacity review follows COMMIT; full containment adoption remains LC.4.
-
-## SEMULITH-LC-0010 (leaf LIVE-CONTAINMENT.4) — adopt the local containment contract
-
-- Import the exact20208B/343-line neutral body with a bounded local authority/frontier note; wire bootstrap, README policy, routing and complete book teaching. Derived routes39; existing limits/seals and CPU qualification unchanged.
-- Full graph inventory, field classification, local declarations/checker and migrations remain LC.4. D51's source terminology correction and capacity review are owned next; no count raise in this slice.
 

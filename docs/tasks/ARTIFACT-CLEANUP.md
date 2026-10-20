@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -344,7 +344,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ### Priority1 activity — make cleanup instruments durable
   Status: `active`
-  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`
+  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`
   Goal: fix the verified workflow defect before returning to P4 policy/status.
   Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
   rc=1; tracked scripts/*cleanup* census empty; cache-name search in scripts/
@@ -427,33 +427,68 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   Normal COMMIT before .13; output target/artifact-cleanup-0069.
   promotion: declined (repairs existing first-class-tools/claim policy).
 
-- ID: `ARTIFACT-CLEANUP.13` — **guarded deletion core and recoverable journal**
-  Status: `pending`
-  Goal: after .12, add anchored whole-cohort/per-file revalidation and same-volume/
-  non-Git parent validation before each unlink; retained/residue post-checks.
-  Preserve known progress/failure after partial operation; exclusive bounded
-  durable intent/outcome journal with an honest uncertain window, closed reader
-  and authenticated plan binding. Cover release-D1, stale/missing data, inode/
-  alias/parent changes, output errors and interruption in owned fixtures only.
-  Keep supported deletion CLI pending .14; no incomplete operator path or real
-  cleanup merely for testing. Own/document/verify/commit each safe slice.
+- ID: `ARTIFACT-CLEANUP.13` — **bounded recoverable attempt journal**
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0070`)
+  Goal: AC0070 from clean e9b4532/brief0/actual host census OK. Establish a bounded
+  one-shot intent/outcome journal before connecting any cache mutation. Bind the
+  published immutable plan and current recorder/actor source identities; anchored
+  same-volume/non-Git exclusive creation and per-append parent/file validation.
+  Canonical closed framed records, bounded counts/bytes, durable intents before
+  reported unlink returns, explicit terminal status, and no overwrite/reuse.
+  Reader retains partial-prefix/pending-intent uncertainty, rejects corruption
+  and reports recorded observations only; no current-state or actor attestation.
+  Cover torn/failed writes, fsync/close failures, source/plan/path changes and
+  both modes/cold CLI in owned on-volume fixtures. No cache unlink API or actual
+  cleanup event in this slice. Sync focused gate/toolbox/shared book/live docs,
+  preserve original source/history/caps, normal COMMIT before .15 core/.14 CLI.
+  Output target/artifact-cleanup-0070.
+  Owned durability finding: Apple fsync(2) documents drive-buffer loss/reordering
+  after ordinary fsync on power failure. Normal file/directory fsync succeeds on
+  owned fixtures; F_FULLFSYNC succeeds for write/read file descriptors too.
+  Add ordered plan/journal/parent synchronization and Darwin F_FULLFSYNC, refuse
+  unsupported/failed barriers. Do not claim hardware/power-failure attestation.
+  Evidence fullsync.json; primary Apple manual linked in shared usage.
+  Book capacity: move only the complete cleanup teaching fragment into the
+  bounded artifact-toolbox part, rebase its two includes explicitly, and include
+  that anchor from the book. Preserve whole text/examples; add journal teaching
+  there through its shared CLI usage. No cap increase or unbounded neighbor.
+  promotion: declined (implements existing durable-source/partial-outcome policy).
 
 - ID: `ARTIFACT-CLEANUP.14` — **bind host census and publish operator workflow**
   Status: `pending`
-  Goal: after .13, bind explicit caller quiescence and a fresh bounded invocation
-  of the public host-census workflow before cache mutation. Preserve UID,
-  exemptions and observation limits; the host census stays outside the doctrine.
+  Goal: after .15 guarded core, bind explicit caller quiescence and a fresh bounded
+  invocation of the public host-census workflow before cache mutation. Preserve
+  UID, exemptions and observation limits; census remains outside the doctrine.
   Add supported delete/inspect CLI, truthful partial/error outcomes and recovery
   examples. Test failed/unavailable process/identity observations, interruption
   and cold copied runtime in owned fixtures; no real cleanup event needed.
   Sync help/book/toolbox/live docs, focused checks and normal COMMIT; close the
   priority1 durable-instrument activity, then return to full P4 policy/status.
 
+- ID: `ARTIFACT-CLEANUP.15` — **anchored guarded deletion and journal integration**
+  Status: `pending`
+  Goal: after .13, add whole-cohort/per-file revalidation and same-volume/non-Git
+  parent validation immediately before each unlink; retained/residue post-checks.
+  Connect durable intent/outcome records; preserve known progress and failure
+  after partial operation, including the unresolved unlink/record window.
+  Cover release-D1, stale/missing data, inode/alias/parent changes, output errors
+  and interruption in owned fixtures only. Supported deletion CLI stays pending
+  .14; no incomplete operator path or real cleanup merely for testing.
+  Own/document/verify/commit each safe slice before .14 host-census/CLI.
+  Owned P1 input-ownership finding: input-candidate.log rc=0 shows a retained
+  fixture under target/retained-fixture-inputs/debug/incremental selected solely
+  by basename/path; no Cargo build-output provenance exists. candidate() checks
+  name/prefix/incremental/link/tracked metadata, not regenerable ownership.
+  Resolve before exposing cache mutation: bind declared published build-output
+  roots/ownership and protect input/evidence/fixture namespaces; test omissions.
+  Metadata-only planning/journal has deleted no such input; .15 owns the fix
+  at highest priority for deletion readiness. No submodule implementation use.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.13` | `pending` | guarded core/journal before host-census and supported CLI |
+| 1 | `ARTIFACT-CLEANUP.15` | `pending` | P1 output-ownership guard and anchored core before supported CLI |
 
 ## Decisions
 
@@ -652,10 +687,45 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   BOARD10/12/replay4/4green unchanged. Source book524285/524288B, no raised cap.
   Original event/producer/capture preserved; normal COMMIT closes .12 before .13.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.13)
+
+- [x] **REPRODUCE / ISSUE** — tracked legacy replay (scripts/probe_legacy_artifact_cleanup.py)
+  rc=0 shows release-D1: unlink followed by failed post-check/no receipt. A later
+  caller needs recoverable progress before any cache operation. Source census:
+  git ls-files scripts/*cleanup* at e9b4532 lists planner/replays, no attempt journal.
+- [x] **ROOT CAUSE (WHY + WHERE)** — legacy cleanup.py writes result.json only
+  after its post-check. Apple fsync(2) also documents drive-buffer loss/reordering
+  after ordinary fsync. fullsync.json verifies owned file/directory fsync and
+  Darwin F_FULLFSYNC on read/write descriptors; power failure remains untested.
+  python3 scripts/probe_artifact_cleanup_journal.py rc=0:26 tests/0 failures/0 errors.
+- [x] **FIX** — one-shot bounded framed journal; bind canonical published plan,
+  recorder/actor source; synchronize plan/ancestors before yield and flush frames
+  before accepting state. Revalidate root/parent/file/plan before each append,
+  preserve failed writes, prohibit poisoned reuse. Strict reader preserves torn
+  prefixes/pending uncertainty and reports records without current-state credit.
+  Readonly inspect CLI; no cache-unlink API. .15 core then .14 operator workflow.
+- [x] **ADDRESSED (verified)** — scripts/check_artifact_cleanup.sh --self-test:
+  48 pass/0 fail. Journal26 tests normal/O; ten omissions each1 failure/0 errors,
+  22 exact outcomes. Four-file copied inspect CLI has no Git/valid parent cwd;
+  no producer launch needed. Actual source-bound plan/barriers/write/read smoke
+  records intent0/returns0; newly owned dummy cache unchanged, report incomplete.
+- [x] **NO REGRESSION** — focused16 rc=0; scripts/check_seam_integrity.sh and
+  48-outcome ARTIFACT-COHORT green. Native3/41514B exact; books7/normal-print
+  old/new teaching verified. Scope18/protected1456/1 opaque Gitlink/98 old entries;
+  native0382/0383 retain4030B whole. Task/index inverses2; planner logic/gate and
+  complete old book fragment retained, include-base inverses2; all caps exact.
+  Staged history/acceptance/default gate checks follow before normal COMMIT.
+- [x] **LOCKSTEP** — task/index/MEM/CH/DEV/LIVE and source-backed book/toolbox
+  teaching synchronized. Rebase the complete old cleanup fragment into the
+  bounded artifact family; preserve its text/examples and all fixed caps.
+  Derived1631 sites;40 doctrines/42 routes/CPU14/18/BOARD10/12/replay4/4green
+  unchanged. Book524076/524288B; normal COMMIT before .15 P1 ownership/core.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.13` |26 tests normal/O/10 omissions, actual metadata/full-sync smoke, gate48/focused16/books7/scope |18 files/protected1456/1Gitlink;98 old entries/4030B whole0382/0383; no cache unlink; P1 ownership fix .15 |
 | `2026-10-20` UTC | `.12` | five legacy tests normal/O/pin omission, cold3, gate26, focused16/books7/scope |18 files/protected1452/1Gitlink;98 whole old entries,3172B native0380/0381; no real cleanup; staged checks/normal COMMIT follow |
 | `2026-10-20` UTC | `.11` | focused16;26 tests normal/O/ten omissions each; actual plan/check; books7; whole source/history inverses |22 exact outcomes; scope18/protected1447/1Gitlink/98 old entries;3504B whole0378/0379; no real deletion; staged checks and normal COMMIT follow |
 | `2026-10-19` UTC | `.10` | saved-cohort plan/check/delete; six normal/O controls; pre-delete actual census |18/78250724B removed; immediate residue0;18121/152718645B retained exact; focused13/books7/source-history/rendered receipt verified |
@@ -689,6 +759,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
+
+`SEMULITH-AC-0070 (leaf ARTIFACT-CLEANUP.13): record recoverable cleanup intent` — bounded metadata journal/inspection,26 tests normal/O/22 journal outcomes, gate48 and actual barrier smoke; no cache unlink. P1 ownership/core .15 next.
 
 `SEMULITH-AC-0069 (leaf ARTIFACT-CLEANUP.12): retain the historical cleanup helper` —5815B authenticated passive source, five legacy tests normal/O and pin controls; cold3/gate26/whole source-history preservation. No real cleanup event.
 
@@ -778,3 +850,5 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 - `2026-10-20` UTC: `.11` bounded planning/checking verified, full original task/history/source retained. Early actual check refused missing plan while planning still ran; joined planner before repeat, then actual cohort matched. No cache deletion. Initial os.stat capability fixture and direct numeric task syntax corrected without weakening production guards. Complete staged checks/normal COMMIT; .12 stays next before P4.
 
 - `2026-10-20` UTC: `.12` retained original helper and replayed debug/release-D1 in owned fixtures. Five tests normal/O, pin omission1 failure/0 errors, cold3 and expanded gate26 pass; focused16/books7/normal-print/scope source-history proof pass. Preserve complete old records and original event; normal COMMIT before .13 guarded core/journal and .14 host/CLI.
+
+- `2026-10-20` UTC: `.13` journal verified; all old source/history retained.26 tests normal/O/22 journal outcomes, gate48/focused16/books7/actual smoke/scope pass. Source/parent/file/barrier faults discriminate; no cache unlink. Normal COMMIT before .15 P1 ownership and anchored core, then .14 host-bound CLI.

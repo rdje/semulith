@@ -33,6 +33,12 @@ self_test() {
     score "GREEN $mode historical helper" "$rc" 0 "$out" '5 tests / 0 failures / 0 errors'
     out="$("${python[@]}" scripts/probe_legacy_artifact_cleanup.py --mutation source-pin 2>&1)"; rc=$?
     score "RED $mode historical source pin" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
+    out="$("${python[@]}" scripts/probe_artifact_cleanup_journal.py 2>&1)"; rc=$?
+    score "GREEN $mode attempt journal" "$rc" 0 "$out" '26 tests / 0 failures / 0 errors'
+    for mutation in plan-binding intent-sequence terminal exclusive parent file barrier poison byte-bound terminal-tail; do
+      out="$("${python[@]}" scripts/probe_artifact_cleanup_journal.py --mutation "$mutation" 2>&1)"; rc=$?
+      score "RED $mode journal $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
+    done
   done
   printf 'ARTIFACT-COHORT --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -42,6 +48,7 @@ self_test() {
 [ "$#" -eq 0 ] || { echo 'ARTIFACT-COHORT: unknown arguments' >&2; exit 2; }
 self_test || { echo 'ARTIFACT-COHORT: REFUSED — self-test stopped discriminating' >&2; exit 2; }
 git ls-files --error-unmatch -- scripts/artifact_cleanup.py scripts/probe_artifact_cleanup.py \
-  scripts/probe_legacy_artifact_cleanup.py scripts/fixtures/artifact_cleanup_0067.py.txt >/dev/null 2>&1 || {
+  scripts/probe_legacy_artifact_cleanup.py scripts/fixtures/artifact_cleanup_0067.py.txt \
+  scripts/artifact_cleanup_journal.py scripts/probe_artifact_cleanup_journal.py >/dev/null 2>&1 || {
   echo 'ARTIFACT-COHORT: REFUSED — instrument and controls must be tracked' >&2; exit 2; }
 echo 'ARTIFACT-COHORT: bounded planning/checking controls green; no real cleanup'

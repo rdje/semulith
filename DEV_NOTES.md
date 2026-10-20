@@ -1,5 +1,51 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — record recoverable cleanup intent (ARTIFACT-CLEANUP.13)
+
+From clean e9b4532/brief0/actual host census OK, split journal-only .13 before
+anchored core .15 and host-bound CLI .14. The retained legacy release replay
+already proves an unlink can precede a failed post-check/no receipt. Establish
+metadata framing first; no cache-unlink API or real cleanup event in this unit.
+
+Add artifact_cleanup_journal: exclusive attempt.jsonl binds the canonical saved
+plan, candidate count and current recorder/actor file identities. Sequential
+intent/return records and explicit terminal state reject incomplete success.
+A torn last line retains only size/digest; pending intent stays unresolved.
+Inspection reports recorded observations, not current absence, actor origin or
+loaded-code attestation; it invokes no Git/producer and reads historical sources.
+16MiB journal,32KiB frame, two events/candidate plus begin/finish,1MiB per source,
+2KiB error detail. Saved plan16MiB separate; no peak-RAM/power-failure claim.
+
+Apple fsync manual identifies drive-buffer loss/reordering across power failure.
+Owned fixture file/directory fsync and F_FULLFSYNC read/write succeed. Synchronize
+saved plan and every ancestor before yielding; flush each accepted frame, require
+Darwin F_FULLFSYNC and fail closed on unavailable/failed barriers. Validate root,
+parent, file identity/single-link/size and saved plan before every append. Failed
+writes poison the writer; preserve bytes rather than append into damaged framing.
+Caller quiescence remains necessary; this is not a namespace/storage transaction.
+
+26 tests normal/O, ten copied-source omissions each1 assertion/zero errors:
+22 exact journal outcomes. Include close-error descriptor cleanup, short/torn
+writes, fsync/full-sync failures, prefix uncertainty, canonical/closed schemas,
+byte/frame/count bounds, source/plan/path changes and cold4 inspect CLI, no Git,
+valid parent cwd/process launch denied. Actual narrow source-bound plan/barrier/
+writer/reader smoke yields incomplete intent0/returns0; owned dummy cache intact.
+
+Expand ARTIFACT-COHORT to48 outcomes/derive1631 literal sites. Move the complete
+cleanup teaching fragment into bounded docs/toolbox/artifacts.md with only two
+explicit include rebases; nested rendering preserves original examples and adds
+shared journal usage. Book authored bytes524076/524288; no raised cap or unbounded
+neighbor. All old producer/capture/event data and CPU/board/replay status stay
+exact. Focused/source/history/rendered checks and normal COMMIT follow before .15.
+New owned P1 finding: a retained-input fixture matches the current path/name
+class without Cargo output provenance. No input was deleted. .15 must bind
+regenerable output ownership before exposing mutation; book/help calls the
+candidate list provisional. Probe input-candidate.log records the counterexample.
+Focused16/books7/normal-print/source-history scope normal/O pass.18 files/
+protected1456/1Gitlink/98 whole old entries;0382/0383 retain4030B. Task/index
+inverses2, book fragment/rebases2 and prior planner/gate exact; staged COMMIT next.
+Promotion declined: existing durability/claim policies govern this implementation.
+
 ## _(2026-10-20 UTC)_ — retain the historical cleanup producer (ARTIFACT-CLEANUP.12)
 
 Continue from clean847be8c exact18/message/diff/brief0 and actual host census OK.
@@ -652,47 +698,4 @@ entries and whole legacy reader
 implementation exact. Whole-ab1488B retained with inverse2/five damaged refusals;
 DEV0358 keeps one oldest2820B entry. Fixed caps and CPU/BOARD/replay statuses exact;
 LIVE's static arm count freshly derived1610. Canonical capture remains pending.
-
-## _(2026-10-19)_ — carry one allowance through evaluation (P4-SYSTEM.14 a42ab)
-
-The three-run collector exposes a conservative charge, but the evaluator's
-manifest seed and later ledger used independent fixed defaults. Add optional
-inclusive plain-int max_read_bytes before record/schema or manifest binding I/O.
-Evaluation accepts0..128MiB, delegates min(remaining,64KiB) to the manifest, then
-passes the same aggregate allowance to the file ledger. Its existing seed charge
-counts once. Defaults,16MiB snapshots, per-role limits, findings and frozen public
-result fields stay exact. Invalid limits refuse with an unchecked record.
-
-A caller reserves its delegated allowance before evaluation. Detailed ledger
-charges cover failed-read reservations; before that ledger is available, retain
-the full reservation. A schema-valid oversized trace declaration reproduces433B
-of actual manifest reads with a zero authentication charge: file-set preflight
-refuses before its ledger starts. Validate seed-inclusive accounting before any
-refund, even when an authentication summary exists. Preserve this legacy result;
-add a control and own the validation as P1 for the next combined driver. No new
-early-failure counter or combined driver is claimed.
-The tracked probe counts actual os.read payloads over23 real fixture files,
-including the real DIV excerpt/guest/expectations and synthetic observations.
-It checks exact/short/zero and invalid limits, clamping/document ceilings, stale/
-missing children, unchanged defaults and modeled collection-charge subtraction.
-Initial mutation harness sentinels escaped as errors; catch type escapes and use
-caught I/O/binding sentinels with numeric no-call checks. All ten omissions now
-fail cleanly. Legacy manifest/evaluator mutation seams follow the new call syntax.
-
-The source-reviewed capture remains35modules/27data/63children/66files; changed
-producer pins total947184B and work from a copy with no materials cache. Preserve
-three complete closed task records/3428B with source/owner inverses, old history
-and fixed caps. Add a bounded book chapter and executable examples without losing
-existing examples. Canonical driver/reference identity/output retention, exact
-predeclared manifest and full policy remain pending; no capture/qualification.
-Promotion declined: existing budget/source/locality contracts apply. Runtime
-controller blocked-state observation is separately owned P2 in the task; cause
-unestablished, repository implementation continues.
-
-Validation:130 normal/O control runs;15 allowance controls/ten omissions and
-33/42/22 legacy matrices retain exact findings.16 focused checks/seven books/ten
-complete examples pass. 1535 other files/1Gitlink/93 old entries exact;
-three whole task records3428B, source/owner inverse2/seven damaged refusals.
-Whole-oldest DEV3993B to0356 and CH2211B to0357; fixed caps and CPU/BOARD/replay
-statuses preserved. LIVE's static arm count is freshly derived1608.
 

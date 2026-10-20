@@ -14,19 +14,20 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.12` / SEMULITH-AC-0069 historical helper retention.
+- last_unit: `ARTIFACT-CLEANUP.13` / SEMULITH-AC-0070 attempt journal.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: .13 guarded deletion core/journal, then .14 actual host-census and
-  supported CLI/recovery. Read .11-.14 and current tool/help/probes first; no real
-  cleanup needed for tests. Parent repair remains priority1 before P4 policy.
-- last_evidence: target/artifact-cleanup-0069. Original5815B helper passive/SHA
-  exact; five legacy tests normal/O, pin omission1 failure/0 errors each mode.
-  Cold3/noGit/valid-parent CLI,26 gate outcomes, focused16/books7/source-history
-  and normal-print checks pass. Scope18/protected1452/1Gitlink/98 old entries;
-  native0380/0381 retain3172B; all caps fixed. Planner behavior remains read-only.
-- blockers: none requiring director input. Preserve original37 producer modules,
-  native3/41514B/canonical observations and historical event/helper identities.
-  Full P4 policy/status follows repair; finite method satisfied/policy pending,
-  CPU14/18,BOARD10/12,GC replay4/4green. D79/D80 LC.4; runtime P2 P4 a42ab.
- 40 doctrines/1629 literal sites/42 routes. No push below300;240 before AC0069.
-  Always target/tmp as TMPDIR; latest cleanup timestamp unchanged in its record.
+- next_action: .15 first fixes P1 input ownership: a retained-input fixture can
+  match cache names/path without Cargo output provenance. Bind regenerable
+  build-output ownership before any mutation, then anchored core/journal; .14
+  host-bound operator CLI last. Read .11-.15 and tool/probes/book first.
+- last_evidence: target/artifact-cleanup-0070. Journal26 tests normal/O/10 guard
+  omissions each1 failure/0 errors,22 outcomes; total gate48. Actual metadata-only
+  source-bound plan/full-sync/read smoke: intent0/returns0, owned dummy intact.
+  Focused16/books7/normal-print/scope;18 files/protected1456/1Gitlink/98 old entries,
+  4030B whole0382/0383. Plan logic unchanged; no cache unlink API. All caps fixed.
+- blockers: none requiring director input. Original37/native3/41514B/canonical
+  observations and original events stay exact. P4 policy/status follows repair;
+  method satisfied/policy pending;CPU14/18,BOARD10/12,GC replay4/4green.
+  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1631 literal sites/42 routes.
+  No push below300;241 before AC0070. Always target/tmp as TMPDIR. Last cleanup
+  timestamp unchanged in its record; no real event required by journal testing.

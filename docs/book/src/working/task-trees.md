@@ -33,12 +33,7 @@ cannot supply it. The gate checks presence, not truth; re-run the cited command.
 Commit the leaf before switching trees. Only its task-tree may remain dirty,
 even when asked to pivot immediately.
 
-Cleanup follows ownership/commit rules: overwrite its latest record; keep
-censuses/retained-input checks in its tree and retain evidence/dependencies.
-
-{{#include ../../../ARTIFACT_CLEANUP.md:latest}}
-
-{{#include ../../../../scripts/artifact_cleanup.py:usage}}
+{{#include ../../../toolbox/artifacts.md:workflow}}
 
 ## Orientation and the selected next action
 
