@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0072 (leaf ARTIFACT-CLEANUP.18) — bound workflow guidance and align the template
+
+Move complete template evidence/general guidance into a separately bounded setup
+guide; the template shrinks1610B. All old history and ceilings are retained. Restore the missing sixth box; document supported direct numeric
+IDs. Reader/runtime unchanged. Shared book examples display every placeholder;
+the materialized template and normative six-label set agree. Guide4259B/78lines,
+ceilings6144B/128lines.43 destinations;40 doctrines/1633 arms and CPU/board/replay
+state unchanged. Native3/focused16/books7/source-history checks pass.
+
 ## SEMULITH-AC-0071 (leaf ARTIFACT-CLEANUP.15) — bind per-file output-provenance records
 
 Add a closed bounded provenance codec and anchored reader: successful bound host
@@ -621,9 +630,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fix D53/D54: check file metrics, README parsing, forced-red hints and provider counts; require literal policy names. Emit family totals directly and retain the repaired README guard/helper across scaffold sync. Failed reads refuse2 without green.
 - Preserve original32 controls;36 additions pass68/0 normal/O, fourteen omissions discriminate and public failure replay agrees. Preserve all101 prior entries through whole DEV rollover; sync book/derived1492 arms. Existing caps, archives and CPU qualification unchanged; D51 review follows.
-
-## SEMULITH-LC-0013 (leaf LIVE-CONTAINMENT.4) — refuse unmeasurable family inventories
-
-- Fix D52: one checked NUL Git inventory and validated size table feed count/aggregate/part bounds. Failed/diagnostic/malformed inventories or unsafe/unmeasurable members refuse2 without a green banner; health and derived exemptions retain their rules.
-- Keep original17 controls; add15 with independent status/stderr, boundary and path failures. Verify normal/O, omission mutations, public CLI replay, whole history/source inverses and focused/seven-book checks. No cap, archive-body or CPU change; D51 capacity review follows.
 

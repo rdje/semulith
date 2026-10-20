@@ -1,5 +1,47 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — bound workflow guidance and align the template (ARTIFACT-CLEANUP.18)
+
+From clean70516a7/brief0/actual host census OK, the task family has352B of
+headroom. Own AC0072 before edits; transfer repeated template guidance into the
+existing setup guide under its own finite contract. Do not remove task history,
+change frozen archives or raise any old ceiling. This also stops new trees
+copying the same long policy explanation into every task file.
+
+Before-state: TEMPLATE has five labels and omits REPRODUCE / ISSUE from the six
+required by DOCTRINE_ENFORCEMENT and the book. The guide recommends .2.1, but the
+public task_source.direct_leaves contract rejects OWNED.2.1 as a foreign leaf;
+OWNED.2/.3 both parse. Correct the guide to direct numeric IDs and activity
+grouping; do not weaken or modify the source reader.
+
+Keep the complete old1898B evidence section and316B general criteria in the guide,
+adding the missing sixth box. The compact copyable template preserves metadata,
+graph/frontier and logs, with a leaf-qualified six-box checklist and a direct
+guidance link. Template3414→1804B releases1610B from the task family. The guide
+grows1704→4259B/78lines; register it as a canonical normative destination, health
+100lines/5120B and ceilings128lines/6144B. It is a controlled destination rather
+than unbounded overflow. All old registry rows/ceilings remain exact.
+
+The book includes the shared guide anchor. Render QA found a plain angle-bracket
+placeholder treated as markup; fence the complete copyable Markdown checklist.
+All placeholder text is now visible in normal and print output. The template's
+new placeholders use inline code. Complete original-template reconstruction
+and guide inverses retain all guidance; only the unsupported nested-ID advice
+changes meaning. A materialized OWNED.md parses as proposed with OWNED.1 pending;
+its six labels exactly match the normative checklist. No runtime or parser change.
+
+Routing/derived counts/book builds pass;43 governed destinations,40 doctrines/
+1633 arms and CPU14/18/BOARD10/12/replay4/4green. Original native3/41514B exact;
+no capture, cache mutation or new cleanup event. Focused/source/history/cap
+checks and normal COMMIT follow before .17 actual-build/provenance selection.
+Promotion declined: applies existing workflow/containment policy without a new
+cross-cutting decision. Detailed original records remain in their existing homes.
+
+Final focused16/books7/scope pass:13 files/protected1467/97 old entries;4001B
+whole0386/0387. Task family3145649/3145728 (79B left): template
+contribution shrank1610B, while unit tracking consumed the room. Retain the
+completed ledger in .19 before further ordinary growth; all history stays exact.
+
 ## _(2026-10-20 UTC)_ — bounded per-file output provenance (ARTIFACT-CLEANUP.15)
 
 From clean7f732ab/brief0/host census OK, isolate the provenance record/reader
@@ -652,52 +694,4 @@ runtime/data set gives12 expected outcomes, no acquired binary/materials.
 source-owner inverses2/eight damaged refusals. Source review35/27/63/66files965026B
 unchanged; profiles524files3142395B fits unchanged caps. LIVE derived1613 only;
 CPU14/18,BOARD10/12,replay4/4green. No canonical capture/qualification.
-
-## _(2026-10-19)_ — combine fresh collection and retained evaluation (P4-SYSTEM.14 a42ad)
-
-Add capture_and_evaluate beside the existing unit collector, leaving one final
-manifest slot free. Bound immutable planned bytes to64KiB; raw scoped checks and
-public execution/authority freezing precede artifact I/O. Use the existing
-mapper/binders, collect three fresh zero-exit processes and bind actual output
-sizes/digests/exits into a private raw-form copy. Preserve all other fields and
-structured comment annotations; canonical rendering is separately bounded64KiB.
-Planned verdicts remain caller claims checked by the retained evaluator.
-
-Share one128MiB allowance. Reserve each stage before calling; validate complete
-collection metadata and conservative charges before returning unused room. Pass
-only that remainder to evaluation, including its manifest seed once. Refund only
-pending metadata with matching seed identity and plain seed-inclusive accounting;
-failed/invalid findings keep their entire active reservation. This closes the P1
-preledger-zero refund hole from a42ab at the reusable composition boundary. The
-final canonical entrypoint must use this protocol.16MiB snapshot limits unchanged.
-
-Initial synthetic run:174273 parent artifact bytes exactly equal its charge,
-135869 collection+38404 evaluation; three fresh processes/finite property matched,
-over correlated synthetic observations, never Sail/canonical evidence. Negative
-controls exposed invalid helper objects attached before validation (four failures)
-and unsupported planning collapsed to refusal. Validate before attaching findings
-and preserve unsupported status/zero charge before collection. A guard omission
-also exposed a missing positive-presence assertion in the short-budget control;
-fix the harness so omission outcomes fail without errors. Unexpected programming
-exceptions propagate, retaining caller reservations. No retry/overwrite/qualification.
-
-Preserve old collection APIs/implementation. Scope legacy unit mutations to that
-old prefix before the new composition, avoiding the module-wide seam ambiguity
-measured at a42ac. New controls exercise actual children/parent read payloads,
-exact/short/zero budgets, malformed metadata/accounting, frozen candidate/scope/
-inventory/author/property/impact, source/schema failures, comments and record caps.
-Review35modules/27data/63children/66files965026B from a materials-free copy. Update
-book contracts and complete examples; preserve whole closed-ac and verification-a
-records2143B with source/owner inverses, old history and unchanged fixed caps.
-Canonical identity/entrypoint/retention/exact manifest/full policy remain pending;
-P2 controller observation stays owned in ab. promotion: declined (existing
-budget/owner/locality contracts; no new qualification doctrine).
-
-Validation:86 normal/O outcomes;29 combined controls/25 omissions and unchanged
-26/16 legacy losses,0 harness errors.16 focused checks/seven books/four complete
-cache-free example blocks pass.1544 other files/1Gitlink/93 prior entries exact;
-whole collector implementation/test bodies preserved. Two closed task records
-2143B/source-owner inverse2/six damaged refusals; DEV0359 keeps3443B/one oldest
-entry and CH0360 keeps2143B/two. Fixed caps and CPU/BOARD/replay statuses unchanged;
-LIVE static arm count freshly derived1612. No canonical capture/qualification.
 

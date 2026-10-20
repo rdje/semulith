@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -344,7 +344,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ### Priority1 activity — make cleanup instruments durable
   Status: `active`
-  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`
+  Children: `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`
   Goal: fix the verified workflow defect before returning to P4 policy/status.
   Reproduce: git ls-files --error-unmatch target/artifact-cleanup-0067/cleanup.py
   rc=1; tracked scripts/*cleanup* census empty; cache-name search in scripts/
@@ -523,11 +523,22 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   authority. Exercise actual owned builds, malformed/stale receipts, source and
   output changes, interruptions and cold CLI. Verify P1 fixed before .16 core.
 
+- ID: `ARTIFACT-CLEANUP.18`
+  Status: `done` (`2026-10-20` UTC, `SEMULITH-AC-0072`)
+  Goal: AC0072: recover template capacity; move guidance intact to a bounded guide,
+  align six evidence labels/flat IDs. Verify docs/gates/books and normal COMMIT.
+  Issue: template lacks REPRODUCE; reader rejects guide’s .2.1 (workflow-before.json).
+  promotion: declined (repairs existing workflow/containment policy).
+
+- ID: `ARTIFACT-CLEANUP.19`
+  Status: `pending`
+  Goal: Retain completed ledger before .17; full predecessor/history/live graph.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.17` | `pending` | bind actual builds and plan selection before .16 core/.14 CLI |
+| 1 | `ARTIFACT-CLEANUP.19` | `pending` | retain completed ledger before .17 |
 
 ## Decisions
 
@@ -776,10 +787,27 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 - [x] **LOCKSTEP** — task/index/live/book/toolbox sync;1633 sites/40 doctrines/42
   routes; CPU14/18/BOARD10/12/replay4/4green unchanged. Normal COMMIT before .17.
 
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.18)
+
+- [x] **REPRODUCE / ISSUE** — workflow-before.json: five template boxes;
+  task_source.direct_leaves refuses OWNED.2.1; direct .2/.3 parse.
+- [x] **ROOT CAUSE (WHY + WHERE)** — python3 public task_source replay rc=0:
+  direct_leaves requires the tree before the last dot. Template omitted ISSUE;
+  detailed guidance was copied per tree rather than routed to a bounded guide.
+- [x] **FIX** — six-box compact template, supported IDs, complete guidance moved
+  to the bounded guide/shared book. Source reader unchanged.
+- [x] **ADDRESSED (verified)** — scripts/check_readme_routes.sh rc=0; six labels
+  match DOCTRINE_ENFORCEMENT, materialized template parses;1610B released.
+- [x] **NO REGRESSION** — focused16 rc=0; native3/41514B/books7;13 files,
+  protected1467/1Gitlink/97 old entries;4001B whole0386/0387; old tree/caps exact.
+- [x] **LOCKSTEP** — live/task/guide/book/routes sync;43 destinations;40 doctrines/
+  1633 arms and CPU/board/replay unchanged. Normal COMMIT before .19.
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-20` UTC | `.18` | focused16/books7/native3/scope |13 files; template/guide and full history inverses verified; .19 next |
 | `2026-10-20` UTC | `.15` |25 tests normal/O/13 omissions, gate76/focused16/books7/scope |18 files/protected1460/1Gitlink/97 old entries;3844B whole0384/0385; no cache mutation; P1 integration .17 |
 | `2026-10-20` UTC | `.13` |26 tests normal/O/10 omissions, actual metadata/full-sync smoke, gate48/focused16/books7/scope |18 files/protected1456/1Gitlink;98 old entries/4030B whole0382/0383; no cache unlink; P1 ownership fix .15 |
 | `2026-10-20` UTC | `.12` | five legacy tests normal/O/pin omission, cold3, gate26, focused16/books7/scope |18 files/protected1452/1Gitlink;98 whole old entries,3172B native0380/0381; no real cleanup; staged checks/normal COMMIT follow |
@@ -815,6 +843,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | `2026-09-27` | `ARTIFACT-CLEANUP.2` | control probe (the row absent) | the same process flags again — the exemption, not blindness, is what changed |
 
 ## Commit Log
+
+`SEMULITH-AC-0072` (.18): finite shared guide; six boxes/direct IDs; source retained. .19 next.
 
 `SEMULITH-AC-0071 (leaf ARTIFACT-CLEANUP.15): bind per-file output-provenance records` —25 tests normal/O/28 provenance outcomes; gate76; actual Cargo dry-run witness; no cache mutation. .17 next.
 

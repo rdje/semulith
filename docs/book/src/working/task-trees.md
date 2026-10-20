@@ -28,6 +28,8 @@ A leaf that lands a code change carries six boxes, three of them **hard-gated** 
 Evidence belongs **inside its ticked bullet**: unrelated leaves and tokens elsewhere
 cannot supply it. The gate checks presence, not truth; re-run the cited command.
 
+{{#include ../../../TASK_TREE_README.md:code-leaf-evidence}}
+
 ## The pivot rule
 
 Commit the leaf before switching trees. Only its task-tree may remain dirty,

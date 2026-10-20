@@ -18,11 +18,7 @@ State the exact outcome this top-level task must deliver.
 
 ## Acceptance Criteria
 
-- The behavior, documentation, or infrastructure outcome is implemented.
-- Focused validation passes.
-- Broader validation runs when the blast radius warrants it.
-- Live docs and roadmap status are updated where project state changed.
-- Each completed leaf is committed through `COMMIT.md`.
+- `<Tree-specific outcomes; apply the guide’s general completion criteria.>`
 
 ## Task Tree
 
@@ -56,32 +52,16 @@ State the exact outcome this top-level task must deliver.
 
 - None.
 
-## Acceptance Checklist (required for any leaf that lands a CODE change)
+## Acceptance Checklist (leaf <TREE-ID>.1)
 
-Enforced by the `TASK-ACCEPTANCE` doctrine (`scripts/check_task_acceptance.sh`). The three boxes
-below are **hard-gated**: each must be ticked **and** carry output from a tool you actually ran,
-**inside that box's own bullet**. A tick is a claim; the pasted output is the artifact someone
-else can re-run.
+[Evidence requirements](../TASK_TREE_README.md#acceptance-checklist-required-for-any-leaf-that-lands-a-code-change).
 
-- [ ] **ROOT CAUSE (WHY + WHERE)** — <the command you ran + its real output, naming the mechanism and the location>
-- [ ] **ADDRESSED (verified)** — <measured before → after on the symptom>
-- [ ] **NO REGRESSION** — <the suite/gate you re-ran + its result>
-- [ ] **FIX** — <the minimal change made> *(not hard-gated)*
-- [ ] **LOCKSTEP** — <docs / contracts / index updated, or N/A + reason> *(not hard-gated)*
-
-⭐ The boxes above are the three legs of `docs/CLAIM_VERIFICATION.md` wearing this repository's
-names: **ROOT CAUSE** is leg 1 (*re-derive* — does one command reproduce it from the source?),
-**NO REGRESSION** carries leg 2 (*falsify* — what would make this false, and did the control
-ever go RED?), and **LOCKSTEP** carries leg 3 (*durability* — is the producer tracked, and does
-anything fail when the claim goes stale?). Two passes of the same question are one pass. If a
-leg is missing, **name it in the box** — a claim with a named gap is usable; a claim with a
-hidden gap is the defect.
-
-⚠️ If none of the built-in evidence signatures fit your defect class, do **not** fake one and do
-**not** quietly drop the box: declare your own tool's signature in `.doctrine/evidence_tokens.txt`
-(see `.doctrine/README.md`). If you find yourself wanting to waive the gate instead, write the
-waiver **and name the leaf that owns fixing the gate** — that is the `WAIVER-ROUTING` doctrine, and
-an author hitting a gate's boundary is the highest-signal defect report the gate can receive.
+- [ ] **REPRODUCE / ISSUE** — `<problem + observed output>`
+- [ ] **ROOT CAUSE (WHY + WHERE)** — `<command/output + mechanism/location>`
+- [ ] **FIX** — `<change>`
+- [ ] **ADDRESSED (verified)** — `<measured before → after>`
+- [ ] **NO REGRESSION** — `<checks + results>`
+- [ ] **LOCKSTEP** — `<docs/contracts/index sync>`
 
 ## Verification Log
 

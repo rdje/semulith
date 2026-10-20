@@ -14,23 +14,25 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- last_unit: `ARTIFACT-CLEANUP.15` / SEMULITH-AC-0071 provenance records/reader.
+- last_unit: `ARTIFACT-CLEANUP.18` / SEMULITH-AC-0072 workflow guidance/template.
 - **Active trees:** `CITATION-ACCURACY`, `LIVE-CONTAINMENT`, `LAB-BENCH`, `ARTIFACT-CLEANUP`, `P5-BOARD`, `P4-SYSTEM`.
-- next_action: .17 binds actual successful public Cargo observations and strict
-  plan selection to .15 provenance. P1 remains open: legacy names/path metadata
-  is not generation. Then .16 anchored core/journal and .14 host/operator CLI.
-  Read .11-.17, current code/probes/shared book before changes; preserve old plans.
-- last_evidence: target/artifact-cleanup-0071. Provenance25 tests normal/O/13
-  omissions each1 failure/0 errors,28 outcomes; gate76. Public Cargo dry-run
-  preserves three owned inputs and lists a profile input too. D3 root/D5 profile
-  guards repaired; D4 complete task prefix/node/history inverse restored.
-  Focused16/books7/normal-print/scope:18 files/protected1460/1Gitlink/97 old
-  entries;3844B whole0384/0385. No producer integration or cache-mutation API.
-- blockers: none requiring director input. Original37/native3/41514B/canonical
-  observations/events exact. P4 full policy/status follows repair; method
-  satisfied/policy pending; CPU14/18,BOARD10/12,GC replay4/4green unchanged.
-  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1633 literal sites/42 routes.
-  All fixed caps retained; task family has little headroom: verify before each
-  slice and preserve complete nodes/history during containment. No push below300;
-  242 before AC0071. Always target/tmp as TMPDIR. Latest cleanup record unchanged;
-  instrument tests are not a new cleanup event.
+- next_action: .19 retains the completed task ledger before .17 can grow.
+  Preserve complete predecessor and exact retired narrative in a checked finite
+  terminal; keep all live nodes/current graph and history retrieval. Re-census
+  consumers/anchors and existing preservation contracts first; no old cap raise.
+  Then .17 actual successful builds/provenance selection, .16 core, .14 host CLI.
+- last_evidence: target/artifact-cleanup-0072. Template3414→1804B; all old guidance
+  reconstructed through finite guide4259B/78lines (cap6144B/128lines), shared
+  book examples visible. Six labels match normative checklist; copied template
+  parses; direct IDs work, nested .2.1 refused; source reader unchanged.
+  Focused16/books7/native3/scope:13 files/protected1467/1Gitlink/97 old entries;
+  4001B whole0386/0387. Old tree/index/registry/book inverses; prior caps retained.
+- blockers: task family has79B left (3145649/3145728); .19 is required
+  before ordinary ledger growth. No director input presently required.
+  P1 input ownership remains open until .17; .15 records/reader have25 normal/O
+  tests/13 omissions each,28 outcomes; artifact gate76. No deletion API exists.
+  Original37/native3/41514B/canonical observations/events exact. P4 policy/status
+  follows repair; method satisfied/policy pending; CPU14/18,BOARD10/12,replay4/4green.
+  D79/D80 LC.4; runtime P2 P4 a42ab.40 doctrines/1633 literal sites/43 routes.
+  No push below300;243 before AC0072. Always target/tmp as TMPDIR. Latest cleanup
+  record unchanged; instrument/documentation work is not a new cleanup event.

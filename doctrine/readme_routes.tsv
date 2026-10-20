@@ -282,6 +282,7 @@ docs/ARTIFACT_CLEANUP.md	reader_navigation	hot_live	ARTIFACT-CLEANUP tree; §8 o
 KNOWLEDGE_MAP.md	reader_navigation	generated_index	derived by knowledge-map/scripts/gen_knowledge_map.sh; KNOWLEDGE-MAP doctrine	0	8192	0	32768	0
 docs/	reader_navigation	partitioned	one contract per file; DELIVERY-PROVENANCE freezes the delivered set	0	0	0	0	0
 docs/TASK_TREE.md	both	hot_live	one row per active tree; completed trees leave the index	85	5120	110	8192	0
+docs/TASK_TREE_README.md	both	normative	ARTIFACT-CLEANUP.18; canonical workflow and template-field guidance, no chronology; fixed standalone bounds	100	5120	128	6144	0
 # Derivation, LIVE-CONTAINMENT.1 (2026-10-06), when the index reached 8,172 / 8,192 B with 22 of
 #   its 31 rows COMPLETED trees — its own control ("completed trees leave the index") had never
 #   been applied: the 22 rows moved verbatim into docs/TASK_TREE_CLOSED.md (4,861 B), the index
