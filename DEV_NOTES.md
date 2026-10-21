@@ -1,5 +1,23 @@
 # DEV_NOTES.md
 
+## _(2026-10-20 UTC)_ — the task family's count re-derived for retention continuation (LIVE-CONTAINMENT.4l)
+
+LC0051 after a658e24, clean tree and `handoff: OK`. The measurement that decided
+the unit: the family reached 107 of 107 on 2026-10-12, the same day the 107
+authority was applied, and no file has joined since — eight days in which the
+P4 tree ran about forty units and squeezed their whole records into the one
+complete-records artifact until 67 B remained. Three members now sit within
+200 B of the per-part ceiling and every archive terminal is at its count, so
+neither P4.14 nor this tree could record a unit. The continuation artifact is
+the partition lifecycle the count axis counts (the 2026-10-01 grounds): the
+whole .4j record and its six acceptance boxes (3,281 B) moved into
+task-claims-2.md under a compact map with exact source/owner/retired inverses,
+and the count went 107 → 116 = 33 + 1 + 42 measured archive parts + the
+reviewed 40-artifact envelope. Promotion declined: the two count precedents
+carry the rule. What this unit does not answer is the aggregate axis at
+3,134,069 of 3,145,728 B; that is a seal of closed parts into docs/task-history
+(slice m), the kind of transition the director approved directly before.
+
 ## _(2026-10-20 UTC)_ — the decisions family re-derived a second time (LIVE-CONTAINMENT.4k)
 
 LC0050 after b70b2f5, clean tree and `handoff: OK`. The routed-in finding
@@ -681,29 +699,4 @@ Four complete closed am records2574B retained with source/owner metadata; fixed
 caps. Focused17/books7/rendered9/scope normal/O pass;46 complete examples exact.
 CH0374 whole1107B; inverses2/eight damaged refusals. Evidence target/p4-system-14/a42an. Promotion declined: existing canonical-owner lockstep
 and currentness doctrine; next full policy/status integration.
-
-## _(2026-10-19)_ — retain the first canonical DIV capture (P4-SYSTEM.14 a42am)
-
-Committedb160c66e source/declarations and all73 input pins precede the one capture.
-Public bounded executable pin matched3801664B. Fresh PIDs39909/39914/39918 exited0;
-12 observations14830B, measured record9928B, derived verification7093B retained.
-All27 source/GPR boundaries: baseline/repeat AGREE, control DIVERGE only step2 x7
-(-3 actual/-4 expected). Three2298B traces hash64551458d50ec4345b716abd9f2caf4b42053d6f3a8640735ee539d89a968bde.
-Independent normal/O checks restore only measured metadata to the exact plan,
-authenticate all observations and reproduce separate matched findings offline.
-Charge24337600B within128MiB;85 authenticated files1048756B/33759B snapshots.
-
-Add one real-retained, process-denied command test:19 normal/O; seven omission
-losses unchanged6/1/1/1/2/1/1,0 errors. Ten101-file offline-copy outcomes cover
-valid/missing/stale/refused raw data with no Git/materials/binary. All producer
-logic/native declarations remain byte-exact. Family22files/fixed caps. Complete
-policy/qualification/REQ-GC-M/OB-GC-M/CPU closure remain pending; no broader credit.
-Derived receipt initially collided with generic record-relative path fingerprints.
-Tool reproduction and existing .4 precedent establish root cause: name root-relative
-identities object, map explicitly for native readers; no exclusion or cap change.
-Focused17/books7/examples6/surfaces8/scope pass normal/O; legacy8+38+4 exact.
-Whole predecessor entries5007B retained0372/0373. Evidence target/p4-system-14/a42am.
-Four whole al records2498B/inverses2/eight damaged refusals; promotion
-declined under existing bounded-capture/retention/independent-findings doctrine.
-Never rerun or overwrite historical outputs; next full source/risk/feature policy.
 

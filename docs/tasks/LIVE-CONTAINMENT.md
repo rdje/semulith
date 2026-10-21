@@ -121,6 +121,18 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
 
+### .4l / SEMULITH-LC-0051 — task-family count for retention continuation (complete)
+
+Owned on clean a658e24. The family stood at 107/107 since 2026-10-12 (33+1+42+31), with
+P4-SYSTEM.md, task-claims.md and reader-records-retention.md within 200 B of the per-part
+ceiling and every terminal at its count, so neither P4.14 a42ap nor this tree could record
+a unit. Cut the first complete-records continuation (task-claims-2.md) by retiring the whole
+.4j record and acceptance (3,281 B, inverses exact) and re-derive the count 107 → 116 =
+33+1+42+40 with its authority docs/decisions/decision_task-family-count-rederivation-retention.md;
+health 64, bytes and per-part unchanged. Evidence target/live-containment/lc0051.
+promotion: declined (the count precedents carry the rule). Next: P4.14 a42ap retires a42ao
+through the continuation; slice (m) owns the aggregate seal (3,134,069 of 3,145,728 B).
+
 ### .4k / SEMULITH-LC-0050 — docs/decisions/ family capacity (complete)
 
 Routed in `2026-10-20` by SEMULITH-AC-0077 (OVER CEILING docs/decisions/: 262242 > 262144
@@ -134,35 +146,7 @@ rule). Next: P4-SYSTEM retention capacity, then P4.14 a42ap.
 
 ### .4j / SEMULITH-LC-0049 — second finite history seal (verified; directly approved)
 
-Owned after clean a5bf4579/brief0/host0. Required whole3787B DEV rollover exceeded
-ordinary-family3677B room; no partial-entry or cap bypass. Standing archive
-delegation supports this exact source a5bf4579:158 closed shards + manifest,
-159 originals782755B/11200LF. Two serializations, independent source tree/mode/blob
-and all159 Python/tar comparisons pass. Published276917B object adds to the exact
-old284500B seal. Relocated normal/O authenticates368 shards; corruption/old-entry
-changes refuse. Retire only verified158 originals, residue0/unretained bytes0.
-Separate LC0049-CAPACITY record in task-claims reviews this finite terminal
-expansion:4 files/565623B health/581897B ceiling. Old object/descriptor and all
-ordinary/head/other caps, reader code/limits and remaining features stay fixed.
-New live0367/0368 retain numbering and4747B whole predecessors. Complete LC0041
-record5552B retained with source/owner inverses2/seven damaged refusals.
-17 focused/seven books/four examples/three surfaces, history44/0 and original-
-context263 queries x2/0 defects pass.1415 protected files/1Gitlink/95 old entries
-and all implementation/probes/prior seal objects exact. Book family shrinks8B;
-old examples preserved. Source identity, semantic closure, live dimensions and
-residue are separately verified. No CPU/board/replay/qualification credit.
-Next P4-SYSTEM.14 final execution/manifest/planned record/input-author-impact,
-then capture/full policy; D79/D80 remain scheduled. Normal COMMIT required.
-Automatic approval review twice refused the local commit because recorded
-standing delegation was not direct trusted user approval. On2026-10-19 the
-director answered “Approve LC0049 and continue” to the explicit request covering
-all158 verified shard retirements, the finite archive bound and local commit
-without push. This resolves that authority blocker for LC0049 only; normal hooks
-and postconditions remain required. Director requests prominent approval alerts
-with the reason. The app-control safety boundary prevented changing its selector;
-no permission setting was altered. Latest parent a5bf45798255bca41d73f284bfe6987f48fc351f.
-Evidence target/live-containment/history-rollover; promotion declined (existing
-finite archive, bounded-reader/source-preservation contracts).
+Closed record: [complete original record](artifacts/live-containment/task-claims-2.md#lc0051-4j-record).
 
 ### Delivery priority and capture handoff — P4-0249
 
@@ -1191,16 +1175,15 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Acceptance Checklist (required for any leaf that lands a CODE change)
 
+- [x] .4l **ROOT CAUSE** — `bash scripts/check_readme_routes.sh` rc=1 with the continuation staged under the old row: OVER CEILING docs/tasks/: 108 files > 107; census 33+1+42+31 = 107 unchanged since 2026-10-12, three members ≥ 130,889 B of 131,072.
+- [x] .4l **ADDRESSED** — the same check rc=0 with the row re-derived (108 of 116 files, 3,134,069 B of 3,145,728); retain.py/verify.py rc=0: 2 spans / 3,281 B exact source/owner/retired inverses, both pointer anchors resolve.
+- [x] .4l **NO REGRESSION** — `bash scripts/check_readme_routes.sh --self-test` 94 pass / 0 fail; focused checks rc=0 (memory-arch, routes, derived counts 44/40/1643, frontier, claims, history, knowledge map, currency, docpaths, seams, arity, shards, acceptance); seven books.
+- [x] .4l **LOCKSTEP** — registry comment + row, decision record + INDEX row, KNOWLEDGE_MAP, book count 61, tree/MEM/DEV/CH; no terminal, reader, byte cap or code changed; CPU/P4/P5 milestones unchanged.
 - [x] .4k **ROOT CAUSE** — `bash scripts/check_readme_routes.sh` rc=1 with the record's index row and the old row: OVER CEILING docs/decisions/: 262287 aggregate bytes > 262144; status census 55 active/1 fulfilled/2 superseded-in-part, 26 records 10-02..12 then none.
 - [x] .4k **ADDRESSED** — the same check rc=0 with the row re-derived (62 files / 265,307 B under 160 / 524,288; health 64 / 278,528): no decisions warning; `git ls-files docs/decisions | xargs cat | wc -c` = 265307.
 - [x] .4k **NO REGRESSION** — `bash scripts/check_readme_routes.sh --self-test` 94 pass / 0 fail; focused checks rc=0 (memory-arch, routes, derived counts 44/40/1643, frontier, claims, history, knowledge map, currency, docpaths, seams, arity, shards, acceptance); seven books.
 - [x] .4k **LOCKSTEP** — registry comment block + row, decision record + INDEX row, KNOWLEDGE_MAP regenerated, book count 60, tree/MEM/DEV/CH; no other cap, terminal, reader or code changed; CPU/P4/P5 milestones unchanged.
-- [x] .4j **REPRODUCE / ISSUE** — `prepare.py` rc=0 at a5bf4579: whole3787B rollover exceeds3677B family room; DEV17B spare.
-- [x] .4j **ROOT CAUSE** — `prepare.py` rc=0/preparation.json: sharding preserves aggregate; exactly158 closed shards plus manifest,782755B.
-- [x] .4j **FIX** — `verify-prototype.py` rc=0 normal/O:159 Python/tar originals exact; relocated368-shard read, corruption/old descriptor refusals.
-- [x] .4j **ADDRESSED** — `apply.py` rc=0/application.json: published copy verified before158-source retirement, residue0; finite capacity authority separate.
-- [x] .4j **NO REGRESSION** — `verify.py`/focused.py rc=0:1415files/1Gitlink/95 entries, old code/seals exact;44 controls/263queries x2/seven books/4examples/3surfaces.
-- [x] .4j **LOCKSTEP** — `verify.py` rc=0: LC0041 whole5552B/inverses2/seven damaged refusals, whole live4747B rolled0367/8; all other caps fixed.
+- [x] .4j: [complete acceptance](artifacts/live-containment/task-claims-2.md#lc0051-4j-acceptance).
 `LIVE-CONTAINMENT.4` slice (e), `SEMULITH-LC-0008`:
 
 - [x] **ROOT CAUSE** — `git show 1146d1b:docs/book/src/working/task-trees.md`
@@ -1402,6 +1385,7 @@ Closed record: [complete original record](archive/LIVE-CONTAINMENT-readers.md#ac
 
 ## Verification Log
 
+LC0051: routes rc=1 RED (108 files > 107) then rc=0 GREEN at 108 of 116 files / 3,134,069 B; retain/verify rc=0 (2 spans, 3,281 B exact); self-test 94 pass / 0 fail; focused rc=0; seven books.
 LC0050: routes rc=1 RED (262287 > 262144) then rc=0 GREEN at 62 files / 265,307 B; self-test 94 pass / 0 fail; focused rc=0; seven books.
 LC0049: verify.py rc=0 normal/O; source159/782755B, residue0; copy/tar/relocated normal/O, focused17/books7/examples4/surfaces3, history44/query263x2; inverses2/seven refusals.
 .4i2b5b2r.d: permanent probe normal/O rc=0:6 actual controls/3 boundary guards;
@@ -1660,6 +1644,7 @@ Slice (a), 2026-10-08: copy/verify/retire exact, archive and partition controls 
 
 ## Commit Log
 
+`SEMULITH-LC-0051 (leaf LIVE-CONTAINMENT.4): re-derive the task-family count for retention continuation` — first continuation cut; next P4.14 a42ap.
 `SEMULITH-LC-0050 (leaf LIVE-CONTAINMENT.4): re-derive the decisions-family bound a second time` — authority with the row; next P4 retention capacity.
 `SEMULITH-LC-0049 (leaf LIVE-CONTAINMENT.4): seal the second finite history segment` — verified finite rollover; next P4.14 delivery.
 `SEMULITH-LC-0048 (leaf LIVE-CONTAINMENT.4): select pinned mdBook before terminal capture` — native prep verified; user capture/analysis pending.

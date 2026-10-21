@@ -333,7 +333,15 @@ docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed 
 #   preconditions checked at573a706. Count107 is pooled33+1+33+40; health64 warning
 #   debt and all byte/part bounds stay fixed. Separate reviewed authority:
 #   docs/decisions/decision_task-family-six-activity-count.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives use owned finite retention transitions	64	1153433	107	3145728	131072
+# Re-derivation, LIVE-CONTAINMENT.4 slice (l) / SEMULITH-LC-0051 (2026-10-20), when the COUNT axis
+#   fired at 108 > 107: the first complete-records continuation (task-claims-2.md), forced by the
+#   per-part ceiling (task-claims.md 131,005 B, P4-SYSTEM.md 130,889 B). Composition at a658e24:
+#   the same 33 IDs + 1 template + 42 archive parts + 31 artifacts = 107, full since 2026-10-12.
+#   Count 116 = 33 + 1 + 42 measured archive parts + the reviewed 40-artifact envelope; health 64,
+#   aggregate and per-part unchanged — the aggregate (3,131,941 B at the firing) is slice (m)'s
+#   seal. Reviewed decision:
+#               docs/decisions/decision_task-family-count-rederivation-retention.md.
+docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives use owned finite retention transitions	64	1153433	116	3145728	131072
 # Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
 #   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice
 #   checklists are the designed growth; per-part (128 KiB) and count (96) did not fire.

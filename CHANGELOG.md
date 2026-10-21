@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0051 (leaf LIVE-CONTAINMENT.4) — re-derive the task-family count for retention continuation
+
+Slice (l): the family had been full (107/107) since 2026-10-12 and three members
+were within 200 B of the per-part ceiling, so no tree could record a unit. The
+first complete-records continuation `task-claims-2.md` holds the whole `.4j`
+record and acceptance (3,281 B, exact inverses); the count is 107 → 116 =
+33+1+42+40 under `decision_task-family-count-rederivation-retention.md`, health,
+aggregate and per-part unchanged. Evidence target/live-containment/lc0051.
+Next: P4-SYSTEM.14 a42ap; the aggregate (3,134,069 of 3,145,728 B) is slice (m)'s seal.
+
 ## SEMULITH-LC-0050 (leaf LIVE-CONTAINMENT.4) — re-derive the decisions-family bound a second time
 
 Slice (k), routed in from ARTIFACT-CLEANUP.23: the byte axis fired again with
@@ -674,9 +684,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Move eleven complete LC0011–21 records (47486B/684LF) verbatim to the ordinary LIVE-CONTAINMENT archive; preserve original heading anchors with direct links. Verify copy before removal, source inverse, native mdbook routes and literal read.
 - Earlier archives/modes, old CH/DEV entries, protected identities/Gitlink and caps remain exact; normal focused/books/hooks required. Full containment and D59/D64 code repair remain open; CPU/MCU/DSP/board behavior and live milestones unchanged.
-
-## SEMULITH-LC-0025 (leaf LIVE-CONTAINMENT.4) — qualify task source and correct stale projections
-
-- Immutable5bdaa14:33 roots/34 source pins/205 numeric declarations; actual archived range checked.14 refusals normal/O and two copied omissions/failed-source refusals. Twelve actual public cases/mode qualify D59 source decoding and D64 punctuated-count repair; current guard code unchanged.
-- D62 live method18/18 becomes19/19; D63 live/closed P3 eight/eight becomes six done plus one conditional. Source tasks/archives/caps/CPU unchanged. Whole history/source/protected inverses and focused/seven-book/rendered checks required; preserve closed task units for headroom before code repair.
 
