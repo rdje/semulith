@@ -8,6 +8,7 @@
   form-coverage; no qualification credit`. Precedents:
   [`decision_sail-gpr-comparison-method.md`](decision_sail-gpr-comparison-method.md) (finite
   method checked, full policy pending) and the policy itself, `profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md`.
+answers: Which bytes does the retained DIV case pin, and why can a leg never be closed by editing them, the expected author included?
 
 ## The fact / decision
 
@@ -44,8 +45,24 @@ gate failure. `REQ-GC-M` keeps deriving `planned`.
   `satisfied` before any record cites it. `qualification` stays the only crediting word the
   status derivation reads; a crediting record is separate, later work.
 - Never close a leg by editing bytes the case pins: the policy, the guest, the expectation
-  file or the predeclaration. A policy change is a new tracked declaration and a capture.
+  file, the predeclaration or the expected author. A policy change is a new tracked declaration
+  and a capture.
 - A new obligation needs its feature disposition declared in `FEATURE_DISPOSITIONS` before
   its legs can be satisfied; a high- or critical-risk requirement stays pending until a
   second-method vocabulary exists.
 - Related: [[sail-gpr-comparison-method]], [[decisions-family-second-rederivation]].
+
+## Measured again: the expected author is a pinned input (a42ar, 2026-10-21)
+
+The first commit of `SEMULITH-P4-0286` added one line to `scripts/derive_rv64gc_expectations.py`,
+a `PARCEL_OWNED_GUESTS` entry registering the new corpus program. The pre-commit gate refused it:
+`DIV-POLICY: blocked — 6 of 10 legs satisfied; missing boundary-fixtures,
+matched-reference-comparison, currentness, form-coverage; FINDING finite method not satisfied
+(stale)`. Of the 64 pinned children exactly one differed from the staged tree, the author. The
+currentness leg did what it is for: evidence derived with an author is invalid once the author
+differs, whether or not the edit touches a derivation. Restoring the author returned the method to
+`satisfied` and the line to `pending — 8 of 10`; the program is checked with its explicit budget
+(`--check --parcels --steps 33`) and its ownership is registered together with the fresh capture
+that pins the changed author. The focused runner cannot see this: the finite method runs only in
+`check_profile_consistency.sh`. A unit that edits any path under `evidence/<case>/dependencies.sexp`
+runs that gate before its commit.

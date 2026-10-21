@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-21 UTC)_ — the expected author is a pinned input; a registration line is a capture (P4-SYSTEM.14 a42ar)
+
+The first commit of P4-0286 was refused by the pre-commit gate: `DIV-POLICY: blocked … finite
+method not satisfied (stale)`. The only pinned input that differed was
+`scripts/derive_rv64gc_expectations.py`, where a one-line `PARCEL_OWNED_GUESTS` entry registered
+the new program. The retained case pins the author's bytes, so the registration invalidated the
+evidence, exactly as the currentness leg is meant to. The focused runner never saw it, because the
+finite method runs only in `check_profile_consistency.sh`. Restored the author, kept the program
+on its explicit budget, and the ownership waits for the fresh capture. Promoted into
+`docs/decisions/decision_policy-legs-measured-two-pending.md` (`answers:`); the knowledge family
+is at its 30-file ceiling, so no new card could land (see LIVE-CONTAINMENT open questions).
+
+## _(2026-10-21 UTC)_ — a health target the family is already above is not a warning (P4-SYSTEM.14 a42ar)
+
+P4-0286 after b469800. The first new guest since 2026-10-09 put `profiles/` 8,516 B over its
+3 MiB aggregate, and the gate's first word about it was the ceiling: the 2026-10-06
+re-derivation had set the health target below the measured family on purpose, "so the
+pressure stays visible", and a line that prints on every run is noise, not a signal. Its own
+schedule ("when the corpus reaches the health ceiling again") could therefore never trigger.
+The headroom it named in slices was right in count and wrong in calendar: eight slices landed
+in three days, then 9 KB in twelve. Re-derived to 4 MiB / 800 files with health at 0.855 and
+below the family, by the same reviewed mechanism the registry names; the ungovern alternative
+is the director's to pick. Promoted to `decision_profiles-family-corpus-second-rederivation.md`
+(`answers:`).
+
 ## _(2026-10-21 UTC)_ — a cap on the review surface, and a blocker carried as "pressure" (LIVE-CONTAINMENT.4 slice m)
 
 LC-0052 after 2634e94. The task family sat 2,430 B under its aggregate ceiling and the book

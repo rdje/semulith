@@ -461,7 +461,19 @@ docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decisio
 #   keep it (65,536; the NIC's 60,112 B at 0.92x), derived members are exempt as a
 #   CHECKED property (a fact_ownership.tsv mirror row with a regeneration-doctrine
 #   governor — the composed catalogues, BOARD-GEN), reported as proof, never failed.
-profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, its byte ceiling re-derived for the processor's evidence corpus by decision_profiles-family-processor-corpus (2026-10-06), the two-tier per-part (64 KiB authored, derived exempt via FACT-OWNERSHIP) decision_derived-members-of-bounded-families (2026-10-02)	590	2690000	600	3145728	65536
+# Re-derivation, P4-SYSTEM.14 a42ar / SEMULITH-P4-0286 (2026-10-21), when the crediting M corpus
+#   program landed: profiles/  526 files / 3,154,244 B measured at staging (+2: m-forms.s and its
+#              expectation file, 11,849 B) — the aggregate FIRED, 8,516 B over, with no health
+#              warning possible: the family had stood above its 2026-10-06 health target by
+#              design, so the ceiling was the first signal. Re-derived by the standing reviewed
+#              mechanism (decision_profiles-family-corpus-second-rederivation): ceiling_bytes
+#              3,145,728 -> 4,194,304 (0.752x at staging), ceiling_lines 600 -> 800 (0.658x; the
+#              count axis was still the 5 x 120 unit arithmetic the 2026-10-06 record retired),
+#              health at the standing 0.855 ratio (684 / 3,586,000) and BELOW the measured
+#              family, so it warns before the ceiling. ⛔ PER-PART STAYS 65,536, two-tier.
+#              The director's alternative (aggregate ungoverned like docs/tasks/, per-part kept)
+#              is named in the record and applies on the director's word only.
+profiles/	reader_navigation	partitioned	one directory per modelled unit; PROFILE-CONSISTENCY gates each processor dossier; the 5× aggregate bound is decision_profiles-family-five-units, its byte ceiling re-derived for the processor's evidence corpus by decision_profiles-family-processor-corpus (2026-10-06) and both aggregates again by decision_profiles-family-corpus-second-rederivation (2026-10-21), the two-tier per-part (64 KiB authored, derived exempt via FACT-OWNERSHIP) decision_derived-members-of-bounded-families (2026-10-02)	684	3586000	800	4194304	65536
 docs/provenance/	reader_navigation	frozen	DELIVERY-PROVENANCE; never an overflow destination	8	16384	20	65536	16384
 docs/CLAIM_VERIFICATION.md	reader_navigation	normative	locally owned standard; body changes only by reviewed re-import	0	0	0	32768	0
 docs/EVIDENCE_AND_GATES.md	reader_navigation	normative	delivered contract, frozen-in-place	0	0	0	16384	0

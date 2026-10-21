@@ -14,29 +14,31 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` — next slice a42ar (the crediting capture's
-  predeclaration); `ARTIFACT-CLEANUP.25` when the record is ~24 h old (after 2026-10-21T22:11Z).
+- active_work_unit: `P4-SYSTEM.14` — next slice a42as (one case with many predeclared
+  properties over `m-forms.s`); `ARTIFACT-CLEANUP.25` is DUE (the record passed 24 h at 2026-10-21T22:11Z); run it first.
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `LIVE-CONTAINMENT.4` slice (m) / `SEMULITH-LC-0052` — the containment reset the
-  director ruled on `2026-10-21` (`docs/decisions/decision_containment-reset.md`): the book and
-  unit books carry no size ceiling; the task family's aggregate and count are ungoverned, its
-  128 KiB per-part cap kept; the second seal rejected; a unit is recorded once (tree record +
-  acceptance rows, one changelog line, dev note only for a lesson).
-- next_action: `P4-SYSTEM.14` a42ar — predeclare the crediting capture (v3) the a42aq
-  measurement names: a guest covering all 13 M forms with one property per Table 1 row and per
-  form, expectations from the pinned chapter, fresh native declarations through capture_div.py's
-  generator, then the three-run capture under the collector; review_div_policy must measure
-  `satisfied` before any crediting record exists. First make room in `docs/tasks/P4-SYSTEM.md`
-  (129,884 of 131,072 B) the standing way: move its oldest closed records verbatim into
-  `docs/tasks/archive/P4-SYSTEM-20.md` with stubs, no inverse script (the LC0052 move in
-  `target/live-containment/lc0052/move.py` is the pattern). EVIDENCE_POLICY.md is pinned: edit
-  it only inside that re-capture. A fresh session suits this.
+- last_unit: `P4-SYSTEM.14` a42ar / `SEMULITH-P4-0286` — `m-forms.s`, the corpus program
+  covering all 13 M forms and the 12 Table 1 cells with derived expectations; verify fixture
+  regenerated; live Sail AGREE on 33 steps (an experiment, not a capture); P4's closed rows
+  through a42aq moved into `docs/tasks/archive/P4-SYSTEM-20.md` (tree ~50 KB); the
+  `profiles/` aggregates re-derived to 4 MiB / 800 files
+  (`decision_profiles-family-corpus-second-rederivation.md`); the director may ungovern
+  them instead.
+- next_action: `P4-SYSTEM.14` a42as — give the property binding
+  (`scripts/matched_gpr_property.py` and its consumers: relations, manifest, review_div_*,
+  capture_div.py, check_profile_consistency.sh) one case with MANY predeclared properties,
+  one per Table 1 cell and one per form over `m-forms.s`, keeping v2 untouched; then a42at
+  declares the v3 case (`capture_div.py --declare`, fresh prepared inputs) and a42au captures
+  the three runs under the collector so review_div_policy measures `satisfied`.
+  EVIDENCE_POLICY.md is pinned by v2: edit it only inside a re-capture.
 - in_flight_uncommitted: none after the normal commit workflow.
-- blockers: none. Raise a structural blocker (a cap, a rule whose cost dominates the work)
+- blockers: a42as and P4-SYSTEM.15–.18 must edit paths the retained case v2 pins (`evidence/rv64gc-signed-div-truncation-v2/dependencies.sexp`: 64 inputs + 4 principals — 35 scripts incl. every `matched_gpr_*.py` and `capture_div.py`, all 20 `definitions/riscv/*.sexp`, six `profiles/rv64gc-lab-v0` files); any edit stales the finite method, `review_div_policy.py` exits 1 and PROFILE-CONSISTENCY refuses every commit.
+  Raised to the director 2026-10-22 with four options (recommended: a stale method becomes an `invalidated` disposition with exit 0 in the unpinned `review_div_policy.py` unless the receipt claims qualification; then evolve and re-capture as v3). Do not start a42as before the director picks.
+  Gate cost: ~2 h 10 min per commit; its PROFILE-CONSISTENCY self-test refused one commit on 2026-10-21 for a cause not identified (.14 a42ar record). Raise a structural blocker (a cap, a rule whose cost dominates the work)
   in the first reply with numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/LIVE-CONTAINMENT.md` .4m; `target/live-containment/lc0052`;
-  `docs/tasks/P4-SYSTEM.md` .14 a42aq; `target/p4-system-14/a42aq`.
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ar; `target/p4-system-14/a42ar`;
+  `docs/tasks/LIVE-CONTAINMENT.md` .4m; `target/live-containment/lc0052`.
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.

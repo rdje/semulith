@@ -116,6 +116,7 @@
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
 - [`decision_policy-legs-measured-two-pending.md`](docs/decisions/decision_policy-legs-measured-two-pending.md)
 - [`decision_profiles-family-composed-units.md`](docs/decisions/decision_profiles-family-composed-units.md)
+- [`decision_profiles-family-corpus-second-rederivation.md`](docs/decisions/decision_profiles-family-corpus-second-rederivation.md)
 - [`decision_profiles-family-five-units.md`](docs/decisions/decision_profiles-family-five-units.md)
 - [`decision_profiles-family-four-units.md`](docs/decisions/decision_profiles-family-four-units.md)
 - [`decision_profiles-family-processor-corpus.md`](docs/decisions/decision_profiles-family-processor-corpus.md)

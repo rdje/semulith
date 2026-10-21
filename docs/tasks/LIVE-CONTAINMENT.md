@@ -1057,6 +1057,17 @@ The cache slice can finish cleanly first; staged C/counts resume after containme
 
 - Does `.3` adopt the full checker package (`live-document-size/` in the donor) or map its
   contracts onto the existing README-ROUTING-CLOSURE registry? Measured at `.3`.
+- Found 2026-10-21 by `P4-SYSTEM.14` a42ar: `docs/book/src/working/task-trees.md` carries
+  number–word joins with the space removed ("becomes151+9, total160", "pooled107 files;108
+  breaches", "Health64"; the "cover33 tasks … and29 lesson cards" line is repaired in
+  that commit) — a compaction made under the book's former ceiling. The ceiling is 0 since
+  `SEMULITH-LC-0052`; a readability restoration pass of that page is due as an LC slice.
+- Found 2026-10-21 by `P4-SYSTEM.14` a42ar: `docs/knowledge/` stands at its file ceiling (30 of
+  30 files, 97 % of 98,304 B; health 12 files / 20,480 B, so the health line has never been a
+  warning). The 31st card (98,684 B) was refused by README-ROUTING-CLOSURE and the lesson was
+  promoted into an existing decision record instead. The same shape as `profiles/`
+  (decision_profiles-family-corpus-second-rederivation): the next lesson card cannot land without a
+  reviewed re-derivation or the director's ungovern word. Director's call.
 
 ## Blockers
 

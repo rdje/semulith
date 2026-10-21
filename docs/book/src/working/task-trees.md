@@ -42,8 +42,8 @@ even when asked to pivot immediately.
 ## Orientation and the selected next action
 
 `KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.
-`MEMORY.md` selects the next action. Source-pinned checks cover33 tasks,
-63 decisions and29 lesson cards. Fresh current replay:
+`MEMORY.md` selects the next action. Source-pinned checks cover 33 tasks,
+64 decisions and 29 lesson cards. Fresh current replay:
 
 ```sh
 python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source
@@ -71,6 +71,7 @@ fixed. Full classifications/derivations remain in the records:
 cat docs/decisions/INDEX.md
 cat docs/decisions/decision_task-tree-family-count-rederivation.md
 cat docs/decisions/decision_profiles-family-five-units.md
+cat docs/decisions/decision_profiles-family-corpus-second-rederivation.md
 cat docs/decisions/decision_task-family-six-activity-count.md
 ```
 

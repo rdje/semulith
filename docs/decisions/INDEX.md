@@ -45,6 +45,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [Five-unit bounds (2026-10-02; composition corrected)](decision_profiles-family-five-units.md) | `decision` | Why the device/per-part changes, and what did LAN add? |
 | [Composed bounds (2026-10-02; superseded in part)](decision_profiles-family-composed-units.md) | `decision` | Which measurements survive the interim raise? |
 | [Corpus pressure (2026-10-06)](decision_profiles-family-processor-corpus.md) | `decision` | Why govern corpus growth separately? |
+| [Corpus pressure again (2026-10-21)](decision_profiles-family-corpus-second-rederivation.md) | `decision` | Why did the ceiling fire before the health line, and what bounds hold now? |
 | [Derived bounds (2026-10-02)](decision_derived-members-of-bounded-families.md) | `decision` | How are derived exemptions proved? |
 | [`reference_temporary-allocation-controls.md`](reference_temporary-allocation-controls.md) | `reference` | on-volume allocation/cleanup controls, child defaults and custom-vocabulary fixture repair |
 | [`decision_task-history-seal-review.md`](decision_task-history-seal-review.md) | `decision` | approved12-file P4 history seal: byte-exact retention, immutable descriptor, checked retrieval and preserved paths/anchors |

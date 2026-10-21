@@ -70,3 +70,41 @@ on synthetic cases where each knob breaks exactly one leg, plus the real tree; e
 five seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
 `coverage-optional`) runs its one discriminating test and fails. `PROFILE-CONSISTENCY`
 runs the probe in its self-test and the measurement on the real path on every commit.
+
+## The program the crediting capture will predeclare
+
+`profiles/rv64gc-lab-v0/guests/m-forms.s` is the corpus program the two pending legs ask
+for, authored before any case names it. Thirty-three instructions: seven set up the
+operands (−7, 2, −1, −2^63 and a register whose word is −2^31 with a zero high half),
+thirteen exercise every M form once with operands that tell each form from its neighbour
+(MULW from MUL, DIVW from DIV, REMW from REM, REMUW from REMU, MULHSU from MULH and MULHU),
+and twelve are the Table 1 cells — division by zero and signed overflow for DIV, DIVU, REM
+and REMU and for their word forms — each citing `RVI-M §11.1.2 (Table 1)` as its source, which
+is the marker the boundary-fixtures leg reads. One sentinel precedes the overflow remainder,
+whose zero would otherwise replace a zero invisibly, and three late results replace earlier
+ones in reused registers, each with a different value.
+
+The expectations were derived on the explicit-budget parcel route the C-composed profile
+requires, validated against the schema, and checked byte-identical on re-derivation:
+
+```bash
+python3 scripts/derive_rv64gc_expectations.py --check --parcels --steps 33 profiles/rv64gc-lab-v0/guests/m-forms.s
+python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/guests/m-forms.expected.sexp schema/expectations.sexp
+python3 scripts/run_rv64gc_sail.py m-forms --out-dir target/p4-system-14/a42ar
+```
+
+The author's owned-guest list is not touched. `scripts/derive_rv64gc_expectations.py` is one of
+the 64 inputs the retained case pins, and a one-line registration there made the finite method
+review `stale` on the first commit attempt, which is the currentness leg doing its work: a change to
+the expected author invalidates the evidence derived with it. The program is checked with its
+explicit budget until the author changes together with a fresh capture.
+
+The last command is a live experiment against the pinned Sail 0.14 binary: it agreed on all
+33 declared steps with two byte-identical traces. That agreement is not a capture. No case
+predeclares the program's properties, no receipt cites it and nothing credits it; the
+retained case and its measurement are untouched, so `REQ-GC-M` keeps deriving `planned`. The
+verify-side differential executes the program on every commit through the regenerated
+fixture, and the interaction matrix names it under boundary × boundary. The next unit gives
+the property binding one case with many predeclared properties — one per Table 1 cell and
+one per form — and only then a declaration and a capture can retain runs that the policy's
+legs would credit.

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0286 (leaf P4-SYSTEM.14) — author the crediting M corpus program
+
+a42ar: `profiles/rv64gc-lab-v0/guests/m-forms.s` exercises all 13 M forms and the 12 Table 1 cells with spec-side expectations on the parcel route (schema-valid, byte-identical on re-derivation, every value matching an independent arithmetic); registered in the run order and the interaction matrix (the author's owned-guest list is a pinned input of the retained case: a one-line registration staled the finite method on the first commit attempt, so ownership waits for the fresh capture); `guests_rv64gc.rs` regenerated; live Sail 0.14 AGREE on 33 steps with byte-identical traces — an experiment, no case or credit; `REQ-GC-M` stays `planned`. P4 closed rows through a42aq moved verbatim into `docs/tasks/archive/P4-SYSTEM-20.md`. The guest pair crossed the `profiles/` 3 MiB aggregate (3,154,244 B) with no health warning possible; both aggregates re-derived by `decision_profiles-family-corpus-second-rederivation.md` to 4 MiB / 800 files with health below the family, per-part unchanged.
+
 ## SEMULITH-LC-0052 (leaf LIVE-CONTAINMENT.4) — containment reset by director ruling
 
 Slice (m): the book and unit books carry no size ceiling, the task family's aggregate and count are ungoverned (per-part 128 KiB kept), the second seal is rejected and a unit is recorded once — `docs/decisions/decision_containment-reset.md`; .4c–.4g moved verbatim into `docs/tasks/archive/LIVE-CONTAINMENT-adoption.md`; routes RED 3,148,764 > 3,145,728 then GREEN; both history heads sharded.

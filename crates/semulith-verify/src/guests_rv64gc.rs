@@ -248,6 +248,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/m-alias.s`  `b403f5a4617078cba591f88ac319117ce8cdc94e0d08a2b2eece257f625c91a8`
 //!   `profiles/rv64gc-lab-v0/guests/m-div.expected.sexp`  `87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e`
 //!   `profiles/rv64gc-lab-v0/guests/m-div.s`  `a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f`
+//!   `profiles/rv64gc-lab-v0/guests/m-forms.expected.sexp`  `561b5da3cf87ea4825fca4e1a001a9c7d26321e491d86515c571f47b0019f44f`
+//!   `profiles/rv64gc-lab-v0/guests/m-forms.s`  `232b4d96d87125c3ab876b2ec415d250a572433df57d5696afffde6a95f8d7a6`
 //!   `profiles/rv64gc-lab-v0/guests/m-mul.expected.sexp`  `45a7074909170ac6b73e2d71ca4e1f207178a71b23008d8c454e5d657af02375`
 //!   `profiles/rv64gc-lab-v0/guests/m-mul.s`  `bd22f1a6ffb596d518bebf39664e9a8e35849e6b557be126b4751bbc98775097`
 //!   `profiles/rv64gc-lab-v0/guests/m-word.expected.sexp`  `10acab3a667569655976b75602c3193a25acdde40fb10eecebfb32050168d77f`
@@ -9084,6 +9086,55 @@ static EXPECTED_M_WORD: &[Expectation] = &[
 ];
 
 #[rustfmt::skip]
+static IMAGE_M_FORMS: &[u8] = &[
+    0x93, 0x02, 0x90, 0xFF, 0x13, 0x03, 0x20, 0x00, 0x93, 0x03, 0xF0, 0xFF, 0x13, 0x04, 0x10, 0x00,
+    0x13, 0x14, 0xF4, 0x03, 0x93, 0x04, 0x10, 0x00, 0x93, 0x94, 0xF4, 0x01, 0x33, 0x85, 0x62, 0x02,
+    0xB3, 0x95, 0x62, 0x02, 0x33, 0xA6, 0x72, 0x02, 0xB3, 0xB6, 0x63, 0x02, 0x3B, 0x87, 0x92, 0x02,
+    0xB3, 0xC7, 0x62, 0x02, 0x33, 0xD8, 0x63, 0x02, 0xB3, 0xE8, 0x62, 0x02, 0x33, 0xF9, 0x63, 0x02,
+    0xBB, 0xC9, 0x64, 0x02, 0x3B, 0xDA, 0x64, 0x02, 0xBB, 0xEA, 0x54, 0x02, 0x3B, 0xFB, 0x54, 0x02,
+    0xB3, 0xCB, 0x02, 0x02, 0x33, 0xDC, 0x02, 0x02, 0xB3, 0xEC, 0x02, 0x02, 0x33, 0xFD, 0x02, 0x02,
+    0xB3, 0x4D, 0x74, 0x02, 0x13, 0x0E, 0xC0, 0x01, 0x33, 0x6E, 0x74, 0x02, 0xBB, 0xCE, 0x04, 0x02,
+    0x3B, 0xDF, 0x04, 0x02, 0xBB, 0xEF, 0x04, 0x02, 0x3B, 0xF5, 0x04, 0x02, 0xBB, 0xC5, 0x74, 0x02,
+    0x3B, 0xE6, 0x74, 0x02,
+];
+#[rustfmt::skip]
+static EXPECTED_M_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 1, writes: &[(6, 0x0000000000000002)] },
+    Expectation { step: 2, writes: &[(7, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 3, writes: &[(8, 0x0000000000000001)] },
+    Expectation { step: 4, writes: &[(8, 0x8000000000000000)] },
+    Expectation { step: 5, writes: &[(9, 0x0000000000000001)] },
+    Expectation { step: 6, writes: &[(9, 0x0000000080000000)] },
+    Expectation { step: 7, writes: &[(10, 0xFFFFFFFFFFFFFFF2)] },
+    Expectation { step: 8, writes: &[(11, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 9, writes: &[(12, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 10, writes: &[(13, 0x0000000000000001)] },
+    Expectation { step: 11, writes: &[(14, 0xFFFFFFFF80000000)] },
+    Expectation { step: 12, writes: &[(15, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 13, writes: &[(16, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 14, writes: &[(17, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 15, writes: &[(18, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(19, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 17, writes: &[(20, 0x0000000040000000)] },
+    Expectation { step: 18, writes: &[(21, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 19, writes: &[(22, 0xFFFFFFFF80000000)] },
+    Expectation { step: 20, writes: &[(23, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 21, writes: &[(24, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 22, writes: &[(25, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 23, writes: &[(26, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 24, writes: &[(27, 0x8000000000000000)] },
+    Expectation { step: 25, writes: &[(28, 0x000000000000001C)] },
+    Expectation { step: 26, writes: &[(28, 0x0000000000000000)] },
+    Expectation { step: 27, writes: &[(29, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 28, writes: &[(30, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 29, writes: &[(31, 0xFFFFFFFF80000000)] },
+    Expectation { step: 30, writes: &[(10, 0xFFFFFFFF80000000)] },
+    Expectation { step: 31, writes: &[(11, 0xFFFFFFFF80000000)] },
+    Expectation { step: 32, writes: &[(12, 0x0000000000000000)] },
+];
+
+#[rustfmt::skip]
 static IMAGE_M_ALIAS: &[u8] = &[
     0x93, 0x02, 0x60, 0x00, 0xB3, 0x82, 0x52, 0x02, 0x13, 0x03, 0x70, 0xFF, 0x33, 0x43, 0x63, 0x02,
     0x93, 0x03, 0xD0, 0x00, 0xB3, 0xE3, 0x73, 0x02, 0x33, 0x80, 0x52, 0x02, 0x33, 0xC0, 0x02, 0x02,
@@ -14069,6 +14120,17 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 32,
         expected_fetches: 64,
         expected: EXPECTED_M_WORD,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "m-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_M_FORMS,
+        executed_steps: 33,
+        expected_fetches: 66,
+        expected: EXPECTED_M_FORMS,
         never_written: &[],
         refusals: &[],
         cross_model: true,

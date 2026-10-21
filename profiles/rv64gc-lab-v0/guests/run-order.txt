@@ -141,6 +141,7 @@ env-irq-sources
 m-mul
 m-div
 m-word
+m-forms
 m-alias
 
 # P4-SYSTEM.12: independently staged compressed corpus
