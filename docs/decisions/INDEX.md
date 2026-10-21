@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [Policy legs measured, two pending](decision_policy-legs-measured-two-pending.md) | `decision` | the retained DIV case satisfies 8 of the policy's 10 legs from its own bytes; boundary fixtures and form coverage wait for a crediting capture; measurement grants no credit |
 | [Task-family count: retention continuation](decision_task-family-count-rederivation-retention.md) | `decision` | 107 → 116 = 33+1+42+40 when the per-part ceiling forced the first complete-records continuation; aggregate is slice (m)'s seal |
 | [Decisions family re-derived again](decision_decisions-family-second-rederivation.md) | `decision` | the byte axis fired a second time while records were being withheld; 2× (160 files / 524,288 B), per-part fixed; the index partition is the next bite |
 | [Exact token facets](decision_exact-token-facets.md) | `decision` | strict token ends, generic searches;91 field controls |

@@ -24,5 +24,6 @@
 [Conservative change impact](impact.md)
 [Evidence policy](policy.md)
 [Requirement status derived](requirement-status.md)
+[Policy legs measured](policy-adequacy.md)
 [Current processor gate](evidence.md)
 [Historical dossier wording](history.md)

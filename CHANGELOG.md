@@ -1,5 +1,17 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0285 (leaf P4-SYSTEM.14) — measure the retained case's policy legs
+
+a42aq: `scripts/review_div_policy.py` reads the evidence policy's requirements for a
+`defined` medium-risk requirement as ten legs and measures each against the retained
+DIV case's own bytes on top of the finite method review: 8 of 10 satisfied; pending
+boundary-fixtures (six Table 1 rows present, none predeclared) and form-coverage (one
+of thirteen forms predeclared). `OB-GC-M`'s feature disposition declared (none
+applies). Measurement grants no credit; `PROFILE-CONSISTENCY` runs it on every commit
+and fails a receipt claiming `qualification` the legs refuse. Probe 19 tests normal/O,
+five seams RED. a42ap's whole rows retired into task-claims-2.md with exact inverses.
+Chapter, toolbox, doctrine mirrors, decision record. `REQ-GC-M` stays `planned`.
+
 ## SEMULITH-P4-0284 (leaf P4-SYSTEM.14) — derive requirement status from the evidence graph
 
 a42ap: `scripts/requirement_status.py` derives each requirement's
@@ -687,9 +699,4 @@ Add bounded immutable-source/baseline comparison through the existing author and
 
 - Fresh immutable1425/473/54 census; seven actual consumers/93 full chapters/49 includes/48 targets reconcile normal/O. All344 output files match uninstrumented builds; five remaining markers await other-reader review.
 - Public mdbook0.5.4 and both actual project interfaces accept missing file, absent anchor and duplicate anchor. Own D65 priority1 repair next; current real includes match. Preserve complete ledger/reproduction/pins, old history/source/modes/caps; focused/seven-book/rendered checks required. Full adoption and CPU qualification stay open.
-
-## SEMULITH-LC-0027 (leaf LIVE-CONTAINMENT.4) — validate task sources before progress claims
-
-- Fix D59/D64: both guards share explicit checked backtick/bold/whole-archive source decoding; unknown/ambiguous/unavailable source refuses2. Check leading progress ratios and annotated closed counts, including every recognized count in a cell; later bare instruction ratios remain excluded.
-- Original13/20 controls retained;38/41 pass normal/O. Same12 public cases/mode,11 actual predicate omissions/38 consumer-mode cases and eight actual read failures qualify the repair. Re-derived1565 arms; book retains historical replay and adds live commands. Preserve old history/source/protected bytes/modes and caps; full graph/CPU qualification unchanged.
 

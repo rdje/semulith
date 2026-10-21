@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-21 UTC)_ — the policy's legs, measured instead of summarised (P4-SYSTEM.14 a42aq)
+
+P4-0285 after d121b50, clean tree and `handoff: OK`. Until now the only statement
+of the retained case's policy standing was one limitation line in its own
+predeclaration, "full source/risk/feature policy remains pending", and the method
+review repeated it as a word. The consumer turns the policy's prose for a `defined`
+medium-risk requirement into ten legs and measures each from bytes the case already
+pins: the expectation file's per-step `source` and `derivation` (every one of the 27
+steps is located), the receipt's three run verdicts and the control's divergence
+point, the dependency manifest's pin of the policy document, and the catalogue. Eight
+legs hold. The two that do not are instructive: the six Table 1 boundary rows are in
+the program and agreed with Sail on the baseline, yet the predeclaration declares one
+property, so they earn nothing — the policy credits declared observations only, and
+declaring them now would be relabeling retained bytes. Form coverage is the larger
+gap: four of thirteen forms exercised, one predeclared. So the honest result is
+`pending` with the missing legs named, and that is what the next capture must
+predeclare. Two design choices worth recording: the feature disposition is a declared
+table in the consumer (an obligation absent from it stays pending; nothing is inferred
+from mnemonics), and the boundary marker is the expectation file's own source
+locator citing a chapter table row — the consumer never reads the chapter. The
+real-tree test runs the method review as a subprocess: inside the unittest process
+the checker-source census sees the probe's own imports and refuses, which is the
+census doing its job. Promotion declined: the chapter and the decision record carry
+the rule.
+
 ## _(2026-10-21 UTC)_ — requirement status is derived, not carried (P4-SYSTEM.14 a42ap)
 
 P4-0284 after f00ce20, clean tree and `handoff: OK`, the first P4 unit able to
@@ -662,47 +687,4 @@ leaf ID before verification, then retire it only after completion. LIVE42routes/
 BOARD10/12,replay4/4green unchanged. Next full source/risk/feature policy and
 status integration; preserve the canonical capture. No full CI or push.
 Promotion declined: existing safe-cohort/locality/retention contracts apply.
-
-## _(2026-10-19)_ — check the retained finite DIV method (P4-SYSTEM.14 a42ao)
-
-Tools-first baseline: the actual lower evaluator binds85 files/1048756B and all
-separate findings, yet leaves method/policy pending. Input influence reachability
-alone does not bind the evidence fingerprint; a self-consistent forged receipt
-can establish bytes without actual execution provenance. Compose public owners
-in matched_gpr_adequacy and read-only review_div_method: independently selected
-73 inputs, exact native generator, only12 observation hashes/sizes+3 exits may
-change the plan, and actual evidence node selects its planned SHA. Curate the
-original measured record identity from reviewed source/declaration/capture history;
-trust remains the tracked collector/procedure, no independent attestation or
-ancestry credit. Method satisfied; full policy pending; replay not checked.
-Require typed complete findings, exact manifest/artifact selection and released
-payloads. Preserve independent findings after late checker refusal. One128MiB
-native/evaluation allowance charges1100198B (51442+1048756); failed calls retain
-reservations, malformed receipts refuse. Snapshot33759B within16MiB; preparation,
-schema/tool I/O and39-module census/recheck remain separately bounded. Old producer
-population37 and all original artifacts/pins remain exact; no Sail rerun.
-Twenty tests normal/O pass;14 targeted omissions lose4/1/4/2/2/1/2/1/3/4/1/1/1/1,
-no errors,30 matrix outcomes. Copied103-file runtime has no Git/materials/binary,
-processes denied and valid parent cwd. Includes fully consistent forged stdout,
-exact/short allowances, missing/stale data and late source drift. Fixture QA:
-first forgery used output instead of codec observation, reproduced20/1/0 and
-corrected before guard audit; production was unchanged by that fixture repair.
-Retain four whole an records2184B in the existing task-claims artifact; old128068B prefix exact.
-New model chapter/toolbox/decision includes; public arm enumerator1625 (+2literal
-score sites, not expanded loop count). CPU14/18/BOARD10/12/replay4/4 unchanged.
-Focused17/books7/rendered5/examples3/scope normal/O pass; whole history6009B retained0375/0376; source-owner inverses2/eight damaged refusals. Evidence target/p4-system-14/a42ao.
-Promotion declined: existing caller authority, provenance and finite-method rules.
-Task count108 exceeded107. TASK-PRESERVATION also refused an append to published
-part19: whole published archive blobs are immutable. Restore part19 exactly in
-both views. Compact only new reconstruction metadata and retain all4 original
-records2184B under one address in existing task-claims; old128068B prefix exact.
-A broad wording replacement touched an older CH0247 phrase; whole-history
-proof caught it. Rebuild the old tail from BASE and its exact moved suffix.
-Diff whitespace reports only original trailing blank separators in the two new
-whole-entry shards; all other changes pass. Preserve those original bytes.
-No capacity increase, history trim or gate exception. Focused acceptance also
-required explicit rc=0 in each evidence bullet; retain actual command outcomes.
-A root-wide status-text query entered vendor accidentally. Its results were
-unused; no vendor writes. Restrict searches to explicit project-owned paths.
-Next full source/risk/feature policy and qualification/status integration.
 

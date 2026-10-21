@@ -2128,6 +2128,20 @@ DIV_METHOD_CASES
     done
   done
 
+  # P4-SYSTEM.14 a42aq: the retained case's policy legs are measured; measurement grants no credit.
+  local policy_mode policy_mutation
+  local -a policy_python
+  for policy_mode in normal optimized; do
+    policy_python=(python3 -B)
+    [ "$policy_mode" = optimized ] && policy_python+=(-O)
+    out="$("${policy_python[@]}" scripts/probe_div_policy.py 2>&1)"; rc=$?
+    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 19 tests / 0 failures / 0 errors; measurement only, no qualification credit"
+    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional; do
+      out="$("${policy_python[@]}" scripts/probe_div_policy.py --mutation "$policy_mutation" 2>&1)"; rc=$?
+      score "RED omitted policy legs $policy_mutation $policy_mode" "$rc" 1 "$out" "DIV-POLICY-PROBE: 1 tests / 1 failures / 0 errors; measurement only, no qualification credit"
+    done
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
@@ -2149,6 +2163,16 @@ if [ "$status_rc" -ne 0 ]; then
     printf '%s\n' "$status_result" | sed 's/^/  /'
     echo "  The GRAPH is authoritative: change the evidence or the catalogue record, never the status alone."; } >&2
   exit "$status_rc"
+fi
+
+# P4-SYSTEM.14 a42aq: the retained DIV case's policy legs are measured from its own bytes; a receipt
+# claiming qualification the legs refuse, or a blocked finite method, fails the gate. No credit.
+policy_result="$(python3 -B scripts/review_div_policy.py 2>&1)"; policy_rc=$?
+if [ "$policy_rc" -ne 0 ]; then
+  { echo "PROFILE-CONSISTENCY: the retained case's policy legs refuse its receipt, or cannot be measured."
+    printf '%s\n' "$policy_result" | sed 's/^/  /'
+    echo "  The LEGS are measured from declared bytes: predeclare and capture, never relabel a receipt."; } >&2
+  exit "$policy_rc"
 fi
 
 # P4-SYSTEM.2 slice (c1): probe the csr-set rule against a staged state document at a
