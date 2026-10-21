@@ -43,7 +43,7 @@ even when asked to pivot immediately.
 
 `KNOWLEDGE_MAP.md` lists task files; open/closed indexes below own status.
 `MEMORY.md` selects the next action. Source-pinned checks cover33 tasks,
-61 decisions and29 lesson cards. Fresh current replay:
+63 decisions and29 lesson cards. Fresh current replay:
 
 ```sh
 python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source
@@ -99,6 +99,19 @@ python3 scripts/collect_containment_graph.py --revision 28920c6 \
 
 ## Local containment contract
 
+The book is not size-contained. The director ruled on 2026-10-21 that this review
+surface, the project book and every unit book `make book` builds, explains everything
+and carries no ceiling on any axis; the structural gates (BOOK-INDEX, REGISTRY-MIRROR,
+UNIT-BOOKS, the navigation qualifiers) keep it true. The same ruling ungoverns the task
+family's aggregate and file count, keeps its 128 KiB per-part cap, rejects a second
+history seal and cuts per-unit duplication: a unit is recorded once, in its tree record
+and gated acceptance rows, with one changelog line. A full tree moves its closed records
+verbatim into an ordinary archive part. The ruling, quoted:
+
+```sh
+cat docs/decisions/decision_containment-reset.md
+```
+
 Contract and frontier:
 
 ```sh
@@ -144,7 +157,7 @@ parts1–12 use the checked reader; choose the part, for example archive9:
 python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
 ```
 
-Ordinary P4 parts/receipts stay native. Two containment archives retain whole
+Ordinary P4 parts/receipts stay native. Three containment archives retain whole
 closed units and LC0027's checklist; original headings link there:
 
 ```sh
@@ -157,6 +170,7 @@ cat docs/tasks/archive/P4-SYSTEM-18.md
 cat docs/tasks/archive/P4-SYSTEM-19.md
 cat docs/tasks/archive/LIVE-CONTAINMENT.md
 cat docs/tasks/archive/LIVE-CONTAINMENT-readers.md
+cat docs/tasks/archive/LIVE-CONTAINMENT-adoption.md
 cat docs/tasks/archive/P4-SYSTEM-book-c30b.md
 cat docs/tasks/archive/P4-SYSTEM-reference-c29e.md
 cat docs/task-history/README.md

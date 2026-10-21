@@ -10,8 +10,10 @@ next one.
 
 When the completed work belongs to a task-tree leaf (a node under `docs/tasks/`):
 
-- Update the owning `docs/tasks/<TREE>.md`: leaf status, verification log, commit log,
-  frontier, decisions, blockers as applicable.
+- Update the owning `docs/tasks/<TREE>.md`: leaf status, the unit's record (what, why,
+  verification, commit id) and its acceptance rows, frontier, decisions, blockers as
+  applicable. The record is the unit's single narrative; the Verification Log and Commit
+  Log sections no longer grow per unit (`decision_containment-reset`, 2026-10-21).
 - Update `docs/TASK_TREE.md` (the Active Task Trees index) only if the frontier changes; a tree
   that closes moves its row, verbatim, to `docs/TASK_TREE_CLOSED.md` (FRONTIER-SYNC refuses a
   completed tree left in the index).
@@ -40,8 +42,9 @@ apply to code changes.
   `Mostly Done`, `In Progress`, `Not Started`. Review before every commit; summarize the
   snapshot in the completion message and state whether the task changed it.
 - `MEMORY.md` — the bounded layer-A resume pointer. Overwrite the "current state" block.
-- `CHANGELOG.md` — changelog-style summary of completed work + validation.
-- `DEV_NOTES.md` — detailed technical notes: root cause, implementation, validation.
+- `CHANGELOG.md` — one heading and one line per completed unit; the tree record holds the rest.
+- `DEV_NOTES.md` — a dated entry only for a real lesson (LESSON-PROMOTION applies); never a
+  per-unit narrative.
 - `docs/decisions/` — add/supersede a decision record (+ its INDEX entry) when a durable
   cross-cutting fact/decision was established.
 - `docs/book/` (mdBook) — update when a user-facing surface it already covers changes.

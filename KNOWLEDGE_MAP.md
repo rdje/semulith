@@ -91,6 +91,7 @@
 - [`decision_ci-recovery-push-approval.md`](docs/decisions/decision_ci-recovery-push-approval.md)
 - [`decision_claim-verification-adopted.md`](docs/decisions/decision_claim-verification-adopted.md)
 - [`decision_composition-model.md`](docs/decisions/decision_composition-model.md)
+- [`decision_containment-reset.md`](docs/decisions/decision_containment-reset.md)
 - [`decision_decisions-family-aggregate-rederivation.md`](docs/decisions/decision_decisions-family-aggregate-rederivation.md)
 - [`decision_decisions-family-second-rederivation.md`](docs/decisions/decision_decisions-family-second-rederivation.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)

@@ -341,7 +341,14 @@ docs/TASK_TREE_CLOSED.md	reader_navigation	append_history	one row per completed 
 #   aggregate and per-part unchanged — the aggregate (3,131,941 B at the firing) is slice (m)'s
 #   seal. Reviewed decision:
 #               docs/decisions/decision_task-family-count-rederivation-retention.md.
-docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives use owned finite retention transitions	64	1153433	116	3145728	131072
+# Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), when the BYTE axis
+#   stood at 3,143,298 of 3,145,728 (108 of 116 files) with ~3.5 KB per unit and no unit able to
+#   record: the aggregate and count ceilings are UNGOVERNED (0) by reviewed decision, the per-part
+#   ceiling stays 131,072. A full tree moves its closed records verbatim into an ordinary archive
+#   part; no seal, no inverse map. A second task-history seal was rejected. Health targets are
+#   advisory and unchanged. Reviewed decision (the director's words quoted):
+#               docs/decisions/decision_containment-reset.md.
+docs/tasks/	author_overflow	partitioned	one file per tree; closed records move verbatim into ordinary archive parts; aggregate and count ungoverned by decision_containment-reset (2026-10-21), per-part kept	64	1153433	0	0	131072
 # Re-derivation, P4-SYSTEM.2 slice (e) (2026-10-03), when the BYTE axis fired at
 #   1,575,182 > 1,572,864 (63 files): the active P4-SYSTEM tree's mandated per-slice
 #   checklists are the designed growth; per-part (128 KiB) and count (96) did not fire.
@@ -367,7 +374,12 @@ docs/tasks/	author_overflow	partitioned	one file per tree; completed narratives 
 #               docs/decisions/decision_decisions-family-second-rederivation.md.
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	64	278528	160	524288	16384
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
-docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the bounded index	40	131072	80	524288	32768
+# Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), at 524,247 of
+#   524,288 B: the book is the review surface and carries NO size containment on any axis — "it is
+#   used to explain thoroughly what the project, its codebase, I mean everything". Structural gates
+#   (BOOK-INDEX, REGISTRY-MIRROR, UNIT-BOOKS, navigation qualifiers) keep it true. Reviewed decision:
+#               docs/decisions/decision_containment-reset.md.
+docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is the index; not size-contained by decision_containment-reset (2026-10-21)	0	0	0	0	0
 # Derivation, MODEL-BOOKS.1 (2026-09-29), when the per-unit model books got their home:
 #   docs/models/     8 files / 27,600 B at adoption (one mdBook per unit: book.toml,
 #                    SUMMARY.md, the introduction, the materials bill, 4 generated
@@ -390,7 +402,12 @@ docs/book/	author_overflow	partitioned	one chapter per subject; SUMMARY.md is th
 #              standing ratios (the adoption-era 0.4 was already below the measured
 #              corpus). ⛔ PER-PART STAYS 32,768 — the largest member is rv64i's
 #              materials.md at 17,540 B.
-docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL; the 5× bound is decision_models-family-five-books (2026-10-02)	98	560000	100	655360	32768
+# Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21): the unit books are
+#   built by the same `make book` target as the project book and are the same review surface; no
+#   size containment on any axis. The per-unit structure (one mdBook per unit, generated materials
+#   gated by MATERIALS-BILL, UNIT-BOOKS) is unchanged. Reviewed decision:
+#               docs/decisions/decision_containment-reset.md.
+docs/models/	reader_navigation	partitioned	one mdBook per modelled unit (decision_one-definition-one-book); the materials tables are generated, gated by MATERIALS-BILL; not size-contained by decision_containment-reset (2026-10-21)	0	0	0	0	0
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign dossier landed:
 #   profiles/  99 -> 100 files / 427,926 B (P2-SCALAR.5 strand 2c: the three act4/ DUT
 #              files from strand 2b plus act4.sexp, the recorded campaign) — the P2-SCALAR.5

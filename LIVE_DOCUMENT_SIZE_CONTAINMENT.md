@@ -19,9 +19,9 @@
   Full inventory coverage and full checker adoption are not claimed here.
   Existing `doctrine/readme_routes.tsv` declarations and the unconditional
   doctrine driver remain in force until their owned transitions land.
-- Existing ceilings and sealed captures are unchanged by this adoption.
-  Capacity changes need their own reviewed expansion authority; the current
-  task-family pressure and source classification correction are owned by .4h.
+- Director ruling 2026-10-21 (docs/decisions/decision_containment-reset.md):
+  the book and unit books carry no size ceiling; the task family's aggregate
+  and count are ungoverned, its per-part cap kept; sealed captures unchanged.
 - This local note is bounded to 40 LF lines and 2,048 bytes, including markers.
   With the fixed imported body, whole-file ceilings are 383 lines / 22,256 bytes.
   Future policy revisions require deliberate local review and their own task.

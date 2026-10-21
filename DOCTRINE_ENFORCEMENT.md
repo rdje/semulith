@@ -125,4 +125,6 @@ A code change cannot commit until its owning task-tree leaf records all six:
 - [ ] **ADDRESSED (verified)** — measured before→after (the global metric where one exists).
 - [ ] **NO REGRESSION** — the guard set stays green; state how you proved it.
 - [ ] **LOCKSTEP** — live docs (`MEMORY.md`, `CHANGELOG.md`, `DEV_NOTES.md`,
-  `LIVE_STATUS.md`), the book, and any trackers updated in the SAME commit.
+  `LIVE_STATUS.md`), the book, and any trackers updated in the SAME commit. A unit is
+  recorded once: the leaf's record plus these rows; one changelog line; a dev note only for
+  a lesson (`docs/decisions/decision_containment-reset.md`).
