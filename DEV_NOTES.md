@@ -1,5 +1,30 @@
 # DEV_NOTES.md
 
+## _(2026-10-21 UTC)_ — requirement status is derived, not carried (P4-SYSTEM.14 a42ap)
+
+P4-0284 after f00ce20, clean tree and `handoff: OK`, the first P4 unit able to
+record itself since the family filled on 2026-10-12. The derivation is small on
+purpose: four rules from the policy's "Status and supersession" paragraph, one
+crediting word (a receipt's boolean `qualification`), and every other case
+reported as uncredited rather than counted. That makes the one retained DIV case
+visible without crediting it: it derives `planned` for REQ-GC-M with the
+annotation `rv64gc-signed-div-truncation-v2:pending`, which is exactly what the
+a42ao review concluded in prose. The gate now refuses a hand-advanced status,
+so the only way a requirement moves is executed, qualified evidence. Two
+findings worth keeping in the tree rather than a card: the rv64i profile also
+carries a policy document and derives 28 `planned` with no drift, so the gate
+covers both without a per-profile switch; and the P4 retention pattern now
+lives in the continuation artifact with a `path` and `own` field per section,
+so one verifier checks every section. A third finding came from the gate itself:
+the first self-test refused 30 arms because the checker was declared inside
+`EVIDENCE_POLICY.md`, and that file is one of the 64 reviewed inputs the retained
+DIV case pins by SHA256 in `dependencies.sexp`; under the a42am retained-identity
+seam an edit to it is a re-capture event, not a documentation change. The
+declaration moved to the chapter and the doctrine row, the policy and GS report
+are byte-identical to f00ce20, and a42aq must plan any policy change as a
+capture. Promotion declined: the model-book chapter and the doctrine row carry
+the rule.
+
 ## _(2026-10-20 UTC)_ — the task family's count re-derived for retention continuation (LIVE-CONTAINMENT.4l)
 
 LC0051 after a658e24, clean tree and `handoff: OK`. The measurement that decided
@@ -680,23 +705,4 @@ required explicit rc=0 in each evidence bullet; retain actual command outcomes.
 A root-wide status-text query entered vendor accidentally. Its results were
 unused; no vendor writes. Restrict searches to explicit project-owned paths.
 Next full source/risk/feature policy and qualification/status integration.
-
-## _(2026-10-19)_ — synchronize completed capture and replay teaching (P4-SYSTEM.14 a42an)
-
-The two canonical decision includes/index and adjacent evidence/reference/collector
-chapters still claimed collection/retention pending after c91d08f5 retained it.
-Native format is matched-gpr-v1; v2 names the DIV case, so the no-v1-capture claim
-was also stale. Gaps, P4 overview and architecture detector prose still placed GC
-reduction/CLI support in the future after .16 closed. Reproduction: scoped nine-
-source census/native record plus generated GS report G-REPLAY4/4green.
-Root cause: completion-state teaching missed the canonical include/index owners
-and neighboring replay paragraphs. Correct only current-state prose, keep dated
-census historical, preserve protocol/limits/trust boundaries and every example.
-The canonical command's absent-name preflight differs from the low-level API's
-owned-output clearing; describe both accurately. No capture rerun or code change.
-Full method/policy qualification and CPU acceptance remain pending.
-Four complete closed am records2574B retained with source/owner metadata; fixed
-caps. Focused17/books7/rendered9/scope normal/O pass;46 complete examples exact.
-CH0374 whole1107B; inverses2/eight damaged refusals. Evidence target/p4-system-14/a42an. Promotion declined: existing canonical-owner lockstep
-and currentness doctrine; next full policy/status integration.
 

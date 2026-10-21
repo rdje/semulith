@@ -2114,6 +2114,20 @@ native-envelope:1
 DIV_METHOD_CASES
   done
 
+  # P4-SYSTEM.14 a42ap: requirement status derived from the evidence graph and drift-checked.
+  local status_mode status_mutation
+  local -a status_python
+  for status_mode in normal optimized; do
+    status_python=(python3 -B)
+    [ "$status_mode" = optimized ] && status_python+=(-O)
+    out="$("${status_python[@]}" scripts/probe_requirement_status.py 2>&1)"; rc=$?
+    score "GREEN requirement status derivation $status_mode" "$rc" 0 "$out" "REQUIREMENT-STATUS-PROBE: 17 tests / 0 failures / 0 errors; derivation only, no qualification credit"
+    for status_mutation in credit-pending ignore-drift skip-supersession unresolved-closes argument-optional; do
+      out="$("${status_python[@]}" scripts/probe_requirement_status.py --mutation "$status_mutation" 2>&1)"; rc=$?
+      score "RED omitted requirement status $status_mutation $status_mode" "$rc" 1 "$out" "REQUIREMENT-STATUS-PROBE: 1 tests / 1 failures / 0 errors; derivation only, no qualification credit"
+    done
+  done
+
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
@@ -2125,6 +2139,16 @@ div_retained_result="$(python3 scripts/retain_div_statement.py --verify 2>&1)"; 
 if [ "$div_retained_rc" -ne 0 ]; then
   printf 'PROFILE-CONSISTENCY: retained DIV statement refused: %s\n' "$div_retained_result" >&2
   exit 1
+fi
+
+# P4-SYSTEM.14 a42ap: every policy-declaring profile's recorded requirement statuses equal their
+# derivation from the evidence graph (EVIDENCE_POLICY.md "Status and supersession").
+status_result="$(python3 -B scripts/requirement_status.py 2>&1)"; status_rc=$?
+if [ "$status_rc" -ne 0 ]; then
+  { echo "PROFILE-CONSISTENCY: a recorded requirement status drifts from its derivation, or the graph refuses."
+    printf '%s\n' "$status_result" | sed 's/^/  /'
+    echo "  The GRAPH is authoritative: change the evidence or the catalogue record, never the status alone."; } >&2
+  exit "$status_rc"
 fi
 
 # P4-SYSTEM.2 slice (c1): probe the csr-set rule against a staged state document at a

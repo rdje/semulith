@@ -14,22 +14,22 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` slice a42ap (full policy/status), now unblocked;
-  `ARTIFACT-CLEANUP.25` when the record is ~24 h old (after 2026-10-21T22:11Z).
+- active_work_unit: `P4-SYSTEM.14` — next slice a42aq (full policy adequacy of the retained
+  case); `ARTIFACT-CLEANUP.25` when the record is ~24 h old (after 2026-10-21T22:11Z).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `LIVE-CONTAINMENT.4l` / `SEMULITH-LC-0051` — task-family count 107 → 116 with
-  its authority; the first complete-records continuation task-claims-2.md holds the .4j
-  whole records (compact map + spans; verify.py in target/live-containment/lc0051).
-- next_action: `P4-SYSTEM.14` a42ap. First retire a42ao's whole record, acceptance,
-  verification and commit rows from docs/tasks/P4-SYSTEM.md (130,889 of 131,072 B) into
-  docs/tasks/artifacts/live-containment/task-claims-2.md with the lc0051 retain pattern
-  (insert + spans, source/owner/retired inverses), then build the status-derivation checker:
-  each of the 48 rv64gc requirements' implementation_status derived from the evidence graph
-  under profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md ("Status and supersession") with a drift
-  gate; one experiment (DIV v2, adequacy pending) → 48 planned / 0 drift. Read the a42ao
-  record, gate_report.py G-OBLIGATIONS and matched_gpr_evaluation first. A fresh session
-  suits the checker work.
+- last_unit: `P4-SYSTEM.14` a42ap / `SEMULITH-P4-0284` — requirement status derived from the
+  evidence graph and drift-checked under PROFILE-CONSISTENCY (48+28 planned, 0 drift);
+  a42ao's whole rows retired into task-claims-2.md (verify-p4.py in target/p4-system-14/a42ap).
+- next_action: `P4-SYSTEM.14` a42aq — full source/risk/feature adequacy of the one retained
+  case (rv64gc-signed-div-truncation-v2, medium risk, category `defined`): name the legs the
+  policy requires (source-located expectations, boundary fixtures, repeated execution, a
+  discriminating control, matched reference comparison), measure which the retained bytes
+  already satisfy, and either produce the crediting disposition (receipt `qualification`
+  true → REQ-GC-M derives `partial`) or an honest `pending` naming the missing legs. Retire
+  a42ap's whole rows into task-claims-2.md first (retain pattern in the a42ap workdir).
+  EVIDENCE_POLICY.md is one of the case's 64 pinned inputs: edit it only inside a re-capture.
+  A fresh session suits this; the P4 tree has ~3 KB of record room.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none requiring director input. Open containment pressure: docs/tasks aggregate
   3,134,069 of 3,145,728 B → LIVE-CONTAINMENT.4 slice (m), a second task-history seal (the
