@@ -26,6 +26,7 @@ SEAMS = {
                     '    at_witness = True\n'),
     "coverage-optional": ('    _leg(legs, "form-coverage", bool(required) and predeclared == required,\n',
                           '    _leg(legs, "form-coverage", bool(required),\n'),
+    "lock-stale": ('    stale = method.get("disposition") == "stale"\n', '    stale = False\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_undeclared_boundary_rows_keep_the_case_pending",
@@ -33,9 +34,27 @@ MUTATION_TESTS = {
     "infer-feature": "test_undeclared_feature_disposition_is_pending",
     "any-control": "test_control_diverging_elsewhere_is_pending",
     "coverage-optional": "test_partial_form_coverage_is_pending",
+    "lock-stale": "test_stale_method_is_invalidated_not_blocked",
 }
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
+STALE = dict(METHOD, disposition="stale", capture_binding=None, record_disposition=None,
+             reason="evidence/cx/dependencies.sexp: pinned bytes differ")
+
+
+def moved_inputs(root: Path, case_id: str) -> list[str]:
+    """Pinned inputs whose current bytes differ from the case's manifest — read independently of the method."""
+    sys.path.insert(0, str(root / "scripts"))
+    import sexp as S
+    forms = S.parse((root / "evidence" / case_id / "dependencies.sexp").read_text())
+    manifest = next(f for f in forms if isinstance(f, list) and f and str(f[0]) == "dependencies")
+    moved = []
+    for item in S.children(manifest, "input"):
+        path, pin = str(S.children(item, "path")[0][1]), str(S.children(item, "sha256")[0][1])
+        target = root / path
+        if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != pin:
+            moved.append(path)
+    return moved
 
 
 def load_module(workdir: Path):
@@ -184,9 +203,27 @@ class PolicyTests(unittest.TestCase):
 
     def test_unsatisfied_method_is_blocked(self):
         fixture(self.root, declare_boundaries=True)
-        t = self.measure(method=dict(METHOD, disposition="refused", capture_binding=None))
-        self.assertEqual(t["disposition"], "blocked"); self.assertEqual(self.M.summary(t)[0], 1)
-        self.assertIn("matched-reference-comparison", t["missing"]); self.assertIn("currentness", t["missing"])
+        for disposition in ("refused", "unavailable", "unsupported"):
+            t = self.measure(method=dict(METHOD, disposition=disposition, capture_binding=None))
+            self.assertEqual((t["disposition"], self.M.summary(t)[0], t["invalidated_by"]), ("blocked", 1, None), disposition)
+            self.assertIn("matched-reference-comparison", t["missing"]); self.assertIn("currentness", t["missing"])
+            self.assertIn("legs measured but blocked", t["findings"][0])
+
+    def test_stale_method_is_invalidated_not_blocked(self):
+        fixture(self.root, declare_boundaries=True)
+        t = self.measure(method=STALE)
+        self.assertEqual((t["disposition"], t["findings"], t["credited"]), ("invalidated", [], False))
+        self.assertEqual(t["missing"], ["matched-reference-comparison", "currentness"])
+        self.assertEqual(t["invalidated_by"], STALE["reason"]); self.assertEqual(t["method"]["reason"], STALE["reason"])
+        code, line = self.M.summary(t)
+        self.assertEqual(code, 0); self.assertIn("DIV-POLICY: invalidated — 8 of 10", line)
+        self.assertIn("invalidated by evidence/cx/dependencies.sexp", line); self.assertIn("no qualification credit", line)
+
+    def test_qualification_over_invalidated_method_is_a_finding(self):
+        fixture(self.root, declare_boundaries=True, qualification=True)
+        t = self.measure(method=STALE)
+        self.assertEqual((t["disposition"], len(t["findings"]), t["credited"]), ("invalidated", 1, False))
+        self.assertIn("claims qualification", t["findings"][0]); self.assertEqual(self.M.summary(t)[0], 1)
 
     def test_high_risk_requires_a_second_method(self):
         fixture(self.root, declare_boundaries=True, risk="high")
@@ -231,14 +268,25 @@ class PolicyTests(unittest.TestCase):
         first, second = self.measure(), self.measure()
         self.assertEqual(first, second); self.assertLessEqual(len(json.dumps(first).encode()), 65536)
 
-    def test_real_tree_measures_pending_with_two_missing_legs(self):
+    def test_real_tree_measures_as_its_manifest_predicts(self):
+        """Current pins: pending with two legs missing. A moved pin: invalidated, naming it, no finding."""
         import subprocess
+        moved = moved_inputs(ROOT, self.M.CASE_ID)
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_method.py")],
-                              capture_output=True, text=True, cwd=str(ROOT), check=True)
+                              capture_output=True, text=True, cwd=str(ROOT))
+        self.assertEqual(done.returncode, 1 if moved else 0, done.stdout + done.stderr)
         table = self.M.measure_policy(ROOT, method=json.loads(done.stdout))
-        self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
-                         ("pending", ["boundary-fixtures", "form-coverage"], [], False))
-        self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
+        if moved:
+            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
+                             ("invalidated", ["boundary-fixtures", "matched-reference-comparison", "currentness", "form-coverage"], [], False))
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 6)
+            self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 0)
+            self.assertTrue(table["invalidated_by"], table["method"])
+        else:
+            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
+                             ("pending", ["boundary-fixtures", "form-coverage"], [], False))
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
+            self.assertIsNone(table["invalidated_by"])
         self.assertEqual(table["boundary"], dict(present=[10, 11, 12, 13, 17, 19], predeclared=[]))
         self.assertEqual((table["coverage"]["predeclared"], table["coverage"]["exercised"], len(table["coverage"]["required"])),
                          (["div"], ["div", "divu", "rem", "remu"], 13))

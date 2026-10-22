@@ -2085,14 +2085,16 @@ property-delegation:1
 DIV_COMMAND_CASES
   done
 
-  # P4-SYSTEM.14 a42ao: retained finite method, with no reference process.
+  # P4-SYSTEM.14 a42ao: retained finite method, with no reference process. a42as: the deep arms run
+  # against a synthetic current capture built in the copy, so every seam stays reachable while the
+  # curated capture is invalidated; one real-tree arm asserts satisfied or stale as the manifest predicts.
   local div_method_mode div_method_mutation div_method_losses
   local -a div_method_python
   for div_method_mode in normal optimized; do
     div_method_python=(python3)
     [ "$div_method_mode" = optimized ] && div_method_python+=(-O)
     out="$("${div_method_python[@]}" scripts/probe_div_method.py 2>&1)"; rc=$?
-    score "GREEN retained DIV method $div_method_mode" "$rc" 0 "$out" "DIV-METHOD: 20 tests / 0 failures / 0 errors; retained finite method, no Sail or policy credit"
+    score "GREEN retained DIV method $div_method_mode" "$rc" 0 "$out" "DIV-METHOD: 21 tests / 0 failures / 0 errors; retained finite method, no Sail or policy credit"
     while IFS=: read -r div_method_mutation div_method_losses; do
       out="$("${div_method_python[@]}" scripts/probe_div_method.py --mutation "$div_method_mutation" 2>&1)"; rc=$?
       score "RED omitted DIV method $div_method_mutation $div_method_mode" "$rc" 1 "$out" "DIV-METHOD: 1 tests / $div_method_losses failures / 0 errors; retained finite method, no Sail or policy credit"
@@ -2129,14 +2131,16 @@ DIV_METHOD_CASES
   done
 
   # P4-SYSTEM.14 a42aq: the retained case's policy legs are measured; measurement grants no credit.
+  # a42as: a stale finite method is `invalidated` with exit 0 (lock-stale seam); the real-tree arm
+  # predicts pending or invalidated from the manifest, so a moved pinned input is not a refusal.
   local policy_mode policy_mutation
   local -a policy_python
   for policy_mode in normal optimized; do
     policy_python=(python3 -B)
     [ "$policy_mode" = optimized ] && policy_python+=(-O)
     out="$("${policy_python[@]}" scripts/probe_div_policy.py 2>&1)"; rc=$?
-    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 19 tests / 0 failures / 0 errors; measurement only, no qualification credit"
-    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional; do
+    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 21 tests / 0 failures / 0 errors; measurement only, no qualification credit"
+    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale; do
       out="$("${policy_python[@]}" scripts/probe_div_policy.py --mutation "$policy_mutation" 2>&1)"; rc=$?
       score "RED omitted policy legs $policy_mutation $policy_mode" "$rc" 1 "$out" "DIV-POLICY-PROBE: 1 tests / 1 failures / 0 errors; measurement only, no qualification credit"
     done
@@ -2166,7 +2170,9 @@ if [ "$status_rc" -ne 0 ]; then
 fi
 
 # P4-SYSTEM.14 a42aq: the retained DIV case's policy legs are measured from its own bytes; a receipt
-# claiming qualification the legs refuse, or a blocked finite method, fails the gate. No credit.
+# claiming qualification the legs refuse, or a refused/unavailable/unsupported finite method, fails
+# the gate. A stale method — a pinned input moved — is `invalidated`, exit 0, the moved declaration
+# named (a42as, the director's ruling of 2026-10-22): a status of the evidence, not a lock. No credit.
 policy_result="$(python3 -B scripts/review_div_policy.py 2>&1)"; policy_rc=$?
 if [ "$policy_rc" -ne 0 ]; then
   { echo "PROFILE-CONSISTENCY: the retained case's policy legs refuse its receipt, or cannot be measured."

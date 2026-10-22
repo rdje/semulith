@@ -358,6 +358,42 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42as / SEMULITH-P4-0287: a stale finite method invalidates, it does not lock (completed)
+
+Owned on clean 8385b8d. Director's ruling 2026-10-22 ("let's follow your recommendation"): the
+retained case's pinned inputs must not make every commit that touches one of them refused.
+`scripts/review_div_policy.py` (unpinned) reports a `stale` finite method as the `invalidated`
+disposition with exit 0 — the policy's own word for a changed input ("changes invalidate
+dependent evidence", EVIDENCE_POLICY.md "Records, controls and currentness") — and keeps exit 1
+for a receipt claiming qualification over an invalidated method and for a refused, unavailable
+or unsupported method. The self-test arms that read the real retained case predict its state
+from the dependency manifest's pins independently, so they assert `stale` on a moved tree and
+`satisfied` on a current one instead of requiring the tree to be frozen. First measurement:
+which arms refuse on a stale tree (experiment: one appended comment line on
+`scripts/matched_gpr_property.py`, reverted; target/p4-system-14/a42as/stale-experiment.log).
+Then the change, the probes, the gate counts, the chapter, the toolbox mirror and a decision
+record. REQ-GC-M stays planned; no credit is granted or removed. Measured first: on the moved tree
+the method reports `stale` (planned-experiment.sexp: SHA256 differs), the policy `blocked` rc=1,
+requirement status ok, and the self-test 1054 pass / 32 fail — DIV-COMMAND 16 arms (two real-tree
+tests), DIV-METHOD 14 arms (the GREEN arm and twelve RED arms, three of them rc=0: seams the stale
+stop made unreachable), DIV-POLICY 2 (target/p4-system-14/a42as/stale-selftest.log). Built: the
+finite method's probe synthesizes a current retained case once per run (current declarations,
+three synthetic processes in 1.6 s, the measured experiment persisted, the copy's method pinned to
+it; the method reviews it `satisfied`, 85 files authenticated, checker 39), runs its 14 seams
+against it and keeps one real-tree arm that asserts `satisfied` or `stale` as the manifest
+predicts; the command probe's two real-tree arms predict the same way (regenerated manifest differs
+in exactly the moved inputs; the offline evaluation refuses); the policy probe gains `invalidated`
+(two tests, the `lock-stale` seam) and its real-tree arm predicts `pending` or `invalidated`.
+Matrix on both tree states (target/p4-system-14/a42as/probe-matrix.log): policy 21 tests, six seams
+RED; command 19 tests, seven seams 6/1/1/1/2/1/1; method 21 tests, fourteen seams
+4/1/4/2/2/1/2/1/3/4/1/1/1/1 — identical in the current and the moved state; on the moved tree
+`review_div_policy.py` prints `invalidated — 6 of 10 legs satisfied; … invalidated by
+evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs` rc=0. Decision
+record `decision_stale-method-invalidates-not-locks.md` (`answers:`), chapter section, toolbox rows,
+gate counts and comments, book decision count. Commit: SEMULITH-P4-0287. Next: ARTIFACT-CLEANUP.25
+(due), then a42at — the property binding's many-property case over m-forms.s, now committable while
+v2 is invalidated — a42au the v3 declaration, a42av the capture.
+
 ### .14 a42ar / SEMULITH-P4-0286: author the crediting M corpus program (completed)
 
 Owned on clean b469800; the tree's closed acceptance, verification and commit rows through
@@ -676,6 +712,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-through-a42aq).
 
+- [x] `.14` a42as **ROOT CAUSE** — `evidence/rv64gc-signed-div-truncation-v2/dependencies.sexp` pins 64 inputs + 4 principals (`grep -o '(input ' … | wc -l` = 64; 35 scripts, 20 definitions/riscv/*.sexp, 6 profile files, 4 schemas, 1 guest); `git log --since=30.days --name-only` touched 67 of the 68 (0 commits since the capture c91d08f); experiment (one appended comment line on scripts/matched_gpr_property.py, reverted): `python3 -B scripts/review_div_method.py` rc=1 `stale | evidence/…/planned-experiment.sexp: SHA256 differs`; `python3 -B scripts/review_div_policy.py` rc=1 `DIV-POLICY: blocked — 6 of 10 legs satisfied; … FINDING finite method not satisfied (stale)`; `bash scripts/check_profile_consistency.sh --self-test` rc=1 `1054 pass / 32 fail`: GREEN composed DIV command ×2 (`'mismatch' != 'matched'` for the three declarations, `'refused' != 'pending'` offline), its seven RED arms ×2 (19 tests / N failures no longer exact), GREEN retained DIV method ×2 (`('stale', 'pending', None, None, None)`), six method RED arms ×2 (evaluation-selection, typed-findings, native-envelope rc=0: the seam never reached), GREEN policy legs ×2 (target/p4-system-14/a42as/stale-experiment.log, stale-selftest.log).
+- [x] `.14` a42as **ADDRESSED** — moved tree: `python3 -B scripts/review_div_policy.py` rc=0 `DIV-POLICY: invalidated — 6 of 10 legs satisfied; missing boundary-fixtures, matched-reference-comparison, currentness, form-coverage; invalidated by evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs; no qualification credit`; `python3 -B scripts/requirement_status.py` rc=0 (48 planned, 0 credited); probe matrix both states (target/p4-system-14/a42as/probe-matrix.log): `probe_div_policy.py` 21 tests / 0 failures normal+O, six seams `1 tests / 1 failures` (lock-stale new); `probe_div_command.py` 19 / 0, seven seams 6,1,1,1,2,1,1 in both states; `probe_div_method.py` 21 / 0 normal+O (after the synthetic-target and exact-charge fixes: target/p4-system-14/a42as/fix-method-green.err, fix-method-O.log), fourteen seams 4,1,4,2,2,1,2,1,3,4,1,1,1,1 in both states; synthetic current capture `status pending` in 1.6 s, reviewed `satisfied`, record valid, binding matched, 85 files, checker 39 (template-trial).
+- [x] `.14` a42as **NO REGRESSION** — current tree unchanged: `python3 -B scripts/review_div_method.py` satisfied; `python3 -B scripts/review_div_policy.py` rc=0 `pending — 8 of 10 legs satisfied; missing boundary-fixtures, form-coverage`; `bash scripts/check_readme_routes.sh` rc=0; `bash knowledge-map/scripts/check_knowledge_map.sh` rc=0; focused checks rc=0 and staged checks rc=0 (target/p4-system-14/a42as/focused-checks.json, staged-checks.json); gate `--self-test` arms for the three probes re-measured in both states (above); no Rust, no profile, no definition, no evidence byte changed (`git status` shows four scripts and documents only).
+- [x] `.14` a42as **LOCKSTEP** — tree record + rows; scripts/review_div_policy.py, probe_div_policy.py, probe_div_method.py, probe_div_command.py, check_profile_consistency.sh (counts 21/21, lock-stale, comments); decision record + INDEX row; policy-adequacy chapter ("What a moved pin does"); toolbox rows 9, 11, 31; book decision count 65 + replay line; KNOWLEDGE_MAP regenerated; MEMORY; one CHANGELOG entry; LIVE_STATUS unchanged (P4 14/18).
 - [x] `.14` a42ar **ROOT CAUSE** — `python3 -B scripts/review_div_policy.py` rc=0 at b469800: `DIV-POLICY: pending — 8 of 10 legs satisfied; missing boundary-fixtures, form-coverage`; no tracked program carried all 13 M forms: `grep -c 'Table 1)' profiles/rv64gc-lab-v0/guests/m-div.expected.sexp` = 6 and `grep -o '(insn "[a-z]*' profiles/rv64gc-lab-v0/guests/m-div.expected.sexp | sort -u | wc -l` = 6 (four M forms); with the program staged `bash scripts/check_readme_routes.sh` rc=1: `OVER CEILING profiles/: 3154244 aggregate bytes > 3145728` (target/p4-system-14/a42ar/routes-red.log), the first signal the gate could give because the family stood above its health target by the 2026-10-06 design; first commit attempt blocked by pre-commit PROFILE-CONSISTENCY `DIV-POLICY: blocked — 6 of 10 legs satisfied; missing boundary-fixtures, matched-reference-comparison, currentness, form-coverage; FINDING finite method not satisfied (stale)` because scripts/derive_rv64gc_expectations.py, one of the 64 inputs the retained case pins, carried a one-line PARCEL_OWNED_GUESTS registration, and by MATERIALS-BILL `DRIFT rv64gc-lab-v0: internal-contracts.md` (target/p4-system-14/a42ar/commit-blocked.log).
 - [x] `.14` a42ar **ADDRESSED** — `grep -c 'Table 1)' profiles/rv64gc-lab-v0/guests/m-forms.expected.sexp` = 12; all 13 forms present (`grep -o '(insn "[a-z]*' … | sort -u | wc -l` = 15 with addi and slli); `python3 -B scripts/derive_rv64gc_expectations.py --check --parcels --steps 33 …` rc=0 byte-identical; `python3 -B scripts/run_rv64gc_sail.py m-forms` rc=0: AGREE 33 declared steps, two traces byte-identical; `bash scripts/check_readme_routes.sh` rc=0 under the re-derived row (ceilings 800 / 4,194,304, health 684 / 3,586,000, per-part 65,536; decision_profiles-family-corpus-second-rederivation.md); the author and its two probes restored to b469800 (`python3 -B scripts/review_div_method.py` satisfied; `python3 -B scripts/review_div_policy.py` `pending — 8 of 10` again; `--check-owned` 42 byte-identical, m-forms checked with `--check --parcels --steps 33`); `python3 scripts/gen_model_book.py --unit rv64gc-lab-v0` regenerated the fragment, `bash scripts/check_materials_bill.sh` rc=0.
 - [x] `.14` a42ar **NO REGRESSION** — `bash scripts/check_guest_gen.sh` rc=0; `bash scripts/check_interaction_matrix.sh` rc=0; `bash scripts/check_exercise_coverage.sh` rc=0; `make check` rc=0 (cargo test 173 + 17 + 287 passed, 0 failed; fmt and clippy clean); focused checks rc=0; seven books; `python3 -B scripts/review_div_policy.py` unchanged (pending 8 of 10: the retained case is untouched).

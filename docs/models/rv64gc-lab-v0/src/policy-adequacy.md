@@ -46,12 +46,25 @@ currentness leg fails until a fresh capture: a policy change is a capture, not a
 ## What the consumer refuses
 
 A receipt whose `qualification` is true while any leg is pending is a finding and fails
-`PROFILE-CONSISTENCY` ("No typed success word substitutes for executed evidence"). An
-unsatisfied finite method leaves the legs measured but `blocked`. A high- or
+`PROFILE-CONSISTENCY` ("No typed success word substitutes for executed evidence"). A refused,
+unavailable or unsupported finite method leaves the legs measured but `blocked`. A high- or
 critical-risk requirement stays pending on its second method, because no declaration
 vocabulary for one exists yet. An obligation without a declared feature disposition stays
 pending; the disposition is never inferred from the mnemonics. A control that diverges
 somewhere other than the witness step and register is not the stated reason.
+
+## What a moved pin does
+
+A `stale` finite method — one of the case's pinned inputs changed since the capture — is not
+refused. The measurement reports `invalidated`, names the first moved declaration
+(`invalidated by evidence/…/planned-experiment.sexp: SHA256 differs`), keeps the two legs that
+depend on the method pending and exits 0, unless the receipt still claims `qualification`. That
+is the policy's own currentness rule ("changes invalidate dependent evidence") read as a status
+of the evidence rather than a lock on the tree: the invalidated case credits nothing, `REQ-GC-M`
+keeps deriving `planned`, and the next capture supersedes it. The finite method's probe keeps
+every seam reachable meanwhile by running its deep arms against a synthetic current capture;
+its real-tree arm, like the command probe's, asserts the state the dependency manifest predicts
+(`decision_stale-method-invalidates-not-locks.md`, the director's ruling of 2026-10-22).
 
 ## Run and controls
 

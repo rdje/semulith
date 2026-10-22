@@ -144,6 +144,69 @@ print(json.dumps(result))
 '''
 
 
+def moved_inputs(root: Path, case_id: str = A.P.CASE_ID) -> list[str]:
+    """Pinned inputs whose current bytes differ from the case's manifest — read without the capture code.
+
+    The retained case is current when this is empty and invalidated otherwise (P4-SYSTEM.14 a42as,
+    the director's ruling of 2026-10-22): a real-tree assertion predicts its outcome from this list
+    instead of requiring the tree to stay frozen."""
+    forms = A.S.parse((root / "evidence" / case_id / "dependencies.sexp").read_text())
+    manifest = next(form for form in forms if isinstance(form, list) and form and str(form[0]) == "dependencies")
+    moved = []
+    for item in A.S.children(manifest, "input"):
+        path, pin = str(A.S.field(item, "path")), str(A.S.field(item, "sha256"))
+        target = root / path
+        if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != pin:
+            moved.append(path)
+    return moved
+
+
+def manifest_pins(payload: bytes) -> dict:
+    """path -> sha256 of one dependency manifest's input rows."""
+    forms = A.S.parse(payload.decode())
+    manifest = next(form for form in forms if isinstance(form, list) and form and str(form[0]) == "dependencies")
+    return {str(A.S.field(item, "path")): str(A.S.field(item, "sha256")) for item in A.S.children(manifest, "input")}
+
+
+def reference_candidate(runtime: Path):
+    path = runtime / A.DIRECTORY / "references.sexp"
+    forms = A.S.parse(path.read_text())
+    document = next(form for form in forms if form[0] == "references")
+    candidate = next(form for form in A.S.children(document, "candidate")
+                     if A.S.field(form, "id") == "sail-riscv")
+    return path, forms, candidate
+
+
+def synthesize_reference(runtime: Path, *, exit_code=0) -> None:
+    """Change only owned fixture identities in a runtime copy; a child imports them fresh.
+
+    The pinned reference binary becomes a script that writes the author-derived trace, so the
+    copy is a current, self-consistent package whose three runs need no Sail. Shared with
+    probe_div_method, whose deep arms run against such a synthetic current capture."""
+    source = (runtime / A.Review.GUEST).read_bytes()
+    derived = Author.derive_snapshot(source, program="m-div.s", instructions=27)
+    lines = []
+    for step in derived.steps:
+        lines.append(f"[{step.n}] [M]: 0x{step.pc:016x} (0x{step.instruction_bits:08x}) synthetic fixture")
+        lines.extend(f"x{reg} <- 0x{value:016x}" for reg, value in step.writes)
+    trace = ("\n".join(lines) + "\n").encode()
+    path, forms, candidate = reference_candidate(runtime)
+    old = A.S.field(candidate, "binary_sha256")
+    binary = runtime / A.S.field(candidate, "binary")
+    binary.parent.mkdir(parents=True, exist_ok=True)
+    binary.write_text("#!" + sys.executable + " -B\nfrom pathlib import Path\nimport sys\n"
+                      + "Path(sys.argv[9]).write_bytes(" + repr(trace) + ")\n"
+                      + "sys.exit(" + str(exit_code) + ")\n")
+    binary.chmod(0o755)
+    digest = hashlib.sha256(binary.read_bytes()).hexdigest()
+    A.S.children(candidate, "binary_sha256")[0][1] = digest
+    path.write_text(A.R.render_forms(forms))
+    identity = runtime / A.IDENTITY_PATH
+    identity.write_bytes(identity.read_bytes().replace(old.encode(), digest.encode()))
+    entry = runtime / "scripts/capture_div.py"
+    entry.write_text(entry.read_text().replace(A.PREPARED[-1][-1], hashlib.sha256(identity.read_bytes()).hexdigest(), 1))
+
+
 class CommandTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -176,37 +239,10 @@ class CommandTests(unittest.TestCase):
         return json.loads(result.stdout.splitlines()[-1])
 
     def candidate(self):
-        path = self.runtime / A.DIRECTORY / "references.sexp"
-        forms = A.S.parse(path.read_text())
-        document = next(form for form in forms if form[0] == "references")
-        candidate = next(form for form in A.S.children(document, "candidate")
-                         if A.S.field(form, "id") == "sail-riscv")
-        return path, forms, candidate
+        return reference_candidate(self.runtime)
 
     def synthetic_reference(self, *, exit_code=0):
-        """Change only owned fixture identities; the child imports them fresh."""
-        source = (self.runtime / A.Review.GUEST).read_bytes()
-        derived = Author.derive_snapshot(source, program="m-div.s", instructions=27)
-        lines = []
-        for step in derived.steps:
-            lines.append(f"[{step.n}] [M]: 0x{step.pc:016x} (0x{step.instruction_bits:08x}) synthetic fixture")
-            lines.extend(f"x{reg} <- 0x{value:016x}" for reg, value in step.writes)
-        trace = ("\n".join(lines) + "\n").encode()
-        path, forms, candidate = self.candidate()
-        old = A.S.field(candidate, "binary_sha256")
-        binary = self.runtime / A.S.field(candidate, "binary")
-        binary.parent.mkdir(parents=True, exist_ok=True)
-        binary.write_text("#!" + sys.executable + " -B\nfrom pathlib import Path\nimport sys\n"
-                          + "Path(sys.argv[9]).write_bytes(" + repr(trace) + ")\n"
-                          + "sys.exit(" + str(exit_code) + ")\n")
-        binary.chmod(0o755)
-        digest = hashlib.sha256(binary.read_bytes()).hexdigest()
-        A.S.children(candidate, "binary_sha256")[0][1] = digest
-        path.write_text(A.R.render_forms(forms))
-        identity = self.runtime / A.IDENTITY_PATH
-        identity.write_bytes(identity.read_bytes().replace(old.encode(), digest.encode()))
-        entry = self.runtime / "scripts/capture_div.py"
-        entry.write_text(entry.read_text().replace(A.PREPARED[-1][-1], hashlib.sha256(identity.read_bytes()).hexdigest(), 1))
+        synthesize_reference(self.runtime, exit_code=exit_code)
 
     def test_exact_real_declaration_inventory_and_readonly_copy(self):
         result = self.inspect()
@@ -223,17 +259,30 @@ class CommandTests(unittest.TestCase):
         self.assertEqual(len(list((self.runtime / A.PREFIX).iterdir())), 4)
 
     def test_retained_native_declarations_match_the_current_actual_package(self):
+        """Every pin current: each tracked declaration equals its regeneration. A pinned input moved: the
+        regenerated manifest differs from the tracked one in exactly the moved inputs, the tracked manifest
+        pin reports mismatch, and no declaration is silently borrowed (a42as)."""
         from unittest.mock import patch
 
+        moved = moved_inputs(ROOT)
         with patch.object(subprocess, "Popen", side_effect=AssertionError("unexpected declaration process")):
             declaration = A.prepare_capture()
-            for name, payload in A.declaration_files(declaration):
-                with self.subTest(name=name):
-                    record = dict(id=name, role="declaration", path=A.PREFIX + "/" + name,
-                                  sha256=hashlib.sha256(payload).hexdigest())
-                    snapshot = A.Artifacts.read_snapshot(ROOT, "input", record, max_bytes=65536)
+            regenerated = dict(A.declaration_files(declaration))
+        for name, payload in regenerated.items():
+            with self.subTest(name=name):
+                record = dict(id=name, role="declaration", path=A.PREFIX + "/" + name,
+                              sha256=hashlib.sha256(payload).hexdigest())
+                snapshot = A.Artifacts.read_snapshot(ROOT, "input", record, max_bytes=65536)
+                if not moved or name != "dependencies.sexp" and snapshot.pin.disposition == "matched":
                     self.assertEqual(snapshot.pin.disposition, "matched", snapshot.pin.reason)
                     self.assertEqual(snapshot.data, payload)
+                else:
+                    self.assertEqual(snapshot.pin.disposition, "mismatch", snapshot.pin.reason)
+        if moved:
+            tracked = manifest_pins((ROOT / A.PREFIX / "dependencies.sexp").read_bytes())
+            current = manifest_pins(regenerated["dependencies.sexp"])
+            self.assertEqual(set(tracked), set(current))
+            self.assertEqual(sorted(path for path in tracked if tracked[path] != current[path]), sorted(moved))
 
     def test_actual_canonical_capture_evaluates_offline_without_a_process(self):
         from unittest.mock import patch
@@ -276,6 +325,13 @@ class CommandTests(unittest.TestCase):
                 current_candidate=dict(declaration.authorities.reference.fields),
                 reviewed_inputs=declaration.inventory, author_review=declaration.author,
                 impact_review=declaration.impact, property_authority=declaration.authorities.property_authority)
+            moved = moved_inputs(ROOT)
+            if moved:
+                # The retained outputs are intact (every pin above matched); the evaluation refuses the
+                # current inventory because a pinned input moved — invalidated, not borrowed (a42as).
+                self.assertEqual(checked.disposition, "refused", checked.reason)
+                self.assertTrue(checked.reason, checked)
+                return
             self.assertEqual(checked.disposition, "pending", checked.reason)
             self.assertEqual(checked.record.disposition, "valid")
             self.assertEqual(checked.comparison.disposition, "satisfied")

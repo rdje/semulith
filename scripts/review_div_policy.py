@@ -33,8 +33,14 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
   feature-rules                the obligation's feature disposition is declared below.
   form-coverage                every form the requirement names is exercised AND predeclared.
 
-Exit 0: measured (satisfied or pending). Exit 1: a finding — the receipt claims
-`qualification` the legs refuse, or the finite method is not satisfied (blocked).
+Exit 0: measured (satisfied, pending or invalidated). Exit 1: a finding — the receipt
+claims `qualification` the legs refuse, or the finite method is refused, unavailable or
+unsupported (blocked). A `stale` finite method — a pinned input moved since the capture —
+is the policy's currentness rule doing its work ("changes invalidate dependent evidence"):
+the measurement is `invalidated`, the legs that depend on the method stay pending, the
+moved input is named, and nothing is refused unless the receipt still claims qualification
+(P4-SYSTEM.14 a42as, the director's ruling of 2026-10-22). An invalidated case grants
+nothing and locks nothing: the next capture supersedes it.
 Exit 2: refused/unavailable/unsupported (bounds, unreadable inputs, another case).
 """
 from __future__ import annotations
@@ -266,22 +272,30 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
 
     assert [leg.id for leg in legs] == list(LEG_ORDER)
     missing = [leg.id for leg in legs if leg.disposition != "satisfied"]
+    stale = method.get("disposition") == "stale"
     findings = []
     if receipt.get("qualification") is True and missing:
         findings.append("receipt claims qualification the policy legs refuse: " + ", ".join(missing))
-    if not method_ok:
+    if not method_ok and not stale:
         findings.append(f"finite method not satisfied ({method.get('disposition')}); legs measured but blocked")
-    disposition = "blocked" if not method_ok else ("satisfied" if not missing else "pending")
+    if stale:
+        disposition = "invalidated"
+    elif not method_ok:
+        disposition = "blocked"
+    else:
+        disposition = "satisfied" if not missing else "pending"
     return dict(format_version=FORMAT, case_id=case_id, profile_id=profile, requirement_id=req_id,
                 obligation_ids=obligation_ids, category=category, risk=risk,
-                method={k: method.get(k) for k in ("disposition", "capture_binding", "record_disposition",
+                method={k: method.get(k) for k in ("disposition", "reason", "capture_binding", "record_disposition",
                                                     "charged_read_bytes", "record_sha256", "planned_sha256")},
+                invalidated_by=(str(method.get("reason") or "finite method stale") if stale else None),
                 legs=[asdict(leg) for leg in legs], missing=missing, findings=findings,
                 coverage=dict(required=required, exercised=exercised, predeclared=predeclared),
                 boundary=dict(present=boundary_steps, predeclared=sorted(declared_steps & set(boundary_steps))),
                 disposition=disposition, credited=False,
                 limitations=["measurement of declared bytes only; grants no qualification, obligation or CPU credit",
                              "a crediting disposition is a separately owned record that cites a satisfied measurement",
+                             "an invalidated measurement is superseded by the next capture, never repaired by relabelling",
                              "boundary rows and forms are read from the expectation file, not inferred from the chapter"])
 
 
@@ -297,6 +311,7 @@ def summary(table: dict) -> tuple[int, str]:
     satisfied = sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied")
     line = (f"DIV-POLICY: {table['disposition']} — {satisfied} of {len(table['legs'])} legs satisfied"
             + (f"; missing {', '.join(table['missing'])}" if table["missing"] else "")
+            + (f"; invalidated by {table['invalidated_by']}" if table.get("invalidated_by") else "")
             + (f"; FINDING {'; '.join(table['findings'])}" if table["findings"] else "")
             + "; no qualification credit")
     return (1 if table["findings"] else 0), line

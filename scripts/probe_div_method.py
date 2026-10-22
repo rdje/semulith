@@ -16,9 +16,27 @@ import unittest
 sys.dont_write_bytecode = True
 
 import capture_div as A
+import probe_div_command as Command  # the synthetic reference and the manifest reading (a42as)
+import review_div_method as M
 
 
 ROOT = Path(__file__).resolve().parent.parent
+DECLARATIONS = ("planned-experiment.sexp", "dependencies.sexp", "authorities.sexp")
+# Builds a CURRENT synthetic retained case in a runtime copy: current declarations, three
+# synthetic processes, the measured experiment persisted. No Sail, no reference binary.
+SYNTHESIZE = r'''
+from pathlib import Path
+import json, sys
+runtime = Path(sys.argv[1]); sys.path.insert(0, str(runtime / "scripts")); sys.dont_write_bytecode = True
+import capture_div as A
+declaration = A.prepare_capture()
+for name, payload in A.declaration_files(declaration):
+    with (runtime / A.PREFIX / name).open("xb") as stream: stream.write(payload)
+result = A.capture()
+if result.disposition == "pending":
+    with (runtime / A.PREFIX / "measured-experiment.sexp").open("xb") as stream: stream.write(result.experiment)
+print(json.dumps(dict(status=result.disposition)))
+'''
 MUTATION = None
 SEAMS = {
     "declaration-binding": ("review_div_method.py", '''        for name, payload in A.declaration_files(declaration):
@@ -68,7 +86,7 @@ SEAMS = {
 ''', ""),
 }
 
-# Each omission runs its discriminating test. Both ordinary suites run all20
+# Each omission runs its discriminating test. Both ordinary suites run all 21
 # tests; repeating unrelated cold-runtime cases under every broken fixture adds
 # no evidence about the omitted predicate.
 MUTATION_TESTS = {
@@ -213,6 +231,12 @@ elif mode=='graph-evidence':
     current_candidate=dict(d.authorities.reference.fields),inventory=d.inventory,impact_review=impact)
  except K.AdequacyError as error:result=dict(disposition='refused',reason=str(error))
  else:result=dict(disposition='accepted')
+elif mode=='exact-charge':
+ # The accounting invariant, read independently of the budget: every declaration's bytes, the measured
+ # record's bytes and the evaluator's own read receipt — nothing refunded, nothing counted twice.
+ d,c,data,b,e=fixture()
+ declared=sum((root/A.PREFIX/name).stat().st_size for name in ('planned-experiment.sexp','dependencies.sexp','authorities.sexp'))
+ result=dict(expected=declared+len(data)+e.authentication.charged_read_bytes,evaluator=e.authentication.charged_read_bytes)
 elif mode=='missing-finding':
  d,c,data,b,e=fixture();result=asdict(K.assess_findings(c,b,replace(e,**{argument:None})))
 elif mode=='unsupported-finding':
@@ -252,17 +276,47 @@ class MethodTests(unittest.TestCase):
                      | {"scripts/matched_gpr_adequacy.py", "scripts/review_div_method.py"})
         if len(cls.paths) != 103:
             raise RuntimeError("retained method runtime population changed")
+        # The deep arms exercise the method's logic against a CURRENT synthetic retained case built
+        # once from the live modules and prepared inputs, so every seam stays reachable whether or
+        # not the curated capture is still current; only the real-tree arm reads the curated one and
+        # predicts its outcome from the manifest (P4-SYSTEM.14 a42as). The copy's method pins the
+        # synthetic measured experiment the way the live one pins the curated capture.
+        base = ROOT / "target/div-method-controls"
+        base.mkdir(parents=True, exist_ok=True)
+        cls.template_directory = TemporaryDirectory(dir=base)
+        cls.template = Path(cls.template_directory.name) / "runtime"
+        outputs = ({p.relative_to(ROOT).as_posix() for p in (ROOT / A.PREFIX).iterdir()}
+                   - {row[2] for row in A.PREPARED})
+        for name in sorted(cls.paths - outputs):
+            target = cls.template / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / name, target)
+        Command.synthesize_reference(cls.template)
+        done = subprocess.run([sys.executable, "-B", "-c", SYNTHESIZE, str(cls.template)], cwd=ROOT,
+                              capture_output=True, text=True, timeout=120)
+        if done.returncode != 0 or json.loads(done.stdout.splitlines()[-1]) != dict(status="pending"):
+            raise RuntimeError("synthetic current capture failed: " + done.stdout + done.stderr)
+        measured = (cls.template / A.PREFIX / "measured-experiment.sexp").read_bytes()
+        path = cls.template / "scripts/review_div_method.py"
+        source = path.read_text()
+        for before, after in ((f'MEASURED_SHA256 = "{M.MEASURED_SHA256}"',
+                               f'MEASURED_SHA256 = "{hashlib.sha256(measured).hexdigest()}"'),
+                              (f"MEASURED_BYTES = {M.MEASURED_BYTES}", f"MEASURED_BYTES = {len(measured)}")):
+            if source.count(before) != 1:
+                raise RuntimeError("curated capture pin must be singular: " + before)
+            source = source.replace(before, after, 1)
+        path.write_text(source)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.template_directory.cleanup()
 
     def setUp(self):
         base = ROOT / "target/div-method-controls"
-        base.mkdir(parents=True, exist_ok=True)
         self.temporary = TemporaryDirectory(dir=base)
         self.addCleanup(self.temporary.cleanup)
         self.runtime = Path(self.temporary.name) / "runtime"
-        for name in sorted(self.paths):
-            target = self.runtime / name
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(ROOT / name, target)
+        shutil.copytree(self.template, self.runtime)
         if MUTATION:
             name, before, after = SEAMS[MUTATION]
             target = self.runtime / "scripts" / name
@@ -281,19 +335,51 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(payload["processes"], 0, payload)
         return payload
 
-    def test_actual_retained_method_is_finite_satisfied_and_policy_pending(self):
+    def test_synthetic_current_capture_is_finite_satisfied_and_policy_pending(self):
         r = self.inspect()
         self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
                           r["capture_binding"], r["evaluation_disposition"]),
                          ("satisfied", "pending", "valid", "matched", "pending"), r)
-        self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
-                         (85, 1048756, 33759), r)
+        self.assertEqual(r["authenticated_files"], 85, r)
+        self.assertGreater(r["authenticated_bytes"], 0, r)
+        self.assertGreater(r["snapshot_bytes"], 0, r)
         self.assertEqual((r["checker_disposition"], r["checker_source_count"]), ("matched", 39), r)
         self.assertTrue(r["root"])
         self.assertEqual(r["replay_disposition"], "not-checked")
         self.assertFalse((self.runtime / ".git").exists())
         self.assertFalse((self.runtime / ".materials").exists())
-        self.assertFalse((self.runtime / "target").exists())
+        # The only thing under the copy's target/ is the synthetic reference script the copy pins.
+        _, _, candidate = Command.reference_candidate(self.runtime)
+        binary = (self.runtime / str(A.S.field(candidate, "binary"))).resolve()
+        self.assertEqual([p.resolve() for p in (self.runtime / "target").rglob("*") if p.is_file()], [binary])
+
+    def test_actual_retained_method_is_satisfied_or_stale_as_its_manifest_predicts(self):
+        """The curated capture on the real tree: finite satisfied while every pin is current; stale,
+        naming the first moved declaration and reading nothing beyond it, once a pinned input moved
+        (the policy then measures `invalidated`). The expectation comes from the manifest, not the tree."""
+        moved = Command.moved_inputs(ROOT)
+        done = subprocess.run([sys.executable, *(["-O"] if sys.flags.optimize else []), "-B",
+                               str(ROOT / "scripts/review_div_method.py")],
+                              cwd=ROOT, capture_output=True, text=True, timeout=120)
+        r = json.loads(done.stdout)
+        if moved:
+            self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
+            self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
+                              r["capture_binding"], r["evaluation_disposition"]),
+                             ("stale", "pending", None, None, None), r)
+            self.assertTrue(r["reason"].startswith(A.PREFIX + "/"), r["reason"])
+            self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
+            self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
+                             (None, None, None), r)
+        else:
+            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+            self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
+                              r["capture_binding"], r["evaluation_disposition"]),
+                             ("satisfied", "pending", "valid", "matched", "pending"), r)
+            self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
+                             (85, 1048756, 33759), r)
+        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
+        self.assertEqual(r["replay_disposition"], "not-checked")
 
     def test_all_runtime_files_remain_exact_and_results_are_immutable(self):
         self.assertTrue(self.inspect("read-only")["unchanged"])
@@ -374,13 +460,15 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(self.inspect("typed-finding")["disposition"], "refused")
 
     def test_native_and_evaluator_reads_share_exact_and_short_allowances(self):
-        for limit in (134217728, 1100198):
+        exact = self.inspect("exact-charge")["expected"]  # independent of the method's own accounting
+        self.assertGreater(exact, A.SMALL_BYTES)
+        for limit in (134217728, exact):
             with self.subTest(limit=limit):
                 r = self.inspect("budget", limit)
-                self.assertEqual((r["disposition"], r["charged_read_bytes"]), ("satisfied", 1100198), r)
-        r = self.inspect("budget", 1100197)
+                self.assertEqual((r["disposition"], r["charged_read_bytes"]), ("satisfied", exact), r)
+        r = self.inspect("budget", exact - 1)
         self.assertNotEqual(r["disposition"], "satisfied", r)
-        self.assertLessEqual(r["charged_read_bytes"], 1100197)
+        self.assertLessEqual(r["charged_read_bytes"], exact - 1)
 
     def test_bad_evaluator_accounting_keeps_the_full_reservation(self):
         for value in ("boolean", "negative", "overflow", "under"):

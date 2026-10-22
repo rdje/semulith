@@ -130,6 +130,7 @@
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)
+- [`decision_stale-method-invalidates-not-locks.md`](docs/decisions/decision_stale-method-invalidates-not-locks.md)
 - [`decision_task-family-count-rederivation-retention.md`](docs/decisions/decision_task-family-count-rederivation-retention.md)
 - [`decision_task-family-six-activity-count.md`](docs/decisions/decision_task-family-six-activity-count.md)
 - [`decision_task-history-seal-review.md`](docs/decisions/decision_task-history-seal-review.md)
