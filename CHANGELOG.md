@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0082 (leaf ARTIFACT-CLEANUP.25) — the second recurring cleanup through the supported act
+
+Plan, strict selection, `--delete` under a fresh host census and `--inspect` in
+target/artifact-cleanup/AC0082: 6 captured Cargo incremental outputs removed
+(15,766,472 B), residue 0, journal recorded-complete/verified; 67 unrecorded
+candidates (281 MB, the gate's mutation-build sessions — an open question), every
+input and log untouched. `docs/ARTIFACT_CLEANUP.md` overwritten. Next cleanup after
+2026-10-23T08:12Z; P4-SYSTEM.14 a42at resumes meanwhile.
+
 ## SEMULITH-P4-0287 (leaf P4-SYSTEM.14) — a stale finite method invalidates, it does not lock
 
 a42as, the director's ruling of 2026-10-22: `scripts/review_div_policy.py` reports a `stale` finite method as `invalidated` with exit 0 and the moved declaration named, keeping exit 1 for a qualification claim over it and for a refused, unavailable or unsupported method; `scripts/probe_div_method.py` builds a synthetic current retained case once per run (current declarations, three synthetic processes, the measured experiment persisted, the copy's method pinned to it) so its 14 seams stay reachable while the curated capture is invalidated, and its real-tree arm — like the command probe's two — asserts the state the dependency manifest predicts. Measured before the change: one appended comment line on a pinned module made 32 of 1,086 self-test arms miss and the gate refuse; after it, both tree states measure green. Decision record, chapter, toolbox mirror, gate counts. No credit granted or removed; `REQ-GC-M` stays planned.

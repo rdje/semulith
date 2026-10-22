@@ -1,5 +1,17 @@
 # DEV_NOTES.md
 
+## _(2026-10-22 UTC)_ — the gate's mutation builds are the cleanup's residue (ARTIFACT-CLEANUP.25)
+
+AC0082 after 39e7016, clean tree and `handoff: OK`, at 34 h: the slot fell inside a gate run.
+Plan 73 candidates, strict selection 6 approved, the guarded core removed exactly those six,
+residue 0, journal recorded-complete at verified, record overwritten. The number that moved is
+the unrecorded one: 13 sessions (62 MB) at AC0081, 67 (281 MB) now, after three commits through
+the gate. The PROFILE-CONSISTENCY self-test and PORT-WEB build mutation copies in their own Cargo
+sessions; capture never records them, strict selection rightly leaves them, and rustc collects an
+incremental session only on a successful build of the same session, which a mutation copy never
+gets. So each gated commit now leaves about 90 MB behind that only a recorded class or a
+disposable build directory can retire. Logged as an Open Question in the cleanup tree.
+
 ## _(2026-10-21 UTC)_ — the expected author is a pinned input; a registration line is a capture (P4-SYSTEM.14 a42ar)
 
 The first commit of P4-0286 was refused by the pre-commit gate: `DIV-POLICY: blocked … finite
