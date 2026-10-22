@@ -241,10 +241,10 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
         m = next(r for r in gc["rows"] if r["id"] == "REQ-GC-M")
-        # Both retained cases bind REQ-GC-M and neither credits it: the retained case is pending,
-        # the m-forms case is declared and awaits its capture.
-        self.assertEqual(sorted(m["uncredited"]), ["rv64gc-m-forms-v3:declared", "rv64gc-signed-div-truncation-v2:pending"])
-        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"]), (2, 0, 1))
+        # Both retained cases bind REQ-GC-M and neither credits it: each is captured with a receipt
+        # whose qualification is false (a42aw), so both are pending and none is merely declared.
+        self.assertEqual(sorted(m["uncredited"]), ["rv64gc-m-forms-v3:pending", "rv64gc-signed-div-truncation-v2:pending"])
+        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"]), (2, 0, 0))
 
 
 def main():

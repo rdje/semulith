@@ -12,7 +12,7 @@ every case; nothing here closes the M obligation or the CPU gate.
 | Case directory | State | Files | Holds |
 | --- | --- | --- | --- |
 | `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` since 2026-10-22 (a pinned input moved) | 21 of 21 | `m-div.s`, 27 boundaries, one predeclared property; baseline/repeat AGREE, wrong-quotient control DIVERGE; superseded by the next capture, never rerun |
-| `rv64gc-m-forms-v3/` | declared 2026-10-22, not captured | 7 of 21 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); the control changes boundary 12 x15 from −3 to −4 |
+| `rv64gc-m-forms-v3/` | captured 2026-10-22 (one invocation of `scripts/retain_div_capture.py`); the retained reviews switch to it in the next unit | 21 of 21 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); baseline/repeat AGREE, the boundary 12 x15 −3 → −4 control DIVERGE; qualification false |
 
 ## Declared files and lifecycle (per case)
 
@@ -23,10 +23,10 @@ every case; nothing here closes the M obligation or the CPU gate.
 | Retained observations | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Retained results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 43 files at most. The prepared inputs are curated from canonical sources by
+With this index: 43 files at most, all 43 present. The prepared inputs are curated from canonical sources by
 `scripts/prepare_div_inputs.py --case <id>` (`--verify` re-derives them); the declarations by
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; the observations and
-results by `--capture`, exactly once. Planned zero hashes/sizes/exits are unmeasured targets; the
+results by `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once. Planned zero hashes/sizes/exits are unmeasured targets; the
 measured record replaces only observation sizes/hashes and checked exits; `verification.json` is a
 derived receipt with qualification false. A declared case without a receipt credits nothing
 (`scripts/requirement_status.py` reports it `declared`). Existing output names refuse reuse;

@@ -217,4 +217,4 @@ without writing; `--write` creates the files exclusively and refuses any that al
 retained input is never replaced. The probe now runs its controls over both cases (34 tests in each
 Python mode) and holds the family census to 43 files / 32 MiB, the two-case envelope of
 `decision_evidence-family-two-cases.md`; omitting the actual layout census loses six assertions.
-The m-forms case is declared, not captured: no observation, receipt or credit exists for it.
+The m-forms case was captured once on 2026-10-22 ([the m-forms capture](canonical-division.md#the-m-forms-capture-a42aw)); its prepared inputs are unchanged by that, and no credit follows from it.

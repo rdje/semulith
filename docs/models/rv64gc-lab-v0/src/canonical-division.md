@@ -147,3 +147,77 @@ The full source/risk/feature policy, complete closure and impact adequacy,
 qualification/status integration and remaining profile evidence still belong to
 `P4-SYSTEM.14`. CPU remains 14/18; this capture does not close `REQ-GC-M`,
 `OB-GC-M`, the environment contract or the processor gate.
+
+## The m-forms capture (a42aw)
+
+The second reviewed case, `rv64gc-m-forms-v3`, was captured once on 2026-10-22 by the tracked tool
+`scripts/retain_div_capture.py` — the procedure the first capture ran by hand, now with a preflight
+(every output and result name absent, the three declarations regenerating byte for byte, the
+binary's digest equal to the retained identity, the declaration commit named), one invocation of
+`capture_div.capture` with the case named, and the exclusive publication of the two results. The
+declaration commit it records is `4af5a68bbec9f1bf0922ec3787f829e029c15f29` (the re-emitted
+declarations of a42av); the binary is the pinned Sail 0.14 release, 3,801,664 bytes.
+
+```bash
+python3 -B scripts/retain_div_capture.py --case rv64gc-m-forms-v3 \
+    --declaration-commit 4af5a68bbec9f1bf0922ec3787f829e029c15f29 --preflight-only
+python3 -B scripts/retain_div_capture.py --case rv64gc-m-forms-v3 \
+    --declaration-commit 4af5a68bbec9f1bf0922ec3787f829e029c15f29
+```
+
+The first command prints `ready` and starts nothing; the second was run exactly once and refuses
+ever since (`outputs already exist; a capture is never rerun`). Its receipt and the offline
+re-evaluation of the retained bytes agree:
+
+| Run | Computed result | Evidence |
+| --- | --- | --- |
+| Baseline | AGREE | All 33 declared boundaries and every GPR change row agree with the source-derived expectations; process 33523 exited 0. |
+| Repeat | AGREE | Same executed inputs, a fresh process (33562), a byte-identical raw trace. |
+| Wrong quotient | DIVERGE | Only boundary 12's x15 differs: `div x15, x5, x6` observed `0xfffffffffffffffd` (−3), the control expects `0xfffffffffffffffc` (−4); process 33599 exited 0, raw trace identical. |
+
+Each raw trace is 2,794 bytes with SHA256
+`784645dcd85f2ce0cc8e734cc22c8c50231ba28434958dec7a6f855ae1cb7f05`. The measured record
+`measured-experiment.sexp` is 16,942 bytes (SHA256
+`fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152`); the receipt
+`verification.json` is 7,017 bytes (SHA256
+`91a90d9c56487af1a6b4306e9007d771e17246ddf41b358185374680090a5a5d`) with `qualification` false;
+like the first receipt it names repository-root identities under `object`, because a JSON object
+carrying both `path` and `sha256` is a fixture pin resolved relative to the record's own directory.
+Retained evaluation authenticated 85 files totalling 1,076,834 bytes and kept 40,438 snapshot
+bytes; the combined conservative artifact-read charge was 24,396,002 bytes of the 134,217,728
+allowance. All 25 predeclared properties bind to the source derivation — the 13 forms and the 12
+Table 1 cells — with the control's observed value equal to the source finding's.
+
+Check the retained result without running Sail, naming the case:
+
+```bash
+PYTHONPATH=scripts python3 - <<'PY_M_FORMS'
+import json
+from capture_div import prepare_capture, ROOT, S, Unit, prefix
+from experiment_artifacts import observe_bounded_file, read_snapshot
+
+case = "rv64gc-m-forms-v3"
+path = prefix(case) + "/verification.json"
+observed = observe_bounded_file(ROOT, path, max_bytes=65536)
+report = json.loads(read_snapshot(ROOT, "input", dict(id="verification", path=path,
+                    sha256=observed.sha256), max_bytes=65536).data)
+retained = report["measured_experiment"]
+measured = read_snapshot(ROOT, "observation", {**retained, "path": retained["object"]}, max_bytes=65536)
+raw = next(form for form in S.parse(measured.data.decode()) if form[0] == "experiment")
+d = prepare_capture(case)
+checked = Unit.Evaluation.evaluate_retained_unit(
+    ROOT, raw_experiment=raw, scope=d.authorities.scope,
+    current_candidate=dict(d.authorities.reference.fields), reviewed_inputs=d.inventory,
+    author_review=d.author, impact_review=d.impact,
+    property_authority=d.authorities.property_authority, case_id=case)
+print(checked.disposition, checked.record.disposition, checked.comparison.disposition)
+print(*(run.comparison.verdict for run in checked.comparison.runs))
+print(len(checked.source_property.facts.observed), report["qualification"])
+PY_M_FORMS
+```
+
+It prints `pending valid satisfied`, `AGREE AGREE DIVERGE`, then `25 False`. The retained reviews
+(`scripts/review_div_method.py`, `scripts/review_div_policy.py`) still read the invalidated first
+case: switching their retained pointers to this capture, and measuring its ten policy legs, is the
+next unit. Nothing here credits `REQ-GC-M`; `scripts/requirement_status.py` derives it `planned`
+with both cases pending.

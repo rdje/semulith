@@ -558,4 +558,5 @@ reaches any reviewed case with pinned prepared inputs; without it the command pr
 retained case, so the method review, the command probe and the method probe are unchanged. The
 capture review takes the same selector (`scripts/review_div_capture.py --review --case <id>`) and
 exercises the loaders over that case's guest. A declared case without a receipt is reported
-`declared` by `scripts/requirement_status.py` and credits nothing; the capture is the next unit.
+`declared` by `scripts/requirement_status.py` and credits nothing. The case was captured once at a42aw
+by `scripts/retain_div_capture.py` ([the m-forms capture](canonical-division.md#the-m-forms-capture-a42aw)).

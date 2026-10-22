@@ -2106,6 +2106,28 @@ property-delegation:1
 DIV_COMMAND_CASES
   done
 
+  # P4-SYSTEM.14 a42aw: capture a declared case once and retain its results; synthetic processes, never Sail.
+  local div_retention_mode div_retention_mutation div_retention_losses
+  local -a div_retention_python
+  for div_retention_mode in normal optimized; do
+    div_retention_python=(python3)
+    [ "$div_retention_mode" = optimized ] && div_retention_python+=(-O)
+    out="$("${div_retention_python[@]}" scripts/probe_div_capture_retention.py 2>&1)"; rc=$?
+    score "GREEN capture retention $div_retention_mode" "$rc" 0 "$out" "DIV-CAPTURE-RETENTION: 11 tests / 0 failures / 0 errors; synthetic processes, no Sail or qualification"
+    while IFS=: read -r div_retention_mutation div_retention_losses; do
+      out="$("${div_retention_python[@]}" scripts/probe_div_capture_retention.py --mutation "$div_retention_mutation" 2>&1)"; rc=$?
+      score "RED omitted capture retention $div_retention_mutation $div_retention_mode" "$rc" 1 "$out" "DIV-CAPTURE-RETENTION: 11 tests / $div_retention_losses failures / 0 errors; synthetic processes, no Sail or qualification"
+    done <<'DIV_RETENTION_CASES'
+outputs-absent:1
+declaration-regeneration:1
+binary-identity:1
+object-id:2
+exclusive-publish:1
+receipt-qualification:1
+measured-pin:1
+DIV_RETENTION_CASES
+  done
+
   # P4-SYSTEM.14 a42ao: retained finite method, with no reference process. a42as: the deep arms run
   # against a synthetic current capture built in the copy, so every seam stays reachable while the
   # curated capture is invalidated; one real-tree arm asserts satisfied or stale as the manifest predicts.
