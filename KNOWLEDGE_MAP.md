@@ -85,6 +85,7 @@
 - [`decision_book-record-navigation.md`](docs/decisions/decision_book-record-navigation.md)
 - [`decision_browser-wasm-target.md`](docs/decisions/decision_browser-wasm-target.md)
 - [`decision_c-guest-routing-and-toolchain.md`](docs/decisions/decision_c-guest-routing-and-toolchain.md)
+- [`decision_caller-names-the-case.md`](docs/decisions/decision_caller-names-the-case.md)
 - [`decision_canonical-definition-input.md`](docs/decisions/decision_canonical-definition-input.md)
 - [`decision_changelog-family-aggregate-rederivation.md`](docs/decisions/decision_changelog-family-aggregate-rederivation.md)
 - [`decision_changelog-family-count-rederivation.md`](docs/decisions/decision_changelog-family-count-rederivation.md)

@@ -40,7 +40,7 @@ print(json.dumps(dict(status=result.disposition)))
 MUTATION = None
 SEAMS = {
     "declaration-binding": ("review_div_method.py", '''        for name, payload in A.declaration_files(declaration):
-            budget.snapshot("input", dict(id=name, path=A.PREFIX + "/" + name,
+            budget.snapshot("input", dict(id=name, path=A.prefix(case_id) + "/" + name,
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
 ''', ""),
     "capture-origin": ("review_div_method.py", "sha256=MEASURED_SHA256, byte_size=MEASURED_BYTES",

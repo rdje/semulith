@@ -24,6 +24,9 @@ import matched_gpr_adequacy as Adequacy
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE_MODULES = frozenset((*A.Review.REVIEWED_MODULES,
                             "matched_gpr_adequacy", "review_div_method"))
+# The retained, captured case this review reads. It lives here, in a consumer no case pins, so
+# moving it to the next captured case does not invalidate any declaration (a42av).
+RETAINED_CASE_ID = "rv64gc-signed-div-truncation-v2"
 SOURCE_DECLARATION_COMMIT = "b160c66e183dee267ebf12edf25066412fe96ff6"
 RETAINED_CAPTURE_COMMIT = "c91d08f52a2c8027092f2014e93f0e47ca4df557"
 MEASURED_SHA256 = "2cb6c7041be5a6e52213c57fe7b1507ad096e76aebcc8323884679526fc6b29e"
@@ -44,7 +47,7 @@ class MethodCheck:
     reason: str
     policy_disposition: str = "pending"
     replay_disposition: str = "not-checked"
-    case_id: str = A.P.CASE_ID
+    case_id: str = RETAINED_CASE_ID
     record_disposition: str | None = None
     capture_binding: str | None = None
     evaluation_disposition: str | None = None
@@ -112,7 +115,7 @@ class _ReadBudget:
             reviewed_inputs=declaration.inventory, author_review=declaration.author,
             impact_review=declaration.impact,
             property_authority=declaration.authorities.property_authority,
-            max_read_bytes=allowance)
+            case_id=declaration.authorities.case_id, max_read_bytes=allowance)
         if type(result) is not A.Unit.Evaluation.EvaluationCheck:
             raise _Stopped("refused", "retained evaluator returned an invalid result")
         authentication = result.authentication
@@ -129,7 +132,7 @@ class _ReadBudget:
         return result
 
 
-def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodCheck:
+def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodCheck:
     """Check the one reviewed retained case without Git, acquired caches or a binary.
 
     One inclusive128MiB native/evaluation allowance and the existing16MiB evaluator
@@ -139,7 +142,7 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
     """
     if type(case_id) is not str or not 0 < len(case_id) <= 256:
         return MethodCheck("refused", "invalid bounded case selector")
-    if case_id != A.P.CASE_ID:
+    if case_id != RETAINED_CASE_ID:
         return MethodCheck("unsupported", "no reviewed capture for selected case", case_id=case_id)
     if type(max_read_bytes) is not int or not 0 <= max_read_bytes <= TOTAL_BYTES:
         return MethodCheck("refused", "invalid method read allowance")
@@ -169,7 +172,7 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
                 identities = tuple(SourceIdentity(path, len(data), hashlib.sha256(data).hexdigest())
                                    for path, data in sorted(sources.data.items()))
         authentication = None if evaluation is None else evaluation.authentication
-        case = A.P.reviewed_case(A.P.CASE_ID)
+        case = A.P.reviewed_case(case_id)
         return MethodCheck(
             disposition, reason, case_id=case_id,
             record_disposition=None if evaluation is None else evaluation.record.disposition,
@@ -194,17 +197,17 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
         sources = A.Review.Snapshots(ROOT)
         A.Review.import_census(sources, roots=frozenset({"review_div_method"}), reviewed=SOURCE_MODULES)
         source_review_complete = True
-        declaration = A.prepare_capture()
+        declaration = A.prepare_capture(case_id)
         context = Adequacy.freeze_review(
             planned_experiment=declaration.planned_experiment, dependencies=declaration.dependencies,
             scope=declaration.authorities.scope,
             current_candidate=dict(declaration.authorities.reference.fields),
-            inventory=declaration.inventory, impact_review=declaration.impact)
+            inventory=declaration.inventory, impact_review=declaration.impact, case_id=case_id)
         for name, payload in A.declaration_files(declaration):
-            budget.snapshot("input", dict(id=name, path=A.PREFIX + "/" + name,
+            budget.snapshot("input", dict(id=name, path=A.prefix(case_id) + "/" + name,
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
         measured = budget.snapshot("observation", dict(
-            id="measured-experiment", path=A.PREFIX + "/measured-experiment.sexp",
+            id="measured-experiment", path=A.prefix(case_id) + "/measured-experiment.sexp",
             sha256=MEASURED_SHA256, byte_size=MEASURED_BYTES))
         binding = Adequacy.bind_measured_capture(context, measured)
         if binding.disposition != "matched":
@@ -229,7 +232,7 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--case", default=A.P.CASE_ID)
+    parser.add_argument("--case", default=RETAINED_CASE_ID)
     parser.add_argument("--max-read-bytes", type=int, default=TOTAL_BYTES)
     args = parser.parse_args()
     result = review_method(case_id=args.case, max_read_bytes=args.max_read_bytes)

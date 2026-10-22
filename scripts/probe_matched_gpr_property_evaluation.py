@@ -553,6 +553,16 @@ class PropertyEvaluationTests(unittest.TestCase):
         self.assertEqual(checked.source_values.facts.witness_value, (1 << 64) - 4)
         self.assertEqual(checked.expected_author.disposition, "matched")
 
+    def test_the_caller_names_the_case_and_an_unknown_case_refuses_before_reads(self):
+        """The retained case is only a default: the m-forms case refuses this record's claims by name."""
+        checked = self.outcome("refused", "property claim", finding="refused", case_id=E.G.M_FORMS_CASE_ID)
+        self.assertEqual(checked.source_values.disposition, "matched")
+        with mock.patch.object(
+            E.M, "read_dependency_manifest", side_effect=AssertionError("artifact I/O")
+        ):
+            self.outcome("refused", "no reviewed source property", finding=None, case_id="rv64gc-unknown")
+        self.assertEqual(self.outcome(case_id=E.G.CASE_ID).source_property.disposition, "matched")
+
     def test_declared_properties_beyond_the_reviewed_case_refuse(self):
         extra = deepcopy(self.f.graph["property"][0])
         extra.update(id="remainder", statement="the remainder takes the dividend's sign",
@@ -634,6 +644,10 @@ MUTATIONS = {
     "actual-context-binding": (
         "(property_context.profile_id, property_context.program, property_context.control_property_id,\n                            property_context.claims, property_context.authority)",
         "(case.profile_id, case.program, case.control_property_id,\n                            case.claims(), case.authority)",
+    ),
+    "case-pass-through": (
+        "source_values=source_values, case_id=selected_case.case_id)",
+        "source_values=source_values, case_id=G.CASE_ID)",
     ),
     "control-value": (
         "or next(item.value for item in observed if item.property_id == control.property_id)\n                           != source_values.facts.witness_value",

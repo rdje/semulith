@@ -32,6 +32,7 @@ import sexp as S
 
 @dataclass(frozen=True)
 class MethodReview:
+    case_id: str
     scope: V.Scope
     reference_identity: I.ReferenceIdentity
     planned_experiment: bytes
@@ -96,10 +97,11 @@ def _document(payload: bytes, scope: V.Scope):
 
 def freeze_review(*, planned_experiment: bytes, dependencies: bytes, scope: V.Scope,
                   current_candidate: dict, inventory: T.InputReview,
-                  impact_review: H.ImpactReview) -> MethodReview:
+                  impact_review: H.ImpactReview, case_id: str = P.CASE_ID) -> MethodReview:
     """Copy caller review and bind the actual selected evidence before artifact I/O.
 
-    The supported review is the existing fixed DIV producer closure. Schema,
+    The supported review is the reviewed case the caller names (the retained case by
+    default); the planned record must be that case's. Schema,
     relation, manifest and influence interpretation stay with their public owners.
     The evidence fingerprint denotes the predeclaration; measured output metadata
     is bound to it separately by bind_measured_capture.
@@ -116,7 +118,7 @@ def freeze_review(*, planned_experiment: bytes, dependencies: bytes, scope: V.Sc
                              frozenset(scope.requirement_ids), frozenset(scope.obligation_ids))
     _, raw = _document(planned_experiment, selected_scope)
     planned = D.references_to_doc([S.Symbol("references"), raw])["experiment"][0]
-    case = P.reviewed_case(P.CASE_ID)
+    case = P.reviewed_case(case_id)
     _need((selected_scope.profile_id, planned["id"], planned["program"], planned["instructions"])
           == (case.profile_id, case.case_id, case.program, case.instructions),
           "review differs from the supported finite DIV case")
@@ -150,8 +152,8 @@ def freeze_review(*, planned_experiment: bytes, dependencies: bytes, scope: V.Sc
                   and (selected[0].kind, selected[0].profile_ids, selected[0].fingerprint, selected[0].path)
                   == ("evidence", (frozen.profile_id,), digest, None),
                   "reviewed evidence fingerprint differs from actual predeclaration")
-    return MethodReview(selected_scope, candidate, bytes(planned_experiment), manifest, frozen,
-                        impact, projection.evidence_key, digest)
+    return MethodReview(case.case_id, selected_scope, candidate, bytes(planned_experiment), manifest,
+                        frozen, impact, projection.evidence_key, digest)
 
 
 def bind_measured_capture(review: MethodReview, measured_experiment: bytes) -> CaptureBinding:
@@ -311,7 +313,7 @@ def assess_findings(review: MethodReview, binding: CaptureBinding,
         _need(all(getattr(evaluation, name).facts is not None
                   for name in ("source_image", "source_values", "expected_author", "source_property")),
               "matched source findings lack their binding facts")
-        _need(evaluation.source_property.facts.case == P.reviewed_case(P.CASE_ID),
+        _need(evaluation.source_property.facts.case == P.reviewed_case(review.case_id),
               "source property differs from the reviewed finite DIV case")
         return MethodFinding("satisfied", "reviewed finite DIV method satisfied; full policy and requirement closure pending")
     except (AdequacyError, AttributeError, KeyError, TypeError, ValueError) as error:

@@ -37,7 +37,8 @@ relation plan before artifact I/O. Create the three-run request through the
 existing public unit binder; its fresh-name, same-volume, symlink/Git-boundary,
 process-group and exclusive-output rules still apply.
 
-Optional `reviewed_inputs`, `author_review`, `property_authority` and
+Optional `reviewed_inputs`, `author_review`, `property_authority`, `case_id` (the reviewed
+case the evaluation binds, the retained case by default; frozen before any artifact I/O) and
 `impact_review` use the same public owners as the [retained evaluator](evaluation.md).
 Copy those authorities before collection. An author review supplies its inventory
 when no explicit input review is given; two supplied inventories must agree.

@@ -467,7 +467,7 @@ def capture(case_id=P.CASE_ID):
         scope=declaration.authorities.scope, current_candidate=dict(declaration.authorities.reference.fields),
         reviewed_inputs=declaration.inventory, author_review=declaration.author,
         impact_review=declaration.impact, property_authority=declaration.authorities.property_authority,
-        max_read_bytes=Unit.C.TOTAL_BYTES)
+        case_id=declaration.authorities.case_id, max_read_bytes=Unit.C.TOTAL_BYTES)
 
 
 def main():

@@ -313,6 +313,7 @@ class _EvaluationPlan:
     impact: Impact.ImpactReview | None
     author: Author.ExpectedAuthorReview | None
     authority: Property.PropertyAuthority | None
+    case_id: str  # the reviewed case the evaluation binds; the caller names it
 
 
 EXPERIMENT_BYTES = 64 * 1024
@@ -337,9 +338,12 @@ def _evaluation_scope(scope):
     return V.Scope(scope.profile_id, *groups)
 
 
-def _evaluation_plan(payload, scope, candidate, inventory, impact, author, authority):
+def _evaluation_plan(payload, scope, candidate, inventory, impact, author, authority, case_id):
     C._need(type(payload) is bytes and 0 < len(payload) <= EXPERIMENT_BYTES,
             "planned experiment requires1..65536 immutable bytes")
+    # The case is the caller's selection, frozen before any artifact I/O; an unknown case
+    # refuses here, not after a process ran.
+    case_id = Property.reviewed_case(case_id).case_id
     scope = _evaluation_scope(scope)
     forms = S.parse(payload.decode("utf-8"), "planned experiment")
     documents = [form for form in forms
@@ -387,7 +391,7 @@ def _evaluation_plan(payload, scope, candidate, inventory, impact, author, autho
         impact = Impact.ImpactReview(frozen.profile_id, frozen.experiment_id,
                                     frozen.previous, frozen.current, paths, uncertain)
     return _EvaluationPlan(forms, raw, scope, candidate, request, inventory,
-                           impact, author, authority)
+                           impact, author, authority, case_id)
 
 
 def _unit_observations(result, request, allowance):
@@ -480,9 +484,13 @@ def capture_and_evaluate(
     impact_review: Impact.ImpactReview | None = None,
     author_review: Author.ExpectedAuthorReview | None = None,
     property_authority: Property.PropertyAuthority | None = None,
+    case_id: str = Property.CASE_ID,
     max_read_bytes: int = C.TOTAL_BYTES,
 ) -> UnitEvaluation:
     """Collect and evaluate one unit within one conservative artifact-read allowance.
+
+    The case the evaluation binds is the caller's (case_id; the retained case by default): a
+    capture of a declared case names it, so no pinned module constant has to move (a42av).
 
     Planned bytes/caller authorities are frozen before artifact I/O. Declared
     verdicts stay caller claims checked by evaluation; output hashes/sizes/exits
@@ -503,7 +511,7 @@ def capture_and_evaluate(
     try:
         plan = _evaluation_plan(planned_experiment, scope, current_candidate,
                                 reviewed_inputs, impact_review, author_review,
-                                property_authority)
+                                property_authority, case_id)
         reserved, remaining = remaining, 0
         captured = capture_unit(root, request=plan.request, max_read_bytes=reserved)
         C._need(type(captured) is UnitCapture and type(captured.reason) is str
@@ -525,7 +533,7 @@ def capture_and_evaluate(
         checked = Evaluation.evaluate_retained_unit(
             root, raw_experiment=plan.raw, scope=plan.scope,
             current_candidate=plan.candidate, reviewed_inputs=plan.inventory,
-            impact_review=plan.impact, author_review=plan.author,
+            impact_review=plan.impact, author_review=plan.author, case_id=plan.case_id,
             property_authority=plan.authority, max_read_bytes=reserved)
         C._need(type(checked) is Evaluation.EvaluationCheck
                 and type(checked.reason) is str

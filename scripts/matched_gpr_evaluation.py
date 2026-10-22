@@ -103,6 +103,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                            impact_review: H.ImpactReview | None = None,
                            author_review: U.ExpectedAuthorReview | None = None,
                            property_authority: G.PropertyAuthority | None = None,
+                           case_id: str = G.CASE_ID,
                            max_read_bytes: int = Q.MAX_READ_BYTES) -> EvaluationCheck:
     """Validate the scoped record, authenticate once and compute byte comparisons.
 
@@ -119,9 +120,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     the caller still owns graph completeness, metadata and change review.
     Optional author_review supplies or agrees with that inventory, then binds
     expected-author metadata after source-value success; it attests no execution.
-    Optional property_authority grounds the reviewed finite properties of the selected
-    case from the actual record's declared properties; author review is required and
-    qualification stays closed.
+    Optional property_authority grounds the reviewed finite properties of the case the
+    caller names (case_id; the retained case by default) from the actual record's declared
+    properties; author review is required and qualification stays closed. An unknown case
+    refuses before any artifact read; the caller that captures or reviews a case knows which
+    one it is (a42av), and no module constant decides it.
     It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -179,9 +182,11 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
             elif review_context != author_context.inventory:
                 raise ValueError("author review differs from current input review")
         property_context = None
+        selected_case = None
         if property_authority is not None:
             if author_context is None:
                 raise ValueError("source property requires expected author review")
+            selected_case = G.reviewed_case(case_id)
             declared = graph["property"]
             if type(declared) is not list or not 1 <= len(declared) <= G.MAX_PROPERTIES:
                 raise ValueError("source property requires 1..64 bounded declared properties")
@@ -375,7 +380,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         source_property = G.bind_source_property(
             property_context, profile_id=property_context.profile_id,
             experiment_id=property_context.experiment_id, manifest=manifest.plan,
-            source_values=source_values)
+            source_values=source_values, case_id=selected_case.case_id)
         property_disposition = getattr(source_property, "disposition", None)
         property_facts = getattr(source_property, "facts", None)
         if (type(source_property) is not G.SourcePropertyCheck
@@ -388,7 +393,6 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                           source_image=source_image, source_values=source_values, expected_author=expected_author)
         if property_disposition == "matched":
             case = getattr(property_facts, "case", None)
-            selected_case = G.reviewed_case(G.CASE_ID)
             authority_inputs = getattr(property_facts, "authority_inputs", None)
             observed = getattr(property_facts, "observed", None)
             try:

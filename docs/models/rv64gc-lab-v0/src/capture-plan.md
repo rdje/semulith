@@ -547,7 +547,13 @@ the second reviewed case from the same producers: `planned-experiment.sexp` (16,
 properties, the control naming `form-div`, 33 boundaries, twelve zero-placeholder
 observations), `dependencies.sexp` (14,488 B: the same 64 children) and `authorities.sexp`
 (17,043 B). They are retained under `evidence/rv64gc-m-forms-v3/` beside the four prepared inputs,
-and the command regenerates them byte for byte from the current tree. The `--case` selector
+and the command regenerates them byte for byte from the current tree. At a42av the three were
+re-emitted once, before any capture: the evaluation, the combined collector and the adequacy and
+method reviews gained an explicit `case_id` (the caller names the case it binds; the retained case
+stays the default and the method review keeps its own retained pointer outside the pinned modules),
+and those modules are among the 64 children the manifest pins, so the dependency manifest, the
+authority record and the planned record's manifest pin changed while every property, input,
+observation and run declaration stayed identical. The `--case` selector
 reaches any reviewed case with pinned prepared inputs; without it the command prepares the
 retained case, so the method review, the command probe and the method probe are unchanged. The
 capture review takes the same selector (`scripts/review_div_capture.py --review --case <id>`) and

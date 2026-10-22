@@ -228,8 +228,11 @@ policy evidence. No other M form is credited by these lines.
 
 ## Authenticated composition contract (a42u)
 
-`evaluate_retained_unit(..., property_authority=...)`
-requires `author_review`. Build PropertyContext from **every** declared property
+`evaluate_retained_unit(..., property_authority=..., case_id=...)`
+requires `author_review`. The caller names the reviewed case the properties are bound to
+(`case_id`, the retained case by default); an unknown case refuses before any artifact read,
+and a record that is not that case's refuses by name (a42av: the capture of a declared case
+names it, so no constant inside a pinned module has to move). Build PropertyContext from **every** declared property
 of the actual validated record — its ID, requirement, obligations and statement,
 with the relation plan's witness for it — the frozen parent program, scoped IDs
 and the property the control run names. Bound the property count (1..64) and

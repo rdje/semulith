@@ -1774,16 +1774,17 @@ SOURCE_PROPERTY_CASES
 
   # P4-SYSTEM.14 a42u: actual-property context and retained finite source findings.
   # a42at: one claim per declared property; the control's observed value must equal the source finding's (control-value).
+  # a42av: the caller names the case the properties bind to (case-pass-through).
   local property_eval_mode property_eval_mutation property_eval_losses
   local -a property_eval_python
   for property_eval_mode in normal optimized; do
     property_eval_python=(python3)
     [ "$property_eval_mode" = optimized ] && property_eval_python+=(-O)
     out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py 2>&1)"; rc=$?
-    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 24 tests / 0 failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
+    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 25 tests / 0 failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     while IFS=: read -r property_eval_mutation property_eval_losses; do
       out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py --mutation "$property_eval_mutation" 2>&1)"; rc=$?
-      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 24 tests / $property_eval_losses failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
+      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 25 tests / $property_eval_losses failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     done <<'PROPERTY_EVALUATION_CASES'
 author-prerequisite:1
 obligation-bound:1
@@ -1792,13 +1793,14 @@ actual-requirement:1
 actual-obligations:1
 actual-program:1
 property-order:1
-property-finding:16
-property-status:5
+property-finding:17
+property-status:6
 unsupported-credit:2
 context-freeze:7
-property-result-shape:17
+property-result-shape:18
 property-fact-binding:19
 actual-context-binding:1
+case-pass-through:1
 control-value:1
 PROPERTY_EVALUATION_CASES
   done
@@ -2009,10 +2011,10 @@ IDENTITY_EMISSION_CASES
     unit_eval_python=(python3)
     [ "$unit_eval_mode" = optimized ] && unit_eval_python+=(-O)
     out="$("${unit_eval_python[@]}" scripts/probe_matched_gpr_unit_evaluation.py 2>&1)"; rc=$?
-    score "GREEN combined collection/evaluation $unit_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-UNIT-EVALUATION: 29 tests / 0 failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
+    score "GREEN combined collection/evaluation $unit_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-UNIT-EVALUATION: 30 tests / 0 failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
     while IFS=: read -r unit_eval_mutation unit_eval_losses; do
       out="$("${unit_eval_python[@]}" scripts/probe_matched_gpr_unit_evaluation.py --mutation "$unit_eval_mutation" 2>&1)"; rc=$?
-      score "RED combined collection/evaluation $unit_eval_mutation $unit_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-UNIT-EVALUATION: 29 tests / $unit_eval_losses failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
+      score "RED combined collection/evaluation $unit_eval_mutation $unit_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-UNIT-EVALUATION: 30 tests / $unit_eval_losses failures / 0 errors; actual synthetic processes/read bytes, qualification closed"
     done <<'UNIT_EVALUATION_CASES'
 planned-bound:2
 scope-envelope:2
@@ -2039,6 +2041,7 @@ attach-invalid-collection:15
 attach-invalid-evaluation:13
 structured-comments:2
 unsupported-finding:1
+case-forward:1
 UNIT_EVALUATION_CASES
   done
 

@@ -246,12 +246,21 @@ class CombinedTests(unittest.TestCase):
                         dict(author_review=replace(self.f.author_review, route="unknown")),
                         dict(author_review=None),
                         dict(property_authority=replace(self.f.authority, source_sha256="wrong")),
+                        dict(case_id="rv64gc-unknown"),
                         dict(reviewed_inputs=replace(self.f.author_review.inventory, experiment_id="other")),
                         dict(impact_review=object())]:
             with self.subTest(keys=tuple(changes)), patch.object(U, "capture_unit", side_effect=AssertionError("collection")):
                 result = self.run_unit("refused", **changes)
                 self.assertEqual(result.charged_read_bytes, 0)
                 self.assertIsNone(result.collection)
+
+    def test_the_capture_names_the_case_it_binds(self):
+        """The retained case is the default; naming the m-forms case over this record collects, then refuses by name."""
+        result = self.run_unit("refused", case_id=U.Property.M_FORMS_CASE_ID)
+        self.assertIn("property claim", result.reason)
+        self.assertEqual(result.collection.disposition, "recorded")
+        self.assertEqual(result.evaluation.source_values.disposition, "matched")
+        self.assertEqual(result.evaluation.source_property.disposition, "refused")
 
     def test_explicit_inventory_and_author_agree(self):
         result = self.run_unit(reviewed_inputs=self.f.author_review.inventory)
@@ -469,6 +478,7 @@ MUTATIONS = {
     "author-freeze": ('author = None if author is None else Author.freeze_review(author, **selected)',
                       'author = author'),
     "property-freeze": ('authority = context.authority', 'authority = authority'),
+    "case-forward": ('author_review=plan.author, case_id=plan.case_id,', 'author_review=plan.author,'),
     "impact-freeze": ('impact = Impact.ImpactReview(frozen.profile_id, frozen.experiment_id,\n                                    frozen.previous, frozen.current, paths, uncertain)',
                       'impact = impact'),
     "collection-limit": ('captured = capture_unit(root, request=plan.request, max_read_bytes=reserved)',
