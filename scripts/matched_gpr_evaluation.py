@@ -119,8 +119,9 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
     the caller still owns graph completeness, metadata and change review.
     Optional author_review supplies or agrees with that inventory, then binds
     expected-author metadata after source-value success; it attests no execution.
-    Optional property_authority grounds one reviewed finite property from the
-    actual selected record; author review is required and qualification stays closed.
+    Optional property_authority grounds the reviewed finite properties of the selected
+    case from the actual record's declared properties; author review is required and
+    qualification stays closed.
     It never grants qualification or CPU acceptance.
     """
     if type(scope) is not V.Scope:
@@ -181,14 +182,22 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         if property_authority is not None:
             if author_context is None:
                 raise ValueError("source property requires expected author review")
-            selected_property = graph["property"][0]
-            obligations = selected_property["obligation_ids"]
-            if type(obligations) is not list or not 1 <= len(obligations) <= 64:
-                raise ValueError("source property requires 1..64 bounded obligation IDs")
+            declared = graph["property"]
+            if type(declared) is not list or not 1 <= len(declared) <= G.MAX_PROPERTIES:
+                raise ValueError("source property requires 1..64 bounded declared properties")
+            # The relation plan validated every witness; claims carry the record's own words.
+            witnesses = {item.property_id: item.witness for item in relations.plan.properties}
+            claims = []
+            for selected_property in declared:
+                obligations = selected_property["obligation_ids"]
+                if type(obligations) is not list or not 1 <= len(obligations) <= 64:
+                    raise ValueError("source property requires 1..64 bounded obligation IDs")
+                claims.append(G.PropertyClaim(
+                    selected_property["id"], selected_property["requirement_id"], tuple(obligations),
+                    selected_property["statement"], witnesses[selected_property["id"]]))
             property_context = G.freeze_context(G.PropertyContext(
-                scope.profile_id, experiment["id"], program, selected_property["id"],
-                selected_property["requirement_id"], tuple(obligations), selected_property["statement"],
-                relations.plan.witness, property_authority),
+                scope.profile_id, experiment["id"], program, tuple(claims),
+                relations.plan.control_property_id, property_authority),
                 profile_id=scope.profile_id, experiment_id=experiment["id"])
         if impact_review is not None and review_context is None:
             raise ValueError("impact review requires current input review")
@@ -260,7 +269,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                                 receipt.check.facts.process_exit)
                       for binding, receipt in zip(execution.runs, receipts))
     try:
-        comparison = C.compare_unit(instructions=execution.instructions, witness=relations.plan.witness,
+        comparison = C.compare_unit(instructions=execution.instructions, witness=relations.plan.control_witness,
             program=program,
             baseline_expectation=_payload(files, "input", execution.baseline_expectation.input_id),
             control_expectation=_payload(files, "input", execution.control_expectation.input_id),
@@ -300,7 +309,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         source=source_bytes,
         baseline_expectation=_payload(files, "input", execution.baseline_expectation.input_id),
         instructions=execution.instructions, program=image_context.program,
-        witness=relations.plan.witness)
+        witness=relations.plan.control_witness)
     if (type(source_values) is not C.SourceExpectationCheck
             or source_values.disposition not in ("matched", "failed", "refused", "unavailable", "unsupported")
             or (source_values.disposition not in ("matched", "failed") and source_values.facts is not None)):
@@ -379,25 +388,27 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
                           source_image=source_image, source_values=source_values, expected_author=expected_author)
         if property_disposition == "matched":
             case = getattr(property_facts, "case", None)
-            selected_case = G.signed_division_case()
+            selected_case = G.reviewed_case(G.CASE_ID)
             authority_inputs = getattr(property_facts, "authority_inputs", None)
+            observed = getattr(property_facts, "observed", None)
             try:
+                control = selected_case.control()
                 property_bound = not (type(case) is not G.ReviewedPropertyCase or case != selected_case
-                        or (case.profile_id, case.program, case.requirement_id, case.obligation_ids,
-                            case.statement, case.witness, case.authority) !=
-                           (property_context.profile_id, property_context.program, property_context.requirement_id,
-                            property_context.obligation_ids, property_context.statement, property_context.witness,
-                            property_context.authority)
-                        or getattr(property_facts, "property_id", None) != property_context.property_id
+                        or (case.profile_id, case.program, case.control_property_id, case.claims(), case.authority) !=
+                           (property_context.profile_id, property_context.program, property_context.control_property_id,
+                            property_context.claims, property_context.authority)
+                        or type(observed) is not tuple
+                        or any(type(item) is not G.ObservedProperty or type(item.value) is not int for item in observed)
+                        or tuple((item.property_id, item.witness, item.value) for item in observed)
+                           != tuple((item.property_id, item.witness, item.expected_value) for item in case.properties)
+                        or next(item.value for item in observed if item.property_id == control.property_id)
+                           != source_values.facts.witness_value
                         or type(getattr(property_facts, "source", None)) is not G.E.InputBinding
                         or property_facts.source != source_input
-                        or type(getattr(property_facts, "observed_value", None)) is not int
-                        or property_facts.observed_value != case.expected_value
-                        or property_facts.observed_value != source_values.facts.witness_value
                         or type(authority_inputs) is not tuple or authority_inputs != case.required_inputs
                         or not all(type(pin) is G.E.InputBinding and pin in manifest.plan.inputs
                                    and pin.input_id in manifest.plan.child_input_ids for pin in authority_inputs))
-            except (AttributeError, TypeError, ValueError):
+            except (AttributeError, TypeError, ValueError, StopIteration):
                 property_bound = False
             if not property_bound:
                 return finish("refused", "source property: facts differ from frozen selection",

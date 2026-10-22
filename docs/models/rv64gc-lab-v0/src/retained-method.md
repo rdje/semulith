@@ -441,11 +441,15 @@ execution binder, then checks the remaining finite declared relationships. The
 caller first validates raw schema and the scoped graph. A frozen `matched` plan
 means these declarations bind; it does not mean the method succeeded.
 
-It requires exactly one property, one control and two producer pairs before
-constructing their indexes. The property observes only `gpr-change` and carries
-one typed witness: a step within the parent's 1–4096 budget and canonical `x1`
-through `x31`. The control names the sole baseline, control run, property and
-mutant expectation input. Its intended verdict is `DIVERGE`. Recorded observed
+It requires one to sixty-four properties, one control and two producer pairs
+before constructing their indexes. Every property observes only `gpr-change` and
+carries one typed witness — a step within the parent's 1–4096 budget and canonical
+`x1` through `x31` — and no two properties witness the same step and register.
+The control names the sole baseline and control run, exactly one declared
+property and the mutant expectation input; that property's witness is the
+plan's `control_witness`, the witness the byte comparison discriminates, and the
+plan's `properties` carry every declaration in record order (a42at). Its
+intended verdict is `DIVERGE`. Recorded observed
 `AGREE` or `REFUSED` remains coherent failure data when it matches the run; a
 control aimed at process refusal needs another method.
 

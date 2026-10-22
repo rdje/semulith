@@ -116,7 +116,7 @@ def freeze_review(*, planned_experiment: bytes, dependencies: bytes, scope: V.Sc
                              frozenset(scope.requirement_ids), frozenset(scope.obligation_ids))
     _, raw = _document(planned_experiment, selected_scope)
     planned = D.references_to_doc([S.Symbol("references"), raw])["experiment"][0]
-    case = P.signed_division_case()
+    case = P.reviewed_case(P.CASE_ID)
     _need((selected_scope.profile_id, planned["id"], planned["program"], planned["instructions"])
           == (case.profile_id, case.case_id, case.program, case.instructions),
           "review differs from the supported finite DIV case")
@@ -311,7 +311,7 @@ def assess_findings(review: MethodReview, binding: CaptureBinding,
         _need(all(getattr(evaluation, name).facts is not None
                   for name in ("source_image", "source_values", "expected_author", "source_property")),
               "matched source findings lack their binding facts")
-        _need(evaluation.source_property.facts.case == P.signed_division_case(),
+        _need(evaluation.source_property.facts.case == P.reviewed_case(P.CASE_ID),
               "source property differs from the reviewed finite DIV case")
         return MethodFinding("satisfied", "reviewed finite DIV method satisfied; full policy and requirement closure pending")
     except (AdequacyError, AttributeError, KeyError, TypeError, ValueError) as error:

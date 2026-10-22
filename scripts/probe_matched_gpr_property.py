@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Finite signed-DIV property controls; synthetic metadata, no capture credit."""
+"""Finite GPR property controls for the reviewed cases; synthetic metadata, no capture credit."""
 from __future__ import annotations
 
 import argparse
 from copy import deepcopy
-from dataclasses import FrozenInstanceError, replace
+from dataclasses import FrozenInstanceError, asdict, replace
+import hashlib
 from pathlib import Path
+import re
 from types import SimpleNamespace
 import sys
 import types
@@ -19,14 +21,77 @@ import probe_matched_gpr_execution as P
 import records_sexp as Records
 
 ROOT = Path(__file__).resolve().parent.parent
+GUESTS = ROOT / "profiles/rv64gc-lab-v0/guests"
 STATEMENT = (
     "For signed DIV with x5 = -7 and x6 = 2, the x7 change at boundary 2 "
     "is -3 (rounding toward zero)."
 )
+M64 = (1 << 64) - 1
+# Independent of the author and the assembler: the encoding fields of the chapter's forms.
+FUNCT3 = dict(
+    mul=0, mulh=1, mulhsu=2, mulhu=3, div=4, divu=5, rem=6, remu=7,
+    mulw=0, divw=4, divuw=5, remw=6, remuw=7,
+)
+INSTRUCTION = re.compile(r"\s*(\w+)\s+x(\d+),\s*x(\d+),\s*(-?\w+)")
 
 
-def fixture():
-    """Construct public-owner facts, not authenticated artifact or process evidence."""
+def encode(line: str) -> int:
+    """Encode one m-forms instruction from its fields (I-type addi/slli, R-type M forms)."""
+    op, rd, rs1, third = INSTRUCTION.match(line).groups()
+    rd, rs1 = int(rd), int(rs1)
+    if op == "addi":
+        return ((int(third) & 0xFFF) << 20) | (rs1 << 15) | (rd << 7) | 0x13
+    if op == "slli":
+        return (int(third) << 20) | (rs1 << 15) | (1 << 12) | (rd << 7) | 0x13
+    rs2, opcode = int(third[1:]), 0x3B if op.endswith("w") else 0x33
+    return (1 << 25) | (rs2 << 20) | (rs1 << 15) | (FUNCT3[op] << 12) | (rd << 7) | opcode
+
+
+def _signed(value: int, bits: int) -> int:
+    value &= (1 << bits) - 1
+    return value - (1 << bits) if value >> (bits - 1) else value
+
+
+def _truncating_quotient(a: int, b: int) -> int:
+    quotient = abs(a) // abs(b)
+    return -quotient if (a < 0) != (b < 0) else quotient
+
+
+def execute(regs: list, line: str) -> tuple[int, int]:
+    """Evaluate one m-forms instruction with plain integer arithmetic and the chapter's Table 1."""
+    op, rd, rs1, third = INSTRUCTION.match(line).groups()
+    rd, a = int(rd), regs[int(rs1)]
+    if op == "addi":
+        value = (a + int(third)) & M64
+    elif op == "slli":
+        value = (a << int(third)) & M64
+    else:
+        b = regs[int(third[1:])]
+        sa, sb = _signed(a, 64), _signed(b, 64)
+        wa, wb, ua, ub = _signed(a, 32), _signed(b, 32), a & 0xFFFFFFFF, b & 0xFFFFFFFF
+        word = lambda v: _signed(v, 32) & M64  # noqa: E731  sign-extend a 32-bit result
+        overflow, word_overflow = sa == -(1 << 63) and sb == -1, wa == -(1 << 31) and wb == -1
+        value = {
+            "mul": lambda: (a * b) & M64,
+            "mulh": lambda: ((sa * sb) >> 64) & M64,
+            "mulhsu": lambda: ((sa * b) >> 64) & M64,
+            "mulhu": lambda: ((a * b) >> 64) & M64,
+            "mulw": lambda: word(a * b),
+            "div": lambda: M64 if sb == 0 else (a if overflow else _truncating_quotient(sa, sb) & M64),
+            "divu": lambda: M64 if b == 0 else a // b,
+            "rem": lambda: a if sb == 0 else (0 if overflow else (sa - sb * _truncating_quotient(sa, sb)) & M64),
+            "remu": lambda: a if b == 0 else a % b,
+            "divw": lambda: M64 if wb == 0 else word(ua if word_overflow else _truncating_quotient(wa, wb)),
+            "divuw": lambda: M64 if ub == 0 else word(ua // ub),
+            "remw": lambda: word(ua) if wb == 0 else word(0 if word_overflow else wa - wb * _truncating_quotient(wa, wb)),
+            "remuw": lambda: word(ua) if ub == 0 else word(ua % ub),
+        }[op]()
+    regs[rd] = value
+    regs[0] = 0
+    return rd, value
+
+
+def authority():
     requirement = next(
         r
         for r in Records.load(ROOT / "profiles/rv64gc-lab-v0/requirements.sexp")
@@ -42,34 +107,43 @@ def fixture():
         for r in D.load_sources(ROOT / "profiles/rv64gc-lab-v0/sources.sexp")["source"]
         if r["id"] == "RVI-M"
     )
-    authority = G.project_authority(
+    return requirement, obligation, source, G.project_authority(
         "rv64gc-lab-v0", requirement=requirement, obligation=obligation, source=source
     )
+
+
+def fixture(case_id: str = G.CASE_ID):
+    """Construct public-owner facts for a reviewed case, not authenticated artifact or process evidence."""
+    case = G.reviewed_case(case_id)
+    requirement, obligation, source, selected_authority = authority()
     values = G.C.compare_source_expectation(
-        source=(ROOT / "profiles/rv64gc-lab-v0/guests/m-div.s").read_bytes(),
-        baseline_expectation=(
-            ROOT / "profiles/rv64gc-lab-v0/guests/m-div.expected.sexp"
-        ).read_bytes(),
-        program="m-div.s",
-        instructions=27,
-        witness=G.C.GprWitness(2, "x7"),
+        source=(GUESTS / case.program).read_bytes(),
+        baseline_expectation=(GUESTS / (Path(case.program).stem + ".expected.sexp")).read_bytes(),
+        program=case.program,
+        instructions=case.instructions,
+        witness=case.control().witness,
     )
     if values.disposition != "matched":
         raise RuntimeError(
-            "canonical signed-DIV source fixture no longer matches: " + values.reason
+            "canonical source fixture no longer matches " + case_id + ": " + values.reason
         )
     experiment, candidate = P.fixture()
-    experiment.update(program="m-div.s", instructions=27)
+    experiment.update(program=case.program, instructions=case.instructions)
     graph = experiment["verification"]
-    prop = graph["property"][0]
-    prop.update(
-        requirement_id="REQ-GC-M",
-        obligation_ids=["OB-GC-M"],
-        statement=STATEMENT,
-        gpr_witness=dict(step_n=2, register="x7"),
-    )
+    graph["property"] = [
+        dict(
+            id=item.property_id,
+            statement=item.statement,
+            requirement_id=case.requirement_id,
+            obligation_ids=list(case.obligation_ids),
+            observation_kinds=["gpr-change"],
+            gpr_witness=asdict(item.witness),
+        )
+        for item in case.properties
+    ]
+    graph["control_run"][0]["property_ids"] = [case.control_property_id]
     for run in graph["run"]:
-        run["argv"][4] = "27"
+        run["argv"][4] = str(case.instructions)
     for item in graph["input"]:
         if item["role"] == "guest-source":
             item["sha256"] = values.facts.derivation.source_sha256
@@ -81,12 +155,7 @@ def fixture():
             "canonical property metadata fixture refuses: " + relations.reason
         )
     execution = relations.plan.execution
-    normative = G.E.InputBinding(
-        "normative-source",
-        "RVI-M-DIV-STATEMENT",
-        "profiles/rv64gc-lab-v0/retained/div-statement.html",
-        "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
-    )
+    normative = G.E.InputBinding(*G._REQUIRED_INPUT_ROWS[0])
     manifest = G.M.ManifestPlan(
         relations.plan,
         "dependency-manifest",
@@ -98,18 +167,27 @@ def fixture():
         ),
         (normative.input_id,),
     )
+    witnesses = {item.property_id: item.witness for item in relations.plan.properties}
+    claims = tuple(
+        G.PropertyClaim(
+            prop["id"],
+            prop["requirement_id"],
+            tuple(prop["obligation_ids"]),
+            prop["statement"],
+            witnesses[prop["id"]],
+        )
+        for prop in graph["property"]
+    )
     context = G.PropertyContext(
         "rv64gc-lab-v0",
         experiment["id"],
-        "m-div.s",
-        prop["id"],
-        "REQ-GC-M",
-        ("OB-GC-M",),
-        STATEMENT,
-        G.C.GprWitness(2, "x7"),
-        authority,
+        case.program,
+        claims,
+        relations.plan.control_property_id,
+        selected_authority,
     )
     return SimpleNamespace(
+        case_id=case_id,
         context=context,
         manifest=manifest,
         values=values,
@@ -125,6 +203,7 @@ class PropertyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.template = fixture()
+        cls.m_template = fixture(G.M_FORMS_CASE_ID)
 
     def setUp(self):
         self.f = deepcopy(self.template)
@@ -162,19 +241,22 @@ class PropertyTests(unittest.TestCase):
         else:
             self.fail("invalid property authority/context accepted")
 
-    def outcome(self, disposition="matched", reason=None, **changes):
+    def outcome(self, disposition="matched", reason=None, fixture=None, **changes):
+        f = self.f if fixture is None else fixture
         args = dict(
             profile_id="rv64gc-lab-v0",
-            experiment_id=self.f.context.experiment_id,
-            manifest=self.f.manifest,
-            source_values=self.f.values,
+            experiment_id=f.context.experiment_id,
+            manifest=f.manifest,
+            source_values=f.values,
+            case_id=f.case_id,
         )
         args.update(changes)
         try:
-            checked = G.bind_source_property(self.f.context, **args)
+            checked = G.bind_source_property(f.context, **args)
         except (
             AttributeError,
             KeyError,
+            IndexError,
             TypeError,
             ValueError,
             AssertionError,
@@ -193,10 +275,15 @@ class PropertyTests(unittest.TestCase):
         self.assertFalse(hasattr(checked, "qualified"))
         return checked
 
+    def claim(self, **changes):
+        """The retained case's one claim with a change; the context carries it alone."""
+        return replace(self.f.context, claims=(replace(self.f.context.claims[0], **changes),))
+
     def test_canonical_source_witness_has_independently_reviewed_meaning(self):
         checked = self.outcome()
         case = checked.facts.case
-        self.assertEqual(case.statement, STATEMENT)
+        control = case.control()
+        self.assertEqual(control.statement, STATEMENT)
         self.assertEqual(
             (case.requirement_id, case.obligation_ids), ("REQ-GC-M", ("OB-GC-M",))
         )
@@ -208,21 +295,27 @@ class PropertyTests(unittest.TestCase):
             ("RVI-M", "11.1.2", "defined", "medium"),
         )
         self.assertEqual(case.coverage, "one signed-DIV quotient witness")
-        self.assertEqual((case.witness.step_n, case.witness.register), (2, "x7"))
+        self.assertEqual((control.witness.step_n, control.witness.register), (2, "x7"))
         self.assertEqual(
-            (case.expected_value, case.control_value), ((1 << 64) - 3, (1 << 64) - 4)
+            (control.expected_value, case.control_value), ((1 << 64) - 3, (1 << 64) - 4)
         )
-        self.assertEqual(checked.facts.observed_value, (1 << 64) - 3)
+        self.assertEqual(
+            checked.facts.observed,
+            (G.ObservedProperty("signed-quotient", G.C.GprWitness(2, "x7"), (1 << 64) - 3),),
+        )
+        self.assertEqual(case.properties, (control,))
 
     def test_raw_fixture_is_valid_in_the_selected_canonical_scope(self):
-        raw = P.raw_experiment(self.f.experiment, self.f.candidate)
         scope = V.Scope(
             "rv64gc-lab-v0",
             frozenset({"sail-riscv"}),
             frozenset({"REQ-GC-M"}),
             frozenset({"OB-GC-M"}),
         )
-        self.assertEqual(V.check_experiment(raw, scope), [])
+        for f in (self.f, self.m_template):
+            with self.subTest(case=f.case_id):
+                raw = P.raw_experiment(f.experiment, f.candidate)
+                self.assertEqual(V.check_experiment(raw, scope), [])
 
     def test_v2_separates_retained_input_from_original_publication_authority(self):
         checked = self.outcome()
@@ -281,6 +374,155 @@ class PropertyTests(unittest.TestCase):
         remainder = -7 - 2 * quotient
         self.assertEqual((quotient, remainder), (-3, -1))
         self.assertEqual(steps[2].writes, ((7, quotient & ((1 << 64) - 1)),))
+
+    def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
+        case = G.m_forms_case()
+        self.assertEqual(G.reviewed_case_ids(), (G.CASE_ID, G.M_FORMS_CASE_ID))
+        self.assertEqual(case.case_id, "rv64gc-m-forms-v3")
+        self.assertEqual((case.program, case.instructions), ("m-forms.s", 33))
+        source = (GUESTS / case.program).read_bytes()
+        self.assertEqual(
+            (len(source), hashlib.sha256(source).hexdigest()),
+            (case.source_size, case.source_sha256),
+        )
+        self.assertEqual(len(case.properties), 25)
+        self.assertEqual(len({item.property_id for item in case.properties}), 25)
+        self.assertEqual(len({item.witness for item in case.properties}), 25)
+        expectations = D.load_expectations(GUESTS / "m-forms.expected.sexp")
+        steps = {step["n"]: step for step in expectations["step"]}
+        forms = {
+            steps[item.witness.step_n]["insn"].split()[0]
+            for item in case.properties
+            if item.cell.startswith("form:")
+        }
+        self.assertEqual(forms, set(self.f.requirement["insns"]))
+        self.assertEqual(len(forms), 13)
+        table1 = sorted(
+            item.witness.step_n for item in case.properties if item.cell.startswith("table1:")
+        )
+        self.assertEqual(table1, sorted(n for n, step in steps.items() if "Table 1" in step["source"]))
+        self.assertEqual(len(table1), 12)
+        for item in case.properties:
+            with self.subTest(property=item.property_id):
+                step = steps[item.witness.step_n]
+                self.assertEqual(
+                    step["writes"], {item.witness.register: f"0x{item.expected_value:016x}"}
+                )
+                self.assertEqual(item.cell.split(":")[1].split("-")[0], step["insn"].split()[0])
+        control = case.control()
+        self.assertEqual(
+            (control.property_id, control.witness, control.expected_value, case.control_value),
+            ("form-div", G.C.GprWitness(12, "x15"), (1 << 64) - 3, (1 << 64) - 4),
+        )
+        self.assertEqual([row[0] for row in case.reviewed_steps], list(range(33)))
+        self.assertEqual((case.requirement_id, case.obligation_ids, case.authority),
+                         ("REQ-GC-M", ("OB-GC-M",), G.signed_division_case().authority))
+        self.assertEqual(case.required_inputs, G.signed_division_case().required_inputs)
+        self.refuses(lambda: G.reviewed_case("rv64gc-m-forms-v2"))
+
+    def test_m_forms_words_and_values_are_independently_derived(self):
+        case = G.m_forms_case()
+        lines = [
+            line for line in (GUESTS / case.program).read_text().splitlines() if line.strip()
+        ]
+        self.assertEqual(len(lines), 33)
+        regs = [0] * 32
+        for n, line in enumerate(lines):
+            rd, value = execute(regs, line)
+            with self.subTest(boundary=n):
+                self.assertEqual(
+                    case.reviewed_steps[n],
+                    (n, 0x80000000 + 4 * n, encode(line), 4, 2, ((rd, value),)),
+                )
+        by_step = {row[0]: row[5][0] for row in case.reviewed_steps}
+        for item in case.properties:
+            self.assertEqual(
+                by_step[item.witness.step_n],
+                (int(item.witness.register[1:]), item.expected_value),
+                item.property_id,
+            )
+        derived = self.m_template.values.facts.derivation
+        self.assertEqual(
+            tuple(
+                (s.n, s.pc, s.instruction_bits, s.instruction_length, s.fetches, s.writes)
+                for s in derived.steps
+            ),
+            case.reviewed_steps,
+        )
+
+    def test_m_forms_case_binds_every_predeclared_value_to_the_source_derivation(self):
+        checked = self.outcome(fixture=self.m_template)
+        case = checked.facts.case
+        self.assertEqual(case.case_id, G.M_FORMS_CASE_ID)
+        self.assertEqual(len(checked.facts.observed), 25)
+        self.assertEqual(
+            checked.facts.observed,
+            tuple(
+                G.ObservedProperty(item.property_id, item.witness, item.expected_value)
+                for item in case.properties
+            ),
+        )
+        control = next(
+            item for item in checked.facts.observed if item.property_id == case.control_property_id
+        )
+        self.assertEqual(control.value, self.m_template.values.facts.witness_value)
+        self.assertEqual(checked.facts.source.sha256, case.source_sha256)
+        self.assertEqual(checked.facts.authority_inputs, case.required_inputs)
+
+    def test_each_predeclared_value_is_held_to_the_derivation_beyond_the_reviewed_words(self):
+        f = deepcopy(self.m_template)
+        derived = f.values.facts.derivation
+        target = next(item for item in G.m_forms_case().properties if item.property_id == "table1-remw-overflow")
+        reviewed = G.m_forms_case()
+        prefix_only = lambda: replace(reviewed, reviewed_steps=reviewed.reviewed_steps[:3])  # noqa: E731
+        with mock.patch.dict(G._CASES, {G.M_FORMS_CASE_ID: prefix_only}):
+            self.outcome(fixture=f)
+            for writes, expected in [
+                (((12, 0x1234),), "predeclared value differs from the source derivation: table1-remw-overflow"),
+                (((13, 0),), "predeclared value differs from the source derivation: table1-remw-overflow"),
+                ((), "predeclared value differs from the source derivation: table1-remw-overflow"),
+            ]:
+                steps = list(derived.steps)
+                steps[target.witness.step_n] = replace(steps[target.witness.step_n], writes=writes)
+                with self.subTest(writes=writes):
+                    self.outcome(
+                        "refused",
+                        expected,
+                        fixture=f,
+                        source_values=replace(
+                            f.values,
+                            facts=replace(f.values.facts, derivation=replace(derived, steps=tuple(steps))),
+                        ),
+                    )
+
+    def test_m_forms_claims_must_match_the_case_exactly(self):
+        f = deepcopy(self.m_template)
+        claims = f.context.claims
+        first, second = claims[0], claims[1]
+        for context, reason in [
+            (replace(f.context, claims=claims[:-1]), "property claim"),
+            (replace(f.context, claims=(*claims[1:], replace(first, property_id="renamed"))), "property claim"),
+            (replace(f.context, claims=(*claims[2:], replace(first, witness=second.witness), replace(second, witness=first.witness))), "property claim"),
+            (replace(f.context, control_property_id=second.property_id if second.property_id != f.context.control_property_id else first.property_id), "property claim"),
+            (replace(f.context, control_property_id="form-mulhu"), "property claim"),
+            (replace(f.context, control_property_id="not-a-claim"), "control property is not one of the claims"),
+            (replace(f.context, claims=(*claims, replace(first, property_id="extra", witness=G.C.GprWitness(0, "x5")))), "property claim"),
+        ]:
+            with self.subTest(reason=reason):
+                self.outcome("refused", reason, fixture=SimpleNamespace(**{**vars(f), "context": context}))
+
+    def test_claim_order_is_irrelevant(self):
+        f = deepcopy(self.m_template)
+        relations = f.manifest.relations
+        reordered = SimpleNamespace(
+            **vars(f),
+        )
+        reordered.context = replace(f.context, claims=tuple(reversed(f.context.claims)))
+        reordered.manifest = replace(
+            f.manifest, relations=replace(relations, properties=tuple(reversed(relations.properties)))
+        )
+        checked = self.outcome(fixture=reordered)
+        self.assertEqual(len(checked.facts.observed), 25)
 
     def test_publishing_derived_status_and_links_does_not_change_semantic_authority(
         self,
@@ -404,7 +646,10 @@ class PropertyTests(unittest.TestCase):
             {},
             object.__new__(G.PropertyContext),
             replace(self.f.context, program=""),
-            replace(self.f.context, statement="x" * 65537),
+            replace(self.f.context, control_property_id=""),
+            self.claim(statement="x" * 65537),
+            self.claim(property_id=""),
+            self.claim(requirement_id=5),
             replace(self.f.context, authority={}),
             replace(
                 self.f.context,
@@ -418,13 +663,29 @@ class PropertyTests(unittest.TestCase):
         self.refuses(lambda: self.freeze(profile_id="other"))
         self.refuses(lambda: self.freeze(experiment_id="other"))
 
-    def test_context_obligation_and_witness_domains_are_bounded_and_plain(self):
+    def test_context_claim_obligation_and_witness_domains_are_bounded_and_plain(self):
+        one = self.f.context.claims[0]
+        for index, claims in enumerate([
+            (),
+            [one],
+            (one,) * 2,
+            (one, *[replace(one, property_id=f"p{n}", witness=G.C.GprWitness(n, "x1")) for n in range(64)]),
+            (one, replace(one, property_id="other")),
+            (one, replace(one, witness=G.C.GprWitness(3, "x8"))),
+            (asdict(one),),
+            (object.__new__(G.PropertyClaim),),
+        ]):
+            with self.subTest(index=index):
+                self.refuses(
+                    lambda: self.freeze(replace(self.f.context, claims=claims))
+                )
+        self.refuses(
+            lambda: self.freeze(replace(self.f.context, control_property_id="absent"))
+        )
         for obligations in [[], (), ("OB-GC-M",) * 2, ("x",) * 65, (False,)]:
             with self.subTest(obligations=obligations):
                 self.refuses(
-                    lambda: self.freeze(
-                        replace(self.f.context, obligation_ids=obligations)
-                    )
+                    lambda: self.freeze(self.claim(obligation_ids=obligations))
                 )
         for witness in [
             None,
@@ -434,42 +695,65 @@ class PropertyTests(unittest.TestCase):
             G.C.GprWitness(2, "x07"),
         ]:
             with self.subTest(witness=witness):
-                self.refuses(
-                    lambda: self.freeze(replace(self.f.context, witness=witness))
-                )
+                self.refuses(lambda: self.freeze(self.claim(witness=witness)))
 
     def test_context_copy_survives_caller_changes(self):
         frozen = self.freeze()
         self.assertIsNot(frozen, self.f.context)
-        self.assertIsNot(frozen.witness, self.f.context.witness)
+        self.assertIsNot(frozen.claims, self.f.context.claims)
+        self.assertIsNot(frozen.claims[0], self.f.context.claims[0])
+        self.assertIsNot(frozen.claims[0].witness, self.f.context.claims[0].witness)
         self.assertIsNot(frozen.authority, self.f.context.authority)
-        object.__setattr__(self.f.context.witness, "step_n", 0)
+        object.__setattr__(self.f.context.claims[0].witness, "step_n", 0)
+        object.__setattr__(self.f.context.claims[0], "statement", "changed")
         object.__setattr__(
             self.f.context.authority, "requirement_semantic_sha256", "a" * 64
         )
         self.assertEqual(
-            (frozen.witness.step_n, frozen.authority.requirement_semantic_sha256),
-            (2, self.template.context.authority.requirement_semantic_sha256),
+            (
+                frozen.claims[0].witness.step_n,
+                frozen.claims[0].statement,
+                frozen.authority.requirement_semantic_sha256,
+            ),
+            (2, STATEMENT, self.template.context.authority.requirement_semantic_sha256),
+        )
+        frozen = self.freeze(self.m_template.context)
+        self.assertEqual(
+            [claim.property_id for claim in frozen.claims],
+            sorted(claim.property_id for claim in self.m_template.context.claims),
         )
 
     def test_claim_statement_requirement_obligation_program_and_witness_must_match_case(
         self,
     ):
-        for change in [
-            dict(statement="unrelated property"),
-            dict(requirement_id="REQ-other"),
-            dict(obligation_ids=("OB-other",)),
-            dict(program="other.s"),
-            dict(witness=G.C.GprWitness(2, "x8")),
+        for context in [
+            self.claim(statement="unrelated property"),
+            self.claim(requirement_id="REQ-other"),
+            self.claim(obligation_ids=("OB-other",)),
+            replace(self.claim(property_id="other-quotient"), control_property_id="other-quotient"),
+            replace(self.f.context, program="other.s"),
+            self.claim(witness=G.C.GprWitness(2, "x8")),
+            replace(
+                self.f.context,
+                claims=(
+                    self.f.context.claims[0],
+                    replace(self.f.context.claims[0], property_id="remainder", witness=G.C.GprWitness(3, "x8")),
+                ),
+            ),
         ]:
-            with self.subTest(change=change):
-                self.f.context = replace(self.template.context, **change)
+            with self.subTest(context=context):
+                self.f.context = context
                 self.outcome("refused", "property claim")
 
-    def test_actual_relation_property_and_witness_are_bound(self):
+    def test_actual_relation_properties_and_control_are_bound(self):
+        relations = self.f.manifest.relations
         for change in [
-            dict(property_id="other"),
-            dict(witness=G.C.GprWitness(1, "x7")),
+            dict(control_property_id="other"),
+            dict(control_witness=G.C.GprWitness(1, "x7")),
+            dict(properties=()),
+            dict(properties=(G.R.PropertyRelation("signed-quotient", G.C.GprWitness(1, "x7")),)),
+            dict(properties=(*relations.properties, G.R.PropertyRelation("extra", G.C.GprWitness(3, "x8")))),
+            dict(properties=list(relations.properties)),
         ]:
             with self.subTest(change=change):
                 self.outcome(
@@ -477,7 +761,7 @@ class PropertyTests(unittest.TestCase):
                     "relation",
                     manifest=replace(
                         self.f.manifest,
-                        relations=replace(self.f.manifest.relations, **change),
+                        relations=replace(relations, **change),
                     ),
                 )
 
@@ -510,15 +794,13 @@ class PropertyTests(unittest.TestCase):
         )
 
     def test_same_size_source_comment_change_requires_new_review(self):
-        source = (ROOT / "profiles/rv64gc-lab-v0/guests/m-div.s").read_bytes()
+        source = (GUESTS / "m-div.s").read_bytes()
         changed = source.replace(b"dividend", b"numerand", 1)
         self.assertNotEqual(changed, source)
         self.assertEqual(len(changed), len(source))
         values = G.C.compare_source_expectation(
             source=changed,
-            baseline_expectation=(
-                ROOT / "profiles/rv64gc-lab-v0/guests/m-div.expected.sexp"
-            ).read_bytes(),
+            baseline_expectation=(GUESTS / "m-div.expected.sexp").read_bytes(),
             program="m-div.s",
             instructions=27,
             witness=G.C.GprWitness(2, "x7"),
@@ -546,11 +828,12 @@ class PropertyTests(unittest.TestCase):
             "refused", "reviewed guest", manifest=manifest, source_values=values
         )
 
-    def test_selected_baseline_and_exact_numeric_witness_are_bound(self):
+    def test_selected_baseline_and_exact_numeric_control_value_are_bound(self):
         good = self.f.values
         for changes in [
             dict(expectation_sha256="a" * 64),
             dict(witness_value=(1 << 64) - 4),
+            dict(witness_value=True),
             dict(witness=G.C.GprWitness(2, "x8")),
         ]:
             with self.subTest(changes=changes):
@@ -587,7 +870,7 @@ class PropertyTests(unittest.TestCase):
             ),
         )
 
-    def test_each_reviewed_prefix_axis_and_operand_change_is_detected(self):
+    def test_each_reviewed_word_axis_and_operand_change_is_detected(self):
         derived = self.f.values.facts.derivation
         for index, change in [
             (0, dict(n=False)),
@@ -598,13 +881,14 @@ class PropertyTests(unittest.TestCase):
             (0, dict(writes=((5, 7),))),
             (1, dict(writes=((6, 3),))),
             (2, dict(writes=((7, (1 << 64) - 4),))),
+            (2, dict(writes=((7, (1 << 64) - 3), (8, 1)))),
         ]:
             with self.subTest(index=index, change=change):
                 steps = list(derived.steps)
                 steps[index] = replace(steps[index], **change)
                 self.outcome(
                     "refused",
-                    "prefix",
+                    "reviewed words",
                     source_values=replace(
                         self.f.values,
                         facts=replace(
@@ -631,6 +915,8 @@ class PropertyTests(unittest.TestCase):
 
     def test_unknown_case_and_unsupported_source_have_no_facts_or_credit(self):
         self.outcome("unsupported", case_id="future-case")
+        self.outcome("refused", case_id=G.M_FORMS_CASE_ID)
+        self.outcome("refused", fixture=self.m_template, case_id=G.CASE_ID)
         self.outcome(
             "unsupported",
             source_values=G.C.SourceExpectationCheck("unsupported", "scope"),
@@ -638,6 +924,7 @@ class PropertyTests(unittest.TestCase):
         self.outcome(
             "refused", source_values=replace(self.f.values, disposition="unsupported")
         )
+        self.outcome("refused", case_id="")
 
     def test_incomplete_public_facts_and_plans_refuse_without_tracebacks(self):
         for manifest in [
@@ -672,11 +959,14 @@ class PropertyTests(unittest.TestCase):
     def test_frozen_case_context_and_result_copy_nested_caller_bindings(self):
         checked = self.outcome()
         values = [
-            (deepcopy(self.f.context), "statement"),
+            (deepcopy(self.f.context), "program"),
+            (deepcopy(self.f.context.claims[0]), "statement"),
             (deepcopy(self.f.context.authority), "source_id"),
             (G.signed_division_case(), "coverage"),
+            (G.m_forms_case().properties[0], "expected_value"),
             (checked, "reason"),
-            (checked.facts, "observed_value"),
+            (checked.facts, "observed"),
+            (checked.facts.observed[0], "value"),
         ]
         for value, field in values:
             with self.subTest(field=field), self.assertRaises(FrozenInstanceError):
@@ -701,11 +991,12 @@ class PropertyTests(unittest.TestCase):
             checked.facts.authority_inputs[0].sha256,
             "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
         )
-        first = G.signed_division_case()
-        object.__setattr__(first.required_inputs[0], "sha256", "a" * 64)
-        self.assertNotEqual(
-            G.signed_division_case().required_inputs[0].sha256, "a" * 64
-        )
+        for builder in (G.signed_division_case, G.m_forms_case):
+            first = builder()
+            object.__setattr__(first.required_inputs[0], "sha256", "a" * 64)
+            object.__setattr__(first.properties[0], "expected_value", 0)
+            self.assertNotEqual(builder().required_inputs[0].sha256, "a" * 64)
+            self.assertNotEqual(builder().properties[0].expected_value, 0)
 
     def test_pure_projection_and_binding_open_no_files_or_processes(self):
         with mock.patch(
@@ -719,6 +1010,7 @@ class PropertyTests(unittest.TestCase):
         ):
             self.assertEqual(self.project(), self.f.context.authority)
             self.outcome()
+            self.outcome(fixture=self.m_template)
 
     def test_unexpected_programming_failures_propagate(self):
         with mock.patch.object(
@@ -739,8 +1031,8 @@ class PropertyTests(unittest.TestCase):
 
 MUTATIONS = {
     "publication-authority": (
-        "            _PUBLICATION_SHA,",
-        "            _REQUIRED_INPUT_ROWS[0][3],",
+        "        _PUBLICATION_SHA,\n",
+        "        _REQUIRED_INPUT_ROWS[0][3],\n",
     ),
     "record-roundtrip": (
         '_require(\n        str(form[0]) == family and Records.form_to_dict(form) == record,\n        "authority record does not round-trip through its canonical owner",\n    )',
@@ -762,24 +1054,40 @@ MUTATIONS = {
         '_require(\n        all(_text(value) for value in values)\n        and values[0] == profile_id\n        and all(_digest(values[n]) for n in (2, 4, 6)),\n        "invalid selected property authority",\n    )',
         "_require(True, 'invalid selected property authority')",
     ),
+    "claim-count": (
+        "type(claims) is tuple and 1 <= len(claims) <= MAX_PROPERTIES,",
+        "type(claims) is tuple,",
+    ),
+    "claim-identity": (
+        'len(set(identities)) == len(identities), "duplicate property claim identities"',
+        "True, 'duplicate property claim identities'",
+    ),
+    "claim-witness": (
+        'len(set(witnesses)) == len(witnesses), "two property claims witness one observation"',
+        "True, 'two property claims witness one observation'",
+    ),
+    "control-claim": (
+        '_require(values[3] in identities, "control property is not one of the claims")',
+        "_require(True, 'control property is not one of the claims')",
+    ),
     "claim-binding": (
-        '_require(\n            (\n                selected.profile_id,\n                selected.program,\n                selected.requirement_id,\n                selected.obligation_ids,\n                selected.statement,\n                selected.witness,\n            )\n            == (\n                case.profile_id,\n                case.program,\n                case.requirement_id,\n                case.obligation_ids,\n                case.statement,\n                case.witness,\n            ),\n            "property claim differs from reviewed finite case",\n        )',
-        "_require(True, 'property claim differs from reviewed finite case')",
+        '_require(\n            (\n                selected.profile_id,\n                selected.program,\n                selected.control_property_id,\n                selected.claims,\n            )\n            == (case.profile_id, case.program, case.control_property_id, case.claims()),\n            "property claims differ from reviewed finite case",\n        )',
+        "_require(True, 'property claims differ from reviewed finite case')",
     ),
     "semantic-authority": (
         '_require(\n            selected.authority == case.authority,\n            "current semantic authority differs from reviewed case",\n        )',
         "_require(True, 'current semantic authority differs from reviewed case')",
     ),
     "relation-binding": (
-        '_require(\n            relations.property_id == selected.property_id\n            and relations.witness == selected.witness,\n            "selected relation differs from property context",\n        )',
-        "_require(True, 'selected relation differs from property context')",
+        '_require(\n            type(relations.properties) is tuple\n            and relations.control_property_id == selected.control_property_id\n            and relations.control_witness == control.witness\n            and tuple(sorted(relations.properties, key=lambda item: item.property_id))\n            == tuple(\n                R.PropertyRelation(claim.property_id, claim.witness)\n                for claim in selected.claims\n            ),\n            "selected relations differ from property context",\n        )',
+        "_require(True, 'selected relations differ from property context')",
     ),
     "normative-pin": (
         '_require(\n            all(\n                inputs.get(pin.input_id) == pin\n                and pin.input_id in manifest.child_input_ids\n                for pin in case.required_inputs\n            ),\n            "reviewed normative source pins differ or are not children",\n        )',
         "_require(True, 'reviewed normative source pins differ or are not children')",
     ),
     "guest-source": (
-        '_require(\n            inputs.get(principal.input_id) == principal\n            and principal.sha256 == _SOURCE_SHA,\n            "selected source differs from reviewed guest",\n        )',
+        '_require(\n            inputs.get(principal.input_id) == principal\n            and principal.sha256 == case.source_sha256,\n            "selected source differs from reviewed guest",\n        )',
         "_require(True, 'selected source differs from reviewed guest')",
     ),
     "baseline-binding": (
@@ -787,20 +1095,24 @@ MUTATIONS = {
         "_require(True, 'source finding differs from selected baseline expectation')",
     ),
     "witness-value": (
-        '_require(\n            facts.witness == selected.witness\n            and type(facts.witness_value) is int\n            and facts.witness_value == case.expected_value,\n            "source witness differs from reviewed quotient",\n        )',
-        "_require(True, 'source witness differs from reviewed quotient')",
+        '_require(\n            facts.witness == control.witness\n            and type(facts.witness_value) is int\n            and facts.witness_value == control.expected_value,\n            "source witness differs from reviewed control value",\n        )',
+        "_require(True, 'source witness differs from reviewed control value')",
     ),
     "budget-binding": (
-        '_require(\n            type(execution.instructions) is int\n            and execution.instructions == case.instructions\n            and type(derived.instructions) is int\n            and derived.instructions == case.instructions,\n            "reviewed property requires the complete 27-boundary budget",\n        )',
-        "_require(True, 'reviewed property requires the complete 27-boundary budget')",
+        '_require(\n            type(execution.instructions) is int\n            and execution.instructions == case.instructions\n            and type(derived.instructions) is int\n            and derived.instructions == case.instructions,\n            "reviewed case requires its complete boundary budget",\n        )',
+        "_require(True, 'reviewed case requires its complete boundary budget')",
     ),
     "source-identity": (
-        '_require(\n            derived.program == case.program\n            and derived.route == "snapshot-parcels-v1"\n            and type(derived.entry) is int\n            and derived.entry == 0x80000000\n            and type(derived.source_size) is int\n            and derived.source_size == 2512\n            and derived.source_sha256 == principal.sha256,\n            "source derivation differs from reviewed program/entry/identity",\n        )',
+        '_require(\n            derived.program == case.program\n            and derived.route == "snapshot-parcels-v1"\n            and type(derived.entry) is int\n            and derived.entry == _ENTRY\n            and type(derived.source_size) is int\n            and derived.source_size == case.source_size\n            and derived.source_sha256 == principal.sha256,\n            "source derivation differs from reviewed program/entry/identity",\n        )',
         "_require(True, 'source derivation differs from reviewed program/entry/identity')",
     ),
-    "prefix-proof": (
-        '_require(\n                all(type(value) is int for value in numeric)\n                and type(writes) is tuple\n                and len(writes) == 1\n                and type(writes[0]) is tuple\n                and len(writes[0]) == 2\n                and all(type(value) is int for value in writes[0])\n                and (*numeric, writes) == expected,\n                "snapshot prefix differs from reviewed words/operands/quotient",\n            )',
-        "_require(True, 'snapshot prefix differs from reviewed words/operands/quotient')",
+    "reviewed-words": (
+        '        and (*numeric, writes) == expected,\n        "snapshot steps differ from reviewed words/operands/values",\n    )',
+        '        and True,\n        "snapshot steps differ from reviewed words/operands/values",\n    )',
+    ),
+    "claim-values": (
+        '_require(\n                type(value) is int and value == item.expected_value,\n                "predeclared value differs from the source derivation: " + item.property_id,\n            )',
+        "_require(True, 'predeclared value differs from the source derivation: ' + item.property_id)",
     ),
     "authority-node-bound": (
         '_require(\n            nodes <= 4096 and depth <= 16, "authority tree exceeds node/depth bounds"\n        )',
@@ -827,23 +1139,27 @@ MUTATIONS = {
         "_OBLIGATION_SEMANTICS",
     ),
     "context-copy": (
-        'return PropertyContext(\n        values[0],\n        values[1],\n        values[2],\n        values[3],\n        values[4],\n        tuple(sorted(obligations)),\n        values[5],\n        C.GprWitness(step, register),\n        _freeze_authority(getattr(context, "authority", None), profile_id),\n    )',
+        'return PropertyContext(\n        values[0],\n        values[1],\n        values[2],\n        tuple(sorted(frozen, key=lambda claim: claim.property_id)),\n        values[3],\n        _freeze_authority(getattr(context, "authority", None), profile_id),\n    )',
         "return context",
+    ),
+    "claim-copy": (
+        'return PropertyClaim(\n        values[0],\n        values[1],\n        tuple(sorted(obligations)),\n        values[2],\n        _freeze_witness(getattr(claim, "witness", None)),\n    )',
+        "return claim",
     ),
     "source-fact-copy": ("inputs[principal.input_id],", "principal,"),
     "authority-fact-copy": (
         "tuple(inputs[pin.input_id] for pin in case.required_inputs)",
         "tuple(next(item for item in manifest.inputs if item.input_id == pin.input_id) for pin in case.required_inputs)",
     ),
-    "case-selection": ("if case_id != CASE_ID:", "if False:"),
+    "case-selection": ("if case_id not in _CASES:", "if False:"),
     "source-unsupported": (
         'if source_values.disposition == "unsupported":',
         "if False:",
     ),
     "frozen-results": ("@dataclass(frozen=True)", "@dataclass(frozen=False)"),
     "finite-finding": (
-        'return SourcePropertyCheck(\n        "matched",\n        "reviewed finite source property binds; authentication/collection/qualification separate",\n        result,\n    )',
-        'return SourcePropertyCheck(\n        "matched",\n        "reviewed finite source property binds; authentication/collection/qualification separate",\n        None,\n    )',
+        'return SourcePropertyCheck(\n        "matched",\n        "reviewed finite source properties bind; authentication/collection/qualification separate",\n        result,\n    )',
+        'return SourcePropertyCheck(\n        "matched",\n        "reviewed finite source properties bind; authentication/collection/qualification separate",\n        None,\n    )',
     ),
 }
 
@@ -856,7 +1172,7 @@ def main():
     if args.mutation:
         source = Path(G.__file__).read_text()
         before, after = MUTATIONS[args.mutation]
-        expected = 5 if args.mutation == "frozen-results" else 1
+        expected = 8 if args.mutation == "frozen-results" else 1
         if source.count(before) != expected:
             raise RuntimeError("property mutation seam count differs")
         module = types.ModuleType("mutated_source_property")
@@ -871,7 +1187,7 @@ def main():
     )
     print(
         f"MATCHED-GPR-PROPERTY: {result.testsRun} tests / {len(result.failures)} failures / "
-        f"{len(result.errors)} errors; synthetic metadata, finite source witness only"
+        f"{len(result.errors)} errors; synthetic metadata, finite source witnesses only"
     )
     return 0 if result.wasSuccessful() else 1
 

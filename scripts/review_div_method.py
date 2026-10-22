@@ -60,7 +60,7 @@ class MethodCheck:
     checker_disposition: str | None = None
     checker_sources: tuple[SourceIdentity, ...] = ()
     origin: tuple[tuple[str, str], ...] = ()
-    supported_claim: str | None = None
+    supported_claims: tuple[str, ...] = ()
 
 
 class _Stopped(Exception):
@@ -169,7 +169,7 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
                 identities = tuple(SourceIdentity(path, len(data), hashlib.sha256(data).hexdigest())
                                    for path, data in sorted(sources.data.items()))
         authentication = None if evaluation is None else evaluation.authentication
-        case = A.P.signed_division_case()
+        case = A.P.reviewed_case(A.P.CASE_ID)
         return MethodCheck(
             disposition, reason, case_id=case_id,
             record_disposition=None if evaluation is None else evaluation.record.disposition,
@@ -186,7 +186,7 @@ def review_method(*, case_id=A.P.CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodC
             origin=(("reviewed_source_declaration", SOURCE_DECLARATION_COMMIT),
                     ("reviewed_retained_capture", RETAINED_CAPTURE_COMMIT),
                     ("trust", "reviewed tracked collector and capture procedure; no independent execution attestation")),
-            supported_claim=case.statement)
+            supported_claims=tuple(item.statement for item in case.properties))
 
     try:
         if ROOT != A.ROOT or ROOT != A.Review.ROOT or ROOT != A.V.ROOT:

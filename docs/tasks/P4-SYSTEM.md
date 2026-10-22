@@ -358,6 +358,56 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42at / SEMULITH-P4-0288: one case, many predeclared properties (completed)
+
+Owned on clean 0aabfef. The policy's two pending legs (boundary-fixtures, form-coverage) need one
+capture that predeclares every Table 1 row and every M form, and the property binding supported
+exactly one property per case: `_records(graph, "property", 1)` in the relation binder, one
+statement and one witness in the context, `graph["property"][0]` in the evaluation and the
+collector, the policy's control leg reading the first property. Measured first: a record with a
+second property is refused (`method requires 1 property records`); the m-forms program has a
+matched source-value finding at boundary 12 x15 (`0xfffffffffffffffd`) and no reviewed case
+(target/p4-system-14/a42at/reproduce-*.log). Built: `scripts/matched_gpr_property.py` owns a case
+table (`reviewed_case`, `reviewed_case_ids`): `rv64gc-signed-div-truncation-v2` keeps its one
+property and stays the retained `CASE_ID`; `rv64gc-m-forms-v3` declares 25 properties over
+`m-forms.s` (33 boundaries) — the 13 forms once each (`form:<mnemonic>`) and the 12 Table 1 cells
+(`table1:<row>`) — each a reviewed RV64 value, with the reviewed words of all 33 boundaries and the
+control `form-div` (boundary 12, x15, −3 → −4, the retained case's discrimination); the probe
+re-derives every word from the encoding fields and every value from integer arithmetic and Table 1
+(33 of 33, 25 of 25; independent-m-forms.log). `PropertyContext` carries 1..64 `PropertyClaim`s with
+distinct identities and witnesses and names its control among them; the binding holds the sorted
+claims and the control to the case, the relation plan's properties and control witness to the
+context, the reviewed words (3 for v2, 33 for v3), and then every predeclared value against the
+source derivation the source-value finding already carries (no second read, no arithmetic engine).
+`RelationPlan` carries `properties` (1..64, distinct witnesses) and `control_property_id` /
+`control_witness`, the comparison witness; the evaluation and the collector build one claim per
+declared property (count and obligations bounded before copying); adequacy, the capture command (one
+property form per reviewed property, the control_run naming the control, a per-case limitation
+line), the method review (`supported_claims`), the capture review (every reviewed value, the guest
+path from the case) and the policy review (the control leg reads the control_run's named property;
+1..64 properties) read the case table. Both cases bind through the pure API (1 and 25 observed
+values); one wrong value and the wrong case refuse (binding-smoke.log). Probes: property rewritten
+(34 tests, 35 seams), property-evaluation 24 / 16 (`control-value`; the fixture now declares the
+reviewed identity `signed-quotient`), relations 42 / 19 (`property-count`, `witness-unique`), policy
+22 / 7 (`first-property`; its fixture gains a control_run), the value-evaluation seam renamed, field
+renames in the manifest, evaluation, method and inputs probes; the seam matrix of ten probes in
+normal and -O mode: every seam discriminates and every count equals the gate's table
+(seams-*.log); gate arms re-measured; the LIVE_STATUS arm total re-derived to 1651. Real tree
+after the change: method `stale`, policy `invalidated — 6 of 10 legs … invalidated by
+evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs` rc 0, capture
+review pending with 37 modules / 64 children unchanged (reviews-after.log) — the a42as design, no
+credit granted or removed, `REQ-GC-M` planned. Decision record
+`decision_many-predeclared-properties-one-control.md` (`answers:`), chapters (source-property: the
+API and the m-forms section; policy-adequacy; retained-method; prepared-inputs), toolbox rows (a row
+for the property probe), KNOWLEDGE_MAP, book decision count 66. Open for the director: only the DIV
+statement is a retained normative excerpt; the multiply statements and the Table 1 rows are cited
+in the expectations (what the legs read), not retained — a retention slice like a42z for §11.1.1
+and Table 1 before the crediting capture is the thorough answer. Commit: SEMULITH-P4-0288. Next:
+a42au — a case selector for `capture_div.py` and `review_div_capture.py` (the retained pointer
+stays v2 for the method and policy reviews), fresh prepared inputs under `evidence/rv64gc-m-forms-v3/`
+(guest.elf, reference-config.json, baseline and control expectations with boundary 12 x15 −3 → −4),
+`--declare`, commit; then a42av captures the three runs and switches the retained pointers.
+
 ### .14 a42as / SEMULITH-P4-0287: a stale finite method invalidates, it does not lock (completed)
 
 Owned on clean 8385b8d. Director's ruling 2026-10-22 ("let's follow your recommendation"): the
@@ -712,6 +762,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-through-a42aq).
 
+- [x] `.14` a42at **ROOT CAUSE** — `grep -n '"property", 1' scripts/matched_gpr_relations.py` = 93 (`_records(graph, "property", 1)`); `grep -n 'graph\["property"\]\[0\]' scripts/matched_gpr_evaluation.py scripts/matched_gpr_unit_collector.py` = 184, 372; `grep -n 'witnesses\[0\]' scripts/review_div_policy.py` = 192 (target/p4-system-14/a42at/reproduce-before.log); experiment `python3 -B` (reproduce-two-properties.log): the synthetic fixture with a second property → `bind_relations` `refused | method requires 1 property records`; `compare_source_expectation` over m-forms.s at (12, x15) → `matched 0xfffffffffffffffd`; reviewed cases in the binding `['signed_division_case']`; `python3 -B scripts/review_div_policy.py` rc=0 `DIV-POLICY: pending — 8 of 10 legs satisfied; missing boundary-fixtures, form-coverage`.
+- [x] `.14` a42at **ADDRESSED** — `python3 -B` independent re-derivation (target/p4-system-14/a42at/independent-m-forms.log): `reviewed steps re-derived: 33 of 33`, `properties consistent with reviewed steps: 25 of 25`, `forms covered: 13`, `table1 cells: 12 steps [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]` = the source's Table 1 lines, source sha and size match; binding-smoke.log: v2 `bind: matched` (1 observed), v3 `bind: matched` (25 observed, control `0xfffffffffffffffd`), wrong last value → `snapshot steps differ from reviewed words/operands/values`, each record under the other case → `property claims differ from reviewed finite case`; `python3 -B [-O] scripts/probe_matched_gpr_property.py` 34 tests / 0 failures / 0 errors both modes, 35 seams all RED (seams-property.log: claim-values 3, reviewed-words 8, control-claim 2, claim-count 1, claim-copy 6, …); `probe_matched_gpr_property_evaluation.py` 24 / 0 both modes, 16 seams (seams-property-evaluation.log: control-value 1, property-fact-binding 19); `probe_matched_gpr_relations.py` 42 / 0, 19 seams (seams-relations.log: property-count 2, witness-unique 2, control-property 1); `probe_div_policy.py` 22 / 0, 7 seams 1t/1f (seams-policy.log: first-property); real tree (reviews-after.log): `python3 -B scripts/review_div_method.py` `stale | evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs`, `python3 -B scripts/review_div_policy.py` rc=0 `DIV-POLICY: invalidated — 6 of 10 legs satisfied; missing boundary-fixtures, matched-reference-comparison, currentness, form-coverage; invalidated by evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs; no qualification credit`.
+- [x] `.14` a42at **NO REGRESSION** — probes with unchanged counts: `python3 -B scripts/probe_matched_gpr_manifest.py` 33 / 0, `probe_matched_gpr_evaluation.py` 42 / 0, `probe_matched_gpr_unit_evaluation.py` 29 / 0, `probe_matched_gpr_unit_collector.py` 26 / 0, `probe_div_capture_inputs.py` 16 / 0, `probe_div_capture_review.py` 31 / 0, `probe_div_authorities.py` 18 / 0, `probe_div_command.py` 19 / 0, `probe_div_method.py` 21 / 0, `probe_matched_gpr_value_evaluation.py` 19 / 0; seam matrices normal and -O for evaluation (29 seams), value-evaluation (12), capture-review (18), unit-evaluation (25), command (7: 6/1/1/1/2/1/1), method (14: 4/1/4/2/2/1/2/1/3/4/1/1/1/1), every count equal to the gate's table (target/p4-system-14/a42at/seams-probe_*.log, compared by script); `python3 -B scripts/review_div_capture.py --review` pending, modules 37 / children 64 unchanged; focused checks rc=0 (target/p4-system-14/a42at/focused-checks.json) after two repairs — `bash scripts/check_derived_counts.sh` COUNT DRIFT 1647 → re-derived 1651 with the doctrine's own `arm_total` (four new static `score` lines), `bash scripts/check_unit_books.sh` BOOK-LINK missing-path → the decision referenced as the other chapters do, then `make book` rc=0 and UNIT-BOOKS ok (6 units + project book, 3660 hyperlinks); `bash knowledge-map/scripts/check_knowledge_map.sh` rc=0 after regeneration; `bash scripts/check_table_arity.sh --all` 0 defective rows; `git status` shows scripts and documents only — no Rust, profile, definition or evidence byte changed.
+- [x] `.14` a42at **LOCKSTEP** — tree record + rows; scripts/matched_gpr_property.py, matched_gpr_relations.py, matched_gpr_evaluation.py, matched_gpr_unit_collector.py, matched_gpr_adequacy.py, capture_div.py, review_div_method.py, review_div_capture.py, review_div_policy.py; eleven probes; check_profile_consistency.sh arms (property 34 / 35 seams, property-evaluation 24 / 16, relations 42 / 19, policy 22 / 7); decision record + INDEX row; source-property, policy-adequacy, retained-method, prepared-inputs chapters; toolbox rows (execution 11, 14, new property row; guest-evidence 13); KNOWLEDGE_MAP regenerated; MEMORY; one CHANGELOG entry; LIVE_STATUS arm total 1651 (P4 14/18 unchanged); book decision count 66.
 - [x] `.14` a42as **ROOT CAUSE** — `evidence/rv64gc-signed-div-truncation-v2/dependencies.sexp` pins 64 inputs + 4 principals (`grep -o '(input ' … | wc -l` = 64; 35 scripts, 20 definitions/riscv/*.sexp, 6 profile files, 4 schemas, 1 guest); `git log --since=30.days --name-only` touched 67 of the 68 (0 commits since the capture c91d08f); experiment (one appended comment line on scripts/matched_gpr_property.py, reverted): `python3 -B scripts/review_div_method.py` rc=1 `stale | evidence/…/planned-experiment.sexp: SHA256 differs`; `python3 -B scripts/review_div_policy.py` rc=1 `DIV-POLICY: blocked — 6 of 10 legs satisfied; … FINDING finite method not satisfied (stale)`; `bash scripts/check_profile_consistency.sh --self-test` rc=1 `1054 pass / 32 fail`: GREEN composed DIV command ×2 (`'mismatch' != 'matched'` for the three declarations, `'refused' != 'pending'` offline), its seven RED arms ×2 (19 tests / N failures no longer exact), GREEN retained DIV method ×2 (`('stale', 'pending', None, None, None)`), six method RED arms ×2 (evaluation-selection, typed-findings, native-envelope rc=0: the seam never reached), GREEN policy legs ×2 (target/p4-system-14/a42as/stale-experiment.log, stale-selftest.log).
 - [x] `.14` a42as **ADDRESSED** — moved tree: `python3 -B scripts/review_div_policy.py` rc=0 `DIV-POLICY: invalidated — 6 of 10 legs satisfied; missing boundary-fixtures, matched-reference-comparison, currentness, form-coverage; invalidated by evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs; no qualification credit`; `python3 -B scripts/requirement_status.py` rc=0 (48 planned, 0 credited); probe matrix both states (target/p4-system-14/a42as/probe-matrix.log): `probe_div_policy.py` 21 tests / 0 failures normal+O, six seams `1 tests / 1 failures` (lock-stale new); `probe_div_command.py` 19 / 0, seven seams 6,1,1,1,2,1,1 in both states; `probe_div_method.py` 21 / 0 normal+O (after the synthetic-target and exact-charge fixes: target/p4-system-14/a42as/fix-method-green.err, fix-method-O.log), fourteen seams 4,1,4,2,2,1,2,1,3,4,1,1,1,1 in both states; synthetic current capture `status pending` in 1.6 s, reviewed `satisfied`, record valid, binding matched, 85 files, checker 39 (template-trial).
 - [x] `.14` a42as **NO REGRESSION** — current tree unchanged: `python3 -B scripts/review_div_method.py` satisfied; `python3 -B scripts/review_div_policy.py` rc=0 `pending — 8 of 10 legs satisfied; missing boundary-fixtures, form-coverage`; `bash scripts/check_readme_routes.sh` rc=0; `bash knowledge-map/scripts/check_knowledge_map.sh` rc=0; focused checks rc=0 and staged checks rc=0 (target/p4-system-14/a42as/focused-checks.json, staged-checks.json); gate `--self-test` arms for the three probes re-measured in both states (above); no Rust, no profile, no definition, no evidence byte changed (`git status` shows four scripts and documents only).

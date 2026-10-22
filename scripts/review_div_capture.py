@@ -277,7 +277,9 @@ def exercise_loaders(source, snapshots):
     import matched_gpr_comparison as C
     import matched_gpr_identity as I
     import experiment_verification as V
+    import matched_gpr_property as P
 
+    case = P.reviewed_case(P.CASE_ID)
     observed = []
     original = S.read_file
 
@@ -292,8 +294,10 @@ def exercise_loaders(source, snapshots):
     for loader in (F._schema, C._schema, I._schema, V._schema):
         loader.cache_clear()
     with patch.object(S, "read_file", read):
-        image = G.build_guest_image(source, program="m-div.s", entry=0x80000000)
-        derived = Author.derive_snapshot(source, program="m-div.s", instructions=27)
+        image = G.build_guest_image(source, program=case.program, entry=0x80000000)
+        derived = Author.derive_snapshot(
+            source, program=case.program, instructions=case.instructions
+        )
         F._schema("capture")
         F._schema("dependencies")
         C._schema()
@@ -306,10 +310,13 @@ def exercise_loaders(source, snapshots):
     require(
         image.payload_size == derived.payload_size, "image/author payload size differs"
     )
-    require(len(derived.steps) == 27, "author boundary budget differs")
-    require(
-        derived.steps[2].writes == ((7, (1 << 64) - 3),), "signed DIV witness differs"
-    )
+    require(len(derived.steps) == case.instructions, "author boundary budget differs")
+    for item in case.properties:
+        step = derived.steps[item.witness.step_n]
+        require(
+            dict(step.writes).get(int(item.witness.register[1:])) == item.expected_value,
+            "reviewed property value differs: " + item.property_id,
+        )
     return {
         "data_paths": sorted(set(observed)),
         "read_calls": len(observed),
@@ -412,7 +419,7 @@ def exercise_authorities(snapshots):
             "authority view pin differs from reviewed snapshot",
         )
     require(
-        context.property_authority == P.signed_division_case().authority,
+        context.property_authority == P.reviewed_case(P.CASE_ID).authority,
         "authority facts differ from reviewed DIV case",
     )
     result = A.report(context)
@@ -433,9 +440,10 @@ def review():
         snapshots.pin(path)
     import matched_gpr_property as P
 
-    case = P.signed_division_case()
+    case = P.reviewed_case(P.CASE_ID)
     require(
-        hashlib.sha256(snapshots.data[GUEST]).hexdigest() == P._SOURCE_SHA,
+        GUEST == "profiles/rv64gc-lab-v0/guests/" + case.program
+        and hashlib.sha256(snapshots.data[GUEST]).hexdigest() == case.source_sha256,
         "guest differs from reviewed case",
     )
     check_retained_input(case, snapshots.data[PRIMARY])

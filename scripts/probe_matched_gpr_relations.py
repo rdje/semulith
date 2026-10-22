@@ -40,8 +40,9 @@ class RelationTests(unittest.TestCase):
         self.assertEqual(V.check_experiment(form, scope), [])
         self.experiment = D.references_to_doc([S.Symbol("references"), form])["experiment"][0]
         result = self.result("matched", "qualification pending")
-        self.assertEqual(result.plan.property_id, "property")
-        self.assertEqual((result.plan.witness.step_n, result.plan.witness.register), (0, "x1"))
+        self.assertEqual(result.plan.control_property_id, "property")
+        self.assertEqual((result.plan.control_witness.step_n, result.plan.control_witness.register), (0, "x1"))
+        self.assertEqual(result.plan.properties, (M.PropertyRelation("property", M.GprWitness(0, "x1")),))
         self.assertEqual(result.plan.control_id, "wrong-expectation")
         self.assertEqual(result.plan.expected_version, "source-derivation-v1")
         self.assertEqual(result.plan.derivation_common_input_ids,
@@ -104,8 +105,9 @@ class RelationTests(unittest.TestCase):
         self.prop["gpr_witness"]["register"] = "x2"; self.control["observed_verdict"] = "AGREE"
         self.base_producer["input_ids"].clear(); self.graph["producer_pair"][0]["evidence"] = "changed"
         self.assertEqual(result, original)
-        for obj, field in ((result, "reason"), (result.plan, "property_id"),
-                           (result.plan.witness, "register"), (result.plan.pairs[0], "evidence")):
+        for obj, field in ((result, "reason"), (result.plan, "control_property_id"),
+                           (result.plan.control_witness, "register"), (result.plan.properties[0], "property_id"),
+                           (result.plan.pairs[0], "evidence")):
             with self.subTest(field=field), self.assertRaises(FrozenInstanceError): setattr(obj, field, "changed")
         self.assertIs(type(result.plan.derivation_common_input_ids), tuple)
         self.assertIs(type(result.plan.pairs[0].shared_input_ids), tuple)
@@ -129,7 +131,8 @@ class RelationTests(unittest.TestCase):
                 with self.subTest(family=family, change=change):
                     original = self.graph[family]
                     self.graph[family] = original[:-1] if change == "missing" else original + [None]
-                    try: self.result("refused", "method requires")
+                    # Properties are bounded 1..64, so a surplus None is an invalid record, not a count.
+                    try: self.result("refused", "record" if (family, change) == ("property", "extra") else "method requires")
                     finally: self.graph[family] = original
 
     def test_invalid_local_family_type_record_and_id(self):
@@ -148,7 +151,8 @@ class RelationTests(unittest.TestCase):
             with self.subTest(family=family):
                 extra = deepcopy(self.graph[family][0]); extra["id"] = "extra"
                 self.graph[family].append(extra)
-                try: self.result("refused", "method requires")
+                # A second property is declared, never ignored: a copy repeats the witness and refuses.
+                try: self.result("refused", "one observation" if family == "property" else "method requires")
                 finally: self.graph[family].pop()
 
     def test_failed_subcases_restore_count_and_version_fixtures(self):
@@ -202,9 +206,45 @@ class RelationTests(unittest.TestCase):
                 try: self.result("refused", "baseline/control")
                 finally: self.control[field] = original
 
-    def test_control_selects_exact_sole_property(self):
+    def test_control_selects_exactly_one_declared_property(self):
         for ids in ([], ["other"], ["property", "other"], ["property"] * 2):
             with self.subTest(ids=ids): self.control["property_ids"] = ids; self.result("refused")
+
+    def more_properties(self, count, register=lambda n: f"x{n}"):
+        """Append synthetic properties p2.. with distinct witnesses on the one boundary."""
+        for n in range(2, 2 + count):
+            prop = deepcopy(self.prop); prop.update(id=f"p{n}", gpr_witness=dict(step_n=0, register=register(n)))
+            self.graph["property"].append(prop)
+
+    def test_many_properties_bind_in_record_order_and_the_control_selects_one(self):
+        self.more_properties(2); self.control["property_ids"] = ["p3"]
+        plan = self.result("matched").plan
+        self.assertEqual([item.property_id for item in plan.properties], ["property", "p2", "p3"])
+        self.assertEqual([item.witness.register for item in plan.properties], ["x1", "x2", "x3"])
+        self.assertEqual((plan.control_property_id, plan.control_witness), ("p3", M.GprWitness(0, "x3")))
+        self.control["property_ids"] = ["p4"]; self.result("refused", "declared property")
+
+    def test_property_population_is_bounded_to_one_through_sixty_four(self):
+        self.experiment["instructions"] = 4096
+        for run in self.graph["run"]: run["argv"][4] = "4096"
+        self.more_properties(63, register=lambda n: "x1")
+        for n, prop in enumerate(self.graph["property"]): prop["gpr_witness"]["step_n"] = n
+        self.assertEqual(len(self.graph["property"]), 64); self.result("matched")
+        self.more_properties(1); self.graph["property"][-1]["gpr_witness"]["step_n"] = 64
+        self.result("refused", "1..64 property")
+        self.graph["property"] = []; self.result("refused", "1..64 property")
+
+    def test_every_property_witness_is_validated_and_distinct(self):
+        self.more_properties(1)
+        second = self.graph["property"][1]
+        for change in (dict(gpr_witness=dict(step_n=0, register="x1")), dict(gpr_witness=dict(step_n=1, register="x2")),
+                       dict(gpr_witness=dict(step_n=0, register="x32")), dict(observation_kinds=["witnessed-delivery"]),
+                       dict(id="property")):
+            with self.subTest(change=change):
+                original = deepcopy(second); second.update(change)
+                try: self.result("refused")
+                finally: second.clear(); second.update(original)
+        self.result("matched")
 
     def test_control_selects_exact_mutant_expectation(self):
         for ids in ([], ["expectation"], ["adapter"], ["mutant-expectation", "adapter"]):
@@ -297,7 +337,9 @@ MUTATIONS = {
     "witness-budget": ('type(step) is int and 0 <= step < execution.instructions,', 'True,'),
     "witness-register": ('isinstance(register, str) and re.fullmatch(r"x([1-9]|[12][0-9]|3[01])", register) is not None,', 'True,'),
     "control-runs": ('control.get("baseline_id") == baseline.run_id and control.get("run_id") == control_run.run_id,', 'True,'),
-    "control-property": ('_ids(control.get("property_ids"), 1, 1, "control property_ids") == (prop["id"],),', 'True,'),
+    "control-property": ('selected in properties,', 'True,'),
+    "property-count": ('type(records) in (list, tuple) and minimum <= len(records) <= maximum,', 'type(records) in (list, tuple),'),
+    "witness-unique": ('(step, register) not in witnessed,', 'True,'),
     "control-mutation": ('_ids(control.get("mutation_input_ids"), 1, 1, "control mutation_input_ids") == (control_run.expectation_id,),', 'True,'),
     "control-intent": ('control.get("expected_verdict") == "DIVERGE",', 'True,'),
     "control-observed": ('observed == raw_control.get("verdict"),', 'True,'),

@@ -22,8 +22,9 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
   matched-reference-comparison the finite method is satisfied and the baseline agrees under
                                the declared comparison rule and named observation vocabulary.
   repeated-execution           a repeat run agrees.
-  discriminating-control       the control diverges at the witness step and register — it
-                               fails for the stated reason (wrong defined result).
+  discriminating-control       the control diverges at the step and register of the one property
+                               the control_run names — it fails for the stated reason (wrong
+                               defined result).
   record-linkage               requirement, effective obligation, tracked runner, expectation
                                producer, receipt identity and limitations are all named.
   currentness                  the policy document is pinned by the dependency manifest and
@@ -148,7 +149,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     verification = S.children(planned, "verification")
     _require(len(verification) == 1, "planned experiment needs exactly one verification form")
     properties = S.children(verification[0], "property")
-    _require(len(properties) >= 1, "planned experiment declares no property")
+    _require(1 <= len(properties) <= 64, "planned experiment declares no property, or more than 64")
     graph = verification[0]  # the scoped graph: properties, inputs, producers and observations
     inputs = {str(_one(i, "id")): i for i in S.children(graph, "input")}
     producers = {str(_one(p, "id")): p for p in S.children(graph, "producer")}
@@ -182,14 +183,18 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
         steps[n] = dict(insn=str(_one(step, "insn") or ""), derivation=str(_one(step, "derivation") or ""),
                         source=str(_one(step, "source") or ""))
     _require(steps, "expectation file declares no step")
-    witnesses = []
+    witnesses = {}
     for prop in properties:
         gw = S.children(prop, "gpr_witness")
         _require(len(gw) == 1, "every property needs exactly one gpr_witness")
         step_n, register = _one(gw[0], "step_n"), str(_one(gw[0], "register"))
         _require(isinstance(step_n, int) and step_n in steps, "witness step is not an expectation step")
-        witnesses.append((step_n, register))
-    witness_step, witness_register = witnesses[0]
+        witnesses[str(_one(prop, "id"))] = (step_n, register)
+    controls = S.children(graph, "control_run")
+    _require(len(controls) == 1, "planned experiment needs exactly one control_run")
+    named = _strings(controls[0], "property_ids")
+    _require(len(named) == 1 and named[0] in witnesses, "control_run must name one declared property")
+    witness_step, witness_register = witnesses[named[0]]
 
     legs: list[Leg] = []
     # source-located-expectations
@@ -206,7 +211,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
          f"{'reads only its own inputs' if not own_output else 'is missing or reads reference inputs'}")
     # boundary-fixtures
     boundary_steps = sorted(n for n, s in steps.items() if BOUNDARY_MARKER in s["source"])
-    declared_steps = {n for n, _ in witnesses}
+    declared_steps = {step for step, _ in witnesses.values()}
     undeclared = [n for n in boundary_steps if n not in declared_steps]
     _leg(legs, "boundary-fixtures", bool(boundary_steps) and not undeclared,
          f"{len(boundary_steps)} directed boundary rows present at steps {boundary_steps}; "

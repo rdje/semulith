@@ -27,6 +27,8 @@ SEAMS = {
     "coverage-optional": ('    _leg(legs, "form-coverage", bool(required) and predeclared == required,\n',
                           '    _leg(legs, "form-coverage", bool(required),\n'),
     "lock-stale": ('    stale = method.get("disposition") == "stale"\n', '    stale = False\n'),
+    "first-property": ('    witness_step, witness_register = witnesses[named[0]]\n',
+                       '    witness_step, witness_register = next(iter(witnesses.values()))\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_undeclared_boundary_rows_keep_the_case_pending",
@@ -35,6 +37,7 @@ MUTATION_TESTS = {
     "any-control": "test_control_diverging_elsewhere_is_pending",
     "coverage-optional": "test_partial_form_coverage_is_pending",
     "lock-stale": "test_stale_method_is_invalidated_not_blocked",
+    "first-property": "test_control_leg_reads_the_property_the_control_run_names",
 }
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
@@ -75,7 +78,8 @@ def load_module(workdir: Path):
 
 def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="medium", declare_boundaries=False,
             steps=None, expected_reads_reference=False, repeat=True, control="DIVERGE", control_step=0,
-            control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1"):
+            control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1",
+            control_property="p0"):
     """One synthetic retained case under profile fx-v0; every knob breaks exactly one leg."""
     profile = root / "profiles" / "fx-v0"; profile.mkdir(parents=True)
     obs = " ".join(f'(insns "{i}")' for i in insns)
@@ -103,10 +107,12 @@ def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="med
                   f'(statement "s") (gpr_witness (step_n {n}) (register "x7")))' for n, _, s in steps if "Table" in s]
     expected_inputs = '(input_ids "guest-source") (input_ids "expectation")' + (
         ' (input_ids "reference-config")' if expected_reads_reference else "")
+    control_run = (f'(control_run (id "c0") (run_id "control") (baseline_id "baseline") (mutation_input_ids "mutant-expectation") '
+                   f'(property_ids "{control_property}") (expected_verdict "DIVERGE") (observed_verdict "{control}") (reason "r"))')
     (case / "planned-experiment.sexp").write_text(
         '(experiment (id "cx") (program "p.s") (instructions 3) (models "m") (verdict "AGREE") (reproduced "r") (control "c")\n'
         '  (verification (format_version "matched-gpr-v1") (comparison_rule "rule-v1") (limitations "l")\n    '
-        + "\n    ".join(props) + '\n'
+        + "\n    ".join(props) + '\n    ' + control_run + '\n'
         '    (input (id "guest-source") (role "guest-source") (path "profiles/fx-v0/guests/p.s") (sha256 "0"))\n'
         '    (input (id "collector") (role "collector") (path "scripts/c.py") (sha256 "0"))\n'
         '    (input (id "reference-config") (role "reference-config") (path "evidence/cx/ref.json") (sha256 "0"))\n'
@@ -193,6 +199,23 @@ class PolicyTests(unittest.TestCase):
         fixture(self.root, declare_boundaries=True, control_step=1, control_register="x8")
         t = self.measure()
         self.assertEqual(t["missing"], ["discriminating-control"]); self.assertIn("witness step 0 x7", self.legs_text(t, "discriminating-control"))
+
+    def test_control_leg_reads_the_property_the_control_run_names(self):
+        """The control changes p1's value (step 1, x7): named, the leg is satisfied; the first property is not it."""
+        fixture(self.root, declare_boundaries=True, control_step=1, control_property="p1")
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []))
+        self.assertIn("witness step 1 x7", self.legs_text(t, "discriminating-control"))
+        self.tearDown(); self.setUp()
+        fixture(self.root, declare_boundaries=True, control_step=1, control_property="p0")
+        self.assertEqual(self.measure()["missing"], ["discriminating-control"])
+        self.tearDown(); self.setUp()
+        case = fixture(self.root, declare_boundaries=True, control_property="absent")
+        with self.assertRaises(self.M.Refused): self.measure()
+        planned = case / "planned-experiment.sexp"
+        sibling = '(control_run (id "c1") (run_id "control") (property_ids "p0") (expected_verdict "DIVERGE") (observed_verdict "DIVERGE") (reason "r"))\n    '
+        planned.write_text(planned.read_text().replace('(control_run (id "c0")', sibling + '(control_run (id "c0")', 1))
+        with self.assertRaises(self.M.Refused): self.measure()
 
     def test_receipt_claiming_qualification_is_a_finding(self):
         fixture(self.root, qualification=True)

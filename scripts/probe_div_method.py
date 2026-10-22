@@ -245,7 +245,7 @@ elif mode=='unsupported-finding':
 elif mode=='terminal-finding':
  d,c,data,b,e=fixture();result=asdict(K.assess_findings(c,b,replace(e,disposition=argument,reason='owned terminal fixture')))
 elif mode=='foreign-plan':
- d,c,data,b,e=fixture();plan=replace(e.manifest.plan,relations=replace(e.manifest.plan.relations,property_id='other-property'))
+ d,c,data,b,e=fixture();plan=replace(e.manifest.plan,relations=replace(e.manifest.plan.relations,control_property_id='other-property'))
  result=asdict(K.assess_findings(c,b,replace(e,manifest=replace(e.manifest,plan=plan))))
 elif mode=='foreign-file':
  d,c,data,b,e=fixture();items=list(e.authentication.files)

@@ -412,7 +412,7 @@ MUTATIONS = {
         "instructions=1, program=image_context.program,",
     ),
     "witness-forward": (
-        "witness=relations.plan.witness)\n    if (type(source_values)",
+        "witness=relations.plan.control_witness)\n    if (type(source_values)",
         'witness=C.GprWitness(0, "x31"))\n    if (type(source_values)',
     ),
     "program-forward": (

@@ -369,11 +369,16 @@ def _evaluation_plan(payload, scope, candidate, inventory, impact, author, autho
         inventory = author.inventory
     if authority is not None:
         C._need(author is not None, "source property requires author review")
-        prop = graph["property"][0]
+        declared = graph["property"]
+        C._need(type(declared) is list and 1 <= len(declared) <= Property.MAX_PROPERTIES,
+                "source property requires 1..64 declared properties")
+        witnesses = {item.property_id: item.witness for item in relations.plan.properties}
+        claims = tuple(Property.PropertyClaim(
+            prop["id"], prop["requirement_id"], tuple(prop["obligation_ids"]), prop["statement"],
+            witnesses[prop["id"]]) for prop in declared)
         context = Property.freeze_context(Property.PropertyContext(
-            scope.profile_id, experiment["id"], experiment["program"], prop["id"],
-            prop["requirement_id"], tuple(prop["obligation_ids"]), prop["statement"],
-            relations.plan.witness, authority), **selected)
+            scope.profile_id, experiment["id"], experiment["program"], claims,
+            relations.plan.control_property_id, authority), **selected)
         authority = context.authority
     if impact is not None:
         C._need(inventory is not None, "impact requires current input review")

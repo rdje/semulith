@@ -51,7 +51,8 @@ unavailable or unsupported finite method leaves the legs measured but `blocked`.
 critical-risk requirement stays pending on its second method, because no declaration
 vocabulary for one exists yet. An obligation without a declared feature disposition stays
 pending; the disposition is never inferred from the mnemonics. A control that diverges
-somewhere other than the witness step and register is not the stated reason.
+somewhere other than the step and register of the property the `control_run` names is not the
+stated reason; the leg reads that property, not the first one declared (a42at).
 
 ## What a moved pin does
 
@@ -78,10 +79,11 @@ python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 
 The first command prints `DIV-POLICY: pending — 8 of 10 legs satisfied; missing
 boundary-fixtures, form-coverage; no qualification credit` and exits zero; `--json` puts
-the leg table on stdout within 64 KiB. The probe runs 19 tests in both interpreter modes
+the leg table on stdout within 64 KiB. The probe runs 22 tests in both interpreter modes
 on synthetic cases where each knob breaks exactly one leg, plus the real tree; each of the
-five seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
-`coverage-optional`) runs its one discriminating test and fails. `PROFILE-CONSISTENCY`
+seven seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
+`coverage-optional`, `lock-stale`, `first-property`) runs its one discriminating test and
+fails. `PROFILE-CONSISTENCY`
 runs the probe in its self-test and the measurement on the real path on every commit.
 
 ## The program the crediting capture will predeclare
@@ -117,7 +119,11 @@ The last command is a live experiment against the pinned Sail 0.14 binary: it ag
 predeclares the program's properties, no receipt cites it and nothing credits it; the
 retained case and its measurement are untouched, so `REQ-GC-M` keeps deriving `planned`. The
 verify-side differential executes the program on every commit through the regenerated
-fixture, and the interaction matrix names it under boundary × boundary. The next unit gives
-the property binding one case with many predeclared properties — one per Table 1 cell and
-one per form — and only then a declaration and a capture can retain runs that the policy's
-legs would credit.
+fixture, and the interaction matrix names it under boundary × boundary. At a42at the property
+binding declares the case: `rv64gc-m-forms-v3`, twenty-five predeclared properties — one per
+form and one per Table 1 cell — each a reviewed RV64 value the binding holds to the source
+derivation, with the reviewed words of all 33 boundaries, and one control (the DIV rounding
+witness at boundary 12, −3 → −4). The declaration record and the capture follow; only then can
+the retained runs be the ones the policy's legs would credit. Until that capture the retained
+case is `invalidated` — the binding is one of its pinned inputs — and nothing is credited
+(`decision_many-predeclared-properties-one-control.md`).

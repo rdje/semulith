@@ -36,11 +36,13 @@ class Fixture(B.Fixture):
         )
         self.experiment.update(program="m-div.s", instructions=27)
         self.graph["property"][0].update(
+            id="signed-quotient",
             requirement_id="REQ-GC-M",
             obligation_ids=["OB-GC-M"],
             statement=P.STATEMENT,
             gpr_witness=dict(step_n=2, register="x7"),
         )
+        self.graph["control_run"][0]["property_ids"] = ["signed-quotient"]
         for run in self.runs.values():
             run["argv"][4] = "27"
         self.source = (ROOT / "profiles/rv64gc-lab-v0/guests/m-div.s").read_bytes()
@@ -202,7 +204,10 @@ class PropertyEvaluationTests(unittest.TestCase):
         self.assertEqual(checked.comparison.disposition, "satisfied")
         self.assertEqual(checked.source_values.disposition, "matched")
         self.assertEqual(checked.expected_author.disposition, "matched")
-        self.assertEqual(checked.source_property.facts.observed_value, (1 << 64) - 3)
+        self.assertEqual(
+            checked.source_property.facts.observed,
+            (E.G.ObservedProperty("signed-quotient", E.G.C.GprWitness(2, "x7"), (1 << 64) - 3),),
+        )
         self.assertFalse((self.f.root / ".materials").exists())
         pin = next(
             item.pin
@@ -356,7 +361,10 @@ class PropertyEvaluationTests(unittest.TestCase):
             (context.profile_id, context.experiment_id, context.program),
             ("rv64gc-lab-v0", self.f.experiment["id"], "m-div.s"),
         )
-        self.assertEqual(context.statement, self.f.graph["property"][0]["statement"])
+        self.assertEqual(len(context.claims), 1)
+        self.assertEqual(context.claims[0].statement, self.f.graph["property"][0]["statement"])
+        self.assertEqual(context.claims[0].witness, E.G.C.GprWitness(2, "x7"))
+        self.assertEqual(context.control_property_id, self.f.graph["control_run"][0]["property_ids"][0])
         self.assertIsNot(context.authority, self.f.authority)
         self.assertIs(call.call_args.kwargs["manifest"], checked.manifest.plan)
         self.assertIs(call.call_args.kwargs["source_values"], checked.source_values)
@@ -476,13 +484,19 @@ class PropertyEvaluationTests(unittest.TestCase):
 
     def test_each_finding_axis_is_bound_to_actual_selected_context(self):
         good = self.outcome().source_property
+        observed = good.facts.observed[0]
         for changes in [
             dict(case=None),
-            dict(case=replace(good.facts.case, statement="wrong")),
-            dict(property_id="wrong"),
+            dict(case=replace(good.facts.case, coverage="wrong")),
+            dict(case=replace(good.facts.case, control_property_id="wrong")),
+            dict(observed=(replace(observed, property_id="wrong"),)),
+            dict(observed=(replace(observed, witness=E.G.C.GprWitness(2, "x8")),)),
+            dict(observed=()),
+            dict(observed=(observed, observed)),
+            dict(observed=[observed]),
             dict(source=replace(good.facts.source, sha256="a" * 64)),
-            dict(observed_value=1),
-            dict(observed_value=True),
+            dict(observed=(replace(observed, value=1),)),
+            dict(observed=(replace(observed, value=True),)),
             dict(authority_inputs=()),
             dict(
                 authority_inputs=(
@@ -524,6 +538,34 @@ class PropertyEvaluationTests(unittest.TestCase):
         with mock.patch.object(E.G, "bind_source_property", return_value=good):
             self.outcome("refused", "facts differ", finding=None)
 
+    def test_canned_property_result_cannot_outrun_the_source_witness_value(self):
+        good = self.outcome()
+        values = replace(
+            good.source_values,
+            facts=replace(good.source_values.facts, witness_value=(1 << 64) - 4),
+        )
+        with mock.patch.object(
+            E.C, "compare_source_expectation", return_value=values
+        ), mock.patch.object(
+            E.G, "bind_source_property", return_value=good.source_property
+        ):
+            checked = self.outcome("refused", "facts differ", finding=None)
+        self.assertEqual(checked.source_values.facts.witness_value, (1 << 64) - 4)
+        self.assertEqual(checked.expected_author.disposition, "matched")
+
+    def test_declared_properties_beyond_the_reviewed_case_refuse(self):
+        extra = deepcopy(self.f.graph["property"][0])
+        extra.update(id="remainder", statement="the remainder takes the dividend's sign",
+                     gpr_witness=dict(step_n=3, register="x8"))
+        self.f.graph["property"].append(extra)
+        checked = self.outcome("refused", "property claim", finding="refused")
+        self.assertEqual(checked.source_values.disposition, "matched")
+        self.f.graph["property"] = [self.f.graph["property"][0]] + [
+            dict(extra, id=f"p{n}", gpr_witness=dict(step_n=n % 27, register=f"x{8 + n // 27}"))
+            for n in range(64)
+        ]
+        self.outcome("refused", "relations: method requires 1..64 property", finding=None)
+
     def test_canned_authority_pin_must_belong_to_authenticated_manifest(self):
         good = self.outcome().source_property
         previous = self.f.root / self.f.normative["path"]
@@ -553,7 +595,7 @@ MUTATIONS = {
     ),
     "actual-statement": (
         'selected_property["statement"],',
-        "G.signed_division_case().statement,",
+        "G.signed_division_case().control().statement,",
     ),
     "actual-requirement": (
         'selected_property["requirement_id"],',
@@ -564,8 +606,8 @@ MUTATIONS = {
         "G.signed_division_case().obligation_ids,",
     ),
     "actual-program": (
-        'scope.profile_id, experiment["id"], program, selected_property["id"],',
-        'scope.profile_id, experiment["id"], "m-div.s", selected_property["id"],',
+        'scope.profile_id, experiment["id"], program, tuple(claims),',
+        'scope.profile_id, experiment["id"], "m-div.s", tuple(claims),',
     ),
     "property-order": (
         'if property_context is not None and source_values.disposition == "matched":',
@@ -581,8 +623,8 @@ MUTATIONS = {
         'else "; finite source property binds")',
     ),
     "context-freeze": (
-        'G.freeze_context(G.PropertyContext(\n                scope.profile_id, experiment["id"], program, selected_property["id"],\n                selected_property["requirement_id"], tuple(obligations), selected_property["statement"],\n                relations.plan.witness, property_authority),\n                profile_id=scope.profile_id, experiment_id=experiment["id"])',
-        'G.PropertyContext(\n                scope.profile_id, experiment["id"], program, selected_property["id"],\n                selected_property["requirement_id"], tuple(obligations), selected_property["statement"],\n                relations.plan.witness, property_authority)',
+        'G.freeze_context(G.PropertyContext(\n                scope.profile_id, experiment["id"], program, tuple(claims),\n                relations.plan.control_property_id, property_authority),\n                profile_id=scope.profile_id, experiment_id=experiment["id"])',
+        'G.PropertyContext(\n                scope.profile_id, experiment["id"], program, tuple(claims),\n                relations.plan.control_property_id, property_authority)',
     ),
     "property-result-shape": (
         'property_context is not None and source_values.disposition == "matched"',
@@ -590,8 +632,12 @@ MUTATIONS = {
     ),
     "property-fact-binding": ("if not property_bound:", "if False:"),
     "actual-context-binding": (
-        "(property_context.profile_id, property_context.program, property_context.requirement_id,\n                            property_context.obligation_ids, property_context.statement, property_context.witness,\n                            property_context.authority)",
-        "(case.profile_id, case.program, case.requirement_id,\n                            case.obligation_ids, case.statement, case.witness,\n                            case.authority)",
+        "(property_context.profile_id, property_context.program, property_context.control_property_id,\n                            property_context.claims, property_context.authority)",
+        "(case.profile_id, case.program, case.control_property_id,\n                            case.claims(), case.authority)",
+    ),
+    "control-value": (
+        "or next(item.value for item in observed if item.property_id == control.property_id)\n                           != source_values.facts.witness_value",
+        "or False",
     ),
 }
 
@@ -621,7 +667,7 @@ def retained_excerpt_smoke():
             "RETAINED EXCERPT SMOKE: pending / finite property matched / "
             + str(len(checked.authentication.files))
             + " authenticated files / "
-            + hex(checked.source_property.facts.observed_value)
+            + hex(checked.source_property.facts.observed[0].value)
             + "; no capture credit"
         )
     return 0

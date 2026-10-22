@@ -231,7 +231,7 @@ class ManifestTests(unittest.TestCase):
         self.doc["input"][0]["path"] = "changed"; self.record["sha256"] = "f" * 64
         self.assertEqual(result, original)
         for obj, field in ((result, "reason"), (result.pin, "sha256"), (result.plan, "manifest_input_id"),
-                           (result.plan.inputs[0], "path"), (result.plan.relations.witness, "register")):
+                           (result.plan.inputs[0], "path"), (result.plan.relations.control_witness, "register")):
             with self.subTest(field=field), self.assertRaises(FrozenInstanceError): setattr(obj, field, "changed")
         self.assertIs(type(result.plan.inputs), tuple); self.assertIs(type(result.plan.child_input_ids), tuple)
 

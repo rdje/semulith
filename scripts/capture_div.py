@@ -178,7 +178,7 @@ def review_authorities() -> CurrentAuthorities:
     require(references["profile"] == PROFILE, "reference authority profile differs")
     source_index = _unique(sources["source"], "source")
     candidates = _unique(references["candidate"], "candidate")
-    case = P.signed_division_case()
+    case = P.reviewed_case(P.CASE_ID)
     require(case.requirement_id in requirements and case.source_id in source_index
             and len(case.obligation_ids) == 1 and case.obligation_ids[0] in obligation_index
             and "sail-riscv" in candidates, "selected DIV authority is missing")
@@ -254,7 +254,7 @@ def _read_pinned(binding, size=None):
 
 def _planned_record(context, inputs, author):
     """Build claims to be tested, with explicit unmeasured output placeholders."""
-    case = P.signed_division_case()
+    case = P.reviewed_case(P.CASE_ID)
     common = list(Execution.COMMON_ROLES)
     selected = dict(context.reference.fields)
     producers = [dict(id="reference", role="reference", candidate_id="sail-riscv",
@@ -292,18 +292,18 @@ def _planned_record(context, inputs, author):
                   consequence="No producer-independence or qualification credit.")
              for identity in ("expected", "expected-mutant")]
     graph = dict(format_version="matched-gpr-v1", comparison_rule="sail-gpr-change-v1",
-                 limitations=["The planned record uses zero output placeholders; collection replaces sizes, hashes and exits with measurements.",
-                              "One finite DIV witness; full source/risk/feature policy remains pending."],
+                 limitations=[P._PLACEHOLDER_LIMITATION, case.limitation],
                  input=[_record(item) for item in inputs], producer=producers,
                  observation=observations, run=runs, producer_pair=pairs,
-                 property=[dict(id="signed-quotient", statement=case.statement,
+                 property=[dict(id=item.property_id, statement=item.statement,
                                 requirement_id=case.requirement_id,
                                 obligation_ids=list(case.obligation_ids), observation_kinds=["gpr-change"],
-                                gpr_witness=asdict(case.witness))],
+                                gpr_witness=asdict(item.witness))
+                           for item in case.properties],
                  control_run=[dict(id="wrong-quotient", run_id="control", baseline_id="baseline",
-                                   property_ids=["signed-quotient"], mutation_input_ids=["mutant-expectation"],
+                                   property_ids=[case.control_property_id], mutation_input_ids=["mutant-expectation"],
                                    expected_verdict="DIVERGE", observed_verdict="DIVERGE",
-                                   reason="Only boundary2 x7 expectation changes from -3 to -4.")])
+                                   reason=case.control_reason)])
     experiment = dict(id=case.case_id, program=case.program, instructions=case.instructions,
                       models=["sail-riscv"], verdict="AGREE", verification=graph,
                       reproduced="Predeclared target: fresh baseline and exact-byte repeat.",
@@ -357,7 +357,7 @@ def prepare_capture() -> CaptureDeclaration:
     require(review["authorities"]["context"] == report(context), "authority views changed during preparation")
     rows = {row["path"]: row for row in review["files"]}
     children = []
-    normative = P.signed_division_case().required_inputs[0]
+    normative = P.reviewed_case(P.CASE_ID).required_inputs[0]
     for path in review["proposed_children"]:
         role = ("expected-author" if path == "scripts/derive_rv64gc_expectations.py" else
                 "normative-source" if path == normative.path else "dependency")

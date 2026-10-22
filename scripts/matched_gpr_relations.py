@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Pure first-method witness/control/declared-derivation/pair bindings.
+"""Pure first-method property/control/declared-derivation/pair bindings.
 
 Caller owns complete raw parent schema and scoped graph validation. These frozen
 facts describe declarations; artifact currentness, actual expected derivation,
 byte comparison and full method/policy qualification remain separate owners.
+A case declares one to MAX_PROPERTIES GPR-change properties, each with its own
+typed witness; the control run names exactly one of them, and that property's
+witness is the witness the three-run byte comparison discriminates.
 """
 from __future__ import annotations
 
@@ -15,6 +18,7 @@ import matched_gpr_execution as E
 
 ASSESSMENTS = frozenset(("shared", "not-shared", "no-evidence-of-sharing", "not-examined"))
 VERDICTS = frozenset(("AGREE", "DIVERGE", "REFUSED"))
+MAX_PROPERTIES = 64  # predeclared properties per case; the m-forms case declares 25 (P4-SYSTEM.14 a42at)
 
 
 @dataclass(frozen=True)
@@ -30,10 +34,17 @@ class PairBinding:
 
 
 @dataclass(frozen=True)
-class RelationPlan:
-    execution: E.ExecutionPlan
+class PropertyRelation:
     property_id: str
     witness: GprWitness
+
+
+@dataclass(frozen=True)
+class RelationPlan:
+    execution: E.ExecutionPlan
+    properties: tuple[PropertyRelation, ...]  # every declared property, in record order
+    control_property_id: str  # the one property the control run discriminates
+    control_witness: GprWitness  # its witness: the three-run byte comparison's witness
     control_id: str
     control_observed_verdict: str  # declaration, never computed method success
     expected_version: str
@@ -80,6 +91,17 @@ def _records(graph: dict, family: str, count: int) -> dict:
     records = graph.get(family)
     _require(type(records) in (list, tuple) and len(records) == count,
              f"method requires {count} {family} records")
+    return _index(records, family)
+
+
+def _bounded_records(graph: dict, family: str, minimum: int, maximum: int) -> dict:
+    records = graph.get(family)
+    _require(type(records) in (list, tuple) and minimum <= len(records) <= maximum,
+             f"method requires {minimum}..{maximum} {family} records")
+    return _index(records, family)
+
+
+def _index(records, family: str) -> dict:
     result = {}
     for record in records:
         _require(isinstance(record, dict), f"invalid {family} record")
@@ -90,25 +112,31 @@ def _records(graph: dict, family: str, count: int) -> dict:
 
 
 def _plan(graph: dict, execution: E.ExecutionPlan) -> RelationPlan:
-    properties = _records(graph, "property", 1)
+    properties = _bounded_records(graph, "property", 1, MAX_PROPERTIES)
     controls = _records(graph, "control_run", 1)
     pairs = _records(graph, "producer_pair", 2)
-    prop = next(iter(properties.values()))
-    _require(_ids(prop.get("observation_kinds"), 1, 1, "observation_kinds") == ("gpr-change",),
-             "method supports only GPR-change properties")
-    witness = prop.get("gpr_witness")
-    _require(isinstance(witness, dict) and len(witness) == 2
-             and set(witness) == {"step_n", "register"}, "method requires typed GPR witness")
-    step, register = witness["step_n"], witness["register"]
-    _require(type(step) is int and 0 <= step < execution.instructions, "witness outside parent budget")
-    _require(isinstance(register, str) and re.fullmatch(r"x([1-9]|[12][0-9]|3[01])", register) is not None,
-             "witness requires canonical x1..31")
+    declared, witnessed = [], set()
+    for prop in properties.values():
+        _require(_ids(prop.get("observation_kinds"), 1, 1, "observation_kinds") == ("gpr-change",),
+                 "method supports only GPR-change properties")
+        witness = prop.get("gpr_witness")
+        _require(isinstance(witness, dict) and len(witness) == 2
+                 and set(witness) == {"step_n", "register"}, "method requires typed GPR witness")
+        step, register = witness["step_n"], witness["register"]
+        _require(type(step) is int and 0 <= step < execution.instructions, "witness outside parent budget")
+        _require(isinstance(register, str) and re.fullmatch(r"x([1-9]|[12][0-9]|3[01])", register) is not None,
+                 "witness requires canonical x1..31")
+        _require((step, register) not in witnessed, "two properties witness one observation")
+        witnessed.add((step, register))
+        declared.append(PropertyRelation(prop["id"], GprWitness(step, register)))
     baseline, _repeat, control_run = execution.runs
     control = next(iter(controls.values()))
     _require(control.get("baseline_id") == baseline.run_id and control.get("run_id") == control_run.run_id,
              "control must name sole baseline/control runs")
-    _require(_ids(control.get("property_ids"), 1, 1, "control property_ids") == (prop["id"],),
-             "control must name sole property")
+    selected = _ids(control.get("property_ids"), 1, 1, "control property_ids")[0]
+    _require(selected in properties,
+             "control must name one declared property")
+    control_witness = next(item.witness for item in declared if item.property_id == selected)
     _require(_ids(control.get("mutation_input_ids"), 1, 1, "control mutation_input_ids") == (control_run.expectation_id,),
              "control must name sole mutant expectation")
     _require(control.get("expected_verdict") == "DIVERGE", "method requires intended DIVERGE control")
@@ -157,7 +185,7 @@ def _plan(graph: dict, execution: E.ExecutionPlan) -> RelationPlan:
                                     assessment, tuple(sorted(shared)), _text(pair.get("evidence"), "pair evidence"),
                                     _text(pair.get("consequence"), "pair consequence")))
     # Exactly two distinct members of the two needed endpoints establish coverage.
-    return RelationPlan(execution, prop["id"], GprWitness(step, register), control["id"], observed,
+    return RelationPlan(execution, tuple(declared), selected, control_witness, control["id"], observed,
                         version, tuple(sorted(derivation_inputs)), tuple(sorted(bindings, key=lambda pair: pair.pair_id)))
 
 

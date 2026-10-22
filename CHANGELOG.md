@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0288 (leaf P4-SYSTEM.14) — one case, many predeclared properties
+
+a42at: `scripts/matched_gpr_property.py` owns a case table — the retained `rv64gc-signed-div-truncation-v2` keeps its one property; `rv64gc-m-forms-v3` declares, before its declaration record and capture, 25 properties over `m-forms.s` (the 13 forms once each, the 12 Table 1 cells) with the reviewed words of all 33 boundaries, every word and value re-derived independently by the probe; the relation plan carries every declared property (1..64, distinct witnesses) and the one the control run names, whose witness the byte comparison discriminates; the evaluation and the collector build one claim per declared property from the record's own words, and the binding holds every predeclared value to the source derivation the source-value finding already carries; the policy's control leg reads the property the `control_run` names. Probes: property 34 tests / 35 seams, property-evaluation 24 / 16, relations 42 / 19, policy 22 / 7; gate arms re-measured in both modes. The retained case is `invalidated` by this commit (its pinned binding moved; a42as) and nothing is credited; `REQ-GC-M` stays `planned`. Decision record, chapters, toolbox rows. Next: a42au declares the case, a42av captures it.
+
 ## SEMULITH-AC-0082 (leaf ARTIFACT-CLEANUP.25) — the second recurring cleanup through the supported act
 
 Plan, strict selection, `--delete` under a fresh host census and `--inspect` in

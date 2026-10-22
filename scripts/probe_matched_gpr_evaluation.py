@@ -411,7 +411,7 @@ class EvaluationTests(unittest.TestCase):
         reading = E.M.read_dependency_manifest
         def changed(*args, **kwargs):
             result = reading(*args, **kwargs)
-            plan = replace(result.plan, relations=replace(result.plan.relations, property_id="different"))
+            plan = replace(result.plan, relations=replace(result.plan.relations, control_property_id="different"))
             return replace(result, plan=plan)
         with mock.patch.object(E.M, "read_dependency_manifest", side_effect=changed), \
                 mock.patch.object(E.Q, "read_declared_files", side_effect=AssertionError("file set")):

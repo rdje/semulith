@@ -841,77 +841,85 @@ EOF
   score "RED optimized omitted execution guard fixture-argv-cleanup" "$rc" 1 "$out" "MATCHED-GPR-EXECUTION: 48 tests / 1 failures / 0 errors; synthetic only"
   # P4-SYSTEM.14 a33: declared method relations and assertion-safe fixture controls.
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" 2>&1)"; rc=$?
-  score "GREEN normal declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 0 failures / 0 errors; synthetic only"
+  score "GREEN normal declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 0 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation family-counts 2>&1)"; rc=$?
-  score "RED normal omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 9 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation gpr-only 2>&1)"; rc=$?
-  score "RED normal omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-budget 2>&1)"; rc=$?
-  score "RED normal omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 7 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-register 2>&1)"; rc=$?
-  score "RED normal omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 7 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-runs 2>&1)"; rc=$?
-  score "RED normal omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-property 2>&1)"; rc=$?
-  score "RED normal omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation property-count 2>&1)"; rc=$?
+  score "RED normal omitted relation guard property-count" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-unique 2>&1)"; rc=$?
+  score "RED normal omitted relation guard witness-unique" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-mutation 2>&1)"; rc=$?
-  score "RED normal omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-intent 2>&1)"; rc=$?
-  score "RED normal omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-observed 2>&1)"; rc=$?
-  score "RED normal omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-version 2>&1)"; rc=$?
-  score "RED normal omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 5 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-selection 2>&1)"; rc=$?
-  score "RED normal omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-consumes 2>&1)"; rc=$?
-  score "RED normal omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-common 2>&1)"; rc=$?
-  score "RED normal omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-endpoints 2>&1)"; rc=$?
-  score "RED normal omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-sharing 2>&1)"; rc=$?
-  score "RED normal omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
-  score "RED normal omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-version-cleanup 2>&1)"; rc=$?
-  score "RED normal omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED normal omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" 2>&1)"; rc=$?
-  score "GREEN optimized declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 0 failures / 0 errors; synthetic only"
+  score "GREEN optimized declared method relations" "$rc" 0 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 0 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation family-counts 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 9 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard family-counts" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation gpr-only 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard gpr-only" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 6 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-budget 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard witness-budget" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 7 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-register 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 6 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard witness-register" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 7 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-runs 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard control-runs" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-property 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard control-property" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation property-count 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard property-count" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
+  out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation witness-unique 2>&1)"; rc=$?
+  score "RED optimized omitted relation guard witness-unique" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-mutation 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard control-mutation" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-intent 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard control-intent" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation control-observed 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard control-observed" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-version 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 5 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard expected-version" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 5 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-selection 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard expected-selection" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-consumes 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 2 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard expected-consumes" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 2 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation expected-common 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard expected-common" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-endpoints 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard pair-endpoints" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation pair-sharing 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 4 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard pair-sharing" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 4 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-count-cleanup 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard fixture-count-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   out="$(python3 -O "$ROOT/scripts/probe_matched_gpr_relations.py" --mutation fixture-version-cleanup 2>&1)"; rc=$?
-  score "RED optimized omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 39 tests / 1 failures / 0 errors; synthetic only"
+  score "RED optimized omitted relation guard fixture-version-cleanup" "$rc" 1 "$out" "MATCHED-GPR-RELATIONS: 42 tests / 1 failures / 0 errors; synthetic only"
   # P4-SYSTEM.14 a34: authenticate/bind only the manifest, never its leaves.
   out="$(python3 "$ROOT/scripts/probe_matched_gpr_manifest.py" 2>&1)"; rc=$?
   score "GREEN normal authenticated manifest binding" "$rc" 0 "$out" "MATCHED-GPR-MANIFEST: 33 tests / 0 failures / 0 errors; fixtures cleaned"
@@ -1714,60 +1722,68 @@ AUTHOR_EVALUATION_CASES
   done
 
   # P4-SYSTEM.14 a42t: finite source meaning and noncircular semantic authority.
+  # a42at: one case with many predeclared properties (the m-forms case, 25 of them); each value held to the derivation.
   local source_property_mode source_property_mutation source_property_losses
   local -a source_property_python
   for source_property_mode in normal optimized; do
     source_property_python=(python3)
     [ "$source_property_mode" = optimized ] && source_property_python+=(-O)
     out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py 2>&1)"; rc=$?
-    score "GREEN finite source property $source_property_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY: 28 tests / 0 failures / 0 errors; synthetic metadata, finite source witness only"
+    score "GREEN finite source property $source_property_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY: 34 tests / 0 failures / 0 errors; synthetic metadata, finite source witnesses only"
     while IFS=: read -r source_property_mutation source_property_losses; do
       out="$("${source_property_python[@]}" scripts/probe_matched_gpr_property.py --mutation "$source_property_mutation" 2>&1)"; rc=$?
-      score "RED finite source property $source_property_mutation $source_property_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY: 28 tests / $source_property_losses failures / 0 errors; synthetic metadata, finite source witness only"
+      score "RED finite source property $source_property_mutation $source_property_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY: 34 tests / $source_property_losses failures / 0 errors; synthetic metadata, finite source witnesses only"
     done <<'SOURCE_PROPERTY_CASES'
-publication-authority:28
+publication-authority:36
 record-roundtrip:1
 authority-string-bound:1
 authority-byte-bound:1
 context-scope:1
 authority-shape:1
-claim-binding:5
+claim-count:1
+claim-identity:1
+claim-witness:1
+control-claim:2
+claim-binding:13
 semantic-authority:9
-relation-binding:2
+relation-binding:6
 normative-pin:6
 guest-source:1
 baseline-binding:1
-witness-value:2
+witness-value:3
 budget-binding:2
 source-identity:5
-prefix-proof:8
+reviewed-words:8
+claim-values:3
 authority-node-bound:1
 authority-depth-bound:1
 derived-status:2
 derived-links:1
 requirement-meaning:6
 obligation-meaning:4
-context-copy:3
+context-copy:7
+claim-copy:6
 source-fact-copy:1
 authority-fact-copy:1
 case-selection:2
 source-unsupported:1
-frozen-results:5
-finite-finding:8
+frozen-results:8
+finite-finding:11
 SOURCE_PROPERTY_CASES
   done
 
   # P4-SYSTEM.14 a42u: actual-property context and retained finite source findings.
+  # a42at: one claim per declared property; the control's observed value must equal the source finding's (control-value).
   local property_eval_mode property_eval_mutation property_eval_losses
   local -a property_eval_python
   for property_eval_mode in normal optimized; do
     property_eval_python=(python3)
     [ "$property_eval_mode" = optimized ] && property_eval_python+=(-O)
     out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py 2>&1)"; rc=$?
-    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / 0 failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
+    score "GREEN finite-property evaluation $property_eval_mode" "$rc" 0 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 24 tests / 0 failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     while IFS=: read -r property_eval_mutation property_eval_losses; do
       out="$("${property_eval_python[@]}" scripts/probe_matched_gpr_property_evaluation.py --mutation "$property_eval_mutation" 2>&1)"; rc=$?
-      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 22 tests / $property_eval_losses failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
+      score "RED finite-property evaluation $property_eval_mutation $property_eval_mode" "$rc" 1 "$out" "MATCHED-GPR-PROPERTY-EVALUATION: 24 tests / $property_eval_losses failures / 0 errors; actual retained excerpt, synthetic observations, no capture credit"
     done <<'PROPERTY_EVALUATION_CASES'
 author-prerequisite:1
 obligation-bound:1
@@ -1776,13 +1792,14 @@ actual-requirement:1
 actual-obligations:1
 actual-program:1
 property-order:1
-property-finding:14
-property-status:4
+property-finding:16
+property-status:5
 unsupported-credit:2
 context-freeze:7
-property-result-shape:15
-property-fact-binding:13
+property-result-shape:17
+property-fact-binding:19
 actual-context-binding:1
+control-value:1
 PROPERTY_EVALUATION_CASES
   done
 
@@ -2133,14 +2150,15 @@ DIV_METHOD_CASES
   # P4-SYSTEM.14 a42aq: the retained case's policy legs are measured; measurement grants no credit.
   # a42as: a stale finite method is `invalidated` with exit 0 (lock-stale seam); the real-tree arm
   # predicts pending or invalidated from the manifest, so a moved pinned input is not a refusal.
+  # a42at: the discriminating-control leg reads the property the control_run names (first-property seam).
   local policy_mode policy_mutation
   local -a policy_python
   for policy_mode in normal optimized; do
     policy_python=(python3 -B)
     [ "$policy_mode" = optimized ] && policy_python+=(-O)
     out="$("${policy_python[@]}" scripts/probe_div_policy.py 2>&1)"; rc=$?
-    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 21 tests / 0 failures / 0 errors; measurement only, no qualification credit"
-    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale; do
+    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 22 tests / 0 failures / 0 errors; measurement only, no qualification credit"
+    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale first-property; do
       out="$("${policy_python[@]}" scripts/probe_div_policy.py --mutation "$policy_mutation" 2>&1)"; rc=$?
       score "RED omitted policy legs $policy_mutation $policy_mode" "$rc" 1 "$out" "DIV-POLICY-PROBE: 1 tests / 1 failures / 0 errors; measurement only, no qualification credit"
     done

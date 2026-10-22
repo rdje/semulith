@@ -127,8 +127,8 @@ expected = map_document(baseline, "expectations", D.expectations_to_doc)
 override = map_document(read(profile / "reference/sail-rv64gc-lab-v0.override.sexp"),
                         "override", D.override_to_doc)
 values = C.compare_source_expectation(source=source, baseline_expectation=baseline,
-    instructions=case.instructions, program=case.program, witness=case.witness)
-if values.disposition != "matched" or values.facts.witness_value != case.expected_value:
+    instructions=case.instructions, program=case.program, witness=case.control().witness)
+if values.disposition != "matched" or values.facts.witness_value != case.control().expected_value:
     raise ValueError(values.reason)
 changed = deepcopy(expected)
 changed["step"][2]["writes"]["x7"] = f"0x{case.control_value:016x}"

@@ -162,7 +162,7 @@ class PreparedInputTests(unittest.TestCase):
         return C.compare_source_expectation(
             source=self.source, baseline_expectation=expectation,
             instructions=self.case.instructions, program=self.case.program,
-            witness=self.case.witness)
+            witness=self.case.control().witness)
 
     def fixture_record(self, name, payload, *, repin=False):
         path = self.temporary / name
@@ -196,7 +196,7 @@ class PreparedInputTests(unittest.TestCase):
         result = self.source_finding(self.baseline)
         self.assertEqual(result.disposition, "matched", result.reason)
         self.assertEqual(len(result.facts.derivation.steps), 27)
-        self.assertEqual(result.facts.witness_value, self.case.expected_value)
+        self.assertEqual(result.facts.witness_value, self.case.control().expected_value)
 
     def test_control_is_exactly_one_typed_wrong_value(self):
         base = mapped(self.baseline, "expectations", D.expectations_to_doc)
@@ -211,7 +211,7 @@ class PreparedInputTests(unittest.TestCase):
         result = self.source_finding(self.control)
         self.assertEqual(result.disposition, "failed")
         self.assertEqual(result.difference.step_n, 2)
-        self.assertEqual(result.difference.observed, (("x7", self.case.expected_value),))
+        self.assertEqual(result.difference.observed, (("x7", self.case.control().expected_value),))
         self.assertEqual(result.difference.expected, (("x7", self.case.control_value),))
 
     def test_config_is_exact_public_materialization(self):
