@@ -2053,15 +2053,16 @@ UNIT_EVALUATION_CASES
   done
 
   # P4-SYSTEM.14 a42af: prepared finite DIV inputs, no reference process.
+  # a42au: every reviewed case's prepared inputs (the retained case and the declared m-forms case), the family census at 43 / 32 MiB.
   local div_inputs_mode
   local -a div_inputs_python
   for div_inputs_mode in normal optimized; do
     div_inputs_python=(python3)
     [ "$div_inputs_mode" = optimized ] && div_inputs_python+=(-O)
     out="$("${div_inputs_python[@]}" scripts/probe_div_capture_inputs.py 2>&1)"; rc=$?
-    score "GREEN prepared DIV capture inputs $div_inputs_mode" "$rc" 0 "$out" "DIV-CAPTURE-INPUTS: 16 tests / 0 failures / 0 errors; prepared artifacts, no reference process or capture credit"
+    score "GREEN prepared DIV capture inputs $div_inputs_mode" "$rc" 0 "$out" "DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit"
     out="$("${div_inputs_python[@]}" scripts/probe_div_capture_inputs.py --mutation actual-layout 2>&1)"; rc=$?
-    score "RED omitted actual DIV layout $div_inputs_mode" "$rc" 1 "$out" "DIV-CAPTURE-INPUTS: 16 tests / 5 failures / 0 errors; prepared artifacts, no reference process or capture credit"
+    score "RED omitted actual DIV layout $div_inputs_mode" "$rc" 1 "$out" "DIV-CAPTURE-INPUTS: 34 tests / 6 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit"
   done
 
   # P4-SYSTEM.14 a42ai: current semantic views, no capture or qualification.
@@ -2140,8 +2141,8 @@ DIV_METHOD_CASES
     status_python=(python3 -B)
     [ "$status_mode" = optimized ] && status_python+=(-O)
     out="$("${status_python[@]}" scripts/probe_requirement_status.py 2>&1)"; rc=$?
-    score "GREEN requirement status derivation $status_mode" "$rc" 0 "$out" "REQUIREMENT-STATUS-PROBE: 17 tests / 0 failures / 0 errors; derivation only, no qualification credit"
-    for status_mutation in credit-pending ignore-drift skip-supersession unresolved-closes argument-optional; do
+    score "GREEN requirement status derivation $status_mode" "$rc" 0 "$out" "REQUIREMENT-STATUS-PROBE: 19 tests / 0 failures / 0 errors; derivation only, no qualification credit"
+    for status_mutation in credit-pending ignore-drift skip-supersession unresolved-closes argument-optional declared-credits; do
       out="$("${status_python[@]}" scripts/probe_requirement_status.py --mutation "$status_mutation" 2>&1)"; rc=$?
       score "RED omitted requirement status $status_mutation $status_mode" "$rc" 1 "$out" "REQUIREMENT-STATUS-PROBE: 1 tests / 1 failures / 0 errors; derivation only, no qualification credit"
     done

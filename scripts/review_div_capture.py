@@ -86,7 +86,7 @@ AUTHORITY_PATHS = frozenset(
     ]
     + ["crates/semulith-verify/src/contract_checks_rv64gc.rs"]
 )
-GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"
+GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"  # the retained case's guest; guest_path() for any case
 PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"
 POLICY = "profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md"
 SELF = "scripts/review_div_capture.py"
@@ -268,7 +268,12 @@ def child_paths(modules):
     return tuple(sorted(paths))
 
 
-def exercise_loaders(source, snapshots):
+def guest_path(case):
+    """The tracked guest source a reviewed case runs; the retained case's is GUEST."""
+    return "profiles/rv64gc-lab-v0/guests/" + case.program
+
+
+def exercise_loaders(source, snapshots, case=None):
     # Imports are ordinary, explicit and already covered by the producer census.
     import sexp as S
     import matched_gpr_image as G
@@ -279,7 +284,8 @@ def exercise_loaders(source, snapshots):
     import experiment_verification as V
     import matched_gpr_property as P
 
-    case = P.reviewed_case(P.CASE_ID)
+    if case is None:
+        case = P.reviewed_case(P.CASE_ID)
     observed = []
     original = S.read_file
 
@@ -350,7 +356,7 @@ def check_retained_input(case, data):
     )
 
 
-def exercise_authorities(snapshots):
+def exercise_authorities(snapshots, case=None):
     """Review the selected current-view loader without making its views inputs.
 
     The public authority owner keeps its own snapshot/tool-I/O contract. This
@@ -360,6 +366,8 @@ def exercise_authorities(snapshots):
     import capture_div as A
     import matched_gpr_property as P
 
+    if case is None:
+        case = P.reviewed_case(P.CASE_ID)
     require(
         set(A.VIEW_PATHS) == AUTHORITY_PATHS,
         "authority view declaration differs from reviewed set",
@@ -386,7 +394,7 @@ def exercise_authorities(snapshots):
     with patch.object(Path, "open", opened), patch.object(
         subprocess, "Popen", denied_process
     ):
-        context = A.review_authorities()
+        context = A.review_authorities(case.case_id)
     require(set(observed) == AUTHORITY_PATHS, "authority read population differs")
     require(
         type(context) is A.CurrentAuthorities and type(context.views) is tuple
@@ -419,7 +427,7 @@ def exercise_authorities(snapshots):
             "authority view pin differs from reviewed snapshot",
         )
     require(
-        context.property_authority == P.reviewed_case(P.CASE_ID).authority,
+        context.property_authority == case.authority and context.case_id == case.case_id,
         "authority facts differ from reviewed DIV case",
     )
     result = A.report(context)
@@ -432,23 +440,26 @@ def exercise_authorities(snapshots):
     )
 
 
-def review():
+def review(case_id=None):
+    """Review the producers for one reviewed case; the retained case when none is named."""
+    import matched_gpr_property as P
+
+    case = P.reviewed_case(P.CASE_ID if case_id is None else case_id)
+    guest = guest_path(case)
+    require(case.case_id != P.CASE_ID or guest == GUEST, "retained guest constant differs from its case")
     snapshots = Snapshots(ROOT)
     modules, edges, external = import_census(snapshots)
     children = child_paths(modules)
-    for path in (*children, GUEST, *sorted(AUTHORITY_PATHS)):
+    for path in (*children, guest, *sorted(AUTHORITY_PATHS)):
         snapshots.pin(path)
-    import matched_gpr_property as P
-
-    case = P.reviewed_case(P.CASE_ID)
     require(
-        GUEST == "profiles/rv64gc-lab-v0/guests/" + case.program
-        and hashlib.sha256(snapshots.data[GUEST]).hexdigest() == case.source_sha256,
+        len(snapshots.data[guest]) == case.source_size
+        and hashlib.sha256(snapshots.data[guest]).hexdigest() == case.source_sha256,
         "guest differs from reviewed case",
     )
     check_retained_input(case, snapshots.data[PRIMARY])
-    exercised = exercise_loaders(snapshots.data[GUEST], snapshots)
-    authorities = exercise_authorities(snapshots)
+    exercised = exercise_loaders(snapshots.data[guest], snapshots, case)
+    authorities = exercise_authorities(snapshots, case)
     snapshots.recheck()
     files = [
         {"path": path, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
@@ -459,6 +470,7 @@ def review():
         "canonical_capture": False,
         "qualification": False,
         "case_id": case.case_id,
+        "guest": guest,
         "module_roots": sorted(ROOT_MODULES),
         "modules": list(modules),
         "import_edges": edges,
@@ -502,9 +514,10 @@ def review():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--review", action="store_true", required=True)
-    parser.parse_args()
+    parser.add_argument("--case", default=None, help="a reviewed case id (default: the retained case)")
+    args = parser.parse_args()
     try:
-        result = review()
+        result = review(args.case)
     except OSError as exc:
         reason = str(exc).replace(str(ROOT) + os.sep, "")
         print(json.dumps({"disposition": "unavailable", "reason": reason}))

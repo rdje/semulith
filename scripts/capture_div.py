@@ -46,26 +46,60 @@ SCHEMAS = tuple("schema/" + name + ".sexp" for name in (
 REGISTRY = "crates/semulith-verify/src/contract_checks_rv64gc.rs"
 VIEW_PATHS = tuple(sorted((*CATALOGUES, *PARTS, *SCHEMAS, REGISTRY)))
 RECORDS = 4096
-PREFIX = "evidence/" + P.CASE_ID
 IDENTITY_PATH = DIRECTORY + "/retained/sail-identity.sexp"
 SMALL_BYTES = 65536
-# Curated inputs have identities distinct from their producer sources.
-PREPARED = (
-    ("guest-image", "guest-image", PREFIX + "/guest.elf", 4416,
-     "38a327660cb1c699e15694fe98d0467e909726555688074d558768300138e153"),
-    ("reference-config", "reference-config", PREFIX + "/reference-config.json", 7609,
-     "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
-    ("expectation", "expectation", PREFIX + "/baseline.expected.sexp", 5847,
-     "87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e"),
-    ("expectation", "mutant-expectation", PREFIX + "/control.expected.sexp", 5443,
-     "3f8d591db326a6a83a47921b7743297edc758eb602fa70660b770d37a07c758e"),
-    ("reference-identity", "reference-identity", IDENTITY_PATH, 711,
-     "b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77"),
-)
+
+
+def prefix(case_id):
+    """The case directory every prepared input, declaration and observation of a case lives under."""
+    return "evidence/" + case_id
+
+
+# Curated inputs have identities distinct from their producer sources: (role, id, name, bytes,
+# sha256) per reviewed case, pinned when scripts/prepare_div_inputs.py curated them (a42af for the
+# retained case, a42au for the m-forms case). An unpinned case cannot be prepared, declared or captured.
+CURATED_INPUTS = {
+    P.CASE_ID: (
+        ("guest-image", "guest-image", "guest.elf", 4416,
+         "38a327660cb1c699e15694fe98d0467e909726555688074d558768300138e153"),
+        ("reference-config", "reference-config", "reference-config.json", 7609,
+         "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+        ("expectation", "expectation", "baseline.expected.sexp", 5847,
+         "87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e"),
+        ("expectation", "mutant-expectation", "control.expected.sexp", 5443,
+         "3f8d591db326a6a83a47921b7743297edc758eb602fa70660b770d37a07c758e"),
+    ),
+    P.M_FORMS_CASE_ID: (
+        ("guest-image", "guest-image", "guest.elf", 4440,
+         "208865142e1569636925a5cea6abff6fc4495f317d5d8e79a06e48d3b0f061b1"),
+        ("reference-config", "reference-config", "reference-config.json", 7609,
+         "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+        ("expectation", "expectation", "baseline.expected.sexp", 7937,
+         "561b5da3cf87ea4825fca4e1a001a9c7d26321e491d86515c571f47b0019f44f"),
+        ("expectation", "mutant-expectation", "control.expected.sexp", 7440,
+         "ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0"),
+    ),
+}
+# The selected execution identity is a profile input, shared by every case.
+IDENTITY_ROW = ("reference-identity", "reference-identity", IDENTITY_PATH, 711,
+                "b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77")
+
+
+def prepared_inputs(case_id):
+    """The case's four curated inputs as (role, id, path, bytes, sha256) rows, then the identity."""
+    if case_id not in CURATED_INPUTS:
+        raise AuthorityError("no pinned prepared inputs for case " + str(case_id))
+    return tuple((role, identity, prefix(case_id) + "/" + name, size, digest)
+                 for role, identity, name, size, digest in CURATED_INPUTS[case_id]) + (IDENTITY_ROW,)
 
 
 class AuthorityError(ValueError):
     """Current validated views cannot supply this reviewed finite case."""
+
+
+# The retained case's constants: the method review, the command probe and the method probe read them.
+PREFIX = prefix(P.CASE_ID)
+PREPARED = prepared_inputs(P.CASE_ID)
 
 
 class CaptureUnavailable(OSError):
@@ -86,6 +120,7 @@ class CurrentAuthorities:
     reference: I.ReferenceIdentity
     property_authority: P.PropertyAuthority
     views: tuple[ViewIdentity, ...]
+    case_id: str = P.CASE_ID
 
 
 def require(condition, reason):
@@ -120,7 +155,7 @@ def _one(forms, head):
     return forms[0]
 
 
-def review_authorities() -> CurrentAuthorities:
+def review_authorities(case_id=P.CASE_ID) -> CurrentAuthorities:
     """Freeze current selected scope, execution identity and DIV semantic authority.
 
     No binary, retained capture or acquired material is read. The function starts
@@ -178,7 +213,7 @@ def review_authorities() -> CurrentAuthorities:
     require(references["profile"] == PROFILE, "reference authority profile differs")
     source_index = _unique(sources["source"], "source")
     candidates = _unique(references["candidate"], "candidate")
-    case = P.reviewed_case(P.CASE_ID)
+    case = P.reviewed_case(case_id)
     require(case.requirement_id in requirements and case.source_id in source_index
             and len(case.obligation_ids) == 1 and case.obligation_ids[0] in obligation_index
             and "sail-riscv" in candidates, "selected DIV authority is missing")
@@ -201,12 +236,12 @@ def review_authorities() -> CurrentAuthorities:
         "registry-tool" if path == REGISTRY else "current-catalogue",
         len(payloads[path]), hashlib.sha256(payloads[path]).hexdigest())
         for path in VIEW_PATHS)
-    return CurrentAuthorities(scope, reference, authority, views)
+    return CurrentAuthorities(scope, reference, authority, views, case.case_id)
 
 
 def report(context):
     return dict(
-        disposition="pending", case_id=P.CASE_ID, profile_id=PROFILE,
+        disposition="pending", case_id=context.case_id, profile_id=PROFILE,
         reference_identity=dict(context.reference.fields),
         property_authority=asdict(context.property_authority),
         scope=dict(candidate_ids=sorted(context.scope.candidate_ids),
@@ -254,7 +289,8 @@ def _read_pinned(binding, size=None):
 
 def _planned_record(context, inputs, author):
     """Build claims to be tested, with explicit unmeasured output placeholders."""
-    case = P.reviewed_case(P.CASE_ID)
+    case = P.reviewed_case(context.case_id)
+    case_prefix = prefix(case.case_id)
     common = list(Execution.COMMON_ROLES)
     selected = dict(context.reference.fields)
     producers = [dict(id="reference", role="reference", candidate_id="sail-riscv",
@@ -268,7 +304,7 @@ def _planned_record(context, inputs, author):
     suffixes = ("trace", "stdout", "stderr", "receipt.sexp")
     for kind in Execution.RUN_KINDS:
         outputs = [dict(id=kind + "-" + role, role=role,
-                        path=PREFIX + "/" + kind + "." + suffix,
+                        path=case_prefix + "/" + kind + "." + suffix,
                         sha256="0" * 64, byte_size=0)
                    for role, suffix in zip(Execution.OUTPUT_ROLES, suffixes)]
         observations.extend(outputs)
@@ -334,7 +370,7 @@ def _authority_record(context, inventory, author):
     # Changing live status/view hashes are deliberately excluded from this record.
     def fields(name, values):
         return [S.Symbol(name), *[[S.Symbol(key), value] for key, value in values]]
-    form = [S.Symbol("capture-authorities"), [S.Symbol("case_id"), P.CASE_ID],
+    form = [S.Symbol("capture-authorities"), [S.Symbol("case_id"), context.case_id],
             fields("reference_identity", context.reference.fields),
             fields("property_authority", asdict(context.property_authority).items()),
             [S.Symbol("expected_author"), author.input_id, Author.SNAPSHOT_ROUTE],
@@ -345,19 +381,24 @@ def _authority_record(context, inventory, author):
     return payload
 
 
-def prepare_capture() -> CaptureDeclaration:
+def prepare_capture(case_id=P.CASE_ID) -> CaptureDeclaration:
     """Compose bounded native declarations; no artifact output or reference process.
 
     Producer/authority review I/O keeps its existing separate limits. Five curated
     principals are read twice at64KiB each (640KiB maximum), outside the later
     combined artifact allowance. Runtime/schema I/O and RAM are separate costs.
+    The retained case is the default; any reviewed case with pinned prepared inputs
+    may be prepared, which is how a case is declared before its capture (a42au).
     """
-    context = review_authorities()
-    review = Review.review()
+    case = P.reviewed_case(case_id)
+    case_prefix = prefix(case.case_id)
+    pinned = prepared_inputs(case.case_id)
+    context = review_authorities(case.case_id)
+    review = Review.review(case.case_id)
     require(review["authorities"]["context"] == report(context), "authority views changed during preparation")
     rows = {row["path"]: row for row in review["files"]}
     children = []
-    normative = P.reviewed_case(P.CASE_ID).required_inputs[0]
+    normative = case.required_inputs[0]
     for path in review["proposed_children"]:
         role = ("expected-author" if path == "scripts/derive_rv64gc_expectations.py" else
                 "normative-source" if path == normative.path else "dependency")
@@ -368,35 +409,35 @@ def prepare_capture() -> CaptureDeclaration:
     require(normative in children, "reviewed normative input differs")
     dependencies = F.encode_dependencies(dict(format_version="matched-gpr-dependencies-v1",
                                              input=[_record(item) for item in children]),
-                                         path=PREFIX + "/dependencies.sexp")
+                                         path=case_prefix + "/dependencies.sexp")
     prepared = tuple(Execution.InputBinding(role, identity, path, digest)
-                     for role, identity, path, _, digest in PREPARED)
-    data = tuple(_read_pinned(item, row[3]) for item, row in zip(prepared, PREPARED))
+                     for role, identity, path, _, digest in pinned)
+    data = tuple(_read_pinned(item, row[3]) for item, row in zip(prepared, pinned))
     identity = I.check_reference_identity_bytes(data[-1], path=IDENTITY_PATH, context=context.reference)
     require(identity.disposition == "matched", "selected retained identity differs")
     require(prepared[0].sha256 == review["exercised"]["image_sha256"], "prepared image differs from reviewed build")
-    paths = (("guest-source", Review.GUEST), ("collector", "scripts/matched_gpr_unit_collector.py"),
+    paths = (("guest-source", Review.guest_path(case)), ("collector", "scripts/matched_gpr_unit_collector.py"),
              ("adapter", "scripts/run_rv64gc_sail.py"))
     inputs = tuple(Execution.InputBinding(role, role, path, rows[path]["sha256"])
                    for role, path in paths) + prepared + (
         Execution.InputBinding("dependency-manifest", "dependency-manifest",
-                               PREFIX + "/dependencies.sexp", _digest(dependencies)),)
-    inventory = Inputs.freeze_review(Inputs.InputReview(PROFILE, P.CASE_ID, inputs + children),
-                                     profile_id=PROFILE, experiment_id=P.CASE_ID)
+                               case_prefix + "/dependencies.sexp", _digest(dependencies)),)
+    inventory = Inputs.freeze_review(Inputs.InputReview(PROFILE, case.case_id, inputs + children),
+                                     profile_id=PROFILE, experiment_id=case.case_id)
     author = next(item for item in children if item.role == "expected-author")
     author_review = Author.freeze_review(Author.ExpectedAuthorReview(
-        inventory, author.input_id, Author.SNAPSHOT_ROUTE), profile_id=PROFILE, experiment_id=P.CASE_ID)
+        inventory, author.input_id, Author.SNAPSHOT_ROUTE), profile_id=PROFILE, experiment_id=case.case_id)
     planned = _planned_record(context, inputs, author)
     projection = Impact.project_inputs(inventory)
     evidence = Change.DependencyNode(projection.evidence_key, "evidence", (PROFILE,), _digest(planned), None)
     graph = Change.DependencyGraph((PROFILE,), (*projection.nodes, evidence),
                                    tuple((evidence.key, node.key) for node in projection.nodes))
-    impact = Impact.ImpactReview(PROFILE, P.CASE_ID, graph, graph)
-    frozen = Impact.freeze_review(impact, profile_id=PROFILE, experiment_id=P.CASE_ID)
+    impact = Impact.ImpactReview(PROFILE, case.case_id, graph, graph)
+    frozen = Impact.freeze_review(impact, profile_id=PROFILE, experiment_id=case.case_id)
     require(Impact.check_inputs(frozen, inventory.inputs, inventory.inputs).disposition == "matched",
             "initial input influence projection refuses")
     authority_record = _authority_record(context, inventory, author)
-    require(tuple(_read_pinned(item, row[3]) for item, row in zip(prepared, PREPARED)) == data,
+    require(tuple(_read_pinned(item, row[3]) for item, row in zip(prepared, pinned)) == data,
             "prepared inputs changed during preparation")
     return CaptureDeclaration(context, planned, dependencies, authority_record,
                               inventory, author_review, impact)
@@ -408,7 +449,7 @@ def declaration_files(declaration):
             ("authorities.sexp", declaration.authority_record))
 
 
-def capture():
+def capture(case_id=P.CASE_ID):
     """Require exact native predeclarations, then delegate one fresh three-run unit.
 
     The operator must commit source and declarations before this call. This
@@ -416,9 +457,10 @@ def capture():
     collector exclusively creates observations; the caller retains returned
     measured record/findings. Failed/partial outputs are never removed or retried.
     """
-    declaration = prepare_capture()
+    declaration = prepare_capture(case_id)
+    case_prefix = prefix(declaration.authorities.case_id)
     for name, payload in declaration_files(declaration):
-        binding = Execution.InputBinding("declaration", name, PREFIX + "/" + name, _digest(payload))
+        binding = Execution.InputBinding("declaration", name, case_prefix + "/" + name, _digest(payload))
         require(_read_pinned(binding, len(payload)) == payload, "native predeclaration differs")
     return Unit.capture_and_evaluate(
         ROOT, planned_experiment=declaration.planned_experiment,
@@ -434,15 +476,18 @@ def main():
     action.add_argument("--review-authorities", action="store_true")
     action.add_argument("--declare", action="store_true", help="print native declarations as JSON strings; no writes")
     action.add_argument("--capture", action="store_true", help="collect only after committing exact native declarations")
+    parser.add_argument("--case", default=P.CASE_ID,
+                        help="a reviewed case with pinned prepared inputs (default: the retained case)")
     args = parser.parse_args()
     try:
         if args.declare:
-            declaration = prepare_capture()
-            result = dict(disposition="pending", canonical_capture=False, qualification=False,
-                          files={PREFIX + "/" + name: payload.decode()
+            declaration = prepare_capture(args.case)
+            result = dict(disposition="pending", case_id=declaration.authorities.case_id,
+                          canonical_capture=False, qualification=False,
+                          files={prefix(declaration.authorities.case_id) + "/" + name: payload.decode()
                                  for name, payload in declaration_files(declaration)})
         elif args.capture:
-            captured = capture()
+            captured = capture(args.case)
             # Keep the existing typed result API; stdout is only a bounded receipt.
             result = dict(disposition=captured.disposition, reason=captured.reason,
                           charged_read_bytes=captured.charged_read_bytes, qualification=False,
@@ -450,7 +495,7 @@ def main():
                           collection=None if captured.collection is None else captured.collection.disposition,
                           evaluation=None if captured.evaluation is None else captured.evaluation.disposition)
         else:
-            result = report(review_authorities())
+            result = report(review_authorities(args.case))
     except OSError as error:
         print(json.dumps(dict(disposition="unavailable", reason=type(error).__name__)))
         return 2

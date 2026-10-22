@@ -180,3 +180,41 @@ refuse existing output names and preserve real failed/partial observations.
 Offline retained evaluation must work without an acquired reference cache;
 fresh replay separately needs the actual pinned binary. Full method/policy
 adequacy and qualification remain pending; canonical observations are retained.
+
+## The m-forms case's prepared inputs (a42au)
+
+The second reviewed case, `rv64gc-m-forms-v3`, has its four prepared inputs under
+`evidence/rv64gc-m-forms-v3/`, curated through the same public owners by the tracked tool
+`scripts/prepare_div_inputs.py`, without launching a reference process:
+
+| File under the case directory | Bytes | SHA256 |
+| --- | --- | --- |
+| `guest.elf` | 4440 | `208865142e1569636925a5cea6abff6fc4495f317d5d8e79a06e48d3b0f061b1` |
+| `reference-config.json` | 7609 | `666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2` |
+| `baseline.expected.sexp` | 7937 | `561b5da3cf87ea4825fca4e1a001a9c7d26321e491d86515c571f47b0019f44f` |
+| `control.expected.sexp` | 7440 | `ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0` |
+
+The guest source is `profiles/rv64gc-lab-v0/guests/m-forms.s` (3,886 bytes, SHA256
+`232b4d96d87125c3ab876b2ec415d250a572433df57d5696afffde6a95f8d7a6`); the image is its
+complete ELF at the fixed cold entry; the configuration is the same mapped override as the
+retained case's, so its bytes and digest are identical; the baseline is the byte-exact copy of
+`m-forms.expected.sexp` (33 boundaries, 66 fetches); the control changes only boundary 12's x15
+from `0xfffffffffffffffd` (−3) to `0xfffffffffffffffc` (−4) under a structured comment, the same
+wrong rounding the retained case's control carries. The source author reports the difference at
+boundary 12 and nowhere else.
+
+```bash
+python3 scripts/prepare_div_inputs.py --verify --case rv64gc-m-forms-v3
+python3 scripts/prepare_div_inputs.py --verify --case rv64gc-signed-div-truncation-v2
+python3 scripts/prepare_div_inputs.py --show --case rv64gc-m-forms-v3
+python3 scripts/probe_div_capture_inputs.py
+```
+
+`--verify` re-derives the four artifacts from the canonical sources and reports each one `equal`
+to the retained bytes (`disposition: pending`); it does so for the retained case too, which is how
+the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints the sizes and digests
+without writing; `--write` creates the files exclusively and refuses any that already exists, so a
+retained input is never replaced. The probe now runs its controls over both cases (34 tests in each
+Python mode) and holds the family census to 43 files / 32 MiB, the two-case envelope of
+`decision_evidence-family-two-cases.md`; omitting the actual layout census loses six assertions.
+The m-forms case is declared, not captured: no observation, receipt or credit exists for it.

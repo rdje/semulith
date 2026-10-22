@@ -539,3 +539,17 @@ parent-prose edits change current view hashes while preserving declaration bytes
 and the selected semantic identity; the status-output cycle stays excluded.
 The actual baseline/repeat/control results are [retained](canonical-division.md);
 full policy remains next.
+
+### The m-forms declaration (a42au)
+
+`scripts/capture_div.py --declare --case rv64gc-m-forms-v3` emits the three native declarations of
+the second reviewed case from the same producers: `planned-experiment.sexp` (16,915 B: 25
+properties, the control naming `form-div`, 33 boundaries, twelve zero-placeholder
+observations), `dependencies.sexp` (14,488 B: the same 64 children) and `authorities.sexp`
+(17,043 B). They are retained under `evidence/rv64gc-m-forms-v3/` beside the four prepared inputs,
+and the command regenerates them byte for byte from the current tree. The `--case` selector
+reaches any reviewed case with pinned prepared inputs; without it the command prepares the
+retained case, so the method review, the command probe and the method probe are unchanged. The
+capture review takes the same selector (`scripts/review_div_capture.py --review --case <id>`) and
+exercises the loaders over that case's guest. A declared case without a receipt is reported
+`declared` by `scripts/requirement_status.py` and credits nothing; the capture is the next unit.

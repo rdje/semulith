@@ -1,50 +1,53 @@
 # Retained finite evidence
 
-This bounded index owns one retained case:
-`evidence/rv64gc-signed-div-truncation-v2/`. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
-explains its prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
-records the actual observations collected on2026-10-19. Baseline/repeat AGREE and
-the wrong-quotient control DIVERGE across27 boundaries. Complete policy and
-qualification remain pending; this does not close the M obligation or CPU gate.
+This bounded index owns the evidence family: one directory per reviewed finite case of
+`profiles/rv64gc-lab-v0` (the cases `scripts/matched_gpr_property.py` reviews), each with the
+same 21 declared slots. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
+explains the prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
+records the observations of 2026-10-19. Complete policy and qualification remain pending for
+every case; nothing here closes the M obligation or the CPU gate.
 
-## Declared files and lifecycle
+## Cases (this table is the complete membership)
 
-| Population | Names under the case directory | Maximum count |
+| Case directory | State | Files | Holds |
+| --- | --- | --- | --- |
+| `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` since 2026-10-22 (a pinned input moved) | 21 of 21 | `m-div.s`, 27 boundaries, one predeclared property; baseline/repeat AGREE, wrong-quotient control DIVERGE; superseded by the next capture, never rerun |
+| `rv64gc-m-forms-v3/` | declared 2026-10-22, not captured | 7 of 21 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); the control changes boundary 12 x15 from −3 to −4 |
+
+## Declared files and lifecycle (per case)
+
+| Population | Names under the case directory | Count |
 | --- | --- | --- |
 | Prepared inputs | `guest.elf`, `reference-config.json`, `baseline.expected.sexp`, `control.expected.sexp` | 4 |
-| Retained observations | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Retained declarations | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp` | 3 |
+| Retained observations | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Retained results | `measured-experiment.sexp`, `verification.json` | 2 |
-| Family index | This file, outside the case directory | 1 |
 
-All22 declared files are retained. Commit `b160c66e` held the exact source,
-prepared inputs and three native declarations before execution. Planned zero
-hashes/sizes/exits remain unmeasured targets. The measured record replaces only
-observation sizes/hashes and checked exits; verification.json is a derived receipt
-with qualification false. The three fresh canonical processes exited zero.
-Native currentness controls still compare declarations with the public generator;
-an affected source/input change requires fresh declarations before execution.
-Collection uses the combined allowance protocol. Existing output names refuse
-reuse; failed/partial observations remain historical data. Never rerun this capture or replace retained bytes to
-make a comparison pass. A corrected capture needs a separately owned declaration.
+With this index: 43 files at most. The prepared inputs are curated from canonical sources by
+`scripts/prepare_div_inputs.py --case <id>` (`--verify` re-derives them); the declarations by
+`scripts/capture_div.py --declare --case <id>`, committed before the capture; the observations and
+results by `--capture`, exactly once. Planned zero hashes/sizes/exits are unmeasured targets; the
+measured record replaces only observation sizes/hashes and checked exits; `verification.json` is a
+derived receipt with qualification false. A declared case without a receipt credits nothing
+(`scripts/requirement_status.py` reports it `declared`). Existing output names refuse reuse;
+failed or partial observations stay historical data. Never rerun a capture or replace retained
+bytes to make a comparison pass: a corrected capture is a new declared case.
 
-S-expression remains the project's source-of-truth format. The JSON configuration
-and ELF image are reproducible interoperability artifacts for the reference's
-public interface. Their canonical inputs remain in the existing profile/encoding
-corpus. The wrong expectation is explicitly a negative control.
+S-expression remains the source-of-truth format; the JSON configuration and the ELF image are
+reproducible interoperability artifacts for the reference's public interface. The wrong
+expectation is explicitly a negative control.
 
 ## Finite retention envelope
 
-The family is limited to22 files,16 MiB aggregate and4 MiB per member. The twelve
-observation slots inherit three4 MiB traces and nine64 KiB streams/receipts from
-the collector. Four prepared inputs and five metadata slots each reserve64 KiB;
-this index reserves4 KiB/80 lines. Their combined maximum is below16 MiB. The
-registry enforces the family and index bounds. The input probe checks the
-declared member names, same-volume regular files and each role limit before
-authenticating prepared pins. Unknown directories are never descended into. Preparation grants no permission to grow the
-family to another case.
+The family is limited to 43 files, 32 MiB aggregate and 4 MiB per member
+(`decision_evidence-family-two-cases.md`, 2026-10-22; one case was 22 files / 16 MiB). Each case's
+twelve observation slots inherit three 4 MiB traces and nine 64 KiB streams/receipts from the
+collector; its four prepared inputs and five metadata slots reserve 64 KiB each; this index
+reserves 4 KiB / 80 lines. The registry enforces the family and index bounds; the input probe
+checks the declared member names, same-volume regular files and each role limit of every case
+before authenticating prepared pins, and never descends into an unknown directory. A third case
+is a new re-derivation, not a quiet addition.
 
-The128 MiB combined artifact-read ceiling and16 MiB evaluator snapshot ceiling
-remain unchanged. The reference executable stays a separately pinned replay
-dependency under its public acquisition route. Offline retained checking must
-not require that binary or acquired source caches.
+The 128 MiB combined artifact-read ceiling and the 16 MiB evaluator snapshot ceiling are
+unchanged. The reference executable stays a separately pinned replay dependency; offline retained
+checking must not require it or any acquired source cache.

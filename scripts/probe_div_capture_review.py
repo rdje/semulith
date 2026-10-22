@@ -162,7 +162,7 @@ class ReviewTests(unittest.TestCase):
             snapshots.pin(path)
         context = A.review_authorities()
 
-        def owner():
+        def owner(*args, **kwargs):
             for path in sorted(R.AUTHORITY_PATHS):
                 with (ROOT / path).open("rb") as stream:
                     stream.read(1)
@@ -190,7 +190,7 @@ class ReviewTests(unittest.TestCase):
             opened.append(Path(path))
             return original(path, *args, **kwargs)
 
-        def extra_owner():
+        def extra_owner(*args, **kwargs):
             with unknown.open("rb") as stream:
                 stream.read(1)
             return owner()
@@ -206,7 +206,7 @@ class ReviewTests(unittest.TestCase):
         view = replace(context.views[0], sha256="0" * 64)
         changed = replace(context, views=(view, *context.views[1:]))
 
-        def wrong_owner():
+        def wrong_owner(*args, **kwargs):
             owner()
             return changed
 
@@ -226,7 +226,7 @@ class ReviewTests(unittest.TestCase):
                 mode = "rb"
             return original(path, mode, *args, **kwargs)
 
-        def writing_owner():
+        def writing_owner(*args, **kwargs):
             with (ROOT / sorted(R.AUTHORITY_PATHS)[0]).open("r+b"):
                 pass
             return owner()
@@ -241,7 +241,7 @@ class ReviewTests(unittest.TestCase):
         snapshots, context, owner = self.authority_fixture()
         changed = replace(context, views=(None, *context.views[1:]))
 
-        def wrong_owner():
+        def wrong_owner(*args, **kwargs):
             owner()
             return changed
 
@@ -252,7 +252,7 @@ class ReviewTests(unittest.TestCase):
     def test_authority_process_attempt_refuses_before_launch(self):
         snapshots, context, owner = self.authority_fixture()
 
-        def process_owner():
+        def process_owner(*args, **kwargs):
             owner()
             process = subprocess.Popen(
                 [sys.executable, "-c", "pass"],

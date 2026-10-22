@@ -1,5 +1,17 @@
 # DEV_NOTES.md
 
+## _(2026-10-22 UTC)_ — a probe fixture built to the code's expectation tests the assumption twice (P4-SYSTEM.14 a42au)
+
+`scripts/requirement_status.py` read a case's `property` forms at the experiment root. Every
+real record nests them under `(verification …)`, so both retained cases loaded with zero
+bindings for two weeks: `REQ-GC-M` showed no uncredited case, and a credited receipt would
+have credited nothing. The probe never saw it because its fixture wrote the flat shape the
+reader expected — the author's assumption, encoded twice, agreeing with itself. Found when the
+declared m-forms case derived `0 declared` on the real tree (`load_cases` → 0 bindings for both
+directories, target/p4-system-14/a42au/probes-fast.log). Fixed: the reader looks under
+`verification` first; the fixture writes the real shape; the real-tree test asserts the two
+cases' bindings. Promoted: `docs/knowledge/a-fixture-must-have-the-real-records-shape.md`.
+
 ## _(2026-10-22 UTC)_ — the gate's mutation builds are the cleanup's residue (ARTIFACT-CLEANUP.25)
 
 AC0082 after 39e7016, clean tree and `handoff: OK`, at 34 h: the slot fell inside a gate run.

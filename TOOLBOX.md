@@ -43,7 +43,8 @@ matches your question:
 | [definition](docs/toolbox/definition.md) | The canonical definition — S-expressions, schemas, fragments, semantics, generators, citations |
 | [guest evidence](docs/toolbox/guest-evidence.md) | Independent guest authoring, staged observations/counts, and public reference probes |
 | [composition](docs/toolbox/composition.md) | Composition and the board — records, assumptions, composed units, the board, its platform export |
-| [execution](docs/toolbox/execution.md) | Execution and evidence — the engines, the guests, coverage, references, bench, materials |
+| [execution](docs/toolbox/execution.md) | Execution and evidence — the engines, the environment boundary, coverage, references, bench, materials |
+| [div evidence](docs/toolbox/div-evidence.md) | The finite DIV cases — authorities, prepared inputs, declaration, capture, method and policy reviews, requirement status, the property binding |
 
 ⛔ **A gate that has never been observed RED is not known to work.** Before trusting any check
 added here, fire it against a deliberately broken input — the first two project checks

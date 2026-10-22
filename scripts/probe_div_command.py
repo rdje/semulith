@@ -103,9 +103,9 @@ try:
    result=dict(status=A.capture().disposition)
  elif mode=='drift':
   original=A.review_authorities;calls=0
-  def change():
+  def change(*args,**kwargs):
    global calls
-   context=original();p=runtime/A.DIRECTORY/'requirements.sexp'
+   context=original(*args,**kwargs);p=runtime/A.DIRECTORY/'requirements.sexp'
    if calls==0:p.write_bytes(p.read_bytes()+b'\n(comment "owned between-view drift")\n')
    calls+=1;return context
   with patch.object(A,'review_authorities',change):declaration()

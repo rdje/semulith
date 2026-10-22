@@ -7,7 +7,8 @@ without that declaration keeps its recorded statuses and is not judged here.
 
 Graph inputs, tracked and bounded: the profile's requirements.sexp and effective
 contract-obligations.sexp, and every evidence case evidence/<case>/ that carries
-planned-experiment.sexp and verification.json (the retained declaration binding the case to
+planned-experiment.sexp — with verification.json once captured, or without it while merely
+declared (a declared case binds requirements and credits nothing) — (the retained declaration binding the case to
 requirement/obligation ids, and the derived receipt carrying the qualification verdict).
 
 Rules, in this order per requirement:
@@ -100,6 +101,27 @@ def load_cases(root: Path) -> list[dict]:
         experiments = [f for f in forms if isinstance(f, list) and f and str(f[0]) == "experiment"]
         _require(len(experiments) == 1, f"exactly one experiment form expected in {planned}")
         exp = experiments[0]
+        # A matched-gpr record nests its properties in the (verification …) graph; a record
+        # without that envelope declares them at the root. Reading only the root bound nothing
+        # for either retained case until a42au measured it (0 bindings loaded for both).
+        verification = S.children(exp, "verification")
+        _require(len(verification) <= 1, f"more than one verification form in {planned}")
+        holder = verification[0] if verification else exp
+        properties = S.children(holder, "property")
+        _require(properties, f"planned experiment declares no property: {planned}")
+        bindings = []
+        for prop in properties:
+            req = _one(prop, "requirement_id")
+            _require(req is not None, f"property without requirement_id in {planned}")
+            bindings.append((req, tuple(_strings(prop, "obligation_ids"))))
+        if not receipt_path.exists():
+            # A declared case awaiting its capture (P4-SYSTEM.14 a42au): the declaration binds
+            # requirements but carries no receipt, so it credits nothing. Its profile is derived
+            # from the requirements it names; it is never read as a verdict.
+            _require(case.name == _one(exp, "id"), f"case directory and experiment id disagree: {case.name}")
+            cases.append(dict(id=case.name, profile=None, credited=False, evaluation="declared",
+                              disposition="declared", bindings=bindings))
+            continue
         try:
             receipt = json.loads(_bounded_bytes(receipt_path).decode("utf-8"))
         except (ValueError, UnicodeError) as error:
@@ -110,11 +132,6 @@ def load_cases(root: Path) -> list[dict]:
         _require(isinstance(receipt.get(CREDITED_FIELD), bool), f"receipt lacks boolean {CREDITED_FIELD}: {receipt_path}")
         _require(receipt["case_id"] == case.name == _one(exp, "id"),
                  f"case id, directory and experiment id disagree: {case.name}")
-        bindings = []
-        for prop in S.children(exp, "property"):
-            req = _one(prop, "requirement_id")
-            _require(req is not None, f"property without requirement_id in {planned}")
-            bindings.append((req, tuple(_strings(prop, "obligation_ids"))))
         cases.append(dict(id=case.name, profile=receipt["profile_id"], credited=credited(receipt),
                           evaluation=receipt["evaluation"], disposition=receipt["disposition"],
                           bindings=bindings))
@@ -136,8 +153,15 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
     findings: list[str] = []
     credited_obligations: dict[str, set[str]] = {}
     uncredited: dict[str, list[str]] = {}
+    def belongs(case):
+        # A receipt names its profile; a declared case belongs to the profile whose catalogue
+        # names every requirement it binds, and to no other.
+        if case["profile"] is not None:
+            return case["profile"] == profile
+        return bool(case["bindings"]) and all(req_id in by_id for req_id, _ in case["bindings"])
+
     for case in cases:
-        if case["profile"] != profile:
+        if not belongs(case):
             continue
         for req_id, obligation_ids in case["bindings"]:
             if req_id not in by_id:
@@ -151,7 +175,10 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
                 elif case["credited"]:
                     credited_obligations.setdefault(req_id, set()).add(ob)
                 else:
-                    uncredited.setdefault(req_id, []).append(f"{case['id']}:{case['evaluation']}")
+                    # One entry per case and requirement, however many properties bind it.
+                    entry = f"{case['id']}:{case['evaluation']}"
+                    if entry not in uncredited.setdefault(req_id, []):
+                        uncredited[req_id].append(entry)
     rows = []
     for r in reqs:
         excluded, argued = r["applicability"] == "excluded", r["source_semantics"]["category"] == "not-applicable"
@@ -175,10 +202,11 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
                          uncredited=uncredited.get(r["id"], [])))
     drift = [row for row in rows if row["recorded"] != row["derived"]]
     counts = {s: sum(1 for row in rows if row["derived"] == s) for s in STATUSES}
-    profile_cases = [c for c in cases if c["profile"] == profile]
+    profile_cases = [c for c in cases if belongs(c)]
     return dict(profile=profile, requirements=len(rows), derived=counts, rows=rows, drift=drift,
                 findings=findings, cases=len(profile_cases),
-                credited_cases=sum(1 for c in profile_cases if c["credited"]))
+                credited_cases=sum(1 for c in profile_cases if c["credited"]),
+                declared_cases=sum(1 for c in profile_cases if c["disposition"] == "declared"))
 
 
 def derive(root: Path, profiles: list[str] | None = None) -> list[dict]:
@@ -207,7 +235,7 @@ def report(tables: list[dict]) -> tuple[int, str, list[str]]:
         bad = bad or bool(t["drift"]) or bool(t["findings"])
         summary = ", ".join(f"{n} {s}" for s, n in t["derived"].items() if n)
         parts.append(f"{t['profile']}: {t['requirements']} requirements derived {summary}; "
-                     f"{t['cases']} case(s), {t['credited_cases']} credited; "
+                     f"{t['cases']} case(s), {t['credited_cases']} credited, {t.get('declared_cases', 0)} declared; "
                      f"{len(t['drift'])} drift, {len(t['findings'])} finding(s)")
     verdict = "drift or finding" if bad else "ok"
     return (1 if bad else 0), f"REQUIREMENT-STATUS: {verdict} ({'; '.join(parts)})", details

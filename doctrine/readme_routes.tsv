@@ -373,7 +373,7 @@ docs/tasks/	author_overflow	partitioned	one file per tree; closed records move v
 #   (13,234 B / 59 rows) is the member that bites next, by its own partition. Reviewed decision:
 #               docs/decisions/decision_decisions-family-second-rederivation.md.
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	64	278528	160	524288	16384
-docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION	12	20480	30	98304	16384
+docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION; bounds re-derived by decision_knowledge-family-first-rederivation.md (2026-10-22)	34	114688	40	131072	16384
 # Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), at 524,247 of
 #   524,288 B: the book is the review surface and carries NO size containment on any axis — "it is
 #   used to explain thoroughly what the project, its codebase, I mean everything". Structural gates
@@ -485,5 +485,5 @@ LIVE_DOCUMENT_SIZE_CONTAINMENT.md	reader_navigation	normative	local neutral cont
 # four prepared inputs + twelve observations + five metadata files + bounded index.
 # At most3*(4MiB+3*64KiB)+9*64KiB+4KiB =13,766,656B, below16MiB;
 # actual prepared payloads23,315B. These are retention limits, not read/RAM budgets.
-evidence/	reader_navigation	partitioned	P4-SYSTEM.14 a42af; one finite first-DIV case; bounded evidence/README.md index and declared lifecycle; ordinary capture refuses existing outputs	20	14680064	22	16777216	4194304
-evidence/README.md	reader_navigation	hot_live	P4-SYSTEM.14 a42af; bounded index for the finite retained case	64	3072	80	4096	0
+evidence/	reader_navigation	partitioned	P4-SYSTEM.14 a42af, re-derived for two declared cases by a42au (decision_evidence-family-two-cases.md); one directory per reviewed finite case, 21 slots each; bounded evidence/README.md index and declared lifecycle; ordinary capture refuses existing outputs	40	29360128	43	33554432	4194304
+evidence/README.md	reader_navigation	hot_live	P4-SYSTEM.14 a42af, a42au; bounded index of the retained finite cases	64	3890	80	4096	0

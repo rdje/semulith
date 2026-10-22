@@ -25,6 +25,8 @@ SEAMS = {
     "unresolved-closes": ('        elif r["research_status"] == "resolved" and r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n',
                           '        elif r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n'),
     "argument-optional": ('        if excluded and argued:\n', '        if excluded:\n'),
+    "declared-credits": ('            cases.append(dict(id=case.name, profile=None, credited=False, evaluation="declared",\n',
+                         '            cases.append(dict(id=case.name, profile=None, credited=True, evaluation="declared",\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_pending_case_stays_uncredited_and_planned",
@@ -32,6 +34,7 @@ MUTATION_TESTS = {
     "skip-supersession": "test_case_naming_superseded_obligation_is_a_finding",
     "unresolved-closes": "test_unresolved_source_caps_closure_at_partial",
     "argument-optional": "test_exclusion_without_argument_is_a_finding",
+    "declared-credits": "test_declared_case_without_receipt_credits_nothing",
 }
 
 
@@ -68,11 +71,13 @@ def obligation(oid):
             f'(source_refs (source_id "SRC") (locator "1")) (parameters) (required_checks "c1"))\n')
 
 
-def case(root, cid, bindings, *, credited=False, evaluation="pending", profile="fx-v0", receipt=None):
+def case(root, cid, bindings, *, credited=False, evaluation="pending", profile="fx-v0", receipt=None, nested=True):
+    """A case directory in the real record shape: properties nested under (verification …)."""
     d = root / "evidence" / cid; d.mkdir(parents=True)
     props = " ".join(f'(property (id "p{i}") (requirement_id "{r}") ' + " ".join(f'(obligation_ids "{o}")' for o in obs) + ")"
                      for i, (r, obs) in enumerate(bindings))
-    (d / "planned-experiment.sexp").write_text(f'(experiment (id "{cid}") {props})\n')
+    graph = f'(verification (format_version "matched-gpr-v1") {props})' if nested else props
+    (d / "planned-experiment.sexp").write_text(f'(experiment (id "{cid}") (program "p.s") {graph})\n')
     body = receipt if receipt is not None else json.dumps(dict(case_id=cid, profile_id=profile, evaluation=evaluation,
                                                               disposition="pending", qualification=credited))
     (d / "verification.json").write_text(body)
@@ -180,6 +185,36 @@ class StatusTests(unittest.TestCase):
         case(self.root, "c2", [("R1", ["OB-A"])], receipt="{not json")
         with self.assertRaises(self.M.Refused): self.run_root()
 
+    def test_declared_case_without_receipt_credits_nothing(self):
+        """A planned record with no receipt is a declared case: counted, bound, never credited."""
+        graph(self.root, [req("R1", ["OB-A"]), req("R2", ["OB-B"])])
+        case(self.root, "c1", [("R1", ["OB-A"])])
+        (self.root / "evidence" / "c1" / "verification.json").unlink()
+        t = self.run_root()[0]
+        self.assertEqual((t["cases"], t["credited_cases"], t["declared_cases"]), (1, 0, 1))
+        self.assertEqual([r["derived"] for r in t["rows"]], ["planned", "planned"])
+        self.assertEqual(t["rows"][0]["uncredited"], ["c1:declared"])
+        self.assertEqual((t["drift"], t["findings"]), ([], []))
+        self.assertIn("1 case(s), 0 credited, 1 declared", self.M.report([t])[1])
+        # A declared case naming another profile's requirement belongs to neither profile.
+        graph(self.root, [req("R9", ["OB-A"])], profile="fy-v0")
+        tables = self.run_root()
+        self.assertEqual([(x["profile"], x["cases"]) for x in tables], [("fx-v0", 1), ("fy-v0", 0)])
+        # The directory must still carry the experiment it declares.
+        (self.root / "evidence" / "c1" / "planned-experiment.sexp").write_text('(experiment (id "other"))\n')
+        with self.assertRaises(self.M.Refused): self.run_root()
+
+    def test_properties_are_read_under_verification_and_at_the_root(self):
+        """The real records nest properties in the verification graph; a flat record still binds."""
+        graph(self.root, [req("R1", ["OB-A"]), req("R2", ["OB-B"])])
+        case(self.root, "c1", [("R1", ["OB-A"])], credited=True)
+        case(self.root, "c2", [("R2", ["OB-B"])], credited=True, nested=False)
+        t = self.run_root()[0]
+        self.assertEqual([r["derived"] for r in t["rows"]], ["implemented", "implemented"])
+        shutil.rmtree(self.root / "evidence")
+        case(self.root, "c3", [], credited=True)
+        with self.assertRaises(self.M.Refused): self.run_root()
+
     def test_case_without_declaration_refuses(self):
         graph(self.root, [req("R1", ["OB-A"])])
         case(self.root, "c1", [("R1", ["OB-A"])])
@@ -204,6 +239,12 @@ class StatusTests(unittest.TestCase):
         for t in tables:
             self.assertEqual((t["drift"], t["findings"]), ([], []), t["profile"])
         self.assertEqual(self.M.report(tables)[0], 0)
+        gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
+        m = next(r for r in gc["rows"] if r["id"] == "REQ-GC-M")
+        # Both retained cases bind REQ-GC-M and neither credits it: the retained case is pending,
+        # the m-forms case is declared and awaits its capture.
+        self.assertEqual(sorted(m["uncredited"]), ["rv64gc-m-forms-v3:declared", "rv64gc-signed-div-truncation-v2:pending"])
+        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"]), (2, 0, 1))
 
 
 def main():
