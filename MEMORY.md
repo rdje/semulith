@@ -14,22 +14,21 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` — next slice a42ay (the crediting act for `REQ-GC-M`: authority, mechanism,
-  retained excerpts); `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
+- active_work_unit: `P4-SYSTEM.14` — a42ay committed (the crediting mechanism); the act (a42az) waits on the
+  director's ruling; `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `P4-SYSTEM.14` a42ax / `SEMULITH-P4-0292` — the retained reviews read `rv64gc-m-forms-v3`
-  (consumers only, no pinned module moved): method `satisfied` (85 files / 1,076,834 B, 40,438 snapshot),
-  `DIV-POLICY: satisfied — 10 of 10 legs`, `credited` false, `REQ-GC-M` planned with both cases pending;
-  the first case is `invalidated` history (`decision_ten-legs-satisfied-credit-separate.md`).
-- next_action: `P4-SYSTEM.14` a42ay — the crediting act for `REQ-GC-M`, a separately owned record: settle
-  (1) the authority (who credits, on which retained normative excerpts — only the DIV statement is retained
-  today; the multiply and Table 1 statements are cited, not retained: a retention slice like a42z first?),
-  (2) the mechanism (`requirement_status.credited()` reads a receipt's `qualification`, but a retained receipt
-  is never replaced — a new record the derivation reads, not a rewrite), (3) the status move `planned` →
-  the policy's credited disposition with its probe seams; read `decision_policy-legs-measured-two-pending.md`
-  and `decision_ten-legs-satisfied-credit-separate.md` first. Also due: LIVE_STATUS.md bounded-snapshot
-  re-derivation (6,137 of 6,144 B), `ARTIFACT-CLEANUP.26` after 2026-10-23T08:12Z.
+- last_unit: `P4-SYSTEM.14` a42ay / `SEMULITH-P4-0293` — the crediting mechanism: `profiles/<p>/credits.sexp`
+  (schema/credits.sexp) read by `scripts/credit_records.py`; the status derivation credits only through a
+  CURRENT record; a receipt's `qualification` true is a finding; real tree 0 records, `REQ-GC-M` planned
+  (`decision_credit-is-a-catalogue-record.md`).
+- next_action: the crediting act (a42az) is the DIRECTOR'S decision, not the agent's: (a) who signs the record,
+  (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`, (c) whether the §11.1.1
+  and Table 1 spans are retained first (a42z-style; CC-BY 4.0 already found: materials/RVI_M_RETENTION.md).
+  Until the ruling: the retention slice (a42az-candidate: `scripts/retain_div_statement.py` generalised to the
+  multiply and Table 1 spans, SRC-01 review, a new sources row) is the thorough preparatory work; also due the
+  LIVE_STATUS.md bounded-snapshot re-derivation (6,137 of 6,144 B) and `ARTIFACT-CLEANUP.26` after
+  2026-10-23T08:12Z.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -38,8 +37,8 @@
   statement is a retained excerpt; the multiply and Table 1 statements are cited, not retained.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ax, a42aw; `target/p4-system-14/a42ax` (reproduce.log,
-  review-method.json, policy-legs-v3-detail.log, probe-*.log, seams-*.log, focused-checks.json);
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ay, a42ax; `target/p4-system-14/a42ay` (design.md, smoke-reader.log,
+  probe-*.log, seams-*.log, token-facets.log, record-schema-selftest.log, real-tree.log, focused-checks.json);
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

@@ -201,7 +201,7 @@ definitions/	reader_navigation	partitioned	reusable definition fragments; one fi
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign record gained its
 #   family: schema/ 16 -> 17 files / 47,347 B (act4.sexp — one schema per construct family,
 #   the SOT-FORMAT.4 shape). Health 16 -> 18 files; bytes and ceilings unchanged.
-schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint	18	131072	24	524288	65536
+schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint; bounds re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23)	27	262144	32	524288	65536
 # Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the family hit its file-count ceiling:
 #   docs/changelog/  22 files at the breach — the family carries shards for TWO append heads
 #               (CHANGELOG.md sharded from 2026-09-27, DOC-SHARDING.1), and a working
@@ -372,7 +372,7 @@ docs/tasks/	author_overflow	partitioned	one file per tree; closed records move v
 #   health just above the 62 / 265,307 B measurement. PER-PART STAYS 16,384 — the index
 #   (13,234 B / 59 rows) is the member that bites next, by its own partition. Reviewed decision:
 #               docs/decisions/decision_decisions-family-second-rederivation.md.
-docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH	64	278528	160	524288	16384
+docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH; per-part and health re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23)	136	458752	160	524288	32768
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION; bounds re-derived by decision_knowledge-family-first-rederivation.md (2026-10-22)	34	114688	40	131072	16384
 # Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), at 524,247 of
 #   524,288 B: the book is the review surface and carries NO size containment on any axis — "it is

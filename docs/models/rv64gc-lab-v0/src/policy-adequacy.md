@@ -33,13 +33,18 @@ fixture; a step's mnemonic is its form), never from the chapter itself.
 
 The measurement says the retained bytes of one case meet every leg the policy names for a
 `defined` requirement of medium risk. It is not a credit: the policy makes a satisfied
-measurement the input to a separately owned crediting record, `requirement_status.py` credits
-a case only through its receipt, and a retained receipt is never replaced. Which act carries
-that credit, and under whose authority, is the next unit's question
-(`decision_ten-legs-satisfied-credit-separate.md`). Two facts the director should weigh before
-it: only the DIV statement is a retained normative excerpt
-(`profiles/rv64gc-lab-v0/retained/div-statement.html`); the multiply and Table 1 statements the
-25 properties cite are cited in the expectations, not retained.
+measurement the input to a separately owned crediting record, and a retained receipt is never
+replaced (`decision_ten-legs-satisfied-credit-separate.md`). Since a42ay (2026-10-23) that
+record has a shape and a reader: a `(credit …)` record in `profiles/rv64gc-lab-v0/credits.sexp`
+that `scripts/credit_records.py` re-authenticates on every read, and that the
+[status derivation](requirement-status.md) alone credits through. This consumer reports
+`credited` from that catalogue — the summary ends `credited by <record>` instead of `no
+qualification credit` — and makes a record over a measurement that is not `satisfied` a
+finding (`decision_credit-is-a-catalogue-record.md`). The catalogue holds no record: writing
+the first one is the crediting act, and two facts the director should weigh before it are
+that only the DIV statement is a retained normative excerpt
+(`profiles/rv64gc-lab-v0/retained/div-statement.html`), while the multiply and Table 1
+statements the 25 properties cite are cited in the expectations, not retained.
 
 ## History: the first case and its two pending legs
 
@@ -93,12 +98,13 @@ python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 The first command prints `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification
 credit` and exits zero; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
-exercised. The probe runs 22 tests in both interpreter modes on synthetic cases where each
+exercised. The probe runs 25 tests in both interpreter modes on synthetic cases where each
 knob breaks exactly one leg, plus the real tree (ten legs while every pin is current; `invalidated`
-with the two method legs missing once a pin moves); each of the
-seven seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
-`coverage-optional`, `lock-stale`, `first-property`) runs its one discriminating test and
-fails. `PROFILE-CONSISTENCY`
+with the two method legs missing once a pin moves) and three credit-record cases (a current record
+over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
+are findings); each of the eight seam omissions (`credit-pending`, `trust-receipt`,
+`infer-feature`, `any-control`, `coverage-optional`, `lock-stale`, `first-property`,
+`credit-any`) runs its one discriminating test and fails. `PROFILE-CONSISTENCY`
 runs the probe in its self-test and the measurement on the real path on every commit.
 
 ## The program the m-forms case predeclares

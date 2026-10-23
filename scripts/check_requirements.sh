@@ -113,6 +113,7 @@ SCHEMA_FOR = {
 SEXP_SCHEMA_FOR = {
     "requirements.sexp": "schema/requirements.sexp",
     "contract-obligations.sexp": "schema/contract-obligations.sexp",
+    "credits.sexp": "schema/credits.sexp",
     "units.sexp": "schema/units.sexp",
     "category-needs.sexp": "schema/category-needs.sexp",
     "act4.sexp": "schema/act4.sexp",
@@ -978,20 +979,21 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   arm_command=(python3 scripts/probe_record_catalog.py --mutation ignore-includes)
   arm "RED lost include expansion" 1 "CONTROL-MISSED"
   # All project token patterns, and the public kernel's deliberate search contract.
+  # a42ay: schema/credits.sexp adds 9 anchored facets (25 schemas / 100 facets): loose-end 96 → 105, ignore-pattern 552 → 606.
   arm_command=(python3 scripts/probe_schema_token_facets.py)
   arm "GREEN exact-token facets normal" 0 "Ran 7 tests"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation loose-end)
-  arm "RED normal token loose-end mutation" 1 "FAILED (failures=96)"
+  arm "RED normal token loose-end mutation" 1 "FAILED (failures=105)"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation ignore-pattern)
-  arm "RED normal token ignore-pattern mutation" 1 "FAILED (failures=552)"
+  arm "RED normal token ignore-pattern mutation" 1 "FAILED (failures=606)"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation fullmatch)
   arm "RED normal token fullmatch mutation" 1 "FAILED (failures=1)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py)
   arm "GREEN exact-token facets optimized" 0 "Ran 7 tests"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation loose-end)
-  arm "RED optimized token loose-end mutation" 1 "FAILED (failures=96)"
+  arm "RED optimized token loose-end mutation" 1 "FAILED (failures=105)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation ignore-pattern)
-  arm "RED optimized token ignore-pattern mutation" 1 "FAILED (failures=552)"
+  arm "RED optimized token ignore-pattern mutation" 1 "FAILED (failures=606)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation fullmatch)
   arm "RED optimized token fullmatch mutation" 1 "FAILED (failures=1)"
   rm -rf "$t"

@@ -16,8 +16,12 @@ Rules, in this order per requirement:
                   the explicit, checked inapplicability argument. One without the other is a
                   finding, never a status.
   implemented     research_status `resolved`, included, and every effective obligation the
-                  requirement names has at least one CREDITED case: a verification receipt
-                  whose `qualification` is true. No typed success word substitutes for it.
+                  requirement names has at least one CREDITED case: a case named by a CURRENT
+                  credit record in the profile's credits.sexp (scripts/credit_records.py: every
+                  pin — measured record, receipt, policy document, the case's dependency
+                  manifest — still describes the tree, the receipt is a complete capture and
+                  carries no verdict of its own). A receipt whose `qualification` is true is a
+                  finding, never a credit: no typed success word substitutes for the record.
   partial         not implemented, but a credited case or an implementation_refs entry exists
                   (incomplete implementation or verification). An unresolved source question
                   caps a requirement here: it cannot close an included requirement.
@@ -39,6 +43,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import credit_records as CR  # noqa: E402
 import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
 
@@ -77,9 +82,10 @@ def _strings(form, name: str) -> list[str]:
     return [str(c[1]) for c in S.children(form, name) if len(c) == 2]
 
 
-def credited(receipt: dict) -> bool:
-    """A case is credited only by its receipt's boolean qualification verdict."""
-    return receipt.get(CREDITED_FIELD) is True
+def credited(case_id: str, requirement_id: str, obligation_id: str, credits: list[dict]) -> bool:
+    """A binding is credited only by a CURRENT credit record naming its case, requirement and obligation."""
+    return any(c["disposition"] == "current" and c["case_id"] == case_id and c["requirement_id"] == requirement_id
+               and obligation_id in c["obligation_ids"] for c in credits)
 
 
 def load_cases(root: Path) -> list[dict]:
@@ -119,7 +125,7 @@ def load_cases(root: Path) -> list[dict]:
             # requirements but carries no receipt, so it credits nothing. Its profile is derived
             # from the requirements it names; it is never read as a verdict.
             _require(case.name == _one(exp, "id"), f"case directory and experiment id disagree: {case.name}")
-            cases.append(dict(id=case.name, profile=None, credited=False, evaluation="declared",
+            cases.append(dict(id=case.name, profile=None, evaluation="declared",
                               disposition="declared", bindings=bindings))
             continue
         try:
@@ -132,7 +138,7 @@ def load_cases(root: Path) -> list[dict]:
         _require(isinstance(receipt.get(CREDITED_FIELD), bool), f"receipt lacks boolean {CREDITED_FIELD}: {receipt_path}")
         _require(receipt["case_id"] == case.name == _one(exp, "id"),
                  f"case id, directory and experiment id disagree: {case.name}")
-        cases.append(dict(id=case.name, profile=receipt["profile_id"], credited=credited(receipt),
+        cases.append(dict(id=case.name, profile=receipt["profile_id"], qualification_word=receipt[CREDITED_FIELD],
                           evaluation=receipt["evaluation"], disposition=receipt["disposition"],
                           bindings=bindings))
     return cases
@@ -153,6 +159,19 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
     findings: list[str] = []
     credited_obligations: dict[str, set[str]] = {}
     uncredited: dict[str, list[str]] = {}
+    try:
+        credits = CR.current_credits(root, profile_dir)
+    except CR.CreditRefused as error:
+        raise Refused(f"{profile}: {error}") from error
+    case_ids = {c["id"] for c in cases}
+    for credit in credits:
+        if credit["case_id"] not in case_ids:
+            findings.append(f"credit {credit['id']} names unknown case {credit['case_id']}")
+        elif credit["disposition"] != "current":
+            findings.append(f"credit {credit['id']} lapsed: {credit['reasons'][0]}")
+        if credit["requirement_id"] not in by_id:
+            findings.append(f"credit {credit['id']} names unknown requirement {credit['requirement_id']}")
+    credited_cases: set[str] = set()
     def belongs(case):
         # A receipt names its profile; a declared case belongs to the profile whose catalogue
         # names every requirement it binds, and to no other.
@@ -163,6 +182,8 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
     for case in cases:
         if not belongs(case):
             continue
+        if case.get("qualification_word") is True:
+            findings.append(f"case {case['id']}: its receipt claims qualification — a typed success word, not a credit record")
         for req_id, obligation_ids in case["bindings"]:
             if req_id not in by_id:
                 findings.append(f"case {case['id']} names unknown requirement {req_id}")
@@ -172,8 +193,9 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
                     findings.append(f"case {case['id']} names obligation {ob} outside the effective contract (superseded or unknown)")
                 elif ob not in by_id[req_id]["obligation_ids"]:
                     findings.append(f"case {case['id']} binds {ob} to {req_id}, which does not name it")
-                elif case["credited"]:
+                elif credited(case["id"], req_id, ob, credits):
                     credited_obligations.setdefault(req_id, set()).add(ob)
+                    credited_cases.add(case["id"])
                 else:
                     # One entry per case and requirement, however many properties bind it.
                     entry = f"{case['id']}:{case['evaluation']}"
@@ -205,7 +227,8 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
     profile_cases = [c for c in cases if belongs(c)]
     return dict(profile=profile, requirements=len(rows), derived=counts, rows=rows, drift=drift,
                 findings=findings, cases=len(profile_cases),
-                credited_cases=sum(1 for c in profile_cases if c["credited"]),
+                credited_cases=len(credited_cases), credits=len(credits),
+                current_credits=sum(1 for c in credits if c["disposition"] == "current"),
                 declared_cases=sum(1 for c in profile_cases if c["disposition"] == "declared"))
 
 
@@ -235,7 +258,8 @@ def report(tables: list[dict]) -> tuple[int, str, list[str]]:
         bad = bad or bool(t["drift"]) or bool(t["findings"])
         summary = ", ".join(f"{n} {s}" for s, n in t["derived"].items() if n)
         parts.append(f"{t['profile']}: {t['requirements']} requirements derived {summary}; "
-                     f"{t['cases']} case(s), {t['credited_cases']} credited, {t.get('declared_cases', 0)} declared; "
+                     f"{t['cases']} case(s), {t['credited_cases']} credited, {t.get('declared_cases', 0)} declared, "
+                     f"{t.get('current_credits', 0)} of {t.get('credits', 0)} credit record(s) current; "
                      f"{len(t['drift'])} drift, {len(t['findings'])} finding(s)")
     verdict = "drift or finding" if bad else "ok"
     return (1 if bad else 0), f"REQUIREMENT-STATUS: {verdict} ({'; '.join(parts)})", details

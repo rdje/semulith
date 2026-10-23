@@ -358,6 +358,65 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42ay / SEMULITH-P4-0293: the crediting record — mechanism, no credit (completed)
+
+Owned on clean 818b873. Every leg of the policy measures satisfied on the retained case and
+nothing can credit it: `requirement_status.credited()` reads a receipt's `qualification`, the receipt
+is written once with `qualification false` by `retain_div_capture.py` and is never replaced, and the
+policy makes a credited disposition a structured record linking requirement, obligation, owner, runner
+and evidence record — none exists (`decision_ten-legs-satisfied-credit-separate.md`). Build the
+mechanism without the act: a third profile catalogue `profiles/<profile>/credits.sexp` (schema
+`schema/credits.sexp`: requirement, obligations, case, the measured record / receipt / policy pins by
+path, SHA256 and size, the retained sources it rests on, authority, date, decision), read by a new
+unpinned `scripts/credit_records.py` over `sexp.py` (`records_sexp.py` and `record_catalog.py` are
+pinned children of the m-forms declaration and refuse unknown heads: they do not change);
+`requirement_status.py` credits a case only through a credit record whose pins authenticate, whose
+receipt is complete and whose policy measurement is `satisfied` at read time (a moved pin lapses the
+credit, a drift finding follows); a receipt claiming `qualification` becomes a finding, never a credit;
+`review_div_policy.credited` reads the catalogue; `check_requirements.sh` validates the catalogue;
+probes with synthetic credit records and seams; chapters, toolbox, decision
+`decision_credit-is-a-catalogue-record.md`. Real tree after this unit: no `credits.sexp`, `REQ-GC-M`
+`planned`, 0 credited. The act (a42az) is one commit the director authorizes: the credit record and
+`implementation_status implemented`. Ruling requested of the director before the act: (a) who signs
+the record, (b) whether one finite case of 25 witnesses suffices for `implemented`, (c) whether the
+§11.1.1 and Table 1 spans are retained first (a42z-style, CC-BY 4.0 already found). Evidence
+target/p4-system-14/a42ay.
+
+Done 2026-10-23. Built: `schema/credits.sexp` (constructs `credit` and `pin`; nine anchored facets, two new
+token languages — the date and the decision-record name — each with a reviewed example in
+`scripts/probe_schema_token_facets.py`, whose census is now 25 schemas / 100 facets) and
+`scripts/credit_records.py` (`load_credits` validates the catalogue against the schema and bounds it to 64
+records / 64 KiB; `authenticate` re-hashes the three pins and every input of the case's dependency
+manifest, requires a complete canonical capture whose `qualification` is false and a declaration binding
+the credited requirement and obligations, and names every reason a record lapsed; `--profile <id>`
+prints the census). `requirement_status.py` credits a binding only through a current record naming its
+case, requirement and obligation; a receipt's `qualification` true, a lapsed record or one naming an
+unknown case or requirement is a finding; the summary gains `N of M credit record(s) current`; the
+unused `credited` key left the case rows. `review_div_policy.py` reports `credited` and `credit_ids` from
+the catalogue, makes a record over a measurement that is not `satisfied` a finding, and ends its summary
+`credited by <record>` when one is current. `check_requirements.sh` validates `credits.sexp` under
+RECORD-SCHEMA (its token arms re-measured: loose-end 96 → 105, ignore-pattern 552 → 606; the first run
+had refused — another gate that discards its self-test output, read through `--self-test`). Probes: status
+22 tests / seven seams — `qualification-word` and `unknown-case-credit` new, `declared-credits` retired
+because the receipt pin makes a declared case uncreditable by construction and its mutation no longer
+reached any predicate (seams-status.log showed it 1t/0f before the retirement); policy 25 tests / eight
+seams (`credit-any`). The derivation's fixtures credit through records whose pins are taken from the
+fixture's own bytes, never through the receipt. Real tree unchanged in substance: no `credits.sexp`,
+`REQ-GC-M` `planned`, 0 of 0 records, the policy `satisfied — 10 of 10 … no qualification credit`.
+Chapters requirement-status ("How a case is credited") and policy-adequacy, three toolbox rows,
+`decision_credit-is-a-catalogue-record.md`, KNOWLEDGE_MAP regenerated. The first focused run was RED on
+`check_readme_routes.sh`: `OVER CEILING schema/: 25 files > 24` (the schema family had sat exactly at its
+ceiling since 2026-10-11, its health line passed since 2026-10-02) and `OVER CEILING docs/decisions/: part
+docs/decisions/INDEX.md` (16,537 B over 16,384; the index was 16,127 B at HEAD and two contract records
+sit within 300 B of the same bound) — re-derived with the measurements in
+`decision_schema-and-decisions-families-rederivation.md` (schema files 24 → 32, health 18 → 27, health
+bytes 128 → 256 KiB; decisions per-part 16 → 32 KiB, health files 64 → 136, health bytes 272 → 448 KiB),
+the two registry rows changed. The act is not taken: it is the director's ruling (authority;
+sufficiency; retention first). Measured for that ruling: `sources.sexp` is not among the seven profile
+files the m-forms declaration pins, so new retained spans and source rows invalidate nothing. Next,
+pending the ruling: the archive move of the closed `.14` rows (this file at 116 KB of its 128 KiB part
+ceiling), then the retention of the §11.1.1 and Table 1 spans.
+
 ### .14 a42ax / SEMULITH-P4-0292: the retained reviews read the m-forms capture (completed)
 
 Owned on clean e775705. The m-forms capture is retained and complete, but the retained reviews still
@@ -951,6 +1010,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-through-a42aq).
 
+- [x] `.14` a42ay **ROOT CAUSE** — `grep -n "def credited" -A2 scripts/requirement_status.py` (HEAD 818b873) → 80 `return receipt.get(CREDITED_FIELD) is True`; `grep -n "qualification=False" scripts/retain_div_capture.py` → 143 (the receipt is written once with `qualification` false and never replaced); real tree before: `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit` while `python3 -B scripts/requirement_status.py` → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared; …)` — nothing could credit; `grep -c "scripts/records_sexp.py" evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1 and `grep -c "scripts/record_catalog.py" …` = 1 (the records reader is a pinned child; `records_sexp.form_to_dict` raises `not a record form` for any head but requirement / obligation / unit / category-need, so a `credit` kind cannot go through it); `ls profiles/rv64gc-lab-v0 | grep -c credits` = 0; design.md, smoke-reader.log over the real pins: `CR-GC-M-1 current []`, `CR-GC-M-lapsed lapsed ['measured pin evidence/rv64gc-m-forms-v3/measured-experiment.sexp: SHA256 or size differs']`.
+- [x] `.14` a42ay **ADDRESSED** — `python3 -B scripts/check_sexp_schema.py target/p4-system-14/a42ay/smoke/profiles/rv64gc-lab-v0/credits.sexp target/p4-system-14/a42ay/credits.schema.sexp` → `check_sexp_schema: ok — … conforms to credits.schema.sexp`; `python3 -B [-O] scripts/probe_requirement_status.py` → `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors` both modes (probe-status.log; the first run `22 tests / 0 failures / 1 errors` — the other-profile fixture pinned a policy file that profile never had — fixed in the fixture, not the reader), seven seams each `1t/1f/0e rc=1` in both modes (seams-status.log: credit-pending, qualification-word, ignore-drift, skip-supersession, unresolved-closes, argument-optional, unknown-case-credit); `python3 -B [-O] scripts/probe_div_policy.py` → `DIV-POLICY-PROBE: 25 tests / 0 failures / 0 errors` both modes, eight seams `1t/1f/0e` (seams-policy.log, credit-any included); real tree (real-tree.log): `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and authenticated, nothing granted` rc 0, `python3 -B scripts/requirement_status.py` → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift, 0 finding(s); …)` rc 0, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit` rc 0.
+- [x] `.14` a42ay **NO REGRESSION** — `bash scripts/check_requirements.sh` first → `RECORD-SCHEMA: REFUSED — the check does not discriminate (self-test failed).` with `--self-test` (record-schema-selftest.log) naming `ValueError: no reviewed token example: credits.sexp/credit/date: ^20[0-9]{2}-[0-9]{2}-[0-9]{2}` ×4 and `wrong reason (no FAILED (failures=96))`; after two reviewed examples and the census 25 / 100: token-facets.log `python3 [-O] … GREEN: rc=0 Ran 7 tests OK`, `loose-end: rc=1 … FAILED (failures=105)`, `ignore-pattern: rc=1 … FAILED (failures=606)`, `fullmatch: rc=1 … FAILED (failures=1)` in both modes, `bash scripts/check_requirements.sh --self-test` → `RECORD-SCHEMA --self-test: 70 pass / 0 fail` rc 0 and `bash scripts/check_requirements.sh` → `RECORD-SCHEMA: ok (20 record file(s) validate and agree with their profile; the Rust graph checker accepts the examples bundle)` rc 0; `bash scripts/check_dossier_schema.sh` → `DOSSIER-SCHEMA: ok (271 __SKIPPED__ 3 (baseline.sexp, portability.sexp, sail-identity.sexp))` rc 0; `bash knowledge-map/scripts/check_knowledge_map.sh` rc 0 after regeneration; first focused run (focused-and-commit.log) `focused: 1 red of 26` — `bash scripts/check_readme_routes.sh` rc 1 `OVER CEILING schema/: 25 files > 24`, `OVER CEILING docs/decisions/: part docs/decisions/INDEX.md` (`wc -c docs/decisions/INDEX.md` = 16537; `git ls-tree -r -l HEAD schema/` = 24 files / 135,259 B; `git show HEAD:docs/decisions/INDEX.md | wc -c` = 16127) — then after the re-derivation `bash scripts/check_readme_routes.sh` → `README-ROUTING-CLOSURE: ok (44 governed destination(s))` rc 0 and `bash scripts/check_registry_mirror.sh` rc 0; focused checks rc 0 on the second run (focused-checks.json); `wc -c` docs/toolbox/div-evidence.md 12706 (ceiling 16384), CHANGELOG.md 52523 (ceiling 65536); `git status`: the new reader and schema, five consumers/probes, two gates, documents — no pinned module, no evidence byte, no profile catalogue (no `credits.sexp`), no Rust file changed.
 - [x] `.14` a42ax **ROOT CAUSE** — target/p4-system-14/a42ax/reproduce.log: `grep -n "^RETAINED_CASE_ID\|^SOURCE_DECLARATION_COMMIT\|^RETAINED_CAPTURE_COMMIT\|^MEASURED_SHA256\|^MEASURED_BYTES" scripts/review_div_method.py` → lines 29–33 naming `rv64gc-signed-div-truncation-v2`, `b160c66e…`, `c91d08f5…`, `2cb6c704…`, 9928 and `grep -n "^CASE_ID" scripts/review_div_policy.py` → 64 `rv64gc-signed-div-truncation-v2`; real tree before: `python3 -B scripts/review_div_method.py` → `method stale | rv64gc-signed-div-truncation-v2 | evidence/rv64gc-signed-div-truncation-v2/planned-experiment.sexp: SHA256 differs`, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: invalidated — 6 of 10 legs satisfied; missing boundary-fixtures, matched-reference-comparison, currentness, form-coverage; …` while the complete capture's receipt reads `rv64gc-m-forms-v3 pending complete True qualification False` and the a42aw preview under a satisfied method already read `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; the method probe's first run after the switch (probe-method-failures.log): `DIV-METHOD: 21 tests / 3 failures / 0 errors` — `AssertionError: 0 != 1` (moved inputs asked of the first case), `'actual predeclaration' not found in 'review differs from the supported finite DIV case'` ×2 (the graph-evidence freeze on the default case), then `Tuples differ: (85, 1076834, 40438) != (85, 1048756, 33759)`.
 - [x] `.14` a42ax **ADDRESSED** — reproduce.log after the switch: `python3 -B scripts/review_div_method.py` rc 0 → `{'disposition': 'satisfied', 'case_id': 'rv64gc-m-forms-v3', 'policy_disposition': 'pending', 'record_disposition': 'valid', 'capture_binding': 'matched', 'evaluation_disposition': 'pending', 'authenticated_files': 85, 'authenticated_bytes': 1076834, 'snapshot_bytes': 40438, 'charged_read_bytes': 1142222}` (review-method.json: `planned_sha256` c18146fc2a12e1ff2c66ddad5d7d79753b37d890493ae2592fca62e7d383c081, `record_sha256` fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152, 39 checker sources; `--max-read-bytes 1142222` rc 0, `1142221` → `refused files: artifact exceeds snapshot byte limit` rc 1); `python3 -B scripts/review_div_policy.py` rc 0 → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit` (policy-legs-v3-detail.log: `boundary-fixtures … 12 directed boundary rows present at steps [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]; 12 predeclared as properties`, `form-coverage … 13 of 13 forms predeclared … 13 exercised`, `discriminating-control … control DIVERGE at step 12 registers ['x15']; witness step 12 x15`, `credited False disposition satisfied invalidated_by None`); `python3 -B [-O] scripts/probe_div_method.py` → `DIV-METHOD: 21 tests / 0 failures / 0 errors` both modes (probe-method.log) and `grep -c "A.PREFIX\|A.PREPARED" scripts/probe_div_method.py` = 0; `python3 -B scripts/probe_div_policy.py` → `DIV-POLICY-PROBE: 22 tests / 0 failures / 0 errors`; seams-method.log 4/1/4/2/2/1/2/1/3/4/1/1/1/1 and seams-policy.log 1×7, each equal to the gate's table in both modes.
 - [x] `.14` a42ax **NO REGRESSION** — `python3 -B scripts/probe_div_command.py` → `DIV-COMMAND: 19 tests / 0 failures / 0 errors` with seams 6/1/1/1/2/1/1 (seams-command.log) and `python3 -B scripts/probe_div_capture_retention.py` → `DIV-CAPTURE-RETENTION: 11 tests / 0 failures / 0 errors` with seams 1/1/1/2/1/1/1 (seams-retention.log), both callers of the now case-parametric synthetic reference on its default case; `python3 -B scripts/requirement_status.py` → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared; 0 drift, 0 finding(s); …)`; `bash knowledge-map/scripts/check_knowledge_map.sh` rc 0 after regeneration; `wc -c` LIVE_STATUS.md 6137 (ceiling 6144), evidence/README.md 4045 (ceiling 4096), CHANGELOG.md 50207 (ceiling 65536); `bash -n scripts/check_profile_consistency.sh` rc 0 with every seam table unchanged; focused checks rc 0 (focused-checks.json); `git status` shows the two consumers, three probes, the gate's comments and documents only — no pinned module, no evidence byte, no profile, definition or Rust file changed.

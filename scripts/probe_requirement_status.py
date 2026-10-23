@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -18,23 +19,25 @@ ROOT = next(p for p in HERE.parents if (p / "scripts" / "sexp.py").is_file())
 MUTATION = None
 # Each seam replaces one load-bearing predicate in a copied module; its test must then fail.
 SEAMS = {
-    "credit-pending": ('    return receipt.get(CREDITED_FIELD) is True\n', '    return True\n'),
+    "credit-pending": ('    return any(c["disposition"] == "current" and c["case_id"] == case_id and c["requirement_id"] == requirement_id\n',
+                       '    return any(c["case_id"] == case_id and c["requirement_id"] == requirement_id\n'),
+    "qualification-word": ('        if case.get("qualification_word") is True:\n', '        if False:\n'),
     "ignore-drift": ('    drift = [row for row in rows if row["recorded"] != row["derived"]]\n',
                      '    drift = []\n'),
     "skip-supersession": ('                if ob not in effective:\n', '                if False:\n'),
     "unresolved-closes": ('        elif r["research_status"] == "resolved" and r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n',
                           '        elif r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n'),
     "argument-optional": ('        if excluded and argued:\n', '        if excluded:\n'),
-    "declared-credits": ('            cases.append(dict(id=case.name, profile=None, credited=False, evaluation="declared",\n',
-                         '            cases.append(dict(id=case.name, profile=None, credited=True, evaluation="declared",\n'),
+    "unknown-case-credit": ('        if credit["case_id"] not in case_ids:\n', '        if False:\n'),
 }
 MUTATION_TESTS = {
-    "credit-pending": "test_pending_case_stays_uncredited_and_planned",
+    "credit-pending": "test_lapsed_credit_credits_nothing",
+    "qualification-word": "test_receipt_claiming_qualification_is_a_finding",
     "ignore-drift": "test_recorded_status_drift_is_reported",
     "skip-supersession": "test_case_naming_superseded_obligation_is_a_finding",
     "unresolved-closes": "test_unresolved_source_caps_closure_at_partial",
     "argument-optional": "test_exclusion_without_argument_is_a_finding",
-    "declared-credits": "test_declared_case_without_receipt_credits_nothing",
+    "unknown-case-credit": "test_credit_naming_unknown_case_or_incomplete_capture_credits_nothing",
 }
 
 
@@ -46,9 +49,11 @@ def load_module(workdir: Path):
         assert src.count(old) == 1, MUTATION
         src = src.replace(old, new, 1)
     target = workdir / "scripts"; target.mkdir(exist_ok=True)
-    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py"):
+    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py", "credit_records.py"):
         source = (HERE / name) if (HERE / name).exists() else (ROOT / "scripts" / name)
         shutil.copy(source, target / name)
+    (workdir / "schema").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "schema" / "credits.sexp", workdir / "schema" / "credits.sexp")
     (target / "requirement_status.py").write_text(src)
     spec = importlib.util.spec_from_file_location("requirement_status_under_test", target / "requirement_status.py")
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
@@ -71,16 +76,48 @@ def obligation(oid):
             f'(source_refs (source_id "SRC") (locator "1")) (parameters) (required_checks "c1"))\n')
 
 
-def case(root, cid, bindings, *, credited=False, evaluation="pending", profile="fx-v0", receipt=None, nested=True):
-    """A case directory in the real record shape: properties nested under (verification …)."""
+def _sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def pin(root, rel):
+    return f'(pin (path "{rel}") (sha256 "{_sha(root / rel)}") (byte_size {(root / rel).stat().st_size}))'
+
+
+def credit(root, cid, bindings, *, profile="fx-v0", measured_sha=None, cred_id=None):
+    """A credit record for a case: every pin taken from the fixture's own files (a42ay)."""
+    req_id, obligations = bindings[0]
+    measured = pin(root, f"evidence/{cid}/measured-experiment.sexp")
+    if measured_sha is not None:
+        measured = measured.replace(_sha(root / f"evidence/{cid}/measured-experiment.sexp"), measured_sha)
+    obs = " ".join(f'(obligation_ids "{o}")' for o in obligations)
+    record = (f'(credit (id "{cred_id or "CR-" + cid}") (profile_ids "{profile}") (requirement_id "{req_id}") {obs} (case_id "{cid}")\n'
+              f'  (measured {measured}) (receipt {pin(root, f"evidence/{cid}/verification.json")})\n'
+              f'  (policy {pin(root, f"profiles/{profile}/EVIDENCE_POLICY.md")}) (retained_sources "SRC")\n'
+              f'  (authority director) (date "2026-10-23") (decision "decision_fixture.md") (legs 10) (limitations "fixture"))\n')
+    path = root / "profiles" / profile / "credits.sexp"
+    path.write_text((path.read_text() if path.exists() else "") + record)
+
+
+def case(root, cid, bindings, *, credited=False, evaluation="pending", profile="fx-v0", receipt=None, nested=True,
+         qualification=False, complete=True):
+    """A case directory in the real record shape: properties nested under (verification …); `credited`
+    writes a current credit record for it (a42ay) — the receipt never carries the credit."""
     d = root / "evidence" / cid; d.mkdir(parents=True)
     props = " ".join(f'(property (id "p{i}") (requirement_id "{r}") ' + " ".join(f'(obligation_ids "{o}")' for o in obs) + ")"
                      for i, (r, obs) in enumerate(bindings))
     graph = f'(verification (format_version "matched-gpr-v1") {props})' if nested else props
     (d / "planned-experiment.sexp").write_text(f'(experiment (id "{cid}") (program "p.s") {graph})\n')
+    (d / "measured-experiment.sexp").write_text(f'(experiment (id "{cid}") (program "p.s") (measured yes))\n')
+    (d / "dependencies.sexp").write_text(
+        f'(dependencies (format_version "matched-gpr-dependencies-v1") (input (id "dependency-1") (role "dependency") '
+        f'(path "evidence/{cid}/planned-experiment.sexp") (sha256 "{_sha(d / "planned-experiment.sexp")}")))\n')
     body = receipt if receipt is not None else json.dumps(dict(case_id=cid, profile_id=profile, evaluation=evaluation,
-                                                              disposition="pending", qualification=credited))
+                                                              disposition="pending", qualification=qualification,
+                                                              complete_canonical_capture=complete))
     (d / "verification.json").write_text(body)
+    if credited and bindings:
+        credit(root, cid, bindings, profile=profile)
 
 
 def graph(root, requirements, obligations=("OB-A", "OB-B"), *, policy=True, profile="fx-v0"):
@@ -130,6 +167,35 @@ class StatusTests(unittest.TestCase):
         row = self.run_root()[0]["rows"][0]
         self.assertEqual((row["derived"], row["uncredited"]), ("planned", ["c1:pending"]))
 
+    def test_lapsed_credit_credits_nothing(self):
+        """A credit whose measured pin no longer describes the tree is lapsed: a finding, no credit (a42ay)."""
+        graph(self.root, [req("R1", ["OB-A"])])
+        case(self.root, "c1", [("R1", ["OB-A"])], evaluation="satisfied")
+        credit(self.root, "c1", [("R1", ["OB-A"])], measured_sha="0" * 64)
+        t = self.run_root()[0]
+        self.assertEqual((t["rows"][0]["derived"], t["credited_cases"], t["credits"], t["current_credits"]), ("planned", 0, 1, 0))
+        self.assertTrue(any("lapsed" in f and "measured pin" in f for f in t["findings"]), t["findings"])
+
+    def test_receipt_claiming_qualification_is_a_finding(self):
+        """A receipt's own `qualification` true is a typed success word: a finding, never a credit (a42ay)."""
+        graph(self.root, [req("R1", ["OB-A"])])
+        case(self.root, "c1", [("R1", ["OB-A"])], evaluation="satisfied", qualification=True)
+        t = self.run_root()[0]
+        self.assertEqual((t["rows"][0]["derived"], t["credited_cases"]), ("planned", 0))
+        self.assertTrue(any("typed success word" in f for f in t["findings"]), t["findings"])
+
+    def test_credit_naming_unknown_case_or_incomplete_capture_credits_nothing(self):
+        graph(self.root, [req("R1", ["OB-A"])])
+        case(self.root, "c1", [("R1", ["OB-A"])], evaluation="satisfied", complete=False)
+        credit(self.root, "c1", [("R1", ["OB-A"])])
+        credit(self.root, "c1", [("R1", ["OB-A"])], cred_id="CR-ghost")
+        (self.root / "profiles/fx-v0/credits.sexp").write_text(
+            (self.root / "profiles/fx-v0/credits.sexp").read_text().replace('(case_id "c1")', '(case_id "ghost")', 1))
+        t = self.run_root()[0]
+        self.assertEqual(t["credited_cases"], 0)
+        self.assertTrue(any("unknown case ghost" in f for f in t["findings"]), t["findings"])
+        self.assertTrue(any("not a complete canonical capture" in f for f in t["findings"]), t["findings"])
+
     def test_unresolved_source_caps_closure_at_partial(self):
         graph(self.root, [req("R1", ["OB-A"], status="partial", research="partial")])
         case(self.root, "c1", [("R1", ["OB-A"])], credited=True, evaluation="satisfied")
@@ -168,7 +234,7 @@ class StatusTests(unittest.TestCase):
 
     def test_case_of_another_profile_is_not_counted(self):
         graph(self.root, [req("R1", ["OB-A"])])
-        case(self.root, "c1", [("R1", ["OB-A"])], credited=True, profile="other-v0")
+        case(self.root, "c1", [("R1", ["OB-A"])], profile="other-v0")  # its receipt names another profile
         t = self.run_root()[0]
         self.assertEqual((t["rows"][0]["derived"], t["cases"]), ("planned", 0))
 
@@ -244,7 +310,7 @@ class StatusTests(unittest.TestCase):
         # Both retained cases bind REQ-GC-M and neither credits it: each is captured with a receipt
         # whose qualification is false (a42aw), so both are pending and none is merely declared.
         self.assertEqual(sorted(m["uncredited"]), ["rv64gc-m-forms-v3:pending", "rv64gc-signed-div-truncation-v2:pending"])
-        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"]), (2, 0, 0))
+        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"]), (2, 0, 0, 0))
 
 
 def main():

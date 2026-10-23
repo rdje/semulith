@@ -29,6 +29,8 @@ SEAMS = {
     "lock-stale": ('    stale = method.get("disposition") == "stale"\n', '    stale = False\n'),
     "first-property": ('    witness_step, witness_register = witnesses[named[0]]\n',
                        '    witness_step, witness_register = next(iter(witnesses.values()))\n'),
+    "credit-any": ('    credited_now = any(c["disposition"] == "current" for c in naming)\n',
+                   '    credited_now = bool(naming)\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_undeclared_boundary_rows_keep_the_case_pending",
@@ -38,6 +40,7 @@ MUTATION_TESTS = {
     "coverage-optional": "test_partial_form_coverage_is_pending",
     "lock-stale": "test_stale_method_is_invalidated_not_blocked",
     "first-property": "test_control_leg_reads_the_property_the_control_run_names",
+    "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
 }
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
@@ -68,8 +71,10 @@ def load_module(workdir: Path):
         assert src.count(old) == 1, MUTATION
         src = src.replace(old, new, 1)
     target = workdir / "scripts"; target.mkdir(exist_ok=True)
-    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py"):
+    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py", "credit_records.py"):
         shutil.copy(ROOT / "scripts" / name, target / name)
+    (workdir / "schema").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "schema" / "credits.sexp", workdir / "schema" / "credits.sexp")
     (target / "review_div_policy.py").write_text(src)
     spec = importlib.util.spec_from_file_location("review_div_policy_under_test", target / "review_div_policy.py")
     module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
@@ -133,7 +138,22 @@ def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="med
     pin = hashlib.sha256(policy).hexdigest() if not stale_policy else "0" * 64
     (case / "dependencies.sexp").write_text(
         f'(dependencies (format_version "v") (input (id "d1") (role "dependency") (path "profiles/fx-v0/EVIDENCE_POLICY.md") (sha256 "{pin}")))\n')
+    (case / "measured-experiment.sexp").write_text('(experiment (id "cx") (program "p.s") (measured yes))\n')
     return case
+
+
+def credit(root: Path, *, case_id="cx", requirement="REQ-X", obligation="OB-GC-M", measured_sha=None, complete=True):
+    """A credit record for the fixture case, every pin taken from the fixture's own bytes (a42ay)."""
+    receipt = root / "evidence" / case_id / "verification.json"
+    body = json.loads(receipt.read_text()); body["complete_canonical_capture"] = complete; receipt.write_text(json.dumps(body))
+    def pin(rel):
+        data = (root / rel).read_bytes()
+        return f'(pin (path "{rel}") (sha256 "{measured_sha if measured_sha and rel.endswith("measured-experiment.sexp") else hashlib.sha256(data).hexdigest()}") (byte_size {len(data)}))'
+    (root / "profiles" / "fx-v0" / "credits.sexp").write_text(
+        f'(credit (id "CR-{case_id}") (profile_ids "fx-v0") (requirement_id "{requirement}") (obligation_ids "{obligation}") (case_id "{case_id}")\n'
+        f'  (measured {pin(f"evidence/{case_id}/measured-experiment.sexp")}) (receipt {pin(f"evidence/{case_id}/verification.json")})\n'
+        f'  (policy {pin("profiles/fx-v0/EVIDENCE_POLICY.md")}) (retained_sources "SRC") (authority director) (date "2026-10-23")\n'
+        f'  (decision "decision_fixture.md") (legs 10) (limitations "fixture"))\n')
 
 
 class PolicyTests(unittest.TestCase):
@@ -216,6 +236,28 @@ class PolicyTests(unittest.TestCase):
         sibling = '(control_run (id "c1") (run_id "control") (property_ids "p0") (expected_verdict "DIVERGE") (observed_verdict "DIVERGE") (reason "r"))\n    '
         planned.write_text(planned.read_text().replace('(control_run (id "c0")', sibling + '(control_run (id "c0")', 1))
         with self.assertRaises(self.M.Refused): self.measure()
+
+    def test_current_credit_reports_credited_over_a_satisfied_measurement(self):
+        """`credited` is the credit record's word, not the measurement's (a42ay)."""
+        fixture(self.root, declare_boundaries=True); credit(self.root)
+        table = self.measure()
+        self.assertEqual((table["disposition"], table["credited"], table["credit_ids"], table["findings"]),
+                         ("satisfied", True, ["CR-cx"], []))
+        self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-cx"))
+
+    def test_credit_over_a_pending_measurement_is_a_finding(self):
+        fixture(self.root); credit(self.root)
+        table = self.measure()
+        self.assertEqual((table["disposition"], table["credited"]), ("pending", True))
+        self.assertTrue(any("while its measurement is pending" in f for f in table["findings"]), table["findings"])
+        self.assertEqual(self.M.summary(table)[0], 1)
+
+    def test_lapsed_credit_is_a_finding_and_credits_nothing(self):
+        fixture(self.root, declare_boundaries=True); credit(self.root, measured_sha="0" * 64)
+        table = self.measure()
+        self.assertEqual((table["disposition"], table["credited"]), ("satisfied", False))
+        self.assertTrue(any("lapsed" in f and "measured pin" in f for f in table["findings"]), table["findings"])
+        self.assertIn("no qualification credit", self.M.summary(table)[1])
 
     def test_receipt_claiming_qualification_is_a_finding(self):
         fixture(self.root, qualification=True)

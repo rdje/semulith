@@ -57,6 +57,7 @@ sys.dont_write_bytecode = True
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+import credit_records as CR  # noqa: E402
 import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
 
@@ -289,6 +290,20 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
         disposition = "blocked"
     else:
         disposition = "satisfied" if not missing else "pending"
+    # a42ay: the credit is a record in the profile's credits.sexp (scripts/credit_records.py), never a
+    # flag of this measurement or of the receipt. A current record naming this case and requirement
+    # reports `credited`; one over a measurement that is not `satisfied` is a finding.
+    try:
+        credits = CR.current_credits(root, profile_dir)
+    except CR.CreditRefused as error:
+        raise Refused(f"{profile}: {error}") from error
+    naming = [c for c in credits if c["case_id"] == case_id and c["requirement_id"] == req_id]
+    credited_now = any(c["disposition"] == "current" for c in naming)
+    for c in naming:
+        if c["disposition"] != "current":
+            findings.append(f"credit {c['id']} names this case but lapsed: {c['reasons'][0]}")
+        elif disposition != "satisfied":
+            findings.append(f"credit {c['id']} names this case while its measurement is {disposition}")
     return dict(format_version=FORMAT, case_id=case_id, profile_id=profile, requirement_id=req_id,
                 obligation_ids=obligation_ids, category=category, risk=risk,
                 method={k: method.get(k) for k in ("disposition", "reason", "capture_binding", "record_disposition",
@@ -297,9 +312,9 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
                 legs=[asdict(leg) for leg in legs], missing=missing, findings=findings,
                 coverage=dict(required=required, exercised=exercised, predeclared=predeclared),
                 boundary=dict(present=boundary_steps, predeclared=sorted(declared_steps & set(boundary_steps))),
-                disposition=disposition, credited=False,
+                disposition=disposition, credited=credited_now, credit_ids=[c["id"] for c in naming],
                 limitations=["measurement of declared bytes only; grants no qualification, obligation or CPU credit",
-                             "a crediting disposition is a separately owned record that cites a satisfied measurement",
+                             "a crediting disposition is a separately owned record (credits.sexp) that cites a satisfied measurement; `credited` reports that record, never this measurement",
                              "an invalidated measurement is superseded by the next capture, never repaired by relabelling",
                              "boundary rows and forms are read from the expectation file, not inferred from the chapter"])
 
@@ -318,7 +333,7 @@ def summary(table: dict) -> tuple[int, str]:
             + (f"; missing {', '.join(table['missing'])}" if table["missing"] else "")
             + (f"; invalidated by {table['invalidated_by']}" if table.get("invalidated_by") else "")
             + (f"; FINDING {'; '.join(table['findings'])}" if table["findings"] else "")
-            + "; no qualification credit")
+            + (f"; credited by {', '.join(table['credit_ids'])}" if table.get("credited") else "; no qualification credit"))
     return (1 if table["findings"] else 0), line
 
 

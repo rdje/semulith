@@ -2162,14 +2162,16 @@ DIV_METHOD_CASES
   done
 
   # P4-SYSTEM.14 a42ap: requirement status derived from the evidence graph and drift-checked.
+  # a42ay: a case is credited only through a current credit record (credits.sexp); a receipt's own
+  # qualification is a finding (qualification-word seam); a lapsed record credits nothing (credit-pending).
   local status_mode status_mutation
   local -a status_python
   for status_mode in normal optimized; do
     status_python=(python3 -B)
     [ "$status_mode" = optimized ] && status_python+=(-O)
     out="$("${status_python[@]}" scripts/probe_requirement_status.py 2>&1)"; rc=$?
-    score "GREEN requirement status derivation $status_mode" "$rc" 0 "$out" "REQUIREMENT-STATUS-PROBE: 19 tests / 0 failures / 0 errors; derivation only, no qualification credit"
-    for status_mutation in credit-pending ignore-drift skip-supersession unresolved-closes argument-optional declared-credits; do
+    score "GREEN requirement status derivation $status_mode" "$rc" 0 "$out" "REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors; derivation only, no qualification credit"
+    for status_mutation in credit-pending ignore-drift skip-supersession unresolved-closes argument-optional unknown-case-credit qualification-word; do
       out="$("${status_python[@]}" scripts/probe_requirement_status.py --mutation "$status_mutation" 2>&1)"; rc=$?
       score "RED omitted requirement status $status_mutation $status_mode" "$rc" 1 "$out" "REQUIREMENT-STATUS-PROBE: 1 tests / 1 failures / 0 errors; derivation only, no qualification credit"
     done
@@ -2187,8 +2189,8 @@ DIV_METHOD_CASES
     policy_python=(python3 -B)
     [ "$policy_mode" = optimized ] && policy_python+=(-O)
     out="$("${policy_python[@]}" scripts/probe_div_policy.py 2>&1)"; rc=$?
-    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 22 tests / 0 failures / 0 errors; measurement only, no qualification credit"
-    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale first-property; do
+    score "GREEN policy legs measured $policy_mode" "$rc" 0 "$out" "DIV-POLICY-PROBE: 25 tests / 0 failures / 0 errors; measurement only, no qualification credit"
+    for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale first-property credit-any; do
       out="$("${policy_python[@]}" scripts/probe_div_policy.py --mutation "$policy_mutation" 2>&1)"; rc=$?
       score "RED omitted policy legs $policy_mutation $policy_mode" "$rc" 1 "$out" "DIV-POLICY-PROBE: 1 tests / 1 failures / 0 errors; measurement only, no qualification credit"
     done

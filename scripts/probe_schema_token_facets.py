@@ -44,6 +44,8 @@ TOKENS = {
     r'^[a-z0-9._]+': 'c.addi',
     r'^sail-gpr-capture-v1': 'sail-gpr-capture-v1',
     r'^(raw-gpr|process-stdout|process-stderr)': 'raw-gpr',
+    r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}': '2026-10-23',  # credits.sexp: the crediting date (a42ay)
+    r'^decision_[a-z0-9-]+\.md': 'decision_example-record.md',  # credits.sexp: the decision record a credit cites
 }
 REAL_DOCUMENTS = (
     ('profiles/rv64gc-lab-v0/references.sexp', 'references', 'binary_sha256'),
@@ -105,8 +107,8 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 24)
-        self.assertEqual(len(current), 91)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 25)  # schema/credits.sexp (a42ay)
+        self.assertEqual(len(current), 100)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):
