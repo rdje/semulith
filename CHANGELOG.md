@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0002 (leaf XTASK.2) — the focused check set is tracked: `cargo xtask focused`
+
+XTASK.2: the 26-check focused set every unit runs before its gated commit lived only in per-unit scratch runners under `target/`; it is now the `FOCUSED` table of the xtask crate, run by `cargo xtask focused [--out DIR]` (logs, one verdict line per check, `focused-checks.json`, exit 1 on any red, never commits; every other argument still goes to make). Measured on the same tree against the scratch runner: 26 identical verdict lines and identical JSON, green; with one count broken, both report the same single red check and exit 1. Help delegation unchanged, the wasm build, `make check` (with three new xtask tests) and API-DOCS green. From this unit on, commits run it.
+
 ## SEMULITH-XTASK-0001 (leaf XTASK.1) — the cargo xtask front door, delegation only
 
 XTASK.1: the new workspace member `xtask/` (std only, no dependency) and the alias `cargo xtask` forward every argument to `make` from the repository root with the same streams and exit status, so every target keeps one definition, the Makefile, and nothing moved. Prototyped first in a detached worktree; measured on the real tree: `help` byte-identical, an unknown target and a deliberately broken `book` failing alike (rc 2, identical output), `check` with every test identical as sorted lines. fmt, clippy -D warnings, the wasm32 build and API-DOCS stay green (the ratchet counts `xtask/`, row 0). The lockfile gains 4 lines, so `make vendor` re-vendors once and prunes the standard-library crates the portability Miri leg re-syncs on every run. README, ARCHITECTURE §4 and the toolbox follow; README now says `make book` builds the API reference too.

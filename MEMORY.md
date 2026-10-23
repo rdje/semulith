@@ -14,18 +14,16 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `XTASK.2` next (a tracked `cargo xtask focused` runner replacing the per-unit scratch chain
-  scripts), `RUSTDOC.4` after. `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling;
-  `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
+- active_work_unit: `XTASK.3` or `RUSTDOC.4` next (see next_action). `P4-SYSTEM.14`'s crediting act (a42az) waits on the
+  director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0001` — XTASK.1: `cargo xtask <args>` = `make <args>` from the root (help, unknown target,
-  check, broken book measured equal); `make vendor` re-vendored once (store 34 → 3; the Miri leg re-syncs std).
-- next_action: `XTASK.2` — the focused-check set (26 checks + `make book`, today in
-  target/p4-system-14/a42ax/focused-and-commit.sh) as a tracked `cargo xtask focused` that must report the same 26
-  results on the same tree and RED when one check is broken; never commits. CHANGELOG.md is ~61 of 64 KiB — shard
-  with `scripts/shard_history.py` before an entry would cross. docs/toolbox/governance.md at 16,302 of 16,384 B.
-  The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one case suffices.
+- last_unit: `SEMULITH-XTASK-0002` — XTASK.2: `cargo xtask focused` is the tracked 26-check focused set (measured equal to
+  the scratch runner, green and with one check broken). Use it for every commit's focused stage.
+- next_action: CHANGELOG.md is ~62.2 of 64 KiB: shard it first (`scripts/shard_history.py`, SHARD-FREEZE), then
+  `XTASK.3` (one source of truth for the Makefile targets — decide direction with care: make delegating to xtask
+  changes nothing visible only if outputs stay identical) or `RUSTDOC.4` (generators emit docs for the generated
+  modules). docs/toolbox/governance.md at 16,302 of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

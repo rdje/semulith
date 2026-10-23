@@ -60,5 +60,5 @@ on the same commit. One commit per completed leaf.
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.27` — the next recurring cleanup (due after 2026-10-24T10:15Z); P4-SYSTEM.14 resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
 | [`RUSTDOC`](tasks/RUSTDOC.md) | `active` | `RUSTDOC.4` — generated modules documented by their generators (3 of 6 leaves done) | repo-local |
-| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.2` — the focused-check runner is tracked (1 of 6 leaves done) | repo-local |
+| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.3` — one source of truth for the targets (2 of 6 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

@@ -48,6 +48,7 @@ execute and validate them against.
 | `make book` | build the mdBook and the rustdoc API reference |
 | `make hooks` | activate the git hooks once per clone (`core.hooksPath=.githooks`) |
 | `cargo xtask <target>` | the same Makefile target through the Rust front door (`XTASK`; nothing moved yet) |
+| `cargo xtask focused` | the focused check set every unit runs before its gated commit; never commits |
 
 ## How this repository works
 
