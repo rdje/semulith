@@ -42,23 +42,34 @@ use crate::machine::{ModelStop, MASK24};
 /// X or Y data space (P is fetch-only in subset v0).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Space {
+    /// X data memory (bit 19 of the move word = 0).
     X,
+    /// Y data memory (bit 19 of the move word = 1).
     Y,
 }
 
 /// A register the subset's moves can name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Reg {
+    /// Data ALU input register X0 (code `$04`).
     X0,
+    /// Data ALU input register X1 (code `$05`).
     X1,
+    /// Data ALU input register Y0 (code `$06`).
     Y0,
+    /// Data ALU input register Y1 (code `$07`).
     Y1,
+    /// Accumulator A's middle 24-bit word A1 (code `$0C`).
     A1,
+    /// Accumulator A's 8-bit extension A2 (code `$0A`).
     A2,
+    /// Accumulator B's middle 24-bit word B1 (code `$0D`).
     B1,
+    /// Accumulator B's 8-bit extension B2 (code `$0B`).
     B2,
     /// The 56-bit accumulator as an immediate-move destination (A `$0E`, B `$0F`).
     AccA,
+    /// Accumulator B as an immediate-move destination (`$0F`).
     AccB,
     /// AGU address register R0–R7 (`$10`–`$17`) — immediate-move destinations only.
     R(usize),
@@ -70,11 +81,17 @@ pub enum Reg {
 /// EOR 011, SUB 100, CMP 101, AND 110 — e.g. FM 13-8).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AluOp {
+    /// ADD — kkk `000` (FM 13-8).
     Add,
+    /// SUB — kkk `100` (FM 13-173).
     Sub,
+    /// CMP — kkk `101`: the subtraction sets the condition codes only (FM 13-46).
     Cmp,
+    /// AND — kkk `110` (FM 13-12).
     And,
+    /// OR — kkk `010` (FM 13-150).
     Or,
+    /// EOR — kkk `011` (FM 13-69).
     Eor,
 }
 
@@ -83,9 +100,13 @@ pub enum AluOp {
 /// logical ops' two-bit JJ names only the four word registers (13-12).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AluSrc {
+    /// Word register X0 (JJJ `100`; JJ `00` in the logical forms).
     X0,
+    /// Word register X1 (JJJ `110`; JJ `10`).
     X1,
+    /// Word register Y0 (JJJ `101`; JJ `01`).
     Y0,
+    /// Word register Y1 (JJJ `111`; JJ `11`).
     Y1,
     /// The 48-bit long word X1:X0.
     LongX,
@@ -119,111 +140,168 @@ pub enum EaMode {
 /// A multiply source pair, QQQ per FM Table 12-16 (encoding 1).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MulPair {
+    /// S1,S2 = X0,X0 (QQQ `000`).
     X0X0,
+    /// S1,S2 = Y0,Y0 (QQQ `001`).
     Y0Y0,
+    /// S1,S2 = X1,X0 (QQQ `010`).
     X1X0,
+    /// S1,S2 = Y1,Y0 (QQQ `011`).
     Y1Y0,
+    /// S1,S2 = X0,Y1 (QQQ `100`).
     X0Y1,
+    /// S1,S2 = Y0,X0 (QQQ `101`).
     Y0X0,
+    /// S1,S2 = X1,Y0 (QQQ `110`).
     X1Y0,
+    /// S1,S2 = Y1,X1 (QQQ `111`).
     Y1X1,
 }
 
 /// The destination accumulator of a Data ALU operation (d: 0 = A, 1 = B, Table 12-13).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Acc {
+    /// Accumulator A (d = 0).
     A,
+    /// Accumulator B (d = 1).
     B,
 }
 
 /// A decoded subset-v0 instruction. Two-word forms carry their extension word's content.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Insn {
+    /// NOP — opcode `$000000` (FM 13-145).
     Nop,
     /// MOVE #xx,D — the 8-bit short immediate (its placement is destination-class
     /// semantics, FM §3.4.1.3: a signed fraction into the 8 MSBs for X0/X1/Y0/Y1).
     MoveImmShort {
+        /// The destination register.
         dest: Reg,
+        /// The 8-bit immediate as encoded.
         imm: u8,
     },
     /// MOVE #xxxxxx,D — the 24-bit immediate in the extension word.
     MoveImmLong {
+        /// The destination register.
         dest: Reg,
+        /// The 24-bit immediate from the extension word.
         imm: u32,
     },
     /// `MOVE S,X/Y:<abs>` (write = register to memory) or `X/Y:<abs>,D` (write = false).
     MoveAbsLong {
+        /// The data space addressed.
         space: Space,
+        /// The register moved to or from memory.
         reg: Reg,
+        /// True for register to memory, false for memory to register.
         write: bool,
+        /// The absolute address from the extension word.
         addr: u32,
     },
     /// MOVE through a linear register-indirect effective address (Rn) (write = register
     /// to memory). The address register update follows the mode.
     MoveRegInd {
+        /// The data space addressed.
         space: Space,
+        /// The register moved to or from memory.
         reg: Reg,
+        /// True for register to memory, false for memory to register.
         write: bool,
+        /// The addressing mode, which also decides how Rn is updated.
         mode: EaMode,
+        /// The address register number n of Rn (0–7).
         rn: usize,
     },
     /// ADD/SUB/CMP/AND/OR/EOR S,D — the register-source data-ALU core.
     AluReg {
+        /// The operation.
         op: AluOp,
+        /// The source register.
         src: AluSrc,
+        /// The destination accumulator.
         dest: Acc,
     },
     /// The 6-bit immediate data-ALU forms (`00000001 01iiiiii 1000dkkk`).
     AluImmShort {
+        /// The operation (kkk).
         op: AluOp,
+        /// The 6-bit immediate as encoded.
         imm: u8,
+        /// The destination accumulator.
         dest: Acc,
     },
     /// The 24-bit immediate data-ALU forms (`00000001 01000000 1100dkkk` + extension).
     AluImmLong {
+        /// The operation (kkk).
         op: AluOp,
+        /// The 24-bit immediate from the extension word.
         imm: u32,
+        /// The destination accumulator.
         dest: Acc,
     },
+    /// MPY (±)S1,S2,D — multiply into the accumulator (FM 13-137).
     Mpy {
+        /// The source pair S1,S2.
         pair: MulPair,
+        /// The destination accumulator.
         dest: Acc,
+        /// True for the negated product (the `-` form).
         negate: bool,
     },
+    /// MAC (±)S1,S2,D — multiply and accumulate (FM 13-99).
     Mac {
+        /// The source pair S1,S2.
         pair: MulPair,
+        /// The destination accumulator.
         dest: Acc,
+        /// True for the negated product (the `-` form).
         negate: bool,
     },
+    /// ASL D — arithmetic shift left by one (FM 13-15).
     Asl {
+        /// The accumulator shifted.
         dest: Acc,
     },
+    /// ASR D — arithmetic shift right by one (FM 13-17).
     Asr {
+        /// The accumulator shifted.
         dest: Acc,
     },
+    /// LSR D — logical shift right by one of the accumulator's middle word, bits 47–24 (FM 13-96).
     Lsr {
+        /// The accumulator shifted.
         dest: Acc,
     },
     /// DO #xxx,expr — 12-bit count; `target` is the extension word (LA, the assembled
     /// last-loop-instruction address).
     DoImm {
+        /// The 12-bit loop count.
         count: u16,
+        /// The last loop instruction's address (LA), from the extension word.
         target: u32,
     },
+    /// `JMP <abs>` — jump to an absolute address (FM 13-83).
     JmpAbs {
+        /// The absolute target from the extension word.
         target: u32,
     },
+    /// `JSR <abs>` — jump to a subroutine at an absolute address (FM 13-89).
     JsrAbs {
+        /// The absolute target from the extension word.
         target: u32,
     },
+    /// RTS — return from subroutine, `$00000C` (FM 13-168).
     Rts,
+    /// ENDDO — leave the current DO loop, `$00008C` (FM 13-67).
     Enddo,
     /// REP #xxx — 12-bit count (the FM's REP page: a zero count repeats 65,536 times).
     RepImm {
+        /// The 12-bit repeat count.
         count: u16,
     },
     /// REP S — the count from a word register's 24 bits (X0/X1/Y0/Y1 in subset v0).
     RepReg {
+        /// The register supplying the count.
         src: Reg,
     },
 }

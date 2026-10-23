@@ -117,8 +117,18 @@ undocumented public items never rises.
   table says so.
 
 - ID: `RUSTDOC.5` — **semulith-dsp56300 to parity**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0005`; owned on clean 3dff1d7; evidence target/rustdoc/rd0005)
   Goal: 35.5% documented → at least the other crates' level; decode.rs and machine.rs first.
+  Result: all 120 items documented (decode.rs 78, machine.rs 37, lod.rs 5), each grounded in what the code
+  already states: operand and register codes from the decoder's own mapping tables (`reg_of`, QQQ and JJ
+  matches), opcodes and manual pages from the decoder's module docs, behaviour from the executor (ASL and
+  ASR shift the whole accumulator by one, LSR only bits 47–24, CMP never writes its destination), the reset
+  image from `main.rs` (taken after the load, before the run), register names from the dump's vocabulary.
+  Two first-draft claims were narrowed to what the code shows (LSR's operand; SR's contents). Observed, not
+  changed: the executor's comments cite ASR and LSR at FM 13-16 / 13-95 where the decoder's module docs say
+  13-17 / 13-96 — one of the two page references is off; the manual decides, in a later check. Record row
+  120 → 0 (86 undocumented in all, every one in `semulith-verify`); rustdoc's coverage report measures
+  `semulith_dsp56300` at 186 items, 100.0%.
 
 - ID: `RUSTDOC.6` — **doc examples for the core public API**
   Status: `pending`
@@ -128,7 +138,7 @@ undocumented public items never rises.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.5` | `pending` | semulith-dsp56300 to parity: 120 undocumented items, 35.5% documented |
+| 1 | `RUSTDOC.6` | `pending` | runnable doc examples for the core public API (0% today) |
 
 ## Decisions
 
@@ -180,6 +190,15 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — checks.log: `make check rc=0 in 81 s` (`287 passed`, `173 passed`, `17 passed`, `5 passed`, 0 failed); `FIXTURE-FINGERPRINT: ok`, `MATERIALS-BILL: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `EXTRACTION: ok`, `SEMANTICS: ok`, `M-VECTORS: ok`, `FP-VECTORS: ok`, `PORT-WEB: ok`, `UNIT-BOOKS: ok (… 3722 rendered hyperlinks …)`; `method satisfied rv64gc-m-forms-v3`, `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; `cargo xtask focused` rc 0 before the commit.
 - [x] **LOCKSTEP** — the record row, the API reference chapter's coverage table, the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.5)
+
+- [x] **REPRODUCE / ISSUE** — scope.txt: `wc -l` = 120 undocumented items in crates/semulith-dsp56300/src (decode.rs 78: variants 41, fields 37; machine.rs 37; lod.rs 5); `doctrine/undocumented_items.tsv` row `semulith-dsp56300 120`; coverage 66 items, 35.5%.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the operand enums, the decoded-instruction fields, the machine's register fields and the loader's case fields were written with module-level docs but no item docs; `grep -n "MulPair::\|AluSrc::X0\b" crates/semulith-dsp56300/src/decode.rs` → the QQQ table at 267–274 and the JJ table at 328–331, `grep -n "AluOp::Cmp" -A6 crates/semulith-dsp56300/src/exec.rs` → 155 `if op != AluOp::Cmp {` (CMP keeps its destination) — the facts each doc rests on.
+- [x] **FIX** — document_dsp.py: 30 block edits (decode.rs 17, machine.rs 12, lod.rs 1) plus two narrowing edits; `ModelStop`'s inline fields expanded into documented field lists; the record row lowered 120 → 0.
+- [x] **ADDRESSED (verified)** — checks.log: `API-DOCS: ok (5 crate(s) documented; … 86 undocumented public item(s), each crate at its recorded count)`; red.log: the `Acc::B` doc line removed → `semulith-dsp56300: 1 undocumented > recorded 0; document the new item(s):` naming `crates/semulith-dsp56300/src/decode.rs:166:5`, rc 1, restored `0bae792bdaaee73e6304e454a2b88707015880dc0321b773f8a2eaebbcac094f` byte-identical; coverage.txt: `semulith_dsp56300: | Total | 186 | 100.0% |`.
+- [x] **NO REGRESSION** — checks.log: `make check rc=0 in 56 s` (`287 passed`, `173 passed`, `17 passed`, `5 passed`, 0 failed; fmt and clippy clean), `PORT-WEB: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `FIXTURE-FINGERPRINT: ok`, `MATERIALS-BILL: ok`, `EXTRACTION: ok`, `FACT-OWNERSHIP: ok (74 fact kind(s) …)`, `SEAM-INTEGRITY: ok`; docs only — `git diff` touches comments and the expanded `ModelStop` field layout, no code path; `cargo xtask focused` rc 0 before the commit.
+- [x] **LOCKSTEP** — the record row, the API reference chapter (coverage table and remaining work) and the derived book index (`python3 scripts/gen_book_index.py`; `BOOK-INDEX: ok`), the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -188,4 +207,5 @@ undocumented public items never rises.
 - `2026-10-23`: RUSTDOC.2 done — the reference is built with the book and linked from it; RUSTDOC.3 next.
 - `2026-10-23`: RUSTDOC.3 done — the missing-docs ratchet holds 267 undocumented items per crate; RUSTDOC.4 next.
 - `2026-10-23`: RUSTDOC.4 done — the generators document the generated modules; semulith-core 61 → 0 undocumented; RUSTDOC.5 next.
+- `2026-10-23`: RUSTDOC.5 done — semulith-dsp56300 120 → 0 undocumented (100.0%); RUSTDOC.6 next.
 - `2026-10-23`: API-DOCS lists only denied errors on failure (the warnings buried the error at XTASK.3's gate refusal; fixed and armed there, `SEMULITH-XTASK-0003`).

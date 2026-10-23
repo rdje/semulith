@@ -4,11 +4,12 @@
 # without documentation (`missing_docs`). scripts/check_rustdoc.sh re-derives every count on each
 # commit and refuses a rise; a fall is refused too until the row is lowered to the new count, so the
 # ratchet only tightens and this file always states the measured truth. Measured 2026-10-23 at f44947a;
-# semulith-core 61 -> 0 when its generators documented the generated modules (RUSTDOC.4).
+# semulith-core 61 -> 0 when its generators documented the generated modules (RUSTDOC.4);
+# semulith-dsp56300 120 -> 0 when its decoder, machine and loader items were documented (RUSTDOC.5).
 #
 # crate	undocumented
 semulith-cli	0
 semulith-core	0
-semulith-dsp56300	120
+semulith-dsp56300	0
 semulith-verify	86
 xtask	0

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0005 (leaf RUSTDOC.5) — semulith-dsp56300 documented
+
+RUSTDOC.5: the DSP crate's 120 undocumented public items (decoder operands and decoded-instruction fields, the machine's registers and stops, the loader's case) now carry docs, each grounded in what the code already states — the decoder's own code tables, its module docs' opcodes and manual pages, the executor's behaviour (ASL/ASR by one bit, LSR on bits 47–24 only, CMP never writing its destination). The ratchet row fell 120 → 0 (86 undocumented in all, all in `semulith-verify`); coverage 186 items, 100.0%. Fired RED with one doc line removed, then restored byte-identical. Docs only: `make check`, the wasm build, the gate reports and every generation check unchanged. Observed, not changed: the executor cites ASR/LSR at FM 13-16/13-95, the decoder at 13-17/13-96. RUSTDOC.6 next.
+
 ## SEMULITH-RDOC-0004 (leaf RUSTDOC.4) — the generators document the generated modules
 
 RUSTDOC.4: every one of `semulith-core`'s 61 undocumented public items sat in its four generated modules and came from a fixed template line in `gen_definition.py` or `gen_state.py`; the generators now emit a doc comment for each (14 template edits) and the modules were regenerated through them (DEF-GEN and STATE-GEN exact). The ratchet refused the fall until the core row was lowered 61 → 0 in this commit (267 → 206 undocumented in all); rustdoc's coverage report now measures `semulith_core` at 614 items, 100.0%, and the API reference chapter says so. Fired RED with one emitted doc line removed: `semulith-core: 1 undocumented > recorded 0`, then restored byte-identical. `make check`, the vector and generation checks and the retained M case unchanged. RUSTDOC.5 next.

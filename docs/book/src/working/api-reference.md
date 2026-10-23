@@ -23,14 +23,15 @@ internal links are rustdoc's, held by `API-DOCS`.
 ## How complete it is
 
 Measured with rustdoc's coverage report (2026-10-23; `semulith_core` re-measured after `RUSTDOC.4`, when
-its generators began documenting the generated modules):
+its generators began documenting the generated modules, and `semulith_dsp56300` after `RUSTDOC.5`):
 
 | Crate | Items documented | Coverage |
 | --- | --- | --- |
 | `semulith_core` | 614 | 100.0% |
 | `semulith_verify` | 404 | 82.4% |
-| `semulith_dsp56300` | 66 | 35.5% |
+| `semulith_dsp56300` | 186 | 100.0% |
 
 The undocumented public items are counted per crate on every commit and may only fall (`RUSTDOC.3`):
 the record is `doctrine/undocumented_items.tsv`, and a rise is refused with the crate's items listed.
-The DSP crate is brought to parity (`RUSTDOC.5`) and runnable examples follow (`RUSTDOC.6`).
+Runnable examples follow (`RUSTDOC.6`); `semulith_verify`'s remaining 86 undocumented items are what the
+ratchet still holds.

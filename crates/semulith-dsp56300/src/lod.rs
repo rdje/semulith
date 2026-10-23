@@ -14,12 +14,18 @@ use crate::machine::{Machine, ModelStop};
 /// A parsed case: load base (also the start pc), stop pc, and step budget.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Case {
+    /// The case name.
     pub name: String,
+    /// The load base, also the start pc.
     pub load: u32,
+    /// The pc at which the run stops.
     pub stop: u32,
+    /// The step budget; exhausting it stops the model.
     pub budget: u64,
 }
 
+/// Parse the harness's `.meta` case line, `case <name> <load6hex> <stop6hex> <budget>`. A fill
+/// header, an extra field or a malformed number is a typed `ModelStop::Input`.
 pub fn parse_meta(text: &str) -> Result<Case, ModelStop> {
     let line = text
         .lines()

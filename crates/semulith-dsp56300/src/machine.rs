@@ -27,13 +27,17 @@ pub fn s56(v: u64) -> i64 {
 /// image lives low; the harness's P deviation window $07C0-$07FF is inside this). An
 /// access outside is a typed `ModelStop::OutOfWindow`, never a wrap.
 pub const X_WORDS: usize = 0x0C00;
+/// Y data space size in words (`$0000`–`$07FF`).
 pub const Y_WORDS: usize = 0x0800;
+/// P program space size in words (`$0000`–`$07FF`).
 pub const P_WORDS: usize = 0x0800;
 
 /// The P deviation window the harness compares (its X window is $0000-$0BFF minus the
 /// harness-private $0400-$04FF, which this model also excludes from its dump).
 pub const P_DUMP_FROM: usize = 0x07C0;
+/// First word of the harness-private X range the dump excludes.
 pub const X_HARNESS_FROM: usize = 0x0400;
+/// Last word of the harness-private X range the dump excludes.
 pub const X_HARNESS_TO: usize = 0x04FF;
 
 /// Hardware stack depth (FM §5.4.3: "16-level by 48-bit"); slots are addressed by the
@@ -45,13 +49,26 @@ pub const STACK_LEVELS: usize = 16;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ModelStop {
     /// A fetched word outside subset v0's decode — named, with its address and word.
-    UnsupportedInsn { addr: u32, word: u32 },
+    UnsupportedInsn {
+        /// The P address the word was fetched from.
+        addr: u32,
+        /// The 24-bit instruction word.
+        word: u32,
+    },
     /// A memory access outside the modelled windows.
-    OutOfWindow { space: char, addr: u32 },
+    OutOfWindow {
+        /// The memory space accessed: `X`, `Y` or `P`.
+        space: char,
+        /// The address outside the window.
+        addr: u32,
+    },
     /// The 16-level hardware stack overflowed (stack extension is excluded upstream too).
     StackOverflow,
     /// The case's step budget was exhausted before the stop pc was reached.
-    BudgetExhausted { budget: u64 },
+    BudgetExhausted {
+        /// The case's step budget.
+        budget: u64,
+    },
     /// A `.lod`/`.meta` construct the runner does not support (e.g. fill headers).
     Input(String),
 }
@@ -83,31 +100,53 @@ impl std::error::Error for ModelStop {}
 /// The machine: the full canonical-dump register set, the hardware stack, and the three
 /// memory spaces. Field order and names follow the dump's vocabulary.
 pub struct Machine {
+    /// Program counter.
     pub pc: u32,
+    /// Status register; the Loop Flag is bit 15 (FM Table 5-1).
     pub sr: u32,
+    /// Operating mode register.
     pub omr: u32,
+    /// Loop address register: the last instruction of the current DO loop.
     pub la: u32,
+    /// Loop counter register.
     pub lc: u32,
+    /// Stack pointer.
     pub sp: u32,
+    /// Stack extension pointer.
     pub ep: u32,
+    /// Stack size register.
     pub sz: u32,
+    /// Stack counter register.
     pub sc: u32,
+    /// Vector base address register.
     pub vba: u32,
+    /// Data ALU input register X0.
     pub x0: u32,
+    /// Data ALU input register X1.
     pub x1: u32,
+    /// Data ALU input register Y0.
     pub y0: u32,
+    /// Data ALU input register Y1.
     pub y1: u32,
     /// Accumulator A as A2:A1:A0 in the low 56 bits.
     pub a: u64,
+    /// Accumulator B as B2:B1:B0 in the low 56 bits.
     pub b: u64,
+    /// AGU address registers R0–R7.
     pub r: [u32; 8],
+    /// AGU offset registers N0–N7.
     pub n: [u32; 8],
+    /// AGU modifier registers M0–M7 (`$FFFFFF` selects linear addressing).
     pub m: [u32; 8],
     /// The hardware stack: `[ssh, ssl]` per level, indexed by SP (slot 0 unused).
     stack: [[u32; 2]; STACK_LEVELS],
+    /// X data memory, `X_WORDS` words.
     pub x: Vec<u32>,
+    /// Y data memory, `Y_WORDS` words.
     pub y: Vec<u32>,
+    /// P program memory, `P_WORDS` words.
     pub p: Vec<u32>,
+    /// Instructions executed so far.
     pub steps: u64,
 }
 
@@ -115,8 +154,11 @@ pub struct Machine {
 /// `fill` header is supported in subset v0 — a meta carrying one is a `ModelStop::Input`),
 /// P holding the loaded program.
 pub struct ResetImage {
+    /// X data memory at reset.
     pub x: Vec<u32>,
+    /// Y data memory at reset.
     pub y: Vec<u32>,
+    /// P program memory holding the loaded program.
     pub p: Vec<u32>,
 }
 
@@ -159,6 +201,7 @@ impl Machine {
         self.stack[self.sp as usize][0]
     }
 
+    /// The SSL register view: the low half of the top stack level.
     pub fn ssl(&self) -> u32 {
         self.stack[self.sp as usize][1]
     }
@@ -190,6 +233,7 @@ impl Machine {
         self.sr & (1 << 15) != 0
     }
 
+    /// Set or clear the Loop Flag, SR bit 15.
     pub fn set_lf(&mut self, on: bool) {
         if on {
             self.sr |= 1 << 15;
@@ -198,6 +242,8 @@ impl Machine {
         }
     }
 
+    /// A copy of the X, Y and P spaces as they are now: taken after the program is loaded
+    /// and before it runs, it is the base the deviation dump compares against.
     pub fn reset_image(&self) -> ResetImage {
         ResetImage {
             x: self.x.clone(),
