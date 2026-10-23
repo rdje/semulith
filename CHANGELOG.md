@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0004 (leaf RUSTDOC.4) — the generators document the generated modules
+
+RUSTDOC.4: every one of `semulith-core`'s 61 undocumented public items sat in its four generated modules and came from a fixed template line in `gen_definition.py` or `gen_state.py`; the generators now emit a doc comment for each (14 template edits) and the modules were regenerated through them (DEF-GEN and STATE-GEN exact). The ratchet refused the fall until the core row was lowered 61 → 0 in this commit (267 → 206 undocumented in all); rustdoc's coverage report now measures `semulith_core` at 614 items, 100.0%, and the API reference chapter says so. Fired RED with one emitted doc line removed: `semulith-core: 1 undocumented > recorded 0`, then restored byte-identical. `make check`, the vector and generation checks and the retained M case unchanged. RUSTDOC.5 next.
+
 ## SEMULITH-XTASK-0003 (leaf XTASK.3) — one definition per target, guarded
 
 XTASK.3: a command is either native to xtask or the Makefile's, never both. Already true by XTASK.1's design (14 Makefile rules; one native, `focused`), it is now held: the natives are declared once in `NATIVE`, dispatch goes through it, and a unit test reads the real Makefile, requires its rules and `.PHONY` list to agree and refuses a native name that is also a rule — fired RED with a temporary `focused:` rule, then restored byte-identical. Delegation unchanged (help, unknown target). The same unit sharded CHANGELOG.md: the 18 oldest entries to `docs/changelog/shard-0414.md` (62,075 → 48,125 B, order and bytes exact, SHARD-FREEZE 416 rows). Two defects owned mid-slice: a weak evidence box (SEAM-INTEGRITY, caught by `cargo xtask focused`), and a gate refusal on API-DOCS — the new crate doc linked a private item, and the failure listing buried that error under the 267 missing-docs warnings; the link is fixed and API-DOCS now lists only denied errors (two new arms, 1,670 in all).

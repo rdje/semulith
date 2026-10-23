@@ -22,11 +22,12 @@ internal links are rustdoc's, held by `API-DOCS`.
 
 ## How complete it is
 
-Measured on 2026-10-23 with rustdoc's coverage report:
+Measured with rustdoc's coverage report (2026-10-23; `semulith_core` re-measured after `RUSTDOC.4`, when
+its generators began documenting the generated modules):
 
 | Crate | Items documented | Coverage |
 | --- | --- | --- |
-| `semulith_core` | 553 | 90.1% |
+| `semulith_core` | 614 | 100.0% |
 | `semulith_verify` | 404 | 82.4% |
 | `semulith_dsp56300` | 66 | 35.5% |
 

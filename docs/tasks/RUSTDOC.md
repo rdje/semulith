@@ -102,8 +102,19 @@ undocumented public items never rises.
   line, while cargo replays the cached warnings, so the count is the same either way.
 
 - ID: `RUSTDOC.4` — **generated modules documented by their generators**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0004`; owned on clean ef340a9; evidence target/rustdoc/rd0004)
   Goal: `gen_definition.py`, `gen_state.py`, `gen_guests.py` emit doc comments; the generated files regenerate.
+  Result: all 61 of `semulith-core`'s undocumented items were in its four generated modules (definition 14,
+  definition_rv64gc 23, state 15, state_rv64gc 9) and every one came from a fixed template line in two
+  generators: `gen_definition.py` (provenance pins and the manifest static, operand fields, instruction and
+  pseudo-instruction fixed bits, the compressed expansion and its operand bindings) and `gen_state.py` (state
+  element fields and classes, the hidden-state census types and constant, in both of its emitters). The
+  generators now emit a doc comment for each (10 + 4 template edits); the four modules were regenerated
+  through them and DEF-GEN and STATE-GEN judge them exact. `gen_guests.py`'s modules carried no undocumented
+  public item, so it is unchanged. Neither generator nor any Rust file is a pinned input of the retained M
+  case. The ratchet then refused the fall until the core row was lowered 61 → 0 in this commit (267 → 206 in
+  all); rustdoc's coverage report re-measured `semulith_core` at 614 items, 100.0%, and the book chapter's
+  table says so.
 
 - ID: `RUSTDOC.5` — **semulith-dsp56300 to parity**
   Status: `pending`
@@ -117,7 +128,7 @@ undocumented public items never rises.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.4` | `pending` | the generated modules' docs come from their generators (core's and verify's largest gaps) |
+| 1 | `RUSTDOC.5` | `pending` | semulith-dsp56300 to parity: 120 undocumented items, 35.5% documented |
 
 ## Decisions
 
@@ -160,6 +171,15 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — `bash scripts/check_registry_mirror.sh` → `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`; `bash scripts/check_fact_ownership.sh` → `FACT-OWNERSHIP: ok (74 fact kind(s): one owner each, every mirror governed)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 1662 → 1668 arms; focused checks rc 0 (focused-checks.json); no Rust source changed (`git status --short crates/` empty).
 - [x] **LOCKSTEP** — registry text, the book's doctrines chapter, `docs/doctrines/evidence.md`, the execution toolbox row, the API reference chapter, LIVE_STATUS (arms), the tree and index, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.4)
+
+- [x] **REPRODUCE / ISSUE** — target/rustdoc/rd0004-scope.txt from target/rustdoc/rd0003/measure.log: 61 `missing documentation` warnings in crates/semulith-core/src/{definition,definition_rv64gc,state,state_rv64gc}.rs, e.g. `crates/semulith-core/src/state.rs:107:5 struct field pub name: &'static str,`; `doctrine/undocumented_items.tsv` row `semulith-core 61`.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -n 'pub name: &.static str\|pub sha256\|…' scripts/gen_definition.py` → the template lines 697–826 and 1067–1072, and `scripts/gen_state.py` 267–327 and 781–793: the generators emitted the fields without a `///` line; `grep -c "(path \"scripts/gen_definition.py\")" evidence/rv64gc-m-forms-v3/dependencies.sexp` = 0 and the same for `gen_state.py` (not pinned).
+- [x] **FIX** — target/rustdoc/rd0004/patch_generators.py: 10 template edits in `scripts/gen_definition.py`, 4 in `scripts/gen_state.py`; the four modules regenerated through `python3 scripts/gen_definition.py --encoding … --out …` (43475 and 207990 bytes) and `python3 scripts/gen_state.py --state … --arith … --out …` (15259 and 52590 bytes); the record row lowered 61 → 0.
+- [x] **ADDRESSED (verified)** — after-regen.log: `DEF-GEN: ok` and `STATE-GEN: ok` for all four modules, then `API-DOCS: FAIL … semulith-core: 0 undocumented < recorded 61; lower the record to 0`; checks.log after the row: `API-DOCS: ok (5 crate(s) documented; … 206 undocumented public item(s), each crate at its recorded count)`; red.log: one emitted doc line removed from `gen_state.py` and `state.rs` regenerated → `semulith-core: 1 undocumented > recorded 0; document the new item(s):` naming `crates/semulith-core/src/state.rs:109:5`, rc 1, then generator and module restored `c2294b1a0f53692571390e7ed34e4de5670eee5bba5dd98c1816d20933506beb` / `e86a95e9f285b060fa8a8827a63a885d482e4db4ac39ea83aa23289d41080fcd` byte-identical; coverage.txt: `semulith_core: | Total | 614 | 100.0% |`.
+- [x] **NO REGRESSION** — checks.log: `make check rc=0 in 81 s` (`287 passed`, `173 passed`, `17 passed`, `5 passed`, 0 failed); `FIXTURE-FINGERPRINT: ok`, `MATERIALS-BILL: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `EXTRACTION: ok`, `SEMANTICS: ok`, `M-VECTORS: ok`, `FP-VECTORS: ok`, `PORT-WEB: ok`, `UNIT-BOOKS: ok (… 3722 rendered hyperlinks …)`; `method satisfied rv64gc-m-forms-v3`, `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; `cargo xtask focused` rc 0 before the commit.
+- [x] **LOCKSTEP** — the record row, the API reference chapter's coverage table, the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -167,4 +187,5 @@ undocumented public items never rises.
 - `2026-10-23`: RUSTDOC.1 done — API-DOCS registered; 20 defects fixed at their source; RUSTDOC.2 next.
 - `2026-10-23`: RUSTDOC.2 done — the reference is built with the book and linked from it; RUSTDOC.3 next.
 - `2026-10-23`: RUSTDOC.3 done — the missing-docs ratchet holds 267 undocumented items per crate; RUSTDOC.4 next.
+- `2026-10-23`: RUSTDOC.4 done — the generators document the generated modules; semulith-core 61 → 0 undocumented; RUSTDOC.5 next.
 - `2026-10-23`: API-DOCS lists only denied errors on failure (the warnings buried the error at XTASK.3's gate refusal; fixed and armed there, `SEMULITH-XTASK-0003`).

@@ -18,12 +18,13 @@
   director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0003` — XTASK.3: one definition per target, guarded by a test that reads the Makefile;
-  CHANGELOG sharded (shard-0414, head 48 KB).
-- next_action: `RUSTDOC.4` (the generators emit docs for the generated modules; lower the ratchet rows in the same
-  commit) or `XTASK.4` (one of the 14 small shell scripts behind a shim, measured equal). Commit chain:
-  target/xtask/xt0002/commit-chain.sh <evidence-dir> (focused stage = `cargo xtask focused`). docs/toolbox/
-  governance.md at 16,302 of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision.
+- last_unit: `SEMULITH-RDOC-0004` — RUSTDOC.4: the generators document the generated modules; semulith-core 0
+  undocumented (100.0% coverage), 206 in all. Before it XTASK-0003 (one definition per target; API-DOCS lists errors only).
+- next_action: `RUSTDOC.5` (semulith-dsp56300: 120 undocumented, decode.rs 78, machine.rs 37 — document them and lower
+  the row) or `XTASK.4` (one of the 14 small shell scripts behind a shim). Commit chain:
+  target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh` before committing a doc
+  change (the focused set does not include API-DOCS — open question in XTASK). The crediting act (a42az) is the
+  DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

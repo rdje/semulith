@@ -15,7 +15,7 @@
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
-//! Generator: `scripts/gen_definition.py` (sha256 `60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1`)
+//! Generator: `scripts/gen_definition.py` (sha256 `187951334b216b8102fbbf24e90a19139fb700d3b28b74127e5b73ed032f4dc8`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -39,29 +39,37 @@ pub struct DefinitionManifest {
 
 /// The generator, identified by name and content — OWN-03's generator fingerprint.
 pub struct GeneratorPin {
+    /// The generator script's repository path.
     pub name: &'static str,
+    /// The sha256 of the generator script's exact bytes.
     pub sha256: &'static str,
 }
 
 /// One canonical input: the path, and the sha256 of the exact bytes.
 pub struct InputPin {
+    /// The input's repository path.
     pub path: &'static str,
+    /// The sha256 of the input's exact bytes.
     pub sha256: &'static str,
 }
 
 /// One upstream source the definition was generated from, pinned by the fragment.
 pub struct SourcePin {
+    /// The upstream file, as the fragment names it.
     pub file: &'static str,
+    /// The sha256 the fragment pins for that file.
     pub sha256: &'static str,
 }
 
+/// This module's provenance: the profile, the composed fragments, the generator and
+/// every input it was generated from, each pinned by content (OWN-03).
 pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     profile: "rv64i-lab-v0",
     ilen: 32,
     fragments: &["riscv/rv64i"],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1",
+        sha256: "187951334b216b8102fbbf24e90a19139fb700d3b28b74127e5b73ed032f4dc8",
     },
     inputs: &[
         InputPin {
@@ -98,9 +106,13 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
 /// MSB-first order — `(12, 12)` first means the field's top bit holds `imm[12]`.
 /// Empty `scatter` marks a contiguous field.
 pub struct FieldDef {
+    /// The field's name in the encoding table.
     pub name: &'static str,
+    /// The field's highest bit in the instruction word.
     pub hi: u8,
+    /// The field's lowest bit in the instruction word.
     pub lo: u8,
+    /// The immediate-bit pieces the field carries, MSB first; empty when contiguous.
     pub scatter: &'static [(u8, u8)],
 }
 
@@ -207,8 +219,11 @@ pub static FIELDS: &[FieldDef] = &[
 /// the operands the encoding declares, the upstream table the encoding came from,
 /// the specification locator the semantics rule cites, and the rule's effect tree.
 pub struct InsnDef {
+    /// The instruction's mnemonic.
     pub name: &'static str,
+    /// The fixed bits a decoder tests.
     pub mask: u32,
+    /// The values of those fixed bits: a word is this instruction iff `word & mask == value`.
     pub value: u32,
     /// The operand fields as the encoding declares them, in operand order. A split
     /// immediate appears as its two fields (`imm12hi`/`imm12lo`, `bimm12hi`/`bimm12lo`);

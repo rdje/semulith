@@ -1720,18 +1720,27 @@ impl crate::privilege::PrivilegedHart for ArchitecturalState {
 /// SEM-08: the hidden-state census, re-earned for the privileged state — carried as
 /// data so the interpreter, the gate report and the reviewer read the same sentence.
 pub struct HiddenStateCandidate {
+    /// The kind of hidden state examined.
     pub candidate: &'static str,
+    /// Whether the profile carries it.
     pub present: bool,
+    /// The reason, as the descriptor records it.
     pub why: &'static str,
 }
 
+/// The census itself: the question, its answer, every candidate and the consequence.
 pub struct HiddenStateCensus {
+    /// The question the census answers.
     pub question: &'static str,
+    /// The answer, in one sentence.
     pub answer: &'static str,
+    /// Each candidate examined, with its reason.
     pub candidates: &'static [HiddenStateCandidate],
+    /// What the answer obliges later work to do.
     pub consequence: &'static str,
 }
 
+/// This profile's hidden-state census, generated from the state descriptor.
 pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
     question: "Is there any state, not listed above, that can influence a future supported observation? (SEM-08, catalog C02 — re-earned for the privileged state)",
     answer: "No - for the complete selected single-hart laboratory profile: all twelve candidates below are answered. The consequence enumerates every state owner; a new extension or environment contract must reopen this census.",

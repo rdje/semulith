@@ -59,6 +59,6 @@ on the same commit. One commit per completed leaf.
 | [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `active` | `.2` — proposed: the Markdown census (1 of 2 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.27` — the next recurring cleanup (due after 2026-10-24T10:15Z); P4-SYSTEM.14 resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
-| [`RUSTDOC`](tasks/RUSTDOC.md) | `active` | `RUSTDOC.4` — generated modules documented by their generators (3 of 6 leaves done) | repo-local |
+| [`RUSTDOC`](tasks/RUSTDOC.md) | `active` | `RUSTDOC.5` — semulith-dsp56300 to parity (4 of 6 leaves done) | repo-local |
 | [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.4` — the small shell glue, one script per leaf (3 of 6 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

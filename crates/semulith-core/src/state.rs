@@ -104,13 +104,17 @@ impl ArchitecturalState {
 /// divergence reports and the gate report read. Values, not storage: reading this
 /// table never touches architectural state and never allocates.
 pub struct StateElement {
+    /// The element's architectural name.
     pub name: &'static str,
+    /// Its width in bits.
     pub width_bits: u32,
+    /// Which kind of state it is.
     pub class: StateClass,
     /// Software-convention role the ISA chapter itself names; `None` where the
     /// descriptor records none (ABI names are a calling convention, not
     /// architecture — see the descriptor's note).
     pub role: Option<&'static str>,
+    /// The specification locator the descriptor cites for it.
     pub source: &'static str,
 }
 
@@ -118,7 +122,9 @@ pub struct StateElement {
 /// generated with the elements rather than hand-extended.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum StateClass {
+    /// A general-purpose integer register.
     IntegerRegister,
+    /// A special register the descriptor names, such as the program counter.
     SpecialRegister,
 }
 
@@ -364,18 +370,27 @@ pub const ELEMENTS: [StateElement; 33] = [
 /// report and the reviewer read the same sentence. Every extension added later
 /// reopens the census (the descriptor's own consequence).
 pub struct HiddenStateCandidate {
+    /// The kind of hidden state examined.
     pub candidate: &'static str,
+    /// Whether the profile carries it.
     pub present: bool,
+    /// The reason, as the descriptor records it.
     pub why: &'static str,
 }
 
+/// The census itself: the question, its answer, every candidate and the consequence.
 pub struct HiddenStateCensus {
+    /// The question the census answers.
     pub question: &'static str,
+    /// The answer, in one sentence.
     pub answer: &'static str,
+    /// Each candidate examined, with its reason.
     pub candidates: &'static [HiddenStateCandidate],
+    /// What the answer obliges later work to do.
     pub consequence: &'static str,
 }
 
+/// This profile's hidden-state census, generated from the state descriptor.
 pub const HIDDEN_STATE_CENSUS: HiddenStateCensus = HiddenStateCensus {
     question: "Is there any state, not listed above, that can influence a future supported observation? (SEM-08, catalog C02)",
     answer: "No — for this profile, and only because of what it excludes.",
