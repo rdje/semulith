@@ -10,6 +10,10 @@
 //! - `cargo xtask focused [--out DIR]` runs the focused check set every unit runs before its gated
 //!   commit (`XTASK.2`): each check in order, its output kept in `DIR` (default `target/focused`),
 //!   one line per check, a summary and a JSON record, exit 1 if any check is red. It never commits.
+//!
+//! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
+//! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
+//! also a Makefile target.
 
 use std::fmt::Write as _;
 use std::fs;
@@ -49,12 +53,21 @@ const FOCUSED: &[&[&str]] = &[
     &["make", "book"],
 ];
 
-/// Dispatches `focused` natively and every other argument list to `make`.
+/// The subcommands xtask implements itself; every other argument list is the Makefile's.
+const NATIVE: &[&str] = &["focused"];
+
+/// Dispatches a native subcommand here and every other argument list to `make`.
 fn main() -> ExitCode {
     let mut args: Vec<String> = std::env::args().skip(1).collect();
     let root = repository_root();
-    if args.first().map(String::as_str) == Some("focused") {
-        return focused(&root, &args[1..]);
+    if let Some(name) = args.first().filter(|arg| NATIVE.contains(&arg.as_str())) {
+        return match name.as_str() {
+            "focused" => focused(&root, &args[1..]),
+            other => {
+                eprintln!("xtask: native subcommand {other} has no implementation");
+                ExitCode::from(2)
+            }
+        };
     }
     if args.is_empty() {
         args.push("help".to_owned());
@@ -182,6 +195,51 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// The rule names a Makefile defines (`name:` at the start of a line, not a variable).
+    fn makefile_rules(text: &str) -> Vec<String> {
+        text.lines()
+            .filter(|line| !line.starts_with(['\t', '#', '.', ' ']))
+            .filter_map(|line| line.split_once(':').map(|(name, _)| name))
+            .filter(|name| !name.is_empty() && !name.contains([' ', '=', '$']))
+            .map(str::to_owned)
+            .collect()
+    }
+
+    #[test]
+    fn a_native_subcommand_is_never_also_a_makefile_target() {
+        let makefile =
+            fs::read_to_string(repository_root().join("Makefile")).expect("the Makefile");
+        let rules = makefile_rules(&makefile);
+        assert!(
+            rules.len() >= 10,
+            "the Makefile parse found too few rules: {rules:?}"
+        );
+        let phony = makefile
+            .lines()
+            .find_map(|line| line.strip_prefix(".PHONY:"))
+            .expect("a .PHONY line");
+        let mut declared: Vec<&str> = phony.split_whitespace().collect();
+        let mut defined: Vec<&str> = rules.iter().map(String::as_str).collect();
+        declared.sort_unstable();
+        defined.sort_unstable();
+        assert_eq!(
+            declared, defined,
+            "every rule is .PHONY and every .PHONY name a rule"
+        );
+        for name in NATIVE {
+            assert!(
+                !rules.iter().any(|rule| rule == name),
+                "{name} is defined twice"
+            );
+        }
+    }
+
+    #[test]
+    fn the_makefile_rule_parse_ignores_variables_recipes_and_comments() {
+        let text = "SHELL := /usr/bin/env bash\n.PHONY: a b\n# c: comment\na:\n\techo x: y\nb: a\n";
+        assert_eq!(makefile_rules(text), vec!["a", "b"]);
+    }
 
     #[test]
     fn every_focused_check_exists_in_the_repository() {

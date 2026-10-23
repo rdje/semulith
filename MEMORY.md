@@ -18,12 +18,12 @@
   director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0002` — XTASK.2: `cargo xtask focused` is the tracked 26-check focused set (measured equal to
-  the scratch runner, green and with one check broken). Use it for every commit's focused stage.
-- next_action: CHANGELOG.md is ~62.2 of 64 KiB: shard it first (`scripts/shard_history.py`, SHARD-FREEZE), then
-  `XTASK.3` (one source of truth for the Makefile targets — decide direction with care: make delegating to xtask
-  changes nothing visible only if outputs stay identical) or `RUSTDOC.4` (generators emit docs for the generated
-  modules). docs/toolbox/governance.md at 16,302 of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision.
+- last_unit: `SEMULITH-XTASK-0003` — XTASK.3: one definition per target, guarded by a test that reads the Makefile;
+  CHANGELOG sharded (shard-0414, head 48 KB).
+- next_action: `RUSTDOC.4` (the generators emit docs for the generated modules; lower the ratchet rows in the same
+  commit) or `XTASK.4` (one of the 14 small shell scripts behind a shim, measured equal). Commit chain:
+  target/xtask/xt0002/commit-chain.sh <evidence-dir> (focused stage = `cargo xtask focused`). docs/toolbox/
+  governance.md at 16,302 of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

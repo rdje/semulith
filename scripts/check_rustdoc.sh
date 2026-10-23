@@ -22,6 +22,14 @@ ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 LINTS="-D rustdoc::broken_intra_doc_links -D rustdoc::private_intra_doc_links -D rustdoc::invalid_html_tags"
 RECORD="doctrine/undocumented_items.tsv"
 
+# defects < cargo-doc-output — one line per DENIED diagnostic (an `error:`): its location, then its message.
+# Warnings are excluded: since RUSTDOC.3 the build warns on every undocumented item (267 at adoption),
+# and listing them buried the one error that failed the build past the cut-off (XTASK.3's gate refusal).
+defects() {
+  awk '/^error: / && !/could not document/ { msg=$0; sub(/^error: /, "", msg); want=1; next }
+       want && /^ *--> / { loc=$0; sub(/^ *--> /, "", loc); printf "  %s  %s\n", loc, msg; want=0 }' | head -60
+}
+
 # ratchet RECORD CRATE... < cargo-doc-output — prints the total, or the problems; rc 0 / 1 / 2 (malformed record)
 ratchet() {
   python3 -c '
@@ -149,6 +157,12 @@ pub fn probe() -> u32 { 42 }'
   out="$(RUSTDOCFLAGS="-D missing_docs" bash -c 'cd "$1" && RUSTDOCFLAGS="$2" cargo doc --offline --no-deps --target-dir "$1/.wt" 2>&1' _ "$t/undocumented" "$LINTS")"; rc=$?
   arm "GREEN an inherited RUSTDOCFLAGS does not leak into the verdict" "$rc" 0 "$out" "-"
 
+  # The failure listing names the denied defect even among many missing-docs warnings.
+  mkcrate "$t/noisy" "probe-noisy" "$(printf '//! Noisy.\n'; for i in $(seq 1 80); do printf 'pub fn f%d() {}\n' "$i"; done; printf '/// See [`nowhere`].\npub fn last() {}\n')"
+  out="$( ( cd "$t/noisy" && RUSTDOCFLAGS="$LINTS -W missing_docs" cargo doc --offline --no-deps --target-dir "$t/noisy/.wt" 2>&1 ) | defects)"; rc=$?
+  arm "RED the build fails and the listing names the denied link, not the 80 warnings" "$rc" 101 "$out" "unresolved link to \`nowhere\`"
+  arm "RED the failure listing carries no warning line" "$rc" 101 "$out" "!missing documentation"
+
   # The ratchet, on a two-crate workspace laid out as crates/<dir>/: one crate with two undocumented
   # public items (a function and a struct field), one fully documented.
   mkdir -p "$t/ws/crates/probe/src" "$t/ws/crates/clean/src"
@@ -192,9 +206,7 @@ out="$(RUSTDOCFLAGS="$LINTS -W missing_docs" cargo doc --workspace --no-deps --o
 if [ "$rc" -ne 0 ]; then
   {
     echo "API-DOCS: FAIL — the workspace's rustdoc carries link or HTML defects (decision_rust-native-tooling):"
-    # one line per defect: the location that follows each diagnostic, then its message
-    printf '%s\n' "$out" | awk '/^(error|warning): / && !/could not document/ { msg=$0; sub(/^(error|warning): /, "", msg); want=1; next }
-                               want && /^ *--> / { loc=$0; sub(/^ *--> /, "", loc); printf "  %s  %s\n", loc, msg; want=0 }' | head -60
+    printf '%s\n' "$out" | defects
     echo "  Fix the doc comment (or its generator) — never allow the lint."
   } >&2
   exit 1

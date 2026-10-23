@@ -167,3 +167,4 @@ undocumented public items never rises.
 - `2026-10-23`: RUSTDOC.1 done — API-DOCS registered; 20 defects fixed at their source; RUSTDOC.2 next.
 - `2026-10-23`: RUSTDOC.2 done — the reference is built with the book and linked from it; RUSTDOC.3 next.
 - `2026-10-23`: RUSTDOC.3 done — the missing-docs ratchet holds 267 undocumented items per crate; RUSTDOC.4 next.
+- `2026-10-23`: API-DOCS lists only denied errors on failure (the warnings buried the error at XTASK.3's gate refusal; fixed and armed there, `SEMULITH-XTASK-0003`).
