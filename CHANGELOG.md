@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0001 (leaf XTASK.1) — the cargo xtask front door, delegation only
+
+XTASK.1: the new workspace member `xtask/` (std only, no dependency) and the alias `cargo xtask` forward every argument to `make` from the repository root with the same streams and exit status, so every target keeps one definition, the Makefile, and nothing moved. Prototyped first in a detached worktree; measured on the real tree: `help` byte-identical, an unknown target and a deliberately broken `book` failing alike (rc 2, identical output), `check` with every test identical as sorted lines. fmt, clippy -D warnings, the wasm32 build and API-DOCS stay green (the ratchet counts `xtask/`, row 0). The lockfile gains 4 lines, so `make vendor` re-vendors once and prunes the standard-library crates the portability Miri leg re-syncs on every run. README, ARCHITECTURE §4 and the toolbox follow; README now says `make book` builds the API reference too.
+
 ## SEMULITH-RDOC-0003 (leaf RUSTDOC.3) — the missing-docs ratchet
 
 RUSTDOC.3: the API-DOCS build now also warns on `missing_docs`, and the check counts the undocumented public items per crate directory against the new record `doctrine/undocumented_items.tsv` (cli 0, core 61, dsp56300 120, verify 86 = 267). A rise is refused with the crate's items listed; a fall is refused until the row is lowered, so the ratchet only tightens and the record is always the measured count. Six new self-test arms on a two-crate scratch workspace (13 in all); fired RED on the real tree with one added undocumented constant (`semulith-core: 62 undocumented > recorded 61`), then restored byte-identical. LIVE_STATUS 1,668 arms. RUSTDOC.4 next.

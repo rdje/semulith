@@ -1,8 +1,9 @@
 # Workspace root: every crate under crates/* is a member (semulith-core, semulith-verify,
-# semulith-cli, semulith-dsp56300 — docs/ARCHITECTURE.md §4 owns their boundaries).
+# semulith-cli, semulith-dsp56300 — docs/ARCHITECTURE.md §4 owns their boundaries), and so is
+# xtask/, the `cargo xtask` automation front door (XTASK.1; development only, no product behaviour).
 [workspace]
 resolver = "2"
-members = ["crates/*"]
+members = ["crates/*", "xtask"]
 
 # ⛔ VENDORED SUBMODULES ARE NOT WORKSPACE MEMBERS. `vendor/linkedspec` is a pinned git submodule
 # carrying its own workspace, its own lockfile and its own edition (2024, where this workspace is

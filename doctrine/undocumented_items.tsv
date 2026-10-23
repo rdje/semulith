@@ -1,6 +1,6 @@
 # undocumented_items.tsv — the API-DOCS missing-docs ratchet (RUSTDOC.3, decision_rust-native-tooling).
 #
-# One row per workspace crate directory under crates/: the number of public items rustdoc reports
+# One row per workspace crate directory under crates/, and one for xtask/ (XTASK.1): the number of public items rustdoc reports
 # without documentation (`missing_docs`). scripts/check_rustdoc.sh re-derives every count on each
 # commit and refuses a rise; a fall is refused too until the row is lowered to the new count, so the
 # ratchet only tightens and this file always states the measured truth. Measured 2026-10-23 at f44947a.
@@ -10,3 +10,4 @@ semulith-cli	0
 semulith-core	61
 semulith-dsp56300	120
 semulith-verify	86
+xtask	0

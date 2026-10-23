@@ -14,18 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `RUSTDOC.4` next (generated modules documented by their generators), or `XTASK.1` (front door)
-  — see next_action. `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27`
-  after 2026-10-24T10:15Z (create AC0084 first).
+- active_work_unit: `XTASK.2` next (a tracked `cargo xtask focused` runner replacing the per-unit scratch chain
+  scripts), `RUSTDOC.4` after. `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling;
+  `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-RDOC-0003` — RUSTDOC.3: the missing-docs ratchet in API-DOCS against
-  `doctrine/undocumented_items.tsv` (267: cli 0, core 61, dsp56300 120, verify 86); a doc improvement must lower
-  its row in the same commit.
-- next_action: `XTASK.1` (the director's priority pair: rustdoc AND xtask; the delegation-only front door, with
-  extreme care), then `RUSTDOC.4`. CHANGELOG.md is near its 64 KiB shard threshold — shard with
-  `scripts/shard_history.py` when the next entry would cross it. Containment: docs/toolbox/governance.md at 16,302
-  of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one case suffices.
+- last_unit: `SEMULITH-XTASK-0001` — XTASK.1: `cargo xtask <args>` = `make <args>` from the root (help, unknown target,
+  check, broken book measured equal); `make vendor` re-vendored once (store 34 → 3; the Miri leg re-syncs std).
+- next_action: `XTASK.2` — the focused-check set (26 checks + `make book`, today in
+  target/p4-system-14/a42ax/focused-and-commit.sh) as a tracked `cargo xtask focused` that must report the same 26
+  results on the same tree and RED when one check is broken; never commits. CHANGELOG.md is ~61 of 64 KiB — shard
+  with `scripts/shard_history.py` before an entry would cross. docs/toolbox/governance.md at 16,302 of 16,384 B.
+  The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one case suffices.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

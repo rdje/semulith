@@ -17,3 +17,8 @@ replace-with = "project-vendor"
 
 [source.project-vendor]
 directory = ".app-data/vendor"
+
+# `cargo xtask <args>` — the automation front door (XTASK.1, decision_rust-native-tooling): it runs the
+# same Makefile target from the repository root, so nothing moves until a later leaf moves it.
+[alias]
+xtask = "run --quiet --offline --package xtask --"

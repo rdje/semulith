@@ -28,7 +28,7 @@ execute and validate them against.
 
 | Path | What lives there |
 | --- | --- |
-| `crates/` | the Rust workspace |
+| `crates/` · `xtask/` | the Rust workspace, and its `cargo xtask` automation front door |
 | `profiles/` | one directory per processor profile — its dossier, pinned sources, and decisions |
 | `evidence/` | bounded retained inputs and finite capture artifacts; [index](evidence/README.md) |
 | `schemas/` · `examples/` | starter data contracts and their synthetic, explicitly planned fixtures |
@@ -45,8 +45,9 @@ execute and validate them against.
 | `make vendor` | populate the on-volume dependency store (`.cargo/config.toml` routes every cargo run there) |
 | `make gate` | doctrine enforcer + synthetic handoff tests |
 | `make check` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` |
-| `make book` | build the mdBook |
+| `make book` | build the mdBook and the rustdoc API reference |
 | `make hooks` | activate the git hooks once per clone (`core.hooksPath=.githooks`) |
+| `cargo xtask <target>` | the same Makefile target through the Rust front door (`XTASK`; nothing moved yet) |
 
 ## How this repository works
 

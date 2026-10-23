@@ -33,9 +33,10 @@ for i, line in enumerate(log):
     if not line.startswith("warning: missing documentation for"):
         continue
     loc = next((x.strip()[4:] for x in log[i + 1:i + 4] if x.strip().startswith("-->")), "")
-    m = re.match(r"crates/([^/]+)/", loc)
-    if m and m.group(1) in counts:
-        counts[m.group(1)] += 1; where[m.group(1)].append(loc + "  " + line[len("warning: "):])
+    m = re.match(r"(?:crates/([^/]+)|(xtask))/", loc)  # a crate under crates/, or the xtask front door (XTASK.1)
+    crate = m and (m.group(1) or m.group(2))
+    if crate in counts:
+        counts[crate] += 1; where[crate].append(loc + "  " + line[len("warning: "):])
     else:
         stray.append(loc or "?")
 rows = {}
@@ -52,7 +53,7 @@ for line in lines:
     rows[parts[0]] = int(parts[1])
 problems = []
 if stray:
-    problems.append("%d undocumented item(s) outside crates/<crate>/: %s" % (len(stray), stray[:3]))
+    problems.append("%d undocumented item(s) outside a workspace crate directory: %s" % (len(stray), stray[:3]))
 for crate in sorted(set(rows) - set(crates)):
     problems.append(crate + ": recorded, but not a workspace crate directory")
 for crate in crates:
@@ -201,6 +202,7 @@ fi
 # Count crates from the workspace's crate directories: a fresh build prints no "Documenting" line,
 # while cargo replays the cached warnings, so the ratchet's count is the same either way.
 dirs=(); for d in crates/*/; do [ -f "$d/Cargo.toml" ] && dirs+=("$(basename "$d")"); done
+[ -f xtask/Cargo.toml ] && dirs+=("xtask")  # the automation front door is a workspace member too (XTASK.1)
 crates="${#dirs[@]}"
 verdict="$(printf '%s\n' "$out" | ratchet "$RECORD" "${dirs[@]}")"; vrc=$?
 if [ "$vrc" -eq 2 ]; then
