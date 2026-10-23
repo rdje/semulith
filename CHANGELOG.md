@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-TOOL-0001 (trees RUSTDOC, XTASK) — register the Rust-native tooling direction
+
+The director, 2026-10-23: SEMULITH uses rustdoc for its API reference and moves to cargo xtask, "with extrem care, and incrementally for not breaking anything", because both are made for a Rust project. Recorded in `decision_rust-native-tooling.md` with the measured assessment (`cargo doc` builds in about 4 s with 0 errors and 287 warnings, 19 of them defects; documented items core 90.1%, verify 82.4%, dsp56300 35.5%; 35 tooling scripts pinned by retained evidence). Two proposed trees: `RUSTDOC` (six leaves, from the 19 doc defects and a link gate to doc examples) and `XTASK` (six leaves, from a delegation-only front door and a tracked focused-check runner to doctrine drivers one per leaf), each declaring its consumer; index rows and a LIVE_STATUS row. No code changed.
+
 ## SEMULITH-AC-0083 (leaf ARTIFACT-CLEANUP.26) — the third recurring cleanup through the supported act
 
 .26: at 26 h, on a clean tree with `handoff: OK`, the four acts ran in target/artifact-cleanup/AC0083 (log inside): 73 candidates planned, 6 captured Cargo incremental outputs (15,766,468 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `recorded-complete`/`verified`, `--inspect` confirming; 19,342 retained files kept. The 67 unrecorded mutation-build sessions (281,084,868 B) did not grow across nine gated commits: a stable set, so the .25 open question's deferral stands. The record is overwritten; `.27` is due after 2026-10-24T10:15Z.

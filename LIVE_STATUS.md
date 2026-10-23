@@ -29,6 +29,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Canonical definition (engine input) | Done | [`MODEL-METHOD`](docs/tasks/MODEL-METHOD.md) 19/19 — semantics 52/52, cited not verified |
 | Modelling method + materials | Done | same tree — `docs/METHOD.md` |
 | Per-unit books | Done | [`MODEL-BOOKS`](docs/tasks/MODEL-BOOKS.md) 8/8 — `UNIT-BOOKS` gates it |
+| Rust-native tooling: rustdoc, cargo xtask | Not Started | [`RUSTDOC`](docs/tasks/RUSTDOC.md), [`XTASK`](docs/tasks/XTASK.md) — `decision_rust-native-tooling`; xtask incrementally, nothing breaks |
 
 ## Roadmap milestones (`ROADMAP.md` §6)
 

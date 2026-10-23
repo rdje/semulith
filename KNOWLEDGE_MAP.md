@@ -74,10 +74,12 @@
 - [`PREFIX-DISCIPLINE.md`](docs/tasks/PREFIX-DISCIPLINE.md)
 - [`PUSH-DISCIPLINE.md`](docs/tasks/PUSH-DISCIPLINE.md)
 - [`ROADMAP-V3.md`](docs/tasks/ROADMAP-V3.md)
+- [`RUSTDOC.md`](docs/tasks/RUSTDOC.md)
 - [`SEMULITH-PKG.md`](docs/tasks/SEMULITH-PKG.md)
 - [`SEMULITH-TREES.md`](docs/tasks/SEMULITH-TREES.md)
 - [`SOT-FORMAT.md`](docs/tasks/SOT-FORMAT.md)
 - [`UPSTREAM-TRACK.md`](docs/tasks/UPSTREAM-TRACK.md)
+- [`XTASK.md`](docs/tasks/XTASK.md)
 
 ## Decision records
 
@@ -135,6 +137,7 @@
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
+- [`decision_rust-native-tooling.md`](docs/decisions/decision_rust-native-tooling.md)
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)
 - [`decision_schema-and-decisions-families-rederivation.md`](docs/decisions/decision_schema-and-decisions-families-rederivation.md)
 - [`decision_stale-method-invalidates-not-locks.md`](docs/decisions/decision_stale-method-invalidates-not-locks.md)

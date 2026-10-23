@@ -14,22 +14,20 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` — a42ay (the crediting mechanism) and a42ba (archive part 21) committed; the
-  act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` when the record is ~24 h old (after 2026-10-24T10:15Z;
-  create target/artifact-cleanup/AC0084 first).
+- active_work_unit: `LIVE-CONTAINMENT.4` .4o next (move the tree's closed row sections into an archive part; script
+  drafted in target/live-containment/lc0054/), then `RUSTDOC.1`, then `XTASK.1` (trees registered 2026-10-23,
+  `decision_rust-native-tooling.md`: xtask incrementally and with extreme care, nothing breaks). `P4-SYSTEM.14`'s
+  crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z
+  (create target/artifact-cleanup/AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `P4-SYSTEM.14` a42ba / `SEMULITH-P4-0294` — the closed `.14` records a42aq–a42aw and rows
-  a42ar–a42ax moved verbatim into docs/tasks/archive/P4-SYSTEM-21.md (live file 118,497 → 63,186 B); before it
-  a42ay / `SEMULITH-P4-0293`, the crediting mechanism (`credits.sexp`, `scripts/credit_records.py`; real tree
-  0 records, `REQ-GC-M` planned; `decision_credit-is-a-catalogue-record.md`).
-- next_action: the crediting act (a42az) is the DIRECTOR'S decision, not the agent's: (a) who signs the record,
-  (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`. (c) is done: a42bb
-  retained the eleven other M statements and Table 1 (`RVI-M-STATEMENTS`, decision_m-statements-retained.md).
-  Also due
-  the RUSTDOC/XTASK registration (director, 2026-10-23; drafts in target/rust-tooling/) and the LIVE-CONTAINMENT
-  tree's own archive move (its file
-  ~128 KB of 131,072 B). LIVE_STATUS was trimmed to states by LC-0053 (4,771 of 6,144 B).
+- last_unit: `SEMULITH-TOOL-0001` — RUSTDOC and XTASK trees and the decision registered; before it AC-0083 (third
+  recurring cleanup), P4-0295 (a42bb: the other eleven M statements and Table 1 retained, `RVI-M-STATEMENTS`).
+- next_action: `.4o` (LIVE-CONTAINMENT rows to docs/tasks/archive/LIVE-CONTAINMENT-rows.md), then `RUSTDOC.1` — fix
+  the 19 doc defects (9 unresolved links, 4 private links, 6 unclosed HTML tags; target/rustdoc-xtask-assessment/)
+  and register a doctrine running `cargo doc --workspace --no-deps --offline` with those lints denied, fired RED
+  first. The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one finite case of 25
+  witnesses suffices for `implemented` on `REQ-GC-M`; the normative text is retained (a42z, a42bb).
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
