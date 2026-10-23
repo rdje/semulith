@@ -4,6 +4,12 @@
 Registry dictionaries use records_sexp's single mapping. All build outputs are
 isolated under target/ and removed; source books are read-only inputs. Local
 hyperlink paths and HTML fragments are checked offline, including print pages.
+
+The project book also carries the workspace's API reference (RUSTDOC.2): rustdoc's output is
+built fresh into the bundle under `api/`, and every book link INTO it must land on an existing
+page. Its own pages are not scanned: their internal links follow rustdoc's conventions
+(JavaScript-resolved source line ranges, percent-encoded impl ids) and are held by the API-DOCS
+doctrine, which denies broken and private intra-doc links at the source.
 """
 from __future__ import annotations
 
@@ -12,6 +18,7 @@ import os
 from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -86,8 +93,33 @@ class Document(HTMLParser):
                 self.links.append(values['href'])
 
 
-def navigation_findings(web_root: Path, output_dirs: list[Path]) -> tuple[list[str], int]:
+API_REFERENCE = 'api'
+
+
+def api_reference(root: Path, scratch: Path, output: Path) -> tuple[list[str], list[Path]]:
+    """Build the workspace's rustdoc fresh into the project bundle (RUSTDOC.2).
+
+    No workspace manifest means no reference. The build never inherits RUSTDOCFLAGS or a
+    target directory, and its output stays inside the scratch bundle like every book."""
+    if not source_path(root, 'Cargo.toml').is_file():
+        return [], []
+    env = {k: v for k, v in os.environ.items() if k not in {'RUSTDOCFLAGS', 'CARGO_TARGET_DIR'}}
+    target = scratch / 'cargo'
+    result = subprocess.run(['cargo', 'doc', '--workspace', '--no-deps', '--offline',
+                             '--target-dir', str(target)], cwd=root, capture_output=True, text=True, env=env)
+    if result.returncode or not (target / 'doc').is_dir():
+        last = (result.stderr or result.stdout).strip().splitlines() or ['no output']
+        return ['API REFERENCE DOES NOT BUILD: ' + last[-1]], []
+    reference = output / API_REFERENCE
+    shutil.copytree(target / 'doc', reference)
+    return [], [reference]
+
+
+def navigation_findings(web_root: Path, output_dirs: list[Path],
+                        references: list[Path] | tuple = ()) -> tuple[list[str], int]:
     web_root = web_root.resolve()
+    references = [r.resolve() for r in references]
+    inside_reference = lambda path: any(path.is_relative_to(r) for r in references)
     documents = {}
     findings = []
     for output in output_dirs:
@@ -95,6 +127,9 @@ def navigation_findings(web_root: Path, output_dirs: list[Path]) -> tuple[list[s
         if not any(p.name not in {'print.html', '404.html'} for p in pages):
             findings.append('NO RENDERED BOOK ' + output.relative_to(web_root).as_posix())
         for page in pages:
+            if inside_reference(page.resolve()):
+                continue  # rustdoc's own pages: their links are API-DOCS's business
+
             if (page.is_symlink() or not page.is_file() or
                     not page.resolve().is_relative_to(web_root) or
                     page.stat().st_dev != web_root.stat().st_dev):
@@ -130,6 +165,8 @@ def navigation_findings(web_root: Path, output_dirs: list[Path]) -> tuple[list[s
             if target.stat().st_dev != web_root.stat().st_dev:
                 findings.append('BOOK-LINK unsafe-destination ' + label)
                 continue
+            if inside_reference(target):
+                continue  # a link into the reference must land on a page; its anchors are rustdoc's
             if url.fragment and target.suffix.lower() == '.html':
                 if target not in documents:
                     documents[target] = Document(target.read_text(encoding='utf-8'))
@@ -198,7 +235,7 @@ def check_books(root: Path) -> tuple[list[str], int, int]:
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='bundle-', dir=parent) as allocated:
         scratch = Path(allocated)
-        outputs = []
+        outputs, references = [], []
         for book in books:
             uid = next((u['id'] for u in units if book == root / u['book'].rstrip('/')), 'project')
             if not book.is_dir():
@@ -217,7 +254,11 @@ def check_books(root: Path) -> tuple[list[str], int, int]:
                 findings.append('BOOK DOES NOT BUILD ' + uid + ': ' + (result.stderr or result.stdout).strip())
                 continue
             outputs.append(output)
-        navigation, checked = navigation_findings(scratch / 'docs', outputs)
+            if uid == 'project':
+                built, refs = api_reference(root, scratch, output)
+                findings.extend(built)
+                references.extend(refs)
+        navigation, checked = navigation_findings(scratch / 'docs', outputs, references)
         findings.extend(navigation)
     return findings, len(units), checked
 

@@ -51,6 +51,9 @@ test: vendor
 
 book:
 	mdbook build docs/book
+	@# RUSTDOC.2: the API reference is rustdoc, built with the book into its (untracked) output
+	cargo doc --workspace --no-deps --offline
+	rm -rf docs/book/book/api && cp -R target/doc docs/book/book/api
 	@for b in docs/models/*/book.toml; do mdbook build "$$(dirname "$$b")" || exit 1; done
 
 # make ci — the NAMED full local suite (PUSH-DISCIPLINE.2), run by the pre-push hook before

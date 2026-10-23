@@ -67,9 +67,26 @@ undocumented public items never rises.
   Progress; LIVE_STATUS re-derived to 41 doctrines and 1,662 arms.
 
 - ID: `RUSTDOC.2` — **the reference is built with the book**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0002`; owned on clean 0fde1f1; evidence target/rustdoc/rd0002)
   Goal: `make book` builds the reference into the book output and a book chapter links it.
   Acceptance: `make book` rc 0; the link resolves in the built book; nothing new is tracked.
+  Measured constraint (prototype.log): UNIT-BOOKS builds every book fresh and verifies every rendered link
+  offline. Placing `cargo doc` output inside the project book's fresh output (534 pages, 18.3 MB, built in
+  2.0 s) makes its scan check 93,094 links in 3.3 s with 2,332 findings, all rustdoc conventions rather than
+  breakage: 2,324 `missing-anchor` (source line ranges such as `#184-195` resolved by JavaScript;
+  percent-encoded impl ids such as `#impl-Borrow%3CT%3E-for-T`, which the checker unquotes before comparing),
+  `help.html -> ./index.html` (`cargo doc` writes no workspace index). So the checker builds the reference
+  into its fresh bundle and verifies that every book link INTO it lands on an existing page, but does not
+  scan the reference's own pages: their internal links are rustdoc's, held by API-DOCS.
+  Result: `scripts/unit_books.py` builds `cargo doc --workspace --no-deps --offline` into the fresh project
+  bundle under `api/` (never inheriting `RUSTDOCFLAGS` or a target directory; no workspace manifest, no
+  reference) and `navigation_findings` takes the reference directories: their pages are not scanned, a link
+  into them must land on an existing page, and its fragment is not judged. `make book` runs the same
+  `cargo doc` and copies `target/doc` into `docs/book/book/api/` (untracked, 20 MB, 4 s). The new chapter
+  "The API reference" (Working in this repository) links the four crate roots and states the measured
+  coverage; the derived book index regenerated, LIVE_STATUS re-derived to 50 chapters. Containment note:
+  `docs/toolbox/governance.md` stands at 16,302 of its 16,384-byte part ceiling, so this unit's toolbox note
+  went to the execution part; the next governance row needs a partition first.
 
 - ID: `RUSTDOC.3` — **missing-docs ratchet**
   Status: `pending`
@@ -92,7 +109,7 @@ undocumented public items never rises.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.2` | `pending` | the reference is built with the book; the gate now holds the links |
+| 1 | `RUSTDOC.3` | `pending` | the missing-docs ratchet; the reference is now reachable from the book |
 
 ## Decisions
 
@@ -117,8 +134,18 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — make-check.log: `make check` rc 0 in 46 s (fmt, clippy -D warnings, `test result: ok. 287 passed`, `173 passed`, `17 passed`, 0 failed); checks.log: `DEF-GEN: ok` for both modules, `STATE-GEN: ok`, `GUEST-GEN: ok`, `FIXTURE-FINGERPRINT: ok (1 pinned fingerprint(s) re-derived)`, `MATERIALS-BILL: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `EXTRACTION: ok`, `SEMANTICS: ok`, `FP-VECTORS: ok`, `M-VECTORS: ok (4485 vectors …)`, `UNIT-BOOKS: ok`; `python3 -B scripts/review_div_method.py` → `satisfied rv64gc-m-forms-v3`, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; `bash scripts/check_registry_mirror.sh` → `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 40 → 41 doctrines and 1655 → 1662 arms; focused checks rc 0 (focused-checks.json).
 - [x] **LOCKSTEP** — the registry entry, `DOCTRINE_ENFORCEMENT.md`, the book's doctrines chapter, `docs/doctrines/evidence.md`, the execution toolbox row, LIVE_STATUS (counts; the tooling row In Progress), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.2)
+
+- [x] **REPRODUCE / ISSUE** — `ls -d docs/book/book/api` → `No such file or directory` after `make book` at 0fde1f1: no reference in the book; `grep -n "cargo doc" Makefile` empty.
+- [x] **ROOT CAUSE (WHY + WHERE)** — prototype.log: rustdoc output placed in the fresh project bundle → `navigation over book + api: 93094 links checked in 3.3s, 2332 findings` (`BOOK-LINK missing-anchor` 2324, `missing-path` 8, e.g. `api/help.html -> ./index.html`, `#184-195`, `#impl-Borrow%3CT%3E-for-T`); `grep -n "unquote(url.fragment)" scripts/unit_books.py` (the checker unquotes fragments rustdoc keeps encoded): the book checker cannot scan rustdoc's pages, and a book link into a reference the fresh bundle lacks would be `missing-path`.
+- [x] **FIX** — `api_reference()` and the `references` boundary in `scripts/unit_books.py`; three probe tests and three seams in `scripts/probe_unit_books.py`; `make book` runs `cargo doc` and copies `target/doc`; the chapter `docs/book/src/working/api-reference.md` and its SUMMARY line; `python3 scripts/gen_book_index.py` regenerated `docs/book/src/index.md`.
+- [x] **ADDRESSED (verified)** — probe.log: `python3 -B [-O] scripts/probe_unit_books.py` → `Ran 55 tests … OK` both modes; seams `scan-reference: … FAILED (failures=2)`, `no-reference-check: … FAILED (failures=2)`, `no-api-build: … FAILED (failures=1)`; `make book` rc 0 in 4 s with `docs/book/book/api/` holding `semulith semulith_core semulith_dsp56300 semulith_verify` (`du -sh` 20M); `bash scripts/check_unit_books.sh` → `UNIT-BOOKS: ok (6 units + project book; catalogue and 3722 rendered hyperlinks checked in fresh bundle)` (3694 before); red-real-tree.log: the chapter's first link changed to `fn.absent.html` → `BOOK-LINK missing-path book/book/working/api-reference.html -> ../api/semulith_core/fn.absent.html` and the print page likewise, rc 1, then restored `adbc76de2e3f8a6ac91dfaf40d7706e0c492b3d7844d8f1c323ea8f9a61ea9cd` byte-identical.
+- [x] **NO REGRESSION** — `bash scripts/check_book_index.sh` → `BOOK-INDEX: ok (docs/book/src/index.md matches the book, 40 table rows)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 49 → 50 chapters; `git status --short docs/book` → only `SUMMARY.md`, `index.md` and the new chapter (the 20 MB reference untracked under `/docs/book/book`); focused checks rc 0 (focused-checks.json); no Rust source, pinned module or evidence byte changed.
+- [x] **LOCKSTEP** — the chapter, SUMMARY, the derived index, LIVE_STATUS (50 chapters), `docs/doctrines/governance.md` (UNIT-BOOKS row), the execution toolbox row, the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
   (target/rustdoc-xtask-assessment/).
 - `2026-10-23`: RUSTDOC.1 done — API-DOCS registered; 20 defects fixed at their source; RUSTDOC.2 next.
+- `2026-10-23`: RUSTDOC.2 done — the reference is built with the book and linked from it; RUSTDOC.3 next.

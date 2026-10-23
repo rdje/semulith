@@ -264,6 +264,42 @@ class BookTests(unittest.TestCase):
         self.assertFalse((self.root / 'docs/book/book').exists())
         self.assertFalse((self.root / 'docs/models/u1/book').exists())
 
+    def reference_navigation(self, book_page, reference_pages):
+        """A book page plus an `api/` reference tree inside the same output (RUSTDOC.2)."""
+        output = self.root / 'web/book'
+        self.write('web/book/index.html', book_page)
+        for name, body in reference_pages.items():
+            self.write('web/book/api/' + name, body)
+        return B.navigation_findings(self.root / 'web', [output], [output / 'api'])
+
+    def test_reference_pages_are_not_scanned_but_links_into_them_resolve(self):
+        """rustdoc's own links (line ranges, encoded ids, a missing root index) are API-DOCS's business."""
+        findings, checked = self.reference_navigation(
+            '<h1>Book</h1><a href="api/crate/index.html">reference</a>',
+            {'crate/index.html': '<a href="../src/lib.rs.html#3-9">src</a><a href="#impl-From%3CT%3E">impl</a>'
+                                 '<a href="./index.html">help</a><a href="../../missing.html">gone</a>'})
+        self.assertEqual(findings, [])
+        self.assertEqual(checked, 1)
+
+    def test_link_into_the_reference_must_land_on_a_page(self):
+        findings, _ = self.reference_navigation(
+            '<h1>Book</h1><a href="api/crate/missing.html">reference</a>', {'crate/index.html': '<h1>crate</h1>'})
+        self.assertTrue(any('missing-path index.html -> api/crate/missing.html' in f or
+                            'missing-path book/index.html -> api/crate/missing.html' in f for f in findings), findings)
+
+    def test_fresh_bundle_builds_the_api_reference(self):
+        """A workspace manifest makes the checker document it fresh; a book link into it resolves."""
+        self.write('Cargo.toml', '[workspace]\nresolver = "2"\nmembers = ["probecrate"]\n')
+        self.write('probecrate/Cargo.toml', '[package]\nname = "probecrate"\nversion = "0.1.0"\nedition = "2021"\n')
+        self.write('probecrate/src/lib.rs', '//! A documented probe crate.\n/// One.\npub fn one() -> u32 { 1 }\n')
+        self.write('docs/book/src/intro.md', '# Intro\n\n[the reference](api/probecrate/index.html)\n')
+        findings, _, links = B.check_books(self.root)
+        self.assertEqual(findings, [])
+        self.write('docs/book/src/intro.md', '# Intro\n\n[the reference](api/probecrate/fn.absent.html)\n')
+        findings, _, _ = B.check_books(self.root)
+        self.assertTrue(any('missing-path' in f and 'api/probecrate/fn.absent.html' in f for f in findings), findings)
+        self.assertFalse((self.root / 'target').exists())
+
     def test_stale_success_output_cannot_supply_missing_fresh_render(self):
         self.write('docs/book/book/index.html', '<h1>Stale project</h1>')
         self.write('docs/models/u1/book/index.html', '<h1>Stale model</h1>')
@@ -283,7 +319,7 @@ def main():
     args = sys.argv[1:]
     if args:
         if len(args) != 2 or args[0] != '--mutation':
-            raise SystemExit('usage: probe_unit_books.py [--mutation no-catalogue|no-navigation|no-path-guard|reuse-stale|no-include-env|no-include-witness|no-include-refusal]')
+            raise SystemExit('usage: probe_unit_books.py [--mutation scan-reference|no-reference-check|no-api-build|no-catalogue|no-navigation|no-path-guard|reuse-stale|no-include-env|no-include-witness|no-include-refusal]')
         mode = args[1]
         if mode == 'no-catalogue':
             B.catalogue_findings = lambda *args: []
@@ -306,6 +342,22 @@ def main():
             mutant = types.ModuleType('unit_books_mutant')
             mutant.__file__ = B.__file__
             exec(compile(source, mutant.__file__, 'exec'), mutant.__dict__)
+            B = mutant
+        elif mode in {'scan-reference', 'no-reference-check', 'no-api-build'}:
+            source = Path(B.__file__).read_text()
+            old, new = {
+                'scan-reference': ("            if inside_reference(page.resolve()):\n                continue  # rustdoc's own pages",
+                                   "            if False:\n                continue  # rustdoc's own pages"),
+                'no-reference-check': ("            if not target.is_relative_to(web_root):\n                findings.append('BOOK-LINK unsafe-destination ' + label)\n                continue\n            if target.is_dir():",
+                                       "            if not target.is_relative_to(web_root):\n                findings.append('BOOK-LINK unsafe-destination ' + label)\n                continue\n            if inside_reference(target):\n                continue\n            if target.is_dir():"),
+                'no-api-build': ("    if not source_path(root, 'Cargo.toml').is_file():\n        return [], []",
+                                 "    if True:\n        return [], []"),
+            }[mode]
+            if source.count(old) != 1:
+                raise SystemExit('nonunique reference mutation seam ' + mode)
+            mutant = types.ModuleType('unit_books_mutant')
+            mutant.__file__ = B.__file__
+            exec(compile(source.replace(old, new, 1), mutant.__file__, 'exec'), mutant.__dict__)
             B = mutant
         elif mode == 'reuse-stale':
             source = Path(B.__file__).read_text()

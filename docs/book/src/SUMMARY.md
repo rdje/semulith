@@ -62,6 +62,7 @@
 - [Task-trees](working/task-trees.md)
 - [What "checked" means](working/claim-verification.md)
 - [The doctrine gates](working/doctrines.md)
+- [The API reference](working/api-reference.md)
 - [Provenance and frozen records](working/provenance.md)
 
 # Annexes
