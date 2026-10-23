@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -694,16 +694,41 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   carries the procedure and the finding is recorded here).
 
 - ID: `ARTIFACT-CLEANUP.26` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-10-23` UTC, `SEMULITH-AC-0083`)
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-10-23T08:12Z), repeat the four acts in a fresh work directory with the
   log inside it; overwrite the record from the receipt; sync and normal COMMIT.
+
+  Result (`2026-10-23T10:15Z`, `SEMULITH-AC-0083`): run at 26 h, after 6336c62
+  with a clean tree and `handoff: OK`, in target/artifact-cleanup/AC0083 with
+  run.log inside it (10:10:09Z to 10:15:09Z). The first launch wrote nothing:
+  the run script appends its log inside the work directory before the plan act
+  creates it, so the directory is made first (mode 700, as the tool's own
+  creation; the plan act accepts an existing directory). Plan: 73 candidates
+  (296,851,336 B), 19,342 retained files (153,838,837 B). Strict selection: 6
+  approved (15,766,468 B, the latest captured engine/guest/core sessions), 67
+  unrecorded (281,084,868 B). The act's fresh census returned `handoff: OK`;
+  the guarded core removed exactly the 6, residue 0, journal
+  `recorded-complete` at `verified`; `--inspect` confirms plan, selection and
+  journal. The one-entry record is overwritten. Finding: the unrecorded
+  population held at 67 sessions (281,084,868 B, 12 B less) across 26 h and
+  nine gated commits plus five refused gate runs, so the mutation builds reuse
+  a fixed set of sessions rather than adding about 90 MB per commit as .25
+  feared; the Open Question below is updated. promotion: declined (routine
+  recurrence; the .24 entry carries the procedure).
+
+- ID: `ARTIFACT-CLEANUP.27` — **the next recurring cleanup**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-10-24T10:15Z), create the fresh work directory, repeat the four acts
+  with the log inside it; overwrite the record from the receipt; sync and
+  normal COMMIT.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.26` | `pending` | the next recurring cleanup, due after 2026-10-23T08:12Z; until then P4-SYSTEM.14 resumes |
+| 1 | `ARTIFACT-CLEANUP.27` | `pending` | the next recurring cleanup, due after 2026-10-24T10:15Z; until then P4-SYSTEM.14 resumes |
 
 ## Decisions
 
@@ -723,7 +748,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   and rustc garbage-collects them only on a successful build of the same session — which the
   mutation copies never get. Either the gate's mutation runs build into a disposable session
   directory, or the ledger gains a recorded class for them. Deferred until a cleanup finds them
-  still growing; nothing here is an input.
+  still growing; nothing here is an input. AC0083 (2026-10-23, .26): still 67 sessions
+  (281,084,868 B) after nine more gated commits — a stable set, not growth; deferral stands.
 
 ## Blockers
 
@@ -847,6 +873,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-23` UTC | `.26` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,468 B), residue 0, 67 unrecorded and 19,342 retained kept |
 | `2026-10-22` UTC | `.25` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,472 B), residue 0, 67 unrecorded and 18,995 retained kept |
 | `2026-10-20` UTC | `.24` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 19 candidates removed (15,766,463 B), residue 0, 13 unrecorded and 18,724 retained kept |
 | `2026-10-20` UTC | `.14` | operator 10 tests normal/O; 3 omissions; artifact146 | census bound before the core; receipts truthful; activity closed |
@@ -855,6 +882,8 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0083 (leaf ARTIFACT-CLEANUP.26): the third recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded residue measured stable at 67.
 
 `SEMULITH-AC-0082 (leaf ARTIFACT-CLEANUP.25): the second recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded mutation-build residue measured as an open question.
 
@@ -870,6 +899,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-23` UTC: .26 done; third cleanup event through the act, 6 outputs removed, record overwritten; the 67 unrecorded sessions are a stable set.
 - `2026-10-22` UTC: .25 done; second cleanup event through the act, 6 outputs removed, record overwritten; 67 unrecorded sessions measured.
 - `2026-10-20` UTC: .24 done; first cleanup event through the act, 6 outputs removed, record overwritten.
 - `2026-10-20` UTC: .14 verified; the supported act binds a fresh host census before the guarded core; activity closed.

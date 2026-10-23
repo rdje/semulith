@@ -15,7 +15,8 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: `P4-SYSTEM.14` — a42ay (the crediting mechanism) and a42ba (archive part 21) committed; the
-  act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
+  act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` when the record is ~24 h old (after 2026-10-24T10:15Z;
+  create target/artifact-cleanup/AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
 - last_unit: `P4-SYSTEM.14` a42ba / `SEMULITH-P4-0294` — the closed `.14` records a42aq–a42aw and rows
@@ -26,7 +27,8 @@
   (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`. (c) is done: a42bb
   retained the eleven other M statements and Table 1 (`RVI-M-STATEMENTS`, decision_m-statements-retained.md).
   Also due
-  `ARTIFACT-CLEANUP.26` after 2026-10-23T08:12Z and the LIVE-CONTAINMENT tree's own archive move (its file
+  the RUSTDOC/XTASK registration (director, 2026-10-23; drafts in target/rust-tooling/) and the LIVE-CONTAINMENT
+  tree's own archive move (its file
   ~128 KB of 131,072 B). LIVE_STATUS was trimmed to states by LC-0053 (4,771 of 6,144 B).
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
