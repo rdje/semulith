@@ -14,28 +14,32 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` — next slice a42ax (switch the retained reviews to the m-forms capture);
-  `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
+- active_work_unit: `P4-SYSTEM.14` — next slice a42ay (the crediting act for `REQ-GC-M`: authority, mechanism,
+  retained excerpts); `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `P4-SYSTEM.14` a42aw / `SEMULITH-P4-0291` — `rv64gc-m-forms-v3` captured once by the new
-  tracked `scripts/retain_div_capture.py`: AGREE/AGREE/DIVERGE over 33 boundaries, 25 properties bound, all
-  findings matched, 43 of 43 family files, qualification false, `REQ-GC-M` planned.
-- next_action: `P4-SYSTEM.14` a42ax — switch the retained reviews to the m-forms capture:
-  `review_div_method.RETAINED_CASE_ID`, `MEASURED_SHA256`/`MEASURED_BYTES` (16,942 B, fb22d5e5…),
-  `SOURCE_DECLARATION_COMMIT` 4af5a68…, `RETAINED_CAPTURE_COMMIT` (the a42aw commit) and
-  `review_div_policy.CASE_ID` to `rv64gc-m-forms-v3`; make `probe_div_method`'s fixture and the policy
-  probe's real-tree arm follow the retained case (the policy should measure all ten legs `satisfied`,
-  `credited: false`); update the policy-adequacy chapter and the toolbox rows; commit. Then the
-  crediting decision for `REQ-GC-M` is a separately owned record (policy: a satisfied measurement is its input).
+- last_unit: `P4-SYSTEM.14` a42ax / `SEMULITH-P4-0292` — the retained reviews read `rv64gc-m-forms-v3`
+  (consumers only, no pinned module moved): method `satisfied` (85 files / 1,076,834 B, 40,438 snapshot),
+  `DIV-POLICY: satisfied — 10 of 10 legs`, `credited` false, `REQ-GC-M` planned with both cases pending;
+  the first case is `invalidated` history (`decision_ten-legs-satisfied-credit-separate.md`).
+- next_action: `P4-SYSTEM.14` a42ay — the crediting act for `REQ-GC-M`, a separately owned record: settle
+  (1) the authority (who credits, on which retained normative excerpts — only the DIV statement is retained
+  today; the multiply and Table 1 statements are cited, not retained: a retention slice like a42z first?),
+  (2) the mechanism (`requirement_status.credited()` reads a receipt's `qualification`, but a retained receipt
+  is never replaced — a new record the derivation reads, not a rewrite), (3) the status move `planned` →
+  the policy's credited disposition with its probe seams; read `decision_policy-legs-measured-two-pending.md`
+  and `decision_ten-legs-satisfied-credit-separate.md` first. Also due: LIVE_STATUS.md bounded-snapshot
+  re-derivation (6,137 of 6,144 B), `ARTIFACT-CLEANUP.26` after 2026-10-23T08:12Z.
 - in_flight_uncommitted: none after the normal commit workflow.
-- blockers: none. Gate cost ~45 min to 2 h per commit; the self-test refusal of 2026-10-21 stays
-  unexplained (.14 a42ar). Open question for the director (a42at record): only the DIV statement is a
-  retained excerpt; the multiply and Table 1 statements are cited, not retained.
+- blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
+  machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
+  since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
+  next REFUSED, read it first. Open question for the director (a42at, a42ax records): only the DIV
+  statement is a retained excerpt; the multiply and Table 1 statements are cited, not retained.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42aw, a42av; `target/p4-system-14/a42aw` (reproduce.log,
-  capture-report.json, offline-reevaluation.log, seams-retention.log, focused-checks.json);
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ax, a42aw; `target/p4-system-14/a42ax` (reproduce.log,
+  review-method.json, policy-legs-v3-detail.log, probe-*.log, seams-*.log, focused-checks.json);
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

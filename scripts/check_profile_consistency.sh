@@ -2131,6 +2131,8 @@ DIV_RETENTION_CASES
   # P4-SYSTEM.14 a42ao: retained finite method, with no reference process. a42as: the deep arms run
   # against a synthetic current capture built in the copy, so every seam stays reachable while the
   # curated capture is invalidated; one real-tree arm asserts satisfied or stale as the manifest predicts.
+  # a42ax: the fixture, the synthetic reference and the real-tree arm follow the review's retained case
+  # (`review_div_method.RETAINED_CASE_ID`, the m-forms capture); the seam counts are unchanged.
   local div_method_mode div_method_mutation div_method_losses
   local -a div_method_python
   for div_method_mode in normal optimized; do
@@ -2177,6 +2179,8 @@ DIV_METHOD_CASES
   # a42as: a stale finite method is `invalidated` with exit 0 (lock-stale seam); the real-tree arm
   # predicts pending or invalidated from the manifest, so a moved pinned input is not a refusal.
   # a42at: the discriminating-control leg reads the property the control_run names (first-property seam).
+  # a42ax: the retained case is the m-forms capture; the real-tree arm asserts its ten legs satisfied and
+  # `credited` false while every pin is current, `invalidated` missing the two method legs once one moves.
   local policy_mode policy_mutation
   local -a policy_python
   for policy_mode in normal optimized; do
@@ -2230,8 +2234,15 @@ fi
 [ "${1:-}" = "--csr-cross" ] && { check_profiles "$@"; exit $?; }
 
 [ -d profiles ] || { echo "PROFILE-CONSISTENCY: ok (no profiles/ yet)"; exit 0; }
-self_test >/dev/null 2>&1 || {
-  echo "PROFILE-CONSISTENCY: REFUSED — the check does not discriminate (self-test failed)." >&2; exit 2; }
+# The self-test's output is KEPT (a42ax, 2026-10-23): two gate refusals (2026-10-21, 2026-10-23) had
+# discarded the MISS lines that name the failing arm, and neither reproduced from the shell.
+selftest_log="$ROOT/target/profile-consistency-selftest.log"
+mkdir -p "$ROOT/target"
+self_test >"$selftest_log" 2>&1 || {
+  { echo "PROFILE-CONSISTENCY: REFUSED — the check does not discriminate (self-test failed)."
+    grep -n -A3 "self-test MISS" "$selftest_log" | head -40 | sed 's/^/  /'
+    echo "  the self-test's complete output is kept at target/profile-consistency-selftest.log"; } >&2
+  exit 2; }
 
 out="$(check_profiles profiles)"; rc=$?
 count="$(printf '%s' "$out" | sed -n 's/^__CHECKED__ //p')"

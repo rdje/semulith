@@ -1,12 +1,16 @@
 # Checking the retained finite method
 
-The first retained DIV case now has a read-only method consumer. It composes the
+The retained DIV case has a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-For the retained case the method result is `satisfied`, full policy is `pending`,
-and replay is `not-checked`. This is one signed−7/2 rounding witness and its wrong
-quotient control. It does not qualify the profile or establish all thirteen M
-forms, `REQ-GC-M`, `OB-GC-M`, CPU acceptance or reference independence.
+For the retained case — `rv64gc-m-forms-v3` since a42ax (2026-10-23); the first case,
+`rv64gc-signed-div-truncation-v2`, was the retained case from a42ao to a42aw and is
+`invalidated` history — the method result is `satisfied`, full policy is `pending`
+as the method sees it (the [policy legs](policy-adequacy.md) measure all ten
+satisfied), and replay is `not-checked`. This is thirteen M forms and twelve Table 1
+cells under one program, with the −7/2 rounding witness's wrong quotient as the
+control. It does not qualify the profile, credit `REQ-GC-M` or `OB-GC-M`, or
+establish CPU acceptance or reference independence.
 
 ## The selected authority and capture
 
@@ -15,15 +19,19 @@ in `scripts/matched_gpr_adequacy.py` opens no artifact and launches no process;
 the existing schema tools retain their own I/O. Neither a stored qualified flag
 nor `verification.json` supplies a verdict or method authority to this consumer.
 
-The consumer selects the original measured record by its reviewed 9,928-byte
-identity and SHA256
-`2cb6c7041be5a6e52213c57fe7b1507ad096e76aebcc8323884679526fc6b29e`.
+The consumer selects the measured record by its reviewed 16,942-byte identity
+and SHA256
+`fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152`.
 Source and predeclarations were committed in
-`b160c66e183dee267ebf12edf25066412fe96ff6`; capture was retained in
-`c91d08f52a2c8027092f2014e93f0e47ca4df557`. Those labels are historical review
+`4af5a68bbec9f1bf0922ec3787f829e029c15f29`; capture was retained in
+`e775705e2cebbafabe05f0458da8d52004d604cb`. Those labels are historical review
 facts, not a runtime Git check or independent execution attestation. The review
 trusts the tracked collector and the committed procedure that produced the
-historical processes. Unknown/shared ancestry earns no independence credit.
+historical processes. Unknown/shared ancestry earns no independence credit. The
+pointers live in `scripts/review_div_method.py`, which no case pins, so moving them
+to a new capture invalidates nothing (`decision_caller-names-the-case.md`); the
+first case's pointers were the 9,928-byte record `2cb6c704…`, commits `b160c66…` /
+`c91d08f…`.
 
 The three native declarations must equal the current public generator's output.
 To bind the measured native graph to its predeclaration, the checker restores
@@ -107,15 +115,16 @@ PY_METHOD
 ```
 
 The output is `satisfied pending not-checked`, `valid matched pending`,
-`85 1048756 33759`, then `1100198 134217728 39`.
+`85 1076834 40438`, then `1142222 134217728 39`.
 
 ```bash
 python3 -B scripts/review_div_method.py
-python3 -B scripts/review_div_method.py --max-read-bytes 1100198
+python3 -B scripts/review_div_method.py --max-read-bytes 1142222
 ```
 
-Both emit derived JSON within 64 KiB and exit zero. An allowance of 1,100,197
-cannot satisfy the method. Exit 2 means unavailable or unsupported; exit 1 means
+Both emit derived JSON within 64 KiB and exit zero. An allowance of 1,142,221
+cannot satisfy the method (`refused files: artifact exceeds snapshot byte limit`,
+exit 1). Exit 2 means unavailable or unsupported; exit 1 means
 another unsatisfied disposition. These commands neither write historical
 artifacts nor repeat canonical execution. Preserve the original capture names.
 

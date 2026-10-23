@@ -23,8 +23,9 @@ retained case pins by SHA256, so editing it is a re-capture, not a note.
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name. Today the derivation is honest and small:
-48 requirements derive `planned`, the one retained case (`rv64gc-signed-div-truncation-v2`)
-is uncredited at `pending`, and no recorded status drifts. The probe
+48 requirements derive `planned`, both cases (`rv64gc-signed-div-truncation-v2`, invalidated
+history; `rv64gc-m-forms-v3`, the retained case whose ten policy legs measure satisfied) are
+uncredited at `pending`, and no recorded status drifts. The probe
 `scripts/probe_requirement_status.py` runs 17 synthetic-graph tests in both
 interpreter modes and five seam omissions that each fail their discriminating test.
 Nothing here advances a status; only executed, qualified evidence does.

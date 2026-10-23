@@ -284,10 +284,20 @@ def main(argv: list[str]) -> int:
 
 
 def _selftest() -> int:
+    import shutil
     import tempfile
     passed = failed = 0
     temporary_root = REPO / "target/doctrine-selftest"
     temporary_root.mkdir(parents=True, exist_ok=True)
+    # Every fixture directory this self-test creates is removed when it ends (a42ax, 2026-10-23):
+    # before that, each run left its 19 directories behind — 5,494 of them, 87 MB, by the gate run
+    # of 2026-10-23 — a leak no cleanup act governs because the fixtures are not recorded outputs.
+    created: list[Path] = []
+
+    def scratch() -> Path:
+        d = Path(tempfile.mkdtemp(dir=temporary_root))
+        created.append(d)
+        return d
 
     def arm(label, fn):
         nonlocal passed, failed
@@ -301,7 +311,7 @@ def _selftest() -> int:
             print(f"  ok    {label}"); passed += 1
 
     def fixture(html: str, sem: str) -> tuple[Path, Path, Path]:
-        d = Path(tempfile.mkdtemp(dir=temporary_root))
+        d = scratch()
         (d / "w").mkdir()
         (d / "w" / "a.html").write_text(html)
         digest = hashlib.sha256(html.encode()).hexdigest()
@@ -353,7 +363,7 @@ def _selftest() -> int:
         headings('<h3><a class="x" href="#y">3.1.2.</a> <span>Sub</span></h3>'), {"3.1.2"}))
 
     def corpus_fixture():
-        d = Path(tempfile.mkdtemp(dir=temporary_root))
+        d = scratch()
         (d / "definitions" / "riscv").mkdir(parents=True)
         for prof, sid, html_text in (("p1", "S", H), ("p2", "T", "<h2>7.1. Other</h2>")):
             w = d / "profiles" / prof / "w"
@@ -381,14 +391,18 @@ def _selftest() -> int:
     arm("GREEN fetched-only artifacts are available without a materials cache",
         lambda: _eq(artifacts_available(corpus_fixture()), True))
     arm("GREEN an absent artifact set permits named-skip dispatch",
-        lambda: _eq(artifacts_available(Path(tempfile.mkdtemp(dir=temporary_root))), False))
+        lambda: _eq(artifacts_available(scratch()), False))
     arm("GREEN a partial fetched directory reaches refusal rather than named skip",
         lambda: _eq((lambda d: ((d / 'profiles/p1/w/a.html').unlink(),
                                (d / 'profiles/p2/w/a.html').unlink(),
                                artifacts_available(d))[-1])(corpus_fixture()), True))
 
-    print(f"check_citations --self-test: {passed} pass / {failed} fail")
-    return 1 if failed else 0
+    for d in created:
+        shutil.rmtree(d, ignore_errors=True)
+    leaked = [d for d in created if d.exists()]
+    print(f"check_citations --self-test: {passed} pass / {failed} fail; "
+          f"{len(created)} fixture directories removed, {len(leaked)} left behind")
+    return 1 if failed or leaked else 0
 
 
 def _eq(got, want):

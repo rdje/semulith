@@ -143,6 +143,7 @@
 - [`decision_task-tree-family-bound.md`](docs/decisions/decision_task-tree-family-bound.md)
 - [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
 - [`decision_task-tree-per-part-growth.md`](docs/decisions/decision_task-tree-per-part-growth.md)
+- [`decision_ten-legs-satisfied-credit-separate.md`](docs/decisions/decision_ten-legs-satisfied-credit-separate.md)
 - [`decision_work-unit-prefix-semulith.md`](docs/decisions/decision_work-unit-prefix-semulith.md)
 - [`reference_fp-model-layer-acceptance.md`](docs/decisions/reference_fp-model-layer-acceptance.md)
 - [`reference_miri-reported-time-is-simulated.md`](docs/decisions/reference_miri-reported-time-is-simulated.md)

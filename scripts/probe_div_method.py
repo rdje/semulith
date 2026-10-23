@@ -29,12 +29,14 @@ from pathlib import Path
 import json, sys
 runtime = Path(sys.argv[1]); sys.path.insert(0, str(runtime / "scripts")); sys.dont_write_bytecode = True
 import capture_div as A
-declaration = A.prepare_capture()
+import review_div_method as M
+case, prefix = M.RETAINED_CASE_ID, A.prefix(M.RETAINED_CASE_ID)
+declaration = A.prepare_capture(case)
 for name, payload in A.declaration_files(declaration):
-    with (runtime / A.PREFIX / name).open("xb") as stream: stream.write(payload)
-result = A.capture()
+    with (runtime / prefix / name).open("xb") as stream: stream.write(payload)
+result = A.capture(case)
 if result.disposition == "pending":
-    with (runtime / A.PREFIX / "measured-experiment.sexp").open("xb") as stream: stream.write(result.experiment)
+    with (runtime / prefix / "measured-experiment.sexp").open("xb") as stream: stream.write(result.experiment)
 print(json.dumps(dict(status=result.disposition)))
 '''
 MUTATION = None
@@ -44,7 +46,7 @@ SEAMS = {
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
 ''', ""),
     "capture-origin": ("review_div_method.py", "sha256=MEASURED_SHA256, byte_size=MEASURED_BYTES",
-                       'sha256=A.Artifacts.observe_bounded_file(ROOT, A.PREFIX + "/measured-experiment.sexp", max_bytes=A.SMALL_BYTES).sha256, byte_size=MEASURED_BYTES'),
+                       'sha256=A.Artifacts.observe_bounded_file(ROOT, A.prefix(RETAINED_CASE_ID) + "/measured-experiment.sexp", max_bytes=A.SMALL_BYTES).sha256, byte_size=MEASURED_BYTES'),
     "record-binding": ("matched_gpr_adequacy.py", '''        _need(normalized == planned_forms, "measured record changes non-observation predeclaration data")
 ''', ""),
     "influence-selection": ("matched_gpr_adequacy.py", '''            _need(len(selected) == 1
@@ -125,20 +127,21 @@ subprocess.Popen=denied
 import capture_div as A
 import matched_gpr_adequacy as K
 import review_div_method as M
+PREFIX=A.prefix(M.RETAINED_CASE_ID)
 def digest(data):return hashlib.sha256(data).hexdigest()
 def fixture(evaluate=True):
- d=A.prepare_capture()
+ d=A.prepare_capture(M.RETAINED_CASE_ID)
  c=K.freeze_review(planned_experiment=d.planned_experiment,dependencies=d.dependencies,
                   scope=d.authorities.scope,current_candidate=dict(d.authorities.reference.fields),
-                  inventory=d.inventory,impact_review=d.impact)
- data=(root/A.PREFIX/'measured-experiment.sexp').read_bytes()
+                  inventory=d.inventory,impact_review=d.impact,case_id=M.RETAINED_CASE_ID)
+ data=(root/PREFIX/'measured-experiment.sexp').read_bytes()
  b=K.bind_measured_capture(c,data)
  e=None
  if evaluate:
   raw=next(f for f in A.S.parse(data.decode()) if f[0]=='experiment')
   e=A.Unit.Evaluation.evaluate_retained_unit(root,raw_experiment=raw,scope=d.authorities.scope,
     current_candidate=dict(d.authorities.reference.fields),reviewed_inputs=d.inventory,
-    author_review=d.author,impact_review=d.impact,property_authority=d.authorities.property_authority)
+    author_review=d.author,impact_review=d.impact,property_authority=d.authorities.property_authority,case_id=M.RETAINED_CASE_ID)
  return d,c,data,b,e
 def report(result):
  value=asdict(result);value['checker_source_count']=len(value.pop('checker_sources'))
@@ -174,7 +177,7 @@ elif mode=='immutable':
   else:blocked.append(False)
  result=report(r);result['frozen']=blocked
 elif mode=='root-mismatch':
- (root/A.PREFIX/'baseline.trace').unlink();M.ROOT=Path.cwd().resolve()
+ (root/PREFIX/'baseline.trace').unlink();M.ROOT=Path.cwd().resolve()
  result=report(M.review_method())
 elif mode=='late-source':
  original=A.Unit.Evaluation.evaluate_retained_unit
@@ -188,12 +191,12 @@ elif mode=='bad-import':
  # The fixture appended the harmless stdlib import before this fresh child loaded.
  result=report(M.review_method())
 elif mode=='forged':
- p=root/A.PREFIX/'baseline.stdout';p.write_bytes(p.read_bytes()+b'\n')
- receipt=root/A.PREFIX/'baseline.receipt.sexp';doc=A.F.parse_capture(receipt.read_bytes(),path=A.PREFIX+'/baseline.receipt.sexp')
+ p=root/PREFIX/'baseline.stdout';p.write_bytes(p.read_bytes()+b'\n')
+ receipt=root/PREFIX/'baseline.receipt.sexp';doc=A.F.parse_capture(receipt.read_bytes(),path=PREFIX+'/baseline.receipt.sexp')
  item=next(row for row in doc['observation'] if row['role']=='process-stdout')
  item.update(sha256=digest(p.read_bytes()),byte_size=p.stat().st_size)
- receipt.write_bytes(A.F.encode_capture(doc,path=A.PREFIX+'/baseline.receipt.sexp'))
- measured=root/A.PREFIX/'measured-experiment.sexp';forms=A.S.parse(measured.read_text())
+ receipt.write_bytes(A.F.encode_capture(doc,path=PREFIX+'/baseline.receipt.sexp'))
+ measured=root/PREFIX/'measured-experiment.sexp';forms=A.S.parse(measured.read_text())
  raw=next(f for f in forms if f[0]=='experiment');graph=A.S.children(raw,'verification')[0]
  for row in A.S.children(graph,'observation'):
   identity=A.S.field(row,'id')
@@ -228,14 +231,14 @@ elif mode=='graph-evidence':
  impact=replace(d.impact,previous=corrupt(d.impact.previous),current=corrupt(d.impact.current))
  try:
   K.freeze_review(planned_experiment=d.planned_experiment,dependencies=d.dependencies,scope=d.authorities.scope,
-    current_candidate=dict(d.authorities.reference.fields),inventory=d.inventory,impact_review=impact)
+    current_candidate=dict(d.authorities.reference.fields),inventory=d.inventory,impact_review=impact,case_id=M.RETAINED_CASE_ID)
  except K.AdequacyError as error:result=dict(disposition='refused',reason=str(error))
  else:result=dict(disposition='accepted')
 elif mode=='exact-charge':
  # The accounting invariant, read independently of the budget: every declaration's bytes, the measured
  # record's bytes and the evaluator's own read receipt — nothing refunded, nothing counted twice.
  d,c,data,b,e=fixture()
- declared=sum((root/A.PREFIX/name).stat().st_size for name in ('planned-experiment.sexp','dependencies.sexp','authorities.sexp'))
+ declared=sum((root/PREFIX/name).stat().st_size for name in ('planned-experiment.sexp','dependencies.sexp','authorities.sexp'))
  result=dict(expected=declared+len(data)+e.authentication.charged_read_bytes,evaluator=e.authentication.charged_read_bytes)
 elif mode=='missing-finding':
  d,c,data,b,e=fixture();result=asdict(K.assess_findings(c,b,replace(e,**{argument:None})))
@@ -256,7 +259,7 @@ elif mode=='typed-finding':
  d,c,data,b,e=fixture();fake=SimpleNamespace(**asdict(e.input_review))
  result=asdict(K.assess_findings(c,b,replace(e,input_review=fake)))
 elif mode=='cli':
- if argument=='missing':(root/A.PREFIX/'authorities.sexp').unlink()
+ if argument=='missing':(root/PREFIX/'authorities.sexp').unlink()
  sys.argv=['review_div_method.py',*({'valid':[],'unknown':['--case','other'],'zero':['--max-read-bytes','0'],'missing':[]}[argument])]
  output=StringIO()
  with redirect_stdout(output):exitcode=M.main()
@@ -270,9 +273,10 @@ print(json.dumps(result))
 class MethodTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.paths = ({row["path"] for row in A.Review.review()["files"]}
-                     | {row[2] for row in A.PREPARED}
-                     | {p.relative_to(ROOT).as_posix() for p in (ROOT / A.PREFIX).iterdir()}
+        cls.case, cls.prefix = M.RETAINED_CASE_ID, A.prefix(M.RETAINED_CASE_ID)
+        cls.paths = ({row["path"] for row in A.Review.review(cls.case)["files"]}
+                     | {row[2] for row in A.prepared_inputs(cls.case)}
+                     | {p.relative_to(ROOT).as_posix() for p in (ROOT / cls.prefix).iterdir()}
                      | {"scripts/matched_gpr_adequacy.py", "scripts/review_div_method.py"})
         if len(cls.paths) != 103:
             raise RuntimeError("retained method runtime population changed")
@@ -285,18 +289,18 @@ class MethodTests(unittest.TestCase):
         base.mkdir(parents=True, exist_ok=True)
         cls.template_directory = TemporaryDirectory(dir=base)
         cls.template = Path(cls.template_directory.name) / "runtime"
-        outputs = ({p.relative_to(ROOT).as_posix() for p in (ROOT / A.PREFIX).iterdir()}
-                   - {row[2] for row in A.PREPARED})
+        outputs = ({p.relative_to(ROOT).as_posix() for p in (ROOT / cls.prefix).iterdir()}
+                   - {row[2] for row in A.prepared_inputs(cls.case)})
         for name in sorted(cls.paths - outputs):
             target = cls.template / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
-        Command.synthesize_reference(cls.template)
+        Command.synthesize_reference(cls.template, case_id=cls.case)
         done = subprocess.run([sys.executable, "-B", "-c", SYNTHESIZE, str(cls.template)], cwd=ROOT,
                               capture_output=True, text=True, timeout=120)
         if done.returncode != 0 or json.loads(done.stdout.splitlines()[-1]) != dict(status="pending"):
             raise RuntimeError("synthetic current capture failed: " + done.stdout + done.stderr)
-        measured = (cls.template / A.PREFIX / "measured-experiment.sexp").read_bytes()
+        measured = (cls.template / cls.prefix / "measured-experiment.sexp").read_bytes()
         path = cls.template / "scripts/review_div_method.py"
         source = path.read_text()
         for before, after in ((f'MEASURED_SHA256 = "{M.MEASURED_SHA256}"',
@@ -357,7 +361,7 @@ class MethodTests(unittest.TestCase):
         """The curated capture on the real tree: finite satisfied while every pin is current; stale,
         naming the first moved declaration and reading nothing beyond it, once a pinned input moved
         (the policy then measures `invalidated`). The expectation comes from the manifest, not the tree."""
-        moved = Command.moved_inputs(ROOT)
+        moved = Command.moved_inputs(ROOT, M.RETAINED_CASE_ID)
         done = subprocess.run([sys.executable, *(["-O"] if sys.flags.optimize else []), "-B",
                                str(ROOT / "scripts/review_div_method.py")],
                               cwd=ROOT, capture_output=True, text=True, timeout=120)
@@ -367,7 +371,7 @@ class MethodTests(unittest.TestCase):
             self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
                               r["capture_binding"], r["evaluation_disposition"]),
                              ("stale", "pending", None, None, None), r)
-            self.assertTrue(r["reason"].startswith(A.PREFIX + "/"), r["reason"])
+            self.assertTrue(r["reason"].startswith(self.prefix + "/"), r["reason"])
             self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
             self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
                              (None, None, None), r)
@@ -377,7 +381,7 @@ class MethodTests(unittest.TestCase):
                               r["capture_binding"], r["evaluation_disposition"]),
                              ("satisfied", "pending", "valid", "matched", "pending"), r)
             self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
-                             (85, 1048756, 33759), r)
+                             (85, 1076834, 40438), r)  # the m-forms capture (a42ax)
         self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
         self.assertEqual(r["replay_disposition"], "not-checked")
 
@@ -394,7 +398,7 @@ class MethodTests(unittest.TestCase):
 
     def test_missing_and_changed_predeclarations_cannot_borrow_current_parent(self):
         for name in ("planned-experiment.sexp", "dependencies.sexp", "authorities.sexp"):
-            path = self.runtime / A.PREFIX / name
+            path = self.runtime / self.prefix / name
             original = path.read_bytes()
             for change, expected in (("missing", "unavailable"), ("changed", "stale")):
                 with self.subTest(name=name, change=change):
@@ -406,7 +410,7 @@ class MethodTests(unittest.TestCase):
                     path.write_bytes(original)
 
     def test_missing_or_changed_observations_preserve_their_dispositions(self):
-        path = self.runtime / A.PREFIX / "baseline.trace"
+        path = self.runtime / self.prefix / "baseline.trace"
         original = path.read_bytes()
         path.unlink()
         self.assertEqual(self.inspect()["disposition"], "unavailable")

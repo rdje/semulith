@@ -177,14 +177,16 @@ def reference_candidate(runtime: Path):
     return path, forms, candidate
 
 
-def synthesize_reference(runtime: Path, *, exit_code=0) -> None:
+def synthesize_reference(runtime: Path, *, exit_code=0, case_id=A.P.CASE_ID) -> None:
     """Change only owned fixture identities in a runtime copy; a child imports them fresh.
 
-    The pinned reference binary becomes a script that writes the author-derived trace, so the
-    copy is a current, self-consistent package whose three runs need no Sail. Shared with
-    probe_div_method, whose deep arms run against such a synthetic current capture."""
-    source = (runtime / A.Review.GUEST).read_bytes()
-    derived = Author.derive_snapshot(source, program="m-div.s", instructions=27)
+    The pinned reference binary becomes a script that writes the author-derived trace of the
+    named case's guest, so the copy is a current, self-consistent package whose three runs need
+    no Sail. Shared with probe_div_method, whose deep arms run against such a synthetic current
+    capture of the retained case (a42ax)."""
+    case = A.P.reviewed_case(case_id)
+    source = (runtime / A.Review.guest_path(case)).read_bytes()
+    derived = Author.derive_snapshot(source, program=case.program, instructions=case.instructions)
     lines = []
     for step in derived.steps:
         lines.append(f"[{step.n}] [M]: 0x{step.pc:016x} (0x{step.instruction_bits:08x}) synthetic fixture")

@@ -216,8 +216,11 @@ print(len(checked.source_property.facts.observed), report["qualification"])
 PY_M_FORMS
 ```
 
-It prints `pending valid satisfied`, `AGREE AGREE DIVERGE`, then `25 False`. The retained reviews
-(`scripts/review_div_method.py`, `scripts/review_div_policy.py`) still read the invalidated first
-case: switching their retained pointers to this capture, and measuring its ten policy legs, is the
-next unit. Nothing here credits `REQ-GC-M`; `scripts/requirement_status.py` derives it `planned`
-with both cases pending.
+It prints `pending valid satisfied`, `AGREE AGREE DIVERGE`, then `25 False`. Since a42ax
+(2026-10-23) the retained reviews read this capture: `scripts/review_div_method.py` names it
+(`RETAINED_CASE_ID`, the 16,942-byte measured pin, the declaration and capture commits) and reports
+`satisfied` over 85 authenticated files, and `scripts/review_div_policy.py` measures
+[all ten legs satisfied](policy-adequacy.md) with `credited` false. The first case is `invalidated`
+history, never rerun. Nothing here credits `REQ-GC-M`; `scripts/requirement_status.py` derives it
+`planned` with both cases pending, and the crediting act is a separately owned record
+(`decision_ten-legs-satisfied-credit-separate.md`).

@@ -9,6 +9,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 
 | Card | Answers |
 | --- | --- |
+| [`a-gate-that-discards-its-self-tests-output-cannot-be-diagnosed.md`](a-gate-that-discards-its-self-tests-output-cannot-be-diagnosed.md) | the gate refused with "the check does not discriminate" — which self-test arm missed? (the gate now keeps its self-test output at `target/profile-consistency-selftest.log` and prints the MISS lines; self-tests remove their fixtures) |
 | [`a-fixture-must-have-the-real-records-shape.md`](a-fixture-must-have-the-real-records-shape.md) | my probe's fixture is green — how do I know it has the shape the real records have? (build it from a real record, and assert the fact on the real tree) |
 | [`a-byte-ceiling-applies-to-authored-content.md`](a-byte-ceiling-applies-to-authored-content.md) | when does a byte ceiling apply to a generated file — and how is the exemption checked rather than declared? |
 | [`a-candidate-landscape-census-entry-is-a-lead.md`](a-candidate-landscape-census-entry-is-a-lead.md) | when does a candidate-landscape claim become a fact — and which surfaces (the version record, the LICENSE files, grep over src/) carry the measurement? |

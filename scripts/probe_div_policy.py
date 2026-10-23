@@ -292,27 +292,31 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(first, second); self.assertLessEqual(len(json.dumps(first).encode()), 65536)
 
     def test_real_tree_measures_as_its_manifest_predicts(self):
-        """Current pins: pending with two legs missing. A moved pin: invalidated, naming it, no finding."""
+        """Current pins: every leg satisfied, credited false. A moved pin: invalidated, naming it, no finding (a42ax)."""
         import subprocess
         moved = moved_inputs(ROOT, self.M.CASE_ID)
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_method.py")],
                               capture_output=True, text=True, cwd=str(ROOT))
         self.assertEqual(done.returncode, 1 if moved else 0, done.stdout + done.stderr)
+        self.assertEqual(json.loads(done.stdout)["case_id"], self.M.CASE_ID)
         table = self.M.measure_policy(ROOT, method=json.loads(done.stdout))
         if moved:
             self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
-                             ("invalidated", ["boundary-fixtures", "matched-reference-comparison", "currentness", "form-coverage"], [], False))
-            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 6)
+                             ("invalidated", ["matched-reference-comparison", "currentness"], [], False))
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
             self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 0)
             self.assertTrue(table["invalidated_by"], table["method"])
         else:
             self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
-                             ("pending", ["boundary-fixtures", "form-coverage"], [], False))
-            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
+                             ("satisfied", [], [], False))
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 10)
             self.assertIsNone(table["invalidated_by"])
-        self.assertEqual(table["boundary"], dict(present=[10, 11, 12, 13, 17, 19], predeclared=[]))
-        self.assertEqual((table["coverage"]["predeclared"], table["coverage"]["exercised"], len(table["coverage"]["required"])),
-                         (["div"], ["div", "divu", "rem", "remu"], 13))
+            self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit"))
+        rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
+        self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
+        forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]
+        self.assertEqual((table["coverage"]["predeclared"], table["coverage"]["exercised"], table["coverage"]["required"]),
+                         (forms, forms, forms))
         self.assertEqual((table["requirement_id"], table["obligation_ids"], table["category"], table["risk"]),
                          ("REQ-GC-M", ["OB-GC-M"], "defined", "medium"))
 
