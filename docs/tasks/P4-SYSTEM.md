@@ -358,6 +358,52 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42bb / SEMULITH-P4-0295: retain the other M statements and Table 1 (completed)
+
+Owned on clean 610783e. The m-forms case's 25 properties cite §11.1.1, §11.1.2 and Table 1 of the pinned
+M chapter, but only the DIV/DIVU span is a retained normative excerpt
+(`profiles/rv64gc-lab-v0/retained/div-statement.html`, a42z); the crediting record (a42ay) names the
+retained sources a credit rests on, so a credit today would rest on cited, unretained text — the
+question put to the director at a42at and a42ax. Measured (target/p4-system-14/a42ay/retention-scope.md):
+the pinned page (35,588 B, `85e1db6c…`) holds twelve `norm:` spans (2,038 B; DIV/DIVU 182 B already
+retained) and Table 1 (1,698 B, static table markup only); `sources.sexp` and any new file under
+`retained/` are outside the 64 inputs the m-forms declaration pins, so retention invalidates nothing,
+while `scripts/retain_div_statement.py` is pinned and must not change. Build `scripts/retain_m_statements.py`
+(`--emit` from the acquired pages, `--verify` offline; the eleven other spans and Table 1 in one attributed
+wrapper; the source and licence pins imported from their one owner; an allowlist of static markup), its
+probe with seams, the retained file `profiles/rv64gc-lab-v0/retained/m-statements.html` (`RVI-M-STATEMENTS`),
+the gate's verify step and arms, the scope note in `materials/RVI_M_RETENTION.md`, a decision record and
+the toolbox row. No credit, no status move: the act stays the director's. Evidence target/p4-system-14/a42bb.
+
+Done 2026-10-23. `scripts/retain_m_statements.py` selects the eleven spans in source order (each unique,
+terminated, at most 1,024 B, no nested span, only `<code>` inside) and Table 1 by its marker and caption
+(unique, terminated, at most 4,096 B, no nested table, only reviewed table markup and `class`/`id`/`style`
+attributes with every style a column width), checks both complete pinned inputs and the licence statement
+through `retain_div_statement`'s pins and `pinned()` (imported, not edited), and wraps them with the
+a42z attribution; the wrapper names the separate DIV/DIVU excerpt instead of repeating it. Emitted through
+its own `--emit` from the acquired pages: 6,018 B, `bc777ebb…`, byte-identical to the scratch preview and
+on re-emission; `--verify` offline `matched`. Probe `scripts/probe_m_statement_retention.py`: 20 tests in
+both modes (19 synthetic, one real-tree offline verification), ten seams each failing its discriminating
+tests (1/1/1/1/3/4/1/1/1/2 — the two markup seams fail every unsafe sub-case). Gate: the `--verify` step
+beside the DIV statement's and 22 arms; the arm total re-derived 1653 → 1655 in LIVE_STATUS. Real tree
+unchanged: method `satisfied`, policy `satisfied — 10 of 10`, 0 credited. Documents: the second scoped
+retention in `materials/RVI_M_RETENTION.md` (spans, bytes, markup allowlist, why nothing pinned moved),
+`decision_m-statements-retained.md`, toolbox row, policy-adequacy and requirement-status sentences, MEMORY
+(ruling (c) answered; (a) authority and (b) sufficiency remain the director's). The first focused run was RED on
+`check_gate_report.sh` (`profiles/rv64gc-lab-v0/GS-REPORT.md is out of sync`: its dossier digest covers every tracked source
+file under the profile, so the new excerpt moved it, e6777221… → 49ebeb22…); regenerated through `scripts/gate_report.py
+rv64gc-lab-v0 --gate GS`, one line changed, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`.
+Defect owned mid-slice: the gated commit (08:10Z → 09:12Z, other repositories' gates sharing the machine) was refused by
+the PROFILE-CONSISTENCY self-test, 1154 pass / 2 fail — and for the first time the kept log named the arms (a42ax's
+diagnostic working): the method probe's `artifact-selection` and `typed-findings` seams, normal mode only, each failing in
+`setUpClass` with `synthetic current capture failed: {"status": "refused"}` after 31.7 s and 59.1 s, where the same
+setup takes 2–4 s; the probe's synthetic capture printed the status and dropped the capture's own reason, the same
+discarded-diagnostic defect one level down. The probe now prints the reason. Twelve reruns of both seams passed as the gate
+expects (repro-setup.log); a freshly written executable launches in 0.13 s against 0.02 s for a re-run at load 6
+(fresh-exec-latency.log) — consistent with, not proof of, a first-execution stall reaching the collector's 30 s process
+limit under heavier load. Cause not identified; no speculative fix; the next occurrence names its reason. Next: ARTIFACT-CLEANUP.26
+(due since 08:12Z), the LIVE-CONTAINMENT tree's own archive move, then the crediting act on the ruling.
+
 ### .14 a42ba / SEMULITH-P4-0294: move the closed `.14` records into archive part 21 (completed)
 
 Owned on clean 3cb37d9. docs/tasks/P4-SYSTEM.md stands at 117,506 B of the task family's 131,072-byte
@@ -793,6 +839,11 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-through-a42aq).
 
+- [x] `.14` a42bb **ROOT CAUSE** — `ls profiles/rv64gc-lab-v0/retained` → `div-statement.html sail-identity.sexp` (one normative excerpt); target/p4-system-14/a42ay/retention-scope.md: twelve `norm:` spans 2,038 B in the pinned page (`shasum -a 256 .materials/riscv/pinned-v20260120/unpriv/m-st-ext.html` = 85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716), Table 1 1,698 B with tags `br caption col colgroup em p sup table tbody td th thead tr` and attributes `class id style`; `grep -o '(path "profiles/[^"]*")' evidence/rv64gc-m-forms-v3/dependencies.sexp …` → seven pinned profile files, `sources.sexp` and any new `retained/` file not among them; `grep -c "scripts/retain_div_statement.py" evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1 (pinned, so not edited).
+- [x] `.14` a42bb **ADDRESSED** — probe-and-seams.log: `python3 -B scripts/retain_m_statements.py --verify` → `{"disposition": "matched", … "byte_size": 6018, "sha256": "bc777ebb97814f7361ececfa0dcfc16074374df2ddfeab71cf6684597681d518"}` rc 0; `--emit | cmp - profiles/rv64gc-lab-v0/retained/m-statements.html` → `re-emission byte-identical`; `python3 -B [-O] scripts/probe_m_statement_retention.py` → `M-STATEMENT-RETENTION: 20 tests / 0 failures / 0 errors` both modes; seams in both modes `input-pins: 20 tests / 1 failures / 0 errors`, `licence-statement` 1, `unique-statement` 1, `closing-span` 1, `span-markup` 3, `table-markup` 4, `style-shape` 1, `table-caption` 1, `retained-bound` 1, `retained-pin` 2 — the gate's table.
+- [x] `.14` a42bb **NO REGRESSION** — real-tree.log: `python3 -B scripts/review_div_method.py` → `method satisfied rv64gc-m-forms-v3`, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`, `python3 -B scripts/requirement_status.py` → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; …)`; `bash scripts/check_derived_counts.sh` COUNT DRIFT `claims '1653' self-test arms; the repository has 1655` → re-derived → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`; `bash scripts/check_readme_routes.sh`, `check_requirements.sh` (`RECORD-SCHEMA: ok (20 record file(s) …)`), `check_fixture_fingerprints.sh` (`FIXTURE-FINGERPRINT: ok (1 pinned fingerprint(s) re-derived)`), `check_docpaths.sh` rc 0; `bash -n scripts/check_profile_consistency.sh` rc 0; first focused run `focused: 1 red of 26` — `bash scripts/check_gate_report.sh` rc 1 (GS-REPORT dossier digest `e6777221ab2ed1396f9dfe5153015edafec8401327b8006e956e98d9a9ecf636` vs `49ebeb22c982e3f1413efe0732b4078cc548e40849345fc8cf80efc8356da9cf`) → `python3 scripts/gate_report.py rv64gc-lab-v0 --gate GS` → `wrote profiles/rv64gc-lab-v0/GS-REPORT.md (6768 bytes)`, `git diff --stat` 1 insertion / 1 deletion, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`; second focused run rc 0 (focused-checks.json); `git status`: the tool, its probe, the retained file, the regenerated GS report, the gate, documents — no pinned module, evidence byte, Rust or definition file changed.
+- [x] `.14` a42bb **ROOT CAUSE** (defect owned mid-slice) — commit.log `❌ PROJECT-SPECIFIC` with the kept log target/profile-consistency-selftest.log (copied to selftest-refusal.log): `PROFILE-CONSISTENCY --self-test: 1154 pass / 2 fail`, `self-test MISS: RED omitted DIV method artifact-selection normal … got rc=1` and `… typed-findings normal …`, each `RuntimeError: synthetic current capture failed: {"status": "refused"}` after `Ran 0 tests in 31.722s` / `59.072s`; `grep -n 'print(json.dumps(dict(status=result.disposition)))' scripts/probe_div_method.py` = 40 (the reason dropped); `grep -n PROCESS_SECONDS scripts/matched_gpr_collector.py` = 24 `PROCESS_SECONDS = 30`, 473 `reference exceeded process time limit` (a pinned module: not changed).
+- [x] `.14` a42bb **ADDRESSED** (defect owned mid-slice) — the synthetic capture prints `dict(status=…, reason=result.reason)` and setup checks `.get("status")`; `python3 -B [-O] scripts/probe_div_method.py` → `DIV-METHOD: 21 tests / 0 failures / 0 errors` both modes (probe-method-after.log); repro-setup.log: 12 runs, `artifact-selection` → `DIV-METHOD: 1 tests / 2 failures / 0 errors` and `typed-findings` → `DIV-METHOD: 1 tests / 1 failures / 0 errors` every time, wall 2–4 s at load 6.0–6.7; fresh-exec-latency.log `fresh n=30 median 0.129s p90 0.154s max 0.218s`, `rerun n=30 median 0.021s … max 0.022s`. Cause open; recorded in the knowledge card.
 - [x] `.14` a42ba **ROOT CAUSE** — `wc -c docs/tasks/P4-SYSTEM.md` = 117506 at 3cb37d9 (118497 with this leaf opened) against `awk -F'\t' '$1=="docs/tasks/"{print $9}' doctrine/readme_routes.tsv` = 131072; the closed records a42aq–a42aw and the rows a42ar–a42ax measured 24,128 + 32,158 B (move.log); a42ar's move (part 20) covered rows through a42aq only.
 - [x] `.14` a42ba **ADDRESSED** — move.log: `live: 118497 -> 63186 B; part 21: 58207 B; records moved: 7, rows: 29 lines / 32158 B`, spans `a42aw 4118 B a5a10aeef0ca982bc441e7d53c837970e29af2cf5665513cde245487b772dae5`, `a42av 3091 B bd888a2b484f584519816b1526e27cb71fbbe89fa4a7e18139f6ca80cf678ca9`, `a42au 4189 B 36570e5b4b56d8feeb5b8ce4514308789ae099fd3f17973f66573bfd71ed95a1`, `a42at 4607 B fc69591d640a0dee666b2c108762aec80b67cb1a9258656e190bf9266514fd88`, `a42as 3203 B 78125b78c295e141faa6ef80b81c963d40a87936b9a694ddf64afc32a2134e26`, `a42ar 3694 B 56aeec4c21acb8a48e047eab87d61150a35a7e061a0ffc0157438d95b3b99797`, `a42aq 1226 B 46a140e48f049d377ce4ca50174700e984f27c2be00a34cda6436773b2c5e47a`, `rows 32158 B 4a784632a06bc4c1347487352eb574820ba96bbc5a820a48150c66954e010e31`, each found exactly once in docs/tasks/archive/P4-SYSTEM-21.md (the script asserts `part.count(b) == 1` and the digest); `grep -c '^\[Record\](archive/P4-SYSTEM-21.md#' docs/tasks/P4-SYSTEM.md` = 7 record stubs and `grep -c '^Rows a42ar–a42ax: ' docs/tasks/P4-SYSTEM.md` = 1 rows pointer.
 - [x] `.14` a42ba **NO REGRESSION** — checks.log: `bash scripts/check_docpaths.sh`, `check_tree_claims.sh`, `check_frontier_sync.sh`, `check_readme_routes.sh` (→ `README-ROUTING-CLOSURE: ok (44 governed destination(s))`), `check_task_history.sh`, `check_table_arity.sh`, `check_book_index.sh` rc 0; focused checks rc 0 (focused-checks.json); `git status`: docs/tasks/P4-SYSTEM.md, the new docs/tasks/archive/P4-SYSTEM-21.md, CHANGELOG.md and MEMORY.md only — no code, schema, profile or evidence byte changed.

@@ -112,6 +112,7 @@
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)
 - [`decision_knowledge-family-first-rederivation.md`](docs/decisions/decision_knowledge-family-first-rederivation.md)
 - [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
+- [`decision_m-statements-retained.md`](docs/decisions/decision_m-statements-retained.md)
 - [`decision_many-predeclared-properties-one-control.md`](docs/decisions/decision_many-predeclared-properties-one-control.md)
 - [`decision_mdbook-incremental-engaging.md`](docs/decisions/decision_mdbook-incremental-engaging.md)
 - [`decision_memory-next-action-pointer.md`](docs/decisions/decision_memory-next-action-pointer.md)

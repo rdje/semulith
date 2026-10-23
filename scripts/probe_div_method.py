@@ -37,7 +37,7 @@ for name, payload in A.declaration_files(declaration):
 result = A.capture(case)
 if result.disposition == "pending":
     with (runtime / prefix / "measured-experiment.sexp").open("xb") as stream: stream.write(result.experiment)
-print(json.dumps(dict(status=result.disposition)))
+print(json.dumps(dict(status=result.disposition, reason=result.reason)))  # a42bb: the reason is kept
 '''
 MUTATION = None
 SEAMS = {
@@ -298,7 +298,7 @@ class MethodTests(unittest.TestCase):
         Command.synthesize_reference(cls.template, case_id=cls.case)
         done = subprocess.run([sys.executable, "-B", "-c", SYNTHESIZE, str(cls.template)], cwd=ROOT,
                               capture_output=True, text=True, timeout=120)
-        if done.returncode != 0 or json.loads(done.stdout.splitlines()[-1]) != dict(status="pending"):
+        if done.returncode != 0 or json.loads(done.stdout.splitlines()[-1]).get("status") != "pending":
             raise RuntimeError("synthetic current capture failed: " + done.stdout + done.stderr)
         measured = (cls.template / cls.prefix / "measured-experiment.sexp").read_bytes()
         path = cls.template / "scripts/review_div_method.py"

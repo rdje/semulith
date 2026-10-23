@@ -74,3 +74,43 @@ wrapper and licence decision above are unchanged by this integration.
 
 Canonical capture, the full retention family and policy qualification remain
 pending. This finite source/artifact binding changes no requirement status.
+
+## Second scoped retention: the other eleven statements and Table 1 (a42bb)
+
+`P4-SYSTEM.14` a42bb, 2026-10-23. The m-forms case (`rv64gc-m-forms-v3`) predeclares 25 properties:
+thirteen forms and twelve Table 1 cells. Its expectations cite §11.1.1, §11.1.2 and Table 1, but only
+the DIV/DIVU statement above was retained; a credit resting on the other statements would rest on
+cited, unretained text. The same pinned page and licence evidence support retaining, in one new
+attributed wrapper, the eleven other normative spans and Table 1:
+
+| Span (`<span id=…>`) | Section | Bytes |
+| --- | --- | --- |
+| `norm:mul_op` | §11.1.1 | 179 |
+| `norm:mulh_mulhu_mulhsu_op` | §11.1.1 | 267 |
+| `norm:mulw_op` | §11.1.1 | 210 |
+| `norm:rem_remu_op` | §11.1.2 | 110 |
+| `norm:rem_result_sign` | §11.1.2 | 109 |
+| `norm:divw_divuw_op` | §11.1.2 | 286 |
+| `norm:remw_remuw_op` | §11.1.2 | 146 |
+| `norm:remw_remuw_result_sign` | §11.1.2 | 145 |
+| `norm:div_by_zero` | §11.1.2 | 84 |
+| `norm:rem_by_zero` | §11.1.2 | 89 |
+| `norm:signed_div_overflow` | §11.1.2 | 231 |
+| `<table id="divby0">` (Table 1, with its caption) | §11.1.2 | 1,698 |
+
+The quoted text is the same CC-BY 4.0 manual text as the DIV statement, under the same licence
+evidence (the unprivileged preface whose statement covers future versions); the wrapper carries the
+same attribution, links, both original page digests and the transformation's name, and states the
+omissions. Only static markup is retained: `<code>` inside the spans; table structure, `<p>`, `<br>`,
+`<em>`, `<sup>`, and `class`/`id`/`style` attributes where every style is a column width. Anything
+else refuses. The DIV/DIVU span is not repeated.
+
+Curated input: `profiles/rv64gc-lab-v0/retained/m-statements.html`, identity `RVI-M-STATEMENTS`
+(bytes and SHA256 in `scripts/retain_m_statements.py`, `RETAINED_SHA`). Regenerate with
+`python3 scripts/retain_m_statements.py --emit` from the acquired pages; check the tracked asset
+without them using `--verify`. The emitter reads the source and licence pins from
+`scripts/retain_div_statement.py`, their one owner, which does not change: it is a pinned input of
+the retained case. The new file is not one of the case's 64 pinned inputs, so retaining it
+invalidates nothing; a crediting record cites it by identity. This remains a scoped redistribution
+decision for these statements and this table; the full snapshot stays untracked and the other
+specification artifacts' terms remain open.

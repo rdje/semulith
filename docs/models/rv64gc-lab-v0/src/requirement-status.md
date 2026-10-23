@@ -51,5 +51,5 @@ authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py`
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
 their discriminating test. Nothing here advances a status: the first credit record, with
 the recorded status moving in the same commit, is the crediting act, under the director's
-ruling on its authority, the sufficiency of one finite case and the retention of the
-multiply and Table 1 statements it would rest on.
+ruling on its authority and on the sufficiency of one finite case. The normative text it would
+rest on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb).

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-M statements and Table 1 — v20260120</title>
+<body>
+<h1>RVI-M §11.1.1–§11.1.2: multiplication, division and remainder statements; Table 1</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements and table are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements and Table 1; all
+surrounding text, diagrams and website assets are omitted. Each quoted span and the
+table are unmodified. No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/m-st-ext.html">RISC-V Ratified Specifications Library,
+v20260120, M extension Version 2.0, §11.1</a>.<br>
+Original page SHA256: <code>85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">unprivileged preface to Version 2.2</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_m_statements.py</code>, reviewed 2026-10-23.
+The DIV/DIVU statement is retained separately (<code>retained/div-statement.html</code>).
+This excerpt establishes no M acceptance.</p>
+<h2>§11.1.1: <code>norm:mul_op</code></h2>
+<blockquote><p><span id="norm:mul_op">MUL performs an XLEN-bit×XLEN-bit multiplication of
+<code>rs1</code> by <code>rs2</code> and places the lower XLEN bits in the destination
+register.</span></p></blockquote>
+<h2>§11.1.1: <code>norm:mulh_mulhu_mulhsu_op</code></h2>
+<blockquote><p><span id="norm:mulh_mulhu_mulhsu_op">MULH, MULHU, and MULHSU perform the same multiplication but
+return the upper XLEN bits of the full 2×XLEN-bit
+product, for signed×signed,
+unsigned×unsigned, and <code>rs1</code>×unsigned <code>rs2</code> multiplication.</span></p></blockquote>
+<h2>§11.1.1: <code>norm:mulw_op</code></h2>
+<blockquote><p><span id="norm:mulw_op">MULW is an RV64 instruction that multiplies the lower 32 bits of the
+source registers, placing the sign extension of the lower 32 bits of the
+result into the destination register.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:rem_remu_op</code></h2>
+<blockquote><p><span id="norm:rem_remu_op">REM and REMU
+provide the remainder of the corresponding division operation.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:rem_result_sign</code></h2>
+<blockquote><p><span id="norm:rem_result_sign">For REM,
+the sign of a nonzero result equals the sign of the dividend.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:divw_divuw_op</code></h2>
+<blockquote><p><span id="norm:divw_divuw_op">DIVW and DIVUW are RV64 instructions that divide the lower 32 bits of
+<code>rs1</code> by the lower 32 bits of <code>rs2</code>, treating them as signed and
+unsigned integers, placing the 32-bit quotient in <code>rd</code>,
+sign-extended to 64 bits.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:remw_remuw_op</code></h2>
+<blockquote><p><span id="norm:remw_remuw_op">REMW and REMUW are RV64 instructions that
+provide the corresponding signed and unsigned remainder
+operations.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:remw_remuw_result_sign</code></h2>
+<blockquote><p><span id="norm:remw_remuw_result_sign">Both REMW and REMUW always sign-extend the 32-bit result
+to 64 bits, including on a divide by zero.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:div_by_zero</code></h2>
+<blockquote><p><span id="norm:div_by_zero">The quotient of division by zero has all bits
+set</span></p></blockquote>
+<h2>§11.1.2: <code>norm:rem_by_zero</code></h2>
+<blockquote><p><span id="norm:rem_by_zero">the remainder of division by zero equals the dividend.</span></p></blockquote>
+<h2>§11.1.2: <code>norm:signed_div_overflow</code></h2>
+<blockquote><p><span id="norm:signed_div_overflow">Signed division overflow occurs only when the most-negative integer is divided
+by −1. The quotient of a signed division with overflow is
+equal to the dividend, and the remainder is zero.</span></p></blockquote>
+<h2>§11.1.2: Table 1</h2>
+<table id="divby0" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Semantics for division by zero and division overflow. L is the width of the operation in bits: XLEN for DIV[U] and REM[U], or 32 for DIV[U]W and REM[U]W.</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Condition</th>
+<th class="tableblock halign-center valign-top">Dividend</th>
+<th class="tableblock halign-center valign-top">Divisor</th>
+<th class="tableblock halign-center valign-top">DIVU[W]</th>
+<th class="tableblock halign-center valign-top">REMU[W]</th>
+<th class="tableblock halign-center valign-top">DIV[W]</th>
+<th class="tableblock halign-center valign-top">REM[W]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Division by zero<br>
+Overflow (signed only)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>x</em><br>
+-2<sup>L-1</sup></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0<br>
+−1</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">2<sup>L</sup>-1<br>
+ -</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>x</em><br>
+ -</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">−1<br>
+ -2<sup>L-1</sup><br></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>x</em><br>
+  0</p></td>
+</tr>
+</tbody>
+</table>
+</body></html>

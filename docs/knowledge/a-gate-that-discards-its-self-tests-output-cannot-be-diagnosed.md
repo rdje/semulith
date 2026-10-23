@@ -20,6 +20,12 @@ log; the arm, its expected and actual exit codes and the probe's output are ther
   timeout was not the explanation either; the arm's name was the one fact that would have settled
   it, and the gate had thrown it away.
 
+- 2026-10-23 (a42bb), the first refusal after the fix: the kept log named the arms at once — the method probe's
+  `artifact-selection` and `typed-findings` seams in normal mode, each dying in `setUpClass` because the
+  synthetic capture returned `refused` after 31.7 s and 59.1 s (2–4 s normally). One level down, the probe
+  printed the capture's status and dropped its reason; it now prints both. The 2026-10-21 and 2026-10-23T02:17Z
+  refusals were most likely the same arms; their logs were never kept.
+
 ## The rule
 
 - A check that runs a self-test and refuses on its failure keeps the self-test's output in a file

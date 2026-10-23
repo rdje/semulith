@@ -1952,6 +1952,32 @@ retained-pin:1
 DIV_RETENTION_CASES
   done
 
+  # P4-SYSTEM.14 a42bb: the other eleven M statements and Table 1, retained under the same licence evidence;
+  # curation only, no property, capture or credit.
+  local m_retention_mode m_retention_mutation m_retention_losses
+  local -a m_retention_python
+  for m_retention_mode in normal optimized; do
+    m_retention_python=(python3 -B)
+    [ "$m_retention_mode" = optimized ] && m_retention_python+=(-O)
+    out="$("${m_retention_python[@]}" scripts/probe_m_statement_retention.py 2>&1)"; rc=$?
+    score "GREEN M statement retention $m_retention_mode" "$rc" 0 "$out" "M-STATEMENT-RETENTION: 20 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit"
+    while IFS=: read -r m_retention_mutation m_retention_losses; do
+      out="$("${m_retention_python[@]}" scripts/probe_m_statement_retention.py --mutation "$m_retention_mutation" 2>&1)"; rc=$?
+      score "RED M statement retention $m_retention_mutation $m_retention_mode" "$rc" 1 "$out" "M-STATEMENT-RETENTION: 20 tests / $m_retention_losses failures / 0 errors; synthetic curation controls, no capture credit"
+    done <<'M_RETENTION_CASES'
+input-pins:1
+licence-statement:1
+unique-statement:1
+closing-span:1
+span-markup:3
+table-markup:4
+style-shape:1
+table-caption:1
+retained-bound:1
+retained-pin:2
+M_RETENTION_CASES
+  done
+
   # P4-SYSTEM.14 a42ab: delegate one allowance through manifest and evaluation.
   local allowance_mode allowance_mutation allowance_losses
   local -a allowance_python
@@ -2206,6 +2232,12 @@ DIV_METHOD_CASES
 div_retained_result="$(python3 scripts/retain_div_statement.py --verify 2>&1)"; div_retained_rc=$?
 if [ "$div_retained_rc" -ne 0 ]; then
   printf 'PROFILE-CONSISTENCY: retained DIV statement refused: %s\n' "$div_retained_result" >&2
+  exit 1
+fi
+# a42bb: the other eleven M statements and Table 1, authenticated the same way.
+m_retained_result="$(python3 -B scripts/retain_m_statements.py --verify 2>&1)"; m_retained_rc=$?
+if [ "$m_retained_rc" -ne 0 ]; then
+  printf 'PROFILE-CONSISTENCY: retained M statements refused: %s\n' "$m_retained_result" >&2
   exit 1
 fi
 

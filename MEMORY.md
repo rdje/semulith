@@ -23,18 +23,17 @@
   a42ay / `SEMULITH-P4-0293`, the crediting mechanism (`credits.sexp`, `scripts/credit_records.py`; real tree
   0 records, `REQ-GC-M` planned; `decision_credit-is-a-catalogue-record.md`).
 - next_action: the crediting act (a42az) is the DIRECTOR'S decision, not the agent's: (a) who signs the record,
-  (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`, (c) whether the §11.1.1
-  and Table 1 spans are retained first (a42z-style; CC-BY 4.0 already found: materials/RVI_M_RETENTION.md).
-  Until the ruling: the retention slice (a42az-candidate: `scripts/retain_div_statement.py` generalised to the
-  multiply and Table 1 spans, SRC-01 review, a new sources row) is the thorough preparatory work; also due
+  (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`. (c) is done: a42bb
+  retained the eleven other M statements and Table 1 (`RVI-M-STATEMENTS`, decision_m-statements-retained.md).
+  Also due
   `ARTIFACT-CLEANUP.26` after 2026-10-23T08:12Z and the LIVE-CONTAINMENT tree's own archive move (its file
   ~128 KB of 131,072 B). LIVE_STATUS was trimmed to states by LC-0053 (4,771 of 6,144 B).
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
-  next REFUSED, read it first. Open question for the director (a42at, a42ax records): only the DIV
-  statement is a retained excerpt; the multiply and Table 1 statements are cited, not retained.
+  next REFUSED, read it first. Open for the director: the crediting act's authority and sufficiency
+  (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
 - evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax; `target/p4-system-14/a42ba` (move.log, checks.log),

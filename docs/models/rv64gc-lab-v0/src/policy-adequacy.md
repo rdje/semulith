@@ -41,10 +41,10 @@ that `scripts/credit_records.py` re-authenticates on every read, and that the
 `credited` from that catalogue — the summary ends `credited by <record>` instead of `no
 qualification credit` — and makes a record over a measurement that is not `satisfied` a
 finding (`decision_credit-is-a-catalogue-record.md`). The catalogue holds no record: writing
-the first one is the crediting act, and two facts the director should weigh before it are
-that only the DIV statement is a retained normative excerpt
-(`profiles/rv64gc-lab-v0/retained/div-statement.html`), while the multiply and Table 1
-statements the 25 properties cite are cited in the expectations, not retained.
+the first one is the crediting act, and it is the director's. The normative text such a record
+would rest on is retained: the DIV/DIVU statement (`retained/div-statement.html`, a42z) and, since
+a42bb, the eleven other M statements and Table 1 (`retained/m-statements.html`, `RVI-M-STATEMENTS`;
+`decision_m-statements-retained.md`).
 
 ## History: the first case and its two pending legs
 
