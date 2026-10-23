@@ -6,8 +6,13 @@
 # point at private items a reader cannot open, or whose prose swallows text into an unclosed HTML tag
 # is a reference that lies quietly. This check builds the workspace's docs offline with exactly three
 # rustdoc lints denied — broken_intra_doc_links, private_intra_doc_links, invalid_html_tags — and
-# refuses any occurrence, naming file, line and lint. Missing documentation is NOT denied here: that
-# is a ratchet of its own (RUSTDOC.3), and denying it now would fail on 268 pre-existing gaps.
+# refuses any occurrence, naming file, line and lint.
+#
+# Missing documentation is a RATCHET, not a denial (RUSTDOC.3): the same build warns on `missing_docs`,
+# the check counts the undocumented public items per crate directory under crates/ and compares each
+# count with doctrine/undocumented_items.tsv. A rise is refused with the crate's undocumented items
+# listed; a fall is refused until the row is lowered to the new count, so the ratchet only tightens and
+# the record always states the measured truth (267 at adoption: core 61, verify 86, dsp56300 120).
 #
 # Measured at adoption (RUSTDOC.1, 2026-10-23): the real tree carried 19 such defects (9 unresolved
 # links, 4 links to private items, 6 unclosed HTML tags); the check was fired RED on it before the
@@ -15,6 +20,55 @@
 set -uo pipefail
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
 LINTS="-D rustdoc::broken_intra_doc_links -D rustdoc::private_intra_doc_links -D rustdoc::invalid_html_tags"
+RECORD="doctrine/undocumented_items.tsv"
+
+# ratchet RECORD CRATE... < cargo-doc-output — prints the total, or the problems; rc 0 / 1 / 2 (malformed record)
+ratchet() {
+  python3 -c '
+import re, sys
+record_path, crates = sys.argv[1], sys.argv[2:]
+log = sys.stdin.read().split("\n")
+counts = {c: 0 for c in crates}; where = {c: [] for c in crates}; stray = []
+for i, line in enumerate(log):
+    if not line.startswith("warning: missing documentation for"):
+        continue
+    loc = next((x.strip()[4:] for x in log[i + 1:i + 4] if x.strip().startswith("-->")), "")
+    m = re.match(r"crates/([^/]+)/", loc)
+    if m and m.group(1) in counts:
+        counts[m.group(1)] += 1; where[m.group(1)].append(loc + "  " + line[len("warning: "):])
+    else:
+        stray.append(loc or "?")
+rows = {}
+try:
+    lines = open(record_path, encoding="utf-8").read().split("\n")
+except OSError as error:
+    print("unreadable record: " + str(error)); sys.exit(2)
+for line in lines:
+    if not line.strip() or line.startswith("#"):
+        continue
+    parts = line.split("\t")
+    if len(parts) != 2 or not parts[1].isdigit() or parts[0] in rows:
+        print("malformed record row: " + repr(line)); sys.exit(2)
+    rows[parts[0]] = int(parts[1])
+problems = []
+if stray:
+    problems.append("%d undocumented item(s) outside crates/<crate>/: %s" % (len(stray), stray[:3]))
+for crate in sorted(set(rows) - set(crates)):
+    problems.append(crate + ": recorded, but not a workspace crate directory")
+for crate in crates:
+    if crate not in rows:
+        problems.append("%s: no recorded count (measured %d)" % (crate, counts[crate]))
+    elif counts[crate] > rows[crate]:
+        problems.append("%s: %d undocumented > recorded %d; document the new item(s):%s" % (
+            crate, counts[crate], rows[crate], "".join("\n    " + w for w in where[crate][:20])))
+    elif counts[crate] < rows[crate]:
+        problems.append("%s: %d undocumented < recorded %d; lower the record to %d (the ratchet only tightens)" % (
+            crate, counts[crate], rows[crate], counts[crate]))
+if problems:
+    print("\n".join(problems)); sys.exit(1)
+print(sum(counts.values()))
+' "$@"
+}
 
 # ── self-test ────────────────────────────────────────────────────────────────────────────────
 SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
@@ -94,6 +148,29 @@ pub fn probe() -> u32 { 42 }'
   out="$(RUSTDOCFLAGS="-D missing_docs" bash -c 'cd "$1" && RUSTDOCFLAGS="$2" cargo doc --offline --no-deps --target-dir "$1/.wt" 2>&1' _ "$t/undocumented" "$LINTS")"; rc=$?
   arm "GREEN an inherited RUSTDOCFLAGS does not leak into the verdict" "$rc" 0 "$out" "-"
 
+  # The ratchet, on a two-crate workspace laid out as crates/<dir>/: one crate with two undocumented
+  # public items (a function and a struct field), one fully documented.
+  mkdir -p "$t/ws/crates/probe/src" "$t/ws/crates/clean/src"
+  printf '[workspace]\nresolver = "2"\nmembers = ["crates/probe", "crates/clean"]\n' > "$t/ws/Cargo.toml"
+  printf '[package]\nname = "probe"\nversion = "0.1.0"\nedition = "2021"\n' > "$t/ws/crates/probe/Cargo.toml"
+  printf '[package]\nname = "clean"\nversion = "0.1.0"\nedition = "2021"\n' > "$t/ws/crates/clean/Cargo.toml"
+  printf '//! A probe.\npub fn bare() {}\n/// Documented.\npub struct S {\n    pub field: u8,\n}\n' > "$t/ws/crates/probe/src/lib.rs"
+  printf '//! Clean.\n/// One.\npub fn one() {}\n' > "$t/ws/crates/clean/src/lib.rs"
+  local doc rec; doc="$t/ws.doc"; rec="$t/rec.tsv"
+  ( cd "$t/ws" && RUSTDOCFLAGS="$LINTS -W missing_docs" cargo doc --workspace --offline --no-deps --target-dir "$t/ws/.wt" > "$doc" 2>&1 )
+  printf 'probe\t2\nclean\t0\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "GREEN the ratchet holds when every crate's count equals its row" "$rc" 0 "$out" "2"
+  printf 'probe\t1\nclean\t0\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "RED a rise is refused, listing the crate's undocumented items" "$rc" 1 "$out" "document the new item(s)"
+  printf 'probe\t3\nclean\t0\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "RED a fall is refused until the row is lowered" "$rc" 1 "$out" "lower the record to 2"
+  printf 'probe\t2\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "RED a crate without a row is refused" "$rc" 1 "$out" "clean: no recorded count"
+  printf 'probe\t2\nclean\t0\nghost\t0\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "RED a row naming no workspace crate is refused" "$rc" 1 "$out" "ghost: recorded, but not a workspace crate directory"
+  printf 'probe 2\n' > "$rec"; out="$(ratchet "$rec" probe clean < "$doc")"; rc=$?
+  arm "REFUSE a malformed record cannot be judged" "$rc" 2 "$out" "malformed record row"
+
   rm -rf "$t"
   printf 'API-DOCS --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
@@ -110,7 +187,7 @@ self_test >/dev/null 2>&1 || {
   exit 2
 }
 
-out="$(RUSTDOCFLAGS="$LINTS" cargo doc --workspace --no-deps --offline 2>&1)"; rc=$?
+out="$(RUSTDOCFLAGS="$LINTS -W missing_docs" cargo doc --workspace --no-deps --offline 2>&1)"; rc=$?
 if [ "$rc" -ne 0 ]; then
   {
     echo "API-DOCS: FAIL — the workspace's rustdoc carries link or HTML defects (decision_rust-native-tooling):"
@@ -121,6 +198,17 @@ if [ "$rc" -ne 0 ]; then
   } >&2
   exit 1
 fi
-crates="$(printf '%s\n' "$out" | grep -c ' Documenting ')"
-printf 'API-DOCS: ok (%s crate(s) documented; no broken or private intra-doc link, no invalid HTML)\n' "$crates"
+# Count crates from the workspace's crate directories: a fresh build prints no "Documenting" line,
+# while cargo replays the cached warnings, so the ratchet's count is the same either way.
+dirs=(); for d in crates/*/; do [ -f "$d/Cargo.toml" ] && dirs+=("$(basename "$d")"); done
+crates="${#dirs[@]}"
+verdict="$(printf '%s\n' "$out" | ratchet "$RECORD" "${dirs[@]}")"; vrc=$?
+if [ "$vrc" -eq 2 ]; then
+  printf 'API-DOCS: REFUSED — %s cannot be judged: %s\n' "$RECORD" "$verdict" >&2; exit 2
+elif [ "$vrc" -ne 0 ]; then
+  { echo "API-DOCS: FAIL — the undocumented public items no longer match $RECORD (the RUSTDOC.3 ratchet):"
+    printf '%s\n' "$verdict" | sed 's/^/  /'; } >&2
+  exit 1
+fi
+printf 'API-DOCS: ok (%s crate(s) documented; no broken or private intra-doc link, no invalid HTML; %s undocumented public item(s), each crate at its recorded count)\n' "$crates" "$verdict"
 exit 0

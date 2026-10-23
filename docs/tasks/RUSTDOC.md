@@ -89,9 +89,17 @@ undocumented public items never rises.
   went to the execution part; the next governance row needs a partition first.
 
 - ID: `RUSTDOC.3` — **missing-docs ratchet**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0003`; owned on clean f44947a; evidence target/rustdoc/rd0003)
   Goal: count undocumented public items per crate (`missing_docs`) and refuse any rise.
   Acceptance: the count recorded from the real tree; a staged undocumented item fires RED.
+  Result: the API-DOCS build now also warns on `missing_docs`; the check counts the warnings per crate
+  directory under `crates/` and compares each with `doctrine/undocumented_items.tsv` (measured: cli 0, core
+  61, dsp56300 120, verify 86 = 267). A rise is refused with the crate's items listed (the new one first in
+  the measured case); a fall is refused until the row is lowered, so the ratchet only tightens and the record
+  is always the measured truth; a crate without a row, a row without a crate, items outside `crates/<dir>/`
+  and a malformed record are refused. Six new self-test arms on a two-crate scratch workspace (13 in all).
+  The crate count in the verdict comes from the crate directories: a fresh build prints no "Documenting"
+  line, while cargo replays the cached warnings, so the count is the same either way.
 
 - ID: `RUSTDOC.4` — **generated modules documented by their generators**
   Status: `pending`
@@ -109,7 +117,7 @@ undocumented public items never rises.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.3` | `pending` | the missing-docs ratchet; the reference is now reachable from the book |
+| 1 | `RUSTDOC.4` | `pending` | the generated modules' docs come from their generators (core's and verify's largest gaps) |
 
 ## Decisions
 
@@ -143,9 +151,19 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — `bash scripts/check_book_index.sh` → `BOOK-INDEX: ok (docs/book/src/index.md matches the book, 40 table rows)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 49 → 50 chapters; `git status --short docs/book` → only `SUMMARY.md`, `index.md` and the new chapter (the 20 MB reference untracked under `/docs/book/book`); focused checks rc 0 (focused-checks.json); no Rust source, pinned module or evidence byte changed.
 - [x] **LOCKSTEP** — the chapter, SUMMARY, the derived index, LIVE_STATUS (50 chapters), `docs/doctrines/governance.md` (UNIT-BOOKS row), the execution toolbox row, the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.3)
+
+- [x] **REPRODUCE / ISSUE** — measure.log: `RUSTDOCFLAGS="… -W missing_docs" cargo doc --workspace --no-deps --offline` rc 0 with `warning: `semulith-core` (lib doc) generated 61 warnings`, `semulith-verify` 86, `semulith-dsp56300` 120 — nothing refused a 268th; by kind: struct field 179, variant 53, method 9, constant 8, struct 7, associated function 5, enum 3, static 2, function 1.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -n "missing_docs" scripts/check_rustdoc.sh` at f44947a: only in a comment ("NOT denied here"); no record of the counts existed (`ls doctrine/` → `fact_ownership.tsv readme_routes.tsv sanctioned_processes.tsv`).
+- [x] **FIX** — `doctrine/undocumented_items.tsv` (four rows); `ratchet()` in `scripts/check_rustdoc.sh` and `-W missing_docs` in its build; six self-test arms.
+- [x] **ADDRESSED (verified)** — after.log: `bash scripts/check_rustdoc.sh --self-test` → `API-DOCS --self-test: 13 pass / 0 fail`; `bash scripts/check_rustdoc.sh` → `API-DOCS: ok (4 crate(s) documented; no broken or private intra-doc link, no invalid HTML; 267 undocumented public item(s), each crate at its recorded count)`; red-real-tree.log: one `pub const` appended to crates/semulith-core/src/lib.rs → `semulith-core: 62 undocumented > recorded 61; document the new item(s):` with `crates/semulith-core/src/lib.rs:40:1  missing documentation for a constant` first, rc 1, then restored `76954523c1628ae74d2969b505f657965abe3f1e1cbefdc84cd0d9ff83cb56bb` byte-identical; `ls target/doctrine-selftest | wc -l` = 0.
+- [x] **NO REGRESSION** — `bash scripts/check_registry_mirror.sh` → `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`; `bash scripts/check_fact_ownership.sh` → `FACT-OWNERSHIP: ok (74 fact kind(s): one owner each, every mirror governed)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 1662 → 1668 arms; focused checks rc 0 (focused-checks.json); no Rust source changed (`git status --short crates/` empty).
+- [x] **LOCKSTEP** — registry text, the book's doctrines chapter, `docs/doctrines/evidence.md`, the execution toolbox row, the API reference chapter, LIVE_STATUS (arms), the tree and index, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
   (target/rustdoc-xtask-assessment/).
 - `2026-10-23`: RUSTDOC.1 done — API-DOCS registered; 20 defects fixed at their source; RUSTDOC.2 next.
 - `2026-10-23`: RUSTDOC.2 done — the reference is built with the book and linked from it; RUSTDOC.3 next.
+- `2026-10-23`: RUSTDOC.3 done — the missing-docs ratchet holds 267 undocumented items per crate; RUSTDOC.4 next.

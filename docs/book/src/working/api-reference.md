@@ -30,5 +30,6 @@ Measured on 2026-10-23 with rustdoc's coverage report:
 | `semulith_verify` | 404 | 82.4% |
 | `semulith_dsp56300` | 66 | 35.5% |
 
-Undocumented public items will be counted per crate and allowed only to fall (`RUSTDOC.3`); the DSP
-crate is brought to parity (`RUSTDOC.5`) and runnable examples follow (`RUSTDOC.6`).
+The undocumented public items are counted per crate on every commit and may only fall (`RUSTDOC.3`):
+the record is `doctrine/undocumented_items.tsv`, and a rise is refused with the crate's items listed.
+The DSP crate is brought to parity (`RUSTDOC.5`) and runnable examples follow (`RUSTDOC.6`).

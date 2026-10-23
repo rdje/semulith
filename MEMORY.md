@@ -14,17 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `RUSTDOC.3` next (missing-docs ratchet), then `XTASK.1` (delegation-only front door;
-  `decision_rust-native-tooling.md`: incrementally, extreme care, nothing breaks). `P4-SYSTEM.14`'s crediting act
-  (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
+- active_work_unit: `RUSTDOC.4` next (generated modules documented by their generators), or `XTASK.1` (front door)
+  — see next_action. `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27`
+  after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-RDOC-0002` — RUSTDOC.2: `make book` builds the rustdoc reference into the book output;
-  chapter "The API reference"; UNIT-BOOKS verifies book links into it without scanning rustdoc's pages.
-- next_action: `RUSTDOC.3` — count undocumented public items per crate (`missing_docs` via rustdoc) and refuse
-  any rise (a ratchet like TABLE-ARITY), fired RED with a staged undocumented item. Containment: docs/toolbox/
-  governance.md is at 16,302 of 16,384 B — partition before adding a governance row. Then XTASK.1. The crediting
-  act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one finite case suffices.
+- last_unit: `SEMULITH-RDOC-0003` — RUSTDOC.3: the missing-docs ratchet in API-DOCS against
+  `doctrine/undocumented_items.tsv` (267: cli 0, core 61, dsp56300 120, verify 86); a doc improvement must lower
+  its row in the same commit.
+- next_action: `XTASK.1` (the director's priority pair: rustdoc AND xtask; the delegation-only front door, with
+  extreme care), then `RUSTDOC.4`. CHANGELOG.md is near its 64 KiB shard threshold — shard with
+  `scripts/shard_history.py` when the next entry would cross it. Containment: docs/toolbox/governance.md at 16,302
+  of 16,384 B. The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one case suffices.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

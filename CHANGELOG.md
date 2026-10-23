@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0003 (leaf RUSTDOC.3) — the missing-docs ratchet
+
+RUSTDOC.3: the API-DOCS build now also warns on `missing_docs`, and the check counts the undocumented public items per crate directory against the new record `doctrine/undocumented_items.tsv` (cli 0, core 61, dsp56300 120, verify 86 = 267). A rise is refused with the crate's items listed; a fall is refused until the row is lowered, so the ratchet only tightens and the record is always the measured count. Six new self-test arms on a two-crate scratch workspace (13 in all); fired RED on the real tree with one added undocumented constant (`semulith-core: 62 undocumented > recorded 61`), then restored byte-identical. LIVE_STATUS 1,668 arms. RUSTDOC.4 next.
+
 ## SEMULITH-RDOC-0002 (leaf RUSTDOC.2) — the API reference is built with the book
 
 RUSTDOC.2: `make book` now runs `cargo doc --workspace --no-deps --offline` and places the reference in the book's untracked output (`docs/book/book/api/`, 20 MB, 4 s); the new chapter "The API reference" links the four crate roots and states the measured coverage. A prototype showed the book checker cannot scan rustdoc's own pages (2,332 findings from JavaScript line-range anchors, percent-encoded ids and a missing root index), so UNIT-BOOKS now builds the reference fresh into its bundle and verifies that every book link INTO it lands on a page, without scanning its pages (rustdoc's links are API-DOCS's): three probe tests and three seams, 55 tests both modes; fired RED on the real tree with one broken link into the reference, then green (3,722 links). The derived book index regenerated; LIVE_STATUS 50 chapters.
