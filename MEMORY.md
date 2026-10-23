@@ -14,19 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `RUSTDOC.1` next (defects listed in target/rust-tooling/rustdoc1-defects.txt), then `XTASK.1` (trees registered 2026-10-23,
-  `decision_rust-native-tooling.md`: xtask incrementally and with extreme care, nothing breaks). `P4-SYSTEM.14`'s
-  crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z
-  (create target/artifact-cleanup/AC0084 first).
+- active_work_unit: `RUSTDOC.2` next (build the reference with `make book`, link it from the book), then
+  `XTASK.1` (delegation-only front door; `decision_rust-native-tooling.md`: incrementally, extreme care, nothing
+  breaks). `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` after
+  2026-10-24T10:15Z (create target/artifact-cleanup/AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-LC-0054` — LIVE-CONTAINMENT's closed rows moved to docs/tasks/archive/LIVE-CONTAINMENT-rows.md
-  (128,385 → 86,120 B); before it TOOL-0001 (RUSTDOC and XTASK registered), AC-0083, P4-0295 (a42bb).
-- next_action: `RUSTDOC.1` — fix
-  the 19 doc defects (9 unresolved links, 4 private links, 6 unclosed HTML tags; target/rustdoc-xtask-assessment/)
-  and register a doctrine running `cargo doc --workspace --no-deps --offline` with those lints denied, fired RED
-  first. The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one finite case of 25
-  witnesses suffices for `implemented` on `REQ-GC-M`; the normative text is retained (a42z, a42bb).
+- last_unit: `SEMULITH-RDOC-0001` — RUSTDOC.1: the API-DOCS doctrine (`scripts/check_rustdoc.sh`) registered; 20 doc
+  defects fixed at their source (two via `gen_definition.py`); 41 doctrines, 1,662 arms.
+- next_action: `RUSTDOC.2` — `make book` also runs `cargo doc --workspace --no-deps --offline` and places the
+  reference in the book output (untracked); a book chapter links it; measure `make book` before/after. Then XTASK.1.
+  The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one finite case of 25 witnesses
+  suffices for `implemented` on `REQ-GC-M`; the normative text is retained (a42z, a42bb).
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

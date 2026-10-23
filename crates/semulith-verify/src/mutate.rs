@@ -15,7 +15,7 @@
 //!   production paths pass the generated `definition::INSNS`. A mutated model is then exactly
 //!   what it should be — *data the one evaluator consumes*: a table copied from `INSNS` with
 //!   one row swapped, either its decode row (`mask`/`value`) or its effect pointer, the
-//!   latter to a mutated copy of the instruction's real effect tree rebuilt by [`rebuild`]
+//!   latter to a mutated copy of the instruction's real effect tree rebuilt by `rebuild`
 //!   and leaked into the suite's bounded test arena. OWN-01 is untouched: no rule has a
 //!   second implementation; the suite never writes semantics, it perturbs data.
 //! - **Observation/outcome-level, where a faithful model-level seam would require a second

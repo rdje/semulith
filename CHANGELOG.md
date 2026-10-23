@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0001 (leaf RUSTDOC.1) — the doc defects and the API-DOCS gate
+
+RUSTDOC.1: the new `API-DOCS` doctrine (`scripts/check_rustdoc.sh`) builds the workspace's rustdoc offline on every commit with broken and private intra-doc links and invalid HTML tags denied, and names each defect's file, line and lint; its self-test documents seven scratch crates (including that an inherited `RUSTDOCFLAGS` never decides the verdict) and removes them. Fired RED on the real tree before any fix: 20 defects. Fixed at the source, comments only: `<abs>` operand notations and bit ranges into code spans, links to private or cfg-gated items made plain, `[Self::new]`, an ambiguous link pinned to `mod@bench`, an editorial quote bracket escaped; the two in the generated definition modules fixed in `gen_definition.py` and both modules regenerated (DEF-GEN ok). `make check` rc 0 (287 + 173 + 17 tests), every generation and vector check green, the retained M case untouched (method satisfied, 10 of 10 legs). LIVE_STATUS: 41 doctrines, 1,662 arms; the tooling row In Progress. RUSTDOC.2 next.
+
 ## SEMULITH-LC-0054 (leaf LIVE-CONTAINMENT.4) — the tree's closed rows move to an archive part
 
 .4o: docs/tasks/LIVE-CONTAINMENT.md stood at about 128 KB of the task family's 131,072-byte part ceiling. Its four closed row sections (the LC0027 checklist, the acceptance checklist, the verification log and the commit log; 42,607 B, every row ticked) moved verbatim into docs/tasks/archive/LIVE-CONTAINMENT-rows.md — each span's SHA256 listed in the part and found once, byte-identical — with one pointer under each heading (128,385 → 86,120 B). The family's standing mechanism (`decision_containment-reset.md`); no code changed.

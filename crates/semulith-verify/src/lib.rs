@@ -19,9 +19,9 @@
 //! mutation suite; [`replay`] (`P1-LAB.10`) is the recorded input bundle that
 //! reproduces a result from its definitions, tools, inputs and event choices
 //! (G-REPLAY), and [`reduce`] is the minimizer whose output retains the original
-//! first divergence (EVD-02); [`bench`] (`P1-LAB.11`) is the performance-baseline
+//! first divergence (EVD-02); [`bench`](mod@bench) (`P1-LAB.11`) is the performance-baseline
 //! harness — the workload mixes, the three ARCHITECTURE §6 modes, the RUST-02
-//! agreement check and the noise statistics (RUST-04); on the wasm target [`wasm`]
+//! agreement check and the noise statistics (RUST-04); on the wasm target `wasm`
 //! exports the bench's `extern "C"` surface (both demo surfaces run the same engine
 //! the commit gate tests).
 

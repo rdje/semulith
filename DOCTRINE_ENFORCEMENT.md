@@ -59,6 +59,7 @@ judged too.
 | `GATE-REPORT` | [evidence](docs/doctrines/evidence.md) |
 | `SHARD-FREEZE` | [governance](docs/doctrines/governance.md) |
 | `PORT-WEB` | [evidence](docs/doctrines/evidence.md) |
+| `API-DOCS` | [evidence](docs/doctrines/evidence.md) |
 | `STATE-GEN` | [definition](docs/doctrines/definition.md) |
 | `DEF-GEN` | [definition](docs/doctrines/definition.md) |
 | `GUEST-GEN` | [definition](docs/doctrines/definition.md) |

@@ -15,7 +15,7 @@
 //!   `definitions/riscv/rv64i.sexp`  `f45071eef9894463259482191cc464fa79df59af04b16e5c10f6c3a7342e0278`
 //!   `profiles/rv64i-lab-v0/encoding.sexp`  `93a2d4718a50b60c23c3b5e64afa64499b09fcf41a906d46d83e63eebab2e5e9`
 //!   `profiles/rv64i-lab-v0/state.sexp`  `ff53fb04f3ed7ac25e4db78e6e92cc3e0caa086df438e221350627194cbea5a4`
-//! Generator: `scripts/gen_definition.py` (sha256 `52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47`)
+//! Generator: `scripts/gen_definition.py` (sha256 `60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -61,7 +61,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     fragments: &["riscv/rv64i"],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47",
+        sha256: "60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1",
     },
     inputs: &[
         InputPin {
@@ -95,7 +95,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
 
 /// One operand field of the encoding: its bit range in the 32-bit word, and, for
 /// the scattered B/J immediates, the immediate-bit pieces the field carries in
-/// MSB-first order — `(12, 12)` first means the field's top bit holds imm[12].
+/// MSB-first order — `(12, 12)` first means the field's top bit holds `imm[12]`.
 /// Empty `scatter` marks a contiguous field.
 pub struct FieldDef {
     pub name: &'static str,
@@ -1367,7 +1367,7 @@ pub enum Sem {
     Sext(u64, &'static Sem),
     /// `(zext N v)` — zero-extend the low N bits of `v` to XLEN.
     Zext(u64, &'static Sem),
-    /// `(bits hi lo v)` — the bits [hi:lo] of `v`.
+    /// `(bits hi lo v)` — the bits `[hi:lo]` of `v`.
     Bits(u8, u8, &'static Sem),
     /// `(load width signed? addr)` — `signed?` is `1` for sign extension, `0` for
     /// zero extension (D-LOAD-EXT).

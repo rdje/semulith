@@ -83,7 +83,7 @@ pub enum Request {
     },
     /// An implicit instruction read of exactly one 16-bit little-endian parcel.
     /// Used by the C-enabled profile; never reads the following parcel. The CPU
-    /// decides from bits [1:0] whether another parcel is architecturally needed.
+    /// decides from bits `[1:0]` whether another parcel is architecturally needed.
     /// `P4-SYSTEM.12`; the effective contract records belong to v2.
     FetchParcel {
         /// Byte address of the parcel; must be two-byte aligned.

@@ -13,7 +13,7 @@
 //!   lower-privilege hart takes it regardless of the global enables), a
 //!   lower-privilege one never fires in a higher mode;
 //! - the delegation mask: a delegated interrupt is masked AT THE DELEGATOR — an STI
-//!   delegated via mideleg[5] is taken in S/U only, never in M;
+//!   delegated via `mideleg[5]` is taken in S/U only, never in M;
 //! - the fixed priorities (M: MEI MSI MTI SEI SSI STI; S: SEI SSI STI) — the M-source
 //!   bits (MSIP/MTIP/MEIP) stay read-only 0 by declaration (decision 5), so the
 //!   eligible set reduces to SSIP/STIP/SEIP and the single ordered walk covers both.

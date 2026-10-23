@@ -17,7 +17,7 @@
 //!   `00000001 01iiiiii 1000dkkk` (6-bit immediate), #xxxx is `00000001 01000000 1100dkkk`
 //!   + immediate extension word; kkk: ADD 000, OR 010, EOR 011, SUB 100, CMP 101, AND 110.
 //! - MOVE #xx,D (immediate short) — 13-113/13-114: `001ddddd iiiiiiii 00000000`.
-//! - MOVE #xxxxxx,D (immediate long), MOVE S,X:<abs> / X:<abs>,D, and the register-indirect
+//! - MOVE #xxxxxx,D (immediate long), `MOVE S,X:<abs>` / `X:<abs>,D`, and the register-indirect
 //!   forms — 13-118 (X Memory Data Move): `01dd<S>ddd W 1 MMMRRR` + extension word for
 //!   MMMRRR = `110100` (immediate) or `110000` (absolute); the linear register-indirect
 //!   modes per Effective Addressing Mode Encoding 1 (Table 12-13, 12-18): 000/001 (Rn)∓Nn,
@@ -28,8 +28,8 @@
 //! - REP #xxx / REP S — 13-161: `00000110 iiiiiiii 1010 hhhh` /
 //!   `00000110 11dddddd 00100000` (dddddd is the six-bit register code, Table 12-13).
 //! - ENDDO — 13-67: `$00008C`. RTS — 13-168: `$00000C`.
-//! - JMP <abs> — 13-83: `0000 1010 11 MMMRRR 10000000` with MMMRRR = `110000` + extension;
-//!   JSR <abs> — 13-89: `0000 1011 11 MMMRRR 10000000`, same extension shape.
+//! - `JMP <abs>` — 13-83: `0000 1010 11 MMMRRR 10000000` with MMMRRR = `110000` + extension;
+//!   `JSR <abs>` — 13-89: `0000 1011 11 MMMRRR 10000000`, same extension shape.
 //!
 //! Register codes (Table 12-13's six-bit encoding / Table 12-14, whose PDF table extraction
 //! is lossy — the codes below are the cells the pinned assembler emits, each one confirmed
@@ -151,7 +151,7 @@ pub enum Insn {
         dest: Reg,
         imm: u32,
     },
-    /// MOVE S,X/Y:<abs> (write = register to memory) or X/Y:<abs>,D (write = false).
+    /// `MOVE S,X/Y:<abs>` (write = register to memory) or `X/Y:<abs>,D` (write = false).
     MoveAbsLong {
         space: Space,
         reg: Reg,

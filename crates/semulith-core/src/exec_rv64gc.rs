@@ -50,7 +50,7 @@
 //! - **The floating-point state** (`P4-SYSTEM.7`, schema/semantics.sexp's floating-point
 //!   block): an instruction whose rule reads or writes the FP state is ILLEGAL at
 //!   mstatus.FS = Off — judged at the head of the step, before ANY effect of the rule
-//!   ([`touches_fp_state`]; an FLW raises 2, never its load's fault); `(freg x)` reads the
+//!   (`touches_fp_state`; an FLW raises 2, never its load's fault); `(freg x)` reads the
 //!   pre-instruction f-file; a write to an f-register marks FS Dirty; each arithmetic operator
 //!   is [`crate::fp`]'s (the model layer over the qualified backend — never the backend
 //!   directly) and accrues its flags through [`privilege::accrue_fflags`] (sticky; Dirty iff

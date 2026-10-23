@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `RUSTDOC`
-- Status: `proposed`
+- Status: `active`
 - Roadmap lane: cross-cutting — Rust-native tooling (director, 2026-10-23; `decision_rust-native-tooling.md`)
 - Gate: none of its own — the doctrine it adds gates it
 - Consumed by: `AG-OS` — the archogen adapter is the first consumer outside this repository of SEMULITH's Rust
@@ -37,17 +37,34 @@ undocumented public items never rises.
 ## Task Tree
 
 - ID: `RUSTDOC`
-  Status: `proposed`
+  Status: `active`
   Goal: the API reference is rustdoc, built with the book and gated.
   Children: `RUSTDOC.1` … `RUSTDOC.6`
 
 - ID: `RUSTDOC.1` — **the 19 doc defects and the link gate**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0001`; owned on clean 68e321c; evidence target/rustdoc/rd0001)
   Goal: fix the 9 unresolved links, 4 links to private items and 6 unclosed HTML tags measured on 2026-10-23;
   register a doctrine that runs `cargo doc` with `rustdoc::broken_intra_doc_links`,
   `rustdoc::private_intra_doc_links` and `rustdoc::invalid_html_tags` denied.
   Acceptance: the doctrine fires RED on the real tree before the fixes and on a deliberately broken copy after;
   green on the fixed tree; offline, own target directory, no new dependency.
+  Result: `scripts/check_rustdoc.sh` registered as the `API-DOCS` doctrine. It runs `cargo doc --workspace
+  --no-deps --offline` (default target directory, as the wasm doctrine does) with exactly the three lints denied
+  and, on failure, lists one line per defect with file, line and message. Its self-test documents seven
+  stand-alone scratch crates under target/doctrine-selftest and removes them: sound GREEN, unresolved link RED,
+  private link RED, unclosed tag RED, missing docs alone GREEN, an unrelated syntax error REFUSE without a lint
+  name, and an inherited `RUSTDOCFLAGS="-D missing_docs"` GREEN (the env never decides the verdict). The first
+  self-test run missed three arms on its own expectation — rustc names the lints with hyphens — and the gate
+  then REFUSED to judge, as designed. Fired on the real tree before any fix: RED with 20 defects, the 19
+  measured that morning plus one ambiguous link (`bench` is both a module and an attribute macro) that the
+  first census had not matched. Fixed at the source, comments only: six `<abs>` operand notations in the DSP
+  decoder and `[1:0]`, `mideleg[5]` put in code spans; four links to private items made plain code spans; the
+  cfg-gated `wasm` link made plain; `[new]` → `[Self::new]`; the ambiguous link pinned to `mod@bench`; the
+  quotation's editorial `[it]` escaped. The two in the generated definition modules were fixed in
+  `scripts/gen_definition.py` (`imm[12]`, `[hi:lo]` as code spans) and both modules regenerated through it: 8
+  lines each, the two doc lines and the generator digest the modules carry as provenance. Neither the
+  generator nor any Rust file is a pinned input of the retained M case. The tree's tooling row moved to In
+  Progress; LIVE_STATUS re-derived to 41 doctrines and 1,662 arms.
 
 - ID: `RUSTDOC.2` — **the reference is built with the book**
   Status: `pending`
@@ -75,7 +92,7 @@ undocumented public items never rises.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.1` | `pending` | smallest step with a gate; scheduled after the in-flight P4 and housekeeping units |
+| 1 | `RUSTDOC.2` | `pending` | the reference is built with the book; the gate now holds the links |
 
 ## Decisions
 
@@ -89,11 +106,19 @@ undocumented public items never rises.
 
 - None.
 
-## Acceptance Checklist
+## Acceptance Checklist (leaf RUSTDOC.1)
 
-Rows land with each leaf.
+[Evidence requirements](../TASK_TREE_README.md#acceptance-checklist-required-for-any-leaf-that-lands-a-code-change).
+
+- [x] **REPRODUCE / ISSUE** — target/rustdoc-xtask-assessment/rustdoc-probe.log: `cargo doc --workspace --no-deps --offline` with the lints as warnings → 287 warnings; `grep -c` of the three lint classes → 9 `unresolved link`, 4 `links to private item`, 6 `unclosed HTML tag`; target/rust-tooling/rustdoc1-defects.txt lists each with file and line.
+- [x] **ROOT CAUSE (WHY + WHERE)** — before.log: `bash scripts/check_rustdoc.sh` → `API-DOCS: FAIL — the workspace's rustdoc carries link or HTML defects` with 20 lines, e.g. `crates/semulith-dsp56300/src/decode.rs:20:49  unclosed HTML tag `abs``, `crates/semulith-core/src/definition.rs:98:76  unresolved link to `12``, `crates/semulith-verify/src/lib.rs:22:34  `bench` is both a module and an attribute macro`; `grep -n "holds imm\[12\]\|the bits \[hi:lo\]" scripts/gen_definition.py` = 750, 921 (the generated modules' text is the generator's); no lint was ever denied: `grep -rn "rustdoc::" crates/*/src/lib.rs` empty and no tracked file ran `cargo doc` (`git ls-files | xargs grep -ln "cargo doc"` empty at 68e321c).
+- [x] **FIX** — 16 comment edits (14 in four crates, 2 in the generator); `python3 scripts/gen_definition.py --encoding … --out crates/semulith-core/src/definition.rs` → `wrote … (42605 bytes)`, the rv64gc pair → `wrote … (206544 bytes)`, `git diff --stat` 8 + 8 lines; `scripts/check_rustdoc.sh` with seven self-test arms; the `API-DOCS` registry entry and its three mirrors.
+- [x] **ADDRESSED (verified)** — after.log: `bash scripts/check_rustdoc.sh` → `API-DOCS: ok (4 crate(s) documented; no broken or private intra-doc link, no invalid HTML)` rc 0; `bash scripts/check_rustdoc.sh --self-test` → `API-DOCS --self-test: 7 pass / 0 fail`; `ls target/doctrine-selftest | wc -l` = 0 after it.
+- [x] **NO REGRESSION** — make-check.log: `make check` rc 0 in 46 s (fmt, clippy -D warnings, `test result: ok. 287 passed`, `173 passed`, `17 passed`, 0 failed); checks.log: `DEF-GEN: ok` for both modules, `STATE-GEN: ok`, `GUEST-GEN: ok`, `FIXTURE-FINGERPRINT: ok (1 pinned fingerprint(s) re-derived)`, `MATERIALS-BILL: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `EXTRACTION: ok`, `SEMANTICS: ok`, `FP-VECTORS: ok`, `M-VECTORS: ok (4485 vectors …)`, `UNIT-BOOKS: ok`; `python3 -B scripts/review_div_method.py` → `satisfied rv64gc-m-forms-v3`, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; `bash scripts/check_registry_mirror.sh` → `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` after 40 → 41 doctrines and 1655 → 1662 arms; focused checks rc 0 (focused-checks.json).
+- [x] **LOCKSTEP** — the registry entry, `DOCTRINE_ENFORCEMENT.md`, the book's doctrines chapter, `docs/doctrines/evidence.md`, the execution toolbox row, LIVE_STATUS (counts; the tooling row In Progress), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
   (target/rustdoc-xtask-assessment/).
+- `2026-10-23`: RUSTDOC.1 done — API-DOCS registered; 20 defects fixed at their source; RUSTDOC.2 next.

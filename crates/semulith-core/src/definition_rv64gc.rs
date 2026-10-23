@@ -36,7 +36,7 @@
 //!   `definitions/riscv/zifencei.sexp`  `7e3c6eebb4cffe383504979c83098cd2807bf90ee23c254ab4f94cad139a5003`
 //!   `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
 //!   `profiles/rv64gc-lab-v0/state.sexp`  `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`
-//! Generator: `scripts/gen_definition.py` (sha256 `52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47`)
+//! Generator: `scripts/gen_definition.py` (sha256 `60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1`)
 
 /// OWN-03's generation manifest: the canonical inputs, the generator, the
 /// configuration, and the upstream source fingerprints this module derives from.
@@ -93,7 +93,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
     ],
     generator: GeneratorPin {
         name: "scripts/gen_definition.py",
-        sha256: "52d645235fb28ced87f0df7b7448fbb9c7d6c375a1248bdbdf62c7e07a154c47",
+        sha256: "60ab421e31482c2b073345293effe2f175ca5d19466bf50c9772799050b3b9d1",
     },
     inputs: &[
         InputPin {
@@ -263,7 +263,7 @@ pub static MANIFEST: DefinitionManifest = DefinitionManifest {
 
 /// One operand field of the encoding: its bit range in the 32-bit word, and, for
 /// the scattered B/J immediates, the immediate-bit pieces the field carries in
-/// MSB-first order — `(12, 12)` first means the field's top bit holds imm[12].
+/// MSB-first order — `(12, 12)` first means the field's top bit holds `imm[12]`.
 /// Empty `scatter` marks a contiguous field.
 pub struct FieldDef {
     pub name: &'static str,
@@ -6384,7 +6384,7 @@ pub enum Sem {
     Sext(u64, &'static Sem),
     /// `(zext N v)` — zero-extend the low N bits of `v` to XLEN.
     Zext(u64, &'static Sem),
-    /// `(bits hi lo v)` — the bits [hi:lo] of `v`.
+    /// `(bits hi lo v)` — the bits `[hi:lo]` of `v`.
     Bits(u8, u8, &'static Sem),
     /// `(load width signed? addr)` — `signed?` is `1` for sign extension, `0` for
     /// zero extension (D-LOAD-EXT).

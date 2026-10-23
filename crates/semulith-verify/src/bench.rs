@@ -26,7 +26,7 @@
 //!   model-side misaligned store, and an environment-side out-of-region load (the
 //!   boundary's AccessFault answer).
 //!
-//! The fault mix runs under the stated harness policy ([`apply_outcome`]): a delivered
+//! The fault mix runs under the stated harness policy (`apply_outcome`): a delivered
 //! exception is observed and execution resumes at pc+4 (delivery-continues, ARCHITECTURE
 //! §5); a requested trap (EBREAK) stops the run; a fetch access-fault stops without an
 //! observation (run.rs's rule — a failed fetch supplied no word).

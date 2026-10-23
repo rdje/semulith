@@ -702,7 +702,7 @@ pub fn from_int(n: u32, iw: u32, signed: bool, rm: Rm, v: u64) -> Flagged {
 /// Narrowing rounds through the backend with OVERFLOW and UNDERFLOW judged on the
 /// exactly-unbounded result (the same value rounded at the target's precision over a 15-bit
 /// exponent), as for every rounded operation; widening is exact. A NaN input yields the
-/// canonical NaN ([`finish`]), and a SIGNALING NaN raises NV — the backend's own
+/// canonical NaN (`finish`), and a SIGNALING NaN raises NV — the backend's own
 /// `INVALID_OP`, measured at slice (d3) in both directions. (The qualification record had
 /// named this a backend deviation; its 24 cases were the MPFR oracle's silence — MPFR has no
 /// signaling NaN — and the record carries the correction.)

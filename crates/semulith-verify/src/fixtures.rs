@@ -46,7 +46,7 @@ impl FlatMemory {
         Self::with_fetch_align(base, size, 4)
     }
 
-    /// [`new`] with the profile's fetch alignment explicit (`P4-SYSTEM.2` slice h — the
+    /// [`Self::new`] with the profile's fetch alignment explicit (`P4-SYSTEM.2` slice h — the
     /// rv64gc corpus fetches at any even address under IALIGN=16, so its fixture declares
     /// 2; rv64i's paths keep the 4-byte default byte-exact).
     #[must_use]

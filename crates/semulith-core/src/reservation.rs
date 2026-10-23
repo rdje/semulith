@@ -5,7 +5,7 @@
 //! One reservation = **(physical address, width, valid)** of the most recent LR — the
 //! reservation SET is exactly the accessed word's or doubleword's bytes, the minimal
 //! conformant set: "An implementation can register an arbitrarily large reservation set
-//! … provided [it] includes all bytes of the addressed data word or doubleword" (RVI-A
+//! … provided \[it\] includes all bytes of the addressed data word or doubleword" (RVI-A
 //! §12.1.2). It is keyed on the PHYSICAL address: the spec's aliasing latitude — an SC
 //! is "allowed to succeed … using an alias … also allowed to fail" — is resolved to the
 //! exact-physical-match point (laboratory authority, decision 2), so a different virtual
