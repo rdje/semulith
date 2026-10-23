@@ -121,6 +121,35 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
 
+### .4n / SEMULITH-LC-0053 — LIVE_STATUS rows back to states (complete)
+
+Owned on clean 267fc77. LIVE_STATUS.md stands at 6,137 of its 6,144-byte ceiling (registry row
+`LIVE_STATUS.md`: hot_live, health 45 lines / 4,096 B, ceiling 90 / 6,144, owner "COMMIT.md; rows are
+states, not prose"), 49 lines, health passed long ago; the next status note any unit writes crosses it.
+Apply the row's declared control, not a raise: each Notes cell keeps the state, the tree pointer with its
+leaf count, every caveat that limits a claim (`incomplete`, "declared not implemented", "cited not
+verified", "uncredited", "unclaimed") and every count DERIVED-COUNTS and TREE-CLAIMS re-derive; narrative
+history leaves the cell only where its tree record already carries it (each dropped phrase located by
+grep in docs/tasks/ before the cut). The book's status chapter includes the file verbatim, so the
+director's view changes with it. Evidence target/live-containment/lc0053.
+
+Done 2026-10-23: 22 Notes cells cut to their states (LIVE_STATUS.before.md kept), 6,137 → 4,771 B, 49 lines
+unchanged — 1,373 B of headroom under the ceiling, still above the 4,096-byte health target, so the
+warning keeps printing; no ceiling moved. Kept in every cell: the tree pointer and leaf count, the
+caveats (G0 `incomplete` with 68 checks unimplemented and "matched on the ISA, not the platform", 72
+checks "declared not implemented", "cited not verified", "closure qualifies no processor/board", "no
+oracle claim", "TI C6000 / SHARC unclaimed", "uncredited") and the three derived counts (40 registered,
+1653 self-test arms, 49 chapters). Homes located before the cut (homes.log): D52–57 in this tree, the
+mirror list in MIRROR-DRIFT, the 34 aligned steps in P1-LAB, boundary items "four in scope, six out" in
+P0-PROFILE, "three G0 criteria are met" in P0-PROFILE, the extraction contract and `.18` in
+MODEL-METHOD, criterion 6 / `c-scope.c` / 129/129 / 642/642 in P2-SCALAR and P1-LAB, TI/VLIW
+slice-gating in P3-BREADTH, `.16` replay in P4-SYSTEM and the history shards, PLATFORM-GEN in P5-BOARD,
+eADL in AG-OS; numbers that left the file (`diff` of the number sets): 129/129, 642/642, 52, 57, `.9`,
+`.16`, `.18`, 4864 (now 4,864). Checks (checks.log): TREE-CLAIMS ok (5 live documents), DERIVED-COUNTS ok
+(3 claims), README-ROUTING-CLOSURE ok, LIVE-DOC-CURRENCY ok, DOCPATH ok; focused checks with `make book`
+rc 0. This tree's own file stands at about 128 KB of its 131,072-byte part ceiling: its closed records
+move to an archive part next, as P4-SYSTEM's did (a42ba). Commit: SEMULITH-LC-0053.
+
 ### .4m / SEMULITH-LC-0052 — containment reset by director ruling (complete)
 
 Owned on clean 2634e94. The family stood at 3,143,298 of 3,145,728 B (108 of 116 files), 2,430 B

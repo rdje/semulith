@@ -26,9 +26,9 @@
   (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`, (c) whether the §11.1.1
   and Table 1 spans are retained first (a42z-style; CC-BY 4.0 already found: materials/RVI_M_RETENTION.md).
   Until the ruling: the retention slice (a42az-candidate: `scripts/retain_div_statement.py` generalised to the
-  multiply and Table 1 spans, SRC-01 review, a new sources row) is the thorough preparatory work; also due the
-  LIVE_STATUS.md bounded-snapshot re-derivation (6,137 of 6,144 B) and `ARTIFACT-CLEANUP.26` after
-  2026-10-23T08:12Z.
+  multiply and Table 1 spans, SRC-01 review, a new sources row) is the thorough preparatory work; also due
+  `ARTIFACT-CLEANUP.26` after 2026-10-23T08:12Z and the LIVE-CONTAINMENT tree's own archive move (its file
+  ~128 KB of 131,072 B). LIVE_STATUS was trimmed to states by LC-0053 (4,771 of 6,144 B).
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

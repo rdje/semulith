@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0053 (leaf LIVE-CONTAINMENT.4) — LIVE_STATUS rows back to states
+
+.4n: LIVE_STATUS.md stood at 6,137 of its 6,144-byte ceiling. Applying the registry's declared control ("rows are states, not prose"), 22 Notes cells were cut to their state, tree pointer, leaf count and caveats (6,137 → 4,771 B; 49 lines); every dropped phrase was located in its tree or the history shards first, and the three derived counts and every tree claim stay (TREE-CLAIMS and DERIVED-COUNTS ok). No ceiling moved. The book's status chapter includes the file, so it shows the shorter rows.
+
 ## SEMULITH-P4-0294 (leaf P4-SYSTEM.14) — move the closed `.14` records into archive part 21
 
 a42ba: docs/tasks/P4-SYSTEM.md stood at 117,506 B of the task family's 131,072-byte part ceiling. The complete records of the closed units a42aq–a42aw (24,128 B) and the acceptance rows a42ar–a42ax (32,158 B) moved verbatim into docs/tasks/archive/P4-SYSTEM-21.md — eight spans, each SHA256 listed in the part and found once, byte-identical — with one pointer each in the live tree (118,497 → 63,186 B). The family's standing mechanism (`decision_containment-reset.md`): no seal, reader or inverse map. No code changed.
