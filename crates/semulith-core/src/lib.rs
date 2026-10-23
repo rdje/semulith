@@ -12,6 +12,24 @@
 //! **nor** `semulith-cli`. The verification harness and the CLI consume this
 //! crate; never the reverse. Behaviour lands leaf by leaf under `P1-LAB`; the
 //! skeleton exists so the boundary holds from the first commit.
+//!
+//! # Example
+//!
+//! Decode an instruction word with the generated canonical definition, and read one of its
+//! operand fields with the same bit helper the interpreter uses:
+//!
+//! ```
+//! use semulith_core::{arith, definition};
+//!
+//! // `addi x1, x0, 5` assembles to 0x0050_0093.
+//! let word: u32 = 0x0050_0093;
+//! let insn = definition::decode(word).expect("an RV64I word");
+//! assert_eq!(insn.name, "addi");
+//! // rd is bits 11..7 of the word: x1.
+//! assert_eq!(arith::bits(u64::from(word), 11, 7), 1);
+//! // The I-immediate is bits 31..20, sign-extended from 12 bits: 5.
+//! assert_eq!(arith::sext(arith::bits(u64::from(word), 31, 20), 12), 5);
+//! ```
 
 pub mod arith;
 pub mod definition;

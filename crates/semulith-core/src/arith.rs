@@ -79,6 +79,14 @@ pub fn xor(x: u64, y: u64) -> u64 {
 /// Extract bits `hi..=lo` (inclusive, 0-indexed) of `value`, zero-extended into XLEN.
 /// Contract: `lo <= hi < XLEN`. Used for immediate fields and the shift-amount masks.
 /// No signedness; the result is exactly `hi - lo + 1` bits wide.
+///
+/// ```
+/// use semulith_core::arith::bits;
+/// // The rs1 field (bits 19..15) of `addi x2, x7, 1` (0x0013_8113) is x7.
+/// assert_eq!(bits(0x0013_8113, 19, 15), 7);
+/// // A field never carries a sign: bits 31..20 of 0xFFF0_0000 are 0xFFF, not -1.
+/// assert_eq!(bits(0xFFF0_0000, 31, 20), 0xFFF);
+/// ```
 #[must_use]
 pub fn bits(value: u64, hi: u32, lo: u32) -> u64 {
     debug_assert!(lo <= hi && hi < XLEN, "bits: need lo <= hi < {XLEN}");
@@ -89,6 +97,16 @@ pub fn bits(value: u64, hi: u32, lo: u32) -> u64 {
 /// into every bit position above it. Contract: `1 <= from_bits <= XLEN`.
 /// — REQ-D-ALU-IMM (12-bit I-immediate), REQ-D-LOAD-EXT (load widths), REQ-D-LUI-AUIPC
 /// (32-bit U-immediate), all via the same width-parametric rule.
+///
+/// ```
+/// use semulith_core::arith::sext;
+/// // A 12-bit immediate of all ones is -1 in XLEN.
+/// assert_eq!(sext(0xFFF, 12), u64::MAX);
+/// // Bit 11 clear: the value is unchanged.
+/// assert_eq!(sext(0x7FF, 12), 0x7FF);
+/// // A byte load of 0x80 sign-extends to -128.
+/// assert_eq!(sext(0x80, 8) as i64, -128);
+/// ```
 #[must_use]
 pub fn sext(value: u64, from_bits: u32) -> u64 {
     debug_assert!(

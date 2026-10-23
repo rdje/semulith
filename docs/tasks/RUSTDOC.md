@@ -39,7 +39,7 @@ undocumented public items never rises.
 - ID: `RUSTDOC`
   Status: `active`
   Goal: the API reference is rustdoc, built with the book and gated.
-  Children: `RUSTDOC.1` … `RUSTDOC.6`
+  Children: `RUSTDOC.1` … `RUSTDOC.7`
 
 - ID: `RUSTDOC.1` — **the 19 doc defects and the link gate**
   Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0001`; owned on clean 68e321c; evidence target/rustdoc/rd0001)
@@ -131,14 +131,30 @@ undocumented public items never rises.
   `semulith_dsp56300` at 186 items, 100.0%.
 
 - ID: `RUSTDOC.6` — **doc examples for the core public API**
-  Status: `pending`
+  Status: `done` (`2026-10-23`, `SEMULITH-RDOC-0006`; owned on clean 85d086e; evidence target/rustdoc/rd0006)
   Goal: runnable examples (doctests) where they teach; `cargo test` runs them (dual mandate: teaching).
+  Result: five examples in `semulith-core`, where the core crate had none: the crate root decodes
+  `addi x1, x0, 5` (0x0050_0093) with the generated definition and reads rd and the sign-extended
+  immediate; `arith::bits` reads rs1 and shows a field carries no sign; `arith::sext` sign-extends 12- and
+  8-bit values; `muldiv::div` shows truncation toward zero (−7 / 2 = −3), `None` on a zero divisor (the
+  instruction's all-ones result being the caller's, Table 1), overflow wrapping and the word form;
+  `muldiv::rem` shows the dividend's sign and overflow's zero remainder. Every value was computed by the
+  real code on the first run; the two hand-assembled words were checked field by field. `make check` runs
+  them. The examples sit in hand-written modules; the generated modules' docs stay their generators'.
+  With this leaf the tree's acceptance criteria hold; `semulith-verify`'s 86 undocumented items become
+  RUSTDOC.7.
+
+- ID: `RUSTDOC.7` — **semulith-verify to parity**
+  Status: `pending`
+  Goal: document `semulith-verify`'s 86 undocumented public items (reduce_rv64gc.rs 25, replay.rs 18,
+  replay_rv64gc.rs 9, reduce.rs 8, report.rs 7, run.rs 7, model_rv64gc.rs 6, snapshot_rv64gc.rs 4, elf.rs 2),
+  each grounded in the code, and lower the ratchet row to 0.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.6` | `pending` | runnable doc examples for the core public API (0% today) |
+| 1 | `RUSTDOC.7` | `pending` | semulith-verify to parity: 86 undocumented items, the last the ratchet holds |
 
 ## Decisions
 
@@ -146,7 +162,8 @@ undocumented public items never rises.
 
 ## Open Questions
 
-- None blocking.
+- The DSP executor's comments cite ASR and LSR at FM 13-16 / 13-95, the decoder's module docs at 13-17 /
+  13-96 (observed at RUSTDOC.5); one of the two is off by a page. The pinned manual decides. Does not block.
 
 ## Blockers
 
@@ -199,6 +216,15 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — checks.log: `make check rc=0 in 56 s` (`287 passed`, `173 passed`, `17 passed`, `5 passed`, 0 failed; fmt and clippy clean), `PORT-WEB: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `FIXTURE-FINGERPRINT: ok`, `MATERIALS-BILL: ok`, `EXTRACTION: ok`, `FACT-OWNERSHIP: ok (74 fact kind(s) …)`, `SEAM-INTEGRITY: ok`; docs only — `git diff` touches comments and the expanded `ModelStop` field layout, no code path; `cargo xtask focused` rc 0 before the commit.
 - [x] **LOCKSTEP** — the record row, the API reference chapter (coverage table and remaining work) and the derived book index (`python3 scripts/gen_book_index.py`; `BOOK-INDEX: ok`), the RUSTDOC tree and docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.6)
+
+- [x] **REPRODUCE / ISSUE** — before.log: `cargo test --doc -p semulith-core` → `running 0 tests`; target/rustdoc-xtask-assessment/semulith_core.txt: examples `| 0 | 0.0% |`.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -c '```' crates/semulith-core/src/lib.rs crates/semulith-core/src/arith.rs crates/semulith-core/src/muldiv.rs` = 0 each at 85d086e: the API was documented in prose only, so no claim in its docs was executed.
+- [x] **FIX** — examples in `crates/semulith-core/src/lib.rs` (crate root), `arith.rs` (`bits`, `sext`) and `muldiv.rs` (`div`, `rem`); the chapter's paragraph; RUSTDOC.7 and the open question added.
+- [x] **ADDRESSED (verified)** — after.log: `test result: ok. 5 passed; 0 failed` with `lib.rs - (line 21) ... ok`, `arith::bits … ok`, `arith::sext … ok`, `muldiv::div … ok`, `muldiv::rem … ok`; red.log: the `div` example changed to expect −4 → `muldiv::div (line 66) ... FAILED`, `left: Some(18446744073709551613)` / `right: Some(18446744073709551612)`, `test result: FAILED. 4 passed; 1 failed`, restored `886ab91342b6b03f000472fdc9a02487e291e19bf84de3d94a55a180adbb98ad` byte-identical; checks.log coverage `| Total | 614 | 100.0% | 5 | 2.7% |`.
+- [x] **NO REGRESSION** — checks.log: `make check rc=0 in 43 s` (`287 passed`, `173 passed`, `17 passed`, two `5 passed` — xtask's tests and the new examples — 0 failed), `API-DOCS: ok (… 86 undocumented public item(s), each crate at its recorded count)`, `PORT-WEB: ok`; `cargo xtask focused` rc 0 before the commit.
+- [x] **LOCKSTEP** — the API reference chapter and the derived index, the RUSTDOC tree (RUSTDOC.7, the open question) and docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -208,4 +234,5 @@ undocumented public items never rises.
 - `2026-10-23`: RUSTDOC.3 done — the missing-docs ratchet holds 267 undocumented items per crate; RUSTDOC.4 next.
 - `2026-10-23`: RUSTDOC.4 done — the generators document the generated modules; semulith-core 61 → 0 undocumented; RUSTDOC.5 next.
 - `2026-10-23`: RUSTDOC.5 done — semulith-dsp56300 120 → 0 undocumented (100.0%); RUSTDOC.6 next.
+- `2026-10-23`: RUSTDOC.6 done — five runnable examples in semulith-core, run by `cargo test`; RUSTDOC.7 (semulith-verify) added.
 - `2026-10-23`: API-DOCS lists only denied errors on failure (the warnings buried the error at XTASK.3's gate refusal; fixed and armed there, `SEMULITH-XTASK-0003`).

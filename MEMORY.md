@@ -18,12 +18,12 @@
   director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-RDOC-0005` — RUSTDOC.5: semulith-dsp56300 120 → 0 undocumented (100.0%); 86 left, all in
-  semulith-verify. Before it RDOC-0004 (generators document the generated modules; core 100.0%).
-- next_action: `RUSTDOC.6` (runnable doc examples for the core public API — teaching mandate) or `XTASK.4` (one of
-  the 14 small shell scripts behind a shim). Also open: semulith-verify's 86 undocumented items (no leaf yet), the
-  FM page discrepancy for ASR/LSR (13-16/13-95 vs 13-17/13-96). Commit chain: target/xtask/xt0002/commit-chain.sh
-  <evidence-dir>; run `bash scripts/check_rustdoc.sh` before a doc commit. The crediting act (a42az) is the DIRECTOR'S.
+- last_unit: `SEMULITH-RDOC-0006` — RUSTDOC.6: five runnable examples in semulith-core (`cargo test` runs them);
+  RUSTDOC's criteria hold; RUSTDOC.7 (semulith-verify, 86 items) added.
+- next_action: `ARTIFACT-CLEANUP.27` first once due (after 2026-10-24T10:15Z, quiet machine, create AC0084);
+  otherwise `XTASK.4` (one of the 14 small shell scripts behind a shim) or `RUSTDOC.7` (semulith-verify's 86
+  items). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh`
+  before a doc commit. The crediting act (a42az) is the DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

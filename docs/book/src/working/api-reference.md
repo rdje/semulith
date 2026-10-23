@@ -33,5 +33,8 @@ its generators began documenting the generated modules, and `semulith_dsp56300` 
 
 The undocumented public items are counted per crate on every commit and may only fall (`RUSTDOC.3`):
 the record is `doctrine/undocumented_items.tsv`, and a rise is refused with the crate's items listed.
-Runnable examples follow (`RUSTDOC.6`); `semulith_verify`'s remaining 86 undocumented items are what the
-ratchet still holds.
+Runnable examples started with `RUSTDOC.6`: the crate root (decode a word, read its fields), the bit-field
+helpers `bits` and `sext`, and RISC-V division — `div` truncating toward zero, `None` on a zero divisor,
+overflow wrapping, and `rem` taking the dividend's sign. `cargo test` runs them, so an example that stops
+being true fails the build. `semulith_verify`'s remaining 86 undocumented items are what the ratchet still
+holds (`RUSTDOC.7`).

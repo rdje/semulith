@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0006 (leaf RUSTDOC.6) — runnable examples for the core API
+
+RUSTDOC.6: `semulith-core` had no doc example; it now has five that `cargo test` runs — the crate root decodes `addi x1, x0, 5` and reads its fields, `arith::bits` and `arith::sext` show field extraction and sign extension, and `muldiv::div`/`rem` show RISC-V division's truncation toward zero, `None` on a zero divisor, overflow wrapping and the remainder's sign. Every value was computed by the real code on the first run; fired RED by expecting −4 for −7 / 2 (the M case's own witness), then restored byte-identical. `make check`, API-DOCS and the wasm build green. With six leaves done the RUSTDOC tree's acceptance criteria hold; `semulith-verify`'s 86 undocumented items become RUSTDOC.7.
+
 ## SEMULITH-RDOC-0005 (leaf RUSTDOC.5) — semulith-dsp56300 documented
 
 RUSTDOC.5: the DSP crate's 120 undocumented public items (decoder operands and decoded-instruction fields, the machine's registers and stops, the loader's case) now carry docs, each grounded in what the code already states — the decoder's own code tables, its module docs' opcodes and manual pages, the executor's behaviour (ASL/ASR by one bit, LSR on bits 47–24 only, CMP never writing its destination). The ratchet row fell 120 → 0 (86 undocumented in all, all in `semulith-verify`); coverage 186 items, 100.0%. Fired RED with one doc line removed, then restored byte-identical. Docs only: `make check`, the wasm build, the gate reports and every generation check unchanged. Observed, not changed: the executor cites ASR/LSR at FM 13-16/13-95, the decoder at 13-17/13-96. RUSTDOC.6 next.
