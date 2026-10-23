@@ -14,14 +14,14 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `P4-SYSTEM.14` — a42ay committed (the crediting mechanism); the act (a42az) waits on the
-  director's ruling; `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
+- active_work_unit: `P4-SYSTEM.14` — a42ay (the crediting mechanism) and a42ba (archive part 21) committed; the
+  act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.26` when the record is ~24 h old (after 2026-10-23T08:12Z).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `P4-SYSTEM.14` a42ay / `SEMULITH-P4-0293` — the crediting mechanism: `profiles/<p>/credits.sexp`
-  (schema/credits.sexp) read by `scripts/credit_records.py`; the status derivation credits only through a
-  CURRENT record; a receipt's `qualification` true is a finding; real tree 0 records, `REQ-GC-M` planned
-  (`decision_credit-is-a-catalogue-record.md`).
+- last_unit: `P4-SYSTEM.14` a42ba / `SEMULITH-P4-0294` — the closed `.14` records a42aq–a42aw and rows
+  a42ar–a42ax moved verbatim into docs/tasks/archive/P4-SYSTEM-21.md (live file 118,497 → 63,186 B); before it
+  a42ay / `SEMULITH-P4-0293`, the crediting mechanism (`credits.sexp`, `scripts/credit_records.py`; real tree
+  0 records, `REQ-GC-M` planned; `decision_credit-is-a-catalogue-record.md`).
 - next_action: the crediting act (a42az) is the DIRECTOR'S decision, not the agent's: (a) who signs the record,
   (b) whether one finite case of 25 witnesses suffices for `implemented` on `REQ-GC-M`, (c) whether the §11.1.1
   and Table 1 spans are retained first (a42z-style; CC-BY 4.0 already found: materials/RVI_M_RETENTION.md).
@@ -37,8 +37,8 @@
   statement is a retained excerpt; the multiply and Table 1 statements are cited, not retained.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ay, a42ax; `target/p4-system-14/a42ay` (design.md, smoke-reader.log,
-  probe-*.log, seams-*.log, token-facets.log, record-schema-selftest.log, real-tree.log, focused-checks.json);
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax; `target/p4-system-14/a42ba` (move.log, checks.log),
+  `target/p4-system-14/a42ay` (design.md, retention-scope.md, smoke-reader.log, probe-*.log, seams-*.log, real-tree.log);
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
