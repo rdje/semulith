@@ -23,29 +23,45 @@ use crate::snapshot_rv64gc::{check_json_limits, SnapshotRv64gc};
 const FORMAT: &str = "semulith-rv64gc-reduction-v1";
 /// Reduction is deliberately narrower than general snapshot/replay.
 pub const MEMORY_BYTES: usize = 64 * 1024;
+/// The largest step budget a reduction accepts.
 pub const MAX_STEPS: usize = 1000;
 /// Includes the original property evaluation and a reserved final verification.
 pub const MAX_EVALUATIONS: usize = 512;
+/// The largest reduction record `parse` accepts, in bytes.
 pub const MAX_JSON_BYTES: usize = 16 * 1024 * 1024;
 
+/// What a reduction runs: the entry point, the budget, the guest's refusal regions, the
+/// model compared against production, and how many evaluations the search may spend.
 pub struct Case<'a> {
+    /// The entry point address.
     pub entry: u64,
+    /// The step budget of each run, at most `MAX_STEPS`.
     pub budget: usize,
+    /// The guest's refusal regions: requests answered with an access fault.
     pub refusals: &'a [Refusal],
+    /// The model compared against the production definition.
     pub model: Model,
+    /// The evaluation budget, from 2 to `MAX_EVALUATIONS`.
     pub evaluation_limit: usize,
 }
 
+/// The first paired step difference between the two runs.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Difference {
+    /// The index of the differing step.
     pub at: usize,
+    /// The reference run's observation at that step.
     pub reference: Step,
+    /// The model run's observation at that step.
     pub model: Step,
 }
 
+/// A retaining result: the reduced image and the difference it still produces.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Reduction {
+    /// The reduced image bytes.
     pub image: Vec<u8>,
+    /// The original difference, re-derived from the reduced image.
     pub retained: Difference,
     /// Property evaluations, including empty candidates and final verification.
     pub evaluations: usize,
@@ -53,10 +69,15 @@ pub struct Reduction {
     pub one_minimal: bool,
 }
 
+/// Why a reduction could not run or retain.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ReduceError {
+    /// The case or a record is invalid; the message names what.
     Invalid(String),
+    /// The runs have no paired step difference to retain (an error, length, fetch or
+    /// final-state-only difference is outside this property).
     NoPairedDifference,
+    /// A model run failed; the message names how.
     ModelFailure(String),
 }
 impl std::fmt::Display for ReduceError {
@@ -204,6 +225,7 @@ fn reducer_identity() -> &'static str {
 }
 
 impl Reproducer {
+    /// Reduce the image, then record both complete reduced-run bundles as a reproducer.
     pub fn record(case: &Case, image: &[u8]) -> Result<(Self, Reduction), ReduceError> {
         let reduction = reduce(case, image)?;
         let input = checkpoint(case, &reduction.image)?;
@@ -276,6 +298,7 @@ impl Reproducer {
         Ok(())
     }
 
+    /// The reproducer as a JSON record (`semulith-rv64gc-reduction-v1`).
     #[must_use]
     pub fn to_json(&self) -> String {
         let mut out = format!(
@@ -293,6 +316,7 @@ impl Reproducer {
         out
     }
 
+    /// Parse a reduction record, refusing one beyond `MAX_JSON_BYTES`.
     pub fn parse(text: &str) -> Result<Self, String> {
         check_json_limits(text, MAX_JSON_BYTES, 2_000_000, "RV64GC reduction")?;
         let doc = json::parse(text).map_err(|e| format!("RV64GC reduction: {e}"))?;
@@ -346,10 +370,13 @@ fn field<'a>(doc: &'a Json, name: &str) -> Result<&'a Json, String> {
 /// replay guard precedes parsing; reductions then apply their narrower byte bound.
 #[derive(Debug)]
 pub enum ReplayRecord {
+    /// A recorded run bundle.
     Run(Box<BundleRv64gc>),
+    /// A reduction reproducer.
     Reduced(Box<Reproducer>),
 }
 impl ReplayRecord {
+    /// Parse either record kind by its root format.
     pub fn parse(text: &str) -> Result<Self, String> {
         check_json_limits(
             text,

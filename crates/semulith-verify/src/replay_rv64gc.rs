@@ -23,6 +23,8 @@ pub const MAX_BOUNDARIES: usize = 10_000;
 /// Complete input checkpoint plus at most 16 MiB of observations and receipts.
 pub const MAX_JSON_BYTES: usize = crate::snapshot_rv64gc::MAX_JSON_BYTES + 16 * 1024 * 1024;
 
+/// A recorded RV64GC run: the producer's identity, the model, the input checkpoint, the
+/// recorded trace and the final-state digest.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct BundleRv64gc {
     producer_sha256: String,
@@ -32,13 +34,17 @@ pub struct BundleRv64gc {
     final_sha256: String,
 }
 
+/// The outcome of replaying an RV64GC bundle.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum ReplayRv64gc {
+    /// The replay reproduces the recorded trace and final state exactly.
     Identical,
+    /// The replay differs from the record.
     Mismatch {
         /// Absolute boundary when trace observations locate the difference;
         /// `None` for an aggregate or final-state receipt.
         boundary: Option<usize>,
+        /// What differs, named.
         what: String,
     },
 }
@@ -78,11 +84,13 @@ impl BundleRv64gc {
         })
     }
 
+    /// How many steps the recorded trace holds.
     #[must_use]
     pub fn recorded_steps(&self) -> usize {
         self.recorded.steps.len()
     }
 
+    /// The model the bundle was recorded with.
     #[must_use]
     pub fn model(&self) -> Model {
         self.model
@@ -152,6 +160,7 @@ impl BundleRv64gc {
         })
     }
 
+    /// The bundle as a JSON record (`semulith-rv64gc-replay-v2`).
     #[must_use]
     pub fn to_json(&self) -> String {
         let mut out = format!(
@@ -198,6 +207,7 @@ impl BundleRv64gc {
         out
     }
 
+    /// Parse a bundle record, refusing one beyond `MAX_JSON_BYTES`.
     pub fn parse(text: &str) -> Result<Self, String> {
         check_json_limits(text, MAX_JSON_BYTES, 2_000_000, "RV64GC bundle")?;
         let doc = json::parse(text).map_err(|e| format!("RV64GC bundle: {e}"))?;

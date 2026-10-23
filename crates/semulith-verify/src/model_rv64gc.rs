@@ -8,10 +8,14 @@
 use semulith_core::definition_rv64gc::{InsnDef, Sem, INSNS};
 use std::sync::OnceLock;
 
+/// The RV64GC model a replay or reduction runs: production, or one bounded control mutant.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Model {
+    /// The generated production definition, unchanged.
     Production,
+    /// Control mutant: the 32-bit ADDI zero-extends its immediate instead of sign-extending it.
     ZextAddi,
+    /// Control mutant: the 32-bit JAL does not write its link register.
     JalNoLink,
 }
 
@@ -26,6 +30,7 @@ impl Model {
         }
     }
 
+    /// The model the CLI's mutation spelling names (`none`, `zext-addi`, `jal-no-link`).
     pub fn from_mutation(name: &str) -> Result<Self, String> {
         match name {
             "none" => Ok(Self::Production),
@@ -37,6 +42,7 @@ impl Model {
         }
     }
 
+    /// The canonical recorded identity, the inverse of [`Model::from_name`].
     #[must_use]
     pub fn name(self) -> &'static str {
         match self {

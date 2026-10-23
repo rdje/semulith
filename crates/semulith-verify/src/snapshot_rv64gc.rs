@@ -44,8 +44,11 @@ pub struct SnapshotRv64gc {
 
 /// Continuation observations, final CPU state and final memory for further checkpoints.
 pub struct Resumed {
+    /// The observations of the continued run.
     pub trace: Trace,
+    /// The final CPU state.
     pub state: ArchitecturalState,
+    /// The final memory.
     pub memory: FlatMemory,
 }
 
@@ -165,6 +168,7 @@ impl SnapshotRv64gc {
         })
     }
 
+    /// The step at which the checkpoint was taken.
     #[must_use]
     pub fn at_step(&self) -> usize {
         self.common.at_step

@@ -14,16 +14,16 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `XTASK.3` or `RUSTDOC.4` next (see next_action). `P4-SYSTEM.14`'s crediting act (a42az) waits on the
-  director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z (create AC0084 first).
+- active_work_unit: `ARTIFACT-CLEANUP.27` (due after 2026-10-24T10:15Z; create AC0084 first), then `XTASK.4`.
+  `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling. RUSTDOC is closed (7/7).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-RDOC-0006` — RUSTDOC.6: five runnable examples in semulith-core (`cargo test` runs them);
-  RUSTDOC's criteria hold; RUSTDOC.7 (semulith-verify, 86 items) added.
-- next_action: `ARTIFACT-CLEANUP.27` first once due (after 2026-10-24T10:15Z, quiet machine, create AC0084);
-  otherwise `XTASK.4` (one of the 14 small shell scripts behind a shim) or `RUSTDOC.7` (semulith-verify's 86
-  items). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh`
-  before a doc commit. The crediting act (a42az) is the DIRECTOR'S decision.
+- last_unit: `SEMULITH-RDOC-0007` — RUSTDOC.7: semulith-verify 86 → 0 undocumented; every crate at 0; coverage
+  100.0% in core, dsp56300, verify; the RUSTDOC tree moved to docs/TASK_TREE_CLOSED.md.
+- next_action: `ARTIFACT-CLEANUP.27` first once due (quiet machine, `mkdir -m 700 target/artifact-cleanup/AC0084`);
+  then `XTASK.4` (one of the 14 small shell scripts behind a shim, measured equal). Commit chain:
+  target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh` before a doc commit.
+  The crediting act (a42az) is the DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -32,8 +32,8 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax; `target/p4-system-14/a42ba` (move.log, checks.log),
-  `target/p4-system-14/a42ay` (design.md, retention-scope.md, smoke-reader.log, probe-*.log, seams-*.log, real-tree.log);
+- evidence: `docs/tasks/RUSTDOC.md` RUSTDOC.7 (`target/rustdoc/rd0007`: scope.txt, checks.log, document_verify.py);
+  `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`

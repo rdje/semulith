@@ -37,7 +37,9 @@ pub struct Segment {
 /// A parsed ELF64 executable: the entry point and its loadable segments.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Image {
+    /// The entry point address from the ELF header.
     pub entry: u64,
+    /// The loadable segments, in file order.
     pub segments: Vec<Segment>,
 }
 

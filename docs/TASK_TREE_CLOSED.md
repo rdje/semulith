@@ -34,4 +34,5 @@ tree, and an open tree here — or a completed one there — is a breach.
 | [`MIRROR-DRIFT`](tasks/MIRROR-DRIFT.md) | `done` (reopened once, for `.4` — a mirror class the first three leaves did not cover) | — (4/4 leaves complete) | repo-local |
 | [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (9/9 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
+| [`RUSTDOC`](tasks/RUSTDOC.md) | `done` (7/7 leaves complete `2026-10-24`) | — (7/7 leaves complete; the API reference is rustdoc, built with the book; API-DOCS gates links, HTML and a 0-undocumented ratchet; 100.0% coverage in all three library crates) | repo-local |
 <!-- ANCHOR_END: closed -->

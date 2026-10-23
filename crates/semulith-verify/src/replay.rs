@@ -50,12 +50,19 @@ pub const EVENT_OBLIGATION: &str = "OB-ENV-EVENT-DELIVERY";
 /// Everything one run consumed and the result it produced — see the module documentation.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Bundle {
+    /// The tool that produced the result.
     pub algorithm: Algorithm,
+    /// The environment policy the run executed under.
     pub platform: Platform,
+    /// The entry point address.
     pub entry: u64,
+    /// The guest image and its digest.
     pub image: Image,
+    /// The event choices the run made.
     pub events: Events,
+    /// The step budget.
     pub budget: usize,
+    /// The recorded result.
     pub recorded: Recorded,
 }
 
@@ -81,14 +88,18 @@ pub struct Algorithm {
 /// The environment policy: one little-endian main-memory region `[base, base + size)`.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Platform {
+    /// The region's base address.
     pub base: u64,
+    /// The region's size in bytes.
     pub size: u64,
 }
 
 /// The guest image and the digest that guards it.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Image {
+    /// The guest's instruction words.
     pub words: Vec<u32>,
+    /// The sha256 of those words, checked before replay.
     pub sha256: String,
 }
 
@@ -104,6 +115,7 @@ pub enum Events {
 /// The recorded result: the observation steps plus the stop's canonical render.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Recorded {
+    /// One observation per executed step.
     pub steps: Vec<Step>,
     /// `format!("{:?}", stop)` — deterministic, and comparable without re-typing data a
     /// round-trip cannot rebuild.
@@ -115,9 +127,13 @@ pub struct Recorded {
 pub struct CaseSpec {
     /// `"production"` or `"mutant:<name>"`.
     pub model: String,
+    /// The entry point address.
     pub entry: u64,
+    /// The memory region's base address.
     pub base: u64,
+    /// The memory region's size in bytes.
     pub size: u64,
+    /// The step budget.
     pub budget: usize,
 }
 
@@ -324,7 +340,12 @@ pub enum Replay {
     /// The recorded and replayed streams first diverge here — step and field named.
     Mismatch(Divergence),
     /// One stream ended before the other; the agreeing prefix is not a pass.
-    LengthMismatch { agreed: usize, longer: String },
+    LengthMismatch {
+        /// How many steps agreed before one stream ended.
+        agreed: usize,
+        /// The stream that continued.
+        longer: String,
+    },
 }
 
 /// Resolve a bundle model name to the instruction table it names. `"production"` is the

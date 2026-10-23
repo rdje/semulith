@@ -5,11 +5,12 @@
 # commit and refuses a rise; a fall is refused too until the row is lowered to the new count, so the
 # ratchet only tightens and this file always states the measured truth. Measured 2026-10-23 at f44947a;
 # semulith-core 61 -> 0 when its generators documented the generated modules (RUSTDOC.4);
-# semulith-dsp56300 120 -> 0 when its decoder, machine and loader items were documented (RUSTDOC.5).
+# semulith-dsp56300 120 -> 0 when its decoder, machine and loader items were documented (RUSTDOC.5);
+# semulith-verify 86 -> 0 (RUSTDOC.7): every row 0, so any new undocumented public item is refused.
 #
 # crate	undocumented
 semulith-cli	0
 semulith-core	0
 semulith-dsp56300	0
-semulith-verify	86
+semulith-verify	0
 xtask	0

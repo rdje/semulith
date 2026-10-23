@@ -32,10 +32,15 @@ const EVALUATION_CAP: usize = 100_000;
 /// the reference it is compared against (production `INSNS`), plus the laboratory
 /// platform facts the run needs.
 pub struct Case<'a> {
+    /// The instruction table under test.
     pub model: &'a [InsnDef],
+    /// The instruction table it is compared against.
     pub reference: &'a [InsnDef],
+    /// The entry point address.
     pub entry: u64,
+    /// The size of the laboratory memory region, in bytes.
     pub region_size: usize,
+    /// The step budget of each run.
     pub budget: usize,
 }
 
@@ -43,8 +48,11 @@ pub struct Case<'a> {
 /// and how many candidate evaluations the search spent.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Reduction {
+    /// The retained instruction words.
     pub words: Vec<u32>,
+    /// The divergence those words still produce.
     pub retained: Divergence,
+    /// Candidate evaluations the search spent.
     pub evaluations: usize,
     /// A complete single-word deletion pass found no retaining deletion. A capped
     /// search has no such witness; neither result claims a global minimum.

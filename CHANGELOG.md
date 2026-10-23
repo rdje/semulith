@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-RDOC-0007 (leaf RUSTDOC.7) — semulith-verify documented; the RUSTDOC tree closes
+
+RUSTDOC.7: `semulith-verify`'s 86 undocumented public items (the reduction, replay, report, run, snapshot and model types' fields and variants) now carry docs, each grounded in the code: the two control mutants, the report's verdicts, replay's image-digest check, the reduction's bounds and error messages. The record's last row fell 86 → 0, so every crate is at 0 undocumented items and API-DOCS refuses the first new one (fired RED on `run.rs:105:5`, restored byte-identical). Coverage is 100.0% in all three library crates (core 614, dsp56300 186, verify 490 items). The RUSTDOC tree is complete (7/7) and moves to the closed register; the API reference chapter's table says so.
+
 ## SEMULITH-RDOC-0006 (leaf RUSTDOC.6) — runnable examples for the core API
 
 RUSTDOC.6: `semulith-core` had no doc example; it now has five that `cargo test` runs — the crate root decodes `addi x1, x0, 5` and reads its fields, `arith::bits` and `arith::sext` show field extraction and sign extension, and `muldiv::div`/`rem` show RISC-V division's truncation toward zero, `None` on a zero divisor, overflow wrapping and the remainder's sign. Every value was computed by the real code on the first run; fired RED by expecting −4 for −7 / 2 (the M case's own witness), then restored byte-identical. `make check`, API-DOCS and the wasm build green. With six leaves done the RUSTDOC tree's acceptance criteria hold; `semulith-verify`'s 86 undocumented items become RUSTDOC.7.

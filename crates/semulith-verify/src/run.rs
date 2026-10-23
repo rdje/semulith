@@ -100,13 +100,16 @@ pub enum Stop {
 /// The trace a run produced: one observation per executed step, plus why it stopped.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Trace {
+    /// One observation per executed step.
     pub steps: Vec<Step>,
+    /// Why the run stopped.
     pub stop: Stop,
 }
 
 /// One boundary crossing, recorded as it happened: the request and the answer.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Crossing {
+    /// The request the model made.
     pub request: Request,
     /// `None` marks a target-facing failure answer (access fault / misaligned); the
     /// distinction from a contract violation is the answer's own type, preserved here.
@@ -368,11 +371,15 @@ pub struct CompareError(pub String);
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Verdict {
     /// Both streams are identical for their whole length.
-    Agree { steps: usize },
+    Agree {
+        /// The number of steps both streams hold.
+        steps: usize,
+    },
     /// The first step at which the observations differ, named precisely.
     Divergence(Divergence),
     /// One stream ended before the other; the agreeing prefix is not a pass.
     LengthMismatch {
+        /// How many steps agreed before one stream ended.
         agreed: usize,
         /// The name of the stream that continued.
         longer: String,
@@ -382,7 +389,9 @@ pub enum Verdict {
 /// The first differing observation: which step, which field, both models' values.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Divergence {
+    /// The index of the first differing step.
     pub at: usize,
+    /// Which field differs, with both models' values.
     pub what: String,
 }
 

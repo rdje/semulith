@@ -23,12 +23,13 @@ internal links are rustdoc's, held by `API-DOCS`.
 ## How complete it is
 
 Measured with rustdoc's coverage report (2026-10-23; `semulith_core` re-measured after `RUSTDOC.4`, when
-its generators began documenting the generated modules, and `semulith_dsp56300` after `RUSTDOC.5`):
+its generators began documenting the generated modules, `semulith_dsp56300` after `RUSTDOC.5` and
+`semulith_verify` after `RUSTDOC.7`):
 
 | Crate | Items documented | Coverage |
 | --- | --- | --- |
 | `semulith_core` | 614 | 100.0% |
-| `semulith_verify` | 404 | 82.4% |
+| `semulith_verify` | 490 | 100.0% |
 | `semulith_dsp56300` | 186 | 100.0% |
 
 The undocumented public items are counted per crate on every commit and may only fall (`RUSTDOC.3`):
@@ -36,5 +37,5 @@ the record is `doctrine/undocumented_items.tsv`, and a rise is refused with the 
 Runnable examples started with `RUSTDOC.6`: the crate root (decode a word, read its fields), the bit-field
 helpers `bits` and `sext`, and RISC-V division — `div` truncating toward zero, `None` on a zero divisor,
 overflow wrapping, and `rem` taking the dividend's sign. `cargo test` runs them, so an example that stops
-being true fails the build. `semulith_verify`'s remaining 86 undocumented items are what the ratchet still
-holds (`RUSTDOC.7`).
+being true fails the build. Since `RUSTDOC.7` every crate's row in the record is 0: no public item is
+undocumented, and the ratchet refuses the first one that would be.

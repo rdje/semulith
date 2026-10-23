@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `RUSTDOC`
-- Status: `active`
+- Status: `done` (7/7 leaves complete `2026-10-24`)
 - Roadmap lane: cross-cutting — Rust-native tooling (director, 2026-10-23; `decision_rust-native-tooling.md`)
 - Gate: none of its own — the doctrine it adds gates it
 - Consumed by: `AG-OS` — the archogen adapter is the first consumer outside this repository of SEMULITH's Rust
@@ -37,7 +37,7 @@ undocumented public items never rises.
 ## Task Tree
 
 - ID: `RUSTDOC`
-  Status: `active`
+  Status: `done`
   Goal: the API reference is rustdoc, built with the book and gated.
   Children: `RUSTDOC.1` … `RUSTDOC.7`
 
@@ -145,16 +145,23 @@ undocumented public items never rises.
   RUSTDOC.7.
 
 - ID: `RUSTDOC.7` — **semulith-verify to parity**
-  Status: `pending`
+  Status: `done` (`2026-10-24`, `SEMULITH-RDOC-0007`; owned on clean c2383d79; evidence target/rustdoc/rd0007)
   Goal: document `semulith-verify`'s 86 undocumented public items (reduce_rv64gc.rs 25, replay.rs 18,
   replay_rv64gc.rs 9, reduce.rs 8, report.rs 7, run.rs 7, model_rv64gc.rs 6, snapshot_rv64gc.rs 4, elf.rs 2),
   each grounded in the code, and lower the ratchet row to 0.
+  Result: all 86 documented by block replacements (distinct structs sharing field names cannot be confused),
+  each claim checked against the code: the two control mutants (ADDI's `Sext` becomes `Zext` on `imm12`;
+  JAL keeps only its `SetPc`, dropping the `rd` write), the report's verdicts (`census_met` is
+  `data_crossings == census_pinned`, `expectations_met` the guest's expectation check), replay's image digest
+  (checked before execution), the reduction's error messages and evaluation bounds. The record's last row
+  fell 86 → 0: every row is 0, so the ratchet now refuses the first undocumented public item anywhere.
+  Coverage: `semulith_core` 614, `semulith_dsp56300` 186, `semulith_verify` 490 items, each 100.0%.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `RUSTDOC.7` | `pending` | semulith-verify to parity: 86 undocumented items, the last the ratchet holds |
+| — | — | — | **tree complete (7/7).** The API reference is rustdoc, built with the book and linked from it; API-DOCS refuses broken or private links and invalid HTML and holds every crate at 0 undocumented items; coverage 100.0% in all three library crates; five runnable examples in `semulith-core`. |
 
 ## Decisions
 
@@ -225,6 +232,15 @@ undocumented public items never rises.
 - [x] **NO REGRESSION** — checks.log: `make check rc=0 in 43 s` (`287 passed`, `173 passed`, `17 passed`, two `5 passed` — xtask's tests and the new examples — 0 failed), `API-DOCS: ok (… 86 undocumented public item(s), each crate at its recorded count)`, `PORT-WEB: ok`; `cargo xtask focused` rc 0 before the commit.
 - [x] **LOCKSTEP** — the API reference chapter and the derived index, the RUSTDOC tree (RUSTDOC.7, the open question) and docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf RUSTDOC.7)
+
+- [x] **REPRODUCE / ISSUE** — scope.txt: `wc -l` = 86 undocumented items in crates/semulith-verify/src; record row `semulith-verify 86`; coverage `404 | 82.4%`.
+- [x] **ROOT CAUSE (WHY + WHERE)** — the replay, reduction, report, run and snapshot types carried struct-level docs but not field or variant docs; `grep -n "Sem::Zext\|Ok(steps\[0\])" crates/semulith-verify/src/model_rv64gc.rs` and `grep -n "let census_met" crates/semulith-verify/src/report.rs` = 73 — the facts the docs rest on.
+- [x] **FIX** — document_verify.py: 35 block edits across nine files; the record row lowered 86 → 0; the chapter's table and closing sentence.
+- [x] **ADDRESSED (verified)** — checks.log: `API-DOCS: ok (5 crate(s) documented; … 0 undocumented public item(s), each crate at its recorded count)`; the `Trace::stop` doc line removed → `semulith-verify: 1 undocumented > recorded 0; document the new item(s):` naming `crates/semulith-verify/src/run.rs:105:5`, then restored `c3b68710e6448d1f079a0fc807c5da7a0e4508fdd785b373d12392d0c5807c56` byte-identical; coverage `semulith_verify: | Total | 490 | 100.0% |`, `semulith_core … 614 | 100.0%`, `semulith_dsp56300 … 186 | 100.0%`.
+- [x] **NO REGRESSION** — checks.log: `make check rc=0 in 43 s` (`287 passed`, `173 passed`, `17 passed`, two `5 passed`, 0 failed; fmt and clippy clean), `PORT-WEB: ok`, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`, `FIXTURE-FINGERPRINT: ok`; docs only (comments and expanded inline field lists); `cargo xtask focused` rc 0 before the commit.
+- [x] **LOCKSTEP** — the record, the chapter, the RUSTDOC tree closed (frontier, root status) and its row moved from docs/TASK_TREE.md to docs/TASK_TREE_CLOSED.md, LIVE_STATUS, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -235,4 +251,5 @@ undocumented public items never rises.
 - `2026-10-23`: RUSTDOC.4 done — the generators document the generated modules; semulith-core 61 → 0 undocumented; RUSTDOC.5 next.
 - `2026-10-23`: RUSTDOC.5 done — semulith-dsp56300 120 → 0 undocumented (100.0%); RUSTDOC.6 next.
 - `2026-10-23`: RUSTDOC.6 done — five runnable examples in semulith-core, run by `cargo test`; RUSTDOC.7 (semulith-verify) added.
+- `2026-10-24`: RUSTDOC.7 done — semulith-verify 86 → 0; every crate at 0 undocumented items; tree closed (7/7).
 - `2026-10-23`: API-DOCS lists only denied errors on failure (the warnings buried the error at XTASK.3's gate refusal; fixed and armed there, `SEMULITH-XTASK-0003`).

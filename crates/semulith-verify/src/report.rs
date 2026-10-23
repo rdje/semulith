@@ -23,17 +23,24 @@ use semulith_core::env::Request;
 /// could not tell that story.
 #[derive(Debug)]
 pub struct GuestRun {
+    /// The tracked guest's name.
     pub guest: &'static str,
+    /// The mutation the model ran under.
     pub mutation: &'static str,
+    /// The entry point address.
     pub entry: u64,
+    /// The run's trace.
     pub trace: Trace,
     /// Data (non-fetch) boundary crossings — the census the phantom-load arm must move even
     /// though the architectural trace does not.
     pub data_crossings: usize,
     /// What [`mutate::pinned_census`] declares for this guest.
     pub census_pinned: usize,
+    /// Whether the data crossings equal the pinned census.
     pub census_met: bool,
+    /// Whether the trace meets the guest's architectural expectations.
     pub expectations_met: bool,
+    /// The first divergence from the clean run, for a mutated model.
     pub divergence: Option<Divergence>,
 }
 
