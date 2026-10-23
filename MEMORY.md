@@ -14,16 +14,15 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `LIVE-CONTAINMENT.4` .4o next (move the tree's closed row sections into an archive part; script
-  drafted in target/live-containment/lc0054/), then `RUSTDOC.1`, then `XTASK.1` (trees registered 2026-10-23,
+- active_work_unit: `RUSTDOC.1` next (defects listed in target/rust-tooling/rustdoc1-defects.txt), then `XTASK.1` (trees registered 2026-10-23,
   `decision_rust-native-tooling.md`: xtask incrementally and with extreme care, nothing breaks). `P4-SYSTEM.14`'s
   crediting act (a42az) waits on the director's ruling; `ARTIFACT-CLEANUP.27` after 2026-10-24T10:15Z
   (create target/artifact-cleanup/AC0084 first).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-TOOL-0001` — RUSTDOC and XTASK trees and the decision registered; before it AC-0083 (third
-  recurring cleanup), P4-0295 (a42bb: the other eleven M statements and Table 1 retained, `RVI-M-STATEMENTS`).
-- next_action: `.4o` (LIVE-CONTAINMENT rows to docs/tasks/archive/LIVE-CONTAINMENT-rows.md), then `RUSTDOC.1` — fix
+- last_unit: `SEMULITH-LC-0054` — LIVE-CONTAINMENT's closed rows moved to docs/tasks/archive/LIVE-CONTAINMENT-rows.md
+  (128,385 → 86,120 B); before it TOOL-0001 (RUSTDOC and XTASK registered), AC-0083, P4-0295 (a42bb).
+- next_action: `RUSTDOC.1` — fix
   the 19 doc defects (9 unresolved links, 4 private links, 6 unclosed HTML tags; target/rustdoc-xtask-assessment/)
   and register a doctrine running `cargo doc --workspace --no-deps --offline` with those lints denied, fired RED
   first. The crediting act (a42az) is the DIRECTOR'S decision: (a) who signs, (b) whether one finite case of 25

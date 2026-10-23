@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0054 (leaf LIVE-CONTAINMENT.4) — the tree's closed rows move to an archive part
+
+.4o: docs/tasks/LIVE-CONTAINMENT.md stood at about 128 KB of the task family's 131,072-byte part ceiling. Its four closed row sections (the LC0027 checklist, the acceptance checklist, the verification log and the commit log; 42,607 B, every row ticked) moved verbatim into docs/tasks/archive/LIVE-CONTAINMENT-rows.md — each span's SHA256 listed in the part and found once, byte-identical — with one pointer under each heading (128,385 → 86,120 B). The family's standing mechanism (`decision_containment-reset.md`); no code changed.
+
 ## SEMULITH-TOOL-0001 (trees RUSTDOC, XTASK) — register the Rust-native tooling direction
 
 The director, 2026-10-23: SEMULITH uses rustdoc for its API reference and moves to cargo xtask, "with extrem care, and incrementally for not breaking anything", because both are made for a Rust project. Recorded in `decision_rust-native-tooling.md` with the measured assessment (`cargo doc` builds in about 4 s with 0 errors and 287 warnings, 19 of them defects; documented items core 90.1%, verify 82.4%, dsp56300 35.5%; 35 tooling scripts pinned by retained evidence). Two proposed trees: `RUSTDOC` (six leaves, from the 19 doc defects and a link gate to doc examples) and `XTASK` (six leaves, from a delegation-only front door and a tracked focused-check runner to doctrine drivers one per leaf), each declaring its consumer; index rows and a LIVE_STATUS row. No code changed.
