@@ -43,15 +43,23 @@ open upstream issues|([0-9]+) open upstream issues|python3 scripts/upstream_expo
 CLAIMS
 }
 
-# The arm total spans every registered project check, and the two harness idioms in use: most
-# call `arm "<name>" <rc> "<reason>"`, `check_seam_integrity.sh` calls `score`. Counting only one
-# idiom would report a confident wrong number — which is this doctrine's own failure mode.
+# The arm total spans every registered project check, and the harness idioms in use: most
+# call `arm "<name>" <rc> "<reason>"`, `check_seam_integrity.sh` calls `score`, and a check ported
+# to xtask (XTASK.6) is a shim `exec cargo xtask <name>` whose arms are the `tally.arm(` calls in
+# xtask/src/<name with _>.rs. Counting only one idiom would report a confident wrong number —
+# which is this doctrine's own failure mode; a shim whose module is missing yields no total.
 arm_total() {
-  local total=0 n
+  local total=0 n m rs
   while IFS= read -r f; do
     [ -f "$f" ] || continue
     n=$(grep -cE '(^|[; ])arm "' "$f"); total=$((total + n))
     n=$(grep -cE '^[[:space:]]+score "' "$f"); total=$((total + n))
+    m=$(sed -nE 's/^exec cargo xtask ([a-z][a-z-]*)( .*)?$/\1/p' "$f" | head -1)
+    if [ -n "$m" ]; then
+      rs="xtask/src/$(printf '%s' "$m" | tr - _).rs"
+      [ -f "$rs" ] || return 1
+      n=$(grep -cE '^[[:space:]]+tally\.arm\(' "$rs"); total=$((total + n))
+    fi
   done < <(grep -oE 'scripts/check_[a-z_]+\.sh' scripts/check_doctrines.project.sh | sort -u)
   printf '%s\n' "$total"
 }
@@ -139,6 +147,18 @@ and a second line says 6 widgets.';                    arm "RED   one of two cla
   fx_claims() { printf '%s\n' "widgets|([0-9]+) widgets|wc -l < pop.txt"; }
   fx_claims() { printf '%s\n' "widgets|([0-9]+) widgets|cat no-such-file-here"; }
                                                        arm "REFUSE an enumerator that produces nothing" 1 "NO ENUMERATOR"
+  # XTASK.6: the arm total counts a shim's xtask module — one bash arm plus two Rust arms is 3, and
+  # a counter blind to the module would read 1; a shim without its module yields no total at all.
+  mkdir -p "$t/scripts" "$t/xtask/src"
+  printf '%s\n' 'PROJECT_DOCTRINES=("A|a|scripts/check_a.sh" "B|b|scripts/check_b.sh")' > "$t/scripts/check_doctrines.project.sh"
+  # built in two pieces so this line is not itself an arm of the idiom it writes into the fixture
+  printf '%s\n%s; %s\n' '#!/usr/bin/env bash' 'x=1' 'arm "one" 0 "-"' > "$t/scripts/check_a.sh"
+  printf '%s\n' '#!/usr/bin/env bash' 'set -euo pipefail' 'exec cargo xtask check-b "$@"' > "$t/scripts/check_b.sh"
+  printf '%s\n' 'fn t(tally: &mut T) {' '    tally.arm("two", 0, 0, "", "-");' '    tally.arm(' '        "three",' '    );' '}' > "$t/xtask/src/check_b.rs"
+  fx_claims() { printf '%s\n' "self-test arms|([0-9]+) self-test arms|arm_total"; }
+  doc 'the gate holds 3 self-test arms.';             arm "GREEN a shim's xtask arms are counted with the bash arms" 0 "__CHECKED__ 1"
+  rm -f "$t/xtask/src/check_b.rs"
+                                                       arm "REFUSE a shim whose xtask module is missing yields no total" 1 "NO ENUMERATOR"
 
   rm -rf "$t"
   printf 'DERIVED-COUNTS --self-test: %d pass / %d fail\n' "$pass" "$fail"

@@ -129,21 +129,51 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   host (an invalid `RUSTFLAGS`), `cargo xtask` exits 1 with no message, because quiet `cargo run` prints
   nothing there, where `cargo build` exits 101 and names the flag; a compile error in xtask is still shown
   (101). Owned as an open question below: the fix trades XTASK.1's quiet output against the message.
+  The remaining 13, measured on 557d2f56 (target/xtask/xt0004/findings.md), each with what limits its port:
+  four are hook-coupled (`pre_push.sh`, `approved_push.sh`, `gen_knowledge_map.sh`, and `check_push_cadence.sh`,
+  which `pre_push.sh` calls); three fetch over the network, so their clone or download path cannot be measured
+  equal offline (`fetch_act4.sh`, `fetch_sources.sh`, `fetch_references.sh`); `install_ci_mdbook.sh` is read as
+  text by `capture_book_dependencies.py`; `update_scaffold.sh` is the template's own updater;
+  `build_c_guest.sh` is one `exec python3`, so a port adds a Rust forwarder and removes no shell;
+  `check_no_background_jobs.sh` comes from the template and its ancestry exclusion would change under cargo;
+  `bootstrap.sh` (a temporary local clone) and `check_portability.sh` are measurable offline. The doctrine
+  drivers carry the larger gain, so `XTASK.6` goes first; these wait, each constraint recorded.
 
 - ID: `XTASK.5` — **check-examples leaves the product CLI**
-  Status: `pending`
+  Status: `blocked` (2026-10-24, on a pinned script; see Blockers)
   Goal: the development check `semulith check-examples` (called by RECORD-SCHEMA through `cargo run`) becomes
   `cargo xtask check-examples`; the product CLI keeps product commands only.
 
-- ID: `XTASK.6` — **doctrine drivers, one per leaf**
-  Status: `pending`
+- ID: `XTASK.6` — **doctrine drivers, one per slice**
+  Status: `active`
   Goal: unpinned doctrine drivers ported one at a time, output lines kept identical, arms re-fired RED.
+  Inventory (measured 2026-10-24 on 557d2f56; target/xtask/xt0004/drivers.md): 54 drivers registered by
+  `check_doctrines.sh` and its project slot — 7 spine (in `update_scaffold.sh`'s `NEUTRAL` list, so a scaffold
+  sync would overwrite a port), 8 calling a pinned script directly (`gate_report.py`, `specfp.py`, `sexp.py`,
+  `record_catalog.py`, `check_sexp_schema.py`, `records_sexp.py`, `dossier_sexp.py`,
+  `retain_div_statement.py`), 39 free (transitive Python imports traced per slice, not yet in bulk). One
+  driver per slice and per commit, as in `XTASK.4`. A ported driver's arms move into its xtask module, so the
+  `DERIVED-COUNTS` arm total must count them there, or the claimed total would drop with no arm removed.
+  Slice `6a` — `PORT-WEB` (`check_wasm_build.sh`, pure bash, 4 arms) becomes `cargo xtask check-wasm-build`:
+  done (`2026-10-24`, `SEMULITH-XTASK-0005`; owned on clean 557d2f56; evidence target/xtask/xt0005). The
+  doctrine is `xtask/src/check_wasm_build.rs`: the same preflight, four arms with the same names and reasons,
+  the same verdict lines and exit statuses (0 ok, 1 fail, 2 refused); the registered script is a held shim
+  (`PORTED`). Measured byte-identical against the bash driver on every path: ok, `--self-test`, a missing
+  target, a self-test broken by wasm-only flags (refused), the self-test's three misses, and a real
+  host-only import in `semulith-core` (FAIL naming `unix`); the run takes the same half-second. The arm total
+  now counts a shim's module (`xtask/src/<name>.rs`, one `tally.arm(` per arm) and yields nothing when the
+  module is missing, with two new `DERIVED-COUNTS` arms, each fired RED (a counter blind to the module; one
+  tolerating its absence): 1670 → 1672 = 1670 − 4 bash arms + 4 Rust arms + 2 new. A defect owned mid-slice:
+  the first fixture line contained the idiom it wrote (`x=1; arm "one"`), so the real total read 1673; the
+  line is now built from pieces, so the source does not match.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.4` | `active` | slice `4b`: the next unhooked script, smallest first (`build_c_guest.sh`, already one `exec python3`), or the front door's silent exit (open question) |
+| 1 | `XTASK.6` | `active` | slice `6b`: the next free pure-bash driver with arms (`COMMIT-PREFIX`, `check_commit_prefix.sh`, 93 code lines), the pattern of `6a` |
+| 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
+| 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
 ## Decisions
 
@@ -165,7 +195,14 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 ## Blockers
 
-- None.
+- `XTASK.5` (2026-10-24): `scripts/gate_report.py` is pinned by the retained M case
+  (`grep -c '(path "scripts/gate_report.py")' evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1) and computes
+  G1's criterion 3 as `graph_rs and check_examples and graph_tests > 0`, with
+  `check_examples = 'Some("check-examples")' in cli` (gate_report.py:383, 391). Moving the command out of
+  `semulith-cli` turns G1-REPORT's criterion 3 unmet ("is NOT wired") unless the pinned script changes, which
+  needs a planned capture. The director's decision: (a) a planned capture that also teaches the report the
+  xtask location, (b) keep `check-examples` as a product command and drop `XTASK.5`, or (c) defer until a
+  capture is planned anyway. Nothing else in the tree waits on it.
 
 ## Acceptance Checklist (leaf XTASK.1)
 
@@ -207,6 +244,15 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 4a **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 6 passed; 0 failed`; `cargo fmt --all -- --check` clean; `cargo clippy -p xtask --all-targets -- -D warnings` clean; after-smoke.log `smoke_bench: ok (53 arms …)`; `cargo xtask focused` rc 0 before the commit; the pre-commit gate (wasm build, API-DOCS) on commit.
 - [x] slice 4a **LOCKSTEP** — README (the xtask row no longer says nothing moved; a `build-bench` row; `README-STABILITY: OK — README.md is 75/85 lines, 4592/4864 bytes`), docs/toolbox/execution.md, docs/ARCHITECTURE.md (the book includes it), the tree (XTASK.4 inventory, slice 4a, the open question), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
+## Acceptance Checklist (leaf XTASK.6)
+
+- [x] slice 6a **REPRODUCE / ISSUE** — before-*.stdout/stderr: `bash scripts/check_wasm_build.sh` → `PORT-WEB: ok (workspace builds for wasm32-unknown-unknown)` rc 0; `--self-test` → `PORT-WEB --self-test: 4 pass / 0 fail`; fake `rustup` → `PORT-WEB: REFUSED — rustup target 'wasm32-unknown-unknown' is not installed, this check cannot judge.` rc 2; wasm-only flags → `PORT-WEB: REFUSED — the check does not discriminate (self-test failed).` rc 2, `--self-test` `1 pass / 3 fail`; a unix import in semulith-core → `PORT-WEB: FAIL — the workspace must build for wasm32-unknown-unknown` rc 1, `grep -c unix` 3; arm_total before = 1670.
+- [x] slice 6a **ROOT CAUSE (WHY + WHERE)** — the doctrine lived only in bash (`grep -cE '(^|[; ])arm "' scripts/check_wasm_build.sh` = 4 at 557d2f56), and `arm_total` counted only the bash idioms, so a port would have dropped the claimed total with no arm removed; drivers.md: 54 drivers, 7 spine, 8 calling a pinned script, 39 free.
+- [x] slice 6a **FIX** — xtask/src/check_wasm_build.rs (`grep -cE '^[[:space:]]+tally\.arm\(' xtask/src/check_wasm_build.rs` = 4); main.rs `NATIVE`, `PORTED`, dispatch; scripts/check_wasm_build.sh a three-command shim (`shasum -a 256` = 05b911439fab3af5f3234c57e9b2206f8853b27ace2dee463f53f4cfb865d3f8); `arm_total` counts a shim's module, two self-test arms.
+- [x] slice 6a **ADDRESSED (verified)** — `cmp` before/after: ok stdout and stderr, native ok stdout, `--self-test` stdout and stderr, missing-target stdout and stderr, broken-self-test stderr, broken `--self-test` stdout → byte-identical, the three `self-test MISS` lines identical; host-only RED rc 1, stderr identical apart from build progress lines; shim run 0.54 s and 0.51 s against the old driver's 0.53 s; `DERIVED-COUNTS --self-test: 12 pass / 0 fail`; blind counter → `MISS: GREEN a shim's xtask arms are counted with the bash arms`, tolerant counter → `MISS: REFUSE a shim whose xtask module is missing yields no total right verdict, wrong reason`, both `11 pass / 1 fail`, restored `scripts/check_derived_counts.sh: OK`; shim RED → `scripts/check_wasm_build.sh must stay a shim of cargo xtask check-wasm-build`, restored `scripts/check_wasm_build.sh: OK`.
+- [x] slice 6a **NO REGRESSION** — make-check.log `make check rc=0 in 43 s`, 493 passed, 0 failed (`cargo test -p xtask` `6 passed`); `API-DOCS: ok (5 crate(s) documented; …)`; arm_total after = 1672 and LIVE_STATUS re-derived (`COUNT DRIFT … claims '1670' … has 1672` → fixed); `ls target/doctrine-selftest | wc -l` = 0 (no scratch leaked); `cargo xtask focused` rc 0 before the commit.
+- [x] slice 6a **LOCKSTEP** — LIVE_STATUS (1672 arms), docs/doctrines/evidence.md and docs/toolbox/execution.md rows, the tree (XTASK.4 constraints, XTASK.5 blocked with its options, XTASK.6 inventory and slice 6a), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -215,3 +261,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-23`: XTASK.2 done — `cargo xtask focused` is the tracked focused set, measured equal to the scratch runner; XTASK.3 next.
 - `2026-10-23`: XTASK.3 done — one definition per target, guarded by a test that reads the Makefile; XTASK.4 next.
 - `2026-10-24`: XTASK.4 opened with its measured inventory (14 scripts, 3 hook-coupled); slice 4a done — `build_bench.sh` is `cargo xtask build-bench` behind a held shim, measured equal.
+- `2026-10-24`: XTASK.5 blocked (pinned `gate_report.py` reads `check-examples` in the CLI); XTASK.6 slice 6a done — `PORT-WEB` is Rust behind a held shim, measured byte-identical; the arm total counts a shim's module (1672).
