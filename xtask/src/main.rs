@@ -21,6 +21,8 @@
 //!   (`XTASK.6` slice `6c`; formerly `scripts/check_delivery_provenance.sh`, now a shim).
 //! - `cargo xtask check-rustdoc [--self-test]` is the `API-DOCS` doctrine (`XTASK.6` slice `6d`; formerly
 //!   `scripts/check_rustdoc.sh`, now a shim): the rustdoc check in Rust.
+//! - `cargo xtask check-push-record [--self-test]` is the `PUSH-RECORD` doctrine (`XTASK.6` slice `6e`;
+//!   formerly `scripts/check_push_record.sh`, now a shim).
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
@@ -30,6 +32,7 @@
 
 mod check_commit_prefix;
 mod check_delivery_provenance;
+mod check_push_record;
 mod check_rustdoc;
 mod check_wasm_build;
 mod harness;
@@ -80,6 +83,7 @@ const NATIVE: &[&str] = &[
     "check-commit-prefix",
     "check-delivery-provenance",
     "check-rustdoc",
+    "check-push-record",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -94,6 +98,7 @@ const PORTED: &[(&str, &str)] = &[
         "scripts/check_delivery_provenance.sh",
     ),
     ("check-rustdoc", "scripts/check_rustdoc.sh"),
+    ("check-push-record", "scripts/check_push_record.sh"),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -108,6 +113,7 @@ fn main() -> ExitCode {
             "check-commit-prefix" => check_commit_prefix::run(&root, &args[1..]),
             "check-delivery-provenance" => check_delivery_provenance::run(&root, &args[1..]),
             "check-rustdoc" => check_rustdoc::run(&root, &args[1..]),
+            "check-push-record" => check_push_record::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

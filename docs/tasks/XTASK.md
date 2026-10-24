@@ -222,12 +222,34 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   broken link in `semulith-core`, a rise (a field's doc removed in `semulith-verify`), a fall, a malformed row,
   an apostrophe-and-tab row, a duplicate row, an unreadable record, two ghost rows, a missing row and an
   unwritable scratch directory. A rise-blind mutant is caught (`14 pass / 1 fail`, main run refused).
+  Slice `6e` — `PUSH-RECORD` (`check_push_record.sh`, named by none, 6 arms, an inline Python check) becomes
+  `cargo xtask check-push-record`: done (`2026-10-24`, `SEMULITH-XTASK-0009`; owned on clean 922a1dbd;
+  evidence target/xtask/xt0009). The ledger's shape and append-only property are `xtask/src/check_push_record.rs`;
+  the Python's two regular expressions are matched by hand (no new crate; ASCII digits for `\d`), and the
+  self-test's scratch repository runs the same git commands in the same order, so its arms see the same
+  accumulated fixture (`git checkout -- file` after `git add` restores from the index, as in bash). Measured
+  byte-identical against the bash driver on nine paths, the real ledger staged and unstaged for two of them:
+  ok, `--self-test`, a missing field, a bad range, a renumbered entry, a single entry ("1 entry"), a staged
+  rewrite (REWRITTEN), a staged pure append ("3 entries"); a rewrite-blind mutant is caught (`5 pass / 1 fail`,
+  main run refused). **A defect owned mid-slice, found the hard way:** the bash driver's self-test never
+  checked its scratch allocation, so with `target/doctrine-selftest` unwritable (a failure-injection run) it
+  carried on with `t=""`, and `git -C ""` acts in the caller's directory: it ran `git init`, `git config
+  user.email t@t`, `git config user.name t`, `git add -A` and `git commit -m base` on the real repository,
+  output discarded by the main run. Stopped about ten minutes in, during the real pre-commit gate: the process
+  tree killed, children included; no commit made (HEAD `922a1dbd`), no `index.lock`; the appended `[user]`
+  section (last in `.git/config`) removed, the identity again the global one every commit carries; the index
+  unstaged to clean; `.git/hooks` untouched. The probe was fired without first reading the path it drives —
+  the lesson is the card `docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md`. The Rust
+  module stops when `scratch` fails, before any git command: with the directory unwritable it refuses (rc 2)
+  and `.git/config`, the index and HEAD are unchanged (measured). Two other drivers carry the fallback form
+  unguarded: `check_seam_integrity.sh` (`cd "$t" && git init -q . && git add leaf.md`) and
+  `check_contract_freeze.sh` (`cd "$t" && judge "$t"`) — owned as slice `6f`, read before any probe.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6e`: the next uncoupled driver (`check_push_record.sh`, 6 arms, or `check_fact_ownership.sh`, 8 arms, each with one inline Python helper) |
+| 1 | `XTASK.6` | `active` | slice `6f`: guard the unchecked scratch allocations of `check_seam_integrity.sh` and `check_contract_freeze.sh`, whose self-tests `cd` into it (read the failure paths first, no blind probe) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 | 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
@@ -326,6 +348,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6d **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, link, rise, fall, malformed, unreadable, ghost, missing row, unwritable scratch → byte-identical (native ok stdout too); against the old script: `malformed record row: "it's\tx\ty"` and the duplicate row → byte-identical; mutant (`count > row && false`) → `API-DOCS --self-test: 14 pass / 1 fail`, `MISS: RED a rise is refused`, main `REFUSED` rc 2, restored `xtask/src/check_rustdoc.rs: OK`; shim RED → `must stay a shim of cargo xtask check-rustdoc`, restored `scripts/check_rustdoc.sh: OK`; DELIVERY-PROVENANCE ok stdout and orphan stderr on the moved helper → byte-identical.
 - [x] slice 6d **NO REGRESSION** — make-check.log `make check rc=0 in 32 s`, 493 passed, 0 failed; `PORT-WEB: ok`; `API-DOCS: ok (5 crate(s) documented; …)` from the Rust check; arm_total 1672, `DERIVED-COUNTS: ok`; locality.log `TMP-LOCALITY: 57/57 shell sites qualified and cleaned`; `SEAM-INTEGRITY: ok (1528 …)`; every changed file restored (`shasum -a 256 -c` OK); `cargo xtask focused` rc 0 before the commit.
 - [x] slice 6d **LOCKSTEP** — docs/doctrines/evidence.md and docs/toolbox/execution.md rows, the tree (coupling census, slice 6d, frontier 6e), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6e **REPRODUCE / ISSUE** — before-*.stdout/stderr (bash driver): `PUSH-RECORD: ok (the ledger is append-only; 2 entries well-formed)` rc 0; `PUSH-RECORD --self-test: 6 pass / 0 fail`; `MISSING FIELD SEMULITH-PUSH-0001: no 'Reason:'`; `BAD RANGE SEMULITH-PUSH-0001`; `NONSEQUENTIAL SEMULITH-PUSH-0003: the 2(th) entry must be SEMULITH-PUSH-0002`; `1 entry well-formed`; staged rewrite `REWRITTEN push-approvals.md`; staged append `3 entries well-formed`; unwritable scratch → the defect below (killed, `refuse rc=143`).
+- [x] slice 6e **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash with an inline Python check (`grep -cE '(^|[; ])arm "' scripts/check_push_record.sh` = 6, `grep -n "python3 -" scripts/check_push_record.sh` = 24 at 922a1dbd); the defect: `grep -n 't="$(SELFTEST_TMP)"' scripts/check_push_record.sh` unguarded, then `git -C "$t" init -q` (line 98) — `git -C ""` leaves the directory unchanged.
+- [x] slice 6e **FIX** — xtask/src/check_push_record.rs (`grep -cE '^[[:space:]]+tally\.arm\(' xtask/src/check_push_record.rs` = 6; `let Ok(t) = scratch(…) else { … return false; }` before any git command); main.rs `NATIVE`/`PORTED`/dispatch; scripts/check_push_record.sh a three-command shim (`shasum -a 256` = 5b4c913fc3539f2f4af15d9fd6ee6495027862208ff1d8f339976119ad5181f0); the knowledge card and its INDEX row.
+- [x] slice 6e **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, missing, badrange, nonseq, single, rewritten, append → byte-identical (native ok stdout too); unwritable scratch → `PUSH-RECORD: REFUSED — the check does not discriminate (self-test failed).` rc 2 with `shasum -a 256 .git/config` 5fa9bf39d1cee284… before and after, `git diff --cached --quiet` clean, HEAD 922a1dbd; restoration after the incident: `git config user.name` → `Richard DJE`, `git config user.email` → `richard.dje@gmail.com` (global; `git config --local --list | grep -c "^user\."` = 0), index clean, `ls .git/index.lock` absent; mutant (`… && false`) → `PUSH-RECORD --self-test: 5 pass / 1 fail`, main `REFUSED` rc 2, restored `xtask/src/check_push_record.rs: OK`; shim RED → `must stay a shim of cargo xtask check-push-record`, restored `scripts/check_push_record.sh: OK`.
+- [x] slice 6e **NO REGRESSION** — make-check.log `make check rc=0 in 31 s`, 493 passed, 0 failed; `PORT-WEB: ok`; `API-DOCS: ok`; arm_total 1672, `DERIVED-COUNTS: ok`; locality.log `TMP-LOCALITY: 56/56 shell sites qualified and cleaned`; `docs/push-approvals.md: OK` after every staged case; `cargo xtask focused` rc 0 before the commit.
+- [x] slice 6e **LOCKSTEP** — docs/doctrines/governance.md row; docs/toolbox/governance.md unchanged (at its cap); docs/knowledge card and INDEX; the tree (slice 6e, the defect, frontier 6f), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Changelog
 
@@ -339,3 +367,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-24`: XTASK.6 slice 6b done — `COMMIT-PREFIX` is Rust behind a held shim, measured byte-identical with the real hook swapped and restored; the doctrine modules share `harness.rs`.
 - `2026-10-24`: XTASK.6 slice 6c done — `DELIVERY-PROVENANCE` is Rust behind a held shim keeping the locality preamble, measured byte-identical on nine paths of the real package.
 - `2026-10-24`: XTASK.6 slice 6d done — `API-DOCS` is Rust (`cargo xtask check-rustdoc`), its Python ratchet ported with it, measured byte-identical on twelve paths.
+- `2026-10-24`: XTASK.6 slice 6e done — `PUSH-RECORD` is Rust behind a held shim, byte-identical on nine paths; the bash self-test's unguarded scratch acted on the real repository during a failure-injection run (stopped, restored, verified; owned, card written); slice 6f guards the two drivers with the same form.

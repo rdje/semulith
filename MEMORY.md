@@ -14,17 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `XTASK.6` (slice 6e next); `ARTIFACT-CLEANUP.27` once due (after 2026-10-24T10:15Z; create
-  AC0084 first; assess the 26 September/October leftovers in target/doctrine_scratch, not deleted yet).
+- active_work_unit: `XTASK.6` (slice 6f next: guard the unchecked scratch of check_seam_integrity.sh and
+  check_contract_freeze.sh — READ their failure paths, no blind probe); `ARTIFACT-CLEANUP.27` once due (after
+  2026-10-24T10:15Z; create AC0084 first; assess the 26 old entries in target/doctrine_scratch).
   `XTASK.5` is blocked on the director (pinned `gate_report.py`); the crediting act (a42az) waits on the director.
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0008` — XTASK.6 slice 6d: `API-DOCS` is Rust (`cargo xtask check-rustdoc`), Python
-  ratchet included, byte-identical on twelve paths; four doctrines now Rust; arm total 1672.
+- last_unit: `SEMULITH-XTASK-0009` — XTASK.6 slice 6e: `PUSH-RECORD` is Rust, byte-identical; the bash self-test's
+  `git -C ""` incident (real repo touched, stopped before any commit, restored, verified) is owned and carded.
 - next_action: `ARTIFACT-CLEANUP.27` first once due (quiet machine, `mkdir -m 700 target/artifact-cleanup/AC0084`);
-  otherwise XTASK.6 slice 6e: an uncoupled driver (target/xtask/xt0007/coupling.md lists 11; next
-  `check_push_record.sh` or `check_fact_ownership.sh`). Commit chain: target/xtask/xt0002/commit-chain.sh
-  <evidence-dir>; run `bash scripts/check_rustdoc.sh` before a doc commit.
+  otherwise XTASK.6 slice 6f. Before ANY failure-injection probe, read the path it drives
+  (docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
+  target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh` before a doc commit.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -33,7 +34,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/XTASK.md` XTASK.6 slices 6a–6d (`target/xtask/xt0005` … `xt0008`: before/after logs, coupling.md);
+- evidence: `docs/tasks/XTASK.md` XTASK.6 slices 6a–6e (`target/xtask/xt0005` … `xt0009`: before/after logs, coupling.md);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
