@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0004 (leaf XTASK.4 slice 4a) — the bench build leaves shell: `cargo xtask build-bench`
+
+XTASK.4 opens with its measured inventory: of 74 tracked shell scripts, 55 are doctrine drivers, none is pinned by the retained case, 5 are evidence or upstream artifacts, and the 14 left are ported one per slice (three are hook-coupled and wait for the hooks). Slice 4a: `scripts/build_bench.sh` is now `cargo xtask build-bench`, and the script a three-command shim that `make bench` still runs; a unit test refuses any other line in it. Measured equal on the real tree: stdout byte-identical through the shim, the subcommand and `make bench`, the module digest unchanged, the same exit status for success (0), a wasm-only build failure (101) and a copy failure (1). Found while measuring and left open: when an invalid host `RUSTFLAGS` breaks rustc's target probe, quiet `cargo run` — and so `cargo xtask` — exits 1 with no message.
+
 ## SEMULITH-RDOC-0007 (leaf RUSTDOC.7) — semulith-verify documented; the RUSTDOC tree closes
 
 RUSTDOC.7: `semulith-verify`'s 86 undocumented public items (the reduction, replay, report, run, snapshot and model types' fields and variants) now carry docs, each grounded in the code: the two control mutants, the report's verdicts, replay's image-digest check, the reduction's bounds and error messages. The record's last row fell 86 → 0, so every crate is at 0 undocumented items and API-DOCS refuses the first new one (fired RED on `run.rs:105:5`, restored byte-identical). Coverage is 100.0% in all three library crates (core 614, dsp56300 186, verify 490 items). The RUSTDOC tree is complete (7/7) and moves to the closed register; the API reference chapter's table says so.

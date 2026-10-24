@@ -10,10 +10,14 @@
 //! - `cargo xtask focused [--out DIR]` runs the focused check set every unit runs before its gated
 //!   commit (`XTASK.2`): each check in order, its output kept in `DIR` (default `target/focused`),
 //!   one line per check, a summary and a JSON record, exit 1 if any check is red. It never commits.
+//! - `cargo xtask build-bench` builds the browser bench's wasm module and copies it next to the page
+//!   (`XTASK.4` slice `4a`; formerly `scripts/build_bench.sh`, which `make bench` still runs and which is
+//!   now a one-line shim to this subcommand).
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
-//! also a Makefile target.
+//! also a Makefile target. A script ported here stays as a shim that only runs its subcommand; a unit
+//! test holds each shim, listed in `PORTED`, to exactly that.
 
 use std::fmt::Write as _;
 use std::fs;
@@ -54,7 +58,12 @@ const FOCUSED: &[&[&str]] = &[
 ];
 
 /// The subcommands xtask implements itself; every other argument list is the Makefile's.
-const NATIVE: &[&str] = &["focused"];
+const NATIVE: &[&str] = &["focused", "build-bench"];
+
+/// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
+/// the shim test only: dispatch needs the native names alone.
+#[cfg(test)]
+const PORTED: &[(&str, &str)] = &[("build-bench", "scripts/build_bench.sh")];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
 fn main() -> ExitCode {
@@ -63,6 +72,7 @@ fn main() -> ExitCode {
     if let Some(name) = args.first().filter(|arg| NATIVE.contains(&arg.as_str())) {
         return match name.as_str() {
             "focused" => focused(&root, &args[1..]),
+            "build-bench" => build_bench(&root),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
@@ -192,6 +202,41 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
     }
 }
 
+/// `cargo xtask build-bench`: builds the bench's wasm module, `semulith-verify`'s cdylib (`LAB-BENCH.1`),
+/// and copies it to the gitignored `bench/semulith_verify.wasm`, the one way that copy appears. Ported
+/// from `scripts/build_bench.sh` with its behaviour kept: arguments are ignored, cargo's own output and a
+/// failed build's exit status pass through, a failed copy is exit 1, and success prints the same two lines.
+fn build_bench(root: &Path) -> ExitCode {
+    let build = Command::new("cargo")
+        .args(["build", "--release", "-p", "semulith-verify"])
+        .args(["--target", "wasm32-unknown-unknown"])
+        .current_dir(root)
+        .status();
+    match build {
+        Ok(status) if status.success() => {}
+        Ok(status) => return exit_code(status.code()),
+        Err(error) => {
+            eprintln!("xtask build-bench: cannot run cargo: {error}");
+            return ExitCode::from(127);
+        }
+    }
+    let module = "bench/semulith_verify.wasm";
+    let built = root.join("target/wasm32-unknown-unknown/release/semulith_verify.wasm");
+    match fs::copy(built, root.join(module)) {
+        Ok(bytes) => {
+            println!("bench: {module} ({bytes} bytes)");
+            println!(
+                "bench: serve with 'python3 -m http.server -d bench 8000' and open http://localhost:8000/"
+            );
+            ExitCode::SUCCESS
+        }
+        Err(error) => {
+            eprintln!("xtask build-bench: cannot copy the module to {module}: {error}");
+            ExitCode::from(1)
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -231,6 +276,29 @@ mod tests {
             assert!(
                 !rules.iter().any(|rule| rule == name),
                 "{name} is defined twice"
+            );
+        }
+    }
+
+    #[test]
+    fn a_ported_script_is_a_shim_that_only_runs_its_subcommand() {
+        let root = repository_root();
+        for (name, script) in PORTED {
+            assert!(NATIVE.contains(name), "{name} is ported but not native");
+            let text = fs::read_to_string(root.join(script)).expect("the ported script");
+            let body: Vec<&str> = text
+                .lines()
+                .filter(|line| !line.trim().is_empty() && !line.starts_with('#'))
+                .collect();
+            let exec = format!("exec cargo xtask {name} \"$@\"");
+            assert_eq!(
+                body,
+                [
+                    "set -euo pipefail",
+                    "cd \"$(git rev-parse --show-toplevel)\"",
+                    exec.as_str()
+                ],
+                "{script} must stay a shim of cargo xtask {name}"
             );
         }
     }

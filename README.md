@@ -47,8 +47,9 @@ execute and validate them against.
 | `make check` | `cargo fmt --check` + `clippy -D warnings` + `cargo test --all` |
 | `make book` | build the mdBook and the rustdoc API reference |
 | `make hooks` | activate the git hooks once per clone (`core.hooksPath=.githooks`) |
-| `cargo xtask <target>` | the same Makefile target through the Rust front door (`XTASK`; nothing moved yet) |
+| `cargo xtask <target>` | the same Makefile target through the Rust front door (`XTASK`) |
 | `cargo xtask focused` | the focused check set every unit runs before its gated commit; never commits |
+| `cargo xtask build-bench` | build the bench's wasm module (`make bench` runs it through its shim) |
 
 ## How this repository works
 

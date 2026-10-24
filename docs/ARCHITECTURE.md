@@ -169,7 +169,7 @@ LAB and BOARD are alternative providers. The laboratory supplies controlled memo
 | User commands and report presentation | `semulith-cli` | Calls core/verification APIs without duplicating behavior |
 | Definition generation | Initially build/development module with deterministic outputs | Separate crate only when its scope warrants it |
 | Later board/device implementations | Later system crate(s) | Consume versioned core types; no dependency on test-only fixtures |
-| Project automation front door (`cargo xtask`) | `xtask` | Development only: runs the Makefile's targets; no product behavior; no dependency on or from the product crates |
+| Project automation front door (`cargo xtask`) | `xtask` | Development only: runs the Makefile's targets and the development commands ported to it; no product behavior; no dependency on or from the product crates |
 
 The task boundary is architectural behavior, not arbitrary crate count. Concrete target state and common arithmetic use native fixed-width values. A nonstandard width can use masked fixed-width storage when it fits; genuinely larger values use an appropriate fallback. Arbitrary width does not imply allocating for every operation.
 

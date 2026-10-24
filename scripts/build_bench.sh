@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-# scripts/build_bench.sh — build the browser bench's wasm module and copy it next to the page.
-# LAB-BENCH.1: the module is semulith-verify's cdylib (std-only extern "C" surface in
-# src/wasm.rs); the copy under bench/ is gitignored, so this script is the one way it appears.
+# scripts/build_bench.sh — shim (XTASK.4 slice 4a): the browser bench's wasm build is now
+# `cargo xtask build-bench` (xtask/src/main.rs, `build_bench`), which builds semulith-verify's
+# cdylib (LAB-BENCH.1) and copies it to the gitignored bench/semulith_verify.wasm. Kept so
+# `make bench` and every documented path keep working; a unit test holds it to this one command.
 set -euo pipefail
-ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT"
-
-cargo build --release -p semulith-verify --target wasm32-unknown-unknown
-cp target/wasm32-unknown-unknown/release/semulith_verify.wasm bench/semulith_verify.wasm
-echo "bench: bench/semulith_verify.wasm ($(wc -c < bench/semulith_verify.wasm | tr -d ' ') bytes)"
-echo "bench: serve with 'python3 -m http.server -d bench 8000' and open http://localhost:8000/"
+cd "$(git rev-parse --show-toplevel)"
+exec cargo xtask build-bench "$@"

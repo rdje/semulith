@@ -103,8 +103,32 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   it), so this cost a gate run; whether to add it is an open question below, not changed here.
 
 - ID: `XTASK.4` — **the small shell glue, one script per leaf**
-  Status: `pending`
+  Status: `active`
   Goal: the 14 shell scripts that are neither doctrine drivers nor pinned, each ported behind a shim.
+  Inventory (measured 2026-10-24 on 90c69268; target/xtask/xt0004/inventory.md): 74 tracked `*.sh` — 55 doctrine
+  drivers named by `check_doctrines.sh` or its project slot, 0 named by the retained case's
+  `dependencies.sexp` (196 entries, none a shell script), 5 evidence or upstream artifacts (the three probe
+  runners under `docs/tasks/artifacts/`, the two LinkedSpec repros) — leaving 14. Three are hook-coupled and
+  wait for the hooks (non-goal above): `pre_push.sh` and `approved_push.sh` (the pre-push hook's body) and
+  `gen_knowledge_map.sh` (called by the pre-commit hook). The others, smallest first: `build_bench.sh` (11
+  lines), `build_c_guest.sh` (18, already one `exec python3`), `install_ci_mdbook.sh` (35, CI), `fetch_act4.sh`
+  (37), `update_scaffold.sh` (78), `fetch_sources.sh` (96), `check_push_cadence.sh` (187),
+  `check_no_background_jobs.sh` (188), `bootstrap.sh` (200), `check_portability.sh` (250, CI),
+  `fetch_references.sh` (330). The thin wrappers gain little from a port; each slice states its gain.
+  One script per slice and per commit, not per leaf: the task-source reader knows direct leaves only
+  (`TREE.N`; a nested `XTASK.4.1` was refused as `foreign leaf`, measured), as P4-SYSTEM's slices do.
+  Slice `4a` — `build_bench.sh` becomes `cargo xtask build-bench`: done (`2026-10-24`, `SEMULITH-XTASK-0004`;
+  owned on clean 90c69268; evidence target/xtask/xt0004). The bench's wasm build is a native subcommand,
+  `build_bench`, run by `make bench` through the old script, now a shim of three commands (`set -euo pipefail`,
+  `cd` to the root, `exec cargo xtask build-bench "$@"`); `PORTED` lists it and a unit test refuses any other
+  line in it, so the shim cannot grow a second definition. Measured equal before and after on the real tree:
+  stdout byte-identical through the shim, the subcommand and `make bench`; module digest unchanged; the same
+  exit status for a wasm-only build failure (101), a copy failure (1) and success (0). Gain: the first script
+  out of shell, and the shape later slices follow — a native subcommand, a shim, a test holding the shim.
+  Found while measuring (front door, not this slice): when the environment breaks rustc's target probe for the
+  host (an invalid `RUSTFLAGS`), `cargo xtask` exits 1 with no message, because quiet `cargo run` prints
+  nothing there, where `cargo build` exits 101 and names the flag; a compile error in xtask is still shown
+  (101). Owned as an open question below: the fix trades XTASK.1's quiet output against the message.
 
 - ID: `XTASK.5` — **check-examples leaves the product CLI**
   Status: `pending`
@@ -119,7 +143,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.4` | `pending` | the small shell glue, one script per leaf, each behind a shim |
+| 1 | `XTASK.4` | `active` | slice `4b`: the next unhooked script, smallest first (`build_c_guest.sh`, already one `exec python3`), or the front door's silent exit (open question) |
 
 ## Decisions
 
@@ -131,6 +155,11 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - Whether `cargo xtask focused` should also run API-DOCS (about 15 s with its self-test): the set reproduces the
   pre-XTASK scratch set, which predates the doctrine, and XTASK.3's gate refusal is what it would have caught.
   Changing the set is a change to the workflow's validation; proposed, not applied. Does not block.
+- The front door's silent exit (found in `XTASK.4` slice `4a`, measured with cargo 1.95.0 in a throwaway
+  crate): with an invalid host `RUSTFLAGS`, `cargo run --quiet` exits 1 and prints nothing; without `--quiet`
+  it prints the cause; `cargo build --quiet` exits 101 with the cause. Options: drop `--quiet` from the alias
+  (cargo's "Finished/Running" lines join stderr; stdout unchanged), or leave it, since only a broken
+  environment reaches it. Not changed in `4a`; a change to XTASK.1's measured output is its own slice.
 - Whether new tooling must be born in Rust once XTASK.1 exists — proposed in the decision record; to be
   confirmed by the director before any check enforces it. Does not block XTASK.1.
 
@@ -169,6 +198,15 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] **ROOT CAUSE** (defects owned mid-slice) — commit-focused-red-1/check_seam_integrity.log: `REGRESSED docs/tasks/XTASK.md: a current tracked acceptance box lacks a declared evidence signature`; commit.log: `API-DOCS: FAIL …` followed only by `missing documentation for a variant` lines and `awk: i/o error occurred while closing /dev/stdout`; api-docs-repro.log: `cargo doc rc=101`, `error: public documentation for `xtask` links to private item `NATIVE`` at `xtask/src/main.rs:14:88`, at line 1613 of the build's output — past the listing's `head -60`.
 - [x] **ADDRESSED** (defects owned mid-slice) — `bash scripts/check_seam_integrity.sh` → `SEAM-INTEGRITY: ok (1478 current tracked acceptance box(es) match declared signatures; classification properties hold)`; api-docs-fix.log: `API-DOCS --self-test: 15 pass / 0 fail`; with the private link restored temporarily → `API-DOCS: FAIL …` listing exactly `xtask/src/main.rs:14:88  public documentation for `xtask` links to private item `NATIVE``; after the fix `API-DOCS: ok (5 crate(s) documented; … 267 undocumented public item(s), each crate at its recorded count)` rc 0; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok` after 1668 → 1670 arms.
 
+## Acceptance Checklist (leaf XTASK.4)
+
+- [x] slice 4a **REPRODUCE / ISSUE** — before.stdout: `bench: bench/semulith_verify.wasm (138930 bytes)` and the serve line, rc 0; `shasum -a 256 bench/semulith_verify.wasm` = 9afa2775c5c6c5406da879936f626316643f4cb40c0bea45be0e501dc4d3013e; `shasum -a 256 scripts/build_bench.sh` at 90c69268 = d7ad190b47e9f9a4…; `grep -c "build_bench" scripts/check_*.sh` empty — no gate arm names the script; `make bench rc=0`; `node scripts/smoke_bench.js` → `smoke_bench: ok (53 arms — clean 49, 3 trace-level mutants, the census arm)`.
+- [x] slice 4a **ROOT CAUSE (WHY + WHERE)** — the bench build lived only in shell (`wc -l scripts/build_bench.sh` = 11): `cargo build --release -p semulith-verify --target wasm32-unknown-unknown`, a `cp` to `bench/`, two `echo` lines; inventory.md: 74 tracked scripts, 55 drivers, 0 pinned, 5 artifacts, 14 to port, 3 hook-coupled.
+- [x] slice 4a **FIX** — xtask/src/main.rs: `build_bench` (cargo's status passed through, a failed copy 1, the same two lines), `NATIVE` gains `build-bench`, `PORTED` and the test `a_ported_script_is_a_shim_that_only_runs_its_subcommand`; scripts/build_bench.sh a three-command shim (`shasum -a 256` = e7dab7cc6d7a83bfe160caa5cd1599e8fcca89b810a4978eba2d29548e78bda6).
+- [x] slice 4a **ADDRESSED (verified)** — `cmp before.stdout after-shim.stdout`, `… after-native.stdout`, `before-make.stdout after-make.stdout` → byte-identical, each rc 0, module 9afa2775c5c6c5406da879936f626316643f4cb40c0bea45be0e501dc4d3013e and mode `-rwxr-xr-x` unchanged; wasm-only RED (`CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS="-C xt0004-bogus"`): old script, shim and subcommand rc 101, stdout 0 B, `grep -c "unknown codegen option"` 1 each, `make bench` rc 2; copy RED (module mode 444): old script rc 1 (`cp: … Permission denied`), shim rc 1 (`xtask build-bench: cannot copy the module to bench/semulith_verify.wasm: Permission denied (os error 13)`); shim RED: one appended line → `test result: FAILED. 5 passed; 1 failed` naming `scripts/build_bench.sh must stay a shim of cargo xtask build-bench`, restored `scripts/build_bench.sh: OK` (shasum -c).
+- [x] slice 4a **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 6 passed; 0 failed`; `cargo fmt --all -- --check` clean; `cargo clippy -p xtask --all-targets -- -D warnings` clean; after-smoke.log `smoke_bench: ok (53 arms …)`; `cargo xtask focused` rc 0 before the commit; the pre-commit gate (wasm build, API-DOCS) on commit.
+- [x] slice 4a **LOCKSTEP** — README (the xtask row no longer says nothing moved; a `build-bench` row; `README-STABILITY: OK — README.md is 75/85 lines, 4592/4864 bytes`), docs/toolbox/execution.md, docs/ARCHITECTURE.md (the book includes it), the tree (XTASK.4 inventory, slice 4a, the open question), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -176,3 +214,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-23`: XTASK.1 done — `cargo xtask` delegates to the Makefile, measured equal; XTASK.2 next.
 - `2026-10-23`: XTASK.2 done — `cargo xtask focused` is the tracked focused set, measured equal to the scratch runner; XTASK.3 next.
 - `2026-10-23`: XTASK.3 done — one definition per target, guarded by a test that reads the Makefile; XTASK.4 next.
+- `2026-10-24`: XTASK.4 opened with its measured inventory (14 scripts, 3 hook-coupled); slice 4a done — `build_bench.sh` is `cargo xtask build-bench` behind a held shim, measured equal.

@@ -14,16 +14,16 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `ARTIFACT-CLEANUP.27` (due after 2026-10-24T10:15Z; create AC0084 first), then `XTASK.4`.
-  `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling. RUSTDOC is closed (7/7).
+- active_work_unit: `XTASK.4` (slice 4b next); `ARTIFACT-CLEANUP.27` once due (after 2026-10-24T10:15Z; create
+  AC0084 first). `P4-SYSTEM.14`'s crediting act (a42az) waits on the director's ruling. RUSTDOC is closed (7/7).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-RDOC-0007` — RUSTDOC.7: semulith-verify 86 → 0 undocumented; every crate at 0; coverage
-  100.0% in core, dsp56300, verify; the RUSTDOC tree moved to docs/TASK_TREE_CLOSED.md.
+- last_unit: `SEMULITH-XTASK-0004` — XTASK.4 slice 4a: `build_bench.sh` is `cargo xtask build-bench` behind a
+  shim held by a unit test (`PORTED`); measured equal; the 14-script inventory is in the XTASK tree.
 - next_action: `ARTIFACT-CLEANUP.27` first once due (quiet machine, `mkdir -m 700 target/artifact-cleanup/AC0084`);
-  then `XTASK.4` (one of the 14 small shell scripts behind a shim, measured equal). Commit chain:
-  target/xtask/xt0002/commit-chain.sh <evidence-dir>; run `bash scripts/check_rustdoc.sh` before a doc commit.
-  The crediting act (a42az) is the DIRECTOR'S decision.
+  otherwise XTASK.4 slice 4b (the next unhooked script, smallest first) — one script per slice, never per leaf
+  (task_source.py knows direct leaves only). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>;
+  run `bash scripts/check_rustdoc.sh` before a doc commit. The crediting act (a42az) is the DIRECTOR'S decision.
 - in_flight_uncommitted: none after the normal commit workflow.
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -32,7 +32,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/RUSTDOC.md` RUSTDOC.7 (`target/rustdoc/rd0007`: scope.txt, checks.log, document_verify.py);
+- evidence: `docs/tasks/XTASK.md` XTASK.4 slice 4a (`target/xtask/xt0004`: inventory.md, before/after/red-* logs);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
   cleanup act `target/artifact-cleanup/AC0082` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-22T08:12Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
