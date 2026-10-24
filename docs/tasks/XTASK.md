@@ -166,12 +166,27 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   tolerating its absence): 1670 → 1672 = 1670 − 4 bash arms + 4 Rust arms + 2 new. A defect owned mid-slice:
   the first fixture line contained the idiom it wrote (`x=1; arm "one"`), so the real total read 1673; the
   line is now built from pieces, so the source does not match.
+  Slice `6b` — `COMMIT-PREFIX` (`check_commit_prefix.sh`, pure bash, 4 arms) becomes
+  `cargo xtask check-commit-prefix`: done (`2026-10-24`, `SEMULITH-XTASK-0006`; owned on clean 253a0256;
+  evidence target/xtask/xt0006). The behavioural probe of `.githooks/commit-msg` is
+  `xtask/src/check_commit_prefix.rs`, with the same two synthetic subjects, four fixture hooks, findings,
+  verdict lines and exit statuses (0 ok, 1 the hook does not pin, 2 refused); the registered script is a held
+  shim. The scratch-directory and child-process helpers it shares with `PORT-WEB` are one module,
+  `xtask/src/harness.rs`. Measured byte-identical against the bash driver with the real hook swapped and
+  restored (digest and mode checked): ok, `--self-test`, an unpinned hook (NOT REFUSED), an empty hook, an
+  over-tight hook (OVER-TIGHT), a missing hook (refused), an unwritable scratch directory (refused);
+  `PORT-WEB` re-measured on the shared helpers, byte-identical again. One intended difference, in a path no
+  gate reads: with an unwritable scratch directory, `--self-test` names the cause (`cannot create a scratch
+  directory`) where bash ran its arms against missing fixture files and printed a count (`2 pass / 2 fail`,
+  `PORT-WEB` `0 pass / 4 fail`); the exit status (1) and the main run's refusal are the same. A defect owned
+  mid-slice: both modules printed that cause during the main run's silent self-test, one stderr line more
+  than bash; now only `--self-test` prints it. Arm total unchanged at 1672 (4 bash arms became 4 Rust arms).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6b`: the next free pure-bash driver with arms (`COMMIT-PREFIX`, `check_commit_prefix.sh`, 93 code lines), the pattern of `6a` |
+| 1 | `XTASK.6` | `active` | slice `6c`: the next free pure-bash driver after a coupling check — `check_delivery_provenance.sh` (9 arms) or `check_gap_claims.sh`, both named by other checks' fixtures or probes |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 | 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
@@ -252,6 +267,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6a **ADDRESSED (verified)** — `cmp` before/after: ok stdout and stderr, native ok stdout, `--self-test` stdout and stderr, missing-target stdout and stderr, broken-self-test stderr, broken `--self-test` stdout → byte-identical, the three `self-test MISS` lines identical; host-only RED rc 1, stderr identical apart from build progress lines; shim run 0.54 s and 0.51 s against the old driver's 0.53 s; `DERIVED-COUNTS --self-test: 12 pass / 0 fail`; blind counter → `MISS: GREEN a shim's xtask arms are counted with the bash arms`, tolerant counter → `MISS: REFUSE a shim whose xtask module is missing yields no total right verdict, wrong reason`, both `11 pass / 1 fail`, restored `scripts/check_derived_counts.sh: OK`; shim RED → `scripts/check_wasm_build.sh must stay a shim of cargo xtask check-wasm-build`, restored `scripts/check_wasm_build.sh: OK`.
 - [x] slice 6a **NO REGRESSION** — make-check.log `make check rc=0 in 43 s`, 493 passed, 0 failed (`cargo test -p xtask` `6 passed`); `API-DOCS: ok (5 crate(s) documented; …)`; arm_total after = 1672 and LIVE_STATUS re-derived (`COUNT DRIFT … claims '1670' … has 1672` → fixed); `ls target/doctrine-selftest | wc -l` = 0 (no scratch leaked); `cargo xtask focused` rc 0 before the commit.
 - [x] slice 6a **LOCKSTEP** — LIVE_STATUS (1672 arms), docs/doctrines/evidence.md and docs/toolbox/execution.md rows, the tree (XTASK.4 constraints, XTASK.5 blocked with its options, XTASK.6 inventory and slice 6a), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6b **REPRODUCE / ISSUE** — before-*.stdout/stderr (bash driver): `COMMIT-PREFIX: ok (the hook refuses SEMILITH- naming SEMULITH, accepts SEMULITH-)` rc 0; `COMMIT-PREFIX --self-test: 4 pass / 0 fail`; unpinned hook rc 1 `NOT REFUSED: a SEMILITH- subject passed .githooks/commit-msg — the pin is absent or dead`; over-tight rc 1 `OVER-TIGHT: …`; missing hook rc 2 `COMMIT-PREFIX: REFUSED — .githooks/commit-msg does not exist; …`; unwritable scratch rc 2 `COMMIT-PREFIX: REFUSED — the check does not discriminate (self-test failed).`; `shasum -a 256 .githooks/commit-msg` re-checked `OK` after each swap, mode `-rwxr-xr-x`.
+- [x] slice 6b **ROOT CAUSE (WHY + WHERE)** — the doctrine lived only in bash (`grep -cE '(^|[; ])arm "' scripts/check_commit_prefix.sh` = 4 at 253a0256); `grep -n "check_commit_prefix" .githooks/commit-msg` = 18, a comment only, so no hook calls the driver; PORT-WEB's private `scratch` and `combined` were the helpers a second module needs.
+- [x] slice 6b **FIX** — xtask/src/check_commit_prefix.rs (`grep -cE '^[[:space:]]+tally\.arm\(' xtask/src/check_commit_prefix.rs` = 4), xtask/src/harness.rs (`scratch`, `combined`), check_wasm_build.rs on the harness, main.rs `NATIVE`/`PORTED`/dispatch; scripts/check_commit_prefix.sh a three-command shim (`shasum -a 256` = 73774026fdec58101662ea7d18b9738457c826ae7bfc2953c887809e16abfbcf); the scratch-cause lines print only under `--self-test`.
+- [x] slice 6b **ADDRESSED (verified)** — `cmp` before/after through the shim: ok stdout and stderr, native ok stdout, `--self-test` stdout and stderr, unpinned/empty/over-tight/missing-hook stderr, unwritable-scratch stdout and stderr → byte-identical; PORT-WEB on the harness: ok stdout and stderr, `--self-test`, missing target, broken self-test, unwritable scratch → byte-identical, host-only RED rc 1 `grep -c unix` 3; shim RED → `scripts/check_commit_prefix.sh must stay a shim of cargo xtask check-commit-prefix`, restored `scripts/check_commit_prefix.sh: OK`.
+- [x] slice 6b **NO REGRESSION** — make-check.log `make check rc=0 in 69 s`, 493 passed, 0 failed; `API-DOCS: ok (5 crate(s) documented; …)`; `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`, arm_total 1672; `ls target/doctrine-selftest | wc -l` = 0 and no `commit-prefix.*` under target/doctrine_scratch; `cargo xtask focused` rc 0 before the commit.
+- [x] slice 6b **LOCKSTEP** — docs/doctrines/governance.md row, the tree (slice 6b, frontier 6c), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Changelog
 
@@ -262,3 +283,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-23`: XTASK.3 done — one definition per target, guarded by a test that reads the Makefile; XTASK.4 next.
 - `2026-10-24`: XTASK.4 opened with its measured inventory (14 scripts, 3 hook-coupled); slice 4a done — `build_bench.sh` is `cargo xtask build-bench` behind a held shim, measured equal.
 - `2026-10-24`: XTASK.5 blocked (pinned `gate_report.py` reads `check-examples` in the CLI); XTASK.6 slice 6a done — `PORT-WEB` is Rust behind a held shim, measured byte-identical; the arm total counts a shim's module (1672).
+- `2026-10-24`: XTASK.6 slice 6b done — `COMMIT-PREFIX` is Rust behind a held shim, measured byte-identical with the real hook swapped and restored; the doctrine modules share `harness.rs`.

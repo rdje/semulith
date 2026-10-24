@@ -15,13 +15,17 @@
 //!   now a one-line shim to this subcommand).
 //! - `cargo xtask check-wasm-build [--self-test]` is the `PORT-WEB` doctrine (`XTASK.6` slice `6a`;
 //!   formerly `scripts/check_wasm_build.sh`, which the doctrine driver still runs, now a shim).
+//! - `cargo xtask check-commit-prefix [--self-test]` is the `COMMIT-PREFIX` doctrine (`XTASK.6` slice
+//!   `6b`; formerly `scripts/check_commit_prefix.sh`, now a shim). The doctrine modules share `harness`.
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
 //! also a Makefile target. A script ported here stays as a shim that only runs its subcommand; a unit
 //! test holds each shim, listed in `PORTED`, to exactly that.
 
+mod check_commit_prefix;
 mod check_wasm_build;
+mod harness;
 
 use std::fmt::Write as _;
 use std::fs;
@@ -62,7 +66,12 @@ const FOCUSED: &[&[&str]] = &[
 ];
 
 /// The subcommands xtask implements itself; every other argument list is the Makefile's.
-const NATIVE: &[&str] = &["focused", "build-bench", "check-wasm-build"];
+const NATIVE: &[&str] = &[
+    "focused",
+    "build-bench",
+    "check-wasm-build",
+    "check-commit-prefix",
+];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
@@ -70,6 +79,7 @@ const NATIVE: &[&str] = &["focused", "build-bench", "check-wasm-build"];
 const PORTED: &[(&str, &str)] = &[
     ("build-bench", "scripts/build_bench.sh"),
     ("check-wasm-build", "scripts/check_wasm_build.sh"),
+    ("check-commit-prefix", "scripts/check_commit_prefix.sh"),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -81,6 +91,7 @@ fn main() -> ExitCode {
             "focused" => focused(&root, &args[1..]),
             "build-bench" => build_bench(&root),
             "check-wasm-build" => check_wasm_build::run(&root, &args[1..]),
+            "check-commit-prefix" => check_commit_prefix::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

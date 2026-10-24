@@ -12,9 +12,10 @@
 //! idiom the `DERIVED-COUNTS` arm total counts in a shim's module.
 
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::{Command, ExitCode, Stdio};
-use std::time::{SystemTime, UNIX_EPOCH};
+
+use crate::harness::{combined, scratch};
 
 /// The browser target the workspace must build for.
 const TARGET: &str = "wasm32-unknown-unknown";
@@ -69,19 +70,6 @@ fn target_installed() -> bool {
         })
 }
 
-/// Runs a command with stdin closed and returns its exit code (`-1` for a signal or a failure to start)
-/// and its standard output followed by its standard error.
-fn combined(command: &mut Command) -> (i32, String) {
-    match command.stdin(Stdio::null()).output() {
-        Ok(output) => {
-            let mut text = String::from_utf8_lossy(&output.stdout).into_owned();
-            text.push_str(&String::from_utf8_lossy(&output.stderr));
-            (output.status.code().unwrap_or(-1), text)
-        }
-        Err(error) => (-1, format!("cannot run cargo: {error}")),
-    }
-}
-
 /// The self-test's pass and fail counts; `verbose` prints misses on stderr and the summary on stdout.
 struct Tally {
     pass: u32,
@@ -115,24 +103,6 @@ impl Tally {
     }
 }
 
-/// A fresh scratch directory under `target/doctrine-selftest`, as the script's `mktemp -d` made.
-fn scratch(root: &Path) -> std::io::Result<PathBuf> {
-    let base = root.join("target/doctrine-selftest");
-    fs::create_dir_all(&base)?;
-    let stamp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map_or(0, |d| d.as_nanos());
-    for attempt in 0..100u32 {
-        let dir = base.join(format!("pw-{}-{stamp}-{attempt}", std::process::id()));
-        match fs::create_dir(&dir) {
-            Ok(()) => return Ok(dir),
-            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
-            Err(error) => return Err(error),
-        }
-    }
-    Err(std::io::Error::other("no free scratch directory"))
-}
-
 /// Writes a one-file crate with its own `[workspace]`, so the repository's workspace does not claim it.
 fn make_crate(dir: &Path, name: &str, bin: bool, source: &str) -> std::io::Result<()> {
     fs::create_dir_all(dir.join("src"))?;
@@ -163,10 +133,12 @@ fn self_test(root: &Path, verbose: bool) -> bool {
         fail: 0,
         verbose,
     };
-    let t = match scratch(root) {
+    let t = match scratch(root, "target/doctrine-selftest", "port-web") {
         Ok(dir) => dir,
         Err(error) => {
-            eprintln!("PORT-WEB self-test: cannot create a scratch directory: {error}");
+            if verbose {
+                eprintln!("PORT-WEB self-test: cannot create a scratch directory: {error}");
+            }
             return false;
         }
     };
