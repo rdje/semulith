@@ -203,12 +203,31 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   mode check would have broken the workspace's wasm32 build, which `PORT-WEB` exists to catch; it is
   `cfg(unix)`. `docs/toolbox/governance.md` keeps its row (the command still works through the shim): the file
   is 82 B under its 16,384 B cap, so it is partitioned before the next governance row, not squeezed.
+  Coupling census before `6d` (1a22c3a3; target/xtask/xt0007/coupling.md): of the 36 unported free drivers,
+  25 are named by another tracked script — some read as bytes (`probe_handoff_census.py`), copied into fixture
+  repositories and run there (`qualify_orientation_indexes.py`, the README-routes self-test), or grepped for a
+  constant (`CENSUS_RE`), where a shim cannot serve; others only in a generator's hint or a history note — and
+  11 are named by none. A fixture-run driver needs a design first (the Rust check run against a fixture's root,
+  the binary reached without the fixture's cargo configuration), so the uncoupled 11 go first.
+  Slice `6d` — `API-DOCS` (`check_rustdoc.sh`, named by none, 15 arms, an inline Python ratchet) becomes
+  `cargo xtask check-rustdoc`: done (`2026-10-24`, `SEMULITH-XTASK-0008`; owned on clean 1a22c3a3; evidence
+  target/xtask/xt0008). The rustdoc check in Rust, `xtask/src/check_rustdoc.rs`: the doc build with the three
+  denied lints, the awk defect listing (`error:` lines but "could not document", their `-->` location, at most
+  60), the Python ratchet with its messages — Python's `repr` of a malformed row (double quotes when the row
+  holds an apostrophe), its `OSError` text (`[Errno 2] No such file or directory: '…'`), its list of stray
+  locations — and the fifteen arms, the inherited-`RUSTDOCFLAGS` arm now guarding the order in which the
+  check sets the variable over an inherited one. The crate directories keep the glob's locale order, through
+  `locale_sorted`, now in `harness.rs` (moved from slice 6c's module; `DELIVERY-PROVENANCE` re-measured on it,
+  byte-identical). Measured byte-identical against the bash driver on twelve paths: ok, `--self-test`, a
+  broken link in `semulith-core`, a rise (a field's doc removed in `semulith-verify`), a fall, a malformed row,
+  an apostrophe-and-tab row, a duplicate row, an unreadable record, two ghost rows, a missing row and an
+  unwritable scratch directory. A rise-blind mutant is caught (`14 pass / 1 fail`, main run refused).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6d`: the next free driver after a coupling check; the pure-bash ones left are textually read or hook-coupled, so the next ports a driver with a Python helper or partitions `docs/toolbox/governance.md` first |
+| 1 | `XTASK.6` | `active` | slice `6e`: the next uncoupled driver (`check_push_record.sh`, 6 arms, or `check_fact_ownership.sh`, 8 arms, each with one inline Python helper) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 | 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
@@ -301,6 +320,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6c **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, drift, undeclared, orphan, missing, no hasher, unwritable scratch, no package → byte-identical (native ok stdout too); mutant (`got != want && false`) → `DELIVERY-PROVENANCE --self-test: 7 pass / 2 fail`, `MISS: RED frozen row byte changed expected rc=1 got rc=0`, main `REFUSED — the check does not discriminate` rc 2, restored `xtask/src/check_delivery_provenance.rs: OK`; shim RED → `must stay a shim of cargo xtask check-delivery-provenance`, restored `scripts/check_delivery_provenance.sh: OK`.
 - [x] slice 6c **NO REGRESSION** — make-check.log `make check rc=0 in 43 s`, 493 passed, 0 failed; `PORT-WEB: ok (workspace builds for wasm32-unknown-unknown)`; locality.log `TMP-LOCALITY: 58/58 shell sites qualified and cleaned`, `2/2 Python self-tests`, `28 unset/foreign child environments constrained`, bare-shell rc 1 (its RED arm); `SEAM-INTEGRITY: ok (1522 …)`; `API-DOCS: ok`; arm_total 1672, `DERIVED-COUNTS: ok`; `cargo xtask focused` rc 0 before the commit.
 - [x] slice 6c **LOCKSTEP** — docs/doctrines/governance.md row; docs/toolbox/governance.md deliberately unchanged (`wc -c` 16302 of 16384); the tree (coupling findings, slice 6c, frontier 6d), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6d **REPRODUCE / ISSUE** — before-*.stdout/stderr (bash driver): `API-DOCS: ok (5 crate(s) documented; … 0 undocumented public item(s), each crate at its recorded count)` rc 0; `API-DOCS --self-test: 15 pass / 0 fail`; broken link → `crates/semulith-core/src/lib.rs:58:11  unresolved link to `nowhere_xt0008`` rc 1; rise → `semulith-verify: 1 undocumented > recorded 0; document the new item(s):` naming `crates/semulith-verify/src/run.rs:105:5`; fall → `lower the record to 0`; malformed → `malformed record row: 'semulith-core 0'` rc 2; unreadable → `unreadable record: [Errno 2] No such file or directory: 'doctrine/undocumented_items.tsv'` rc 2; ghost rows → `aaa: recorded, but not a workspace crate directory`; missing row → `xtask: no recorded count (measured 0)`; unwritable scratch → `REFUSED — the check does not discriminate` rc 2.
+- [x] slice 6d **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash with an inline Python ratchet (`grep -cE '(^|[; ])arm "' scripts/check_rustdoc.sh` = 15, `grep -n "python3 -c" scripts/check_rustdoc.sh` = 35 at 1a22c3a3); coupling.md: no other tracked script names it.
+- [x] slice 6d **FIX** — xtask/src/check_rustdoc.rs (`grep -cE '^[[:space:]]+tally\.arm\(' xtask/src/check_rustdoc.rs` = 15); `locale_sorted` moved into xtask/src/harness.rs; main.rs `NATIVE`/`PORTED`/dispatch; scripts/check_rustdoc.sh a three-command shim (`shasum -a 256` = c43f24aa3dd2328383dce32bc6e6997613a7ae32d20ec09de1ec18223cf1e34e).
+- [x] slice 6d **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, link, rise, fall, malformed, unreadable, ghost, missing row, unwritable scratch → byte-identical (native ok stdout too); against the old script: `malformed record row: "it's\tx\ty"` and the duplicate row → byte-identical; mutant (`count > row && false`) → `API-DOCS --self-test: 14 pass / 1 fail`, `MISS: RED a rise is refused`, main `REFUSED` rc 2, restored `xtask/src/check_rustdoc.rs: OK`; shim RED → `must stay a shim of cargo xtask check-rustdoc`, restored `scripts/check_rustdoc.sh: OK`; DELIVERY-PROVENANCE ok stdout and orphan stderr on the moved helper → byte-identical.
+- [x] slice 6d **NO REGRESSION** — make-check.log `make check rc=0 in 32 s`, 493 passed, 0 failed; `PORT-WEB: ok`; `API-DOCS: ok (5 crate(s) documented; …)` from the Rust check; arm_total 1672, `DERIVED-COUNTS: ok`; locality.log `TMP-LOCALITY: 57/57 shell sites qualified and cleaned`; `SEAM-INTEGRITY: ok (1528 …)`; every changed file restored (`shasum -a 256 -c` OK); `cargo xtask focused` rc 0 before the commit.
+- [x] slice 6d **LOCKSTEP** — docs/doctrines/evidence.md and docs/toolbox/execution.md rows, the tree (coupling census, slice 6d, frontier 6e), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Changelog
 
@@ -313,3 +338,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-24`: XTASK.5 blocked (pinned `gate_report.py` reads `check-examples` in the CLI); XTASK.6 slice 6a done — `PORT-WEB` is Rust behind a held shim, measured byte-identical; the arm total counts a shim's module (1672).
 - `2026-10-24`: XTASK.6 slice 6b done — `COMMIT-PREFIX` is Rust behind a held shim, measured byte-identical with the real hook swapped and restored; the doctrine modules share `harness.rs`.
 - `2026-10-24`: XTASK.6 slice 6c done — `DELIVERY-PROVENANCE` is Rust behind a held shim keeping the locality preamble, measured byte-identical on nine paths of the real package.
+- `2026-10-24`: XTASK.6 slice 6d done — `API-DOCS` is Rust (`cargo xtask check-rustdoc`), its Python ratchet ported with it, measured byte-identical on twelve paths.

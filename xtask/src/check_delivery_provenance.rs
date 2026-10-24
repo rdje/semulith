@@ -16,11 +16,10 @@
 
 use std::collections::HashMap;
 use std::fs;
-use std::io::Write as _;
 use std::path::Path;
 use std::process::{Command, ExitCode, Stdio};
 
-use crate::harness::scratch;
+use crate::harness::{locale_sorted, scratch};
 
 /// Runs the doctrine: `--self-test` as the first argument runs the arms; anything else runs the check.
 /// Exit 0 ok, 1 a package no longer matches its dispositions, 2 refused.
@@ -139,33 +138,6 @@ fn executable(meta: &fs::Metadata) -> bool {
 #[cfg(not(unix))]
 fn executable(_: &fs::Metadata) -> bool {
     true
-}
-
-/// Sorts lines with the system `sort`, so the order is the locale's collation, as the script's was.
-fn locale_sorted(lines: Vec<String>) -> Vec<String> {
-    if lines.is_empty() {
-        return lines;
-    }
-    let child = Command::new("sort")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn();
-    let Ok(mut child) = child else {
-        return lines;
-    };
-    let mut input = lines.join("\n");
-    input.push('\n');
-    if let Some(mut stdin) = child.stdin.take() {
-        let _ = stdin.write_all(input.as_bytes());
-    }
-    match child.wait_with_output() {
-        Ok(output) if output.status.success() => String::from_utf8_lossy(&output.stdout)
-            .lines()
-            .map(str::to_owned)
-            .collect(),
-        _ => lines,
-    }
 }
 
 /// The package directories under `docs/provenance/`, as the script's `docs/provenance/*/` glob listed them:

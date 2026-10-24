@@ -1,8 +1,9 @@
 //! What the doctrine modules ported from bash share (`XTASK.6`): a scratch directory under `target/` in
 //! place of the scripts' `mktemp -d`, and a child's exit code with its combined output in place of their
-//! `out="$(… 2>&1)"; rc=$?`.
+//! `out="$(… 2>&1)"; rc=$?`, and the system `sort` for the scripts' locale-collated order.
 
 use std::fs;
+use std::io::Write as _;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -38,5 +39,32 @@ pub fn combined(command: &mut Command) -> (i32, String) {
             -1,
             format!("cannot run {:?}: {error}", command.get_program()),
         ),
+    }
+}
+
+/// Sorts lines with the system `sort`, so the order is the locale's collation, as the script's was.
+pub fn locale_sorted(lines: Vec<String>) -> Vec<String> {
+    if lines.is_empty() {
+        return lines;
+    }
+    let child = Command::new("sort")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null())
+        .spawn();
+    let Ok(mut child) = child else {
+        return lines;
+    };
+    let mut input = lines.join("\n");
+    input.push('\n');
+    if let Some(mut stdin) = child.stdin.take() {
+        let _ = stdin.write_all(input.as_bytes());
+    }
+    match child.wait_with_output() {
+        Ok(output) if output.status.success() => String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .map(str::to_owned)
+            .collect(),
+        _ => lines,
     }
 }
