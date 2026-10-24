@@ -181,12 +181,34 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `PORT-WEB` `0 pass / 4 fail`); the exit status (1) and the main run's refusal are the same. A defect owned
   mid-slice: both modules printed that cause during the main run's silent self-test, one stderr line more
   than bash; now only `--self-test` prints it. Arm total unchanged at 1672 (4 bash arms became 4 Rust arms).
+  Coupling found before `6c` (6b59f3cb): `check_gap_claims.sh` waits — `check_task_acceptance.sh` (line 87)
+  and `check_seam_integrity.sh` (`vocabulary_agreement`, lines 249, 251, 321) read its `CENSUS_RE` line as
+  text, so a shim would break them until those readers move. `check_delivery_provenance.sh` is named by
+  `probe_temporary_locality.py` (line 156), which requires its `# All scratch,` preamble (`mkdir -p` and
+  `export TMPDIR` on `target/tmp`); the probe is not pinned, so the shim keeps that preamble instead.
+  Slice `6c` — `DELIVERY-PROVENANCE` (`check_delivery_provenance.sh`, pure bash, 9 arms) becomes
+  `cargo xtask check-delivery-provenance`: done (`2026-10-24`, `SEMULITH-XTASK-0007`; owned on clean 6b59f3cb;
+  evidence target/xtask/xt0007). The doctrine is `xtask/src/check_delivery_provenance.rs`, its nine arms with
+  the same names and reasons. Kept from bash on purpose: hashing through `sha256sum` or `shasum -a 256` chosen
+  as `command -v` chose (no new crate; the same refusal when neither exists); the locale's collation through
+  `sort` (measured: en_US.UTF-8 lists `_b.txt`, `Alpha.txt`, `zeta.txt` and `docs/ARCHITECTURE.md` before
+  `README.md`, which byte order would not); `comm -23` as a multiset difference; bash's split of a disposition
+  row (the third field keeps the rest, one trailing separator after a single field dropped — probed in bash
+  on five row shapes). The shim keeps the `# All scratch,` preamble `probe_temporary_locality.py` reads, and the
+  shim test accepts exactly that second shape. Measured byte-identical against the bash driver on the real
+  package (20 frozen-in-place, 2 relocated, 3 live; restored by a tree digest after each case): ok,
+  `--self-test`, a drifted frozen row, undeclared rows, orphan dispositions, a missing `dispositions.tsv`, no
+  hasher on `PATH`, an unwritable scratch directory (refused) and no package at all. A drift-blind mutant of
+  the module is caught by its own arms (`7 pass / 2 fail`, main run refused). Found while drafting: a Unix-only
+  mode check would have broken the workspace's wasm32 build, which `PORT-WEB` exists to catch; it is
+  `cfg(unix)`. `docs/toolbox/governance.md` keeps its row (the command still works through the shim): the file
+  is 82 B under its 16,384 B cap, so it is partitioned before the next governance row, not squeezed.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6c`: the next free pure-bash driver after a coupling check — `check_delivery_provenance.sh` (9 arms) or `check_gap_claims.sh`, both named by other checks' fixtures or probes |
+| 1 | `XTASK.6` | `active` | slice `6d`: the next free driver after a coupling check; the pure-bash ones left are textually read or hook-coupled, so the next ports a driver with a Python helper or partitions `docs/toolbox/governance.md` first |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 | 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
@@ -273,6 +295,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6b **ADDRESSED (verified)** — `cmp` before/after through the shim: ok stdout and stderr, native ok stdout, `--self-test` stdout and stderr, unpinned/empty/over-tight/missing-hook stderr, unwritable-scratch stdout and stderr → byte-identical; PORT-WEB on the harness: ok stdout and stderr, `--self-test`, missing target, broken self-test, unwritable scratch → byte-identical, host-only RED rc 1 `grep -c unix` 3; shim RED → `scripts/check_commit_prefix.sh must stay a shim of cargo xtask check-commit-prefix`, restored `scripts/check_commit_prefix.sh: OK`.
 - [x] slice 6b **NO REGRESSION** — make-check.log `make check rc=0 in 69 s`, 493 passed, 0 failed; `API-DOCS: ok (5 crate(s) documented; …)`; `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`, arm_total 1672; `ls target/doctrine-selftest | wc -l` = 0 and no `commit-prefix.*` under target/doctrine_scratch; `cargo xtask focused` rc 0 before the commit.
 - [x] slice 6b **LOCKSTEP** — docs/doctrines/governance.md row, the tree (slice 6b, frontier 6c), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6c **REPRODUCE / ISSUE** — before-*.stdout/stderr (bash driver, real package): `DELIVERY-PROVENANCE: ok` + `  docs/provenance/planning-package-v0.2: 20 frozen-in-place, 2 relocated re-derived; 3 live row(s) declared` rc 0; `DELIVERY-PROVENANCE --self-test: 9 pass / 0 fail`; `DRIFTED (frozen-in-place) RULES.md` with `delivered 8e7bf579156cf0d0ed07fb13f2855610fbdcbed6ffca1b7afb350342df154cae` rc 1; UNDECLARED listing `docs/ARCHITECTURE.md`, `README.md`, `ROADMAP.md`, `RULES.md`; ORPHAN listing `_b.txt`, `Alpha.txt`, `zeta.txt`; missing dispositions rc 1; no hasher `DELIVERY-PROVENANCE: REFUSED — no sha256sum or shasum on PATH; this check cannot judge.` rc 2; unwritable scratch rc 2; no package `DELIVERY-PROVENANCE: ok (no packages under docs/provenance/)` rc 0; tree digest 2d90ab8e3893e3cafe889491fdfcd2865e7d34e75dd5c56d6831d5178f4721e2 re-derived after each case.
+- [x] slice 6c **ROOT CAUSE (WHY + WHERE)** — the doctrine lived only in bash (`grep -cE '(^|[; ])arm "' scripts/check_delivery_provenance.sh` = 9 at 6b59f3cb); `grep -n "check_delivery_provenance" scripts/probe_temporary_locality.py` = 156 (the preamble is read as text); `grep -n "CENSUS_RE" scripts/check_task_acceptance.sh` = 87 and `grep -n "check_gap_claims" scripts/check_seam_integrity.sh` = 249, 251, 321 (why `check_gap_claims.sh` waits).
+- [x] slice 6c **FIX** — xtask/src/check_delivery_provenance.rs (`grep -cE '^[[:space:]]+tally\.arm\(' xtask/src/check_delivery_provenance.rs` = 9); main.rs `NATIVE`/`PORTED`/dispatch and the shim test's second shape; scripts/check_delivery_provenance.sh a shim with the locality preamble (`shasum -a 256` = 912546f7e201a39ed040820ca196f2a3fae3be5bfd9d0e660905e2fc19076f84).
+- [x] slice 6c **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, drift, undeclared, orphan, missing, no hasher, unwritable scratch, no package → byte-identical (native ok stdout too); mutant (`got != want && false`) → `DELIVERY-PROVENANCE --self-test: 7 pass / 2 fail`, `MISS: RED frozen row byte changed expected rc=1 got rc=0`, main `REFUSED — the check does not discriminate` rc 2, restored `xtask/src/check_delivery_provenance.rs: OK`; shim RED → `must stay a shim of cargo xtask check-delivery-provenance`, restored `scripts/check_delivery_provenance.sh: OK`.
+- [x] slice 6c **NO REGRESSION** — make-check.log `make check rc=0 in 43 s`, 493 passed, 0 failed; `PORT-WEB: ok (workspace builds for wasm32-unknown-unknown)`; locality.log `TMP-LOCALITY: 58/58 shell sites qualified and cleaned`, `2/2 Python self-tests`, `28 unset/foreign child environments constrained`, bare-shell rc 1 (its RED arm); `SEAM-INTEGRITY: ok (1522 …)`; `API-DOCS: ok`; arm_total 1672, `DERIVED-COUNTS: ok`; `cargo xtask focused` rc 0 before the commit.
+- [x] slice 6c **LOCKSTEP** — docs/doctrines/governance.md row; docs/toolbox/governance.md deliberately unchanged (`wc -c` 16302 of 16384); the tree (coupling findings, slice 6c, frontier 6d), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Changelog
 
@@ -284,3 +312,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-24`: XTASK.4 opened with its measured inventory (14 scripts, 3 hook-coupled); slice 4a done — `build_bench.sh` is `cargo xtask build-bench` behind a held shim, measured equal.
 - `2026-10-24`: XTASK.5 blocked (pinned `gate_report.py` reads `check-examples` in the CLI); XTASK.6 slice 6a done — `PORT-WEB` is Rust behind a held shim, measured byte-identical; the arm total counts a shim's module (1672).
 - `2026-10-24`: XTASK.6 slice 6b done — `COMMIT-PREFIX` is Rust behind a held shim, measured byte-identical with the real hook swapped and restored; the doctrine modules share `harness.rs`.
+- `2026-10-24`: XTASK.6 slice 6c done — `DELIVERY-PROVENANCE` is Rust behind a held shim keeping the locality preamble, measured byte-identical on nine paths of the real package.

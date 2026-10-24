@@ -17,13 +17,17 @@
 //!   formerly `scripts/check_wasm_build.sh`, which the doctrine driver still runs, now a shim).
 //! - `cargo xtask check-commit-prefix [--self-test]` is the `COMMIT-PREFIX` doctrine (`XTASK.6` slice
 //!   `6b`; formerly `scripts/check_commit_prefix.sh`, now a shim). The doctrine modules share `harness`.
+//! - `cargo xtask check-delivery-provenance [--self-test]` is the `DELIVERY-PROVENANCE` doctrine
+//!   (`XTASK.6` slice `6c`; formerly `scripts/check_delivery_provenance.sh`, now a shim).
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
 //! also a Makefile target. A script ported here stays as a shim that only runs its subcommand; a unit
-//! test holds each shim, listed in `PORTED`, to exactly that.
+//! test holds each shim, listed in `PORTED`, to exactly that — three commands, or the same with the
+//! repository-volume scratch preamble that `probe_temporary_locality.py` requires of some scripts.
 
 mod check_commit_prefix;
+mod check_delivery_provenance;
 mod check_wasm_build;
 mod harness;
 
@@ -71,6 +75,7 @@ const NATIVE: &[&str] = &[
     "build-bench",
     "check-wasm-build",
     "check-commit-prefix",
+    "check-delivery-provenance",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -80,6 +85,10 @@ const PORTED: &[(&str, &str)] = &[
     ("build-bench", "scripts/build_bench.sh"),
     ("check-wasm-build", "scripts/check_wasm_build.sh"),
     ("check-commit-prefix", "scripts/check_commit_prefix.sh"),
+    (
+        "check-delivery-provenance",
+        "scripts/check_delivery_provenance.sh",
+    ),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -92,6 +101,7 @@ fn main() -> ExitCode {
             "build-bench" => build_bench(&root),
             "check-wasm-build" => check_wasm_build::run(&root, &args[1..]),
             "check-commit-prefix" => check_commit_prefix::run(&root, &args[1..]),
+            "check-delivery-provenance" => check_delivery_provenance::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
@@ -310,14 +320,22 @@ mod tests {
                 .filter(|line| !line.trim().is_empty() && !line.starts_with('#'))
                 .collect();
             let exec = format!("exec cargo xtask {name} \"$@\"");
-            assert_eq!(
-                body,
-                [
-                    "set -euo pipefail",
-                    "cd \"$(git rev-parse --show-toplevel)\"",
-                    exec.as_str()
-                ],
-                "{script} must stay a shim of cargo xtask {name}"
+            let plain = [
+                "set -euo pipefail",
+                "cd \"$(git rev-parse --show-toplevel)\"",
+                exec.as_str(),
+            ];
+            // The same, keeping the scratch preamble probe_temporary_locality.py reads in some scripts.
+            let local = [
+                "set -euo pipefail",
+                "ROOT=\"$(git rev-parse --show-toplevel)\" || exit 2; cd \"$ROOT\"",
+                "mkdir -p \"$ROOT/target/tmp\" || exit 2",
+                "export TMPDIR=\"$ROOT/target/tmp\"",
+                exec.as_str(),
+            ];
+            assert!(
+                body == plain || body == local,
+                "{script} must stay a shim of cargo xtask {name}: {body:?}"
             );
         }
     }
