@@ -334,7 +334,8 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(first, second); self.assertLessEqual(len(json.dumps(first).encode()), 65536)
 
     def test_real_tree_measures_as_its_manifest_predicts(self):
-        """Current pins: every leg satisfied, credited false. A moved pin: invalidated, naming it, no finding (a42ax)."""
+        """Current pins: every leg satisfied, credited by CR-GC-M-1 (a42az). A moved method pin: invalidated,
+        naming it; the record that cites the case lapses and is the one finding (a42ay), exit 1."""
         import subprocess
         moved = moved_inputs(ROOT, self.M.CASE_ID)
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_method.py")],
@@ -343,17 +344,23 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(json.loads(done.stdout)["case_id"], self.M.CASE_ID)
         table = self.M.measure_policy(ROOT, method=json.loads(done.stdout))
         if moved:
-            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
-                             ("invalidated", ["matched-reference-comparison", "currentness"], [], False))
+            # Every pinned method input is also read by the credit's authentication (credit_records.authenticate
+            # walks the case's dependency manifest), so a moved input invalidates the measurement AND lapses
+            # CR-GC-M-1: `credited` false, the lapsed record named as the one finding, exit 1, the status falls
+            # back to `planned` (drift) until the record is withdrawn or the case recaptured.
+            self.assertEqual((table["disposition"], table["missing"], table["credited"], table["credit_ids"]),
+                             ("invalidated", ["matched-reference-comparison", "currentness"], False, ["CR-GC-M-1"]))
+            self.assertEqual(len(table["findings"]), 1, table["findings"])
+            self.assertTrue(table["findings"][0].startswith("credit CR-GC-M-1 names this case but lapsed: "), table["findings"])
             self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
-            self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 0)
+            self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 1)
             self.assertTrue(table["invalidated_by"], table["method"])
         else:
-            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"]),
-                             ("satisfied", [], [], False))
+            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"], table["credit_ids"]),
+                             ("satisfied", [], [], True, ["CR-GC-M-1"]))
             self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 10)
             self.assertIsNone(table["invalidated_by"])
-            self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit"))
+            self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-1"))
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]

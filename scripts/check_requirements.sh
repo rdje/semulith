@@ -97,6 +97,7 @@ from validate_records import validate_jsonl, UnsupportedSchema
 import sexp as S
 import records_sexp as R
 import record_catalog as C
+import credit_records as CR
 import dossier_sexp as D
 import check_sexp_schema as K
 
@@ -335,6 +336,22 @@ for cat in catalogues:
             findings.append(f"CAMPAIGN VERDICTS {cat.name}: run.verdicts = "
                             f"'{_val(run_f, 'verdicts')}' but the rows derive "
                             f"'{derived}'")
+        continue
+    if cat.name == "credits.sexp":
+        # 14. CREDITS — the credited-disposition catalogue (a42ay) is read by its own unpinned
+        #     reader, never by the pinned records reader, which refuses the `credit` head by
+        #     design. The reader re-validates the schema, bounds the file and refuses a
+        #     duplicate id; what each record grants is requirement_status.py's derivation,
+        #     which authenticates every pin on every read (decision_credit-is-a-catalogue-record).
+        try:
+            credits = CR.load_credits(root, cat.parent)
+        except (CR.CreditRefused, S.SexpError) as exc:
+            findings.append(f"UNREADABLE {cat.relative_to(root)}: conforms to its schema but does "
+                            f"not read as credits — {exc}")
+            continue
+        if not credits:
+            findings.append(f"INVALID    {cat.relative_to(root)}: contains no records — an empty "
+                            f"catalogue is not a valid one")
         continue
     try:
         recs = R.load(cat, root=root)
@@ -965,6 +982,13 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   campaign_fixed 'verdict_semulith "pass"@@@verdict_semulith "green"'; arm "RED   a verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
   campaign_fixed '(signature "agree")@@@(signature "fine")'; arm "RED   a comparison verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
   rm -f "$t/p/act4.sexp"
+  # ---- rule 14 CREDITS: the credit catalogue reads through its own reader, never the pinned one -
+  # ($t/schema is the fixture's link to the real schema directory: never copy into or remove under it)
+  CREDIT='(credit (id "CR-1") (profile_ids "p") (requirement_id "REQ-D-A") (obligation_ids "OB-A") (case_id "case") (measured (pin (path "m") (sha256 "'"$(printf 'a%.0s' {1..64})"'") (byte_size 1))) (receipt (pin (path "r") (sha256 "'"$(printf 'b%.0s' {1..64})"'") (byte_size 1))) (policy (pin (path "p") (sha256 "'"$(printf 'c%.0s' {1..64})"'") (byte_size 1))) (retained_sources "S") (authority review) (date "2026-10-26") (decision "decision_x.md") (legs 10) (limitations "l"))'
+  printf '%s\n' "$CREDIT" > "$t/p/credits.sexp";              arm "GREEN a credit catalogue reads through its own reader" 0 "__CHECKED__ 2"
+  printf '%s\n%s\n' "$CREDIT" "$CREDIT" > "$t/p/credits.sexp"; arm "RED   a duplicate credit id" 1 "duplicate credit id"
+  : > "$t/p/credits.sexp";                                     arm "RED   an empty credit catalogue" 1 "contains no records"
+  rm -f "$t/p/credits.sexp"
   # ---- the JSONL track (examples stay JSONL) -------------------------------------------------
   printf '%s\n' "$REQ" > "$t/p/requirements.jsonl";           arm "GREEN a JSONL record validates on the old track" 0 "__CHECKED__ 2"
   printf 'not json at all\n' > "$t/p/mystery.jsonl";          arm "RED   a record file no schema governs" 1 "UNGOVERNED"

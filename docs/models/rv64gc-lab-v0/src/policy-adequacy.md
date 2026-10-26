@@ -24,8 +24,9 @@ nothing is credited.
 | feature-rules | the seven feature families | satisfied by declaration: none applies to `OB-GC-M` |
 | form-coverage | every form the requirement names | satisfied: 13 of 13 forms predeclared and 13 exercised (`mul`, `mulh`, `mulhsu`, `mulhu`, `mulw`, `div`, `divu`, `rem`, `remu`, `divw`, `divuw`, `remw`, `remuw`) |
 
-Ten legs satisfied, none pending; the disposition is `satisfied`, `credited` is false and
-`REQ-GC-M` keeps deriving `planned`. The consumer reads boundary rows and forms from the
+Ten legs satisfied, none pending; the disposition is `satisfied`, and since 2026-10-26 `credited` is true:
+the record `CR-GC-M-1` in `credits.sexp` (signed `review` under `decision_four-rulings-delegated.md`, per
+`decision_req-gc-m-credited-implemented.md`) credits the case, and `REQ-GC-M` derives `implemented`. The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row is a directed boundary
 fixture; a step's mnemonic is its form), never from the chapter itself.
 

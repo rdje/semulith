@@ -307,10 +307,16 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
         m = next(r for r in gc["rows"] if r["id"] == "REQ-GC-M")
-        # Both retained cases bind REQ-GC-M and neither credits it: each is captured with a receipt
-        # whose qualification is false (a42aw), so both are pending and none is merely declared.
-        self.assertEqual(sorted(m["uncredited"]), ["rv64gc-m-forms-v3:pending", "rv64gc-signed-div-truncation-v2:pending"])
-        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"]), (2, 0, 0, 0))
+        # Both retained cases bind REQ-GC-M. The m-forms case is credited by the current record CR-GC-M-1
+        # (the crediting act a42az, 2026-10-26), so the requirement derives `implemented` and the recorded
+        # status agrees; the truncation case is captured with a receipt whose qualification is false
+        # (a42aw), so it stays pending, and nothing is merely declared. This arm is the manifest's
+        # prediction of the real tree: the next crediting act re-states it from the measured tree.
+        self.assertEqual((m["recorded"], m["derived"], m["why"]), ("implemented", "implemented", "every obligation credited (1)"))
+        self.assertEqual(m["uncredited"], ["rv64gc-signed-div-truncation-v2:pending"])
+        self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 1, "not-applicable": 0})
+        self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
+                         (2, 1, 0, 1, 1))
 
 
 def main():

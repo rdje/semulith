@@ -9,6 +9,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 
 | Card | Answers |
 | --- | --- |
+| [`a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`](a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md) | my profile change passed the focused set, then the gate refused PROFILE-CONSISTENCY — why? (three self-test arms read the real tree and predict its state; the act that moves the tree re-predicts them, and the probes run in seconds before the fifty-minute gate) |
 | [`an-empty-scratch-path-falls-back-to-the-repository.md`](an-empty-scratch-path-falls-back-to-the-repository.md) | my self-test could not create its scratch directory — what does the rest of it do? (an unchecked `t="$(mktemp -d …)"` leaves `t=""`, and `git -C ""` and `cd ""` act in the real repository) |
 | [`a-gate-that-discards-its-self-tests-output-cannot-be-diagnosed.md`](a-gate-that-discards-its-self-tests-output-cannot-be-diagnosed.md) | the gate refused with "the check does not discriminate" — which self-test arm missed? (the gate now keeps its self-test output at `target/profile-consistency-selftest.log` and prints the MISS lines; self-tests remove their fixtures) |
 | [`a-fixture-must-have-the-real-records-shape.md`](a-fixture-must-have-the-real-records-shape.md) | my probe's fixture is green — how do I know it has the shape the real records have? (build it from a real record, and assert the fact on the real tree) |

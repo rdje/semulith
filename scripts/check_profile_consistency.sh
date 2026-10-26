@@ -1723,6 +1723,9 @@ AUTHOR_EVALUATION_CASES
 
   # P4-SYSTEM.14 a42t: finite source meaning and noncircular semantic authority.
   # a42at: one case with many predeclared properties (the m-forms case, 25 of them); each value held to the derivation.
+  # a42az: the derived-status arm's count follows the real REQ-GC-M record, which the fixture reads: 2 while
+  # it recorded `planned` (only the two subtests publishing another status left the pinned authority), 36 —
+  # every binding — since the crediting act recorded `implemented`. A status change re-states it.
   local source_property_mode source_property_mutation source_property_losses
   local -a source_property_python
   for source_property_mode in normal optimized; do
@@ -1757,7 +1760,7 @@ reviewed-words:8
 claim-values:3
 authority-node-bound:1
 authority-depth-bound:1
-derived-status:2
+derived-status:36
 derived-links:1
 requirement-meaning:6
 obligation-meaning:4
@@ -2190,6 +2193,8 @@ DIV_METHOD_CASES
   # P4-SYSTEM.14 a42ap: requirement status derived from the evidence graph and drift-checked.
   # a42ay: a case is credited only through a current credit record (credits.sexp); a receipt's own
   # qualification is a finding (qualification-word seam); a lapsed record credits nothing (credit-pending).
+  # a42az: the real-tree arm predicts the credited tree — 47 planned, 1 implemented, CR-GC-M-1 current, one
+  # case pending; a crediting act re-states that prediction from the measured tree, never loosens it.
   local status_mode status_mutation
   local -a status_python
   for status_mode in normal optimized; do
@@ -2207,8 +2212,9 @@ DIV_METHOD_CASES
   # a42as: a stale finite method is `invalidated` with exit 0 (lock-stale seam); the real-tree arm
   # predicts pending or invalidated from the manifest, so a moved pinned input is not a refusal.
   # a42at: the discriminating-control leg reads the property the control_run names (first-property seam).
-  # a42ax: the retained case is the m-forms capture; the real-tree arm asserts its ten legs satisfied and
-  # `credited` false while every pin is current, `invalidated` missing the two method legs once one moves.
+  # a42ax: the retained case is the m-forms capture; the real-tree arm asserts its ten legs satisfied and,
+  # since the crediting act (a42az, 2026-10-26), `credited` by CR-GC-M-1 while every pin is current;
+  # `invalidated` missing the two method legs once one moves, the still-current record then a finding.
   local policy_mode policy_mutation
   local -a policy_python
   for policy_mode in normal optimized; do

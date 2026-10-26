@@ -6,6 +6,11 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [Four rulings delegated to the workflow (2026-10-26)](decision_four-rulings-delegated.md) | `decision` | the director: the four open items of 2026-10-26 are the workflow's to decide, "sota, signoff and production-grade"; one record per ruling, `authority review` |
+| [REQ-GC-M credited implemented (2026-10-26)](decision_req-gc-m-credited-implemented.md) | `decision` | the first credit record, signed `review` under delegation; one finite case of 25 witnesses under ten satisfied legs suffices for `implemented` and for nothing more |
+| [check-examples stays in the CLI (2026-10-26)](decision_check-examples-stays-in-the-cli.md) | `decision` | report presentation over the records graph is the CLI's role; `XTASK.5` closes without a code change, no capture spent |
+| [The focused set runs API-DOCS (2026-10-26)](decision_focused-set-runs-api-docs.md) | `decision` | `cargo xtask focused` gains the rustdoc check before `make book` (27 checks); `XTASK.7` |
+| [Orphan incremental sessions (2026-10-26)](decision_orphan-incremental-sessions.md) | `decision` | altered builds use a disposable target directory; strict selection gains the recorded class `orphan incremental session` (`ARTIFACT-CLEANUP.29`) |
 | [Containment reset (2026-10-21)](decision_containment-reset.md) | `decision` | director ruling: the book and unit books carry no size ceiling; the task family's aggregate and count are ungoverned, per-part 128 KiB kept, closed records move verbatim into archive parts; a second seal rejected; per-unit duplication cut |
 | [Policy legs measured, two pending](decision_policy-legs-measured-two-pending.md) | `decision` | the retained DIV case satisfies 8 of the policy's 10 legs from its own bytes; boundary fixtures and form coverage wait for a crediting capture; measurement grants no credit |
 | [Rust-native tooling: rustdoc and xtask (2026-10-23)](decision_rust-native-tooling.md) | `decision` | the director: rustdoc is the API reference; the move to cargo xtask is incremental and extremely careful — behaviour measured before/after, shims until arms move, no weakening, no new dependency, pinned evidence scripts untouched; trees `RUSTDOC` and `XTASK` |

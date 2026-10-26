@@ -39,3 +39,12 @@ It was stopped about ten minutes in, before the gate finished: the process tree 
   and `check_contract_freeze.sh` (`cd "$t" && judge "$t"`).
 
 Evidence: `docs/tasks/XTASK.md` (slice `6e`, the defect owned mid-slice); target/xtask/xt0009.
+
+## The same class through a link (2026-10-26)
+
+A fixture directory may hold a **link into the real tree** (`check_requirements.sh` links `$t/schema` to
+the real `schema/` so fixtures validate against the real schemas). A path through that link is a real
+path: `rm -f "$t/schema/credits.sexp"` in a new self-test arm deleted the tracked `schema/credits.sexp`.
+The token-facet probe's closed inventory caught it (`24 != 25`); the culprit was isolated by running each
+suspect alone and checking the file after each, and the file came back from git. Before writing into or
+removing under any fixture subpath, read how the fixture was built: `grep -n "ln -s" <driver>`.

@@ -358,6 +358,62 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a42az / SEMULITH-P4-0296: the crediting act, under the director's delegation (completed)
+
+Owned on clean 1d609ca0. The director delegated the ruling on 2026-10-26
+(`decision_four-rulings-delegated.md`): the record `CR-GC-M-1` in `profiles/rv64gc-lab-v0/credits.sexp`
+is signed `authority review` under it, never `director`; one finite case (`rv64gc-m-forms-v3`, 25
+witnesses: the 13 M forms and the 12 Table 1 cells, one each) whose ten legs measure `satisfied` is
+sufficient for `implemented` and for nothing more, its limitations written into the record
+(`decision_req-gc-m-credited-implemented.md`); retention came first (a42z, a42bb). The act in one
+commit: the record (pins taken from the tree: measured `fb22d5e5…` 16,942 B, receipt `91a90d9c…`
+7,017 B, policy `85296cf7…` 9,230 B), `implementation_status implemented` on `REQ-GC-M`, the GS report
+regenerated (`48 requirements: 1 implemented, 47 planned`), the two model-book chapters that said the
+status kept deriving `planned`. Rehearsed first on a smoke root (target/p4-system-14/a42az/smoke, symlinks
+to the real inputs, a copied profile): `CREDIT-RECORDS … 1 current`, `REQUIREMENT-STATUS: ok (… 47 planned,
+1 implemented … 1 credited …)`, and two RED controls — the record present with the status left `planned`
+→ `drift … recorded planned derived implemented`; a moved measured pin → `lapsed`, the status falls back,
+`1 drift, 1 finding`. On the real tree: `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
+CR-GC-M-1`.
+
+Two defects owned mid-slice. (1) `RECORD-SCHEMA` refused the real catalogue: `check_requirements.sh`
+validated it against its schema and then handed every catalogue to the pinned records reader, which
+refuses the `credit` head by design (the a42ay design knew this for the reader and gave the credits their
+own module, but the gate's loop had no branch for it, and the real tree held no `credits.sexp` to show it).
+The loop now reads `credits.sexp` through `credit_records.load_credits` (schema re-validated, bounded,
+duplicate ids refused, an empty catalogue invalid) and never through the pinned reader; three arms (GREEN
+a catalogue reads; RED a duplicate id; RED an empty catalogue), each fired on the real tree too. (2) The
+first version of those arms deleted the tracked `schema/credits.sexp`: the fixture's `$t/schema` is a
+link to the real schema directory (`ln -sfn "$ROOT/schema" "$t/schema"`, line 747), and the arm removed
+"its" copy through the link. Found by the token-facet probe's closed inventory (`24 != 25`), the culprit
+isolated by running each suspect alone and checking the file after each; the file restored from git
+(`git checkout -- schema/credits.sexp`, 25 schemas); the arms now neither copy into nor remove under
+`$t/schema`. The lesson joins the scratch-hygiene card. One more observation, not a defect: the GS
+report's dossier digest covers every *tracked* source file under the profile, so the report regenerated
+before `credits.sexp` was staged went out of sync the moment it was (`GATE-REPORT` red in the first focused
+run, `8f90fe23…` → `afcaa32c…`); regenerated after staging, in sync — stage a new profile file first, then
+regenerate. Two more derived artifacts followed the same inputs in the second focused run: the unit book's
+`materials/internal-contracts.md` pins `requirements.sexp`'s digest (`0f006fa9…` → `2f83ca52…`;
+`python3 scripts/gen_model_book.py --unit rv64gc-lab-v0`), and `KNOWLEDGE_MAP.md` lists the decision records
+(five rows; `gen_knowledge_map.sh > KNOWLEDGE_MAP.md`, as the pre-commit hook writes it). Both regenerated, never
+edited; the three derived artifacts a profile change moves are now named here for the next act. Evidence
+target/p4-system-14/a42az.
+
+The gate's answer to the third chain (2026-10-26T11:21Z, gate3/selftest-refusal.log): `PROFILE-CONSISTENCY`
+refused — its self-test pins the real tree's state in three arms that the focused set never runs. The
+requirement-status probe's real-tree arm predicted two pending cases and no credit; the policy probe's
+predicted `credited` false, and its moved-pin branch a current record with no finding; the source-property
+probe's `derived-status` mutation arm predicted 2 failures, a count that follows the real `REQ-GC-M` record
+the fixture reads (2 while it recorded `planned`, 36 — every binding — once it records `implemented`). Each
+re-predicted from the measured tree, none loosened: one pending case, `implemented` recorded and derived,
+`CR-GC-M-1` current, 36. The moved-pin branch was then exercised on the real tree, one byte appended to a
+pinned method input (`definitions/riscv/m.sexp`) and then to the policy pin (`EVIDENCE_POLICY.md`), each
+restored from the index and verified: the credit's authentication walks the case's dependency manifest, so
+any moved input lapses the record — `invalidated — 8 of 10 legs … FINDING credit CR-GC-M-1 names this case
+but lapsed`, exit 1, the status falling back with `1 drift, 1 finding`. For the next act: run the three
+probes before launching the chain; the full self-test costs the gate's fifty minutes. Carded
+(`a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`).
+
 ### .14 a42bb / SEMULITH-P4-0295: retain the other M statements and Table 1 (completed)
 
 Owned on clean 610783e. The m-forms case's 25 properties cite §11.1.1, §11.1.2 and Table 1 of the pinned
@@ -839,6 +895,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 
 Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-through-a42aq).
 
+- [x] `.14` a42az **ROOT CAUSE** — `python3 -B scripts/requirement_status.py` at 1d609ca0 → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current …)`; `ls profiles/rv64gc-lab-v0/credits.sexp` → absent; `grep -c "implementation_status planned" profiles/rv64gc-lab-v0/requirements.sexp` row `REQ-GC-M` = 1; the pins `shasum -a 256` / `wc -c`: measured fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152 16942, receipt 91a90d9c56487af1a6b4306e9007d771e17246ddf41b358185374680090a5a5d 7017, policy 85296cf7ae694f0d40e08ed398989d32f20f4720d4a798bf46a18caf22825071 9230; the gate defect: `grep -n "recs = R.load(cat, root=root)" scripts/check_requirements.sh` = 339 with no `credits.sexp` branch before it → `UNREADABLE profiles/rv64gc-lab-v0/credits.sexp: conforms to its schema but does not map to records — not a record form`.
+- [x] `.14` a42az **ADDRESSED** — real-tree.log: `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 47 planned, 1 implemented; 2 case(s), 1 credited, 0 declared, 1 of 1 credit record(s) current; 0 drift, 0 finding(s) …)`, `CREDIT-RECORDS: rv64gc-lab-v0: 1 credit(s), 1 current, 0 lapsed`, `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-1`; smoke REDs: red-status-planned.log `drift rv64gc-lab-v0 REQ-GC-M: recorded \`planned\` derived \`implemented\`` rc 1, red-lapsed.log `CREDIT-RECORDS … 0 current, 1 lapsed` and `finding … credit CR-GC-M-1 lapsed: measured pin … SHA256 or size differs`, `1 drift, 1 finding(s)` rc 1; gate: st2.log `RECORD-SCHEMA --self-test: 73 pass / 0 fail`, real2.log `RECORD-SCHEMA: ok (21 record file(s) validate and agree with their profile; …)`, red-dup.log `UNREADABLE profiles/rv64gc-lab-v0/credits.sexp: conforms to its schema but does not read as credits — … duplicate credit id` rc 1, red-empty.log `INVALID    profiles/rv64gc-lab-v0/credits.sexp: contains no records` rc 1, restored `profiles/rv64gc-lab-v0/credits.sexp: OK` (shasum -c); `ls schema/*.sexp | wc -l` = 25 after the self-test and the real run.
+- [x] `.14` a42az **NO REGRESSION** — gate3/selftest-refusal.log: `PROFILE-CONSISTENCY self-test MISS` ×6 (`RED finite source property derived-status`, `GREEN requirement status derivation`, `GREEN policy legs measured`, each in both modes); re-predicted: `python3 -B [-O] scripts/probe_requirement_status.py` → `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`, `python3 -B [-O] scripts/probe_div_policy.py` → `DIV-POLICY-PROBE: 25 tests / 0 failures / 0 errors`, `python3 [-O] scripts/probe_matched_gpr_property.py --mutation derived-status` → `MATCHED-GPR-PROPERTY: 34 tests / 36 failures / 0 errors`; gate3/moved-m.sexp.log and moved-EVIDENCE_POLICY.md.log: `DIV-POLICY-PROBE: 25 tests / 0 failures / 0 errors` under each moved pin, `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness; … FINDING credit CR-GC-M-1 names this case but lapsed: manifest input definitions/riscv/m.sexp: SHA256 differs` rc 1 (the policy pin: `policy pin profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md: SHA256 or size differs`), `REQUIREMENT-STATUS: drift or finding (… 0 of 1 credit record(s) current; 1 drift, 1 finding(s) …)` rc 1; restored: `shasum -a 256 definitions/riscv/m.sexp` = 0f48d4348b850b5fcfd296b220409a2a711d8b13075fdea9059b33d67544a386 and `profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md` = 85296cf7ae694f0d40e08ed398989d32f20f4720d4a798bf46a18caf22825071 as before, `git ls-files -s | shasum -a 256` identical before and after (index-content-before.txt, index-content-after.txt), `.git/config` 5fa9bf39d1cee284f370824209c0efc7dc2358c7554526d8345987a599a279d5 unchanged, HEAD 1d609ca0.
 - [x] `.14` a42bb **ROOT CAUSE** — `ls profiles/rv64gc-lab-v0/retained` → `div-statement.html sail-identity.sexp` (one normative excerpt); target/p4-system-14/a42ay/retention-scope.md: twelve `norm:` spans 2,038 B in the pinned page (`shasum -a 256 .materials/riscv/pinned-v20260120/unpriv/m-st-ext.html` = 85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716), Table 1 1,698 B with tags `br caption col colgroup em p sup table tbody td th thead tr` and attributes `class id style`; `grep -o '(path "profiles/[^"]*")' evidence/rv64gc-m-forms-v3/dependencies.sexp …` → seven pinned profile files, `sources.sexp` and any new `retained/` file not among them; `grep -c "scripts/retain_div_statement.py" evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1 (pinned, so not edited).
 - [x] `.14` a42bb **ADDRESSED** — probe-and-seams.log: `python3 -B scripts/retain_m_statements.py --verify` → `{"disposition": "matched", … "byte_size": 6018, "sha256": "bc777ebb97814f7361ececfa0dcfc16074374df2ddfeab71cf6684597681d518"}` rc 0; `--emit | cmp - profiles/rv64gc-lab-v0/retained/m-statements.html` → `re-emission byte-identical`; `python3 -B [-O] scripts/probe_m_statement_retention.py` → `M-STATEMENT-RETENTION: 20 tests / 0 failures / 0 errors` both modes; seams in both modes `input-pins: 20 tests / 1 failures / 0 errors`, `licence-statement` 1, `unique-statement` 1, `closing-span` 1, `span-markup` 3, `table-markup` 4, `style-shape` 1, `table-caption` 1, `retained-bound` 1, `retained-pin` 2 — the gate's table.
 - [x] `.14` a42bb **NO REGRESSION** — real-tree.log: `python3 -B scripts/review_div_method.py` → `method satisfied rv64gc-m-forms-v3`, `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`, `python3 -B scripts/requirement_status.py` → `REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 48 planned; 2 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; …)`; `bash scripts/check_derived_counts.sh` COUNT DRIFT `claims '1653' self-test arms; the repository has 1655` → re-derived → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`; `bash scripts/check_readme_routes.sh`, `check_requirements.sh` (`RECORD-SCHEMA: ok (20 record file(s) …)`), `check_fixture_fingerprints.sh` (`FIXTURE-FINGERPRINT: ok (1 pinned fingerprint(s) re-derived)`), `check_docpaths.sh` rc 0; `bash -n scripts/check_profile_consistency.sh` rc 0; first focused run `focused: 1 red of 26` — `bash scripts/check_gate_report.sh` rc 1 (GS-REPORT dossier digest `e6777221ab2ed1396f9dfe5153015edafec8401327b8006e956e98d9a9ecf636` vs `49ebeb22c982e3f1413efe0732b4078cc548e40849345fc8cf80efc8356da9cf`) → `python3 scripts/gate_report.py rv64gc-lab-v0 --gate GS` → `wrote profiles/rv64gc-lab-v0/GS-REPORT.md (6768 bytes)`, `git diff --stat` 1 insertion / 1 deletion, `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`; second focused run rc 0 (focused-checks.json); `git status`: the tool, its probe, the retained file, the regenerated GS report, the gate, documents — no pinned module, evidence byte, Rust or definition file changed.

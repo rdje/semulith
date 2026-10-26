@@ -378,7 +378,7 @@ The first two print `MATCHED-GPR-PROPERTY: 34 tests / 0 failures / 0 errors; syn
 metadata, finite source witnesses only`; the third omits the per-property value check and
 fails the three tests that depend on it. The binding grants the m-forms case nothing: no
 declaration record names it yet, no capture retains its runs, no receipt cites it, and
-`REQ-GC-M` keeps deriving `planned`. The declaration (`capture_div.py --declare`) and the
+`REQ-GC-M` kept deriving `planned` (until the m-forms capture and its credit record of 2026-10-26). The declaration (`capture_div.py --declare`) and the
 capture are the next units; the retained case stays `rv64gc-signed-div-truncation-v2` until
 the capture lands and is `invalidated` meanwhile, because this binding is one of its pinned
 inputs (`decision_many-predeclared-properties-one-control.md`).
