@@ -14,18 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `XTASK.6` (one driver per slice; 6h done) → next slice 6i `REGISTRY-MIRROR`
-  (`check_registry_mirror.sh` → `cargo xtask check-registry-mirror`; measure the bash driver first, as 6a–6h);
+- active_work_unit: `XTASK.6` (one driver per slice; 6i done) → next slice 6j, a DESIGN: a Rust S-expression
+  reader in harness.rs measured equal to the pinned sexp.py on the corpus (the six uncoupled drivers left read through it);
   `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0014` — XTASK.6 slice 6h: FACT-OWNERSHIP is Rust behind a held shim (glob reader with
-  Python's rules; arm total 1675 → 1677), byte-identical on eleven paths. Before it 6g (FIXTURE-FINGERPRINT, the
+- last_unit: `SEMULITH-XTASK-0015` — XTASK.6 slice 6i: REGISTRY-MIRROR is Rust behind a held shim (three regexes by
+  hand), byte-identical on twelve paths. Before it 6h (FACT-OWNERSHIP; arm total 1677), 6g (FIXTURE-FINGERPRINT;
   CHANGELOG shard 0415) and `SEMULITH-P4-0296` (a42az: run the three PROFILE-CONSISTENCY probes before touching
   profiles/).
-- next_action: `XTASK.6` slice 6i (`check_registry_mirror.sh`: measure the bash driver first; its `re` by hand),
-  `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `.29` only after the ruling. Before
+- next_action: `XTASK.6` slice 6j (design the Rust S-expression reader: read scripts/sexp.py, measure on every
+  corpus .sexp), `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `.29` only after the ruling. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.
@@ -38,7 +38,7 @@
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
 - evidence: `docs/tasks/P4-SYSTEM.md` .14 a42az (`target/p4-system-14/a42az`: smoke, real-tree.log, red-*.log, st2.log);
-  `docs/tasks/XTASK.md` XTASK.6 slices 6a–6h (`target/xtask/xt0005` … `xt0010`, `xt0013`, `xt0014`: before/, after/);
+  `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
   cleanup act `target/artifact-cleanup/AC0084` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-26T08:50Z`).

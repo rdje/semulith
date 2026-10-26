@@ -27,6 +27,8 @@
 //!   slice `6g`; formerly `scripts/check_fixture_fingerprints.sh`, now a shim): every pinned `sha256` re-derived.
 //! - `cargo xtask check-fact-ownership [--self-test]` is the `FACT-OWNERSHIP` doctrine (`XTASK.6` slice `6h`;
 //!   formerly `scripts/check_fact_ownership.sh`, now a shim): one owner per fact kind, every mirror governed.
+//! - `cargo xtask check-registry-mirror [--self-test]` is the `REGISTRY-MIRROR` doctrine (`XTASK.6` slice `6i`;
+//!   formerly `scripts/check_registry_mirror.sh`, now a shim): the two documents list what the registry registers.
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
@@ -39,6 +41,7 @@ mod check_delivery_provenance;
 mod check_fact_ownership;
 mod check_fixture_fingerprints;
 mod check_push_record;
+mod check_registry_mirror;
 mod check_rustdoc;
 mod check_wasm_build;
 mod harness;
@@ -95,6 +98,7 @@ const NATIVE: &[&str] = &[
     "check-push-record",
     "check-fixture-fingerprints",
     "check-fact-ownership",
+    "check-registry-mirror",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -115,6 +119,7 @@ const PORTED: &[(&str, &str)] = &[
         "scripts/check_fixture_fingerprints.sh",
     ),
     ("check-fact-ownership", "scripts/check_fact_ownership.sh"),
+    ("check-registry-mirror", "scripts/check_registry_mirror.sh"),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -132,6 +137,7 @@ fn main() -> ExitCode {
             "check-push-record" => check_push_record::run(&root, &args[1..]),
             "check-fixture-fingerprints" => check_fixture_fingerprints::run(&root, &args[1..]),
             "check-fact-ownership" => check_fact_ownership::run(&root, &args[1..]),
+            "check-registry-mirror" => check_registry_mirror::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

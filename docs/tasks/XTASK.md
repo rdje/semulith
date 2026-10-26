@@ -322,6 +322,27 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   1675 → 1677 and LIVE_STATUS is re-derived: the module's ten `tally.arm(` restore the honest count. Next:
   slice `6i`, `REGISTRY-MIRROR` (`check_registry_mirror.sh`, named by none, 13 arms, Python on `re` only) — 7
   uncoupled drivers remain.
+  Slice `6i` — `REGISTRY-MIRROR` (`check_registry_mirror.sh`, named by none, 13 arms, an inline Python check)
+  becomes `cargo xtask check-registry-mirror`: done (`2026-10-26`, `SEMULITH-XTASK-0015`; owned on clean 39150ac2;
+  evidence target/xtask/xt0015). The two registries' quoted triples, the two human mirrors and the
+  `docs/doctrines/` family union (written as the script's `cat` wrote it, byte-identical) with their five
+  comparisons — coverage, phantom rows, the project section, executable paths, the "<N> checks run today"
+  sentence spelled or in digits — are `xtask/src/check_registry_mirror.rs`, the script's three regular
+  expressions matched by hand (no new crate) and unit-tested against Python's own matches. Measured
+  byte-identical against the bash driver on the real tree: ok (`3 document(s) mirror the registry`),
+  `--self-test` (`13 pass / 0 fail`), a registered id without its row, a phantom row, a drifted and an
+  unreadable count sentence, a family union missing a project row, a registered check made non-executable, a
+  missing mirror, an emptied universal registry (refused), the universal driver absent (`ok (no driver yet)`),
+  the unwritable-scratch refusal — each altered tracked file restored digest-verified (the mode change by
+  `chmod`). Two differences by design: the `--self-test` refusal names the cause without `mktemp`'s own line;
+  without `python3` the port judges where the script refused. A phantom-blind mutant is caught (`12 pass / 1
+  fail`, main run refused), built only into a disposable target directory; the arm total is unchanged (13 bash
+  arms out, 13 `tally.arm(` in). Found while porting: clippy's arity cap (`too_many_arguments`) refused an
+  eight-argument arm helper, so the tally carries the fixture registries. Next: slice `6j`, a design — the six
+  uncoupled drivers that remain (`check_m_vectors.sh`, `check_unit_composition.sh`, `check_scope_coverage.sh`,
+  `check_citation_quotes.sh`, `check_extraction.sh`, `check_exercise_coverage.sh`) all read the corpus through
+  the pinned Python readers (`sexp.py`, `records_sexp.py`) or load a project module, so a port needs a Rust
+  S-expression reader measured equal to the pinned one on the corpus first, as its own slice.
 
 - ID: `XTASK.7` — **the focused set runs API-DOCS**
   Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0011`; owned on clean eaa63f58; evidence target/xtask/xt0012)
@@ -339,7 +360,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6i`: `REGISTRY-MIRROR` (`check_registry_mirror.sh`, named by none, 13 arms, Python on `re` only) becomes `cargo xtask check-registry-mirror` behind a held shim; 7 uncoupled drivers remain |
+| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus, the precondition for the six uncoupled drivers that remain |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -455,6 +476,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6h **ADDRESSED (verified)** — after/ through the shim against before/, stdout, stderr and rc each: `before/after: 35 identical, 4 differ` — ok, `--self-test`, governor, ungoverned, missing, unnamed, twoowners, badrow, empty, gone and the main-run scratch refusal byte-identical (33 files); the 4 differences by design: `scratchst.stderr` lacks `mktemp: failed to create directory …`, `nopy.*` rc 2 → rc 0 `FACT-OWNERSHIP: ok (74 fact kind(s) …)`. Mutant (`&& false` on the registered-governor test) built with `CARGO_TARGET_DIR=target/xtask/xt0014/mutant-target`: `FACT-OWNERSHIP --self-test: 9 pass / 1 fail`, `MISS: RED   a governor that is not a registered doctrine right verdict, wrong reason (no UNREGISTERED GOVERNOR)`, main `REFUSED` rc 2; restored `xtask/src/check_fact_ownership.rs: OK`, the 22M target removed, `ls target/debug/incremental | wc -l` = 84 unchanged. Shim RED (`echo extra` appended): `scripts/check_fact_ownership.sh must stay a shim of cargo xtask check-fact-ownership`, `test result: FAILED. 8 passed; 1 failed`, restored `scripts/check_fact_ownership.sh: OK`. FIXTURE-FINGERPRINT on the moved helpers: ff-ok and ff-st stdout/stderr `cmp` identical to target/xtask/xt0013/after/ok and selftest.
 - [x] slice 6h **NO REGRESSION** — make-check.log `make check rc=0 in 30 s`, 496 passed, 0 failed (cargo-test.log `9 passed` in xtask); `COUNT DRIFT LIVE_STATUS.md: claims '1675' self-test arms; the repository has 1677  [arm_total]` → LIVE_STATUS.md re-derived (`grep -c "1677 self-test arms" LIVE_STATUS.md` = 1), `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`; `ls target/doctrine-selftest | wc -l` = 0; the staged focused run before the chain.
 - [x] slice 6h **LOCKSTEP** — docs/toolbox/governance.md and docs/doctrines/governance.md rows unchanged (the command still answers through the shim); LIVE_STATUS.md (1677); the tree (slice 6h, frontier 6i, the changelog line), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6i **REPRODUCE / ISSUE** — before/ (bash driver on 39150ac2, measure-before.out): `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)` rc 0 in 727 ms; `REGISTRY-MIRROR --self-test: 13 pass / 0 fail`; the `DOCPATH` row removed from DOCTRINE_ENFORCEMENT.md → rc 1 `NOT MIRRORED`; a `GAMMA-GHOST` row appended to the book chapter → `PHANTOM`; `Thirteen checks run today` → `Seven …` → `COUNT DRIFT`, → `Umpteen …` → `UNREADABLE COUNT`; the `FIXTURE-FINGERPRINT` row removed from docs/doctrines/governance.md → `NOT MIRRORED docs-doctrines-union.md`; `chmod -x scripts/check_docpaths.sh` → `NOT EXECUTABLE`; DOCTRINE_ENFORCEMENT.md moved → `NO MIRROR`; `DOCTRINES=(\n)` → rc 2 `NO REGISTRY universal=0 project=41`; scripts/check_doctrines.sh moved → rc 0 `REGISTRY-MIRROR: ok (no driver yet)`; `chmod 500 target/doctrine-selftest` → main rc 2, `--self-test` rc 1; no python3 → rc 2 `REFUSED — python3 is not on PATH`; `shasum -a 256 -c base.sha` OK and the mode `-rwxr-xr-x` back after every probe, `tree digests: identical to base`.
+- [x] slice 6i **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash with an inline Python check (`grep -cE '(^|[; ])arm "' scripts/check_registry_mirror.sh` = 13 at 39150ac2; `grep -c "re.compile" ` = 3): three regular expressions (`ENTRY`, `ROW`, `NUM`) and `cat docs/doctrines/*.md` with no Rust counterpart without a crate.
+- [x] slice 6i **FIX** — xtask/src/check_registry_mirror.rs (`shasum -a 256` = a5bfbef4c94b8df97aaa3e8ada6efa119916fec243ca1a81f0f6f83e9d2a38d5; `grep -cE '^[[:space:]]+tally\.arm\('` = 13; one unit test over the three matchers, Python's results pinned); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_registry_mirror.sh a three-command shim (`shasum -a 256` = 19e7a4729e049b51ee370ec2007cf56f082bd21d41a2550743e6298ce26bed7d); `git diff --stat` over xtask/ and scripts/: 3 files, 677 insertions, 294 deletions; `cargo fmt --check` clean, `cargo clippy -p xtask --all-targets -- -D warnings` rc 0 (after the arm helper's arity fix).
+- [x] slice 6i **ADDRESSED (verified)** — after/ through the shim against before/, stdout, stderr and rc each: `before/after: 38 identical, 4 differ` — ok, `--self-test`, notmirrored, phantom, countdrift, unreadable, unionlost, notexec, nomirror, noregistry, nodriver and the main-run scratch refusal byte-identical (36 files), target/registry-mirror/docs-doctrines-union.md `cmp` identical before and after; the 4 differences by design: `scratchst.stderr` lacks `mktemp: failed to create directory …`, `nopy.*` rc 2 → rc 0 `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`. Mutant (`&& false` on the phantom test) built with `CARGO_TARGET_DIR=target/xtask/xt0015/mutant-target`: `REGISTRY-MIRROR --self-test: 12 pass / 1 fail`, `MISS: RED   a row nothing registers expected rc=1 got rc=0`, main `REFUSED` rc 2; restored `xtask/src/check_registry_mirror.rs: OK`, the 24M target removed, `ls target/debug/incremental | wc -l` = 84 unchanged. Shim RED (`echo extra` appended): `scripts/check_registry_mirror.sh must stay a shim of cargo xtask check-registry-mirror`, `test result: FAILED. 9 passed; 1 failed`, restored `scripts/check_registry_mirror.sh: OK`.
+- [x] slice 6i **NO REGRESSION** — make-check.log `make check rc=0 in 31 s`, 497 passed, 0 failed (cargo-test.log `10 passed` in xtask); `API-DOCS: ok (5 crate(s) documented; …)` after the staged focused run caught an unescaped `<N>` in the module doc (`unclosed HTML tag`), backticked; `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` — 13 bash arms out, 13 `tally.arm(` in, the total 1677 unchanged; `ls target/doctrine-selftest | wc -l` = 0; the staged focused run before the chain.
+- [x] slice 6i **LOCKSTEP** — docs/toolbox/governance.md and docs/doctrines/governance.md rows unchanged (the command still answers through the shim); the tree (slice 6i, frontier 6j, the changelog line), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -482,3 +509,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-26`: XTASK.6 slice 6f done — all 32 bash self-tests check their scratch allocation and stop before any command (both allocation forms, one census); ok and `--self-test` byte-identical, the guarded failure path leaves `.git/config`, HEAD and the index unchanged; slice 6g is `FIXTURE-FINGERPRINT`.
 - `2026-10-26`: XTASK.6 slice 6g done — `FIXTURE-FINGERPRINT` is Rust behind a held shim (a JSON reader with Python's messages, the hasher shared through the harness), byte-identical on eight paths and a fifteen-finding scratch tree; CHANGELOG.md sharded; slice 6h is `FACT-OWNERSHIP`.
 - `2026-10-26`: XTASK.6 slice 6h done — `FACT-OWNERSHIP` is Rust behind a held shim (a `glob` reader with Python's rules, the string helpers shared through the harness), byte-identical on eleven paths; the arm total re-derived 1675 → 1677 (the bash idiom had missed two `armp` arms); slice 6i is `REGISTRY-MIRROR`.
+- `2026-10-26`: XTASK.6 slice 6i done — `REGISTRY-MIRROR` is Rust behind a held shim (three regular expressions by hand, the family union written as before), byte-identical on twelve paths; the six uncoupled drivers left all need a Rust S-expression reader first — slice 6j is that design.
