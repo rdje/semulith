@@ -706,7 +706,7 @@ PY
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/schemas" "$t/p"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "RECORD-SCHEMA self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/schemas" "$t/p"
   cp schemas/requirement.schema.json schemas/contract-obligation.schema.json "$t/schemas/"
 
   argc() {

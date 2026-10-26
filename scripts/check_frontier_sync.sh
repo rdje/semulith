@@ -265,7 +265,7 @@ PY
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/tasks"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "FRONTIER-SYNC self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/tasks"
 
   # ⛔ STRICT ARITY. A fixture helper that ignores its extra arguments will swallow a whole
   # following command when a `;` is missing — `index a b arm NAME 1 WHY` is ONE call, and the

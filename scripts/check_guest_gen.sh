@@ -59,7 +59,7 @@ SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp
 
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "GUEST-GEN self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
 
   # The surgical guests directory mirrors the real layout: <name>.s + <name>.expected.sexp
   # + the run-order record (P4-SYSTEM.2 slice d: the guest SET is directory-derived; the

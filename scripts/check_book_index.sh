@@ -47,7 +47,7 @@ SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp
 
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "BOOK-INDEX self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
 
   # ⛔ STRICT ARITY (docs/knowledge/self-test-arms-that-never-ran.md): a missing `;` before
   # an arm call swallows it silently; the guard makes that a loud failure.

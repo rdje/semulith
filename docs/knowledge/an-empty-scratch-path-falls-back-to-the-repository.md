@@ -48,3 +48,15 @@ path: `rm -f "$t/schema/credits.sexp"` in a new self-test arm deleted the tracke
 The token-facet probe's closed inventory caught it (`24 != 25`); the culprit was isolated by running each
 suspect alone and checking the file after each, and the file came back from git. Before writing into or
 removing under any fixture subpath, read how the fixture was built: `grep -n "ln -s" <driver>`.
+
+## Guarded at the source (2026-10-26, `XTASK.6` slice `6f`)
+
+The form was the scaffold's, not two drivers': `grep -lF 't="$(SELFTEST_TMP)"' scripts/*.sh` found 32
+bash drivers, every allocation unchecked. Each now reads
+`t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "<DOCTRINE> self-test: cannot create a scratch
+directory under target/doctrine-selftest" >&2; return 1; }` — the Rust modules' wording — so with the
+directory unwritable the `--self-test` run names the cause and the main run refuses before the first
+fixture command. The scan widened to the link form (`grep -nE 'git -C "\$t"|cd "\$t"|ln -s'`) found 14
+fallback-form lines in 6 drivers, none reachable past the guard; measured with the directory at mode 500
+and `.git/config`, HEAD, the index and `schema/` verified unchanged. A new driver copies the guarded line,
+not the bare one. Evidence: `docs/tasks/XTASK.md` slice `6f`; target/xtask/xt0010.

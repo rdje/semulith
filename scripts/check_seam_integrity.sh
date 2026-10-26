@@ -196,7 +196,7 @@ code_class_properties() { # $1 code regex  (paths on stdin)
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "SEAM-INTEGRITY self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
   local full narrow
   full="$(effective_sig)"; [ -n "$full" ] || { echo "seam self-test: the owner printed no signature set" >&2; return 1; }
   narrow="$(extract_default_sig)"

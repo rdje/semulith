@@ -22,7 +22,7 @@ check_books() { python3 scripts/unit_books.py "$1"; }
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "UNIT-BOOKS self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
 
   argc() {
     [ "$2" -eq "$1" ] && return 0

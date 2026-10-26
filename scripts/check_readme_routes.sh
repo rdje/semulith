@@ -411,7 +411,7 @@ SELFTEST_TMP() {  # repo-volume scratch: project-created temporary workspaces mu
 
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/docs"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "README-ROUTING-CLOSURE self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/docs"
   printf '# L\n\nSee [a](docs/) and [b](KEEP.md).\n' > "$t/README.md"
   printf 'x\n' > "$t/KEEP.md"; printf 'y\n' > "$t/docs/inner.md"
   reg() { printf '%s\n' "$@" > "$t/routes.tsv"; }

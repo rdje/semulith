@@ -108,7 +108,7 @@ check_counts() { # $1 = root to resolve against; $2 = claims provider fn; $3 = l
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "DERIVED-COUNTS self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
 
   # ⛔ STRICT ARITY — docs/knowledge/self-test-arms-that-never-ran.md.
   argc() {

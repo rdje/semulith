@@ -57,7 +57,7 @@ PY
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/definitions/riscv" "$t/profiles/good" "$t/profiles/bad"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "EXTRACTION self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/definitions/riscv" "$t/profiles/good" "$t/profiles/bad"
 
   argc() {
     [ "$2" -eq "$1" ] && return 0

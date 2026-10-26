@@ -387,7 +387,7 @@ PY
 self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/p"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "PROFILE-CONSISTENCY self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/p"
   # ⛔ STRICT ARITY — docs/knowledge/self-test-arms-that-never-ran.md. A helper that ignores
   # surplus arguments swallows the whole following command when a `;` is missing, silently.
   argc() {

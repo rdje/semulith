@@ -258,6 +258,27 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   and `.git/config`, the index and HEAD are unchanged (measured). Two other drivers carry the fallback form
   unguarded: `check_seam_integrity.sh` (`cd "$t" && git init -q . && git add leaf.md`) and
   `check_contract_freeze.sh` (`cd "$t" && judge "$t"`) — owned as slice `6f`, read before any probe.
+  Slice `6f` — **every bash self-test checks its scratch allocation**: done (`2026-10-26`,
+  `SEMULITH-XTASK-0012`; owned on clean f8f3a549; evidence target/xtask/xt0010). The form was the scaffold's, not
+  two drivers': `grep -lF 't="$(SELFTEST_TMP)"' scripts/*.sh | wc -l` = 32 drivers on f8f3a549, every
+  allocation inside `self_test()` and none checked — 19 bare, 13 with a same-line `; mkdir -p "$t/…"`
+  (`check_requirements.sh:709` among them). The reading 6e asked for, widened to `ln -s`
+  (`grep -nE 'git -C "\$t"|cd "\$t"|ln -s'`), found 14 fallback-form lines in 6 drivers: `cd "$t"` ×9
+  (`check_contract_freeze.sh` six, `check_seam_integrity.sh` three, one `git init -q . && git add leaf.md`),
+  `ln -s` ×5 (the real `scripts/` and `schema/` linked into fixtures, two archive links, one relative); no
+  `rm -rf "$t"/*`. Each allocation now reads `t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo
+  "<DOCTRINE> self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }`
+  — the Rust modules' wording (`harness.rs`) — with any same-line tail kept after it, applied by one script over
+  the census (`guard_scratch2.py`: both forms, exactly one match per driver asserted, the doctrine name read
+  from the driver's own tally line). Measured before and after on the same clean HEAD for 31 drivers
+  (`PROFILE-CONSISTENCY`'s main path is the gate's ~50-min self-test; its before and after lines are the two
+  chain gates' PROJECT-SPECIFIC logs): ok and `--self-test`, stdout, stderr and rc each — 186 of 186 files
+  byte-identical (before2 in 923 s). The failure path, guarded, for all 32: `target/doctrine-selftest`
+  mode 500, with `.git/config`'s digest, HEAD, the index content and the `schema/*.sexp` count snapshotted before
+  and verified after — every main run `REFUSED — the check does not discriminate (self-test failed).` rc 2 (stdout empty; the 30 that discard the self-test's output say nothing more, `check_guest_gen.sh` and `check_profile_consistency.sh` keep their log and show the cause), every `--self-test` run rc 1 naming it (`mktemp: failed to create directory via template …: Permission denied`, then `<DOCTRINE> self-test: cannot create a scratch directory under target/doctrine-selftest`); `.git/config` 5fa9bf39d1cee284…, HEAD f8f3a549, index content 9bcbf7e2e0659714… and 25 schemas identical before and after, the directory restored to 755, nothing left under it. No arm added or removed, no pinned or spine script touched, no build
+  under altered sources (criterion 6 not engaged). Next: slice `6g`, `FIXTURE-FINGERPRINT`
+  (`check_fixture_fingerprints.sh`, named by none, 7 arms, inline Python on the standard library only) — the
+  smallest of the 9 uncoupled drivers that remain.
 
 - ID: `XTASK.7` — **the focused set runs API-DOCS**
   Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0011`; owned on clean eaa63f58; evidence target/xtask/xt0012)
@@ -275,7 +296,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6f`: guard the unchecked scratch allocations of `check_seam_integrity.sh` and `check_contract_freeze.sh`, whose self-tests `cd` into it (read the failure paths first, no blind probe) |
+| 1 | `XTASK.6` | `active` | slice `6g`: `FIXTURE-FINGERPRINT` (`check_fixture_fingerprints.sh`, named by none, 7 arms, inline Python on the standard library only) becomes `cargo xtask check-fixture-fingerprints` behind a held shim; 9 uncoupled drivers remain |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -373,6 +394,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6e **ADDRESSED (verified)** — `cmp` before/after, stdout and stderr each: ok, `--self-test`, missing, badrange, nonseq, single, rewritten, append → byte-identical (native ok stdout too); unwritable scratch → `PUSH-RECORD: REFUSED — the check does not discriminate (self-test failed).` rc 2 with `shasum -a 256 .git/config` 5fa9bf39d1cee284… before and after, `git diff --cached --quiet` clean, HEAD 922a1dbd; restoration after the incident: `git config user.name` → `Richard DJE`, `git config user.email` → `richard.dje@gmail.com` (global; `git config --local --list | grep -c "^user\."` = 0), index clean, `ls .git/index.lock` absent; mutant (`… && false`) → `PUSH-RECORD --self-test: 5 pass / 1 fail`, main `REFUSED` rc 2, restored `xtask/src/check_push_record.rs: OK`; shim RED → `must stay a shim of cargo xtask check-push-record`, restored `scripts/check_push_record.sh: OK`.
 - [x] slice 6e **NO REGRESSION** — make-check.log `make check rc=0 in 31 s`, 493 passed, 0 failed; `PORT-WEB: ok`; `API-DOCS: ok`; arm_total 1672, `DERIVED-COUNTS: ok`; locality.log `TMP-LOCALITY: 56/56 shell sites qualified and cleaned`; `docs/push-approvals.md: OK` after every staged case; `cargo xtask focused` rc 0 before the commit.
 - [x] slice 6e **LOCKSTEP** — docs/doctrines/governance.md row; docs/toolbox/governance.md unchanged (at its cap); docs/knowledge card and INDEX; the tree (slice 6e, the defect, frontier 6f), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6f **REPRODUCE / ISSUE** — on f8f3a549: `grep -lF 't="$(SELFTEST_TMP)"' scripts/*.sh | wc -l` = 32, `grep -l "cannot create a scratch directory" scripts/*.sh | wc -l` = 0 (none guarded); `grep -cF 't="$(SELFTEST_TMP)";' ` over the 32 = 13 same-line forms, 19 bare; scan32.txt: `grep -nE 'git -C "\$t"|cd "\$t"|ln -s'` over the 32 = 14 lines in 6 drivers (`cd "$t"` 9, `ln -s` 5); `rm -rf "$t"/*` 0; every allocation's enclosing function `self_test` (32 of 32). before2/: ok and `--self-test` for 31 drivers, 186 files, every ok rc 0 and every `--self-test` rc 0, taken in 923 s.
+- [x] slice 6f **ROOT CAUSE (WHY + WHERE)** — the scaffold idiom `t="$(SELFTEST_TMP)"` (`SELFTEST_TMP() { … mktemp -d "$d/XXXXXX"; }`; `git show f8f3a549:scripts/check_board_gen.sh | grep -cF 't="$(SELFTEST_TMP)"'` = 1, bare, at line 37 of 32 such drivers) never checked its result, so an unwritable `target/doctrine-selftest` left `t=""` and the self-test went on: `cd ""` is no move and `git -C ""` no change of directory (the 6e incident; `docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md`), and `ln -s … "$t/schema"` with `t=""` would aim at `/schema`. 6e read two drivers; the form was in all 32.
+- [x] slice 6f **FIX** — the 32 drivers in drivers32.txt, one line each (`git diff --stat` 32 files, 32 insertions, 32 deletions): `grep -l "cannot create a scratch directory under target/doctrine-selftest" scripts/*.sh | wc -l` = 32, `grep -lF 't="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] ||' scripts/*.sh | wc -l` = 32, the 13 same-line `mkdir -p` tails kept (`grep -cE 'return 1; }; mkdir -p' ` over the 32 = 13); applied by target/xtask/xt0010/guard_scratch2.py (`{'plain': 19, 'tail': 13} applied`).
+- [x] slice 6f **ADDRESSED (verified)** — after2/ against before2/ on the same HEAD: `ok+self-test comparison: 186 identical, 0 differ`. Failure path (`chmod 500 target/doctrine-selftest`, restored 755 by trap): measure_after2.out, 32 of 32 drivers `main rc=2` with `<DOCTRINE>: REFUSED — the check does not discriminate (self-test failed).` and an empty stdout (`cat after2/*.fail.stdout | wc -c` = 0), 32 of 32 `self-test rc=1 guard=1` — stderr `mktemp: failed to create directory via template ‘…/target/doctrine-selftest/XXXXXX’: Permission denied` then `<DOCTRINE> self-test: cannot create a scratch directory under target/doctrine-selftest` (`check_guest_gen.sh`, which keeps its self-test log, shows both on the main run too: `grep -c 'cannot create' after2/check_guest_gen.fail.stderr` = 1); `config 5fa9bf39d1cee284 -> 5fa9bf39d1cee284; HEAD f8f3a549… -> f8f3a549…; index 9bcbf7e2e0659714 -> 9bcbf7e2e0659714; schemas 25 -> 25`; `git status --short` shows the 32 modified drivers and nothing else; `ls target/doctrine-selftest | wc -l` = 0 after.
+- [x] slice 6f **NO REGRESSION** — make-check.log `make check rc=0 in 30 s; 493 passed, 0 failed`; measure_focused.out on the guarded tree with nothing else changed: `cargo xtask focused` rc 0, `focused: 0 red of 27`, `verdict lines: 27 identical, 0 differ` against target/xtask/xt0012/after (the XTASK.7 finished-slice run, f8f3a549's content), `scratch left: 0`; `DERIVED-COUNTS` unchanged (no `arm "` line added: `grep -cE '(^|[; ])arm "'` totals equal before and after over the 32); `probe_temporary_locality.py`'s shell sites unchanged (the `mktemp` expression lives in `SELFTEST_TMP`, untouched); no spine file (`update_scaffold.sh` `NEUTRAL` list) and no pinned script among the 32; no altered build, so no disposable target was needed (criterion 6).
+- [x] slice 6f **LOCKSTEP** — the knowledge card (a `Guarded` section: the census command, the guard line, the widened scan); the tree (slice 6f, frontier 6g, the changelog line), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -397,3 +424,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-24`: XTASK.6 slice 6e done — `PUSH-RECORD` is Rust behind a held shim, byte-identical on nine paths; the bash self-test's unguarded scratch acted on the real repository during a failure-injection run (stopped, restored, verified; owned, card written); slice 6f guards the two drivers with the same form.
 - `2026-10-26`: XTASK.5 closed by decision — `check-examples` stays a product command; no code change, no capture spent.
 - `2026-10-26`: XTASK.7 done — `cargo xtask focused` runs API-DOCS before `make book`, 27 checks; the leaf-wide criteria gain the disposable-target rule for altered builds.
+- `2026-10-26`: XTASK.6 slice 6f done — all 32 bash self-tests check their scratch allocation and stop before any command (both allocation forms, one census); ok and `--self-test` byte-identical, the guarded failure path leaves `.git/config`, HEAD and the index unchanged; slice 6g is `FIXTURE-FINGERPRINT`.

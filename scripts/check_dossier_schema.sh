@@ -95,7 +95,7 @@ SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp
 
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"; mkdir -p "$t/profiles/p" "$t/schema"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "DOSSIER-SCHEMA self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/profiles/p" "$t/schema"
 
   # ⛔ STRICT ARITY (docs/knowledge/self-test-arms-that-never-ran.md).
   argc() {

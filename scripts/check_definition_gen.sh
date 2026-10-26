@@ -42,7 +42,7 @@ SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp
 
 self_test() {
   local t pass=0 fail=0 out rc
-  t="$(SELFTEST_TMP)"
+  t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "DEF-GEN self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }
 
   # The generator resolves fragments as <encoding's parent^3>/<fragment-root>, so the
   # surgical unit mirrors the real layout: tmp/profiles/<unit>/encoding.sexp composes
