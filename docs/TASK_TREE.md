@@ -59,5 +59,5 @@ on the same commit. One commit per completed leaf.
 | [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `active` | `.2` — proposed: the Markdown census (1 of 2 leaves done) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.28` — the next recurring cleanup (due after 2026-10-27T08:50Z); XTASK.6 resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
-| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.6` — slice `6f`: guard two drivers' unchecked scratch allocations (3 of 6 leaves done; XTASK.5 blocked) | repo-local |
+| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.6` — slice `6f`: guard two drivers' unchecked scratch allocations (4 of 6 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

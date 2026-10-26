@@ -140,9 +140,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   drivers carry the larger gain, so `XTASK.6` goes first; these wait, each constraint recorded.
 
 - ID: `XTASK.5` — **check-examples leaves the product CLI**
-  Status: `blocked` (2026-10-24, on a pinned script; see Blockers)
+  Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0010`; closed by decision, no code change)
   Goal: the development check `semulith check-examples` (called by RECORD-SCHEMA through `cargo run`) becomes
   `cargo xtask check-examples`; the product CLI keeps product commands only.
+  Result: closed without a code change by `decision_check-examples-stays-in-the-cli.md` (the workflow, under the
+  director's delegation of 2026-10-26, `decision_four-rulings-delegated.md`). The command validates the frozen
+  records bundle and presents its report — the CLI's architectural role (`docs/ARCHITECTURE.md` §4, "user
+  commands and report presentation") — so it was never development-only tooling, and the goal's premise
+  ("the product CLI keeps product commands only") already holds. Moving it would have turned G1's criterion 3
+  false unless the pinned `gate_report.py` changed, a planned capture of the retained M case for no product
+  gain. The gate keeps calling it through `cargo run`; a future move travels with a capture that also teaches
+  the report its new location. Measured unchanged: `grep -c 'Some("check-examples")' crates/semulith-cli/src/main.rs`
+  = 1, `grep -c check-examples scripts/check_requirements.sh` = 2; `python3 scripts/gate_report.py`
+  regenerates G1 byte-identical (GATE-REPORT ok).
 
 - ID: `XTASK.6` — **doctrine drivers, one per slice**
   Status: `active`
@@ -251,7 +261,6 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 | --- | --- | --- | --- |
 | 1 | `XTASK.6` | `active` | slice `6f`: guard the unchecked scratch allocations of `check_seam_integrity.sh` and `check_contract_freeze.sh`, whose self-tests `cd` into it (read the failure paths first, no blind probe) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
-| 3 | `XTASK.5` | `blocked` | `gate_report.py` (pinned) reads `check-examples` in the CLI source; the director's decision |
 
 ## Decisions
 
@@ -273,14 +282,8 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 ## Blockers
 
-- `XTASK.5` (2026-10-24): `scripts/gate_report.py` is pinned by the retained M case
-  (`grep -c '(path "scripts/gate_report.py")' evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1) and computes
-  G1's criterion 3 as `graph_rs and check_examples and graph_tests > 0`, with
-  `check_examples = 'Some("check-examples")' in cli` (gate_report.py:383, 391). Moving the command out of
-  `semulith-cli` turns G1-REPORT's criterion 3 unmet ("is NOT wired") unless the pinned script changes, which
-  needs a planned capture. The director's decision: (a) a planned capture that also teaches the report the
-  xtask location, (b) keep `check-examples` as a product command and drop `XTASK.5`, or (c) defer until a
-  capture is planned anyway. Nothing else in the tree waits on it.
+- None. (`XTASK.5`'s blocker of 2026-10-24 — the pinned `gate_report.py` reading `check-examples` in the CLI source —
+  was resolved by decision on 2026-10-26: the command stays in the CLI; see the leaf.)
 
 ## Acceptance Checklist (leaf XTASK.1)
 
@@ -368,3 +371,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-24`: XTASK.6 slice 6c done — `DELIVERY-PROVENANCE` is Rust behind a held shim keeping the locality preamble, measured byte-identical on nine paths of the real package.
 - `2026-10-24`: XTASK.6 slice 6d done — `API-DOCS` is Rust (`cargo xtask check-rustdoc`), its Python ratchet ported with it, measured byte-identical on twelve paths.
 - `2026-10-24`: XTASK.6 slice 6e done — `PUSH-RECORD` is Rust behind a held shim, byte-identical on nine paths; the bash self-test's unguarded scratch acted on the real repository during a failure-injection run (stopped, restored, verified; owned, card written); slice 6f guards the two drivers with the same form.
+- `2026-10-26`: XTASK.5 closed by decision — `check-examples` stays a product command; no code change, no capture spent.
