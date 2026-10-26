@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [Alternate the Rust tooling port with project feature work (2026-10-26)](decision_alternate-port-and-features.md) | `decision` | the director: one `XTASK` slice, then one project feature leaf, never two tooling units back to back; first applied after slice 6i with `P4-SYSTEM.14` a42bc |
 | [Four rulings delegated to the workflow (2026-10-26)](decision_four-rulings-delegated.md) | `decision` | the director: the four open items of 2026-10-26 are the workflow's to decide, "sota, signoff and production-grade"; one record per ruling, `authority review` |
 | [REQ-GC-M credited implemented (2026-10-26)](decision_req-gc-m-credited-implemented.md) | `decision` | the first credit record, signed `review` under delegation; one finite case of 25 witnesses under ten satisfied legs suffices for `implemented` and for nothing more |
 | [check-examples stays in the CLI (2026-10-26)](decision_check-examples-stays-in-the-cli.md) | `decision` | report presentation over the records graph is the CLI's role; `XTASK.5` closes without a code change, no capture spent |

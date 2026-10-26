@@ -14,18 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: `XTASK.6` (one driver per slice; 6i done) → next slice 6j, a DESIGN: a Rust S-expression
-  reader in harness.rs measured equal to the pinned sexp.py on the corpus (the six uncoupled drivers left read through it);
+- active_work_unit: ALTERNATING (director 2026-10-26, `decision_alternate-port-and-features.md`): a42bc (feature)
+  done → `XTASK.6` slice 6j (drafted in target/xtask/xt0016: the Rust sexp reader) → the next P4-SYSTEM.14 act;
   `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0015` — XTASK.6 slice 6i: REGISTRY-MIRROR is Rust behind a held shim (three regexes by
-  hand), byte-identical on twelve paths. Before it 6h (FACT-OWNERSHIP; arm total 1677), 6g (FIXTURE-FINGERPRINT;
-  CHANGELOG shard 0415) and `SEMULITH-P4-0296` (a42az: run the three PROFILE-CONSISTENCY probes before touching
-  profiles/).
-- next_action: `XTASK.6` slice 6j (design the Rust S-expression reader: read scripts/sexp.py, measure on every
-  corpus .sexp), `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `.29` only after the ruling. Before
+- last_unit: `SEMULITH-P4-0297` — P4-SYSTEM.14 a42bc: the credited M case is the dossier's first qualified experiment
+  record (qualification = a current credit + form-equality with the measured record, computed by the gate);
+  G-TRACE green, 5 of 10 axes open. Before it XTASK-0015 (6i), 0014 (6h), 0013 (6g; CHANGELOG shard 0415).
+  Run the three PROFILE-CONSISTENCY probes before any chain touching profiles/ or evidence/.
+- next_action: `XTASK.6` slice 6j (apply target/xtask/xt0016: apply_6j.py, measure.sh, docs), then a P4-SYSTEM.14
+  feature act; `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `.29` only after the ruling. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.

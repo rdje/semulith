@@ -360,13 +360,16 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus, the precondition for the six uncoupled drivers that remain |
+| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus, the precondition for the six uncoupled drivers that remain — next after the feature unit a42bc (alternation) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
 
 - `2026-10-23`: the director: "Migration to xtask shall be done with extrem care, and incrementally for not
   breaking anything" (`decision_rust-native-tooling.md`).
+- `2026-10-26`: the director: "Please alternate Rust tooling port and project feature implementation. Do not get
+  stuck on Rust's tooling because the project work needs to progress" (`decision_alternate-port-and-features.md`):
+  after a slice lands, the next unit is a project feature leaf; a slice drafted ahead waits its turn.
 
 ## Open Questions
 

@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-10-10`
-- **Status:** `active` — finite method checked; full policy/qualification pending
+- **Status:** `active` — finite method checked; the first record qualified through its credit (a42bc, 2026-10-26)
 - **Owner / source:** `P4-SYSTEM.14` a12–a42ao, `SEMULITH-P4-0203`–`0283`; existing GC verification policy and evidence-graph requirements
 answers: Which matched-GPR checks exist, how are conflicting expectation writes refused, and why does qualification remain closed?
 
@@ -18,11 +18,13 @@ that its evidence is adequate or current.
 **Implemented:** bindings, collection, retained DIV capture (`c91d08f5`) and finite
 method review (`review_div_method.py`). Full policy/qualification pending.
 
-DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY still refuses every block as
-`UNQUALIFIED EXPERIMENT VERIFICATION`: complete method/policy adequacy remains
-pending. Legacy checks/records stay intact; no GC record is
-qualified. The original declaration remains prospective for fresh qualification;
-it neither backdates historical experiments nor weakens the GC verification policy.
+DOSSIER-SCHEMA checks shape. PROFILE-CONSISTENCY refuses a block as
+`UNQUALIFIED EXPERIMENT VERIFICATION` unless `credit_records.dossier_qualification`
+finds a CURRENT credit record naming its case and the dossier record equal, form for form,
+to the case's measured record (a42bc, 2026-10-26). The M case (`CR-GC-M-1`) is the first
+record so qualified. Legacy checks/records stay intact. The original declaration remains
+prospective for fresh qualification; it neither backdates historical experiments nor
+weakens the GC verification policy.
 
 ## Why
 

@@ -175,6 +175,42 @@ def current_credits(root: Path, profile_dir: Path) -> list[dict]:
     return [dict(credit, **authenticate(root, credit)) for credit in load_credits(root, profile_dir)]
 
 
+def dossier_qualification(root: Path, profile_dir: Path, form) -> list[str]:
+    """Why a dossier experiment form is NOT qualified; empty when it is (P4-SYSTEM.14 a42bc).
+
+    A verification-bearing experiment record in references.sexp is qualified exactly when (1) a credit
+    record of the profile that authenticates `current` names the record's id as its case, and (2) the
+    record is the case's measured record, form for form — the dossier restates the evidence, it never
+    owns a second version of it. Qualification is computed here from the tree at check time; no stored
+    flag and no verdict string in the record itself can assert it.
+    """
+    root, profile_dir = Path(root), Path(profile_dir)
+    reasons: list[str] = []
+    if not (isinstance(form, list) and form and str(form[0]) == "experiment"):
+        return ["not an experiment form"]
+    xid = _one(form, "id")
+    if not xid:
+        return ["the record has no id"]
+    naming = [c for c in current_credits(root, profile_dir) if c["case_id"] == xid]
+    current = [c for c in naming if c["disposition"] == "current"]
+    if not naming:
+        reasons.append(f"no credit record names the case {xid}")
+    elif not current:
+        reasons.append(f"no current credit record names the case {xid}: "
+                       + "; ".join(r for c in naming for r in c["reasons"][:2]))
+    measured_path = root / "evidence" / xid / "measured-experiment.sexp"
+    if not measured_path.is_file():
+        reasons.append(f"the case has no measured record at {measured_path.relative_to(root).as_posix()}")
+        return reasons
+    measured = [f for f in S.parse(measured_path.read_bytes()[:DOCUMENT_BYTES].decode("utf-8"), str(measured_path))
+                if isinstance(f, list) and f and str(f[0]) == "experiment"]
+    if len(measured) != 1:
+        reasons.append(f"the case's measured record holds {len(measured)} experiment form(s), not one")
+    elif measured[0] != form:
+        reasons.append("the dossier record differs from the case's measured record")
+    return reasons
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=ROOT)

@@ -144,11 +144,13 @@ and retained reference-identity authentication, [receipt binding](retained-metho
 and [execution binding](retained-method.md#binding-the-declared-sail-invocations) exist. The composed evaluator also binds
 source/ELF bytes, input/impact reviews and a finite source-grounded property.
 Reviewed fresh collection and the [first retained DIV capture](canonical-division.md)
-now exist. Complete adequacy/policy remains pending. PROFILE-CONSISTENCY continues
-to refuse v1 blocks as unqualified. The [policy](policy.md) was declared after
+now exist. PROFILE-CONSISTENCY refuses a v1 block unless a CURRENT credit record names its
+case and the dossier record is the case's measured record, form for form (a42bc); the M
+case is the first so qualified, the dossier's one experiment record. The [policy](policy.md) was declared after
 implementation and is prospective; this book does not backdate it. Candidate
 availability, a successful book build and syntax checks do not advance requirement
-status or close G-TRACE. Full policy/status consumers follow verified captures.
+status or close G-TRACE: the credit did the first (REQ-GC-M), the qualified record the second
+(G-TRACE green since a42bc). Full policy/status consumers follow verified captures.
 
 At composition checkpoint `3e5a3ea`, full local CI passed all 443 Rust tests,
 doctrines, browser bench, 53 smoke controls and seven book builds. All 1,370

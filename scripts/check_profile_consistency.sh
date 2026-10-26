@@ -64,6 +64,7 @@ import experiment_verification as V
 import experiment_artifacts as A
 import records_sexp as R
 import sexp as S
+import credit_records as CR
 
 # P4-SYSTEM.2 slice (c1): the csr-set rule applied OUTSIDE a unit directory — the staged
 # rv64gc state document lives at a scratch path until the route flip, and must validate
@@ -284,9 +285,15 @@ for profile_path in sorted(root.glob("*/profile.sexp")):
                                 if pin.disposition != "matched":
                                     findings.append(f"VERIFICATION ARTIFACT {name}/{xid}/"
                                         f"{pin.record_kind}/{pin.record_id}: {pin.disposition}: {pin.reason}")
-                    findings.append(
-                        f"UNQUALIFIED EXPERIMENT VERIFICATION {name}/{xid}: "
-                        "complete method/policy adequacy pending; matching pins give no qualification")
+                    # a42bc: qualified exactly when a CURRENT credit record names the case and the record is
+                    # the case's measured record (credit_records.dossier_qualification); otherwise the
+                    # refusal stands, naming why. Matching pins alone still give no qualification.
+                    why = CR.dossier_qualification(pathlib.Path.cwd(), profile_path.parent,
+                                                   raw_experiments[experiment_index]
+                                                   if experiment_index < len(raw_experiments) else None)
+                    if why:
+                        findings.append(
+                            f"UNQUALIFIED EXPERIMENT VERIFICATION {name}/{xid}: " + "; ".join(why))
                 models = x.get("models") or []
                 if len(models) != len(set(models)):
                     findings.append(
@@ -564,7 +571,7 @@ EOF
   # A schema-conforming block cannot receive qualification credit from
   # relationship/artifact/byte checks before full method/policy adequacy.
   VERIFIED_EXP="$(python3 "$ROOT/scripts/probe_experiment_verification.py" --emit-experiment)"
-  refs "$BASE$VERIFIED_EXP)";                                   arm "RED   new verification remains closed pending full adequacy" 1 "UNQUALIFIED EXPERIMENT VERIFICATION"
+  refs "$BASE$VERIFIED_EXP)";                                   arm "RED   a verification block with no current credit stays unqualified" 1 "UNQUALIFIED EXPERIMENT VERIFICATION"
   refs "$(printf '%s' "$EXP" | grep -v 'control'))";            arm "RED   agreement with no control" 1 "NO CONTROL"
   refs "$(printf '%s' "$EXP" | grep -v 'reproduced'))";        arm "RED   an experiment that never reproduced" 1 "THIN EXPERIMENT"
   refs "$(printf '%s' "$EXP" | grep -v 'observed'))";          arm "RED   a difference with nothing observed" 1 "THIN DIFFERENCE"
@@ -2225,6 +2232,21 @@ DIV_METHOD_CASES
     for policy_mutation in credit-pending trust-receipt infer-feature any-control coverage-optional lock-stale first-property credit-any; do
       out="$("${policy_python[@]}" scripts/probe_div_policy.py --mutation "$policy_mutation" 2>&1)"; rc=$?
       score "RED omitted policy legs $policy_mutation $policy_mode" "$rc" 1 "$out" "DIV-POLICY-PROBE: 1 tests / 1 failures / 0 errors; measurement only, no qualification credit"
+    done
+  done
+
+  # P4-SYSTEM.14 a42bc: a dossier record qualifies only through a current credit naming its case and
+  # form-equality with the case's measured record; the real-tree arm pins the credited case as qualified.
+  local qual_mode qual_mutation
+  local -a qual_python
+  for qual_mode in normal optimized; do
+    qual_python=(python3 -B)
+    [ "$qual_mode" = optimized ] && qual_python+=(-O)
+    out="$("${qual_python[@]}" scripts/probe_dossier_qualification.py 2>&1)"; rc=$?
+    score "GREEN dossier qualification through a current credit $qual_mode" "$rc" 0 "$out" "DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures / 0 errors; the credit decides, never the record"
+    for qual_mutation in credit-any mirror-any id-any; do
+      out="$("${qual_python[@]}" scripts/probe_dossier_qualification.py --mutation "$qual_mutation" 2>&1)"; rc=$?
+      score "RED omitted dossier qualification $qual_mutation $qual_mode" "$rc" 1 "$out" "DOSSIER-QUALIFICATION-PROBE: 1 tests / 1 failures / 0 errors; the credit decides, never the record"
     done
   done
 
