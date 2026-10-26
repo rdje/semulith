@@ -14,22 +14,22 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: the four delegated rulings, one leaf per commit (`decision_four-rulings-delegated.md`):
-  a42az, `XTASK.5`, `XTASK.7` and `XTASK.6` slice 6f done → next `ARTIFACT-CLEANUP.29` (orphan-session class;
-  design target/artifact-cleanup/AC29/design.md; leaf first), `ARTIFACT-CLEANUP.28` once due (after
-  2026-10-27T08:50Z), then `XTASK.6` slice 6g (`FIXTURE-FINGERPRINT` → `cargo xtask check-fixture-fingerprints`).
+- active_work_unit: `XTASK.6` (one driver per slice; 6g done) → next slice 6h `FACT-OWNERSHIP`
+  (`check_fact_ownership.sh` → `cargo xtask check-fact-ownership`; measure the bash driver first, as 6a–6g);
+  `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
+  measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0012` — XTASK.6 slice 6f: all 32 bash self-tests check their scratch allocation
-  (ok/self-test byte-identical, failure path verified harmless); before it XTASK.7 (27-check focused set) and
-  `SEMULITH-P4-0296` (a42az: REQ-GC-M credited; run the three PROFILE-CONSISTENCY probes before touching profiles/).
-- next_action: `ARTIFACT-CLEANUP.29` (leaf first, then the act), `ARTIFACT-CLEANUP.28` once due, then `XTASK.6`
-  slice 6g (`check_fixture_fingerprints.sh`: measure the bash driver first, as 6a–6e). Before
+- last_unit: `SEMULITH-XTASK-0013` — XTASK.6 slice 6g: FIXTURE-FINGERPRINT is Rust behind a held shim (JSON reader
+  with Python's messages, hasher shared in harness.rs), byte-identical on eight paths; CHANGELOG.md sharded (0415).
+  Before it 6f (32 guarded self-tests) and `SEMULITH-P4-0296` (a42az: run the three PROFILE-CONSISTENCY probes
+  before touching profiles/).
+- next_action: `XTASK.6` slice 6h (`check_fact_ownership.sh`: measure the bash driver first; `re`/`glob` by hand),
+  `ARTIFACT-CLEANUP.28` once due; `.29` only after the ruling. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.
-- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md is at 64,497 B of its 65,536 B
-  ceiling: the next unit shards it BEFORE its entry, as ef340a9c did (oldest entries → shard-0415.md, one SHARDS row).
+- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
@@ -38,7 +38,7 @@
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
 - evidence: `docs/tasks/P4-SYSTEM.md` .14 a42az (`target/p4-system-14/a42az`: smoke, real-tree.log, red-*.log, st2.log);
-  `docs/tasks/XTASK.md` XTASK.6 slices 6a–6f (`target/xtask/xt0005` … `xt0010`; 6f: before2/, after2/, measure_after2.out);
+  `docs/tasks/XTASK.md` XTASK.6 slices 6a–6g (`target/xtask/xt0005` … `xt0010`, `xt0013`: before/, after/, measure-*.out);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
   cleanup act `target/artifact-cleanup/AC0084` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-26T08:50Z`).

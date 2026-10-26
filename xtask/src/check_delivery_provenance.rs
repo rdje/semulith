@@ -17,9 +17,9 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
-use std::process::{Command, ExitCode, Stdio};
+use std::process::ExitCode;
 
-use crate::harness::{locale_sorted, scratch};
+use crate::harness::{locale_sorted, scratch, Hasher};
 
 /// Runs the doctrine: `--self-test` as the first argument runs the arms; anything else runs the check.
 /// Exit 0 ok, 1 a package no longer matches its dispositions, 2 refused.
@@ -65,79 +65,6 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
     }
     print!("DELIVERY-PROVENANCE: ok\n{report}");
     ExitCode::SUCCESS
-}
-
-/// The hasher the script would pick: `sha256sum` when on `PATH`, else `shasum -a 256`.
-struct Hasher {
-    program: &'static str,
-    args: &'static [&'static str],
-}
-
-impl Hasher {
-    /// The first hasher that hashes `/dev/null` successfully, as the script's preflight required.
-    fn find() -> Option<Self> {
-        let candidates = [
-            Hasher {
-                program: "sha256sum",
-                args: &[],
-            },
-            Hasher {
-                program: "shasum",
-                args: &["-a", "256"],
-            },
-        ];
-        // The script chose by `command -v`, then required the chosen one to work: a hasher that exists but
-        // fails is a refusal, not a fall-through to the next.
-        let chosen = candidates.into_iter().find(|h| on_path(h.program))?;
-        let works = Command::new(chosen.program)
-            .args(chosen.args)
-            .arg("/dev/null")
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()
-            .is_ok_and(|status| status.success());
-        works.then_some(chosen)
-    }
-
-    /// The first space-separated field of the hasher's first output line (the script's `cut -d' ' -f1`);
-    /// the hasher's own errors pass through on stderr.
-    fn digest(&self, path: &Path) -> String {
-        Command::new(self.program)
-            .args(self.args)
-            .arg(path)
-            .stdin(Stdio::null())
-            .stderr(Stdio::inherit())
-            .output()
-            .map(|output| {
-                let text = String::from_utf8_lossy(&output.stdout).into_owned();
-                let line = text.lines().next().unwrap_or("");
-                line.split(' ').next().unwrap_or("").to_owned()
-            })
-            .unwrap_or_default()
-    }
-}
-
-/// Whether `program` is an executable file in a `PATH` directory (the script's `command -v`).
-fn on_path(program: &str) -> bool {
-    std::env::var_os("PATH").is_some_and(|path| {
-        std::env::split_paths(&path).any(|dir| {
-            fs::metadata(dir.join(program)).is_ok_and(|meta| meta.is_file() && executable(&meta))
-        })
-    })
-}
-
-/// Whether a file's mode lets someone execute it.
-#[cfg(unix)]
-fn executable(meta: &fs::Metadata) -> bool {
-    use std::os::unix::fs::PermissionsExt as _;
-    meta.permissions().mode() & 0o111 != 0
-}
-
-/// Without Unix modes (the wasm32 build of the workspace) a regular file is taken as executable.
-#[cfg(not(unix))]
-fn executable(_: &fs::Metadata) -> bool {
-    true
 }
 
 /// The package directories under `docs/provenance/`, as the script's `docs/provenance/*/` glob listed them:

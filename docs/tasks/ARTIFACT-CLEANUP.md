@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -758,6 +758,31 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0084.
 
+- ID: `ARTIFACT-CLEANUP.29` — **the recorded class "orphan incremental session"**
+  Status: `pending` (blocked on a ruling; see Blockers)
+  Goal: execute ruling 2 of `decision_orphan-incremental-sessions.md` — strict selection gains the
+  class, approved as a group and recorded beside `approved`/`unrecorded` as `orphan`; the guarded core
+  and the operator carry it; probe arms fired RED; then a cleanup act removes the backlog. Design:
+  target/artifact-cleanup/AC29/design.md.
+  Finding before implementation (`2026-10-26`, measured on the live tree, `SEMULITH-XTASK-0013`): the
+  class as recorded has no structural discriminator. A census of the four cargo roots (target/debug, the
+  wasm32 target, the two PRODUCERS roots) finds 106 crate-hash directories, every one holding only
+  session directories and one zero-byte `.lock` per session; the directories built 2 h earlier and the
+  400–700 h-old ones have the same shape (two finished sessions, two locks), because rustc keeps the
+  previous and the current session and collects only within a directory. Definition (2), "every regular
+  file under D is a plan candidate", therefore holds for the live directories too: the class approves the
+  current configuration's caches, and a daily cleanup is followed by one full rebuild. The plan's
+  `.bin`-only scope covers 64 % of the bytes under those roots (`.bin` 786,755,579 B in 252 files; `.o`
+  381,613,191 B in 10,471 files; `.rmeta` 60,305,342 B in 66; total 1,228,674,112 B): removing an orphan
+  session's `.bin` files leaves its work products and directory skeleton forever, and rustc starts fresh
+  silently on a missing dep-graph. Options for the ruling: (A) implement the class as recorded — ~787 MB
+  now, the live caches daily, ~442 MB of skeletons kept forever, the smallest change; (B) widen the class
+  to whole sessions (every regular file under an orphan session directory, then the emptied directories)
+  — the full 1.23 GB and every future orphan, a widening of the directive's enumerated scope to record;
+  (C) B restricted to directories with no session younger than the last recorded cleanup act — keeps the
+  live caches between daily cleanups, an age rule anchored to the record. The workflow holds ruling 2
+  under the delegation; the scope widening in B and C is new, so it is raised, not taken.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -796,7 +821,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ## Blockers
 
-- None.
+- `ARTIFACT-CLEANUP.29`: a ruling between options A, B and C (the leaf's finding, `2026-10-26`); until
+  then the recurring cleanups (`.28` …) run the supported act unchanged.
 
 <!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
 Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).
