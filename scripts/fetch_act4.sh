@@ -26,12 +26,23 @@ if [ -d "$DIR/.git" ]; then
   echo "fetch_act4: already at the pinned $PIN"
 else
   git clone --filter=blob:none --no-checkout "$URL" "$DIR"
-  git -C "$DIR" sparse-checkout set tests/env tests/rv64i/I config
+  git -C "$DIR" sparse-checkout set tests/env tests/rv64i/I tests/rv64i/M tests/rv64i/Zaamo tests/rv64i/Zalrsc tests/rv64i/Zca config
   git -C "$DIR" checkout "$PIN"
 fi
 
 # The census is the verification: the pin's content, counted, not assumed.
+# A clone made before P4-SYSTEM.15 slice b holds the I suite only: add the other paths at the SAME pin.
+for s in M Zaamo Zalrsc Zca; do
+  [ -d "$DIR/tests/rv64i/$s" ] || git -C "$DIR" sparse-checkout add "tests/rv64i/$s"
+done
 FILES=$(find "$DIR/tests/rv64i/I" -name 'I-*.S' | wc -l | tr -d ' ')
 SIGUPD=$(grep -h -c "RVTEST_SIGUPD(" "$DIR"/tests/rv64i/I/I-*.S | paste -sd+ - | bc)
 echo "fetch_act4: ok — $FILES RV64I test files, $SIGUPD RVTEST_SIGUPD invocations"
 [ "$FILES" = "51" ] || { echo "fetch_act4: expected 51 test files, counted $FILES" >&2; exit 1; }
+# The suites P4-SYSTEM.15 slice b added, each counted at the pin (the census is the verification).
+for census in M:13 Zaamo:18 Zalrsc:4 Zca:32; do
+  s=${census%%:*}; want=${census##*:}
+  got=$(find "$DIR/tests/rv64i/$s" -name "$s-*.S" | wc -l | tr -d ' ')
+  [ "$got" = "$want" ] || { echo "fetch_act4: expected $want $s test files, counted $got" >&2; exit 1; }
+done
+echo "fetch_act4: ok — M 13, Zaamo 18, Zalrsc 4, Zca 32 test files at the pin"

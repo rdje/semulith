@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # Named valid tokens, independent of anchor implementation. A new token language
 # needs a reviewed example here; silently skipping an unknown pattern is forbidden.
 TOKENS = {
-    r'^I-[a-z0-9]+-[0-9]+\.S': 'I-add-01.S',
+    r'^[A-Z][A-Za-z]*-[a-z0-9.]+-[0-9]+\.S': 'Zaamo-amoadd.d-00.S',  # act4.sexp: <Suite>-<mnemonic>-<nn>.S since P4-SYSTEM.15 slice b
     r'^[0-9a-f]{64}': 'a' * 64,
     r'^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*': '0x8000_0000',
     r'^OB-[A-Z0-9-]+': 'OB-EXAMPLE',

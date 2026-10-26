@@ -40,7 +40,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — CPU-LAB report `incomplete` (G-CONTRACT/G-OBLIGATIONS open); EXPERIMENTAL release decision recorded |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 6 of 7 leaves done; gate `BREADTH` RUN, verdict **`passed`**; TI C6000 / SHARC unclaimed |
-| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 14/18; `.14` open — the M case measures 10 of 10 policy legs, credits `REQ-GC-M` `implemented` (CR-GC-M-1) and is the dossier's first qualified experiment record (a42bc: G-TRACE green); `.15` slice a ran the pinned RV64I suite on the GC model as external evidence (2026-10-26; 5 of 10 axes open) |
+| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 14/18; `.14` open — the M case measures 10 of 10 policy legs, credits `REQ-GC-M` `implemented` (CR-GC-M-1) and is the dossier's first qualified experiment record (a42bc: G-TRACE green); `.15` slices a–b ran the pinned I, M, A and C suites on the GC model as external evidence (2026-10-26; 5 of 10 axes open) |
 | P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 10/12; probes and gate report wait on the CPU |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves |
 | P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |

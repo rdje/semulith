@@ -15,17 +15,16 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): features
-  1–2 done (a42bc; P4-SYSTEM.15 slice a) → features 3–5 (.15 slices b–d or a .14 act) → `XTASK.6` slice 6j (drafted);
+  1–3 done (a42bc; P4-SYSTEM.15 slices a, b) → features 4–5 (.15 slices c–d or a .14 act) → `XTASK.6` slice 6j (drafted);
   `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0298` — P4-SYSTEM.15 slice a: the pinned RV64I suite over the GC model (`run_act4_campaign.py
-  --profile`), recorded as act4.sexp and declared as G-REGRESSION `external` evidence; the CLI's GC `--trace-stores`
-  (silently ignored) fixed. Before it a42bc (G-TRACE green), XTASK-0015 (6i). Run the three PROFILE-CONSISTENCY
-  probes before any chain touching profiles/ or evidence/.
-- next_action: feature 3 — P4-SYSTEM.15 slice b (M/A/C suites: more sparse paths at the same pin, widen the act4
-  test-file pattern, run, record); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); 6j after feature 5. Before
+- last_unit: `SEMULITH-P4-0299` — P4-SYSTEM.15 slice b: the M, A (Zaamo, Zalrsc) and C (Zca) suites of the same pin
+  join the GC campaign (`--suites`; 118 rows). Before it slice a (the I suite; the CLI's GC `--trace-stores` fixed),
+  a42bc (G-TRACE green). Run the three PROFILE-CONSISTENCY probes before any chain touching profiles/ or evidence/.
+- next_action: feature 4 — P4-SYSTEM.15 slice c (the validator-mutation campaign over the two wrong full-table GC
+  models, or the F/D suites with TEST_FLEN 64); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); 6j after 5. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.

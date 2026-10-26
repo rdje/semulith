@@ -5,7 +5,9 @@
 ;; semantics; the shared ancestry is the recorded `references.sexp` independence row). The
 ;; dossier is a RECORDED experiment, not a regenerated artifact: its inputs (the sparse
 ;; clone, the reference binaries) are untracked by design, so the commit gate checks shape
-;; and internal consistency — never re-execution. One `test` row per generated test file:
+;; and internal consistency — never re-execution. One `test` row per generated test file
+;; (`<Suite>-<mnemonic>-<nn>.S`: the I suite alone until P4-SYSTEM.15 slice b added M, Zaamo,
+;; Zalrsc and Zca of the same pin):
 ;; the measured signature-slot count, the three HTIF verdicts, and the two comparison
 ;; verdicts (semulith vs the Sail-derived signature; spike vs sail — the control pair).
 ;; The `run` block's counts are RE-DERIVED from the rows by RECORD-SCHEMA rule 13 — a
@@ -38,7 +40,7 @@
   (field (name verdicts) (type string) (min-length 1)))
 
 (construct (name test)
-  (field (name file) (type string) (min-length 1) (pattern "^I-[a-z0-9]+-[0-9]+\\.S\\Z"))
+  (field (name file) (type string) (min-length 1) (pattern "^[A-Z][A-Za-z]*-[a-z0-9.]+-[0-9]+\\.S\\Z"))
   (field (name signature_slots) (type integer))
   (field (name verdict_semulith) (type string) (min-length 1))
   (field (name verdict_sail) (type string) (min-length 1))

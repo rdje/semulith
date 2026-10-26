@@ -29,6 +29,8 @@ usage: run_act4_campaign.py [I-add-00 ...]   (default: I-add-00 — the slice-(b
        run_act4_campaign.py --profile UNIT … (P4-SYSTEM.15 slice a: the same pinned suite run
                                               against another unit's model, its own DUT pieces
                                               under profiles/UNIT/act4/, its own act4.sexp)
+       run_act4_campaign.py --suites I,M,Zaamo,Zalrsc,Zca …  (P4-SYSTEM.15 slice b: the suites of the
+                                              same pin to run; default I; --record needs each complete)
 """
 
 from __future__ import annotations
@@ -58,7 +60,22 @@ DUT = ROOT / f"profiles/{PROFILE}/act4"
 SAIL = ROOT / "target/refs/sail-riscv-Mac-arm64/bin/sail_riscv_sim"
 SPIKE = ROOT / "target/refs/spike-build/spike"
 OUT = ROOT / "target/refs/guests/act4"
-SUITE = ACT4 / "tests/rv64i/I"
+# The suites of the pinned commit this campaign may run, with their file counts at the pin (the census
+# fetch_act4.sh verifies). Each test file is `<Suite>-<mnemonic>-<nn>.S` under tests/rv64i/<Suite>/.
+SUITES = {"I": 51, "M": 13, "Zaamo": 18, "Zalrsc": 4, "Zca": 32}
+SELECTED = ["I"]
+
+
+def suite_dir(suite: str) -> Path:
+    return ACT4 / "tests/rv64i" / suite
+
+
+def suite_of(name: str) -> str:
+    """`Zaamo-amoadd.d-00` → `Zaamo`: the file stem's prefix names its suite."""
+    suite = name.split("-", 1)[0]
+    if suite not in SUITES:
+        raise Refusal(f"{name}: no suite named {suite!r} in this campaign ({', '.join(SUITES)})")
+    return suite
 
 failures: list[str] = []
 
@@ -97,7 +114,7 @@ def toolchain() -> tuple[str, list[str], str]:
 
 
 def build(clang: str, lld: list[str], name: str) -> Path:
-    src = SUITE / f"{name}.S"
+    src = suite_dir(suite_of(name)) / f"{name}.S"
     if not src.is_file():
         raise Refusal(f"{src} is not in the sparse clone")
     obj, elf = OUT / f"{name}.o", OUT / f"{name}.elf"
@@ -366,7 +383,7 @@ def write_record(results: list[dict], clang: str, lld: list[str]) -> Path:
   (profile "{PROFILE}")
   (suite (origin "https://github.com/riscv/riscv-arch-test") (branch "act4")
          (pin "{ACT4_PIN}")
-         (sparse_paths "tests/env") (sparse_paths "tests/rv64i/I")
+         (sparse_paths "tests/env"){"".join(f' (sparse_paths "tests/rv64i/{s}")' for s in SELECTED)}
          (sparse_paths "config"))
   (toolchain (compiler "{compiler}") (linker "{linker}"))
   (run (date "{datetime.date.today().isoformat()}") (tests {len(results)})
@@ -391,6 +408,15 @@ def main(argv: list[str]) -> int:
         PROFILE = names[at + 1]
         DUT = ROOT / f"profiles/{PROFILE}/act4"
         del names[at:at + 2]
+    global SELECTED
+    if "--suites" in names:
+        at = names.index("--suites")
+        chosen = names[at + 1].split(",") if at + 1 < len(names) else []
+        if not chosen or any(s not in SUITES for s in chosen) or len(set(chosen)) != len(chosen):
+            print(f"run_act4_campaign: --suites wants distinct names among {', '.join(SUITES)}", file=sys.stderr)
+            return 2
+        SELECTED = chosen
+        del names[at:at + 2]
     if names == ["--self-test"]:
         return self_test()
     record = False
@@ -398,15 +424,15 @@ def main(argv: list[str]) -> int:
         names.remove("--record")
         record = True
     if names == ["--all"] or (record and not names):
-        names = sorted(p.stem for p in SUITE.glob("I-*.S"))
-    if record and len(names) != 51:
-        print("run_act4_campaign: --record requires the full fleet (--all) — a partial "
+        names = [stem for s in SELECTED for stem in sorted(p.stem for p in suite_dir(s).glob(f"{s}-*.S"))]
+    if record and len(names) != sum(SUITES[s] for s in SELECTED):
+        print("run_act4_campaign: --record requires every selected suite complete (--all) — a partial "
               "record would masquerade as the campaign", file=sys.stderr)
         return 2
     if not names:
         names = ["I-add-00"]
     print(f"the ACT4 external campaign for {PROFILE} "
-          f"(pinned riscv-arch-test {ACT4_PIN[:12]}…, {len(names)} test file(s))")
+          f"(pinned riscv-arch-test {ACT4_PIN[:12]}…, suites {','.join(SELECTED)}, {len(names)} test file(s))")
     results = []
     try:
         require()
