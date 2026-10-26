@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -718,17 +718,51 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   recurrence; the .24 entry carries the procedure).
 
 - ID: `ARTIFACT-CLEANUP.27` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-10-26` UTC, `SEMULITH-AC-0084`)
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-10-24T10:15Z), create the fresh work directory, repeat the four acts
   with the log inside it; overwrite the record from the receipt; sync and
   normal COMMIT.
 
+  Result (`2026-10-26T08:50Z`, `SEMULITH-AC-0084`): run at 70 h (the session
+  was away for the weekend), after ddb4d25b with a clean tree and `handoff:
+  OK`, in target/artifact-cleanup/AC0084 (made first, mode 700) with run.log
+  inside it (08:45:03Z to 08:50:21Z). Plan: 253 candidates (786,490,888 B),
+  20,071 retained files (154,698,634 B). Strict selection: 6 approved
+  (15,766,335 B, the latest captured engine/guest/core sessions), 247
+  unrecorded (770,724,553 B). The act's fresh census returned `handoff: OK`;
+  the guarded core removed exactly the 6, residue 0, journal
+  `recorded-complete` at `verified`; `--inspect` confirms plan, selection and
+  journal. The one-entry record is overwritten. Finding (the open question's
+  trigger has fired): the unrecorded population grew from 67 files
+  (281,084,868 B) to 247 files (770,724,553 B) across 18 gated commits. A
+  census of the plan against AC0083's (target/artifact-cleanup/AC0084,
+  census in the leaf's reply of 2026-10-26): 252 files added, 72 gone; 83
+  incremental sessions, every one in a crate-hash directory that holds no
+  live session — so a successful build of the same crate configuration, which
+  would garbage-collect them, never follows; 198 files under target/debug, 36
+  under the wasm32 target, 18 under target/p4-system-12; by crate dsp56300 54,
+  core 42, verify 36, the CLI 30, xtask 30, the four rv64gc binaries 12 each;
+  by hour, 10-23 21h to 10-24 07h UTC, the window of the XTASK slices' gated
+  commits and their before/after measurements (which build the workspace with
+  altered sources or flags, each a configuration no later build repeats). Not
+  deleted here: strict selection leaves what the ledger does not record, by
+  the scope decision. The deferral is over; the options are listed in the Open
+  Question for the director. promotion: declined (routine recurrence; the .24
+  entry carries the procedure).
+
+- ID: `ARTIFACT-CLEANUP.28` — **the next recurring cleanup**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-10-27T08:50Z), create the fresh work directory (mode 700), repeat the
+  four acts with the log inside it; overwrite the record from the receipt;
+  sync and normal COMMIT. Re-census the unrecorded population against AC0084.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.27` | `pending` | the next recurring cleanup, due after 2026-10-24T10:15Z; until then P4-SYSTEM.14 resumes |
+| 1 | `ARTIFACT-CLEANUP.28` | `pending` | the next recurring cleanup, due after 2026-10-27T08:50Z; until then XTASK.6 resumes |
 
 ## Decisions
 
@@ -750,6 +784,15 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   directory, or the ledger gains a recorded class for them. Deferred until a cleanup finds them
   still growing; nothing here is an input. AC0083 (2026-10-23, .26): still 67 sessions
   (281,084,868 B) after nine more gated commits — a stable set, not growth; deferral stands.
+  AC0084 (2026-10-26, .27): 247 files / 83 orphan sessions (770,724,553 B) after 18 gated
+  commits — growth, so the deferral ends. The sessions come from builds of the workspace under
+  altered sources or flags (the gate's mutation copies, and the XTASK slices' RED measurements),
+  each a crate configuration no later successful build repeats, so rustc never collects them.
+  For the director, three options: (a) the gate's mutation builds and the measurement runs use a
+  disposable target directory that the act removes whole; (b) the ledger gains a recorded class
+  "orphan incremental session: a crate-hash directory with no live session", so strict
+  selection can approve them; (c) a size cap on the unrecorded population, beyond which (a) or
+  (b) is required. Nothing is deleted outside the act; the act's scope is the decision above.
 
 ## Blockers
 
@@ -873,6 +916,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-26` UTC | `.27` | plan/select/delete/inspect on the real tree; receipt complete/verified; census against AC0083 | 6 of 253 candidates removed (15,766,335 B), residue 0, 247 unrecorded (83 orphan sessions, grown) and 20,071 retained kept |
 | `2026-10-23` UTC | `.26` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,468 B), residue 0, 67 unrecorded and 19,342 retained kept |
 | `2026-10-22` UTC | `.25` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,472 B), residue 0, 67 unrecorded and 18,995 retained kept |
 | `2026-10-20` UTC | `.24` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 19 candidates removed (15,766,463 B), residue 0, 13 unrecorded and 18,724 retained kept |
@@ -882,6 +926,8 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 | `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
 
 ## Commit Log
+
+`SEMULITH-AC-0084 (leaf ARTIFACT-CLEANUP.27): the fourth recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded population grew to 83 orphan sessions, the deferral ends, three options for the director.
 
 `SEMULITH-AC-0083 (leaf ARTIFACT-CLEANUP.26): the third recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded residue measured stable at 67.
 
@@ -899,6 +945,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-26` UTC: .27 done; fourth cleanup event through the act, 6 outputs removed, record overwritten; the unrecorded population grew to 83 orphan sessions (770,724,553 B), the open question's deferral ends.
 - `2026-10-23` UTC: .26 done; third cleanup event through the act, 6 outputs removed, record overwritten; the 67 unrecorded sessions are a stable set.
 - `2026-10-22` UTC: .25 done; second cleanup event through the act, 6 outputs removed, record overwritten; 67 unrecorded sessions measured.
 - `2026-10-20` UTC: .24 done; first cleanup event through the act, 6 outputs removed, record overwritten.
