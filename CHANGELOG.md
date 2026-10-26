@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0011 (leaf XTASK.7) — `cargo xtask focused` runs API-DOCS; the set is 27 checks
+
+XTASK.7: the focused set gains `bash scripts/check_rustdoc.sh` between `check_requirements.sh` and `make book` (`decision_focused-set-runs-api-docs.md`, under the director's delegation of 2026-10-26); the test holds the set to 27. Measured on the real tree: `0 red of 26` → `0 red of 27`, 25 of the 26 earlier verdict lines identical and the one difference `SEAM-INTEGRITY`'s box count (1543 → 1548, this leaf's own five acceptance rows), one new `API-DOCS: ok (5 crate(s) documented …)`; RED: one broken intra-doc link in `semulith-core` makes the run `1 red of 27` naming the lint and the line, the file restored byte-identical, the altered source built only into a disposable target directory that the slice removed — the new leaf-wide criterion 6, from `decision_orphan-incremental-sessions.md`. Documentation commits no longer run the check by hand.
+
 ## SEMULITH-XTASK-0010 (leaf XTASK.5) — `check-examples` stays in the product CLI; XTASK.5 closed by decision
 
 XTASK.5: closed without a code change by `decision_check-examples-stays-in-the-cli.md`, under the director's delegation of 2026-10-26 (`decision_four-rulings-delegated.md`). The command validates the frozen records bundle and presents its report — the CLI's architectural role (`docs/ARCHITECTURE.md` §4) — so it was never development-only tooling and the goal's premise already holds; moving it would have turned the G1 report's criterion 3 unmet unless the pinned `gate_report.py` changed, a planned capture of the retained M case spent for no product gain. The blocker row and the frontier's blocked note are removed; `XTASK` stands at 4 of 6 leaves done, frontier `XTASK.6` slice `6f`. Docs only.

@@ -43,7 +43,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-/// The focused check set, in the order the commit workflow has run it since 2026-10-22: the
+/// The focused check set, in the order the commit workflow has run it since 2026-10-22 (API-DOCS since
+/// 2026-10-26, `XTASK.7`): the
 /// repository-wide documentation, routing, task-tree, history and record checks, then the book.
 /// Before `XTASK.2` this list lived only in per-unit scratch scripts under `target/`.
 const FOCUSED: &[&[&str]] = &[
@@ -72,6 +73,8 @@ const FOCUSED: &[&[&str]] = &[
     &["bash", "scripts/check_fixture_fingerprints.sh"],
     &["bash", "scripts/check_gate_report.sh"],
     &["bash", "scripts/check_requirements.sh"],
+    // XTASK.7 (decision_focused-set-runs-api-docs.md): the rustdoc check before the book copies the reference.
+    &["bash", "scripts/check_rustdoc.sh"],
     &["make", "book"],
 ];
 
@@ -370,7 +373,7 @@ mod tests {
                 );
             }
         }
-        assert_eq!(FOCUSED.len(), 26);
+        assert_eq!(FOCUSED.len(), 27);
     }
 
     #[test]

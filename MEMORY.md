@@ -15,15 +15,16 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: the four delegated rulings, one leaf per commit (`decision_four-rulings-delegated.md`):
-  a42az done, `XTASK.5` closed (docs only) → next `XTASK.7` (API-DOCS into FOCUSED), then `XTASK.6`
-  slice 6f (guard 19 drivers; target/xtask/xt0010/guard_scratch.py --apply, before-measurement recorded),
+  a42az done, `XTASK.5` closed, `XTASK.7` done (27-check focused set) → next `XTASK.6` slice 6f (guard 19
+  drivers + check_requirements.sh:709; RETAKE target/xtask/xt0010/before on the clean HEAD first — NOTES.md there),
   then `ARTIFACT-CLEANUP.29` (orphan-session class). `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0010` — XTASK.5 closed by decision_check-examples-stays-in-the-cli.md (docs only);
-  before it `SEMULITH-P4-0296` (a42az: REQ-GC-M credited `implemented`, CR-GC-M-1; three PROFILE-CONSISTENCY
-  self-test arms re-predicted from the measured tree — run the probes before a chain that touches profiles/).
-- next_action: `XTASK.7` (target/xtask/xt0012/add_api_docs.py, measure.sh), then as listed above. Before
+- last_unit: `SEMULITH-XTASK-0011` — XTASK.7: `cargo xtask focused` runs API-DOCS (27 checks, measured, RED in a
+  disposable target); before it XTASK.5 closed by decision, and `SEMULITH-P4-0296` (a42az: REQ-GC-M credited
+  `implemented`, CR-GC-M-1; run the three PROFILE-CONSISTENCY probes before a chain that touches profiles/).
+- next_action: `XTASK.6` slice 6f (target/xtask/xt0010: NOTES.md, guard_scratch.py --apply, measure_after.sh), then
+  `ARTIFACT-CLEANUP.29`; `ARTIFACT-CLEANUP.28` once due. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.
