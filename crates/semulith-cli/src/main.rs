@@ -391,7 +391,7 @@ fn run_guest(args: &[String]) -> ExitCode {
         );
     }
     if profile == Profile::Rv64gcLabV0 {
-        return run_guest_rv64gc(&mut env, image.entry, steps);
+        return run_guest_rv64gc(&mut env, image.entry, steps, trace_stores);
     }
     let (trace, crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
     let mut out = format_steps(&trace.steps, 0);
@@ -448,13 +448,54 @@ fn run_guest(args: &[String]) -> ExitCode {
 /// verify-side runner performs). The step vocabulary is the rv64gc runner's own —
 /// `[n] [mode] pc` plus the register changes; a delivered trap is control flow here, not
 /// a terminal observation.
-fn run_guest_rv64gc(env: &mut FlatMemory, entry: u64, steps: usize) -> ExitCode {
+/// Records every successful data store the GC model makes at the environment boundary, so
+/// `--trace-stores` observes the GC profile as it observes rv64i (P4-SYSTEM.15 slice a: the
+/// flag was accepted for the GC profile and silently ignored — the run returned before the
+/// store trace was written, and the campaign's extractor read an empty store trace).
+struct RecordStores<'a> {
+    inner: &'a mut FlatMemory,
+    stores: Vec<(u64, u64, u64)>,
+}
+
+impl semulith_core::env::Environment for RecordStores<'_> {
+    fn request(
+        &mut self,
+        request: semulith_core::env::Request,
+    ) -> Result<semulith_core::env::Response, semulith_core::env::BoundaryError> {
+        let response = self.inner.request(request);
+        if let (
+            semulith_core::env::Request::Store { width, addr, data },
+            Ok(semulith_core::env::Response::StoreDone),
+        ) = (request, &response)
+        {
+            let bytes = width.bytes();
+            let masked = if bytes == 8 {
+                data
+            } else {
+                data & ((1 << (bytes * 8)) - 1)
+            };
+            self.stores.push((bytes, addr, masked));
+        }
+        response
+    }
+}
+
+fn run_guest_rv64gc(
+    env: &mut FlatMemory,
+    entry: u64,
+    steps: usize,
+    trace_stores: bool,
+) -> ExitCode {
     let mut state = semulith_core::state_rv64gc::ArchitecturalState::zeroed_at(entry);
+    let mut recording = RecordStores {
+        inner: env,
+        stores: Vec::new(),
+    };
     let mut out = String::new();
     for n in 0..steps {
         let pc = state.pc();
         let before: Vec<u64> = (0..32).map(|i| state.read_x(i)).collect();
-        match semulith_core::exec_rv64gc::step(&mut state, env) {
+        match semulith_core::exec_rv64gc::step(&mut state, &mut recording) {
             semulith_core::exec_rv64gc::StepRv64gc::Executed => {}
             semulith_core::exec_rv64gc::StepRv64gc::ReservedDecode { at, word } => {
                 let handler =
@@ -472,6 +513,12 @@ fn run_guest_rv64gc(env: &mut FlatMemory, entry: u64, steps: usize) -> ExitCode 
             if now != before[i as usize] {
                 out.push_str(&format!("x{i} <- 0x{now:016x}\n"));
             }
+        }
+    }
+    if trace_stores {
+        // The same spelling as the rv64i path's, so the campaign's one extractor reads both.
+        for (bytes, addr, masked) in &recording.stores {
+            out.push_str(&format!("mem[{bytes},0x{addr:016x}] <- 0x{masked:016x}\n"));
         }
     }
     print!("{out}");

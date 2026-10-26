@@ -360,7 +360,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus, the precondition for the six uncoupled drivers that remain — next after the feature unit a42bc (alternation) |
+| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus, the precondition for the six uncoupled drivers that remain — next after five feature units (two landed: a42bc, .15 slice a; `decision_alternate-port-and-features.md`) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions

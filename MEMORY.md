@@ -14,18 +14,18 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: ALTERNATING (director 2026-10-26, `decision_alternate-port-and-features.md`): a42bc (feature)
-  done → `XTASK.6` slice 6j (drafted in target/xtask/xt0016: the Rust sexp reader) → the next P4-SYSTEM.14 act;
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): features
+  1–2 done (a42bc; P4-SYSTEM.15 slice a) → features 3–5 (.15 slices b–d or a .14 act) → `XTASK.6` slice 6j (drafted);
   `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0297` — P4-SYSTEM.14 a42bc: the credited M case is the dossier's first qualified experiment
-  record (qualification = a current credit + form-equality with the measured record, computed by the gate);
-  G-TRACE green, 5 of 10 axes open. Before it XTASK-0015 (6i), 0014 (6h), 0013 (6g; CHANGELOG shard 0415).
-  Run the three PROFILE-CONSISTENCY probes before any chain touching profiles/ or evidence/.
-- next_action: `XTASK.6` slice 6j (apply target/xtask/xt0016: apply_6j.py, measure.sh, docs), then a P4-SYSTEM.14
-  feature act; `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `.29` only after the ruling. Before
+- last_unit: `SEMULITH-P4-0298` — P4-SYSTEM.15 slice a: the pinned RV64I suite over the GC model (`run_act4_campaign.py
+  --profile`), recorded as act4.sexp and declared as G-REGRESSION `external` evidence; the CLI's GC `--trace-stores`
+  (silently ignored) fixed. Before it a42bc (G-TRACE green), XTASK-0015 (6i). Run the three PROFILE-CONSISTENCY
+  probes before any chain touching profiles/ or evidence/.
+- next_action: feature 3 — P4-SYSTEM.15 slice b (M/A/C suites: more sparse paths at the same pin, widen the act4
+  test-file pattern, run, record); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); 6j after feature 5. Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.

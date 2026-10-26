@@ -10,10 +10,12 @@ answers: In what order do XTASK slices and project feature leaves run?
 
 ## The fact / decision
 
-Units alternate: one `XTASK` slice (a Rust tooling port, `decision_rust-native-tooling.md`), then one project
-feature leaf from the active P-tree frontiers in `docs/TASK_TREE.md` (`P4-SYSTEM`, `P5-BOARD`, …), then the next
-`XTASK` slice. Two tooling units never land back to back while a project feature frontier is open. The
-recurring cleanups (`ARTIFACT-CLEANUP`) run when due and count for neither side.
+Units alternate at a ratio the director set later the same day — "work on 5 project features implementation
+for 1 Rust tooling, because feature work has a higher priority. 5 features -> 1 Rust tooling -> 5 features ->
+1 Rust tooling -> …": FIVE project feature units from the active P-tree frontiers in `docs/TASK_TREE.md`
+(`P4-SYSTEM`, `P5-BOARD`, …), then ONE `XTASK` slice (a Rust tooling port, `decision_rust-native-tooling.md`),
+then five features again. Two tooling units never land back to back while a project feature frontier is
+open. The recurring cleanups (`ARTIFACT-CLEANUP`) run when due and count for neither side.
 
 ## Why
 
@@ -24,9 +26,10 @@ open axes, the board's firmware probes). A run of tooling slices starves them, a
 
 ## How to apply
 
-- `MEMORY.md`'s `next_action` names the next unit's side explicitly; the `XTASK` tree's frontier row says
-  "after the next project feature leaf".
+- `MEMORY.md`'s `next_action` names the next unit's side and the feature count so far; the `XTASK` tree's
+  frontier row says "after the next N feature units".
 - A tooling slice drafted ahead (as `XTASK.6` slice 6j is, in target/xtask/xt0016) waits its turn; drafting
   under `target/` while a feature chain runs is fine, landing it is not.
-- The first application: after `SEMULITH-XTASK-0015` (slice 6i), the next unit is `P4-SYSTEM.14` a42bc (the
-  first qualified experiment record in the dossier — G-TRACE evidenced), then slice 6j.
+- The first application: after `SEMULITH-XTASK-0015` (slice 6i), five feature units — `P4-SYSTEM.14` a42bc (the
+  first qualified experiment record, G-TRACE evidenced; feature 1), then `P4-SYSTEM.15` slices (the external
+  suite over the GC model, …) — then slice 6j. `MEMORY.md`'s `next_action` carries the count.
