@@ -25,6 +25,8 @@
 //!   formerly `scripts/check_push_record.sh`, now a shim).
 //! - `cargo xtask check-fixture-fingerprints [--self-test]` is the `FIXTURE-FINGERPRINT` doctrine (`XTASK.6`
 //!   slice `6g`; formerly `scripts/check_fixture_fingerprints.sh`, now a shim): every pinned `sha256` re-derived.
+//! - `cargo xtask check-fact-ownership [--self-test]` is the `FACT-OWNERSHIP` doctrine (`XTASK.6` slice `6h`;
+//!   formerly `scripts/check_fact_ownership.sh`, now a shim): one owner per fact kind, every mirror governed.
 //!
 //! One definition per target (`XTASK.3`): a command is either native here, named in `NATIVE`, or
 //! the Makefile's — never both. A unit test reads the Makefile and refuses a native name that is
@@ -34,6 +36,7 @@
 
 mod check_commit_prefix;
 mod check_delivery_provenance;
+mod check_fact_ownership;
 mod check_fixture_fingerprints;
 mod check_push_record;
 mod check_rustdoc;
@@ -91,6 +94,7 @@ const NATIVE: &[&str] = &[
     "check-rustdoc",
     "check-push-record",
     "check-fixture-fingerprints",
+    "check-fact-ownership",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -110,6 +114,7 @@ const PORTED: &[(&str, &str)] = &[
         "check-fixture-fingerprints",
         "scripts/check_fixture_fingerprints.sh",
     ),
+    ("check-fact-ownership", "scripts/check_fact_ownership.sh"),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -126,6 +131,7 @@ fn main() -> ExitCode {
             "check-rustdoc" => check_rustdoc::run(&root, &args[1..]),
             "check-push-record" => check_push_record::run(&root, &args[1..]),
             "check-fixture-fingerprints" => check_fixture_fingerprints::run(&root, &args[1..]),
+            "check-fact-ownership" => check_fact_ownership::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

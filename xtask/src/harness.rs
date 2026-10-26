@@ -1,7 +1,8 @@
 //! What the doctrine modules ported from bash share (`XTASK.6`): a scratch directory under `target/` in
 //! place of the scripts' `mktemp -d`, and a child's exit code with its combined output in place of their
 //! `out="$(… 2>&1)"; rc=$?`, the system `sort` for the scripts' locale-collated order, and the external
-//! hasher (`sha256sum`, else `shasum -a 256`) the scripts hashed with — no new crate.
+//! hasher (`sha256sum`, else `shasum -a 256`) the scripts hashed with, and two of Python's string
+//! methods the ported inline scripts relied on — no new crate.
 
 use std::fs;
 use std::io::Write as _;
@@ -141,4 +142,39 @@ fn executable(meta: &fs::Metadata) -> bool {
 #[cfg(not(unix))]
 fn executable(_: &fs::Metadata) -> bool {
     true
+}
+
+/// Python's `str.splitlines()`: every line break it recognises, none kept.
+pub fn py_splitlines(text: &str) -> Vec<&str> {
+    let mut lines = Vec::new();
+    let mut start = 0;
+    let mut chars = text.char_indices().peekable();
+    while let Some((at, c)) = chars.next() {
+        let end = match c {
+            '\r' => {
+                if chars.peek().is_some_and(|&(_, next)| next == '\n') {
+                    chars.next();
+                    Some(at + 2)
+                } else {
+                    Some(at + 1)
+                }
+            }
+            '\n' | '\u{0b}' | '\u{0c}' | '\u{1c}' | '\u{1d}' | '\u{1e}' | '\u{85}' | '\u{2028}'
+            | '\u{2029}' => Some(at + c.len_utf8()),
+            _ => None,
+        };
+        if let Some(end) = end {
+            lines.push(&text[start..at]);
+            start = end;
+        }
+    }
+    if start < text.len() {
+        lines.push(&text[start..]);
+    }
+    lines
+}
+
+/// Python's `str.strip()`: the characters `str.isspace()` accepts.
+pub fn py_strip(text: &str) -> &str {
+    text.trim_matches(|c: char| c.is_whitespace() || ('\u{1c}'..='\u{1f}').contains(&c))
 }

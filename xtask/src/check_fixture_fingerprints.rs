@@ -18,7 +18,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
-use crate::harness::{scratch, Hasher};
+use crate::harness::{py_splitlines, py_strip, scratch, Hasher};
 
 /// Top-level directories the scan never enters, relative to the root (the script's `EXCLUDE`).
 const EXCLUDE: &[&str] = &["docs/provenance", ".git", "target", "vendor", ".app-data"];
@@ -215,41 +215,6 @@ fn relative(root: &Path, path: &Path) -> String {
         .unwrap_or(path)
         .to_string_lossy()
         .into_owned()
-}
-
-/// Python's `str.splitlines()`: every line break it recognises, none kept.
-fn py_splitlines(text: &str) -> Vec<&str> {
-    let mut lines = Vec::new();
-    let mut start = 0;
-    let mut chars = text.char_indices().peekable();
-    while let Some((at, c)) = chars.next() {
-        let end = match c {
-            '\r' => {
-                if chars.peek().is_some_and(|&(_, next)| next == '\n') {
-                    chars.next();
-                    Some(at + 2)
-                } else {
-                    Some(at + 1)
-                }
-            }
-            '\n' | '\u{0b}' | '\u{0c}' | '\u{1c}' | '\u{1d}' | '\u{1e}' | '\u{85}' | '\u{2028}'
-            | '\u{2029}' => Some(at + c.len_utf8()),
-            _ => None,
-        };
-        if let Some(end) = end {
-            lines.push(&text[start..at]);
-            start = end;
-        }
-    }
-    if start < text.len() {
-        lines.push(&text[start..]);
-    }
-    lines
-}
-
-/// Python's `str.strip()`: the characters `str.isspace()` accepts.
-fn py_strip(text: &str) -> &str {
-    text.trim_matches(|c: char| c.is_whitespace() || ('\u{1c}'..='\u{1f}').contains(&c))
 }
 
 /// What the scan needs of a JSON document: its shape, with strings kept.
