@@ -20,14 +20,14 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0025` — XTASK.6 slice 6q: EXTRACTION's driver in Rust behind a held shim (the Python judge spawned as
-  before; fixtures through the Rust record mapping; eleven arms; byte-identical on the real tree and 8 fixture repositories);
-  XTASK.md's closed rows 6a–6o archived. Before it XTASK-0024 (6p), XTASK-0023 (6o), XTASK-0022 (6n), XTASK-0021 (6m), XTASK-0020 (6l).
+- last_unit: `SEMULITH-XTASK-0026` — XTASK.6 slice 6r: CITATION-QUOTES's driver in Rust behind a held shim (the Python tool and its two
+  inline controls spawned verbatim; 22 arms; byte-identical on the real tree and 5 fixture repositories); CHANGELOG sharded
+  (`docs/changelog/shard-0417.md`). Before it XTASK-0025 (6q), XTASK-0024 (6p), XTASK-0023 (6o), XTASK-0022 (6n), XTASK-0021 (6m), XTASK-0020 (6l).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6r (`check_citation_quotes.sh`
-  behind a held shim); shard CHANGELOG.md (≈63 KB of 65,536) in that unit. `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
-  Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6s (`check_m_vectors.sh` behind
+  a held shim — the last uncoupled driver); then `docs/knowledge/`'s containment (130,763 of 131,072 B, 41 files — README-ROUTES refuses
+  the next card; the 6r card waits in target/xtask/xt0026/card.md). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

@@ -447,6 +447,28 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   (44128 B, one contiguous span) moved verbatim into `docs/tasks/archive/XTASK-1.md` (the a43b mechanism: SHA256 in the part's
   table, found once, one pointer left), the live leaf 81406 B after the move. Two uncoupled drivers remain:
   `check_citation_quotes.sh` (slice 6r) and `check_m_vectors.sh`.
+  Slice 6r (`2026-10-27`, `SEMULITH-XTASK-0026`; on clean dff02433, taken out of turn — no feature leaf unblocked): `CITATION-QUOTES`'s
+  driver is Rust — `xtask/src/check_citation_quotes.rs` (445 lines) ports the bash driver line for line: the pinned Python tool
+  `scripts/check_citation_quotes.py` spawned exactly as the driver spawned it and NOT ported, the driver's two inline Python
+  controls — the source-availability probe (the NAMED SKIP route) and the altered-bytes identity control — run verbatim through
+  `python3 -` as string constants, the NAMED SKIP, FAIL and REFUSED lines and exit statuses the same (the 6q frontier row said
+  "over the Rust reader": the driver reads nothing itself — corrected here); the twenty-two bash arms are twenty-two `tally.arm(`
+  calls, the arm total unchanged; `scripts/check_citation_quotes.sh` a shim of `cargo xtask check-citation-quotes`. Measured in a
+  disposable draft crate: the self-test `22 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
+  tree's stdout and stderr byte-identical (`CITATION-QUOTES: 115 attributed quote(s) judged (R1 1, R2 108, R3 3, R4 3); 0
+  finding(s); …`), and 5 scratch fixture repositories (every pinned script copied in) — the pinned pages absent (NAMED
+  SKIP), a sources manifest that cannot be read (measured: ALSO the NAMED SKIP — §9 below), a synthetic pinned page with a quote in
+  its section (judged green), one with a quote the page never says (FAIL, to stderr as the script's `>&2` sent it — the first
+  draft printed it to stdout, caught by this state), a page whose bytes differ from the pin (evidence REFUSED) — 5 identical, 0 differ in
+  stdout, stderr and exit status. **§9 finding, the pinned driver's and reproduced faithfully:** the availability probe exits 1 for
+  "pages absent" and Python exits 1 for an uncaught exception — a manifest the reader refuses with an exception outside the
+  probe's `except` tuple crashes with a traceback on stderr and the driver reads the 1 as absence: NAMED SKIP, exit 0, a green
+  gate. Not fixed here (the port is held byte-identical to the script); recorded as an open question for the doctrine's owner.
+  The knowledge card for it is drafted (target/xtask/xt0026/card.md) and NOT added: `docs/knowledge/` stands at 130,763 B of its
+  131,072 B aggregate ceiling (41 files; README-ROUTES refused the first run at 133,410 B) — the directory's containment is the
+  next maintenance unit, and the card lands with it. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). CHANGELOG.md,
+  at 63257 B against its 65,536 B ceiling, is sharded in this unit (`scripts/shard_history.py --max-bytes 49152`: `docs/changelog/shard-0417.md`
+  sealed, the head 48775 B before this entry). One uncoupled driver remains: `check_m_vectors.sh` — slice `6s`.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -530,7 +552,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6r`: `check_citation_quotes.sh` behind a held shim — the Markdown citation census's driver over the Rust reader; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6s`: `check_m_vectors.sh` behind a held shim — the last uncoupled driver (the M-extension vector table's judge, spawned as before); taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -553,6 +575,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   environment reaches it. Not changed in `4a`; a change to XTASK.1's measured output is its own slice.
 - Whether new tooling must be born in Rust once XTASK.1 exists — proposed in the decision record; to be
   confirmed by the director before any check enforces it. Does not block XTASK.1.
+- (6r, `2026-10-27`) `CITATION-QUOTES`'s availability probe exits 1 for "pages absent" and Python exits 1 for an uncaught exception, so a sources manifest the reader refuses outside the probe's `except` tuple reads as absence — NAMED SKIP, exit 0 (measured in the 6r fixture `manifest-unreadable`; the card is drafted in target/xtask/xt0026/card.md and waits for `docs/knowledge/`'s containment — the directory is at 130,763 of 131,072 B). The port reproduces it; the doctrine's owner decides whether the probe should refuse (exit 2) on any exception — a one-line change to the script, re-measured through the shim.
 
 ## Blockers
 
@@ -614,6 +637,12 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - [x] slice 6q **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 8 fixture repositories (target/xtask/xt0025/red/summary.txt): `RED/GREEN paths: 8 identical, 0 differ` — stdout, stderr and rc each; the moved span's SHA256 found once in the part's table (`grep -c` = 1) and its rows absent from the live leaf (`grep -c 'slice 6a \*\*' docs/tasks/XTASK.md` = 0).
 - [x] slice 6q **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_extraction.sh` through the shim → the same `ok (5 unit(s) sufficient — P1-LAB may cite this)` line; `bash scripts/check_derived_counts.sh` → ok (11 bash arms + 1 `score` out, 11 `tally.arm(` + 1 `tally.score(` in; 1692 holds); `wc -c docs/tasks/XTASK.md` after the move = 81406 (49666 B under the ceiling before this slice's own rows).
 - [x] slice 6q **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6q, frontier 6r, the Decisions bullet), the archive part and its pointer, docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6r **REPRODUCE / ISSUE** — before/ (bash driver at dff02433; target/xtask/xt0026/before/): `CITATION-QUOTES: 115 attributed quote(s) judged (R1 1, R2 108, R3 3, R4 3); 0 finding(s); 86 unattributed (counted, never judged); …` rc 0, stderr empty; `CITATION-QUOTES --self-test: 22 pass / 0 fail`; `grep -c 'arm "' scripts/check_citation_quotes.sh` = 22; `wc -c CHANGELOG.md` = 63257 against the 65536 B ceiling.
+- [x] slice 6r **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around the tool's invocations and two inline Python controls (`grep -c 'python3 -' scripts/check_citation_quotes.sh` = 2); the tool itself (`wc -l scripts/check_citation_quotes.py` = 337, over `check_citations`) is the judge and stays pinned Python. CHANGELOG.md grows by one entry per unit; its last shard was cut at AC-0085.
+- [x] slice 6r **FIX** — xtask/src/check_citation_quotes.rs (`shasum -a 256` = 3700a19e17e19cd693bb8fe833aea96552270b6799b0ef8726913d11b5386e4d; `wc -l` = 445; `grep -cE '^[[:space:]]+tally\.arm\('` = 22); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_citation_quotes.sh a shim (`exec cargo xtask check-citation-quotes "$@"`); CHANGELOG.md sharded (`docs/changelog/shard-0417.md`; `wc -c CHANGELOG.md` = 48775 after the cut, before this entry).
+- [x] slice 6r **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0026/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6r **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_citation_quotes.sh` through the shim → the same `115 attributed quote(s) judged` line; `bash scripts/check_derived_counts.sh` → ok (22 bash arms out, 22 `tally.arm(` in; 1692 holds); the history check over the new shard → ok.
+- [x] slice 6r **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6r, frontier 6s, the Decisions bullet, the 6q frontier wording corrected, the §9 open question; the knowledge card deferred — `docs/knowledge/` at its aggregate ceiling, its containment the next maintenance unit), docs/TASK_TREE.md, CHANGELOG (sharded, then the entry), MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -660,3 +689,4 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - `2026-10-27`: XTASK.6 slice 6o done — the record mapping is Rust (`xtask/src/records.rs`), equal to the pinned `records_sexp.py` on all 16 tracked catalogues and held there by two unit tests; nothing ported, nothing shimmed (`decision_rust-records-mapping.md`); of the four uncoupled drivers two read records as dictionaries (6n's "three" corrected); slice 6p ports `check_scope_coverage.sh`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6p done — `SCOPE-COVERAGE` is Rust behind a held shim over the Rust record mapping, byte-identical on the real tree and 11 fixture repositories, ten arms; the first driver ported over the mapping; three uncoupled drivers remain (`check_extraction.sh` next, slice 6q); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6q done — `EXTRACTION`'s driver is Rust behind a held shim (the pinned Python judge spawned as before, not ported; the fixtures written through the Rust record mapping), byte-identical on the real tree and 8 fixture repositories, eleven arms; the closed slices' acceptance rows 6a–6o moved verbatim to `docs/tasks/archive/XTASK-1.md` (this leaf 125,454 → 81406 B); two uncoupled drivers remain (`check_citation_quotes.sh` next, slice 6r); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6r done — `CITATION-QUOTES`'s driver is Rust behind a held shim (the pinned Python tool and its two inline controls spawned verbatim), byte-identical on the real tree and 5 fixture repositories, twenty-two arms; CHANGELOG.md sharded (`docs/changelog/shard-0417.md`); one uncoupled driver remains (`check_m_vectors.sh`, slice 6s); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

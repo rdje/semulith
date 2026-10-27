@@ -42,6 +42,9 @@
 //!   `check_extraction.rs`): every tracked unit judged by the pinned Python judge `scripts/check_extraction.py`,
 //!   spawned as the driver spawned it, the self-test's record fixtures written through the Rust record mapping;
 //!   `scripts/check_extraction.sh` is its shim.
+//! - `cargo xtask check-citation-quotes [--self-test]` is the `CITATION-QUOTES` doctrine's driver (`XTASK.6` slice
+//!   `6r`, `check_citation_quotes.rs`): the pinned Python tool `scripts/check_citation_quotes.py` spawned as the driver
+//!   spawned it, its two inline Python controls run verbatim; `scripts/check_citation_quotes.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -61,6 +64,7 @@
 //! test holds each shim, listed in `PORTED`, to exactly that — three commands, or the same with the
 //! repository-volume scratch preamble that `probe_temporary_locality.py` requires of some scripts.
 
+mod check_citation_quotes;
 mod check_commit_prefix;
 mod check_delivery_provenance;
 mod check_exercise_coverage;
@@ -141,6 +145,7 @@ const NATIVE: &[&str] = &[
     "check-unit-composition",
     "check-scope-coverage",
     "check-extraction",
+    "check-citation-quotes",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -168,6 +173,7 @@ const PORTED: &[(&str, &str)] = &[
     ),
     ("check-scope-coverage", "scripts/check_scope_coverage.sh"),
     ("check-extraction", "scripts/check_extraction.sh"),
+    ("check-citation-quotes", "scripts/check_citation_quotes.sh"),
     (
         "check-exercise-coverage",
         "scripts/check_exercise_coverage.sh",
@@ -198,6 +204,7 @@ fn main() -> ExitCode {
             "check-unit-composition" => check_unit_composition::run(&root, &args[1..]),
             "check-scope-coverage" => check_scope_coverage::run(&root, &args[1..]),
             "check-extraction" => check_extraction::run(&root, &args[1..]),
+            "check-citation-quotes" => check_citation_quotes::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
