@@ -46,6 +46,13 @@ def run_owner(owner, directory):
     """
     if owner == "freeze":
         source = (ROOT / "scripts/check_contract_freeze.sh").read_text()
+        if "judge() {" not in source:
+            # XTASK.6 slice 6aj: the shell driver is a shim of `cargo xtask check-contract-freeze`; the judge is the
+            # Rust module's verbatim constant — the same bytes the heredoc carried, rebuilt into the same shell function.
+            module = (ROOT / "xtask/src/check_contract_freeze.rs").read_text()
+            head, tail = 'const JUDGE: &str = r#"', '"#;'
+            a = module.index(head) + len(head)
+            source = "judge() {\npython3 - \"$1\" <<'PY'\n" + module[a:module.index(tail, a)] + "PY\n}\n# ── self-test"
         if MUTATION == "freeze-cycle":
             source = without_guard(source, FREEZE_GUARD)
         start, end = "judge() {", "# ── self-test"

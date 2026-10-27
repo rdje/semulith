@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0055 (leaf XTASK.6 slice 6aj-b) — the ancestry probe's judge source, the file the 6aj commit described but did not stage
+
+`scripts/probe_contract_ancestry.py` extracted the bash judge from `scripts/check_contract_freeze.sh`'s text and ran it; with the driver a shim (3eb30477, slice 6aj) it raised `real shell judge boundary changed` and CONTRACT-FREEZE refused. The probe now rebuilds the same shell function around the Rust module's verbatim `JUDGE` constant when the driver lacks the markers. The 6aj apply carried the change and its gate ran with it in the working tree, but the staging list missed the file, so 3eb30477 refuses CONTRACT-FREEZE until this commit; the leaf's 6aj FIX row and paragraph name the probe and this unit. The 6aj entry below stays as written — history is append-only.
+
 ## SEMULITH-XTASK-0046 (leaf XTASK.6 slice 6aj) — CONTRACT-FREEZE's driver is Rust behind a held shim; the inline judge runs verbatim
 
 A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_contract_freeze.rs` (391 lines) ports the bash driver: the inline Python judge over the pinned `record_catalog` and `sexp` runs verbatim through `python3 -`, not ported; the controls take the real contract and apply the script's edits, the ancestry probe runs plain and optimized; the nine bash arms are nine `tally.arm(` calls; `scripts/check_contract_freeze.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). 30 of 42 registered drivers answer through shims. Next: slice 6ak — `check_fp_vectors.sh` behind a held shim.

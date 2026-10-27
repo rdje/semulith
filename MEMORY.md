@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0046` — XTASK.6 slice 6aj: CONTRACT-FREEZE's driver in Rust behind a held shim (the inline judge run
-  verbatim; 9 arms; byte-identical on the real tree and 3 fixture repositories) — 30 of 42 drivers through shims. Before it
-  XTASK-0045 (6ai), XTASK-0044 (6ah), XTASK-0043 (6ag), XTASK-0042 (6af), XTASK-0041 (6ae), XTASK-0040 (6ad), XTASK-0039 (6ac).
+- last_unit: `SEMULITH-XTASK-0055` — XTASK.6 slice 6aj-b: the ancestry probe's judge source, the file 6aj (`SEMULITH-XTASK-0046`,
+  3eb30477: CONTRACT-FREEZE's driver in Rust behind a held shim, 9 arms, byte-identical on the real tree and 3 fixture repositories)
+  described but did not stage — 30 of 42 drivers through shims. Before it XTASK-0045 (6ai), XTASK-0044 (6ah), XTASK-0043 (6ag).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
   and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6ak (`check_fp_vectors.sh` behind a
