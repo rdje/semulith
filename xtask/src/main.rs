@@ -81,6 +81,9 @@
 //! - `cargo xtask check-changelog-shards [--self-test]` is the `SHARD-FREEZE` doctrine's driver (`XTASK.6` slice
 //!   `6ad`, `check_changelog_shards.rs`): the sharded history judged frozen by `scripts/check_history_partition.py`
 //!   and `history_predecessor.py`, run as the driver ran them; `scripts/check_changelog_shards.sh` is its shim.
+//! - `cargo xtask check-derived-counts [--self-test|--list]` is the `DERIVED-COUNTS` doctrine (`XTASK.6` slice `6ae`,
+//!   `check_derived_counts.rs`): every live document's repository counts re-derived, the arm total among them,
+//!   natively; `scripts/check_derived_counts.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -107,6 +110,7 @@ mod check_changelog_shards;
 mod check_citation_quotes;
 mod check_commit_prefix;
 mod check_delivery_provenance;
+mod check_derived_counts;
 mod check_exercise_coverage;
 mod check_extraction;
 mod check_fact_ownership;
@@ -206,12 +210,14 @@ const NATIVE: &[&str] = &[
     "check-frontier-sync",
     "check-task-history",
     "check-changelog-shards",
+    "check-derived-counts",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-derived-counts", "scripts/check_derived_counts.sh"),
     (
         "check-changelog-shards",
         "scripts/check_changelog_shards.sh",
@@ -295,6 +301,7 @@ fn main() -> ExitCode {
             "check-frontier-sync" => check_frontier_sync::run(&root, &args[1..]),
             "check-task-history" => check_task_history::run(&root, &args[1..]),
             "check-changelog-shards" => check_changelog_shards::run(&root, &args[1..]),
+            "check-derived-counts" => check_derived_counts::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

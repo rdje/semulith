@@ -213,6 +213,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   append-only, exactly partitioned)`), and 3 scratch fixture repositories — a clone of the repository, a shard thawed after the event, no CHANGELOG.md at all — 3 identical, 0 differ in stdout, stderr and
   exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ae` — `check_derived_counts.sh`
   behind a held shim (the arm counter itself).
+  Slice 6ae (`2026-10-27`, `SEMULITH-XTASK-0041`; on clean 9fed766d, taken out of turn — no feature leaf unblocked): `DERIVED-COUNTS`
+  is Rust — `xtask/src/check_derived_counts.rs` (477 lines) ports the bash doctrine line for line, natively this time: the
+  claims table verbatim, each enumerator run through `bash -c` from the root as the script's `eval` ran it (whitespace stripped,
+  a failure or silence a NO ENUMERATOR), the arm total derived in Rust by the script's own rules — bash `arm "` and `score "`
+  lines, a shim's `exec cargo xtask` subcommand resolved to `xtask/src/<name>.rs` and its `tally.arm(`/`tally.score(` lines, a
+  missing module yielding no total — the live documents read from the routes registry's `hot_live` rows, and the claim
+  extraction left to the shell's own `grep -E`/`grep -oE` so the match is the script's; `--list` kept; the twelve bash arms are
+  twelve `tally.arm(` calls, the arm total unchanged; `scripts/check_derived_counts.sh` a shim of `cargo xtask check-derived-counts`.
+  Measured in a disposable draft crate: the self-test `12 pass / 0 fail` with stdout and stderr byte-identical to the bash
+  driver's, the real tree's stdout and stderr byte-identical (`DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`), the
+  `--list` table byte-identical, and 3 scratch fixture repositories — a clone of the repository, a drifted arm-total claim in LIVE_STATUS.md, no routes registry — 3 identical, 0 differ in stdout, stderr and exit
+  status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6af` — `check_artifact_cleanup.sh`
+  behind a held shim.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -296,7 +309,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ae`: `check_derived_counts.sh` behind a held shim — the arm counter itself; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6af`: `check_artifact_cleanup.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -408,6 +421,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ad **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0039/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ad **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_changelog_shards.sh` through the shim → the same two lines; `bash scripts/check_derived_counts.sh` → ok (44 bash arms out, 44 `tally.arm(` in; 1692 holds).
 - [x] slice 6ad **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ad, frontier 6ae, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ae **REPRODUCE / ISSUE** — before/ (bash driver at 9fed766d; target/xtask/xt0040/before/): `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` rc 0, stderr empty; `DERIVED-COUNTS --self-test: 12 pass / 0 fail`; `--list` five rows; `grep -c 'arm "' scripts/check_derived_counts.sh` = 12.
+- [x] slice 6ae **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash (`wc -l scripts/check_derived_counts.sh` = 194): a claims heredoc, an `eval` per enumerator, an `arm_total` function over the registry and `grep` extraction; no Python judge to spawn — a native port, the counting rules carried over one for one.
+- [x] slice 6ae **FIX** — xtask/src/check_derived_counts.rs (`shasum -a 256` = 3035363762a7ff3dfa6e474a082ac4b9c2c9dfc937ccc7efa775d3e30bbdf54a; `wc -l` = 477; `grep -cE '^[[:space:]]+tally\.arm\('` = 12); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_derived_counts.sh a shim (`exec cargo xtask check-derived-counts "$@"`).
+- [x] slice 6ae **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, `cmp after/list.out before/list.out` rc=0, stderr identical; 3 fixture repositories (target/xtask/xt0040/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ae **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh` through the shim → the same `ok (3 derived count claim(s) re-derived)` line and `1692` re-derived by the Rust counter (12 bash arms out, 12 `tally.arm(` in).
+- [x] slice 6ae **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ae, frontier 6af, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -468,3 +487,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ab done — `FRONTIER-SYNC`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, forty-one arms; XTASK.md's closed-slice paragraphs 6a–6aa archived (part 3); next `check_task_history.sh` (slice 6ac); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ac done — `TASK-HISTORY`'s driver is Rust behind a held shim (the five Python judges run as before), byte-identical on the real tree and 3 fixture repositories, fifty-two arms; next `check_changelog_shards.sh` (slice 6ad); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ad done — `SHARD-FREEZE`'s driver is Rust behind a held shim (the partition and predecessor judges run as before), byte-identical on the real tree and 3 fixture repositories, forty-four arms; next `check_derived_counts.sh` (slice 6ae); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ae done — `DERIVED-COUNTS` is Rust behind a held shim (a native port: the claims, the enumerators through `bash -c`, the arm total by the script's rules), byte-identical on the real tree and 3 fixture repositories, twelve arms; next `check_artifact_cleanup.sh` (slice 6af); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
