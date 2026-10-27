@@ -20,14 +20,14 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0018` — XTASK.6 slice 6j: the Rust S-expression reader in the harness, corpus-identical to the pinned
-  sexp.py by a unit test (389/390 CLI cases; the 41-digit-integer limit documented). Before it P4-0306 (the XLEN program; BLOCKER
-  widened: the M manifest pins matched_gpr_property.py and capture_div.py — options A/B/C), P4-0305, P4-0304, AC0085.
-- next_action: cycle three, feature 11 = `.14` a43b-1, the CSR-SET case's program (sentinel-loaded reads of the 33 CSRs, aliases, a
-  refused write, a non-member trap; EVD-05 expectations; live Sail) — no pinned file. RAISED to the director: the pinned-tooling ruling
-  (declaring any case lapses CR-GC-M-1) and the workload kind's declaration. `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
-  Probes before a chain touching profiles/; GS regen only after `git add`; a decision record → regenerate KNOWLEDGE_MAP.md; acceptance
-  boxes carry a signature token. Read the path before any failure-injection probe. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+- last_unit: `SEMULITH-P4-0307` — P4-SYSTEM.14 a43b-1: the CSR-SET case's program (103 steps, M and S, 28 of the 33 CSRs matched live by
+  Sail 103/103; the five counters trap under the pinned override — a recorded reference limitation, lab-only). Before it XTASK-0018
+  (slice 6j), P4-0306 (XLEN program; BLOCKER widened: the M manifest pins the case-declaration tooling — options A/B/C), P4-0305.
+- next_action: feature 12 = `.14` a43c-1, the ZICNTR case's program (M readability of the three counter reads, mcounteren/scounteren
+  gating in S/U, instret; the reference's Zicntr is disabled, so the Sail-matched witnesses are the TRAP paths only — lab-only values
+  named). Then a43d-1 SSTC. RAISED to the director: the pinned-tooling ruling and the workload kind's declaration. `ARTIFACT-CLEANUP.30`
+  once due (after 2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only after `git add`; a decision record →
+  regenerate KNOWLEDGE_MAP.md; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

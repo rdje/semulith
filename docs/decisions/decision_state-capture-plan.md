@@ -71,3 +71,17 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
 - Each case's `limitations` state what the status does not claim: a finite program, one witness per check, counter
   values and rate-dependent schedules out of scope, no claim about acceptance.
 - A property that cannot be phrased as a GPR change at a step boundary reopens item 3; nothing else does.
+
+## Addendum — measured 2026-10-27 (a43b-1, `SEMULITH-P4-0307`)
+
+- **The reference has no Zicntr under the pinned override.** `csrrs` of mcycle, minstret, cycle, time and instret each trap
+  illegal-instruction in the pinned Sail sim (33-CSR probe; `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`
+  declares `Zicntr` unsupported; the dossier records "disabled reference Zicntr … leave those observations unmatched"). So
+  item 2's CSR-SET case matches 28 of the 33 and names the five counters as corpus-judged (`mm-counters`,
+  `mm-csr-ro-counters`), and item 2's ZICNTR case can match only the trap paths (gating in S/U), never a counter read's
+  success or value: the policy's "genuine reference limitation leaves the affected comparison uncredited" applies to both.
+- **The spec-side deriver's CSR vocabulary is the 33.** `derive_rv64gc_expectations.py` refuses any other CSR number
+  (`csr 0x… outside the corpus's vocabulary`) and is a pinned input of the retained DIV case, so the "non-member address
+  traps" witness is not derivable today; the negative side of CSR-SET is the refused write and the privilege-refused access.
+- **A same-value write is not a change.** The GPR vocabulary records changes; a handler reading the same cause twice needs a
+  sentinel between (the M program's own idiom). A trap before `mtvec` is set cascades into a fetch fault at address 0.

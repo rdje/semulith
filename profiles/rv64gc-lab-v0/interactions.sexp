@@ -141,7 +141,7 @@
 ;; ── alias × * ─────────────────────────────────────────────────────────────────────
 (cell (axis "alias") (axis "alias") (guest "c-alu") (guest "c-hints") (guest "c-links") (guest "bound-alias") (guest "scope-mem") (guest "dir-chase") (guest "dir-ext-matrix") (guest "dir-x0-writes") (guest "a-amo-overlap") (guest "f-sgnj") (guest "d-sgnj") (guest "m-alias"))
 (cell (axis "alias") (axis "boundary") (guest "it-alias-bound") (guest "smoke-arith") (guest "m-alias"))
-(cell (axis "alias") (axis "legality") (guest "mm-csr-rw") (guest "mm-readonly") (guest "fp-fcsr-view"))
+(cell (axis "alias") (axis "legality") (guest "mm-csr-rw") (guest "mm-readonly") (guest "fp-fcsr-view") (guest "csr-set"))
 (cell (axis "alias") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters"))
 (cell (axis "alias") (axis "progress") (guest "c-links") (guest "bound-alias") (guest "it-progress-loop"))
 (cell (axis "alias") (axis "restart") (degenerate "the staged corpus composes no x0/aliasing case with an xret return: the restart cells observe control state (xepc, xPP, MPRV) through CSR reads by design, and the alias layer's x0 discipline is exercised against CSR access (alias x legality) and loop progress (alias x progress) — reported, not omitted"))
