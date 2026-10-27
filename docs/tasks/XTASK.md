@@ -365,6 +365,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   pattern outside it is refused by name at schema load. Nothing ported, no shim, `scripts/check_sexp_schema.py` untouched
   (an M-manifest input). In tree: `cargo test -p xtask` `test result: ok. 15 passed` (3 s); clippy at deny-warnings rc=0 (clean after its `--fix` simplified one boolean expression). Next: slice
   `6m` — the encoding-disjointness judge (`check_encoding_disjoint.py`: 496 lines, validates through this module first).
+  Slice 6m (`2026-10-27`, `SEMULITH-XTASK-0021`; on clean eef7f048, taken out of turn — no feature leaf unblocked): the
+  encoding-disjointness judge is Rust — `xtask/src/disjoint.rs` (796 lines: the instruction rows' masks and values,
+  fragment loading on the `.sexp` and riscv-opcodes routes, schema validation through `schema.rs` before judging, the slot
+  rules, exhaustive collisions, declared specializations, the pseudo rules, and the command line's texts) with the one
+  composition resolver moved to `xtask/src/composition.rs` (90 lines), shared by the exercise-coverage census and the
+  judge. `cargo xtask check-encoding-disjoint <fragment…> | --self-test` mirrors `python3 scripts/check_encoding_disjoint.py`:
+  the 17 arms re-asserted in-process with the pinned labels, fixtures and needles (`--self-test` stdout byte-identical), and
+  the judge over every tracked encoding and `definitions/riscv` document — 23: 12 compose, 1 rejects (`zicntr.sexp`, a
+  pseudo-only fragment judged alone), 10 semantics files refused as not fragments — identical in stdout, stderr and exit
+  status (`23 identical, 0 differ`); `EXERCISE-COVERAGE` through the shared resolver stays byte-identical to its 6k baseline.
+  Nothing ported, no shim: the pinned judge is a library and CLI no bash driver wraps, and it stays (an M-manifest input).
+  In tree: `cargo test -p xtask` `test result: ok. 15 passed`; clippy at deny-warnings rc=0 (clean after its `--fix` of two findings and two type aliases for the judge's tuple types). Next: slice `6n` — `check_unit_composition.sh`
+  (49 lines of inline Python over this judge, 6 bash arms) behind a held shim.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -448,7 +461,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6m`: the encoding-disjointness judge in Rust (`check_encoding_disjoint.py`, validating through `schema.rs`) — the second of three units towards `UNIT-COMPOSITION`; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6n`: `check_unit_composition.sh` behind a held shim, over the Rust judge and resolver — the third unit towards `UNIT-COMPOSITION`; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -591,6 +604,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6l **ADDRESSED (verified)** — `cargo test -p xtask` → `test result: ok. 15 passed` (`the_corpus_validates_as_the_pinned_validator_validates_it ... ok` over 315 pairs; `the_pinned_validators_arms_hold ... ok`); `cmp after/selftest.stdout before/selftest.stdout` rc=0 (the 52 self-test lines byte-identical) and the two stderr refusal lines identical up to each run's own scratch directory name (`target/tmpXXXX` vs `target/schema-selftest.<pid>…`; a combined capture also orders the pinned tool's unbuffered stderr first — the first chain compared the combined streams and I stopped it before it committed the claim); `corpus equality: 315 (file, schema) pairs; 315 identical, 0 differ` (stdout, stderr and rc each, target/xtask/xt0020/measure.log).
 - [x] slice 6l **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean after its `--fix` simplified one boolean expression); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh` → ok (the arm total unchanged: the Python's 51 arms stay, the Rust arms are not `tally.arm(` calls); `git status` before the docs shows only xtask/ changed.
 - [x] slice 6l **LOCKSTEP** — docs/toolbox/definition.md gains the `cargo xtask check-sexp-schema` row; the tree (slice 6l, frontier 6m, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY; `decision_rust-schema-validator.md` + INDEX row, KNOWLEDGE_MAP.md regenerated.
+- [x] slice 6m **REPRODUCE / ISSUE** — before/ (pinned judge at eef7f048): `python3 scripts/check_encoding_disjoint.py --self-test` → `check_encoding_disjoint --self-test: 17 pass / 0 fail`; the CLI over 23 tracked documents: `rc census: 12 0, 1 1, 10 2` (target/xtask/xt0021/before/); `grep -c '' scripts/check_encoding_disjoint.py` = 496.
+- [x] slice 6m **ROOT CAUSE (WHY + WHERE)** — the disjointness judge had one definition, the pinned Python module, which `check_unit_composition.sh` imports (`grep -c 'import check_encoding_disjoint' scripts/check_unit_composition.sh` = 1); no Rust judge existed and the composition resolver lived inside the 6k module (`grep -c 'fn resolve_composition' xtask/src/check_exercise_coverage.rs` = 1 at eef7f048).
+- [x] slice 6m **FIX** — xtask/src/disjoint.rs (`shasum -a 256` = ed85ad0218e03ce131804ee26124f06aefd8f0763872705dca492c2efc1ddcdb; `wc -l` = 796; 17 arms as in-process `arm(` calls), xtask/src/composition.rs (90 lines; `grep -c 'fn resolve_composition' xtask/src/check_exercise_coverage.rs` = 0 after the move); main.rs doc bullet, `mod composition; mod disjoint;`, `NATIVE` `"check-encoding-disjoint"`, dispatch; no shim, no script changed.
+- [x] slice 6m **ADDRESSED (verified)** — `cmp after-tree/selftest.stdout before/selftest.stdout` rc=0 (the pinned tool's 18 self-test lines byte-identical); the CLI over the 23 tracked encodings and `definitions/riscv` documents: `CLI over the corpus: 23 documents, 23 identical, 0 differ` (stdout, stderr and rc each; target/xtask/xt0021/measure.log).
+- [x] slice 6m **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 15 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean after its `--fix` of two findings and two type aliases for the judge's tuple types); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_exercise_coverage.sh` through the shared resolver → `cmp after-tree/exercise.out ../xt0019/before/real.out` rc=0; `bash scripts/check_derived_counts.sh` → ok (the arm total unchanged).
+- [x] slice 6m **LOCKSTEP** — docs/toolbox/definition.md gains the `cargo xtask check-encoding-disjoint` row; the tree (slice 6m, frontier 6n, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -632,3 +651,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-27`: XTASK.6 slice 6j done — the Rust S-expression reader `xtask/src/sexp.rs` is in the harness, equal to the pinned `scripts/sexp.py` by a unit test over every tracked `.sexp` file and 389 of 390 command-line cases (the 41-digit-integer fixture is the documented limit); nothing ported, the pinned reader untouched; slice 6k ports the first consumer.
 - `2026-10-27`: XTASK.6 slice 6k done — `EXERCISE-COVERAGE` is Rust behind a held shim (the inline Python and `resolve_composition` ported line for line onto the 6j reader), byte-identical on the real tree and on seven fixture states, 23 arms; taken out of turn because no feature leaf was unblocked (the `.14` declarations and ZICNTR wait on the pinned-tooling ruling, LAB-BENCH.2 on a user-feedback round, P5-BOARD.5 on the CPU's acceptance) — the alternation resumes with features the day a ruling lands; slice 6l ports `check_unit_composition.sh`.
 - `2026-10-27`: XTASK.6 slice 6l done — the schema validator `xtask/src/schema.rs` is in the harness, equal to the pinned `scripts/check_sexp_schema.py` by its 51 arms (byte-identical output) and by a unit test over every (file, schema) pair the project validates (315); regex facets are an enumerated anchored subset refusing unknown shapes by name; nothing ported, the pinned validator untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6m ports the disjointness judge.
+- `2026-10-27`: XTASK.6 slice 6m done — the encoding-disjointness judge is Rust (`xtask/src/disjoint.rs`, with the one composition resolver moved to `composition.rs` and shared with the exercise-coverage census): 17 arms byte-identical to the pinned judge's self-test, 23 tracked documents identical in stdout, stderr and exit status; nothing ported, no shim, the pinned judge untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6n ports `check_unit_composition.sh` behind a held shim.

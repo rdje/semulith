@@ -32,6 +32,10 @@
 //! - `cargo xtask check-exercise-coverage [--self-test]` is the `EXERCISE-COVERAGE` doctrine (`XTASK.6` slice `6k`;
 //!   formerly `scripts/check_exercise_coverage.sh`, now a shim): every declared scope form executed by a tracked
 //!   guest, the composition closed through the one resolver — the first consumer of the Rust S-expression reader.
+//! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
+//!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
+//!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
+//!   consumers share is `composition.rs`. The pinned judge stays.
 //! - `cargo xtask check-sexp-schema <file.sexp> <schema.sexp> | --self-test` validates a source-of-truth file against
 //!   its schema with the Rust validator (`XTASK.6` slice `6l`, `schema.rs`), measured equal to the pinned
 //!   `scripts/check_sexp_schema.py` over every pair the project validates; the pinned validator stays.
@@ -53,6 +57,8 @@ mod check_push_record;
 mod check_registry_mirror;
 mod check_rustdoc;
 mod check_wasm_build;
+mod composition;
+mod disjoint;
 mod harness;
 mod schema;
 mod sexp;
@@ -113,6 +119,7 @@ const NATIVE: &[&str] = &[
     "check-exercise-coverage",
     "sexp",
     "check-sexp-schema",
+    "check-encoding-disjoint",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -159,6 +166,7 @@ fn main() -> ExitCode {
             "check-exercise-coverage" => check_exercise_coverage::run(&root, &args[1..]),
             "sexp" => sexp::run(&args[1..]),
             "check-sexp-schema" => schema::run(&root, &args[1..]),
+            "check-encoding-disjoint" => disjoint::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
