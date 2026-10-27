@@ -72,6 +72,9 @@
 #                   re-derived (the owner's base-covering records + their dependency closure),
 #                   every shared field must be equal, the profile-scoped fields must name the
 #                   mirror's unit, and an authored base record outside the closure is refused.
+#    15. WORKLOAD   the workload-campaign record (profiles/*/workload.sexp, P4-SYSTEM.15 slice f) carries
+#                   only counts its own rows re-derive, and its verdict vocabulary is closed — rule 13's
+#                   shape for the compiled, self-checking workloads judged three-way.
 #
 # ✅ The gap `P0-PROFILE.3` declared here — obligation ids checked against nothing — is CLOSED by
 # rules 6 and 7, which `P0-PROFILE.4` added along with the contract that defines them.
@@ -118,6 +121,7 @@ SEXP_SCHEMA_FOR = {
     "units.sexp": "schema/units.sexp",
     "category-needs.sexp": "schema/category-needs.sexp",
     "act4.sexp": "schema/act4.sexp",
+    "workload.sexp": "schema/workload.sexp",
 }
 ARCH_AUTHORITY = "architecture"
 
@@ -336,6 +340,63 @@ for cat in catalogues:
             findings.append(f"CAMPAIGN VERDICTS {cat.name}: run.verdicts = "
                             f"'{_val(run_f, 'verdicts')}' but the rows derive "
                             f"'{derived}'")
+        continue
+    if cat.name == "workload.sexp":
+        # 15. WORKLOAD — the workload-campaign record (P4-SYSTEM.15 slice f) is a RECORDED
+        # experiment like the ACT4 record: every carried count is re-derived from the rows
+        # and the verdict vocabulary is confined (rule 13's shape, the row head `workload`).
+        def _field(f, name):
+            for c in f[1:]:
+                if isinstance(c, list) and c and str(c[0]) == name:
+                    return c
+            return None
+        def _val(f, name):
+            c = _field(f, name)
+            return c[1] if c is not None and len(c) == 2 else None
+        forms = [f for f in S.read_file(cat)
+                 if not (isinstance(f, list) and f and str(f[0]) == "comment")]
+        root_form = forms[0] if len(forms) == 1 else None
+        rows = [c for c in (root_form or [None])[1:]
+                if isinstance(c, list) and c and str(c[0]) == "workload"]
+        run_f = _field(root_form, "run") if root_form else None
+        if root_form is None or str(root_form[0]) != "workload-campaign" or run_f is None:
+            findings.append(f"WORKLOAD ROOT {cat.name}: no single workload-campaign form "
+                            f"with a run block")
+            continue
+        seen_files = set()
+        for r in rows:
+            fn = _val(r, "file")
+            if fn in seen_files:
+                findings.append(f"WORKLOAD DUPLICATE {cat.name}: workload '{fn}' appears twice")
+            seen_files.add(fn)
+            for k in ("verdict_semulith", "verdict_sail", "verdict_spike"):
+                if str(_val(r, k)) not in ("pass", "fail"):
+                    findings.append(f"WORKLOAD VOCABULARY {cat.name} [{fn}]: {k} is "
+                                    f"'{_val(r, k)}', not pass|fail")
+            for k in ("signature", "control"):
+                if str(_val(r, k)) not in ("agree", "mismatch"):
+                    findings.append(f"WORKLOAD VOCABULARY {cat.name} [{fn}]: {k} is "
+                                    f"'{_val(r, k)}', not agree|mismatch")
+            if int(_val(r, "compressed")) > int(_val(r, "instructions")):
+                findings.append(f"WORKLOAD CENSUS {cat.name} [{fn}]: more compressed instructions "
+                                f"than instructions")
+        if int(_val(run_f, "workloads")) != len(rows):
+            findings.append(f"WORKLOAD COUNT {cat.name}: run.workloads = "
+                            f"{_val(run_f, 'workloads')} but the record carries {len(rows)} row(s)")
+        slots = sum(int(_val(r, "signature_slots")) for r in rows)
+        if int(_val(run_f, "signature_slots")) != slots:
+            findings.append(f"WORKLOAD SLOTS {cat.name}: run.signature_slots = "
+                            f"{_val(run_f, 'signature_slots')} but the rows carry {slots}")
+        passed = sum(1 for r in rows
+                     if str(_val(r, "verdict_semulith")) == "pass"
+                     and str(_val(r, "verdict_sail")) == "pass"
+                     and str(_val(r, "verdict_spike")) == "pass"
+                     and str(_val(r, "signature")) == "agree"
+                     and str(_val(r, "control")) == "agree")
+        derived = f"{passed} pass / {len(rows) - passed} fail"
+        if str(_val(run_f, "verdicts")) != derived:
+            findings.append(f"WORKLOAD VERDICTS {cat.name}: run.verdicts = "
+                            f"'{_val(run_f, 'verdicts')}' but the rows derive '{derived}'")
         continue
     if cat.name == "credits.sexp":
         # 14. CREDITS — the credited-disposition catalogue (a42ay) is read by its own unpinned
@@ -982,6 +1043,21 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   campaign_fixed 'verdict_semulith "pass"@@@verdict_semulith "green"'; arm "RED   a verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
   campaign_fixed '(signature "agree")@@@(signature "fine")'; arm "RED   a comparison verdict outside the closed vocabulary" 1 "CAMPAIGN VOCABULARY"
   rm -f "$t/p/act4.sexp"
+
+  # ---- rule 15 WORKLOAD: the workload record carries only counts its rows re-derive -------
+  workload_fixed() { argc 1 "$#" workload_fixed || return; python3 -c "
+import pathlib, sys
+text = '''$BASE_WORKLOAD'''
+text = text.replace(*'''$1'''.split('@@@', 1)) if '''$1''' else text
+pathlib.Path('$t/p/workload.sexp').write_text(text)"; }
+  BASE_WORKLOAD='(workload-campaign (profile "p") (toolchain (compiler "c") (linker "l")) (run (date "2026-10-27") (workloads 2) (signature_slots 5) (verdicts "1 pass / 1 fail")) (evidence_note "n") (workload (file "wl-a.c") (instructions 10) (compressed 4) (families "IM") (sail_steps 7) (signature_slots 2) (verdict_semulith "pass") (verdict_sail "pass") (verdict_spike "pass") (signature "agree") (control "agree")) (workload (file "wl-b.c") (instructions 9) (compressed 3) (families "I") (sail_steps 5) (signature_slots 3) (verdict_semulith "fail") (verdict_sail "fail") (verdict_spike "fail") (signature "agree") (control "agree")))'
+  workload_fixed "";                                        arm "GREEN a consistent workload record — one failing workload, honestly recorded" 0 "__CHECKED__ 2"
+  workload_fixed '(workloads 2)@@@(workloads 3)';           arm "RED   a carried workload count the rows contradict" 1 "WORKLOAD COUNT"
+  workload_fixed '(signature_slots 5)@@@(signature_slots 6)'; arm "RED   a carried slot total the rows contradict" 1 "WORKLOAD SLOTS"
+  workload_fixed '"1 pass / 1 fail"@@@"2 pass / 0 fail"';   arm "RED   a verdict summary the rows contradict" 1 "WORKLOAD VERDICTS"
+  workload_fixed 'verdict_sail "pass"@@@verdict_sail "green"'; arm "RED   a verdict outside the closed vocabulary" 1 "WORKLOAD VOCABULARY"
+  workload_fixed '(compressed 4)@@@(compressed 40)';       arm "RED   a census with more compressed than instructions" 1 "WORKLOAD CENSUS"
+  rm -f "$t/p/workload.sexp"
   # ---- rule 14 CREDITS: the credit catalogue reads through its own reader, never the pinned one -
   # ($t/schema is the fixture's link to the real schema directory: never copy into or remove under it)
   CREDIT='(credit (id "CR-1") (profile_ids "p") (requirement_id "REQ-D-A") (obligation_ids "OB-A") (case_id "case") (measured (pin (path "m") (sha256 "'"$(printf 'a%.0s' {1..64})"'") (byte_size 1))) (receipt (pin (path "r") (sha256 "'"$(printf 'b%.0s' {1..64})"'") (byte_size 1))) (policy (pin (path "p") (sha256 "'"$(printf 'c%.0s' {1..64})"'") (byte_size 1))) (retained_sources "S") (authority review) (date "2026-10-26") (decision "decision_x.md") (legs 10) (limitations "l"))'
@@ -1004,20 +1080,21 @@ pathlib.Path('$t/p/act4.sexp').write_text(text)"; }
   arm "RED lost include expansion" 1 "CONTROL-MISSED"
   # All project token patterns, and the public kernel's deliberate search contract.
   # a42ay: schema/credits.sexp adds 9 anchored facets (25 schemas / 100 facets): loose-end 96 → 105, ignore-pattern 552 → 606.
+  # P4-SYSTEM.15 slice f: schema/workload.sexp adds 1 anchored facet (26 schemas / 101 facets): loose-end 105 → 106, ignore-pattern 606 → 612.
   arm_command=(python3 scripts/probe_schema_token_facets.py)
   arm "GREEN exact-token facets normal" 0 "Ran 7 tests"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation loose-end)
-  arm "RED normal token loose-end mutation" 1 "FAILED (failures=105)"
+  arm "RED normal token loose-end mutation" 1 "FAILED (failures=106)"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation ignore-pattern)
-  arm "RED normal token ignore-pattern mutation" 1 "FAILED (failures=606)"
+  arm "RED normal token ignore-pattern mutation" 1 "FAILED (failures=612)"
   arm_command=(python3 scripts/probe_schema_token_facets.py --mutation fullmatch)
   arm "RED normal token fullmatch mutation" 1 "FAILED (failures=1)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py)
   arm "GREEN exact-token facets optimized" 0 "Ran 7 tests"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation loose-end)
-  arm "RED optimized token loose-end mutation" 1 "FAILED (failures=105)"
+  arm "RED optimized token loose-end mutation" 1 "FAILED (failures=106)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation ignore-pattern)
-  arm "RED optimized token ignore-pattern mutation" 1 "FAILED (failures=606)"
+  arm "RED optimized token ignore-pattern mutation" 1 "FAILED (failures=612)"
   arm_command=(python3 -O scripts/probe_schema_token_facets.py --mutation fullmatch)
   arm "RED optimized token fullmatch mutation" 1 "FAILED (failures=1)"
   rm -rf "$t"

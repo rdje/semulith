@@ -30,7 +30,7 @@ is not a claim with a denominator.
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
-| `G-REGRESSION` | `P4-SYSTEM.15` | The pinned riscv-arch-test RV64I suite has run against this unit as external tests with Sail-derived expectations (act4.sexp, P4-SYSTEM.15 slice a); the M, A (Zaamo, Zalrsc) and C (Zca) suites followed (slice b) and the F and D suites (slice c); the validator-mutation campaign over the full-table GC models ran (slice d: 28 of 30 designated mutants detected, two corpus gaps pinned for slice e); the Misalign suites and a workload suite have not run. |
+| `G-REGRESSION` | `P4-SYSTEM.15` | Four of the five required kinds are evidenced (directed, external, generated, validator-mutation). The fifth, workload, has RUN and is RECORDED — profiles/rv64gc-lab-v0/workload.sexp (P4-SYSTEM.15 slice f): four compiled, self-checking C workloads, 4 pass / 0 fail three-way, RECORD-SCHEMA rule 15 — but is not yet declared here: the GS report generator's own self-test assumes an open workload kind and the generator (scripts/gate_report.py) is a pinned input of the credited M case's dependency manifest, so changing it lapses credit CR-GC-M-1. Declaring the kind is slice g: re-capture the M case against the changed generator (or rule on the pin), then declare. The pinned Misalign suites are not applicable (generated for MISALIGNED_LDST true; the profile traps misaligned data). |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
@@ -64,7 +64,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 e616b6cca5bb8f94b9badc1a15333c5029923b059f4d3dec2ca331978a2e1eac`
+  `sha256 0fe111f7e0edb8aa8bc83744dc7f0faf044b6295deb6b78630d1406f6a0897eb`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

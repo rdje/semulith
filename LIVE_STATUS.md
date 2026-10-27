@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | [`SEMULITH-PKG`](docs/tasks/SEMULITH-PKG.md) |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (41 registered) | Done | `scripts/check_doctrines.project.sh` — 1679 self-test arms, each fired RED before registration |
+| Project doctrines (41 registered) | Done | `scripts/check_doctrines.project.sh` — 1685 self-test arms, each fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | 85 lines / 4,864 B; 44 destinations |
 | mdBook is the review surface | Done | 50 chapters; the doctrine chapter is gated against the registry; the API reference is rustdoc, built with it |
@@ -40,7 +40,7 @@ summarize the snapshot in every commit-workflow completion message.
 | P2 — validated RV64I profile | CPU-LAB | Done | [`P2-SCALAR`](docs/tasks/P2-SCALAR.md) 9/9 — CPU-LAB report `incomplete` (G-CONTRACT/G-OBLIGATIONS open); EXPERIMENTAL release decision recorded |
 | DSP specification and stress review | — | Done | [`DSP-REVIEW`](docs/tasks/DSP-REVIEW.md) 8/8 — six findings routed to `P3-BREADTH.1`; no oracle claim |
 | P3 — shared interfaces + real DSP slice | BREADTH | Done | [`P3-BREADTH`](docs/tasks/P3-BREADTH.md) 6 of 7 leaves done; gate `BREADTH` RUN, verdict **`passed`**; TI C6000 / SHARC unclaimed |
-| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 14/18; `.14` open — the M case measures 10 of 10 policy legs, credits `REQ-GC-M` `implemented` (CR-GC-M-1) and is the dossier's first qualified experiment record (a42bc: G-TRACE green); `.15` slices a–e: the pinned I, M, A, C, F and D suites as external evidence and the validator-mutation campaign (30 of 30 mutants detected once the two corpus gaps it found were closed) (2026-10-27; 5 of 10 axes open) |
+| P4 — Linux CPU profile | CPU-SYSTEM | In Progress | [`P4-SYSTEM`](docs/tasks/P4-SYSTEM.md) 14/18; `.14` open — the M case measures 10 of 10 policy legs, credits `REQ-GC-M` `implemented` (CR-GC-M-1) and is the dossier's first qualified experiment record (a42bc: G-TRACE green); `.15` slices a–f: the pinned I, M, A, C, F and D suites as external evidence, the validator-mutation campaign (30 of 30) and four compiled workloads recorded — the workload kind's declaration waits on slice g (2026-10-27; 5 of 10 axes open) |
 | P5 — board model | BOARD | In Progress | [`P5-BOARD`](docs/tasks/P5-BOARD.md) — 10/12; probes and gate report wait on the CPU |
 | archogen OS integration | ARCHOGEN-OS | Not Started | [`AG-OS`](docs/tasks/AG-OS.md) — 8 leaves |
 | P6 — Linux userspace | LINUX | Not Started | [`P6-LINUX`](docs/tasks/P6-LINUX.md) — 8 leaves; a banner is not a pass |

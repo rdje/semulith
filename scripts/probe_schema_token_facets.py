@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # needs a reviewed example here; silently skipping an unknown pattern is forbidden.
 TOKENS = {
     r'^[A-Z][A-Za-z]*-[a-z0-9.]+-[0-9]+\.S': 'Zaamo-amoadd.d-00.S',  # act4.sexp: <Suite>-<mnemonic>-<nn>.S since P4-SYSTEM.15 slice b
+    r'^wl-[a-z]+\.c': 'wl-integer.c',  # workload.sexp: a tracked workload source, P4-SYSTEM.15 slice f
     r'^[0-9a-f]{64}': 'a' * 64,
     r'^0x[0-9a-f]{1,4}(_[0-9a-f]{4})*': '0x8000_0000',
     r'^OB-[A-Z0-9-]+': 'OB-EXAMPLE',
@@ -107,8 +108,8 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 25)  # schema/credits.sexp (a42ay)
-        self.assertEqual(len(current), 100)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 26)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f)
+        self.assertEqual(len(current), 101)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):
