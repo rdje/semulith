@@ -75,6 +75,9 @@
 //! - `cargo xtask check-frontier-sync [--self-test]` is the `FRONTIER-SYNC` doctrine's driver (`XTASK.6` slice `6ab`,
 //!   `check_frontier_sync.rs`): the task-tree index and closed-tree register judged against the trees by the driver's
 //!   inline Python judge, run verbatim; `scripts/check_frontier_sync.sh` is its shim.
+//! - `cargo xtask check-task-history [--self-test]` is the `TASK-HISTORY` doctrine's driver (`XTASK.6` slice `6ac`,
+//!   `check_task_history.rs`): the sealed task history's judges run as the driver ran them, the fifty-two probe runs as
+//!   its controls; `scripts/check_task_history.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -113,6 +116,7 @@ mod check_registry_mirror;
 mod check_rustdoc;
 mod check_scope_coverage;
 mod check_state_gen;
+mod check_task_history;
 mod check_tree_claims;
 mod check_unit_books;
 mod check_unit_composition;
@@ -196,12 +200,14 @@ const NATIVE: &[&str] = &[
     "check-unit-books",
     "check-tree-claims",
     "check-frontier-sync",
+    "check-task-history",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-task-history", "scripts/check_task_history.sh"),
     ("check-frontier-sync", "scripts/check_frontier_sync.sh"),
     ("check-tree-claims", "scripts/check_tree_claims.sh"),
     ("check-unit-books", "scripts/check_unit_books.sh"),
@@ -278,6 +284,7 @@ fn main() -> ExitCode {
             "check-unit-books" => check_unit_books::run(&root, &args[1..]),
             "check-tree-claims" => check_tree_claims::run(&root, &args[1..]),
             "check-frontier-sync" => check_frontier_sync::run(&root, &args[1..]),
+            "check-task-history" => check_task_history::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
