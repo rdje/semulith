@@ -57,7 +57,7 @@ on the same commit. One commit per completed leaf.
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
 | [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `active` | `.2` — proposed: the Markdown census (1 of 2 leaves done) | repo-local |
-| [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.28` — the next recurring cleanup (due after 2026-10-27T08:50Z); XTASK.6 resumes meanwhile | repo-local |
+| [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.30` — the next recurring cleanup (due after 2026-10-28T09:33Z); the feature cycle (P4-SYSTEM) resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
 | [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.6` — slice `6j`: a Rust S-expression reader measured against the pinned one, after the next five feature units (the gate leaf closed: 52–56 min → 6.8 min for code, 27 s for documentation) (6 of 8 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

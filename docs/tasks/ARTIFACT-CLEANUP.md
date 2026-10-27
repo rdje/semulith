@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -752,11 +752,31 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   entry carries the procedure).
 
 - ID: `ARTIFACT-CLEANUP.28` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-10-27` UTC, `SEMULITH-AC-0085`)
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-10-27T08:50Z), create the fresh work directory (mode 700), repeat the
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0084.
+
+  Result (`2026-10-27T09:33Z`, `SEMULITH-AC-0085`): run at 25 h, after f67eaa43 with a clean tree and
+  `handoff: OK` (deferred past the rv64gc portability legs, which built under target/
+  until 09:59 local), in target/artifact-cleanup/AC0085 (made first, mode 700) with run.log
+  inside it (2026-10-27T09:28Z to 2026-10-27T09:33Z). Plan: 349 candidates (1,135,162,995 B), 21,991 retained files
+  (266,514,643 B). Strict selection: 6 approved (15,766,334 B), 343 unrecorded (1,119,396,661 B).
+  The act's fresh census returned `handoff: OK`; the guarded core removed exactly the
+  6, residue 0, journal `complete`/`verified`; `--inspect` confirms plan, selection and
+  journal. The one-entry record is overwritten. Re-census against AC0084: the unrecorded
+  population moved from 247 files (770,724,553 B) to 343 (1,119,396,661 B); the ruling on
+  `.29` stands open, so nothing outside the recorded classes is touched. promotion:
+  declined (routine recurrence; the .24 entry carries the procedure).
+  Finding (§9, carded `a-name-one-tool-writes-is-a-path-another-tool-refuses.md`): the plan act refused twice
+  (`unsafe relative path`; 73 s and 86 s walks) on 4460 names under target/xtask/xt0017 carrying U+001F/U+001E —
+  the XTASK.8 slice-c prefetch records (rest/rec12 and rest/rec24, 2228 files each) and 4 control-shadow files.
+  My first census grouped the offenders by a three-component prefix and acted on its one example (4 files removed,
+  second refusal); the second listed the population per directory. Both populations were archived whole to
+  target/xtask/xt0017/{shadow-record,rest}.tar (4 and 4,459 entries, counted against the files before anything
+  was removed) and removed; the census then found 0 such names and the acts ran. Open design item for this
+  tree: a refusal that names the path, or quarantines an unrepresentable entry and plans the rest.
 
 - ID: `ARTIFACT-CLEANUP.29` — **the recorded class "orphan incremental session"**
   Status: `pending` (blocked on a ruling; see Blockers)
@@ -783,11 +803,18 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   live caches between daily cleanups, an age rule anchored to the record. The workflow holds ruling 2
   under the delegation; the scope widening in B and C is new, so it is raised, not taken.
 
+- ID: `ARTIFACT-CLEANUP.30` — **the next recurring cleanup**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-10-28T09:33Z), create the fresh work directory (mode 700), repeat the
+  four acts with the log inside it; overwrite the record from the receipt;
+  sync and normal COMMIT. Re-census the unrecorded population against AC0085.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.28` | `pending` | the next recurring cleanup, due after 2026-10-27T08:50Z; until then XTASK.6 resumes |
+| 1 | `ARTIFACT-CLEANUP.30` | `pending` | the next recurring cleanup, due after 2026-10-28T09:33Z; until then the feature cycle (P4-SYSTEM) resumes |
 
 ## Decisions
 
@@ -822,7 +849,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 ## Blockers
 
 - `ARTIFACT-CLEANUP.29`: a ruling between options A, B and C (the leaf's finding, `2026-10-26`); until
-  then the recurring cleanups (`.28` …) run the supported act unchanged.
+  then the recurring cleanups (`.30` …) run the supported act unchanged.
 
 <!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
 Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).

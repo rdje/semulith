@@ -16,7 +16,7 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): features
   1–3 done (a42bc; P4-SYSTEM.15 slices a, b) → features 4–5 (.15 slices c–d or a .14 act) → `XTASK.6` slice 6j (drafted);
-  `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
+  `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
@@ -24,7 +24,7 @@
   open). Before it P4-0303 (the workload suite recorded; its declaration waits on a ruling — the M case's manifest pins
   gate_report.py), P4-0302, XTASK-0017, P4-0301. Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/.
 - next_action: RAISED, awaiting the director: the workload kind's declaration (re-capture the M case against a changed
-  gate_report.py, or report generators leave capture manifests). Feature 9: G-STATE or G-OBLIGATIONS (P4-SYSTEM.14); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
+  gate_report.py, or report generators leave capture manifests). Feature 9: G-STATE or G-OBLIGATIONS (P4-SYSTEM.14); `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.
@@ -40,7 +40,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0084` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-26T08:50Z`).
+  cleanup act `target/artifact-cleanup/AC0085` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-27T09:33Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.
