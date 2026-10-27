@@ -603,6 +603,23 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   documents copied in) — the corpus, an orphan book, no registry, a broken rendered link — 4 identical, 0 differ in stdout, stderr and exit
   status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6aa` — `check_tree_claims.sh`
   behind a held shim.
+  Slice 6aa (`2026-10-27`, `SEMULITH-XTASK-0037`; on clean 4b7a2dae, taken out of turn — no feature leaf unblocked): `TREE-CLAIMS`'s
+  driver is Rust — `xtask/src/check_tree_claims.rs` (581 lines) ports the bash driver line for line: the inline Python judge
+  (every live document's tree facts re-derived over the shared `task_source` reader, archived ranges and their declarations
+  qualified) runs verbatim through `python3 -` as a string constant extracted from the script, NOT ported; the controls write the
+  script's synthetic registry, live document and trees — its `tree` heredoc, `archive_fixture` and `source_edit` as the same
+  texts and the same single replacement — through thirty-eight arms (counts, frontier pointers, tree status, missing documents
+  and registries, bold and conditional statuses, duplicate and invalid sources, archived ranges whole, missing, incomplete,
+  mis-populated, overlapping, repeated, unsafe or unsupported, leading ratios, a linked archive directory); the thirty-eight bash
+  arms are thirty-eight `tally.arm(` calls, the arm total unchanged; `scripts/check_tree_claims.sh` a shim of `cargo xtask
+  check-tree-claims`. Measured in a disposable draft crate: the self-test `38 pass / 0 fail` with stdout and stderr
+  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`TREE-CLAIMS: ok (5 live document(s)
+  state nothing the trees contradict)`), and 4 scratch fixture repositories (scripts, the routes registry, `docs/` and
+  the top-level documents copied in) — the corpus, a drifted leaf count, no routes registry, a tree missing — 4 identical, 0 differ in
+  stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run); the first chain refused by
+  `PORT-WEB` — the controls' symlink stood unguarded for wasm32, gated `#[cfg(unix)]`, the digest and line count above re-stated,
+  the chain re-run. Next: slice `6ab` —
+  `check_frontier_sync.sh` behind a held shim.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -686,7 +703,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6aa`: `check_tree_claims.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ab`: `check_frontier_sync.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -774,6 +791,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6z **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0035/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each (the first fixture set lacked the navigation probe's documents: every state REFUSED on both sides — identical and uninformative; the documents copied in).
 - [x] slice 6z **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_unit_books.sh` through the shim → the same `6 units + project book` line; `bash scripts/check_derived_counts.sh` → ok (18 bash arms out, 18 `tally.arm(` in; 1692 holds).
 - [x] slice 6z **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6z, frontier 6aa, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6aa **REPRODUCE / ISSUE** — before/ (bash driver at 4b7a2dae; target/xtask/xt0036/before/): `TREE-CLAIMS: ok (5 live document(s) state nothing the trees contradict)` rc 0, stderr empty; `TREE-CLAIMS --self-test: 38 pass / 0 fail`; `grep -c 'arm "' scripts/check_tree_claims.sh` = 38.
+- [x] slice 6aa **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 163-line inline Python judge over `scripts/task_source.py` and a `source_edit` snippet (`grep -c 'python3 -' scripts/check_tree_claims.sh` = 2); the judge stays Python, run verbatim as the script ran it.
+- [x] slice 6aa **FIX** — xtask/src/check_tree_claims.rs (`shasum -a 256` = 9639a57bfeb26edf0ff7c1c3ae6cd9c343cb652c699dbb02a951f2d62484c539; `wc -l` = 581; `grep -cE '^[[:space:]]+tally\.arm\('` = 38); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_tree_claims.sh a shim (`exec cargo xtask check-tree-claims "$@"`).
+- [x] slice 6aa **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0036/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6aa **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_tree_claims.sh` through the shim → the same `5 live document(s)` line; `bash scripts/check_derived_counts.sh` → ok (38 bash arms out, 38 `tally.arm(` in; 1692 holds).
+- [x] slice 6aa **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6aa, frontier 6ab, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -830,3 +853,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6x done — `STATE-GEN`'s driver is Rust behind a held shim (the generator spawned as before; the script's rv64gc template embedded verbatim), byte-identical on the real tree and 5 fixture repositories, twenty-nine arms; CHANGELOG.md sharded (`docs/changelog/shard-0418.md`); next `check_interaction_matrix.sh` (slice 6y); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6y done — `INTERACTION-MATRIX`'s driver is Rust behind a held shim (the judge spawned as before), byte-identical on the real tree and 4 fixture repositories, fifteen arms; XTASK.md's closed rows 6p–6x archived (part 2); next `check_unit_books.sh` (slice 6z); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6z done — `UNIT-BOOKS`'s driver is Rust behind a held shim (the judge spawned as before over a fresh mdbook bundle), byte-identical on the real tree and 4 fixture repositories, eighteen arms; next `check_tree_claims.sh` (slice 6aa); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6aa done — `TREE-CLAIMS`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, thirty-eight arms; next `check_frontier_sync.sh` (slice 6ab); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

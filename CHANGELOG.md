@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0037 (leaf XTASK.6 slice 6aa) — TREE-CLAIMS's driver is Rust behind a held shim; the inline judge runs verbatim
+
+A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_tree_claims.rs` (581 lines) ports the bash driver: the inline Python judge over the shared `task_source` reader runs verbatim through `python3 -`, not ported; the controls write the script's synthetic registry, live document and trees through thirty-eight arms; the thirty-eight bash arms are thirty-eight `tally.arm(` calls; `scripts/check_tree_claims.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 4 fixture repositories 4 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6ab — `check_frontier_sync.sh` behind a held shim.
+
 ## SEMULITH-XTASK-0036 (leaf XTASK.6 slice 6z) — UNIT-BOOKS's driver is Rust behind a held shim; the judge stays, spawned as before
 
 A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_unit_books.rs` (310 lines) ports the bash driver: the judge `scripts/unit_books.py` spawned exactly as before over a fresh `mdbook` bundle and not ported, the script's four probe runs scored as it scored them; the controls write the script's synthetic registry and books; the eighteen bash arms are eighteen `tally.arm(` calls; `scripts/check_unit_books.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 4 fixture repositories 4 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6aa — `check_tree_claims.sh` behind a held shim.

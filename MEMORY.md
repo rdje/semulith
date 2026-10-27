@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0036` — XTASK.6 slice 6z: UNIT-BOOKS's driver in Rust behind a held shim (the judge spawned as before;
-  18 arms + 4 probe runs; byte-identical on the real tree and 4 fixture repositories). Before it XTASK-0035 (6y), XTASK-0034
-  (6x), XTASK-0033 (6w), XTASK-0032 (6v), XTASK-0031 (6r-b), XTASK-0029 (6u), XTASK-0028 (6t), XTASK-0027 (6s), XTASK-0026 (6r).
+- last_unit: `SEMULITH-XTASK-0037` — XTASK.6 slice 6aa: TREE-CLAIMS's driver in Rust behind a held shim (the inline judge run
+  verbatim; 38 arms; byte-identical on the real tree and 4 fixture repositories). Before it XTASK-0036 (6z), XTASK-0035 (6y),
+  XTASK-0034 (6x), XTASK-0033 (6w), XTASK-0032 (6v), XTASK-0031 (6r-b), XTASK-0029 (6u), XTASK-0028 (6t), XTASK-0027 (6s).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6aa (`check_tree_claims.sh` behind
-  a held shim; six free drivers follow, then the three `sexp`-only callers over `sexp.rs`). `ARTIFACT-CLEANUP.30` once due (after
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6ab (`check_frontier_sync.sh`
+  behind a held shim; five free drivers follow, then the three `sexp`-only callers over `sexp.rs`). `ARTIFACT-CLEANUP.30` once due (after
   2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
