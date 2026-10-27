@@ -283,6 +283,18 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   temporary-locality probe pins this entrypoint's `mkdir -p "$ROOT/target/tmp"` and `export TMPDIR` lines, which the shim now keeps
   (the cargo child's scratch stays on the volume, as the script's children's did). Next: slice `6aj` — `check_contract_freeze.sh` behind a held
   shim, its inline judge (over the pinned `record_catalog` and `sexp`) run verbatim — the first of the eleven pinned-module callers.
+  Slice 6aj (`2026-10-27`, `SEMULITH-XTASK-0046`; on clean c1b98abf, taken out of turn — no feature leaf unblocked): `CONTRACT-FREEZE`'s
+  driver is Rust — `xtask/src/check_contract_freeze.rs` (391 lines) ports the bash driver line for line: the inline Python judge
+  (every unit's contract versions against their obligation records — members, pins, extensions, supersessions — over the pinned
+  `record_catalog` and `sexp`) runs verbatim through `python3 -` as a string constant extracted from the script, from the scratch
+  tree in the controls where the script symlinked `scripts/`, NOT ported; the controls take the real contract and its rendered
+  catalogue and apply the script's `sed` edits as the same first-occurrence and range replacements; the ancestry probe runs plain
+  and optimized; judge first, controls only for a pass; the nine bash arms are nine `tally.arm(` calls, the arm total unchanged;
+  `scripts/check_contract_freeze.sh` a shim of `cargo xtask check-contract-freeze`. Measured in a disposable draft crate: the
+  self-test `13 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr
+  byte-identical (`CONTRACT-FREEZE: ok (1 versioned unit(s), 3 version(s), 0 finding(s))`), and 3 scratch fixture repositories — a clone of the repository, a frozen version's record edited in its catalogue part, a member dropped from the contract — 3 identical, 0 differ in stdout,
+  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ak` —
+  `check_fp_vectors.sh` behind a held shim (its generator and judge spawned as before).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -366,7 +378,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6aj`: `check_contract_freeze.sh` behind a held shim, its inline judge run verbatim — the first of the eleven pinned-module callers; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ak`: `check_fp_vectors.sh` behind a held shim — its generator and judge spawned as before; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -508,6 +520,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ai **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0044/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ai **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_upstream_index.sh` through the shim → the same `ok (3 issue record(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (21 bash arms out, 21 `tally.arm(` in; 1692 holds).
 - [x] slice 6ai **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ai, the frontier, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6aj **REPRODUCE / ISSUE** — before/ (bash driver at c1b98abf; target/xtask/xt0045/before/): `CONTRACT-FREEZE: ok (1 versioned unit(s), 3 version(s), 0 finding(s))` rc 0, stderr empty; `CONTRACT-FREEZE --self-test: 13 pass / 0 fail`; `grep -c 'arm "' scripts/check_contract_freeze.sh` = 9 (two inside the ancestry loop, run six times).
+- [x] slice 6aj **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 90-line inline Python judge importing the pinned `record_catalog` and `sexp` (`grep -c 'import record_catalog' scripts/check_contract_freeze.sh` = 1) and a probe run six ways; the judge stays Python, run verbatim as the script ran it.
+- [x] slice 6aj **FIX** — xtask/src/check_contract_freeze.rs (`shasum -a 256` = 0c4cc5d30e1f85e2f21a11f6502d7686b7f2026ed51dc728e9a2ad2b5aa7e66f; `wc -l` = 391; `grep -cE '^[[:space:]]+tally\.arm\('` = 9); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_contract_freeze.sh a shim (`exec cargo xtask check-contract-freeze "$@"`).
+- [x] slice 6aj **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0045/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6aj **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_contract_freeze.sh` through the shim → the same `ok (1 versioned unit(s), 3 version(s), 0 finding(s))` line; `bash scripts/check_derived_counts.sh` → ok (9 bash arms out, 9 `tally.arm(` in; 1692 holds).
+- [x] slice 6aj **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6aj, frontier 6ak, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -573,3 +591,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ag done — `SOURCE-FORMAT` is Rust behind a held shim over the harness's reader (the first `sexp`-only caller ported; the refusal probe run as before), byte-identical on the real tree and 3 fixture repositories, seven arms and eighteen scorings; next `check_semantics_corpus.sh` (slice 6ah); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ah done — `SEMANTICS`'s driver is Rust behind a held shim (the encoding documents over the harness's reader, the judges spawned as before), byte-identical on the real tree and 3 fixture repositories, eight arms; next `check_upstream_index.sh` (slice 6ai); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ai done — `UPSTREAM-INDEX`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, twenty-one arms; the `sexp` callers are all ported — 29 of 42 drivers answer through shims, one deferred, eleven call other pinned modules; next `check_contract_freeze.sh` (slice 6aj); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6aj done — `CONTRACT-FREEZE`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 3 fixture repositories, nine arms; the first of the eleven pinned-module callers; next `check_fp_vectors.sh` (slice 6ak); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

@@ -96,6 +96,9 @@
 //! - `cargo xtask check-upstream-index [--self-test]` is the `UPSTREAM-INDEX` doctrine's driver (`XTASK.6` slice
 //!   `6ai`, `check_upstream_index.rs`): every upstream issue record mirrored by its indices and report, judged by the
 //!   driver's inline Python run verbatim; `scripts/check_upstream_index.sh` is its shim.
+//! - `cargo xtask check-contract-freeze [--self-test]` is the `CONTRACT-FREEZE` doctrine's driver (`XTASK.6` slice
+//!   `6aj`, `check_contract_freeze.rs`): every unit's contract versions judged against their obligation records by the
+//!   driver's inline Python run verbatim; `scripts/check_contract_freeze.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -122,6 +125,7 @@ mod check_book_index;
 mod check_changelog_shards;
 mod check_citation_quotes;
 mod check_commit_prefix;
+mod check_contract_freeze;
 mod check_delivery_provenance;
 mod check_derived_counts;
 mod check_exercise_coverage;
@@ -231,12 +235,14 @@ const NATIVE: &[&str] = &[
     "check-source-format",
     "check-semantics-corpus",
     "check-upstream-index",
+    "check-contract-freeze",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-contract-freeze", "scripts/check_contract_freeze.sh"),
     ("check-upstream-index", "scripts/check_upstream_index.sh"),
     (
         "check-semantics-corpus",
@@ -336,6 +342,7 @@ fn main() -> ExitCode {
             "check-source-format" => check_source_format::run(&root, &args[1..]),
             "check-semantics-corpus" => check_semantics_corpus::run(&root, &args[1..]),
             "check-upstream-index" => check_upstream_index::run(&root, &args[1..]),
+            "check-contract-freeze" => check_contract_freeze::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
