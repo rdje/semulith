@@ -118,6 +118,7 @@
 - [`decision_generated-mirror-needs-tracked-input.md`](docs/decisions/decision_generated-mirror-needs-tracked-input.md)
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)
 - [`decision_knowledge-family-first-rederivation.md`](docs/decisions/decision_knowledge-family-first-rederivation.md)
+- [`decision_knowledge-family-second-rederivation.md`](docs/decisions/decision_knowledge-family-second-rederivation.md)
 - [`decision_lane-consumption.md`](docs/decisions/decision_lane-consumption.md)
 - [`decision_m-statements-retained.md`](docs/decisions/decision_m-statements-retained.md)
 - [`decision_many-predeclared-properties-one-control.md`](docs/decisions/decision_many-predeclared-properties-one-control.md)

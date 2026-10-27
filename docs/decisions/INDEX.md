@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [Knowledge family re-derived a second time (2026-10-27)](decision_knowledge-family-second-rederivation.md) | `decision` | Why did the knowledge-card family's ceiling fire again five days after its first re-derivation, and what bounds hold now? |
 | [The harness's own record mapping (2026-10-27)](decision_rust-records-mapping.md) | `decision` | `xtask/src/records.rs` equal to the pinned `scripts/records_sexp.py` by measurement — all 16 tracked catalogues identical through both readers, held by two unit tests; `cargo xtask records <catalogue> [--dump]`; nothing ported, nothing shimmed |
 | [The harness's own schema validator (2026-10-27)](decision_rust-schema-validator.md) | `decision` | `xtask/src/schema.rs` equal to the pinned `scripts/check_sexp_schema.py` by measurement — 51 arms byte-identical, 315 (file, schema) corpus pairs identical and held by a unit test; the one limit an anchored regex subset refusing unknown shapes by name; nothing ported, the pinned validator untouched |
 | [The harness's own S-expression reader (2026-10-27)](decision_rust-sexp-reader.md) | `decision` | `xtask/src/sexp.rs` equal to the pinned `scripts/sexp.py` by measurement — a unit test dumps every tracked `.sexp` file through both readers and requires identity; 389 of 390 command-line cases identical, the one difference the documented 41-digit-integer limit; nothing ported, the pinned reader untouched |

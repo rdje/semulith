@@ -373,7 +373,7 @@ docs/tasks/	author_overflow	partitioned	one file per tree; closed records move v
 #   (13,234 B / 59 rows) is the member that bites next, by its own partition. Reviewed decision:
 #               docs/decisions/decision_decisions-family-second-rederivation.md.
 docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH; per-part and health re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23)	136	458752	160	524288	32768
-docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION; bounds re-derived by decision_knowledge-family-first-rederivation.md (2026-10-22)	34	114688	40	131072	16384
+docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION; bounds re-derived by decision_knowledge-family-second-rederivation.md (2026-10-27)	48	157696	56	180224	16384
 # Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), at 524,247 of
 #   524,288 B: the book is the review surface and carries NO size containment on any axis — "it is
 #   used to explain thoroughly what the project, its codebase, I mean everything". Structural gates
