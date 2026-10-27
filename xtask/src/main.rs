@@ -99,6 +99,9 @@
 //! - `cargo xtask check-contract-freeze [--self-test]` is the `CONTRACT-FREEZE` doctrine's driver (`XTASK.6` slice
 //!   `6aj`, `check_contract_freeze.rs`): every unit's contract versions judged against their obligation records by the
 //!   driver's inline Python run verbatim; `scripts/check_contract_freeze.sh` is its shim.
+//! - `cargo xtask check-fp-vectors [--self-test]` is the `FP-VECTORS` doctrine's driver (`XTASK.6` slice `6ak`,
+//!   `check_fp_vectors.rs`): the floating-point vectors judged as the generator's output and the spec-side reference
+//!   against the host's hardware IEEE, generator and judge spawned as before; `scripts/check_fp_vectors.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -132,6 +135,7 @@ mod check_exercise_coverage;
 mod check_extraction;
 mod check_fact_ownership;
 mod check_fixture_fingerprints;
+mod check_fp_vectors;
 mod check_frontier_sync;
 mod check_interaction_matrix;
 mod check_m_vectors;
@@ -236,12 +240,14 @@ const NATIVE: &[&str] = &[
     "check-semantics-corpus",
     "check-upstream-index",
     "check-contract-freeze",
+    "check-fp-vectors",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-fp-vectors", "scripts/check_fp_vectors.sh"),
     ("check-contract-freeze", "scripts/check_contract_freeze.sh"),
     ("check-upstream-index", "scripts/check_upstream_index.sh"),
     (
@@ -343,6 +349,7 @@ fn main() -> ExitCode {
             "check-semantics-corpus" => check_semantics_corpus::run(&root, &args[1..]),
             "check-upstream-index" => check_upstream_index::run(&root, &args[1..]),
             "check-contract-freeze" => check_contract_freeze::run(&root, &args[1..]),
+            "check-fp-vectors" => check_fp_vectors::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

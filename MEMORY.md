@@ -20,12 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0055` — XTASK.6 slice 6aj-b: the ancestry probe's judge source, the file 6aj (`SEMULITH-XTASK-0046`,
-  3eb30477: CONTRACT-FREEZE's driver in Rust behind a held shim, 9 arms, byte-identical on the real tree and 3 fixture repositories)
-  described but did not stage — 30 of 42 drivers through shims. Before it XTASK-0045 (6ai), XTASK-0044 (6ah), XTASK-0043 (6ag).
+- last_unit: `SEMULITH-XTASK-0047` — XTASK.6 slice 6ak: FP-VECTORS's driver in Rust behind a held shim (the generator spawned, the
+  hardware cross-check run verbatim; 7 arms; byte-identical on the real tree and 3 fixture repositories) — 31 of 42 drivers
+  through shims. Before it XTASK-0055 (6aj-b, the ancestry probe's judge source), XTASK-0046 (6aj), XTASK-0045 (6ai), XTASK-0044 (6ah).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6ak (`check_fp_vectors.sh` behind a
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6al (`check_gate_report.sh` behind a
   held shim; then the other pinned-module callers, their judges run as before). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
