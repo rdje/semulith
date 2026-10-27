@@ -54,6 +54,9 @@
 //! - `cargo xtask check-board-verdict [--self-test]` is the `BOARD-VERDICT` doctrine's driver (`XTASK.6` slice `6u`,
 //!   `check_board_verdict.rs`): every tracked board's composition decided by `scripts/board_verdict.py`, spawned as the
 //!   driver spawned it; `scripts/check_board_verdict.sh` is its shim.
+//! - `cargo xtask check-board-gen [--self-test]` is the `BOARD-GEN` doctrine's driver (`XTASK.6` slice `6v`,
+//!   `check_board_gen.rs`): every tracked board's generated artifacts judged against a regeneration by
+//!   `scripts/gen_board.py`, spawned as the driver spawned it; `scripts/check_board_gen.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -73,6 +76,7 @@
 //! test holds each shim, listed in `PORTED`, to exactly that — three commands, or the same with the
 //! repository-volume scratch preamble that `probe_temporary_locality.py` requires of some scripts.
 
+mod check_board_gen;
 mod check_board_verdict;
 mod check_book_index;
 mod check_citation_quotes;
@@ -161,12 +165,14 @@ const NATIVE: &[&str] = &[
     "check-m-vectors",
     "check-book-index",
     "check-board-verdict",
+    "check-board-gen",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-board-gen", "scripts/check_board_gen.sh"),
     ("check-board-verdict", "scripts/check_board_verdict.sh"),
     ("check-book-index", "scripts/check_book_index.sh"),
     ("check-m-vectors", "scripts/check_m_vectors.sh"),
@@ -226,6 +232,7 @@ fn main() -> ExitCode {
             "check-m-vectors" => check_m_vectors::run(&root, &args[1..]),
             "check-book-index" => check_book_index::run(&root, &args[1..]),
             "check-board-verdict" => check_board_verdict::run(&root, &args[1..]),
+            "check-board-gen" => check_board_gen::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

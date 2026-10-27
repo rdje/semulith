@@ -528,6 +528,20 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   lands with its INDEX row. Measured after the edit: `bash scripts/check_readme_routes.sh` rc 0 with no `docs/knowledge/` line
   (41 files, 133410 B against 48 / 157,696). The slice runners now print the routes check's `health:` lines for the family in
   their prechecks. Next: slice `6v` — `check_board_gen.sh` behind a held shim (its generator `gen_board.py` spawned as before).
+  Slice 6v (`2026-10-27`, `SEMULITH-XTASK-0032`; on clean 47a05592, taken out of turn — no feature leaf unblocked): `BOARD-GEN`'s driver
+  is Rust — `xtask/src/check_board_gen.rs` (348 lines) ports the bash driver line for line: the generator `scripts/gen_board.py`
+  spawned exactly as the driver spawned it (`--check` over every tracked board; the self-test's derivations over a scratch copy of
+  the real definition), NOT ported; the controls the same — the seven artifacts emitted, two derivations byte-identical (the
+  script's `diff -r` as a recursive byte comparison), a faithful generation in sync, three hand-edited artifacts and a moved
+  definition named as DRIFT, an overlapping region and an undeclared device refused at generation; the nine bash arms are nine
+  `tally.arm(` calls (one arm's "no output" form kept; the first draft folded three into a loop, which the arm counter cannot see —
+  unrolled before measuring), the arm total unchanged; `scripts/check_board_gen.sh` a shim of `cargo xtask check-board-gen`. Measured in
+  a disposable draft crate: the self-test `9 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
+  tree's stdout and stderr byte-identical (`BOARD-GEN: ok (1 board(s) — manifest, composed catalogues, hardware description and map
+  all byte-exact functions of the canonical definition)`), and 5 scratch fixture repositories (the whole corpus copied in) —
+  one board, no board, two boards, a stale artifact, a moved definition — 5 identical, 0 differ in stdout, stderr and exit status. In tree:
+  `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6w` — `check_platform_gen.sh` behind a held shim
+  (its generator `gen_platform.py` spawned as before).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -611,7 +625,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6v`: `check_board_gen.sh` behind a held shim — the board's generator spawned as before; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6w`: `check_platform_gen.sh` behind a held shim — the platform generator spawned as before; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -727,6 +741,12 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - [x] slice 6r-b **ADDRESSED (verified)** — `bash scripts/check_readme_routes.sh` rc=0 and `grep -c 'docs/knowledge/'` of its output = 0 (neither ceiling nor health line for the family); the family at staging: 41 files, 133410 B — 0.73× / 0.74× of the new ceilings, below both health lines.
 - [x] slice 6r-b **NO REGRESSION** — `bash scripts/check_readme_routes.sh --self-test` → `94 pass / 0 fail`; `bash scripts/check_lesson_promotion.sh` → ok (the card's INDEX row); `bash scripts/check_memory_architecture.sh` → ok (the record's INDEX row); `bash scripts/check_table_arity.sh` → ok; no code changed (`git diff --cached --stat -- xtask scripts` empty).
 - [x] slice 6r-b **LOCKSTEP** — the record + decisions INDEX + KNOWLEDGE_MAP, the routes row, the card + knowledge INDEX, the tree (this paragraph, the 6r open question's pointer to the landed card, the Decisions bullet), CHANGELOG, MEMORY (the containment item closed).
+- [x] slice 6v **REPRODUCE / ISSUE** — before/ (bash driver at 47a05592; target/xtask/xt0030/before/): `BOARD-GEN: ok (1 board(s) — manifest, composed catalogues, hardware description and map all byte-exact functions of the canonical definition)` rc 0, stderr empty; `BOARD-GEN --self-test: 9 pass / 0 fail`; `grep -c 'arm "' scripts/check_board_gen.sh` = 9.
+- [x] slice 6v **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/gen_board.py` (`grep -c gen_board.py scripts/check_board_gen.sh` = 11) with three inline Python text mutations of the definition copy (`grep -c 'python3 -' scripts/check_board_gen.sh` = 3); the generator stays pinned Python, spawned as before.
+- [x] slice 6v **FIX** — xtask/src/check_board_gen.rs (`shasum -a 256` = 4f0cbef5ff843c688bb9e6d474934447da4bbf094369eec04a47dc967f304502; `wc -l` = 348; `grep -cE '^[[:space:]]+tally\.arm\('` = 9); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_board_gen.sh a shim (`exec cargo xtask check-board-gen "$@"`).
+- [x] slice 6v **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0030/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6v **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_board_gen.sh` through the shim → the same `1 board(s)` line; `bash scripts/check_derived_counts.sh` → ok (9 bash arms out, 9 `tally.arm(` in; 1692 holds).
+- [x] slice 6v **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6v, frontier 6w, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -778,3 +798,4 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - `2026-10-27`: XTASK.6 slice 6t done — `BOOK-INDEX`'s driver is Rust behind a held shim (the generator spawned as before), byte-identical on the real tree and 5 fixture repositories, ten arms; next `check_board_verdict.sh` (slice 6u); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6u done — `BOARD-VERDICT`'s driver is Rust behind a held shim (the judge spawned as before), byte-identical on the real tree and 5 fixture repositories, six arms; §9: the controls copy the live board, so a rejected live board refuses the check instead of failing by name (an open question); next `check_board_gen.sh` (slice 6v); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6r-b done — the knowledge family's second re-derivation (`decision_knowledge-family-second-rederivation.md`: ceiling 56 files / 180,224 B, health 48 / 157,696) and the deferred 6r card landed; §15: the health line had fired four slices earlier and was read as noise — the slice runners now print it.
+- `2026-10-27`: XTASK.6 slice 6v done — `BOARD-GEN`'s driver is Rust behind a held shim (the generator spawned as before), byte-identical on the real tree and 5 fixture repositories, nine arms; next `check_platform_gen.sh` (slice 6w); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
