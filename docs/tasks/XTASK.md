@@ -411,6 +411,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   uncoupled drivers, two read records as dictionaries (`check_scope_coverage.sh`, `check_extraction.sh`); the 6n text above said
   three — `check_citation_quotes.sh` reads through `sexp` only (corrected here, §15). Next: slice `6p` — `check_scope_coverage.sh`
   over the Rust mapping, behind a held shim.
+  Slice 6p (`2026-10-27`, `SEMULITH-XTASK-0024`; on clean cc60342a, taken out of turn — no feature leaf unblocked): `SCOPE-COVERAGE`
+  is Rust — `xtask/src/check_scope_coverage.rs` (354 lines) ports the driver's 68-line inline Python line for line over the
+  Rust record mapping (6o): every tracked `materials/units.sexp` read as records, each unit's declared `requires` against the
+  census beside the registry — no census, an unreadable registry or census, an undeclared scope, a required category with no
+  row, one `missing`, one with a disposition the gate cannot judge — with the shell wrapper's verdict lines and exit statuses;
+  the ten bash arms are ten `tally.arm(` calls, the arm total unchanged; `scripts/check_scope_coverage.sh` a shim of
+  `cargo xtask check-scope-coverage`. Measured in a disposable draft crate: the self-test `10 pass / 0 fail` with stdout and
+  stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`SCOPE-COVERAGE: ok (6 unit(s)
+  may code — every required category covered)`), and 11 scratch fixture repositories — green, no registry, no census, a required category missing, one with no census row, an undeclared scope, an unknown disposition, an unreadable registry, an unreadable census, a non-record registry form, a later census row replacing an earlier one — 11 identical, 0 differ in stdout,
+  stderr and exit status (the unreadable and non-record states hold the Rust reader's and mapping's refusal texts equal to the
+  Python exceptions' as well). In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Three uncoupled
+  drivers remain: `check_extraction.sh` (the last to read records as dictionaries), `check_citation_quotes.sh`,
+  `check_m_vectors.sh`. Next: slice `6q` — `check_extraction.sh` over the Rust mapping, behind a held shim.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -494,7 +507,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6p`: `check_scope_coverage.sh` over the Rust record mapping, behind a held shim — the first of the two remaining drivers that read records as dictionaries; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6q`: `check_extraction.sh` over the Rust record mapping, behind a held shim — the last driver that reads records as dictionaries; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -655,6 +668,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6o **ADDRESSED (verified)** — the in-tree binary against the pinned mapping over the 16 catalogues: 16 catalogues, 16 identical, 0 differ (JSON lines `cmp` rc=0 each; stderr empty); `--dump` of the three round-tripping catalogues `cmp` rc=0 against the files; `cargo test -p xtask records` → `test result: ok. 2 passed`.
 - [x] slice 6o **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; every doctrine driver still runs the pinned mapping (no shim); `bash scripts/check_derived_counts.sh` → ok.
 - [x] slice 6o **LOCKSTEP** — the toolbox row (`cargo xtask records`), the decision record + INDEX + KNOWLEDGE_MAP, the tree (slice 6o, frontier 6p, the Decisions bullet, the §15 correction of 6n's driver count), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6p **REPRODUCE / ISSUE** — before/ (bash driver at cc60342a; target/xtask/xt0024/before/): `SCOPE-COVERAGE: ok (6 unit(s) may code — every required category covered)` rc 0, stderr empty; `SCOPE-COVERAGE --self-test: 10 pass / 0 fail`; `grep -c 'arm "' scripts/check_scope_coverage.sh` = 10.
+- [x] slice 6p **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash around a 68-line inline Python block importing `records_sexp` and `sexp` (`grep -c 'import records_sexp' scripts/check_scope_coverage.sh` = 1); until 6o there was no Rust record mapping to port it onto without a second owner of the field correspondence.
+- [x] slice 6p **FIX** — xtask/src/check_scope_coverage.rs (`shasum -a 256` = c06112909eb7aaea49aded81738aa3b52c3ad189596a8166e43c8d3ded99b6b4; `wc -l` = 354; `grep -cE '^[[:space:]]+tally\.arm\('` = 10); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_scope_coverage.sh a shim (`exec cargo xtask check-scope-coverage "$@"`).
+- [x] slice 6p **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 11 scratch fixture repositories (target/xtask/xt0024/red/summary.txt): `RED/GREEN paths: 11 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6p **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_scope_coverage.sh` through the shim → the same `ok (6 unit(s) may code — every required category covered)` line; `bash scripts/check_derived_counts.sh` → ok (10 bash arms out, 10 `tally.arm(` in).
+- [x] slice 6p **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6p, frontier 6q, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -699,3 +718,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-27`: XTASK.6 slice 6m done — the encoding-disjointness judge is Rust (`xtask/src/disjoint.rs`, with the one composition resolver moved to `composition.rs` and shared with the exercise-coverage census): 17 arms byte-identical to the pinned judge's self-test, 23 tracked documents identical in stdout, stderr and exit status; nothing ported, no shim, the pinned judge untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6n ports `check_unit_composition.sh` behind a held shim.
 - `2026-10-27`: XTASK.6 slice 6n done — `UNIT-COMPOSITION` is Rust behind a held shim over the Rust judge, validator and resolver, byte-identical on the real tree and nine fixture states, nine arms; the three-unit port that began with the schema validator closes; four uncoupled drivers remain, all reading through `records_sexp.py` — slice 6o measures that reader's port the way 6j measured `sexp.py`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6o done — the record mapping is Rust (`xtask/src/records.rs`), equal to the pinned `records_sexp.py` on all 16 tracked catalogues and held there by two unit tests; nothing ported, nothing shimmed (`decision_rust-records-mapping.md`); of the four uncoupled drivers two read records as dictionaries (6n's "three" corrected); slice 6p ports `check_scope_coverage.sh`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6p done — `SCOPE-COVERAGE` is Rust behind a held shim over the Rust record mapping, byte-identical on the real tree and 11 fixture repositories, ten arms; the first driver ported over the mapping; three uncoupled drivers remain (`check_extraction.sh` next, slice 6q); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
