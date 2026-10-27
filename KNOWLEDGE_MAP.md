@@ -148,6 +148,7 @@
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)
 - [`decision_schema-and-decisions-families-rederivation.md`](docs/decisions/decision_schema-and-decisions-families-rederivation.md)
 - [`decision_stale-method-invalidates-not-locks.md`](docs/decisions/decision_stale-method-invalidates-not-locks.md)
+- [`decision_state-capture-plan.md`](docs/decisions/decision_state-capture-plan.md)
 - [`decision_task-family-count-rederivation-retention.md`](docs/decisions/decision_task-family-count-rederivation-retention.md)
 - [`decision_task-family-six-activity-count.md`](docs/decisions/decision_task-family-six-activity-count.md)
 - [`decision_task-history-seal-review.md`](docs/decisions/decision_task-history-seal-review.md)
