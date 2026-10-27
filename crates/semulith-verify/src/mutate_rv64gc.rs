@@ -145,12 +145,12 @@ pub const MUTATIONS: &[Mutation] = &[
                story: "the model does not implement wfi" },
 ];
 
-/// The mutants the tracked corpus does NOT detect — the campaign's finding, pinned. Each is a
-/// corpus gap owned by `P4-SYSTEM.15` slice e: the instruction is either not exercised by any
-/// guest or exercised only with operands that cannot tell the wrong behaviour from the right
-/// one. The pin keeps the test honest in both directions — a new gap fails it, and so does a
-/// gap a new guest closes, until the pin moves with the corpus.
-pub const KNOWN_GAPS: &[&str] = &["fle-d-as-feq", "c-sub-as-xor"];
+/// The mutants the tracked corpus does NOT detect — the campaign's finding, pinned. Slice d found
+/// two (`fle-d-as-feq`: d-compare exercised `fle.d` only where <= and = agree; `c-sub-as-xor`:
+/// c-alu exercised `c.sub` only where - and ^ agree); slice e closed both with one discriminating
+/// instruction each. The pin keeps the test honest in both directions — a new gap fails it, and
+/// so does a gap a new guest closes, until the pin moves with the corpus.
+pub const KNOWN_GAPS: &[&str] = &[];
 
 fn canonical_row(table: &[InsnDef], name: &str) -> Result<usize, String> {
     table

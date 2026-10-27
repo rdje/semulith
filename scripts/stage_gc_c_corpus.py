@@ -51,8 +51,9 @@ def programs(asm):
             'c.li x8, -1', 'c.srli x8, 63', 'c.slli x8, 63', 'c.srai x8, 63',
             'c.andi x8, -32', 'c.li x9, 1', 'c.add x8, x9', 'c.sub x8, x9',
             'c.and x8, x9', 'c.or x8, x9', 'c.xor x8, x9', 'c.mv x10, x9',
-            'c.add x10, x10', 'c.slli x10, 0', 'c.srli x8, 0', 'c.srai x8, 0'],
-            16, {8: 0, 9: 1, 10: 2}),
+            'c.add x10, x10', 'c.slli x10, 0', 'c.srli x8, 0', 'c.srai x8, 0',
+            'c.li x11, 3', 'c.sub x8, x11'],
+            18, {8: -3, 9: 1, 10: 2, 11: 3}),
         Guest('c-word', [
             'lui x8, 524288', 'addi x8, x8, -1', 'c.li x9, 1',
             'c.addw x8, x9', 'c.subw x8, x9', 'c.addiw x8, 1',

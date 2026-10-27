@@ -6,7 +6,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py c-alu.expected.sexp schema/expectations.sexp
 
-(expectations (program "c-alu.s") (entry "0x0000000080000000") (instructions 16)
+(expectations (program "c-alu.s") (entry "0x0000000080000000") (instructions 18)
   (step (n 0) (insn "c.li x8, -1") (writes (write (reg "x8") (value "0xffffffffffffffff")))
     (derivation "C.LI uses its declared base operation at length 2: the 12-bit immediate adds into rd.") (source "RVI-C §27.1.5.1; RVI-RV32I §1.1.4"))
   (step (n 1) (insn "c.srli x8, 63") (writes (write (reg "x8") (value "0x0000000000000001")))
@@ -39,4 +39,8 @@
     (derivation "C.SRLI uses its declared base operation at length 2: logical right shift.") (source "RVI-C §27.1.5.2; RVI-RV64I §3.1.2.1"))
   (step (n 15) (insn "c.srai x8, 0") (writes)
     (derivation "C.SRAI uses its declared base operation at length 2: arithmetic right shift.") (source "RVI-C §27.1.5.2; RVI-RV64I §3.1.2.1"))
+  (step (n 16) (insn "c.li x11, 3") (writes (write (reg "x11") (value "0x0000000000000003")))
+    (derivation "C.LI uses its declared base operation at length 2: the 12-bit immediate adds into rd.") (source "RVI-C §27.1.5.1; RVI-RV32I §1.1.4"))
+  (step (n 17) (insn "c.sub x8, x11") (writes (write (reg "x8") (value "0xfffffffffffffffd")))
+    (derivation "C.SUB uses its declared base operation at length 2: rd = rs1 - rs2, wrapping.") (source "RVI-C §27.1.5.3; RVI-RV32I §1.1.4"))
 )

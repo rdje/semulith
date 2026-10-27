@@ -36,8 +36,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/bound-shift.s`  `d0502bfd2fb3fc2cffc62a357514de1bf2e1db1bd0bd83808348bcc7b73c13f6`
 //!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.expected.sexp`  `414140f320b495515e558569e6a799db829c2b562fc2d2477c5658f2e71ac2f9`
 //!   `profiles/rv64gc-lab-v0/guests/bound-shiftw.s`  `7921dd98e4048c47b3349d6e0d2960d093d384016d9c36968ad30518c9b9c636`
-//!   `profiles/rv64gc-lab-v0/guests/c-alu.expected.sexp`  `5e587c1c446b7aa50e2ad67b93724bc46ed653e29979590493d8639c49df925a`
-//!   `profiles/rv64gc-lab-v0/guests/c-alu.s`  `0cc1f27c60a7874b2d233f7b023cc2f35f58d042e8415e387fb11281595aaa95`
+//!   `profiles/rv64gc-lab-v0/guests/c-alu.expected.sexp`  `3f944d1a2febe803443518b366d91f1f315128d93b2a985c7c0a137f69bd14e6`
+//!   `profiles/rv64gc-lab-v0/guests/c-alu.s`  `5245738e7eba27e9e16ec4064aa0477336f3f918c36b3ea8e31c5a93cbe1f59a`
 //!   `profiles/rv64gc-lab-v0/guests/c-backward.expected.sexp`  `13c0db79af4b4e14cf076d84bec7d1aa55be23b21fcec374960361e8854c5349`
 //!   `profiles/rv64gc-lab-v0/guests/c-backward.s`  `2cd4312bb44a7134b2dafbb0e5193b2566a9a964a2067668fccceebd22d1d373`
 //!   `profiles/rv64gc-lab-v0/guests/c-branches.expected.sexp`  `58640d572bea42e1f116135d6e03afae1681035bd331800f992fe97519b5c5c3`
@@ -96,8 +96,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/d-arith.s`  `e8cc14f78798e8eca030250ad66ef69df433bfd90cd3fee2c08bd0cc5aaf185d`
 //!   `profiles/rv64gc-lab-v0/guests/d-class.expected.sexp`  `ec4b346da9556607cf28661afcf3ebbad68c8c4905fed85d068b9d4f580b2f7b`
 //!   `profiles/rv64gc-lab-v0/guests/d-class.s`  `b23788fe63c6616e2acc401d90c63edb5f77be4108a821ed680bb3032dfb69a7`
-//!   `profiles/rv64gc-lab-v0/guests/d-compare.expected.sexp`  `ab4560a341387f8cecf5c8153f9a644fbd58c7a2e0ef4e60c82d7ada288910f5`
-//!   `profiles/rv64gc-lab-v0/guests/d-compare.s`  `4ecaab35823d39f1503501103f75fa3b48e2fa5bc73bb27afcd4f5174d3a753e`
+//!   `profiles/rv64gc-lab-v0/guests/d-compare.expected.sexp`  `616809b95863c9c03e0d7a8950496e4486efbb10cb5c9e025f7fae7f894a6146`
+//!   `profiles/rv64gc-lab-v0/guests/d-compare.s`  `5d23fb95d8398f4cc43482f94872fbbc4dd9ae63dddc21499d218970753823d2`
 //!   `profiles/rv64gc-lab-v0/guests/d-convert.expected.sexp`  `60db79dfa7cae9cb24babdeedba849dd27f7360ddf01c10501f1f46d9c8d7805`
 //!   `profiles/rv64gc-lab-v0/guests/d-convert.s`  `1f93a63d5c3cf099acc7e8c2a29925413d20b9145ba5feabce61b1e47c18015c`
 //!   `profiles/rv64gc-lab-v0/guests/d-f2f.expected.sexp`  `bb9373b8499d57e0fa968959f01dccc460bf29bae715a4c89e8c7263ec2d735e`
@@ -7783,7 +7783,7 @@ static IMAGE_D_COMPARE: &[u8] = &[
     0xD3, 0x82, 0x06, 0xF2, 0x53, 0xA7, 0x12, 0xA2, 0xF3, 0x27, 0x10, 0x00, 0x53, 0x98, 0x12, 0xA2,
     0xF3, 0x28, 0x10, 0x00, 0x73, 0x10, 0x10, 0x00, 0x37, 0x09, 0xF4, 0x7F, 0x13, 0x19, 0x09, 0x02,
     0x13, 0x0E, 0x30, 0x12, 0x13, 0x1E, 0x0E, 0x02, 0x13, 0x5E, 0x0E, 0x02, 0x33, 0x69, 0xC9, 0x01,
-    0x53, 0x03, 0x09, 0xF2, 0xD3, 0x29, 0x13, 0xA2, 0x73, 0x2A, 0x10, 0x00,
+    0x53, 0x03, 0x09, 0xF2, 0xD3, 0x29, 0x13, 0xA2, 0x73, 0x2A, 0x10, 0x00, 0xD3, 0x8A, 0x20, 0xA2,
 ];
 #[rustfmt::skip]
 static EXPECTED_D_COMPARE: &[Expectation] = &[
@@ -7822,6 +7822,7 @@ static EXPECTED_D_COMPARE: &[Expectation] = &[
     Expectation { step: 32, writes: &[] },
     Expectation { step: 33, writes: &[] },
     Expectation { step: 34, writes: &[(20, 0x0000000000000010)] },
+    Expectation { step: 35, writes: &[(21, 0x0000000000000001)] },
 ];
 
 #[rustfmt::skip]
@@ -9187,6 +9188,7 @@ static EXPECTED_C_IMMEDIATES: &[Expectation] = &[
 static IMAGE_C_ALU: &[u8] = &[
     0x7D, 0x54, 0x7D, 0x90, 0x7E, 0x14, 0x7D, 0x94, 0x01, 0x98, 0x85, 0x44, 0x26, 0x94, 0x05, 0x8C,
     0x65, 0x8C, 0x45, 0x8C, 0x25, 0x8C, 0x26, 0x85, 0x2A, 0x95, 0x02, 0x05, 0x01, 0x80, 0x01, 0x84,
+    0x8D, 0x45, 0x0D, 0x8C,
 ];
 #[rustfmt::skip]
 static EXPECTED_C_ALU: &[Expectation] = &[
@@ -9206,6 +9208,8 @@ static EXPECTED_C_ALU: &[Expectation] = &[
     Expectation { step: 13, writes: &[] },
     Expectation { step: 14, writes: &[] },
     Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[(11, 0x0000000000000003)] },
+    Expectation { step: 17, writes: &[(8, 0xFFFFFFFFFFFFFFFD)] },
 ];
 
 #[rustfmt::skip]
@@ -13930,8 +13934,8 @@ pub static GUESTS: &[Guest] = &[
         name: "d-compare",
         entry: 0x0000000080000000,
         image: IMAGE_D_COMPARE,
-        executed_steps: 35,
-        expected_fetches: 70,
+        executed_steps: 36,
+        expected_fetches: 72,
         expected: EXPECTED_D_COMPARE,
         never_written: &[],
         refusals: &[],
@@ -14161,8 +14165,8 @@ pub static GUESTS: &[Guest] = &[
         name: "c-alu",
         entry: 0x0000000080000000,
         image: IMAGE_C_ALU,
-        executed_steps: 16,
-        expected_fetches: 16,
+        executed_steps: 18,
+        expected_fetches: 18,
         expected: EXPECTED_C_ALU,
         never_written: &[],
         refusals: &[],

@@ -32,4 +32,5 @@ srli x28, x28, 32            #: … and back down. | RVI-RV64I §3.1.2
 or x18, x18, x28             #: x18 = 0x7ff4000000000123. | RVI-RV32I §1.1.4
 fmv.d.x f6, x18
 feq.d x19, f6, f1            #: a signaling NaN: INVALID even for FEQ. | RVI-D §21.1.6
-csrrs x20, fflags, x0        #: x20 = the accrued flags so far. | RVI-F §20.1.2 #|end
+csrrs x20, fflags, x0        #: x20 = the accrued flags so far. | RVI-F §20.1.2
+fle.d x21, f1, f2            #: 1.0 <= 2.0 — fle.d answers 1 where feq.d answers 0 (the mutation campaign's d-compare gap). | RVI-D §21.1.6 #|end

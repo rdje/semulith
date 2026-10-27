@@ -18,5 +18,5 @@
 | `encoding.sexp` | the composed encoding space (fragments resolved, collision-free, gated by UNIT-COMPOSITION) | composes `riscv/rv64i`, `riscv/zicsr`, `riscv/zicntr`, `riscv/system`, `riscv/a`, `riscv/zifencei`, `riscv/f`, `riscv/d`, `riscv/m`, `riscv/c` |
 | `requirements.sexp` | the requirement catalogue; RECORD-SCHEMA cross-checks declared decision mirrors verbatim | 48 requirements |
 | `contract-obligations.sexp` | the declared environment-obligation catalogue (`rv64gc-lab-env-v0`, `rv64gc-lab-env-v1`, `rv64gc-lab-env-v2`): positive AND negative checks per record; counts include historical records | 66 catalogue obligations, 132 declared checks |
-| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 168 guests, 5398 expected steps |
+| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 168 guests, 5401 expected steps |
 | `interactions.sexp` | the unit's declared interaction matrix, gated by INTERACTION-MATRIX | 28 cells over 7 axes |

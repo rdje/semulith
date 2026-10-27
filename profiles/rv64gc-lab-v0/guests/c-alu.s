@@ -15,3 +15,5 @@ c.add x10, x10
 c.slli x10, 0
 c.srli x8, 0
 c.srai x8, 0
+c.li x11, 3
+c.sub x8, x11

@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0017` — XTASK.8 slice d: the docs-only gate path (six closures; a docs commit in 27 s).
-  Before it P4-0301 (the GC validator-mutation campaign: 28 of 30, two gaps pinned), P4-0300, XTASK-0016 (the gate
-  52–56 → 6.8 min), P4-0299. Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/.
-- next_action: the tooling slice (XTASK.8 slice d) landed → features 6–10: P4-SYSTEM.15 slice e (the two corpus
-  gaps), the workload suite, the Misalign suites, …; then XTASK.6 slice 6j; `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
+- last_unit: `SEMULITH-P4-0302` — P4-SYSTEM.15 slice e: the two corpus gaps closed (30 of 30 mutants detected). Before
+  it XTASK-0017 (the docs-only gate path: a docs commit in 27 s; XTASK.8 done), P4-0301 (the campaign), P4-0300,
+  XTASK-0016 (the gate 52–56 → 6.8 min). Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/.
+- next_action: feature 7 of cycle two (6 = slice e landed): P4-SYSTEM.15 — the workload suite (the last open
+  G-REGRESSION kind) or the Misalign suites; then 8–10, then XTASK.6 slice 6j; `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.

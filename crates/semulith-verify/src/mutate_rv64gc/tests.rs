@@ -58,7 +58,7 @@ fn every_designated_mutant_is_detected_by_the_corpus() {
         undetected, KNOWN_GAPS,
         "the mutants no tracked guest detects must be exactly the pinned corpus gaps (a new gap is a finding; a closed gap moves the pin)\n{report}"
     );
-    assert!(census.len() - undetected.len() >= 28, "at least 28 of the designated mutants are detected");
+    assert_eq!(census.len() - undetected.len(), 30, "every designated mutant is detected");
 }
 
 #[test]

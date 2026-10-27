@@ -5,7 +5,7 @@
 ;; Validate with
 ;;   python3 scripts/check_sexp_schema.py d-compare.expected.sexp schema/expectations.sexp
 
-(expectations (program "d-compare.s") (entry "0x0000000080000000") (instructions 35) (fetches 70)
+(expectations (program "d-compare.s") (entry "0x0000000080000000") (instructions 36) (fetches 72)
   (step (n 0) (insn "addi x31, x0, 1") (writes (write (reg "x31") (value "0x0000000000000001")))
     (derivation "the FS=Initial pattern starts as a 1.") (source "RVI-RV32I §1.1.4"))
   (step (n 1) (insn "slli x31, x31, 13") (writes (write (reg "x31") (value "0x0000000000002000")))
@@ -75,5 +75,7 @@
   (step (n 33) (insn "feq.d x19, f6, f1") (writes)
     (derivation "a signaling NaN: INVALID even for FEQ.") (source "RVI-D §21.1.6"))
   (step (n 34) (insn "csrrs x20, fflags, x0") (writes (write (reg "x20") (value "0x0000000000000010")))
-    (derivation "x20 = the accrued flags so far.") (source "RVI-F §20.1.2 #|end"))
+    (derivation "x20 = the accrued flags so far.") (source "RVI-F §20.1.2"))
+  (step (n 35) (insn "fle.d x21, f1, f2") (writes (write (reg "x21") (value "0x0000000000000001")))
+    (derivation "1.0 <= 2.0 — fle.d answers 1 where feq.d answers 0 (the mutation campaign's d-compare gap).") (source "RVI-D §21.1.6 #|end"))
 )
