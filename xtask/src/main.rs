@@ -93,6 +93,9 @@
 //! - `cargo xtask check-semantics-corpus [--self-test]` is the `SEMANTICS` doctrine's driver (`XTASK.6` slice `6ah`,
 //!   `check_semantics_corpus.rs`): every semantics document paired with its fragment, every unit's composed fragments
 //!   refined, the citations arm judged or skipped by name; `scripts/check_semantics_corpus.sh` is its shim.
+//! - `cargo xtask check-upstream-index [--self-test]` is the `UPSTREAM-INDEX` doctrine's driver (`XTASK.6` slice
+//!   `6ai`, `check_upstream_index.rs`): every upstream issue record mirrored by its indices and report, judged by the
+//!   driver's inline Python run verbatim; `scripts/check_upstream_index.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -140,6 +143,7 @@ mod check_task_history;
 mod check_tree_claims;
 mod check_unit_books;
 mod check_unit_composition;
+mod check_upstream_index;
 mod check_wasm_build;
 mod composition;
 mod disjoint;
@@ -226,12 +230,14 @@ const NATIVE: &[&str] = &[
     "check-artifact-cleanup",
     "check-source-format",
     "check-semantics-corpus",
+    "check-upstream-index",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-upstream-index", "scripts/check_upstream_index.sh"),
     (
         "check-semantics-corpus",
         "scripts/check_semantics_corpus.sh",
@@ -329,6 +335,7 @@ fn main() -> ExitCode {
             "check-artifact-cleanup" => check_artifact_cleanup::run(&root, &args[1..]),
             "check-source-format" => check_source_format::run(&root, &args[1..]),
             "check-semantics-corpus" => check_semantics_corpus::run(&root, &args[1..]),
+            "check-upstream-index" => check_upstream_index::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

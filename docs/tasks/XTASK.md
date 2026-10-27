@@ -266,6 +266,23 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   tree's stdout and stderr byte-identical (`SEMANTICS: ok (14 check(s) — pairs, refinement rule, citations)`), and 3
   scratch fixture repositories — a clone of the repository, a semantics document planted without a fragment beside it, a planted pair whose rule cites nothing — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`;
   clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ai` — `check_upstream_index.sh` behind a held shim, the last `sexp` caller.
+  Slice 6ai (`2026-10-27`, `SEMULITH-XTASK-0045`; on clean b41abdba, taken out of turn — no feature leaf unblocked): `UPSTREAM-INDEX`'s
+  driver is Rust — `xtask/src/check_upstream_index.rs` (562 lines) ports the bash driver line for line: the inline Python judge
+  (every issue record against its two indices and report, the verified pins, the blocks entries against every tree's leaves, the
+  subtree's self-containment) runs verbatim through `python3 -` as a string constant extracted from the script, reading the records
+  with the pinned `sexp.py` it copies into the scratch tree, NOT ported; the controls write the script's synthetic tracker (its
+  `mk`, `idx`, `reset` and record heredocs as the same texts, its four Python edits as the same replacements) and print one line per
+  arm as the script did; the scan runs without a self-test gate, as the script ran it; the twenty-one bash arms are twenty-one
+  `tally.arm(` calls, the arm total unchanged; `scripts/check_upstream_index.sh` a shim of `cargo xtask check-upstream-index`. Measured
+  in a disposable draft crate: the self-test `21 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
+  tree's stdout and stderr byte-identical (`UPSTREAM-INDEX: ok (3 issue record(s) mirrored by both indices)`), and 4
+  scratch fixture repositories — a clone of the repository, the top index carrying a stale state, the vendor index carrying a stale severity, a record without its blocks field — 4 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`;
+  clippy at deny-warnings rc=0 (clean on the first in-tree run). The `sexp` callers are all ported; of the registry's forty-two drivers, twenty-nine answer
+  through shims, one is deferred with its reason, and eleven call `dossier_sexp`, `record_catalog`, `check_sexp_schema`,
+  `gate_report`, `specfp` or `retain_div_statement` in their own text. The first precheck was refused by `SEAM-INTEGRITY`: its
+  temporary-locality probe pins this entrypoint's `mkdir -p "$ROOT/target/tmp"` and `export TMPDIR` lines, which the shim now keeps
+  (the cargo child's scratch stays on the volume, as the script's children's did). Next: slice `6aj` — `check_contract_freeze.sh` behind a held
+  shim, its inline judge (over the pinned `record_catalog` and `sexp`) run verbatim — the first of the eleven pinned-module callers.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -349,7 +366,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ai`: `check_upstream_index.sh` behind a held shim — the last `sexp` caller, its inline judge run verbatim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6aj`: `check_contract_freeze.sh` behind a held shim, its inline judge run verbatim — the first of the eleven pinned-module callers; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -485,6 +502,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ah **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0043/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ah **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_semantics_corpus.sh` through the shim → the same `ok (14 check(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (8 bash arms out, 8 `tally.arm(` in; 1692 holds).
 - [x] slice 6ah **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ah, frontier 6ai, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ai **REPRODUCE / ISSUE** — before/ (bash driver at b41abdba; target/xtask/xt0044/before/): `UPSTREAM-INDEX: ok (3 issue record(s) mirrored by both indices)` rc 0, stderr empty; `UPSTREAM-INDEX --self-test: 21 pass / 0 fail` (one `  ok` line per arm); `grep -c 'arm "' scripts/check_upstream_index.sh` = 21.
+- [x] slice 6ai **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 157-line inline Python judge over the pinned `sexp.py` and four inline Python edits (`grep -c 'python3 -' scripts/check_upstream_index.sh` = 5); the judge stays Python, run verbatim as the script ran it.
+- [x] slice 6ai **FIX** — xtask/src/check_upstream_index.rs (`shasum -a 256` = 59228f56b45a56ab790e533d8334cab78c527e8cb28f4914210aba9432022940; `wc -l` = 562; `grep -cE '^[[:space:]]+tally\.arm\('` = 21); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_upstream_index.sh a shim (`exec cargo xtask check-upstream-index "$@"`).
+- [x] slice 6ai **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0044/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ai **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_upstream_index.sh` through the shim → the same `ok (3 issue record(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (21 bash arms out, 21 `tally.arm(` in; 1692 holds).
+- [x] slice 6ai **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ai, the frontier, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -549,3 +572,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6af done — `ARTIFACT-COHORT`'s driver is Rust behind a held shim (the probe suites run as before), byte-identical on the real tree and 2 fixture repositories, sixteen scorings; `check_readme_routes.sh` deferred with its reason (PATH-shadowing controls, ~600 lines); next `check_source_format.sh` over `sexp.rs` (slice 6ag); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ag done — `SOURCE-FORMAT` is Rust behind a held shim over the harness's reader (the first `sexp`-only caller ported; the refusal probe run as before), byte-identical on the real tree and 3 fixture repositories, seven arms and eighteen scorings; next `check_semantics_corpus.sh` (slice 6ah); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ah done — `SEMANTICS`'s driver is Rust behind a held shim (the encoding documents over the harness's reader, the judges spawned as before), byte-identical on the real tree and 3 fixture repositories, eight arms; next `check_upstream_index.sh` (slice 6ai); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ai done — `UPSTREAM-INDEX`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, twenty-one arms; the `sexp` callers are all ported — 29 of 42 drivers answer through shims, one deferred, eleven call other pinned modules; next `check_contract_freeze.sh` (slice 6aj); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
