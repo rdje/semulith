@@ -483,6 +483,24 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   in stdout, stderr and exit status (the first draft passed the live paths absolute and the DRIFT line printed them — the script
   passes them relative; three states caught it, §15). In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run).
   The uncoupled drivers are all ported (6k–6s). Left in the registry (re-measured by the drivers' own text — the first census matched `.sexp` filenames and over-counted the pinned callers): fourteen free drivers whose judges are separate Python scripts spawned by path or inline Python without pinned imports (`check_book_index.sh`, `check_board_verdict.sh`, `check_board_gen.sh`, `check_platform_gen.sh`, `check_state_gen.sh`, `check_interaction_matrix.sh`, `check_unit_books.sh`, `check_tree_claims.sh`, `check_frontier_sync.sh`, `check_task_history.sh`, `check_changelog_shards.sh`, `check_readme_routes.sh`, `check_derived_counts.sh`, `check_artifact_cleanup.sh`; `check_seam_integrity.sh` waits on `check_gap_claims.sh`'s readers and the spine's `check_doctrines.sh` is held NEUTRAL), and twelve whose own text imports or runs a pinned module — the three on `sexp` alone (`check_semantics_corpus.sh`, `check_source_format.sh`, `check_upstream_index.sh`) portable over `sexp.rs` as 6k was. Next: slice `6t` — `check_book_index.sh` behind a held shim.
+  Slice 6t (`2026-10-27`, `SEMULITH-XTASK-0028`; on clean a010ecdb, taken out of turn — no feature leaf unblocked): `BOOK-INDEX`'s
+  driver is Rust — `xtask/src/check_book_index.rs` (308 lines) ports the bash driver line for line: the generator
+  `scripts/gen_book_index.py` spawned exactly as the driver spawned it (`--check` over the book, the glossary and the committed
+  index), NOT ported; the status reading the same — 1 with the generator's named `DRIFT` line is the FAIL, every other failure
+  a refusal, launch failures and unknown exits included; the controls over a copy of the real book (an index emitted, a faithful
+  regeneration in sync, a hand-edited index, the chapters emptied, a chapter the SUMMARY names removed, the SUMMARY removed) and
+  the judge's four status readings; the ten bash arms are ten `tally.arm(` calls (one arm's "no output" form kept), the arm
+  total unchanged; `scripts/check_book_index.sh` a shim of `cargo xtask check-book-index`. Measured in a disposable draft crate:
+  the self-test `10 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr
+  byte-identical (`BOOK-INDEX: ok (docs/book/src/index.md matches the book, 40 table rows)`), and 5 scratch fixture
+  repositories (every pinned script, the book and the glossary copied in) — green, a hand-edited index, a chapter missing, the
+  chapters emptied, no SUMMARY — 5 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
+  deny-warnings rc=0 (clean on the first in-tree run).
+  The first chain was refused by `PROFILE-CONSISTENCY`'s self-test: the `group-cleanup` mutation of the matched-GPR collector
+  probe survived (`25 tests / 0 failures`) while fixture repositories and draft builds ran beside the gate; alone on the idle
+  machine the mutation is caught three runs of three (rc 1, `25 tests / 1 failures`) — a load-sensitive control, recorded for
+  the doctrine's owner (§9; no card while `docs/knowledge/` sits at its ceiling, see 6r-b); the chain re-ran on an idle machine.
+  Next: slice `6u` — `check_board_verdict.sh` behind a held shim (its judge `board_verdict.py` spawned as before).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -566,7 +584,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6t`: `check_book_index.sh` behind a held shim — the first of fourteen free drivers left; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6u`: `check_board_verdict.sh` behind a held shim — the board's composition judge spawned as before; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -663,6 +681,12 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - [x] slice 6s **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0027/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each (the first draft: 3 differ, the DRIFT line's path — fixed, re-measured).
 - [x] slice 6s **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_m_vectors.sh` through the shim → the same `4485 vectors in sync` line; `bash scripts/check_derived_counts.sh` → ok (6 bash arms out, 6 `tally.arm(` in; 1692 holds).
 - [x] slice 6s **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6s, the frontier, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6t **REPRODUCE / ISSUE** — before/ (bash driver at a010ecdb; target/xtask/xt0028/before/): `BOOK-INDEX: ok (docs/book/src/index.md matches the book, 40 table rows)` rc 0, stderr empty; `BOOK-INDEX --self-test: 10 pass / 0 fail`; `grep -c 'arm "' scripts/check_book_index.sh` = 10.
+- [x] slice 6t **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/gen_book_index.py --check` (`grep -c gen_book_index.py scripts/check_book_index.sh` = 9) and a status-reading function (`grep -c judge_generator` = 6); the generator is the judge and stays pinned Python, spawned as before.
+- [x] slice 6t **FIX** — xtask/src/check_book_index.rs (`shasum -a 256` = b89db20eac461d2f78320cb2c04870f4ed1a1f291c728040f8fea36897894b5c; `wc -l` = 308; `grep -cE '^[[:space:]]+tally\.arm\('` = 10); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_book_index.sh a shim (`exec cargo xtask check-book-index "$@"`).
+- [x] slice 6t **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0028/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6t **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_book_index.sh` through the shim → the same `40 table rows` line; `bash scripts/check_derived_counts.sh` → ok (10 bash arms out, 10 `tally.arm(` in; 1692 holds).
+- [x] slice 6t **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6t, frontier 6u, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -711,3 +735,4 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - `2026-10-27`: XTASK.6 slice 6q done — `EXTRACTION`'s driver is Rust behind a held shim (the pinned Python judge spawned as before, not ported; the fixtures written through the Rust record mapping), byte-identical on the real tree and 8 fixture repositories, eleven arms; the closed slices' acceptance rows 6a–6o moved verbatim to `docs/tasks/archive/XTASK-1.md` (this leaf 125,454 → 81406 B); two uncoupled drivers remain (`check_citation_quotes.sh` next, slice 6r); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6r done — `CITATION-QUOTES`'s driver is Rust behind a held shim (the pinned Python tool and its two inline controls spawned verbatim), byte-identical on the real tree and 5 fixture repositories, twenty-two arms; CHANGELOG.md sharded (`docs/changelog/shard-0417.md`); one uncoupled driver remains (`check_m_vectors.sh`, slice 6s); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6s done — `M-VECTORS`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 5 fixture repositories, six arms; the uncoupled drivers are all ported (6k–6s); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6t done — `BOOK-INDEX`'s driver is Rust behind a held shim (the generator spawned as before), byte-identical on the real tree and 5 fixture repositories, ten arms; next `check_board_verdict.sh` (slice 6u); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

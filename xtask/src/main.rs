@@ -48,6 +48,9 @@
 //! - `cargo xtask check-m-vectors [--self-test]` is the `M-VECTORS` doctrine's driver (`XTASK.6` slice `6s`,
 //!   `check_m_vectors.rs`): the table judged against its generator by the driver's inline Python judge, run verbatim;
 //!   `scripts/check_m_vectors.sh` is its shim.
+//! - `cargo xtask check-book-index [--self-test]` is the `BOOK-INDEX` doctrine's driver (`XTASK.6` slice `6t`,
+//!   `check_book_index.rs`): the committed book index judged against a regeneration by `scripts/gen_book_index.py`,
+//!   spawned as the driver spawned it; `scripts/check_book_index.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -67,6 +70,7 @@
 //! test holds each shim, listed in `PORTED`, to exactly that — three commands, or the same with the
 //! repository-volume scratch preamble that `probe_temporary_locality.py` requires of some scripts.
 
+mod check_book_index;
 mod check_citation_quotes;
 mod check_commit_prefix;
 mod check_delivery_provenance;
@@ -151,12 +155,14 @@ const NATIVE: &[&str] = &[
     "check-extraction",
     "check-citation-quotes",
     "check-m-vectors",
+    "check-book-index",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-book-index", "scripts/check_book_index.sh"),
     ("check-m-vectors", "scripts/check_m_vectors.sh"),
     ("build-bench", "scripts/build_bench.sh"),
     ("check-wasm-build", "scripts/check_wasm_build.sh"),
@@ -212,6 +218,7 @@ fn main() -> ExitCode {
             "check-extraction" => check_extraction::run(&root, &args[1..]),
             "check-citation-quotes" => check_citation_quotes::run(&root, &args[1..]),
             "check-m-vectors" => check_m_vectors::run(&root, &args[1..]),
+            "check-book-index" => check_book_index::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
