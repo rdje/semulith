@@ -38,6 +38,10 @@
 //! - `cargo xtask check-scope-coverage [--self-test]` is the `SCOPE-COVERAGE` doctrine (`XTASK.6` slice `6p`,
 //!   `check_scope_coverage.rs`): every unit's declared scope against the census beside its registry, read through
 //!   the Rust record mapping; `scripts/check_scope_coverage.sh` is its shim.
+//! - `cargo xtask check-extraction [--self-test]` is the `EXTRACTION` doctrine (`XTASK.6` slice `6q`,
+//!   `check_extraction.rs`): every tracked unit judged by the pinned Python judge `scripts/check_extraction.py`,
+//!   spawned as the driver spawned it, the self-test's record fixtures written through the Rust record mapping;
+//!   `scripts/check_extraction.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -60,6 +64,7 @@
 mod check_commit_prefix;
 mod check_delivery_provenance;
 mod check_exercise_coverage;
+mod check_extraction;
 mod check_fact_ownership;
 mod check_fixture_fingerprints;
 mod check_push_record;
@@ -135,6 +140,7 @@ const NATIVE: &[&str] = &[
     "check-encoding-disjoint",
     "check-unit-composition",
     "check-scope-coverage",
+    "check-extraction",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -161,6 +167,7 @@ const PORTED: &[(&str, &str)] = &[
         "scripts/check_unit_composition.sh",
     ),
     ("check-scope-coverage", "scripts/check_scope_coverage.sh"),
+    ("check-extraction", "scripts/check_extraction.sh"),
     (
         "check-exercise-coverage",
         "scripts/check_exercise_coverage.sh",
@@ -190,6 +197,7 @@ fn main() -> ExitCode {
             "check-encoding-disjoint" => disjoint::run(&root, &args[1..]),
             "check-unit-composition" => check_unit_composition::run(&root, &args[1..]),
             "check-scope-coverage" => check_scope_coverage::run(&root, &args[1..]),
+            "check-extraction" => check_extraction::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
