@@ -60,6 +60,9 @@
 //! - `cargo xtask check-platform-gen [--self-test]` is the `PLATFORM-GEN` doctrine's driver (`XTASK.6` slice `6w`,
 //!   `check_platform_gen.rs`): every tracked board's platform capability manifest judged against a regeneration by
 //!   `scripts/gen_platform.py`, spawned as the driver spawned it; `scripts/check_platform_gen.sh` is its shim.
+//! - `cargo xtask check-state-gen [--self-test]` is the `STATE-GEN` doctrine's driver (`XTASK.6` slice `6x`,
+//!   `check_state_gen.rs`): the architectural-state modules judged against a regeneration from their descriptors by
+//!   `scripts/gen_state.py`, spawned as the driver spawned it; `scripts/check_state_gen.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -95,6 +98,7 @@ mod check_push_record;
 mod check_registry_mirror;
 mod check_rustdoc;
 mod check_scope_coverage;
+mod check_state_gen;
 mod check_unit_composition;
 mod check_wasm_build;
 mod composition;
@@ -171,12 +175,14 @@ const NATIVE: &[&str] = &[
     "check-board-verdict",
     "check-board-gen",
     "check-platform-gen",
+    "check-state-gen",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-state-gen", "scripts/check_state_gen.sh"),
     ("check-platform-gen", "scripts/check_platform_gen.sh"),
     ("check-board-gen", "scripts/check_board_gen.sh"),
     ("check-board-verdict", "scripts/check_board_verdict.sh"),
@@ -240,6 +246,7 @@ fn main() -> ExitCode {
             "check-board-verdict" => check_board_verdict::run(&root, &args[1..]),
             "check-board-gen" => check_board_gen::run(&root, &args[1..]),
             "check-platform-gen" => check_platform_gen::run(&root, &args[1..]),
+            "check-state-gen" => check_state_gen::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
