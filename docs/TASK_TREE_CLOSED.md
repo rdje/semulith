@@ -35,4 +35,5 @@ tree, and an open tree here — or a completed one there — is a breach.
 | [`SEMULITH-PKG`](tasks/SEMULITH-PKG.md) | `done` | — (9/9 leaves complete) | repo-local |
 | [`BOOTSTRAP`](tasks/BOOTSTRAP.md) | `done` | — | repo-local |
 | [`RUSTDOC`](tasks/RUSTDOC.md) | `done` (7/7 leaves complete `2026-10-24`) | — (7/7 leaves complete; the API reference is rustdoc, built with the book; API-DOCS gates links, HTML and a 0-undocumented ratchet; 100.0% coverage in all three library crates) | repo-local |
+| [`CITATION-ACCURACY`](tasks/CITATION-ACCURACY.md) | `done` (2/2 leaves complete `2026-10-27`) | — (the quoted-phrase-in-section gate over every tracked `.sexp`, then the Markdown census: two adjacency shapes decidable and judged, paragraph-scope attribution shown undecidable in prose and counted; a new quoting shape joins as a new leaf with its own RED arm; `SEMULITH-CA-0002`) | repo-local |
 <!-- ANCHOR_END: closed -->

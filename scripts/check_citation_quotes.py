@@ -35,11 +35,18 @@ of the cited artifact does hold the phrase, or that none does.
 ⚠️ HONEST LIMITS. It judges quotes, not paraphrase: an unquoted claim under a locator is still
 a reviewer's question. A source pinned as a declared non-snapshot artifact (`http_status 0` —
 a PDF) has no section structure here; quotes attributed to it are counted UNCHECKABLE by name.
-Markdown documents are not in the corpus (the tree's open question).
+MARKDOWN (CITATION-ACCURACY.2). Live tracked `.md` documents join the corpus under the two shapes the
+census proved decidable — adjacency only: MD-R1, a quoted phrase immediately followed by a parenthesized
+locator (`"…" (RVI-F §20.1.2`); MD-R5, a possessive locator immediately before it (`RVI-F §20.1.4's "…"`).
+A quoted phrase elsewhere in a paragraph that names a locator is COUNTED, never judged: measured, such
+paragraphs quote laboratory terms, acceptance wording and tool names beside the specification (61 of 61
+would have been false attributions). Code spans and fenced blocks are not quotations; history
+(docs/tasks/archive/, docs/changelog/) is not judged. Double, typographic and single quotes are read; a
+phrase may wrap a line, never a blank line.
 
 Usage:
   check_citation_quotes.py                       judge every tracked .sexp (the corpus)
-  check_citation_quotes.py --pages DIR FILE…     judge FILEs against synthetic pages DIR/<ID>.html
+  check_citation_quotes.py --pages DIR FILE…     judge FILEs (.sexp or .md) against synthetic pages DIR/<ID>.html
 Exit: 0 every judged quote occurs in its cited section; 1 a miss or an unresolved section;
       2 refused (the pinned pages are absent — a check that cannot judge never reports green).
 """
@@ -208,6 +215,77 @@ def judge(files: list[Path], pages: dict[str, Path | None], label) -> int:
     return 1 if findings else 0
 
 
+# ── Markdown (CITATION-ACCURACY.2): the two adjacency shapes the census proved decidable ─────────
+MD_LOC = r"([A-Z][A-Z0-9-]+) §([0-9]+(?:\.[0-9]+)*)"
+MD_DQ = re.compile(r"[\"“]((?:[^\"”\n]|\n(?!\n)){6,300}?)[\"”]")  # wraps a line, never a blank line
+MD_R1_AFTER = re.compile(r"\s*\(" + MD_LOC)
+MD_R5_BEFORE = re.compile(MD_LOC + r"['’]s\s*$")
+MD_HISTORY = ("docs/tasks/archive/", "docs/changelog/")
+
+
+def markdown_prose(text: str) -> str:
+    """The document without its code: fenced blocks dropped, code spans replaced — code is not a quotation."""
+    text = re.sub(r"```.*?```", "\n", text, flags=re.S)
+    return re.sub(r"`[^`\n]*`", "`code`", text)
+
+
+def markdown_attributions(text: str):
+    """(phrase, rule, source id, section) per decidable quote; (phrase, None, None, None) per counted one —
+    a quote with a locator within 400 characters but no adjacency."""
+    out = []
+    prose = markdown_prose(text)
+    singles = [m for m in QUOTE.finditer(prose) if len(m.group(1)) >= MIN_PHRASE and "\n\n" not in m.group(1)]
+    for m in sorted(list(MD_DQ.finditer(prose)) + singles, key=lambda m: m.start()):
+        phrase = m.group(1)
+        if len(key(phrase)) < MIN_PHRASE:
+            continue
+        after = prose[m.end(): m.end() + 80]
+        before = prose[max(0, m.start() - 80): m.start()]
+        a = MD_R1_AFTER.match(after)
+        b = MD_R5_BEFORE.search(before)
+        if a:
+            out.append((phrase, "MD-R1", a.group(1), a.group(2)))
+        elif b:
+            out.append((phrase, "MD-R5", b.group(1), b.group(2)))
+        elif re.search(MD_LOC, prose[max(0, m.start() - 400): m.end() + 400]):
+            out.append((phrase, None, None, None))
+    return out
+
+
+def judge_markdown(files: list[Path], pages: dict[str, Path | None], label) -> int:
+    """Judge the decidable Markdown quotes; print the findings and the census line (before the .sexp line)."""
+    secs: dict[str, dict[str, str]] = {}
+    counts = {"MD-R1": 0, "MD-R5": 0}
+    counted, uncheckable, findings = 0, {}, []
+    for f in files:
+        for phrase, rule, sid, num in markdown_attributions(f.read_text(encoding="utf-8")):
+            if rule is None:
+                counted += 1
+                continue
+            if sid not in pages or pages[sid] is None:
+                uncheckable[sid] = uncheckable.get(sid, 0) + 1
+                continue
+            if sid not in secs:
+                secs[sid] = sections(pages[sid].read_text(encoding="utf-8", errors="replace"))
+            counts[rule] += 1
+            body = secs[sid].get(num)
+            short = phrase if len(phrase) <= 90 else phrase[:87] + "…"
+            if body is None:
+                findings.append(f"  UNRESOLVED {label(f)} [{rule}]: {sid} §{num} does not exist in the pinned "
+                                f"artifact — '{short}'")
+            elif not occurs(phrase, body):
+                findings.append(f"  MISS {label(f)} [{rule}]: '{short}' is not in {sid} §{num} — "
+                                f"{where(phrase, secs[sid])}")
+    for line in findings:
+        print(line)
+    rules = ", ".join(f"{r} {n}" for r, n in counts.items())
+    skip = ", ".join(f"{sid} ×{n}" for sid, n in sorted(uncheckable.items())) or "none"
+    print(f"CITATION-QUOTES (markdown): {len(files)} document(s); {sum(counts.values())} attributed quote(s) "
+          f"judged ({rules}); {len(findings)} finding(s); {counted} counted (a locator near, no adjacency); "
+          f"uncheckable (no HTML pin): {skip}")
+    return 1 if findings else 0
+
+
 def corpus_pages() -> dict[str, Path | None]:
     """Every source id the profiles pin → its page on disk (None for a declared PDF pin),
     through check_citations' own route (the fetched area, else the materials cache)."""
@@ -235,14 +313,21 @@ def main(argv: list[str]) -> int:
             d = Path(argv[1])
             pages = {p.stem: p for p in d.glob("*.html")}
             pages.update({p.stem: None for p in d.glob("*.pdf")})
-            return judge([Path(a) for a in argv[2:]], pages, lambda f: f.name)
+            given = [Path(a) for a in argv[2:]]
+            rc_md = judge_markdown([a for a in given if a.suffix == ".md"], pages, lambda f: f.name)
+            rc = judge([a for a in given if a.suffix != ".md"], pages, lambda f: f.name)
+            return max(rc, rc_md)
         if argv:
             print(__doc__, file=sys.stderr)
             return 2
         tracked = subprocess.run(["git", "ls-files", "*.sexp"], cwd=REPO, check=True,
                                  capture_output=True, text=True).stdout.split()
-        return judge([REPO / t for t in tracked], corpus_pages(),
-                     lambda f: f.relative_to(REPO).as_posix())
+        docs = subprocess.run(["git", "ls-files", "*.md"], cwd=REPO, check=True,
+                              capture_output=True, text=True).stdout.split()
+        pages = corpus_pages()
+        rel = lambda f: f.relative_to(REPO).as_posix()  # noqa: E731
+        rc_md = judge_markdown([REPO / d for d in docs if not d.startswith(MD_HISTORY)], pages, rel)
+        return max(judge([REPO / t for t in tracked], pages, rel), rc_md)
     except (Refusal, _C.CitationError, _sexp.SexpError, KeyError, OSError) as exc:
         print(f"CITATION-QUOTES: REFUSED — {exc}", file=sys.stderr)
         return 2

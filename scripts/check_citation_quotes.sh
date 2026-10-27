@@ -115,6 +115,40 @@ self_test() {
   run pdf
   arm "GREEN a quote under a PDF pin is counted UNCHECKABLE by name" "$rc" 0 "$out" "PDFDOC ×1"
 
+
+  # ── Markdown (CITATION-ACCURACY.2): the two adjacency shapes; code, prose-distance and wraps ─────
+  mdoc() { printf '%s\n' "$2" > "$t/$1.md"; }
+  runmd() { out="$(python3 "$TOOL" --pages "$t/pages" "$t/$1.md" 2>&1)"; rc=$?; }
+
+  mdoc md-r1 'The rule: "the quick brown fox jumps" (SPEC §1.1).'
+  runmd md-r1
+  arm "GREEN an MD-R1 quote followed by its locator passes" "$rc" 0 "$out" "(MD-R1 1, MD-R5 0)"
+
+  mdoc md-r1-wrong 'It says "Implementations shall ignore writes" (SPEC §1.1).'
+  runmd md-r1-wrong
+  arm "RED an MD-R1 quote under the wrong section is refused, naming where it is" "$rc" 1 "$out" "is not in SPEC §1.1 — found in §1.2"
+
+  mdoc md-r5 "SPEC §1.1's \"the lazy dog\" is the sentence's end."
+  runmd md-r5
+  arm "GREEN an MD-R5 possessive locator before its quote passes" "$rc" 0 "$out" "(MD-R1 0, MD-R5 1)"
+
+  mdoc md-r5-wrong "SPEC §1.2's \"quick brown fox\" is elsewhere."
+  runmd md-r5-wrong
+  arm "RED an MD-R5 quote under the wrong section is refused" "$rc" 1 "$out" "found in §1.1"
+
+  mdoc md-code 'A code span: `"never in the page at all"` (SPEC §1.1) is not a quotation.'
+  runmd md-code
+  arm "GREEN a quote inside a code span is not judged" "$rc" 0 "$out" "0 attributed quote(s) judged (MD-R1 0, MD-R5 0)"
+
+  mdoc md-prose 'SPEC §1.1 describes the fox. The laboratory calls the outcome "nothing retired" in its own words.'
+  runmd md-prose
+  arm "GREEN a quote in a one-locator paragraph is counted, never judged" "$rc" 0 "$out" "1 counted (a locator near, no adjacency)"
+
+  mdoc md-wrap 'As written, "the quick brown
+fox jumps" (SPEC §1.1) wraps a line.'
+  runmd md-wrap
+  arm "GREEN a quoted phrase that wraps a line stays one phrase" "$rc" 0 "$out" "(MD-R1 1, MD-R5 0); 0 finding(s)"
+
   out="$(python3 "$TOOL" --bogus 2>&1)"; rc=$?
   arm "RED an unknown invocation is refused, not judged" "$rc" 2 "$out" "Usage:"
 

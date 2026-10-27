@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tree ID: `CITATION-ACCURACY`
-- Status: `active`
+- Status: `done` (`2026-10-27` — both leaves complete)
 - Roadmap lane: cross-cutting evidence discipline (`ROADMAP.md` — the evidence/traceability
   contract, `docs/EVIDENCE_AND_GATES.md`; `RULES.md` SRC-*: a claim cites the exact source)
 - Gate: the project doctrine this tree registers (`CITATION-QUOTES`)
@@ -71,21 +71,39 @@ names the section where the phrase actually is.
   `promotion: declined (the lesson is mechanized — the CITATION-QUOTES row in DOCTRINE_ENFORCEMENT.md states it and the gate enforces it).`
 
 - ID: `CITATION-ACCURACY.2` — **the Markdown census**
-  Status: `proposed`
+  Status: `done` (`2026-10-27`, `SEMULITH-CA-0002`; feature 13 of the alternation's third cycle,
+  `decision_alternate-port-and-features.md`)
   Goal: measure the attribution grammar of the tracked Markdown documents that quote the
   pinned specification (dossiers, decision records, the book) — and extend the corpus only
   to a shape the census proves decidable.
   Acceptance: a census of quoted phrases under `ID §N` locators in tracked `.md`, each
   shape dispositioned (decidable → judged; undecidable → counted with its reason); any
   extension RED-proven before it judges.
-  Verification: pending
-  Commit: pending
+  Result: **met.** The census over every tracked `.md` (89 `ID §N` locator mentions, 64 in the 408 live documents, 25
+  in history under docs/tasks/archive/ and docs/changelog/, which is never edited and not judged): two shapes are
+  decidable, both adjacency — MD-R1, a quoted phrase immediately followed by a parenthesized locator; MD-R5, a
+  possessive locator immediately before it (`RVI-F §20.1.4's "after rounding"`). A quoted phrase elsewhere in a
+  paragraph that names one locator is NOT decidable in prose: the prototype's paragraph rule attributed 61 such
+  quotes and they were the laboratory's own wording (`'nothing retired'`, `'a later leaf'` under RVP-MACHINE §2.1.4
+  — false misses), so that shape is counted, never judged; 51 locators have no quoted phrase near them; 36 cite ids
+  that are not pinned specification sources (ARCHITECTURE, ARCH, HTML, LIMITATIONS, FM); 8 sit beside two or more
+  locators. Code spans and fenced blocks are not quotations; a phrase may wrap a line, never a blank line; double,
+  typographic and single quotes are read. The gate extends to the live `.md` under the two shapes: 1 attributed quote
+  judged (MD-R5 1), 0 findings, 17 counted, uncheckable ARCHITECTURE ×1 (a project document) and SIFIVE-FU540-C000 ×1
+  (a PDF pin; the dossier spelled it `FU540` — corrected to the pinned id); the `.sexp` line unchanged (115 judged,
+  0 findings). Seven RED/GREEN arms join the wrapper's self-test (22 pass / 0 fail): MD-R1 in section, MD-R1 wrong
+  section refused naming §1.2, MD-R5 in section, MD-R5 wrong section refused, a code-span quote not judged, a
+  one-locator paragraph quote counted, a wrapped phrase one phrase. DERIVED-COUNTS re-derived the arm total 1685 →
+  1692. Evidence target/citation-accuracy (md_census.py, md_scan.py, apply_md.py, selftest.log, corpus.log).
+  Verification: `2026-10-27` — the Verification Log below.
+  Commit: `SEMULITH-CA-0002`
+  `promotion: declined (the grammar is mechanized — the census's dispositions are the gate's rules and its arms).`
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `CITATION-ACCURACY.2` | `proposed` | the corpus's remaining quoting surface (Markdown); `.1` landed the gate over every tracked `.sexp` |
+| — | — | — | 2/2 leaves complete — the tree closes; a new quoting shape joins as a new leaf with its own RED arm |
 
 ## Decisions
 
@@ -113,11 +131,21 @@ names the section where the phrase actually is.
   pinned pages are an untracked, network-acquired cache, so a clone without them prints a NAMED
   SKIP; the self-test judges synthetic pages and always runs.
 
+- `2026-10-27` (`.2`, the census before the extension; sources: target/citation-accuracy/md_census.py over
+  every tracked `.md`, md_scan.py over the live ones, both reusing the gate's matcher and pinned pages):
+  **The measured grammar.** 89 locator mentions (64 live, 25 historical); 51 with no quoted phrase in their
+  paragraph; 36 under ids that are not pinned specification sources; 8 beside two or more locators; 61 in a
+  paragraph naming exactly one locator — judged as if attributed, those produced false misses on the
+  laboratory's own wording, so paragraph scope is undecidable in prose where a single `.sexp` string was
+  decidable (R4). **The decidable shapes**: adjacency only — MD-R1 (quote then `(ID §N`) and MD-R5
+  (`ID §N's` then the quote); live population 1, judged OK. **Exclusions**: code spans and fenced blocks
+  (code is not a quotation), history parts (never edited after the move), a blank line ends a phrase.
+
 ## Open Questions
 
-- Do Markdown documents join the corpus (the dossiers and decision records quote the
-  specification under `RVI-* §N` locators)? Owned by `.2` (proposed): the grammar is measured
-  first, and only a decidable shape is judged.
+- Do Markdown documents join the corpus? **Answered by `.2`** (`2026-10-27`): yes, under the two
+  adjacency shapes the census proved decidable; paragraph-scope attribution stays counted, never
+  judged — a new shape joins only with its own RED arm.
 
 ## Blockers
 
@@ -160,20 +188,33 @@ names the section where the phrase actually is.
   registry mirror), `TOOLBOX.md` row, `LIVE_STATUS.md` (35 / 445), `docs/TASK_TREE.md` row,
   `MEMORY.md` (active trees), `CHANGELOG.md`, `DEV_NOTES.md` (+ its shard).
 
+`CITATION-ACCURACY.2` — the Markdown census (`2026-10-27`, `SEMULITH-CA-0002`):
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — at 9cdfdc50: `grep -c 'MD-R' scripts/check_citation_quotes.py` = 0 and `main()` judged `git ls-files '*.sexp'` only; the census (target/citation-accuracy/md_census.py): 89 locator mentions in tracked `.md`, 61 quotes in one-locator paragraphs a paragraph rule misattributes (false misses on the laboratory's wording), 2 adjacency quotes.
+- [x] **FIX** — scripts/check_citation_quotes.py: `markdown_prose`, `markdown_attributions` (MD-R1, MD-R5), `judge_markdown`, the live `.md` corpus in `main` (history excluded), `--pages` accepting `.md`; scripts/check_citation_quotes.sh: `mdoc`/`runmd` and seven arms (`grep -c 'runmd ' scripts/check_citation_quotes.sh` = 7); profiles/rv64gc-lab-v0/DOSSIER.md: `FU540 §4.7` → the pinned `SIFIVE-FU540-C000 §4.7`.
+- [x] **ADDRESSED (verified)** — `bash scripts/check_citation_quotes.sh --self-test` → `CITATION-QUOTES --self-test: 22 pass / 0 fail`; `python3 scripts/check_citation_quotes.py` → `CITATION-QUOTES (markdown): 408 document(s); 1 attributed quote(s) judged (MD-R1 0, MD-R5 1); 0 finding(s); 17 counted (a locator near, no adjacency); uncheckable (no HTML pin): ARCHITECTURE ×1, SIFIVE-FU540-C000 ×1`; the two RED arms fire on the synthetic wrong-section fixtures (`found in §1.2`, `found in §1.1`).
+- [x] **NO REGRESSION** — `bash scripts/check_citation_quotes.sh` rc=0 with the `.sexp` verdict byte-identical: `CITATION-QUOTES: 115 attributed quote(s) judged (R1 1, R2 108, R3 3, R4 3); 0 finding(s)`; `bash scripts/check_derived_counts.sh` → ok once LIVE_STATUS re-derived 1685 → 1692; `bash scripts/check_materials_bill.sh` → ok after the dossier edit (model book regenerated).
+- [x] **LOCKSTEP** — docs/toolbox/definition.md row (Markdown named); the tree (`.2` done, the tree done, the frontier closed), docs/TASK_TREE.md (the row leaves the index) and docs/TASK_TREE_CLOSED.md (the closed-tree register gains it — FRONTIER-SYNC refused the bare removal first, then a register row naming leaf ids), LIVE_STATUS (arm total), CHANGELOG, MEMORY; profiles/rv64gc-lab-v0/GS-REPORT.md regenerated — the dossier is a profile source file, so its one-locator edit moved the GS content digest (GATE-REPORT refused the first chain).
+
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
+| `2026-10-27` | `.2` | the census over every tracked `.md` (89 locator mentions; 61 paragraph-scope quotes shown undecidable; 2 adjacency shapes); the extended tool over the live `.md` (1 judged, 0 findings) and the unchanged `.sexp` corpus; 22 controls (7 new, 2 RED) | met |
 | `2026-10-06` | `.1` | the gap measured (check_citations' scope: sem files, existence); the census (108 quotes, 24 attributable); the tool against the real pre-fix files (6 MISS → §20.1.2) and HEAD (24 judged, 0 findings); 14 controls + the mutation (6 RED arms red); registration mirrors | **met** — CITATION-QUOTES registered (35th doctrine); quotes now checked against the section they cite |
 
 ## Commit Log
 
 | Leaf | Commit subject or reference | Notes |
 | --- | --- | --- |
+| `.2` | `SEMULITH-CA-0002 (leaf CITATION-ACCURACY.2): the Markdown census — two adjacency shapes decidable and judged, paragraph scope counted` | the census, the two rules, seven arms, the dossier locator; the tree closes |
 | `.1` | `SEMULITH-CA-0001 (leaf CITATION-ACCURACY.1): the quoted-phrase-in-section gate — CITATION-QUOTES registered, RED on the real pre-fix corpus (6 misses, each naming §20.1.2)` | the tool + wrapper + registration; `.2` proposed for Markdown |
 
 ## Changelog
 
+- `2026-10-27`: `.2` done (`SEMULITH-CA-0002`) — the Markdown census: two adjacency shapes decidable
+  and judged (1 live quote), paragraph-scope attribution shown undecidable in prose and counted; the
+  tree closes.
 - `2026-10-06`: `.1` done (`SEMULITH-CA-0001`) — CITATION-QUOTES registered: 24 attributed quotes
   judged across every tracked `.sexp`, RED-proven on the real pre-fix corpus; `.2` (the
   Markdown census) proposed.

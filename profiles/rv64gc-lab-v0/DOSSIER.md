@@ -109,7 +109,7 @@ implementation: earlier successful runs are not automatically requalified.
   defines exactly two A/D schemes and names the page-fault one Svade
   (RVP-SUPERVISOR §11.1.3.1, §11.1.10); (ii) the pinned SoC precedent the Sv39 choice
   already cites implements exactly that scheme — "does not automatically set the A and
-  D bits … Instead, the U54 MMU will raise a page fault" (FU540 §4.7); (iii) the
+  D bits … Instead, the U54 MMU will raise a page fault" (SIFIVE-FU540-C000 §4.7); (iii) the
   laboratory's observe-through-the-ISA discipline (P4-SYSTEM.2 decision 6) can evidence
   a page fault (scause/stval via csrr) but cannot evidence an implicit PTE write, so the
   hardware-update default would price a new observation vocabulary to test a side
