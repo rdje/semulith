@@ -145,6 +145,7 @@
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-gc-m-credited-implemented.md`](docs/decisions/decision_req-gc-m-credited-implemented.md)
 - [`decision_rust-native-tooling.md`](docs/decisions/decision_rust-native-tooling.md)
+- [`decision_rust-records-mapping.md`](docs/decisions/decision_rust-records-mapping.md)
 - [`decision_rust-schema-validator.md`](docs/decisions/decision_rust-schema-validator.md)
 - [`decision_rust-sexp-reader.md`](docs/decisions/decision_rust-sexp-reader.md)
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)

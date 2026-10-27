@@ -392,6 +392,25 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `UNIT-COMPOSITION` closes; the uncoupled drivers left are `check_m_vectors.sh`, `check_scope_coverage.sh`,
   `check_citation_quotes.sh` and `check_extraction.sh` (the last three read through `records_sexp` as well — its port is
   the next design question). Next: slice `6o` — `records_sexp.py` measured equal, the way 6j measured `sexp.py`.
+  Slice 6o (`2026-10-27`, `SEMULITH-XTASK-0023`; on clean 5f55db54, taken out of turn — no feature leaf unblocked): the record
+  mapping is Rust — `xtask/src/records.rs` (1076 lines) ports `scripts/records_sexp.py`, the single owner of the JSON key ↔
+  field correspondence: the four record shapes (requirement, obligation, unit, category-need) read into ordered JSON-shaped
+  records, the typed parameter values (`int`, `str`, `true`, `false`, `null`, `ints`, `strs`), the refusals for values the corpus
+  does not write, and the writer (`dict_to_form`, the closed string escapes, one form per line) — together with the catalogue
+  reader's include expansion (`record_catalog.text`: cycle, duplicate-part, unreadable-part, include-family, catalogue-root,
+  part-form, include-shape, include-path and include-escape refusals), so a composed obligation catalogue reads as the pinned
+  tool reads it. Measured in a disposable draft crate over every tracked catalogue the mapping serves (16: the RECORD-SCHEMA
+  map's requirements, obligations, units and category-needs files plus the obligation parts): the JSON dumps through both
+  readers 16 catalogues, 16 identical, 0 differ; the three catalogues the pinned renderer round-trips byte for byte (`netboard-lab-v0/requirements.sexp`,
+  `netboard-lab-v0/contract-obligations.sexp`, `rv64gc-lab-v0/contract-v1.obligations.sexp`) round-trip here too; the other
+  thirteen differ from their files through either renderer (comments and layout the compact renderer drops) — the pinned tool's
+  own behaviour, measured. Held permanently by two unit tests (`the_catalogues_read_as_the_pinned_mapping_reads_them`, one
+  `python3 -I` comparator process; `the_renderer_round_trips_the_rendered_catalogues`); `cargo xtask records <catalogue>
+  [--dump]` is the by-hand surface. Nothing ported, nothing shimmed: `scripts/records_sexp.py` is a pinned input of the M case's
+  manifest and its callers still run it. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Of the four
+  uncoupled drivers, two read records as dictionaries (`check_scope_coverage.sh`, `check_extraction.sh`); the 6n text above said
+  three — `check_citation_quotes.sh` reads through `sexp` only (corrected here, §15). Next: slice `6p` — `check_scope_coverage.sh`
+  over the Rust mapping, behind a held shim.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -475,7 +494,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6o`: `records_sexp.py` in Rust, measured equal to the pinned one on the corpus (the reader the four remaining uncoupled drivers share) — taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6p`: `check_scope_coverage.sh` over the Rust record mapping, behind a held shim — the first of the two remaining drivers that read records as dictionaries; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -630,6 +649,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6n **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical; nine fixture states (target/xtask/xt0022/red/summary.txt): `RED/GREEN paths: 9 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6n **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 15 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_unit_composition.sh` through the shim → the same `ok (3 unit composition(s) decided)` line; `bash scripts/check_derived_counts.sh` → ok (9 bash arms out, 9 `tally.arm(` in).
 - [x] slice 6n **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6n, frontier 6o, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6o **REPRODUCE / ISSUE** — before/ (the pinned mapping at 5f55db54; target/xtask/xt0023/before/census.txt): `grep -c 'record(s)'` = 16 catalogues load, `grep -c 'byte-identical to the file'` = 3 round-trip, `grep -c DIFFERS` = 13 (comments/layout), `grep -c REFUSED` = 6 non-record forms (`credits.sexp`, `schema/*.sexp` — expected); `grep -c records xtask/src/main.rs` = 0: no Rust reader of records.
+- [x] slice 6o **ROOT CAUSE (WHY + WHERE)** — the JSON key ↔ field correspondence has one owner, `scripts/records_sexp.py` (`wc -l` = 336; `grep -l records_sexp scripts/*.py scripts/*.sh | wc -l` = 51 callers; a pinned input of the M case's manifest); the two drivers that read records as dictionaries cannot be ported without a second owner — unless the harness carries the same mapping, measured equal.
+- [x] slice 6o **FIX** — xtask/src/records.rs (`shasum -a 256` = 81e4e4f71771de6eeda78962d83e81e0e8a6b637838b11cbe6c99a1b9bc01a72; `wc -l` = 1076); main.rs doc bullet, `mod`, `NATIVE`, dispatch (`cargo xtask records <catalogue> [--dump]`); docs/decisions/decision_rust-records-mapping.md + INDEX row; the toolbox row. No shim, nothing ported: `git status --short scripts/records_sexp.py` empty.
+- [x] slice 6o **ADDRESSED (verified)** — the in-tree binary against the pinned mapping over the 16 catalogues: 16 catalogues, 16 identical, 0 differ (JSON lines `cmp` rc=0 each; stderr empty); `--dump` of the three round-tripping catalogues `cmp` rc=0 against the files; `cargo test -p xtask records` → `test result: ok. 2 passed`.
+- [x] slice 6o **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; every doctrine driver still runs the pinned mapping (no shim); `bash scripts/check_derived_counts.sh` → ok.
+- [x] slice 6o **LOCKSTEP** — the toolbox row (`cargo xtask records`), the decision record + INDEX + KNOWLEDGE_MAP, the tree (slice 6o, frontier 6p, the Decisions bullet, the §15 correction of 6n's driver count), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -673,3 +698,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-27`: XTASK.6 slice 6l done — the schema validator `xtask/src/schema.rs` is in the harness, equal to the pinned `scripts/check_sexp_schema.py` by its 51 arms (byte-identical output) and by a unit test over every (file, schema) pair the project validates (315); regex facets are an enumerated anchored subset refusing unknown shapes by name; nothing ported, the pinned validator untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6m ports the disjointness judge.
 - `2026-10-27`: XTASK.6 slice 6m done — the encoding-disjointness judge is Rust (`xtask/src/disjoint.rs`, with the one composition resolver moved to `composition.rs` and shared with the exercise-coverage census): 17 arms byte-identical to the pinned judge's self-test, 23 tracked documents identical in stdout, stderr and exit status; nothing ported, no shim, the pinned judge untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6n ports `check_unit_composition.sh` behind a held shim.
 - `2026-10-27`: XTASK.6 slice 6n done — `UNIT-COMPOSITION` is Rust behind a held shim over the Rust judge, validator and resolver, byte-identical on the real tree and nine fixture states, nine arms; the three-unit port that began with the schema validator closes; four uncoupled drivers remain, all reading through `records_sexp.py` — slice 6o measures that reader's port the way 6j measured `sexp.py`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6o done — the record mapping is Rust (`xtask/src/records.rs`), equal to the pinned `records_sexp.py` on all 16 tracked catalogues and held there by two unit tests; nothing ported, nothing shimmed (`decision_rust-records-mapping.md`); of the four uncoupled drivers two read records as dictionaries (6n's "three" corrected); slice 6p ports `check_scope_coverage.sh`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.

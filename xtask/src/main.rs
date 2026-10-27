@@ -42,6 +42,9 @@
 //! - `cargo xtask check-sexp-schema <file.sexp> <schema.sexp> | --self-test` validates a source-of-truth file against
 //!   its schema with the Rust validator (`XTASK.6` slice `6l`, `schema.rs`), measured equal to the pinned
 //!   `scripts/check_sexp_schema.py` over every pair the project validates; the pinned validator stays.
+//! - `cargo xtask records <catalogue.sexp> [--dump]` reads a record catalogue through the Rust record mapping
+//!   (`XTASK.6` slice `6o`, `records.rs`), measured equal to the pinned `scripts/records_sexp.py` on every
+//!   catalogue the project keeps; the pinned mapping stays.
 //! - `cargo xtask sexp <file.sexp>` parses a file with the Rust S-expression reader (`XTASK.6` slice `6j`,
 //!   `sexp.rs`), measured equal to the pinned `scripts/sexp.py` on the corpus; the pinned reader stays.
 //!
@@ -64,6 +67,7 @@ mod check_wasm_build;
 mod composition;
 mod disjoint;
 mod harness;
+mod records;
 mod schema;
 mod sexp;
 
@@ -123,6 +127,7 @@ const NATIVE: &[&str] = &[
     "check-exercise-coverage",
     "sexp",
     "check-sexp-schema",
+    "records",
     "check-encoding-disjoint",
     "check-unit-composition",
 ];
@@ -175,6 +180,7 @@ fn main() -> ExitCode {
             "check-exercise-coverage" => check_exercise_coverage::run(&root, &args[1..]),
             "sexp" => sexp::run(&args[1..]),
             "check-sexp-schema" => schema::run(&root, &args[1..]),
+            "records" => records::run(&root, &args[1..]),
             "check-encoding-disjoint" => disjoint::run(&root, &args[1..]),
             "check-unit-composition" => check_unit_composition::run(&root, &args[1..]),
             other => {
