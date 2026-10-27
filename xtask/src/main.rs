@@ -102,6 +102,9 @@
 //! - `cargo xtask check-fp-vectors [--self-test]` is the `FP-VECTORS` doctrine's driver (`XTASK.6` slice `6ak`,
 //!   `check_fp_vectors.rs`): the floating-point vectors judged as the generator's output and the spec-side reference
 //!   against the host's hardware IEEE, generator and judge spawned as before; `scripts/check_fp_vectors.sh` is its shim.
+//! - `cargo xtask check-gate-report [--self-test]` is the `GATE-REPORT` doctrine's driver (`XTASK.6` slice `6al`,
+//!   `check_gate_report.rs`): every tracked gate report judged as the function of its inputs the generator computes,
+//!   the generator and its probe spawned as before; `scripts/check_gate_report.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -137,6 +140,7 @@ mod check_fact_ownership;
 mod check_fixture_fingerprints;
 mod check_fp_vectors;
 mod check_frontier_sync;
+mod check_gate_report;
 mod check_interaction_matrix;
 mod check_m_vectors;
 mod check_platform_gen;
@@ -241,12 +245,14 @@ const NATIVE: &[&str] = &[
     "check-upstream-index",
     "check-contract-freeze",
     "check-fp-vectors",
+    "check-gate-report",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-gate-report", "scripts/check_gate_report.sh"),
     ("check-fp-vectors", "scripts/check_fp_vectors.sh"),
     ("check-contract-freeze", "scripts/check_contract_freeze.sh"),
     ("check-upstream-index", "scripts/check_upstream_index.sh"),
@@ -350,6 +356,7 @@ fn main() -> ExitCode {
             "check-upstream-index" => check_upstream_index::run(&root, &args[1..]),
             "check-contract-freeze" => check_contract_freeze::run(&root, &args[1..]),
             "check-fp-vectors" => check_fp_vectors::run(&root, &args[1..]),
+            "check-gate-report" => check_gate_report::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

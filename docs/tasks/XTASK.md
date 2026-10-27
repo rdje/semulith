@@ -310,6 +310,18 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   driver's, the real tree's stdout and stderr byte-identical (`FP-VECTORS: ok (crates/semulith-core/src/fp/tests/vectors.rs matches the spec-side reference, 230 vectors + 3168 fixtures; reference vs hardware RNE: agree 2131)`), and 3 scratch fixture repositories — a clone of the repository, an expected value edited by hand in the tracked table, a fixture row's expected value edited — 3 identical, 0 differ in stdout,
   stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6al` —
   `check_gate_report.sh` behind a held shim (two arms; the report judge spawned as before).
+  Slice 6al (`2026-10-27`, `SEMULITH-XTASK-0048`; on clean 2532f41f, taken out of turn — no feature leaf unblocked): `GATE-REPORT`'s
+  driver is Rust — `xtask/src/check_gate_report.rs` (358 lines) ports the bash driver line for line: the generator
+  (`scripts/gate_report.py [<profile>] --gate <gate> --stdout`, stderr discarded), its own `--self-test` and the runtime-root probe
+  (plain and `-O`, the `git-root` mutation) spawned as the script spawned them, NOT ported; the controls run against the REAL
+  reports — every `profiles/<id>/G?-REPORT.md` in the glob's order and the repo-level `BREADTH` report — determinism, the
+  `**Verdict:` marker edit as the same first-occurrence replacement, the tamper's visibility; a stale report explained as before
+  (`diff` spawned on a scratch copy of the generated text, twenty lines indented, the regeneration command); the two bash arms
+  are two `tally.arm(` calls inside the same two-mode loop, the arm total unchanged; `scripts/check_gate_report.sh` a shim of
+  `cargo xtask check-gate-report`. Measured in a disposable draft crate: the self-test `20 pass / 0 fail` with stdout and stderr
+  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`), and 3 scratch fixture repositories — a clone of the repository, a profile report's verdict marker edited by hand, the repo-level report edited — 3 identical, 0 differ in stdout,
+  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6am` —
+  `check_materials_bill.sh` behind a held shim (eleven arms).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -393,7 +405,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6al`: `check_gate_report.sh` behind a held shim — the report judge spawned as before; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6am`: `check_materials_bill.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -547,6 +559,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ak **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0046/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ak **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_fp_vectors.sh` through the shim → the same `FP-VECTORS: ok (…)` line; `bash scripts/check_derived_counts.sh` → ok (7 bash arms out, 7 `tally.arm(` in; 1692 holds).
 - [x] slice 6ak **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ak, frontier 6al, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6al **REPRODUCE / ISSUE** — before/ (bash driver at 2532f41f; target/xtask/xt0047/before/): `GATE-REPORT: ok (5 generated report(s) in sync with their inputs)` rc 0, stderr empty; `GATE-REPORT --self-test: 20 pass / 0 fail`; `grep -c 'arm "' scripts/check_gate_report.sh` = 2 (inside a two-mode loop, run four times).
+- [x] slice 6al **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/gate_report.py` (`grep -c 'gate_report.py' scripts/check_gate_report.sh` = 8) and `scripts/probe_gate_runtime_root.py`, with `diff` process substitutions and a `sed` marker edit in its controls; generator and probe stay Python, spawned as the script spawned them.
+- [x] slice 6al **FIX** — xtask/src/check_gate_report.rs (`shasum -a 256` = 529b020ef04868d963a4431e9e64fe13ff967895f7458b76882fe3b34daa7338; `wc -l` = 358; `grep -cE '^[[:space:]]+tally\.arm\('` = 2); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_gate_report.sh a shim (`exec cargo xtask check-gate-report "$@"`).
+- [x] slice 6al **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0047/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6al **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_gate_report.sh` through the shim → the same `GATE-REPORT: ok (…)` line; `bash scripts/check_derived_counts.sh` → ok (2 bash arms out, 2 `tally.arm(` in; 1692 holds).
+- [x] slice 6al **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6al, frontier 6am, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -614,3 +632,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ai done — `UPSTREAM-INDEX`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, twenty-one arms; the `sexp` callers are all ported — 29 of 42 drivers answer through shims, one deferred, eleven call other pinned modules; next `check_contract_freeze.sh` (slice 6aj); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6aj done — `CONTRACT-FREEZE`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 3 fixture repositories, nine arms; the first of the eleven pinned-module callers; next `check_fp_vectors.sh` (slice 6ak); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ak done — `FP-VECTORS`'s driver is Rust behind a held shim (the generator spawned and the hardware cross-check run verbatim), byte-identical on the real tree and 3 fixture repositories, seven arms; next `check_gate_report.sh` (slice 6al); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6al done — `GATE-REPORT`'s driver is Rust behind a held shim (the generator and its probe spawned as before), byte-identical on the real tree and 3 fixture repositories, two arms; next `check_materials_bill.sh` (slice 6am); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
