@@ -348,6 +348,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`DEF-GEN: ok (crates/semulith-core/src/definition_rv64gc.rs matches the canonical definition, encoding sha256 8b77378df968f968)` and the rv64gc line), and 3 scratch fixture repositories — a clone of the repository, the tracked rv64i module edited by hand, the tracked rv64gc module edited by hand — 3 identical, 0 differ in stdout,
   stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ao` —
   `check_dossier_schema.sh` behind a held shim (forty-seven arms).
+  Slice 6ao (`2026-10-27`, `SEMULITH-XTASK-0051`; on clean 25d1351b, taken out of turn — no feature leaf unblocked): `DOSSIER-SCHEMA`'s
+  driver is Rust — `xtask/src/check_dossier_schema.rs` (666 lines) ports the bash driver line for line: the inline Python sweep
+  (every tracked `profiles/*/*.sexp` against its same-named or suffix-family schema through `scripts/check_sexp_schema.py`, the
+  schema-less documents counted BY NAME, over the pinned `dossier_sexp`) runs verbatim through `python3 -` as a string constant
+  extracted from the script, NOT ported; the three probes of the controls — the experiment verification cases, the expectation
+  mapping (its `--emit` fixtures written as the redirection wrote them) and its mutation, the bounded-artifact suite plain and `-O`
+  under its ten omissions — spawned as the script spawned them; the synthetic facet schema and documents written as the heredoc
+  and printfs wrote them; the forty-seven bash arms are forty-seven `tally.arm(` calls, unrolled as the script's were, the arm total
+  unchanged; `scripts/check_dossier_schema.sh` a shim of `cargo xtask check-dossier-schema`. Measured in a disposable draft crate:
+  the self-test `47 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr
+  byte-identical (`DOSSIER-SCHEMA: ok (277 __SKIPPED__ 4 (baseline.sexp, portability.sexp, sail-identity.sexp))`), and 3 scratch fixture repositories — a clone of the repository, a dossier document planted with no same-named schema, a tracked dossier document left unterminated — 3 identical, 0 differ in stdout,
+  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ap` —
+  `check_requirements.sh` behind a held shim (seventy-nine arms).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -431,7 +444,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ao`: `check_dossier_schema.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ap`: `check_requirements.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -603,6 +616,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6an **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0049/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6an **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_definition_gen.sh` through the shim → the same two `DEF-GEN: ok` lines; `bash scripts/check_derived_counts.sh` → ok (42 bash arms out, 42 `tally.arm(` in; 1692 holds).
 - [x] slice 6an **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6an, frontier 6ao, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ao **REPRODUCE / ISSUE** — before/ (bash driver at 25d1351b; target/xtask/xt0050/before/): `DOSSIER-SCHEMA: ok (277 __SKIPPED__ 4 (baseline.sexp, portability.sexp, sail-identity.sexp))` rc 0, stderr empty; `DOSSIER-SCHEMA --self-test: 47 pass / 0 fail`; `grep -c 'arm "' scripts/check_dossier_schema.sh` = 47.
+- [x] slice 6ao **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 45-line inline Python sweep importing the pinned `dossier_sexp` (`grep -c 'import dossier_sexp' scripts/check_dossier_schema.sh` = 1) and three probes (`grep -c 'probe_' …` = 5); sweep and probes stay Python, run as the script ran them.
+- [x] slice 6ao **FIX** — xtask/src/check_dossier_schema.rs (`shasum -a 256` = 11057d3b68546effbb7dcc01bda6abf26ed89e9da5a7ead95c5b7762eabc5a15; `wc -l` = 666; `grep -cE '^[[:space:]]+tally\.arm\('` = 47); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_dossier_schema.sh a shim (`exec cargo xtask check-dossier-schema "$@"`).
+- [x] slice 6ao **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0050/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ao **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_dossier_schema.sh` through the shim → the same `DOSSIER-SCHEMA: ok (…)` line; `bash scripts/check_derived_counts.sh` → ok (47 bash arms out, 47 `tally.arm(` in; 1692 holds).
+- [x] slice 6ao **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ao, frontier 6ap, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -673,3 +692,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6al done — `GATE-REPORT`'s driver is Rust behind a held shim (the generator and its probe spawned as before), byte-identical on the real tree and 3 fixture repositories, two arms; next `check_materials_bill.sh` (slice 6am); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6am done — `MATERIALS-BILL`'s driver is Rust behind a held shim (the inline Python judge run verbatim, the generator spawned as before), byte-identical on the real tree and 3 fixture repositories, eleven arms; CHANGELOG.md sharded (`docs/changelog/shard-0419.md`); next `check_definition_gen.sh` (slice 6an); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6an done — `DEF-GEN`'s driver is Rust behind a held shim (the generator, the probes and the controls' inline programs spawned as before), byte-identical on the real tree and 3 fixture repositories, forty-two arms; next `check_dossier_schema.sh` (slice 6ao); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ao done — `DOSSIER-SCHEMA`'s driver is Rust behind a held shim (the inline sweep run verbatim, the probes spawned as before), byte-identical on the real tree and 3 fixture repositories, forty-seven arms; next `check_requirements.sh` (slice 6ap); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
