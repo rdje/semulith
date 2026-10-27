@@ -66,6 +66,9 @@
 //! - `cargo xtask check-interaction-matrix [--self-test]` is the `INTERACTION-MATRIX` doctrine's driver (`XTASK.6`
 //!   slice `6y`, `check_interaction_matrix.rs`): every tracked unit's declared matrix judged by
 //!   `scripts/check_interaction_matrix.py`, spawned as the driver spawned it; `scripts/check_interaction_matrix.sh` is its shim.
+//! - `cargo xtask check-unit-books [--self-test]` is the `UNIT-BOOKS` doctrine's driver (`XTASK.6` slice `6z`,
+//!   `check_unit_books.rs`): every registered unit's model book judged over a fresh `mdbook` bundle by
+//!   `scripts/unit_books.py`, spawned as the driver spawned it; `scripts/check_unit_books.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -103,6 +106,7 @@ mod check_registry_mirror;
 mod check_rustdoc;
 mod check_scope_coverage;
 mod check_state_gen;
+mod check_unit_books;
 mod check_unit_composition;
 mod check_wasm_build;
 mod composition;
@@ -181,12 +185,14 @@ const NATIVE: &[&str] = &[
     "check-platform-gen",
     "check-state-gen",
     "check-interaction-matrix",
+    "check-unit-books",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-unit-books", "scripts/check_unit_books.sh"),
     (
         "check-interaction-matrix",
         "scripts/check_interaction_matrix.sh",
@@ -257,6 +263,7 @@ fn main() -> ExitCode {
             "check-platform-gen" => check_platform_gen::run(&root, &args[1..]),
             "check-state-gen" => check_state_gen::run(&root, &args[1..]),
             "check-interaction-matrix" => check_interaction_matrix::run(&root, &args[1..]),
+            "check-unit-books" => check_unit_books::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
