@@ -226,6 +226,20 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `--list` table byte-identical, and 3 scratch fixture repositories — a clone of the repository, a drifted arm-total claim in LIVE_STATUS.md, no routes registry — 3 identical, 0 differ in stdout, stderr and exit
   status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6af` — `check_artifact_cleanup.sh`
   behind a held shim.
+  Slice 6af (`2026-10-27`, `SEMULITH-XTASK-0042`; on clean b57535c2, taken out of turn — no feature leaf unblocked): `ARTIFACT-COHORT`'s
+  driver is Rust — `xtask/src/check_artifact_cleanup.rs` (343 lines) ports the bash driver line for line: the cleanup
+  instrument's seven probe suites and their mutations run as the driver ran them (`python3 -B [-O] scripts/probe_*.py`), plain and
+  optimized, NOT ported; the eighteen instruments and controls checked tracked through `git ls-files --error-unmatch`; no real
+  cleanup runs; the sixteen bash `score` lines are sixteen `tally.score(` lines (this driver scores, it does not `arm`; the counter
+  reads both idioms since 6q), the arm total unchanged; `scripts/check_artifact_cleanup.sh` a shim of `cargo xtask
+  check-artifact-cleanup`. Measured in a disposable draft crate: the self-test `150 pass / 0 fail` with stdout and stderr
+  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (the self-test line, then `ARTIFACT-COHORT:
+  bounded planning/checking controls green; no real cleanup`), the unknown-arguments refusal identical, and 2 scratch fixture
+  repositories — a clone of the repository, an instrument untracked in the clone — 2 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
+  deny-warnings rc=0 (clean on the first in-tree run). `check_readme_routes.sh`, the last free driver, is DEFERRED with its reason: its controls shadow the
+  PATH tools (`wc`, `python3`, `sort`, `grep` in a fixture `bin/`), so a port must call the same tools to stay measurable by them —
+  sized at about 600 lines of Rust, out of proportion for an out-of-turn slice while features wait. Next: slice `6ag` —
+  `check_source_format.sh` over `sexp.rs`, the first of the three `sexp`-only callers.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -309,7 +323,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6af`: `check_artifact_cleanup.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ag`: `check_source_format.sh` over `sexp.rs` behind a held shim — the first `sexp`-only caller; `check_readme_routes.sh` deferred (PATH-shadowing controls); taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -427,6 +441,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ae **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, `cmp after/list.out before/list.out` rc=0, stderr identical; 3 fixture repositories (target/xtask/xt0040/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ae **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh` through the shim → the same `ok (3 derived count claim(s) re-derived)` line and `1692` re-derived by the Rust counter (12 bash arms out, 12 `tally.arm(` in).
 - [x] slice 6ae **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ae, frontier 6af, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6af **REPRODUCE / ISSUE** — before/ (bash driver at b57535c2; target/xtask/xt0041/before/): `ARTIFACT-COHORT --self-test: 150 pass / 0 fail` then `ARTIFACT-COHORT: bounded planning/checking controls green; no real cleanup` rc 0, stderr empty; `grep -cE '^[[:space:]]+score "' scripts/check_artifact_cleanup.sh` = 16, `grep -c 'arm "'` = 0.
+- [x] slice 6af **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around seven probe suites run two ways with their mutations (`grep -c 'probe_' scripts/check_artifact_cleanup.sh` = 25) and one `git ls-files --error-unmatch` over eighteen paths; the probes stay Python, run as the script ran them.
+- [x] slice 6af **FIX** — xtask/src/check_artifact_cleanup.rs (`shasum -a 256` = 3d7d8c46d0a06539519a8ec83891291809b068fc73da8512f848a38d0774ff62; `wc -l` = 343; `grep -cE '^[[:space:]]+tally\.score\('` = 16, `tally\.arm\(` = 0); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_artifact_cleanup.sh a shim (`exec cargo xtask check-artifact-cleanup "$@"`).
+- [x] slice 6af **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both, `cmp after/args.err before/args.err` rc=0; 2 fixture repositories (target/xtask/xt0041/red/summary.txt): `RED/GREEN paths: 2 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6af **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_artifact_cleanup.sh` through the shim → the same two lines; `bash scripts/check_derived_counts.sh` → ok (16 bash scores out, 16 `tally.score(` in; 1692 holds).
+- [x] slice 6af **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6af, frontier 6ag, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -488,3 +508,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ac done — `TASK-HISTORY`'s driver is Rust behind a held shim (the five Python judges run as before), byte-identical on the real tree and 3 fixture repositories, fifty-two arms; next `check_changelog_shards.sh` (slice 6ad); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ad done — `SHARD-FREEZE`'s driver is Rust behind a held shim (the partition and predecessor judges run as before), byte-identical on the real tree and 3 fixture repositories, forty-four arms; next `check_derived_counts.sh` (slice 6ae); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ae done — `DERIVED-COUNTS` is Rust behind a held shim (a native port: the claims, the enumerators through `bash -c`, the arm total by the script's rules), byte-identical on the real tree and 3 fixture repositories, twelve arms; next `check_artifact_cleanup.sh` (slice 6af); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6af done — `ARTIFACT-COHORT`'s driver is Rust behind a held shim (the probe suites run as before), byte-identical on the real tree and 2 fixture repositories, sixteen scorings; `check_readme_routes.sh` deferred with its reason (PATH-shadowing controls, ~600 lines); next `check_source_format.sh` over `sexp.rs` (slice 6ag); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

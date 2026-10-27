@@ -84,6 +84,9 @@
 //! - `cargo xtask check-derived-counts [--self-test|--list]` is the `DERIVED-COUNTS` doctrine (`XTASK.6` slice `6ae`,
 //!   `check_derived_counts.rs`): every live document's repository counts re-derived, the arm total among them,
 //!   natively; `scripts/check_derived_counts.sh` is its shim.
+//! - `cargo xtask check-artifact-cleanup [--self-test]` is the `ARTIFACT-COHORT` doctrine's driver (`XTASK.6` slice
+//!   `6af`, `check_artifact_cleanup.rs`): the cleanup instrument's probe suites and mutations run as the driver ran
+//!   them, the instruments' tracking checked; `scripts/check_artifact_cleanup.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -103,6 +106,7 @@
 //! test holds each shim, listed in `PORTED`, to exactly that — three commands, or the same with the
 //! repository-volume scratch preamble that `probe_temporary_locality.py` requires of some scripts.
 
+mod check_artifact_cleanup;
 mod check_board_gen;
 mod check_board_verdict;
 mod check_book_index;
@@ -211,12 +215,17 @@ const NATIVE: &[&str] = &[
     "check-task-history",
     "check-changelog-shards",
     "check-derived-counts",
+    "check-artifact-cleanup",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    (
+        "check-artifact-cleanup",
+        "scripts/check_artifact_cleanup.sh",
+    ),
     ("check-derived-counts", "scripts/check_derived_counts.sh"),
     (
         "check-changelog-shards",
@@ -302,6 +311,7 @@ fn main() -> ExitCode {
             "check-task-history" => check_task_history::run(&root, &args[1..]),
             "check-changelog-shards" => check_changelog_shards::run(&root, &args[1..]),
             "check-derived-counts" => check_derived_counts::run(&root, &args[1..]),
+            "check-artifact-cleanup" => check_artifact_cleanup::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
