@@ -90,6 +90,9 @@
 //! - `cargo xtask check-source-format [--self-test]` is the `SOURCE-FORMAT` doctrine (`XTASK.6` slice `6ag`,
 //!   `check_source_format.rs`): every source of truth under the four families judged an S-expression the harness's own
 //!   reader parses; `scripts/check_source_format.sh` is its shim.
+//! - `cargo xtask check-semantics-corpus [--self-test]` is the `SEMANTICS` doctrine's driver (`XTASK.6` slice `6ah`,
+//!   `check_semantics_corpus.rs`): every semantics document paired with its fragment, every unit's composed fragments
+//!   refined, the citations arm judged or skipped by name; `scripts/check_semantics_corpus.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -130,6 +133,7 @@ mod check_push_record;
 mod check_registry_mirror;
 mod check_rustdoc;
 mod check_scope_coverage;
+mod check_semantics_corpus;
 mod check_source_format;
 mod check_state_gen;
 mod check_task_history;
@@ -221,12 +225,17 @@ const NATIVE: &[&str] = &[
     "check-derived-counts",
     "check-artifact-cleanup",
     "check-source-format",
+    "check-semantics-corpus",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    (
+        "check-semantics-corpus",
+        "scripts/check_semantics_corpus.sh",
+    ),
     ("check-source-format", "scripts/check_source_format.sh"),
     (
         "check-artifact-cleanup",
@@ -319,6 +328,7 @@ fn main() -> ExitCode {
             "check-derived-counts" => check_derived_counts::run(&root, &args[1..]),
             "check-artifact-cleanup" => check_artifact_cleanup::run(&root, &args[1..]),
             "check-source-format" => check_source_format::run(&root, &args[1..]),
+            "check-semantics-corpus" => check_semantics_corpus::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

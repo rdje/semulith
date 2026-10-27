@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0044 (leaf XTASK.6 slice 6ah) — SEMANTICS's driver is Rust behind a held shim; the judges run as before
+
+A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_semantics_corpus.rs` (573 lines) ports the driver's inline Python: the encoding documents read through the harness's own reader, `check_semantics.py` spawned per pair, the refinement rule and the citations probe run through `python3 -` as the Python called them; the eight bash arms are eight `tally.arm(` calls; `scripts/check_semantics_corpus.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6ai — `check_upstream_index.sh` behind a held shim.
+
 ## SEMULITH-XTASK-0043 (leaf XTASK.6 slice 6ag) — SOURCE-FORMAT is Rust behind a held shim, over the harness's own reader
 
 A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_source_format.rs` (452 lines) ports the driver's inline Python over the harness's reader (`sexp.rs`, equal to the pinned `scripts/sexp.py`, refusal texts included): every family file judged by its format, every `.sexp` by the reader, an empty corpus refused; the shared reader's refusal probe runs as before; the seven bash arms and eighteen `score` lines are seven `tally.arm(` calls and eighteen `tally.score(` lines; `scripts/check_source_format.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6ah — `check_semantics_corpus.sh` over `sexp.rs`.

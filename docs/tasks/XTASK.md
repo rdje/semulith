@@ -252,6 +252,20 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   file(s) under definitions/ schema/ profiles/ materials/, all in the one format)`), and 3 scratch fixture repositories —
   a clone of the repository, a `.toml` planted and tracked under a unit, an unterminated `.sexp` planted and tracked — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings
   rc=0 (clean on the first in-tree run). Next: slice `6ah` — `check_semantics_corpus.sh` over `sexp.rs`.
+  Slice 6ah (`2026-10-27`, `SEMULITH-XTASK-0044`; on clean 5284f544, taken out of turn — no feature leaf unblocked): `SEMANTICS`'s
+  driver is Rust — `xtask/src/check_semantics_corpus.rs` (573 lines) ports the driver's inline Python line for line: the
+  semantics documents paired with the fragments beside them and judged by `scripts/check_semantics.py`, spawned as the Python spawned
+  it; the encoding documents read through the harness's own reader (`sexp.rs`) — the composed fragments' names, the fragment root —
+  and the refinement rule judged by `check_semantics.compose` through `python3 -`, as the Python called it in-process; the citations
+  arm's availability probe through `python3 -` with the Python's own exception tuple, `check_citations.py --corpus` spawned when the
+  pages are present, the NAMED SKIP otherwise; the eight bash arms are eight `tally.arm(` calls, the arm total unchanged;
+  `scripts/check_semantics_corpus.sh` a shim of `cargo xtask check-semantics-corpus`. Two intended differences on paths no corpus
+  has: an encoding without `(fragment-root …)` and a form-less encoding are reported UNREADABLE where the inline Python ended with a
+  traceback (measured in a fourth clone with the root form removed: the bash driver's traceback, status 1; the port's `UNREADABLE` finding, status 1). Measured in a
+  disposable draft crate: the self-test `8 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
+  tree's stdout and stderr byte-identical (`SEMANTICS: ok (14 check(s) — pairs, refinement rule, citations)`), and 3
+  scratch fixture repositories — a clone of the repository, a semantics document planted without a fragment beside it, a planted pair whose rule cites nothing — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`;
+  clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ai` — `check_upstream_index.sh` behind a held shim, the last `sexp` caller.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -335,7 +349,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ah`: `check_semantics_corpus.sh` over `sexp.rs` behind a held shim — the second `sexp`-only caller; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ai`: `check_upstream_index.sh` behind a held shim — the last `sexp` caller, its inline judge run verbatim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -465,6 +479,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ag **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0042/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ag **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_source_format.sh` through the shim → the same `ok (331 source-of-truth file(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (7 arms + 18 scores out, 7 `tally.arm(` + 18 `tally.score(` in; 1692 holds).
 - [x] slice 6ag **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ag, frontier 6ah, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ah **REPRODUCE / ISSUE** — before/ (bash driver at 5284f544; target/xtask/xt0043/before/): `SEMANTICS: ok (14 check(s) — pairs, refinement rule, citations)` rc 0, stderr empty; `SEMANTICS --self-test: 8 pass / 0 fail`; `grep -c 'arm "' scripts/check_semantics_corpus.sh` = 8.
+- [x] slice 6ah **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 96-line inline Python block importing the pinned `sexp.py` and `check_semantics` (`grep -c 'import sexp' scripts/check_semantics_corpus.sh` = 1) and spawning `check_semantics.py` per pair; until 6j there was no Rust reader equal to the pinned one for the encoding documents.
+- [x] slice 6ah **FIX** — xtask/src/check_semantics_corpus.rs (`shasum -a 256` = 5b296d3318f678f10af851dbd91fbe104204a9a9d21677d2d428fc8b02f3c5d3; `wc -l` = 573; `grep -cE '^[[:space:]]+tally\.arm\('` = 8); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_semantics_corpus.sh a shim (`exec cargo xtask check-semantics-corpus "$@"`).
+- [x] slice 6ah **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0043/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ah **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_semantics_corpus.sh` through the shim → the same `ok (14 check(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (8 bash arms out, 8 `tally.arm(` in; 1692 holds).
+- [x] slice 6ah **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ah, frontier 6ai, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -528,3 +548,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ae done — `DERIVED-COUNTS` is Rust behind a held shim (a native port: the claims, the enumerators through `bash -c`, the arm total by the script's rules), byte-identical on the real tree and 3 fixture repositories, twelve arms; next `check_artifact_cleanup.sh` (slice 6af); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6af done — `ARTIFACT-COHORT`'s driver is Rust behind a held shim (the probe suites run as before), byte-identical on the real tree and 2 fixture repositories, sixteen scorings; `check_readme_routes.sh` deferred with its reason (PATH-shadowing controls, ~600 lines); next `check_source_format.sh` over `sexp.rs` (slice 6ag); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ag done — `SOURCE-FORMAT` is Rust behind a held shim over the harness's reader (the first `sexp`-only caller ported; the refusal probe run as before), byte-identical on the real tree and 3 fixture repositories, seven arms and eighteen scorings; next `check_semantics_corpus.sh` (slice 6ah); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ah done — `SEMANTICS`'s driver is Rust behind a held shim (the encoding documents over the harness's reader, the judges spawned as before), byte-identical on the real tree and 3 fixture repositories, eight arms; next `check_upstream_index.sh` (slice 6ai); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
