@@ -200,6 +200,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   no HEAD at all (git's own `fatal:` line passing through, as the script let it — the first draft swallowed it, caught by this
   state), the descriptor edited — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
   deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ad` — `check_changelog_shards.sh` behind a held shim.
+  Slice 6ad (`2026-10-27`, `SEMULITH-XTASK-0040`; on clean ad9a8294, taken out of turn — no feature leaf unblocked): `SHARD-FREEZE`'s
+  driver is Rust — `xtask/src/check_changelog_shards.rs` (631 lines) ports the bash driver line for line: the partition judge
+  `scripts/check_history_partition.py` over the committed manifest and archive descriptor taken through `git show` into scratch
+  files, then `scripts/history_predecessor.py`, both run as the driver ran them, NOT ported; the controls write the script's
+  synthetic shards, heads and manifests (the manifest rows through the harness's hasher in the glob's order, the `prev` rows as
+  the script spelled them) and run its eighteen archive-probe and twelve predecessor-probe invocations; the forty-four bash arms
+  are forty-four `tally.arm(` calls (the first draft folded thirty into two loops the arm counter cannot see — unrolled before
+  measuring), the arm total unchanged; `scripts/check_changelog_shards.sh` a shim of `cargo xtask check-changelog-shards`. Measured
+  in a disposable draft crate: the self-test `44 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
+  tree's stdout and stderr byte-identical (the predecessor's line and `SHARD-FREEZE: ok (… shard row(s) frozen, 2 heads + shards
+  append-only, exactly partitioned)`), and 3 scratch fixture repositories — a clone of the repository, a shard thawed after the event, no CHANGELOG.md at all — 3 identical, 0 differ in stdout, stderr and
+  exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ae` — `check_derived_counts.sh`
+  behind a held shim (the arm counter itself).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -283,7 +296,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ad`: `check_changelog_shards.sh` behind a held shim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ae`: `check_derived_counts.sh` behind a held shim — the arm counter itself; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -389,6 +402,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6ac **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; `cmp after/args.err before/args.err` rc=0 (`TASK-HISTORY: unknown arguments`, rc 2); 3 fixture repositories (target/xtask/xt0038/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ac **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_task_history.sh` through the shim → the same five lines; `bash scripts/check_derived_counts.sh` → ok (52 bash arms out, 52 `tally.arm(` in; 1692 holds).
 - [x] slice 6ac **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ac, frontier 6ad, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ad **REPRODUCE / ISSUE** — before/ (bash driver at ad9a8294; target/xtask/xt0039/before/): the predecessor's line and `SHARD-FREEZE: ok (420 shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)` rc 0, stderr empty; `SHARD-FREEZE --self-test: 44 pass / 0 fail`; `grep -c 'arm "' scripts/check_changelog_shards.sh` = 44.
+- [x] slice 6ad **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/check_history_partition.py` and `scripts/history_predecessor.py` with two probe suites (`grep -c 'python3 ' scripts/check_changelog_shards.sh` = 9) and `sha256sum`-built manifests; the judges stay Python, run as the script ran them.
+- [x] slice 6ad **FIX** — xtask/src/check_changelog_shards.rs (`shasum -a 256` = f7b9885b5d101d797e5eb92044b7038b6002a3e3e45177ed0203bb900b744c35; `wc -l` = 631; `grep -cE '^[[:space:]]+tally\.arm\('` = 44); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_changelog_shards.sh a shim (`exec cargo xtask check-changelog-shards "$@"`).
+- [x] slice 6ad **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0039/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ad **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_changelog_shards.sh` through the shim → the same two lines; `bash scripts/check_derived_counts.sh` → ok (44 bash arms out, 44 `tally.arm(` in; 1692 holds).
+- [x] slice 6ad **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ad, frontier 6ae, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -448,3 +467,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6aa done — `TREE-CLAIMS`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, thirty-eight arms; next `check_frontier_sync.sh` (slice 6ab); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ab done — `FRONTIER-SYNC`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 4 fixture repositories, forty-one arms; XTASK.md's closed-slice paragraphs 6a–6aa archived (part 3); next `check_task_history.sh` (slice 6ac); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ac done — `TASK-HISTORY`'s driver is Rust behind a held shim (the five Python judges run as before), byte-identical on the real tree and 3 fixture repositories, fifty-two arms; next `check_changelog_shards.sh` (slice 6ad); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ad done — `SHARD-FREEZE`'s driver is Rust behind a held shim (the partition and predecessor judges run as before), byte-identical on the real tree and 3 fixture repositories, forty-four arms; next `check_derived_counts.sh` (slice 6ae); taken out of turn while every feature leaf waits on the pinned-tooling ruling.

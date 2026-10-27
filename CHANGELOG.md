@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0040 (leaf XTASK.6 slice 6ad) — SHARD-FREEZE's driver is Rust behind a held shim; the judges run as before
+
+A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_changelog_shards.rs` (631 lines) ports the bash driver: the partition judge over the committed manifest and archive descriptor taken through `git show`, then the predecessor judge, both run as before and not ported; the controls write the script's synthetic shards and run its probe mutations; the forty-four bash arms are forty-four `tally.arm(` calls; `scripts/check_changelog_shards.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6ae — `check_derived_counts.sh` behind a held shim.
+
 ## SEMULITH-XTASK-0039 (leaf XTASK.6 slice 6ac) — TASK-HISTORY's driver is Rust behind a held shim; the five judges run as before
 
 A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_task_history.rs` (263 lines) ports the bash driver: the five Python judges run as the driver ran them, output and exit statuses passing through, not ported; the controls are the script's fifty-two probe runs; the fifty-two bash arms are fifty-two `tally.arm(` calls; `scripts/check_task_history.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, the unknown-arguments refusal identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). Next: slice 6ad — `check_changelog_shards.sh` behind a held shim.

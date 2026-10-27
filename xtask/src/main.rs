@@ -78,6 +78,9 @@
 //! - `cargo xtask check-task-history [--self-test]` is the `TASK-HISTORY` doctrine's driver (`XTASK.6` slice `6ac`,
 //!   `check_task_history.rs`): the sealed task history's judges run as the driver ran them, the fifty-two probe runs as
 //!   its controls; `scripts/check_task_history.sh` is its shim.
+//! - `cargo xtask check-changelog-shards [--self-test]` is the `SHARD-FREEZE` doctrine's driver (`XTASK.6` slice
+//!   `6ad`, `check_changelog_shards.rs`): the sharded history judged frozen by `scripts/check_history_partition.py`
+//!   and `history_predecessor.py`, run as the driver ran them; `scripts/check_changelog_shards.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -100,6 +103,7 @@
 mod check_board_gen;
 mod check_board_verdict;
 mod check_book_index;
+mod check_changelog_shards;
 mod check_citation_quotes;
 mod check_commit_prefix;
 mod check_delivery_provenance;
@@ -201,12 +205,17 @@ const NATIVE: &[&str] = &[
     "check-tree-claims",
     "check-frontier-sync",
     "check-task-history",
+    "check-changelog-shards",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    (
+        "check-changelog-shards",
+        "scripts/check_changelog_shards.sh",
+    ),
     ("check-task-history", "scripts/check_task_history.sh"),
     ("check-frontier-sync", "scripts/check_frontier_sync.sh"),
     ("check-tree-claims", "scripts/check_tree_claims.sh"),
@@ -285,6 +294,7 @@ fn main() -> ExitCode {
             "check-tree-claims" => check_tree_claims::run(&root, &args[1..]),
             "check-frontier-sync" => check_frontier_sync::run(&root, &args[1..]),
             "check-task-history" => check_task_history::run(&root, &args[1..]),
+            "check-changelog-shards" => check_changelog_shards::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
