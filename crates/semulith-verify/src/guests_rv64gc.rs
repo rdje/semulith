@@ -338,6 +338,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/w-sw.s`  `22d952146776d415f32c58e36427d40707ab7aa47522208fdf2eb2330d709363`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.expected.sexp`  `3e67f6003c5e46b6c080f1de31d00c0e3f5aaf0d3d42b46ca84f744d651329b4`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.s`  `3be147608a1765f2a0bc16a585e4ce7342c7b0ad36911051b95b85a49e083f85`
+//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.expected.sexp`  `8dab37a4e9e16ab8a639629d648fe83fb8fe754e8aa84bb1cfd1356365faaede`
+//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.s`  `72ec541bc7f3f9ee1915087411dfe594861044e0cbf483ea248afe54fb3461c8`
 //! Generator: `scripts/gen_guests.py` (sha256 `cefce8dfb55619694bb4420affbe8f8951ee32ae810834015616127979b45de3`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is
@@ -9161,6 +9163,45 @@ static EXPECTED_M_ALIAS: &[Expectation] = &[
 ];
 
 #[rustfmt::skip]
+static IMAGE_XLEN_FORMS: &[u8] = &[
+    0x93, 0x02, 0x10, 0x00, 0x93, 0x92, 0xF2, 0x03, 0x13, 0xD3, 0xF2, 0x03, 0x93, 0xD3, 0xF2, 0x43,
+    0x13, 0x04, 0xF0, 0xFF, 0x93, 0x14, 0x04, 0x02, 0x13, 0x15, 0x84, 0x02, 0x93, 0x55, 0x14, 0x00,
+    0x13, 0x86, 0x15, 0x00, 0xB3, 0x06, 0x84, 0x00, 0x37, 0x07, 0x00, 0x80, 0x9B, 0x07, 0x17, 0x00,
+    0x1B, 0x58, 0x17, 0x00, 0x9B, 0x58, 0x17, 0x40, 0x3B, 0x09, 0x54, 0x00, 0xBB, 0x09, 0xB0, 0x40,
+    0x3B, 0x1A, 0xB3, 0x00, 0x97, 0x00, 0x00, 0x00, 0x93, 0x80, 0x80, 0x01, 0x73, 0x90, 0x50, 0x30,
+    0x93, 0x0A, 0x10, 0x00, 0x93, 0x9A, 0x8A, 0x02, 0x03, 0xBB, 0x0A, 0x00, 0x73, 0x2F, 0x20, 0x34,
+    0xF3, 0x2F, 0x30, 0x34,
+];
+#[rustfmt::skip]
+static EXPECTED_XLEN_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(5, 0x8000000000000000)] },
+    Expectation { step: 2, writes: &[(6, 0x0000000000000001)] },
+    Expectation { step: 3, writes: &[(7, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 5, writes: &[(9, 0xFFFFFFFF00000000)] },
+    Expectation { step: 6, writes: &[(10, 0xFFFFFF0000000000)] },
+    Expectation { step: 7, writes: &[(11, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 8, writes: &[(12, 0x8000000000000000)] },
+    Expectation { step: 9, writes: &[(13, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 10, writes: &[(14, 0xFFFFFFFF80000000)] },
+    Expectation { step: 11, writes: &[(15, 0xFFFFFFFF80000001)] },
+    Expectation { step: 12, writes: &[(16, 0x0000000040000000)] },
+    Expectation { step: 13, writes: &[(17, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 14, writes: &[(18, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 15, writes: &[(19, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(20, 0xFFFFFFFF80000000)] },
+    Expectation { step: 17, writes: &[(1, 0x0000000080000044)] },
+    Expectation { step: 18, writes: &[(1, 0x000000008000005C)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[(21, 0x0000000000000001)] },
+    Expectation { step: 21, writes: &[(21, 0x0000010000000000)] },
+    Expectation { step: 22, writes: &[] },
+    Expectation { step: 23, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 24, writes: &[(31, 0x0000010000000000)] },
+];
+
+#[rustfmt::skip]
 static IMAGE_C_IMMEDIATES: &[u8] = &[
     0x81, 0x50, 0xFD, 0x00, 0x85, 0x00, 0xFD, 0x41, 0x81, 0x11, 0x01, 0x72, 0xFD, 0x62, 0x41, 0x41,
     0x01, 0x71, 0x7D, 0x61, 0xE0, 0x1F, 0x13, 0x01, 0xF0, 0xFF, 0x41, 0x61, 0x5C, 0x00, 0x01, 0x00,
@@ -14146,6 +14187,17 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 14,
         expected_fetches: 28,
         expected: EXPECTED_M_ALIAS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "xlen-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_XLEN_FORMS,
+        executed_steps: 25,
+        expected_fetches: 50,
+        expected: EXPECTED_XLEN_FORMS,
         never_written: &[],
         refusals: &[],
         cross_model: true,

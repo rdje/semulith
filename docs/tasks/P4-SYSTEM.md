@@ -392,7 +392,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | capture plan written (a43, `SEMULITH-P4-0305`); next a43a — the XLEN case, feature 10 |
+| 1 | `P4-SYSTEM.14` | `active` | the XLEN program in the corpus (a43a-1, `SEMULITH-P4-0306`); a43a-2 (properties, inputs, declaration) waits on the pinned-tooling ruling — meanwhile the a43b-1/a43c-1/a43d-1 programs |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
 | 3 | `P4-SYSTEM.17` | `active` | portability: slice a — the instrument over the rv64gc corpus, the four legs re-measured, the record |
 
@@ -487,6 +487,46 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43a-1 / SEMULITH-P4-0306: the XLEN case's crediting program — in the corpus, agreed live by Sail (completed)
+
+Feature 10 of the second cycle, on clean 2429670f: the first of the XLEN case's units (`decision_state-capture-plan.md`
+item 1 (i), split: the program and its expectations here; properties, curated inputs and the declaration next).
+`profiles/rv64gc-lab-v0/guests/xlen-forms.s` — 25 instructions, every witness a GPR change at a step boundary, each line
+citing its chapter: bit 63 exists and shifts by 63 read it back (`slli`/`srli`/`srai`), bits 32..63 are real and the
+6-bit shift amount 40 is legal, 2^63 - 1 + 1 wraps to -2^63 and -1 + -1 discards the carry (RVI-RV64I §3.1.1, §3.1.2.1;
+RVI-RV32I §1.1.4), `lui` sign-extends its immediate to 64 bits and the `*W` family (`addiw`, `srliw`, `sraiw`, `addw`,
+`subw`, `sllw`) ignores the upper input bits and sign-extends its word (§3.1.2, §3.1.2.2); then the address-space witness:
+`mtvec` set to a handler six instructions on, a load at 2^40 (outside every declared region) raising a load access fault,
+the handler reading `mcause` = 5 and `mtval` = 0x0000010000000000 into x30/x31 — the full 64-bit address, formed and
+reported (RVP-MACHINE §2.1.6–7; D-ADDRESS-SPACE). Expectations derived on the parcel route
+(`derive_rv64gc_expectations.py --parcels --steps 25`: 25 steps, 50 fetches, schema-valid, byte-identical to the scratch
+derivation; the deriver's owned list untouched — it is a pinned input of the retained DIV case). Judged three ways: the
+lab fixture (`gen_guests.py` → guests_rv64gc.rs 168 → 169 guests, 5401 → 5426 expected steps;
+`every_guest_matches_its_expectations` ok), the pinned Sail sim live over the canonical ELF with the retained override
+(`AGREE on 25 of 25 declared steps`, the trap boundary `trapping from M to M to handle load-access-fault` included — an
+experiment, not a capture: target/p4-system-14/a43a/draft/sail_experiment.py, sail.trace), and the lab demo's trace. The
+CLI's `run` refuses the GC profile by name, so the lab is judged through the corpus. Registered in run-order.txt (after the
+M group) and the boundary × boundary interaction cell; GUEST-GEN, EXERCISE-COVERAGE (19/19), INTERACTION-MATRIX,
+DERIVED-COUNTS, GATE-REPORT and MATERIALS-BILL green; GS-REPORT.md and the internal-contracts fragment regenerated
+(the interactions digest, the corpus count). The portability record of P4-0304 stays a session over 168 guests; the next
+recording run re-measures over 169. REQUIREMENT-STATUS unchanged: `47 planned, 1 implemented; 1 of 1 credit record(s)
+current` — no file this unit touched is pinned by the M manifest (checked by name).
+
+**Finding, raised to the director (widens the P4-0303 blocker):** the closure review the plan asked for shows the M case's
+manifest (64 inputs: 20 definitions, 5 profile files, 4 schemas, 35 scripts) pins `scripts/matched_gpr_property.py` (the
+`_CASES` table) and `scripts/capture_div.py` (`CURATED_INPUTS`) — the two files a new case's properties and input pins are
+declared in. Declaring the XLEN case (a43a-2) as the M case was declared lapses `CR-GC-M-1` and drops REQ-GC-M to
+`planned`, exactly as the six-line gate_report.py fix would. Options: (A) rule that the capture's dependency closure is the
+measurement's (semantics, schemas, comparators, collector, the expectation author) and not the case-declaration or report
+tooling, with a re-pin procedure for the retained manifest; (B) move case declarations to data (`evidence/<case>/case.sexp`
+read by the tools), one re-capture of M as v4 under the new manifest, then every later case adds data only; (C) accept one
+lapse-and-re-credit cycle per new case. Until the ruling, the other three programs (a43b-1 CSR-SET, a43c-1 ZICNTR, a43d-1
+SSTC) can land the same way as this one, touching no pinned file. The first chain's focused stage refused twice, both
+mine: GATE-REPORT (the GS report had been regenerated before the new guest files were tracked — its dossier digest is
+over the TRACKED source files; regenerated after `git add`) and SEAM-INTEGRITY (the NO REGRESSION box carried no
+declared evidence signature; a `grep -c` token added). Evidence target/p4-system-14/a43a (draft/, guest-test.log,
+demo-xlen-forms.txt, m-manifest-census.txt, chain-1-refused.log).
 
 ### .14 a43 / SEMULITH-P4-0305: the state-capture plan — G-STATE's route declared (completed)
 
@@ -1094,6 +1134,9 @@ Rows through a42aq: [retained verbatim](archive/P4-SYSTEM-20.md#acceptance-rows-
 - [x] `.14` a43 **ROOT CAUSE** — at a2f4d163: `grep -c '(kind state)' profiles/rv64gc-lab-v0/requirements.sexp` = 4; GS-REPORT.md line 14 reads `0 of 4 \`state\` requirements implemented`; `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; 2 case(s), 1 credited`: no state requirement has a case, and a requirement leaves `planned` only through one.
 - [x] `.14` a43 **ADDRESSED** — `docs/decisions/decision_state-capture-plan.md` (+ INDEX row): per requirement the GPR-vocabulary witnesses, the controls, the named limitations and the order; `grep -c '^CSR' target/p4-system-14/a43/sail-trace-csr-sample.txt` = 44 (the deferred vocabulary measured present); `grep -c 'a43' docs/tasks/P4-SYSTEM.md` ≥ 6.
 - [x] `.14` a43 **NO REGRESSION** — docs-only: `git diff --cached --name-only -- profiles evidence schema scripts` empty; `python3 -B scripts/requirement_status.py` after the edits → the same `47 planned, 1 implemented; … 1 of 1 credit record(s) current; 0 drift, 0 finding(s)`; GS-REPORT.md byte-identical.
+- [x] `.14` a43a-1 **ROOT CAUSE** — at 2429670f: `grep -c xlen-forms profiles/rv64gc-lab-v0/guests/run-order.txt` = 0; the GS report reads `0 of 4 \`state\` requirements implemented`; the plan's first case has no program to witness REQ-D-XLEN.
+- [x] `.14` a43a-1 **ADDRESSED** — `python3 scripts/derive_rv64gc_expectations.py --parcels --steps 25 xlen-forms.s` → `wrote xlen-forms.expected.sexp (25 steps)`, `check_sexp_schema: ok`; `gen_guests.py --check … guests_rv64gc.rs` → `matches the tracked guests` (169 guests); `cargo test -p semulith-verify every_guest_matches_its_expectations` → `test result: ok. 1 passed`; live Sail: `AGREE on 25 of 25 declared steps` (draft/sail_experiment.py).
+- [x] `.14` a43a-1 **NO REGRESSION** — `grep -c xlen-forms evidence/rv64gc-m-forms-v3/dependencies.sexp` = 0 and no touched path appears in that manifest (checked by name); `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; 2 case(s), 1 credited, 0 declared, 1 of 1 credit record(s) current; 0 drift`; `bash scripts/check_guest_gen.sh` rc=0 (192 s), EXERCISE-COVERAGE 19/19, INTERACTION-MATRIX ok, DERIVED-COUNTS ok, GATE-REPORT ok, MATERIALS-BILL ok; probes 22/0, 25/0, 34 tests / 36 failures as pinned.
 - [x] `.15` slice a **ROOT CAUSE** — at 4b0b680a: `grep -c 'external' profiles/rv64gc-lab-v0/gate.sexp` = 1 (the open row only), `ls profiles/rv64gc-lab-v0/act4.sexp` absent, GS-REPORT `G-REGRESSION … 2 of 5 required kinds evidenced — open: external, workload, validator-mutation`; the runner hard-wired `PROFILE = "rv64i-lab-v0"` (`grep -c 'PROFILE = "rv64i-lab-v0"' scripts/run_act4_campaign.py` = 1), no DUT pieces for the GC unit; smoke-rv64gc.log (first run): `REFUSED — semulith: no store crossings parsed`, gc-run.out 32,902 lines without one `mem[` line while `--trace-stores` was given — the CLI's GC branch returned before the store trace (`grep -n 'return run_guest_rv64gc' crates/semulith-cli/src/main.rs` above the `if trace_stores` block).
 - [x] `.15` slice a **ADDRESSED** — crates/semulith-cli/src/main.rs: `RecordStores` (an `Environment` recording `Request::Store` answered `StoreDone`), `run_guest_rv64gc(…, trace_stores)` prints `mem[{bytes},0x{addr}] <- 0x{value}` lines; `cargo clippy -p semulith-cli --all-targets -- -D warnings` rc 0, `cargo fmt --check` clean; gc-stores.txt vs i-stores.txt (I-add-00 on both models, 29,460 steps): 17,018 lines each, `cmp` identical. scripts/run_act4_campaign.py: `PROFILES` table, `--profile` parsing, the record naming its unit (`run_act4_campaign --self-test: 7 pass / 0 fail`); smoke-rv64i.log unchanged (`513 slots agree`, both pairs); smoke-rv64gc.log after the fix: all 7 PASS, `513 slots agree` on both pairs. campaign-rv64gc.log: `51 pass / 0 fail` over 51 files, 17,017 slots, 45 s; `shasum -a 256 profiles/rv64gc-lab-v0/act4.sexp` = ca64f00f54d55f2d…; `RECORD-SCHEMA: ok (22 record file(s) validate and agree with their profile; the Rust graph checker accepts the examples bundle)`; `python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS` → `G-REGRESSION … 3 of 5 required kinds evidenced — open: `workload`, `validator-mutation` | **incomplete**; external `profiles/rv64gc-lab-v0/act4.sexp` verified `yes``.
 - [x] `.15` slice a **NO REGRESSION** — rv64i: `python3 -B scripts/run_act4_campaign.py I-add-00` byte-for-byte the same PASS lines as before the patch (smoke-rv64i.log), profiles/rv64i-lab-v0/act4.sexp untouched (`git diff --stat` names no rv64i file); `probe_requirement_status.py` `22 tests / 0 failures`, `probe_div_policy.py` `25 tests / 0 failures`, `probe_matched_gpr_property.py --mutation derived-status` `34 tests / 36 failures` (= `derived-status:36`); `REQUIREMENT-STATUS` and `DIV-POLICY` lines unchanged; `make check` green; `ls target/doctrine-selftest | wc -l` = 0; the staged focused run before the chain.

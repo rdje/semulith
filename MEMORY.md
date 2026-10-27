@@ -20,14 +20,14 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0305` — P4-SYSTEM.14 a43: the state-capture plan (decision_state-capture-plan.md) — the four
-  `state` requirements route through matched cases in the GPR vocabulary (a43a XLEN, a43b CSR-SET, a43c ZICNTR, a43d SSTC;
-  three units each). Before it P4-0304 (portability), AC0085, P4-0303 (workload recorded; declaration waits on a ruling).
-- next_action: feature 10 = `.14` a43a, the XLEN case (program + EVD-05 expectations + inputs + declaration; review the
-  dependency closure first — the M case pins gate_report.py, ruling pending). RAISED to the director: the workload kind's
-  declaration. `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Run the three PROFILE-CONSISTENCY probes before a
-  chain touching profiles/. Before ANY failure-injection probe or fixture write, read the path it drives (the scratch-hygiene
-  card: docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+- last_unit: `SEMULITH-P4-0306` — P4-SYSTEM.14 a43a-1: the XLEN case's program in the corpus (25 steps incl. the 2^40 access-fault
+  witness; lab fixture ok, live Sail 25 of 25). BLOCKER widened: the M manifest pins matched_gpr_property.py and capture_div.py —
+  declaring any new case lapses CR-GC-M-1 (options A/B/C in the leaf). Before it P4-0305 (the state-capture plan), P4-0304, AC0085.
+- next_action: XTASK.6 slice 6j (one tooling slice after features 6–10; drafted in target/xtask/xt0016/). RAISED to the director:
+  the pinned-tooling ruling (case declaration + report generators in the M manifest) and the workload kind's declaration; until
+  it lands, cycle three's features are the a43b-1/a43c-1/a43d-1 programs (no pinned file). `ARTIFACT-CLEANUP.30` once due (after
+  2026-10-28T09:33Z). Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/. Before ANY failure-injection probe
+  or fixture write, read the path it drives (docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
