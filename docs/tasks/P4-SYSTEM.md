@@ -363,10 +363,25 @@ This gate authorises the planned next engineering stage: board implementation.
   Completed execution records: [whole original technical history](artifacts/live-containment/task-claims.md#p4-a42x-p4-16-history).
 
 - ID: `P4-SYSTEM.17` — **portability** — `G-PORTABILITY`
-  Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution began `2026-10-27` as
+  feature 8 of the second cycle under `decision_alternate-port-and-features.md`)
   Goal: the portability instrument's manifest over the rv64gc corpus; the x86-64 and AArch64
   legs; the pinned Miri plan over the new pure-Rust primitives.
   Acceptance: both legs' manifests byte-identical; the record re-measured for this unit.
+  Slice a (`2026-10-27`): `scripts/check_portability.sh --profile UNIT [--record]` — the instrument's manifest over
+  the unit's guest fixture (rv64gc's demo prints a byte-exact text trace and refuses `--json` by design, so the
+  manifest hashes the text; rv64i's command lines and record unchanged), every message naming the unit's record,
+  and `--record` freezing the measured run as `profiles/UNIT/portability.sexp` from the legs' own logs and digests.
+  Slice a result (`2026-10-27`, `SEMULITH-P4-0304`; applied on clean 7d0ef1dd; evidence target/p4-system-17/a): the four
+  legs re-measured for this unit on this host — native aarch64 `green (cargo test --all: 503 suites, 0 failed)`, the fixture digest manifest `2e0835dd325c0834915be74b27ad8cefdfd187e4f11227fad27daf442d67f6ab` over
+  the 168 rv64gc guests, x86-64 under Rosetta 2 `green (503 suites, 0 failed)` (the x86-64 manifest equal to the native one byte for
+  byte: the acceptance), Miri `green (178 suites passed, 0 failed: 173 interpreted lib tests + 5 doc-tests)`, cross-endian `green (178 suites passed, 0 failed, on big-endian powerpc64)` — verdict `passed`, in 6227 s wall (native + x86-64 about 4 min; the two Miri legs about 50 min each — the harness's own `finished in 7251.82s` is Miri's deterministic virtual clock under isolation, identical across runs, not wall time); the record
+  `profiles/rv64gc-lab-v0/portability.sexp`. Controls: `PORTABILITY --self-test: 9 pass / 0 fail`, `PORTABILITY-COLD: 15 pass / 0
+  fail`; an unknown unit and `--record --leg` refuse. gate.sexp declares it as the `x86-64`, `aarch64` and `miri` evidence and the
+  G-PORTABILITY open row retires: the GS report reads `G-PORTABILITY: 3 of 3 required kinds evidenced, green; verdict incomplete, open axes 4 of 10: G-STATE, G-OBLIGATIONS, G-REGRESSION, G-RELEASE`.
+  Novel finding (§9) carded: `docs/knowledge/a-time-read-inside-the-interpreter-is-the-interpreters-time.md` — two
+  independent Miri runs reported `finished in 7251.82s` to the hundredth while each took about 50 min of wall time; under
+  Miri's isolation the harness reads a deterministic virtual clock, so a leg's duration is measured outside the interpreter.
 - ID: `P4-SYSTEM.18` — **the CPU-SYSTEM verdict and the release decision** — `G-RELEASE`
   Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
   Goal: the report regenerated over the complete profile; the named release decision.
@@ -379,6 +394,7 @@ This gate authorises the planned next engineering stage: board implementation.
 | --- | --- | --- | --- |
 | 1 | `P4-SYSTEM.14` | `active` | canonical closure and capture plan |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
+| 3 | `P4-SYSTEM.17` | `active` | portability: slice a — the instrument over the rv64gc corpus, the four legs re-measured, the record |
 
 ## Decisions
 

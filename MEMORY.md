@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0303` — P4-SYSTEM.15 slice f: the workload suite recorded (four compiled C workloads, 4 pass three-way);
-  its declaration waits on slice g (the M case's manifest pins gate_report.py). Before it P4-0302, XTASK-0017 (docs commit
-  27 s; XTASK.8 done), P4-0301, P4-0300, XTASK-0016. Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/.
-- next_action: RAISE to the director: declaring the workload kind needs a ruling (re-capture the M case against a changed
-  gate_report.py, or report generators leave capture manifests); meanwhile feature 8: G-STATE/G-OBLIGATIONS/G-PORTABILITY; `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
+- last_unit: `SEMULITH-P4-0304` — P4-SYSTEM.17 slice a: G-PORTABILITY re-measured for rv64gc (four legs, passed; 4 of 10 axes
+  open). Before it P4-0303 (the workload suite recorded; its declaration waits on a ruling — the M case's manifest pins
+  gate_report.py), P4-0302, XTASK-0017, P4-0301. Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/.
+- next_action: RAISED, awaiting the director: the workload kind's declaration (re-capture the M case against a changed
+  gate_report.py, or report generators leave capture manifests). Feature 9: G-STATE or G-OBLIGATIONS (P4-SYSTEM.14); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.
