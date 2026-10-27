@@ -29,7 +29,7 @@ usage: run_act4_campaign.py [I-add-00 ...]   (default: I-add-00 — the slice-(b
        run_act4_campaign.py --profile UNIT … (P4-SYSTEM.15 slice a: the same pinned suite run
                                               against another unit's model, its own DUT pieces
                                               under profiles/UNIT/act4/, its own act4.sexp)
-       run_act4_campaign.py --suites I,M,Zaamo,Zalrsc,Zca …  (P4-SYSTEM.15 slice b: the suites of the
+       run_act4_campaign.py --suites I,M,Zaamo,Zalrsc,Zca,F,D …  (P4-SYSTEM.15 slices b, c: the suites of the
                                               same pin to run; default I; --record needs each complete)
 """
 
@@ -62,7 +62,10 @@ SPIKE = ROOT / "target/refs/spike-build/spike"
 OUT = ROOT / "target/refs/guests/act4"
 # The suites of the pinned commit this campaign may run, with their file counts at the pin (the census
 # fetch_act4.sh verifies). Each test file is `<Suite>-<mnemonic>-<nn>.S` under tests/rv64i/<Suite>/.
-SUITES = {"I": 51, "M": 13, "Zaamo": 18, "Zalrsc": 4, "Zca": 32}
+SUITES = {"I": 51, "M": 13, "Zaamo": 18, "Zalrsc": 4, "Zca": 32, "F": 84, "D": 116}
+# TEST_FLEN is the width a test file was written for (its data layout and signature stride are baked in):
+# 64 for the D suite, 32 for every other suite here (P4-SYSTEM.15 slice c).
+TEST_FLEN = {"D": 64}
 SELECTED = ["I"]
 
 
@@ -129,7 +132,7 @@ def build(clang: str, lld: list[str], name: str) -> Path:
     proc = subprocess.run(
         [clang, "--target=riscv64-unknown-elf", f"-march={march}", "-mabi=lp64",
          "-mno-relax", f"-I{ACT4}/tests/env", f"-I{DUT}",
-         f"-DTEST_FILE=\"{name}.S\"", "-DTEST_FLEN=32",
+         f"-DTEST_FILE=\"{name}.S\"", f"-DTEST_FLEN={TEST_FLEN.get(suite_of(name), 32)}",
          "-DSAIL_CLINT_BASE_ADDRESS=0x2000000",
          "-DSAIL_SIMPLE_INTERRUPT_GENERATOR_BASE_ADDRESS=0xC000000",
          "-c", str(src), "-o", str(obj)],

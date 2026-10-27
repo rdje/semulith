@@ -4,10 +4,10 @@
  * The same minimal set as rv64i's, on purpose: the pinned RV64I suite (tests/rv64i/I) is
  * what runs here, from reset in M-mode, and its bodies carry no CSR, fence.i or
  * floating-point instruction outside compiled-out guards. The GC profile's S/U modes,
- * Zicsr, Zicntr, F/D and C are not exercised by this suite and are therefore not
- * declared to its framework — an undeclared feature compiles its machinery out; it
- * does not claim its absence from the model. The M/A/F/D/C suites are their own
- * acquisition and their own DUT configuration (a later slice).
+ * Zicsr and Zicntr are not exercised by these suites and are therefore not declared to
+ * its framework — an undeclared feature compiles its machinery out; it does not claim
+ * its absence from the model. The M, A and C suites joined in slice b (no macro of their
+ * own), F and D in slice c (declared below, since their framework paths read them).
  *
  * The upstream framework generates this file from a UDB YAML description of the
  * DUT. This laboratory writes the minimal honest set by hand: exactly what the
@@ -31,5 +31,13 @@
 #define RVTEST_CONFIG_H
 
 #define UDB_MXLEN 64
+
+/* P4-SYSTEM.15 slice c: the F and D suites. The profile implements F and D (D-GC-COMPOSITION), so
+ * the framework may set mstatus.FS before a test and select fsw/fsd in its FP signature macros;
+ * the effective width stays the test's own TEST_FLEN (32 for F, 64 for D). Declaring these
+ * changes no integer test's body: measured by re-running the I, M, A and C suites after the
+ * declaration (every row unchanged). */
+#define F_SUPPORTED 1
+#define D_SUPPORTED 1
 
 #endif /* RVTEST_CONFIG_H */

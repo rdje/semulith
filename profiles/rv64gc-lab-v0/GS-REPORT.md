@@ -30,7 +30,7 @@ is not a claim with a denominator.
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
-| `G-REGRESSION` | `P4-SYSTEM.15` | The pinned riscv-arch-test RV64I suite has run against this unit as external tests with Sail-derived expectations (act4.sexp, P4-SYSTEM.15 slice a); the M, A (Zaamo, Zalrsc) and C (Zca) suites followed (slice b); the F and D suites, the Misalign suites, a workload suite and the complete validator-mutation campaign over the full-table GC models have not run. Two deliberately wrong full-table GC models are available as detector controls. |
+| `G-REGRESSION` | `P4-SYSTEM.15` | The pinned riscv-arch-test RV64I suite has run against this unit as external tests with Sail-derived expectations (act4.sexp, P4-SYSTEM.15 slice a); the M, A (Zaamo, Zalrsc) and C (Zca) suites followed (slice b) and the F and D suites (slice c); the Misalign suites, a workload suite and the complete validator-mutation campaign over the full-table GC models have not run. Two deliberately wrong full-table GC models are available as detector controls. |
 | `G-PORTABILITY` | `P4-SYSTEM.17` | No portability record for this unit: the instrument's manifest is built from rv64i's guests. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
@@ -64,7 +64,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 c4e221d595126ea27db0392764ee3ec586264d1161f11922214a9e61c3b51742`
+  `sha256 f45e5065484ca37d930c0e8dc633a81637d1d837f7d3a5a3041c375a5cb47c49`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)
