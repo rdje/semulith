@@ -38,6 +38,7 @@ pub mod json;
 pub mod m_vectors;
 pub mod model_rv64gc;
 pub mod mutate;
+pub mod mutate_rv64gc;
 pub mod pattern;
 pub mod reduce;
 pub mod reduce_rv64gc;

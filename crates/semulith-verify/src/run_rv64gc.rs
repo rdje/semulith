@@ -127,7 +127,7 @@ pub fn run_guest_with_model(guest: &Guest, model: Model) -> Result<(Trace, FlatM
     Ok(run_guest_over(guest, model.table()?))
 }
 
-fn run_guest_over(guest: &Guest, table: &[InsnDef]) -> (Trace, FlatMemory) {
+pub(crate) fn run_guest_over(guest: &Guest, table: &[InsnDef]) -> (Trace, FlatMemory) {
     let mut env = FlatMemory::with_fetch_align(guest.entry, 0x10000, 2);
     env.load_image(0, guest.image);
     let mut state = ArchitecturalState::zeroed_at(guest.entry);
