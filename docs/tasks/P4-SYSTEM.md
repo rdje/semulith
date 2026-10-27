@@ -392,7 +392,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | the XLEN and CSR-SET programs in the corpus (a43a-1, a43b-1); next a43c-1 ZICNTR and a43d-1 SSTC; the declarations (a43a-2 …) wait on the pinned-tooling ruling |
+| 1 | `P4-SYSTEM.14` | `active` | the XLEN, CSR-SET and SSTC programs in the corpus (a43a-1, a43b-1, a43d-1); the declarations (a43a-2 …) and the ZICNTR program (a reference with Zicntr) wait on the pinned-tooling ruling |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
 | 3 | `P4-SYSTEM.17` | `active` | portability: slice a — the instrument over the rv64gc corpus, the four legs re-measured, the record |
 
@@ -487,6 +487,30 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43d-1 / SEMULITH-P4-0308: the SSTC case's crediting program — access, both gates and the kernel's own timer matched; delivery named out (completed)
+
+Feature 12 (cycle three), on clean 623ee0d7. Two probes first, both in target/p4-system-14/a43d/draft: with STCE set and
+`stimecmp` = 0 the laboratory reads `mip.STIP` (0x20) where the pinned Sail reads 0, and the supervisor timer interrupt the
+laboratory delivers at the next step head never arrives in Sail (the override declares `platform/clint` unsupported — the
+dossier's "unmatched timer source"); `time` traps there too (Zicntr off). So the program witnesses what the reference can
+see. `profiles/rv64gc-lab-v0/guests/sstc.s` — 44 instructions, 52 executed steps, M and S: `mtvec` to a two-visit handler;
+in M, `stimecmp` readable with STCE and TM both clear (resets to 0), written 2^40 and read back (all 64 bits); `mret` to S;
+the first S access refused (`mcounteren.TM` clear — the handler's visit 1 sets TM and returns), the second refused
+(`menvcfg.STCE` clear — visit 2 sets STCE, the visit told by an `mscratch` flag), the third succeeds (2^40); then the
+S-mode kernel programs its own timer (2^41) and reads it back — the extension's purpose without an M-mode round trip.
+Expectations derived on the parcel route (`--parcels --steps 52`: 52 steps, 104 fetches, schema-valid). Judged three ways:
+the lab fixture (guests_rv64gc.rs 170 → 171 guests, 5581 expected steps; `every_guest_matches_its_expectations` ok), the
+pinned Sail sim live over the canonical ELF (`AGREE on 52 of 52 declared steps`, modes M and S — an experiment, not a
+capture; two same-value flag reads needed sentinels first, 48 → 52), and the lab demo's trace (52 steps). Registered in
+run-order.txt and the legality × delegation interaction cell; GUEST-GEN (200 s), EXERCISE-COVERAGE 19/19,
+INTERACTION-MATRIX, DERIVED-COUNTS, GATE-REPORT and MATERIALS-BILL green; GS-REPORT.md and the internal-contracts fragment
+regenerated after `git add`; REQUIREMENT-STATUS unchanged; no touched path is pinned by the M manifest. Delivery, the
+scheduled-time boundaries and suppression stay corpus-judged (`mm-stimecmp`, `w-timer`) and are the case's named
+limitation. **The plan's record is corrected in the same addendum:** the ZICNTR case cannot be matched against this
+reference at all (a succeeding counter read traps in Sail; the gating trap paths would agree for different reasons), so
+its program waits for a reference with Zicntr — the pinned-tooling ruling. Evidence target/p4-system-14/a43d (draft/,
+guest-test.log, demo-sstc.txt).
 
 ### .14 a43b-1 / SEMULITH-P4-0307: the CSR-SET case's crediting program — 28 of the 33 matched live, the counters named out (completed)
 
@@ -885,6 +909,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a43b-1 **ROOT CAUSE** — at e7c56f47: `grep -c csr-set profiles/rv64gc-lab-v0/guests/run-order.txt` = 0; REQ-D-CSR-SET reads `planned` with no program witnessing the 33; the 33-CSR Sail probe: 27 of 33 reset values agree with the deriver, the five counters trap illegal-instruction (Zicntr unsupported in the pinned override), so a program over all 33 cannot match.
 - [x] `.14` a43b-1 **ADDRESSED** — `derive_rv64gc_expectations.py --parcels --steps 103 csr-set.s` → `wrote csr-set.expected.sexp (103 steps)`, `check_sexp_schema: ok`; `grep -c '(step' profiles/rv64gc-lab-v0/guests/csr-set.expected.sexp` = 103; `gen_guests.py --check` → `matches the tracked guests` (170); `cargo test -p semulith-verify every_guest_matches_its_expectations` → `test result: ok. 1 passed`; live Sail `AGREE on 103 of 103 declared steps` (modes M and S).
 - [x] `.14` a43b-1 **NO REGRESSION** — `grep -c csr-set evidence/rv64gc-m-forms-v3/dependencies.sexp` = 0 (no pinned path touched); `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; … 1 of 1 credit record(s) current; 0 drift`; `bash scripts/check_guest_gen.sh` rc=0 (198 s); INTERACTION-MATRIX ok (no orphan guests), EXERCISE-COVERAGE 19/19, DERIVED-COUNTS, GATE-REPORT, MATERIALS-BILL ok; probes 22/0, 25/0, 34 tests / 36 failures as pinned.
+- [x] `.14` a43d-1 **ROOT CAUSE** — at 623ee0d7: `grep -c sstc profiles/rv64gc-lab-v0/guests/run-order.txt` = 0; REQ-D-SSTC reads `planned`; the mip probe: lab `mip` 0x20 vs Sail 0x0 with STCE set and stimecmp 0 — the pinned reference has no timer source, so delivery cannot be a matched witness and the program must be shaped to what the reference sees.
+- [x] `.14` a43d-1 **ADDRESSED** — `derive_rv64gc_expectations.py --parcels --steps 52 sstc.s` → `wrote sstc.expected.sexp (52 steps)`, `check_sexp_schema: ok`; `grep -c '(step' profiles/rv64gc-lab-v0/guests/sstc.expected.sexp` = 52; `gen_guests.py --check` → `matches the tracked guests` (171); `cargo test -p semulith-verify every_guest_matches_its_expectations` → `test result: ok. 1 passed`; live Sail `AGREE on 52 of 52 declared steps`.
+- [x] `.14` a43d-1 **NO REGRESSION** — `grep -c sstc evidence/rv64gc-m-forms-v3/dependencies.sexp` = 0; `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; … 1 of 1 credit record(s) current; 0 drift`; `bash scripts/check_guest_gen.sh` rc=0 (200 s); INTERACTION-MATRIX ok, EXERCISE-COVERAGE 19/19, DERIVED-COUNTS, GATE-REPORT, MATERIALS-BILL ok; probes 22/0, 25/0, 34 tests / 36 failures as pinned.
 - [x] `.15` slice a **ROOT CAUSE** — at 4b0b680a: `grep -c 'external' profiles/rv64gc-lab-v0/gate.sexp` = 1 (the open row only), `ls profiles/rv64gc-lab-v0/act4.sexp` absent, GS-REPORT `G-REGRESSION … 2 of 5 required kinds evidenced — open: external, workload, validator-mutation`; the runner hard-wired `PROFILE = "rv64i-lab-v0"` (`grep -c 'PROFILE = "rv64i-lab-v0"' scripts/run_act4_campaign.py` = 1), no DUT pieces for the GC unit; smoke-rv64gc.log (first run): `REFUSED — semulith: no store crossings parsed`, gc-run.out 32,902 lines without one `mem[` line while `--trace-stores` was given — the CLI's GC branch returned before the store trace (`grep -n 'return run_guest_rv64gc' crates/semulith-cli/src/main.rs` above the `if trace_stores` block).
 - [x] `.15` slice a **ADDRESSED** — crates/semulith-cli/src/main.rs: `RecordStores` (an `Environment` recording `Request::Store` answered `StoreDone`), `run_guest_rv64gc(…, trace_stores)` prints `mem[{bytes},0x{addr}] <- 0x{value}` lines; `cargo clippy -p semulith-cli --all-targets -- -D warnings` rc 0, `cargo fmt --check` clean; gc-stores.txt vs i-stores.txt (I-add-00 on both models, 29,460 steps): 17,018 lines each, `cmp` identical. scripts/run_act4_campaign.py: `PROFILES` table, `--profile` parsing, the record naming its unit (`run_act4_campaign --self-test: 7 pass / 0 fail`); smoke-rv64i.log unchanged (`513 slots agree`, both pairs); smoke-rv64gc.log after the fix: all 7 PASS, `513 slots agree` on both pairs. campaign-rv64gc.log: `51 pass / 0 fail` over 51 files, 17,017 slots, 45 s; `shasum -a 256 profiles/rv64gc-lab-v0/act4.sexp` = ca64f00f54d55f2d…; `RECORD-SCHEMA: ok (22 record file(s) validate and agree with their profile; the Rust graph checker accepts the examples bundle)`; `python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS` → `G-REGRESSION … 3 of 5 required kinds evidenced — open: `workload`, `validator-mutation` | **incomplete**; external `profiles/rv64gc-lab-v0/act4.sexp` verified `yes``.
 - [x] `.15` slice a **NO REGRESSION** — rv64i: `python3 -B scripts/run_act4_campaign.py I-add-00` byte-for-byte the same PASS lines as before the patch (smoke-rv64i.log), profiles/rv64i-lab-v0/act4.sexp untouched (`git diff --stat` names no rv64i file); `probe_requirement_status.py` `22 tests / 0 failures`, `probe_div_policy.py` `25 tests / 0 failures`, `probe_matched_gpr_property.py --mutation derived-status` `34 tests / 36 failures` (= `derived-status:36`); `REQUIREMENT-STATUS` and `DIV-POLICY` lines unchanged; `make check` green; `ls target/doctrine-selftest | wc -l` = 0; the staged focused run before the chain.

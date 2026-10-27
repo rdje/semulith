@@ -155,7 +155,7 @@
 
 ;; ── legality × * ──────────────────────────────────────────────────────────────────
 (cell (axis "legality") (axis "legality") (guest "c-off-fld") (guest "c-off-fldsp") (guest "c-off-fsd") (guest "c-off-fsdsp") (guest "c-hints") (guest "mm-csr-legality-s") (guest "mm-csr-legality-u") (guest "mm-readonly") (guest "mm-wfi") (guest "mm-sfence") (guest "mm-sret") (guest "sv39-perm-usr") (guest "a-lrsc-illegal") (guest "i-prio") (guest "fp-fs-off") (guest "fp-fcsr-view") (guest "env-irq-sources"))
-(cell (axis "legality") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp"))
+(cell (axis "legality") (axis "delegation") (guest "mm-ecall-deleg") (guest "mm-counters") (guest "mm-stimecmp") (guest "sstc"))
 (cell (axis "legality") (axis "progress") (guest "mm-wfi") (guest "mm-ebreak") (guest "scope-ecall") (guest "scope-ebreak") (guest "fault-fetch") (guest "sv39-tlb-fence") (guest "a-amo-aqrl") (guest "a-lrsc-mustfail") (guest "i-accept") (guest "i-enable") (guest "w-sw") (guest "f-dirty"))
 (cell (axis "legality") (axis "restart") (guest "mm-sret") (guest "mm-mret") (guest "mm-ecall-deleg") (guest "sv39-mprv") (guest "sv39-perm-usr"))
 

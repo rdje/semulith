@@ -304,6 +304,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/smoke-arith.s`  `00e86c26cf8a113499fc2c3f3abaf96953347efb620a031771147001018fd84b`
 //!   `profiles/rv64gc-lab-v0/guests/smoke-trap.expected.sexp`  `7d8753ad247fe705ce64cee74ef82fbbdb5c214a2dfe5e9adaabc72dcfd95de7`
 //!   `profiles/rv64gc-lab-v0/guests/smoke-trap.s`  `c9533287494eecf17ecd965070232331cfdefc2eb9af1fb36de644c9c819d216`
+//!   `profiles/rv64gc-lab-v0/guests/sstc.expected.sexp`  `e57a4d0c938955dc9c200dbedb54ee94827f1625e96d73b36d145a110735d1a9`
+//!   `profiles/rv64gc-lab-v0/guests/sstc.s`  `b086f3c415c347da935bcac850a9b305bf68eeabda45f588ea4d72e6a5c7f4c8`
 //!   `profiles/rv64gc-lab-v0/guests/sv39-deleg.expected.sexp`  `e2bf346e5889ce03a1e2478c0b76c86520081f3966a123d04edbd7cd1021472b`
 //!   `profiles/rv64gc-lab-v0/guests/sv39-deleg.s`  `020f1453944427479f53e9d9bc32161447e04d77bae76e72c5217072d2c06b3e`
 //!   `profiles/rv64gc-lab-v0/guests/sv39-fault-canonical.expected.sexp`  `98a54629c3e5f481d814d52a08d82df9e490ce1fbe163be95433aa7705edf734`
@@ -9339,6 +9341,76 @@ static EXPECTED_CSR_SET: &[Expectation] = &[
 ];
 
 #[rustfmt::skip]
+static IMAGE_SSTC: &[u8] = &[
+    0x97, 0x00, 0x00, 0x00, 0x93, 0x80, 0x40, 0x07, 0x73, 0x90, 0x50, 0x30, 0x93, 0x02, 0xF0, 0xFF,
+    0xF3, 0x22, 0xD0, 0x14, 0x13, 0x03, 0x10, 0x00, 0x13, 0x13, 0x83, 0x02, 0x73, 0x10, 0xD3, 0x14,
+    0x93, 0x03, 0xF0, 0xFF, 0xF3, 0x23, 0xD0, 0x14, 0x93, 0x01, 0x10, 0x00, 0x93, 0x91, 0xB1, 0x00,
+    0x73, 0xA0, 0x01, 0x30, 0x17, 0x02, 0x00, 0x00, 0x13, 0x02, 0x02, 0x01, 0x73, 0x10, 0x12, 0x34,
+    0x73, 0x00, 0x20, 0x30, 0x13, 0x04, 0xF0, 0xFF, 0x73, 0x24, 0xD0, 0x14, 0x13, 0x0F, 0xF0, 0xFF,
+    0x93, 0x04, 0xF0, 0xFF, 0xF3, 0x24, 0xD0, 0x14, 0x13, 0x05, 0xF0, 0xFF, 0x73, 0x25, 0xD0, 0x14,
+    0x93, 0x05, 0x10, 0x00, 0x93, 0x95, 0x95, 0x02, 0x73, 0x90, 0xD5, 0x14, 0x13, 0x06, 0xF0, 0xFF,
+    0x73, 0x26, 0xD0, 0x14, 0x73, 0x2F, 0x20, 0x34, 0x93, 0x0D, 0xF0, 0xFF, 0xF3, 0x2D, 0x00, 0x34,
+    0x63, 0x9C, 0x0D, 0x00, 0x13, 0x0E, 0x20, 0x00, 0x73, 0x20, 0x6E, 0x30, 0x93, 0x0D, 0x10, 0x00,
+    0x73, 0x90, 0x0D, 0x34, 0x63, 0x06, 0x00, 0x00, 0x37, 0x0E, 0x00, 0x80, 0x73, 0x20, 0xAE, 0x30,
+    0xF3, 0x2E, 0x10, 0x34, 0x93, 0x8E, 0x4E, 0x00, 0x73, 0x90, 0x1E, 0x34, 0x73, 0x00, 0x20, 0x30,
+];
+#[rustfmt::skip]
+static EXPECTED_SSTC: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000074)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(5, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(5, 0x0000000000000000)] },
+    Expectation { step: 5, writes: &[(6, 0x0000000000000001)] },
+    Expectation { step: 6, writes: &[(6, 0x0000010000000000)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(7, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 9, writes: &[(7, 0x0000010000000000)] },
+    Expectation { step: 10, writes: &[(3, 0x0000000000000001)] },
+    Expectation { step: 11, writes: &[(3, 0x0000000000000800)] },
+    Expectation { step: 12, writes: &[] },
+    Expectation { step: 13, writes: &[(4, 0x0000000080000034)] },
+    Expectation { step: 14, writes: &[(4, 0x0000000080000044)] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[] },
+    Expectation { step: 17, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 18, writes: &[] },
+    Expectation { step: 19, writes: &[(30, 0x0000000000000002)] },
+    Expectation { step: 20, writes: &[(27, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 21, writes: &[(27, 0x0000000000000000)] },
+    Expectation { step: 22, writes: &[] },
+    Expectation { step: 23, writes: &[(28, 0x0000000000000002)] },
+    Expectation { step: 24, writes: &[] },
+    Expectation { step: 25, writes: &[(27, 0x0000000000000001)] },
+    Expectation { step: 26, writes: &[] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[(29, 0x0000000080000048)] },
+    Expectation { step: 29, writes: &[(29, 0x000000008000004C)] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[(30, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 33, writes: &[(9, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 34, writes: &[] },
+    Expectation { step: 35, writes: &[(30, 0x0000000000000002)] },
+    Expectation { step: 36, writes: &[(27, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 37, writes: &[(27, 0x0000000000000001)] },
+    Expectation { step: 38, writes: &[] },
+    Expectation { step: 39, writes: &[(28, 0xFFFFFFFF80000000)] },
+    Expectation { step: 40, writes: &[] },
+    Expectation { step: 41, writes: &[(29, 0x0000000080000054)] },
+    Expectation { step: 42, writes: &[(29, 0x0000000080000058)] },
+    Expectation { step: 43, writes: &[] },
+    Expectation { step: 44, writes: &[] },
+    Expectation { step: 45, writes: &[(10, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 46, writes: &[(10, 0x0000010000000000)] },
+    Expectation { step: 47, writes: &[(11, 0x0000000000000001)] },
+    Expectation { step: 48, writes: &[(11, 0x0000020000000000)] },
+    Expectation { step: 49, writes: &[] },
+    Expectation { step: 50, writes: &[(12, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 51, writes: &[(12, 0x0000020000000000)] },
+];
+
+#[rustfmt::skip]
 static IMAGE_C_IMMEDIATES: &[u8] = &[
     0x81, 0x50, 0xFD, 0x00, 0x85, 0x00, 0xFD, 0x41, 0x81, 0x11, 0x01, 0x72, 0xFD, 0x62, 0x41, 0x41,
     0x01, 0x71, 0x7D, 0x61, 0xE0, 0x1F, 0x13, 0x01, 0xF0, 0xFF, 0x41, 0x61, 0x5C, 0x00, 0x01, 0x00,
@@ -14346,6 +14418,17 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 103,
         expected_fetches: 206,
         expected: EXPECTED_CSR_SET,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "sstc",
+        entry: 0x0000000080000000,
+        image: IMAGE_SSTC,
+        executed_steps: 52,
+        expected_fetches: 104,
+        expected: EXPECTED_SSTC,
         never_written: &[],
         refusals: &[],
         cross_model: true,

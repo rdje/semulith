@@ -78,8 +78,19 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
   illegal-instruction in the pinned Sail sim (33-CSR probe; `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`
   declares `Zicntr` unsupported; the dossier records "disabled reference Zicntr … leave those observations unmatched"). So
   item 2's CSR-SET case matches 28 of the 33 and names the five counters as corpus-judged (`mm-counters`,
-  `mm-csr-ro-counters`), and item 2's ZICNTR case can match only the trap paths (gating in S/U), never a counter read's
-  success or value: the policy's "genuine reference limitation leaves the affected comparison uncredited" applies to both.
+  `mm-csr-ro-counters`). **Corrected by a43d-1 (`SEMULITH-P4-0308`):** item 2's ZICNTR case cannot be matched against this
+  reference at all — a counter read that succeeds in the laboratory traps in Sail, and the S/U gating trap paths would
+  agree for different reasons (the gate there, the absent extension here), which the policy forbids to count. ZICNTR's
+  credit waits for a reference with Zicntr (a per-case reference configuration or a second reference), i.e. on the
+  pinned-tooling ruling; its program is not authored until then. The policy's "genuine reference limitation leaves the
+  affected comparison uncredited" applies.
+- **The reference has no timer source under the pinned override** (`platform/clint` unsupported): with STCE set and
+  `stimecmp` = 0 the laboratory reads `mip.STIP` (0x20) and Sail reads 0, and the supervisor timer interrupt the
+  laboratory delivers at the next step head never arrives in Sail (probes target/p4-system-14/a43d/draft/mip-probe.s,
+  sstc-probe.s; the dossier's "unmatched timer source"). So item 2's SSTC case witnesses M access without gating, a
+  64-bit compare value written and read back, the two S gates (`mcounteren.TM`, `menvcfg.STCE`) as separate trap paths,
+  and the S-mode kernel programming its own timer; delivery and suppression stay corpus-judged (`mm-stimecmp`,
+  `w-timer`) and are named in the case's limitations.
 - **The spec-side deriver's CSR vocabulary is the 33.** `derive_rv64gc_expectations.py` refuses any other CSR number
   (`csr 0x… outside the corpus's vocabulary`) and is a pinned input of the retained DIV case, so the "non-member address
   traps" witness is not derivable today; the negative side of CSR-SET is the refused write and the privilege-refused access.
