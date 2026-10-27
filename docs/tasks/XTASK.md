@@ -501,6 +501,22 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   machine the mutation is caught three runs of three (rc 1, `25 tests / 1 failures`) — a load-sensitive control, recorded for
   the doctrine's owner (§9; no card while `docs/knowledge/` sits at its ceiling, see 6r-b); the chain re-ran on an idle machine.
   Next: slice `6u` — `check_board_verdict.sh` behind a held shim (its judge `board_verdict.py` spawned as before).
+  Slice 6u (`2026-10-27`, `SEMULITH-XTASK-0029`; on clean f229ae89, taken out of turn — no feature leaf unblocked): `BOARD-VERDICT`'s
+  driver is Rust — `xtask/src/check_board_verdict.rs` (246 lines) ports the bash driver line for line: the judge
+  `scripts/board_verdict.py` spawned exactly as the driver spawned it for every tracked `profiles/*/board.sexp` (the glob's locale
+  order kept), NOT ported; the controls over scratch copies of the real board with the script's five text mutations (an answer
+  removed, an answer to a ghost, an obligation answered twice, a `satisfies` edge to a ghost, a guarantee's line removed), the same
+  verdict lines and exit statuses; the six bash arms are six `tally.arm(` calls, the arm total unchanged;
+  `scripts/check_board_verdict.sh` a shim of `cargo xtask check-board-verdict`. Measured in a disposable draft crate: the self-test
+  `6 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical
+  (`BOARD-VERDICT: ok (1 board(s) — every CPU assumption discharged, every satisfies edge resolved, every composition disposition
+  bound)`), and 5 scratch fixture repositories (every pinned script, the profiles, schemas, definitions and materials copied
+  in — the judge reads the composed dossiers, so a board alone refuses) — one board, no board, two boards, the real board rejected,
+  one of two rejected (FAIL by name) — 5 identical, 0 differ in stdout, stderr and exit status. §9, the script's and reproduced faithfully: the
+  controls copy the LIVE board, so a corpus whose live board is rejected reads as a check that does not discriminate — REFUSED,
+  exit 2, never FAIL by name (the `no board` and `rejected` states); an open question for the doctrine's owner beside 6r's. In
+  tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6v` — `check_board_gen.sh` behind a held
+  shim (its generator `gen_board.py` spawned as before).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -584,7 +600,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6u`: `check_board_verdict.sh` behind a held shim — the board's composition judge spawned as before; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6v`: `check_board_gen.sh` behind a held shim — the board's generator spawned as before; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -608,6 +624,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - Whether new tooling must be born in Rust once XTASK.1 exists — proposed in the decision record; to be
   confirmed by the director before any check enforces it. Does not block XTASK.1.
 - (6r, `2026-10-27`) `CITATION-QUOTES`'s availability probe exits 1 for "pages absent" and Python exits 1 for an uncaught exception, so a sources manifest the reader refuses outside the probe's `except` tuple reads as absence — NAMED SKIP, exit 0 (measured in the 6r fixture `manifest-unreadable`; the card is drafted in target/xtask/xt0026/card.md and waits for `docs/knowledge/`'s containment — the directory is at 130,763 of 131,072 B). The port reproduces it; the doctrine's owner decides whether the probe should refuse (exit 2) on any exception — a one-line change to the script, re-measured through the shim.
+- (6u, `2026-10-27`) `BOARD-VERDICT`'s controls copy the LIVE board (`profiles/netboard-lab-v0`) and expect it ACCEPTED, so a corpus whose live board is rejected makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6u fixtures `no-board` and `rejected`. The port reproduces it; the doctrine's owner decides whether the controls should run over a frozen fixture board instead.
 
 ## Blockers
 
@@ -687,6 +704,12 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - [x] slice 6t **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0028/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6t **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_book_index.sh` through the shim → the same `40 table rows` line; `bash scripts/check_derived_counts.sh` → ok (10 bash arms out, 10 `tally.arm(` in; 1692 holds).
 - [x] slice 6t **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6t, frontier 6u, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6u **REPRODUCE / ISSUE** — before/ (bash driver at f229ae89; target/xtask/xt0029/before/): `BOARD-VERDICT: ok (1 board(s) — every CPU assumption discharged, every satisfies edge resolved, every composition disposition bound)` rc 0, stderr empty; `BOARD-VERDICT --self-test: 6 pass / 0 fail`; `grep -c 'arm "' scripts/check_board_verdict.sh` = 6.
+- [x] slice 6u **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/board_verdict.py` (`grep -c board_verdict.py scripts/check_board_verdict.sh` = 8) with five inline Python text mutations of the board copy (`grep -c 'python3 -' scripts/check_board_verdict.sh` = 5); the judge stays pinned Python, spawned as before.
+- [x] slice 6u **FIX** — xtask/src/check_board_verdict.rs (`shasum -a 256` = 7ac17a0ecf1a3fbd60f5fd694105ca9f4909b28819a6d28ea1b0553b016f96bc; `wc -l` = 246; `grep -cE '^[[:space:]]+tally\.arm\('` = 6); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_board_verdict.sh a shim (`exec cargo xtask check-board-verdict "$@"`).
+- [x] slice 6u **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 5 fixture repositories (target/xtask/xt0029/red/summary.txt): `RED/GREEN paths: 5 identical, 0 differ` — stdout, stderr and rc each (the first fixture set copied the board alone: every state REFUSED on both sides — identical and uninformative; the corpus copied in, the states speak).
+- [x] slice 6u **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_board_verdict.sh` through the shim → the same `1 board(s)` line; `bash scripts/check_derived_counts.sh` → ok (6 bash arms out, 6 `tally.arm(` in; 1692 holds).
+- [x] slice 6u **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6u, frontier 6v, the Decisions bullet, the §9 open question), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -736,3 +759,4 @@ Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 - `2026-10-27`: XTASK.6 slice 6r done — `CITATION-QUOTES`'s driver is Rust behind a held shim (the pinned Python tool and its two inline controls spawned verbatim), byte-identical on the real tree and 5 fixture repositories, twenty-two arms; CHANGELOG.md sharded (`docs/changelog/shard-0417.md`); one uncoupled driver remains (`check_m_vectors.sh`, slice 6s); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6s done — `M-VECTORS`'s driver is Rust behind a held shim (the inline Python judge run verbatim), byte-identical on the real tree and 5 fixture repositories, six arms; the uncoupled drivers are all ported (6k–6s); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6t done — `BOOK-INDEX`'s driver is Rust behind a held shim (the generator spawned as before), byte-identical on the real tree and 5 fixture repositories, ten arms; next `check_board_verdict.sh` (slice 6u); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6u done — `BOARD-VERDICT`'s driver is Rust behind a held shim (the judge spawned as before), byte-identical on the real tree and 5 fixture repositories, six arms; §9: the controls copy the live board, so a rejected live board refuses the check instead of failing by name (an open question); next `check_board_gen.sh` (slice 6v); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
