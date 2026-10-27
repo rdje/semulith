@@ -108,6 +108,9 @@
 //! - `cargo xtask check-materials-bill [--self-test]` is the `MATERIALS-BILL` doctrine's driver (`XTASK.6` slice
 //!   `6am`, `check_materials_bill.rs`): every registered unit's materials bill judged against the pinned dossier by the
 //!   driver's inline Python run verbatim, the generator spawned as before; `scripts/check_materials_bill.sh` is its shim.
+//! - `cargo xtask check-definition-gen [--self-test]` is the `DEF-GEN` doctrine's driver (`XTASK.6` slice `6an`,
+//!   `check_definition_gen.rs`): the generated definition modules judged as the generator's output of the canonical
+//!   definition, the generator and the C probes spawned as before; `scripts/check_definition_gen.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -135,6 +138,7 @@ mod check_changelog_shards;
 mod check_citation_quotes;
 mod check_commit_prefix;
 mod check_contract_freeze;
+mod check_definition_gen;
 mod check_delivery_provenance;
 mod check_derived_counts;
 mod check_exercise_coverage;
@@ -251,12 +255,14 @@ const NATIVE: &[&str] = &[
     "check-fp-vectors",
     "check-gate-report",
     "check-materials-bill",
+    "check-definition-gen",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-definition-gen", "scripts/check_definition_gen.sh"),
     ("check-materials-bill", "scripts/check_materials_bill.sh"),
     ("check-gate-report", "scripts/check_gate_report.sh"),
     ("check-fp-vectors", "scripts/check_fp_vectors.sh"),
@@ -364,6 +370,7 @@ fn main() -> ExitCode {
             "check-fp-vectors" => check_fp_vectors::run(&root, &args[1..]),
             "check-gate-report" => check_gate_report::run(&root, &args[1..]),
             "check-materials-bill" => check_materials_bill::run(&root, &args[1..]),
+            "check-definition-gen" => check_definition_gen::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
