@@ -87,6 +87,9 @@
 //! - `cargo xtask check-artifact-cleanup [--self-test]` is the `ARTIFACT-COHORT` doctrine's driver (`XTASK.6` slice
 //!   `6af`, `check_artifact_cleanup.rs`): the cleanup instrument's probe suites and mutations run as the driver ran
 //!   them, the instruments' tracking checked; `scripts/check_artifact_cleanup.sh` is its shim.
+//! - `cargo xtask check-source-format [--self-test]` is the `SOURCE-FORMAT` doctrine (`XTASK.6` slice `6ag`,
+//!   `check_source_format.rs`): every source of truth under the four families judged an S-expression the harness's own
+//!   reader parses; `scripts/check_source_format.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -127,6 +130,7 @@ mod check_push_record;
 mod check_registry_mirror;
 mod check_rustdoc;
 mod check_scope_coverage;
+mod check_source_format;
 mod check_state_gen;
 mod check_task_history;
 mod check_tree_claims;
@@ -216,12 +220,14 @@ const NATIVE: &[&str] = &[
     "check-changelog-shards",
     "check-derived-counts",
     "check-artifact-cleanup",
+    "check-source-format",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-source-format", "scripts/check_source_format.sh"),
     (
         "check-artifact-cleanup",
         "scripts/check_artifact_cleanup.sh",
@@ -312,6 +318,7 @@ fn main() -> ExitCode {
             "check-changelog-shards" => check_changelog_shards::run(&root, &args[1..]),
             "check-derived-counts" => check_derived_counts::run(&root, &args[1..]),
             "check-artifact-cleanup" => check_artifact_cleanup::run(&root, &args[1..]),
+            "check-source-format" => check_source_format::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

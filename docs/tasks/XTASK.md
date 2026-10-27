@@ -240,6 +240,18 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   PATH tools (`wc`, `python3`, `sort`, `grep` in a fixture `bin/`), so a port must call the same tools to stay measurable by them —
   sized at about 600 lines of Rust, out of proportion for an out-of-turn slice while features wait. Next: slice `6ag` —
   `check_source_format.sh` over `sexp.rs`, the first of the three `sexp`-only callers.
+  Slice 6ag (`2026-10-27`, `SEMULITH-XTASK-0043`; on clean afee5b58, taken out of turn — no feature leaf unblocked): `SOURCE-FORMAT`
+  is Rust — `xtask/src/check_source_format.rs` (452 lines) ports the driver's inline Python line for line over the harness's own
+  reader: every file of the four families (tracked under `git`, everything there under `fs`), a retired-format file an OUTSIDE
+  FORMAT, a `.sexp` the reader refuses UNREADABLE with the reader's own text (`sexp.rs` equal to the pinned `scripts/sexp.py`,
+  refusal texts included — 6j, 6p), a corpus without a `.sexp` NO SEXP SOURCE, an empty corpus refused; the shared reader's
+  refusal probe runs as the script ran it, plain and optimized; the seven bash arms and eighteen `score` lines are seven
+  `tally.arm(` calls and eighteen `tally.score(` lines, the arm total unchanged; `scripts/check_source_format.sh` a shim of
+  `cargo xtask check-source-format`. Measured in a disposable draft crate: the self-test `25 pass / 0 fail` with stdout and stderr
+  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`SOURCE-FORMAT: ok (331 source-of-truth
+  file(s) under definitions/ schema/ profiles/ materials/, all in the one format)`), and 3 scratch fixture repositories —
+  a clone of the repository, a `.toml` planted and tracked under a unit, an unterminated `.sexp` planted and tracked — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings
+  rc=0 (clean on the first in-tree run). Next: slice `6ah` — `check_semantics_corpus.sh` over `sexp.rs`.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -323,7 +335,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6ag`: `check_source_format.sh` over `sexp.rs` behind a held shim — the first `sexp`-only caller; `check_readme_routes.sh` deferred (PATH-shadowing controls); taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6ah`: `check_semantics_corpus.sh` over `sexp.rs` behind a held shim — the second `sexp`-only caller; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -447,6 +459,12 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - [x] slice 6af **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both, `cmp after/args.err before/args.err` rc=0; 2 fixture repositories (target/xtask/xt0041/red/summary.txt): `RED/GREEN paths: 2 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6af **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_artifact_cleanup.sh` through the shim → the same two lines; `bash scripts/check_derived_counts.sh` → ok (16 bash scores out, 16 `tally.score(` in; 1692 holds).
 - [x] slice 6af **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6af, frontier 6ag, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6ag **REPRODUCE / ISSUE** — before/ (bash driver at afee5b58; target/xtask/xt0042/before/): `SOURCE-FORMAT: ok (331 source-of-truth file(s) under definitions/ schema/ profiles/ materials/, all in the one format)` rc 0, stderr empty; `SOURCE-FORMAT --self-test: 25 pass / 0 fail`; `grep -c 'arm "' scripts/check_source_format.sh` = 7, `grep -cE '^[[:space:]]+score "'` = 18.
+- [x] slice 6ag **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash around a 45-line inline Python block importing the pinned `sexp.py` (`grep -c 'import sexp' scripts/check_source_format.sh` = 1) and eighteen probe scorings; until 6j there was no Rust reader equal to the pinned one to port it onto.
+- [x] slice 6ag **FIX** — xtask/src/check_source_format.rs (`shasum -a 256` = 25998bc518702809274b036bbc582eaa3166663c9af514446cb24587616adc3b; `wc -l` = 452; `grep -cE '^[[:space:]]+tally\.arm\('` = 7, `tally\.score\(` = 18); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_source_format.sh a shim (`exec cargo xtask check-source-format "$@"`).
+- [x] slice 6ag **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0042/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6ag **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_source_format.sh` through the shim → the same `ok (331 source-of-truth file(s) …)` line; `bash scripts/check_derived_counts.sh` → ok (7 arms + 18 scores out, 7 `tally.arm(` + 18 `tally.score(` in; 1692 holds).
+- [x] slice 6ag **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ag, frontier 6ah, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -509,3 +527,4 @@ Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows
 - `2026-10-27`: XTASK.6 slice 6ad done — `SHARD-FREEZE`'s driver is Rust behind a held shim (the partition and predecessor judges run as before), byte-identical on the real tree and 3 fixture repositories, forty-four arms; next `check_derived_counts.sh` (slice 6ae); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6ae done — `DERIVED-COUNTS` is Rust behind a held shim (a native port: the claims, the enumerators through `bash -c`, the arm total by the script's rules), byte-identical on the real tree and 3 fixture repositories, twelve arms; next `check_artifact_cleanup.sh` (slice 6af); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-27`: XTASK.6 slice 6af done — `ARTIFACT-COHORT`'s driver is Rust behind a held shim (the probe suites run as before), byte-identical on the real tree and 2 fixture repositories, sixteen scorings; `check_readme_routes.sh` deferred with its reason (PATH-shadowing controls, ~600 lines); next `check_source_format.sh` over `sexp.rs` (slice 6ag); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-27`: XTASK.6 slice 6ag done — `SOURCE-FORMAT` is Rust behind a held shim over the harness's reader (the first `sexp`-only caller ported; the refusal probe run as before), byte-identical on the real tree and 3 fixture repositories, seven arms and eighteen scorings; next `check_semantics_corpus.sh` (slice 6ah); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
