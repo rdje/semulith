@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [The harness's own S-expression reader (2026-10-27)](decision_rust-sexp-reader.md) | `decision` | `xtask/src/sexp.rs` equal to the pinned `scripts/sexp.py` by measurement — a unit test dumps every tracked `.sexp` file through both readers and requires identity; 389 of 390 command-line cases identical, the one difference the documented 41-digit-integer limit; nothing ported, the pinned reader untouched |
 | [The state-capture plan (2026-10-27)](decision_state-capture-plan.md) | `decision` | the four `state` requirements are credited through matched cases in the GPR vocabulary, one case each in three units (a43a XLEN first); counter values are the declared profile difference; the CSR-write format waits for a property GPRs cannot witness |
 | [Alternate the Rust tooling port with project feature work (2026-10-26)](decision_alternate-port-and-features.md) | `decision` | the director: one `XTASK` slice, then one project feature leaf, never two tooling units back to back; first applied after slice 6i with `P4-SYSTEM.14` a42bc |
 | [Four rulings delegated to the workflow (2026-10-26)](decision_four-rulings-delegated.md) | `decision` | the director: the four open items of 2026-10-26 are the workflow's to decide, "sota, signoff and production-grade"; one record per ruling, `authority review` |

@@ -14,20 +14,20 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): features
-  1–3 done (a42bc; P4-SYSTEM.15 slices a, b) → features 4–5 (.15 slices c–d or a .14 act) → `XTASK.6` slice 6j (drafted);
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): cycle two complete
+  (P4-0302 … P4-0306) and XTASK-0018 (slice 6j) landed → cycle three: the a43b-1/a43c-1/a43d-1 programs, then the XLEN declaration;
   `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0306` — P4-SYSTEM.14 a43a-1: the XLEN case's program in the corpus (25 steps incl. the 2^40 access-fault
-  witness; lab fixture ok, live Sail 25 of 25). BLOCKER widened: the M manifest pins matched_gpr_property.py and capture_div.py —
-  declaring any new case lapses CR-GC-M-1 (options A/B/C in the leaf). Before it P4-0305 (the state-capture plan), P4-0304, AC0085.
-- next_action: XTASK.6 slice 6j (one tooling slice after features 6–10; drafted in target/xtask/xt0016/). RAISED to the director:
-  the pinned-tooling ruling (case declaration + report generators in the M manifest) and the workload kind's declaration; until
-  it lands, cycle three's features are the a43b-1/a43c-1/a43d-1 programs (no pinned file). `ARTIFACT-CLEANUP.30` once due (after
-  2026-10-28T09:33Z). Run the three PROFILE-CONSISTENCY probes before a chain touching profiles/. Before ANY failure-injection probe
-  or fixture write, read the path it drives (docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+- last_unit: `SEMULITH-XTASK-0018` — XTASK.6 slice 6j: the Rust S-expression reader in the harness, corpus-identical to the pinned
+  sexp.py by a unit test (389/390 CLI cases; the 41-digit-integer limit documented). Before it P4-0306 (the XLEN program; BLOCKER
+  widened: the M manifest pins matched_gpr_property.py and capture_div.py — options A/B/C), P4-0305, P4-0304, AC0085.
+- next_action: cycle three, feature 11 = `.14` a43b-1, the CSR-SET case's program (sentinel-loaded reads of the 33 CSRs, aliases, a
+  refused write, a non-member trap; EVD-05 expectations; live Sail) — no pinned file. RAISED to the director: the pinned-tooling ruling
+  (declaring any case lapses CR-GC-M-1) and the workload kind's declaration. `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
+  Probes before a chain touching profiles/; GS regen only after `git add`; a decision record → regenerate KNOWLEDGE_MAP.md; acceptance
+  boxes carry a signature token. Read the path before any failure-injection probe. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

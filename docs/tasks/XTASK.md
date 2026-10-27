@@ -343,6 +343,17 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `check_citation_quotes.sh`, `check_extraction.sh`, `check_exercise_coverage.sh`) all read the corpus through
   the pinned Python readers (`sexp.py`, `records_sexp.py`) or load a project module, so a port needs a Rust
   S-expression reader measured equal to the pinned one on the corpus first, as its own slice.
+  Slice 6j (`2026-10-27`, `SEMULITH-XTASK-0018`; on clean 8ebbf2dc, the one tooling slice after features 6–10): the
+  reader is `xtask/src/sexp.rs` (649 lines; `decision_rust-sexp-reader.md`) — the pinned grammar, refusal messages, line
+  numbers and Python-shaped I/O errors, the pinned reader's twenty self-test arms re-asserted as a unit test, and the
+  equality held permanently by `the_corpus_reads_as_the_pinned_reader_reads_it`: every tracked `.sexp` file (367) dumped
+  through both readers in one `python3 -I` process and required byte-identical (an absent comparator fails, never skips).
+  `cargo xtask sexp <file>` mirrors `scripts/sexp.py <file>`: 390 cases (the corpus, 21 fixtures, the usage path), 389
+  identical; the one difference is the documented limit — a 41-digit integer Python holds and `i128` refuses (rc 0 vs 1),
+  absent from the corpus by the test's own word. Nothing ported, no shim, `scripts/sexp.py` untouched (a pinned input of the
+  M case's manifest). clippy's `--fix` rewrote one manual range check and rustfmt three expressions before the chain. Next:
+  slice `6k` — the first consumer, `check_exercise_coverage.sh` (reads through `children`/`read_file`/`field` directly), after
+  the next five feature units.
 
 - ID: `XTASK.7` — **the focused set runs API-DOCS**
   Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0011`; owned on clean eaa63f58; evidence target/xtask/xt0012)
@@ -414,7 +425,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus — after the next five feature units (`decision_alternate-port-and-features.md`) |
+| 1 | `XTASK.6` | `active` | slice `6k`: the first consumer of the Rust reader — `check_exercise_coverage.sh` ported behind a held shim — after the next five feature units (`decision_alternate-port-and-features.md`) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -539,6 +550,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6i **ADDRESSED (verified)** — after/ through the shim against before/, stdout, stderr and rc each: `before/after: 38 identical, 4 differ` — ok, `--self-test`, notmirrored, phantom, countdrift, unreadable, unionlost, notexec, nomirror, noregistry, nodriver and the main-run scratch refusal byte-identical (36 files), target/registry-mirror/docs-doctrines-union.md `cmp` identical before and after; the 4 differences by design: `scratchst.stderr` lacks `mktemp: failed to create directory …`, `nopy.*` rc 2 → rc 0 `REGISTRY-MIRROR: ok (3 document(s) mirror the registry)`. Mutant (`&& false` on the phantom test) built with `CARGO_TARGET_DIR=target/xtask/xt0015/mutant-target`: `REGISTRY-MIRROR --self-test: 12 pass / 1 fail`, `MISS: RED   a row nothing registers expected rc=1 got rc=0`, main `REFUSED` rc 2; restored `xtask/src/check_registry_mirror.rs: OK`, the 24M target removed, `ls target/debug/incremental | wc -l` = 84 unchanged. Shim RED (`echo extra` appended): `scripts/check_registry_mirror.sh must stay a shim of cargo xtask check-registry-mirror`, `test result: FAILED. 9 passed; 1 failed`, restored `scripts/check_registry_mirror.sh: OK`.
 - [x] slice 6i **NO REGRESSION** — make-check.log `make check rc=0 in 31 s`, 497 passed, 0 failed (cargo-test.log `10 passed` in xtask); `API-DOCS: ok (5 crate(s) documented; …)` after the staged focused run caught an unescaped `<N>` in the module doc (`unclosed HTML tag`), backticked; `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` — 13 bash arms out, 13 `tally.arm(` in, the total 1677 unchanged; `ls target/doctrine-selftest | wc -l` = 0; the staged focused run before the chain.
 - [x] slice 6i **LOCKSTEP** — docs/toolbox/governance.md and docs/doctrines/governance.md rows unchanged (the command still answers through the shim); the tree (slice 6i, frontier 6j, the changelog line), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6j **REPRODUCE / ISSUE** — at 8ebbf2dc: `ls xtask/src | grep -c sexp` = 0; `grep -lE 'sexp|records_sexp' <the six uncoupled drivers> | wc -l` = 5: every remaining bash driver reads the corpus through the pinned Python readers, so no port of them can begin.
+- [x] slice 6j **ROOT CAUSE (WHY + WHERE)** — the S-expression format has one definition, `scripts/sexp.py` (323 lines), and it is pinned by the retained M case's manifest (`grep -c scripts/sexp.py evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1): it cannot be moved or edited, so a Rust reader must be measured equal to it rather than derived from a description.
+- [x] slice 6j **FIX** — xtask/src/sexp.rs (`wc -l` = 649; `shasum -a 256` = cb8077366598df6f648a4810d66a2b1affa7c32155cf0aaa92453aa10c4f1e2e; `grep -c '#\[test\]'` = 2: the pinned arms and the corpus equality); main.rs doc bullet, `mod sexp;`, `NATIVE` `"sexp"`, dispatch `sexp::run`; no shim, no script changed.
+- [x] slice 6j **ADDRESSED (verified)** — `cargo test -p xtask` → `test result: ok. 12 passed; 0 failed` (`the_corpus_reads_as_the_pinned_reader_reads_it ... ok` over 367 tracked files); measure.sh: `sexp.py CLI vs cargo xtask sexp: 390 cases, 389 identical, 1 differ` — `DIFFERS target/tmp/xt0016-fixtures/bigint.sexp (rc 0 vs 1)`, the documented i128 limit.
+- [x] slice 6j **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (after `--fix` of one `manual_range_contains`); `cargo fmt -p xtask -- --check` rc=0; `API-DOCS: ok (5 crate(s) documented; … 0 undocumented public item(s))`; `git status` before the docs shows only xtask/ changed — every bash driver and `scripts/sexp.py` byte-identical.
+- [x] slice 6j **LOCKSTEP** — docs/toolbox/execution.md gains the `cargo xtask sexp` row; the tree (slice 6j, frontier 6k, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY; `decision_rust-sexp-reader.md` + INDEX row, KNOWLEDGE_MAP.md regenerated (`KNOWLEDGE-MAP` in sync).
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -577,3 +594,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-26`: XTASK.6 slice 6i done — `REGISTRY-MIRROR` is Rust behind a held shim (three regular expressions by hand, the family union written as before), byte-identical on twelve paths; the six uncoupled drivers left all need a Rust S-expression reader first — slice 6j is that design.
 - `2026-10-26`: XTASK.8 opened on the director's instruction and its slices a–c done — the pooled project slot and PROFILE-CONSISTENCY's parallel prefetch take the commit gate from 52–56 min to 6.8 min, every verdict line unchanged.
 - `2026-10-27`: XTASK.8 slice d done — the docs-only path (`decision_docs-only-gate-path.md`): six declared closures, a documentation commit's gate 27 s, `=== all doctrines green ===`, the six declared checks answered from the record (the recording run before it, every check running: 508 s); the leaf is done.
+- `2026-10-27`: XTASK.6 slice 6j done — the Rust S-expression reader `xtask/src/sexp.rs` is in the harness, equal to the pinned `scripts/sexp.py` by a unit test over every tracked `.sexp` file and 389 of 390 command-line cases (the 41-digit-integer fixture is the documented limit); nothing ported, the pinned reader untouched; slice 6k ports the first consumer.
