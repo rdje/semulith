@@ -91,7 +91,11 @@ def _stop(child):
     """Join the leader even if killing its group fails; never leave owned children."""
     try:
         os.killpg(child.pid, signal.SIGKILL)
-    except ProcessLookupError:
+    except (ProcessLookupError, PermissionError):
+        # ESRCH: the group is gone. EPERM (macOS): every member has already exited — an unreaped
+        # leader cannot be signalled, and a live descendant would have taken the signal instead
+        # (measured 2026-10-27, XTASK.8: the pooled gate made the leader finish first). Either way
+        # nothing owned is left running; the leader is joined below.
         pass
     finally:
         child.wait()

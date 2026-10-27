@@ -59,17 +59,70 @@ PROJECT_DOCTRINES=(
   "ARTIFACT-COHORT|bounded planning/history/journal/provenance checks protect inputs, source identity, retained populations and exclusive output; ordered attempt records preserve unresolved progress; normal/O owned-fixture guard omissions discriminate; no project cleanup|scripts/check_artifact_cleanup.sh"
 )
 
+# XTASK.8 (2026-10-26): the checks run through a bounded pool and are REPORTED in registry order, so the
+# output is what the serial loop printed — a failing check's complete output, nothing for a green one.
+# Each check owns its scratch (mktemp under target/doctrine-selftest, or a path only it uses), the
+# cargo-based checks serialize on cargo's lock, and no check writes the index, so the order of
+# EXECUTION is free; only the order of REPORTING is kept. The pool is `xargs -P` (POSIX), so the hook
+# runs under any bash. DOCTRINE_JOBS=1 is the old serial run; DOCTRINE_TIMES=<file> records each
+# check's wall time (id, rc, seconds) for the gate's own census.
+# One exception, measured 2026-10-27: cargo copies an uplifted binary to a FRESH inode on every
+# `cargo run`, so two concurrent runs of one binary race — the loser's exec finds no file ("never
+# executed") or the running one is killed. The checks whose script invokes cargo therefore run one
+# after another in a single LANE beside the pool; the lane is detected from the script's text, so a
+# check that starts using cargo joins it without a list to keep in step.
 fails=0
+jobs="${DOCTRINE_JOBS:-$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)}"
+case "$jobs" in ''|*[!0-9]*|0) jobs=4;; esac
+mkdir -p "$ROOT/target/tmp" || exit 2
+work="$(mktemp -d "$ROOT/target/tmp/doctrines.XXXXXX")" || exit 2
+trap 'rm -rf "$work"' EXIT
+n=0
+: > "$work/queue"; : > "$work/lane"
 for entry in "${PROJECT_DOCTRINES[@]}"; do
   id="${entry%%|*}"; rest="${entry#*|}"; proves="${rest%%|*}"; path="${rest##*|}"
   if [ ! -x "$path" ]; then
-    echo "PROJECT/$id: missing or not executable: $path ($proves)" >&2
-    fails=$((fails+1)); continue
+    # reported at its registry position, as the serial loop reported it: recorded now, printed in order
+    echo "PROJECT/$id: missing or not executable: $path ($proves)" > "$work/$n.out"; echo 127 > "$work/$n.rc"
+  elif grep -q cargo "$path" 2>/dev/null; then
+    printf '%s\t%s\t%s\n' "$n" "$id" "$path" >> "$work/lane"
+  else
+    printf '%s\t%s\t%s\n' "$n" "$id" "$path" >> "$work/queue"
   fi
-  if ! out="$("$path" 2>&1)"; then
-    printf '%s\n' "$out" >&2
+  n=$((n+1))
+done
+# one worker per queued check: its output and exit status to files named by its queue index
+run_doctrine() { # work index id path
+  local s; s=$(date +%s)
+  "$4" > "$1/$2.out" 2>&1; local rc=$?
+  printf '%s\n' "$rc" > "$1/$2.rc"
+  [ -n "${DOCTRINE_TIMES:-}" ] && printf '%s\t%s\t%s\n' "$3" "$rc" "$(( $(date +%s) - s ))" >> "$DOCTRINE_TIMES"
+  return 0
+}
+export -f run_doctrine; export DOCTRINE_TIMES
+run_lane() { # the cargo-invoking checks, one after another
+  local i id path
+  while IFS="$(printf '\t')" read -r i id path; do run_doctrine "$work" "$i" "$id" "$path"; done < "$work/lane"
+}
+lane_pid=""
+if [ -s "$work/lane" ]; then
+  if [ "$jobs" -eq 1 ]; then run_lane; else run_lane & lane_pid=$!; fi
+fi
+if [ -s "$work/queue" ]; then
+  tr '\t' '\n' < "$work/queue" | xargs -P "$jobs" -L 3 bash -c 'run_doctrine "$0" "$1" "$2" "$3"' "$work"
+fi
+[ -n "$lane_pid" ] && wait "$lane_pid"
+i=0
+while [ "$i" -lt "$n" ]; do
+  if [ ! -f "$work/$i.rc" ]; then
+    id="$(awk -F'\t' -v k="$i" '$1==k{print $2}' "$work/queue" "$work/lane")"
+    echo "PROJECT/$id: the check did not report (its worker left no exit status)" >&2
+    fails=$((fails+1))
+  elif [ "$(cat "$work/$i.rc")" != "0" ]; then
+    cat "$work/$i.out" >&2
     fails=$((fails+1))
   fi
+  i=$((i+1))
 done
 
 [ "$fails" -eq 0 ] || exit 1

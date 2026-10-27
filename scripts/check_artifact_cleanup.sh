@@ -49,9 +49,9 @@ self_test() {
       score "RED $mode provenance $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done
     out="$("${python[@]}" scripts/probe_artifact_cargo.py 2>&1)"; rc=$?
-    score "GREEN $mode Cargo boundary" "$rc" 0 "$out" '23 tests / 0 failures / 0 errors'
+    score "GREEN $mode Cargo boundary" "$rc" 0 "$out" '24 tests / 0 failures / 0 errors'
     for mutation in build-root environment root-binding source-recheck manifest-recheck pipe-bound group-join group-kill \
-                    capture-success capture-version; do
+                    stop-zombie capture-success capture-version; do
       out="$("${python[@]}" scripts/probe_artifact_cargo.py --mutation "$mutation" 2>&1)"; rc=$?
       score "RED $mode Cargo $mutation" "$rc" 1 "$out" '1 tests / 1 failures / 0 errors'
     done

@@ -31,6 +31,7 @@ SEAMS = {
     "group-join": ('            _stop(child)\n            return subprocess.CompletedProcess',
                    '            return subprocess.CompletedProcess'),
     "group-kill": ('        os.killpg(child.pid, signal.SIGKILL)', '        pass'),
+    "stop-zombie": ('    except (ProcessLookupError, PermissionError):', '    except ProcessLookupError:'),
     "capture-success": ('    if result.returncode == 0:\n', '    if True:\n'),
     "capture-version": ('    O.need(result.returncode == 0, "Cargo version query failed")\n', ''),
 }
@@ -43,6 +44,7 @@ TARGETS = {
     "pipe-bound": "test_each_pipe_overflow_refuses_and_joins",
     "group-join": "test_even_success_joins_the_owned_process_group",
     "group-kill": "test_a_descendant_closing_pipes_cannot_outlive_the_invocation",
+    "stop-zombie": "test_stop_joins_a_leader_that_already_exited",
     "capture-success": "test_failed_build_records_nothing_and_retires_only_absent_rows",
     "capture-version": "test_failed_or_unbounded_version_query_refuses_capture",
 }
@@ -309,6 +311,20 @@ class CargoTests(unittest.TestCase):
                 if "output exceeds bound" in str(error):refused.append(target)
                 else:raise
         self.assertEqual(refused, ["stdout", "stderr"])
+
+    def test_stop_joins_a_leader_that_already_exited(self):
+        # macOS: killpg on a group whose only member is an exited, unreaped leader returns EPERM (measured
+        # 2026-10-27 under XTASK.8's pooled gate, where the overflow test's child finished first); a live
+        # descendant would have taken the signal instead, so EPERM means nothing owned is left to stop.
+        child = subprocess.Popen([sys.executable, "-B", "-c", "pass"], stdin=subprocess.DEVNULL,
+                                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
+        child.stdout.read()   # EOF: the leader has exited; nothing has reaped it yet
+        time.sleep(0.2)
+        try:
+            self.c._stop(child)
+        except PermissionError as error:
+            self.fail(f"_stop raised on a leader that had already exited: {error}")
+        self.assertIsNotNone(child.returncode, "the leader was not joined")
 
     def test_deadline_refuses_and_joins_the_owned_process(self):
         with self.assertRaisesRegex(self.o.ProvenanceError, "timed out"):

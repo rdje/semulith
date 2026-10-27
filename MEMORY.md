@@ -23,8 +23,8 @@
 - last_unit: `SEMULITH-P4-0299` — P4-SYSTEM.15 slice b: the M, A (Zaamo, Zalrsc) and C (Zca) suites of the same pin
   join the GC campaign (`--suites`; 118 rows). Before it slice a (the I suite; the CLI's GC `--trace-stores` fixed),
   a42bc (G-TRACE green). Run the three PROFILE-CONSISTENCY probes before any chain touching profiles/ or evidence/.
-- next_action: feature 4 — P4-SYSTEM.15 slice c (the validator-mutation campaign over the two wrong full-table GC
-  models, or the F/D suites with TEST_FLEN 64); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z); 6j after 5. Before
+- next_action: feature 4 — P4-SYSTEM.15 slice c (the F/D suites; drafted in target/p4-system-15/c), then XTASK.8
+  slice d (docs-only gate path: decision record first); `ARTIFACT-CLEANUP.28` once due (after 2026-10-27T08:50Z). Before
   ANY failure-injection probe or any fixture write, read the path it drives (the scratch-hygiene card:
   docs/knowledge/an-empty-scratch-path-falls-back-to-the-repository.md). Commit chain:
   target/xtask/xt0002/commit-chain.sh <evidence-dir>.

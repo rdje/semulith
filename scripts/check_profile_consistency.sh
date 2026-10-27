@@ -395,6 +395,45 @@ self_test() {
   SELFTEST_TMP() { local d="$ROOT/target/doctrine-selftest"; mkdir -p "$d"; mktemp -d "$d/XXXXXX"; }
   local t pass=0 fail=0 out rc
   t="$(SELFTEST_TMP)" && [ -n "$t" ] && [ -d "$t" ] || { echo "PROFILE-CONSISTENCY self-test: cannot create a scratch directory under target/doctrine-selftest" >&2; return 1; }; mkdir -p "$t/p"
+  # XTASK.8 (2026-10-26): the probe invocations below are independent of one another, so they run FIRST, in
+  # parallel, and each arm then reads its recorded output — the same command on the same tree, scored by the
+  # same `score` in the same order. Three passes: (1) this self-test runs once with a `python3` that only RECORDS
+  # the argv of every probe invocation (nothing is scored; everything that is not a probe runs live), (2) the
+  # recorded argv run in parallel (scripts/doctrine_prefetch.py), (3) the self-test runs for real, the `python3`
+  # function answering an exact-argv match from the record and running anything else live — a missed shape costs
+  # time, never a wrong answer. The enumeration is the run itself: an arm added tomorrow is prefetched tomorrow.
+  # PROFILE_CONSISTENCY_PREFETCH=0 restores the serial run (the measurement's control);
+  # PROFILE_CONSISTENCY_PREFETCH_MISSES=<file> logs every argv answered live.
+  local prefetch_dir=""
+  python3() {
+    # the shadow, in force inside this self-test only (unset before the summary); the key is the argv after
+    # `python3`, U+001F-joined with `/` as U+001E — the file name the prefetch wrote, by expansion alone
+    case "${1:-}" in -|-c) ;; *)
+      if [ -n "${PROFILE_CONSISTENCY_RECORD_ARGV:-}" ] || [ -n "$prefetch_dir" ]; then
+        local us=$'\037' k="" x probe=0 rc_=""
+        for x in "$@"; do k="$k${k:+$us}$x"; case "$x" in scripts/probe_*.py|*/scripts/probe_*.py) probe=1;; esac; done
+        if [ -n "${PROFILE_CONSISTENCY_RECORD_ARGV:-}" ]; then
+          [ "$probe" = 1 ] && { printf '%s\n' "$k" >> "$PROFILE_CONSISTENCY_RECORD_ARGV"; return 0; }
+        else
+          k="${k//\//$'\036'}"
+          if [ -f "$prefetch_dir/$k.rc" ] && read -r rc_ < "$prefetch_dir/$k.rc" && [ -n "$rc_" ]; then
+            cat "$prefetch_dir/$k.out"; return "$rc_"
+          fi
+          [ -n "${PROFILE_CONSISTENCY_PREFETCH_MISSES:-}" ] && printf '%s\n' "python3 $*" >> "$PROFILE_CONSISTENCY_PREFETCH_MISSES"
+        fi
+      fi;;
+    esac
+    command python3 "$@"
+  }
+  if [ "${PROFILE_CONSISTENCY_PREFETCH:-1}" != "0" ] && [ -z "${PROFILE_CONSISTENCY_RECORD_ARGV:-}" ] && [ -f "$ROOT/scripts/doctrine_prefetch.py" ]; then
+    prefetch_dir="$(SELFTEST_TMP)/prefetch" && mkdir -p "$prefetch_dir" || prefetch_dir=""
+    if [ -n "$prefetch_dir" ]; then
+      ( export PROFILE_CONSISTENCY_RECORD_ARGV="$prefetch_dir.argv"; self_test ) >/dev/null 2>&1   # pass 1: record
+      if ! command python3 -B "$ROOT/scripts/doctrine_prefetch.py" "$prefetch_dir.argv" "$prefetch_dir" >/dev/null 2>&1; then
+        rm -rf "$(dirname "$prefetch_dir")"; prefetch_dir=""   # a failed prefetch is no prefetch: every arm runs live
+      fi
+    fi
+  fi
   # ⛔ STRICT ARITY — docs/knowledge/self-test-arms-that-never-ran.md. A helper that ignores
   # surplus arguments swallows the whole following command when a `;` is missing, silently.
   argc() {
@@ -2250,6 +2289,8 @@ DIV_METHOD_CASES
     done
   done
 
+  [ -n "$prefetch_dir" ] && rm -rf "$(dirname "$prefetch_dir")"
+  unset -f python3
   printf 'PROFILE-CONSISTENCY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ]
 }
