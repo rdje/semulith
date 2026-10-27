@@ -378,6 +378,20 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Nothing ported, no shim: the pinned judge is a library and CLI no bash driver wraps, and it stays (an M-manifest input).
   In tree: `cargo test -p xtask` `test result: ok. 15 passed`; clippy at deny-warnings rc=0 (clean after its `--fix` of two findings and two type aliases for the judge's tuple types). Next: slice `6n` — `check_unit_composition.sh`
   (49 lines of inline Python over this judge, 6 bash arms) behind a held shim.
+  Slice 6n (`2026-10-27`, `SEMULITH-XTASK-0022`; on clean 51615ac1, taken out of turn — no feature leaf unblocked): `UNIT-COMPOSITION`
+  is Rust — `xtask/src/check_unit_composition.rs` (338 lines) ports the driver's 49-line inline Python line for line over
+  the Rust judge, validator and resolver (6m, 6l, 6k): every tracked `profiles/*/encoding.sexp` REFUSED by name when unreadable,
+  REJECTED with its collision, duplicate-name and pseudo-problem counts, or composing (partial when it declares slots); the shell
+  wrapper's verdict lines and exit statuses the same; the nine bash arms (the leaf said six — the count was wrong, the
+  script has nine) are nine `tally.arm(` calls, the arm total unchanged; `scripts/check_unit_composition.sh` a shim of
+  `cargo xtask check-unit-composition`. Measured in a disposable draft crate: the self-test `9 pass / 0 fail` with stdout
+  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`UNIT-COMPOSITION: ok (3 unit
+  composition(s) decided)`), and nine scratch fixture trees — green, partial, slots claiming completeness, partial with nothing
+  unbound, an undeclared compose field, a ghost fragment, a collision, a ghost pseudo, no document — 9 identical, 0 differ in stdout, stderr
+  and exit status. In tree: `cargo test -p xtask` `test result: ok. 15 passed`; clippy at deny-warnings rc=0 (clean on the first run). The three-unit port towards
+  `UNIT-COMPOSITION` closes; the uncoupled drivers left are `check_m_vectors.sh`, `check_scope_coverage.sh`,
+  `check_citation_quotes.sh` and `check_extraction.sh` (the last three read through `records_sexp` as well — its port is
+  the next design question). Next: slice `6o` — `records_sexp.py` measured equal, the way 6j measured `sexp.py`.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -461,7 +475,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6n`: `check_unit_composition.sh` behind a held shim, over the Rust judge and resolver — the third unit towards `UNIT-COMPOSITION`; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6o`: `records_sexp.py` in Rust, measured equal to the pinned one on the corpus (the reader the four remaining uncoupled drivers share) — taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -610,6 +624,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6m **ADDRESSED (verified)** — `cmp after-tree/selftest.stdout before/selftest.stdout` rc=0 (the pinned tool's 18 self-test lines byte-identical); the CLI over the 23 tracked encodings and `definitions/riscv` documents: `CLI over the corpus: 23 documents, 23 identical, 0 differ` (stdout, stderr and rc each; target/xtask/xt0021/measure.log).
 - [x] slice 6m **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 15 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean after its `--fix` of two findings and two type aliases for the judge's tuple types); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_exercise_coverage.sh` through the shared resolver → `cmp after-tree/exercise.out ../xt0019/before/real.out` rc=0; `bash scripts/check_derived_counts.sh` → ok (the arm total unchanged).
 - [x] slice 6m **LOCKSTEP** — docs/toolbox/definition.md gains the `cargo xtask check-encoding-disjoint` row; the tree (slice 6m, frontier 6n, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6n **REPRODUCE / ISSUE** — before/ (bash driver at 51615ac1): `UNIT-COMPOSITION: ok (3 unit composition(s) decided)` rc 0; `UNIT-COMPOSITION --self-test: 9 pass / 0 fail`; `grep -c 'arm "' scripts/check_unit_composition.sh` = 9 (the leaf's plan said six).
+- [x] slice 6n **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash around a 49-line inline Python block importing `check_encoding_disjoint` and `sexp` (`grep -c 'import check_encoding_disjoint' scripts/check_unit_composition.sh` = 1); until 6l–6m there was no Rust validator, judge or shared resolver to port it onto.
+- [x] slice 6n **FIX** — xtask/src/check_unit_composition.rs (`shasum -a 256` = 8d7ddb2029051cc82e1ebb84a4d191db1f1a3b3334657b2298014e503dd5c158; `wc -l` = 338; `grep -cE '^[[:space:]]+tally\.arm\('` = 9); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_unit_composition.sh a shim (`exec cargo xtask check-unit-composition "$@"`).
+- [x] slice 6n **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical; nine fixture states (target/xtask/xt0022/red/summary.txt): `RED/GREEN paths: 9 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6n **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 15 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_unit_composition.sh` through the shim → the same `ok (3 unit composition(s) decided)` line; `bash scripts/check_derived_counts.sh` → ok (9 bash arms out, 9 `tally.arm(` in).
+- [x] slice 6n **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6n, frontier 6o, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -652,3 +672,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-27`: XTASK.6 slice 6k done — `EXERCISE-COVERAGE` is Rust behind a held shim (the inline Python and `resolve_composition` ported line for line onto the 6j reader), byte-identical on the real tree and on seven fixture states, 23 arms; taken out of turn because no feature leaf was unblocked (the `.14` declarations and ZICNTR wait on the pinned-tooling ruling, LAB-BENCH.2 on a user-feedback round, P5-BOARD.5 on the CPU's acceptance) — the alternation resumes with features the day a ruling lands; slice 6l ports `check_unit_composition.sh`.
 - `2026-10-27`: XTASK.6 slice 6l done — the schema validator `xtask/src/schema.rs` is in the harness, equal to the pinned `scripts/check_sexp_schema.py` by its 51 arms (byte-identical output) and by a unit test over every (file, schema) pair the project validates (315); regex facets are an enumerated anchored subset refusing unknown shapes by name; nothing ported, the pinned validator untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6m ports the disjointness judge.
 - `2026-10-27`: XTASK.6 slice 6m done — the encoding-disjointness judge is Rust (`xtask/src/disjoint.rs`, with the one composition resolver moved to `composition.rs` and shared with the exercise-coverage census): 17 arms byte-identical to the pinned judge's self-test, 23 tracked documents identical in stdout, stderr and exit status; nothing ported, no shim, the pinned judge untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6n ports `check_unit_composition.sh` behind a held shim.
+- `2026-10-27`: XTASK.6 slice 6n done — `UNIT-COMPOSITION` is Rust behind a held shim over the Rust judge, validator and resolver, byte-identical on the real tree and nine fixture states, nine arms; the three-unit port that began with the schema validator closes; four uncoupled drivers remain, all reading through `records_sexp.py` — slice 6o measures that reader's port the way 6j measured `sexp.py`; taken out of turn while every feature leaf waits on the pinned-tooling ruling.

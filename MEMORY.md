@@ -20,14 +20,14 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0021` — XTASK.6 slice 6m: the encoding-disjointness judge in Rust (`xtask/src/disjoint.rs`) with the one
-  composition resolver shared in `composition.rs`; 17 arms byte-identical, 23 tracked documents identical in all streams. Before it
-  XTASK-0020 (6l, the schema validator), XTASK-0019 (6k), CA-0002 (the citation census; tree closed), P4-0308, P4-0307.
+- last_unit: `SEMULITH-XTASK-0022` — XTASK.6 slice 6n: UNIT-COMPOSITION in Rust behind a held shim over the Rust judge, validator and
+  resolver (nine arms; byte-identical on the real tree and nine fixture states) — the three-unit port closes. Before it XTASK-0021
+  (6m, the disjointness judge + shared resolver), XTASK-0020 (6l, the schema validator), XTASK-0019 (6k), CA-0002, P4-0308.
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6n (`check_unit_composition.sh`
-  behind a held shim). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only
-  after `git add`; a decision record → regenerate KNOWLEDGE_MAP.md; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6o (`records_sexp.py` in Rust,
+  measured equal — the reader the four remaining drivers share). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes
+  before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
