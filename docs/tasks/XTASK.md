@@ -357,9 +357,10 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   hand.
 
 - ID: `XTASK.8` — **the commit gate under ten minutes**
-  Status: `active` (opened `2026-10-26` on the director's instruction: "50min is not acceptable, that is way too
+  Status: `done` (`2026-10-27`; opened `2026-10-26` on the director's instruction: "50min is not acceptable, that is way too
   long, we need to shorten it by a lot to accelerate feature implementation"; the tooling unit of the 5:1 ratio in
-  place of slice 6j)
+  place of slice 6j — slices a–c `SEMULITH-XTASK-0016`, slice d `SEMULITH-XTASK-0017`: 52–56 min → 6.8 min for a code
+  commit, 27 s for a documentation commit)
   Goal: the pre-commit gate well under ten minutes for a code commit and a few minutes for a docs-only commit —
   the same checks, the same verdict lines, the same refusals; only wall time and the order of EXECUTION change,
   the order of REPORTING kept.
@@ -394,10 +395,17 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   missed shape costs time, never a wrong answer; `PROFILE_CONSISTENCY_PREFETCH=0` is the serial control; eight
   unit controls in target/xtask/xt0017/control_shadow.sh). `--self-test` output identical with and without it;
   wall 2746 s (45.8 min) → 447 s (7.5 min: 5 s recording, ~350 s parallel, the rest answering; 0 misses; 24 jobs no faster than 12 — CPU-bound). The full gate after slices b and c, idle machine: 406 s (6.8 min), `=== all doctrines green ===`: PROFILE-CONSISTENCY 403 s, GUEST-GEN 323 s, RECORD-SCHEMA 97 s, ARTIFACT-COHORT 67 s, the rest under 45 s; the eleven universal checks together 3.1 s.
-  Slice d (next) — the docs-only path: a commit that touches no script, schema or fixture skips the synthetic
-  self-test arms whose inputs are byte-identical to the last green run (a content key over the tracked
-  `scripts/` and `schema/` closure) while the arms that pin real-tree facts always run — a doctrine change with
-  its own decision record before it lands.
+  Slice d (`2026-10-27`, applied on clean fa536bf7; evidence target/xtask/xt0018; `decision_docs-only-gate-path.md`
+  first) — the docs-only path, one level up from the arms: a check that DECLARES its input closure (the tracked
+  prefixes it reads, `DOCTRINE_CLOSURES` beside the registry, declared only after reading the check and the Python
+  it calls for every path they open) is answered from its last GREEN run when the commit stages nothing inside the
+  closure and the closure's content key (`git ls-files -s` over it, digested — every blob id as the commit will
+  carry it) equals the recorded one (target/doctrine-gate/green/<ID>, per clone). No declaration, no staged set
+  (a run outside a commit), a staged path inside, or a differing key: the check runs; a refusal is never recorded;
+  `DOCTRINE_DOCS_ONLY=0` is the control and `DOCTRINE_TIMES` records a skip as `skipped`. Six closures declared —
+  PROFILE-CONSISTENCY, GUEST-GEN, RECORD-SCHEMA, ARTIFACT-COHORT, DEF-GEN, CONTRACT-FREEZE — every one of them
+  reading `scripts/` and none a document, so a documentation commit skips exactly the checks that bound the gate.
+  Controls in a scratch repository (red_docs_only.sh): ten scenarios as predicted — no staged set runs everything; the first docs-only run records green (the red stub never); the second skips the closure stub only, serial and pooled alike with identical stderr; `DOCTRINE_DOCS_ONLY=0`, a staged path inside the closure and committed closure content no run has seen each run it; green again after. Measured: 27 s, `=== all doctrines green ===`, the six declared checks answered from the record (the recording run before it, every check running: 508 s); a code commit: every check runs — 406 s alone, 8–9.4 min as the chains lived it.
   Acceptance: the gate's verdict lines and refusals unchanged on the same tree (measured on the stub registry
   and on a real refusal); a code commit's gate well under ten minutes; every check's own scratch untouched by
   the others.
@@ -406,8 +414,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.8` | `active` | the commit gate under ten minutes: slices a–c landed (censuses, the pooled project slot, PROFILE-CONSISTENCY's prefetch); slice d, the docs-only path, needs its decision record first |
-| 2 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus — after the next five feature units (`decision_alternate-port-and-features.md`) |
+| 1 | `XTASK.6` | `active` | slice `6j`: design — a Rust S-expression reader in the harness, measured equal to the pinned `sexp.py` on the corpus — after the next five feature units (`decision_alternate-port-and-features.md`) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -569,3 +576,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-26`: XTASK.6 slice 6h done — `FACT-OWNERSHIP` is Rust behind a held shim (a `glob` reader with Python's rules, the string helpers shared through the harness), byte-identical on eleven paths; the arm total re-derived 1675 → 1677 (the bash idiom had missed two `armp` arms); slice 6i is `REGISTRY-MIRROR`.
 - `2026-10-26`: XTASK.6 slice 6i done — `REGISTRY-MIRROR` is Rust behind a held shim (three regular expressions by hand, the family union written as before), byte-identical on twelve paths; the six uncoupled drivers left all need a Rust S-expression reader first — slice 6j is that design.
 - `2026-10-26`: XTASK.8 opened on the director's instruction and its slices a–c done — the pooled project slot and PROFILE-CONSISTENCY's parallel prefetch take the commit gate from 52–56 min to 6.8 min, every verdict line unchanged.
+- `2026-10-27`: XTASK.8 slice d done — the docs-only path (`decision_docs-only-gate-path.md`): six declared closures, a documentation commit's gate 27 s, `=== all doctrines green ===`, the six declared checks answered from the record (the recording run before it, every check running: 508 s); the leaf is done.

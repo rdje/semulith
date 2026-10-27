@@ -71,6 +71,41 @@ PROJECT_DOCTRINES=(
 # executed") or the running one is killed. The checks whose script invokes cargo therefore run one
 # after another in a single LANE beside the pool; the lane is detected from the script's text, so a
 # check that starts using cargo joins it without a list to keep in step.
+# XTASK.8 slice d (2026-10-27, docs/decisions/decision_docs-only-gate-path.md): a check that DECLARES its
+# input closure — the tracked path prefixes it reads — may be answered from its last GREEN run on a commit
+# that stages nothing inside the closure while the closure's tracked content (every blob id `git ls-files -s`
+# lists, as the commit will carry it) is byte-identical to that run's. No declaration, no staged set (a run
+# outside a commit), a differing key, or a staged path inside the closure: the check runs. A refusal is never
+# recorded. DOCTRINE_DOCS_ONLY=0 disables the path (the control); DOCTRINE_TIMES records a skip as `skipped`.
+# The closures: id -> the tracked prefixes the check reads, declared only after reading the check and the
+# Python it calls for every path they open (the census in target/xtask/xt0018); a check that reads documents
+# has docs/ here. A case statement, not a quoted-row table: DERIVED-COUNTS counts every `  "ID|` row of this
+# file as a registered doctrine and REGISTRY-MIRROR reads every `"ID|…|….sh"`, so a table would be miscounted.
+closure_of() { # id -> its prefixes, or nothing
+  case "$1" in
+    PROFILE-CONSISTENCY) printf '%s' "scripts/ profiles/ evidence/ schema/";;
+    GUEST-GEN) printf '%s' "scripts/ profiles/ crates/";;
+    RECORD-SCHEMA) printf '%s' "scripts/ schema/ schemas/ examples/ profiles/ materials/ crates/";;
+    ARTIFACT-COHORT) printf '%s' "scripts/";;
+    DEF-GEN) printf '%s' "scripts/ definitions/ profiles/ schema/ crates/";;
+    CONTRACT-FREEZE) printf '%s' "scripts/ profiles/ schema/";;
+    *) return 1;;
+  esac
+}
+staged_touches() { # prefixes… -> 0 when a staged path lies inside one of them
+  local prefix path
+  for prefix in "$@"; do while IFS= read -r path; do case "$path" in "$prefix"*) return 0;; esac; done <<< "$staged"; done
+  return 1
+}
+closure_key() { # prefixes… -> the digest of the closure's tracked content as the index carries it ('' when unavailable)
+  local listing; listing="$(git ls-files -s -- "$@" 2>/dev/null)" || return 0
+  if command -v shasum >/dev/null 2>&1; then printf '%s\n' "$listing" | shasum -a 256 | cut -c1-64
+  elif command -v sha256sum >/dev/null 2>&1; then printf '%s\n' "$listing" | sha256sum | cut -c1-64
+  else printf '%s\n' "$listing" | python3 -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())' 2>/dev/null; fi
+}
+GREEN_DIR="$ROOT/target/doctrine-gate/green"; export GREEN_DIR
+staged=""
+if [ "${DOCTRINE_DOCS_ONLY:-1}" != "0" ]; then staged="$(git diff --cached --name-only --diff-filter=ACMRD 2>/dev/null)"; fi
 fails=0
 jobs="${DOCTRINE_JOBS:-$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)}"
 case "$jobs" in ''|*[!0-9]*|0) jobs=4;; esac
@@ -84,32 +119,45 @@ for entry in "${PROJECT_DOCTRINES[@]}"; do
   if [ ! -x "$path" ]; then
     # reported at its registry position, as the serial loop reported it: recorded now, printed in order
     echo "PROJECT/$id: missing or not executable: $path ($proves)" > "$work/$n.out"; echo 127 > "$work/$n.rc"
-  elif grep -q cargo "$path" 2>/dev/null; then
-    printf '%s\t%s\t%s\n' "$n" "$id" "$path" >> "$work/lane"
   else
-    printf '%s\t%s\t%s\n' "$n" "$id" "$path" >> "$work/queue"
+    key="-"; skip=0
+    if [ -n "$staged" ] && closure="$(closure_of "$id")"; then
+      # shellcheck disable=SC2086 — the closure is a space-separated prefix list by declaration
+      key="$(closure_key $closure)"; [ -n "$key" ] || key="-"
+      if [ "$key" != "-" ] && ! staged_touches $closure && [ -f "$GREEN_DIR/$id" ] && [ "$(cat "$GREEN_DIR/$id")" = "$key" ]; then skip=1; fi
+    fi
+    if [ "$skip" = 1 ]; then
+      : > "$work/$n.out"; echo 0 > "$work/$n.rc"
+      [ -n "${DOCTRINE_TIMES:-}" ] && printf '%s\tskipped\t0\n' "$id" >> "$DOCTRINE_TIMES"
+    elif grep -q cargo "$path" 2>/dev/null; then
+      printf '%s\t%s\t%s\t%s\n' "$n" "$id" "$path" "$key" >> "$work/lane"
+    else
+      printf '%s\t%s\t%s\t%s\n' "$n" "$id" "$path" "$key" >> "$work/queue"
+    fi
   fi
   n=$((n+1))
 done
 # one worker per queued check: its output and exit status to files named by its queue index
-run_doctrine() { # work index id path
+run_doctrine() { # work index id path key
   local s; s=$(date +%s)
   "$4" > "$1/$2.out" 2>&1; local rc=$?
   printf '%s\n' "$rc" > "$1/$2.rc"
   [ -n "${DOCTRINE_TIMES:-}" ] && printf '%s\t%s\t%s\n' "$3" "$rc" "$(( $(date +%s) - s ))" >> "$DOCTRINE_TIMES"
+  # a GREEN run of a check with a declared closure records the key it ran against — never a refusal
+  if [ "$rc" -eq 0 ] && [ "${5:--}" != "-" ]; then mkdir -p "$GREEN_DIR" && printf '%s\n' "$5" > "$GREEN_DIR/$3"; fi
   return 0
 }
 export -f run_doctrine; export DOCTRINE_TIMES
 run_lane() { # the cargo-invoking checks, one after another
-  local i id path
-  while IFS="$(printf '\t')" read -r i id path; do run_doctrine "$work" "$i" "$id" "$path"; done < "$work/lane"
+  local i id path key
+  while IFS="$(printf '\t')" read -r i id path key; do run_doctrine "$work" "$i" "$id" "$path" "$key"; done < "$work/lane"
 }
 lane_pid=""
 if [ -s "$work/lane" ]; then
   if [ "$jobs" -eq 1 ]; then run_lane; else run_lane & lane_pid=$!; fi
 fi
 if [ -s "$work/queue" ]; then
-  tr '\t' '\n' < "$work/queue" | xargs -P "$jobs" -L 3 bash -c 'run_doctrine "$0" "$1" "$2" "$3"' "$work"
+  tr '\t' '\n' < "$work/queue" | xargs -P "$jobs" -L 4 bash -c 'run_doctrine "$0" "$1" "$2" "$3" "$4"' "$work"
 fi
 [ -n "$lane_pid" ] && wait "$lane_pid"
 i=0

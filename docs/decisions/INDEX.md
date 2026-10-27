@@ -86,3 +86,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [Evidence family, two cases (2026-10-22)](decision_evidence-family-two-cases.md) | `decision` | Why does the evidence family hold two case directories, and what bounds govern it now? |
 | [Knowledge family re-derived (2026-10-22)](decision_knowledge-family-first-rederivation.md) | `decision` | Why did the knowledge-card family's ceiling fire on a promoted lesson, and what bounds hold now? |
 | [The caller names the case (2026-10-22)](decision_caller-names-the-case.md) | `decision` | Which case does the evaluation bind when a second case is declared, and why does the retained pointer not live in the binding module? |
+| [A docs-only commit answers a check from its last green run (2026-10-27)](decision_docs-only-gate-path.md) | `decision` | When may the commit gate skip a check, and what makes the skip sound? |

@@ -103,6 +103,7 @@
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_derived-members-of-bounded-families.md`](docs/decisions/decision_derived-members-of-bounded-families.md)
 - [`decision_device-applicability-by-declared-vehicle.md`](docs/decisions/decision_device-applicability-by-declared-vehicle.md)
+- [`decision_docs-only-gate-path.md`](docs/decisions/decision_docs-only-gate-path.md)
 - [`decision_doctrine-enforcement-ceiling-rederivation.md`](docs/decisions/decision_doctrine-enforcement-ceiling-rederivation.md)
 - [`decision_document-everything.md`](docs/decisions/decision_document-everything.md)
 - [`decision_dsp56300-lab-v0-subset.md`](docs/decisions/decision_dsp56300-lab-v0-subset.md)
