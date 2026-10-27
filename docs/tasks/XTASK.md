@@ -354,6 +354,17 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   M case's manifest). clippy's `--fix` rewrote one manual range check and rustfmt three expressions before the chain. Next:
   slice `6k` — the first consumer, `check_exercise_coverage.sh` (reads through `children`/`read_file`/`field` directly), after
   the next five feature units.
+  Slice 6l (`2026-10-27`, `SEMULITH-XTASK-0020`; on clean bbf9a326, taken out of turn — no feature leaf unblocked, recorded in
+  the Decisions): the schema validator is Rust — `xtask/src/schema.rs` (2097 lines; `decision_rust-schema-validator.md`):
+  the pinned kernel (constructs, fields, facets, operators), the validation walk and every refusal text byte for byte,
+  the 51 self-test arms re-asserted (`cargo xtask check-sexp-schema --self-test` prints the pinned tool's 52 lines
+  byte-identically), and the equality held permanently by `the_corpus_validates_as_the_pinned_validator_validates_it`
+  over every (file, schema) pair the project validates (315 today, one `python3 -I` comparator process; an absent
+  comparator fails). The command line mirrors the pinned tool: 315 pairs identical in stdout, stderr and exit status.
+  The one limit: regex facets are an anchored hand-written subset (31 distinct corpus patterns, all inside it); a
+  pattern outside it is refused by name at schema load. Nothing ported, no shim, `scripts/check_sexp_schema.py` untouched
+  (an M-manifest input). In tree: `cargo test -p xtask` `test result: ok. 15 passed` (3 s); clippy at deny-warnings rc=0 (clean after its `--fix` simplified one boolean expression). Next: slice
+  `6m` — the encoding-disjointness judge (`check_encoding_disjoint.py`: 496 lines, validates through this module first).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -437,7 +448,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6l`: `check_unit_composition.sh` onto the Rust composition resolver, behind a held shim — after the next five feature units (`decision_alternate-port-and-features.md`) |
+| 1 | `XTASK.6` | `active` | slice `6m`: the encoding-disjointness judge in Rust (`check_encoding_disjoint.py`, validating through `schema.rs`) — the second of three units towards `UNIT-COMPOSITION`; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -574,6 +585,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6k **ADDRESSED (verified)** — the draft binary against before/: `cmp after/real.out before/real.out` rc=0 (`real stdout byte-identical`), stderr identical, `selftest stdout byte-identical`; seven fixture states (target/xtask/xt0019/red/summary.txt): `RED/GREEN paths: 7 identical, 0 differ` — the green state's `EXERCISE-COVERAGE: ok (1 profile(s) — every declared form exercised, 2/2)` rc 0 from both drivers, the six refusals rc 1, stdout+stderr+rc each.
 - [x] slice 6k **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 12 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first run; rustfmt reflowed the hand-written module before the chain); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_exercise_coverage.sh` through the shim → the same `ok (5 profile(s) …)` line; DERIVED-COUNTS arm total unchanged (23 out, 23 in).
 - [x] slice 6k **LOCKSTEP** — docs/toolbox/definition.md / docs/doctrines rows unchanged (the command still answers through the shim); the tree (slice 6k, frontier 6l, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6l **REPRODUCE / ISSUE** — before/ (pinned tool at bbf9a326): `python3 scripts/check_sexp_schema.py --self-test` → `check_sexp_schema --self-test: 51 pass / 0 fail`; 34 scripts call it; `grep -c '' scripts/check_sexp_schema.py` = 906; `grep -c 'check_sexp_schema' evidence/rv64gc-m-forms-v3/dependencies.sexp` = 1 (pinned — never edited).
+- [x] slice 6l **ROOT CAUSE (WHY + WHERE)** — the schema language had one definition, the pinned Python validator; the disjointness judge and the unit-composition driver (6m, 6n) validate every document through it, so no port of them can begin without a Rust validator measured equal to it (`grep -c 'use crate::schema' xtask/src/*.rs` = 0 at bbf9a326).
+- [x] slice 6l **FIX** — xtask/src/schema.rs (`shasum -a 256` = 2d96abe3c5cf65cbf1152cf516a3550864e21ccb5ec7c4f5227dc85d2502bdb6; `wc -l` = 2097; 51 arms as `a.accepts(`/`a.refuses(`/`a.refuses_schema(` calls, a hand-written anchored regex subset, three unit tests); main.rs doc bullet, `mod schema;`, `NATIVE` `"check-sexp-schema"`, dispatch; no shim, no script changed.
+- [x] slice 6l **ADDRESSED (verified)** — `cargo test -p xtask` → `test result: ok. 15 passed` (`the_corpus_validates_as_the_pinned_validator_validates_it ... ok` over 315 pairs; `the_pinned_validators_arms_hold ... ok`); `cmp after/selftest.stdout before/selftest.stdout` rc=0 (the 52 self-test lines byte-identical) and the two stderr refusal lines identical up to each run's own scratch directory name (`target/tmpXXXX` vs `target/schema-selftest.<pid>…`; a combined capture also orders the pinned tool's unbuffered stderr first — the first chain compared the combined streams and I stopped it before it committed the claim); `corpus equality: 315 (file, schema) pairs; 315 identical, 0 differ` (stdout, stderr and rc each, target/xtask/xt0020/measure.log).
+- [x] slice 6l **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean after its `--fix` simplified one boolean expression); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh` → ok (the arm total unchanged: the Python's 51 arms stay, the Rust arms are not `tally.arm(` calls); `git status` before the docs shows only xtask/ changed.
+- [x] slice 6l **LOCKSTEP** — docs/toolbox/definition.md gains the `cargo xtask check-sexp-schema` row; the tree (slice 6l, frontier 6m, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY; `decision_rust-schema-validator.md` + INDEX row, KNOWLEDGE_MAP.md regenerated.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -614,3 +631,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-27`: XTASK.8 slice d done — the docs-only path (`decision_docs-only-gate-path.md`): six declared closures, a documentation commit's gate 27 s, `=== all doctrines green ===`, the six declared checks answered from the record (the recording run before it, every check running: 508 s); the leaf is done.
 - `2026-10-27`: XTASK.6 slice 6j done — the Rust S-expression reader `xtask/src/sexp.rs` is in the harness, equal to the pinned `scripts/sexp.py` by a unit test over every tracked `.sexp` file and 389 of 390 command-line cases (the 41-digit-integer fixture is the documented limit); nothing ported, the pinned reader untouched; slice 6k ports the first consumer.
 - `2026-10-27`: XTASK.6 slice 6k done — `EXERCISE-COVERAGE` is Rust behind a held shim (the inline Python and `resolve_composition` ported line for line onto the 6j reader), byte-identical on the real tree and on seven fixture states, 23 arms; taken out of turn because no feature leaf was unblocked (the `.14` declarations and ZICNTR wait on the pinned-tooling ruling, LAB-BENCH.2 on a user-feedback round, P5-BOARD.5 on the CPU's acceptance) — the alternation resumes with features the day a ruling lands; slice 6l ports `check_unit_composition.sh`.
+- `2026-10-27`: XTASK.6 slice 6l done — the schema validator `xtask/src/schema.rs` is in the harness, equal to the pinned `scripts/check_sexp_schema.py` by its 51 arms (byte-identical output) and by a unit test over every (file, schema) pair the project validates (315); regex facets are an enumerated anchored subset refusing unknown shapes by name; nothing ported, the pinned validator untouched; taken out of turn — no feature leaf is unblocked until the pinned-tooling ruling lands; slice 6m ports the disjointness judge.

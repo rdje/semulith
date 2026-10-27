@@ -32,6 +32,9 @@
 //! - `cargo xtask check-exercise-coverage [--self-test]` is the `EXERCISE-COVERAGE` doctrine (`XTASK.6` slice `6k`;
 //!   formerly `scripts/check_exercise_coverage.sh`, now a shim): every declared scope form executed by a tracked
 //!   guest, the composition closed through the one resolver — the first consumer of the Rust S-expression reader.
+//! - `cargo xtask check-sexp-schema <file.sexp> <schema.sexp> | --self-test` validates a source-of-truth file against
+//!   its schema with the Rust validator (`XTASK.6` slice `6l`, `schema.rs`), measured equal to the pinned
+//!   `scripts/check_sexp_schema.py` over every pair the project validates; the pinned validator stays.
 //! - `cargo xtask sexp <file.sexp>` parses a file with the Rust S-expression reader (`XTASK.6` slice `6j`,
 //!   `sexp.rs`), measured equal to the pinned `scripts/sexp.py` on the corpus; the pinned reader stays.
 //!
@@ -51,6 +54,7 @@ mod check_registry_mirror;
 mod check_rustdoc;
 mod check_wasm_build;
 mod harness;
+mod schema;
 mod sexp;
 
 use std::fmt::Write as _;
@@ -108,6 +112,7 @@ const NATIVE: &[&str] = &[
     "check-registry-mirror",
     "check-exercise-coverage",
     "sexp",
+    "check-sexp-schema",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
@@ -153,6 +158,7 @@ fn main() -> ExitCode {
             "check-registry-mirror" => check_registry_mirror::run(&root, &args[1..]),
             "check-exercise-coverage" => check_exercise_coverage::run(&root, &args[1..]),
             "sexp" => sexp::run(&args[1..]),
+            "check-sexp-schema" => schema::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

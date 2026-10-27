@@ -20,12 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0019` — XTASK.6 slice 6k: EXERCISE-COVERAGE in Rust behind a held shim (the inline Python and the
-  composition resolver ported onto the 6j reader; 23 arms; byte-identical on the real tree and seven fixture states). Before it
-  CA-0002 (the Markdown citation census; the tree closed), P4-0308 (SSTC program), P4-0307 (CSR-SET), XTASK-0018, P4-0306 (XLEN).
+- last_unit: `SEMULITH-XTASK-0020` — XTASK.6 slice 6l: the schema validator in Rust (`xtask/src/schema.rs`), 51 arms byte-identical
+  to the pinned tool's self-test, 315 (file, schema) corpus pairs identical and held by a unit test; regex facets an anchored
+  subset refusing unknown shapes by name. Before it XTASK-0019 (6k), CA-0002 (the citation census; tree closed), P4-0308, P4-0307.
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue (XTASK.6 slice 6l: check_unit_composition.sh).
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6m (the disjointness judge).
   `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only after `git add`; a
   decision record → regenerate KNOWLEDGE_MAP.md; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
