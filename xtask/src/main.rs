@@ -29,6 +29,9 @@
 //!   formerly `scripts/check_fact_ownership.sh`, now a shim): one owner per fact kind, every mirror governed.
 //! - `cargo xtask check-registry-mirror [--self-test]` is the `REGISTRY-MIRROR` doctrine (`XTASK.6` slice `6i`;
 //!   formerly `scripts/check_registry_mirror.sh`, now a shim): the two documents list what the registry registers.
+//! - `cargo xtask check-exercise-coverage [--self-test]` is the `EXERCISE-COVERAGE` doctrine (`XTASK.6` slice `6k`;
+//!   formerly `scripts/check_exercise_coverage.sh`, now a shim): every declared scope form executed by a tracked
+//!   guest, the composition closed through the one resolver — the first consumer of the Rust S-expression reader.
 //! - `cargo xtask sexp <file.sexp>` parses a file with the Rust S-expression reader (`XTASK.6` slice `6j`,
 //!   `sexp.rs`), measured equal to the pinned `scripts/sexp.py` on the corpus; the pinned reader stays.
 //!
@@ -40,6 +43,7 @@
 
 mod check_commit_prefix;
 mod check_delivery_provenance;
+mod check_exercise_coverage;
 mod check_fact_ownership;
 mod check_fixture_fingerprints;
 mod check_push_record;
@@ -102,6 +106,7 @@ const NATIVE: &[&str] = &[
     "check-fixture-fingerprints",
     "check-fact-ownership",
     "check-registry-mirror",
+    "check-exercise-coverage",
     "sexp",
 ];
 
@@ -124,6 +129,10 @@ const PORTED: &[(&str, &str)] = &[
     ),
     ("check-fact-ownership", "scripts/check_fact_ownership.sh"),
     ("check-registry-mirror", "scripts/check_registry_mirror.sh"),
+    (
+        "check-exercise-coverage",
+        "scripts/check_exercise_coverage.sh",
+    ),
 ];
 
 /// Dispatches a native subcommand here and every other argument list to `make`.
@@ -142,6 +151,7 @@ fn main() -> ExitCode {
             "check-fixture-fingerprints" => check_fixture_fingerprints::run(&root, &args[1..]),
             "check-fact-ownership" => check_fact_ownership::run(&root, &args[1..]),
             "check-registry-mirror" => check_registry_mirror::run(&root, &args[1..]),
+            "check-exercise-coverage" => check_exercise_coverage::run(&root, &args[1..]),
             "sexp" => sexp::run(&args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");

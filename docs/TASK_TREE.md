@@ -58,5 +58,5 @@ on the same commit. One commit per completed leaf.
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
 | [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.30` — the next recurring cleanup (due after 2026-10-28T09:33Z); the feature cycle (P4-SYSTEM) resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
-| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.6` — slice `6j` done (the Rust S-expression reader, corpus-identical to the pinned one by a unit test); slice `6k` ports its first consumer after the next five feature units (6 of 8 leaves done) | repo-local |
+| [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.6` — slice `6k` done (`EXERCISE-COVERAGE` in Rust behind a held shim, byte-identical on the real tree and seven fixture states); slice `6l` ports `check_unit_composition.sh` after the next five feature units (6 of 8 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->

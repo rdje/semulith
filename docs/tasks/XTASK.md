@@ -354,6 +354,18 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   M case's manifest). clippy's `--fix` rewrote one manual range check and rustfmt three expressions before the chain. Next:
   slice `6k` — the first consumer, `check_exercise_coverage.sh` (reads through `children`/`read_file`/`field` directly), after
   the next five feature units.
+  Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
+  ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
+  220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
+  ported beside it: one resolver, a missing fragment or an unmet `requires` refused by the pinned words) behind a held shim
+  (`scripts/check_exercise_coverage.sh` → `cargo xtask check-exercise-coverage`). Measured before the apply in a disposable
+  draft crate: the self-test `23 pass / 0 fail` (23 bash arms out, 23 `tally.arm(` in — the arm total unchanged), the real
+  tree's stdout and stderr byte-identical to the bash driver's (`ok (5 profile(s) — every declared form exercised, 19/19 /
+  200/200 / 52/52)`), and seven scratch fixture trees — green, unexercised, denominator lie, no composition, unresolved form,
+  no guests, device contradiction — identical in stdout, stderr and exit status (`7 identical, 0 differ`; the first pass
+  compared only the refusal path: the fixture roots lacked the two fragments the pseudo arms copy, both drivers refused
+  alike). In tree: `cargo test -p xtask` `test result: ok. 12 passed`; clippy at deny-warnings rc=0 (clean on the first run; rustfmt reflowed the hand-written module before the chain). Next: slice `6l` — `check_unit_composition.sh`,
+  the second consumer of the composition resolver, after the next five feature units.
 
 - ID: `XTASK.7` — **the focused set runs API-DOCS**
   Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0011`; owned on clean eaa63f58; evidence target/xtask/xt0012)
@@ -425,7 +437,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6k`: the first consumer of the Rust reader — `check_exercise_coverage.sh` ported behind a held shim — after the next five feature units (`decision_alternate-port-and-features.md`) |
+| 1 | `XTASK.6` | `active` | slice `6l`: `check_unit_composition.sh` onto the Rust composition resolver, behind a held shim — after the next five feature units (`decision_alternate-port-and-features.md`) |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -556,6 +568,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 6j **ADDRESSED (verified)** — `cargo test -p xtask` → `test result: ok. 12 passed; 0 failed` (`the_corpus_reads_as_the_pinned_reader_reads_it ... ok` over 367 tracked files); measure.sh: `sexp.py CLI vs cargo xtask sexp: 390 cases, 389 identical, 1 differ` — `DIFFERS target/tmp/xt0016-fixtures/bigint.sexp (rc 0 vs 1)`, the documented i128 limit.
 - [x] slice 6j **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (after `--fix` of one `manual_range_contains`); `cargo fmt -p xtask -- --check` rc=0; `API-DOCS: ok (5 crate(s) documented; … 0 undocumented public item(s))`; `git status` before the docs shows only xtask/ changed — every bash driver and `scripts/sexp.py` byte-identical.
 - [x] slice 6j **LOCKSTEP** — docs/toolbox/execution.md gains the `cargo xtask sexp` row; the tree (slice 6j, frontier 6k, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY; `decision_rust-sexp-reader.md` + INDEX row, KNOWLEDGE_MAP.md regenerated (`KNOWLEDGE-MAP` in sync).
+- [x] slice 6k **REPRODUCE / ISSUE** — before/ (bash driver at 04b650e7): `EXERCISE-COVERAGE: ok (5 profile(s) — every declared form exercised, 19/19` / `200/200` / `52/52)` rc 0 in 2 s; `EXERCISE-COVERAGE --self-test: 23 pass / 0 fail`; `grep -cE '^\s*arm ' scripts/check_exercise_coverage.sh` = 23.
+- [x] slice 6k **ROOT CAUSE (WHY + WHERE)** — the doctrine lived in bash around a 220-line inline Python block (`awk` census: `inline python block: 220 lines`) importing `sexp` and `riscv_asm.resolve_composition`; no Rust counterpart existed until 6j's reader (`grep -c 'use crate::sexp' xtask/src/*.rs` = 0 at 04b650e7).
+- [x] slice 6k **FIX** — xtask/src/check_exercise_coverage.rs (`shasum -a 256` = 12106e50652971d8448ead70a9a77bec670d61e4d5bc021c95a97bed40da522e; `wc -l` = 874; `grep -cE '^[[:space:]]+tally\.arm\('` = 23; `resolve_composition` ported with the pinned refusal words); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_exercise_coverage.sh a shim (`exec cargo xtask check-exercise-coverage "$@"`).
+- [x] slice 6k **ADDRESSED (verified)** — the draft binary against before/: `cmp after/real.out before/real.out` rc=0 (`real stdout byte-identical`), stderr identical, `selftest stdout byte-identical`; seven fixture states (target/xtask/xt0019/red/summary.txt): `RED/GREEN paths: 7 identical, 0 differ` — the green state's `EXERCISE-COVERAGE: ok (1 profile(s) — every declared form exercised, 2/2)` rc 0 from both drivers, the six refusals rc 1, stdout+stderr+rc each.
+- [x] slice 6k **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 12 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first run; rustfmt reflowed the hand-written module before the chain); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_exercise_coverage.sh` through the shim → the same `ok (5 profile(s) …)` line; DERIVED-COUNTS arm total unchanged (23 out, 23 in).
+- [x] slice 6k **LOCKSTEP** — docs/toolbox/definition.md / docs/doctrines rows unchanged (the command still answers through the shim); the tree (slice 6k, frontier 6l, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -595,3 +613,4 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-26`: XTASK.8 opened on the director's instruction and its slices a–c done — the pooled project slot and PROFILE-CONSISTENCY's parallel prefetch take the commit gate from 52–56 min to 6.8 min, every verdict line unchanged.
 - `2026-10-27`: XTASK.8 slice d done — the docs-only path (`decision_docs-only-gate-path.md`): six declared closures, a documentation commit's gate 27 s, `=== all doctrines green ===`, the six declared checks answered from the record (the recording run before it, every check running: 508 s); the leaf is done.
 - `2026-10-27`: XTASK.6 slice 6j done — the Rust S-expression reader `xtask/src/sexp.rs` is in the harness, equal to the pinned `scripts/sexp.py` by a unit test over every tracked `.sexp` file and 389 of 390 command-line cases (the 41-digit-integer fixture is the documented limit); nothing ported, the pinned reader untouched; slice 6k ports the first consumer.
+- `2026-10-27`: XTASK.6 slice 6k done — `EXERCISE-COVERAGE` is Rust behind a held shim (the inline Python and `resolve_composition` ported line for line onto the 6j reader), byte-identical on the real tree and on seven fixture states, 23 arms; taken out of turn because no feature leaf was unblocked (the `.14` declarations and ZICNTR wait on the pinned-tooling ruling, LAB-BENCH.2 on a user-feedback round, P5-BOARD.5 on the CPU's acceptance) — the alternation resumes with features the day a ruling lands; slice 6l ports `check_unit_composition.sh`.

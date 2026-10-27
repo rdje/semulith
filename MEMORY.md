@@ -20,14 +20,14 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-CA-0002` — CITATION-ACCURACY.2: the Markdown citation census (two adjacency shapes decidable and judged, 1 live
-  quote; paragraph-scope attribution undecidable in prose, counted; 7 arms; the tree closes). Before it P4-0308 (SSTC program),
-  P4-0307 (CSR-SET), XTASK-0018, P4-0306 (XLEN; BLOCKER: the M manifest pins the case-declaration tooling — options A/B/C).
-- next_action: RAISE to the director: no unblocked feature leaf remains for features 14–15 (the `.14` declarations and the ZICNTR
-  program wait on the pinned-tooling ruling; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance) — options:
-  rule A/B/C now, or let XTASK.6 slice 6k run meanwhile. `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes before a
-  chain touching profiles/; GS regen only after `git add`; a decision record → regenerate KNOWLEDGE_MAP.md; acceptance boxes carry
-  a signature token; the task leaf's per-part ceiling is 131,072 B. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+- last_unit: `SEMULITH-XTASK-0019` — XTASK.6 slice 6k: EXERCISE-COVERAGE in Rust behind a held shim (the inline Python and the
+  composition resolver ported onto the 6j reader; 23 arms; byte-identical on the real tree and seven fixture states). Before it
+  CA-0002 (the Markdown citation census; the tree closed), P4-0308 (SSTC program), P4-0307 (CSR-SET), XTASK-0018, P4-0306 (XLEN).
+- next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
+  pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
+  and the workload kind's declaration; until a ruling lands the tooling slices continue (XTASK.6 slice 6l: check_unit_composition.sh).
+  `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z). Probes before a chain touching profiles/; GS regen only after `git add`; a
+  decision record → regenerate KNOWLEDGE_MAP.md; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
   machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
