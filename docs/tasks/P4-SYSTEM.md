@@ -373,7 +373,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Completed execution records: [whole original technical history](artifacts/live-containment/task-claims.md#p4-a42x-p4-16-history).
 
 - ID: `P4-SYSTEM.17` — **portability** — `G-PORTABILITY`
-  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution began `2026-10-27` as
+  Status: `done` (`2026-10-28`, `SEMULITH-P4-0314`: the hosted matrix agreed for both units; opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution began `2026-10-27` as
   feature 8 of the second cycle under `decision_alternate-port-and-features.md`)
   Goal: the portability instrument's manifest over the rv64gc corpus; the x86-64 and AArch64
   legs; the pinned Miri plan over the new pure-Rust primitives.
@@ -413,6 +413,12 @@ This gate authorises the planned next engineering stage: board implementation.
   not its record's `0670a01b…` (2026-09-30) — the demo's JSON report changed since; the instrument compares hosts, never the record
   (control `translated-stale-record`). The book's P2 page describes the matrix generally and stays true. The leaf stays active until
   the matrix's first hosted run of both units: CI evidence lands with the next approved push.
+  Closed (`2026-10-28`, `SEMULITH-P4-0314`; evidence target/p4-system-17/close/portability-run.log): the granted push's hosted
+  portability run (40713852362 on b917d1ba) is green end to end — the four host jobs `native: green` with the rv64gc manifest
+  `24c4f12a… (171 guests)` on ubuntu-latest (x86-64) and macos-latest (aarch64) alike and rv64i's `3fbc498e… (49 guests)` alike,
+  the same digests measured here; the agree job `portability matrix: rv64i-lab-v0 — the two hosts agree byte-identically` and the
+  same for rv64gc-lab-v0; the Miri job `miri: green`, `cross-endian: green`. The x86-64 leg's permanent home now carries both
+  units on real hardware, as `decision_release-route-x86-64-leg.md` requires; the Rosetta bridge stays a local cross-check.
 - ID: `P4-SYSTEM.18` — **the CPU-SYSTEM verdict and the release decision** — `G-RELEASE`
   Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
   Goal: the report regenerated over the complete profile; the named release decision.
@@ -425,7 +431,6 @@ This gate authorises the planned next engineering stage: board implementation.
 | --- | --- | --- | --- |
 | 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a done (the declarations as data, read beside the code and equal to it); a44-2b the tools read them (`CR-GC-M-1` retired for the one lapse), a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
-| 3 | `P4-SYSTEM.17` | `active` | portability: slices a–b done (the rv64gc record; the CI matrix per unit, the Rosetta bridge repaired); the matrix's first hosted run of both units lands with the next approved push, then the leaf closes |
 
 ## Decisions
 
@@ -1060,6 +1065,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-2a **ROOT CAUSE** — a case's declaration lived only in two pinned scripts (`grep -c '_CASES = ' scripts/matched_gpr_property.py` = 1, `grep -c '^CURATED_INPUTS = ' scripts/capture_div.py` = 1); no schema described one (`ls schema | wc -l` = 26).
 - [x] `.14` a44-2a **ADDRESSED** — target/p4-system-14/a44-2a/probe.txt: `MATCHED-GPR-CASE: 7 tests / 0 failures / 0 errors` plain and `-O`; the five seams 1, 1, 1, 1 and 2 failures; generation: loaded == in-code, prepared == pinned, render(read) identical for both cases; `probe_div_capture_inputs.py` `34 tests / 0 failures`; `probe_schema_token_facets.py` OK (27 schemas, 122 facets).
 - [x] `.14` a44-2a **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1176 pass / 0 fail` (374 s); `RECORD-SCHEMA: ok (23 record file(s) …)`; `DERIVED-COUNTS: ok (5 derived count claim(s) re-derived)`; `cargo test -p xtask` `test result: ok. 17 passed` (the S-expression and schema corpus tests read the new files); no pinned path touched (`git diff --cached --name-only` against both `dependencies.sexp`: `grep -c` 0); `python3 -B scripts/requirement_status.py` → `1 of 1 credit record(s) current`.
+- [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
+- [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
+- [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 

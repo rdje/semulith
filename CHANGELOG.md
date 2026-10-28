@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0314 (leaf P4-SYSTEM.17) — portability closes: the hosted matrix agreed for both units
+
+The granted push's hosted portability run (40713852362 on b917d1ba) is green end to end: the four host jobs on ubuntu-latest (x86-64) and macos-latest (aarch64) produce the same manifests per unit — rv64gc `24c4f12a…` over 171 guests, rv64i `3fbc498e…` over 49, the digests measured here — the agree job prints that both units' hosts agree byte-identically, and the Miri and cross-endian legs are green. The x86-64 leg's permanent home now carries both units on real hardware; P4-SYSTEM.17 is done (15 of 18 leaves).
+
 ## SEMULITH-P4-0313 (leaf P4-SYSTEM.14 a44-2a) — the matched cases' declarations as data, read beside the code and equal to it
 
 The first half of ruling B's tool change, with no pinned file touched (`CR-GC-M-1` stays current). `schema/matched-case.sexp` declares a matched case — program, properties and RV64 values, control, reviewed steps, authority and pins — and `scripts/matched_gpr_case.py` reads, validates, maps and renders it, refusing a missing, invalid, misnamed or control-less declaration by name. Both existing cases now carry an `evidence/<case>/case.sexp` rendered from the in-code facts; each loads equal to its in-code case and renders back byte for byte. The new probe (7 tests, five seams) joins PROFILE-CONSISTENCY; the evidence family (22 slots per case) and the schema census (27 schemas, 122 facets) are re-derived with their counts measured. Next, a44-2b switches the tools to the declarations and opens the one lapse.

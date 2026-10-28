@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0313` — P4-SYSTEM.14 a44-2a: the matched cases' declarations as data (schema/matched-case.sexp,
-  scripts/matched_gpr_case.py, a case.sexp per case, equal to the in-code cases; the family and schema census re-derived);
-  no pinned file touched. Before it AC-0087 (ARTIFACT-CLEANUP.32: the cohort's controls on Linux), P4-0312 (a44-1).
+- last_unit: `SEMULITH-P4-0314` — P4-SYSTEM.17 done: the hosted portability matrix (run 40713852362 on b917d1ba) agreed
+  byte-identically for both units on real x86-64 and aarch64, Miri and cross-endian green. Before it P4-0313 (a44-2a: the
+  declarations as data), AC-0087 (the cohort on Linux), P4-0312 (a44-1).
 - next_action: P4-SYSTEM.14 a44-2b (a44-1's design): the pinned tools read the case files (matched_gpr_case.py), the in-code
   tables removed, the censuses (manifest population, reviewed modules/data paths, probes' seams and loss counts) re-derived,
   CR-GC-M-1 retired and REQ-GC-M planned for the one lapse; then a44-3 … a44-5. A push grant is asked (CI doctrines red). Tooling turns (5:1): the three doctrine controls, XTASK's close,
