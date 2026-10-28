@@ -316,7 +316,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   byte-identical. The change's own first draft was misformatted and the new check's command caught it before the commit.
 
 - ID: `XTASK.11` — **the doctrine controls refuse and freeze (ruling 5)**
-  Status: `active` (`2026-10-28`; the director's ruling 5, `decision_doctrine-controls-refuse-and-freeze.md`)
+  Status: `done` (`2026-10-28`, slices a–e, `SEMULITH-XTASK-0064` … `0068`; the director's ruling 5, `decision_doctrine-controls-refuse-and-freeze.md`)
   Goal: the three doctrine-owner questions answered as ruled — `CITATION-QUOTES`' availability probe refuses on any
   unexpected exception (6r); `BOARD-VERDICT`'s and `STATE-GEN`'s controls judge frozen fixture copies, so a wrong live board or
   a hand-edited live rv64gc pair fails by name (6u, 6x). One doctrine per slice, each change fired RED. Widened by slice c:
@@ -366,13 +366,24 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   merely contain `docs/`), many are deliberate real-tree arms (`a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`),
   and `BOARD-GEN` is a measured case (it refuses when the live `board.sexp` is absent). Next: slice e — classify the census
   (which GREEN controls require a correct live corpus) and raise the remedies to the director: beyond ruling 5's named three.
+  Slice e (`2026-10-28`, `SEMULITH-XTASK-0068`; on clean 59f14afa; evidence target/xtask/xt0068/classification.md): the census
+  classified by reading each driver's self-test (two claims re-checked by hand: BOOK-INDEX copies the live `docs/book`; DEF-GEN's
+  GREEN in-sync arm runs `--check` on the live rv64gc encoding, state and module — the real check's own test). 11 drivers are
+  FRAGILE — a GREEN arm expects a verdict on the unmodified live corpus: BOARD-GEN, BOOK-INDEX, CONTRACT-FREEZE (partly mitigated:
+  it judges before its self-test), DEF-GEN, EXERCISE-COVERAGE, GUEST-GEN, MATERIALS-BILL, PLATFORM-GEN, RECORD-SCHEMA and
+  UNIT-BOOKS through one probe each, and PROFILE-CONSISTENCY through 14 probes; 10 are false positives (scratch paths, TSV row
+  literals); ARTIFACT-COHORT reads only its owned fixtures; DOSSIER-SCHEMA, outside the census, is likely fragile too. The most
+  consequential by commits since 2026-09-28: BOOK-INDEX (`docs/book`, 364), PROFILE-CONSISTENCY (`profiles/rv64gc-lab-v0`, 139;
+  it refused this way on 2026-10-26), DEF-GEN and GUEST-GEN (their live in-sync arms duplicate the real check). Ruling 5 named
+  three doctrines and its record states the rule generally; extending it to the other eleven is a programme of its own (some
+  PROFILE-CONSISTENCY real-tree arms are deliberate: `a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`), so it is
+  raised to the director as an Open Question with a recommended order. The leaf is done: its ruled scope is executed.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.11` | `active` | ruling 5: slices a–d done (a crash refuses; BOARD-VERDICT and STATE-GEN judge frozen copies; a deleted board or descriptor fails by name); slice e classifies the live-data census for the director |
-| 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once `XTASK.11` lands |
+| 1 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
 
 ## Decisions
 
@@ -403,6 +414,12 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - (Answered 2026-10-28 by ruling 2, `decision_xtask-closes-with-shell-remainder.md`: yes, after `XTASK.11`.) (4b, `2026-10-28`) Whether `XTASK.4` — and with it the tree — closes with its 13 remaining scripts in shell, each for the
   constraint slice 4b measured (hooks, network, pinned readers, the template, the controls' stub cargo). The lane is the
   director's (`decision_rust-native-tooling.md`); until the word, the leaf stays active and no port of them is started.
+- (e, `2026-10-28`) Whether ruling 5's rule (a self-test judges frozen copies; a deleted source fails by name) extends to the 11
+  doctrines `XTASK.11` slice e classified FRAGILE (target/xtask/xt0068/classification.md). Recommended: yes, one slice per
+  doctrine in this order — DEF-GEN and GUEST-GEN (their live in-sync arm repeats the real check: drop it, keep a frozen pair),
+  BOOK-INDEX (freeze a small book), then BOARD-GEN, PLATFORM-GEN, MATERIALS-BILL, EXERCISE-COVERAGE, CONTRACT-FREEZE, the
+  RECORD-SCHEMA and UNIT-BOOKS probes, and PROFILE-CONSISTENCY's 14 probes last, case by case (some real-tree arms are deliberate
+  predictions and stay, named). The director's.
 
 ## Blockers
 
@@ -504,6 +521,9 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice d **FIX** — xtask/src/check_board_verdict.rs: `orphaned_units` (`composition.sexp` without `board.sexp`) fails by name before the empty-corpus branch; clippy `-D warnings` rc=0.
 - [x] slice d **ADDRESSED (verified)** — red.txt: `no-board after rc=1 FAIL — … composition.sexp is generated from a board definition, but … board.sexp is absent`; `no-board-unit-at-all after rc=0`; the other three states unchanged; `tree restored: 0 profile paths changed`.
 - [x] slice d **NO REGRESSION** — `BOARD-VERDICT --self-test: 6 pass / 0 fail`; `bash scripts/check_board_verdict.sh` rc=0 `ok (1 board(s) …)`; `cargo fmt --all -- --check` rc=0; census.py rc=0 (`drivers 41`); the commit gate green (chain log).
+- [x] slice e **ROOT CAUSE (WHY + WHERE)** — census.txt flagged 21 of 41 drivers by string (`grep -c '^- check_' target/xtask/xt0067/census.txt`); a mechanical match cannot tell a live read from a scratch path, so each self-test was read (classification.md, file:line per row).
+- [x] slice e **ADDRESSED (verified)** — classification.md `wc -l` = 26: 11 FRAGILE, 10 FALSE-POSITIVE, 1 DEFINITION-INPUT; two rows re-checked by hand (`sed -n 134,138p xtask/src/check_book_index.rs`; `sed -n 930,940p xtask/src/check_definition_gen.rs`).
+- [x] slice e **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green; the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.10)
 
@@ -581,3 +601,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.11 slice b — BOARD-VERDICT's controls judge a frozen board; a rejected live board fails by name instead of refusing.
 - `2026-10-28`: XTASK.11 slice c — STATE-GEN's controls judge a frozen pair; each pair judged on its own, an orphaned module fails by name; slice b's missing-board claim corrected.
 - `2026-10-28`: XTASK.11 slice d — a deleted board fails by name; the live-data census measured (21 of 41 drivers; classification next).
+- `2026-10-28`: XTASK.11 done — slice e classifies the live-data census (11 fragile doctrines); extending ruling 5 to them is raised to the director.

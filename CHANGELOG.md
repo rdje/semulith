@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0068 (leaf XTASK.11 slice e) — the live-data census classified; XTASK.11 done
+
+Each flagged driver's self-test was read and classified: 11 doctrines are fragile — a GREEN arm expects a verdict on the unmodified live corpus, so a wrong corpus makes the check refuse instead of failing by name (BOARD-GEN, BOOK-INDEX, CONTRACT-FREEZE, DEF-GEN, EXERCISE-COVERAGE, GUEST-GEN, MATERIALS-BILL, PLATFORM-GEN, RECORD-SCHEMA and UNIT-BOOKS through a probe each, PROFILE-CONSISTENCY through 14 probes); 10 were false positives; ARTIFACT-COHORT reads only its fixtures. Ruling 5 named three doctrines, now done; extending its rule to the eleven is raised to the director with a recommended order (DEF-GEN and GUEST-GEN first, whose live in-sync arms repeat the real check; PROFILE-CONSISTENCY last, case by case). XTASK.11 is done; XTASK.4 and the tree close once that question is answered.
+
 ## SEMULITH-AC-0088 (leaf ARTIFACT-CLEANUP.33) — the other trees' stale nested build targets removed; a wrong census corrected
 
 Ruling 4's second part. The census behind it listed 18 roots, 24.1 GB, as other units' leftovers; three are live — the cargo cohort's two producer roots (22.6 GB, managed by the recurring cleanup act) and the dsp56300 reference build — and stay. The 15 stale ones, each a cargo target with no tooling reference, were removed: 968,441,856 B. The ruling's record, the XTASK.9 leaf and the SEMULITH-XTASK-0061 entry's "24.1 GB" are corrected by this one.
