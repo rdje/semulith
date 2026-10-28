@@ -225,9 +225,23 @@ class IncludeTests(unittest.TestCase):
                 return os.stat_result(fields)
             return result
 
-        with mock.patch.object(Path, 'stat', foreign), self.assertRaises(I.IncludeRefused):
+        opened = []
+        original_open = os.open
+
+        def spy_open(path, *args, **kwargs):
+            if Path(path) == target:
+                opened.append(path)
+            return original_open(path, *args, **kwargs)
+
+        with mock.patch.object(Path, 'stat', foreign), mock.patch.object(os, 'open', spy_open), \
+                self.assertRaises(I.IncludeRefused) as refused:
             I.preprocess(self.context, self.book, self.root)
-        self.assertEqual(calls, 1)
+        # How many pathlib calls reach Path.stat is the interpreter's business (3.11 routes is_symlink, exists and stat
+        # there, 3.14 stat alone: 3 calls against 1, the hosted refusal of 2026-10-28), so the test holds the property —
+        # the foreign volume is the reason, and the source is refused before it is ever opened — not a call count.
+        self.assertGreaterEqual(calls, 1)
+        self.assertIn('another volume', str(refused.exception))
+        self.assertEqual(opened, [])
         original_lstat = Path.lstat
         calls = 0
 
@@ -242,9 +256,11 @@ class IncludeTests(unittest.TestCase):
                     return os.stat_result(fields)
             return result
 
-        with mock.patch.object(Path, 'lstat', changed), self.assertRaises(I.IncludeRefused):
+        with mock.patch.object(Path, 'lstat', changed), self.assertRaises(I.IncludeRefused) as refused:
             I.preprocess(self.context, self.book, self.root)
-        self.assertEqual(calls, 2)
+        # As above: the change is the reason, whichever lstat the interpreter routes first observes it.
+        self.assertGreaterEqual(calls, 2)
+        self.assertIn('changed', str(refused.exception))
 
     def test_change_after_selected_read_refuses(self):
         self.include('fragment.txt')

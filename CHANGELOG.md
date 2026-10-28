@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0071 (leaf XTASK.12 slice c) — the hosted UNIT-BOOKS refusal's cause fixed: a probe counted the interpreter's calls
+
+The diagnostic of slices a–b named the hosted miss: `probe_book_includes.py`'s another-volume test asserted the include target was stat'ed exactly once, and the number of pathlib calls that reach `Path.stat` depends on the Python version — 3 on the runner's 3.12, 1 on this host's 3.14 (`AssertionError: 3 != 1`, reproduced exactly here under 3.12 and 3.11). The test now asserts what it guards: the refusal names the foreign volume and the source is never opened; the change test's refusal names the change. A red run with the volume refusal removed fails it on both interpreters; the whole doctrines suite is green with `python3` resolving to 3.12. Card: `a-count-of-pathlib-calls-tests-the-interpreter.md`.
+
 ## SEMULITH-XTASK-0070 (leaf XTASK.12 slice b) — every driver's quiet refusal names its missed arms
 
 The 28 other drivers whose real run refused with only "self-test failed" get UNIT-BOOKS' report path, by one transformation: each tally keeps its misses, every miss print goes through one `report()`, and a quiet self-test prints its misses before the refusal. All 29 drivers checked structurally; every self-test unchanged and green; three red runs on the tree (the frozen STATE-GEN module, the frozen board, the live rv64gc definition module) each now name the missed arm before the refusal line, restored byte-identical. A hosted refusal can now be read from its log.

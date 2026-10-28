@@ -402,12 +402,24 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   (red/): the frozen STATE-GEN module, the frozen board and the live rv64gc definition module hand-edited — each quiet run now
   prints `… self-test MISS: GREEN …` before its refusal (1, 2 and 1 lines). The last one is open question (e) in miniature: a
   live module edit refuses DEF-GEN instead of failing it by name. The leaf is done once the hosted run is green.
+  Slice c (`2026-10-28`, `SEMULITH-XTASK-0071`; on clean 447ad5f9; evidence target/xtask/xt0071): the hosted run of slice a's push
+  (40763391753 on 18bfc69c) named the miss — `probe_book_includes.IncludeTests.test_another_volume_and_changed_input_refuse`,
+  line 230, `AssertionError: 3 != 1`. The test patched `Path.stat` and asserted the include target was stat'ed exactly once, and
+  a sibling assertion counted `Path.lstat` calls; how many pathlib calls reach those methods is the interpreter's (3.11 and 3.12
+  route `is_symlink()`, `exists()` and `stat()` through `Path.stat`: 3; 3.14 only `stat()`: 1). The runner's `python3` is 3.12,
+  this host's 3.14. Reproduced exactly here under Python 3.12.15 (installed beside the default) and 3.11: `3 != 1`. The test now
+  holds the property — the refusal names `another volume` and the source is never opened (an `os.open` spy), the change test's
+  refusal names `changed` — with `calls >= 1` (and `>= 2`) proving the patch was consulted. RED: the volume refusal removed from
+  `book_paths.source_path` and `book_includes` (restored byte-identical) fails the test on 3.11 (wrong reason) and 3.14 (no
+  refusal). Parity: the whole doctrines suite with `python3` resolving to 3.12 — `=== all doctrines green ===` (13 checks,
+  1224 s). `probe_book_navigation.py`'s deep-nesting test fails on 3.11 only (exit 1 against 2), not on the runner's 3.12:
+  noted, out of scope. Card: `docs/knowledge/a-count-of-pathlib-calls-tests-the-interpreter.md`.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.12` | `active` | slices a–b done (every driver's quiet refusal names its missed arms); the hosted doctrines run green closes it |
+| 1 | `XTASK.12` | `active` | slices a–c done (every driver names its misses; the version-dependent count in the include probe fixed); the hosted doctrines run green closes it |
 | 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
 
 ## Decisions
@@ -538,6 +550,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice b **FIX** — target/xtask/xt0070/transform.py over the 28 (`Tally.misses`, `report()`, the quiet loop); clippy `-D warnings` rc=0 after two `.to_owned()`; `cargo fmt --all -- --check` rc=0.
 - [x] slice b **ADDRESSED (verified)** — structural check `29 of 29` keep and print their misses; red/: `state-gen rc=2 :: 1 MISS line(s)`, `board-verdict rc=2 :: 2 MISS line(s)`, `def-gen rc=2 :: 1 MISS line(s)`, each before its refusal; `cmp` restored all three.
 - [x] slice b **NO REGRESSION** — selftests.txt `29 of 29 rc=0` with unchanged pass counts; `cargo test -p xtask` `test result: ok. 17 passed`; the commit gate green (chain log).
+- [x] slice c **ROOT CAUSE (WHY + WHERE)** — target/push/doctrines-18bfc69c-full.log: `FAIL: test_another_volume_and_changed_input_refuse … line 230` (`grep -c 'AssertionError: 3 != 1'` = 2); reproduced: `/opt/homebrew/bin/python3.12 -B -m unittest …` → `3 != 1`, Python 3.11 the same, 3.14 `OK`.
+- [x] slice c **FIX** — scripts/probe_book_includes.py: the two count assertions become property assertions (reason, never opened, `calls >= 1` / `>= 2`); the card and its INDEX row.
+- [x] slice c **ADDRESSED (verified)** — the probe under 3.11, 3.12 and 3.14: `Ran 22 tests … OK` each; RED (volume refusal removed, restored, `cmp` rc=0): `AssertionError: 'another volume' not found …` on 3.11, `IncludeRefused not raised` on 3.14.
+- [x] slice c **NO REGRESSION** — gate-py312.log: `=== all doctrines green ===` under `python3` 3.12.15 (1224 s); the commit gate green under the default 3.14 (chain log).
 
 ## Acceptance Checklist (leaf XTASK.11)
 
@@ -640,3 +656,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.11 done — slice e classifies the live-data census (11 fragile doctrines); extending ruling 5 to them is raised to the director.
 - `2026-10-28`: XTASK.12 slice a — UNIT-BOOKS' quiet refusal names its missed arms (the hosted refusal on 45f970c0 said only "self-test failed"); 28 drivers next.
 - `2026-10-28`: XTASK.12 slice b — every driver's quiet refusal names its missed arms (28 more drivers; 29 of 29).
+- `2026-10-28`: XTASK.12 slice c — the include probe asserts the refusal's reason, not pathlib's call count (3 on Python 3.12, 1 on 3.14); the doctrines suite green under 3.12.

@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0070` — XTASK.12 slice b: every driver's quiet refusal names its missed arms (29 of 29). Pushed
-  18bfc69c (SEMULITH-PUSH-0004, the director's 'right now I need the GitHub CI to go green'); its hosted doctrines run names
-  the UNIT-BOOKS miss. Before it XTASK-0069 (slice a), XTASK-0068 (XTASK.11 done).
+- last_unit: `SEMULITH-XTASK-0071` — XTASK.12 slice c: the hosted UNIT-BOOKS refusal's cause (a probe counted pathlib calls: 3 on the
+  runner's Python 3.12, 1 on 3.14) fixed by property assertions; the doctrines suite green under 3.12. Before it XTASK-0070
+  (every driver names its misses). Pushed 18bfc69c (SEMULITH-PUSH-0004); this unit goes out next (hosted CI green first).
 - next_action: tooling first, so the a44 lapse block runs uninterrupted: hosted CI green first (the director, 2026-10-28):
   read the hosted UNIT-BOOKS miss on 18bfc69c and fix it; then XTASK open question (e) (11 fragile doctrines, the workflow's call); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C);
   the cleanup narrative's owned rollover (14.2 KB of 14.7 KB: due before any unit but `.31`). Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
