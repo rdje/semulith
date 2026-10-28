@@ -117,6 +117,9 @@
 //! - `cargo xtask check-requirements [--self-test|--audit]` is the `RECORD-SCHEMA` doctrine's driver (`XTASK.6` slice
 //!   `6ap`, `check_requirements.rs`): every tracked record file validated and cross-checked by the driver's inline Python
 //!   run verbatim, the Rust graph checker and the probes spawned as before; `scripts/check_requirements.sh` is its shim.
+//! - `cargo xtask check-guest-gen [--self-test]` is the `GUEST-GEN` doctrine's driver (`XTASK.6` slice `6aq`,
+//!   `check_guest_gen.rs`): the generated guest fixtures judged as the generator's output of the tracked guests and the
+//!   base mirror through its governor, generator, governor and probes spawned as before; `scripts/check_guest_gen.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -155,6 +158,7 @@ mod check_fixture_fingerprints;
 mod check_fp_vectors;
 mod check_frontier_sync;
 mod check_gate_report;
+mod check_guest_gen;
 mod check_interaction_matrix;
 mod check_m_vectors;
 mod check_materials_bill;
@@ -266,12 +270,14 @@ const NATIVE: &[&str] = &[
     "check-definition-gen",
     "check-dossier-schema",
     "check-requirements",
+    "check-guest-gen",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-guest-gen", "scripts/check_guest_gen.sh"),
     ("check-requirements", "scripts/check_requirements.sh"),
     ("check-dossier-schema", "scripts/check_dossier_schema.sh"),
     ("check-definition-gen", "scripts/check_definition_gen.sh"),
@@ -385,6 +391,7 @@ fn main() -> ExitCode {
             "check-definition-gen" => check_definition_gen::run(&root, &args[1..]),
             "check-dossier-schema" => check_dossier_schema::run(&root, &args[1..]),
             "check-requirements" => check_requirements::run(&root, &args[1..]),
+            "check-guest-gen" => check_guest_gen::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
