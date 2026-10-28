@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0053` — XTASK.6 slice 6aq: GUEST-GEN's driver in Rust behind a held shim (generator, governor, probes
-  and inline edits spawned as before; 332 arms; byte-identical on the real tree and 3 fixture repositories) — 37 of 42
-  drivers through shims. Before it XTASK-0052 (6ap), XTASK-0051 (6ao), XTASK-0050 (6an), XTASK-0049 (6am), XTASK-0048 (6al).
+- last_unit: `SEMULITH-XTASK-0056` — XTASK.6 slice 6aq-b: the part-4 row move (rows 6y–6ap, 37565 B → docs/tasks/archive/XTASK-4.md)
+  that 6aq's commit (`SEMULITH-XTASK-0053`, de88cbba: GUEST-GEN's driver in Rust behind a held shim, 332 arms, byte-identical on the real
+  tree and 3 fixture repositories) carried but did not describe — 37 of 42 drivers through shims. Before it XTASK-0052 (6ap), XTASK-0051 (6ao).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
   and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6ar (`check_profile_consistency.sh`

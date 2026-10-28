@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0056 (leaf XTASK.6 slice 6aq-b) — the part-4 row move the 6aq commit carried but did not describe
+
+Slice 6aq's commit (de88cbba) moved `docs/tasks/XTASK.md`'s closed rows 6y–6ap (37565 B, one contiguous span of 108 rows) verbatim into `docs/tasks/archive/XTASK-4.md` after the prechecks refused the leaf's 131,072 B per-part ceiling (133490 B; the live leaf 96007 B) — the a43b mechanism, as parts 1–3 — but the edit that should have named the move in the leaf's paragraph, FIX row and bullet and in the slice's entry stopped on a missed anchor, so the commit's text is silent about it. This unit records the move where the slice's text should have; the 6aq entry below stays as written — history is append-only.
+
 ## SEMULITH-XTASK-0053 (leaf XTASK.6 slice 6aq) — GUEST-GEN's driver is Rust behind a held shim; generator, governor and probes run as before
 
 A tooling slice taken while every feature leaf waits on a ruling. `xtask/src/check_guest_gen.rs` (4002 lines, generated from the script: the fixture arms and mode loops by hand, the 312 probe arms derived) ports the bash driver: the generator, the base-mirror governor, the probe suites and the controls' inline edits spawned as before, not ported; the quiet run keeps the controls' output in `target/guest-gen/self-test.log` as before; the 332 bash arms are 332 `tally.arm(` calls; `scripts/check_guest_gen.sh` is a shim. Measured in a disposable draft crate: the self-test byte-identical, the real tree's stdout and stderr byte-identical, 3 fixture repositories 3 identical, 0 differ in all three streams. In tree: `cargo test -p xtask` `test result: ok. 17 passed`, clippy rc=0 (clean on the first in-tree run). 37 of 42 registered drivers answer through shims. Next: slice 6ar — `check_profile_consistency.sh` behind a held shim.
