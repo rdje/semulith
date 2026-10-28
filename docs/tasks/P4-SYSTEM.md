@@ -353,6 +353,16 @@ This gate authorises the planned next engineering stage: board implementation.
   inputs (then a re-pin procedure) — raised to the director. Carded (`a-report-generator-pinned-as-a-measurement-
   input.md`). Also found: the pinned Misalign suites are generated for `MISALIGNED_LDST: true` and are not
   applicable to a profile that traps misaligned data accesses (the open row says so).
+  Slice e-b (`2026-10-28`, `SEMULITH-P4-0311`; on clean 1199c775; evidence target/p4-system-15/e-b): the granted push's
+  boundary refused — `make ci` red at its `check` leg, `cargo fmt --all -- --check` failing on the two files slice e wrote
+  (`crates/semulith-verify/src/mutate_rv64gc.rs` and its `tests.rs`, last touched by d0f37d83); nothing was sent. Root cause:
+  neither the commit gate nor the focused set runs rustfmt or clippy over the workspace (`grep -ciE 'fmt|clippy'` over the
+  focused set's 28 entries and the project registry = 0), so a crate edited outside xtask can drift until the push boundary,
+  360 commits later. Fixed by formatting only: the token difference is 33 trailing commas and one pair of closure braces (a
+  token diff of before and after), neither file pinned by a retained manifest; `make check` then green (fmt, clippy at
+  deny-warnings, `cargo test --all` 510 passed, 0 failed). ROUTING EVIDENCE for the prevention, which is XTASK's (the focused
+  set lives in `xtask/src/main.rs`): measured above — rustfmt is in no commit-time check — and its cost, `cargo fmt --all --
+  --check` under a second; the focused set gains it as `XTASK.10`, the way `XTASK.7` added API-DOCS.
   Acceptance: every mutation class detected on the rv64gc corpus; the external suite's verdicts
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
@@ -977,6 +987,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44 **ROOT CAUSE** — the declarations waited on a ruling (P4-0306 finding); measured for the ruling's cost: `grep -c matched_gpr_property.py` and `grep -c capture_div.py` = 1 each in both `evidence/*/dependencies.sexp` — two retained cases pin both scripts.
 - [x] `.14` a44 **ADDRESSED** — five records (`decision_director-rulings-2026-10-28.md` and the four rulings) with their INDEX rows (`grep -c 2026-10-28 docs/decisions/INDEX.md` ≥ 5); the frontier row, the route and the ZICNTR Open Question in this leaf.
 - [x] `.14` a44 **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); the prechecks green on the staged tree (target/p4-system-14/a44/prechecks.txt) and the commit gate (chain log).
+- [x] `.15` slice e-b **ROOT CAUSE** — the push boundary: `pre-push: REFUSED — the full local suite is red at leg *** [check]` (target/push/last-green.log: `Diff in …/mutate_rv64gc.rs`); `cargo fmt --all -- --check -l` lists 2 files, both last touched by d0f37d83 (`git log -1`), neither in `evidence/*/dependencies.sexp` (`grep -c` 0); rustfmt in no commit-time check.
+- [x] `.15` slice e-b **ADDRESSED** — `rustfmt --edition 2021` (the workspace edition) over the module; `cargo fmt --all -- --check` rc=0; the token diff of before/after: 33 inserted `,` and one `{`/`}` pair, nothing else (target/p4-system-15/e-b).
+- [x] `.15` slice e-b **NO REGRESSION** — `make check` rc=0 (42 s): fmt, `cargo clippy --all-targets --all-features -- -D warnings`, `cargo test --all` 510 passed, 0 failed over 13 binaries (make-check.log); the commit gate green (chain log).
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 

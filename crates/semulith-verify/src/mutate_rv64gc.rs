@@ -76,73 +76,223 @@ pub struct Mutation {
 /// anchor every test runs first, not a member of the inventory.
 pub const MUTATIONS: &[Mutation] = &[
     // I — the base, through the two canonical controls and two sibling swaps
-    Mutation { name: "zext-addi", family: Family::I, row: "addi", how: Perturbation::Control(Model::ZextAddi),
-               story: "addi zero-extends its immediate instead of sign-extending it" },
-    Mutation { name: "jal-no-link", family: Family::I, row: "jal", how: Perturbation::Control(Model::JalNoLink),
-               story: "jal transfers but does not write its link register" },
-    Mutation { name: "slt-unsigned", family: Family::I, row: "slt", how: Perturbation::EffectOf("sltu"),
-               story: "slt compares unsigned" },
-    Mutation { name: "lw-zero-extends", family: Family::I, row: "lw", how: Perturbation::EffectOf("lwu"),
-               story: "lw zero-extends the loaded word" },
-    Mutation { name: "sraiw-as-srliw", family: Family::I, row: "sraiw", how: Perturbation::EffectOf("srliw"),
-               story: "sraiw shifts in zeros" },
+    Mutation {
+        name: "zext-addi",
+        family: Family::I,
+        row: "addi",
+        how: Perturbation::Control(Model::ZextAddi),
+        story: "addi zero-extends its immediate instead of sign-extending it",
+    },
+    Mutation {
+        name: "jal-no-link",
+        family: Family::I,
+        row: "jal",
+        how: Perturbation::Control(Model::JalNoLink),
+        story: "jal transfers but does not write its link register",
+    },
+    Mutation {
+        name: "slt-unsigned",
+        family: Family::I,
+        row: "slt",
+        how: Perturbation::EffectOf("sltu"),
+        story: "slt compares unsigned",
+    },
+    Mutation {
+        name: "lw-zero-extends",
+        family: Family::I,
+        row: "lw",
+        how: Perturbation::EffectOf("lwu"),
+        story: "lw zero-extends the loaded word",
+    },
+    Mutation {
+        name: "sraiw-as-srliw",
+        family: Family::I,
+        row: "sraiw",
+        how: Perturbation::EffectOf("srliw"),
+        story: "sraiw shifts in zeros",
+    },
     // M
-    Mutation { name: "mul-as-mulh", family: Family::M, row: "mul", how: Perturbation::EffectOf("mulh"),
-               story: "mul writes the high half of the product" },
-    Mutation { name: "divu-as-div", family: Family::M, row: "divu", how: Perturbation::EffectOf("div"),
-               story: "divu divides signed" },
-    Mutation { name: "remw-missing", family: Family::M, row: "remw", how: Perturbation::Remove,
-               story: "the model does not implement remw" },
+    Mutation {
+        name: "mul-as-mulh",
+        family: Family::M,
+        row: "mul",
+        how: Perturbation::EffectOf("mulh"),
+        story: "mul writes the high half of the product",
+    },
+    Mutation {
+        name: "divu-as-div",
+        family: Family::M,
+        row: "divu",
+        how: Perturbation::EffectOf("div"),
+        story: "divu divides signed",
+    },
+    Mutation {
+        name: "remw-missing",
+        family: Family::M,
+        row: "remw",
+        how: Perturbation::Remove,
+        story: "the model does not implement remw",
+    },
     // A
-    Mutation { name: "amoadd-w-as-swap", family: Family::A, row: "amoadd.w", how: Perturbation::EffectOf("amoswap.w"),
-               story: "amoadd.w stores the operand instead of the sum" },
-    Mutation { name: "amomax-d-unsigned", family: Family::A, row: "amomax.d", how: Perturbation::EffectOf("amomaxu.d"),
-               story: "amomax.d compares unsigned" },
-    Mutation { name: "sc-d-nop", family: Family::A, row: "sc.d", how: Perturbation::Nop,
-               story: "sc.d neither stores nor writes its success code" },
+    Mutation {
+        name: "amoadd-w-as-swap",
+        family: Family::A,
+        row: "amoadd.w",
+        how: Perturbation::EffectOf("amoswap.w"),
+        story: "amoadd.w stores the operand instead of the sum",
+    },
+    Mutation {
+        name: "amomax-d-unsigned",
+        family: Family::A,
+        row: "amomax.d",
+        how: Perturbation::EffectOf("amomaxu.d"),
+        story: "amomax.d compares unsigned",
+    },
+    Mutation {
+        name: "sc-d-nop",
+        family: Family::A,
+        row: "sc.d",
+        how: Perturbation::Nop,
+        story: "sc.d neither stores nor writes its success code",
+    },
     // F
-    Mutation { name: "fadd-s-as-fsub", family: Family::F, row: "fadd.s", how: Perturbation::EffectOf("fsub.s"),
-               story: "fadd.s subtracts" },
-    Mutation { name: "feq-s-as-flt", family: Family::F, row: "feq.s", how: Perturbation::EffectOf("flt.s"),
-               story: "feq.s answers less-than" },
-    Mutation { name: "fmv-x-w-nop", family: Family::F, row: "fmv.x.w", how: Perturbation::Nop,
-               story: "fmv.x.w moves nothing" },
-    Mutation { name: "fcvt-w-s-unsigned", family: Family::F, row: "fcvt.w.s", how: Perturbation::EffectOf("fcvt.wu.s"),
-               story: "fcvt.w.s converts to unsigned" },
-    Mutation { name: "fclass-s-missing", family: Family::F, row: "fclass.s", how: Perturbation::Remove,
-               story: "the model does not implement fclass.s" },
+    Mutation {
+        name: "fadd-s-as-fsub",
+        family: Family::F,
+        row: "fadd.s",
+        how: Perturbation::EffectOf("fsub.s"),
+        story: "fadd.s subtracts",
+    },
+    Mutation {
+        name: "feq-s-as-flt",
+        family: Family::F,
+        row: "feq.s",
+        how: Perturbation::EffectOf("flt.s"),
+        story: "feq.s answers less-than",
+    },
+    Mutation {
+        name: "fmv-x-w-nop",
+        family: Family::F,
+        row: "fmv.x.w",
+        how: Perturbation::Nop,
+        story: "fmv.x.w moves nothing",
+    },
+    Mutation {
+        name: "fcvt-w-s-unsigned",
+        family: Family::F,
+        row: "fcvt.w.s",
+        how: Perturbation::EffectOf("fcvt.wu.s"),
+        story: "fcvt.w.s converts to unsigned",
+    },
+    Mutation {
+        name: "fclass-s-missing",
+        family: Family::F,
+        row: "fclass.s",
+        how: Perturbation::Remove,
+        story: "the model does not implement fclass.s",
+    },
     // D
-    Mutation { name: "fadd-d-as-fmul", family: Family::D, row: "fadd.d", how: Perturbation::EffectOf("fmul.d"),
-               story: "fadd.d multiplies" },
-    Mutation { name: "fle-d-as-feq", family: Family::D, row: "fle.d", how: Perturbation::EffectOf("feq.d"),
-               story: "fle.d answers equality" },
-    Mutation { name: "fmv-x-d-nop", family: Family::D, row: "fmv.x.d", how: Perturbation::Nop,
-               story: "fmv.x.d moves nothing" },
-    Mutation { name: "fcvt-l-d-unsigned", family: Family::D, row: "fcvt.l.d", how: Perturbation::EffectOf("fcvt.lu.d"),
-               story: "fcvt.l.d converts to unsigned" },
+    Mutation {
+        name: "fadd-d-as-fmul",
+        family: Family::D,
+        row: "fadd.d",
+        how: Perturbation::EffectOf("fmul.d"),
+        story: "fadd.d multiplies",
+    },
+    Mutation {
+        name: "fle-d-as-feq",
+        family: Family::D,
+        row: "fle.d",
+        how: Perturbation::EffectOf("feq.d"),
+        story: "fle.d answers equality",
+    },
+    Mutation {
+        name: "fmv-x-d-nop",
+        family: Family::D,
+        row: "fmv.x.d",
+        how: Perturbation::Nop,
+        story: "fmv.x.d moves nothing",
+    },
+    Mutation {
+        name: "fcvt-l-d-unsigned",
+        family: Family::D,
+        row: "fcvt.l.d",
+        how: Perturbation::EffectOf("fcvt.lu.d"),
+        story: "fcvt.l.d converts to unsigned",
+    },
     // C — a compressed row's OWN effect (its expansion only binds operands)
-    Mutation { name: "c-addi-nop", family: Family::C, row: "c.addi", how: Perturbation::Nop,
-               story: "c.addi does nothing" },
-    Mutation { name: "c-sub-as-xor", family: Family::C, row: "c.sub", how: Perturbation::EffectOf("c.xor"),
-               story: "c.sub exclusive-ors" },
-    Mutation { name: "c-ld-nop", family: Family::C, row: "c.ld", how: Perturbation::Nop,
-               story: "c.ld loads nothing" },
-    Mutation { name: "c-j-nop", family: Family::C, row: "c.j", how: Perturbation::Nop,
-               story: "c.j falls through" },
+    Mutation {
+        name: "c-addi-nop",
+        family: Family::C,
+        row: "c.addi",
+        how: Perturbation::Nop,
+        story: "c.addi does nothing",
+    },
+    Mutation {
+        name: "c-sub-as-xor",
+        family: Family::C,
+        row: "c.sub",
+        how: Perturbation::EffectOf("c.xor"),
+        story: "c.sub exclusive-ors",
+    },
+    Mutation {
+        name: "c-ld-nop",
+        family: Family::C,
+        row: "c.ld",
+        how: Perturbation::Nop,
+        story: "c.ld loads nothing",
+    },
+    Mutation {
+        name: "c-j-nop",
+        family: Family::C,
+        row: "c.j",
+        how: Perturbation::Nop,
+        story: "c.j falls through",
+    },
     // Zicsr
-    Mutation { name: "csrrw-as-csrrs", family: Family::Zicsr, row: "csrrw", how: Perturbation::EffectOf("csrrs"),
-               story: "csrrw sets bits instead of writing the value" },
-    Mutation { name: "csrrci-nop", family: Family::Zicsr, row: "csrrci", how: Perturbation::Nop,
-               story: "csrrci neither reads nor clears" },
+    Mutation {
+        name: "csrrw-as-csrrs",
+        family: Family::Zicsr,
+        row: "csrrw",
+        how: Perturbation::EffectOf("csrrs"),
+        story: "csrrw sets bits instead of writing the value",
+    },
+    Mutation {
+        name: "csrrci-nop",
+        family: Family::Zicsr,
+        row: "csrrci",
+        how: Perturbation::Nop,
+        story: "csrrci neither reads nor clears",
+    },
     // Privileged
-    Mutation { name: "mret-nop", family: Family::Privileged, row: "mret", how: Perturbation::Nop,
-               story: "mret returns nowhere and restores nothing" },
-    Mutation { name: "sret-as-mret", family: Family::Privileged, row: "sret", how: Perturbation::EffectOf("mret"),
-               story: "sret behaves as mret" },
-    Mutation { name: "ecall-nop", family: Family::Privileged, row: "ecall", how: Perturbation::Nop,
-               story: "ecall traps nowhere" },
-    Mutation { name: "wfi-missing", family: Family::Privileged, row: "wfi", how: Perturbation::Remove,
-               story: "the model does not implement wfi" },
+    Mutation {
+        name: "mret-nop",
+        family: Family::Privileged,
+        row: "mret",
+        how: Perturbation::Nop,
+        story: "mret returns nowhere and restores nothing",
+    },
+    Mutation {
+        name: "sret-as-mret",
+        family: Family::Privileged,
+        row: "sret",
+        how: Perturbation::EffectOf("mret"),
+        story: "sret behaves as mret",
+    },
+    Mutation {
+        name: "ecall-nop",
+        family: Family::Privileged,
+        row: "ecall",
+        how: Perturbation::Nop,
+        story: "ecall traps nowhere",
+    },
+    Mutation {
+        name: "wfi-missing",
+        family: Family::Privileged,
+        row: "wfi",
+        how: Perturbation::Remove,
+        story: "the model does not implement wfi",
+    },
 ];
 
 /// The mutants the tracked corpus does NOT detect — the campaign's finding, pinned. Slice d found
@@ -164,7 +314,11 @@ fn canonical_row(table: &[InsnDef], name: &str) -> Result<usize, String> {
 /// silent pass: the inventory must follow the definition.
 pub fn table_for(mutation: &Mutation) -> Result<Vec<InsnDef>, String> {
     if let Perturbation::Control(model) = mutation.how {
-        return Ok(model.table()?.iter().map(|row| InsnDef { ..*row }).collect());
+        return Ok(model
+            .table()?
+            .iter()
+            .map(|row| InsnDef { ..*row })
+            .collect());
     }
     let mut table: Vec<InsnDef> = INSNS.iter().map(|row| InsnDef { ..*row }).collect();
     let at = canonical_row(&table, mutation.row)?;
@@ -195,7 +349,10 @@ pub fn first_divergence(production: &Trace, mutant: &Trace) -> Option<usize> {
         .iter()
         .zip(&mutant.steps)
         .position(|(a, b)| a != b)
-        .or_else(|| (production.steps.len() != mutant.steps.len()).then_some(production.steps.len().min(mutant.steps.len())))
+        .or_else(|| {
+            (production.steps.len() != mutant.steps.len())
+                .then_some(production.steps.len().min(mutant.steps.len()))
+        })
 }
 
 /// One detection: the guest's name and the step at which its trace first diverges.
@@ -220,7 +377,10 @@ pub fn detectors(mutation: &Mutation) -> Result<Vec<Detection>, String> {
 
 /// The campaign's census: every mutant with its detectors, in inventory order.
 pub fn census() -> Result<Census, String> {
-    MUTATIONS.iter().map(|m| detectors(m).map(|d| (m, d))).collect()
+    MUTATIONS
+        .iter()
+        .map(|m| detectors(m).map(|d| (m, d)))
+        .collect()
 }
 
 /// The guest a name denotes (the campaign's own lookup, so a test reads as a name).

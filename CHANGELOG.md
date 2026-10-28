@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0311 (leaf P4-SYSTEM.15 slice e-b) — the mutation campaign's two files formatted; the push boundary caught the drift
+
+The granted push's boundary refused before sending anything: `make ci` was red at its `check` leg because `cargo fmt --all -- --check` failed on `crates/semulith-verify/src/mutate_rv64gc.rs` and its tests, written by slice e (P4-0302). Neither the commit gate nor the focused set runs rustfmt or clippy over the workspace, so the drift waited for the push. The files are formatted — 33 trailing commas and one pair of closure braces, no other token — and `make check` is green (clippy at deny-warnings; 510 tests passed). The prevention, the focused set gaining the format check, is XTASK's (`XTASK.10`).
+
 ## SEMULITH-P4-0310 (leaf P4-SYSTEM.14 a44) — the director's rulings of 2026-10-28 recorded
 
 The director granted the session's five recommendations ("I grant all your recommendations"; "Your recommendations better be sota, signoff and production-grade"; "next push granted"). One record per ruling under `decision_director-rulings-2026-10-28.md`: case declarations move to data (option B of the P4-0306 finding); XTASK closes with its 13 remaining scripts in shell; the next push; orphan incremental sessions removed whole, anchored to the cleanup record (option C), and other trees' leftover build directories removed; a probe's unexpected exception refuses and live-data controls judge frozen copies. Measured while recording ruling 1: both retained cases pin both declaration scripts, so it costs two re-captures (M v4, signed-DIV v3), not one — recorded as measured. The ZICNTR program is not covered: it waits for a reference that implements Zicntr, a new Open Question. Each ruling names the leaf that executes it.

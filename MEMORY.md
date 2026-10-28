@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0310` — P4-SYSTEM.14 a44: the director's rulings of 2026-10-28 recorded (five records, one per ruling;
-  `decision_director-rulings-2026-10-28.md`). Before it XTASK-0062 (XTASK.4 slice 4b), XTASK-0061 (XTASK.9), AC-0086,
-  P4-0309 (the CI portability matrix per unit).
+- last_unit: `SEMULITH-P4-0311` — P4-SYSTEM.15 slice e-b: two files rustfmt-formatted after the granted push's boundary refused
+  (`make ci` red at `check`; nothing sent). Before it P4-0310 (a44: the director's rulings of 2026-10-28 recorded), XTASK-0062,
+  XTASK-0061, AC-0086.
 - next_action: the director ruled 2026-10-28 (`decision_director-rulings-2026-10-28.md`): the NEXT PUSH is granted (a cadence push,
-  359+ commits) — run it right after this unit lands; then features first (5:1): P4-SYSTEM.14 a44-1 (the case file and the tools
+  361 commits) — retry it after P4-0311 (the first try refused: fmt drift); then features first (5:1): P4-SYSTEM.14 a44-1 (the case file and the tools
   reading it), a44-2/a44-3 (M v4, DIV v3 re-captures), the XLEN/CSR-SET/SSTC declarations as data; tooling turns: the three
   doctrine controls (XTASK), XTASK's close, ARTIFACT-CLEANUP.29 (class C + other trees' 24.1 GB); `.31` due after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
