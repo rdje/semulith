@@ -16,17 +16,17 @@
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): cycle two complete
   (P4-0302 … P4-0306) and XTASK-0018 (slice 6j) landed → cycle three: the a43b-1/a43c-1/a43d-1 programs, then the XLEN declaration;
-  `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
+  `ARTIFACT-CLEANUP.31` once due (after 2026-10-29T09:49Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0309` — P4-SYSTEM.17 slice b: the CI portability matrix per unit (rv64i, rv64gc); the Rosetta bridge
-  repaired (translated tests spawn git through a natively resolved link; libxcrun is arm64-only). Before it
-  SEMULITH-XTASK-0060 (XTASK.6 closed; the spine's own checks stay bash), SEMULITH-XTASK-0059 (6au).
+- last_unit: `SEMULITH-AC-0086` — ARTIFACT-CLEANUP.30, the recurring cleanup (6 outputs removed, residue 0). Before it
+  `SEMULITH-P4-0309` — P4-SYSTEM.17 slice b: the CI portability matrix per unit, the Rosetta bridge repaired; then
+  SEMULITH-XTASK-0060 (XTASK.6 closed; the spine's own checks stay bash).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance;
-  `.17` on the next approved push's hosted run) and the workload kind's declaration; until a ruling lands: `ARTIFACT-CLEANUP.30`
-  (due after 2026-10-28T09:33Z), then the XTASK frontier `XTASK.4`, its leaf file's closed 6aq–6av text moved to an archive part first.
+  `.17` on the next approved push's hosted run) and the workload kind's declaration; until a ruling lands: the XTASK frontier
+  `XTASK.4`, its leaf file's closed 6aq–6av text moved to an archive part first; `ARTIFACT-CLEANUP.31` once due (after 2026-10-29T09:49Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 60 KB of 64 KiB (last sharded in XTASK-0049, shard-0419; the next shard is due within two entries).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -40,7 +40,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0085` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-27T09:33Z`).
+  cleanup act `target/artifact-cleanup/AC0086` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-28T09:49Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.

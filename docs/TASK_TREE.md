@@ -56,7 +56,7 @@ on the same commit. One commit per completed leaf.
 | [`P7-COMPUTER`](tasks/P7-COMPUTER.md) | `proposed` | `.1` — declare the workload suite (gate `SYSTEM`) | repo-local |
 | [`MC-MULTICORE`](tasks/MC-MULTICORE.md) | `proposed` | `.1` — extend the CPU/environment contract | repo-local |
 | [`LAB-BENCH`](tasks/LAB-BENCH.md) | `active` | `.2` — proposed: stepping, register view, live traces (1 of 2 leaves done; `semulith demo` + the browser bench land) | repo-local |
-| [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.30` — the next recurring cleanup (due after 2026-10-28T09:33Z); the feature cycle (P4-SYSTEM) resumes meanwhile | repo-local |
+| [`ARTIFACT-CLEANUP`](tasks/ARTIFACT-CLEANUP.md) | `active` | `ARTIFACT-CLEANUP.31` — the next recurring cleanup (due after 2026-10-29T09:49Z); the XTASK tree's frontier resumes meanwhile | repo-local |
 | [`LIVE-CONTAINMENT`](tasks/LIVE-CONTAINMENT.md) | `active` | `.4` — active: archive sealed, full doctrine adoption remains (3 of 4 leaves done) | repo-local |
 | [`XTASK`](tasks/XTASK.md) | `active` | `XTASK.4` — the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline. XTASK.6 done (`2026-10-28`, slices 6a–6av): the project registry's drivers in Rust behind held shims, equal to the pinned tools on the whole corpus — 41 of 41 drivers through shims, the count re-derived by `DERIVED-COUNTS`; the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`) (7 of 8 leaves done) | repo-local |
 <!-- ANCHOR_END: trees -->
