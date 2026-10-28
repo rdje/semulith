@@ -142,6 +142,31 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `check_no_background_jobs.sh` comes from the template and its ancestry exclusion would change under cargo;
   `bootstrap.sh` (a temporary local clone) and `check_portability.sh` are measurable offline. The doctrine
   drivers carry the larger gain, so `XTASK.6` goes first; these wait, each constraint recorded.
+  Slice `4b` — the closing review (`2026-10-28`, `SEMULITH-XTASK-0062`; on clean a8d4d526, taken while every feature leaf waits on
+  a ruling; evidence target/xtask/xt0062, census.sh → census.txt), documentation only. Every remaining script re-measured against
+  what limits its port. Four are hook-family: `pre_push.sh` (called by `.githooks/pre-push`), `approved_push.sh` and
+  `check_push_cadence.sh` (called from it), and `knowledge-map/scripts/gen_knowledge_map.sh` (called by `.githooks/pre-commit`;
+  ordinary tracked bash) — the hooks change only after a reviewed period (Non-Goals). Three fetch over the network
+  (`fetch_act4.sh`, `fetch_sources.sh`, `fetch_references.sh`: 2, 2 and 5 network lines), so their download paths cannot be
+  measured equal offline, and the pinned `gate_report.py` prints `fetch_references.sh --verify-only` and names
+  `build_c_guest.sh` in its report. `install_ci_mdbook.sh` is run by `doctrines.yml` and read as text by
+  `capture_book_dependencies.py`; `update_scaffold.sh` is the bedrock template's own updater; `build_c_guest.sh` is one
+  `exec python3` (18 lines: a port adds a forwarder and removes no shell); `check_no_background_jobs.sh` is the handoff rule's
+  census, which the cleanup's delete act also runs as its fresh census, and its process-ancestry exclusion would change under
+  cargo; `bootstrap.sh` is a fresh clone's first command and runs cargo only `if command -v cargo` — a shim would make the
+  bootstrap need the toolchain it may come before (`decision_universal-registry-checks-stay-bash.md`'s first reason);
+  `check_portability.sh`'s cold controls put stub `git`, `cargo`, `rustup`, `uname`, `arch` and `xcrun` first on PATH, so a
+  shim's `exec cargo xtask` would be answered by the stub and the controls could not reach the instrument, and its equality
+  needs the nightly Miri legs (about 100 min) and the Rosetta leg. Proposed: all 13 stay shell, the leaf closing with one
+  script of fourteen ported (`build_bench.sh`, 4a) and the tree with it (9 of 9) — a change to the lane the director set, so
+  the close waits on the director's word (Open Questions). Correction (§15, own defect): slice 6av recorded
+  `knowledge-map/scripts/check_knowledge_map.sh` as "a submodule, read-only"; `git ls-files -s knowledge-map` lists ordinary
+  tracked files (mode 100755) and `.gitmodules` names `vendor/linkedspec` alone. It is the universal registry's conditional
+  `KNOWLEDGE-MAP` check, held local against a scaffold sync since `LIVE-CONTAINMENT.4` and run as text in crate-less fixtures
+  by the orientation qualifier, so it stays bash by that decision's own reasons; the record gains the correction and the 6av
+  paragraph is marked. Containment: XTASK.6's closed rows 6aq–6av (13,683 B) moved verbatim to `archive/XTASK-5.md` and its
+  slice paragraphs 6ab–6av (43,129 B) to `archive/XTASK-6.md` (the a43b mechanism; the live file 125,750 B before
+  this slice's text, ceiling 131,072 B); CHANGELOG.md sharded (14 oldest entries to `docs/changelog/shard-0420.md`, the head 64,688 → 48,558 B).
 
 - ID: `XTASK.5` — **check-examples leaves the product CLI**
   Status: `done` (`2026-10-26`, `SEMULITH-XTASK-0010`; closed by decision, no code change)
@@ -170,312 +195,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   driver per slice and per commit, as in `XTASK.4`. A ported driver's arms move into its xtask module, so the
   `DERIVED-COUNTS` arm total must count them there, or the claimed total would drop with no arm removed.
   Slices 6a–6aa (with 6r-b): [retained verbatim](archive/XTASK-3.md#slice-paragraphs-6a-to-6aa).
-  Slice 6ab (`2026-10-27`, `SEMULITH-XTASK-0038`; on clean 4d6a890f, taken out of turn — no feature leaf unblocked): `FRONTIER-SYNC`'s
-  driver is Rust — `xtask/src/check_frontier_sync.rs` (668 lines) ports the bash driver line for line: the inline Python judge
-  (the task-tree index and the closed-tree register against every tree, through the shared `task_source` reader) runs verbatim
-  through `python3 -` as a string constant extracted from the script, NOT ported; the controls write the script's synthetic trees,
-  index and register — its `tree`, `index`, `index_for`, `closed` and `archive_fixture` heredocs as the same texts (the dashed
-  frontier row's `—` cells included), its `source_edit` as the same single replacement — through forty-one arms (frontier drift,
-  status drift, unknown and done leaves, premature completion, the register's counts and stale frontiers, trees in both files or
-  neither, missing files and rows, the shared-source qualification, annotated counts, a linked archive directory); the forty-one
-  bash arms are forty-one `tally.arm(` calls, the arm total unchanged; `scripts/check_frontier_sync.sh` a shim of `cargo xtask
-  check-frontier-sync`. Measured in a disposable draft crate: the self-test `41 pass / 0 fail` with stdout and stderr
-  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`FRONTIER-SYNC: ok (35 tree(s) mirrored by
-  docs/TASK_TREE.md)`), and 4 scratch fixture repositories (scripts and `docs/` copied in) — the corpus, a status drift, an
-  unlisted tree, no index — 4 identical, 0 differ in stdout, stderr and exit status. `docs/tasks/XTASK.md`, at 117906 B against its
-  131,072 B per-part ceiling before this slice's text, has the closed slices' narrative paragraphs 6a–6aa (6r-b among them; 55667 B,
-  one contiguous span of 452 lines, 27 slices; 6k's paragraph stays beside the open slices') moved verbatim out of the leaf's
-  Task Tree node into `docs/tasks/archive/XTASK-3.md` after this slice's text lands (the a43b mechanism, as parts 1 and 2: SHA256 in
-  the part's table, one pointer line left in the node; the live leaf 62338 B before this slice's text). In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
-  deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ac` — `check_task_history.sh` behind a held shim.
-  Slice 6ac (`2026-10-27`, `SEMULITH-XTASK-0039`; on clean 2e87f916, taken out of turn — no feature leaf unblocked): `TASK-HISTORY`'s
-  driver is Rust — `xtask/src/check_task_history.rs` (263 lines) ports the bash driver line for line: the five Python judges
-  (`task_history_archive.py` against HEAD's descriptor taken through `git show`, the three preservation judges, the links judge)
-  run as the driver ran them with their output and exit statuses passing straight through, NOT ported; the controls are the
-  script's fifty-two probe runs — forty-six cases of `probe_task_history.py` and the three probe suites plain and optimized — the
-  arm table taken from the script; the fifty-two bash arms are fifty-two `tally.arm(` calls, the arm total unchanged;
-  `scripts/check_task_history.sh` a shim of `cargo xtask check-task-history`. Measured in a disposable draft crate: the self-test
-  `52 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical
-  (the five judges' lines through `TASK-HISTORY-LINKS: ok (8 historical links, no live narrative includes)`), the unknown-arguments
-  refusal identical, and 3 scratch fixture repositories (full clones of the repository) — the clone,
-  no HEAD at all (git's own `fatal:` line passing through, as the script let it — the first draft swallowed it, caught by this
-  state), the descriptor edited — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
-  deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ad` — `check_changelog_shards.sh` behind a held shim.
-  Slice 6ad (`2026-10-27`, `SEMULITH-XTASK-0040`; on clean ad9a8294, taken out of turn — no feature leaf unblocked): `SHARD-FREEZE`'s
-  driver is Rust — `xtask/src/check_changelog_shards.rs` (631 lines) ports the bash driver line for line: the partition judge
-  `scripts/check_history_partition.py` over the committed manifest and archive descriptor taken through `git show` into scratch
-  files, then `scripts/history_predecessor.py`, both run as the driver ran them, NOT ported; the controls write the script's
-  synthetic shards, heads and manifests (the manifest rows through the harness's hasher in the glob's order, the `prev` rows as
-  the script spelled them) and run its eighteen archive-probe and twelve predecessor-probe invocations; the forty-four bash arms
-  are forty-four `tally.arm(` calls (the first draft folded thirty into two loops the arm counter cannot see — unrolled before
-  measuring), the arm total unchanged; `scripts/check_changelog_shards.sh` a shim of `cargo xtask check-changelog-shards`. Measured
-  in a disposable draft crate: the self-test `44 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
-  tree's stdout and stderr byte-identical (the predecessor's line and `SHARD-FREEZE: ok (… shard row(s) frozen, 2 heads + shards
-  append-only, exactly partitioned)`), and 3 scratch fixture repositories — a clone of the repository, a shard thawed after the event, no CHANGELOG.md at all — 3 identical, 0 differ in stdout, stderr and
-  exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ae` — `check_derived_counts.sh`
-  behind a held shim (the arm counter itself).
-  Slice 6ae (`2026-10-27`, `SEMULITH-XTASK-0041`; on clean 9fed766d, taken out of turn — no feature leaf unblocked): `DERIVED-COUNTS`
-  is Rust — `xtask/src/check_derived_counts.rs` (477 lines) ports the bash doctrine line for line, natively this time: the
-  claims table verbatim, each enumerator run through `bash -c` from the root as the script's `eval` ran it (whitespace stripped,
-  a failure or silence a NO ENUMERATOR), the arm total derived in Rust by the script's own rules — bash `arm "` and `score "`
-  lines, a shim's `exec cargo xtask` subcommand resolved to `xtask/src/<name>.rs` and its `tally.arm(`/`tally.score(` lines, a
-  missing module yielding no total — the live documents read from the routes registry's `hot_live` rows, and the claim
-  extraction left to the shell's own `grep -E`/`grep -oE` so the match is the script's; `--list` kept; the twelve bash arms are
-  twelve `tally.arm(` calls, the arm total unchanged; `scripts/check_derived_counts.sh` a shim of `cargo xtask check-derived-counts`.
-  Measured in a disposable draft crate: the self-test `12 pass / 0 fail` with stdout and stderr byte-identical to the bash
-  driver's, the real tree's stdout and stderr byte-identical (`DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)`), the
-  `--list` table byte-identical, and 3 scratch fixture repositories — a clone of the repository, a drifted arm-total claim in LIVE_STATUS.md, no routes registry — 3 identical, 0 differ in stdout, stderr and exit
-  status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6af` — `check_artifact_cleanup.sh`
-  behind a held shim.
-  Slice 6af (`2026-10-27`, `SEMULITH-XTASK-0042`; on clean b57535c2, taken out of turn — no feature leaf unblocked): `ARTIFACT-COHORT`'s
-  driver is Rust — `xtask/src/check_artifact_cleanup.rs` (343 lines) ports the bash driver line for line: the cleanup
-  instrument's seven probe suites and their mutations run as the driver ran them (`python3 -B [-O] scripts/probe_*.py`), plain and
-  optimized, NOT ported; the eighteen instruments and controls checked tracked through `git ls-files --error-unmatch`; no real
-  cleanup runs; the sixteen bash `score` lines are sixteen `tally.score(` lines (this driver scores, it does not `arm`; the counter
-  reads both idioms since 6q), the arm total unchanged; `scripts/check_artifact_cleanup.sh` a shim of `cargo xtask
-  check-artifact-cleanup`. Measured in a disposable draft crate: the self-test `150 pass / 0 fail` with stdout and stderr
-  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (the self-test line, then `ARTIFACT-COHORT:
-  bounded planning/checking controls green; no real cleanup`), the unknown-arguments refusal identical, and 2 scratch fixture
-  repositories — a clone of the repository, an instrument untracked in the clone — 2 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at
-  deny-warnings rc=0 (clean on the first in-tree run). `check_readme_routes.sh`, the last free driver, is DEFERRED with its reason: its controls shadow the
-  PATH tools (`wc`, `python3`, `sort`, `grep` in a fixture `bin/`), so a port must call the same tools to stay measurable by them —
-  sized at about 600 lines of Rust, out of proportion for an out-of-turn slice while features wait. Next: slice `6ag` —
-  `check_source_format.sh` over `sexp.rs`, the first of the three `sexp`-only callers.
-  Slice 6ag (`2026-10-27`, `SEMULITH-XTASK-0043`; on clean afee5b58, taken out of turn — no feature leaf unblocked): `SOURCE-FORMAT`
-  is Rust — `xtask/src/check_source_format.rs` (452 lines) ports the driver's inline Python line for line over the harness's own
-  reader: every file of the four families (tracked under `git`, everything there under `fs`), a retired-format file an OUTSIDE
-  FORMAT, a `.sexp` the reader refuses UNREADABLE with the reader's own text (`sexp.rs` equal to the pinned `scripts/sexp.py`,
-  refusal texts included — 6j, 6p), a corpus without a `.sexp` NO SEXP SOURCE, an empty corpus refused; the shared reader's
-  refusal probe runs as the script ran it, plain and optimized; the seven bash arms and eighteen `score` lines are seven
-  `tally.arm(` calls and eighteen `tally.score(` lines, the arm total unchanged; `scripts/check_source_format.sh` a shim of
-  `cargo xtask check-source-format`. Measured in a disposable draft crate: the self-test `25 pass / 0 fail` with stdout and stderr
-  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`SOURCE-FORMAT: ok (331 source-of-truth
-  file(s) under definitions/ schema/ profiles/ materials/, all in the one format)`), and 3 scratch fixture repositories —
-  a clone of the repository, a `.toml` planted and tracked under a unit, an unterminated `.sexp` planted and tracked — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings
-  rc=0 (clean on the first in-tree run). Next: slice `6ah` — `check_semantics_corpus.sh` over `sexp.rs`.
-  Slice 6ah (`2026-10-27`, `SEMULITH-XTASK-0044`; on clean 5284f544, taken out of turn — no feature leaf unblocked): `SEMANTICS`'s
-  driver is Rust — `xtask/src/check_semantics_corpus.rs` (573 lines) ports the driver's inline Python line for line: the
-  semantics documents paired with the fragments beside them and judged by `scripts/check_semantics.py`, spawned as the Python spawned
-  it; the encoding documents read through the harness's own reader (`sexp.rs`) — the composed fragments' names, the fragment root —
-  and the refinement rule judged by `check_semantics.compose` through `python3 -`, as the Python called it in-process; the citations
-  arm's availability probe through `python3 -` with the Python's own exception tuple, `check_citations.py --corpus` spawned when the
-  pages are present, the NAMED SKIP otherwise; the eight bash arms are eight `tally.arm(` calls, the arm total unchanged;
-  `scripts/check_semantics_corpus.sh` a shim of `cargo xtask check-semantics-corpus`. Two intended differences on paths no corpus
-  has: an encoding without `(fragment-root …)` and a form-less encoding are reported UNREADABLE where the inline Python ended with a
-  traceback (measured in a fourth clone with the root form removed: the bash driver's traceback, status 1; the port's `UNREADABLE` finding, status 1). Measured in a
-  disposable draft crate: the self-test `8 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
-  tree's stdout and stderr byte-identical (`SEMANTICS: ok (14 check(s) — pairs, refinement rule, citations)`), and 3
-  scratch fixture repositories — a clone of the repository, a semantics document planted without a fragment beside it, a planted pair whose rule cites nothing — 3 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`;
-  clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ai` — `check_upstream_index.sh` behind a held shim, the last `sexp` caller.
-  Slice 6ai (`2026-10-27`, `SEMULITH-XTASK-0045`; on clean b41abdba, taken out of turn — no feature leaf unblocked): `UPSTREAM-INDEX`'s
-  driver is Rust — `xtask/src/check_upstream_index.rs` (562 lines) ports the bash driver line for line: the inline Python judge
-  (every issue record against its two indices and report, the verified pins, the blocks entries against every tree's leaves, the
-  subtree's self-containment) runs verbatim through `python3 -` as a string constant extracted from the script, reading the records
-  with the pinned `sexp.py` it copies into the scratch tree, NOT ported; the controls write the script's synthetic tracker (its
-  `mk`, `idx`, `reset` and record heredocs as the same texts, its four Python edits as the same replacements) and print one line per
-  arm as the script did; the scan runs without a self-test gate, as the script ran it; the twenty-one bash arms are twenty-one
-  `tally.arm(` calls, the arm total unchanged; `scripts/check_upstream_index.sh` a shim of `cargo xtask check-upstream-index`. Measured
-  in a disposable draft crate: the self-test `21 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real
-  tree's stdout and stderr byte-identical (`UPSTREAM-INDEX: ok (3 issue record(s) mirrored by both indices)`), and 4
-  scratch fixture repositories — a clone of the repository, the top index carrying a stale state, the vendor index carrying a stale severity, a record without its blocks field — 4 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`;
-  clippy at deny-warnings rc=0 (clean on the first in-tree run). The `sexp` callers are all ported; of the registry's forty-two drivers, twenty-nine answer
-  through shims, one is deferred with its reason, and eleven call `dossier_sexp`, `record_catalog`, `check_sexp_schema`,
-  `gate_report`, `specfp` or `retain_div_statement` in their own text. The first precheck was refused by `SEAM-INTEGRITY`: its
-  temporary-locality probe pins this entrypoint's `mkdir -p "$ROOT/target/tmp"` and `export TMPDIR` lines, which the shim now keeps
-  (the cargo child's scratch stays on the volume, as the script's children's did). Next: slice `6aj` — `check_contract_freeze.sh` behind a held
-  shim, its inline judge (over the pinned `record_catalog` and `sexp`) run verbatim — the first of the eleven pinned-module callers.
-  Slice 6aj (`2026-10-27`, `SEMULITH-XTASK-0046`; on clean c1b98abf, taken out of turn — no feature leaf unblocked): `CONTRACT-FREEZE`'s
-  driver is Rust — `xtask/src/check_contract_freeze.rs` (391 lines) ports the bash driver line for line: the inline Python judge
-  (every unit's contract versions against their obligation records — members, pins, extensions, supersessions — over the pinned
-  `record_catalog` and `sexp`) runs verbatim through `python3 -` as a string constant extracted from the script, from the scratch
-  tree in the controls where the script symlinked `scripts/`, NOT ported; the controls take the real contract and its rendered
-  catalogue and apply the script's `sed` edits as the same first-occurrence and range replacements; the ancestry probe runs plain
-  and optimized — it extracted the judge from the shell driver's text, so it now rebuilds the same shell function around the Rust
-  module's verbatim constant when the driver is a shim (the first in-tree self-test refused with `real shell judge boundary changed`;
-  the probe's file missed the slice commit's staging and lands in slice 6aj-b, `SEMULITH-XTASK-0055`); judge first, controls only for a pass; the nine bash arms are nine `tally.arm(` calls, the arm total unchanged;
-  `scripts/check_contract_freeze.sh` a shim of `cargo xtask check-contract-freeze`. Measured in a disposable draft crate: the
-  self-test `13 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr
-  byte-identical (`CONTRACT-FREEZE: ok (1 versioned unit(s), 3 version(s), 0 finding(s))`), and 3 scratch fixture repositories — a clone of the repository, a frozen version's record edited in its catalogue part, a member dropped from the contract — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ak` —
-  `check_fp_vectors.sh` behind a held shim (its generator and judge spawned as before).
-  Slice 6ak (`2026-10-27`, `SEMULITH-XTASK-0047`; on clean 1be4fb4c, taken out of turn — no feature leaf unblocked): `FP-VECTORS`'s
-  driver is Rust — `xtask/src/check_fp_vectors.rs` (415 lines) ports the bash driver line for line: the generator
-  (`scripts/gen_fp_vectors.py --check`, `--out`, `--fixtures-out`) spawned as the script spawned it; the hardware cross-check — the
-  spec-side reference `scripts/specfp.py` against the host's IEEE in RNE, directed ties, 400 seeded cases, the format conversions —
-  run verbatim through `python3 -` as a string constant extracted from the script, NOT ported; the controls write the generator's
-  table into scratch and apply the script's `sed` edits as first-occurrence replacements, its `printf >>` as an append and its
-  `awk` field rewrite as the same seventh-field toggle rebuilt with single spaces; the mutated reference judged from its own
-  directory; controls first, then the table's `--check`, then the cross-check, as the script ordered them; the seven bash arms are
-  seven `tally.arm(` calls, the arm total unchanged; `scripts/check_fp_vectors.sh` a shim of `cargo xtask check-fp-vectors`.
-  Measured in a disposable draft crate: the self-test `7 pass / 0 fail` with stdout and stderr byte-identical to the bash
-  driver's, the real tree's stdout and stderr byte-identical (`FP-VECTORS: ok (crates/semulith-core/src/fp/tests/vectors.rs matches the spec-side reference, 230 vectors + 3168 fixtures; reference vs hardware RNE: agree 2131)`), and 3 scratch fixture repositories — a clone of the repository, an expected value edited by hand in the tracked table, a fixture row's expected value edited — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6al` —
-  `check_gate_report.sh` behind a held shim (two arms; the report judge spawned as before).
-  Slice 6al (`2026-10-27`, `SEMULITH-XTASK-0048`; on clean 2532f41f, taken out of turn — no feature leaf unblocked): `GATE-REPORT`'s
-  driver is Rust — `xtask/src/check_gate_report.rs` (358 lines) ports the bash driver line for line: the generator
-  (`scripts/gate_report.py [<profile>] --gate <gate> --stdout`, stderr discarded), its own `--self-test` and the runtime-root probe
-  (plain and `-O`, the `git-root` mutation) spawned as the script spawned them, NOT ported; the controls run against the REAL
-  reports — every `profiles/<id>/G?-REPORT.md` in the glob's order and the repo-level `BREADTH` report — determinism, the
-  `**Verdict:` marker edit as the same first-occurrence replacement, the tamper's visibility; a stale report explained as before
-  (`diff` spawned on a scratch copy of the generated text, twenty lines indented, the regeneration command); the two bash arms
-  are two `tally.arm(` calls inside the same two-mode loop, the arm total unchanged; `scripts/check_gate_report.sh` a shim of
-  `cargo xtask check-gate-report`. Measured in a disposable draft crate: the self-test `20 pass / 0 fail` with stdout and stderr
-  byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`GATE-REPORT: ok (5 generated report(s) in sync with their inputs)`), and 3 scratch fixture repositories — a clone of the repository, a profile report's verdict marker edited by hand, the repo-level report edited — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6am` —
-  `check_materials_bill.sh` behind a held shim (eleven arms).
-  Slice 6am (`2026-10-27`, `SEMULITH-XTASK-0049`; on clean 629a7f61, taken out of turn — no feature leaf unblocked): `MATERIALS-BILL`'s
-  driver is Rust — `xtask/src/check_materials_bill.rs` (538 lines) ports the bash driver line for line: the inline Python judge
-  (every registered unit's bill against the pinned dossier — the generated fragments' DRIFT, a `###` section and a does-not-supply
-  statement for every material the declared shape enumerates — over the pinned `sexp`, `dossier_sexp` and `gen_model_book`) runs
-  verbatim through `python3 -` as a string constant extracted from the script, NOT ported; the generator, its catalogue tests and
-  the controls' four inline Python edits spawned as the script spawned them; the controls re-root the REAL dossiers and book (the
-  processor's, the UART's, the board's) into scratch as the script did; the eleven bash arms are eleven `tally.arm(` calls, the
-  arm total unchanged; `scripts/check_materials_bill.sh` a shim of `cargo xtask check-materials-bill`. Measured in a disposable
-  draft crate: the self-test `11 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and
-  stderr byte-identical (the per-unit lines and `MATERIALS-BILL: ok (6 unit(s) — generated tables match the pinned data; every material states what it does not supply)`), and 3 scratch fixture repositories — a clone of the repository, a generated table edited by hand in the tracked book, a material's section removed from the tracked bill — 3 identical, 0 differ in stdout,
-  stderr and exit status. CHANGELOG.md, at 65714 B against its 65,536 B ceiling after this slice's entry, is sharded in this
-  unit (`scripts/shard_history.py --max-bytes 49152`: `docs/changelog/shard-0419.md` sealed, the head 48532 B; the prechecks had refused the ceiling). In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6an` —
-  `check_definition_gen.sh` behind a held shim (forty-two arms).
-  Slice 6an (`2026-10-27`, `SEMULITH-XTASK-0050`; on clean 034b14c5, taken out of turn — no feature leaf unblocked): `DEF-GEN`'s driver
-  is Rust — `xtask/src/check_definition_gen.rs` (1046 lines) ports the bash driver line for line: the generator
-  (`scripts/gen_definition.py --check|--out …`), the C-expansion and C-engine probes (plain and under their three mutations) and the
-  controls' four inline Python programs (the fence mutator over the pinned `sexp`/`records_sexp`, the ghost instruction, the fieldless
-  operand, the reversed decode rows) spawned as the script spawned them, NOT ported; the controls run over a surgical copy of the real
-  unit and over staged rv64gc compositions written as the script's heredocs wrote them (the A, F, F+D, M and C surfaces), the `sed`
-  and `grep -v` edits as the same literal replacements and line drops, the needle checks as the same substring tests; the census's
-  two pairs judged as before, the encoding's digest through the harness's hasher; the forty-two bash arms are forty-two `tally.arm(`
-  calls (the needle loops keep their one call each, as the script's did), the arm total unchanged; `scripts/check_definition_gen.sh`
-  a shim of `cargo xtask check-definition-gen`. Measured in a disposable draft crate: the self-test `56 pass / 0 fail` with stdout and
-  stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`DEF-GEN: ok (crates/semulith-core/src/definition_rv64gc.rs matches the canonical definition, encoding sha256 8b77378df968f968)` and the rv64gc line), and 3 scratch fixture repositories — a clone of the repository, the tracked rv64i module edited by hand, the tracked rv64gc module edited by hand — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ao` —
-  `check_dossier_schema.sh` behind a held shim (forty-seven arms).
-  Slice 6ao (`2026-10-27`, `SEMULITH-XTASK-0051`; on clean 25d1351b, taken out of turn — no feature leaf unblocked): `DOSSIER-SCHEMA`'s
-  driver is Rust — `xtask/src/check_dossier_schema.rs` (666 lines) ports the bash driver line for line: the inline Python sweep
-  (every tracked `profiles/*/*.sexp` against its same-named or suffix-family schema through `scripts/check_sexp_schema.py`, the
-  schema-less documents counted BY NAME, over the pinned `dossier_sexp`) runs verbatim through `python3 -` as a string constant
-  extracted from the script, NOT ported; the three probes of the controls — the experiment verification cases, the expectation
-  mapping (its `--emit` fixtures written as the redirection wrote them) and its mutation, the bounded-artifact suite plain and `-O`
-  under its ten omissions — spawned as the script spawned them; the synthetic facet schema and documents written as the heredoc
-  and printfs wrote them; the forty-seven bash arms are forty-seven `tally.arm(` calls, unrolled as the script's were, the arm total
-  unchanged; `scripts/check_dossier_schema.sh` a shim of `cargo xtask check-dossier-schema`. Measured in a disposable draft crate:
-  the self-test `47 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr
-  byte-identical (`DOSSIER-SCHEMA: ok (277 __SKIPPED__ 4 (baseline.sexp, portability.sexp, sail-identity.sexp))`), and 3 scratch fixture repositories — a clone of the repository, a dossier document planted with no same-named schema, a tracked dossier document left unterminated — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ap` —
-  `check_requirements.sh` behind a held shim (seventy-nine arms).
-  Slice 6ap (`2026-10-28`, `SEMULITH-XTASK-0052`; on clean 258c10f6, taken out of turn — no feature leaf unblocked): `RECORD-SCHEMA`'s
-  driver is Rust — `xtask/src/check_requirements.rs` (1910 lines) ports the bash driver line for line: the 670-line inline Python
-  judge (every tracked record file against its schema and the fifteen cross-checks, over the pinned validators and readers) runs
-  verbatim through `python3 -` as a string constant extracted from the script, NOT ported — the root passed as `.` as the script
-  passed it; the controls' fixture writers are the script's own `python3 -c` programs re-composed around the same JSON records, the
-  record mutations piped through the same one-line programs, the versioned-mirror and mirror-derive fixtures and the `--audit` report
-  run verbatim, the two probes (plain and `-O`) and the workspace's Rust graph checker (`cargo run -p semulith-cli -- check-examples`)
-  spawned as before; the seventy-nine bash arms are seventy-nine `tally.arm(` calls, the arm total unchanged;
-  `scripts/check_requirements.sh` a shim of `cargo xtask check-requirements`. Measured in a disposable draft crate: the self-test
-  `79 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical
-  (`RECORD-SCHEMA: ok (23 record file(s) validate and agree with their profile; the Rust graph checker accepts the examples bundle)`), and 3 scratch fixture repositories — a clone of the repository, a requirement's statement edited away from its decision, a JSONL file planted that no schema governs — 3 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6aq` —
-  `check_guest_gen.sh` behind a held shim (332 arms, the largest driver).
-  Slice 6aq (`2026-10-28`, `SEMULITH-XTASK-0053`; on clean fd4ed3e9, taken out of turn — no feature leaf unblocked): `GUEST-GEN`'s
-  driver is Rust — `xtask/src/check_guest_gen.rs` (4002 lines, generated from the script by `target/xtask/xt0052/gen_module.py`:
-  the sixteen fixture arms and the two mode loops written by hand, the 312 probe arms derived from the script's `out=…; arm …`
-  pairs) ports the bash driver line for line: the generator (`scripts/gen_guests.py --check|--out …`), the base-mirror governor
-  (`scripts/check_gc_mirror.py`), the twenty-odd probe suites (plain and `-O`, each under its mutations) and the controls' three
-  inline Python edits spawned as the script spawned them, NOT ported; the surgical guests directory copied as the script copied
-  it, the `sed`, `printf >>`, `mv` and `cp` edits as the same literal operations; the quiet run keeps the controls' output in
-  `target/guest-gen/self-test.log` and shows its last eighty lines on a refusal, as the script did; the 332 bash arms are 332
-  `tally.arm(` calls (the two mode loops keep their one GREEN and one RED call each, as the script's did), the arm total unchanged;
-  `scripts/check_guest_gen.sh` a shim of `cargo xtask check-guest-gen`. Measured in a disposable draft crate: the self-test
-  `400 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (the
-  three `GUEST-GEN: ok` lines, `GUEST-GEN: ok (the base mirror holds: 46 file(s) byte-identical, 42 independently checked count-only migration(s), 7 recorded re-derivation(s), 3 pinned image-identical source re-derivation(s))`), and 3 scratch fixture repositories — a clone of the repository (the vendored crates and cargo home copied in), the tracked rv64i fixture edited by hand (`FAIL`, by name), the tracked rv64gc fixture edited by hand (the controls judge the LIVE rv64gc pair, so the edit refuses the check — exit 2 — as 6u's and 6x's did; the same open question) — 3 identical, 0 differ in stdout,
-  stderr and exit status (§9, recorded in `docs/knowledge/a-clone-of-the-repository-cannot-build-what-the-repository-builds.md`: a bare clone lacks the
-  untracked vendored source root `.app-data/vendor`, so the C-image probes refused on both sides until the directory was linked in).
-  `docs/tasks/XTASK.md`, over its 131,072 B per-part ceiling with this slice's text (133490 B; the prechecks refused it), had the
-  closed rows 6y–6ap (37565 B, one contiguous span of 108 rows) moved verbatim into `docs/tasks/archive/XTASK-4.md` in the same commit
-  (the a43b mechanism, as parts 1–3: SHA256 in the part's table, one pointer left in the checklist; the live leaf 96007 B) — recorded here by
-  slice 6aq-b (`SEMULITH-XTASK-0056`), the slice commit's text having missed it. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Next: slice `6ar` —
-  `check_profile_consistency.sh` behind a held shim (the last pinned-module caller; 51 arms, 2361 lines).
-  Slice 6ar (`2026-10-28`, `SEMULITH-XTASK-0054`; on clean 99b89790, taken out of turn — no feature leaf unblocked): `PROFILE-CONSISTENCY`'s
-  driver is Rust — `xtask/src/check_profile_consistency.rs` (8828 lines, assembled from the script by
-  `target/xtask/xt0053/gen_module.py` + `assemble.py`: the 51 fixture arms, the prober and the main path by hand, the 445 unrolled
-  `score` probes and the 25 mode loops derived) ports the bash driver line for line: the 330-line inline Python judge (over the
-  pinned dossier reader and verification modules) runs verbatim through `python3 -` as a string constant extracted from the
-  script, NOT ported, its `--csr-cross` mode passed through; the four tools the real run consults first and the forty-odd probe
-  suites spawned as the script spawned them; the controls' fixture surgery (`sed -i.bak`, range deletes, `grep -v`, the dossier
-  strings composed from `BASE`) as the same literal text manipulation; the XTASK.8 prefetch kept in shape — a recording pass,
-  `scripts/doctrine_prefetch.py` in parallel, the scoring pass answered from the record, the `PROFILE_CONSISTENCY_PREFETCH`,
-  `…_MISSES` and `…_RECORD_ARGV` knobs honoured; the quiet run's output kept in `target/profile-consistency-selftest.log` with
-  the MISS excerpt on a refusal; the 51 bash arms are 51 `tally.arm(` calls and the 494 bash `score` lines 494 `tally.score(`
-  calls (the mode loops keep their one GREEN and one RED call each), the arm total unchanged; `scripts/check_profile_consistency.sh`
-  a shim of `cargo xtask check-profile-consistency`. Measured in a disposable draft crate: the self-test `1164 pass / 0 fail` with stdout
-  and stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)`), and 2 scratch fixture repositories — a clone of the repository, a profile's declared count edited away from its enumeration — 2 identical, 0 differ in stdout,
-  stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Every pinned-module caller now
-  answers through a shim; `check_readme_routes.sh` (PATH-shadowing tool fixtures) stays the one deferred driver. Next: slice `6as` —
-  `check_readme_routes.sh` behind a held shim, or the leaf's closing review.
-  Slice 6as (`2026-10-28`, `SEMULITH-XTASK-0057`; on clean 69d90094, taken out of turn — no feature leaf unblocked): the leaf's running
-  driver count is re-derived, and `DERIVED-COUNTS` now owns it. From slice 6ai on, every slice's docs script stated `N of 42 drivers
-  through shims` in `docs/TASK_TREE.md` and `MEMORY.md`, and 6ai's `42` was itself a miscount — the project registry holds 41 drivers
-  (`grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41) — so the claim drifted through twelve slices unchecked (§15, an own
-  defect: a running total, the founding defect class of `DERIVED-COUNTS`). `xtask/src/check_derived_counts.rs`'s claims table gains two
-  rows on the live phrase `N of M drivers through shims` — the shim count (registered paths whose text runs `exec cargo xtask`) and the
-  registry size — observed RED on the live documents before the correction (four `COUNT DRIFT` findings, `MEMORY.md` and
-  `docs/TASK_TREE.md`: 38 against 39, 42 against 41) and GREEN after it. 39 of 41 drivers answer through shims today; `README-ROUTING-CLOSURE`
-  and `SEAM-INTEGRITY` are the two in bash. The closed slices' paragraphs and acceptance rows keep the numbers they stated, and the CHANGELOG
-  entries are frozen — both are history. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0. Next: slice `6at` —
-  `check_readme_routes.sh` behind a held shim. Its controls shadow `git`, `wc`, `python3`, `sort` and `grep` on `PATH` and redefine five shell
-  functions inside subshells, so the port spawns the same tools where the script did and carries the redefinitions as seams of its own —
-  a design settled first, in that slice.
-  Slice 6at (`2026-10-28`, `SEMULITH-XTASK-0058`; on clean 8a493254, taken out of turn — no feature leaf unblocked): `README-ROUTING-CLOSURE`'s
-  driver is Rust — `xtask/src/check_readme_routes.rs` (1923 lines) ports the bash driver line for line, and the design is this: the three
-  Python programs the script ran on `python3 -`'s stdin (the link parser, the family measure, the registry reader) run verbatim, NOT ported;
-  `wc` (through the checked scalar-count rules of `scripts/read_text_metrics.bash`: status, stderr and shape), the README guard and the
-  hint pipeline (`grep -oE | tr | sort -u` under `pipefail`, through `bash -c`) are spawned as the script spawned them, every child of a
-  fixture under that fixture's exported environment — so the controls' `PATH`-shadowed `git`, `wc`, `python3`, `sort` and `grep` meet
-  the same calls; the five shell functions the controls redefined in subshells (the family measure, the registry reader, the
-  regeneration-set check, the hint producer, the row reader called alone) are a `Seams` value only the self-test sets; output keeps
-  the shell's order (stdout and stderr tagged, merged where an arm wrote `2>&1`, stdout alone where the entry flow captured it). The
-  ninety-four bash arms are ninety-four `tally.arm(` calls, the arm total unchanged; `scripts/check_readme_routes.sh` a shim of `cargo
-  xtask check-readme-routes` that keeps the scratch preamble `probe_temporary_locality.py` reads. Measured in a disposable draft crate:
-  the self-test `94 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's (6 s against 12 s), the real tree's stdout
-  and stderr byte-identical (`README-ROUTING-CLOSURE: ok (44 governed destination(s))`), and 4 scratch fixture repositories — a
-  clone of the repository, an ungoverned link added to the landing page, `LIVE_STATUS.md` grown past its byte ceiling, a malformed
-  registry row (refused) — 4 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings
-  rc=0 (clean on the first in-tree run). 40 of 41 drivers through shims now — and the claim row slice 6as added held its first run: the run script checked the counts
-  before its docs step, `DERIVED-COUNTS` refused the applied tree (the documents still said 39, the registry already 40), and the slice
-  was finished with the docs first and the counts after them. `SEAM-INTEGRITY` waits on the readers of `GAP-CLAIM-CENSUS`, a universal
-  spine check. Next:
-  slice `6au` — the leaf's closing review.
-  Slice 6au (`2026-10-28`, `SEMULITH-XTASK-0059`; on clean 94de1c7b, taken out of turn — no feature leaf unblocked): `SEAM-INTEGRITY`'s driver
-  is Rust — `xtask/src/check_seam_integrity.rs` (636 lines) ports the bash driver line for line, and the closing review that 6at named
-  moves to slice 6av: its first measurement found the stated hold weaker than the leaf said. `SEAM-INTEGRITY` READS `GAP-CLAIM-CENSUS`'s
-  text (its `CENSUS_RE`, for the vocabulary rule R5), and that driver stays bash — so nothing blocked the port; the 6r-era phrase "waits
-  on `check_gap_claims.sh`'s readers" had been carried forward unexamined. The port asks the owner for its effective rules as the script
-  did (`scripts/check_task_acceptance.sh --print-sig`, `--print-code-re`), extracts the built-in defaults and the census list from the
-  scripts' text as its `sed` did, runs the box scoper (`awk`) verbatim per task file and every pattern test through the shell's own
-  `grep -E`, and the verdict line's box count through the script's own pipeline; the nineteen bash `score` lines are nineteen
-  `tally.score(` calls, the arm total unchanged; `scripts/check_seam_integrity.sh` a shim of `cargo xtask check-seam-integrity` that keeps
-  the scratch preamble the locality probe reads. Measured in a disposable draft crate: the self-test `19 pass / 0 fail` with stdout and
-  stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`SEAM-INTEGRITY: ok (1843 current tracked
-  acceptance box(es) …)`), and 4 scratch fixture repositories — a clone of the repository, a seam file emptied (refused: the controls
-  no longer discriminate), an acceptance box without evidence, a prose file the classifier over-matches — 4 identical, 0 differ in stdout, stderr and
-  exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). 41 of 41 drivers through shims: every driver of
-  the project registry. Next: slice `6av` — the leaf's closing review, which weighs the four checks the universal registry runs from
-  project-owned scripts (`MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS`): the spine's registry, two of them
-  carrying source fixes owed upstream (`scripts/update_scaffold.sh`'s note, `reference_upstream-spine-defects.md`).
-  Slice 6av (`2026-10-28`, `SEMULITH-XTASK-0060`; on clean 476146b4, taken out of turn — no feature leaf unblocked): the leaf's closing
-  review, documentation only (target/xtask/xt0060/census.sh → census.txt). The project registry holds 41 drivers (`grep -cE '^  "[A-Z]'
-  scripts/check_doctrines.project.sh` = 41) and every one of their scripts is a shim (`exec cargo xtask` in 41 of 41), the count
-  re-derived by `DERIVED-COUNTS`; every arm total held through its port. The leaf's inventory (target/xtask/xt0004/drivers.md, 55
-  rows) reconciles: 41 ported, 7 spine scripts `scripts/update_scaffold.sh` re-syncs (`NEUTRAL`), the registry comment's placeholder
-  path, two outside the port — `knowledge-map/scripts/check_knowledge_map.sh` (a submodule, read-only) and
-  `scripts/check_doctrines.project.sh` (the runner, `XTASK.8`'s) — and four scripts the UNIVERSAL registry runs from copies the project
-  owns: `MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS`. Those four stay bash (`decision_universal-registry-checks-stay-bash.md`): none of the
-  eleven universal scripts invokes cargo (two `cargo` lines in all eleven, both evidence vocabulary), so the spine runs on bash, git
-  and python3 alone in any clone; each of the four is read or run as TEXT outside the crate — the orientation qualifier writes the
-  memory check into a crate-less fixture, mutates it and runs it; README-ROUTES copies the README guard into its fixtures;
-  SEAM-INTEGRITY asks the acceptance check for its rules and reads the census vocabulary from the gap check; the handoff census holds
-  all four across a scaffold sync — and two carry source fixes owed to the bash template upstream. The open questions of 6r, 6u and 6x
-  stay in this tree's Open Questions, their doctrine owners' to answer; none blocks the close. Leaf done. Next: the tree's frontier is
-  `XTASK.4`.
+  Slices 6ab–6av: [retained verbatim](archive/XTASK-6.md#slice-paragraphs-6ab-to-6av).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -584,7 +304,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
+| 1 | `XTASK.4` | `active` | slice 4b's closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed); closing the leaf, and the tree with it, waits on the director |
 
 ## Decisions
 
@@ -612,6 +332,9 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - (6r, `2026-10-27`) `CITATION-QUOTES`'s availability probe exits 1 for "pages absent" and Python exits 1 for an uncaught exception, so a sources manifest the reader refuses outside the probe's `except` tuple reads as absence — NAMED SKIP, exit 0 (measured in the 6r fixture `manifest-unreadable`; the card: `docs/knowledge/a-crash-that-exits-one-reads-as-an-absence.md`, landed with the family's second re-derivation in 6r-b). The port reproduces it; the doctrine's owner decides whether the probe should refuse (exit 2) on any exception — a one-line change to the script, re-measured through the shim.
 - (6u, `2026-10-27`) `BOARD-VERDICT`'s controls copy the LIVE board (`profiles/netboard-lab-v0`) and expect it ACCEPTED, so a corpus whose live board is rejected makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6u fixtures `no-board` and `rejected`. The port reproduces it; the doctrine's owner decides whether the controls should run over a frozen fixture board instead.
 - (6x, `2026-10-27`) `STATE-GEN`'s controls judge the LIVE rv64gc pair (`profiles/rv64gc-lab-v0/state.sexp` against `crates/semulith-core/src/state_rv64gc.rs`) and expect it in sync, so a corpus whose live rv64gc module or census is edited makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6x fixtures `gc-module-hand-edited` and `gc-census-silent`; the rv64i pair fails by name. The port reproduces it; the doctrine's owner decides, beside 6u's question, whether the controls should run over frozen fixture copies.
+- (4b, `2026-10-28`) Whether `XTASK.4` — and with it the tree — closes with its 13 remaining scripts in shell, each for the
+  constraint slice 4b measured (hooks, network, pinned readers, the template, the controls' stub cargo). The lane is the
+  director's (`decision_rust-native-tooling.md`); until the word, the leaf stays active and no port of them is started.
 
 ## Blockers
 
@@ -657,48 +380,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - [x] slice 4a **ADDRESSED (verified)** — `cmp before.stdout after-shim.stdout`, `… after-native.stdout`, `before-make.stdout after-make.stdout` → byte-identical, each rc 0, module 9afa2775c5c6c5406da879936f626316643f4cb40c0bea45be0e501dc4d3013e and mode `-rwxr-xr-x` unchanged; wasm-only RED (`CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS="-C xt0004-bogus"`): old script, shim and subcommand rc 101, stdout 0 B, `grep -c "unknown codegen option"` 1 each, `make bench` rc 2; copy RED (module mode 444): old script rc 1 (`cp: … Permission denied`), shim rc 1 (`xtask build-bench: cannot copy the module to bench/semulith_verify.wasm: Permission denied (os error 13)`); shim RED: one appended line → `test result: FAILED. 5 passed; 1 failed` naming `scripts/build_bench.sh must stay a shim of cargo xtask build-bench`, restored `scripts/build_bench.sh: OK` (shasum -c).
 - [x] slice 4a **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 6 passed; 0 failed`; `cargo fmt --all -- --check` clean; `cargo clippy -p xtask --all-targets -- -D warnings` clean; after-smoke.log `smoke_bench: ok (53 arms …)`; `cargo xtask focused` rc 0 before the commit; the pre-commit gate (wasm build, API-DOCS) on commit.
 - [x] slice 4a **LOCKSTEP** — README (the xtask row no longer says nothing moved; a `build-bench` row; `README-STABILITY: OK — README.md is 75/85 lines, 4592/4864 bytes`), docs/toolbox/execution.md, docs/ARCHITECTURE.md (the book includes it), the tree (XTASK.4 inventory, slice 4a, the open question), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 4b **REPRODUCE / ISSUE** — the leaf's frontier said "the remaining 13 scripts wait" with constraints measured on 557d2f56; re-measured at a8d4d526 (target/xtask/xt0062/census.sh rc=0 → census.txt): per script `wc -l`, the cargo and network lines (`grep -cE`), and its callers (`git grep -l`).
+- [x] slice 4b **ROOT CAUSE (WHY + WHERE)** — each constraint located: `.githooks/pre-push` → pre_push.sh → approved_push.sh, check_push_cadence.sh; `.githooks/pre-commit` → gen_knowledge_map.sh; network lines 2/2/5 in the three fetchers; gate_report.py (pinned: `git grep -c 'scripts/gate_report.py' -- 'evidence/*/dependencies.sexp'` = 1 each in two manifests) prints fetch_references.sh and build_c_guest.sh; bootstrap.sh:83 `command -v cargo`; probe_portability.py stubs git, cargo, rustup, uname, arch, xcrun.
+- [x] slice 4b **FIX** — documentation only: the 4b paragraph, the frontier row, an Open Question for the director, the 6av correction (`git ls-files -s knowledge-map` mode 100755; `git config -f .gitmodules --get-regexp path` → vendor/linkedspec alone) in the paragraph and the decision record; containment 13,683 + 43,129 B moved, CHANGELOG sharded (14 oldest entries to `docs/changelog/shard-0420.md`, the head 64,688 → 48,558 B).
+- [x] slice 4b **ADDRESSED (verified)** — the movers' facts (target/xtask/xt0062/rows.json, paras.json: SHA256 of each moved block in the part's table, `grep -c` of each block in the part = 1 and in the live file = 0); `bash scripts/check_changelog_shards.sh` rc=0 after the shard.
+- [x] slice 4b **NO REGRESSION** — the prechecks on the staged tree (target/xtask/xt0062/prechecks.txt): FRONTIER-SYNC, MEMORY-ARCH, SEAM-INTEGRITY, TASK-ACCEPTANCE, DERIVED-COUNTS, README-ROUTES, TABLE-ARITY, TASK-HISTORY, SHARD-FREEZE rc=0; the commit gate green (chain log).
+- [x] slice 4b **LOCKSTEP** — the tree (4b paragraph, frontier, Open Questions, the marked 6av paragraph, changelog line), archive parts 5 and 6, the decision record's correction, docs/TASK_TREE.md, KNOWLEDGE_MAP.md, CHANGELOG.md and its shard, MEMORY.md.
 
 ## Acceptance Checklist (leaf XTASK.6)
 
 Rows 6a–6o: [retained verbatim](archive/XTASK-1.md#acceptance-rows-6a-to-6o).
 Rows 6p–6x (with 6r-b): [retained verbatim](archive/XTASK-2.md#acceptance-rows-6p-to-6x).
 Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap).
-- [x] slice 6aq **REPRODUCE / ISSUE** — before/ (bash driver at fd4ed3e9; target/xtask/xt0052/before/): the three `GUEST-GEN: ok` lines (`GUEST-GEN: ok (the base mirror holds: 46 file(s) byte-identical, 42 independently checked count-only migration(s), 7 recorded re-derivation(s), 3 pinned image-identical source re-derivation(s))`) rc 0, stderr empty; `GUEST-GEN --self-test: 400 pass / 0 fail`; `grep -c 'arm "' scripts/check_guest_gen.sh` = 332 (two inside mode loops, run four times each).
-- [x] slice 6aq **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around `scripts/gen_guests.py`, `scripts/check_gc_mirror.py`, twenty-odd probe suites (`grep -c 'scripts/probe_' scripts/check_guest_gen.sh` = 290) and three inline Python edits; all of them stay as they are, spawned as the script spawned them.
-- [x] slice 6aq **FIX** — xtask/src/check_guest_gen.rs (`shasum -a 256` = 8848ea5694b14acbd3f2e4d2bccb1fb9f1eea8d200eca3bf085f756b463f7483; `wc -l` = 4002; `grep -cE '^[[:space:]]+tally\.arm\('` = 332); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_guest_gen.sh a shim (`exec cargo xtask check-guest-gen "$@"`); docs/tasks/XTASK.md's closed rows 6y–6ap moved verbatim into docs/tasks/archive/XTASK-4.md (37565 B, 108 rows, SHA256 in the part's table; `wc -c docs/tasks/XTASK.md` 133490 → 96007; recorded by 6aq-b).
-- [x] slice 6aq **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 3 fixture repositories (target/xtask/xt0052/red/summary.txt): `RED/GREEN paths: 3 identical, 0 differ` — stdout, stderr and rc each.
-- [x] slice 6aq **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_guest_gen.sh` through the shim → the same three `ok` lines; `bash scripts/check_derived_counts.sh` → ok (332 bash arms out, 332 `tally.arm(` in; 1692 holds).
-- [x] slice 6aq **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6aq, frontier 6ar, the Decisions bullet), the knowledge card and its INDEX row, the archive part 4 and its pointer (named by 6aq-b), docs/TASK_TREE.md, CHANGELOG, MEMORY.
-- [x] slice 6ar **REPRODUCE / ISSUE** — before/ (bash driver at 99b89790; target/xtask/xt0053/before/): `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` rc 0, stderr empty; `PROFILE-CONSISTENCY --self-test: 1164 pass / 0 fail`; `grep -c 'arm "' scripts/check_profile_consistency.sh` = 51, `grep -cE '^[[:space:]]+score "'` = 494.
-- [x] slice 6ar **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around a 330-line inline Python judge importing the pinned dossier reader (`grep -c 'import dossier_sexp' scripts/check_profile_consistency.sh` = 1), four tools, forty-odd probe suites and the XTASK.8 `python3` shadow; judge, tools and probes stay as they are, run as the script ran them, the prefetch re-expressed as a prober with the same three passes.
-- [x] slice 6ar **FIX** — xtask/src/check_profile_consistency.rs (`shasum -a 256` = 4210291d196e75b4965351dcf44dffa6ef9bf696ff2d0fff2358236dfbe1a342; `wc -l` = 8828; `grep -cE '^[[:space:]]+tally\.arm\('` = 51, `grep -cE '^[[:space:]]+tally\.score\('` = 494); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_profile_consistency.sh a shim (`exec cargo xtask check-profile-consistency "$@"`).
-- [x] slice 6ar **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 2 fixture repositories (target/xtask/xt0053/red/summary.txt): `RED/GREEN paths: 2 identical, 0 differ` — stdout, stderr and rc each.
-- [x] slice 6ar **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_profile_consistency.sh` through the shim → the same `PROFILE-CONSISTENCY: ok (…)` line; `bash scripts/check_derived_counts.sh` → ok (545 bash arms+scores out, 545 `tally.arm(`+`tally.score(` in; 1692 holds).
-- [x] slice 6ar **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ar, frontier 6as, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
-- [x] slice 6as **REPRODUCE / ISSUE** — on clean 69d90094: `grep -c 'of 42 drivers through shims' docs/TASK_TREE.md` = 1 and `grep -c 'of 42 drivers through shims' MEMORY.md` = 1; `grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41; the shim count re-derived = 39; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` rc=0 — the drift unchecked (target/xtask/xt0057/before/).
-- [x] slice 6as **ROOT CAUSE (WHY + WHERE)** — the count was a running total: each slice's docs script incremented the shim number and carried 6ai's `42` forward; `DERIVED-COUNTS`' claims table had no row for the phrase (`cargo run -q -p xtask -- check-derived-counts --list` before the change listed 5 claims, none of them it).
-- [x] slice 6as **FIX** — xtask/src/check_derived_counts.rs: two claim rows, `drivers through shims` (the registered paths whose text is `exec cargo xtask …`, `grep -l` counted) and `drivers registered` (`grep -cE '^  "[A-Z]'`); `--list` now shows `drivers through shims … 39` and `drivers registered … 41`; docs/TASK_TREE.md and MEMORY.md state 39 of 41.
-- [x] slice 6as **ADDRESSED (verified)** — RED before the correction: `bash scripts/check_derived_counts.sh` rc=1 with four `COUNT DRIFT` lines (MEMORY.md and docs/TASK_TREE.md; 38 vs 39 shims, 42 vs 41 registered; target/xtask/xt0057/red.out); GREEN after: rc=0, `DERIVED-COUNTS: ok (7 derived count claim(s) re-derived)` (claim instances across the live documents: the three before plus the new rows' four).
-- [x] slice 6as **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh --self-test` unchanged (the fixture claims are the self-test's own); no arm added, the arm total 1692 holds.
-- [x] slice 6as **LOCKSTEP** — the tree (slice 6as, frontier 6at, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY (its stale CHANGELOG-size and gate-cost lines re-measured in the same edit).
-- [x] slice 6at **REPRODUCE / ISSUE** — before/ (bash driver at 8a493254; target/xtask/xt0058/before/): `README-ROUTING-CLOSURE: ok (44 governed destination(s))` and the health lines, rc 0, stderr empty; `README-ROUTING-CLOSURE --self-test: 94 pass / 0 fail`; `grep -cE '(^|[; ])arm "' scripts/check_readme_routes.sh` = 94.
-- [x] slice 6at **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around three Python programs (`grep -c "<<'PY" scripts/check_readme_routes.sh` counts them with the fixtures'), the sourced `read_text_metrics.bash`, and controls that shadow five tools on PATH and redefine five functions in subshells; the programs stay Python, the tools stay spawned, the redefinitions become seams.
-- [x] slice 6at **FIX** — xtask/src/check_readme_routes.rs (`shasum -a 256` = c17522b87c8d7a1c2800ed91e2e7c8b4a629bbfbad8f4ebf76c6e98fcbceb2fc; `wc -l` = 1923; `grep -cE '^[[:space:]]+tally\.arm\('` = 94); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_readme_routes.sh a shim (`exec cargo xtask check-readme-routes "$@"`, the locality preamble kept).
-- [x] slice 6at **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0058/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
-- [x] slice 6at **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_readme_routes.sh` through the shim → the same `ok (44 governed destination(s))` lines; `bash scripts/check_derived_counts.sh` → ok (94 bash arms out, 94 `tally.arm(` in; 1692 holds; 40 of 41 drivers through shims re-derived); `bash scripts/check_seam_integrity.sh --self-test` → 19 pass (the locality preamble kept).
-- [x] slice 6at **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6at, frontier 6au, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
-- [x] slice 6au **REPRODUCE / ISSUE** — before/ (bash driver at 94de1c7b; target/xtask/xt0059/before/): `SEAM-INTEGRITY: ok (1843 current tracked acceptance box(es) match declared signatures; classification properties hold)` rc 0, stderr empty; `SEAM-INTEGRITY --self-test: 19 pass / 0 fail`; `grep -cE '^[[:space:]]+score "' scripts/check_seam_integrity.sh` = 19.
-- [x] slice 6au **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around an `awk` box scoper, `grep -E` pattern tests and `sed` extractions of two other scripts' text; the recorded hold ("waits on `check_gap_claims.sh`'s readers") was examined: `grep -c 'check_gap_claims.sh' scripts/check_seam_integrity.sh` = 3, every one a READ of that bash script's text, so the port keeps reading it and nothing blocked.
-- [x] slice 6au **FIX** — xtask/src/check_seam_integrity.rs (`shasum -a 256` = d24a9926abf8246f673bfb558c1d2a91e5dd1f7e5fcde5ffb3c55ae08ebaa061; `wc -l` = 636; `grep -cE '^[[:space:]]+tally\.score\('` = 19); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_seam_integrity.sh a shim (`exec cargo xtask check-seam-integrity "$@"`, the locality preamble kept).
-- [x] slice 6au **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0059/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
-- [x] slice 6au **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_seam_integrity.sh` through the shim → the same `ok (… acceptance box(es) …)` line; `bash scripts/check_derived_counts.sh` after the docs → ok (19 bash scores out, 19 `tally.score(` in; 1692 holds; 41 of 41 drivers through shims re-derived).
-- [x] slice 6au **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6au, frontier 6av, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
-- [x] slice 6av **REPRODUCE / ISSUE** — the leaf's close was unweighed at 476146b4: `grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41, `exec cargo xtask` in 41 of 41 registered scripts (target/xtask/xt0060/census.txt, census.sh rc=0); the inventory's 55 rows (`{'free': 39, 'missing': 1, 'calls-pinned': 8, 'spine': 7}`) left six scripts unaccounted, four of them run by the universal registry.
-- [x] slice 6av **ROOT CAUSE (WHY + WHERE)** — the inventory classed scripts by path, not by registry: the universal registry has 11 entries (`grep -c '^  "'` over its `DOCTRINES` array), 7 in update_scaffold.sh's `NEUTRAL` and 4 project-owned copies; their readers (`git grep -l` per script, census.txt): qualify_orientation_indexes.py, check_readme_routes.rs, check_seam_integrity.rs, probe_temporary_locality.py, probe_handoff_census.py.
-- [x] slice 6av **FIX** — documentation only: `decision_universal-registry-checks-stay-bash.md` + its INDEX row; XTASK.6 `done`; the frontier → `XTASK.4`; KNOWLEDGE_MAP.md regenerated; no script or code staged (`git diff --cached --name-only | grep -cE '^(scripts|xtask|crates)/'` = 0).
-- [x] slice 6av **ADDRESSED (verified)** — `grep -c cargo` over the 11 universal scripts: 2 lines (check_task_acceptance.sh:73 `DEFAULT_SIG`, check_gap_claims.sh:60 `CENSUS_RE`), both signature regexes, 0 invocations; inventory reconciled 55 = 41 ported + 7 `NEUTRAL` + 4 held bash + 2 outside + 1 placeholder (census.txt).
-- [x] slice 6av **NO REGRESSION** — on the staged tree (target/xtask/xt0060/prechecks.txt): `bash scripts/check_frontier_sync.sh` rc=0 `FRONTIER-SYNC: ok (35 tree(s) mirrored by docs/TASK_TREE.md)` (the index row names `XTASK.4`, "7 of 8 leaves done"); `bash scripts/check_derived_counts.sh` rc=0 `DERIVED-COUNTS: ok (7 derived count claim(s) re-derived)`; `bash scripts/check_memory_architecture.sh` rc=0 (the new record indexed); `bash knowledge-map/scripts/check_knowledge_map.sh` rc=0; `bash scripts/check_seam_integrity.sh` rc=0 `SEAM-INTEGRITY: ok (1855 current tracked acceptance box(es) match declared signatures; classification properties hold)`; README-ROUTES, TABLE-ARITY, TASK-HISTORY, SHARD-FREEZE and TASK-ACCEPTANCE rc=0.
-- [x] slice 6av **LOCKSTEP** — the tree (status `done`, slice 6av, the frontier, the Decisions bullet), docs/TASK_TREE.md (7 of 8 leaves done), docs/decisions/INDEX.md, KNOWLEDGE_MAP.md, CHANGELOG, MEMORY.
+Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6av).
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -786,3 +480,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6au done — `SEAM-INTEGRITY`'s driver is Rust behind a held shim (the owner's rules asked of it, the box scoper and pattern tests spawned as before), byte-identical on the real tree and 4 fixture repositories, nineteen scores; the recorded hold on it was examined and found empty; 41 of 41 project drivers through shims; next the leaf's closing review (slice 6av).
 - `2026-10-28`: XTASK.6 slice 6av done — the leaf's closing review: 41 of 41 project drivers behind held shims; the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`); XTASK.6 `done`, the frontier `XTASK.4`.
 - `2026-10-28`: XTASK.9 done — the units' own scratch removed: 40 draft-crate targets and 228 scratch clones (11.1 GB) the units had left under `target/xtask/`, every output kept; a sweep after every landed commit makes it mechanical.
+- `2026-10-28`: XTASK.4 slice 4b — the closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed; the close waits on the director); the 6av "submodule" claim corrected; XTASK.6's closed rows and paragraphs moved to archive parts 5 and 6.

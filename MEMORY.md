@@ -20,15 +20,15 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0061` — XTASK.9: the XTASK units' own scratch removed (40 draft-crate targets, 228 clones, 11.1 GB;
-  outputs kept; a sweep after every landed commit). Before it SEMULITH-AC-0086 (ARTIFACT-CLEANUP.30), SEMULITH-P4-0309
-  (P4-SYSTEM.17 slice b: the CI portability matrix per unit, the Rosetta bridge repaired).
-- next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
-  pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance;
-  `.17` on the next approved push's hosted run) and the workload kind's declaration; until a ruling lands: the XTASK frontier
-  `XTASK.4`, its leaf file's closed 6aq–6av text moved to an archive part first; `ARTIFACT-CLEANUP.31` once due (after 2026-10-29T09:49Z).
+- last_unit: `SEMULITH-XTASK-0062` — XTASK.4 slice 4b, the closing review: all 13 remaining scripts stay shell (proposed; the close is the
+  director's); the 6av "submodule" claim corrected; XTASK.6's closed text archived (parts 5, 6); CHANGELOG sharded. Before it
+  XTASK-0061 (XTASK.9: the units' own scratch removed), AC-0086, P4-0309 (the CI portability matrix per unit).
+- next_action: RAISED to the director — no unblocked leaf remains: the `.14` declarations and the ZICNTR program wait on the pinned-tooling
+  ruling (A/B/C in the P4-0306 leaf); LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance; `.17` on the next
+  approved push's hosted run; `.15` slice g on the workload kind's declaration; XTASK.4's close on the director's word (4b's Open
+  Question); `ARTIFACT-CLEANUP.29` on its ruling. Only `ARTIFACT-CLEANUP.31` runs unasked, once due (after 2026-10-29T09:49Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
-- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 60 KB of 64 KiB (last sharded in XTASK-0049, shard-0419; the next shard is due within two entries).
+- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the

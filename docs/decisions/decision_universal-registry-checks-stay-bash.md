@@ -50,3 +50,12 @@ port. `cargo xtask focused` already runs three of them by their bash paths, and 
   `reference_upstream-spine-defects.md`.
 - Revisit only if the bedrock itself ships its spine in Rust, or the director rules that the spine may depend on
   cargo. Related: `decision_rust-native-tooling.md`, `decision_alternate-port-and-features.md`.
+
+## Correction (2026-10-28, `XTASK.4` slice 4b)
+
+The universal registry has a twelfth, conditional entry this record left out: `KNOWLEDGE-MAP`
+(`knowledge-map/scripts/check_knowledge_map.sh`, added when the subsystem exists). `XTASK.6` slice 6av called it "a submodule,
+read-only" — wrong: `git ls-files -s knowledge-map` lists ordinary tracked files and `.gitmodules` names `vendor/linkedspec`
+alone. It stays bash by this record's own reasons: it invokes no cargo; `scripts/update_scaffold.sh` holds it and its generator
+local since `LIVE-CONTAINMENT.4` (the D74/D75 map readers); and `scripts/qualify_orientation_indexes.py` writes both into a
+crate-less fixture, mutates their refusal lines and runs them with bash.
