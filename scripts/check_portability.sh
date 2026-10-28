@@ -210,7 +210,16 @@ elif [ "$(uname -m)" = "arm64" ] && [ "$(uname -s)" = "Darwin" ]; then
     if rustup target list --installed 2>/dev/null | grep -q '^x86_64-apple-darwin$'; then
       X86=red
       XLOG="$ROOT/target/portability/x86-64.log"
-      cargo test --all --target x86_64-apple-darwin >"$XLOG" 2>&1; XRC=$?
+      # Under translation a spawned /usr/bin/git runs the shim's x86_64 slice, which cannot load the
+      # Command Line Tools' arm64-only libxcrun ("missing compatible architecture"; measured 2026-10-28,
+      # P4-SYSTEM.17 slice b) — and the harness's corpus tests spawn git. Lead the tests' PATH with a link
+      # to the real git, resolved natively here; an arm64 tool runs natively from a translated parent.
+      # No xcrun, or no answer: no link, the PATH as it was.
+      XPATH="$PATH"; XTOOLS="$ROOT/target/portability/rosetta-tools"
+      if XGIT="$(xcrun --find git 2>/dev/null)" && [ -x "$XGIT" ] && mkdir -p "$XTOOLS" && ln -sfn "$XGIT" "$XTOOLS/git"; then
+        XPATH="$XTOOLS:$PATH"
+      fi
+      PATH="$XPATH" cargo test --all --target x86_64-apple-darwin >"$XLOG" 2>&1; XRC=$?
       if [ "$XRC" -eq 0 ] && ! grep -qE "[1-9][0-9]* failed" "$XLOG"; then
         if XDG="$(manifest_digest x86_64-apple-darwin)" && NATIVE_DIGEST="$(manifest_digest "")"; then
           if [ "$XDG" = "$NATIVE_DIGEST" ]; then X86="green (Rosetta translation; the manifest agrees byte-identically)"

@@ -1,8 +1,10 @@
 name: portability
 # G-PORTABILITY's CI home (P2-SCALAR.9, decision_release-route-x86-64-leg): the mandatory
 # two-native-host leg runs as a matrix — ubuntu-latest is x86-64, macos-latest is aarch64 —
-# and the agree job byte-compares the two hosts' digest manifests. The Miri and
-# cross-endian legs run on x86-64 with the pinned nightly provisioning.
+# for every profile unit the instrument knows (P4-SYSTEM.17 slice b: rv64i and rv64gc),
+# and the agree job byte-compares the two hosts' digest manifests unit by unit. The Miri
+# and cross-endian legs run on x86-64 with the pinned nightly provisioning; their scope,
+# semulith-core, is the same for both units.
 on:
   push:
   pull_request:
@@ -12,6 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        unit: [rv64i-lab-v0, rv64gc-lab-v0]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -27,16 +30,16 @@ jobs:
       - name: Vendor the dependency store (on-volume — .cargo/config.toml routes cargo there)
         run: make vendor
       - name: The native leg + the digest manifest
-        run: bash scripts/check_portability.sh --leg native --emit-manifest manifest.txt
+        run: bash scripts/check_portability.sh --profile ${{ matrix.unit }} --leg native --emit-manifest manifest.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: portability-log-${{ matrix.os }}
+          name: portability-log-${{ matrix.os }}-${{ matrix.unit }}
           path: target/portability/*.log
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: manifest-${{ matrix.os }}
+          name: manifest-${{ matrix.os }}-${{ matrix.unit }}
           path: manifest.txt
 
   miri:
@@ -77,9 +80,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: manifest-*
-      - name: Byte-compare the two hosts' manifests
+      - name: Byte-compare the two hosts' manifests, unit by unit
         run: |
           set -e
           ls
-          diff manifest-ubuntu-latest/manifest.txt manifest-macos-latest/manifest.txt && \
-            echo "portability matrix: the two hosts agree byte-identically"
+          units="rv64i-lab-v0 rv64gc-lab-v0"
+          # exactly the four manifests the matrix uploads (2 hosts x 2 units) — a missing or extra one refuses
+          test "$(ls -d manifest-*/ | wc -l)" -eq 4 || { echo "portability matrix: expected 4 manifests (2 hosts x 2 units)"; exit 1; }
+          for unit in $units; do
+            diff "manifest-ubuntu-latest-$unit/manifest.txt" "manifest-macos-latest-$unit/manifest.txt"
+            echo "portability matrix: $unit — the two hosts agree byte-identically"
+          done

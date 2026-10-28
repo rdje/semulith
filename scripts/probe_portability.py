@@ -24,11 +24,14 @@ CASES = [
     ('translated-differs', 'x86-64', 'Darwin', 'x86-diff', 1, 'x86-64: red', False),
     ('translated-stale-record', 'x86-64', 'Darwin', 'stale', 0, 'x86-64: green', True),
     ('translated-digest-fails', 'x86-64', 'Darwin', 'digest-red', 1, 'x86-64: red', False),
+    ('translated-no-xcrun', 'x86-64', 'Darwin', 'no-xcrun', 0, 'x86-64: green', True),
 ]
 CARGO = '''#!/bin/sh
 printf '%s\n' "$*" >> "$CONTROL_CALLS"
 case "$*" in
-  'test --all --target x86_64-apple-darwin') echo 'test result: ok. 1 passed; 0 failed';;
+  'test --all --target x86_64-apple-darwin')
+    printf 'git=%s\n' "$(command -v git)" >> "$CONTROL_CALLS"
+    echo 'test result: ok. 1 passed; 0 failed';;
   'run -q '* )
     [ "$CONTROL_OUTCOME" != digest-red ] || exit 1
     case "$*" in *'-- demo --guest=stub --json') :;; *) exit 2;; esac
@@ -70,6 +73,14 @@ echo powerpc64-unknown-linux-gnu
 '''
 
 
+XCRUN = '''#!/bin/sh
+printf 'xcrun %s\n' "$*" >> "$CONTROL_CALLS"
+[ "$*" = '--find git' ] || exit 2
+[ "$CONTROL_OUTCOME" != no-xcrun ] || exit 1
+echo "$CONTROL_ROOT/native/git"
+'''
+
+
 def executable(path, body):
     path.write_text(body)
     path.chmod(0o755)
@@ -101,6 +112,9 @@ elif [ "$CONTROL_OS" = Darwin ]; then echo arm64
 else echo x86_64; fi
 ''')
             executable(binary / 'arch', '#!/bin/sh\nexit 0\n')
+            executable(binary / 'xcrun', XCRUN)
+            (root / 'native').mkdir()
+            executable(root / 'native/git', '#!/bin/sh\nexit 0\n')
             if leg == 'x86-64':
                 registry = root / 'crates/semulith-verify/src/guests.rs'
                 registry.parent.mkdir(parents=True)
@@ -124,6 +138,13 @@ else echo x86_64; fi
             valid = result.returncode == rc and reason in output
             if leg != 'x86-64':
                 valid = valid and 'test --all' not in invoked
+            if leg == 'x86-64':
+                # the translated tests see the natively resolved git (P4-SYSTEM.17 slice b); no xcrun, the PATH as it was
+                link = root / 'target/portability/rosetta-tools/git'
+                if outcome == 'no-xcrun':
+                    valid = valid and f'git={binary}/git' in invoked and not link.exists()
+                else:
+                    valid = valid and f'git={link}' in invoked and link.resolve() == (root / 'native/git').resolve()
             if outcome in ('green', 'stale'):
                 valid = valid and log.is_file() and 'test result: ok.' in log.read_text()
                 if leg != 'x86-64':

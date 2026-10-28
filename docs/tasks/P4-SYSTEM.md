@@ -382,6 +382,27 @@ This gate authorises the planned next engineering stage: board implementation.
   Novel finding (§9) carded: `docs/knowledge/a-time-read-inside-the-interpreter-is-the-interpreters-time.md` — two
   independent Miri runs reported `finished in 7251.82s` to the hundredth while each took about 50 min of wall time; under
   Miri's isolation the harness reads a deterministic virtual clock, so a leg's duration is measured outside the interpreter.
+  Slice b (`2026-10-28`, `SEMULITH-P4-0309`; on clean 77477864; evidence target/p4-system-17/b; the one unblocked feature unit): the
+  CI matrix carries both units, and measuring it repaired the Rosetta bridge. `decision_release-route-x86-64-leg.md` makes the CI
+  two-host matrix the x86-64 leg's permanent home and the rv64gc record's note says "the bare-metal leg is the CI matrix's", but
+  `.github/workflows/portability.yml` ran the instrument for rv64i alone. The host job gains a `unit` axis (`rv64i-lab-v0`,
+  `rv64gc-lab-v0`; `--profile` per job, artifacts named by host and unit) and the agree job byte-compares the two hosts' manifests
+  unit by unit, refusing unless exactly the four manifests arrive. Measured on this aarch64 host: the host step's command green for
+  both units — rv64i `manifest sha256: 3fbc498e… (49 guests)`, byte-identical with and without `--profile rv64i-lab-v0`; rv64gc
+  `24c4f12a… (171 guests)` — and the agree step's body, extracted from the workflow, over replicated artifact layouts: 5 of 5 as predicted — agree rc=0 (`portability matrix: rv64gc-lab-v0 — the two hosts agree byte-identically`), a byte differing in rv64gc rc=1, a digest differing in rv64i rc=1, a missing manifest rc=1, an extra one rc=1.
+  Finding (§15, own defect): the Rosetta x86-64 leg had turned red — `cargo test --all --target x86_64-apple-darwin` failed three
+  xtask tests with `git ls-files failed`. Root cause, by probe: under translation a spawned `/usr/bin/git` runs the shim's x86_64
+  slice, which cannot load the Command Line Tools' arm64-only `libxcrun` (`missing compatible architecture (have 'arm64,arm64e',
+  need 'x86_64')`); the harness's corpus tests (XTASK.6 slices 6j, 6l and 6o, landed after slice a's green run) spawn git, and
+  nothing re-ran this non-gate leg after them. Leading PATH with the tools' directory is wrong — it also shadows the project's
+  python3 (3.14) with 3.9, whose parser refuses the pinned reader (`int | str`, measured) — so the Rosetta branch now leads the
+  tests' PATH with one link, `target/portability/rosetta-tools/git` → `xcrun --find git` (no xcrun, or no answer: the PATH as it
+  was). Fixed: rv64gc `x86-64: green (Rosetta translation; the manifest agrees byte-identically)` (510 passed, 0 failed over 13 test binaries; 142 s); rv64i green the same way (510 passed, 0 failed; 78 s). The cold controls gain an `xcrun` stub, a record of the git the translated tests see
+  and a sixteenth case, `translated-no-xcrun`: `PORTABILITY-COLD: 16 pass / 0 fail`, and against the unfixed instrument `12 pass /
+  4 fail` — the four translated cases that reach the tests miss. Noted, not this slice's: rv64i's manifest today is `3fbc498e…`,
+  not its record's `0670a01b…` (2026-09-30) — the demo's JSON report changed since; the instrument compares hosts, never the record
+  (control `translated-stale-record`). The book's P2 page describes the matrix generally and stays true. The leaf stays active until
+  the matrix's first hosted run of both units: CI evidence lands with the next approved push.
 - ID: `P4-SYSTEM.18` — **the CPU-SYSTEM verdict and the release decision** — `G-RELEASE`
   Status: `pending` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
   Goal: the report regenerated over the complete profile; the named release decision.
@@ -394,7 +415,7 @@ This gate authorises the planned next engineering stage: board implementation.
 | --- | --- | --- | --- |
 | 1 | `P4-SYSTEM.14` | `active` | the XLEN, CSR-SET and SSTC programs in the corpus (a43a-1, a43b-1, a43d-1); the declarations (a43a-2 …) and the ZICNTR program (a reference with Zicntr) wait on the pinned-tooling ruling |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
-| 3 | `P4-SYSTEM.17` | `active` | portability: slice a — the instrument over the rv64gc corpus, the four legs re-measured, the record |
+| 3 | `P4-SYSTEM.17` | `active` | portability: slices a–b done (the rv64gc record; the CI matrix per unit, the Rosetta bridge repaired); the matrix's first hosted run of both units lands with the next approved push, then the leaf closes |
 
 ## Decisions
 
@@ -930,6 +951,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.15` slice f **ROOT CAUSE** — at d0f37d83: `grep -c 'kind workload' profiles/rv64gc-lab-v0/gate.sexp` = 0, GS-REPORT `G-REGRESSION … 4 of 5 required kinds evidenced — open: workload`; `ls profiles/rv64gc-lab-v0/workload` absent; the base profile's compiled guest (`c-scope.c`, G1 criterion 6) had no rv64gc counterpart and the ACT4 pipeline no C entry.
 - [x] `.15` slice f **ADDRESSED** — `python3 scripts/run_workload_campaign.py --record` → every `HTIF verdict … tohost <- 1`, `semulith vs the Sail-derived signature … slots agree`, `spike vs sail — the control pair … agree` for all four, `recorded profiles/rv64gc-lab-v0/workload.sexp (4 workload rows)` (campaign.log, 91 s); `--self-test` → `5 pass / 0 fail`; `derive_workload_constants.py --check` → `32 constants in 4 workloads re-derived and equal`; the declaration attempt measured: `gate_report --self-test: 23 pass / 1 fail` (`got 5, want 6`) and, with the generator fixed, `credit CR-GC-M-1 lapsed: manifest input scripts/gate_report.py: SHA256 differs` — reverted, `git diff HEAD -- scripts/gate_report.py` empty, `REQUIREMENT-STATUS: ok (… 1 credited …)`.
 - [x] `.15` slice f **NO REGRESSION** — `bash scripts/check_requirements.sh` → `RECORD-SCHEMA: ok (23 record file(s) …)` with `RECORD-SCHEMA --self-test: 79 pass / 0 fail` (rule 15's six arms; the token-facet probe re-pinned at 26 schemas / 101 facets, loose-end 106, ignore-pattern 612); `GATE-REPORT: ok (5 generated report(s) in sync …)`, `MATERIALS-BILL: ok`, GS `4 of 5 … open: workload` and `Open axes (5 of 10)` as before; the three PROFILE-CONSISTENCY probes (pc-probes.log: 22/0, 25/0, 36 failures for `derived-status`); `ls target/doctrine-selftest | wc -l` = 0.
+- [x] `.17` slice b **ROOT CAUSE** — at 77477864: `grep -c 'check_portability.sh --leg native' .github/workflows/portability.yml` = 1 with no `--profile` (rv64i alone); `bash scripts/check_portability.sh --profile rv64gc-lab-v0 --leg x86-64` rc=1 `x86-64: red`, its log `test result: FAILED. 14 passed; 3 failed` (`git ls-files failed`); `arch -x86_64 /usr/bin/git --version` rc=1 (`libxcrun` arm64-only); `cargo test --target x86_64-apple-darwin -p xtask` with one git link leading PATH `test result: ok. 17 passed`, with the tools' directory leading PATH a python3 3.9 `TypeError` (target/p4-system-17/b: measure.txt, xtask-x86-*.log).
+- [x] `.17` slice b **ADDRESSED** — portability.yml: the `unit` axis and the per-unit agree (`ruby -ryaml` parse: matrix os × unit, jobs host, miri, agree); agree_controls.sh over the tracked workflow: 5 of 5 as predicted — agree rc=0 (`portability matrix: rv64gc-lab-v0 — the two hosts agree byte-identically`), a byte differing in rv64gc rc=1, a digest differing in rv64i rc=1, a missing manifest rc=1, an extra one rc=1; the host command rc=0 for both units and `cmp` rc=0 for rv64i with and without `--profile`; the Rosetta leg rv64gc `x86-64: green (Rosetta translation; the manifest agrees byte-identically)` (510 passed, 0 failed over 13 test binaries; 142 s), rv64i green the same way (510 passed, 0 failed; 78 s); `bash scripts/check_portability.sh --self-test` → `PORTABILITY --self-test: 9 pass / 0 fail`, `PORTABILITY-COLD: 16 pass / 0 fail`.
+- [x] `.17` slice b **NO REGRESSION** — `bash -n scripts/check_portability.sh` rc=0; the old probe against the fixed instrument `PORTABILITY-COLD: 15 pass / 0 fail`; the new probe against the unfixed instrument `PORTABILITY-COLD: 12 pass / 4 fail` (the control discriminates); `git grep -l check_portability -- 'evidence/*/dependencies.sexp' | wc -l` = 0 (no pinned path); the commit gate green (chain log).
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 
