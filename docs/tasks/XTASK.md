@@ -159,7 +159,8 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   regenerates G1 byte-identical (GATE-REPORT ok).
 
 - ID: `XTASK.6` — **doctrine drivers, one per slice**
-  Status: `active`
+  Status: `done` (`2026-10-28`, `SEMULITH-XTASK-0060`; slices 6a–6av: the project registry's 41 drivers in Rust behind held shims;
+  the four universal-registry checks the project owns stay bash — `decision_universal-registry-checks-stay-bash.md`)
   Goal: unpinned doctrine drivers ported one at a time, output lines kept identical, arms re-fired RED.
   Inventory (measured 2026-10-24 on 557d2f56; target/xtask/xt0004/drivers.md): 54 drivers registered by
   `check_doctrines.sh` and its project slot — 7 spine (in `update_scaffold.sh`'s `NEUTRAL` list, so a scaffold
@@ -460,6 +461,21 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   the project registry. Next: slice `6av` — the leaf's closing review, which weighs the four checks the universal registry runs from
   project-owned scripts (`MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS`): the spine's registry, two of them
   carrying source fixes owed upstream (`scripts/update_scaffold.sh`'s note, `reference_upstream-spine-defects.md`).
+  Slice 6av (`2026-10-28`, `SEMULITH-XTASK-0060`; on clean 476146b4, taken out of turn — no feature leaf unblocked): the leaf's closing
+  review, documentation only (target/xtask/xt0060/census.sh → census.txt). The project registry holds 41 drivers (`grep -cE '^  "[A-Z]'
+  scripts/check_doctrines.project.sh` = 41) and every one of their scripts is a shim (`exec cargo xtask` in 41 of 41), the count
+  re-derived by `DERIVED-COUNTS`; every arm total held through its port. The leaf's inventory (target/xtask/xt0004/drivers.md, 55
+  rows) reconciles: 41 ported, 7 spine scripts `scripts/update_scaffold.sh` re-syncs (`NEUTRAL`), the registry comment's placeholder
+  path, two outside the port — `knowledge-map/scripts/check_knowledge_map.sh` (a submodule, read-only) and
+  `scripts/check_doctrines.project.sh` (the runner, `XTASK.8`'s) — and four scripts the UNIVERSAL registry runs from copies the project
+  owns: `MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS`. Those four stay bash (`decision_universal-registry-checks-stay-bash.md`): none of the
+  eleven universal scripts invokes cargo (two `cargo` lines in all eleven, both evidence vocabulary), so the spine runs on bash, git
+  and python3 alone in any clone; each of the four is read or run as TEXT outside the crate — the orientation qualifier writes the
+  memory check into a crate-less fixture, mutates it and runs it; README-ROUTES copies the README guard into its fixtures;
+  SEAM-INTEGRITY asks the acceptance check for its rules and reads the census vocabulary from the gap check; the handoff census holds
+  all four across a scaffold sync — and two carry source fixes owed to the bash template upstream. The open questions of 6r, 6u and 6x
+  stay in this tree's Open Questions, their doctrine owners' to answer; none blocks the close. Leaf done. Next: the tree's frontier is
+  `XTASK.4`.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -543,8 +559,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6av`: the leaf's closing review — every project driver answers through a shim; the four universal-registry checks the project owns (spine role, fixes owed upstream) weighed; taken out of turn while every feature leaf waits on a ruling |
-| 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
+| 1 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
 
@@ -553,6 +568,9 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - `2026-10-26`: the director: "Please alternate Rust tooling port and project feature implementation. Do not get
   stuck on Rust's tooling because the project work needs to progress" (`decision_alternate-port-and-features.md`):
   after a slice lands, the next unit is a project feature leaf; a slice drafted ahead waits its turn.
+- `2026-10-28`: `XTASK.6` closes on the project registry; the four universal-registry checks the project owns —
+  `MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS` — stay bash (`decision_universal-registry-checks-stay-bash.md`, ruled under
+  the delegation of 2026-10-26, authority `review`).
 
 ## Open Questions
 
@@ -650,6 +668,12 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - [x] slice 6au **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0059/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6au **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_seam_integrity.sh` through the shim → the same `ok (… acceptance box(es) …)` line; `bash scripts/check_derived_counts.sh` after the docs → ok (19 bash scores out, 19 `tally.score(` in; 1692 holds; 41 of 41 drivers through shims re-derived).
 - [x] slice 6au **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6au, frontier 6av, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6av **REPRODUCE / ISSUE** — the leaf's close was unweighed at 476146b4: `grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41, `exec cargo xtask` in 41 of 41 registered scripts (target/xtask/xt0060/census.txt, census.sh rc=0); the inventory's 55 rows (`{'free': 39, 'missing': 1, 'calls-pinned': 8, 'spine': 7}`) left six scripts unaccounted, four of them run by the universal registry.
+- [x] slice 6av **ROOT CAUSE (WHY + WHERE)** — the inventory classed scripts by path, not by registry: the universal registry has 11 entries (`grep -c '^  "'` over its `DOCTRINES` array), 7 in update_scaffold.sh's `NEUTRAL` and 4 project-owned copies; their readers (`git grep -l` per script, census.txt): qualify_orientation_indexes.py, check_readme_routes.rs, check_seam_integrity.rs, probe_temporary_locality.py, probe_handoff_census.py.
+- [x] slice 6av **FIX** — documentation only: `decision_universal-registry-checks-stay-bash.md` + its INDEX row; XTASK.6 `done`; the frontier → `XTASK.4`; KNOWLEDGE_MAP.md regenerated; no script or code staged (`git diff --cached --name-only | grep -cE '^(scripts|xtask|crates)/'` = 0).
+- [x] slice 6av **ADDRESSED (verified)** — `grep -c cargo` over the 11 universal scripts: 2 lines (check_task_acceptance.sh:73 `DEFAULT_SIG`, check_gap_claims.sh:60 `CENSUS_RE`), both signature regexes, 0 invocations; inventory reconciled 55 = 41 ported + 7 `NEUTRAL` + 4 held bash + 2 outside + 1 placeholder (census.txt).
+- [x] slice 6av **NO REGRESSION** — on the staged tree (target/xtask/xt0060/prechecks.txt): `bash scripts/check_frontier_sync.sh` rc=0 `FRONTIER-SYNC: ok (35 tree(s) mirrored by docs/TASK_TREE.md)` (the index row names `XTASK.4`, "7 of 8 leaves done"); `bash scripts/check_derived_counts.sh` rc=0 `DERIVED-COUNTS: ok (7 derived count claim(s) re-derived)`; `bash scripts/check_memory_architecture.sh` rc=0 (the new record indexed); `bash knowledge-map/scripts/check_knowledge_map.sh` rc=0; `bash scripts/check_seam_integrity.sh` rc=0 `SEAM-INTEGRITY: ok (1855 current tracked acceptance box(es) match declared signatures; classification properties hold)`; README-ROUTES, TABLE-ARITY, TASK-HISTORY, SHARD-FREEZE and TASK-ACCEPTANCE rc=0.
+- [x] slice 6av **LOCKSTEP** — the tree (status `done`, slice 6av, the frontier, the Decisions bullet), docs/TASK_TREE.md (7 of 8 leaves done), docs/decisions/INDEX.md, KNOWLEDGE_MAP.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -727,3 +751,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6as done — the leaf's driver count re-derived (39 of 41 through shims, not 38 of 42) and owned by `DERIVED-COUNTS` (two claim rows, RED on the old text, GREEN on the corrected); next `check_readme_routes.sh` (slice 6at), a design first; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6at done — `README-ROUTING-CLOSURE`'s driver is Rust behind a held shim (the three Python readers run verbatim, the tools spawned under each fixture's environment, the five redefined functions as seams), byte-identical on the real tree and 4 fixture repositories, ninety-four arms; 40 of 41 drivers through shims; next the leaf's closing review (slice 6au).
 - `2026-10-28`: XTASK.6 slice 6au done — `SEAM-INTEGRITY`'s driver is Rust behind a held shim (the owner's rules asked of it, the box scoper and pattern tests spawned as before), byte-identical on the real tree and 4 fixture repositories, nineteen scores; the recorded hold on it was examined and found empty; 41 of 41 project drivers through shims; next the leaf's closing review (slice 6av).
+- `2026-10-28`: XTASK.6 slice 6av done — the leaf's closing review: 41 of 41 project drivers behind held shims; the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`); XTASK.6 `done`, the frontier `XTASK.4`.

@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [The universal-registry checks the project owns stay bash (2026-10-28)](decision_universal-registry-checks-stay-bash.md) | `decision` | Why do MEMORY-ARCH, README-STABILITY, TASK-ACCEPTANCE and GAP-CLAIM-CENSUS stay bash when every project driver moved behind `cargo xtask`? |
 | [Knowledge family re-derived a second time (2026-10-27)](decision_knowledge-family-second-rederivation.md) | `decision` | Why did the knowledge-card family's ceiling fire again five days after its first re-derivation, and what bounds hold now? |
 | [The harness's own record mapping (2026-10-27)](decision_rust-records-mapping.md) | `decision` | `xtask/src/records.rs` equal to the pinned `scripts/records_sexp.py` by measurement — all 16 tracked catalogues identical through both readers, held by two unit tests; `cargo xtask records <catalogue> [--dump]`; nothing ported, nothing shimmed |
 | [The harness's own schema validator (2026-10-27)](decision_rust-schema-validator.md) | `decision` | `xtask/src/schema.rs` equal to the pinned `scripts/check_sexp_schema.py` by measurement — 51 arms byte-identical, 315 (file, schema) corpus pairs identical and held by a unit test; the one limit an anchored regex subset refusing unknown shapes by name; nothing ported, the pinned validator untouched |

@@ -20,15 +20,15 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0059` — XTASK.6 slice 6au: SEAM-INTEGRITY's driver in Rust behind a held shim (owner rules asked, awk and
-  grep spawned as before; 19 scores; byte-identical on the real tree and 4 fixture repositories; its recorded hold examined and found
-  empty) — 41 of 41 drivers through shims. Before it XTASK-0058 (6at), XTASK-0057 (6as), XTASK-0054 (6ar), XTASK-0056 (6aq-b).
+- last_unit: `SEMULITH-XTASK-0060` — XTASK.6 slice 6av, the leaf's closing review: XTASK.6 done — 41 of 41 drivers through shims;
+  the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`).
+  Before it XTASK-0059 (6au), XTASK-0058 (6at), XTASK-0057 (6as), XTASK-0054 (6ar).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6av (the leaf's closing review:
-  the four universal-registry checks the project owns, spine role, fixes owed upstream). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
+  and the workload kind's declaration; until a ruling lands: `ARTIFACT-CLEANUP.30` (due after 2026-10-28T09:33Z), then the XTASK
+  frontier `XTASK.4` (the remaining 13 scripts), its leaf file's closed 6aq–6av text moved to an archive part first.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
-- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 49 KB of 64 KiB (sharded in XTASK-0049, shard-0419).
+- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 58 KB of 64 KiB (last sharded in XTASK-0049, shard-0419; the next shard is due within two entries).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
