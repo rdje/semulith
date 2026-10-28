@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0063` — XTASK.10: `cargo xtask focused` runs rustfmt and clippy first (29 checks), so formatting or
-  lint drift is caught at the commit. Before it P4-0311 (P4-SYSTEM.15 e-b: the formatting the push boundary refused), P4-0310
-  (the director's rulings of 2026-10-28 recorded); pushed b917d1ba (361 commits, make ci green).
-- next_action: the director ruled 2026-10-28 (`decision_director-rulings-2026-10-28.md`): the NEXT PUSH is granted (a cadence push,
-  361 commits) — retry it after P4-0311 (the first try refused: fmt drift); then features first (5:1): P4-SYSTEM.14 a44-1 (the case file and the tools
-  reading it), a44-2/a44-3 (M v4, DIV v3 re-captures), the XLEN/CSR-SET/SSTC declarations as data; tooling turns: the three
-  doctrine controls (XTASK), XTASK's close, ARTIFACT-CLEANUP.29 (class C + other trees' 24.1 GB); `.31` due after 2026-10-29T09:49Z.
+- last_unit: `SEMULITH-P4-0312` — P4-SYSTEM.14 a44-1: the case-declaration design (five slices, the one lapse) and the a44
+  correction (one re-capture, M as v4: the DIV capture is invalidated since 2026-10-22). Before it XTASK-0063 (XTASK.10:
+  the focused set runs rustfmt and clippy), P4-0311 (e-b), P4-0310 (the rulings recorded); pushed b917d1ba.
+- next_action: P4-SYSTEM.14 a44-2 (docs/tasks/P4-SYSTEM.md a44-1's design): schema/matched-case.sexp, case files for the two
+  existing cases (loaded == in-code, measured, before removal), the tools reading them, the censuses re-derived, CR-GC-M-1 retired
+  (REQ-GC-M planned for the one lapse); then a44-3 … a44-5. Tooling turns (5:1): the three doctrine controls, XTASK's close,
+  ARTIFACT-CLEANUP.29 (class C + 24.1 GB); P4-SYSTEM.17 closes when the hosted runs of b917d1ba are green; `.31` after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under

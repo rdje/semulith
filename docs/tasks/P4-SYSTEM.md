@@ -423,7 +423,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): case declarations to data — a44-1 the case file and the tools reading it, a44-2/a44-3 the M (v4) and signed-DIV (v3) re-captures, then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28), designed in a44-1: a44-2 the case file, its schema and the tools reading it (`CR-GC-M-1` retired for the one lapse), a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
 | 3 | `P4-SYSTEM.17` | `active` | portability: slices a–b done (the rv64gc record; the CI matrix per unit, the Rosetta bridge repaired); the matrix's first hosted run of both units lands with the next approved push, then the leaf closes |
 
@@ -519,6 +519,52 @@ bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
 
+### .14 a44-1 / SEMULITH-P4-0312: the case-declaration design — what moves to data, what is re-derived, the one lapse (completed)
+
+Documentation only; the inventory is target/p4-system-14/a44-1/inventory.md (a read-only census of both scripts, every reader
+and both manifests; its key lines re-checked by `grep -n`: `capture_div.py:408` `len(children) == 64`,
+`matched_gpr_artifacts.py:21` `MANIFEST_INPUTS = 64`, `review_div_capture.py:36,53,295` the closed module and data-path
+censuses, `probe_div_capture_inputs.py:37` `FAMILY_FILES = 43`, `review_div_capture.py:345,349` and `capture_div.py:217` the
+M-specific checks). **Correction first (§15, own defect):** a44 recorded that ruling B costs two re-captures because both
+retained cases pin both declaration scripts. The signed-DIV case's capture has been `invalidated` since 2026-10-22 (five of its
+pinned inputs moved; `evidence/README.md`) and credits nothing (`REQUIREMENT-STATUS: … 2 case(s), 1 credited`), so only the M
+case must be re-captured — one re-capture, as recommended; the DIV case stays a historical, invalidated capture. The a44 text,
+the two decision records and the live rows are corrected; `evidence/README.md`'s "uncredited" (stale since a42az) too.
+What a declaration is today: in `matched_gpr_property.py`, per case — the case id, the guest source's name, boundary count,
+size and SHA, the properties (id, cell, witness step and register, expected value, statement), the control (property, value,
+reason), the limitation, the reviewed steps, the source locator, category, risk and coverage, and the authority (requirement,
+obligations, source id, publication SHA, the requirement's and obligation's semantic digests) with its normative-source input
+rows; in `capture_div.py` — the four curated inputs (role, id, name, bytes, SHA). Shared, and staying in code: the profile,
+the entry point, the property bound, the reference-identity row and the tool paths.
+The design: one file per case, `evidence/<case>/case.sexp`, validated by a new `schema/matched-case.sexp`, carrying every
+per-case field above (register values as hex strings, as the expectation files write them). `reviewed_case(case_id)` reads it
+and refuses a case without one by name; `CURATED_INPUTS` becomes the file's prepared rows; the in-script tables and `_CASES` are
+removed (one definition). The M-specific checks in pinned code become checks of the file against the catalogues — the
+normative-source rows, the source id and the obligation count come from the case file and are verified against the
+requirement, obligation and source catalogues — so a non-M case (XLEN, CSR-SET, SSTC) is accepted on its own authority. The
+case file is a pinned input of its own manifest, and the manifest's fixed 64 becomes the reviewed population counted from the
+declaration, so a new case's file touches no other case's pins.
+Re-derived in the same slice, each measured: the module and data-path censuses of `review_div_capture.py` (the case file a
+declared data read); the evidence family (22 slots per case; its members and the 43-file row of `doctrine/readme_routes.tsv`,
+by `decision_evidence-family-two-cases.md`'s mechanism); the probes that mutate the two scripts' text
+(`probe_matched_gpr_property.py`'s four mutation strings, `probe_div_command.py`'s identity-digest rewrite) re-pointed to the
+loader, their loss counts in `check_profile_consistency.rs` re-measured; the consumer pointers of `review_div_method.py` and
+`review_div_policy.py` moved to the new case when it exists.
+The one lapse: the slice that edits the pinned scripts invalidates the M v3 capture, as any pinned edit does. The credits schema
+has no retired state and a lapsed record is a finding, so `CR-GC-M-1` is retired in that slice (removed from `credits.sexp`, the
+retirement recorded in `decision_req-gc-m-credited-implemented.md`) and REQ-GC-M honestly reads `planned` until the M case is
+re-captured as v4 and re-credited (`CR-GC-M-2`), the dossier copy (`references.sexp`) and `gate.sexp` following.
+Slices: a44-2 the schema, the case files of the two existing cases (their facts moved; a test asserts each loaded case equals
+the in-code one before the in-code one is removed), the tools reading them, the censuses re-derived, `CR-GC-M-1` retired; a44-3
+the M v4 case declared (its case file, prepared inputs and three declarations, committed); a44-4 the capture, exactly once, and
+the method and policy reviews (10 of 10 legs); a44-5 the re-credit. Then the XLEN (a43a-2), CSR-SET and SSTC declarations as
+data, one per unit. ZICNTR stays open (the reference). The first gate refused once: PROFILE-CONSISTENCY's
+`RED omitted capture retention declaration-regeneration` arm saw a second failure, `15 != 21` in the retention probe's rerun
+test (target/p4-system-14/a44-1/gate-1-refused-selftest.log), which 15 re-runs never reproduced — direct, plain and
+optimized, eight concurrent, four under 24 CPU-bound processes (race/). The probe's rerun mode does not check its first
+retain's success, so a failed first retain reads as a file count; the hardening (assert the first retain's code, name its
+reason) joins a44-2, which re-points these probes anyway.
+
 ### .14 a44 / SEMULITH-P4-0310: the director's rulings of 2026-10-28 recorded — case declarations to data, two re-captures (completed)
 
 The director granted the five recommendations of the session's status report ("I grant all your recommendations"; "Your
@@ -529,10 +575,11 @@ recommendations better be sota, signoff and production-grade"; "next push grante
 file per case under `evidence/<case>/`, read by the tools, which refuse a case without one. Measured while recording it: BOTH
 retained cases pin both scripts (`grep -c` of each name in `evidence/rv64gc-m-forms-v3/dependencies.sexp` and
 `evidence/rv64gc-signed-div-truncation-v2/dependencies.sexp` = 1 each), so the ruling costs two re-captures — the M case as
-v4 and the signed-DIV case as v3 — not the one the recommendation named; recorded as measured and told to the director. Each
+v4 and the signed-DIV case as v3 — not the one the recommendation named [corrected in a44-1: the DIV capture is invalidated
+since 2026-10-22 and uncredited, so one re-capture, M as v4]; recorded as measured and told to the director. Each
 re-capture must reproduce its predecessor's verdicts with the manifest change the only declared difference, and `CR-GC-M-1`
 is re-issued against v4 through the crediting act. The route: a44-1 the case file, its schema and the tools reading it (the
-in-script tables removed); a44-2 and a44-3 the two re-captures; then the XLEN (a43a-2), CSR-SET and SSTC declarations as
+in-script tables removed); then the M re-capture (a44-1's slices); then the XLEN (a43a-2), CSR-SET and SSTC declarations as
 data. LIVE_STATUS's P4 line also gains `.17` slice b, which P4-0309 left out (an own lockstep miss). Not covered: the ZICNTR program waits for a pinned reference that implements Zicntr (the a43d-1 addendum) — a
 reference re-pin no option addressed, raised to the director as an Open Question.
 
@@ -990,6 +1037,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.15` slice e-b **ROOT CAUSE** — the push boundary: `pre-push: REFUSED — the full local suite is red at leg *** [check]` (target/push/last-green.log: `Diff in …/mutate_rv64gc.rs`); `cargo fmt --all -- --check -l` lists 2 files, both last touched by d0f37d83 (`git log -1`), neither in `evidence/*/dependencies.sexp` (`grep -c` 0); rustfmt in no commit-time check.
 - [x] `.15` slice e-b **ADDRESSED** — `rustfmt --edition 2021` (the workspace edition) over the module; `cargo fmt --all -- --check` rc=0; the token diff of before/after: 33 inserted `,` and one `{`/`}` pair, nothing else (target/p4-system-15/e-b).
 - [x] `.15` slice e-b **NO REGRESSION** — `make check` rc=0 (42 s): fmt, `cargo clippy --all-targets --all-features -- -D warnings`, `cargo test --all` 510 passed, 0 failed over 13 binaries (make-check.log); the commit gate green (chain log).
+- [x] `.14` a44-1 **ROOT CAUSE** — the a44 record's cost claim rested on a pin count alone; the DIV case's standing: `evidence/README.md` "`invalidated` since 2026-10-22", `python3 -B scripts/requirement_status.py` → `2 case(s), 1 credited`; the inventory's line references re-checked (`grep -n`, listed in the a44-1 record).
+- [x] `.14` a44-1 **ADDRESSED** — the design recorded (what moves, what is re-derived, the one lapse, five slices); the a44 text, `decision_director-rulings-2026-10-28.md`, `decision_case-declarations-as-data.md`, docs/TASK_TREE.md, LIVE_STATUS.md and evidence/README.md corrected (`grep -c 'two re-captures'` in the live rows = 0).
+- [x] `.14` a44-1 **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); the prechecks green on the staged tree (target/p4-system-14/a44-1/prechecks.txt) and the commit gate (chain log).
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 

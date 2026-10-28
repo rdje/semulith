@@ -5,7 +5,7 @@ This bounded index owns the evidence family: one directory per reviewed finite c
 same 21 declared slots. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
 explains the prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
 records the observations of 2026-10-19 and 2026-10-22. The m-forms case is the retained one; its
-ten policy legs measure satisfied, uncredited: nothing here closes the M obligation or the CPU gate.
+ten policy legs measure satisfied, credited (`CR-GC-M-1`, a42az): nothing here closes the M obligation or the CPU gate.
 
 ## Cases (this table is the complete membership)
 

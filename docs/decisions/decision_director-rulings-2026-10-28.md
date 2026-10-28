@@ -12,7 +12,7 @@ answers: What did the director rule on 2026-10-28, to what standard, and which l
 
 | # | Ruling | Record | Executed by |
 | --- | --- | --- | --- |
-| 1 | Case declarations move to data; both retained cases re-captured once | [`decision_case-declarations-as-data.md`](decision_case-declarations-as-data.md) | `P4-SYSTEM.14` (slice a44 first) |
+| 1 | Case declarations move to data; the M case re-captured once (as v4) | [`decision_case-declarations-as-data.md`](decision_case-declarations-as-data.md) | `P4-SYSTEM.14` (slice a44 first) |
 | 2 | `XTASK` closes with its 13 remaining scripts in shell | [`decision_xtask-closes-with-shell-remainder.md`](decision_xtask-closes-with-shell-remainder.md) | `XTASK.4`, then the tree's close |
 | 3 | The next push is granted | this record | the next push (a cadence push: 359 commits since 76882c8c, cadence 300) |
 | 4 | Orphan incremental sessions: whole sessions, record-anchored (option C); other trees' leftover build directories removed | [`decision_orphan-sessions-record-anchored.md`](decision_orphan-sessions-record-anchored.md) | `ARTIFACT-CLEANUP.29` |
@@ -30,7 +30,8 @@ read as wider than its words.
 - Ruling 1 was recommended as "one re-capture of the M case"; measured while recording it, both retained
   cases pin the two declaration scripts (`evidence/rv64gc-m-forms-v3` and
   `evidence/rv64gc-signed-div-truncation-v2`), so it costs two re-captures. Recorded as measured; the
-  director is told.
+  director is told. **Corrected 2026-10-28 (a44-1):** the signed-DIV capture has been `invalidated` since
+  2026-10-22 and credits nothing, so only the M case is re-captured — one re-capture, as recommended.
 - Ruling 1 does not reach the ZICNTR program: it waits for a pinned reference that implements Zicntr (the
   `.14` a43d-1 addendum), a reference re-pin no option addressed. It stays open, raised to the director.
 - Ruling 3 covers the next push only; later pushes follow the 300-commit cadence or a new approval.

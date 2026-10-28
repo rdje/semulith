@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0312 (leaf P4-SYSTEM.14 a44-1) — the case-declaration design; one re-capture, not two
+
+Documentation only. The design for ruling B, from a read-only inventory of both declaration scripts, every reader and both manifests: one `evidence/<case>/case.sexp` per case under a new `schema/matched-case.sexp`, read by the tools (a case without one refused), the in-script tables removed; the M-specific checks in pinned code become checks of the case file against the catalogues, so a non-M case is accepted on its own authority; the closed censuses (manifest population, reviewed modules and data paths, the evidence family, the probes' mutation strings and loss counts) re-derived in the same slice; and the one lapse — `CR-GC-M-1` retired and REQ-GC-M `planned` from the pinned edit until the M case is re-captured as v4 and re-credited. Correction: the SEMULITH-P4-0310 entry below says ruling B costs two re-captures; the signed-DIV capture has been invalidated since 2026-10-22 and credits nothing, so it costs one (M as v4) — the records, the tree and the live rows say so now. `evidence/README.md` no longer calls the credited M case uncredited.
+
 ## SEMULITH-XTASK-0063 (leaf XTASK.10) — the focused set runs rustfmt and clippy
 
 The granted push was refused at the boundary over formatting drift two files had carried since 2026-10-27, because no commit-time check ran rustfmt or clippy over the workspace. `cargo xtask focused` now begins with `make check`'s first two steps, `cargo fmt --all -- --check` and `cargo clippy --all-targets --all-features -- -D warnings`, logged as `cargo-fmt` and `cargo-clippy`; the set is 29 checks. Measured: 0 red of 27 (192 s) before, 0 red of 29 (198 s) after with the 27 earlier verdicts identical; a planted misformatted clippy error turns exactly the two new checks red, built in a disposable target and restored byte-identical.

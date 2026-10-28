@@ -1,4 +1,4 @@
-# Case declarations move to data; the two retained cases are re-captured once
+# Case declarations move to data; the credited M case is re-captured once
 
 - **Type:** `decision`
 - **Date:** `2026-10-28`
@@ -12,8 +12,10 @@ answers: How does a new matched case get declared without lapsing the credit tha
 A matched case's declaration — its properties (today the `_CASES` table of `scripts/matched_gpr_property.py`)
 and its input pins (today `CURATED_INPUTS` of `scripts/capture_div.py`) — moves out of the scripts into data,
 one file per case under `evidence/<case>/` read by the tools. Both retained cases pin both scripts in their
-dependency manifests, so each is re-captured once under the new manifest: the M case as `v4`, the signed-DIV
-case as `v3`. From then on a new case adds data only and touches no pinned file.
+dependency manifests; the credited M case is re-captured once under the new manifest, as `v4`. The signed-DIV
+case's capture has been `invalidated` since 2026-10-22 and credits nothing, so it stays a historical capture
+(corrected in a44-1: this record first said both were re-captured). From then on a new case adds data only and
+touches no pinned file. The design: `docs/tasks/P4-SYSTEM.md` `.14` a44-1.
 
 ## Why
 
