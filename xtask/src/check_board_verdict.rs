@@ -209,6 +209,24 @@ fn boards(root: &Path) -> Vec<String> {
     locale_sorted(found)
 }
 
+/// `profiles/*` units holding `composition.sexp` (the board generator's manifest, derived from `board.sexp`) but no
+/// `board.sexp`, in the shell glob's order.
+fn orphaned_units(root: &Path) -> Vec<String> {
+    let found: Vec<String> = fs::read_dir(root.join("profiles"))
+        .map(|entries| {
+            entries
+                .flatten()
+                .filter(|e| {
+                    e.path().join("composition.sexp").is_file()
+                        && !e.path().join("board.sexp").is_file()
+                })
+                .map(|e| format!("profiles/{}", e.file_name().to_string_lossy()))
+                .collect()
+        })
+        .unwrap_or_default();
+    locale_sorted(found)
+}
+
 /// `cargo xtask check-board-verdict [--self-test]`: the shell driver's verdict lines and exit statuses.
 pub fn run(root: &Path, args: &[String]) -> ExitCode {
     if args.first().is_some_and(|arg| arg == "--self-test") {
@@ -224,6 +242,15 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         return ExitCode::from(2);
     }
     let defs = boards(root);
+    // A unit holding the board generator's manifest without the definition it derives from is a deleted board, not
+    // "no board yet" (`XTASK.11` slice d, ruling 5: a wrong live board fails by name).
+    let orphans = orphaned_units(root);
+    if !orphans.is_empty() {
+        for dir in &orphans {
+            eprintln!("BOARD-VERDICT: FAIL — {dir}/composition.sexp is generated from a board definition, but {dir}/board.sexp is absent. Restore the definition, or remove its generated artifacts with it.");
+        }
+        return ExitCode::from(1);
+    }
     if defs.is_empty() {
         println!("BOARD-VERDICT: ok (no board declares itself yet)");
         return ExitCode::SUCCESS;

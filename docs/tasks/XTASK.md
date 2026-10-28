@@ -353,12 +353,23 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   removed 2 → 1 (`… is generated, but its descriptor … is absent`); the rv64i module hand-edited and the in-sync tree unchanged
   (1, 0). `STATE-GEN --self-test: 29 pass / 0 fail`; the real verdict unchanged. Next: slice d — the census of every doctrine
   whose controls read live data.
+  Slice d (`2026-10-28`, `SEMULITH-XTASK-0067`; on clean 8c622c02; evidence target/xtask/xt0067): the missing-board case
+  the 6u finding named, finished — `BOARD-VERDICT`'s real run fails by name a `profiles/*` unit holding `composition.sexp` (the
+  board generator's manifest, derived from `board.sexp`) without its `board.sexp`; a corpus with no board unit at all is still
+  "no board declares itself yet". Measured before and after (red.sh, each state applied to the tree and restored): `board.sexp`
+  deleted `rc=0 ok (no board declares itself yet)` → `rc=1 FAIL — profiles/netboard-lab-v0/composition.sexp is generated from a
+  board definition, but … board.sexp is absent`; no board unit at all 0 → 0; rejected, one of two rejected and one good board
+  unchanged. `BOARD-VERDICT --self-test: 6 pass / 0 fail`. The census (census.py → census.txt): 21 of 41 drivers' self-tests
+  reference live tracked data directly and `PROFILE-CONSISTENCY`'s runs 44 probes — some are false positives (route rows that
+  merely contain `docs/`), many are deliberate real-tree arms (`a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`),
+  and `BOARD-GEN` is a measured case (it refuses when the live `board.sexp` is absent). Next: slice e — classify the census
+  (which GREEN controls require a correct live corpus) and raise the remedies to the director: beyond ruling 5's named three.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.11` | `active` | ruling 5: slices a–c done (CITATION-QUOTES refuses a crash; BOARD-VERDICT and STATE-GEN judge frozen copies, a deleted descriptor fails by name); slice d censuses every doctrine whose controls read live data |
+| 1 | `XTASK.11` | `active` | ruling 5: slices a–d done (a crash refuses; BOARD-VERDICT and STATE-GEN judge frozen copies; a deleted board or descriptor fails by name); slice e classifies the live-data census for the director |
 | 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once `XTASK.11` lands |
 
 ## Decisions
@@ -487,6 +498,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice c **FIX** — scripts/fixtures/state-gen/ (four frozen files; `python3 -B scripts/gen_state.py --check` over the frozen pair rc=0); xtask/src/check_state_gen.rs: the controls read `FIXTURE_*`, `run` judges each pair and fails an orphaned module by name; clippy `-D warnings` rc=0.
 - [x] slice c **ADDRESSED (verified)** — red.txt: `gc-module-hand-edited after rc=1`, `gc-census-silent after rc=1`, `descriptor-missing after rc=1 … is generated, but its descriptor … is absent`; `module-hand-edited` and `in-sync` unchanged; `tree restored: 0 paths changed`.
 - [x] slice c **NO REGRESSION** — `STATE-GEN --self-test: 29 pass / 0 fail`; `bash scripts/check_state_gen.sh` rc=0 (both pairs `ok … matches …`); `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
+- [x] slice d **ROOT CAUSE (WHY + WHERE)** — `run` printed "no board declares itself yet" whenever `boards()` (units with `board.sexp`) was empty, so a deleted `board.sexp` beside its generated `composition.sexp` passed (red.txt: `no-board before rc=0`).
+- [x] slice d **FIX** — xtask/src/check_board_verdict.rs: `orphaned_units` (`composition.sexp` without `board.sexp`) fails by name before the empty-corpus branch; clippy `-D warnings` rc=0.
+- [x] slice d **ADDRESSED (verified)** — red.txt: `no-board after rc=1 FAIL — … composition.sexp is generated from a board definition, but … board.sexp is absent`; `no-board-unit-at-all after rc=0`; the other three states unchanged; `tree restored: 0 profile paths changed`.
+- [x] slice d **NO REGRESSION** — `BOARD-VERDICT --self-test: 6 pass / 0 fail`; `bash scripts/check_board_verdict.sh` rc=0 `ok (1 board(s) …)`; `cargo fmt --all -- --check` rc=0; census.py rc=0 (`drivers 41`); the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.10)
 
@@ -563,3 +578,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.11 slice a — CITATION-QUOTES' availability probe refuses an unexpected exception (ruling 5); 24 arms.
 - `2026-10-28`: XTASK.11 slice b — BOARD-VERDICT's controls judge a frozen board; a rejected live board fails by name instead of refusing.
 - `2026-10-28`: XTASK.11 slice c — STATE-GEN's controls judge a frozen pair; each pair judged on its own, an orphaned module fails by name; slice b's missing-board claim corrected.
+- `2026-10-28`: XTASK.11 slice d — a deleted board fails by name; the live-data census measured (21 of 41 drivers; classification next).
