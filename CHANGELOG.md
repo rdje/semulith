@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0065 (leaf XTASK.11 slice b) — BOARD-VERDICT's controls judge a frozen board
+
+Ruling 5, second doctrine. The self-test copied the live board's four documents and expected them accepted, so a rejected live board made the check refuse as non-discriminating (exit 2) instead of failing by name. `scripts/fixtures/board-verdict/` now holds frozen copies of those four documents and the controls copy them; the verdict reads only a board's own documents and the board schema, so the controls no longer depend on the corpus they judge. Measured with the binary before and after on the 6u corpus states, each applied to the tree and restored: a rejected live board 2 REFUSED → 1 FAIL by name; no board 2 REFUSED → 0 ok (no board declares itself yet); a good board and one of two rejected unchanged. Self-test 6 pass / 0 fail; the real verdict unchanged.
+
 ## SEMULITH-XTASK-0064 (leaf XTASK.11 slice a) — CITATION-QUOTES' availability probe refuses an unexpected exception
 
 Ruling 5 (`decision_doctrine-controls-refuse-and-freeze.md`), first doctrine. The availability probe caught four exception types and exited inside its `try`, so any other exception left Python with status 1 — the status the driver reads as "the pinned pages are absent" (a truncated manifest's `DossierError` became a NAMED SKIP, measured in XTASK.6 slice 6r). It now exits 2 with the exception's type and message on anything outside its named refusals, and exits 0 or 1 only after the call returns. Two arms hold it, over the probe's own text with its call patched: a foreign exception must refuse (2), an absence must stay the named skip (1); the same crash over the predecessor text exits 1, so the arm discriminates. Self-test 24 pass / 0 fail; the real verdict unchanged. The XTASK leaf's open questions 6r, 6u, 6x and 4b are marked answered by rulings 5 and 2; `XTASK.11` carries 6u and 6x next, then XTASK closes.

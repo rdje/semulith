@@ -326,12 +326,21 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   1 (the named skip). Measured: `CITATION-QUOTES --self-test: 24 pass / 0 fail` (22 + the two); the real tree's verdict
   unchanged (`115 attributed quote(s) judged … 0 finding(s)`); RED — the same crash program over the slice's predecessor text
   exits 1 (the crash read as absent), so the arm discriminates. Next: slice b — `BOARD-VERDICT`'s frozen fixture board.
+  Slice b (`2026-10-28`, `SEMULITH-XTASK-0065`; on clean 37debc11; evidence target/xtask/xt0065): `BOARD-VERDICT`'s controls
+  judge frozen copies — `scripts/fixtures/board-verdict/` holds the four documents the controls copied from the live board
+  (`board.sexp`, `requirements.sexp`, `contract-obligations.sexp`, `sources.sexp`, taken from `profiles/netboard-lab-v0` today),
+  and `xtask/src/check_board_verdict.rs` copies them instead of the live ones; the verdict reads only a board's own documents and
+  the board schema, so the controls no longer depend on the corpus they judge. Measured with the binary before and after on the
+  6u corpus states, each applied to the tree and restored byte-identical (red.sh): a rejected live board `rc=2 REFUSED — the check
+  does not discriminate` → `rc=1 FAIL — the composition does not hold`; no board `rc=2 REFUSED` → `rc=0 ok (no board declares itself
+  yet)`; one good board and one of two rejected unchanged (0 and 1). `BOARD-VERDICT --self-test: 6 pass / 0 fail`, the real verdict
+  unchanged. Next: slice c — `STATE-GEN`'s frozen rv64gc pair.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.11` | `active` | ruling 5: slice a done (CITATION-QUOTES refuses a crash); slices b (BOARD-VERDICT) and c (STATE-GEN) judge frozen fixture copies |
+| 1 | `XTASK.11` | `active` | ruling 5: slices a–b done (CITATION-QUOTES refuses a crash; BOARD-VERDICT judges a frozen board); slice c (STATE-GEN's frozen rv64gc pair) next |
 | 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once `XTASK.11` lands |
 
 ## Decisions
@@ -452,6 +461,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice a **FIX** — xtask/src/check_citation_quotes.rs: `except Exception` → exit 2 with the type and message, the exit after the call; two arms (`tally.arm(` ×2) over the probe's own text with its call patched.
 - [x] slice a **ADDRESSED (verified)** — `CITATION-QUOTES --self-test: 24 pass / 0 fail` (selftest.out); `bash scripts/check_citation_quotes.sh` rc=0 `115 attributed quote(s) judged (R1 1, R2 108, R3 3, R4 3); 0 finding(s)` (real.out).
 - [x] slice a **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt --all -- --check` rc=0; DERIVED-COUNTS re-derived (LIVE_STATUS 1,694 → 1,696 arms); the commit gate green (chain log).
+- [x] slice b **ROOT CAUSE (WHY + WHERE)** — `self_test` copied `profiles/netboard-lab-v0`'s four documents (`grep -c 'repo.join(BOARD)'` = 1 in the predecessor), so a rejected live board failed the GREEN control and the check refused (red.txt: `rejected before rc=2 REFUSED`).
+- [x] slice b **FIX** — scripts/fixtures/board-verdict/ (four frozen documents, `cmp` equal to the live ones at 37debc11); xtask/src/check_board_verdict.rs copies `FIXTURE`; the unused `BOARD` constant removed (clippy `-D warnings` rc=0).
+- [x] slice b **ADDRESSED (verified)** — red.txt: `rejected after rc=1 FAIL — the composition does not hold`, `no-board after rc=0 ok (no board declares itself yet)`; `one-board` and `one-of-two-rejected` unchanged; `tree restored: 0 profile paths changed`.
+- [x] slice b **NO REGRESSION** — `BOARD-VERDICT --self-test: 6 pass / 0 fail`; `bash scripts/check_board_verdict.sh` rc=0 `ok (1 board(s) …)`; `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.10)
 
@@ -526,3 +539,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.4 slice 4b — the closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed; the close waits on the director); the 6av "submodule" claim corrected; XTASK.6's closed rows and paragraphs moved to archive parts 5 and 6.
 - `2026-10-28`: XTASK.10 done — `cargo xtask focused` runs rustfmt and clippy first (29 checks); routed from P4-SYSTEM.15 slice e-b after the push boundary refused over formatting drift.
 - `2026-10-28`: XTASK.11 slice a — CITATION-QUOTES' availability probe refuses an unexpected exception (ruling 5); 24 arms.
+- `2026-10-28`: XTASK.11 slice b — BOARD-VERDICT's controls judge a frozen board; a rejected live board fails by name instead of refusing.

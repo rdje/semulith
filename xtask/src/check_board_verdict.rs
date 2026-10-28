@@ -18,7 +18,10 @@ use std::process::ExitCode;
 
 use crate::harness::{combined, locale_sorted, scratch};
 
-const BOARD: &str = "profiles/netboard-lab-v0";
+/// The controls' frozen copies of the board's four documents (`XTASK.11` slice b, ruling 5,
+/// `decision_doctrine-controls-refuse-and-freeze.md`): copied from `profiles/netboard-lab-v0` on 2026-10-28, never refreshed by a corpus
+/// edit, so a wrong live board fails by name in the real check instead of making the controls refuse.
+const FIXTURE: &str = "scripts/fixtures/board-verdict";
 const DOCS: [&str; 4] = [
     "board.sexp",
     "requirements.sexp",
@@ -87,7 +90,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     };
     let _ = fs::create_dir_all(t.join("board"));
     for doc in DOCS {
-        let _ = fs::copy(repo.join(BOARD).join(doc), t.join("board").join(doc));
+        let _ = fs::copy(repo.join(FIXTURE).join(doc), t.join("board").join(doc));
     }
     let judge = |dir: &Path| verdict(repo, &dir.display().to_string());
     let mut tally = Tally {
@@ -95,10 +98,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         fail: 0,
         verbose,
     };
-    // GREEN: the real board's composition is ACCEPTED, every edge printed.
+    // GREEN: the frozen board's composition is ACCEPTED, every edge printed.
     let (rc, out) = judge(&t.join("board"));
     tally.arm(
-        "GREEN the real board's composition is ACCEPTED",
+        "GREEN the frozen board's composition is ACCEPTED",
         rc,
         0,
         captured(&out),

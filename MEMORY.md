@@ -20,10 +20,10 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0064` — XTASK.11 slice a (ruling 5): CITATION-QUOTES' availability probe refuses an unexpected
-  exception (exit 2), two arms. Before it P4-0314 (P4-SYSTEM.17 done: the hosted matrix agreed), P4-0313 (a44-2a), AC-0087.
-  Local commits ahead of origin: 6 (a push is asked; hosted doctrines red until then).
-- next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.11 slices b (BOARD-VERDICT) and c (STATE-GEN)
+- last_unit: `SEMULITH-XTASK-0065` — XTASK.11 slice b (ruling 5): BOARD-VERDICT's controls judge frozen copies
+  (scripts/fixtures/board-verdict/); a rejected live board fails by name (rc 1) instead of refusing (rc 2). Before it XTASK-0064
+  (slice a), P4-0314 (P4-SYSTEM.17 done). Local commits ahead of origin: 7 (a push is asked).
+- next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.11 slice c (STATE-GEN)
   over frozen fixture copies; XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C) + the other trees' 24.1 GB;
   the cleanup narrative's owned rollover before `.31`. Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
   `ARTIFACT-CLEANUP.31` due after 2026-10-29T09:49Z.
