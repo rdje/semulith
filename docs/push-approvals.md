@@ -37,3 +37,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** director 2026-10-28: 'ok' to pushing the fix for the hosted doctrines failure on b917d1ba (ARTIFACT-COHORT on Linux, run 40713852259) once the gated commit lands
 - **Range:** origin/main..62e807a71ecc698566b91021ea55ecb9f4e91960 — 7 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 62e807a71ecc698566b91021ea55ecb9f4e91960 before this record was written
+
+## SEMULITH-PUSH-0004 — 2026-10-28T21:04:40+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-10-28: 'right now I need the GitHub CI to go green' - push the UNIT-BOOKS refusal diagnostic so the hosted doctrines run names what missed (run 40746652030 refused with no detail after a runner image change)
+- **Range:** origin/main..300ffbf41d7c3d2fdd1936342ae5f277c5cba9be — 5 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 300ffbf41d7c3d2fdd1936342ae5f277c5cba9be before this record was written
