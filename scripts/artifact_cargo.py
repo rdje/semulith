@@ -84,6 +84,9 @@ def environment() -> dict[str, str]:
                TMPDIR=str(ROOT / "target/p4-system-12"),
                TMP=str(ROOT / "target/p4-system-12"), TEMP=str(ROOT / "target/p4-system-12"),
                CARGO_TERM_COLOR="never", PYTHONDONTWRITEBYTECODE="1")
+    # The cohort records incremental outputs, so incremental compilation is bound here, never inherited: an
+    # ambient setting (a CARGO_INCREMENTAL, a config file above the checkout) must not empty the capture.
+    env["CARGO_INCREMENTAL"] = "1"
     return env
 
 

@@ -221,6 +221,7 @@ fn self_test(repo: &Path) -> bool {
             "stop-zombie",
             "capture-success",
             "capture-version",
+            "incremental-binding",
         ] {
             let (rc, out) = tally.probe("scripts/probe_artifact_cargo.py", Some(mutation));
             tally.score(

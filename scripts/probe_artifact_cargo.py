@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import argparse
 import ast
+import contextlib
 from dataclasses import asdict
 import hashlib
 import importlib.util
+import errno
 import json
 import os
 from pathlib import Path
@@ -34,6 +36,7 @@ SEAMS = {
     "stop-zombie": ('    except (ProcessLookupError, PermissionError):', '    except ProcessLookupError:'),
     "capture-success": ('    if result.returncode == 0:\n', '    if True:\n'),
     "capture-version": ('    O.need(result.returncode == 0, "Cargo version query failed")\n', ''),
+    "incremental-binding": ('    env["CARGO_INCREMENTAL"] = "1"\n', ''),
 }
 TARGETS = {
     "build-root": "test_exact_command_matches_the_closed_provenance_protocol",
@@ -47,6 +50,7 @@ TARGETS = {
     "stop-zombie": "test_stop_joins_a_leader_that_already_exited",
     "capture-success": "test_failed_build_records_nothing_and_retires_only_absent_rows",
     "capture-version": "test_failed_or_unbounded_version_query_refuses_capture",
+    "incremental-binding": "test_ambient_build_overrides_cannot_escape_the_bound_environment",
 }
 
 
@@ -251,9 +255,10 @@ class CargoTests(unittest.TestCase):
     def test_ambient_build_overrides_cannot_escape_the_bound_environment(self):
         names = ("CARGO_BUILD_BUILD_DIR", "CARGO_BUILD_TARGET", "CARGO_ENCODED_RUSTFLAGS",
                  "RUSTC_WRAPPER", "RUSTFLAGS", "RUSTDOCFLAGS", "GIT_DIR")
-        with patch.dict(os.environ, {name: "foreign" for name in names}):
+        with patch.dict(os.environ, {**{name: "foreign" for name in names}, "CARGO_INCREMENTAL": "0"}):
             env = self.c.environment()
         self.assertFalse(set(names) & set(env))
+        self.assertEqual(env.get("CARGO_INCREMENTAL"), "1", "incremental compilation is bound, never inherited")
         self.assertEqual(env["CARGO_HOME"], str(self.root / ".app-data/cargo-home"))
         for name in ("TMPDIR", "TMP", "TEMP"):
             self.assertEqual(env[name], str(self.root / "target/p4-system-12"))
@@ -316,15 +321,20 @@ class CargoTests(unittest.TestCase):
         # macOS: killpg on a group whose only member is an exited, unreaped leader returns EPERM (measured
         # 2026-10-27 under XTASK.8's pooled gate, where the overflow test's child finished first); a live
         # descendant would have taken the signal instead, so EPERM means nothing owned is left to stop.
-        child = subprocess.Popen([sys.executable, "-B", "-c", "pass"], stdin=subprocess.DEVNULL,
-                                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
-        child.stdout.read()   # EOF: the leader has exited; nothing has reaped it yet
-        time.sleep(0.2)
-        try:
-            self.c._stop(child)
-        except PermissionError as error:
-            self.fail(f"_stop raised on a leader that had already exited: {error}")
-        self.assertIsNotNone(child.returncode, "the leader was not joined")
+        # Linux signals a zombie leader's group and returns 0 (the hosted doctrines run of 2026-10-28 on b917d1ba passed
+        # the stop-zombie RED), so the test also injects the EPERM macOS returns: the tolerance is exercised on every host.
+        for injected in (False, True):
+            child = subprocess.Popen([sys.executable, "-B", "-c", "pass"], stdin=subprocess.DEVNULL,
+                                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, start_new_session=True)
+            child.stdout.read()   # EOF: the leader has exited; nothing has reaped it yet
+            time.sleep(0.2)
+            eperm = PermissionError(errno.EPERM, "Operation not permitted")
+            with (patch.object(self.c.os, "killpg", side_effect=eperm) if injected else contextlib.nullcontext()):
+                try:
+                    self.c._stop(child)
+                except PermissionError as error:
+                    self.fail(f"_stop raised on a leader that had already exited (EPERM injected: {injected}): {error}")
+            self.assertIsNotNone(child.returncode, "the leader was not joined")
 
     def test_deadline_refuses_and_joins_the_owned_process(self):
         with self.assertRaisesRegex(self.o.ProvenanceError, "timed out"):
@@ -382,7 +392,9 @@ class CargoTests(unittest.TestCase):
         report = json.loads(result.stdout)
         self.assertIn("1 passed", report["stdout"]);self.assertEqual(retained.read_bytes(), before)
         caches = list((self.root / self.incremental).glob("*/*/query-cache.bin"))
-        self.assertTrue(caches, "actual public Cargo must generate observed incremental output")
+        found = sorted(str(p.relative_to(self.root)) for p in (self.root / self.incremental).parent.rglob("*") if p.is_file())
+        self.assertTrue(caches, "actual public Cargo must generate observed incremental output; under the build root: "
+                        + json.dumps(found[:40]) + f" ({len(found)} files)")
         publication = report["publication"]
         self.assertTrue(report["recorded"] >= 1 and publication["written"] and publication["added"] == report["recorded"]
                         and report["observed"] == report["recorded"] + 1 and report["unclaimed"] == 0, report)

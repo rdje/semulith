@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -837,6 +837,21 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0086.
 
+- ID: `ARTIFACT-CLEANUP.32` — **the cohort's Cargo controls hold on the hosted Linux runner**
+  Status: `done` (`2026-10-28` UTC, `SEMULITH-AC-0087`; on clean bf4fc468; evidence target/artifact-cleanup/AC0087)
+  Goal: the hosted doctrines run of the granted push (b917d1ba, run 40713852259, the first since 2026-10-08) refused
+  `ARTIFACT-COHORT --self-test: 146 pass / 4 fail`; the gate must hold on Linux as here.
+  Result: two causes. `stop-zombie` (XTASK.8's own control, measured on macOS only): Linux signals a zombie leader's
+  group and returns 0, so dropping the EPERM tolerance went undetected there (both RED arms rc=0); the test now also
+  injects the EPERM macOS returns, so the tolerance is exercised on every host. The cold-copy build found no incremental
+  output (both GREEN arms) under the runner's rustc 1.99.1 — not the compiler: the probe passes under 1.99.1 here. The
+  wrapper stripped every `CARGO_*` variable but never bound incremental compilation, so a cargo config above the checkout
+  can switch it off; simulated (an outer `build.incremental = false`), the old wrapper fails with the hosted assertion
+  verbatim and the new one passes. `environment()` binds `CARGO_INCREMENTAL=1`, a twelfth RED seam
+  (`incremental-binding`) holds it, and the assertion lists what the build root holds, so a different hosted cause names
+  itself. Hosted confirmation waits for the next push. Noted: `rust-toolchain.toml` floats on `stable` — the runner had
+  1.99.1, this host 1.95.0.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -883,6 +898,13 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.32)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `gh run view 40713852259 --log-failed`: `MISS: RED … stop-zombie … got rc=0` ×2 and `[] is not true : actual public Cargo must generate observed incremental output` ×2; `RUSTUP_TOOLCHAIN=1.99.1 python3 -B scripts/probe_artifact_cargo.py` → `24 tests / 0 failures`; the old wrapper under an outer `build.incremental = false` → the same assertion (AC0087/old-wrapper-outer-config.txt).
+- [x] **FIX** — scripts/artifact_cargo.py `environment()` binds `CARGO_INCREMENTAL=1`; scripts/probe_artifact_cargo.py: the EPERM-injected leg, the binding asserted, seam `incremental-binding`, the build root listed on failure; xtask/src/check_artifact_cleanup.rs: the new arm.
+- [x] **ADDRESSED (verified)** — AC0087/measure.txt: GREEN `24 tests / 0 failures` plain and `-O`; each of the 12 seams `1 tests / 1 failures`; under the outer config the new wrapper passes, the old fails; `ARTIFACT-COHORT --self-test: 152 pass / 0 fail`.
+- [x] **NO REGRESSION** — `cargo test -p xtask` `test result: ok. 17 passed`; clippy and `cargo fmt --all -- --check` rc=0; `bash scripts/check_artifact_cleanup.sh` rc=0; the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.14)
 
@@ -1025,6 +1047,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-28` UTC: .32 done; the cohort's Cargo controls hold on Linux (EPERM injected; incremental bound, its own RED seam); 152 arms.
 - `2026-10-26` UTC: .27 done; fourth cleanup event through the act, 6 outputs removed, record overwritten; the unrecorded population grew to 83 orphan sessions (770,724,553 B), the open question's deferral ends.
 - `2026-10-23` UTC: .26 done; third cleanup event through the act, 6 outputs removed, record overwritten; the 67 unrecorded sessions are a stable set.
 - `2026-10-22` UTC: .25 done; second cleanup event through the act, 6 outputs removed, record overwritten; 67 unrecorded sessions measured.

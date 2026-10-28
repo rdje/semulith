@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0312` — P4-SYSTEM.14 a44-1: the case-declaration design (five slices, the one lapse) and the a44
-  correction (one re-capture, M as v4: the DIV capture is invalidated since 2026-10-22). Before it XTASK-0063 (XTASK.10:
-  the focused set runs rustfmt and clippy), P4-0311 (e-b), P4-0310 (the rulings recorded); pushed b917d1ba.
+- last_unit: `SEMULITH-AC-0087` — ARTIFACT-CLEANUP.32: the cohort's Cargo controls hold on the hosted Linux runner (the push's
+  doctrines run refused 146/4: EPERM now injected; incremental compilation bound, its own RED seam). Before it P4-0312 (a44-1,
+  the case-declaration design), XTASK-0063 (XTASK.10). Pushed b917d1ba; CI there: rust green, doctrines red, portability hosts green.
 - next_action: P4-SYSTEM.14 a44-2 (docs/tasks/P4-SYSTEM.md a44-1's design): schema/matched-case.sexp, case files for the two
   existing cases (loaded == in-code, measured, before removal), the tools reading them, the censuses re-derived, CR-GC-M-1 retired
   (REQ-GC-M planned for the one lapse); then a44-3 … a44-5. Tooling turns (5:1): the three doctrine controls, XTASK's close,
