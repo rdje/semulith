@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0071` — XTASK.12 slice c: the hosted UNIT-BOOKS refusal's cause (a probe counted pathlib calls: 3 on the
-  runner's Python 3.12, 1 on 3.14) fixed by property assertions; the doctrines suite green under 3.12. Before it XTASK-0070
-  (every driver names its misses). Pushed 18bfc69c (SEMULITH-PUSH-0004); this unit goes out next (hosted CI green first).
-- next_action: tooling first, so the a44 lapse block runs uninterrupted: hosted CI green first (the director, 2026-10-28):
-  read the hosted UNIT-BOOKS miss on 18bfc69c and fix it; then XTASK open question (e) (11 fragile doctrines, the workflow's call); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C);
-  the cleanup narrative's owned rollover (14.2 KB of 14.7 KB: due before any unit but `.31`). Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
-  `ARTIFACT-CLEANUP.31` due after 2026-10-29T09:49Z.
+- last_unit: `SEMULITH-XTASK-0072` — hosted CI green on cefb0d84 (doctrines 40782096575, rust 40782096560): XTASK.12 done;
+  XTASK.4 done by ruling 2; question (e) answered (XTASK.13). Before it XTASK-0071 (the pathlib-count fix), XTASK-0070.
+  Pushes this session: b917d1ba, 45f970c0, 18bfc69c, cefb0d84 (SEMULITH-PUSH-0003 … 0005).
+- next_action: the workflow schedules (the director, 2026-10-28: hosted CI green first, then its own order): P4-SYSTEM.14
+  a44-2b → a44-5 back to back (the one lapse; features first, 5:1), with XTASK.13 slices (DEF-GEN, GUEST-GEN first), the cleanup
+  narrative's rollover (14.2 of 14.7 KB) and ARTIFACT-CLEANUP.29 class C as the tooling turns; `.31` due after 2026-10-29T09:49Z.
+  Watch hosted CI after every push; a red run outranks everything.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under

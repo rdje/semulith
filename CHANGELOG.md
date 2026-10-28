@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0072 (XTASK.12 and XTASK.4 close) — hosted CI green; the eleven fragile doctrines scheduled
+
+The push of SEMULITH-XTASK-0071 (cefb0d84) turned the hosted doctrines run green — `=== all doctrines green ===`, the first since 2026-10-08 — with rust green beside it: XTASK.12 is done. XTASK.4 closes by ruling 2 (one script of fourteen ported, 13 stay shell). Open question (e) is answered by the workflow under the director's delegation of scheduling: ruling 5's rule extends to the eleven doctrines slice e classified fragile, as XTASK.13, one slice per doctrine between feature units, DEF-GEN and GUEST-GEN first.
+
 ## SEMULITH-XTASK-0071 (leaf XTASK.12 slice c) — the hosted UNIT-BOOKS refusal's cause fixed: a probe counted the interpreter's calls
 
 The diagnostic of slices a–b named the hosted miss: `probe_book_includes.py`'s another-volume test asserted the include target was stat'ed exactly once, and the number of pathlib calls that reach `Path.stat` depends on the Python version — 3 on the runner's 3.12, 1 on this host's 3.14 (`AssertionError: 3 != 1`, reproduced exactly here under 3.12 and 3.11). The test now asserts what it guards: the refusal names the foreign volume and the source is never opened; the change test's refusal names the change. A red run with the volume refusal removed fails it on both interpreters; the whole doctrines suite is green with `python3` resolving to 3.12. Card: `a-count-of-pathlib-calls-tests-the-interpreter.md`.

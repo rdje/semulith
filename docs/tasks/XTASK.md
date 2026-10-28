@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`, `XTASK.13`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -107,7 +107,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   it), so this cost a gate run; whether to add it is an open question below, not changed here.
 
 - ID: `XTASK.4` — **the small shell glue, one script per leaf**
-  Status: `active`
+  Status: `done` (`2026-10-29`, `SEMULITH-XTASK-0072`: one script of fourteen ported, 13 stay shell by ruling 2, `decision_xtask-closes-with-shell-remainder.md`)
   Goal: the 14 shell scripts that are neither doctrine drivers nor pinned, each ported behind a shim.
   Inventory (measured 2026-10-24 on 90c69268; target/xtask/xt0004/inventory.md): 74 tracked `*.sh` — 55 doctrine
   drivers named by `check_doctrines.sh` or its project slot, 0 named by the retained case's
@@ -380,7 +380,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   raised to the director as an Open Question with a recommended order. The leaf is done: its ruled scope is executed.
 
 - ID: `XTASK.12` — **a quiet refusal names the arm that missed**
-  Status: `active` (`2026-10-28`; opened by the hosted doctrines run 40746652030 on 45f970c0)
+  Status: `done` (`2026-10-29`, slices a–c; hosted CI green on cefb0d84: doctrines 40782096575 `=== all doctrines green ===`, rust 40782096560 success; opened by the hosted doctrines run 40746652030 on 45f970c0)
   Goal: when a doctrine's quiet self-test (the one its real run makes before judging) misses, the refusal names every missed arm
   and its output, so a hosted refusal can be diagnosed from its log.
   Slice a (`2026-10-28`, `SEMULITH-XTASK-0069`; on clean 474efaa6; evidence target/xtask/xt0069): the granted push's hosted run
@@ -414,13 +414,25 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   refusal). Parity: the whole doctrines suite with `python3` resolving to 3.12 — `=== all doctrines green ===` (13 checks,
   1224 s). `probe_book_navigation.py`'s deep-nesting test fails on 3.11 only (exit 1 against 2), not on the runner's 3.12:
   noted, out of scope. Card: `docs/knowledge/a-count-of-pathlib-calls-tests-the-interpreter.md`.
+  Closed (`2026-10-29`): the push of this slice (cefb0d84, SEMULITH-PUSH-0005) turned the hosted doctrines run green —
+  40782096575 `=== all doctrines green ===`, rust 40782096560 success — the first green hosted doctrines run since 2026-10-08.
+
+- ID: `XTASK.13` — **the eleven fragile doctrines judge frozen copies (ruling 5's rule)**
+  Status: `pending` (`2026-10-29`; open question (e) answered by the workflow under the director's delegation of 2026-10-28:
+  "I do not think you need my input to take your decision on what to do next … schedule what you need to schedule")
+  Goal: each doctrine `XTASK.11` slice e classified FRAGILE (target/xtask/xt0068/classification.md) judges frozen copies in its
+  self-test, and a deleted or damaged live source fails by name instead of refusing; one slice per doctrine, each fired RED with
+  the binary before and after on the doctrine's own corpus states. Order: DEF-GEN and GUEST-GEN (their live in-sync arm repeats
+  the real check — dropped, a frozen pair kept), BOOK-INDEX, BOARD-GEN, PLATFORM-GEN, MATERIALS-BILL, EXERCISE-COVERAGE,
+  CONTRACT-FREEZE, the RECORD-SCHEMA and UNIT-BOOKS probes, then PROFILE-CONSISTENCY's 14 probes case by case (a real-tree arm
+  that is a deliberate prediction stays, named); DOSSIER-SCHEMA's legacy arm is checked on the way. Scheduled between the
+  feature units (5:1).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.12` | `active` | slices a–c done (every driver names its misses; the version-dependent count in the include probe fixed); the hosted doctrines run green closes it |
-| 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
+| 1 | `XTASK.13` | `pending` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: DEF-GEN and GUEST-GEN first |
 
 ## Decisions
 
@@ -451,7 +463,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - (Answered 2026-10-28 by ruling 2, `decision_xtask-closes-with-shell-remainder.md`: yes, after `XTASK.11`.) (4b, `2026-10-28`) Whether `XTASK.4` — and with it the tree — closes with its 13 remaining scripts in shell, each for the
   constraint slice 4b measured (hooks, network, pinned readers, the template, the controls' stub cargo). The lane is the
   director's (`decision_rust-native-tooling.md`); until the word, the leaf stays active and no port of them is started.
-- (e, `2026-10-28`) Whether ruling 5's rule (a self-test judges frozen copies; a deleted source fails by name) extends to the 11
+- (Answered 2026-10-29 by the workflow under the director's delegation of scheduling: yes — `XTASK.13`.) (e, `2026-10-28`) Whether ruling 5's rule (a self-test judges frozen copies; a deleted source fails by name) extends to the 11
   doctrines `XTASK.11` slice e classified FRAGILE (target/xtask/xt0068/classification.md). Recommended: yes, one slice per
   doctrine in this order — DEF-GEN and GUEST-GEN (their live in-sync arm repeats the real check: drop it, keep a frozen pair),
   BOOK-INDEX (freeze a small book), then BOARD-GEN, PLATFORM-GEN, MATERIALS-BILL, EXERCISE-COVERAGE, CONTRACT-FREEZE, the
@@ -554,6 +566,7 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice c **FIX** — scripts/probe_book_includes.py: the two count assertions become property assertions (reason, never opened, `calls >= 1` / `>= 2`); the card and its INDEX row.
 - [x] slice c **ADDRESSED (verified)** — the probe under 3.11, 3.12 and 3.14: `Ran 22 tests … OK` each; RED (volume refusal removed, restored, `cmp` rc=0): `AssertionError: 'another volume' not found …` on 3.11, `IncludeRefused not raised` on 3.14.
 - [x] slice c **NO REGRESSION** — gate-py312.log: `=== all doctrines green ===` under `python3` 3.12.15 (1224 s); the commit gate green under the default 3.14 (chain log).
+- [x] close **ADDRESSED (verified)** — `gh run view 40782096575 --json conclusion` → `success`; `grep -c 'all doctrines green' target/push/doctrines-cefb0d84-full.log` ≥ 1; rust 40782096560 `success`.
 
 ## Acceptance Checklist (leaf XTASK.11)
 
@@ -657,3 +670,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.12 slice a — UNIT-BOOKS' quiet refusal names its missed arms (the hosted refusal on 45f970c0 said only "self-test failed"); 28 drivers next.
 - `2026-10-28`: XTASK.12 slice b — every driver's quiet refusal names its missed arms (28 more drivers; 29 of 29).
 - `2026-10-28`: XTASK.12 slice c — the include probe asserts the refusal's reason, not pathlib's call count (3 on Python 3.12, 1 on 3.14); the doctrines suite green under 3.12.
+- `2026-10-29`: XTASK.12 done — hosted doctrines green on cefb0d84; XTASK.4 done by ruling 2 (13 scripts stay shell); open question (e) answered: XTASK.13 extends ruling 5 to the eleven fragile doctrines.
