@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0063 (leaf XTASK.10) — the focused set runs rustfmt and clippy
+
+The granted push was refused at the boundary over formatting drift two files had carried since 2026-10-27, because no commit-time check ran rustfmt or clippy over the workspace. `cargo xtask focused` now begins with `make check`'s first two steps, `cargo fmt --all -- --check` and `cargo clippy --all-targets --all-features -- -D warnings`, logged as `cargo-fmt` and `cargo-clippy`; the set is 29 checks. Measured: 0 red of 27 (192 s) before, 0 red of 29 (198 s) after with the 27 earlier verdicts identical; a planted misformatted clippy error turns exactly the two new checks red, built in a disposable target and restored byte-identical.
+
 ## SEMULITH-P4-0311 (leaf P4-SYSTEM.15 slice e-b) — the mutation campaign's two files formatted; the push boundary caught the drift
 
 The granted push's boundary refused before sending anything: `make ci` was red at its `check` leg because `cargo fmt --all -- --check` failed on `crates/semulith-verify/src/mutate_rv64gc.rs` and its tests, written by slice e (P4-0302). Neither the commit gate nor the focused set runs rustfmt or clippy over the workspace, so the drift waited for the push. The files are formatted — 33 trailing commas and one pair of closure braces, no other token — and `make check` is green (clippy at deny-warnings; 510 tests passed). The prevention, the focused set gaining the format check, is XTASK's (`XTASK.10`).

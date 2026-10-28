@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -300,6 +300,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `target/linkedspec`, `target/miri`, `target/miri.stale-*`), 24,135,434,240 B, all but `target/miri` older than the rule.
   Card: `docs/knowledge/scratch-kept-beside-its-outputs-is-never-removed.md`.
 
+- ID: `XTASK.10` — **the focused set runs rustfmt and clippy**
+  Status: `done` (`2026-10-28`, `SEMULITH-XTASK-0063`; routed from `P4-SYSTEM.15` slice e-b with its evidence; on clean b917d1ba;
+  evidence target/xtask/xt0063)
+  Goal: a crate's formatting or lint drift is caught at the commit that makes it, not at the push boundary hundreds of commits
+  later — the granted push of 2026-10-28 was refused by `make ci`'s `check` leg over two files formatted wrong since 2026-10-27.
+  Result: `FOCUSED` (`xtask/src/main.rs`) begins with the first two steps of `make check`, `cargo fmt --all -- --check` and
+  `cargo clippy --all-targets --all-features -- -D warnings`; a cargo step's log is named by its subcommand (`cargo-fmt.log`,
+  `cargo-clippy.log`), and the tests hold the set at 29 and the two names. Measured on the clean HEAD and on the change:
+  `focused: 0 red of 27` (192 s) → `0 red of 29` (198 s), the 27 earlier verdict lines identical; RED — one appended line both
+  misformatted and a clippy error (`clone` on a `Copy` value) makes the run `2 red of 29`, exactly the two new checks
+  (`cargo fmt` rc=1, `cargo clippy` rc=101), built in the disposable target/tmp/xt0063-red and removed, the file restored
+  byte-identical. The change's own first draft was misformatted and the new check's command caught it before the commit.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -418,6 +431,14 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **NO REGRESSION** — `git ls-files -- target | wc -l` = 0 and `git status --short` empty after the removal (no tracked byte touched); the 1,408 kept output files present (`kept outputs missing 0`); the commit gate green (chain log).
 - [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
 
+## Acceptance Checklist (leaf XTASK.10)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -ciE 'fmt|clippy'` over `FOCUSED` (27 entries) and scripts/check_doctrines.project.sh = 0: no commit-time check runs rustfmt or clippy over the workspace; the push boundary's `make ci` refused at `check` (target/push/last-green.log, P4-SYSTEM.15 slice e-b).
+- [x] **FIX** — xtask/src/main.rs: two `FOCUSED` entries first, `log_name` names a cargo step `cargo-<subcommand>`, the tests (`FOCUSED.len()` 29, the two names); `cargo fmt -p xtask` applied to the draft.
+- [x] **ADDRESSED (verified)** — target/xtask/xt0063: before.stdout `focused: 0 red of 27`, after.stdout `focused: 0 red of 29`, `earlier verdict lines identical: 27 of 27`; red.stdout `focused: 2 red of 29` (`cargo fmt` rc=1, `cargo clippy` rc=101); `cmp` restored rc=0; the disposable target removed.
+- [x] **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
+- [x] **LOCKSTEP** — the tree (XTASK.10 node, Children, changelog line), docs/TASK_TREE.md (9 of 10 leaves done), the knowledge card that counts the set, CHANGELOG.md, MEMORY.md.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -481,3 +502,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.6 slice 6av done — the leaf's closing review: 41 of 41 project drivers behind held shims; the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`); XTASK.6 `done`, the frontier `XTASK.4`.
 - `2026-10-28`: XTASK.9 done — the units' own scratch removed: 40 draft-crate targets and 228 scratch clones (11.1 GB) the units had left under `target/xtask/`, every output kept; a sweep after every landed commit makes it mechanical.
 - `2026-10-28`: XTASK.4 slice 4b — the closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed; the close waits on the director); the 6av "submodule" claim corrected; XTASK.6's closed rows and paragraphs moved to archive parts 5 and 6.
+- `2026-10-28`: XTASK.10 done — `cargo xtask focused` runs rustfmt and clippy first (29 checks); routed from P4-SYSTEM.15 slice e-b after the push boundary refused over formatting drift.

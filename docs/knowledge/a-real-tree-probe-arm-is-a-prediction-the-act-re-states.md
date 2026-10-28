@@ -21,7 +21,7 @@ tree. Three kinds can, and a change to a profile's catalogue or evidence re-stat
   and the gate line gains `FINDING credit … lapsed`, exit 1. Predict it from the code, then exercise it
   by moving one pinned input a byte and restoring it from the index.
 
-The focused set (`cargo xtask focused`, 27 checks since `XTASK.7`) does not include `PROFILE-CONSISTENCY`: the self-test
+The focused set (`cargo xtask focused`, 27 checks since `XTASK.7`, 29 since `XTASK.10`) does not include `PROFILE-CONSISTENCY`: the self-test
 costs the pre-commit gate's fifty minutes. So the chain reports the three arms only after the gate has
 run. Before launching a chain that touches `profiles/` or `evidence/`, run the probes directly, in both
 modes, and the mutation arm whose count depends on the record:

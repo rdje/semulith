@@ -206,10 +206,22 @@ use std::process::{Command, ExitCode, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// The focused check set, in the order the commit workflow has run it since 2026-10-22 (API-DOCS since
-/// 2026-10-26, `XTASK.7`): the
+/// 2026-10-26, `XTASK.7`; rustfmt and clippy first since 2026-10-28, `XTASK.10`): the
 /// repository-wide documentation, routing, task-tree, history and record checks, then the book.
 /// Before `XTASK.2` this list lived only in per-unit scratch scripts under `target/`.
 const FOCUSED: &[&[&str]] = &[
+    // XTASK.10 (2026-10-28): the first two steps of `make check`, so rustfmt or clippy drift in any crate is caught at
+    // the commit, not hundreds of commits later at the push boundary (P4-SYSTEM.15 slice e-b).
+    &["cargo", "fmt", "--all", "--", "--check"],
+    &[
+        "cargo",
+        "clippy",
+        "--all-targets",
+        "--all-features",
+        "--",
+        "-D",
+        "warnings",
+    ],
     &["bash", "scripts/check_memory_architecture.sh"],
     &["bash", "scripts/check_readme_routes.sh"],
     &["bash", "scripts/check_registry_mirror.sh"],
@@ -457,6 +469,10 @@ fn exit_code(code: Option<i32>) -> ExitCode {
 
 /// The log name of a focused check: its script's stem, or `book` for `make book`.
 fn log_name(command: &[&str]) -> String {
+    // A cargo step is named by its subcommand (`cargo-fmt`), never by its last flag.
+    if let ["cargo", subcommand, ..] = command {
+        return format!("cargo-{subcommand}");
+    }
     let last = command.last().copied().unwrap_or("check");
     let file = last.rsplit('/').next().unwrap_or(last);
     file.strip_suffix(".sh").unwrap_or(file).to_owned()
@@ -675,7 +691,7 @@ mod tests {
                 );
             }
         }
-        assert_eq!(FOCUSED.len(), 27);
+        assert_eq!(FOCUSED.len(), 29);
     }
 
     #[test]
@@ -686,6 +702,11 @@ mod tests {
         sorted.dedup();
         assert_eq!(sorted.len(), names.len());
         assert_eq!(log_name(&["make", "book"]), "book");
+        assert_eq!(
+            log_name(&["cargo", "fmt", "--all", "--", "--check"]),
+            "cargo-fmt"
+        );
+        assert_eq!(log_name(FOCUSED[1]), "cargo-clippy");
         assert_eq!(
             log_name(&["bash", "scripts/check_docpaths.sh"]),
             "check_docpaths"

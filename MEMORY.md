@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0311` — P4-SYSTEM.15 slice e-b: two files rustfmt-formatted after the granted push's boundary refused
-  (`make ci` red at `check`; nothing sent). Before it P4-0310 (a44: the director's rulings of 2026-10-28 recorded), XTASK-0062,
-  XTASK-0061, AC-0086.
+- last_unit: `SEMULITH-XTASK-0063` — XTASK.10: `cargo xtask focused` runs rustfmt and clippy first (29 checks), so formatting or
+  lint drift is caught at the commit. Before it P4-0311 (P4-SYSTEM.15 e-b: the formatting the push boundary refused), P4-0310
+  (the director's rulings of 2026-10-28 recorded); pushed b917d1ba (361 commits, make ci green).
 - next_action: the director ruled 2026-10-28 (`decision_director-rulings-2026-10-28.md`): the NEXT PUSH is granted (a cadence push,
   361 commits) — retry it after P4-0311 (the first try refused: fmt drift); then features first (5:1): P4-SYSTEM.14 a44-1 (the case file and the tools
   reading it), a44-2/a44-3 (M v4, DIV v3 re-captures), the XLEN/CSR-SET/SSTC declarations as data; tooling turns: the three
