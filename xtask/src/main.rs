@@ -128,6 +128,10 @@
 //!   `6at`, `check_readme_routes.rs`): every destination the landing page links to and the README guard emits governed
 //!   and bounded by `doctrine/readme_routes.tsv`, the three Python readers run verbatim and the measuring tools spawned
 //!   as before; `scripts/check_readme_routes.sh` is its shim.
+//! - `cargo xtask check-seam-integrity [--self-test]` is the `SEAM-INTEGRITY` doctrine's driver (`XTASK.6` slice
+//!   `6au`, `check_seam_integrity.rs`): the `.doctrine/` seams' behaviour re-asserted over the repository's own
+//!   history, the owner's rules asked of it and the box scoper and pattern tests spawned as before;
+//!   `scripts/check_seam_integrity.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -178,6 +182,7 @@ mod check_registry_mirror;
 mod check_requirements;
 mod check_rustdoc;
 mod check_scope_coverage;
+mod check_seam_integrity;
 mod check_semantics_corpus;
 mod check_source_format;
 mod check_state_gen;
@@ -283,12 +288,14 @@ const NATIVE: &[&str] = &[
     "check-guest-gen",
     "check-profile-consistency",
     "check-readme-routes",
+    "check-seam-integrity",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-seam-integrity", "scripts/check_seam_integrity.sh"),
     ("check-readme-routes", "scripts/check_readme_routes.sh"),
     (
         "check-profile-consistency",
@@ -411,6 +418,7 @@ fn main() -> ExitCode {
             "check-guest-gen" => check_guest_gen::run(&root, &args[1..]),
             "check-profile-consistency" => check_profile_consistency::run(&root, &args[1..]),
             "check-readme-routes" => check_readme_routes::run(&root, &args[1..]),
+            "check-seam-integrity" => check_seam_integrity::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

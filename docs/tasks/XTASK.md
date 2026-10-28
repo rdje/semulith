@@ -443,6 +443,23 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   was finished with the docs first and the counts after them. `SEAM-INTEGRITY` waits on the readers of `GAP-CLAIM-CENSUS`, a universal
   spine check. Next:
   slice `6au` — the leaf's closing review.
+  Slice 6au (`2026-10-28`, `SEMULITH-XTASK-0059`; on clean 94de1c7b, taken out of turn — no feature leaf unblocked): `SEAM-INTEGRITY`'s driver
+  is Rust — `xtask/src/check_seam_integrity.rs` (636 lines) ports the bash driver line for line, and the closing review that 6at named
+  moves to slice 6av: its first measurement found the stated hold weaker than the leaf said. `SEAM-INTEGRITY` READS `GAP-CLAIM-CENSUS`'s
+  text (its `CENSUS_RE`, for the vocabulary rule R5), and that driver stays bash — so nothing blocked the port; the 6r-era phrase "waits
+  on `check_gap_claims.sh`'s readers" had been carried forward unexamined. The port asks the owner for its effective rules as the script
+  did (`scripts/check_task_acceptance.sh --print-sig`, `--print-code-re`), extracts the built-in defaults and the census list from the
+  scripts' text as its `sed` did, runs the box scoper (`awk`) verbatim per task file and every pattern test through the shell's own
+  `grep -E`, and the verdict line's box count through the script's own pipeline; the nineteen bash `score` lines are nineteen
+  `tally.score(` calls, the arm total unchanged; `scripts/check_seam_integrity.sh` a shim of `cargo xtask check-seam-integrity` that keeps
+  the scratch preamble the locality probe reads. Measured in a disposable draft crate: the self-test `19 pass / 0 fail` with stdout and
+  stderr byte-identical to the bash driver's, the real tree's stdout and stderr byte-identical (`SEAM-INTEGRITY: ok (1843 current tracked
+  acceptance box(es) …)`), and 4 scratch fixture repositories — a clone of the repository, a seam file emptied (refused: the controls
+  no longer discriminate), an acceptance box without evidence, a prose file the classifier over-matches — 4 identical, 0 differ in stdout, stderr and
+  exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). 41 of 41 drivers through shims: every driver of
+  the project registry. Next: slice `6av` — the leaf's closing review, which weighs the four checks the universal registry runs from
+  project-owned scripts (`MEMORY-ARCH`, `README-STABILITY`, `TASK-ACCEPTANCE`, `GAP-CLAIM-CENSUS`): the spine's registry, two of them
+  carrying source fixes owed upstream (`scripts/update_scaffold.sh`'s note, `reference_upstream-spine-defects.md`).
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -526,7 +543,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6au`: the leaf's closing review — every project driver but `SEAM-INTEGRITY` (waiting on `GAP-CLAIM-CENSUS`'s readers) answers through a shim; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6av`: the leaf's closing review — every project driver answers through a shim; the four universal-registry checks the project owns (spine role, fixes owed upstream) weighed; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -627,6 +644,12 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - [x] slice 6at **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0058/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6at **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_readme_routes.sh` through the shim → the same `ok (44 governed destination(s))` lines; `bash scripts/check_derived_counts.sh` → ok (94 bash arms out, 94 `tally.arm(` in; 1692 holds; 40 of 41 drivers through shims re-derived); `bash scripts/check_seam_integrity.sh --self-test` → 19 pass (the locality preamble kept).
 - [x] slice 6at **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6at, frontier 6au, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6au **REPRODUCE / ISSUE** — before/ (bash driver at 94de1c7b; target/xtask/xt0059/before/): `SEAM-INTEGRITY: ok (1843 current tracked acceptance box(es) match declared signatures; classification properties hold)` rc 0, stderr empty; `SEAM-INTEGRITY --self-test: 19 pass / 0 fail`; `grep -cE '^[[:space:]]+score "' scripts/check_seam_integrity.sh` = 19.
+- [x] slice 6au **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around an `awk` box scoper, `grep -E` pattern tests and `sed` extractions of two other scripts' text; the recorded hold ("waits on `check_gap_claims.sh`'s readers") was examined: `grep -c 'check_gap_claims.sh' scripts/check_seam_integrity.sh` = 3, every one a READ of that bash script's text, so the port keeps reading it and nothing blocked.
+- [x] slice 6au **FIX** — xtask/src/check_seam_integrity.rs (`shasum -a 256` = d24a9926abf8246f673bfb558c1d2a91e5dd1f7e5fcde5ffb3c55ae08ebaa061; `wc -l` = 636; `grep -cE '^[[:space:]]+tally\.score\('` = 19); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_seam_integrity.sh a shim (`exec cargo xtask check-seam-integrity "$@"`, the locality preamble kept).
+- [x] slice 6au **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0059/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6au **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_seam_integrity.sh` through the shim → the same `ok (… acceptance box(es) …)` line; `bash scripts/check_derived_counts.sh` after the docs → ok (19 bash scores out, 19 `tally.score(` in; 1692 holds; 41 of 41 drivers through shims re-derived).
+- [x] slice 6au **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6au, frontier 6av, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -703,3 +726,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6ar done — `PROFILE-CONSISTENCY`'s driver is Rust behind a held shim (the inline judge run verbatim, tools and probes spawned as before, the XTASK.8 prefetch kept), byte-identical on the real tree and 2 fixture repositories, 51 arms + 494 scores; every pinned-module caller now answers through a shim; next `check_readme_routes.sh` (slice 6as) or the leaf's closing review; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6as done — the leaf's driver count re-derived (39 of 41 through shims, not 38 of 42) and owned by `DERIVED-COUNTS` (two claim rows, RED on the old text, GREEN on the corrected); next `check_readme_routes.sh` (slice 6at), a design first; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6at done — `README-ROUTING-CLOSURE`'s driver is Rust behind a held shim (the three Python readers run verbatim, the tools spawned under each fixture's environment, the five redefined functions as seams), byte-identical on the real tree and 4 fixture repositories, ninety-four arms; 40 of 41 drivers through shims; next the leaf's closing review (slice 6au).
+- `2026-10-28`: XTASK.6 slice 6au done — `SEAM-INTEGRITY`'s driver is Rust behind a held shim (the owner's rules asked of it, the box scoper and pattern tests spawned as before), byte-identical on the real tree and 4 fixture repositories, nineteen scores; the recorded hold on it was examined and found empty; 41 of 41 project drivers through shims; next the leaf's closing review (slice 6av).
