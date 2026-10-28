@@ -20,9 +20,9 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-AC-0086` — ARTIFACT-CLEANUP.30, the recurring cleanup (6 outputs removed, residue 0). Before it
-  `SEMULITH-P4-0309` — P4-SYSTEM.17 slice b: the CI portability matrix per unit, the Rosetta bridge repaired; then
-  SEMULITH-XTASK-0060 (XTASK.6 closed; the spine's own checks stay bash).
+- last_unit: `SEMULITH-XTASK-0061` — XTASK.9: the XTASK units' own scratch removed (40 draft-crate targets, 228 clones, 11.1 GB;
+  outputs kept; a sweep after every landed commit). Before it SEMULITH-AC-0086 (ARTIFACT-CLEANUP.30), SEMULITH-P4-0309
+  (P4-SYSTEM.17 slice b: the CI portability matrix per unit, the Rosetta bridge repaired).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance;
   `.17` on the next approved push's hosted run) and the workload kind's declaration; until a ruling lands: the XTASK frontier

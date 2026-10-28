@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -555,6 +555,31 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   and on a real refusal); a code commit's gate well under ten minutes; every check's own scratch untouched by
   the others.
 
+- ID: `XTASK.9` — **the units' own scratch removed**
+  Status: `done` (`2026-10-28`, `SEMULITH-XTASK-0061`; opened by `ARTIFACT-CLEANUP.30`'s census, AC0086; on clean d860ac3f;
+  evidence target/xtask/xt0061)
+  Goal: every disposable build directory and scratch clone repository the XTASK units left under `target/xtask/` removed —
+  rule 1 of `decision_orphan-incremental-sessions.md`, this tree's Acceptance Criterion 6 — every output, log and summary
+  kept, and the removal made mechanical.
+  Result: the cleanup's census attributed 450 of its 784 unrecorded files (2,295,034,299 B) to 40 draft-crate target
+  directories (`target/xtask/xt0013` … `xt0059`, each a cargo target with `CACHEDIR.TAG`); a wider census found 228 scratch
+  clone repositories in the `red-<epoch>` fixture directories beside them. Why they stayed: a draft target was rebuilt across
+  a slice's iterations and nothing removed it at the unit's close, and `red_clone.sh` wrote each fixture's compared outputs
+  (`*.bash.out`, `*.rs.out`, `tally`, the `summary.txt` the acceptance rows cite through the `red` link) into the directory
+  that held its clones — a whole-directory removal would have destroyed cited evidence, and nothing removed the clones inside.
+  `remove_scratch.py` validated every path by shape and content (a target: `CACHEDIR.TAG` and only cargo's entries; a clone:
+  `.git`) and removed exactly 268 directories (11,125,043,200 B by `du -sk`): `target/xtask` 11,258,164 KB → 393,888 KB, the
+  1,408 output files beside the clones all present after; of the AC0086 unrecorded population 450 gone and 334 left
+  (1,399,591,247 B, the shared target's own orphan sessions, the `.29` ruling's), none under `target/xtask/`. Mechanical from
+  now on, in the local helpers (untracked): `target/xtask/sweep_unit_scratch.sh <evidence-dir>` removes only a directory of
+  the evidence dir carrying `CACHEDIR.TAG` and a directory inside a `red-*` carrying `.git`, refuses a path outside
+  `target/`, and runs after every successful commit of the chain; `red_clone.sh` removes a clone once its outputs compare
+  equal (a DIFFER keeps it for inspection). The sweep's control on a scratch layout removed exactly the target and the clone
+  and kept the outputs, a plain directory and a link. Outside this leaf, listed for the director beside the `.29` ruling:
+  18 nested cargo target roots of other trees' units (`target/p4-system-7`, `-11`, `-12`, `-13`, `target/refs`,
+  `target/linkedspec`, `target/miri`, `target/miri.stale-*`), 24,135,434,240 B, all but `target/miri` older than the rule.
+  Card: `docs/knowledge/scratch-kept-beside-its-outputs-is-never-removed.md`.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -691,6 +716,14 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - [x] **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1164 pass / 0 fail` with and without the prefetch; `ARTIFACT-COHORT --self-test: 150 pass / 0 fail` (was 148) and `python3 -B scripts/probe_artifact_cargo.py --mutation stop-zombie` → `artifact Cargo: 1 tests / 1 failures / 0 errors`; every project check rc 0 in the pooled run (`awk -F'\t' '$2!=0' target/xtask/xt0017/gate/times.pool.tsv | wc -l` = 0); no scratch left behind (`ls target/doctrine-selftest | wc -l` = 0).
 - [x] **LOCKSTEP** — the tree (XTASK.8 node, Children, frontier rows, changelog line), docs/TASK_TREE.md, CHANGELOG.md entry, MEMORY.md next_action, the knowledge card and its INDEX row.
 
+## Acceptance Checklist (leaf XTASK.9)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — target/artifact-cleanup/AC0086-census.txt: `unrecorded 784 files 3,694,625,546 B`, `under target/xtask/*/draft-target: 450 files 2,295,034,299 B`; `find target/xtask -name draft-target` 40 directories, each with `CACHEDIR.TAG`; 228 clone roots (`.git`) under 51 `red-<epoch>` directories, `du -sk` 7.01 GB; `git grep -l -E 'red-17[0-9]{8}' | wc -l` = 0 (no tracked doc cites a path inside them); red_clone.sh writes `$R/$NAME.bash.out` into the clones' directory.
+- [x] **FIX** — target/xtask/xt0061/remove_scratch.py (`--apply`): `removed 268; still present 0; kept outputs missing 0`, removed.tsv 268 rows (`wc -l`); the helpers: sweep_unit_scratch.sh (`bash -n` rc=0) called by commit-chain.sh after a successful commit, red_clone.sh removing a matched clone.
+- [x] **ADDRESSED (verified)** — `du -sk target/xtask`: 11258164 → 393888; unrecorded-after.txt: `still present 334 files 1,399,591,247 B; gone 450`, `still present under target/xtask/: 0`; the sweep control: `sweep: 2 removed`, outputs, a plain directory and a link kept, a path outside target/ refused rc=2.
+- [x] **NO REGRESSION** — `git ls-files -- target | wc -l` = 0 and `git status --short` empty after the removal (no tracked byte touched); the 1,408 kept output files present (`kept outputs missing 0`); the commit gate green (chain log).
+- [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
+
 ## Changelog
 
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
@@ -752,3 +785,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6at done — `README-ROUTING-CLOSURE`'s driver is Rust behind a held shim (the three Python readers run verbatim, the tools spawned under each fixture's environment, the five redefined functions as seams), byte-identical on the real tree and 4 fixture repositories, ninety-four arms; 40 of 41 drivers through shims; next the leaf's closing review (slice 6au).
 - `2026-10-28`: XTASK.6 slice 6au done — `SEAM-INTEGRITY`'s driver is Rust behind a held shim (the owner's rules asked of it, the box scoper and pattern tests spawned as before), byte-identical on the real tree and 4 fixture repositories, nineteen scores; the recorded hold on it was examined and found empty; 41 of 41 project drivers through shims; next the leaf's closing review (slice 6av).
 - `2026-10-28`: XTASK.6 slice 6av done — the leaf's closing review: 41 of 41 project drivers behind held shims; the four universal-registry checks the project owns stay bash (`decision_universal-registry-checks-stay-bash.md`); XTASK.6 `done`, the frontier `XTASK.4`.
+- `2026-10-28`: XTASK.9 done — the units' own scratch removed: 40 draft-crate targets and 228 scratch clones (11.1 GB) the units had left under `target/xtask/`, every output kept; a sweep after every landed commit makes it mechanical.
