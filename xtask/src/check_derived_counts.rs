@@ -16,12 +16,16 @@ use std::process::{Command, ExitCode, Stdio};
 
 use crate::harness::scratch;
 
-/// The `count_claims` table, verbatim: `label|pattern|enumerator`.
+/// The `count_claims` table, verbatim from the script (`label|pattern|enumerator`), and two rows added in `XTASK.6` slice
+/// `6as` after a running total drifted through twelve slices: the shim count and the registry size of the live phrase
+/// `N of M drivers through shims`, re-derived from the project registry and the shims' own `exec cargo xtask` line.
 const CLAIMS: &str = "routed destinations|([0-9]+) destinations governed|grep -cv '^#\\|^$' doctrine/readme_routes.tsv
 project doctrines|([0-9]+) registered|grep -cE '^  \"[A-Z]' scripts/check_doctrines.project.sh
 book chapters|([0-9]+) chapters|grep -cE '^\\s*-? ?\\[' docs/book/src/SUMMARY.md
 self-test arms|([0-9]+) self-test arms|arm_total
 open upstream issues|([0-9]+) open upstream issues|python3 scripts/upstream_exposure.py --open-count
+drivers through shims|([0-9]+) of [0-9]+ drivers through shims|grep -oE '[|]scripts/[a-z_]+[.]sh\"$' scripts/check_doctrines.project.sh | tr -d '|\"' | xargs grep -l '^exec cargo xtask' | grep -c .
+drivers registered|([0-9]+) drivers through shims|grep -cE '^  \"[A-Z]' scripts/check_doctrines.project.sh
 ";
 
 /// A parsed claim row.

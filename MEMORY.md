@@ -20,17 +20,17 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0054` — XTASK.6 slice 6ar: PROFILE-CONSISTENCY's driver in Rust behind a held shim (the inline judge run
-  verbatim, tools and probes spawned as before, the XTASK.8 prefetch kept; 51 arms + 494 scores; byte-identical on the real tree and
-  2 fixture repositories) — 38 of 42 drivers through shims, every pinned-module caller. Before it XTASK-0056 (6aq-b, the part-4 row move named), XTASK-0053 (6aq), XTASK-0052 (6ap).
+- last_unit: `SEMULITH-XTASK-0057` — XTASK.6 slice 6as: the leaf's driver count re-derived — 39 of 41 drivers through shims (it had
+  drifted as `N of 42` since 6ai) — and owned by DERIVED-COUNTS (two claim rows, RED on the old text, GREEN now). Before it
+  XTASK-0054 (6ar), XTASK-0056 (6aq-b), XTASK-0053 (6aq), XTASK-0052 (6ap), XTASK-0051 (6ao), XTASK-0050 (6an), XTASK-0049 (6am).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6as (`check_readme_routes.sh`,
-  the one deferred driver, behind a held shim — or the leaf's closing review). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6at (`check_readme_routes.sh`
+  behind a held shim — its PATH-shadowed tools and function redefinitions need a design first). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
-- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
-- blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the
-  machine); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
+- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 49 KB of 64 KiB (sharded in XTASK-0049, shard-0419).
+- blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
+  load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
   next REFUSED, read it first. Open for the director: the crediting act's authority and sufficiency
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.

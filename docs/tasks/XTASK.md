@@ -410,6 +410,19 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0 (clean on the first in-tree run). Every pinned-module caller now
   answers through a shim; `check_readme_routes.sh` (PATH-shadowing tool fixtures) stays the one deferred driver. Next: slice `6as` —
   `check_readme_routes.sh` behind a held shim, or the leaf's closing review.
+  Slice 6as (`2026-10-28`, `SEMULITH-XTASK-0057`; on clean 69d90094, taken out of turn — no feature leaf unblocked): the leaf's running
+  driver count is re-derived, and `DERIVED-COUNTS` now owns it. From slice 6ai on, every slice's docs script stated `N of 42 drivers
+  through shims` in `docs/TASK_TREE.md` and `MEMORY.md`, and 6ai's `42` was itself a miscount — the project registry holds 41 drivers
+  (`grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41) — so the claim drifted through twelve slices unchecked (§15, an own
+  defect: a running total, the founding defect class of `DERIVED-COUNTS`). `xtask/src/check_derived_counts.rs`'s claims table gains two
+  rows on the live phrase `N of M drivers through shims` — the shim count (registered paths whose text runs `exec cargo xtask`) and the
+  registry size — observed RED on the live documents before the correction (four `COUNT DRIFT` findings, `MEMORY.md` and
+  `docs/TASK_TREE.md`: 38 against 39, 42 against 41) and GREEN after it. 39 of 41 drivers answer through shims today; `README-ROUTING-CLOSURE`
+  and `SEAM-INTEGRITY` are the two in bash. The closed slices' paragraphs and acceptance rows keep the numbers they stated, and the CHANGELOG
+  entries are frozen — both are history. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings rc=0. Next: slice `6at` —
+  `check_readme_routes.sh` behind a held shim. Its controls shadow `git`, `wc`, `python3`, `sort` and `grep` on `PATH` and redefine five shell
+  functions inside subshells, so the port spawns the same tools where the script did and carries the redefinitions as seams of its own —
+  a design settled first, in that slice.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -493,7 +506,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6as`: `check_readme_routes.sh` behind a held shim (the one deferred driver), or the leaf's closing review; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6at`: `check_readme_routes.sh` behind a held shim — its PATH-shadowed tools and function redefinitions need a design first; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -582,6 +595,12 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - [x] slice 6ar **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 2 fixture repositories (target/xtask/xt0053/red/summary.txt): `RED/GREEN paths: 2 identical, 0 differ` — stdout, stderr and rc each.
 - [x] slice 6ar **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to one command); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_profile_consistency.sh` through the shim → the same `PROFILE-CONSISTENCY: ok (…)` line; `bash scripts/check_derived_counts.sh` → ok (545 bash arms+scores out, 545 `tally.arm(`+`tally.score(` in; 1692 holds).
 - [x] slice 6ar **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6ar, frontier 6as, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
+- [x] slice 6as **REPRODUCE / ISSUE** — on clean 69d90094: `grep -c 'of 42 drivers through shims' docs/TASK_TREE.md` = 1 and `grep -c 'of 42 drivers through shims' MEMORY.md` = 1; `grep -cE '^  "[A-Z]' scripts/check_doctrines.project.sh` = 41; the shim count re-derived = 39; `bash scripts/check_derived_counts.sh` → `DERIVED-COUNTS: ok (3 derived count claim(s) re-derived)` rc=0 — the drift unchecked (target/xtask/xt0057/before/).
+- [x] slice 6as **ROOT CAUSE (WHY + WHERE)** — the count was a running total: each slice's docs script incremented the shim number and carried 6ai's `42` forward; `DERIVED-COUNTS`' claims table had no row for the phrase (`cargo run -q -p xtask -- check-derived-counts --list` before the change listed 5 claims, none of them it).
+- [x] slice 6as **FIX** — xtask/src/check_derived_counts.rs: two claim rows, `drivers through shims` (the registered paths whose text is `exec cargo xtask …`, `grep -l` counted) and `drivers registered` (`grep -cE '^  "[A-Z]'`); `--list` now shows `drivers through shims … 39` and `drivers registered … 41`; docs/TASK_TREE.md and MEMORY.md state 39 of 41.
+- [x] slice 6as **ADDRESSED (verified)** — RED before the correction: `bash scripts/check_derived_counts.sh` rc=1 with four `COUNT DRIFT` lines (MEMORY.md and docs/TASK_TREE.md; 38 vs 39 shims, 42 vs 41 registered; target/xtask/xt0057/red.out); GREEN after: rc=0, `DERIVED-COUNTS: ok (7 derived count claim(s) re-derived)` (claim instances across the live documents: the three before plus the new rows' four).
+- [x] slice 6as **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh --self-test` unchanged (the fixture claims are the self-test's own); no arm added, the arm total 1692 holds.
+- [x] slice 6as **LOCKSTEP** — the tree (slice 6as, frontier 6at, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY (its stale CHANGELOG-size and gate-cost lines re-measured in the same edit).
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -656,3 +675,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6ap done — `RECORD-SCHEMA`'s driver is Rust behind a held shim (the inline judge run verbatim, the writers, probes and the Rust graph checker spawned as before), byte-identical on the real tree and 3 fixture repositories, seventy-nine arms; next `check_guest_gen.sh` (slice 6aq); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6aq done — `GUEST-GEN`'s driver is Rust behind a held shim (generator, governor, probes and inline edits spawned as before; the module generated from the script), byte-identical on the real tree and 3 fixture repositories, 332 arms; XTASK.md's closed rows 6y–6ap archived (part 4, named by 6aq-b); next `check_profile_consistency.sh` (slice 6ar, the last pinned-module caller); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6ar done — `PROFILE-CONSISTENCY`'s driver is Rust behind a held shim (the inline judge run verbatim, tools and probes spawned as before, the XTASK.8 prefetch kept), byte-identical on the real tree and 2 fixture repositories, 51 arms + 494 scores; every pinned-module caller now answers through a shim; next `check_readme_routes.sh` (slice 6as) or the leaf's closing review; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-28`: XTASK.6 slice 6as done — the leaf's driver count re-derived (39 of 41 through shims, not 38 of 42) and owned by `DERIVED-COUNTS` (two claim rows, RED on the old text, GREEN on the corrected); next `check_readme_routes.sh` (slice 6at), a design first; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
