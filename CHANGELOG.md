@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0064 (leaf XTASK.11 slice a) — CITATION-QUOTES' availability probe refuses an unexpected exception
+
+Ruling 5 (`decision_doctrine-controls-refuse-and-freeze.md`), first doctrine. The availability probe caught four exception types and exited inside its `try`, so any other exception left Python with status 1 — the status the driver reads as "the pinned pages are absent" (a truncated manifest's `DossierError` became a NAMED SKIP, measured in XTASK.6 slice 6r). It now exits 2 with the exception's type and message on anything outside its named refusals, and exits 0 or 1 only after the call returns. Two arms hold it, over the probe's own text with its call patched: a foreign exception must refuse (2), an absence must stay the named skip (1); the same crash over the predecessor text exits 1, so the arm discriminates. Self-test 24 pass / 0 fail; the real verdict unchanged. The XTASK leaf's open questions 6r, 6u, 6x and 4b are marked answered by rulings 5 and 2; `XTASK.11` carries 6u and 6x next, then XTASK closes.
+
 ## SEMULITH-P4-0314 (leaf P4-SYSTEM.17) — portability closes: the hosted matrix agreed for both units
 
 The granted push's hosted portability run (40713852362 on b917d1ba) is green end to end: the four host jobs on ubuntu-latest (x86-64) and macos-latest (aarch64) produce the same manifests per unit — rv64gc `24c4f12a…` over 171 guests, rv64i `3fbc498e…` over 49, the digests measured here — the agree job prints that both units' hosts agree byte-identically, and the Miri and cross-endian legs are green. The x86-64 leg's permanent home now carries both units on real hardware; P4-SYSTEM.17 is done (15 of 18 leaves).

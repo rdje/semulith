@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -313,11 +313,26 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   (`cargo fmt` rc=1, `cargo clippy` rc=101), built in the disposable target/tmp/xt0063-red and removed, the file restored
   byte-identical. The change's own first draft was misformatted and the new check's command caught it before the commit.
 
+- ID: `XTASK.11` — **the doctrine controls refuse and freeze (ruling 5)**
+  Status: `active` (`2026-10-28`; the director's ruling 5, `decision_doctrine-controls-refuse-and-freeze.md`)
+  Goal: the three doctrine-owner questions answered as ruled — `CITATION-QUOTES`' availability probe refuses on any
+  unexpected exception (6r); `BOARD-VERDICT`'s and `STATE-GEN`'s controls judge frozen fixture copies, so a wrong live board or
+  a hand-edited live rv64gc pair fails by name (6u, 6x). One doctrine per slice, each change fired RED.
+  Slice a (`2026-10-28`, `SEMULITH-XTASK-0064`; on clean aafcbdfd; evidence target/xtask/xt0064): `CITATION-QUOTES`'
+  availability probe (`xtask/src/check_citation_quotes.rs` `AVAILABILITY`) now exits 2 with the exception's type and message
+  on any exception outside its named refusals, and exits 0 or 1 only after the call returns — a truncated manifest's
+  `DossierError` (the 6r finding) refuses instead of reading as "the pinned pages are absent". Two arms hold it: the probe's
+  own text with its call patched to raise a foreign `ValueError` must exit 2 naming it, and patched to return `False` must exit
+  1 (the named skip). Measured: `CITATION-QUOTES --self-test: 24 pass / 0 fail` (22 + the two); the real tree's verdict
+  unchanged (`115 attributed quote(s) judged … 0 finding(s)`); RED — the same crash program over the slice's predecessor text
+  exits 1 (the crash read as absent), so the arm discriminates. Next: slice b — `BOARD-VERDICT`'s frozen fixture board.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.4` | `active` | slice 4b's closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed); closing the leaf, and the tree with it, waits on the director |
+| 1 | `XTASK.11` | `active` | ruling 5: slice a done (CITATION-QUOTES refuses a crash); slices b (BOARD-VERDICT) and c (STATE-GEN) judge frozen fixture copies |
+| 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once `XTASK.11` lands |
 
 ## Decisions
 
@@ -342,10 +357,10 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   environment reaches it. Not changed in `4a`; a change to XTASK.1's measured output is its own slice.
 - Whether new tooling must be born in Rust once XTASK.1 exists — proposed in the decision record; to be
   confirmed by the director before any check enforces it. Does not block XTASK.1.
-- (6r, `2026-10-27`) `CITATION-QUOTES`'s availability probe exits 1 for "pages absent" and Python exits 1 for an uncaught exception, so a sources manifest the reader refuses outside the probe's `except` tuple reads as absence — NAMED SKIP, exit 0 (measured in the 6r fixture `manifest-unreadable`; the card: `docs/knowledge/a-crash-that-exits-one-reads-as-an-absence.md`, landed with the family's second re-derivation in 6r-b). The port reproduces it; the doctrine's owner decides whether the probe should refuse (exit 2) on any exception — a one-line change to the script, re-measured through the shim.
-- (6u, `2026-10-27`) `BOARD-VERDICT`'s controls copy the LIVE board (`profiles/netboard-lab-v0`) and expect it ACCEPTED, so a corpus whose live board is rejected makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6u fixtures `no-board` and `rejected`. The port reproduces it; the doctrine's owner decides whether the controls should run over a frozen fixture board instead.
-- (6x, `2026-10-27`) `STATE-GEN`'s controls judge the LIVE rv64gc pair (`profiles/rv64gc-lab-v0/state.sexp` against `crates/semulith-core/src/state_rv64gc.rs`) and expect it in sync, so a corpus whose live rv64gc module or census is edited makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6x fixtures `gc-module-hand-edited` and `gc-census-silent`; the rv64i pair fails by name. The port reproduces it; the doctrine's owner decides, beside 6u's question, whether the controls should run over frozen fixture copies.
-- (4b, `2026-10-28`) Whether `XTASK.4` — and with it the tree — closes with its 13 remaining scripts in shell, each for the
+- (Answered 2026-10-28 by ruling 5; executed by `XTASK.11` slice a.) (6r, `2026-10-27`) `CITATION-QUOTES`'s availability probe exits 1 for "pages absent" and Python exits 1 for an uncaught exception, so a sources manifest the reader refuses outside the probe's `except` tuple reads as absence — NAMED SKIP, exit 0 (measured in the 6r fixture `manifest-unreadable`; the card: `docs/knowledge/a-crash-that-exits-one-reads-as-an-absence.md`, landed with the family's second re-derivation in 6r-b). The port reproduces it; the doctrine's owner decides whether the probe should refuse (exit 2) on any exception — a one-line change to the script, re-measured through the shim.
+- (Answered 2026-10-28 by ruling 5; `XTASK.11` slice b.) (6u, `2026-10-27`) `BOARD-VERDICT`'s controls copy the LIVE board (`profiles/netboard-lab-v0`) and expect it ACCEPTED, so a corpus whose live board is rejected makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6u fixtures `no-board` and `rejected`. The port reproduces it; the doctrine's owner decides whether the controls should run over a frozen fixture board instead.
+- (Answered 2026-10-28 by ruling 5; `XTASK.11` slice c.) (6x, `2026-10-27`) `STATE-GEN`'s controls judge the LIVE rv64gc pair (`profiles/rv64gc-lab-v0/state.sexp` against `crates/semulith-core/src/state_rv64gc.rs`) and expect it in sync, so a corpus whose live rv64gc module or census is edited makes the check refuse as non-discriminating (exit 2) instead of failing by name (exit 1) — measured in the 6x fixtures `gc-module-hand-edited` and `gc-census-silent`; the rv64i pair fails by name. The port reproduces it; the doctrine's owner decides, beside 6u's question, whether the controls should run over frozen fixture copies.
+- (Answered 2026-10-28 by ruling 2, `decision_xtask-closes-with-shell-remainder.md`: yes, after `XTASK.11`.) (4b, `2026-10-28`) Whether `XTASK.4` — and with it the tree — closes with its 13 remaining scripts in shell, each for the
   constraint slice 4b measured (hooks, network, pinned readers, the template, the controls' stub cargo). The lane is the
   director's (`decision_rust-native-tooling.md`); until the word, the leaf stays active and no port of them is started.
 
@@ -431,6 +446,13 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **NO REGRESSION** — `git ls-files -- target | wc -l` = 0 and `git status --short` empty after the removal (no tracked byte touched); the 1,408 kept output files present (`kept outputs missing 0`); the commit gate green (chain log).
 - [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
 
+## Acceptance Checklist (leaf XTASK.11)
+
+- [x] slice a **ROOT CAUSE (WHY + WHERE)** — `AVAILABILITY` caught four exception types and called `sys.exit` inside the `try`, so any other exception left the interpreter with status 1, the status the driver reads as absence (the 6r card; target/xtask/xt0064/red-old-text.txt: the predecessor text with a foreign `ValueError` → `rc=1`).
+- [x] slice a **FIX** — xtask/src/check_citation_quotes.rs: `except Exception` → exit 2 with the type and message, the exit after the call; two arms (`tally.arm(` ×2) over the probe's own text with its call patched.
+- [x] slice a **ADDRESSED (verified)** — `CITATION-QUOTES --self-test: 24 pass / 0 fail` (selftest.out); `bash scripts/check_citation_quotes.sh` rc=0 `115 attributed quote(s) judged (R1 1, R2 108, R3 3, R4 3); 0 finding(s)` (real.out).
+- [x] slice a **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt --all -- --check` rc=0; DERIVED-COUNTS re-derived (LIVE_STATUS 1,694 → 1,696 arms); the commit gate green (chain log).
+
 ## Acceptance Checklist (leaf XTASK.10)
 
 - [x] **ROOT CAUSE (WHY + WHERE)** — `grep -ciE 'fmt|clippy'` over `FOCUSED` (27 entries) and scripts/check_doctrines.project.sh = 0: no commit-time check runs rustfmt or clippy over the workspace; the push boundary's `make ci` refused at `check` (target/push/last-green.log, P4-SYSTEM.15 slice e-b).
@@ -503,3 +525,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.9 done — the units' own scratch removed: 40 draft-crate targets and 228 scratch clones (11.1 GB) the units had left under `target/xtask/`, every output kept; a sweep after every landed commit makes it mechanical.
 - `2026-10-28`: XTASK.4 slice 4b — the closing review: all 13 remaining scripts stay shell, each for a measured constraint (proposed; the close waits on the director); the 6av "submodule" claim corrected; XTASK.6's closed rows and paragraphs moved to archive parts 5 and 6.
 - `2026-10-28`: XTASK.10 done — `cargo xtask focused` runs rustfmt and clippy first (29 checks); routed from P4-SYSTEM.15 slice e-b after the push boundary refused over formatting drift.
+- `2026-10-28`: XTASK.11 slice a — CITATION-QUOTES' availability probe refuses an unexpected exception (ruling 5); 24 arms.

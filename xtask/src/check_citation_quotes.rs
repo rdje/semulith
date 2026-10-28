@@ -19,17 +19,24 @@ use crate::harness::{combined, scratch};
 
 const TOOL: &str = "scripts/check_citation_quotes.py";
 
-/// The availability probe, verbatim: `check_citations`' own cache route — the fetched working area, else the
-/// manifest-verified materials cache. 0 present, 1 absent, 2 cannot be judged.
+/// The availability probe: `check_citations`' own cache route — the fetched working area, else the
+/// manifest-verified materials cache. 0 present, 1 absent, 2 cannot be judged. Since `XTASK.11` slice a (ruling 5,
+/// `decision_doctrine-controls-refuse-and-freeze.md`) any exception outside the named refusals is a crash the probe
+/// cannot judge past — exit 2 — never the exit 1 that means "absent" (a truncated manifest's `DossierError` was read as
+/// absence, measured in `XTASK.6` slice 6r).
 const AVAILABILITY: &str = r#"import sys
 sys.path.insert(0, "scripts")
 import check_citations as C
 import sexp
 try:
-    sys.exit(0 if C.artifacts_available() else 1)
+    available = C.artifacts_available()
 except (C.CitationError, sexp.SexpError, KeyError, OSError) as exc:
     print(exc)
     sys.exit(2)
+except Exception as exc:
+    print(f"{type(exc).__name__}: {exc}")
+    sys.exit(2)
+sys.exit(0 if available else 1)
 "#;
 
 /// The identity control, verbatim: a page whose bytes differ from its pinned digest must be refused, not judged.
@@ -391,6 +398,34 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         1,
         &out,
         "sha256",
+    );
+    // XTASK.11 slice a (ruling 5): the availability probe's own exits, with its call patched — an unexpected
+    // exception refuses (2); only a recognised absence is the named skip's 1.
+    let patched = |body: &str| {
+        format!(
+            "import sys\nsys.path.insert(0, \"scripts\")\nimport check_citations as C\ndef _patched():\n{body}\nC.artifacts_available = _patched\n{AVAILABILITY}"
+        )
+    };
+    let (rc, out) = python_program(
+        repo,
+        &patched("    raise ValueError(\"a foreign failure\")"),
+        &[],
+        true,
+    );
+    tally.arm(
+        "RED an unexpected exception in the availability probe refuses, never reads as absent",
+        rc,
+        2,
+        &out,
+        "ValueError: a foreign failure",
+    );
+    let (rc, out) = python_program(repo, &patched("    return False"), &[], true);
+    tally.arm(
+        "GREEN a recognised absence is the availability probe's exit 1, the named skip",
+        rc,
+        1,
+        &out,
+        "",
     );
     let _ = fs::remove_dir_all(&t);
     if verbose {

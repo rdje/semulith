@@ -11,7 +11,7 @@ summarize the snapshot in every commit-workflow completion message.
 | Discipline spine (`bedrock` 0.6.1) | Done | memory · task-trees · commit workflow · doctrine enforcement · mdBook |
 | Planning package v0.2 ingested | Done | [`SEMULITH-PKG`](docs/tasks/SEMULITH-PKG.md) |
 | Claim-verification standard adopted | Done | `docs/CLAIM_VERIFICATION.md`; §5A tags and §7 constant sweep not mechanized |
-| Project doctrines (41 registered) | Done | `scripts/check_doctrines.project.sh` — 1694 self-test arms, each fired RED before registration |
+| Project doctrines (41 registered) | Done | `scripts/check_doctrines.project.sh` — 1696 self-test arms, each fired RED before registration |
 | Spine defects repaired at source | Done | fixed in `check_task_acceptance.sh`, watched by `SEAM-INTEGRITY` |
 | README policy + routing closure | Done | 85 lines / 4,864 B; 44 destinations |
 | mdBook is the review surface | Done | 50 chapters; the doctrine chapter is gated against the registry; the API reference is rustdoc, built with it |
