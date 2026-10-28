@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0062` — XTASK.4 slice 4b, the closing review: all 13 remaining scripts stay shell (proposed; the close is the
-  director's); the 6av "submodule" claim corrected; XTASK.6's closed text archived (parts 5, 6); CHANGELOG sharded. Before it
-  XTASK-0061 (XTASK.9: the units' own scratch removed), AC-0086, P4-0309 (the CI portability matrix per unit).
-- next_action: RAISED to the director — no unblocked leaf remains: the `.14` declarations and the ZICNTR program wait on the pinned-tooling
-  ruling (A/B/C in the P4-0306 leaf); LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance; `.17` on the next
-  approved push's hosted run; `.15` slice g on the workload kind's declaration; XTASK.4's close on the director's word (4b's Open
-  Question); `ARTIFACT-CLEANUP.29` on its ruling. Only `ARTIFACT-CLEANUP.31` runs unasked, once due (after 2026-10-29T09:49Z).
+- last_unit: `SEMULITH-P4-0310` — P4-SYSTEM.14 a44: the director's rulings of 2026-10-28 recorded (five records, one per ruling;
+  `decision_director-rulings-2026-10-28.md`). Before it XTASK-0062 (XTASK.4 slice 4b), XTASK-0061 (XTASK.9), AC-0086,
+  P4-0309 (the CI portability matrix per unit).
+- next_action: the director ruled 2026-10-28 (`decision_director-rulings-2026-10-28.md`): the NEXT PUSH is granted (a cadence push,
+  359+ commits) — run it right after this unit lands; then features first (5:1): P4-SYSTEM.14 a44-1 (the case file and the tools
+  reading it), a44-2/a44-3 (M v4, DIV v3 re-captures), the XLEN/CSR-SET/SSTC declarations as data; tooling turns: the three
+  doctrine controls (XTASK), XTASK's close, ARTIFACT-CLEANUP.29 (class C + other trees' 24.1 GB); `.31` due after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under

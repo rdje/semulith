@@ -6,6 +6,11 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [The director's rulings of 2026-10-28](decision_director-rulings-2026-10-28.md) | `decision` | What did the director rule on 2026-10-28, to what standard, and which leaf executes each ruling? |
+| [Case declarations move to data (2026-10-28)](decision_case-declarations-as-data.md) | `decision` | How does a new matched case get declared without lapsing the credit that rests on a retained capture? |
+| [XTASK closes with its shell remainder (2026-10-28)](decision_xtask-closes-with-shell-remainder.md) | `decision` | Does every shell script have to move behind cargo xtask before the XTASK tree closes? |
+| [Orphan sessions removed whole, record-anchored (2026-10-28)](decision_orphan-sessions-record-anchored.md) | `decision` | What does the recorded class "orphan incremental session" remove, and what happens to the leftover build directories of older units? |
+| [Probe exceptions refuse; self-tests judge frozen copies (2026-10-28)](decision_doctrine-controls-refuse-and-freeze.md) | `decision` | What should a doctrine do when its availability probe crashes, or when its self-test's controls copy live data that is wrong? |
 | [The universal-registry checks the project owns stay bash (2026-10-28)](decision_universal-registry-checks-stay-bash.md) | `decision` | Why do MEMORY-ARCH, README-STABILITY, TASK-ACCEPTANCE and GAP-CLAIM-CENSUS stay bash when every project driver moved behind `cargo xtask`? |
 | [Knowledge family re-derived a second time (2026-10-27)](decision_knowledge-family-second-rederivation.md) | `decision` | Why did the knowledge-card family's ceiling fire again five days after its first re-derivation, and what bounds hold now? |
 | [The harness's own record mapping (2026-10-27)](decision_rust-records-mapping.md) | `decision` | `xtask/src/records.rs` equal to the pinned `scripts/records_sexp.py` by measurement — all 16 tracked catalogues identical through both readers, held by two unit tests; `cargo xtask records <catalogue> [--dump]`; nothing ported, nothing shimmed |

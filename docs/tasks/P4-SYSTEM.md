@@ -413,7 +413,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | the XLEN, CSR-SET and SSTC programs in the corpus (a43a-1, a43b-1, a43d-1); the declarations (a43a-2 …) and the ZICNTR program (a reference with Zicntr) wait on the pinned-tooling ruling |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): case declarations to data — a44-1 the case file and the tools reading it, a44-2/a44-3 the M (v4) and signed-DIV (v3) re-captures, then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
 | 3 | `P4-SYSTEM.17` | `active` | portability: slices a–b done (the rv64gc record; the CI matrix per unit, the Rosetta bridge repaired); the matrix's first hosted run of both units lands with the next approved push, then the leaf closes |
 
@@ -508,6 +508,23 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44 / SEMULITH-P4-0310: the director's rulings of 2026-10-28 recorded — case declarations to data, two re-captures (completed)
+
+The director granted the five recommendations of the session's status report ("I grant all your recommendations"; "Your
+recommendations better be sota, signoff and production-grade"; "next push granted"), recorded one ruling per file under
+`decision_director-rulings-2026-10-28.md`. This tree's is ruling 1, option B of the P4-0306 finding
+(`decision_case-declarations-as-data.md`): a matched case's declaration — its properties (the `_CASES` table of
+`scripts/matched_gpr_property.py`) and its input pins (`CURATED_INPUTS` of `scripts/capture_div.py`) — moves into one data
+file per case under `evidence/<case>/`, read by the tools, which refuse a case without one. Measured while recording it: BOTH
+retained cases pin both scripts (`grep -c` of each name in `evidence/rv64gc-m-forms-v3/dependencies.sexp` and
+`evidence/rv64gc-signed-div-truncation-v2/dependencies.sexp` = 1 each), so the ruling costs two re-captures — the M case as
+v4 and the signed-DIV case as v3 — not the one the recommendation named; recorded as measured and told to the director. Each
+re-capture must reproduce its predecessor's verdicts with the manifest change the only declared difference, and `CR-GC-M-1`
+is re-issued against v4 through the crediting act. The route: a44-1 the case file, its schema and the tools reading it (the
+in-script tables removed); a44-2 and a44-3 the two re-captures; then the XLEN (a43a-2), CSR-SET and SSTC declarations as
+data. LIVE_STATUS's P4 line also gains `.17` slice b, which P4-0309 left out (an own lockstep miss). Not covered: the ZICNTR program waits for a pinned reference that implements Zicntr (the a43d-1 addendum) — a
+reference re-pin no option addressed, raised to the director as an Open Question.
 
 ### .14 a43d-1 / SEMULITH-P4-0308: the SSTC case's crediting program — access, both gates and the kernel's own timer matched; delivery named out (completed)
 
@@ -917,6 +934,9 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - ~~What supplies independent numeric expectations.~~ Closed by `.7`: the spec-side exact-rational
   reference and its hardware controls. Public instruction comparisons supplement
   that evidence; no reference-backend ancestry assumption is used.
+- (2026-10-28, a44) Which reference the ZICNTR case is matched against: the pinned Sail build traps a succeeding counter read
+  (Zicntr off), so the program cannot be matched against it at all. Options: re-pin a Sail build with Zicntr (a new reference
+  identity, its own capture), or credit the counters through a named limitation. The director's.
 
 ## Blockers
 
@@ -954,6 +974,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.17` slice b **ROOT CAUSE** — at 77477864: `grep -c 'check_portability.sh --leg native' .github/workflows/portability.yml` = 1 with no `--profile` (rv64i alone); `bash scripts/check_portability.sh --profile rv64gc-lab-v0 --leg x86-64` rc=1 `x86-64: red`, its log `test result: FAILED. 14 passed; 3 failed` (`git ls-files failed`); `arch -x86_64 /usr/bin/git --version` rc=1 (`libxcrun` arm64-only); `cargo test --target x86_64-apple-darwin -p xtask` with one git link leading PATH `test result: ok. 17 passed`, with the tools' directory leading PATH a python3 3.9 `TypeError` (target/p4-system-17/b: measure.txt, xtask-x86-*.log).
 - [x] `.17` slice b **ADDRESSED** — portability.yml: the `unit` axis and the per-unit agree (`ruby -ryaml` parse: matrix os × unit, jobs host, miri, agree); agree_controls.sh over the tracked workflow: 5 of 5 as predicted — agree rc=0 (`portability matrix: rv64gc-lab-v0 — the two hosts agree byte-identically`), a byte differing in rv64gc rc=1, a digest differing in rv64i rc=1, a missing manifest rc=1, an extra one rc=1; the host command rc=0 for both units and `cmp` rc=0 for rv64i with and without `--profile`; the Rosetta leg rv64gc `x86-64: green (Rosetta translation; the manifest agrees byte-identically)` (510 passed, 0 failed over 13 test binaries; 142 s), rv64i green the same way (510 passed, 0 failed; 78 s); `bash scripts/check_portability.sh --self-test` → `PORTABILITY --self-test: 9 pass / 0 fail`, `PORTABILITY-COLD: 16 pass / 0 fail`.
 - [x] `.17` slice b **NO REGRESSION** — `bash -n scripts/check_portability.sh` rc=0; the old probe against the fixed instrument `PORTABILITY-COLD: 15 pass / 0 fail`; the new probe against the unfixed instrument `PORTABILITY-COLD: 12 pass / 4 fail` (the control discriminates); `git grep -l check_portability -- 'evidence/*/dependencies.sexp' | wc -l` = 0 (no pinned path); the commit gate green (chain log).
+- [x] `.14` a44 **ROOT CAUSE** — the declarations waited on a ruling (P4-0306 finding); measured for the ruling's cost: `grep -c matched_gpr_property.py` and `grep -c capture_div.py` = 1 each in both `evidence/*/dependencies.sexp` — two retained cases pin both scripts.
+- [x] `.14` a44 **ADDRESSED** — five records (`decision_director-rulings-2026-10-28.md` and the four rulings) with their INDEX rows (`grep -c 2026-10-28 docs/decisions/INDEX.md` ≥ 5); the frontier row, the route and the ZICNTR Open Question in this leaf.
+- [x] `.14` a44 **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); the prechecks green on the staged tree (target/p4-system-14/a44/prechecks.txt) and the commit gate (chain log).
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 
