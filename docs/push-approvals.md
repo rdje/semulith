@@ -44,3 +44,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** director 2026-10-28: 'right now I need the GitHub CI to go green' - push the UNIT-BOOKS refusal diagnostic so the hosted doctrines run names what missed (run 40746652030 refused with no detail after a runner image change)
 - **Range:** origin/main..300ffbf41d7c3d2fdd1936342ae5f277c5cba9be — 5 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 300ffbf41d7c3d2fdd1936342ae5f277c5cba9be before this record was written
+
+## SEMULITH-PUSH-0005 — 2026-10-28T23:20:26+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-10-28: 'right now I need the GitHub CI to go green' - push the fix for the hosted UNIT-BOOKS refusal (a probe counted Python 3.12's pathlib calls; run 40763391753)
+- **Range:** origin/main..48473252390a6852359dae96e89170d4a5ff957a — 2 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 48473252390a6852359dae96e89170d4a5ff957a before this record was written
