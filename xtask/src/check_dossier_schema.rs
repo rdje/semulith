@@ -175,18 +175,25 @@ struct Tally {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: the exit status must be `expected` and the captured output must contain `want`.
     fn arm(&mut self, name: &str, rc: i32, expected: i32, out: &str, want: &str) {
         if rc == expected && out.contains(want) {
             self.pass += 1;
         } else {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("DOSSIER-SCHEMA self-test MISS: {name} — expected rc={expected} (reason: {want}), got rc={rc}\n{out}");
-            }
+            self.report(format!("DOSSIER-SCHEMA self-test MISS: {name} — expected rc={expected} (reason: {want}), got rc={rc}\n{out}"));
         }
     }
 }
@@ -206,6 +213,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     let profile = t.join("profiles/p/profile.sexp");
     let _ = fs::write(t.join("schema/profile.sexp"), FACET_SCHEMA);
@@ -615,6 +623,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "DOSSIER-SCHEMA --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

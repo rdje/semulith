@@ -140,9 +140,18 @@ struct Tally {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: the run's exit status must be `expected` and its output must contain `want` — or, with an empty
     /// `want`, there must be no output at all.
     fn arm(&mut self, name: &str, rc: i32, expected: i32, out: &str, want: &str) {
@@ -152,18 +161,14 @@ impl Tally {
                 return;
             }
             self.fail += 1;
-            if self.verbose {
-                eprintln!("STATE-GEN self-test MISS: {name} — expected rc={expected} and no output, got rc={rc}\n{out}");
-            }
+            self.report(format!("STATE-GEN self-test MISS: {name} — expected rc={expected} and no output, got rc={rc}\n{out}"));
             return;
         }
         if rc == expected && out.contains(want) {
             self.pass += 1;
         } else {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("STATE-GEN self-test MISS: {name} — expected rc={expected} (reason: {want}), got rc={rc}\n{out}");
-            }
+            self.report(format!("STATE-GEN self-test MISS: {name} — expected rc={expected} (reason: {want}), got rc={rc}\n{out}"));
         }
     }
 }
@@ -185,6 +190,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     let (rc, o) = emit(repo, &state, &arith, &out);
     tally.arm(
@@ -516,6 +522,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "STATE-GEN --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

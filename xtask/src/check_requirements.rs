@@ -972,22 +972,29 @@ struct Tally {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: the command's exit status must be `expected` and its merged output must contain `want`.
     fn arm(&mut self, name: &str, (rc, raw): (i32, String), expected: i32, want: &str) {
         let out = captured(&raw);
         if rc != expected {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("RECORD-SCHEMA self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}");
-            }
+            self.report(format!(
+                "RECORD-SCHEMA self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
+            ));
         } else if !out.contains(want) {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("RECORD-SCHEMA self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}");
-            }
+            self.report(format!("RECORD-SCHEMA self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}"));
         } else {
             self.pass += 1;
         }
@@ -1031,6 +1038,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     let p = t.join("p");
     // schema-layer access: the fixture root must SEE schema/ for load_schema — symlink it
@@ -1761,6 +1769,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "RECORD-SCHEMA --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

@@ -73,9 +73,18 @@ struct Tally<'a> {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally<'_> {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// The script's `run`.
     fn run(&self) -> (i32, String) {
         match &self.control {
@@ -128,16 +137,12 @@ impl Tally<'_> {
         let out = captured(&out);
         if rc != expected {
             self.fail += 1;
-            if self.verbose {
-                eprintln!(
-                    "SHARD-FREEZE self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
-                );
-            }
+            self.report(format!(
+                "SHARD-FREEZE self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
+            ));
         } else if !out.contains(want) {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("SHARD-FREEZE self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}");
-            }
+            self.report(format!("SHARD-FREEZE self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}"));
         } else {
             self.pass += 1;
         }
@@ -217,6 +222,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     let _ = fs::remove_file(&prev_path);
     shard1();
@@ -510,6 +516,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "SHARD-FREEZE --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

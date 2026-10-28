@@ -123,20 +123,27 @@ struct Tally {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: the exit status must be `expected` and the captured output must contain `want`.
     fn arm(&mut self, name: &str, rc: i32, expected: i32, out: &str, want: &str) {
         if rc == expected && out.contains(want) {
             self.pass += 1;
         } else {
             self.fail += 1;
-            if self.verbose {
-                eprintln!(
-                    "GATE-REPORT self-test MISS: {name} — rc={rc}, expected {expected}\n{out}"
-                );
-            }
+            self.report(format!(
+                "GATE-REPORT self-test MISS: {name} — rc={rc}, expected {expected}\n{out}"
+            ));
         }
     }
 
@@ -146,9 +153,7 @@ impl Tally {
             self.pass += 1;
         } else {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("GATE-REPORT self-test MISS: {miss}");
-            }
+            self.report(format!("GATE-REPORT self-test MISS: {miss}"));
         }
     }
 
@@ -172,6 +177,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     // The CONTRACT MEASURE's own controls (P4-SYSTEM.10 slice a): every report's contract axis is this count, so a
     // measure that stopped discriminating would sync perfectly and still lie.
@@ -250,6 +256,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "GATE-REPORT --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

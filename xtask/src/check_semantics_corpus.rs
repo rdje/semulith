@@ -339,26 +339,33 @@ struct Tally<'a> {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally<'_> {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: judging the fixture tree must give `expected` and contain `want`.
     fn arm(&mut self, name: &str, expected: i32, want: &str) {
         let verdict = check_corpus(self.repo, self.root, Mode::Fs);
         let out = verdict.text();
         if verdict.rc != expected {
             self.fail += 1;
-            if self.verbose {
-                eprintln!(
-                    "SEMANTICS self-test MISS: {name} expected rc={expected} got rc={}\n{out}",
-                    verdict.rc
-                );
-            }
+            self.report(format!(
+                "SEMANTICS self-test MISS: {name} expected rc={expected} got rc={}\n{out}",
+                verdict.rc
+            ));
         } else if !out.contains(want) {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("SEMANTICS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}");
-            }
+            self.report(format!(
+                "SEMANTICS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}"
+            ));
         } else {
             self.pass += 1;
         }
@@ -412,6 +419,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     frag();
     sem(&both);
@@ -508,6 +516,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "SEMANTICS --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

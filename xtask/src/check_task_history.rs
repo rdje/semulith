@@ -19,9 +19,18 @@ struct Tally<'a> {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally<'_> {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: the probe run for `case` must exit `expected` and print `want` (stdout and stderr together).
     fn arm(&mut self, case: &str, expected: i32, want: &str) {
         let mut command = Command::new("python3");
@@ -45,12 +54,10 @@ impl Tally<'_> {
             self.pass += 1;
         } else {
             self.fail += 1;
-            if self.verbose {
-                eprintln!(
+            self.report(format!(
                     "TASK-HISTORY self-test MISS: {case} expected rc={expected} reason={want} got rc={rc}\n{}",
                     out.trim_end_matches('\n')
-                );
-            }
+                ));
         }
     }
 }
@@ -62,6 +69,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     tally.arm(
         "green",
@@ -152,6 +160,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "TASK-HISTORY --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

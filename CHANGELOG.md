@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0070 (leaf XTASK.12 slice b) — every driver's quiet refusal names its missed arms
+
+The 28 other drivers whose real run refused with only "self-test failed" get UNIT-BOOKS' report path, by one transformation: each tally keeps its misses, every miss print goes through one `report()`, and a quiet self-test prints its misses before the refusal. All 29 drivers checked structurally; every self-test unchanged and green; three red runs on the tree (the frozen STATE-GEN module, the frozen board, the live rv64gc definition module) each now name the missed arm before the refusal line, restored byte-identical. A hosted refusal can now be read from its log.
+
 ## SEMULITH-XTASK-0069 (leaf XTASK.12 slice a) — UNIT-BOOKS' quiet refusal names its missed arms
 
 The granted push's hosted run (45f970c0) confirmed the ARTIFACT-COHORT fix and refused on UNIT-BOOKS with only "self-test failed": the driver printed a miss only in a verbose run, and the real run's self-test is quiet. Its inputs did not change since the passing hosted run and it passes here, so the cause is not yet known. The driver now keeps every miss and a quiet run prints them before the refusal line (RED: a navigation probe made to fail is named, with its output). 28 more drivers share the gap — the next slice. Own slip recorded: this slice was edited and built while the previous commit's gate ran.

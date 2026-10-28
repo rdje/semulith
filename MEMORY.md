@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0069` — XTASK.12 slice a: UNIT-BOOKS' quiet refusal names its missed arms (the hosted run on
-  45f970c0 confirmed the ARTIFACT-COHORT fix but refused on UNIT-BOOKS with no detail). Before it XTASK-0068 (XTASK.11 done:
-  the live-data census classified, question (e) raised), AC-0088. Pushed 45f970c0; hosted doctrines there: UNIT-BOOKS refused.
-- next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.12 slice b (28 drivers' quiet misses); the
-  director's answers (a re-run or push for the hosted UNIT-BOOKS refusal; XTASK open question (e)); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C);
+- last_unit: `SEMULITH-XTASK-0070` — XTASK.12 slice b: every driver's quiet refusal names its missed arms (29 of 29). Pushed
+  18bfc69c (SEMULITH-PUSH-0004, the director's 'right now I need the GitHub CI to go green'); its hosted doctrines run names
+  the UNIT-BOOKS miss. Before it XTASK-0069 (slice a), XTASK-0068 (XTASK.11 done).
+- next_action: tooling first, so the a44 lapse block runs uninterrupted: hosted CI green first (the director, 2026-10-28):
+  read the hosted UNIT-BOOKS miss on 18bfc69c and fix it; then XTASK open question (e) (11 fragile doctrines, the workflow's call); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C);
   the cleanup narrative's owned rollover (14.2 KB of 14.7 KB: due before any unit but `.31`). Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
   `ARTIFACT-CLEANUP.31` due after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.

@@ -250,9 +250,18 @@ struct Tally<'a> {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, for a quiet run's refusal (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally<'_> {
+    /// A missed arm's report: printed at once in a verbose run, kept for a quiet run's refusal (`XTASK.12`).
+    fn report(&mut self, report: String) {
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
+    }
     /// One arm: judging the fixture tree (`r.tsv`, `tasks`) must give `expected` and contain `want`.
     fn arm(&mut self, name: &str, expected: i32, want: &str) {
         let (rc, out) = check_claims(
@@ -265,16 +274,14 @@ impl Tally<'_> {
         let out = captured(&out);
         if rc != expected {
             self.fail += 1;
-            if self.verbose {
-                eprintln!(
-                    "TREE-CLAIMS self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
-                );
-            }
+            self.report(format!(
+                "TREE-CLAIMS self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
+            ));
         } else if !out.contains(want) {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("TREE-CLAIMS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}");
-            }
+            self.report(format!(
+                "TREE-CLAIMS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}"
+            ));
         } else {
             self.pass += 1;
         }
@@ -286,9 +293,7 @@ impl Tally<'_> {
         let text = fs::read_to_string(&path).unwrap_or_default();
         if text.matches(from).count() != 1 {
             self.fail += 1;
-            if self.verbose {
-                eprintln!("source fixture edit failed rc=1");
-            }
+            self.report("source fixture edit failed rc=1".to_owned());
             return;
         }
         let _ = fs::write(&path, text.replacen(from, to, 1));
@@ -329,6 +334,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     routes();
     tree("ALPHA", "active", "done", "pending", "2");
@@ -524,6 +530,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "TREE-CLAIMS --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run names every missed arm before the caller's refusal line (`XTASK.12`).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

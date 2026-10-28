@@ -392,12 +392,22 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   the quiet run prints `UNIT-BOOKS navigation probe failed` and the probe's own line, then the refusal. A census found 28 more
   drivers whose quiet refusal hides its misses (quiet-miss.txt): slice b. Own slip, recorded: this slice's edit, build and RED ran
   while slice e's commit gate was running — the gate passed, and this slice's gate re-validates the tree.
+  Slice b (`2026-10-28`, `SEMULITH-XTASK-0070`; on clean 18bfc69c, pushed as SEMULITH-PUSH-0004; evidence target/xtask/xt0070): the
+  28 other drivers the census found get the same report path, by one transformation (transform.py; each step had to match once
+  per file, every touched file backed up in before/): each `Tally` keeps a `misses` list, every guarded miss print goes through
+  `report()` (printed at once when verbose, kept always), and a quiet self-test prints its misses before the caller's refusal;
+  two literal-only reports became `.to_owned()` for clippy. Measured: a structural check over all 29 drivers (`misses.push`,
+  the quiet loop, no verbose-only miss print left) 29 of 29; every self-test unchanged and green (selftests.txt: 29 of 29 rc=0,
+  the same pass counts, from `BOARD-GEN 9` to `README-ROUTING-CLOSURE 94`); RED on the tree, each restored byte-identical
+  (red/): the frozen STATE-GEN module, the frozen board and the live rv64gc definition module hand-edited — each quiet run now
+  prints `… self-test MISS: GREEN …` before its refusal (1, 2 and 1 lines). The last one is open question (e) in miniature: a
+  live module edit refuses DEF-GEN instead of failing it by name. The leaf is done once the hosted run is green.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.12` | `active` | slice a done (UNIT-BOOKS names its misses); slice b: the 28 other drivers whose quiet refusal hides its misses |
+| 1 | `XTASK.12` | `active` | slices a–b done (every driver's quiet refusal names its missed arms); the hosted doctrines run green closes it |
 | 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
 
 ## Decisions
@@ -524,6 +534,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice a **FIX** — xtask/src/check_unit_books.rs: `Tally.misses`, `miss()`, the quiet run prints them; clippy `-D warnings` rc=0; `cargo fmt --all -- --check` rc=0.
 - [x] slice a **ADDRESSED (verified)** — red.out (the probe made to exit 1): `red rc=2`, `UNIT-BOOKS navigation probe failed` and `UNIT-BOOKS optimized navigation probe failed` with the probe's line, then the refusal; `cmp` restored rc=0.
 - [x] slice a **NO REGRESSION** — `UNIT-BOOKS --self-test: 22 pass / 0 fail`; `bash scripts/check_unit_books.sh` rc=0 `ok (6 units + project book; … 3720 rendered hyperlinks …)`; the commit gate green (chain log).
+- [x] slice b **ROOT CAUSE (WHY + WHERE)** — target/xtask/xt0069/quiet-miss.txt: 28 drivers printed a miss only under `if self.verbose` (`grep -c` per file in the census).
+- [x] slice b **FIX** — target/xtask/xt0070/transform.py over the 28 (`Tally.misses`, `report()`, the quiet loop); clippy `-D warnings` rc=0 after two `.to_owned()`; `cargo fmt --all -- --check` rc=0.
+- [x] slice b **ADDRESSED (verified)** — structural check `29 of 29` keep and print their misses; red/: `state-gen rc=2 :: 1 MISS line(s)`, `board-verdict rc=2 :: 2 MISS line(s)`, `def-gen rc=2 :: 1 MISS line(s)`, each before its refusal; `cmp` restored all three.
+- [x] slice b **NO REGRESSION** — selftests.txt `29 of 29 rc=0` with unchanged pass counts; `cargo test -p xtask` `test result: ok. 17 passed`; the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.11)
 
@@ -625,3 +639,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.11 slice d — a deleted board fails by name; the live-data census measured (21 of 41 drivers; classification next).
 - `2026-10-28`: XTASK.11 done — slice e classifies the live-data census (11 fragile doctrines); extending ruling 5 to them is raised to the director.
 - `2026-10-28`: XTASK.12 slice a — UNIT-BOOKS' quiet refusal names its missed arms (the hosted refusal on 45f970c0 said only "self-test failed"); 28 drivers next.
+- `2026-10-28`: XTASK.12 slice b — every driver's quiet refusal names its missed arms (28 more drivers; 29 of 29).
