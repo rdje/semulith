@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -379,11 +379,26 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   PROFILE-CONSISTENCY real-tree arms are deliberate: `a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`), so it is
   raised to the director as an Open Question with a recommended order. The leaf is done: its ruled scope is executed.
 
+- ID: `XTASK.12` — **a quiet refusal names the arm that missed**
+  Status: `active` (`2026-10-28`; opened by the hosted doctrines run 40746652030 on 45f970c0)
+  Goal: when a doctrine's quiet self-test (the one its real run makes before judging) misses, the refusal names every missed arm
+  and its output, so a hosted refusal can be diagnosed from its log.
+  Slice a (`2026-10-28`, `SEMULITH-XTASK-0069`; on clean 474efaa6; evidence target/xtask/xt0069): the granted push's hosted run
+  confirmed the ARTIFACT-COHORT fix and refused on `UNIT-BOOKS: REFUSED — the check does not discriminate (self-test failed)` —
+  with nothing more, because `check_unit_books.rs` printed a miss only in a verbose run. Its inputs did not change between the
+  passing hosted run (b917d1ba) and this one (`git diff --stat` empty over docs/book, materials, docs/models and its scripts), and
+  here it passes (`22 pass / 0 fail`): the cause is not yet known. The driver's tally now keeps every miss and a quiet run prints
+  them before the refusal line; verbose output is unchanged. RED: the navigation probe made to exit 1 (restored byte-identical) —
+  the quiet run prints `UNIT-BOOKS navigation probe failed` and the probe's own line, then the refusal. A census found 28 more
+  drivers whose quiet refusal hides its misses (quiet-miss.txt): slice b. Own slip, recorded: this slice's edit, build and RED ran
+  while slice e's commit gate was running — the gate passed, and this slice's gate re-validates the tree.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
+| 1 | `XTASK.12` | `active` | slice a done (UNIT-BOOKS names its misses); slice b: the 28 other drivers whose quiet refusal hides its misses |
+| 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once the live-data controls question (e) is answered |
 
 ## Decisions
 
@@ -503,6 +518,13 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **NO REGRESSION** — `git ls-files -- target | wc -l` = 0 and `git status --short` empty after the removal (no tracked byte touched); the 1,408 kept output files present (`kept outputs missing 0`); the commit gate green (chain log).
 - [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
 
+## Acceptance Checklist (leaf XTASK.12)
+
+- [x] slice a **ROOT CAUSE (WHY + WHERE)** — `gh run view 40746652030 --log-failed`: only `UNIT-BOOKS: REFUSED — the check does not discriminate (self-test failed)`; `grep -n 'if self.verbose' xtask/src/check_unit_books.rs` guarded every miss report; `git diff --stat b917d1ba 45f970c0` over its inputs empty.
+- [x] slice a **FIX** — xtask/src/check_unit_books.rs: `Tally.misses`, `miss()`, the quiet run prints them; clippy `-D warnings` rc=0; `cargo fmt --all -- --check` rc=0.
+- [x] slice a **ADDRESSED (verified)** — red.out (the probe made to exit 1): `red rc=2`, `UNIT-BOOKS navigation probe failed` and `UNIT-BOOKS optimized navigation probe failed` with the probe's line, then the refusal; `cmp` restored rc=0.
+- [x] slice a **NO REGRESSION** — `UNIT-BOOKS --self-test: 22 pass / 0 fail`; `bash scripts/check_unit_books.sh` rc=0 `ok (6 units + project book; … 3720 rendered hyperlinks …)`; the commit gate green (chain log).
+
 ## Acceptance Checklist (leaf XTASK.11)
 
 - [x] slice a **ROOT CAUSE (WHY + WHERE)** — `AVAILABILITY` caught four exception types and called `sys.exit` inside the `try`, so any other exception left the interpreter with status 1, the status the driver reads as absence (the 6r card; target/xtask/xt0064/red-old-text.txt: the predecessor text with a foreign `ValueError` → `rc=1`).
@@ -602,3 +624,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.11 slice c — STATE-GEN's controls judge a frozen pair; each pair judged on its own, an orphaned module fails by name; slice b's missing-board claim corrected.
 - `2026-10-28`: XTASK.11 slice d — a deleted board fails by name; the live-data census measured (21 of 41 drivers; classification next).
 - `2026-10-28`: XTASK.11 done — slice e classifies the live-data census (11 fragile doctrines); extending ruling 5 to them is raised to the director.
+- `2026-10-28`: XTASK.12 slice a — UNIT-BOOKS' quiet refusal names its missed arms (the hosted refusal on 45f970c0 said only "self-test failed"); 28 drivers next.

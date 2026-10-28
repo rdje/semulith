@@ -42,6 +42,8 @@ struct Tally<'a> {
     pass: u32,
     fail: u32,
     verbose: bool,
+    /// Every missed arm's report, kept so a quiet run's refusal can name what missed (`XTASK.12`).
+    misses: Vec<String>,
 }
 
 impl Tally<'_> {
@@ -50,17 +52,13 @@ impl Tally<'_> {
         let (rc, out) = check_books(self.repo, self.root);
         let out = captured(&out);
         if rc != expected {
-            self.fail += 1;
-            if self.verbose {
-                eprintln!(
-                    "UNIT-BOOKS self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
-                );
-            }
+            self.miss(format!(
+                "UNIT-BOOKS self-test MISS: {name} expected rc={expected} got rc={rc}\n{out}"
+            ));
         } else if !out.contains(want) {
-            self.fail += 1;
-            if self.verbose {
-                eprintln!("UNIT-BOOKS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}");
-            }
+            self.miss(format!(
+                "UNIT-BOOKS self-test MISS: {name} right verdict, wrong reason (no {want})\n{out}"
+            ));
         } else {
             self.pass += 1;
         }
@@ -77,11 +75,17 @@ impl Tally<'_> {
         if rc == 0 {
             self.pass += 1;
         } else {
-            self.fail += 1;
-            if self.verbose {
-                eprintln!("{heading}\n{}", captured(&out));
-            }
+            self.miss(format!("{heading}\n{}", captured(&out)));
         }
+    }
+
+    /// A missed arm: counted, printed at once in a verbose run, kept for a quiet run's refusal.
+    fn miss(&mut self, report: String) {
+        self.fail += 1;
+        if self.verbose {
+            eprintln!("{report}");
+        }
+        self.misses.push(report);
     }
 }
 
@@ -112,6 +116,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         pass: 0,
         fail: 0,
         verbose,
+        misses: Vec::new(),
     };
     tally.arm("REFUSE no registry at all", 2, "REFUSED");
     registry("(unit (id \"u1\") (kind processor) (layer processor) (book \"docs/models/u1\"))");
@@ -234,6 +239,12 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             "UNIT-BOOKS --self-test: {} pass / {} fail",
             tally.pass, tally.fail
         );
+    } else {
+        // A quiet run that misses names every missed arm before the caller's refusal line (`XTASK.12`): a hosted
+        // refusal that said only "self-test failed" could not be diagnosed from its log (run 40746652030).
+        for report in &tally.misses {
+            eprintln!("{report}");
+        }
     }
     tally.fail == 0
 }

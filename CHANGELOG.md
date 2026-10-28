@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0069 (leaf XTASK.12 slice a) — UNIT-BOOKS' quiet refusal names its missed arms
+
+The granted push's hosted run (45f970c0) confirmed the ARTIFACT-COHORT fix and refused on UNIT-BOOKS with only "self-test failed": the driver printed a miss only in a verbose run, and the real run's self-test is quiet. Its inputs did not change since the passing hosted run and it passes here, so the cause is not yet known. The driver now keeps every miss and a quiet run prints them before the refusal line (RED: a navigation probe made to fail is named, with its output). 28 more drivers share the gap — the next slice. Own slip recorded: this slice was edited and built while the previous commit's gate ran.
+
 ## SEMULITH-XTASK-0068 (leaf XTASK.11 slice e) — the live-data census classified; XTASK.11 done
 
 Each flagged driver's self-test was read and classified: 11 doctrines are fragile — a GREEN arm expects a verdict on the unmodified live corpus, so a wrong corpus makes the check refuse instead of failing by name (BOARD-GEN, BOOK-INDEX, CONTRACT-FREEZE, DEF-GEN, EXERCISE-COVERAGE, GUEST-GEN, MATERIALS-BILL, PLATFORM-GEN, RECORD-SCHEMA and UNIT-BOOKS through a probe each, PROFILE-CONSISTENCY through 14 probes); 10 were false positives; ARTIFACT-COHORT reads only its fixtures. Ruling 5 named three doctrines, now done; extending its rule to the eleven is raised to the director with a recommended order (DEF-GEN and GUEST-GEN first, whose live in-sync arms repeat the real check; PROFILE-CONSISTENCY last, case by case). XTASK.11 is done; XTASK.4 and the tree close once that question is answered.
