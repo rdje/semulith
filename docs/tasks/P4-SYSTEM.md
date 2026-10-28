@@ -423,7 +423,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28), designed in a44-1: a44-2 the case file, its schema and the tools reading it (`CR-GC-M-1` retired for the one lapse), a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a done (the declarations as data, read beside the code and equal to it); a44-2b the tools read them (`CR-GC-M-1` retired for the one lapse), a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
 | 3 | `P4-SYSTEM.17` | `active` | portability: slices a–b done (the rv64gc record; the CI matrix per unit, the Rosetta bridge repaired); the matrix's first hosted run of both units lands with the next approved push, then the leaf closes |
 
@@ -518,6 +518,23 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-2a / SEMULITH-P4-0313: the matched cases' declarations as data — read beside the code, equal to it (completed)
+
+The first half of a44-1's a44-2, split so the lapse window stays one slice: no pinned file is touched, so `CR-GC-M-1` stays
+current. `schema/matched-case.sexp` (the 27th schema) declares a case — its program, properties and their RV64 values, control,
+reviewed steps, authority, normative inputs and prepared pins; `scripts/matched_gpr_case.py` reads a declaration, validates it,
+maps it onto `ReviewedPropertyCase` and renders its canonical text; a case without one, one that does not validate, one whose
+id disagrees with its directory and one whose control names no property are refused by name.
+`evidence/rv64gc-signed-div-truncation-v2/case.sexp` (2,756 B) and `evidence/rv64gc-m-forms-v3/case.sexp` (12,565 B) were
+rendered from the in-code facts. Measured: each declaration loads equal to `reviewed_case(id)` and its prepared rows equal
+`CURATED_INPUTS[id]`; each renders back byte for byte; `scripts/probe_matched_gpr_case.py` 7 tests / 0 failures plain and
+optimized, five seams (missing-refusal, id-binding, control-binding and schema 1 loss each, value-mapping 2), its 12 arms in
+PROFILE-CONSISTENCY. Re-derived: the evidence family (22 slots per case, ceiling 45, health 42 — the addendum to
+`decision_evidence-family-two-cases.md`; `evidence/README.md` 4,095 B under its 4,096 B cap); the schema census (27 schemas,
+122 facets, five reviewed token examples; RECORD-SCHEMA's token arms 106 → 127 and 612 → 738 failures, measured); the method
+probe's runtime population 103 → 104 (the declaration is a file of the retained case); LIVE_STATUS's arm total 1,692 → 1,694. Nothing
+reads the declarations yet: a44-2b switches the tools to them and removes the in-code tables — the one lapse.
 
 ### .14 a44-1 / SEMULITH-P4-0312: the case-declaration design — what moves to data, what is re-derived, the one lapse (completed)
 
@@ -1040,6 +1057,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-1 **ROOT CAUSE** — the a44 record's cost claim rested on a pin count alone; the DIV case's standing: `evidence/README.md` "`invalidated` since 2026-10-22", `python3 -B scripts/requirement_status.py` → `2 case(s), 1 credited`; the inventory's line references re-checked (`grep -n`, listed in the a44-1 record).
 - [x] `.14` a44-1 **ADDRESSED** — the design recorded (what moves, what is re-derived, the one lapse, five slices); the a44 text, `decision_director-rulings-2026-10-28.md`, `decision_case-declarations-as-data.md`, docs/TASK_TREE.md, LIVE_STATUS.md and evidence/README.md corrected (`grep -c 'two re-captures'` in the live rows = 0).
 - [x] `.14` a44-1 **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); the prechecks green on the staged tree (target/p4-system-14/a44-1/prechecks.txt) and the commit gate (chain log).
+- [x] `.14` a44-2a **ROOT CAUSE** — a case's declaration lived only in two pinned scripts (`grep -c '_CASES = ' scripts/matched_gpr_property.py` = 1, `grep -c '^CURATED_INPUTS = ' scripts/capture_div.py` = 1); no schema described one (`ls schema | wc -l` = 26).
+- [x] `.14` a44-2a **ADDRESSED** — target/p4-system-14/a44-2a/probe.txt: `MATCHED-GPR-CASE: 7 tests / 0 failures / 0 errors` plain and `-O`; the five seams 1, 1, 1, 1 and 2 failures; generation: loaded == in-code, prepared == pinned, render(read) identical for both cases; `probe_div_capture_inputs.py` `34 tests / 0 failures`; `probe_schema_token_facets.py` OK (27 schemas, 122 facets).
+- [x] `.14` a44-2a **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1176 pass / 0 fail` (374 s); `RECORD-SCHEMA: ok (23 record file(s) …)`; `DERIVED-COUNTS: ok (5 derived count claim(s) re-derived)`; `cargo test -p xtask` `test result: ok. 17 passed` (the S-expression and schema corpus tests read the new files); no pinned path touched (`git diff --cached --name-only` against both `dependencies.sexp`: `grep -c` 0); `python3 -B scripts/requirement_status.py` → `1 of 1 credit record(s) current`.
 Rows a42ay–a42bb: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows-a42ay-to-a42bb).
 Rows a42ar–a42ax: [retained verbatim](archive/P4-SYSTEM-21.md#acceptance-rows-through-a42ax).
 

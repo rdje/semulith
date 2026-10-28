@@ -278,7 +278,7 @@ class MethodTests(unittest.TestCase):
                      | {row[2] for row in A.prepared_inputs(cls.case)}
                      | {p.relative_to(ROOT).as_posix() for p in (ROOT / cls.prefix).iterdir()}
                      | {"scripts/matched_gpr_adequacy.py", "scripts/review_div_method.py"})
-        if len(cls.paths) != 103:
+        if len(cls.paths) != 104:  # +1: the case's declaration, evidence/<case>/case.sexp (P4-SYSTEM.14 a44-2a)
             raise RuntimeError("retained method runtime population changed")
         # The deep arms exercise the method's logic against a CURRENT synthetic retained case built
         # once from the live modules and prepared inputs, so every seam stays reachable whether or

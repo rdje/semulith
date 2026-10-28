@@ -1692,7 +1692,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=106)",
+        "FAILED (failures=127)",
     );
     tally.arm(
         "RED normal token ignore-pattern mutation",
@@ -1703,7 +1703,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=612)",
+        "FAILED (failures=738)",
     );
     tally.arm(
         "RED normal token fullmatch mutation",
@@ -1731,7 +1731,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=106)",
+        "FAILED (failures=127)",
     );
     tally.arm(
         "RED optimized token ignore-pattern mutation",
@@ -1742,7 +1742,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=612)",
+        "FAILED (failures=738)",
     );
     tally.arm(
         "RED optimized token fullmatch mutation",

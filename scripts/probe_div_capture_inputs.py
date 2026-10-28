@@ -34,7 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 43  # two declared cases of 21 slots each, plus the index
+FAMILY_FILES = 45  # two declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
 FAMILY_BYTES = 32 * 1024 * 1024
 CASES = (P.CASE_ID, P.M_FORMS_CASE_ID)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
@@ -120,7 +120,7 @@ def retention_limits():
                                   ("stderr", Collector.STREAM_BYTES),
                                   ("receipt.sexp", F.DOCUMENT_BYTES)):
                 limits[case_id + "/" + run + "." + suffix] = bound
-        for name in ("planned-experiment.sexp", "dependencies.sexp", "authorities.sexp",
+        for name in ("case.sexp", "planned-experiment.sexp", "dependencies.sexp", "authorities.sexp",
                      "measured-experiment.sexp", "verification.json"):
             limits[case_id + "/" + name] = INPUT_BYTES
     return limits
@@ -361,12 +361,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 27529216)
+        self.assertEqual(sum(limits.values()), 27660288)  # +2 x 65536: the two case declarations (a44-2a)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 21 + 21)
+        self.assertEqual(len(members), 1 + 22 + 22)
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):

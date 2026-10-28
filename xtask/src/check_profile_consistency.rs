@@ -8146,6 +8146,30 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED finite source property {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-PROPERTY: 34 tests / {losses} failures / 0 errors; synthetic metadata, finite source witnesses only"));
         }
     }
+    // P4-SYSTEM.14 a44-2a: the matched cases' declarations as data (scripts/matched_gpr_case.py).
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec!["scripts/probe_matched_gpr_case.py".to_owned()];
+        if optimized {
+            argv.insert(0, "-O".to_owned());
+        }
+        tally.score(
+            &format!("GREEN case declarations {mode}"),
+            prober.probe(repo, argv.clone()),
+            0,
+            "MATCHED-GPR-CASE: 7 tests / 0 failures / 0 errors; declarations as data, no capture",
+        );
+        for (mutation, losses) in [
+            ("missing-refusal", "1"),
+            ("id-binding", "1"),
+            ("control-binding", "1"),
+            ("schema", "1"),
+            ("value-mapping", "2"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 7 tests / {losses} failures / 0 errors; declarations as data, no capture"));
+        }
+    }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> =
             vec!["scripts/probe_matched_gpr_property_evaluation.py".to_owned()];

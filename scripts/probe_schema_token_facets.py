@@ -47,6 +47,11 @@ TOKENS = {
     r'^(raw-gpr|process-stdout|process-stderr)': 'raw-gpr',
     r'^20[0-9]{2}-[0-9]{2}-[0-9]{2}': '2026-10-23',  # credits.sexp: the crediting date (a42ay)
     r'^decision_[a-z0-9-]+\.md': 'decision_example-record.md',  # credits.sexp: the decision record a credit cites
+    r'^[a-z0-9][a-z0-9-]*-v[0-9]+': 'rv64gc-m-forms-v3',  # matched-case.sexp: a case id, its directory's name (a44-2a)
+    r'^[a-z0-9][a-z0-9-]*\.s': 'm-forms.s',  # matched-case.sexp: the guest program
+    r'^(guest-image|reference-config|expectation)': 'guest-image',  # matched-case.sexp: a prepared input's role
+    r'^[A-Za-z0-9][A-Za-z0-9._-]*': 'guest.elf',  # matched-case.sexp: a prepared input's file name
+    r'^(form|table1):[A-Za-z0-9._-]+': 'form:div',  # matched-case.sexp: the policy cell a property serves
 }
 REAL_DOCUMENTS = (
     ('profiles/rv64gc-lab-v0/references.sexp', 'references', 'binary_sha256'),
@@ -108,8 +113,8 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 26)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f)
-        self.assertEqual(len(current), 101)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 27)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a)
+        self.assertEqual(len(current), 122)  # +21: schema/matched-case.sexp's pattern facets (P4-SYSTEM.14 a44-2a)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):

@@ -20,12 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-AC-0087` — ARTIFACT-CLEANUP.32: the cohort's Cargo controls hold on the hosted Linux runner (the push's
-  doctrines run refused 146/4: EPERM now injected; incremental compilation bound, its own RED seam). Before it P4-0312 (a44-1,
-  the case-declaration design), XTASK-0063 (XTASK.10). Pushed b917d1ba; CI there: rust green, doctrines red, portability hosts green.
-- next_action: P4-SYSTEM.14 a44-2 (docs/tasks/P4-SYSTEM.md a44-1's design): schema/matched-case.sexp, case files for the two
-  existing cases (loaded == in-code, measured, before removal), the tools reading them, the censuses re-derived, CR-GC-M-1 retired
-  (REQ-GC-M planned for the one lapse); then a44-3 … a44-5. Tooling turns (5:1): the three doctrine controls, XTASK's close,
+- last_unit: `SEMULITH-P4-0313` — P4-SYSTEM.14 a44-2a: the matched cases' declarations as data (schema/matched-case.sexp,
+  scripts/matched_gpr_case.py, a case.sexp per case, equal to the in-code cases; the family and schema census re-derived);
+  no pinned file touched. Before it AC-0087 (ARTIFACT-CLEANUP.32: the cohort's controls on Linux), P4-0312 (a44-1).
+- next_action: P4-SYSTEM.14 a44-2b (a44-1's design): the pinned tools read the case files (matched_gpr_case.py), the in-code
+  tables removed, the censuses (manifest population, reviewed modules/data paths, probes' seams and loss counts) re-derived,
+  CR-GC-M-1 retired and REQ-GC-M planned for the one lapse; then a44-3 … a44-5. A push grant is asked (CI doctrines red). Tooling turns (5:1): the three doctrine controls, XTASK's close,
   ARTIFACT-CLEANUP.29 (class C + 24.1 GB); P4-SYSTEM.17 closes when the hosted runs of b917d1ba are green; `.31` after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).

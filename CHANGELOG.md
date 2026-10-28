@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0313 (leaf P4-SYSTEM.14 a44-2a) — the matched cases' declarations as data, read beside the code and equal to it
+
+The first half of ruling B's tool change, with no pinned file touched (`CR-GC-M-1` stays current). `schema/matched-case.sexp` declares a matched case — program, properties and RV64 values, control, reviewed steps, authority and pins — and `scripts/matched_gpr_case.py` reads, validates, maps and renders it, refusing a missing, invalid, misnamed or control-less declaration by name. Both existing cases now carry an `evidence/<case>/case.sexp` rendered from the in-code facts; each loads equal to its in-code case and renders back byte for byte. The new probe (7 tests, five seams) joins PROFILE-CONSISTENCY; the evidence family (22 slots per case) and the schema census (27 schemas, 122 facets) are re-derived with their counts measured. Next, a44-2b switches the tools to the declarations and opens the one lapse.
+
 ## SEMULITH-AC-0087 (leaf ARTIFACT-CLEANUP.32) — the cohort's Cargo controls hold on the hosted Linux runner
 
 The first hosted doctrines run since 2026-10-08 (the granted push, b917d1ba) refused `ARTIFACT-COHORT --self-test: 146 pass / 4 fail`. The `stop-zombie` control was measured on macOS only: Linux signals a zombie leader's group and returns 0, so the RED arm could not fail there; the test now also injects the EPERM macOS returns. The real cold-copy build found no incremental output on the runner — not its rustc 1.99.1, which passes here; the wrapper never bound incremental compilation, and an outer cargo config switching it off reproduces the hosted assertion verbatim with the old wrapper. `artifact_cargo.environment()` binds `CARGO_INCREMENTAL=1`, a twelfth RED seam holds it, and the assertion now lists the build root. 152 arms green; the hosted confirmation waits for the next push.

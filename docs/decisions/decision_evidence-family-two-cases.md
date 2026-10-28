@@ -64,3 +64,12 @@ the traces arrive in one capture, not by accretion.
   32 MiB) and refuses an undeclared sibling or an undeclared member.
 - The `evidence/README.md` health target moves with each reviewed rewrite; its 4 KiB / 80-line ceiling does
   not.
+
+## Addendum (2026-10-28, `P4-SYSTEM.14` a44-2a): the case declaration joins each case
+
+Each case gains one slot, `case.sexp` — its declaration as data (`decision_case-declarations-as-data.md`), read by
+`scripts/matched_gpr_case.py` and reserved 64 KiB like the other metadata slots. By this record's own rule the file
+ceiling is 2 × 22 slots + the index = **45** and the health line stays three below it, **42**; the byte bounds are
+unchanged (the declared limits sum to 27,660,288 B, under 32 MiB). The input probe's `FAMILY_FILES`, its summed
+limits and its member census move with it; `evidence/README.md` stays under its 4,096 B cap. A third case (the M
+case's v4 capture) is the next re-derivation.
