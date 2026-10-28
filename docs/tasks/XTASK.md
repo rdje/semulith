@@ -297,7 +297,9 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   equal (a DIFFER keeps it for inspection). The sweep's control on a scratch layout removed exactly the target and the clone
   and kept the outputs, a plain directory and a link. Outside this leaf, listed for the director beside the `.29` ruling:
   18 nested cargo target roots of other trees' units (`target/p4-system-7`, `-11`, `-12`, `-13`, `target/refs`,
-  `target/linkedspec`, `target/miri`, `target/miri.stale-*`), 24,135,434,240 B, all but `target/miri` older than the rule.
+  `target/linkedspec`, `target/miri`, `target/miri.stale-*`), 24,135,434,240 B, all but `target/miri` older than the rule
+  [corrected by `ARTIFACT-CLEANUP.33`: three of them are live — two cargo producer roots, 22.6 GB, and the dsp56300 build;
+  the 15 stale ones, 968 MB, were removed].
   Card: `docs/knowledge/scratch-kept-beside-its-outputs-is-never-removed.md`.
 
 - ID: `XTASK.10` — **the focused set runs rustfmt and clippy**

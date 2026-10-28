@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -852,6 +852,18 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   itself. Hosted confirmation waits for the next push. Noted: `rust-toolchain.toml` floats on `stable` — the runner had
   1.99.1, this host 1.95.0.
 
+- ID: `ARTIFACT-CLEANUP.33` — **the other trees' stale nested build targets removed (ruling 4, part 2, corrected)**
+  Status: `done` (`2026-10-28` UTC, `SEMULITH-AC-0088`; on clean 17d25849; evidence target/artifact-cleanup/AC0088)
+  Goal: ruling 4's second part — the nested cargo targets older units left under `target/` removed once, each validated.
+  Result: the census behind the ruling was wrong. Of the 18 roots (24,135,434,240 B) listed after AC0086, three are live:
+  `target/p4-system-12/c-engine-build` and `c-guest-image-build` are the cargo cohort's producer roots
+  (`artifact_output_provenance.PRODUCERS`, 22.6 GB, managed by the recurring act) and `target/refs/dsp56300-build` is
+  `scripts/run_dsp56300_smoke.py`'s build directory; they stay. The 15 stale ones — `target/linkedspec`, `target/miri` (the
+  portability instrument moved to `target/portability/miri-target`; its one mention is that comment), `target/miri.stale-*`,
+  and old P4-SYSTEM.7, .11 and .13 probe targets — each a cargo target (`CACHEDIR.TAG`) with no tooling reference
+  (`git grep -l` over scripts, xtask, Makefile, .cargo, .github, crates), were removed: 968,441,856 B (removed.tsv); the
+  three live roots untouched. Ruling 4's record and `XTASK.9`'s leaf are corrected.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -898,6 +910,12 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.33)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — AC0086-all-nested-targets.txt listed 18 roots as other units' leftovers; `python3` over `artifact_output_provenance.PRODUCERS` names two of them as producer roots; `git grep -n target/refs/dsp56300-build` → `scripts/run_dsp56300_smoke.py:44`.
+- [x] **ADDRESSED (verified)** — AC0088/census.txt: 15 stale roots, each `tag`, `tooling-refs=0` (target/miri's one hit is a comment); removed.tsv `wc -l` = 15, 968,441,856 B; `still present 0`; `live roots untouched: True`.
+- [x] **NO REGRESSION** — `git status --short | wc -l` = 0 after removal (nothing tracked touched); the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.32)
 
@@ -1047,6 +1065,7 @@ The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4
 
 ## Changelog
 
+- `2026-10-28` UTC: .33 done; 15 stale nested targets (968 MB) removed; the two producer roots and the dsp56300 build are live and stay.
 - `2026-10-28` UTC: .32 done; the cohort's Cargo controls hold on Linux (EPERM injected; incremental bound, its own RED seam); 152 arms.
 - `2026-10-26` UTC: .27 done; fourth cleanup event through the act, 6 outputs removed, record overwritten; the unrecorded population grew to 83 orphan sessions (770,724,553 B), the open question's deferral ends.
 - `2026-10-23` UTC: .26 done; third cleanup event through the act, 6 outputs removed, record overwritten; the 67 unrecorded sessions are a stable set.

@@ -20,12 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0067` — XTASK.11 slice d: a deleted board.sexp beside its generated composition fails by name;
-  the live-data census measured (21 of 41 drivers, 44 PROFILE-CONSISTENCY probes; target/xtask/xt0067/census.txt). Before it
-  XTASK-0066 (slice c, STATE-GEN). Pushed 45f970c0 (SEMULITH-PUSH-0003).
+- last_unit: `SEMULITH-AC-0088` — ARTIFACT-CLEANUP.33: 15 stale nested targets removed (968 MB); the "24.1 GB" census was
+  wrong — two cargo producer roots (22.6 GB) and the dsp56300 build are live and stay. Before it XTASK-0067 (XTASK.11 d),
+  XTASK-0066 (c). Pushed 45f970c0 (SEMULITH-PUSH-0003).
 - next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.11 slice e (classify the
-  live-data census; remedies beyond ruling 5's three go to the director); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C) + the other trees' 24.1 GB;
-  the cleanup narrative's owned rollover before `.31`. Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
+  live-data census; remedies beyond ruling 5's three go to the director); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C);
+  the cleanup narrative's owned rollover (14.2 KB of 14.7 KB: due before any unit but `.31`). Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
   `ARTIFACT-CLEANUP.31` due after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 47 KB of 64 KiB (sharded in XTASK-0062).

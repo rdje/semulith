@@ -16,7 +16,11 @@ answers: What does the recorded class "orphan incremental session" remove, and w
    not to a threshold.
 2. The nested cargo target directories other trees' units left under `target/` (18 roots, 24,135,434,240 B
    on 2026-10-28, listed in target/artifact-cleanup/AC0086-all-nested-targets.txt) are removed once, each
-   validated by shape and content before removal, as `XTASK.9` removed its own.
+   validated by shape and content before removal, as `XTASK.9` removed its own. **Corrected 2026-10-28
+   (`ARTIFACT-CLEANUP.33`):** three of the 18 are live — the cargo cohort's producer roots
+   `target/p4-system-12/c-engine-build` and `c-guest-image-build` (22.6 GB, managed by the recurring act) and
+   `target/refs/dsp56300-build` (`run_dsp56300_smoke.py`'s build) — and stay; the 15 stale roots (968,441,856 B)
+   were removed.
 
 ## Why
 

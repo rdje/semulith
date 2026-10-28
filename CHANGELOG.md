@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0088 (leaf ARTIFACT-CLEANUP.33) — the other trees' stale nested build targets removed; a wrong census corrected
+
+Ruling 4's second part. The census behind it listed 18 roots, 24.1 GB, as other units' leftovers; three are live — the cargo cohort's two producer roots (22.6 GB, managed by the recurring cleanup act) and the dsp56300 reference build — and stay. The 15 stale ones, each a cargo target with no tooling reference, were removed: 968,441,856 B. The ruling's record, the XTASK.9 leaf and the SEMULITH-XTASK-0061 entry's "24.1 GB" are corrected by this one.
+
 ## SEMULITH-XTASK-0067 (leaf XTASK.11 slice d) — a deleted board fails by name; the live-data census measured
 
 The missing-board case the 6u finding named, finished: BOARD-VERDICT's real run fails by name a unit holding the board generator's manifest (`composition.sexp`, derived from `board.sexp`) without its `board.sexp`, where slice b had left "no board declares itself yet" — a silent pass on a deletion. A corpus with no board unit at all keeps that verdict. Measured before and after: the deleted board 0 → 1 by name; no board unit 0 → 0; the other states unchanged; self-test 6 pass / 0 fail. The census of doctrines whose self-tests reference live tracked data: 21 of 41 drivers, plus PROFILE-CONSISTENCY's 44 probes — false positives, deliberate real-tree arms and measured cases (BOARD-GEN) among them; slice e classifies it for the director.
