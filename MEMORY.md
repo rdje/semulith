@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0056` — XTASK.6 slice 6aq-b: the part-4 row move (rows 6y–6ap, 37565 B → docs/tasks/archive/XTASK-4.md)
-  that 6aq's commit (`SEMULITH-XTASK-0053`, de88cbba: GUEST-GEN's driver in Rust behind a held shim, 332 arms, byte-identical on the real
-  tree and 3 fixture repositories) carried but did not describe — 37 of 42 drivers through shims. Before it XTASK-0052 (6ap), XTASK-0051 (6ao).
+- last_unit: `SEMULITH-XTASK-0054` — XTASK.6 slice 6ar: PROFILE-CONSISTENCY's driver in Rust behind a held shim (the inline judge run
+  verbatim, tools and probes spawned as before, the XTASK.8 prefetch kept; 51 arms + 494 scores; byte-identical on the real tree and
+  2 fixture repositories) — 38 of 42 drivers through shims, every pinned-module caller. Before it XTASK-0056 (6aq-b, the part-4 row move named), XTASK-0053 (6aq), XTASK-0052 (6ap).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6ar (`check_profile_consistency.sh`
-  behind a held shim — the last pinned-module caller; `check_readme_routes.sh` stays deferred). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6as (`check_readme_routes.sh`,
+  the one deferred driver, behind a held shim — or the leaf's closing review). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 50 KB of 64 KiB (sharded in XTASK-0013).
 - blockers: none. Gate cost ~45 min to 3 h per commit (longer when other repositories' gates share the

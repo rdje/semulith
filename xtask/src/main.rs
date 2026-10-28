@@ -120,6 +120,10 @@
 //! - `cargo xtask check-guest-gen [--self-test]` is the `GUEST-GEN` doctrine's driver (`XTASK.6` slice `6aq`,
 //!   `check_guest_gen.rs`): the generated guest fixtures judged as the generator's output of the tracked guests and the
 //!   base mirror through its governor, generator, governor and probes spawned as before; `scripts/check_guest_gen.sh` is its shim.
+//! - `cargo xtask check-profile-consistency [--self-test|--csr-cross …]` is the `PROFILE-CONSISTENCY` doctrine's driver
+//!   (`XTASK.6` slice `6ar`, `check_profile_consistency.rs`): every profile dossier judged by the driver's inline Python run
+//!   verbatim, the tools and probe suites spawned as before with the XTASK.8 prefetch; `scripts/check_profile_consistency.sh`
+//!   is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -163,6 +167,7 @@ mod check_interaction_matrix;
 mod check_m_vectors;
 mod check_materials_bill;
 mod check_platform_gen;
+mod check_profile_consistency;
 mod check_push_record;
 mod check_registry_mirror;
 mod check_requirements;
@@ -271,12 +276,17 @@ const NATIVE: &[&str] = &[
     "check-dossier-schema",
     "check-requirements",
     "check-guest-gen",
+    "check-profile-consistency",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    (
+        "check-profile-consistency",
+        "scripts/check_profile_consistency.sh",
+    ),
     ("check-guest-gen", "scripts/check_guest_gen.sh"),
     ("check-requirements", "scripts/check_requirements.sh"),
     ("check-dossier-schema", "scripts/check_dossier_schema.sh"),
@@ -392,6 +402,7 @@ fn main() -> ExitCode {
             "check-dossier-schema" => check_dossier_schema::run(&root, &args[1..]),
             "check-requirements" => check_requirements::run(&root, &args[1..]),
             "check-guest-gen" => check_guest_gen::run(&root, &args[1..]),
+            "check-profile-consistency" => check_profile_consistency::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)
