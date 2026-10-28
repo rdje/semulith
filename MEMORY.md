@@ -20,13 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0057` — XTASK.6 slice 6as: the leaf's driver count re-derived — 39 of 41 drivers through shims (it had
-  drifted as `N of 42` since 6ai) — and owned by DERIVED-COUNTS (two claim rows, RED on the old text, GREEN now). Before it
-  XTASK-0054 (6ar), XTASK-0056 (6aq-b), XTASK-0053 (6aq), XTASK-0052 (6ap), XTASK-0051 (6ao), XTASK-0050 (6an), XTASK-0049 (6am).
+- last_unit: `SEMULITH-XTASK-0058` — XTASK.6 slice 6at: README-ROUTING-CLOSURE's driver in Rust behind a held shim (the Python readers
+  verbatim, the PATH-shadowed tools spawned under each fixture's environment, five redefined functions as seams; 94 arms; byte-identical
+  on the real tree and 4 fixture repositories) — 40 of 41 drivers through shims. Before it XTASK-0057 (6as), XTASK-0054 (6ar).
 - next_action: RAISED to the director — no unblocked feature leaf remains (the `.14` declarations and the ZICNTR program wait on the
   pinned-tooling ruling, options A/B/C in the P4-0306 leaf; LAB-BENCH.2 on a user-feedback round; P5-BOARD.5 on the CPU's acceptance)
-  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6at (`check_readme_routes.sh`
-  behind a held shim — its PATH-shadowed tools and function redefinitions need a design first). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
+  and the workload kind's declaration; until a ruling lands the tooling slices continue: XTASK.6 slice 6au (the leaf's closing review;
+  SEAM-INTEGRITY waits on GAP-CLAIM-CENSUS's readers). `ARTIFACT-CLEANUP.30` once due (after 2026-10-28T09:33Z).
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md at 49 KB of 64 KiB (sharded in XTASK-0049, shard-0419).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under

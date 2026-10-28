@@ -124,6 +124,10 @@
 //!   (`XTASK.6` slice `6ar`, `check_profile_consistency.rs`): every profile dossier judged by the driver's inline Python run
 //!   verbatim, the tools and probe suites spawned as before with the XTASK.8 prefetch; `scripts/check_profile_consistency.sh`
 //!   is its shim.
+//! - `cargo xtask check-readme-routes [--self-test]` is the `README-ROUTING-CLOSURE` doctrine's driver (`XTASK.6` slice
+//!   `6at`, `check_readme_routes.rs`): every destination the landing page links to and the README guard emits governed
+//!   and bounded by `doctrine/readme_routes.tsv`, the three Python readers run verbatim and the measuring tools spawned
+//!   as before; `scripts/check_readme_routes.sh` is its shim.
 //! - `cargo xtask check-encoding-disjoint <fragment…> | --self-test` judges a composition's instruction encodings
 //!   pairwise disjoint (`XTASK.6` slice `6m`, `disjoint.rs`), measured equal to the pinned
 //!   `scripts/check_encoding_disjoint.py` over every tracked encoding and fragment; the composition resolver both
@@ -169,6 +173,7 @@ mod check_materials_bill;
 mod check_platform_gen;
 mod check_profile_consistency;
 mod check_push_record;
+mod check_readme_routes;
 mod check_registry_mirror;
 mod check_requirements;
 mod check_rustdoc;
@@ -277,12 +282,14 @@ const NATIVE: &[&str] = &[
     "check-requirements",
     "check-guest-gen",
     "check-profile-consistency",
+    "check-readme-routes",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-readme-routes", "scripts/check_readme_routes.sh"),
     (
         "check-profile-consistency",
         "scripts/check_profile_consistency.sh",
@@ -403,6 +410,7 @@ fn main() -> ExitCode {
             "check-requirements" => check_requirements::run(&root, &args[1..]),
             "check-guest-gen" => check_guest_gen::run(&root, &args[1..]),
             "check-profile-consistency" => check_profile_consistency::run(&root, &args[1..]),
+            "check-readme-routes" => check_readme_routes::run(&root, &args[1..]),
             other => {
                 eprintln!("xtask: native subcommand {other} has no implementation");
                 ExitCode::from(2)

@@ -423,6 +423,26 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `check_readme_routes.sh` behind a held shim. Its controls shadow `git`, `wc`, `python3`, `sort` and `grep` on `PATH` and redefine five shell
   functions inside subshells, so the port spawns the same tools where the script did and carries the redefinitions as seams of its own —
   a design settled first, in that slice.
+  Slice 6at (`2026-10-28`, `SEMULITH-XTASK-0058`; on clean 8a493254, taken out of turn — no feature leaf unblocked): `README-ROUTING-CLOSURE`'s
+  driver is Rust — `xtask/src/check_readme_routes.rs` (1923 lines) ports the bash driver line for line, and the design is this: the three
+  Python programs the script ran on `python3 -`'s stdin (the link parser, the family measure, the registry reader) run verbatim, NOT ported;
+  `wc` (through the checked scalar-count rules of `scripts/read_text_metrics.bash`: status, stderr and shape), the README guard and the
+  hint pipeline (`grep -oE | tr | sort -u` under `pipefail`, through `bash -c`) are spawned as the script spawned them, every child of a
+  fixture under that fixture's exported environment — so the controls' `PATH`-shadowed `git`, `wc`, `python3`, `sort` and `grep` meet
+  the same calls; the five shell functions the controls redefined in subshells (the family measure, the registry reader, the
+  regeneration-set check, the hint producer, the row reader called alone) are a `Seams` value only the self-test sets; output keeps
+  the shell's order (stdout and stderr tagged, merged where an arm wrote `2>&1`, stdout alone where the entry flow captured it). The
+  ninety-four bash arms are ninety-four `tally.arm(` calls, the arm total unchanged; `scripts/check_readme_routes.sh` a shim of `cargo
+  xtask check-readme-routes` that keeps the scratch preamble `probe_temporary_locality.py` reads. Measured in a disposable draft crate:
+  the self-test `94 pass / 0 fail` with stdout and stderr byte-identical to the bash driver's (6 s against 12 s), the real tree's stdout
+  and stderr byte-identical (`README-ROUTING-CLOSURE: ok (44 governed destination(s))`), and 4 scratch fixture repositories — a
+  clone of the repository, an ungoverned link added to the landing page, `LIVE_STATUS.md` grown past its byte ceiling, a malformed
+  registry row (refused) — 4 identical, 0 differ in stdout, stderr and exit status. In tree: `cargo test -p xtask` `test result: ok. 17 passed`; clippy at deny-warnings
+  rc=0 (clean on the first in-tree run). 40 of 41 drivers through shims now — and the claim row slice 6as added held its first run: the run script checked the counts
+  before its docs step, `DERIVED-COUNTS` refused the applied tree (the documents still said 39, the registry already 40), and the slice
+  was finished with the docs first and the counts after them. `SEAM-INTEGRITY` waits on the readers of `GAP-CLAIM-CENSUS`, a universal
+  spine check. Next:
+  slice `6au` — the leaf's closing review.
   Slice 6k (`2026-10-27`, `SEMULITH-XTASK-0019`; on clean 04b650e7, the tooling slice taken while every feature leaf waits on a
   ruling — recorded in the Decisions): `EXERCISE-COVERAGE` is Rust — `xtask/src/check_exercise_coverage.rs` (874 lines; the
   220-line inline Python ported line for line as the first consumer of the Rust reader, with `riscv_asm.resolve_composition`
@@ -506,7 +526,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.6` | `active` | slice `6at`: `check_readme_routes.sh` behind a held shim — its PATH-shadowed tools and function redefinitions need a design first; taken out of turn while every feature leaf waits on a ruling |
+| 1 | `XTASK.6` | `active` | slice `6au`: the leaf's closing review — every project driver but `SEAM-INTEGRITY` (waiting on `GAP-CLAIM-CENSUS`'s readers) answers through a shim; taken out of turn while every feature leaf waits on a ruling |
 | 2 | `XTASK.4` | `active` | the remaining 13 scripts wait, each constraint recorded; `bootstrap.sh` and `check_portability.sh` are measurable offline |
 
 ## Decisions
@@ -601,6 +621,12 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - [x] slice 6as **ADDRESSED (verified)** — RED before the correction: `bash scripts/check_derived_counts.sh` rc=1 with four `COUNT DRIFT` lines (MEMORY.md and docs/TASK_TREE.md; 38 vs 39 shims, 42 vs 41 registered; target/xtask/xt0057/red.out); GREEN after: rc=0, `DERIVED-COUNTS: ok (7 derived count claim(s) re-derived)` (claim instances across the live documents: the three before plus the new rows' four).
 - [x] slice 6as **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_derived_counts.sh --self-test` unchanged (the fixture claims are the self-test's own); no arm added, the arm total 1692 holds.
 - [x] slice 6as **LOCKSTEP** — the tree (slice 6as, frontier 6at, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY (its stale CHANGELOG-size and gate-cost lines re-measured in the same edit).
+- [x] slice 6at **REPRODUCE / ISSUE** — before/ (bash driver at 8a493254; target/xtask/xt0058/before/): `README-ROUTING-CLOSURE: ok (44 governed destination(s))` and the health lines, rc 0, stderr empty; `README-ROUTING-CLOSURE --self-test: 94 pass / 0 fail`; `grep -cE '(^|[; ])arm "' scripts/check_readme_routes.sh` = 94.
+- [x] slice 6at **ROOT CAUSE (WHY + WHERE)** — the driver lived in bash around three Python programs (`grep -c "<<'PY" scripts/check_readme_routes.sh` counts them with the fixtures'), the sourced `read_text_metrics.bash`, and controls that shadow five tools on PATH and redefine five functions in subshells; the programs stay Python, the tools stay spawned, the redefinitions become seams.
+- [x] slice 6at **FIX** — xtask/src/check_readme_routes.rs (`shasum -a 256` = c17522b87c8d7a1c2800ed91e2e7c8b4a629bbfbad8f4ebf76c6e98fcbceb2fc; `wc -l` = 1923; `grep -cE '^[[:space:]]+tally\.arm\('` = 94); main.rs doc bullet, `mod`, `NATIVE`, `PORTED`, dispatch; scripts/check_readme_routes.sh a shim (`exec cargo xtask check-readme-routes "$@"`, the locality preamble kept).
+- [x] slice 6at **ADDRESSED (verified)** — the draft binary against before/: `cmp after/selftest.out before/selftest.out` rc=0, `cmp after/real.out before/real.out` rc=0, stderr identical both; 4 fixture repositories (target/xtask/xt0058/red/summary.txt): `RED/GREEN paths: 4 identical, 0 differ` — stdout, stderr and rc each.
+- [x] slice 6at **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed` (the shim test holds the new shim to its commands); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0 (clean on the first in-tree run); `cargo fmt -p xtask -- --check` rc=0; `bash scripts/check_readme_routes.sh` through the shim → the same `ok (44 governed destination(s))` lines; `bash scripts/check_derived_counts.sh` → ok (94 bash arms out, 94 `tally.arm(` in; 1692 holds; 40 of 41 drivers through shims re-derived); `bash scripts/check_seam_integrity.sh --self-test` → 19 pass (the locality preamble kept).
+- [x] slice 6at **LOCKSTEP** — docs/toolbox rows unchanged (the command still answers through the shim); the tree (slice 6at, frontier 6au, the Decisions bullet), docs/TASK_TREE.md, CHANGELOG, MEMORY.
 
 ## Acceptance Checklist (leaf XTASK.7)
 
@@ -676,3 +702,4 @@ Rows 6y–6ap: [retained verbatim](archive/XTASK-4.md#acceptance-rows-6y-to-6ap)
 - `2026-10-28`: XTASK.6 slice 6aq done — `GUEST-GEN`'s driver is Rust behind a held shim (generator, governor, probes and inline edits spawned as before; the module generated from the script), byte-identical on the real tree and 3 fixture repositories, 332 arms; XTASK.md's closed rows 6y–6ap archived (part 4, named by 6aq-b); next `check_profile_consistency.sh` (slice 6ar, the last pinned-module caller); taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6ar done — `PROFILE-CONSISTENCY`'s driver is Rust behind a held shim (the inline judge run verbatim, tools and probes spawned as before, the XTASK.8 prefetch kept), byte-identical on the real tree and 2 fixture repositories, 51 arms + 494 scores; every pinned-module caller now answers through a shim; next `check_readme_routes.sh` (slice 6as) or the leaf's closing review; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
 - `2026-10-28`: XTASK.6 slice 6as done — the leaf's driver count re-derived (39 of 41 through shims, not 38 of 42) and owned by `DERIVED-COUNTS` (two claim rows, RED on the old text, GREEN on the corrected); next `check_readme_routes.sh` (slice 6at), a design first; taken out of turn while every feature leaf waits on the pinned-tooling ruling.
+- `2026-10-28`: XTASK.6 slice 6at done — `README-ROUTING-CLOSURE`'s driver is Rust behind a held shim (the three Python readers run verbatim, the tools spawned under each fixture's environment, the five redefined functions as seams), byte-identical on the real tree and 4 fixture repositories, ninety-four arms; 40 of 41 drivers through shims; next the leaf's closing review (slice 6au).
