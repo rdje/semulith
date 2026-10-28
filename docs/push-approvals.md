@@ -30,3 +30,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** pushes needed to fix GitHub CI are exceptional hence accepted
 - **Range:** origin/main..1f25d4871fe73fc6e078f2f13fd78fa2ff7f6a25 — 3 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 1f25d4871fe73fc6e078f2f13fd78fa2ff7f6a25 before this record was written
+
+## SEMULITH-PUSH-0003 — 2026-10-28T19:19:26+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-10-28: 'ok' to pushing the fix for the hosted doctrines failure on b917d1ba (ARTIFACT-COHORT on Linux, run 40713852259) once the gated commit lands
+- **Range:** origin/main..62e807a71ecc698566b91021ea55ecb9f4e91960 — 7 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 62e807a71ecc698566b91021ea55ecb9f4e91960 before this record was written
