@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0065` — XTASK.11 slice b (ruling 5): BOARD-VERDICT's controls judge frozen copies
-  (scripts/fixtures/board-verdict/); a rejected live board fails by name (rc 1) instead of refusing (rc 2). Before it XTASK-0064
-  (slice a), P4-0314 (P4-SYSTEM.17 done). Local commits ahead of origin: 7 (a push is asked).
-- next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.11 slice c (STATE-GEN)
-  over frozen fixture copies; XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C) + the other trees' 24.1 GB;
+- last_unit: `SEMULITH-XTASK-0066` — XTASK.11 slice c (ruling 5): STATE-GEN's controls judge frozen copies; each pair judged on
+  its own, an orphaned module fails by name; slice b's missing-board claim corrected. Pushed 45f970c0 (SEMULITH-PUSH-0003,
+  the director's 'ok'); its hosted doctrines run confirms the ARTIFACT-COHORT fix.
+- next_action: tooling first, so the a44 lapse block runs uninterrupted: XTASK.11 slice d (census every
+  doctrine whose controls read live data, then one slice each); XTASK.4 and the tree close (ruling 2); ARTIFACT-CLEANUP.29 (class C) + the other trees' 24.1 GB;
   the cleanup narrative's owned rollover before `.31`. Then P4-SYSTEM.14 a44-2b → a44-5 back to back (the one lapse).
   `ARTIFACT-CLEANUP.31` due after 2026-10-29T09:49Z.
   Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.

@@ -317,7 +317,10 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Status: `active` (`2026-10-28`; the director's ruling 5, `decision_doctrine-controls-refuse-and-freeze.md`)
   Goal: the three doctrine-owner questions answered as ruled — `CITATION-QUOTES`' availability probe refuses on any
   unexpected exception (6r); `BOARD-VERDICT`'s and `STATE-GEN`'s controls judge frozen fixture copies, so a wrong live board or
-  a hand-edited live rv64gc pair fails by name (6u, 6x). One doctrine per slice, each change fired RED.
+  a hand-edited live rv64gc pair fails by name (6u, 6x). One doctrine per slice, each change fired RED. Widened by slice c:
+  the ruling's rule is general (a self-test judges frozen copies, never live data), and a deleted source must fail by name, not
+  read as "nothing declared yet" — so slice d censuses every doctrine whose controls read live data (BOARD-GEN measured so,
+  GUEST-GEN noted at 6aq) and one slice follows per doctrine found.
   Slice a (`2026-10-28`, `SEMULITH-XTASK-0064`; on clean aafcbdfd; evidence target/xtask/xt0064): `CITATION-QUOTES`'
   availability probe (`xtask/src/check_citation_quotes.rs` `AVAILABILITY`) now exits 2 with the exception's type and message
   on any exception outside its named refusals, and exits 0 or 1 only after the call returns — a truncated manifest's
@@ -333,14 +336,29 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   the board schema, so the controls no longer depend on the corpus they judge. Measured with the binary before and after on the
   6u corpus states, each applied to the tree and restored byte-identical (red.sh): a rejected live board `rc=2 REFUSED — the check
   does not discriminate` → `rc=1 FAIL — the composition does not hold`; no board `rc=2 REFUSED` → `rc=0 ok (no board declares itself
-  yet)`; one good board and one of two rejected unchanged (0 and 1). `BOARD-VERDICT --self-test: 6 pass / 0 fail`, the real verdict
+  yet)` [corrected in slice c: that is a silent pass on a deletion, not the ruled outcome — the gate still refuses the state
+  through BOARD-GEN, whose controls read the live board too; a board unit holding gen_board's artifacts without `board.sexp`
+  must fail by name — slice d's census owns it]; one good board and one of two rejected unchanged (0 and 1). `BOARD-VERDICT --self-test: 6 pass / 0 fail`, the real verdict
   unchanged. Next: slice c — `STATE-GEN`'s frozen rv64gc pair.
+  Slice c (`2026-10-28`, `SEMULITH-XTASK-0066`; on clean 45f970c0, after the approved push; evidence target/xtask/xt0066):
+  `STATE-GEN`'s controls judge frozen copies — `scripts/fixtures/state-gen/` holds the rv64i descriptor, the arithmetic module and
+  an rv64gc pair (`rv64i/state.sexp`, `arith.rs`, `rv64gc/state.sexp` and `rv64gc/state_rv64gc.rs`, the module generated from the
+  frozen descriptor at its own path, since a module records its source path and digest; its body equals the live module's). The
+  first draft copied the live module and named the descriptor `rv64gc-state.sexp`: the generator refuses a descriptor not named
+  `state.sexp` and the copied header named the live path — 2 of 29 arms refused, caught before any commit. The real run now judges
+  each pair on its own: a generated module whose descriptor is absent fails by name (before, an absent rv64i descriptor returned
+  "ok (no state descriptor yet)" without judging rv64gc at all); only when no pair has either half is there no state yet.
+  Measured with the binary before and after on the 6x corpus states, each applied to the tree and restored byte-identical
+  (red.sh): the rv64gc module hand-edited 2 REFUSED → 1 FAIL by name; the rv64gc census silenced 2 → 1; the rv64i descriptor
+  removed 2 → 1 (`… is generated, but its descriptor … is absent`); the rv64i module hand-edited and the in-sync tree unchanged
+  (1, 0). `STATE-GEN --self-test: 29 pass / 0 fail`; the real verdict unchanged. Next: slice d — the census of every doctrine
+  whose controls read live data.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.11` | `active` | ruling 5: slices a–b done (CITATION-QUOTES refuses a crash; BOARD-VERDICT judges a frozen board); slice c (STATE-GEN's frozen rv64gc pair) next |
+| 1 | `XTASK.11` | `active` | ruling 5: slices a–c done (CITATION-QUOTES refuses a crash; BOARD-VERDICT and STATE-GEN judge frozen copies, a deleted descriptor fails by name); slice d censuses every doctrine whose controls read live data |
 | 2 | `XTASK.4` | `active` | ruling 2 (2026-10-28): the leaf closes with its 13 scripts in shell, and the tree with it, once `XTASK.11` lands |
 
 ## Decisions
@@ -465,6 +483,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice b **FIX** — scripts/fixtures/board-verdict/ (four frozen documents, `cmp` equal to the live ones at 37debc11); xtask/src/check_board_verdict.rs copies `FIXTURE`; the unused `BOARD` constant removed (clippy `-D warnings` rc=0).
 - [x] slice b **ADDRESSED (verified)** — red.txt: `rejected after rc=1 FAIL — the composition does not hold`, `no-board after rc=0 ok (no board declares itself yet)`; `one-board` and `one-of-two-rejected` unchanged; `tree restored: 0 profile paths changed`.
 - [x] slice b **NO REGRESSION** — `BOARD-VERDICT --self-test: 6 pass / 0 fail`; `bash scripts/check_board_verdict.sh` rc=0 `ok (1 board(s) …)`; `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
+- [x] slice c **ROOT CAUSE (WHY + WHERE)** — `self_test` copied the live rv64i descriptor and `arith.rs` and judged the live rv64gc pair (`grep -c 'check(repo, STATE_GC, ARITH, OUT_GC)'` = 1 in the predecessor); `run` returned ok when the rv64i descriptor was absent; red.txt: three corpus states `before rc=2 REFUSED`.
+- [x] slice c **FIX** — scripts/fixtures/state-gen/ (four frozen files; `python3 -B scripts/gen_state.py --check` over the frozen pair rc=0); xtask/src/check_state_gen.rs: the controls read `FIXTURE_*`, `run` judges each pair and fails an orphaned module by name; clippy `-D warnings` rc=0.
+- [x] slice c **ADDRESSED (verified)** — red.txt: `gc-module-hand-edited after rc=1`, `gc-census-silent after rc=1`, `descriptor-missing after rc=1 … is generated, but its descriptor … is absent`; `module-hand-edited` and `in-sync` unchanged; `tree restored: 0 paths changed`.
+- [x] slice c **NO REGRESSION** — `STATE-GEN --self-test: 29 pass / 0 fail`; `bash scripts/check_state_gen.sh` rc=0 (both pairs `ok … matches …`); `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.10)
 
@@ -540,3 +562,4 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - `2026-10-28`: XTASK.10 done — `cargo xtask focused` runs rustfmt and clippy first (29 checks); routed from P4-SYSTEM.15 slice e-b after the push boundary refused over formatting drift.
 - `2026-10-28`: XTASK.11 slice a — CITATION-QUOTES' availability probe refuses an unexpected exception (ruling 5); 24 arms.
 - `2026-10-28`: XTASK.11 slice b — BOARD-VERDICT's controls judge a frozen board; a rejected live board fails by name instead of refusing.
+- `2026-10-28`: XTASK.11 slice c — STATE-GEN's controls judge a frozen pair; each pair judged on its own, an orphaned module fails by name; slice b's missing-board claim corrected.

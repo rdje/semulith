@@ -22,6 +22,14 @@ const ARITH: &str = "crates/semulith-core/src/arith.rs";
 const OUT: &str = "crates/semulith-core/src/state.rs";
 const STATE_GC: &str = "profiles/rv64gc-lab-v0/state.sexp";
 const OUT_GC: &str = "crates/semulith-core/src/state_rv64gc.rs";
+/// The controls' frozen copies (`XTASK.11` slice c, ruling 5, `decision_doctrine-controls-refuse-and-freeze.md`): the rv64i
+/// descriptor, the arithmetic module and the rv64gc pair as they stood on 2026-10-28, never refreshed by a corpus edit, so
+/// a hand-edited live module or census fails by name in the real check instead of making the controls refuse. The frozen
+/// rv64gc module was generated from the frozen descriptor at its own path (a module records its source path and digest).
+const FIXTURE_STATE: &str = "scripts/fixtures/state-gen/rv64i/state.sexp";
+const FIXTURE_ARITH: &str = "scripts/fixtures/state-gen/arith.rs";
+const FIXTURE_STATE_GC: &str = "scripts/fixtures/state-gen/rv64gc/state.sexp";
+const FIXTURE_OUT_GC: &str = "scripts/fixtures/state-gen/rv64gc/state_rv64gc.rs";
 
 /// The script's `gc_state` descriptor, verbatim; `{field}` is its one argument (a `(field …)` form or nothing).
 const GC_STATE: &str = r#"(state (profile_id "rv64gc-lab-v0") (xlen 64) (note "n")
@@ -169,8 +177,8 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         );
         return false;
     };
-    let _ = fs::copy(repo.join(STATE), t.join("state.sexp"));
-    let _ = fs::copy(repo.join(ARITH), t.join("arith.rs"));
+    let _ = fs::copy(repo.join(FIXTURE_STATE), t.join("state.sexp"));
+    let _ = fs::copy(repo.join(FIXTURE_ARITH), t.join("arith.rs"));
     let p = |rel: &str| t.join(rel).display().to_string();
     let (state, arith, out) = (p("state.sexp"), p("arith.rs"), p("state.rs"));
     let mut tally = Tally {
@@ -397,20 +405,20 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&o),
         "does not declare a present fp-file",
     );
-    // The census's real rv64gc pair, by the paths the script passed (relative to the root).
-    let (rc, o) = check(repo, STATE_GC, ARITH, OUT_GC);
+    // The frozen rv64gc pair, by root-relative paths as the script passed the real one.
+    let (rc, o) = check(repo, FIXTURE_STATE_GC, FIXTURE_ARITH, FIXTURE_OUT_GC);
     tally.arm(
-        "GREEN the census's rv64gc pair is in sync",
+        "GREEN the frozen rv64gc pair is in sync",
         rc,
         0,
         captured(&o),
         "",
     );
-    let _ = fs::copy(repo.join(OUT_GC), t.join("gc-module.rs"));
+    let _ = fs::copy(repo.join(FIXTURE_OUT_GC), t.join("gc-module.rs"));
     hand_edit(&t.join("gc-module.rs"), "\n// hand edit\n");
-    let (rc, o) = check(repo, STATE_GC, ARITH, &p("gc-module.rs"));
+    let (rc, o) = check(repo, FIXTURE_STATE_GC, FIXTURE_ARITH, &p("gc-module.rs"));
     tally.arm(
-        "RED the census's rv64gc pair catches a hand edit",
+        "RED the frozen rv64gc pair catches a hand edit",
         rc,
         1,
         captured(&o),
@@ -542,15 +550,28 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("STATE-GEN: REFUSED — the check does not discriminate (self-test failed).");
         return ExitCode::from(2);
     }
-    if !root.join(STATE).is_file() {
+    // Each pair on its own (`XTASK.11` slice c): a descriptor is judged against its module; a generated module whose
+    // descriptor is absent fails by name — a deletion must not read as "nothing declared yet"; only when no pair has
+    // either half is there no state yet.
+    let pairs = [(STATE, OUT), (STATE_GC, OUT_GC)];
+    if pairs
+        .iter()
+        .all(|(state, module)| !root.join(state).is_file() && !root.join(module).is_file())
+    {
         println!("STATE-GEN: ok (no state descriptor yet)");
         return ExitCode::SUCCESS;
     }
-    if let Err(code) = judge_pair(root, STATE, OUT) {
-        return code;
-    }
-    if let Err(code) = judge_pair(root, STATE_GC, OUT_GC) {
-        return code;
+    for (state, module) in pairs {
+        if !root.join(state).is_file() {
+            if root.join(module).is_file() {
+                eprintln!("STATE-GEN: FAIL — {module} is generated, but its descriptor {state} is absent. Restore the descriptor, or remove the module with it.");
+                return ExitCode::from(1);
+            }
+            continue;
+        }
+        if let Err(code) = judge_pair(root, state, module) {
+            return code;
+        }
     }
     ExitCode::SUCCESS
 }
