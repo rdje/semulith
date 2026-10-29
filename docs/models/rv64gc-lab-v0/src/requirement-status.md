@@ -42,16 +42,18 @@ measurement that is not `satisfied` a finding (`decision_credit-is-a-catalogue-r
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name. Today the derivation is honest and small:
-48 requirements derive `planned`, both cases (`rv64gc-signed-div-truncation-v2`, invalidated
-history; `rv64gc-m-forms-v3`, whose ten policy legs measured satisfied, credited by `CR-GC-M-1`
-from 2026-10-26 until `P4-SYSTEM.14` a44-2b retired the record on 2026-10-29 and invalidated the
-capture by moving its pinned inputs) are uncredited at `pending`, the profile has no credit catalogue,
-and no recorded status drifts. The M case returns as `v4`, re-credited as `CR-GC-M-2` (a44-5).
+47 requirements derive `planned` and `REQ-GC-M` `implemented`, through one current record,
+`CR-GC-M-2`, naming `rv64gc-m-forms-v4` (`P4-SYSTEM.14` a44-5). The two earlier cases are
+uncredited at `pending`: `rv64gc-signed-div-truncation-v2`, invalidated history, and
+`rv64gc-m-forms-v3`, credited by `CR-GC-M-1` from 2026-10-26 until a44-2b retired the record on
+2026-10-29 and invalidated the capture by moving its pinned inputs; v4 is its re-capture under the
+new manifest. No recorded status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
-`CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
+`CREDIT-RECORDS: rv64gc-lab-v0: 1 credit(s), 1 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
-their discriminating test. Nothing here advances a status: the first credit record, with
-the recorded status moving in the same commit, is the crediting act, under the director's
-ruling on its authority and on the sufficiency of one finite case. The normative text it would
-rest on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb).
+their discriminating test. Nothing here advances a status: a credit record, with the recorded
+status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
+re-issue `CR-GC-M-2`), under the rulings on its authority and on the sufficiency of one finite case
+(`decision_req-gc-m-credited-implemented.md`). The normative text it rests on is retained
+(`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb).

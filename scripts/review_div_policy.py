@@ -62,7 +62,7 @@ import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
 
 FORMAT = "div-policy-review-v1"
-CASE_ID = "rv64gc-m-forms-v3"  # the retained, captured case (a42ax); a consumer constant no case pins
+CASE_ID = "rv64gc-m-forms-v4"  # the retained, captured case (a42ax: v3; a44-5: v4); a consumer constant no case pins
 DOCUMENT_BYTES = 65536
 BOUNDARY_MARKER = "Table"  # an expectation step whose source cites a chapter table row is a directed boundary fixture
 LOW_RISK = ("low", "medium")

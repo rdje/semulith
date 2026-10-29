@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0320 (P4-SYSTEM.14 a44-5) — the reviews read v4 and CR-GC-M-2 re-issues the credit; ruling B carried out
+
+The method review names the v4 capture (declared 177b43a1, captured 3c464095) and reports `satisfied` over 88 authenticated files; the policy review reads v4: 10 of 10 legs satisfied. The crediting act under the same rulings: `credits.sexp` recreated with `CR-GC-M-2`, `REQ-GC-M` `implemented` (47 planned, 1 implemented, 1 credited, 0 drift), the dossier copy of v4's measured record and its G-TRACE row restored — G-TRACE green, 3 of 10 axes open. The real-tree arms of the method, policy, dossier and status probes restated; the property probe's `derived-status` loss back to 37. The one lapse (a44-2b to a44-5) closed the same day; the XLEN, CSR-SET and SSTC declarations follow as data.
+
 ## SEMULITH-P4-0319 (P4-SYSTEM.14 a44-4) — the M v4 case captured, exactly once
 
 One invocation of `scripts/retain_div_capture.py --case rv64gc-m-forms-v4 --declaration-commit 177b43a1…` after a `ready` preflight: three zero-exit processes, baseline and repeat AGREE, the control DIVERGE, complete, qualification false. Every trace and stdout is byte-identical to v3's; the stderr streams differ only by the case directory in the path they print — the manifest is the only declared difference, as ruling 1 requires. The case holds 22 of 22; status: 3 cases, 0 credited. The reviews and the credit move to v4 in a44-5.

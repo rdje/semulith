@@ -12,7 +12,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | --- | --- | --- | --- |
 | `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` 2026-10-22 (a pinned input moved) | 22 of 22 | `m-div.s`, 27 boundaries, 1 predeclared property; AGREE, AGREE, control DIVERGE |
 | `rv64gc-m-forms-v3/` | captured 2026-10-22; retained (a42ax), 10 of 10 legs; `invalidated` 2026-10-29 (a44-2b) | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties (13 forms, 12 Table 1 cells); AGREE, AGREE, control DIVERGE |
-| `rv64gc-m-forms-v4/` | declared 2026-10-29 (a44-3), captured the same day by one invocation (a44-4): v3's case under the declaration-as-data manifest (67 children) | 22 of 22 | v3's program, properties and prepared bytes; AGREE, AGREE, control DIVERGE; traces byte-identical to v3's |
+| `rv64gc-m-forms-v4/` | declared and captured 2026-10-29 (a44-3, a44-4; 67 children); the retained case, 10 of 10 legs, credited `CR-GC-M-2` (a44-5) | 22 of 22 | v3's program, properties and prepared bytes; AGREE, AGREE, control DIVERGE; traces byte-identical to v3's |
 
 ## Declared files and lifecycle (per case)
 

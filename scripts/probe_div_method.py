@@ -384,7 +384,7 @@ class MethodTests(unittest.TestCase):
                               r["capture_binding"], r["evaluation_disposition"]),
                              ("satisfied", "pending", "valid", "matched", "pending"), r)
             self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
-                             (85, 1076834, 40438), r)  # the m-forms capture (a42ax)
+                             (88, 1098379, 40438), r)  # the m-forms v4 capture (a44-4; v3's was 85, 1,076,834)
         self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
         self.assertEqual(r["replay_disposition"], "not-checked")
 

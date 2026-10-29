@@ -28,11 +28,12 @@ SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement
                             "matched_gpr_adequacy", "review_div_method"))
 # The retained, captured case this review reads. It lives here, in a consumer no case pins, so
 # moving it to the next captured case does not invalidate any declaration (a42av).
-# a42ax: the m-forms capture (a42aw) retained in e775705; the first case stays retained history.
-RETAINED_CASE_ID = "rv64gc-m-forms-v3"
-SOURCE_DECLARATION_COMMIT = "4af5a68bbec9f1bf0922ec3787f829e029c15f29"
-RETAINED_CAPTURE_COMMIT = "e775705e2cebbafabe05f0458da8d52004d604cb"
-MEASURED_SHA256 = "fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152"
+# a42ax: the m-forms capture (a42aw) retained in e775705; P4-SYSTEM.14 a44-5: the M case re-captured as v4 under the
+# declaration-as-data manifest (declared 177b43a1, captured 3c464095); v2 and v3 stay retained history.
+RETAINED_CASE_ID = "rv64gc-m-forms-v4"
+SOURCE_DECLARATION_COMMIT = "177b43a10745fc5406e787b601d8699b946dbb63"
+RETAINED_CAPTURE_COMMIT = "3c46409585272172d185a9d7ff864311706cde40"
+MEASURED_SHA256 = "aadb5ef3360f1d14a79258522eea098802d492889a747d5be41eeed69e106e08"
 MEASURED_BYTES = 16942
 TOTAL_BYTES = A.Unit.Evaluation.Q.MAX_READ_BYTES
 

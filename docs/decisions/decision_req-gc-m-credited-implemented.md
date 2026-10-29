@@ -61,3 +61,16 @@ record (RECORD-SCHEMA refuses an empty catalogue; an absent one is no credits, a
 text is kept frozen as the qualification probe's fixture (`scripts/fixtures/dossier-qualification/credits.sexp`). The sufficiency and
 authority rulings above stand unchanged for the re-credit: the M case re-captured as `v4` under the new manifest
 (a44-3, a44-4) is credited by a new record, `CR-GC-M-2` (a44-5), through the same crediting act.
+
+## Re-credit (2026-10-29, `P4-SYSTEM.14` a44-5)
+
+`CR-GC-M-2` re-issues the credit against `rv64gc-m-forms-v4`, through the same act and on the same rulings: authority
+`review` (the delegation of 2026-10-26, and ruling 1 of 2026-10-28, which requires the credit "re-issued against the new
+capture through the crediting act — never carried by hand"), sufficiency one finite case of 25 witnesses whose ten legs
+measure satisfied (`DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-2`), the same three
+limitations. The capture reproduces v3's verdicts and witnesses with the manifest as the only declared difference
+(every trace byte-identical; a44-4). In the same commit: `credits.sexp` recreated with the one record, `REQ-GC-M`
+`implemented` (`REQUIREMENT-STATUS: … 47 planned, 1 implemented; 3 case(s), 1 credited … 1 of 1 credit record(s) current;
+0 drift`), the dossier copy of v4's measured record in `references.sexp` and its `G-TRACE` row in `gate.sexp` (G-TRACE
+green, 3 of 10 axes open), the retained reviews pointed at v4 (`review_div_method.py`, `review_div_policy.py`).
+

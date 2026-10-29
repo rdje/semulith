@@ -8128,7 +8128,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("claim-values", "3"),
             ("authority-node-bound", "1"),
             ("authority-depth-bound", "1"),
-            ("derived-status", "2"),
+            ("derived-status", "37"),
             ("derived-links", "1"),
             ("requirement-meaning", "6"),
             ("obligation-meaning", "4"),

@@ -21,8 +21,8 @@
 (evidence (axis G-REGRESSION) (kind generated)
   (test (file "crates/semulith-verify/src/m_vectors/tests.rs") (fn "every_generated_vector_holds_through_the_engine"))
   (statement "The generated M vectors: every M instruction over edge and seeded operands, the expected rd from scripts/gen_m_vectors.py's exact-integer reference (RVI-M §11.1, Table 1 by name), run through the engine's decode, guard and operators (P4-SYSTEM.11); the table gated by M-VECTORS."))
-;; G-TRACE: no experiment while no current credit names a case — the m-forms case's row (a42bc) left with the
-;; retirement of CR-GC-M-1 (P4-SYSTEM.14 a44-2b, 2026-10-29); the re-captured M case returns with CR-GC-M-2 (a44-5).
+(evidence (axis G-TRACE) (kind experiment) (experiment "rv64gc-m-forms-v4")
+  (statement "The first qualified matched experiment: the M case's measured record (33 instructions, 25 finite witnesses — the 13 M forms and the 12 Table 1 cells) with its matched-gpr-v1 verification graph — baseline, byte-identical repeat, a wrong-quotient control observed diverging, every input and observation pinned, both producer pairs assessed — credited by CR-GC-M-2 (REQ-GC-M, implemented) and qualified in the dossier only while that credit is current (P4-SYSTEM.14 a42bc; the M case re-captured as v4 under the declaration-as-data manifest and re-credited in a44-5, its traces byte-identical to v3's). The eight earlier Sail matched experiments (P4-SYSTEM.2 to .8, .12's C corpus) stay prose in matched_scope: history, not evidence, until each is re-run as a record under the same contract."))
 (evidence (axis G-REPLAY) (kind determinism)
   (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") (fn "every_guest_re_executes_identically_from_cold_reset"))
   (statement "Every guest re-executes identically from cold reset: the run is a function of the definition and the program."))
@@ -39,8 +39,6 @@
 
 (open (axis G-STATE) (owner "P4-SYSTEM.14")
   (statement "The state requirements read planned: no requirement status is derived from evidence yet."))
-(open (axis G-TRACE) (owner "P4-SYSTEM.14")
-  (statement "No matched experiment is evidenced while no current credit names a case: the m-forms case's record left with CR-GC-M-1's retirement (a44-2b, 2026-10-29). P4-SYSTEM.14 owns its return: the M case re-captured as v4 under the new manifest (a44-3, a44-4) and re-credited as CR-GC-M-2 (a44-5)."))
 (open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.14")
   (statement "Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5."))
 (evidence (axis G-REGRESSION) (kind workload) (record "profiles/rv64gc-lab-v0/workload.sexp")

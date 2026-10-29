@@ -226,4 +226,7 @@ history, never rerun. Nothing here credits `REQ-GC-M`; `scripts/requirement_stat
 (`decision_ten-legs-satisfied-credit-separate.md`). That act came at a42az (`CR-GC-M-1`, 2026-10-26) and was
 retired at `P4-SYSTEM.14` a44-2b (2026-10-29): moving the matched cases' declarations into data moved pinned
 inputs of this capture, so the method review reports it `stale`, the policy review `invalidated`, and this
-capture joins the first as history; the M case returns as `v4`, captured under the new manifest.
+capture joins the first as history. The M case returned as `rv64gc-m-forms-v4`, declared (a44-3, 177b43a1) and
+captured once (a44-4, 3c464095) under the new manifest of 67 children: every trace and stdout byte-identical to
+v3's, the stderr streams differing only by the case directory they print. The retained reviews read v4 —
+`satisfied` over 88 authenticated files, all ten legs — and `CR-GC-M-2` credits it (a44-5).

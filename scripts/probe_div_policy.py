@@ -334,22 +334,34 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(first, second); self.assertLessEqual(len(json.dumps(first).encode()), 65536)
 
     def test_real_tree_measures_as_its_manifest_predicts(self):
-        """The m-forms capture's method pins moved at P4-SYSTEM.14 a44-2b (the declarations became data) and its
-        credit CR-GC-M-1 was retired there: invalidated, naming the moved pin, uncredited and with no finding, since
-        no record names the case; exit 0. The re-credit (CR-GC-M-2, a44-5) re-states this arm for the M v4 case."""
+        """Current pins: every leg satisfied, credited by CR-GC-M-2 (the M case re-captured as v4 and re-credited,
+        P4-SYSTEM.14 a44-5). A moved method pin: invalidated, naming it; the record that cites the case lapses and is
+        the one finding (a42ay), exit 1. The expectation comes from the manifest, not the tree."""
         import subprocess
         moved = moved_inputs(ROOT, self.M.CASE_ID)
-        self.assertTrue(moved, "the m-forms capture's pinned inputs moved at a44-2b and never return")
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_method.py")],
                               capture_output=True, text=True, cwd=str(ROOT))
-        self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
+        self.assertEqual(done.returncode, 1 if moved else 0, done.stdout + done.stderr)
         self.assertEqual(json.loads(done.stdout)["case_id"], self.M.CASE_ID)
         table = self.M.measure_policy(ROOT, method=json.loads(done.stdout))
-        self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"], table["credit_ids"]),
-                         ("invalidated", ["matched-reference-comparison", "currentness"], [], False, []))
-        self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
-        self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 0)
-        self.assertTrue(table["invalidated_by"], table["method"])
+        if moved:
+            # Every pinned method input is also read by the credit's authentication (credit_records.authenticate
+            # walks the case's dependency manifest), so a moved input invalidates the measurement AND lapses
+            # CR-GC-M-2: `credited` false, the lapsed record named as the one finding, exit 1, the status falls
+            # back to `planned` (drift) until the record is withdrawn or the case recaptured.
+            self.assertEqual((table["disposition"], table["missing"], table["credited"], table["credit_ids"]),
+                             ("invalidated", ["matched-reference-comparison", "currentness"], False, ["CR-GC-M-2"]))
+            self.assertEqual(len(table["findings"]), 1, table["findings"])
+            self.assertTrue(table["findings"][0].startswith("credit CR-GC-M-2 names this case but lapsed: "), table["findings"])
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
+            self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 1)
+            self.assertTrue(table["invalidated_by"], table["method"])
+        else:
+            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"], table["credit_ids"]),
+                             ("satisfied", [], [], True, ["CR-GC-M-2"]))
+            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 10)
+            self.assertIsNone(table["invalidated_by"])
+            self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-2"))
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]

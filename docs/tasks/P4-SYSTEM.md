@@ -438,8 +438,8 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-4 done — the declarations are data the tools read, a case is accepted on its own authority, the M case declared as v4 (67 children) and captured once (a44-4: traces byte-identical to v3's); `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`; next a44-5 the reviews pointed at v4 and the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
-| 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-TRACE, G-OBLIGATIONS open) |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN (a43a-2), CSR-SET and SSTC declarations as data, one per unit; the ZICNTR program waits for a reference with Zicntr |
+| 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
 
@@ -532,6 +532,24 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-5 / SEMULITH-P4-0320: the reviews read v4 and the credit is re-issued — the one lapse closed (completed)
+
+`review_div_method.py` names the v4 capture (`RETAINED_CASE_ID`, the declaration commit 177b43a1, the capture commit
+3c464095, the measured record's 16,942 B and digest) and reports `satisfied` over 88 authenticated files (1,098,379 B; v3's
+was 85); `review_div_policy.py` reads v4: `DIV-POLICY: satisfied — 10 of 10 legs satisfied`. The crediting act, as at
+a42az and under the same rulings (`decision_req-gc-m-credited-implemented.md`, Re-credit): `credits.sexp` recreated with
+`CR-GC-M-2` (case v4; the measured record, receipt and policy pinned; authority `review`; ten legs; the three
+limitations), `REQ-GC-M` `implemented` — `REQUIREMENT-STATUS: … 47 planned, 1 implemented; 3 case(s), 1 credited … 1 of
+1 credit record(s) current; 0 drift`, `CREDIT-RECORDS: … 1 credit(s), 1 current`. The method review stays `satisfied`
+after the status edit (the semantic digests normalize the status, as at a42az; measured). The dossier copy is v4's
+measured record, form for form, and the gate's `G-TRACE` row names it: GS `G-TRACE … green`, `Open axes (3 of 10)`
+(`G-STATE`, `G-OBLIGATIONS`, `G-RELEASE`). Restated, each measured: the method and policy probes' real-tree arms (current
+→ satisfied, credited by `CR-GC-M-2`), the dossier probe's (v4 qualifies on the real tree, v3 does not; the mirror keeps
+judging the frozen `CR-GC-M-1`), the status probe's, and the property probe's `derived-status` loss back to 37 (36 arms,
+0 differ). The lapse lasted a44-2b to a44-5, six commits on one day. Ruling B is carried out; next in this leaf the XLEN,
+CSR-SET and SSTC declarations as data, each a new case file touching no pinned code. By the 5:1 rule this is the sixth
+feature unit since XTASK-0072 — run so the lapse closed back to back; the next unit is an XTASK slice (`XTASK.13`).
 
 ### .14 a44-4 / SEMULITH-P4-0319: the M v4 case captured, exactly once (completed)
 
@@ -1181,6 +1199,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-4 **ROOT CAUSE** — v4 was declared and uncaptured: at 177b43a1 `ls evidence/rv64gc-m-forms-v4 | wc -l` = 8 and `python3 -B scripts/requirement_status.py` → `1 declared`.
 - [x] `.14` a44-4 **ADDRESSED** — `retain_div_capture.py … --preflight-only` → `ready` (14 absent); the one invocation rc=0 → `pending`, `complete True qualification False`, runs `baseline 0, repeat 0, control 0`, verdicts `AGREE AGREE DIVERGE`; `ls evidence/rv64gc-m-forms-v4 | wc -l` = 22; `cmp` of the three traces and three stdout streams with v3's: identical; `diff` of each stderr: only the trace path's case directory.
 - [x] `.14` a44-4 **NO REGRESSION** — `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` (67 members); `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`; the 41 probes (target/p4-system-14/a44-4/green-1); the staged prechecks (prechecks.txt) and the commit gate (chain log).
+- [x] `.14` a44-5 **ROOT CAUSE** — the lapse: at 3c464095 `ls profiles/rv64gc-lab-v0/credits.sexp` absent, `python3 -B scripts/requirement_status.py` → `48 planned; 3 case(s), 0 credited`, `grep -c 'RETAINED_CASE_ID = "rv64gc-m-forms-v3"' scripts/review_div_method.py` = 1.
+- [x] `.14` a44-5 **ADDRESSED** — `python3 -B scripts/review_div_method.py` → `satisfied` (88 files); `python3 -B scripts/review_div_policy.py` → `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-2`; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `1 credit(s), 1 current, 0 lapsed`; `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; 3 case(s), 1 credited … 0 drift, 0 finding(s)`; GS `Open axes (3 of 10)`.
+- [x] `.14` a44-5 **NO REGRESSION** — the property arms `36 arms, 0 differ` (target/p4-system-14/a44-5/property-arms.txt; `derived-status` 37); the 41 matched-GPR/DIV/status probes rc=0 (target/p4-system-14/a44-5/green-1); `PROFILE-CONSISTENCY --self-test: 1188 pass / 0 fail` (pc-selftest-1.log); the staged prechecks (prechecks.txt) and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

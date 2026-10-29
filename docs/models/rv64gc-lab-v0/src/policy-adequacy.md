@@ -30,7 +30,10 @@ the record `CR-GC-M-1` in `credits.sexp` (signed `review` under `decision_four-r
 2026-10-29 the case is `invalidated`: `P4-SYSTEM.14` a44-2b moved pinned inputs of its capture (the matched
 cases' declarations became data) and retired the record (that decision's Retirement), so the consumer reports
 `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness` and
-`REQ-GC-M` derives `planned` until the M case's v4 capture is measured and credited (a44-3 to a44-5). The consumer reads boundary rows and forms from the
+`REQ-GC-M` derived `planned` until the M case's v4 capture was measured and credited. The same day the M case was
+re-captured as `rv64gc-m-forms-v4` under the new manifest (a44-3 declared, a44-4 captured: traces byte-identical to
+v3's), and this review now reads v4 (`CASE_ID`): `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
+CR-GC-M-2` (a44-5), and `REQ-GC-M` derives `implemented` again. The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row is a directed boundary
 fixture; a step's mnemonic is its form), never from the chapter itself.
 
