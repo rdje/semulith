@@ -342,8 +342,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/w-sw.s`  `22d952146776d415f32c58e36427d40707ab7aa47522208fdf2eb2330d709363`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.expected.sexp`  `3e67f6003c5e46b6c080f1de31d00c0e3f5aaf0d3d42b46ca84f744d651329b4`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.s`  `3be147608a1765f2a0bc16a585e4ce7342c7b0ad36911051b95b85a49e083f85`
-//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.expected.sexp`  `8dab37a4e9e16ab8a639629d648fe83fb8fe754e8aa84bb1cfd1356365faaede`
-//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.s`  `72ec541bc7f3f9ee1915087411dfe594861044e0cbf483ea248afe54fb3461c8`
+//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.expected.sexp`  `a932c58347bdda567520842f83e71b02213ba7333d2d802b8b7b7b30cf68d74c`
+//!   `profiles/rv64gc-lab-v0/guests/xlen-forms.s`  `83668ff2797349de578c5b9cc39278e2596f817810c6d1bb875bf06dc6ca4460`
 //! Generator: `scripts/gen_guests.py` (sha256 `cefce8dfb55619694bb4420affbe8f8951ee32ae810834015616127979b45de3`)
 //!
 //! Every data array below carries `#[rustfmt::skip]`: the emission is

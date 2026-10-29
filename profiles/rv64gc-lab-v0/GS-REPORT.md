@@ -62,7 +62,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 2b8c787faa80f249e05527dff5cd7192135aa1b5824ff70b16fcb5e1ef3b6cc3`
+  `sha256 0ded1bdf9703cdf18a54c536db0218c3b782328bab803a26b61ab3ebbc00ab3f`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

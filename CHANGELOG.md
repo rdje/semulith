@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0322 (P4-SYSTEM.14 a43a-2b) — the XLEN case declared: the first non-M case, on its own authority
+
+`evidence/rv64gc-xlen-forms-v1/case.sexp` declares REQ-D-XLEN's case: `xlen-forms.s`, 25 reviewed boundaries, 17 properties read off the source derivation (bit 63, the 2^64 wrap, RV64 LUI, the `*W` family, the 64-bit address reported whole in `mtval`), a 32-bit-truncation control, authority REQ-D-XLEN / OB-XLEN / RVI-RV64I and the retained RV64I statements as its normative input. Five wrong RV64I section labels in the guest's comments (a43a-1's) were corrected first, the expectations and the corpus fixture regenerated. The prepared inputs were curated through the public owners; the producer and authority reviews accept the case with no constant of the M source. The evidence family's fourth re-derivation: 89 files / 64 MiB.
+
 ## SEMULITH-P4-0321 (P4-SYSTEM.14 a43a-2a) — the XLEN case's normative statements retained: RVI-RV64I §3.1
 
 A case's normative input is a retained excerpt naming its own source page (a44-2c), so REQ-D-XLEN's source is retained the way the M statements were: `scripts/retain_rv64i_statements.py` copies ten exact statements of RVI-RV64I §3.1 — the 64-bit registers and address space, the shift amount, RV64 LUI and the `*W` family — into `profiles/rv64gc-lab-v0/retained/rv64i-statements.html` (4,163 B, `RVI-RV64I-STATEMENTS`) under the unprivileged licence evidence. The spans stay unmodified, so the extractor admits exactly their measured markup (emphasis and one same-publication cross-reference) and refuses any other. `probe_rv64i_statement_retention.py`: 17 tests, seven guard omissions in PROFILE-CONSISTENCY, whose real run verifies the excerpt offline; the SRC-01 record is `materials/RVI_RV64I_RETENTION.md`.

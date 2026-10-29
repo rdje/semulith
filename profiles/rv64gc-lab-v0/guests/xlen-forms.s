@@ -8,13 +8,13 @@ slli x10, x8, 40             #: a 6-bit shift amount (40 > 31 is legal in RV64I)
 srli x11, x8, 1              #: the largest positive XLEN value 2^63 - 1: {new}. | RVI-RV64I §3.1.2.1
 addi x12, x11, 1             #: 2^63 - 1 + 1 wraps modulo 2^64 to -2^63: {new} — no overflow trap. | RVI-RV32I §1.1.4
 add x13, x8, x8              #: -1 + -1 = -2 modulo 2^64: {new} — the carry out of bit 63 is discarded. | RVI-RV32I §1.1.4
-lui x14, 0x80000             #: LUI 0x80000: the 32-bit immediate sign-extended to 64 bits: {new}. | RVI-RV64I §3.1.2.2
-addiw x15, x14, 1            #: ADDIW: the low word 0x80000001, sign-extended: {new}. | RVI-RV64I §3.1.2
+lui x14, 0x80000             #: LUI 0x80000: the 32-bit immediate sign-extended to 64 bits: {new}. | RVI-RV64I §3.1.2.1
+addiw x15, x14, 1            #: ADDIW: the low word 0x80000001, sign-extended: {new}. | RVI-RV64I §3.1.2.1
 srliw x16, x14, 1            #: SRLIW: the low word 0x80000000 >> 1 = 0x40000000, sign-extended with bit 31 clear: {new}. | RVI-RV64I §3.1.2.1
 sraiw x17, x14, 1            #: SRAIW: the low word's sign at bit 31 is copied: 0xC0000000 sign-extended: {new}. | RVI-RV64I §3.1.2.1
-addw x18, x8, x5             #: ADDW ignores bits 32..63 of its inputs: -1 + 0 (the low word of -2^63) = -1 as a word, sign-extended: {new}. | RVI-RV64I §3.1.2
-subw x19, x0, x11            #: SUBW: 0 - 0xFFFFFFFF (the low word of 2^63 - 1) = 1 as a word, sign-extended: {new}. | RVI-RV64I §3.1.2
-sllw x20, x6, x11            #: SLLW takes the low 5 bits of the shift amount: 1 << 31 = 0x80000000, sign-extended: {new}. | RVI-RV64I §3.1.2.1
+addw x18, x8, x5             #: ADDW ignores bits 32..63 of its inputs: -1 + 0 (the low word of -2^63) = -1 as a word, sign-extended: {new}. | RVI-RV64I §3.1.2.2
+subw x19, x0, x11            #: SUBW: 0 - 0xFFFFFFFF (the low word of 2^63 - 1) = 1 as a word, sign-extended: {new}. | RVI-RV64I §3.1.2.2
+sllw x20, x6, x11            #: SLLW takes the low 5 bits of the shift amount: 1 << 31 = 0x80000000, sign-extended: {new}. | RVI-RV64I §3.1.2.2
 auipc x1, 0                  #: the handler's base: this instruction's own 64-bit address, {new}. | RVI-RV32I §1.1.4
 addi x1, x1, 24              #: the handler sits six instructions on, at {new}. | RVI-RV32I §1.1.4
 csrrw x0, mtvec, x1          #: direct-mode mtvec = the handler; no GPR written. | RVP-MACHINE §2.1.5

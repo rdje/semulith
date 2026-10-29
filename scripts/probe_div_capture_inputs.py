@@ -34,10 +34,11 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 67  # three declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 48 * 1024 * 1024  # the third re-derivation (a44-3): three cases at most 41,488,384 B with the index
+FAMILY_FILES = 89  # four declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
+FAMILY_BYTES = 64 * 1024 * 1024  # the fourth re-derivation (a43a-2b): four cases at most 55,316,480 B with the index
 M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4)
+XLEN_V1 = "rv64gc-xlen-forms-v1"  # the first non-M case, REQ-D-XLEN (P4-SYSTEM.14 a43a-2b)
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -63,8 +64,19 @@ PREPARED = {
 }
 # v4's prepared inputs are v3's bytes: they derive from the canonical program, override and expectation only.
 PREPARED[M_FORMS_V4] = dict(PREPARED[P.M_FORMS_CASE_ID])
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426}
-BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66)}
+# The XLEN case's own pins, stated here independently of its declaration (a43a-2b).
+PREPARED[XLEN_V1] = {
+    "guest.elf": ("guest-image", 4408,
+        "89228f06141a273369da1607a3130b790b2ae722613f7e6b1edd48e92e57f5e0"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 5890,
+        "a932c58347bdda567520842f83e71b02213ba7333d2d802b8b7b7b30cf68d74c"),
+    "control.expected.sexp": ("expectation", 5442,
+        "5f42512fef0fbc56483c64acec3bec6c00bb477d1111da9dacaa8e9e26dbde7b"),
+}
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 23349}
+BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50)}
 
 
 def bounded_bytes(path):
@@ -364,12 +376,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 41488384)  # three cases of 13,828,096 B and the index (a44-3)
+        self.assertEqual(sum(limits.values()), 55316480)  # four cases of 13,828,096 B and the index (a43a-2b)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 22 + 22 + 22)  # v4 captured (a44-4); 8 at its declaration (a44-3)
+        self.assertEqual(len(members), 1 + 22 + 22 + 22 + 5)  # the XLEN case declared, its 4 prepared inputs (a43a-2b)
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):

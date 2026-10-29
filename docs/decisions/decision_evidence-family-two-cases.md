@@ -86,3 +86,10 @@ health **44,040,192** B, 42 MiB, the same 0.875 ratio); the 4 MiB part bound is 
 holds 53 files (v4's eight declared ones), 67 after its capture. `evidence/README.md` keeps its 4,096 B / 80-line cap:
 its text was compressed to hold the third row (3,383 B). A fourth case is a fourth re-derivation.
 
+## Addendum (2026-10-29, `P4-SYSTEM.14` a43a-2b): the fourth case — XLEN, the first non-M case
+
+`rv64gc-xlen-forms-v1` (REQ-D-XLEN, on RVI-RV64I's own authority) is the fourth case directory and the fourth
+re-derivation: **89** files (4 × 22 + the index; health **86**) and **67,108,864** B (64 MiB; health **58,720,256** B,
+56 MiB, the 0.875 ratio); four cases and the index hold at most 55,316,480 B (`retention_limits()`). At declaration the
+family holds 72 files (the XLEN case's case file and four prepared inputs). The index stays under its 4,096 B cap.
+
