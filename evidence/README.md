@@ -12,7 +12,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | --- | --- | --- | --- |
 | `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` 2026-10-22 (a pinned input moved) | 22 of 22 | `m-div.s`, 27 boundaries, 1 predeclared property; AGREE, AGREE, control DIVERGE |
 | `rv64gc-m-forms-v3/` | captured 2026-10-22; retained (a42ax), 10 of 10 legs; `invalidated` 2026-10-29 (a44-2b) | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties (13 forms, 12 Table 1 cells); AGREE, AGREE, control DIVERGE |
-| `rv64gc-m-forms-v4/` | declared 2026-10-29 (a44-3): v3's case under the declaration-as-data manifest (67 children) | 8 of 22 | v3's program, properties and prepared bytes; capture pending (a44-4) |
+| `rv64gc-m-forms-v4/` | declared 2026-10-29 (a44-3), captured the same day by one invocation (a44-4): v3's case under the declaration-as-data manifest (67 children) | 22 of 22 | v3's program, properties and prepared bytes; AGREE, AGREE, control DIVERGE; traces byte-identical to v3's |
 
 ## Declared files and lifecycle (per case)
 
@@ -24,7 +24,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 67 files at most, 53 present. Prepared inputs come from canonical sources
+With this index: 67 files at most, all 67 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.

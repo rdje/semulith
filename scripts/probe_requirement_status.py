@@ -310,15 +310,15 @@ class StatusTests(unittest.TestCase):
         # Both retained cases bind REQ-GC-M and neither is credited: CR-GC-M-1 (a42az, 2026-10-26) was retired by
         # P4-SYSTEM.14 a44-2b (2026-10-29), whose edit moved pinned inputs of the m-forms capture, so the
         # requirement derives `planned` and the recorded status agrees; both captures carry receipts whose
-        # qualification is false, so both stay pending, and v4 is declared (a44-3). This arm is the
+        # qualification is false, so both stay pending, and so does v4 (captured a44-4). This arm is the
         # manifest's prediction of the real tree: the re-credit (CR-GC-M-2, a44-5) re-states it from the measured tree.
         self.assertEqual((m["recorded"], m["derived"], m["why"]), ("planned", "planned", "no credited implementation or evidence"))
-        # The M case re-declared as v4 (a44-3) binds REQ-GC-M before its capture: `declared`, crediting nothing.
-        self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-m-forms-v4:declared",
+        # The M case re-captured as v4 (a44-3 declared, a44-4 captured) carries its receipt, uncredited until a44-5.
+        self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-m-forms-v4:pending",
                                            "rv64gc-signed-div-truncation-v2:pending"])
         self.assertEqual(gc["derived"], {"planned": 48, "partial": 0, "implemented": 0, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (3, 0, 1, 0, 0))
+                         (3, 0, 0, 0, 0))
 
 
 def main():

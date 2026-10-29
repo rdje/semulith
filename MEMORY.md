@@ -20,12 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0318` (P4-SYSTEM.14 a44-3) — the M case declared as v4 (67 children; its commit is the declaration
-  commit). Before it P4-0317 (`.15` done, G-REGRESSION green), P4-0316, P4-0315. Hosted CI all green on cefb0d84 (portability too).
-- next_action: P4-SYSTEM.14 a44-4 — `retain_div_capture.py --case rv64gc-m-forms-v4 --declaration-commit <P4-0318's id>`,
-  exactly once (FREEZE until then: v4's 67 children, its principals, the 13 authority views); review_div_method's
-  RETAINED_CASE_ID/pins and review_div_policy's CASE_ID to v4; then a44-5 (CR-GC-M-2 with credits.sexp recreated,
-  references.sexp, gate.sexp G-TRACE row, `derived-status` 2 -> 37) — the 5:1 count reaches six at a44-5 (closes the lapse);
+- last_unit: `SEMULITH-P4-0319` (P4-SYSTEM.14 a44-4) — the M v4 case captured once (traces byte-identical to v3's).
+  Declaration commit 177b43a1 (P4-0318); this unit's commit is the capture commit. Hosted CI all green on cefb0d84.
+- next_action: P4-SYSTEM.14 a44-5 — review_div_method (RETAINED_CASE_ID, SOURCE_DECLARATION_COMMIT 177b43a1,
+  RETAINED_CAPTURE_COMMIT = P4-0319's id, MEASURED_SHA256/BYTES) and review_div_policy CASE_ID to v4; CR-GC-M-2 with
+  credits.sexp recreated; REQ-GC-M implemented; references.sexp dossier copy; gate.sexp G-TRACE row (drop its open row);
+  `derived-status` 2 -> 37; the probes' real-tree arms — the 5:1 count reaches six at a44-5 (closes the lapse);
   then XTASK.13 (DEF-GEN, GUEST-GEN first), the cleanup rollover, ARTIFACT-CLEANUP.29 class C; `.31` after 2026-10-29T09:49Z.
   Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).

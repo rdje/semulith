@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-3 done — the declarations are data the tools read, a case is accepted on its own authority, the M case declared as v4 (67 children); `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`; next a44-4 its capture, exactly once, then a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-4 done — the declarations are data the tools read, a case is accepted on its own authority, the M case declared as v4 (67 children) and captured once (a44-4: traces byte-identical to v3's); `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`; next a44-5 the reviews pointed at v4 and the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-TRACE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,19 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-4 / SEMULITH-P4-0319: the M v4 case captured, exactly once (completed)
+
+`python3 -B scripts/retain_div_capture.py --case rv64gc-m-forms-v4 --declaration-commit 177b43a10745fc5406e787b601d8699b946dbb63`,
+one invocation after its preflight (`ready`: 14 output names absent, the reference binary's digest the retained identity's,
+`16de42a8…`): three zero-exit processes, baseline and repeat AGREE, the control DIVERGE (boundary 12, x15, −3 → −4),
+complete, qualification false, in 1.2 s (target/p4-system-14/a44-4: preflight.json, capture.json). Retained: the twelve
+observations, `measured-experiment.sexp` (16,942 B, `aadb5ef3360f1d14…`) and `verification.json` (7,017 B, `1d4b1b5d5472a85b…`);
+the case directory holds its 22 of 22. Ruling 1's reproduction rule holds: every trace and stdout is byte-identical to
+v3's, and the three stderr streams differ only by the case directory in the trace path they print — the manifest is the
+only declared difference. Status: `3 case(s), 0 credited, 0 declared` (v4 pending, uncredited until a44-5). The method
+and policy reviews still name v3: a44-5 points them at v4, naming this commit as the capture commit, and issues the
+credit. Restated: the input probe's member census (67 present), the status probe's real-tree arm, the index's v4 row.
 
 ### .14 a44-3 / SEMULITH-P4-0318: the M case declared as v4 under the declaration-as-data manifest (completed)
 
@@ -1165,6 +1178,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-3 **ROOT CAUSE** — the M case's only capture (v3) is invalidated since a44-2b and ruling 1 re-captures it once under the new manifest: at 1e0a0e8b `ls evidence/ | grep -c m-forms-v4` = 0 and `python3 -B scripts/requirement_status.py` → `2 case(s), 0 credited, 0 declared`.
 - [x] `.14` a44-3 **ADDRESSED** — `python3 -B scripts/prepare_div_inputs.py --show --case rv64gc-m-forms-v4` → v3's four pins (4,440 / 7,609 / 7,937 / 7,440 B), `cmp` identical for all four after `--write`; `grep -o "(input " evidence/rv64gc-m-forms-v4/dependencies.sexp | wc -l` = 67 with `evidence/rv64gc-m-forms-v4/case.sexp` among them; `python3 -B scripts/requirement_status.py` → `3 case(s), 0 credited, 1 declared … 0 drift`.
 - [x] `.14` a44-3 **NO REGRESSION** — `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` plain and `-O` (the census at 67 files, 41,488,384 B); the 41 matched-GPR/DIV/status probes rc=0 (target/p4-system-14/a44-3/green-1 and the three re-runs); `PROFILE-CONSISTENCY --self-test: 1188 pass / 0 fail` (pc-selftest-1.log); `RECORD-SCHEMA: ok (25 record file(s) …)`; the staged prechecks (prechecks.txt) and the commit gate (chain log).
+- [x] `.14` a44-4 **ROOT CAUSE** — v4 was declared and uncaptured: at 177b43a1 `ls evidence/rv64gc-m-forms-v4 | wc -l` = 8 and `python3 -B scripts/requirement_status.py` → `1 declared`.
+- [x] `.14` a44-4 **ADDRESSED** — `retain_div_capture.py … --preflight-only` → `ready` (14 absent); the one invocation rc=0 → `pending`, `complete True qualification False`, runs `baseline 0, repeat 0, control 0`, verdicts `AGREE AGREE DIVERGE`; `ls evidence/rv64gc-m-forms-v4 | wc -l` = 22; `cmp` of the three traces and three stdout streams with v3's: identical; `diff` of each stderr: only the trace path's case directory.
+- [x] `.14` a44-4 **NO REGRESSION** — `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` (67 members); `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`; the 41 probes (target/p4-system-14/a44-4/green-1); the staged prechecks (prechecks.txt) and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

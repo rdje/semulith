@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0319 (P4-SYSTEM.14 a44-4) — the M v4 case captured, exactly once
+
+One invocation of `scripts/retain_div_capture.py --case rv64gc-m-forms-v4 --declaration-commit 177b43a1…` after a `ready` preflight: three zero-exit processes, baseline and repeat AGREE, the control DIVERGE, complete, qualification false. Every trace and stdout is byte-identical to v3's; the stderr streams differ only by the case directory in the path they print — the manifest is the only declared difference, as ruling 1 requires. The case holds 22 of 22; status: 3 cases, 0 credited. The reviews and the credit move to v4 in a44-5.
+
 ## SEMULITH-P4-0318 (P4-SYSTEM.14 a44-3) — the M case declared as v4 under the declaration-as-data manifest
 
 Ruling 1's one re-capture, declared: `evidence/rv64gc-m-forms-v4/` holds v3's declaration under the new id, the four prepared inputs (v3's bytes: they derive from canonical sources only, measured by `prepare_div_inputs.py --show`) and the three declarations from `capture_div.py --declare` — the dependency manifest with 67 children, the case's declaration, its schema and its reader among them. This commit is the declaration commit the capture (a44-4) names; no pinned input moves until then. The evidence family's third re-derivation: 67 files / 48 MiB (three cases at most 41,488,384 B), the index compressed to 3,383 B. Status: 3 cases, 0 credited, 1 declared.
