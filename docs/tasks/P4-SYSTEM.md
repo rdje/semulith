@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2e done: RVI-RV64I §3.1 retained, the case declared fit for the policy's legs and captured once; a43a-2f the reviews over several retained cases, then the credit), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2f done: RVI-RV64I §3.1 retained, the case declared fit for the policy's legs, captured once, and measured ten of ten by reviews that read every retained capture; next its credit, `CR-D-XLEN-1`), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,31 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43a-2f / SEMULITH-P4-0326: the retained reviews read every reviewed capture — the XLEN case measured ten of ten (completed)
+
+The finite method review (`scripts/review_div_method.py`) held one retained case; the policy review refused any other
+(`unsupported: no reviewed capture`), and measured on the XLEN case's own bytes through `--method-json` it read 7 of 10:
+`boundary-fixtures` 0 rows (it knew M's `Table` citations only), `feature-rules` "OB-XLEN: feature disposition
+undeclared", `form-coverage` "0 of 0 forms" — a `state` requirement names no instruction (before/,
+policy-xlen-before.json). Both reviews are consumers no manifest pins (a42av), so generalizing them lapses nothing.
+The method review now holds `RETAINED_CAPTURES`, one row per reviewed capture: v4's named pins kept (the probe's
+synthetic copy re-pins them) and the XLEN row — declared 5c2cde93, captured e32cc645, measured 14,958 B `d39825b0…`;
+a case without a row (v2, v3) is `unsupported` and reads nothing. The policy review accepts those cases and
+`--every-retained` measures each, one line per case, the worst exit code; `PROFILE-CONSISTENCY`'s real run calls it.
+A directed boundary row is a `Table` citation or a `(boundary: …)` tag (the XLEN guest's ten; absent from every M
+expectation, so M's twelve rows do not move); a `state` requirement naming no form satisfies `form-coverage`
+vacuously and says so ("coverage is vacuous, its 17 predeclared witnesses stand for it"); `OB-XLEN`'s feature
+disposition is declared: none applies — the access fault at 2^40 and the handler's `CSRRS` of `mtval` observe the
+address and claim no trap, CSR or protection behaviour, which REQ-D-FAULT-PRIORITY, REQ-D-CSR-SET and
+REQ-GC-CSR-ACCESS own (`decision_reviews-read-every-retained-case.md`). Measured: `rv64gc-m-forms-v4: DIV-POLICY:
+satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-2` (its table identical to the single-case run) and
+`rv64gc-xlen-forms-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; the XLEN method
+`satisfied` over 88 authenticated files (1,092,798 B), exact allowance 1,155,615. The probes hold the rows: the method
+probe's real-tree arm runs each row against its own authenticated counts and requires v3 `unsupported`; the policy
+probe gains a `(boundary: …)` test and a state-requirement test, each with its seam (`boundary-tag`,
+`state-vacuous`), and its real-tree arm reads one `--every-retained` run and re-measures both tables with the module
+under test. The book's method and policy pages, stale since v3, now describe both cases. Next: the credit, `CR-D-XLEN-1`.
 
 ### .14 a43a-2e / SEMULITH-P4-0325: the XLEN case captured, exactly once — the first non-M capture (completed)
 
@@ -1136,6 +1161,9 @@ Rows a44-1–a44-2a: [retained verbatim](archive/P4-SYSTEM-23.md#acceptance-rows
 - [x] `.14` a43a-2e **ROOT CAUSE** — the XLEN case was declared and uncaptured: at 5c2cde93 `ls evidence/rv64gc-xlen-forms-v1 | wc -l` = 8.
 - [x] `.14` a43a-2e **ADDRESSED** — the preflight `rc=0` → `ready` (14 absent); the one invocation `rc=0` → `pending`, `complete True qualification False`, runs `baseline 0, repeat 0, control 0`, verdicts `AGREE AGREE DIVERGE`, the control's difference `step_n 24, x31 2^40 vs 0`; `ls evidence/rv64gc-xlen-forms-v1 | wc -l` = 22.
 - [x] `.14` a43a-2e **NO REGRESSION** — `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` (89 members); `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`; `DIV-CAPTURE-RETENTION: 11 tests / 0 failures / 0 errors` (the wording fix); the 41 probes (green-1); the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43a-2f **ROOT CAUSE** — the reviews read one case: at f81bf9f8 `review_div_policy.py --case rv64gc-xlen-forms-v1` `rc=2` → `refused — unsupported: no reviewed capture` (policy-xlen-at-f81bf9f8.log); measured through `--method-json`, `pending — 7 of 10 legs satisfied; missing boundary-fixtures, feature-rules, form-coverage` (policy-xlen-before.err): `0 directed boundary rows`, `OB-XLEN: feature disposition undeclared`, `0 of 0 forms predeclared`.
+- [x] `.14` a43a-2f **ADDRESSED** — `python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v1` `rc=0` → `satisfied`, 88 files, 1,092,798 B; `--max-read-bytes 1155615` `rc=0`, 1155614 `rc=1`; `--case rv64gc-m-forms-v3` `rc=2` `unsupported`, 0 bytes read; `python3 -B scripts/review_div_policy.py --every-retained` `rc=0` → `rv64gc-m-forms-v4: … 10 of 10 legs satisfied; credited by CR-GC-M-2`, `rv64gc-xlen-forms-v1: … 10 of 10 legs satisfied; no qualification credit`; v4's table identical to the single-case run (`cmp`); `grep -c '(boundary' evidence/rv64gc-m-forms-v4/baseline.expected.sexp` = 0.
+- [x] `.14` a43a-2f **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1208 pass / 0 fail` (1204 + the two new seams in both modes), traced: `ls target/p4-system-14/a43a-2f/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` through `--every-retained` (check.log, run on a quiet host, wait.log); `DIV-METHOD: 21 tests / 0 failures / 0 errors`, `--mutation capture-origin` `1 tests / 1 failures` both modes; `DIV-POLICY-PROBE: 27 tests / 0 failures / 0 errors` both modes, each of the ten seams `1 tests / 1 failures`; `DERIVED-COUNTS: ok` (the arm total 1698 unchanged: the seams are loop rows); the first chain's focused stage refused before the gate, `focused: 2 red of 29` — `cargo fmt` (the new `tool(…)` call) and `KNOWLEDGE-MAP` (the new decision record's row) — both fixed, `cargo fmt --all -- --check` `rc=0`, the map check `rc=0`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

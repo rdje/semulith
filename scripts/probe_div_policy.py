@@ -24,8 +24,10 @@ SEAMS = {
                       '    feature = [FEATURE_DISPOSITIONS.get(ob, "none applies (inferred)") for ob in obligation_ids]\n'),
     "any-control": ('    at_witness = diff.get("step_n") == witness_step and observed == {witness_register}\n',
                     '    at_witness = True\n'),
-    "coverage-optional": ('    _leg(legs, "form-coverage", bool(required) and predeclared == required,\n',
-                          '    _leg(legs, "form-coverage", bool(required),\n'),
+    "coverage-optional": ('    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),\n',
+                          '    _leg(legs, "form-coverage", vacuous or bool(required),\n'),
+    "state-vacuous": ('    vacuous = requirement["kind"] == "state" and not required\n', '    vacuous = not required\n'),
+    "boundary-tag": ('BOUNDARY_MARKERS = ("Table", "(boundary")\n', 'BOUNDARY_MARKERS = ("Table",)\n'),
     "lock-stale": ('    stale = method.get("disposition") == "stale"\n', '    stale = False\n'),
     "first-property": ('    witness_step, witness_register = witnesses[named[0]]\n',
                        '    witness_step, witness_register = next(iter(witnesses.values()))\n'),
@@ -41,7 +43,10 @@ MUTATION_TESTS = {
     "lock-stale": "test_stale_method_is_invalidated_not_blocked",
     "first-property": "test_control_leg_reads_the_property_the_control_run_names",
     "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
+    "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
+    "boundary-tag": "test_boundary_tag_marks_a_directed_row",
 }
+XLEN_CASE_ID = "rv64gc-xlen-forms-v1"  # the second reviewed capture (a43a-2e), measured since a43a-2f
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
 STALE = dict(METHOD, disposition="stale", capture_binding=None, record_disposition=None,
@@ -81,7 +86,7 @@ def load_module(workdir: Path):
     return module
 
 
-def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="medium", declare_boundaries=False,
+def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div", "rem"), risk="medium", declare_boundaries=False,
             steps=None, expected_reads_reference=False, repeat=True, control="DIVERGE", control_step=0,
             control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1",
             control_property="p0"):
@@ -89,7 +94,7 @@ def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="med
     profile = root / "profiles" / "fx-v0"; profile.mkdir(parents=True)
     obs = " ".join(f'(insns "{i}")' for i in insns)
     (profile / "requirements.sexp").write_text(
-        f'(requirement (id "REQ-X") (profile_ids "fx-v0") (kind instruction) (statement "s") {obs} '
+        f'(requirement (id "REQ-X") (profile_ids "fx-v0") (kind {kind}) (statement "s") {obs} '
         f'(source_refs (source_id "SRC") (locator "1")) (applicability included) (research_status resolved) '
         f'(implementation_status planned) (source_semantics (category defined) (detail "d")) (risk {risk}) '
         f'(obligation_ids "{obligation}"))\n')
@@ -109,7 +114,7 @@ def fixture(root: Path, *, obligation="OB-GC-M", insns=("div", "rem"), risk="med
              f'(statement "s") (gpr_witness (step_n 0) (register "x7")))']
     if declare_boundaries:
         props += [f'(property (id "p{n}") (requirement_id "REQ-X") (obligation_ids "{obligation}") (observation_kinds "gpr-change") '
-                  f'(statement "s") (gpr_witness (step_n {n}) (register "x7")))' for n, _, s in steps if "Table" in s]
+                  f'(statement "s") (gpr_witness (step_n {n}) (register "x7")))' for n, _, s in steps if "Table" in s or "(boundary" in s]
     expected_inputs = '(input_ids "guest-source") (input_ids "expectation")' + (
         ' (input_ids "reference-config")' if expected_reads_reference else "")
     control_run = (f'(control_run (id "c0") (run_id "control") (baseline_id "baseline") (mutation_input_ids "mutant-expectation") '
@@ -184,6 +189,30 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual((t["disposition"], t["missing"]), ("pending", ["boundary-fixtures"]))
         self.assertEqual(t["boundary"], dict(present=[1, 2], predeclared=[]))
         self.assertFalse(t["credited"])
+
+    def test_boundary_tag_marks_a_directed_row(self):
+        """A `(boundary: …)` tag marks a directed row as a table citation does (the XLEN guest's ten, a43a-2f)."""
+        steps = [(0, "div x7, x5, x6", "SRC §1"), (1, "div x8, x5, x6", "SRC §1 (boundary: bit 63)"),
+                 (2, "div x9, x5, x0", "SRC §1 (boundary: the wrap at 2^63)")]
+        fixture(self.root, insns=("div",), steps=steps)
+        t = self.measure()
+        self.assertEqual((t["missing"], t["boundary"]), (["boundary-fixtures"], dict(present=[1, 2], predeclared=[])))
+        self.tearDown(); self.setUp()
+        fixture(self.root, insns=("div",), steps=steps, declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["boundary"]), ("satisfied", dict(present=[1, 2], predeclared=[1, 2])))
+
+    def test_state_requirement_without_forms_is_vacuous_but_explicit(self):
+        """A state requirement names no form (REQ-D-XLEN): satisfied, and the leg says why; another kind naming none stays pending."""
+        fixture(self.root, kind="state", insns=(), declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"], t["coverage"]),
+                         ("satisfied", [], dict(required=[], exercised=[], predeclared=[])))
+        self.assertIn("coverage is vacuous, its 3 predeclared witnesses", self.legs_text(t, "form-coverage"))
+        self.tearDown(); self.setUp()
+        fixture(self.root, insns=(), declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual(t["missing"], ["form-coverage"]); self.assertIn("0 of 0 forms predeclared", self.legs_text(t, "form-coverage"))
 
     def test_partial_form_coverage_is_pending(self):
         fixture(self.root, insns=("div", "rem", "mul"), declare_boundaries=True)
@@ -334,17 +363,23 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(first, second); self.assertLessEqual(len(json.dumps(first).encode()), 65536)
 
     def test_real_tree_measures_as_its_manifest_predicts(self):
-        """Current pins: every leg satisfied, credited by CR-GC-M-2 (the M case re-captured as v4 and re-credited,
-        P4-SYSTEM.14 a44-5). A moved method pin: invalidated, naming it; the record that cites the case lapses and is
-        the one finding (a42ay), exit 1. The expectation comes from the manifest, not the tree."""
+        """Every reviewed capture, measured by the live consumer in the one `--every-retained` run PROFILE-CONSISTENCY
+        makes (a43a-2f), and again by the module under test from the same method results. M's v4 with current pins:
+        every leg satisfied, credited by CR-GC-M-2 (re-captured and re-credited, P4-SYSTEM.14 a44-5); the XLEN case:
+        every leg satisfied, nothing credited. A moved method pin: invalidated, naming it; the record that cites the
+        case lapses and is the one finding (a42ay), exit 1. The expectations come from each manifest, not the tree."""
         import subprocess
-        moved = moved_inputs(ROOT, self.M.CASE_ID)
-        done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_method.py")],
+        done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
-        self.assertEqual(done.returncode, 1 if moved else 0, done.stdout + done.stderr)
-        self.assertEqual(json.loads(done.stdout)["case_id"], self.M.CASE_ID)
-        table = self.M.measure_policy(ROOT, method=json.loads(done.stdout))
-        if moved:
+        tables = json.loads(done.stdout)
+        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID])
+        moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
+        self.assertEqual(done.returncode, 1 if moved[self.M.CASE_ID] else 0, done.stderr)
+        self.assertEqual(done.stderr.splitlines(), [f"{t['case_id']}: {self.M.summary(t)[1]}" for t in tables])
+        for live in tables:
+            self.assertEqual(self.M.measure_policy(ROOT, method=live["method"], case_id=live["case_id"]), live)
+        table, xlen = tables
+        if moved[self.M.CASE_ID]:
             # Every pinned method input is also read by the credit's authentication (credit_records.authenticate
             # walks the case's dependency manifest), so a moved input invalidates the measurement AND lapses
             # CR-GC-M-2: `credited` false, the lapsed record named as the one finding, exit 1, the status falls
@@ -369,6 +404,21 @@ class PolicyTests(unittest.TestCase):
                          (forms, forms, forms))
         self.assertEqual((table["requirement_id"], table["obligation_ids"], table["category"], table["risk"]),
                          ("REQ-GC-M", ["OB-GC-M"], "defined", "medium"))
+        # The XLEN case: no credit names it yet, so a moved pin invalidates it without a finding (exit 0 for it).
+        if moved[XLEN_CASE_ID]:
+            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["findings"], xlen["credited"]),
+                             ("invalidated", ["matched-reference-comparison", "currentness"], [], False))
+        else:
+            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["findings"], xlen["credited"], xlen["credit_ids"]),
+                             ("satisfied", [], [], False, []))
+            self.assertEqual(self.M.summary(xlen), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit"))
+        boundaries = [1, 5, 6, 7, 8, 9, 10, 13, 16, 24]
+        self.assertEqual(xlen["boundary"], dict(present=boundaries, predeclared=boundaries))
+        self.assertEqual(xlen["coverage"], dict(required=[], exercised=[], predeclared=[]))
+        self.assertIn("coverage is vacuous, its 17 predeclared witnesses", self.legs_text(xlen, "form-coverage"))
+        self.assertTrue(self.legs_text(xlen, "feature-rules").startswith("OB-XLEN: none applies: "))
+        self.assertEqual((xlen["requirement_id"], xlen["obligation_ids"], xlen["category"], xlen["risk"]),
+                         ("REQ-D-XLEN", ["OB-XLEN"], "defined", "low"))
 
 
 def main():

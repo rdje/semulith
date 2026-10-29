@@ -6,6 +6,7 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [The reviews read every retained case (2026-10-29)](decision_reviews-read-every-retained-case.md) | `decision` | How do the finite method and policy reviews read a second captured case, and how are the XLEN case's form-coverage and feature-rules legs decided? |
 | [The director's rulings of 2026-10-28](decision_director-rulings-2026-10-28.md) | `decision` | What did the director rule on 2026-10-28, to what standard, and which leaf executes each ruling? |
 | [Case declarations move to data (2026-10-28)](decision_case-declarations-as-data.md) | `decision` | How does a new matched case get declared without lapsing the credit that rests on a retained capture? |
 | [XTASK closes with its shell remainder (2026-10-28)](decision_xtask-closes-with-shell-remainder.md) | `decision` | Does every shell script have to move behind cargo xtask before the XTASK tree closes? |

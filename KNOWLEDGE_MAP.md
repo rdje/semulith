@@ -149,6 +149,7 @@
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-gc-m-credited-implemented.md`](docs/decisions/decision_req-gc-m-credited-implemented.md)
+- [`decision_reviews-read-every-retained-case.md`](docs/decisions/decision_reviews-read-every-retained-case.md)
 - [`decision_rust-native-tooling.md`](docs/decisions/decision_rust-native-tooling.md)
 - [`decision_rust-records-mapping.md`](docs/decisions/decision_rust-records-mapping.md)
 - [`decision_rust-schema-validator.md`](docs/decisions/decision_rust-schema-validator.md)

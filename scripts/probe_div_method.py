@@ -45,8 +45,8 @@ SEAMS = {
             budget.snapshot("input", dict(id=name, path=A.prefix(case_id) + "/" + name,
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
 ''', ""),
-    "capture-origin": ("review_div_method.py", "sha256=MEASURED_SHA256, byte_size=MEASURED_BYTES",
-                       'sha256=A.Artifacts.observe_bounded_file(ROOT, A.prefix(RETAINED_CASE_ID) + "/measured-experiment.sexp", max_bytes=A.SMALL_BYTES).sha256, byte_size=MEASURED_BYTES'),
+    "capture-origin": ("review_div_method.py", "sha256=retained.measured_sha256, byte_size=retained.measured_bytes",
+                       'sha256=A.Artifacts.observe_bounded_file(ROOT, A.prefix(case_id) + "/measured-experiment.sexp", max_bytes=A.SMALL_BYTES).sha256, byte_size=retained.measured_bytes'),
     "record-binding": ("matched_gpr_adequacy.py", '''        _need(normalized == planned_forms, "measured record changes non-observation predeclaration data")
 ''', ""),
     "influence-selection": ("matched_gpr_adequacy.py", '''            _need(len(selected) == 1
@@ -361,32 +361,45 @@ class MethodTests(unittest.TestCase):
         self.assertEqual([p.resolve() for p in (self.runtime / "target").rglob("*") if p.is_file()], [binary])
 
     def test_actual_retained_method_is_satisfied_or_stale_as_its_manifest_predicts(self):
-        """The curated capture on the real tree: finite satisfied while every pin is current; stale,
-        naming the first moved declaration and reading nothing beyond it, once a pinned input moved
-        (the policy then measures `invalidated`). The expectation comes from the manifest, not the tree."""
-        moved = Command.moved_inputs(ROOT, M.RETAINED_CASE_ID)
-        done = subprocess.run([sys.executable, *(["-O"] if sys.flags.optimize else []), "-B",
-                               str(ROOT / "scripts/review_div_method.py")],
-                              cwd=ROOT, capture_output=True, text=True, timeout=120)
+        """Every reviewed capture on the real tree (P4-SYSTEM.14 a43a-2f: the M case's v4 and the XLEN case), each
+        through its own row: finite satisfied while every pin is current; stale, naming the first moved declaration
+        and reading nothing beyond it, once a pinned input moved (the policy then measures `invalidated`). The
+        expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
+        authenticated = {"rv64gc-m-forms-v4": (88, 1098379, 40438),  # a44-4 (v3's was 85, 1,076,834)
+                         "rv64gc-xlen-forms-v1": (88, 1092798, 35100)}  # a43a-2e
+        self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
+        for case_id, counts in authenticated.items():
+            with self.subTest(case=case_id):
+                moved = Command.moved_inputs(ROOT, case_id)
+                done = subprocess.run([sys.executable, *(["-O"] if sys.flags.optimize else []), "-B",
+                                       str(ROOT / "scripts/review_div_method.py"), "--case", case_id],
+                                      cwd=ROOT, capture_output=True, text=True, timeout=120)
+                r = json.loads(done.stdout)
+                row = M.RETAINED_CAPTURES[case_id]
+                self.assertEqual((r["case_id"], r["origin"][:2]),
+                                 (case_id, [["reviewed_source_declaration", row.declaration_commit],
+                                            ["reviewed_retained_capture", row.capture_commit]]), r)
+                if moved:
+                    self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
+                    self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
+                                      r["capture_binding"], r["evaluation_disposition"]),
+                                     ("stale", "pending", None, None, None), r)
+                    self.assertTrue(r["reason"].startswith(A.prefix(case_id) + "/"), r["reason"])
+                    self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
+                    self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
+                                     (None, None, None), r)
+                else:
+                    self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+                    self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
+                                      r["capture_binding"], r["evaluation_disposition"]),
+                                     ("satisfied", "pending", "valid", "matched", "pending"), r)
+                    self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]), counts, r)
+                self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
+                self.assertEqual(r["replay_disposition"], "not-checked")
+        done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts/review_div_method.py"), "--case", "rv64gc-m-forms-v3"],
+                              cwd=ROOT, capture_output=True, text=True, timeout=60)
         r = json.loads(done.stdout)
-        if moved:
-            self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
-            self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
-                              r["capture_binding"], r["evaluation_disposition"]),
-                             ("stale", "pending", None, None, None), r)
-            self.assertTrue(r["reason"].startswith(self.prefix + "/"), r["reason"])
-            self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
-            self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
-                             (None, None, None), r)
-        else:
-            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
-            self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
-                              r["capture_binding"], r["evaluation_disposition"]),
-                             ("satisfied", "pending", "valid", "matched", "pending"), r)
-            self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
-                             (88, 1098379, 40438), r)  # the m-forms v4 capture (a44-4; v3's was 85, 1,076,834)
-        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
-        self.assertEqual(r["replay_disposition"], "not-checked")
+        self.assertEqual((done.returncode, r["disposition"], r["charged_read_bytes"], r["origin"]), (2, "unsupported", 0, []), r)
 
     def test_all_runtime_files_remain_exact_and_results_are_immutable(self):
         self.assertTrue(self.inspect("read-only")["unchanged"])

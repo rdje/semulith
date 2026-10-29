@@ -26,16 +26,36 @@ ROOT = Path(__file__).resolve().parent.parent
 # manifest pins it) but no checker code imports it since a44-2c bound excerpts to the case's own authority.
 SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement"}),
                             "matched_gpr_adequacy", "review_div_method"))
-# The retained, captured case this review reads. It lives here, in a consumer no case pins, so
-# moving it to the next captured case does not invalidate any declaration (a42av).
+# The retained, captured cases this review reads. They live here, in a consumer no case pins, so
+# adding the next captured case does not invalidate any declaration (a42av).
 # a42ax: the m-forms capture (a42aw) retained in e775705; P4-SYSTEM.14 a44-5: the M case re-captured as v4 under the
-# declaration-as-data manifest (declared 177b43a1, captured 3c464095); v2 and v3 stay retained history.
+# declaration-as-data manifest (declared 177b43a1, captured 3c464095); v2 and v3 stay retained history, reviewed by
+# nothing. The default case keeps its named pins (the method probe's synthetic copy re-pins them).
 RETAINED_CASE_ID = "rv64gc-m-forms-v4"
 SOURCE_DECLARATION_COMMIT = "177b43a10745fc5406e787b601d8699b946dbb63"
 RETAINED_CAPTURE_COMMIT = "3c46409585272172d185a9d7ff864311706cde40"
 MEASURED_SHA256 = "aadb5ef3360f1d14a79258522eea098802d492889a747d5be41eeed69e106e08"
 MEASURED_BYTES = 16942
 TOTAL_BYTES = A.Unit.Evaluation.Q.MAX_READ_BYTES
+
+
+@dataclass(frozen=True)
+class RetainedCapture:
+    """Where one retained case was declared and captured, and its measured record: reviewed historical facts."""
+    declaration_commit: str
+    capture_commit: str
+    measured_sha256: str
+    measured_bytes: int
+
+
+# P4-SYSTEM.14 a43a-2f: one row per reviewed capture, each case's own pins; a case without a row is unsupported.
+RETAINED_CAPTURES = {
+    RETAINED_CASE_ID: RetainedCapture(SOURCE_DECLARATION_COMMIT, RETAINED_CAPTURE_COMMIT, MEASURED_SHA256, MEASURED_BYTES),
+    # a43a-2d re-declared the XLEN case in 5c2cde93; a43a-2e captured it once in e32cc645.
+    "rv64gc-xlen-forms-v1": RetainedCapture(
+        "5c2cde93d5ba0940df03513d3e7cb788b364340e", "e32cc6457732e6ca8bb6673c88d6f5aed6fad21c",
+        "d39825b0b4d7ccbada20d4d0545f26bb5fce1a79b5003b16dd99997cce041e41", 14958),
+}
 
 
 @dataclass(frozen=True)
@@ -137,7 +157,7 @@ class _ReadBudget:
 
 
 def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodCheck:
-    """Check the one reviewed retained case without Git, acquired caches or a binary.
+    """Check one reviewed retained case without Git, acquired caches or a binary.
 
     One inclusive128MiB native/evaluation allowance and the existing16MiB evaluator
     snapshot ceiling apply. Producer/authority preparation retains its published
@@ -146,8 +166,9 @@ def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> Me
     """
     if type(case_id) is not str or not 0 < len(case_id) <= 256:
         return MethodCheck("refused", "invalid bounded case selector")
-    if case_id != RETAINED_CASE_ID:
+    if case_id not in RETAINED_CAPTURES:
         return MethodCheck("unsupported", "no reviewed capture for selected case", case_id=case_id)
+    retained = RETAINED_CAPTURES[case_id]
     if type(max_read_bytes) is not int or not 0 <= max_read_bytes <= TOTAL_BYTES:
         return MethodCheck("refused", "invalid method read allowance")
     if max_read_bytes == 0:
@@ -190,8 +211,8 @@ def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> Me
             planned_sha256=None if binding is None else binding.planned_sha256,
             evidence_key=None if binding is None else binding.evidence_key,
             missing_findings=missing, checker_disposition=checker_disposition, checker_sources=identities,
-            origin=(("reviewed_source_declaration", SOURCE_DECLARATION_COMMIT),
-                    ("reviewed_retained_capture", RETAINED_CAPTURE_COMMIT),
+            origin=(("reviewed_source_declaration", retained.declaration_commit),
+                    ("reviewed_retained_capture", retained.capture_commit),
                     ("trust", "reviewed tracked collector and capture procedure; no independent execution attestation")),
             supported_claims=tuple(item.statement for item in case.properties))
 
@@ -212,7 +233,7 @@ def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> Me
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
         measured = budget.snapshot("observation", dict(
             id="measured-experiment", path=A.prefix(case_id) + "/measured-experiment.sexp",
-            sha256=MEASURED_SHA256, byte_size=MEASURED_BYTES))
+            sha256=retained.measured_sha256, byte_size=retained.measured_bytes))
         binding = Adequacy.bind_measured_capture(context, measured)
         if binding.disposition != "matched":
             return finish(binding.disposition, binding.reason)

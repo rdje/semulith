@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0326 (leaf P4-SYSTEM.14 a43a-2f) — the retained reviews read every reviewed capture; the XLEN case measured ten of ten
+
+a43a-2f: `review_div_method.py` holds one `RETAINED_CAPTURES` row per reviewed capture (v4's pins kept; the XLEN case's: declared 5c2cde93, captured e32cc645, measured 14,958 B), a case without a row `unsupported`; `review_div_policy.py` accepts those cases and `--every-retained` measures each (PROFILE-CONSISTENCY's real run). A `(boundary: …)` tag marks a directed row as a `Table` citation does; a `state` requirement naming no form satisfies form coverage vacuously and says so; `OB-XLEN`'s feature disposition is declared (none applies: the fault and the `mtval` read observe the address, claim no trap). Both cases measure 10 of 10 — v4 credited by `CR-GC-M-2`, the XLEN case uncredited (7 of 10 before). The probes hold the rows (method 21 tests; policy 27, seams `boundary-tag`, `state-vacuous`); the book's method and policy pages describe both cases; `decision_reviews-read-every-retained-case.md`. Next: the credit `CR-D-XLEN-1`.
+
 ## SEMULITH-AC-0089 (leaf ARTIFACT-CLEANUP.31) — the seventh recurring cleanup through the supported act
 
 .31: at 25 h, on a clean tree with `handoff: OK`, the four acts ran in target/artifact-cleanup/AC0089 (log inside): 334 candidates planned, 6 captured Cargo incremental outputs (15,766,338 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 25,066 retained files kept. Re-census against AC0086: the unrecorded population moved from 784 files (3.7 GB) to 328 (1,368,469,538 B) — the XTASK draft crates' 450 are gone (`XTASK.9`), the rest are the shared target's orphan sessions that `.29`'s ruled class C will remove. The record is overwritten; `.34` is due after 2026-10-30T11:07Z.

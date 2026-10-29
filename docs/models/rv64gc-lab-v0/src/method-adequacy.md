@@ -1,35 +1,42 @@
 # Checking the retained finite method
 
-The retained DIV case has a read-only method consumer. It composes the
+The retained matched cases have a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-For the retained case — `rv64gc-m-forms-v3` since a42ax (2026-10-23); the first case,
-`rv64gc-signed-div-truncation-v2`, was the retained case from a42ao to a42aw and is
-`invalidated` history — the method result is `satisfied`, full policy is `pending`
-as the method sees it (the [policy legs](policy-adequacy.md) measure all ten
-satisfied), and replay is `not-checked`. This is thirteen M forms and twelve Table 1
-cells under one program, with the −7/2 rounding witness's wrong quotient as the
-control. It does not qualify the profile, credit `REQ-GC-M` or `OB-GC-M`, or
-establish CPU acceptance or reference independence.
+It reads every case it holds a reviewed capture for: the M case's
+`rv64gc-m-forms-v4` (the default; v3 from a42ax and the first case,
+`rv64gc-signed-div-truncation-v2`, from a42ao, are `invalidated` history) and,
+since a43a-2f (2026-10-29), the XLEN case `rv64gc-xlen-forms-v1`. For each the
+method result is `satisfied`, full policy is `pending` as the method sees it (the
+[policy legs](policy-adequacy.md) measure all ten satisfied), and replay is
+`not-checked`. The M case is thirteen M forms and twelve Table 1 cells under one
+program, with the −7/2 rounding witness's wrong quotient as the control; the XLEN
+case is seventeen witnesses of the 64-bit registers, the `*W` family and the
+64-bit address space, with a 32-bit-truncated address as the control. The method
+result credits nothing and establishes no CPU acceptance or reference independence.
 
 ## The selected authority and capture
 
-`scripts/review_div_method.py` owns the fixed case selection. The pure composition
+`scripts/review_div_method.py` owns the case selection: one `RETAINED_CAPTURES` row per
+reviewed capture, and a case without a row is `unsupported` before any read. The pure composition
 in `scripts/matched_gpr_adequacy.py` opens no artifact and launches no process;
 the existing schema tools retain their own I/O. Neither a stored qualified flag
 nor `verification.json` supplies a verdict or method authority to this consumer.
 
-The consumer selects the measured record by its reviewed 16,942-byte identity
-and SHA256
-`fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152`.
-Source and predeclarations were committed in
-`4af5a68bbec9f1bf0922ec3787f829e029c15f29`; capture was retained in
-`e775705e2cebbafabe05f0458da8d52004d604cb`. Those labels are historical review
-facts, not a runtime Git check or independent execution attestation. The review
+The consumer selects each case's measured record by its reviewed identity:
+
+| Case | Measured record | Declared in | Captured in |
+| --- | --- | --- | --- |
+| `rv64gc-m-forms-v4` | 16,942 B, `aadb5ef3…` | `177b43a1` (a44-3) | `3c464095` (a44-4) |
+| `rv64gc-xlen-forms-v1` | 14,958 B, `d39825b0…` | `5c2cde93` (a43a-2d) | `e32cc645` (a43a-2e) |
+
+v3's row was 16,942 B `fb22d5e5…`, declared in `4af5a68b` and retained in `e775705e`. Those labels
+are historical review facts, not a runtime Git check or independent execution attestation. The review
 trusts the tracked collector and the committed procedure that produced the
 historical processes. Unknown/shared ancestry earns no independence credit. The
-pointers live in `scripts/review_div_method.py`, which no case pins, so moving them
-to a new capture invalidates nothing (`decision_caller-names-the-case.md`); the
+pointers live in `scripts/review_div_method.py`, which no case pins, so adding a row for a
+new capture invalidates nothing (`decision_caller-names-the-case.md`,
+`decision_reviews-read-every-retained-case.md`); the
 first case's pointers were the 9,928-byte record `2cb6c704…`, commits `b160c66…` /
 `c91d08f…`.
 
@@ -109,23 +116,25 @@ Run from the repository root:
 ```bash
 PYTHONPATH=scripts python3 -B - <<'PY_METHOD'
 from review_div_method import review_method
-r = review_method()
-print(r.disposition, r.policy_disposition, r.replay_disposition)
-print(r.record_disposition, r.capture_binding, r.evaluation_disposition)
-print(r.authenticated_files, r.authenticated_bytes, r.snapshot_bytes)
-print(r.charged_read_bytes, r.read_limit, len(r.checker_sources))
+for case in ("rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1"):
+    r = review_method(case_id=case)
+    print(r.disposition, r.policy_disposition, r.replay_disposition, "|",
+          r.record_disposition, r.capture_binding, r.evaluation_disposition, "|",
+          r.authenticated_files, r.authenticated_bytes, r.snapshot_bytes, "|",
+          r.charged_read_bytes, r.read_limit, len(r.checker_sources))
 PY_METHOD
 ```
 
-The output is `satisfied pending not-checked`, `valid matched pending`,
-`85 1076834 40438`, then `1142222 134217728 39`.
+The output is `satisfied pending not-checked | valid matched pending | 88 1098379 40438 |
+1165123 134217728 39` for v4 and the same with `88 1092798 35100 | 1155615` for the XLEN case.
 
 ```bash
 python3 -B scripts/review_div_method.py
-python3 -B scripts/review_div_method.py --max-read-bytes 1142222
+python3 -B scripts/review_div_method.py --max-read-bytes 1165123
+python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v1 --max-read-bytes 1155615
 ```
 
-Both emit derived JSON within 64 KiB and exit zero. An allowance of 1,142,221
+All emit derived JSON within 64 KiB and exit zero. One byte less (1,165,122; 1,155,614)
 cannot satisfy the method (`refused files: artifact exceeds snapshot byte limit`,
 exit 1). Exit 2 means unavailable or unsupported; exit 1 means
 another unsatisfied disposition. These commands neither write historical
@@ -139,13 +148,14 @@ python3 -B -O scripts/probe_div_method.py
 python3 -B scripts/probe_div_method.py --mutation capture-origin
 ```
 
-Each unmutated mode passes 20 tests. The targeted origin omission runs one test
+Each unmutated mode passes 21 tests; the real-tree arm runs every row and requires a
+retained case without one (v3) to be `unsupported` having read nothing. The targeted origin omission runs one test
 and reports one failure with no errors; that nonzero exit is the expected
 negative control. PROFILE-CONSISTENCY runs both modes and all fourteen targeted
 guard omissions. Their failure counts are respectively
 4/1/4/2/2/1/2/1/3/4/1/1/1/1, with no errors.
 
-A 103-file runtime copy contains only the retained package and required code,
+A 106-file runtime copy (the default case's) contains only the retained package and required code,
 without Git, acquired materials or a binary. Child process launching is denied;
 the valid parent checkout remains available as cwd to expose accidental borrowing.
 Controls cover missing/changed native declarations and traces, exact/short read

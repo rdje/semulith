@@ -17,8 +17,9 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                witness step cites the requirement's source; the expected
                                producer reads no reference-only input (no model output as
                                its own expectation).
-  boundary-fixtures            directed boundary rows (a step whose source cites a table row)
-                               are present AND each is predeclared as a property.
+  boundary-fixtures            directed boundary rows (a step whose source cites a table row or
+                               carries a `(boundary: …)` tag) are present AND each is predeclared
+                               as a property.
   matched-reference-comparison the finite method is satisfied and the baseline agrees under
                                the declared comparison rule and named observation vocabulary.
   repeated-execution           a repeat run agrees.
@@ -32,7 +33,8 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
   risk-method                  low/medium risk needs no second method; high/critical does,
                                and no declaration vocabulary exists yet for it.
   feature-rules                the obligation's feature disposition is declared below.
-  form-coverage                every form the requirement names is exercised AND predeclared.
+  form-coverage                every form the requirement names is exercised AND predeclared; a
+                               state requirement naming no form is satisfied vacuously, and says so.
 
 Exit 0: measured (satisfied, pending or invalidated). Exit 1: a finding — the receipt
 claims `qualification` the legs refuse, or the finite method is refused, unavailable or
@@ -43,6 +45,8 @@ moved input is named, and nothing is refused unless the receipt still claims qua
 (P4-SYSTEM.14 a42as, the director's ruling of 2026-10-22). An invalidated case grants
 nothing and locks nothing: the next capture supersedes it.
 Exit 2: refused/unavailable/unsupported (bounds, unreadable inputs, another case).
+`--every-retained` measures every case the finite method review holds a reviewed capture for, one line
+each, and exits with the worst code (P4-SYSTEM.14 a43a-2f; PROFILE-CONSISTENCY's real run).
 """
 from __future__ import annotations
 
@@ -62,15 +66,22 @@ import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
 
 FORMAT = "div-policy-review-v1"
-CASE_ID = "rv64gc-m-forms-v4"  # the retained, captured case (a42ax: v3; a44-5: v4); a consumer constant no case pins
+CASE_ID = "rv64gc-m-forms-v4"  # the default retained case (a42ax: v3; a44-5: v4); a consumer constant no case pins
 DOCUMENT_BYTES = 65536
-BOUNDARY_MARKER = "Table"  # an expectation step whose source cites a chapter table row is a directed boundary fixture
+# An expectation step whose source cites a chapter table row (M's Table 1) or carries a `(boundary: …)` tag (the XLEN
+# guest's ten, a43a-2d) is a directed boundary fixture. The tag occurs in no M expectation, so M's rows do not move.
+BOUNDARY_MARKERS = ("Table", "(boundary")
 LOW_RISK = ("low", "medium")
 # Declared feature dispositions (policy "the following feature rules apply regardless of the risk
 # field"). An obligation absent here has no disposition and stays pending — never inferred.
 FEATURE_DISPOSITIONS = {
     "OB-GC-M": "none applies: integer multiply/divide touches no privilege, translation, atomic, "
                "floating-point, counter, fetch or environment rule (P4-SYSTEM.14 a42aq, 2026-10-21)",
+    "OB-XLEN": "none applies: the register width and the 64-bit address space touch no privilege, translation, "
+               "atomic, floating-point, counter, fetch or environment rule; the access fault at 2^40 and the "
+               "handler's CSRRS of mtval are the route that observes the address, not a claimed trap, CSR or "
+               "protection behaviour (the fault's selection is REQ-D-FAULT-PRIORITY's, mtval's presence "
+               "REQ-D-CSR-SET's, the read REQ-GC-CSR-ACCESS's) (P4-SYSTEM.14 a43a-2f, 2026-10-29)",
 }
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
@@ -211,7 +222,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
          f"{'cites' if cited else 'does not cite'} {req_id}'s source; expected producer "
          f"{'reads only its own inputs' if not own_output else 'is missing or reads reference inputs'}")
     # boundary-fixtures
-    boundary_steps = sorted(n for n, s in steps.items() if BOUNDARY_MARKER in s["source"])
+    boundary_steps = sorted(n for n, s in steps.items() if any(marker in s["source"] for marker in BOUNDARY_MARKERS))
     declared_steps = {step for step, _ in witnesses.values()}
     undeclared = [n for n in boundary_steps if n not in declared_steps]
     _leg(legs, "boundary-fixtures", bool(boundary_steps) and not undeclared,
@@ -273,7 +284,12 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     mnemonic = lambda s: s["insn"].split()[0].lower() if s["insn"].split() else ""
     exercised = sorted({mnemonic(s) for s in steps.values()} & set(required))
     predeclared = sorted({mnemonic(steps[n]) for n in declared_steps} & set(required))
-    _leg(legs, "form-coverage", bool(required) and predeclared == required,
+    # a43a-2f: a state requirement (REQ-D-XLEN: the register width and the address space) names no form, so there is
+    # none to cover; its predeclared witnesses are its coverage. Any other requirement naming no form stays pending.
+    vacuous = requirement["kind"] == "state" and not required
+    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),
+         f"a state requirement names no form: coverage is vacuous, its {len(witnesses)} predeclared witnesses stand for it"
+         if vacuous else
          f"{len(predeclared)} of {len(required)} forms predeclared {predeclared}; {len(exercised)} exercised {exercised}")
 
     assert [leg.id for leg in legs] == list(LEG_ORDER)
@@ -323,8 +339,14 @@ def review_policy(root: Path, *, case_id: str = CASE_ID) -> dict:
     """Compose the finite method review on the real tree, then measure the legs."""
     import review_div_method as Method
     _require(Path(root).resolve() == Method.ROOT.resolve(), "the finite method review is bound to the repository root")
-    _require(case_id == CASE_ID, f"unsupported: no reviewed capture for {case_id}")
+    _require(case_id in Method.RETAINED_CAPTURES, f"unsupported: no reviewed capture for {case_id}")
     return measure_policy(root, method=asdict(Method.review_method(case_id=case_id)), case_id=case_id)
+
+
+def review_every(root: Path) -> list[dict]:
+    """Every case the finite method review holds a reviewed capture for, in its order (a43a-2f)."""
+    import review_div_method as Method
+    return [review_policy(root, case_id=case_id) for case_id in Method.RETAINED_CAPTURES]
 
 
 def summary(table: dict) -> tuple[int, str]:
@@ -340,12 +362,21 @@ def summary(table: dict) -> tuple[int, str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Measure the retained DIV case against the policy legs.")
     parser.add_argument("--root", default=str(HERE.parent))
-    parser.add_argument("--case", default=CASE_ID)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--case", default=CASE_ID)
+    selection.add_argument("--every-retained", action="store_true",
+                           help="every case with a reviewed capture, one summary line each; the worst exit code")
     parser.add_argument("--method-json", help="a plain method result file instead of running the finite method review")
     parser.add_argument("--json", action="store_true", help="the leg table on stdout, the summary on stderr")
     args = parser.parse_args(argv)
+    if args.every_retained and args.method_json:
+        parser.error("--every-retained runs the finite method review itself; --method-json selects one case")
     try:
-        if args.method_json:
+        if args.every_retained:
+            tables = review_every(Path(args.root))
+            payload = json.dumps(tables, indent=2) + "\n"
+            _require(len(payload.encode()) <= DOCUMENT_BYTES * len(tables), "leg tables exceed 64 KiB per case")
+        elif args.method_json:
             try:
                 method = json.loads(_bounded_bytes(Path(args.method_json)).decode("utf-8"))
             except (ValueError, UnicodeError) as error:
@@ -356,6 +387,13 @@ def main(argv: list[str] | None = None) -> int:
     except Refused as error:
         print(f"DIV-POLICY: refused — {error}", file=sys.stderr)
         return 2
+    if args.every_retained:
+        results = [(table["case_id"], *summary(table)) for table in tables]
+        if args.json:
+            sys.stdout.write(payload)
+        for case_id, _, line in results:
+            print(f"{case_id}: {line}", file=sys.stderr if args.json else sys.stdout)
+        return max(code for _, code, _ in results)
     code, line = summary(table)
     if args.json:
         payload = json.dumps(table, indent=2) + "\n"

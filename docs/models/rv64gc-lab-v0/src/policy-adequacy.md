@@ -2,16 +2,17 @@
 
 The evidence policy names, for a `defined` requirement of low or medium risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
-legs and measures each one against the retained bytes of the retained case —
-`rv64gc-m-forms-v3` since a42ax (2026-10-23); the first case, `rv64gc-signed-div-truncation-v2`,
-is history below — on top of the finite method review. It opens only bounded tracked files,
-launches no process and grants no credit: `credited` is always false. The measurement is the
-input a later, separately owned crediting record would cite; today every leg is satisfied and
-nothing is credited.
+legs and measures each one against the retained bytes of every case the finite method review
+holds a reviewed capture for — the M case's `rv64gc-m-forms-v4` and, since a43a-2f (2026-10-29),
+the XLEN case `rv64gc-xlen-forms-v1`; the earlier cases (`rv64gc-signed-div-truncation-v2`,
+`rv64gc-m-forms-v3`) are history below — on top of the finite method review. It opens only
+bounded tracked files, launches no process and grants no credit: `credited` reports a separately
+owned record in `credits.sexp`, never the measurement. Today every leg of both cases is
+satisfied; the M case is credited by `CR-GC-M-2`, the XLEN case by nothing yet.
 
 ## The ten legs and what the bytes say
 
-| Leg | Policy words | Measured on the retained case |
+| Leg | Policy words | Measured on the M case (v4) |
 | --- | --- | --- |
 | source-located-expectations | source-located expected observations; model output is not its own expectation | satisfied: 33 of 33 steps carry a derivation and a source; the witness step 12 cites `REQ-GC-M`'s source; the expected producer reads only its own inputs |
 | boundary-fixtures | directed boundary fixtures | satisfied: 12 Table 1 rows present (steps 20–24, 26–32) and all 12 predeclared as properties |
@@ -34,8 +35,31 @@ cases' declarations became data) and retired the record (that decision's Retirem
 re-captured as `rv64gc-m-forms-v4` under the new manifest (a44-3 declared, a44-4 captured: traces byte-identical to
 v3's), and this review now reads v4 (`CASE_ID`): `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
 CR-GC-M-2` (a44-5), and `REQ-GC-M` derives `implemented` again. The consumer reads boundary rows and forms from the
-expectation file (a step whose source cites a chapter table row is a directed boundary
-fixture; a step's mnemonic is its form), never from the chapter itself.
+expectation file (a step whose source cites a chapter table row, or carries a `(boundary: …)` tag, is a directed
+boundary fixture; a step's mnemonic is its form), never from the chapter itself.
+
+## The XLEN case's ten legs (a43a-2f)
+
+`REQ-D-XLEN` (XLEN = 64: the integer registers and the supported user address space are 64 bits) is a `state`
+requirement of low risk under `OB-XLEN`; its case predeclares seventeen witnesses and one control
+(`decision_reviews-read-every-retained-case.md`). Before a43a-2f the consumer measured it 7 of 10: it knew M's `Table`
+rows only, it had no feature disposition for `OB-XLEN`, and it read a requirement naming no instruction as `0 of 0`
+forms, pending. Now:
+
+| Leg | Measured on the XLEN case |
+| --- | --- |
+| source-located-expectations | satisfied: 25 of 25 steps carry a derivation and a source; the witness step 24 cites `REQ-D-XLEN`'s source (`RVI-RV64I §3.1.1`) |
+| boundary-fixtures | satisfied: 10 tagged rows (steps 1, 5–10, 13, 16, 24: bit 63, bit 32, a shift amount above 31, 2^63 − 1, the wrap at 2^63, the carry out of bit 63, bit 31 extended, the word's sign bit, `rs2[4:0]`, an address above 2^32), all predeclared |
+| matched-reference-comparison | satisfied: method satisfied (88 authenticated files), baseline AGREE under `sail-gpr-change-v1` |
+| repeated-execution | satisfied: repeat AGREE |
+| discriminating-control | satisfied: control DIVERGE at step 24, register x31 (2^40 observed, 0 in the control's expectation) |
+| record-linkage | satisfied: `REQ-D-XLEN`, `OB-XLEN`, collector, expected producer, three limitations |
+| currentness | satisfied: the policy pinned and unchanged; the method binding matched |
+| risk-method | satisfied: low risk needs no second method |
+| feature-rules | satisfied by declaration: none applies to `OB-XLEN` — the access fault at 2^40 and the handler's `CSRRS` of `mtval` observe the address; no trap, CSR or protection behaviour is claimed |
+| form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 17 predeclared witnesses stand for it |
+
+`DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`: the credit is the next unit's record.
 
 ## What a satisfied measurement is, and is not
 
@@ -99,22 +123,27 @@ its real-tree arm, like the command probe's, asserts the state the dependency ma
 ```bash
 python3 -B scripts/review_div_policy.py
 python3 -B scripts/review_div_policy.py --json
+python3 -B scripts/review_div_policy.py --every-retained
 python3 -B scripts/probe_div_policy.py
 python3 -B -O scripts/probe_div_policy.py
 python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 ```
 
-The first command prints `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification
-credit` and exits zero; `--json` puts the leg table on stdout within 64 KiB, with the twelve
+The first command measures the default case, v4, and prints `DIV-POLICY: satisfied — 10 of 10 legs
+satisfied; credited by CR-GC-M-2`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
-exercised. The probe runs 25 tests in both interpreter modes on synthetic cases where each
-knob breaks exactly one leg, plus the real tree (ten legs while every pin is current; `invalidated`
+exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
+the case, and exits with the worst code. The probe runs 27 tests in both interpreter modes on synthetic
+cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
+naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
+through one `--every-retained` run (both cases' ten legs while every pin is current; `invalidated`
 with the two method legs missing once a pin moves) and three credit-record cases (a current record
 over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
-are findings); each of the eight seam omissions (`credit-pending`, `trust-receipt`,
+are findings); each of the ten seam omissions (`credit-pending`, `trust-receipt`,
 `infer-feature`, `any-control`, `coverage-optional`, `lock-stale`, `first-property`,
-`credit-any`) runs its one discriminating test and fails. `PROFILE-CONSISTENCY`
-runs the probe in its self-test and the measurement on the real path on every commit.
+`credit-any`, `state-vacuous`, `boundary-tag`) runs its one discriminating test and fails.
+`PROFILE-CONSISTENCY` runs the probe in its self-test and `--every-retained` on the real path on
+every commit.
 
 ## The program the m-forms case predeclares
 

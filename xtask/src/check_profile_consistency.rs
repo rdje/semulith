@@ -8618,7 +8618,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 25 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 27 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8628,6 +8628,8 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "lock-stale",
             "first-property",
             "credit-any",
+            "state-vacuous",
+            "boundary-tag",
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8817,8 +8819,13 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("  The GRAPH is authoritative: change the evidence or the catalogue record, never the status alone.");
         return ExitCode::from(u8::try_from(rc).unwrap_or(1));
     }
-    // P4-SYSTEM.14 a42aq: the retained DIV case's policy legs are measured from its own bytes.
-    let (rc, out) = tool(root, true, &["scripts/review_div_policy.py"]);
+    // P4-SYSTEM.14 a42aq: the retained DIV case's policy legs are measured from its own bytes; since a43a-2f every
+    // case the finite method review holds a reviewed capture for (the M case's v4 and the XLEN case), one line each.
+    let (rc, out) = tool(
+        root,
+        true,
+        &["scripts/review_div_policy.py", "--every-retained"],
+    );
     if rc != 0 {
         eprintln!("PROFILE-CONSISTENCY: the retained case's policy legs refuse its receipt, or cannot be measured.");
         indented(&out);
