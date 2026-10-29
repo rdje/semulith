@@ -232,11 +232,19 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
                 declared_cases=sum(1 for c in profile_cases if c["disposition"] == "declared"))
 
 
+def derives_statuses(profile_dir: Path) -> bool:
+    """Whether this derivation owns the profile's recorded statuses: its dossier carries EVIDENCE_POLICY.md.
+
+    RECORD-SCHEMA's mirror rule asks this function, never a copy of the condition: a mirrored requirement's
+    status is the mirror profile's own exactly where this derivation governs it (P4-SYSTEM.14 a43a-3)."""
+    return (Path(profile_dir) / POLICY).is_file()
+
+
 def derive(root: Path, profiles: list[str] | None = None) -> list[dict]:
     base = root / "profiles"
     dirs = sorted(p for p in base.iterdir() if p.is_dir()) if base.is_dir() else []
     _require(len(dirs) <= MAX_PROFILES, f"more than {MAX_PROFILES} profiles")
-    selected = [p for p in dirs if (p / POLICY).is_file() and (profiles is None or p.name in profiles)]
+    selected = [p for p in dirs if derives_statuses(p) and (profiles is None or p.name in profiles)]
     if profiles is not None:
         missing = set(profiles) - {p.name for p in selected}
         _require(not missing, f"no policy-declaring profile named {sorted(missing)}")

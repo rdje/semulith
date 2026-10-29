@@ -28,6 +28,7 @@ import record_catalog as C
 import credit_records as CR
 import dossier_sexp as D
 import check_sexp_schema as K
+import requirement_status as RS
 
 root = pathlib.Path(sys.argv[1])
 findings, checked = [], []
@@ -577,7 +578,11 @@ for cat in catalogues:
 # register that UNIT's base-corpus records are DERIVED mirrors of the owner's catalogue. A
 # mirror record must equal the owner's record on every field but the profile-scoped ones —
 # byte-verbatim, the probe's rule — and the mirror may not drift: a record that was copied
-# and then edited is a fact stated in two ungoverned ways (MODEL-METHOD.7).
+# and then edited is a fact stated in two ungoverned ways (MODEL-METHOD.7). A requirement's
+# implementation_status is profile-scoped where REQUIREMENT-STATUS derives the mirror profile's
+# statuses (requirement_status.derives_statuses, asked here, never copied): there it is derived from
+# that profile's own evidence and any drift is refused, so it is governed, once, per profile — a
+# status is not the requirement's meaning (P4-SYSTEM.14 a43a-3, decision_mirror-status-is-per-profile.md).
 reg_path = root / "doctrine" / "fact_ownership.tsv"
 if reg_path.is_file():
     for line in reg_path.read_text().splitlines():
@@ -621,7 +626,8 @@ if reg_path.is_file():
                                     f"mirror does not carry the record — the derivation is "
                                     f"incomplete")
                     continue
-                for f_ in set(want) - {"profile_ids"}:
+                derived = {"implementation_status"} if RS.derives_statuses(mirror_p.parent) else set()
+                for f_ in set(want) - {"profile_ids"} - derived:
                     if got.get(f_) != want.get(f_):
                         findings.append(f"MIRROR DRIFT {mirror_p.name} [{rid}]: field {f_!r} "
                                         f"differs from the owner's record — a derived mirror "
@@ -758,6 +764,20 @@ p = pathlib.Path(sys.argv[1]) / "m/requirements.sexp"
 recs = R.load(p)
 recs[0]["statement"] = "S — edited after the copy"
 p.write_text(R.dump(recs))
+"####;
+const DERIVE_STATUS: &str = r####"import pathlib, sys
+sys.path.insert(0, sys.argv[2] + "/scripts")
+import records_sexp as R
+t = pathlib.Path(sys.argv[1])
+# restore, then let the mirror's own status differ from the owner's; argv[3] says whether m/ derives its statuses
+own = R.load(t / "o/requirements.sexp")
+mir = dict(own[0]); mir["profile_ids"] = ["m"]; mir["implementation_status"] = "implemented"
+(t / "m/requirements.sexp").write_text(R.dump([mir]))
+policy = t / "m/EVIDENCE_POLICY.md"
+if sys.argv[3] == "derived":
+    policy.write_text("# policy\n")
+elif policy.is_file():
+    policy.unlink()
 "####;
 const DERIVE_DROPPED: &str = r####"import pathlib, sys
 sys.path.insert(0, sys.argv[2] + "/scripts")
@@ -1383,6 +1403,20 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     fx.program(DERIVE_EDITED, &[&ts, &root_s]);
     tally.arm(
         "RED   a mirror record edited after the copy",
+        fx.judge(),
+        1,
+        "MIRROR DRIFT",
+    );
+    fx.program(DERIVE_STATUS, &[&ts, &root_s, "derived"]);
+    tally.arm(
+        "GREEN a mirror's status its own profile derives",
+        fx.judge(),
+        0,
+        "__CHECKED__ 7",
+    );
+    fx.program(DERIVE_STATUS, &[&ts, &root_s, "underived"]);
+    tally.arm(
+        "RED   a mirror's status nobody derives",
         fx.judge(),
         1,
         "MIRROR DRIFT",

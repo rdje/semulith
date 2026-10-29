@@ -42,18 +42,21 @@ measurement that is not `satisfied` a finding (`decision_credit-is-a-catalogue-r
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name. Today the derivation is honest and small:
-47 requirements derive `planned` and `REQ-GC-M` `implemented`, through one current record,
-`CR-GC-M-2`, naming `rv64gc-m-forms-v4` (`P4-SYSTEM.14` a44-5). The two earlier cases are
+46 requirements derive `planned`, and two `implemented` through two current records:
+`REQ-GC-M` through `CR-GC-M-2`, naming `rv64gc-m-forms-v4` (`P4-SYSTEM.14` a44-5), and
+`REQ-D-XLEN` — the first `state` requirement — through `CR-D-XLEN-1`, naming
+`rv64gc-xlen-forms-v1` (a43a-3; `decision_req-d-xlen-credited-implemented.md`). The two earlier cases are
 uncredited at `pending`: `rv64gc-signed-div-truncation-v2`, invalidated history, and
 `rv64gc-m-forms-v3`, credited by `CR-GC-M-1` from 2026-10-26 until a44-2b retired the record on
 2026-10-29 and invalidated the capture by moving its pinned inputs; v4 is its re-capture under the
 new manifest. No recorded status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
-`CREDIT-RECORDS: rv64gc-lab-v0: 1 credit(s), 1 current, 0 lapsed; records read and
+`CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
-re-issue `CR-GC-M-2`), under the rulings on its authority and on the sufficiency of one finite case
-(`decision_req-gc-m-credited-implemented.md`). The normative text it rests on is retained
-(`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb).
+re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`), under the rulings on its authority and on the
+sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
+rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
+since a43a-2a).

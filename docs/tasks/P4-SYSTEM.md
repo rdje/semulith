@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2f done: RVI-RV64I §3.1 retained, the case declared fit for the policy's legs, captured once, and measured ten of ten by reviews that read every retained capture; next its credit, `CR-D-XLEN-1`), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); the XLEN case as data done (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, the case declared, captured once, measured ten of ten and credited by `CR-D-XLEN-1` — `REQ-D-XLEN` `implemented`, G-STATE 1 of 4); next a43b-2, the planned lapse window that opens CSR-SET (the control declared per case, the high-risk predeclaration vocabulary, v4 and XLEN re-captured once and re-credited), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,37 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43a-3 / SEMULITH-P4-0327: `REQ-D-XLEN` credited `implemented` — the first `state` requirement (completed)
+
+The crediting act of the state-capture plan's third step, as a44-5 did it for the M case and on the same rulings
+(`decision_req-d-xlen-credited-implemented.md`): `CR-D-XLEN-1` in `credits.sexp` — case `rv64gc-xlen-forms-v1`, the
+measured record (14,958 B, `d39825b0…`), the receipt (7,055 B, `72413fdf…`) and the policy pinned, retained source
+`RVI-RV64I-STATEMENTS`, authority `review`, ten legs, four limitations; `REQ-D-XLEN` `implemented`. Derived:
+`REQUIREMENT-STATUS: … 46 planned, 2 implemented; 4 case(s), 2 credited, 0 declared, 2 of 2 credit record(s) current; 0
+drift`; `CREDIT-RECORDS: … 2 credit(s), 2 current`; `rv64gc-xlen-forms-v1: DIV-POLICY: satisfied — 10 of 10 legs
+satisfied; credited by CR-D-XLEN-1`; both method reviews stay `satisfied` after the status edit (the semantic digests
+normalize the status, as at a44-5). The dossier holds the case's measured record form for form beside v4's, both
+qualifying (`dossier_qualification` → `[]`), and `gate.sexp` its `G-TRACE` evidence row; the G-STATE and G-OBLIGATIONS
+open statements now say what is implemented. GS: G-STATE `1 of 4 state requirements implemented`, G-TRACE both rows
+verified, `Open axes (3 of 10)`. Found while building the dossier copy: the measured record's `control` prose ("wrong
+quotient must diverge") and control-run id (`wrong-quotient`) are `capture_div.py`'s fixed M literals — pinned by both
+captures, so fixing them now would lapse both credits for prose that grants nothing; the credit's limitations name them
+with the receipt's M phrase (a43a-2e), and the pattern is a knowledge card
+(`docs/knowledge/a-producer-generalized-from-its-first-case-keeps-its-literals.md`). Found by the act: RECORD-SCHEMA
+refused it — `MIRROR DRIFT requirements.sexp [REQ-D-XLEN]: field 'implementation_status' differs from the owner's
+record` — rule 14 holding the rv64gc mirror to rv64i's `planned` while REQUIREMENT-STATUS derives rv64gc's
+`implemented`; the status is now the mirror's own exactly where its profile carries `EVIDENCE_POLICY.md` (every
+meaning field still compared), with two arms each shown to discriminate (`80 pass / 1 fail` without the exemption and
+with it unconditional; `81 pass / 0 fail`); the condition is asked of `requirement_status.derives_statuses`, never copied
+(`decision_mirror-status-is-per-profile.md`). Re-stated, each measured: the
+policy probe's XLEN block (credited; a moved pin lapses `CR-D-XLEN-1`), the status probe's real-tree prediction (46 / 2,
+the XLEN row), the dossier probe (the XLEN record qualifies); the property probe's `derived-status` loss stays 37. The
+model book's status and policy pages, and its fragments' input digests, regenerated. Decided on the director's question
+(2026-10-29): the literals are removed in one planned lapse window that opens CSR-SET, before any further case is
+declared — the control declared per case, CSR-SET's high-risk predeclaration vocabulary in the same pinned-schema move,
+v4 and xlen-v1 re-captured once as v5 and xlen-v2 (traces byte-identical), both re-credited
+(`decision_producer-debt-paid-before-the-next-case.md`). Next: a43b-2, that window, designed before its first pinned edit.
 
 ### .14 a43a-2f / SEMULITH-P4-0326: the retained reviews read every reviewed capture — the XLEN case measured ten of ten (completed)
 
@@ -1164,6 +1195,9 @@ Rows a44-1–a44-2a: [retained verbatim](archive/P4-SYSTEM-23.md#acceptance-rows
 - [x] `.14` a43a-2f **ROOT CAUSE** — the reviews read one case: at f81bf9f8 `review_div_policy.py --case rv64gc-xlen-forms-v1` `rc=2` → `refused — unsupported: no reviewed capture` (policy-xlen-at-f81bf9f8.log); measured through `--method-json`, `pending — 7 of 10 legs satisfied; missing boundary-fixtures, feature-rules, form-coverage` (policy-xlen-before.err): `0 directed boundary rows`, `OB-XLEN: feature disposition undeclared`, `0 of 0 forms predeclared`.
 - [x] `.14` a43a-2f **ADDRESSED** — `python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v1` `rc=0` → `satisfied`, 88 files, 1,092,798 B; `--max-read-bytes 1155615` `rc=0`, 1155614 `rc=1`; `--case rv64gc-m-forms-v3` `rc=2` `unsupported`, 0 bytes read; `python3 -B scripts/review_div_policy.py --every-retained` `rc=0` → `rv64gc-m-forms-v4: … 10 of 10 legs satisfied; credited by CR-GC-M-2`, `rv64gc-xlen-forms-v1: … 10 of 10 legs satisfied; no qualification credit`; v4's table identical to the single-case run (`cmp`); `grep -c '(boundary' evidence/rv64gc-m-forms-v4/baseline.expected.sexp` = 0.
 - [x] `.14` a43a-2f **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1208 pass / 0 fail` (1204 + the two new seams in both modes), traced: `ls target/p4-system-14/a43a-2f/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` through `--every-retained` (check.log, run on a quiet host, wait.log); `DIV-METHOD: 21 tests / 0 failures / 0 errors`, `--mutation capture-origin` `1 tests / 1 failures` both modes; `DIV-POLICY-PROBE: 27 tests / 0 failures / 0 errors` both modes, each of the ten seams `1 tests / 1 failures`; `DERIVED-COUNTS: ok` (the arm total 1698 unchanged: the seams are loop rows); the first chain's focused stage refused before the gate, `focused: 2 red of 29` — `cargo fmt` (the new `tool(…)` call) and `KNOWLEDGE-MAP` (the new decision record's row) — both fixed, `cargo fmt --all -- --check` `rc=0`, the map check `rc=0`; the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43a-3 **ROOT CAUSE** — REQ-D-XLEN's ten legs were satisfied and no record credited them: at 7ff63fef `python3 -B scripts/review_div_policy.py --every-retained` `rc=0` → `rv64gc-xlen-forms-v1: … no qualification credit`, `python3 -B scripts/requirement_status.py` → `47 planned, 1 implemented; 4 case(s), 1 credited`.
+- [x] `.14` a43a-3 **ADDRESSED** — `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `2 credit(s), 2 current, 0 lapsed`; `python3 -B scripts/requirement_status.py` `rc=0` → `46 planned, 2 implemented; 4 case(s), 2 credited, 0 declared, 2 of 2 credit record(s) current; 0 drift`; `--every-retained` `rc=0` → `credited by CR-D-XLEN-1`; both dossier records `dossier_qualification` → `[]`; `grep -c 'rv64gc-xlen-forms-v1' profiles/rv64gc-lab-v0/gate.sexp` = 1; GS G-STATE → `1 of 4` state requirements implemented; `RECORD-SCHEMA --self-test: 81 pass / 0 fail`, `RECORD-SCHEMA: ok`; with `derives_statuses` single-sourced, `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors` both modes and its seven seams `1 tests / 1 failures` each.
+- [x] `.14` a43a-3 **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1208 pass / 0 fail`, traced (`ls target/p4-system-14/a43a-3/eperm | wc -l` = 0), the whole check `rc=0` on a quiet host; `DIV-POLICY-PROBE: 27 tests / 0 failures / 0 errors`, `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`, `DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures / 0 errors`, each in both modes; `MATCHED-GPR-PROPERTY: 35 tests / 37 failures` under `derived-status` (unchanged); `MATERIALS-BILL: ok`, `GATE-REPORT: ok`, `UNIT-BOOKS: ok`; `DERIVED-COUNTS: ok` (1700 arms); the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

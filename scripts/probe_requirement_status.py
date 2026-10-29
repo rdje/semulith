@@ -313,9 +313,14 @@ class StatusTests(unittest.TestCase):
         # stay pending. This arm is the manifest's prediction of the real tree: the next crediting act re-states it.
         self.assertEqual((m["recorded"], m["derived"], m["why"]), ("implemented", "implemented", "every obligation credited (1)"))
         self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-signed-div-truncation-v2:pending"])
-        self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 1, "not-applicable": 0})
+        # The XLEN case binds REQ-D-XLEN alone and is credited by CR-D-XLEN-1 (a43a-3): the first `state` requirement
+        # to derive `implemented`.
+        x = next(r for r in gc["rows"] if r["id"] == "REQ-D-XLEN")
+        self.assertEqual((x["recorded"], x["derived"], x["why"], x["uncredited"]),
+                         ("implemented", "implemented", "every obligation credited (1)", []))
+        self.assertEqual(gc["derived"], {"planned": 46, "partial": 0, "implemented": 2, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (4, 1, 0, 1, 1))  # the XLEN case captured (a43a-2e), pending until its credit
+                         (4, 2, 0, 2, 2))
 
 
 def main():

@@ -8,7 +8,7 @@ the XLEN case `rv64gc-xlen-forms-v1`; the earlier cases (`rv64gc-signed-div-trun
 `rv64gc-m-forms-v3`) are history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Today every leg of both cases is
-satisfied; the M case is credited by `CR-GC-M-2`, the XLEN case by nothing yet.
+satisfied; the M case is credited by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3).
 
 ## The ten legs and what the bytes say
 
@@ -59,7 +59,8 @@ forms, pending. Now:
 | feature-rules | satisfied by declaration: none applies to `OB-XLEN` — the access fault at 2^40 and the handler's `CSRRS` of `mtval` observe the address; no trap, CSR or protection behaviour is claimed |
 | form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 17 predeclared witnesses stand for it |
 
-`DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`: the credit is the next unit's record.
+Measured at a43a-2f `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; since a43a-3 the
+record `CR-D-XLEN-1` credits it, and the line ends `credited by CR-D-XLEN-1` (`decision_req-d-xlen-credited-implemented.md`).
 
 ## What a satisfied measurement is, and is not
 

@@ -6,6 +6,9 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 
 | Record | Type | One-line hook |
 | --- | --- | --- |
+| [Producer debt paid before the next case (2026-10-29)](decision_producer-debt-paid-before-the-next-case.md) | `decision` | When and how are the M literals in the pinned producers (the control prose and control-run id) removed, and what does it cost? |
+| [A mirror's status is per profile (2026-10-29)](decision_mirror-status-is-per-profile.md) | `decision` | Why did crediting REQ-D-XLEN in rv64gc-lab-v0 trip MIRROR DRIFT, and which rule owns a mirrored requirement's implementation status? |
+| [REQ-D-XLEN credited implemented (2026-10-29)](decision_req-d-xlen-credited-implemented.md) | `decision` | Who signs the XLEN credit, is one finite case of seventeen witnesses enough for `implemented`, and what do the case's retained M words claim? |
 | [The reviews read every retained case (2026-10-29)](decision_reviews-read-every-retained-case.md) | `decision` | How do the finite method and policy reviews read a second captured case, and how are the XLEN case's form-coverage and feature-rules legs decided? |
 | [The director's rulings of 2026-10-28](decision_director-rulings-2026-10-28.md) | `decision` | What did the director rule on 2026-10-28, to what standard, and which leaf executes each ruling? |
 | [Case declarations move to data (2026-10-28)](decision_case-declarations-as-data.md) | `decision` | How does a new matched case get declared without lapsing the credit that rests on a retained capture? |

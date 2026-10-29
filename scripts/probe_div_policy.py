@@ -366,15 +366,15 @@ class PolicyTests(unittest.TestCase):
         """Every reviewed capture, measured by the live consumer in the one `--every-retained` run PROFILE-CONSISTENCY
         makes (a43a-2f), and again by the module under test from the same method results. M's v4 with current pins:
         every leg satisfied, credited by CR-GC-M-2 (re-captured and re-credited, P4-SYSTEM.14 a44-5); the XLEN case:
-        every leg satisfied, nothing credited. A moved method pin: invalidated, naming it; the record that cites the
-        case lapses and is the one finding (a42ay), exit 1. The expectations come from each manifest, not the tree."""
+        every leg satisfied, credited by CR-D-XLEN-1 (a43a-3). A moved method pin: invalidated, naming it; the record
+        that cites the case lapses and is its one finding (a42ay), exit 1. The expectations come from each manifest."""
         import subprocess
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
         self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
-        self.assertEqual(done.returncode, 1 if moved[self.M.CASE_ID] else 0, done.stderr)
+        self.assertEqual(done.returncode, 1 if any(moved.values()) else 0, done.stderr)
         self.assertEqual(done.stderr.splitlines(), [f"{t['case_id']}: {self.M.summary(t)[1]}" for t in tables])
         for live in tables:
             self.assertEqual(self.M.measure_policy(ROOT, method=live["method"], case_id=live["case_id"]), live)
@@ -404,14 +404,16 @@ class PolicyTests(unittest.TestCase):
                          (forms, forms, forms))
         self.assertEqual((table["requirement_id"], table["obligation_ids"], table["category"], table["risk"]),
                          ("REQ-GC-M", ["OB-GC-M"], "defined", "medium"))
-        # The XLEN case: no credit names it yet, so a moved pin invalidates it without a finding (exit 0 for it).
+        # The XLEN case, credited by CR-D-XLEN-1 since a43a-3: a moved pin lapses that record as it does CR-GC-M-2's.
         if moved[XLEN_CASE_ID]:
-            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["findings"], xlen["credited"]),
-                             ("invalidated", ["matched-reference-comparison", "currentness"], [], False))
+            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["credited"], xlen["credit_ids"]),
+                             ("invalidated", ["matched-reference-comparison", "currentness"], False, ["CR-D-XLEN-1"]))
+            self.assertEqual(len(xlen["findings"]), 1, xlen["findings"])
+            self.assertTrue(xlen["findings"][0].startswith("credit CR-D-XLEN-1 names this case but lapsed: "), xlen["findings"])
         else:
             self.assertEqual((xlen["disposition"], xlen["missing"], xlen["findings"], xlen["credited"], xlen["credit_ids"]),
-                             ("satisfied", [], [], False, []))
-            self.assertEqual(self.M.summary(xlen), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit"))
+                             ("satisfied", [], [], True, ["CR-D-XLEN-1"]))
+            self.assertEqual(self.M.summary(xlen), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-1"))
         boundaries = [1, 5, 6, 7, 8, 9, 10, 13, 16, 24]
         self.assertEqual(xlen["boundary"], dict(present=boundaries, predeclared=boundaries))
         self.assertEqual(xlen["coverage"], dict(required=[], exercised=[], predeclared=[]))

@@ -125,12 +125,14 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """The live catalogue credits the M case's v4 capture (CR-GC-M-2, a44-5): its measured record qualifies on
-        the real tree, and v3's, which no live credit names since CR-GC-M-1's retirement (a44-2b), does not."""
+        """The live catalogue credits the M case's v4 capture (CR-GC-M-2, a44-5) and the XLEN case (CR-D-XLEN-1, a43a-3):
+        both measured records qualify on the real tree, and v3's, which no live credit names since CR-GC-M-1's
+        retirement (a44-2b), does not."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
         self.assertEqual(self.qualification(measured(LIVE_CASE), ROOT), [])
+        self.assertEqual(self.qualification(measured("rv64gc-xlen-forms-v1"), ROOT), [])
         self.assertEqual(self.qualification(measured(CASE), ROOT), ["no credit record names the case " + CASE])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):
