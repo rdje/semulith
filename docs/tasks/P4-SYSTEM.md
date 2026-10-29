@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-2c done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c done (the checks of the M source became checks of the case's own authority; `.15` closed after it); next a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-3 done — the declarations are data the tools read, a case is accepted on its own authority, the M case declared as v4 (67 children); `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`; next a44-4 its capture, exactly once, then a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-TRACE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,26 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-3 / SEMULITH-P4-0318: the M case declared as v4 under the declaration-as-data manifest (completed)
+
+The one re-capture of ruling 1, declared. `evidence/rv64gc-m-forms-v4/case.sexp` is v3's declaration with the new id,
+rendered by `matched_gpr_case.render` (every field but the id equal, measured). The prepared inputs derive from the
+canonical program, override and expectation only, never from the case id: `prepare_div_inputs.py --show --case
+rv64gc-m-forms-v4` reported v3's four pins byte for byte, `--write` created them and `--verify` re-derived them. `capture_div.py
+--declare --case rv64gc-m-forms-v4` emitted the three declarations (planned 16,915 B, dependencies 15,166 B with **67**
+children — the case's declaration, its schema and its reader among them — authorities 17,721 B), written exclusively and
+committed here: this commit is the declaration commit a44-4 names. From here to the capture no pinned input may move —
+the manifest's 67 children, the nine principals and the 13 authority views the capture regenerates `authorities.sexp`
+from. The evidence family's third re-derivation (`decision_evidence-family-two-cases.md`, Addendum a44-3): 67 files /
+48 MiB (health 64 / 42 MiB); three cases hold at most 41,488,384 B (`retention_limits()`), 53 files present at
+declaration; `evidence/README.md` compressed to hold the third row (3,383 B of its 4,096 B cap). Status: `3 case(s), 0
+credited, 1 declared` — v4 binds `REQ-GC-M` and credits nothing until its capture and credit. Probes restated: the input
+probe's census (v4's pins are v3's), the declaration probe's planned-record population, the property probe's case ids,
+the status probe's real-tree arm. Own slip (§15): the first write of the declarations parsed the command's JSON object
+as the file map and created three stray files (`disposition`, `case_id`, an empty `canonical_capture`) in the new case
+directory; they were removed, untracked and never staged, before the three declarations were written from its `files`
+map. Next: a44-4, the capture, exactly once.
 
 ### .14 a44-2c / SEMULITH-P4-0316: the checks specific to the M source become checks of the case's own authority (completed)
 
@@ -1142,6 +1162,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-2c **ROOT CAUSE** — after a44-2b the review still bound a case to the M source's constants: `git show HEAD:scripts/review_div_capture.py | grep -c 'RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA'` = 1 and `git show HEAD:scripts/capture_div.py | grep -c 'len(case.obligation_ids) == 1'` = 1, so a non-M case would be refused by pinned code.
 - [x] `.14` a44-2c **ADDRESSED** — `grep -c "Retain\.\|RVI-M" scripts/review_div_capture.py` = 0; `grep -c "len(case.obligation_ids) == 1" scripts/capture_div.py` = 0; `python3 -B scripts/probe_div_capture_review.py` → `33 tests / 0 failures / 0 errors` (the non-M case accepted on its own authority); `python3 -B scripts/probe_div_authorities.py` → `19 tests / 0 failures / 0 errors`; seams measured: `publication-authority` 4, `excerpt-not-publication` 1, `excerpt-population` 1, `retained-pin` 2, `obligation-binding` 1.
 - [x] `.14` a44-2c **NO REGRESSION** — the 41 matched-GPR/DIV/status probes rc=0 (target/p4-system-14/a44-2c/green-1 and the method/policy re-runs); `python3 -B scripts/review_div_method.py` → `stale`, 39 checker sources; `PROFILE-CONSISTENCY --self-test: 1187 pass / 1 fail` (pc-selftest-1.log: the load timeout above, its arm green alone, `DIV-METHOD: 1 tests / 4 failures`, as expected), the guard raised; the staged prechecks (prechecks.txt) and the commit gate's self-test (chain log).
+- [x] `.14` a44-3 **ROOT CAUSE** — the M case's only capture (v3) is invalidated since a44-2b and ruling 1 re-captures it once under the new manifest: at 1e0a0e8b `ls evidence/ | grep -c m-forms-v4` = 0 and `python3 -B scripts/requirement_status.py` → `2 case(s), 0 credited, 0 declared`.
+- [x] `.14` a44-3 **ADDRESSED** — `python3 -B scripts/prepare_div_inputs.py --show --case rv64gc-m-forms-v4` → v3's four pins (4,440 / 7,609 / 7,937 / 7,440 B), `cmp` identical for all four after `--write`; `grep -o "(input " evidence/rv64gc-m-forms-v4/dependencies.sexp | wc -l` = 67 with `evidence/rv64gc-m-forms-v4/case.sexp` among them; `python3 -B scripts/requirement_status.py` → `3 case(s), 0 credited, 1 declared … 0 drift`.
+- [x] `.14` a44-3 **NO REGRESSION** — `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` plain and `-O` (the census at 67 files, 41,488,384 B); the 41 matched-GPR/DIV/status probes rc=0 (target/p4-system-14/a44-3/green-1 and the three re-runs); `PROFILE-CONSISTENCY --self-test: 1188 pass / 0 fail` (pc-selftest-1.log); `RECORD-SCHEMA: ok (25 record file(s) …)`; the staged prechecks (prechecks.txt) and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

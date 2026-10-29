@@ -73,3 +73,16 @@ ceiling is 2 × 22 slots + the index = **45** and the health line stays three be
 unchanged (the declared limits sum to 27,660,288 B, under 32 MiB). The input probe's `FAMILY_FILES`, its summed
 limits and its member census move with it; `evidence/README.md` stays under its 4,096 B cap. A third case (the M
 case's v4 capture) is the next re-derivation.
+
+## Addendum (2026-10-29, `P4-SYSTEM.14` a44-3): the third case — the M case re-captured as v4
+
+By ruling 1 (`decision_case-declarations-as-data.md`) the M case is re-captured once under the declaration-as-data
+manifest, as `rv64gc-m-forms-v4`: a third case directory, the third re-derivation this record's rule reserves. Neither
+earlier case is removed — both are `invalidated` history, never rerun or replaced. Measured: a case holds at most
+13,828,096 B (three 4 MiB traces, nine 64 KiB streams and receipts, ten 64 KiB prepared and metadata slots), so three
+cases and the 4 KiB index hold at most 41,488,384 B (`retention_limits()` sums exactly that), above the 32 MiB
+ceiling. The bounds move to **67** files (3 × 22 + the index; health **64**, three below) and **50,331,648** B (48 MiB;
+health **44,040,192** B, 42 MiB, the same 0.875 ratio); the 4 MiB part bound is unchanged. At declaration the family
+holds 53 files (v4's eight declared ones), 67 after its capture. `evidence/README.md` keeps its 4,096 B / 80-line cap:
+its text was compressed to hold the third row (3,383 B). A fourth case is a fourth re-derivation.
+

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0318 (P4-SYSTEM.14 a44-3) — the M case declared as v4 under the declaration-as-data manifest
+
+Ruling 1's one re-capture, declared: `evidence/rv64gc-m-forms-v4/` holds v3's declaration under the new id, the four prepared inputs (v3's bytes: they derive from canonical sources only, measured by `prepare_div_inputs.py --show`) and the three declarations from `capture_div.py --declare` — the dependency manifest with 67 children, the case's declaration, its schema and its reader among them. This commit is the declaration commit the capture (a44-4) names; no pinned input moves until then. The evidence family's third re-derivation: 67 files / 48 MiB (three cases at most 41,488,384 B), the index compressed to 3,383 B. Status: 3 cases, 0 credited, 1 declared.
+
 ## SEMULITH-P4-0317 (P4-SYSTEM.15 slice g) — the workload kind declared; G-REGRESSION green; `.15` done
 
 The workload suite recorded in slice f (four compiled, self-checking C workloads, 4 pass / 0 fail three-way) is declared as G-REGRESSION's fifth kind in place of the open row, and the Misalign applicability note moves onto the external row: GS `G-REGRESSION … 5 of 5 required kinds evidenced … green`, 4 of 10 axes open. Unblocked by P4-SYSTEM.14 a44-2b — no current capture pins the report generator until the M v4 capture, which follows this slice. The generator's not-applicable control no longer assumes the kind is open: it removes every live workload evidence form at its parsed span, then asserts +1 against that bare copy (`gate_report --self-test: 24 pass / 0 fail` before and after; 23 / 1 when the copy is not made bare).

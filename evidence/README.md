@@ -1,18 +1,18 @@
 # Retained finite evidence
 
 This bounded index owns the evidence family: one directory per reviewed finite case of
-`profiles/rv64gc-lab-v0` (the cases `scripts/matched_gpr_property.py` reviews), each with the
-same 22 declared slots. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
-explains the prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
-records the observations of 2026-10-19 and 2026-10-22. Both captures are `invalidated`: a44-2b moved
-pinned inputs and retired `CR-GC-M-1`; the M case returns as v4. Nothing here closes the M obligation or the CPU gate.
+`profiles/rv64gc-lab-v0`, each declared by its `case.sexp` and holding the same 22 slots. The
+[model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md) explains the prepared identities;
+the [canonical captures](../docs/models/rv64gc-lab-v0/src/canonical-division.md) record the
+observations. Nothing here closes the M obligation or the CPU gate.
 
 ## Cases (this table is the complete membership)
 
 | Case directory | State | Files | Holds |
 | --- | --- | --- | --- |
-| `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` since 2026-10-22 (a pinned input moved) | 22 of 22 | `m-div.s`, 27 boundaries, one predeclared property; baseline/repeat AGREE, wrong-quotient control DIVERGE; superseded by the next capture, never rerun |
-| `rv64gc-m-forms-v3/` | captured 2026-10-22 (one invocation of `scripts/retain_div_capture.py`); retained 2026-10-23 (a42ax), 10 of 10 legs; `invalidated` since 2026-10-29 | 22 of 22 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); baseline/repeat AGREE, the boundary 12 x15 −3 → −4 control DIVERGE; qualification false |
+| `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` 2026-10-22 (a pinned input moved) | 22 of 22 | `m-div.s`, 27 boundaries, 1 predeclared property; AGREE, AGREE, control DIVERGE |
+| `rv64gc-m-forms-v3/` | captured 2026-10-22; retained (a42ax), 10 of 10 legs; `invalidated` 2026-10-29 (a44-2b) | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties (13 forms, 12 Table 1 cells); AGREE, AGREE, control DIVERGE |
+| `rv64gc-m-forms-v4/` | declared 2026-10-29 (a44-3): v3's case under the declaration-as-data manifest (67 children) | 8 of 22 | v3's program, properties and prepared bytes; capture pending (a44-4) |
 
 ## Declared files and lifecycle (per case)
 
@@ -20,34 +20,27 @@ pinned inputs and retired `CR-GC-M-1`; the M case returns as v4. Nothing here cl
 | --- | --- | --- |
 | Case declaration | `case.sexp` (`scripts/matched_gpr_case.py` reads it) | 1 |
 | Prepared inputs | `guest.elf`, `reference-config.json`, `baseline.expected.sexp`, `control.expected.sexp` | 4 |
-| Retained declarations | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp` | 3 |
-| Retained observations | `baseline`, `repeat`, `control`, each with `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
-| Retained results | `measured-experiment.sexp`, `verification.json` | 2 |
+| Declarations | `planned-experiment.sexp`, `dependencies.sexp`, `authorities.sexp` | 3 |
+| Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
+| Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 45 files at most, all 45 present. Prepared inputs are curated from canonical sources by
-`scripts/prepare_div_inputs.py --case <id>` (`--verify` re-derives them); the declarations by
-`scripts/capture_div.py --declare --case <id>`, committed before the capture; the observations and
-results by `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once. Planned zeros are
-unmeasured targets the measured record replaces; `verification.json` is a derived receipt, qualification false. A declared case without a receipt credits nothing
-(`scripts/requirement_status.py` reports it `declared`). Existing output names refuse reuse;
-failed or partial observations stay historical data. Never rerun a capture or replace retained
-bytes to make a comparison pass: a corrected capture is a new declared case.
-
-S-expression remains the source-of-truth format; the JSON configuration and the ELF image are
-reproducible interoperability artifacts for the reference's public interface. The wrong
-expectation is explicitly a negative control.
+With this index: 67 files at most, 53 present. Prepared inputs come from canonical sources
+(`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
+`scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
+results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.
+`verification.json` is a derived receipt, qualification false; a case without one credits nothing
+(`scripts/requirement_status.py`: `declared`). Existing names refuse reuse; failed observations
+stay history. Never rerun a capture or replace retained bytes: a correction is a new case.
+S-expression is the source of truth; the JSON configuration and the ELF image are reproducible
+interoperability artifacts; the wrong expectation is a negative control.
 
 ## Finite retention envelope
 
-The family is limited to 45 files, 32 MiB aggregate and 4 MiB per member
-(`decision_evidence-family-two-cases.md`, 2026-10-22; one case was 22 files / 16 MiB). Each case's
-twelve observation slots inherit three 4 MiB traces and nine 64 KiB streams/receipts from the
-collector; its four prepared inputs and six metadata slots (the declaration among them) reserve 64 KiB each; this index
-reserves 4 KiB / 80 lines. The registry enforces the family and index bounds; the input probe
-checks the declared member names, same-volume regular files and each role limit of every case
-before authenticating prepared pins, and never descends into an unknown directory. A third case
-is a new re-derivation, not a quiet addition.
-
-The 128 MiB combined artifact-read ceiling and the 16 MiB evaluator snapshot ceiling are
-unchanged. The reference executable stays a separately pinned replay dependency; offline retained
-checking must not require it or any acquired source cache.
+The family is limited to 67 files, 48 MiB aggregate and 4 MiB per member
+(`decision_evidence-family-two-cases.md`, re-derived for three cases by a44-3). Per case: three
+4 MiB traces and nine 64 KiB streams/receipts (the collector's bounds), ten 64 KiB prepared and
+metadata slots; this index 4 KiB / 80 lines. The registry enforces the family and index bounds;
+the input probe checks member names, same-volume regular files and each role limit before
+authenticating prepared pins, never descending into an unknown directory. A fourth case is a new
+re-derivation. The 128 MiB artifact-read and 16 MiB snapshot ceilings are unchanged; offline
+checking needs neither the reference executable nor an acquired source cache.

@@ -378,7 +378,8 @@ class PropertyTests(unittest.TestCase):
 
     def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
         case = G.reviewed_case(G.M_FORMS_CASE_ID)
-        self.assertEqual(G.reviewed_case_ids(), tuple(sorted((G.CASE_ID, G.M_FORMS_CASE_ID))))
+        # The declared cases: v2, v3 and the M case re-declared as v4 (P4-SYSTEM.14 a44-3).
+        self.assertEqual(G.reviewed_case_ids(), tuple(sorted((G.CASE_ID, G.M_FORMS_CASE_ID, "rv64gc-m-forms-v4"))))
         self.assertEqual(case.case_id, "rv64gc-m-forms-v3")
         self.assertEqual((case.program, case.instructions), ("m-forms.s", 33))
         source = (GUESTS / case.program).read_bytes()

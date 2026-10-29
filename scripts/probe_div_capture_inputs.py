@@ -34,9 +34,10 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 45  # two declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 32 * 1024 * 1024
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID)
+FAMILY_FILES = 67  # three declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
+FAMILY_BYTES = 48 * 1024 * 1024  # the third re-derivation (a44-3): three cases at most 41,488,384 B with the index
+M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -60,8 +61,10 @@ PREPARED = {
                                   "ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0"),
     },
 }
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426}
-BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66)}
+# v4's prepared inputs are v3's bytes: they derive from the canonical program, override and expectation only.
+PREPARED[M_FORMS_V4] = dict(PREPARED[P.M_FORMS_CASE_ID])
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426}
+BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66)}
 
 
 def bounded_bytes(path):
@@ -361,12 +364,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 27660288)  # +2 x 65536: the two case declarations (a44-2a)
+        self.assertEqual(sum(limits.values()), 41488384)  # three cases of 13,828,096 B and the index (a44-3)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 22 + 22)
+        self.assertEqual(len(members), 1 + 22 + 22 + 8)  # v4 declared, not yet captured (a44-3); + 14 at its capture
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):
