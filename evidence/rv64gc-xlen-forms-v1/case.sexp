@@ -1,8 +1,8 @@
 ;; evidence/rv64gc-xlen-forms-v1/case.sexp — the reviewed declaration of matched case rv64gc-xlen-forms-v1 (schema/matched-case.sexp).
 ;; Data, not code (decision_case-declarations-as-data.md): read by scripts/matched_gpr_case.py.
 (case (id "rv64gc-xlen-forms-v1") (profile_id "rv64gc-lab-v0")
-  (program "xlen-forms.s") (instructions 25) (source_size 3009)
-  (source_sha256 "83668ff2797349de578c5b9cc39278e2596f817810c6d1bb875bf06dc6ca4460")
+  (program "xlen-forms.s") (instructions 25) (source_size 3394)
+  (source_sha256 "639442998f70299660776bf0fbd917f0cc7b95294e6f19d9c7619645e2e7f446")
   (requirement_id "REQ-D-XLEN") (obligation_ids "OB-XLEN")
   (contract_id "rv64gc-lab-env-v2") (contract_version "2")
   (control (property_id "xlen-address-reported") (value 0) (reason "Only boundary24 x31 expectation changes from 2^40 to 0, the address truncated to 32 bits."))
@@ -14,8 +14,8 @@
   (required_input (role "normative-source") (id "RVI-RV64I-STATEMENTS") (path "profiles/rv64gc-lab-v0/retained/rv64i-statements.html") (sha256 "5c93941804b6bab707d3c0345529fc918b10a953d72bc82d5735bcf78788f2a5"))
   (prepared (role "guest-image") (id "guest-image") (name "guest.elf") (byte_size 4408) (sha256 "89228f06141a273369da1607a3130b790b2ae722613f7e6b1edd48e92e57f5e0"))
   (prepared (role "reference-config") (id "reference-config") (name "reference-config.json") (byte_size 7609) (sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"))
-  (prepared (role "expectation") (id "expectation") (name "baseline.expected.sexp") (byte_size 5890) (sha256 "a932c58347bdda567520842f83e71b02213ba7333d2d802b8b7b7b30cf68d74c"))
-  (prepared (role "expectation") (id "mutant-expectation") (name "control.expected.sexp") (byte_size 5442) (sha256 "5f42512fef0fbc56483c64acec3bec6c00bb477d1111da9dacaa8e9e26dbde7b"))
+  (prepared (role "expectation") (id "expectation") (name "baseline.expected.sexp") (byte_size 6275) (sha256 "a849b7b5fafe7e46b4204d260defe76410b713fddc601c41e8b891ee9b5d6fd3"))
+  (prepared (role "expectation") (id "mutant-expectation") (name "control.expected.sexp") (byte_size 5827) (sha256 "97275174954728a68c1a247530a89dcdee0da0bb338c5701e7b7a4b07f1bf332"))
   (property (id "xlen-bit63") (cell "form:slli") (step_n 1) (register "x5") (expected 0x8000000000000000)
     (statement "For SLLI with x5 = 1 and a shift amount of 63, the x5 change at boundary 1 is -2^63: bit 63 exists (RVI-RV64I §3.1.1, §3.1.2.1)."))
   (property (id "xlen-srli63") (cell "form:srli") (step_n 2) (register "x6") (expected 1)

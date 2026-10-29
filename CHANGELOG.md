@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0324 (P4-SYSTEM.14 a43a-2d) — the XLEN case re-declared before its capture: its evidence fit for the policy's legs
+
+Caught before the capture, which was queued and stopped unrun: the policy's source-located leg needs the control's witness step to cite the requirement's own source and locator, and its boundary leg needs the case's boundary fixtures marked and predeclared — fixed for good once captured. The guest now cites RVI-RV64I §3.1.1 where the width and address claims rest on it (the control's step included) and tags ten boundary witnesses `(boundary: …)`, each a property's step; the marker occurs in no other guest. The uncaptured case was re-declared in place (the a42av precedent): only digests and sizes changed, the image byte-identical; review pending, preflight ready.
+
 ## SEMULITH-P4-0323 (P4-SYSTEM.14 a43a-2c) — the XLEN case's three declarations, committed before its capture
 
 `capture_div.py --declare --case rv64gc-xlen-forms-v1` emitted the planned experiment, the dependency manifest (67 children, the retained RV64I statements as the normative child) and the authority record, written exclusively; this commit is the declaration commit the capture names. The declaration agrees with its own planned record; the status reads 4 cases, 1 credited, 1 declared — the XLEN case binds REQ-D-XLEN and credits nothing yet.

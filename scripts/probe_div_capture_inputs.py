@@ -64,18 +64,18 @@ PREPARED = {
 }
 # v4's prepared inputs are v3's bytes: they derive from the canonical program, override and expectation only.
 PREPARED[M_FORMS_V4] = dict(PREPARED[P.M_FORMS_CASE_ID])
-# The XLEN case's own pins, stated here independently of its declaration (a43a-2b).
+# The XLEN case's own pins, stated here independently of its declaration (a43a-2b; re-curated a43a-2d).
 PREPARED[XLEN_V1] = {
     "guest.elf": ("guest-image", 4408,
         "89228f06141a273369da1607a3130b790b2ae722613f7e6b1edd48e92e57f5e0"),
     "reference-config.json": ("reference-config", 7609,
         "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
-    "baseline.expected.sexp": ("expectation", 5890,
-        "a932c58347bdda567520842f83e71b02213ba7333d2d802b8b7b7b30cf68d74c"),
-    "control.expected.sexp": ("expectation", 5442,
-        "5f42512fef0fbc56483c64acec3bec6c00bb477d1111da9dacaa8e9e26dbde7b"),
+    "baseline.expected.sexp": ("expectation", 6275,
+        "a849b7b5fafe7e46b4204d260defe76410b713fddc601c41e8b891ee9b5d6fd3"),
+    "control.expected.sexp": ("expectation", 5827,
+        "97275174954728a68c1a247530a89dcdee0da0bb338c5701e7b7a4b07f1bf332"),
 }
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 23349}
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50)}
 
 

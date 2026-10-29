@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2c done: RVI-RV64I §3.1 retained, the case and its declarations; a43a-2d its capture, then the reviews and the credit), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2d done: RVI-RV64I §3.1 retained, the case declared and re-declared fit for the policy's legs; a43a-2e its capture, then the reviews and the credit), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,24 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43a-2d / SEMULITH-P4-0324: the XLEN case re-declared before its capture — its evidence fit for the policy's legs (completed)
+
+Caught before the capture, which was queued and stopped unrun (target/p4-system-14/a43a-2d, 14 output names still absent):
+the policy review's `source-located-expectations` leg requires the control's witness step to cite the requirement's own
+source and locator, and its `boundary-fixtures` leg requires the case's directed boundary fixtures to be marked and
+predeclared — read from the expectation file, which a capture fixes for good. No XLEN step cited RVI-RV64I §3.1.1 (the
+control's step 24 cited RVP-MACHINE §2.1.7 alone), and nothing marked XLEN's boundaries (the review knows M's `Table` rows
+only). The guest's comments now cite §3.1.1 where the register-width and address-space claims rest on it (steps 1, 5, 8,
+9, 21 and 24, the control's step reading `RVI-RV64I §3.1.1; RVP-MACHINE §2.1.7`) and tag ten boundary witnesses
+`(boundary: …)` — bit 63, bit 32, a shift amount above 31, 2^63 - 1, the wrap at 2^63, the carry out of bit 63, bit 31
+extended to 63, the word's sign bit, `rs2[4:0]` and an address above 2^32 — each a predeclared property's step; the marker
+occurs in no other guest or retained expectation (`grep -c "(boundary"` = 0 for m-forms and v4), so M's measurement cannot
+move when the review learns it (a43a-2f). The case was re-declared in place under the a42av precedent (declared, never
+captured, nothing observed): its eight files removed and recreated by the same tools (kept in target/…/old-v1);
+measured, token for token, only digests and sizes changed — the case 6, the planned record 4, the manifest 1, the
+authority record 5; the image and the reference configuration are byte-identical (comments do not reach the ELF); the
+producer review `pending` with 67 children, the capture preflight `ready`. Next: a43a-2e, the capture, on a quiet host.
 
 ### .14 a43a-2c / SEMULITH-P4-0323: the XLEN case's three declarations, committed before its capture (completed)
 
@@ -1097,6 +1115,9 @@ Rows a44-1–a44-2a: [retained verbatim](archive/P4-SYSTEM-23.md#acceptance-rows
 - [x] `.14` a43a-2c **ROOT CAUSE** — the XLEN case had no declarations, so it could not be captured: at dfbc9f3d `ls evidence/rv64gc-xlen-forms-v1 | wc -l` = 5.
 - [x] `.14` a43a-2c **ADDRESSED** — `capture_div.py --declare --case rv64gc-xlen-forms-v1` `rc=0` → `pending`; `grep -o "(input " evidence/rv64gc-xlen-forms-v1/dependencies.sexp | wc -l` = 67; `python3 -B scripts/requirement_status.py` → `4 case(s), 1 credited, 1 declared … 0 drift`.
 - [x] `.14` a43a-2c **NO REGRESSION** — `MATCHED-GPR-CASE: 8 tests / 0 failures / 0 errors` (the planned-record agreement over four cases); `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`; the 41 probes (green-1); the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43a-2d **ROOT CAUSE** — at 792820b2 the control's witness step cited no RVI-RV64I §3.1.1 (`git show 792820b2:evidence/rv64gc-xlen-forms-v1/baseline.expected.sexp | grep -c 'RVI-RV64I §3.1.1'` = 0) and no XLEN boundary was marked (`grep -c "(boundary"` = 0), so the policy's source-located and boundary legs could not be met once captured.
+- [x] `.14` a43a-2d **ADDRESSED** — `grep -c "(boundary:" profiles/rv64gc-lab-v0/guests/xlen-forms.s` = 10, every tagged step a property's; step 24's source `RVI-RV64I §3.1.1; RVP-MACHINE §2.1.7 (…)`; the re-declaration's token diff: digests and sizes only (6 / 4 / 1 / 5); `retain_div_capture.py … --preflight-only` `rc=0` → `ready`.
+- [x] `.14` a43a-2d **NO REGRESSION** — the 41 probes rc=0 (green-1); `GUEST-GEN: ok`; `EXERCISE-COVERAGE` 52/52; `INTERACTION-MATRIX: ok`; `RECORD-SCHEMA: ok (26 record file(s) …)`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).
