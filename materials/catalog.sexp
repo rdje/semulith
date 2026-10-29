@@ -20,7 +20,7 @@
 ;
 ; ⛔ A CACHE IS NOT A SOURCE OF TRUTH. `.materials/` is gitignored: these are large third-party
 ; documents and the repository does not redistribute the complete fetched artifacts. The
-; scoped licensed DIV statement exception is materials/RVI_M_RETENTION.md. Tracked here are the
+; scoped licensed statement exceptions are materials/RVI_M_RETENTION.md and RVI_RV64I_RETENTION.md. Tracked here are the
 ; identity, the revision, the digest and the licence — so a missing cache is a REFUSAL WITH
 ; INSTRUCTIONS rather than a wrong answer. Run `scripts/materials.py --fetch` to populate it.
 
@@ -677,8 +677,9 @@
     (licence-evidence "The pinned unpriv/colophon.html preface to Version2.2 states CC-BY4.0
                        for that manual and future versions; priv/priv-preface.html has the
                        corresponding statement for its volume. The former no-statement claim
-                       was contradicted inside this snapshot. Scope, source pins and the one
-                       retained DIV statement decision: materials/RVI_M_RETENTION.md. The
+                       was contradicted inside this snapshot. Scope, source pins and the
+                       retained statement decisions: materials/RVI_M_RETENTION.md (M) and
+                       materials/RVI_RV64I_RETENTION.md (RV64I §3.1). The
                        complete site rendering/assets remain unassessed and untracked.")
     (corpus "chipdoc")
     (corpus-path "risc-v/isa/pinned/v20260120")

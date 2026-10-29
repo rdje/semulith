@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-RV64I statements — v20260120</title>
+<body>
+<h1>RVI-RV64I §3.1: the 64-bit registers and address space, the shift amount, LUI and the *W instructions</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/rv64.html">RISC-V Ratified Specifications Library,
+v20260120, RV64I Base Integer Instruction Set Version 2.1, §3.1</a>.<br>
+Original page SHA256: <code>6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">unprivileged preface to Version 2.2</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_rv64i_statements.py</code>, reviewed 2026-10-29.
+This excerpt establishes no XLEN acceptance.</p>
+<h2>§3.1.1: <code>norm:rv64i_xreg_sz</code></h2>
+<blockquote><p><span id="norm:rv64i_xreg_sz">RV64I widens the integer registers and supported user address space to
+64 bits (XLEN=64 in <a href="rv32.html#gprs" class="xref page">RISC-V base unprivileged integer register state</a>).</span></p></blockquote>
+<h2>§3.1.2: <code>norm:rv64_w_sex</code></h2>
+<blockquote><p><span id="norm:rv64_w_sex">These "*W"
+instructions ignore the upper 32 bits of their inputs and always produce
+32-bit signed values, sign-extending them to 64 bits, i.e. bits XLEN-1
+through 31 are equal.</span></p></blockquote>
+<h2>§3.1.2.1: <code>norm:addiw_op</code></h2>
+<blockquote><p><span id="norm:addiw_op">ADDIW is an RV64I instruction that adds the sign-extended 12-bit
+immediate to register <em>rs1</em> and produces the proper sign extension of a
+32-bit result in <em>rd</em>.</span></p></blockquote>
+<h2>§3.1.2.1: <code>norm:addiw_overflow</code></h2>
+<blockquote><p><span id="norm:addiw_overflow">Overflows are ignored and the result is the low
+32 bits of the result sign-extended to 64 bits.</span></p></blockquote>
+<h2>§3.1.2.1: <code>norm:slliw_srliw_sraiw_op</code></h2>
+<blockquote><p><span id="norm:slliw_srliw_sraiw_op">SLLIW, SRLIW, and SRAIW are RV64I-only instructions that are analogously
+defined but operate on 32-bit values and sign-extend their 32-bit
+results to 64 bits.</span></p></blockquote>
+<h2>§3.1.2.1: <code>norm:lui_op_rv64i</code></h2>
+<blockquote><p><span id="norm:lui_op_rv64i">LUI places the
+32-bit U-immediate into register <em>rd</em>, filling in the lowest 12 bits
+with zeros. The 32-bit result is sign-extended to 64 bits.</span></p></blockquote>
+<h2>§3.1.2.2: <code>norm:addw_subw_op</code></h2>
+<blockquote><p><span id="norm:addw_subw_op">ADDW and SUBW are RV64I-only instructions that are defined analogously
+to ADD and SUB but operate on 32-bit values and produce signed 32-bit results.</span></p></blockquote>
+<h2>§3.1.2.2: <code>norm:addw_subw_overflow</code></h2>
+<blockquote><p><span id="norm:addw_subw_overflow">Overflows are ignored, and the low 32-bits of the result is
+sign-extended to 64-bits and written to the destination register.</span></p></blockquote>
+<h2>§3.1.2.2: <code>norm:sll_srl_sra_sh_amt_rv64i</code></h2>
+<blockquote><p><span id="norm:sll_srl_sra_sh_amt_rv64i">In RV64I, only the low 6 bits of <em>rs2</em> are considered
+for the shift amount.</span></p></blockquote>
+<h2>§3.1.2.2: <code>norm:sllw_srlw_sraw_op</code></h2>
+<blockquote><p><span id="norm:sllw_srlw_sraw_op">SLLW, SRLW, and SRAW are RV64I-only instructions that are analogously
+defined but operate on 32-bit values and sign-extend their 32-bit
+results to 64 bits. The shift amount is given by <em>rs2[4:0]</em>.</span></p></blockquote>
+</body></html>

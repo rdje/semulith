@@ -8368,6 +8368,30 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED M statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("M-STATEMENT-RETENTION: 20 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a43a-2a: the retained RV64I statements the XLEN case cites (scripts/retain_rv64i_statements.py).
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec![
+            "-B".to_owned(),
+            "scripts/probe_rv64i_statement_retention.py".to_owned(),
+        ];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN RV64I statement retention {mode}"), prober.probe(repo, argv.clone()), 0, "RV64I-STATEMENT-RETENTION: 17 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit");
+        for (mutation, losses) in [
+            ("input-pins", "1"),
+            ("licence-statement", "1"),
+            ("unique-statement", "1"),
+            ("closing-span", "1"),
+            ("span-markup", "7"),
+            ("retained-bound", "1"),
+            ("retained-pin", "2"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED RV64I statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("RV64I-STATEMENT-RETENTION: 17 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
+        }
+    }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["scripts/probe_matched_gpr_read_allowance.py".to_owned()];
         if optimized {
@@ -8773,6 +8797,16 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
     let (rc, out) = tool(root, true, &["scripts/retain_m_statements.py", "--verify"]);
     if rc != 0 {
         eprintln!("PROFILE-CONSISTENCY: retained M statements refused: {out}");
+        return ExitCode::from(1);
+    }
+    // P4-SYSTEM.14 a43a-2a: the ten RVI-RV64I §3.1 statements the XLEN case cites, authenticated the same way.
+    let (rc, out) = tool(
+        root,
+        true,
+        &["scripts/retain_rv64i_statements.py", "--verify"],
+    );
+    if rc != 0 {
+        eprintln!("PROFILE-CONSISTENCY: retained RV64I statements refused: {out}");
         return ExitCode::from(1);
     }
     // P4-SYSTEM.14 a42ap: every policy-declaring profile's recorded requirement statuses equal their derivation.

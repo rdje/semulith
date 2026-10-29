@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0321 (P4-SYSTEM.14 a43a-2a) — the XLEN case's normative statements retained: RVI-RV64I §3.1
+
+A case's normative input is a retained excerpt naming its own source page (a44-2c), so REQ-D-XLEN's source is retained the way the M statements were: `scripts/retain_rv64i_statements.py` copies ten exact statements of RVI-RV64I §3.1 — the 64-bit registers and address space, the shift amount, RV64 LUI and the `*W` family — into `profiles/rv64gc-lab-v0/retained/rv64i-statements.html` (4,163 B, `RVI-RV64I-STATEMENTS`) under the unprivileged licence evidence. The spans stay unmodified, so the extractor admits exactly their measured markup (emphasis and one same-publication cross-reference) and refuses any other. `probe_rv64i_statement_retention.py`: 17 tests, seven guard omissions in PROFILE-CONSISTENCY, whose real run verifies the excerpt offline; the SRC-01 record is `materials/RVI_RV64I_RETENTION.md`.
+
 ## SEMULITH-XTASK-0073 (leaf XTASK.13 slice a) — DEF-GEN's controls judge a frozen copy; an orphaned module fails by name
 
 Ruling 5's rule for the first fragile doctrine. `scripts/fixtures/def-gen/` mirrors the repository layout — both units' encodings and states, the twenty `definitions/riscv` fragments, the rv64gc module regenerated at its fixture path — and every DEF-GEN control reads it; the fence mutator takes its source as an argument and `probe_c_engine.py --data-root` points the compiled tracked engine's composition at the copy. The freeze exposed an absence branch: `run` passed with 'no encoding composition yet' when the rv64i encoding was missing; a generated module without its encoding or state descriptor now fails by name. On the real tree, before → after: a hand-edited module, an edited fragment and a missing encoding move from `REFUSED (self-test failed)` to named failures; a missing fragment is the generator's named refusal. `DEF-GEN --self-test: 56 pass / 0 fail`.

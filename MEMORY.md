@@ -20,12 +20,13 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0073` (XTASK.13 slice a) — DEF-GEN's controls judge a frozen copy (scripts/fixtures/def-gen); an
-  orphaned module fails by name. Before it P4-0315 … P4-0320 (ruling B carried out: v4 re-captured, `CR-GC-M-2`, G-TRACE green).
-- next_action: five feature units (5:1 restarted at XTASK-0073): P4-SYSTEM.14 the XLEN declaration as data (a43a-2: a new case
-  file, prepared inputs, declarations, capture, policy — each a unit, no pinned code), then CSR-SET, SSTC; then XTASK.13
-  slice b (GUEST-GEN). Maintenance between: ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z), the cleanup narrative's rollover.
-  A push before the 300-commit cadence is exceptional (scripts/approved_push.sh, the director's words). Watch hosted CI after
+- last_unit: `SEMULITH-P4-0321` (P4-SYSTEM.14 a43a-2a) — the XLEN case's RVI-RV64I §3.1 statements retained
+  (retain_rv64i_statements.py; rv64i-statements.html). Feature 1 of 5 since XTASK-0073 (DEF-GEN frozen, 9d0240d7).
+- next_action: features 2-5: a43a-2b the XLEN case's declaration (evidence/rv64gc-xlen-forms-v1/case.sexp: properties,
+  authority REQ-D-XLEN/OB-XLEN/RVI-RV64I, required input RVI-RV64I-STATEMENTS; prepared inputs; the family's 4th
+  re-derivation), a43a-2c its declarations (capture_div --declare) and capture, a43a-2d the reviews generalized to several
+  retained cases (review_div_method/policy pointers, XLEN policy legs), a43a-2e the credit; then XTASK.13 slice b (GUEST-GEN).
+  Maintenance: ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z), the cleanup narrative's rollover. Watch hosted CI after
   every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
