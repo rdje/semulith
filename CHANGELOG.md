@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0073 (leaf XTASK.13 slice a) — DEF-GEN's controls judge a frozen copy; an orphaned module fails by name
+
+Ruling 5's rule for the first fragile doctrine. `scripts/fixtures/def-gen/` mirrors the repository layout — both units' encodings and states, the twenty `definitions/riscv` fragments, the rv64gc module regenerated at its fixture path — and every DEF-GEN control reads it; the fence mutator takes its source as an argument and `probe_c_engine.py --data-root` points the compiled tracked engine's composition at the copy. The freeze exposed an absence branch: `run` passed with 'no encoding composition yet' when the rv64i encoding was missing; a generated module without its encoding or state descriptor now fails by name. On the real tree, before → after: a hand-edited module, an edited fragment and a missing encoding move from `REFUSED (self-test failed)` to named failures; a missing fragment is the generator's named refusal. `DEF-GEN --self-test: 56 pass / 0 fail`.
+
 ## SEMULITH-P4-0320 (P4-SYSTEM.14 a44-5) — the reviews read v4 and CR-GC-M-2 re-issues the credit; ruling B carried out
 
 The method review names the v4 capture (declared 177b43a1, captured 3c464095) and reports `satisfied` over 88 authenticated files; the policy review reads v4: 10 of 10 legs satisfied. The crediting act under the same rulings: `credits.sexp` recreated with `CR-GC-M-2`, `REQ-GC-M` `implemented` (47 planned, 1 implemented, 1 credited, 0 drift), the dossier copy of v4's measured record and its G-TRACE row restored — G-TRACE green, 3 of 10 axes open. The real-tree arms of the method, policy, dossier and status probes restated; the property probe's `derived-status` loss back to 37. The one lapse (a44-2b to a44-5) closed the same day; the XLEN, CSR-SET and SSTC declarations follow as data.

@@ -25,15 +25,20 @@ def main():
     control = parser.add_mutually_exclusive_group()
     control.add_argument('--engine-revision')
     control.add_argument('--mutation', choices=['erase-expansion-widths', 'word-parcel-read', 'short-ilen'])
+    parser.add_argument('--data-root', type=Path, default=REPO,
+                        help='where definitions/ and the unit\'s encoding and state are read (default: the repository); '
+                             'DEF-GEN\'s self-test passes its frozen copy, scripts/fixtures/def-gen (XTASK.13); the engine '
+                             'compiled is always the tracked one')
     args = parser.parse_args()
+    data = args.data_root if args.data_root.is_absolute() else REPO / args.data_root
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='c-engine-', dir=parent) as td:
         root = Path(td)
         unit = root / 'profiles/rv64gc-lab-v0'
         unit.mkdir(parents=True)
-        shutil.copytree(REPO / 'definitions', root / 'definitions')
-        encoding = (REPO / 'profiles/rv64gc-lab-v0/encoding.sexp').read_text()
+        shutil.copytree(data / 'definitions', root / 'definitions')
+        encoding = (data / 'profiles/rv64gc-lab-v0/encoding.sexp').read_text()
         slot = '(slot (id c) (requires "riscv/c"))'
         if slot in encoding:
             encoding = encoding.replace(slot, '(extensions "riscv/c")')
@@ -42,8 +47,8 @@ def main():
         (unit / 'encoding.sexp').write_text(encoding)
         src = root / 'src'
         shutil.copytree(REPO / 'crates/semulith-core/src', src)
-        data = G.load_inputs(unit / 'encoding.sexp', REPO / 'profiles/rv64gc-lab-v0/state.sexp')
-        (src / 'definition_rv64gc.rs').write_text(G.emit(data, G.sha256(REPO / 'scripts/gen_definition.py')))
+        inputs = G.load_inputs(unit / 'encoding.sexp', data / 'profiles/rv64gc-lab-v0/state.sexp')
+        (src / 'definition_rv64gc.rs').write_text(G.emit(inputs, G.sha256(REPO / 'scripts/gen_definition.py')))
         if args.engine_revision:
             (src / 'exec_rv64gc.rs').write_bytes(subprocess.check_output([
                 'git', 'show', f'{args.engine_revision}:crates/semulith-core/src/exec_rv64gc.rs'], cwd=REPO))

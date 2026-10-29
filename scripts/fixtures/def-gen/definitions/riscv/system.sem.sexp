@@ -1,0 +1,74 @@
+;; system.sem.sexp — what the privileged system instructions DO (mret, sret, wfi, sfence.vma
+;; — the D-PRIV-INSNS selection, RVP-INSNS 18.1).
+;;
+;; ⛔ HAND-WRITTEN FROM THE PINNED SPECIFICATION. The stated, dated decisions (2026-10-03),
+;; each with its authority:
+;;
+;; - WFI'S LEGALITY IS RESOLVED, AND A LEGAL WFI ENTERS THE WAIT (authority: laboratory;
+;;   the halt landed at P4-SYSTEM.5 slice (c), 2026-10-05). Legality, with the spec's
+;;   latitudes resolved and recorded: illegal in U with S present (§2.1.3.3 — the
+;;   bounded-time latitude is resolved FOR trapping, the deterministic choice); illegal
+;;   in S with mstatus.TW=1 (§2.1.1.6.6 — the "may always raise" latitude, resolved the
+;;   same way); always legal in M. The wait itself is the STEP MACHINERY's (decision 4 —
+;;   the hart-state bit is hart state, not instruction semantics; the sem tree below is
+;;   legality-only, and the step loop performs the entry after the legal evaluation):
+;;   the nop latitude ("a legal implementation is to simply implement the WFI
+;;   instruction as a NOP", §2.1.3.3) is recorded-NOT-taken — taking it would leave the
+;;   leaf's acceptance untestable (the .3 over-fence precedent). (The earlier stated
+;;   nop — "the wake event is P4-SYSTEM.5's" — is superseded by the halt, dated
+;;   2026-10-05.)
+;;
+;; - SFENCE.VMA'S INVALIDATION EFFECT IS THE FOUR SPECIFIED CASES (authority: laboratory;
+;;   P4-SYSTEM.3 decision 2). With the minimal TLB modelled (4-entry fully-associative,
+;;   FIFO, ASID-tagged at 16 — the state census carries the parameters), the fence does
+;;   the §11.1.2.1 work: all-spaces flush; per-ASID except global; per-address;
+;;   per-address+ASID except global — and the over-fence latitude ("an implementation
+;;   may always invalidate more") is recorded-not-taken, so the G-bit retention and the
+;;   per-ASID cases are genuinely testable. A non-canonical rs1 VA has no effect and
+;;   raises nothing. (The earlier time-scoped nop statement — "no translation caches are
+;;   modelled" — is superseded by this effect, dated 2026-10-04.) Its LEGALITY is
+;;   unchanged: illegal in U (RVP-SUPERVISOR §11.1.9's shared-permission sentence) and
+;;   in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6); TVM does not gate M.
+;;
+;; - THE mstatus BIT POSITIONS are the pinned encoding.h's masks (the specification renders
+;;   the layouts only as figure images — the same re-pin family as the instruction tables):
+;;   TSR=bit 22, TW=bit 21, TVM=bit 20 (MPRV=bit 17 is xret's internal concern).
+;;
+;; - INTERNAL STATE READS use csr-state, never csr-read: sret's TSR check, wfi's TW check and
+;;   sfence.vma's TVM check are the machine inspecting its own state, not the instruction
+;;   performing a CSR access — routing them through the permission model would trap an
+;;   S-mode sret on the M-level mstatus address, and would recurse inside the gates
+;;   themselves (schema/semantics.sexp says so at the operator).
+
+(semantics
+  (fragment "riscv/system")
+  (xlen 64)
+
+  (sem (insn mret) (source "RVP-MACHINE §2.1.3.2 — xRET executes in mode x or higher; in a less-privileged mode it raises illegal-instruction (xtval = the instruction word)")
+       (effect (if (eq (mode) (lit 3))
+                   (xret (lit 3))
+                   (trap-deliver (lit 2) (inst)))))
+  (sem (insn sret) (source "RVP-MACHINE §2.1.3.2 — legal in M and in S, illegal in U; in S with mstatus.TSR=1 it raises illegal-instruction (§2.1.1.6.6; TSR is bit 22, mstatus is 0x300 — the pinned encoding.h masks)")
+       (effect (if (eq (mode) (lit 0))
+                   (trap-deliver (lit 2) (inst))
+                   (if (and (eq (mode) (lit 1))
+                            (ne (bits 22 22 (csr-state (lit 768))) (lit 0)))
+                       (trap-deliver (lit 2) (inst))
+                       (xret (lit 1))))))
+  (sem (insn wfi) (source "RVP-MACHINE §2.1.3.3 — legality: illegal in U with S present, illegal in S with mstatus.TW=1 (§2.1.1.6.6; TW is bit 21), always legal in M; a LEGAL wfi enters the wait state — the halt entry is the step machinery's (P4-SYSTEM.5 decision 4; the nop latitude recorded-not-taken, the header)")
+       (effect (if (eq (mode) (lit 0))
+                   (trap-deliver (lit 2) (inst))
+                   (if (and (lt (mode) (lit 3))
+                            (ne (bits 21 21 (csr-state (lit 768))) (lit 0)))
+                       (trap-deliver (lit 2) (inst))
+                       (nop)))))
+  (sem (insn sfence.vma) (source "RVP-SUPERVISOR §11.1.2.1 — the translation fence; illegal in U (§11.1.9's shared-permission sentence) and in S with mstatus.TVM=1 (RVP-MACHINE §2.1.1.6.6; TVM is bit 20); the invalidation effect is the four specified cases over the modelled TLB (P4-SYSTEM.3 decision 2; the header records the superseded time-scoped nop)")
+       (effect (if (eq (mode) (lit 0))
+                   (trap-deliver (lit 2) (inst))
+                   (if (and (eq (mode) (lit 1))
+                            (ne (bits 20 20 (csr-state (lit 768))) (lit 0)))
+                       (trap-deliver (lit 2) (inst))
+                       (tlb-invalidate (reg rs1) (reg rs2)
+                                       (eq (field rs1) (lit 0))
+                                       (eq (field rs2) (lit 0)))))))
+)

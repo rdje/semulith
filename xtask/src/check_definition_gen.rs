@@ -26,15 +26,21 @@ const OUT: &str = "crates/semulith-core/src/definition.rs";
 const ENCODING_GC: &str = "profiles/rv64gc-lab-v0/encoding.sexp";
 const STATE_GC: &str = "profiles/rv64gc-lab-v0/state.sexp";
 const OUT_GC: &str = "crates/semulith-core/src/definition_rv64gc.rs";
+/// The controls' frozen copy (ruling 5; `XTASK.13` slice a): both units' encodings and states, the twenty
+/// `definitions/riscv` fragments and the rv64gc module regenerated at its own path (a module records its sources' paths),
+/// laid out as the repository is, so the generator resolves `<encoding's parent^3>/<fragment-root>` the same way. The
+/// self-test judges this copy; `run` judges the live pairs, so a damaged live definition fails by name, never as a
+/// self-test refusal.
+const FIXTURE: &str = "scripts/fixtures/def-gen";
 
-/// `MUTATE_FENCE`, verbatim: `python3 - <replacement> <out>` — the one `tlb-invalidate` effect of the real
+/// `MUTATE_FENCE`, verbatim: `python3 - <replacement> <out> <source>` — the one `tlb-invalidate` effect of the frozen
 /// `system.sem.sexp` replaced, the document re-rendered through the pinned `records_sexp`.
 const MUTATE_FENCE: &str = r####"import sys
 from pathlib import Path
 sys.path.insert(0, 'scripts')
 import sexp as S
 import records_sexp as R
-forms = S.read_file(Path('definitions/riscv/system.sem.sexp'))
+forms = S.read_file(Path(sys.argv[3]))
 replacement = S.parse(sys.argv[1])[0]
 matches = 0
 def replace(form):
@@ -272,6 +278,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         verbose,
         misses: Vec::new(),
     };
+    // Every control reads the frozen copy, never the live definitions (`FIXTURE`).
+    let fx = repo.join(FIXTURE);
+    let (fx_encoding_gc, fx_state_gc, fx_out_gc) =
+        (fx.join(ENCODING_GC), fx.join(STATE_GC), fx.join(OUT_GC));
     // The generator resolves fragments as <encoding's parent^3>/<fragment-root>, so the surgical unit mirrors the real
     // layout: tmp/profiles/<unit>/encoding.sexp composes tmp/definitions/riscv/*. The state descriptor is fingerprinted,
     // not read — the real one answers.
@@ -279,15 +289,16 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let riscv = t.join("definitions/riscv");
     let _ = fs::create_dir_all(t.join("profiles/rv64i-lab-v0"));
     let _ = fs::create_dir_all(&riscv);
-    let real_riscv = repo.join("definitions/riscv");
-    let _ = fs::copy(repo.join(ENCODING), &enc);
+    let real_riscv = fx.join("definitions/riscv");
+    let _ = fs::copy(fx.join(ENCODING), &enc);
     let _ = fs::copy(real_riscv.join("rv64i.sexp"), riscv.join("rv64i.sexp"));
     let _ = fs::copy(
         real_riscv.join("rv64i.sem.sexp"),
         riscv.join("rv64i.sem.sexp"),
     );
     let definition = t.join("definition.rs");
-    let state = OsStr::new(STATE);
+    let state_path = fx.join(STATE);
+    let state = state_path.as_os_str();
     // `GEN`: the surgical unit's encoding, the real state, the scratch module, then the caller's flags.
     let gen = |check: bool| {
         let mut args = vec![
@@ -332,7 +343,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "DRIFT",
     );
     // RED: a unit with an instruction length this generator cannot emit is refused by name.
-    sed_first(&repo.join(ENCODING), &enc, "(ilen 32)", "(ilen 64)");
+    sed_first(&fx.join(ENCODING), &enc, "(ilen 32)", "(ilen 64)");
     let (rc, out) = gen(true);
     tally.arm(
         "RED an unsupported instruction length is refused by name",
@@ -341,10 +352,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&out),
         "ilen 64",
     );
-    let _ = fs::copy(repo.join(ENCODING), &enc);
+    let _ = fs::copy(fx.join(ENCODING), &enc);
     // RED: a unit other than the laboratory profile is refused by name.
     sed_first(
-        &repo.join(ENCODING),
+        &fx.join(ENCODING),
         &enc,
         "(profile \"rv64i-lab-v0\")",
         "(profile \"rv64i-other-v0\")",
@@ -357,7 +368,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&out),
         "rv64i-other-v0",
     );
-    let _ = fs::copy(repo.join(ENCODING), &enc);
+    let _ = fs::copy(fx.join(ENCODING), &enc);
     // RED: an instruction the semantics do not cover is refused, naming the instruction.
     let rv64i = riscv.join("rv64i.sexp");
     python_program(repo, GHOST_INSN, &[rv64i.as_os_str()], verbose);
@@ -454,7 +465,11 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         python_program(
             repo,
             MUTATE_FENCE,
-            &[OsStr::new(replacement), gc_system_sem.as_os_str()],
+            &[
+                OsStr::new(replacement),
+                gc_system_sem.as_os_str(),
+                real_system_sem.as_os_str(),
+            ],
             verbose,
         )
     };
@@ -492,7 +507,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     // RED: a privileged operator in an RV64I rule is refused, named — the rv64i module's byte surface is frozen, so the
     // refusal is the honest verdict there. Rewrite the fence rule to query (mode) in the rv64i surgical copy (a fresh
     // encoding copy: the earlier arms mutated the first).
-    let _ = fs::copy(repo.join(ENCODING), &enc);
+    let _ = fs::copy(fx.join(ENCODING), &enc);
     sed_first(
         &rv64i_sem,
         &rv64i_sem,
@@ -782,7 +797,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     // decoding and independent operand/immediate-limit expectations.
     copy_sexp_files(&real_riscv, &gc_riscv);
     sed_first(
-        &repo.join(ENCODING_GC),
+        &fx_encoding_gc,
         &gc_enc,
         "(slot (id c) (requires \"riscv/c\"))",
         "(extensions \"riscv/c\")",
@@ -795,7 +810,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
                 OsStr::new("--encoding"),
                 gc_enc.as_os_str(),
                 OsStr::new("--state"),
-                OsStr::new(STATE_GC),
+                fx_state_gc.as_os_str(),
                 OsStr::new("--out"),
                 c_definition.as_os_str(),
             ],
@@ -881,7 +896,9 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
 
     // P4-SYSTEM.12 c2: compile the TRACKED evaluator on the temporary C composition. Each RED arm requires a behavioral
     // test failure, never a compile/tool failure.
-    let (rc, out) = probe(repo, "scripts/probe_c_engine.py", &[]);
+    // The probe compiles the TRACKED engine against a composition of the frozen definitions (`--data-root`).
+    let data_root = [OsStr::new("--data-root"), fx.as_os_str()];
+    let (rc, out) = probe(repo, "scripts/probe_c_engine.py", &data_root);
     tally.arm(
         "GREEN C's exact parcel and expansion execution",
         rc,
@@ -895,6 +912,8 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         &[
             OsStr::new("--mutation"),
             OsStr::new("erase-expansion-widths"),
+            data_root[0],
+            data_root[1],
         ],
     );
     tally.arm(
@@ -907,7 +926,12 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let (rc, out) = probe(
         repo,
         "scripts/probe_c_engine.py",
-        &[OsStr::new("--mutation"), OsStr::new("word-parcel-read")],
+        &[
+            OsStr::new("--mutation"),
+            OsStr::new("word-parcel-read"),
+            data_root[0],
+            data_root[1],
+        ],
     );
     tally.arm(
         "RED a word read crosses the first parcel's region",
@@ -919,7 +943,12 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let (rc, out) = probe(
         repo,
         "scripts/probe_c_engine.py",
-        &[OsStr::new("--mutation"), OsStr::new("short-ilen")],
+        &[
+            OsStr::new("--mutation"),
+            OsStr::new("short-ilen"),
+            data_root[0],
+            data_root[1],
+        ],
     );
     tally.arm(
         "RED a wider prefix needs every ILEN parcel",
@@ -929,18 +958,18 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "c_engine::unsupported_long_prefix_keeps_all_ilen_bits ... FAILED",
     );
 
-    // The slice-(h) census arms: the gate's judging loop covers the rv64gc owner→mirror pair — pinned against the REAL
-    // pair, not a synthetic one.
+    // The slice-(h) census arms over the FROZEN rv64gc owner→mirror pair (ruling 5, `XTASK.13` slice a): `run` judges
+    // the live pairs; these hold the judging route itself to a fixed copy, so live drift fails `run` by name.
     let (rc, out) = generator(
         repo,
         &[
             OsStr::new("--check"),
             OsStr::new("--encoding"),
-            OsStr::new(ENCODING_GC),
+            fx_encoding_gc.as_os_str(),
             OsStr::new("--state"),
-            OsStr::new(STATE_GC),
+            fx_state_gc.as_os_str(),
             OsStr::new("--out"),
-            OsStr::new(OUT_GC),
+            fx_out_gc.as_os_str(),
         ],
     );
     tally.arm(
@@ -951,16 +980,16 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "",
     );
     let gc_module = t.join("gc-module.rs");
-    let _ = fs::copy(repo.join(OUT_GC), &gc_module);
+    let _ = fs::copy(&fx_out_gc, &gc_module);
     append(&gc_module, "\n// hand edit\n");
     let (rc, out) = generator(
         repo,
         &[
             OsStr::new("--check"),
             OsStr::new("--encoding"),
-            OsStr::new(ENCODING_GC),
+            fx_encoding_gc.as_os_str(),
             OsStr::new("--state"),
-            OsStr::new(STATE_GC),
+            fx_state_gc.as_os_str(),
             OsStr::new("--out"),
             gc_module.as_os_str(),
         ],
@@ -1042,16 +1071,28 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("DEF-GEN: REFUSED — the check does not discriminate (self-test failed).");
         return ExitCode::from(2);
     }
-    if !root.join(ENCODING).is_file() {
+    // The owner→mirror census: every tracked encoding composition (+ its state descriptor) and its generated module. A
+    // generated module whose encoding or state descriptor is absent is an orphan, failed by name (`XTASK.13` slice a): the
+    // controls judge a frozen copy, so a deleted live definition must fail here, never pass as "nothing yet".
+    let mut judged = 0;
+    for (encoding, state, module) in [(ENCODING, STATE, OUT), (ENCODING_GC, STATE_GC, OUT_GC)] {
+        let missing = [("encoding", encoding), ("state descriptor", state)]
+            .into_iter()
+            .find(|(_, path)| !root.join(path).is_file());
+        if let Some((role, path)) = missing {
+            if root.join(module).is_file() {
+                eprintln!("DEF-GEN: {module} is generated, but its {role} {path} is absent — an orphaned module.");
+                return ExitCode::from(1);
+            }
+            continue;
+        }
+        if let Err(code) = judge_pair(root, encoding, state, module) {
+            return code;
+        }
+        judged += 1;
+    }
+    if judged == 0 {
         println!("DEF-GEN: ok (no encoding composition yet)");
-        return ExitCode::SUCCESS;
-    }
-    // The owner→mirror census: every tracked encoding composition (+ its state descriptor) and its generated module.
-    if let Err(code) = judge_pair(root, ENCODING, STATE, OUT) {
-        return code;
-    }
-    if let Err(code) = judge_pair(root, ENCODING_GC, STATE_GC, OUT_GC) {
-        return code;
     }
     ExitCode::SUCCESS
 }

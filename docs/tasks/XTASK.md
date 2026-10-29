@@ -418,7 +418,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   40782096575 `=== all doctrines green ===`, rust 40782096560 success — the first green hosted doctrines run since 2026-10-08.
 
 - ID: `XTASK.13` — **the eleven fragile doctrines judge frozen copies (ruling 5's rule)**
-  Status: `pending` (`2026-10-29`; open question (e) answered by the workflow under the director's delegation of 2026-10-28:
+  Status: `active` (slice a done `2026-10-29`; opened `2026-10-29`; open question (e) answered by the workflow under the director's delegation of 2026-10-28:
   "I do not think you need my input to take your decision on what to do next … schedule what you need to schedule")
   Goal: each doctrine `XTASK.11` slice e classified FRAGILE (target/xtask/xt0068/classification.md) judges frozen copies in its
   self-test, and a deleted or damaged live source fails by name instead of refusing; one slice per doctrine, each fired RED with
@@ -427,12 +427,26 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   CONTRACT-FREEZE, the RECORD-SCHEMA and UNIT-BOOKS probes, then PROFILE-CONSISTENCY's 14 probes case by case (a real-tree arm
   that is a deliberate prediction stays, named); DOSSIER-SCHEMA's legacy arm is checked on the way. Scheduled between the
   feature units (5:1).
+  Slice a (`2026-10-29`, `SEMULITH-XTASK-0073`; on clean 1067faed; evidence target/xtask/xt0073): `DEF-GEN`'s controls judge
+  a frozen copy. `scripts/fixtures/def-gen/` mirrors the repository's layout (25 files, 440 KB): both units' `encoding.sexp`
+  and `state.sexp`, the twenty `definitions/riscv` fragments and `crates/semulith-core/src/definition_rv64gc.rs` regenerated
+  at its fixture path (`gen_definition.py --check` rc=0 over the frozen pair; its body equals the live module's but for the
+  input paths its manifest records). Every control reads `FIXTURE` — the surgical rv64i unit, the staged rv64gc compositions,
+  the fence mutator (it now takes its source as an argument instead of opening the live `system.sem.sexp`) and the census's
+  in-sync and hand-edit arms — and `scripts/probe_c_engine.py` gains `--data-root` (default the repository; the engine it
+  compiles is always the tracked one), which the controls point at the copy. The absence branch the freeze exposed: `run`
+  printed "ok (no encoding composition yet)" when the rv64i encoding was missing, which a deleted live encoding would now
+  reach; a generated module whose encoding or state descriptor is absent is now an orphan, failed by name. Measured on the
+  real tree, the binary before and after (red.txt, the tree restored, 0 paths changed): `in-sync` 0 → 0;
+  `gc-module-hand-edited`, `fragment-edited` and `encoding-missing` 2 (REFUSED, self-test failed) → 1, each named;
+  `fragment-missing` 2 → 2, now the generator's named refusal (`fragment 'riscv/system' has no semantics document`), never
+  the self-test's. `DEF-GEN --self-test: 56 pass / 0 fail` before and after. Next: slice b, GUEST-GEN.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `pending` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: DEF-GEN and GUEST-GEN first |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slice a (DEF-GEN) done; GUEST-GEN next, after five feature units |
 
 ## Decisions
 
@@ -552,6 +566,13 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **NO REGRESSION** — `git ls-files -- target | wc -l` = 0 and `git status --short` empty after the removal (no tracked byte touched); the 1,408 kept output files present (`kept outputs missing 0`); the commit gate green (chain log).
 - [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
 
+## Acceptance Checklist (leaf XTASK.13)
+
+- [x] slice a **ROOT CAUSE (WHY + WHERE)** — `self_test` copied the live fragments and pairs and judged the live rv64gc pair (`grep -c 'repo.join(ENCODING_GC)\|repo.join(OUT_GC)\|repo.join("definitions/riscv")'` = 3 in target/xtask/xt0073/check_definition_gen.rs.before); `run` returned ok when the rv64i encoding was absent; red.txt: four corpus states `before rc=2 REFUSED — the check does not discriminate (self-test failed)`.
+- [x] slice a **FIX** — scripts/fixtures/def-gen/ (25 frozen files; `python3 -B scripts/gen_definition.py --check` over the frozen pair rc=0); xtask/src/check_definition_gen.rs: the controls read `FIXTURE`, `run` fails an orphaned module by name; scripts/probe_c_engine.py `--data-root`; clippy `-D warnings` rc=0.
+- [x] slice a **ADDRESSED (verified)** — red.txt: `gc-module-hand-edited after rc=1 … out of sync`, `fragment-edited after rc=1 … out of sync`, `encoding-missing after rc=1 … is generated, but its encoding … is absent`, `fragment-missing after rc=2` naming the missing semantics document; `in-sync` rc=0 both; `tree restored: 0 paths changed`.
+- [x] slice a **NO REGRESSION** — `DEF-GEN --self-test: 56 pass / 0 fail`; `bash scripts/check_definition_gen.sh` rc=0 (both pairs `ok … matches …`); `cargo test -p xtask` `test result: ok. 17 passed`; `python3 -B scripts/probe_c_engine.py` (default root) passes; the commit gate green (chain log).
+
 ## Acceptance Checklist (leaf XTASK.12)
 
 - [x] slice a **ROOT CAUSE (WHY + WHERE)** — `gh run view 40746652030 --log-failed`: only `UNIT-BOOKS: REFUSED — the check does not discriminate (self-test failed)`; `grep -n 'if self.verbose' xtask/src/check_unit_books.rs` guarded every miss report; `git diff --stat b917d1ba 45f970c0` over its inputs empty.
@@ -600,6 +621,7 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Changelog
 
+- `2026-10-29`: XTASK.13 slice a done — DEF-GEN's controls judge a frozen copy (scripts/fixtures/def-gen); an orphaned module fails by name.
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
   (target/rustdoc-xtask-assessment/).
 - `2026-10-23`: XTASK.1 done — `cargo xtask` delegates to the Makefile, measured equal; XTASK.2 next.

@@ -1,0 +1,16 @@
+;; encoding.sexp — the complete declared RV64GC laboratory composition.
+;; P4-SYSTEM.12 e2c binds C and the independently staged parcel corpus together.
+(encoding (profile "rv64gc-lab-v0") (ilen 32)
+  (comment "RV64I + Zicsr + Zicntr + privileged system + A + Zifencei + F + D + M + C: 197 instructions and three Zicntr pseudo spellings. The RV64+D C selection is Zca plus Zcd, 37 forms. C-enabled fetches request exact two-byte parcels; the next parcel is requested only for a 32-bit instruction. Complete composition is scope evidence, not the CPU-SYSTEM acceptance verdict.")
+  (compose (base "riscv/rv64i")
+    (extensions "riscv/zicsr")
+    (extensions "riscv/zicntr")
+    (extensions "riscv/system")
+    (extensions "riscv/a")
+    (extensions "riscv/zifencei")
+    (extensions "riscv/f")
+    (extensions "riscv/d")
+    (extensions "riscv/m")
+    (extensions "riscv/c")
+    (status complete))
+  (fragment-root "definitions"))

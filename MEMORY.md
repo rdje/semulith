@@ -20,12 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0320` (P4-SYSTEM.14 a44-5) — ruling B carried out: the reviews read v4, `CR-GC-M-2` re-issued,
-  `REQ-GC-M` `implemented`, G-TRACE green (GS 3 of 10 open); the lapse (a44-2b … a44-5) closed the same day. Before it
-  P4-0315 … P4-0319 (a44-2b, a44-2c, `.15` slice g, a44-3, a44-4). Hosted CI all green on cefb0d84 (portability too).
-- next_action: 5:1 — six feature units since XTASK-0072, so the next unit is an XTASK slice: XTASK.13 DEF-GEN (judge a
-  frozen copy, ruling 5), then five features: `.14` the XLEN declaration as data (a43a-2: a new case file, no pinned
-  code), CSR-SET, SSTC; ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z) and the cleanup narrative's rollover as maintenance.
+- last_unit: `SEMULITH-XTASK-0073` (XTASK.13 slice a) — DEF-GEN's controls judge a frozen copy (scripts/fixtures/def-gen); an
+  orphaned module fails by name. Before it P4-0315 … P4-0320 (ruling B carried out: v4 re-captured, `CR-GC-M-2`, G-TRACE green).
+- next_action: five feature units (5:1 restarted at XTASK-0073): P4-SYSTEM.14 the XLEN declaration as data (a43a-2: a new case
+  file, prepared inputs, declarations, capture, policy — each a unit, no pinned code), then CSR-SET, SSTC; then XTASK.13
+  slice b (GUEST-GEN). Maintenance between: ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z), the cleanup narrative's rollover.
   A push before the 300-commit cadence is exceptional (scripts/approved_push.sh, the director's words). Watch hosted CI after
   every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
