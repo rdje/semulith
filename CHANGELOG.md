@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0089 (leaf ARTIFACT-CLEANUP.31) — the seventh recurring cleanup through the supported act
+
+.31: at 25 h, on a clean tree with `handoff: OK`, the four acts ran in target/artifact-cleanup/AC0089 (log inside): 334 candidates planned, 6 captured Cargo incremental outputs (15,766,338 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 25,066 retained files kept. Re-census against AC0086: the unrecorded population moved from 784 files (3.7 GB) to 328 (1,368,469,538 B) — the XTASK draft crates' 450 are gone (`XTASK.9`), the rest are the shared target's orphan sessions that `.29`'s ruled class C will remove. The record is overwritten; `.34` is due after 2026-10-30T11:07Z.
+
 ## SEMULITH-XTASK-0074 (leaf XTASK.13 slice b1) — GUEST-GEN's census and surgical controls judge frozen mini corpora
 
 A whole frozen copy would be 3 MB, so `scripts/fixtures/guest-gen/` holds what the arms use: three rv64i guests (the surgical arms' own) and three rv64gc guests with their byte fixture regenerated at its path, each with its own run-order record, over DEF-GEN's frozen definitions. The census's in-sync and hand-edit arms judge the frozen pair; the real run keeps judging the live pairs. On the real tree a hand-edited rv64gc fixture now fails by name instead of refusing; a missing guest and an unassemblable one still refuse through the base-mirror and parcel-count arms, which read the live corpus — slice b2. `GUEST-GEN --self-test: 400 pass / 0 fail`.

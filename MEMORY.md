@@ -15,14 +15,14 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`): cycle two complete
-  (P4-0302 … P4-0306) and XTASK-0018 (slice 6j) landed → cycle three: the a43b-1/a43c-1/a43d-1 programs, then the XLEN declaration;
-  `ARTIFACT-CLEANUP.31` once due (after 2026-10-29T09:49Z); `ARTIFACT-CLEANUP.29` waits for a ruling on its
-  measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
+  (P4-0302 … P4-0306) and XTASK-0018 (slice 6j) landed; the 5:1 count restarted at XTASK-0074 (XTASK.13 b1);
+  `ARTIFACT-CLEANUP.34` once due (after 2026-10-30T11:07Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
+  ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0074` (XTASK.13 slice b1) — GUEST-GEN's census and surgical arms judge frozen mini corpora;
-  the 5:1 turn after P4-0321 … P4-0325 (XLEN retained, declared, re-declared, captured).
-- next_action: ARTIFACT-CLEANUP.31 (due since 2026-10-29T09:49Z; maintenance), then features: a43a-2f the reviews over several
+- last_unit: `SEMULITH-AC-0089` (ARTIFACT-CLEANUP.31, maintenance) — 6 outputs removed, residue 0; unrecorded 784 → 328
+  (the XTASK drafts' 450 gone; the rest is `.29` class C). Before it: XTASK-0074 (XTASK.13 b1, the 5:1 turn).
+- next_action: features (1 of 5 after XTASK-0074): a43a-2f the reviews over several
   retained cases (review_div_method/policy per case; boundary marker "(boundary"; form coverage for a state requirement;
   OB-XLEN feature disposition; PROFILE-CONSISTENCY's real run per case) and the credit CR-D-XLEN-1 (REQ-D-XLEN implemented);
   then CSR-SET, SSTC as data; XTASK.13 slice b2 (GUEST-GEN mirror + count arms) at the next turn.
@@ -40,7 +40,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0086` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-28T09:49Z`).
+  cleanup act `target/artifact-cleanup/AC0089` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-29T11:07Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.
