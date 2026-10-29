@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a, a43a-2b done: RVI-RV64I §3.1 retained, the case declared on its own authority; a43a-2c its declarations and capture), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); next the XLEN case as data (a43a-2a … a43a-2c done: RVI-RV64I §3.1 retained, the case and its declarations; a43a-2d its capture, then the reviews and the credit), then CSR-SET and SSTC; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,17 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43a-2c / SEMULITH-P4-0323: the XLEN case's three declarations, committed before its capture (completed)
+
+`python3 -B scripts/capture_div.py --declare --case rv64gc-xlen-forms-v1` emitted the planned experiment (14,931 B), the
+dependency manifest (15,173 B, **67** children — the case's declaration, its schema and its reader, and the retained RV64I
+statements as the normative child in place of the M excerpt) and the authority record (17,755 B), written exclusively from
+the command's `files` map; this commit is the declaration commit the capture (a43a-2d) names. From here to the capture no
+pinned input moves (the 67 children, the principals, the 13 authority views). Measured: the declaration agrees with its own
+planned record and manifest (`MATCHED-GPR-CASE: 8 tests / 0 failures`, the planned population now four cases);
+`REQUIREMENT-STATUS: … 4 case(s), 1 credited, 1 declared … 0 drift` — the XLEN case binds REQ-D-XLEN and credits nothing;
+the family holds 75 files. Next: a43a-2d, the capture, exactly once.
 
 ### .14 a43a-2b / SEMULITH-P4-0322: the XLEN case declared — the first non-M case, on its own authority (completed)
 
@@ -1083,6 +1094,9 @@ Rows a44-1–a44-2a: [retained verbatim](archive/P4-SYSTEM-23.md#acceptance-rows
 - [x] `.14` a43a-2b **ROOT CAUSE** — REQ-D-XLEN had no declared case (`ls evidence | grep -c xlen` = 0) and the guest's RV64I citations disagreed with the page (`git show a9e1c6d4:profiles/rv64gc-lab-v0/guests/xlen-forms.s | grep -c '§3.1.2.2'` = 1, on the LUI line; §3.1.2.1 is LUI's heading).
 - [x] `.14` a43a-2b **ADDRESSED** — `python3 -B scripts/review_div_capture.py --review --case rv64gc-xlen-forms-v1` `rc=0` → `pending`, 67 children; `python3 -B scripts/capture_div.py --review-authorities --case rv64gc-xlen-forms-v1` → `pending`, REQ-D-XLEN / OB-XLEN / RVI-RV64I; `prepare_div_inputs.py --verify` → `pending` (re-derived); `python3 -B scripts/probe_div_capture_inputs.py` → `34 tests / 0 failures / 0 errors` over four cases.
 - [x] `.14` a43a-2b **NO REGRESSION** — the 41 probes rc=0 (target/p4-system-14/a43a-2b/green-1); `GUEST-GEN: ok`; `EXERCISE-COVERAGE` 52/52; `INTERACTION-MATRIX: ok`; `RECORD-SCHEMA: ok (26 record file(s) …)`; `MATERIALS-BILL: ok`; the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43a-2c **ROOT CAUSE** — the XLEN case had no declarations, so it could not be captured: at dfbc9f3d `ls evidence/rv64gc-xlen-forms-v1 | wc -l` = 5.
+- [x] `.14` a43a-2c **ADDRESSED** — `capture_div.py --declare --case rv64gc-xlen-forms-v1` `rc=0` → `pending`; `grep -o "(input " evidence/rv64gc-xlen-forms-v1/dependencies.sexp | wc -l` = 67; `python3 -B scripts/requirement_status.py` → `4 case(s), 1 credited, 1 declared … 0 drift`.
+- [x] `.14` a43a-2c **NO REGRESSION** — `MATCHED-GPR-CASE: 8 tests / 0 failures / 0 errors` (the planned-record agreement over four cases); `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors`; the 41 probes (green-1); the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

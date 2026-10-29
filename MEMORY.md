@@ -20,11 +20,11 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0322` (P4-SYSTEM.14 a43a-2b) — the XLEN case declared (rv64gc-xlen-forms-v1, the first non-M
-  case, accepted on its own authority). Features 1-2 of 5 since XTASK-0073: P4-0321 (RV64I retained), P4-0322.
-- next_action: features 3-5: a43a-2c the XLEN declarations (capture_div --declare, committed) and its capture
-  (retain_div_capture, exactly once), a43a-2d the reviews generalized to several retained cases (review_div_method/policy
-  pointers per case; XLEN policy legs, defined/low), a43a-2e the credit (CR-D-XLEN-1); then XTASK.13 slice b (GUEST-GEN).
+- last_unit: `SEMULITH-P4-0323` (P4-SYSTEM.14 a43a-2c) — the XLEN case's declarations committed (67 children); this commit
+  is its declaration commit. Features 1-3 of 5 since XTASK-0073: P4-0321, P4-0322, P4-0323.
+- next_action: features 4-5: a43a-2d the XLEN capture (retain_div_capture --declaration-commit <P4-0323's id>, exactly
+  once; FREEZE pinned inputs until then), a43a-2e the reviews generalized to several retained cases (review_div_method/policy
+  pointers per case; XLEN policy legs, defined/low) and the credit (CR-D-XLEN-1); then XTASK.13 slice b (GUEST-GEN).
   Maintenance: ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z), the cleanup narrative's rollover. Watch hosted CI after
   every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).

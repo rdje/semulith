@@ -36,7 +36,7 @@ SEAMS = {
 }
 # The cases whose capture declared a planned record and a dependency manifest; a declared case without them
 # is named here when it lands, never skipped silently.
-PLANNED = ("rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-signed-div-truncation-v2")
+PLANNED = ("rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-signed-div-truncation-v2", "rv64gc-xlen-forms-v1")
 MUTATION = None
 
 

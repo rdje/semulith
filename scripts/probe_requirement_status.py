@@ -315,7 +315,7 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-signed-div-truncation-v2:pending"])
         self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 1, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (3, 1, 0, 1, 1))
+                         (4, 1, 1, 1, 1))  # the XLEN case declared (a43a-2c)
 
 
 def main():
