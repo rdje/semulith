@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0317 (P4-SYSTEM.15 slice g) — the workload kind declared; G-REGRESSION green; `.15` done
+
+The workload suite recorded in slice f (four compiled, self-checking C workloads, 4 pass / 0 fail three-way) is declared as G-REGRESSION's fifth kind in place of the open row, and the Misalign applicability note moves onto the external row: GS `G-REGRESSION … 5 of 5 required kinds evidenced … green`, 4 of 10 axes open. Unblocked by P4-SYSTEM.14 a44-2b — no current capture pins the report generator until the M v4 capture, which follows this slice. The generator's not-applicable control no longer assumes the kind is open: it removes every live workload evidence form at its parsed span, then asserts +1 against that bare copy (`gate_report --self-test: 24 pass / 0 fail` before and after; 23 / 1 when the copy is not made bare).
+
 ## SEMULITH-P4-0316 (P4-SYSTEM.14 a44-2c) — a case is accepted on its own authority; no constant of the M source remains in the capture tools
 
 `review_div_capture.check_retained_input` binds a case's 1–8 normative excerpts to the case's own authority instead of the DIV excerpt's constants: each is retained under its profile, pinned by its bytes, and names exactly one original publication equal to the case's source digest (which the authority review holds equal to the catalogue); an excerpt is never its own publication. The excerpts are the case's normative manifest children, and `capture_div` accepts the case's declared obligations, projecting the one its authority names. A synthetic non-M case passes and is refused when its excerpt names another page (review probe 33 tests; `publication-authority` 2 → 4, `retained-pin` 1 → 2, two new seams; authority probe 19 tests, `obligation-binding` new). The method checker no longer reaches the extractor: 39 checker sources. Next `.15` slice g, then the M v4 case.

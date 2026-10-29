@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (5 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (4 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
@@ -16,7 +16,7 @@
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
 | `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 48 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
-| `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 4 of 5 required kinds evidenced — open: `workload` | **incomplete** |
+| `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
 | `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 4 of 4 required kinds evidenced | **green** |
 | `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | no release decision recorded; this report is generated from tracked inputs and gated for sync (GATE-REPORT); other axes open | **incomplete** |
@@ -31,7 +31,6 @@ is not a claim with a denominator.
 | `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: no requirement status is derived from evidence yet. |
 | `G-TRACE` | `P4-SYSTEM.14` | No matched experiment is evidenced while no current credit names a case: the m-forms case's record left with CR-GC-M-1's retirement (a44-2b, 2026-10-29). P4-SYSTEM.14 owns its return: the M case re-captured as v4 under the new manifest (a44-3, a44-4) and re-credited as CR-GC-M-2 (a44-5). |
 | `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
-| `G-REGRESSION` | `P4-SYSTEM.15` | Four of the five required kinds are evidenced (directed, external, generated, validator-mutation). The fifth, workload, has RUN and is RECORDED — profiles/rv64gc-lab-v0/workload.sexp (P4-SYSTEM.15 slice f): four compiled, self-checking C workloads, 4 pass / 0 fail three-way, RECORD-SCHEMA rule 15 — but is not yet declared here: the GS report generator's own self-test assumes an open workload kind and the generator (scripts/gate_report.py) is a pinned input of the credited M case's dependency manifest, so changing it lapses credit CR-GC-M-1. Declaring the kind is slice g: re-capture the M case against the changed generator (or rule on the pin), then declare. The pinned Misalign suites are not applicable (generated for MISALIGNED_LDST true; the profile traps misaligned data). |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -43,7 +42,7 @@ is not a claim with a denominator.
 | `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | yes |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
 | `G-REGRESSION` | `generated` | `crates/semulith-verify/src/m_vectors/tests.rs` `every_generated_vector_holds_through_the_engine` | yes |
-| `G-REGRESSION` | `workload` | — | **none declared** |
+| `G-REGRESSION` | `workload` | `profiles/rv64gc-lab-v0/workload.sexp` | yes |
 | `G-REGRESSION` | `validator-mutation` | `crates/semulith-verify/src/mutate_rv64gc/tests.rs` `every_designated_mutant_is_detected_by_the_corpus` | yes |
 | `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
 | `G-PORTABILITY` | `aarch64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
@@ -64,7 +63,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 09606eda319d6bd984e5388a1f9ff7f07f84378ff174b00b399ab42578c24f4f`
+  `sha256 0030042d4cd0377da9897a88ac25242adca2fdd72d6b8c3aa572364b78811033`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

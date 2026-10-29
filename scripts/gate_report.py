@@ -1515,11 +1515,23 @@ def _selftest() -> int:
             lambda: gs_refuses("twoloc", {"gate.sexp": ev(
                 '(evidence (axis G-TRACE) (kind experiment) (experiment "x") (record "y") (statement "s"))')},
                 "names exactly one of test / record / experiment"))
+        def without(axis, kind):
+            """The manifest less every evidence form for (axis, kind), cut at its parsed span: a control that must
+            open a kind first, whatever the real manifest declares (P4-SYSTEM.15 slice g)."""
+            def edit(s):
+                spans = [(a, b) for f, a, b in S.forms_with_spans(s)
+                         if isinstance(f, list) and f and str(f[0]) == "evidence"
+                         and (_one(f, "axis"), _one(f, "kind")) == (axis, kind)]
+                for a, b in reversed(spans):
+                    s = s[:a] + s[b:]
+                return s
+            return edit
+        na = '(not-applicable (axis G-REGRESSION) (kind workload) (why "the stated reason"))'
         arm("RED a not-applicable kind counts (+1), and is printed with its reason",
-            lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION") + 1),
-                                has(r, "not applicable — the stated reason")))(
-                gs("na", {"gate.sexp": ev(
-                    '(not-applicable (axis G-REGRESSION) (kind workload) (why "the stated reason"))')})))
+            lambda: (lambda bare, r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(bare, "G-REGRESSION") + 1),
+                                      has(r, "not applicable — the stated reason")))(
+                gs("na-bare", {"gate.sexp": without("G-REGRESSION", "workload")}),
+                gs("na", {"gate.sexp": lambda s: ev(na)(without("G-REGRESSION", "workload")(s))})))
         rec = (tmp / "gs-failrec" / "act.sexp").relative_to(ROOT).as_posix()
         arm("RED a verdict-bearing record that reads a failure is not evidence",
             lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION")),

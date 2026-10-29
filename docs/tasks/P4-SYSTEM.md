@@ -237,8 +237,9 @@ This gate authorises the planned next engineering stage: board implementation.
   Acceptance: no requirement reads `planned` that its evidence shows implemented, none reads
   `implemented` without it; every experiment is a record a gate judges.
 - ID: `P4-SYSTEM.15` — **regression over the complete profile** — `G-REGRESSION`
-  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`; execution began
-  `2026-10-26` as feature 2 of 5 under `decision_alternate-port-and-features.md`)
+  Status: `done` (`2026-10-29`, `SEMULITH-P4-0317`: G-REGRESSION green, 5 of 5 kinds; opened by `.10`'s design brief
+  `2026-10-06`, `SEMULITH-P4-0068`; execution began `2026-10-26` as feature 2 of 5 under
+  `decision_alternate-port-and-features.md`)
   Goal: the validator-mutation suite over the unit's tables, and an external directed suite run
   against it.
   Slice a (`2026-10-26`): the pinned riscv-arch-test RV64I suite (`P2-SCALAR.5`'s campaign, 51 generated
@@ -363,6 +364,14 @@ This gate authorises the planned next engineering stage: board implementation.
   deny-warnings, `cargo test --all` 510 passed, 0 failed). ROUTING EVIDENCE for the prevention, which is XTASK's (the focused
   set lives in `xtask/src/main.rs`): measured above — rustfmt is in no commit-time check — and its cost, `cargo fmt --all --
   --check` under a second; the focused set gains it as `XTASK.10`, the way `XTASK.7` added API-DOCS.
+  Slice g result (`2026-10-29`, `SEMULITH-P4-0317`; evidence target/p4-system-15/g): the workload kind declared —
+  `(evidence (axis G-REGRESSION) (kind workload) (record "profiles/rv64gc-lab-v0/workload.sexp"))` in place of the open
+  row, the Misalign applicability note moved onto the external row; GS: `G-REGRESSION … 5 of 5 required kinds evidenced
+  … green`, `Open axes (4 of 10)`. Unblocked by `.14` a44-2b: no current capture pins the report generator (the M case
+  is invalidated until v4, which a44-4 captures after this slice, so v4 pins the final generator). The generator's
+  not-applicable control no longer assumes the kind is open in the real manifest: it first removes every live
+  (G-REGRESSION, workload) evidence form at its parsed span (`S.forms_with_spans`), then asserts +1 against that bare
+  copy (`gate_report --self-test: 24 pass / 0 fail` before and after the declaration). The leaf is done.
   Acceptance: every mutation class detected on the rv64gc corpus; the external suite's verdicts
   recorded per test.
 - ID: `P4-SYSTEM.16` — **replay, snapshots and reduction** — `G-REPLAY`
@@ -429,8 +438,8 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-2c done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c done (the checks of the M source became checks of the case's own authority); next `.15` slice g, then a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
-| 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — unblocked by `.14` a44-2b (the M capture is invalidated until v4): it lands before a44-4, so v4 pins the final report generator |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-2c done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c done (the checks of the M source became checks of the case's own authority; `.15` closed after it); next a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-TRACE, G-OBLIGATIONS open) |
 
 ## Decisions
 
@@ -1109,6 +1118,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.15` slice f **ROOT CAUSE** — at d0f37d83: `grep -c 'kind workload' profiles/rv64gc-lab-v0/gate.sexp` = 0, GS-REPORT `G-REGRESSION … 4 of 5 required kinds evidenced — open: workload`; `ls profiles/rv64gc-lab-v0/workload` absent; the base profile's compiled guest (`c-scope.c`, G1 criterion 6) had no rv64gc counterpart and the ACT4 pipeline no C entry.
 - [x] `.15` slice f **ADDRESSED** — `python3 scripts/run_workload_campaign.py --record` → every `HTIF verdict … tohost <- 1`, `semulith vs the Sail-derived signature … slots agree`, `spike vs sail — the control pair … agree` for all four, `recorded profiles/rv64gc-lab-v0/workload.sexp (4 workload rows)` (campaign.log, 91 s); `--self-test` → `5 pass / 0 fail`; `derive_workload_constants.py --check` → `32 constants in 4 workloads re-derived and equal`; the declaration attempt measured: `gate_report --self-test: 23 pass / 1 fail` (`got 5, want 6`) and, with the generator fixed, `credit CR-GC-M-1 lapsed: manifest input scripts/gate_report.py: SHA256 differs` — reverted, `git diff HEAD -- scripts/gate_report.py` empty, `REQUIREMENT-STATUS: ok (… 1 credited …)`.
 - [x] `.15` slice f **NO REGRESSION** — `bash scripts/check_requirements.sh` → `RECORD-SCHEMA: ok (23 record file(s) …)` with `RECORD-SCHEMA --self-test: 79 pass / 0 fail` (rule 15's six arms; the token-facet probe re-pinned at 26 schemas / 101 facets, loose-end 106, ignore-pattern 612); `GATE-REPORT: ok (5 generated report(s) in sync …)`, `MATERIALS-BILL: ok`, GS `4 of 5 … open: workload` and `Open axes (5 of 10)` as before; the three PROFILE-CONSISTENCY probes (pc-probes.log: 22/0, 25/0, 36 failures for `derived-status`); `ls target/doctrine-selftest | wc -l` = 0.
+- [x] `.15` slice g **ROOT CAUSE** — at 9012d16a the workload kind was recorded but undeclared: `grep -c '(kind workload)' profiles/rv64gc-lab-v0/gate.sexp` = 0, GS `4 of 5 required kinds evidenced — open: workload`; the generator's not-applicable control appended a workload form to the REAL manifest and expected +1, true only while the kind is open.
+- [x] `.15` slice g **ADDRESSED** — `grep -c '(kind workload)' profiles/rv64gc-lab-v0/gate.sexp` = 1, `grep -c '(open (axis G-REGRESSION)' profiles/rv64gc-lab-v0/gate.sexp` = 0; `python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS` → `G-REGRESSION … 5 of 5 required kinds evidenced … green`, `Open axes (4 of 10)`; `python3 -B scripts/gate_report.py --self-test` → `24 pass / 0 fail` with the kind declared.
+- [x] `.15` slice g **NO REGRESSION** — `python3 -B scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/gate.sexp schema/gate.sexp` ok; the not-applicable arm fails when the bare copy is not bare (target/p4-system-15/g/red.txt); the staged prechecks (prechecks.txt) and the commit gate (chain log).
 - [x] `.17` slice b **ROOT CAUSE** — at 77477864: `grep -c 'check_portability.sh --leg native' .github/workflows/portability.yml` = 1 with no `--profile` (rv64i alone); `bash scripts/check_portability.sh --profile rv64gc-lab-v0 --leg x86-64` rc=1 `x86-64: red`, its log `test result: FAILED. 14 passed; 3 failed` (`git ls-files failed`); `arch -x86_64 /usr/bin/git --version` rc=1 (`libxcrun` arm64-only); `cargo test --target x86_64-apple-darwin -p xtask` with one git link leading PATH `test result: ok. 17 passed`, with the tools' directory leading PATH a python3 3.9 `TypeError` (target/p4-system-17/b: measure.txt, xtask-x86-*.log).
 - [x] `.17` slice b **ADDRESSED** — portability.yml: the `unit` axis and the per-unit agree (`ruby -ryaml` parse: matrix os × unit, jobs host, miri, agree); agree_controls.sh over the tracked workflow: 5 of 5 as predicted — agree rc=0 (`portability matrix: rv64gc-lab-v0 — the two hosts agree byte-identically`), a byte differing in rv64gc rc=1, a digest differing in rv64i rc=1, a missing manifest rc=1, an extra one rc=1; the host command rc=0 for both units and `cmp` rc=0 for rv64i with and without `--profile`; the Rosetta leg rv64gc `x86-64: green (Rosetta translation; the manifest agrees byte-identically)` (510 passed, 0 failed over 13 test binaries; 142 s), rv64i green the same way (510 passed, 0 failed; 78 s); `bash scripts/check_portability.sh --self-test` → `PORTABILITY --self-test: 9 pass / 0 fail`, `PORTABILITY-COLD: 16 pass / 0 fail`.
 - [x] `.17` slice b **NO REGRESSION** — `bash -n scripts/check_portability.sh` rc=0; the old probe against the fixed instrument `PORTABILITY-COLD: 15 pass / 0 fail`; the new probe against the unfixed instrument `PORTABILITY-COLD: 12 pass / 4 fail` (the control discriminates); `git grep -l check_portability -- 'evidence/*/dependencies.sexp' | wc -l` = 0 (no pinned path); the commit gate green (chain log).

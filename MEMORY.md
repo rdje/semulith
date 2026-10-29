@@ -20,15 +20,15 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0316` (P4-SYSTEM.14 a44-2c) — a case is accepted on its own authority: excerpts bound to the
-  publication they name, declared obligations, no constant of the M source. Before it P4-0315 (a44-2b: the tools read the
-  case declarations; `CR-GC-M-1` retired, `REQ-GC-M` `planned`, G-TRACE open, owned by .14).
-- next_action: `.15` slice g (the workload kind; it edits the pinned report generator, so before a44-4), then a44-3 (the M
-  v4 case declared: case.sexp, prepared inputs, three declarations), a44-4 (its capture, exactly once), a44-5 (CR-GC-M-2,
-  references.sexp, gate.sexp, `derived-status` 2 → 37 restated) back to back; XTASK.13 slices (DEF-GEN, GUEST-GEN first),
-  the cleanup narrative's rollover and ARTIFACT-CLEANUP.29 class C as the tooling turns; `.31` due after 2026-10-29T09:49Z.
-  Watch hosted CI after every push; a red run outranks everything. After a profile catalogue edit: gen_model_book.py --unit.
-  Probes before a chain touching profiles/; GS regen only after `git add`; acceptance boxes carry a signature token. Commit chain: target/xtask/xt0002/commit-chain.sh <evidence-dir>.
+- last_unit: `SEMULITH-P4-0317` (P4-SYSTEM.15 slice g) — the workload kind declared, G-REGRESSION green, `.15` done (16/18;
+  GS 4 of 10 axes open). Before it P4-0316 (a44-2c: a case accepted on its own authority) and P4-0315 (a44-2b: the tools read
+  the case declarations; `CR-GC-M-1` retired, `REQ-GC-M` `planned`, G-TRACE open).
+- next_action: P4-SYSTEM.14 a44-3 (the M v4 case declared: case.sexp, prepared inputs via prepare_div_inputs.py --write,
+  the three declarations via capture_div.py --declare, committed), a44-4 (its capture via retain_div_capture.py, exactly
+  once; review_div_method/policy pointers to v4), a44-5 (CR-GC-M-2 with credits.sexp recreated, references.sexp, gate.sexp,
+  `derived-status` 2 → 37 restated) back to back — the 5:1 count reaches six at a44-5, recorded as closing the one lapse;
+  then XTASK.13 (DEF-GEN, GUEST-GEN first), the cleanup rollover, ARTIFACT-CLEANUP.29 class C; `.31` after 2026-10-29T09:49Z.
+  Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

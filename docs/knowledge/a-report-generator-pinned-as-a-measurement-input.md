@@ -32,5 +32,9 @@ rule, and left the kind undeclared with the reason in the open row; declaring it
   honest moves are a re-capture (a new case version with a fresh manifest) or leaving the dependent change
   undeclared and saying so where the status is read.
 
-Evidence: `docs/tasks/P4-SYSTEM.md` `.15` slice f; target/p4-system-15/f (campaign.log, record-schema.log,
+Resolved 2026-10-29 by the re-capture route, batched: ruling B's switch (`P4-SYSTEM.14` a44-2b) invalidated the M
+capture anyway, so the generator edit and the declaration landed in the lapse window (`.15` slice g), before the M
+case's v4 capture pins the final generator — one re-capture for every pinned edit queued behind it.
+
+Evidence: `docs/tasks/P4-SYSTEM.md` `.15` slices f and g; target/p4-system-15/f (campaign.log, record-schema.log,
 the reverted generator edit); `profiles/rv64gc-lab-v0/gate.sexp` G-REGRESSION open row.
