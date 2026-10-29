@@ -23,6 +23,7 @@ SEAMS = {
                        '    require(not issues, "authority shape: " + (issues[0] if issues else ""))\n'),
     "registry-binding": ('    require(registries == [REGISTRY], "authority registry differs from reviewed source")\n'),
     "authority-binding": ('    require(authority == case.authority, "current DIV semantic authority differs from reviewed case")\n'),
+    "obligation-binding": ('            and case.authority.obligation_id in case.obligation_ids\n'),
 }
 CHILD = '''from pathlib import Path
 from dataclasses import FrozenInstanceError
@@ -248,6 +249,16 @@ class AuthorityTests(unittest.TestCase):
         field(self.document(forms), "profile")[1] = "foreign"
         self.save(path, forms)
         self.refuses(needle="profile differs")
+
+    def test_the_projected_obligation_must_be_one_the_case_declares(self):
+        """A case names its obligations and the one its authority projects; projecting another catalogue
+        obligation refuses before any projection (a44-2c), whatever its count."""
+        path = self.runtime / A.Case.case_path(A.P.CASE_ID)
+        text = path.read_text()
+        changed = text.replace('(obligation_id "OB-GC-M")', '(obligation_id "OB-GC-C")', 1)
+        self.assertNotEqual(changed, text)
+        path.write_text(changed)
+        self.refuses(needle="selected DIV authority is missing")
 
     def test_missing_selected_records_refuse(self):
         for name, head, identity in (("requirements", "requirement", "REQ-GC-M"),

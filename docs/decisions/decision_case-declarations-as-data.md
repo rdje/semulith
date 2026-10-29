@@ -51,3 +51,7 @@ option C would repeat a lapse and re-credit for every new case. B pays the cost 
   censuses re-derived, `CR-GC-M-1` retired) and a44-2c (the checks still specific to the M source — the
   normative-source identity and publication in `review_div_capture.py`, the single obligation in
   `capture_div.py` — become checks against the catalogues, so a non-M case is accepted on its own authority).
+- a44-2c, measured: a case's 1–8 normative excerpts are retained under its profile, pinned by their bytes, and each
+  names exactly one original publication equal to the case's source digest (held equal to the catalogue by the
+  authority review); a synthetic non-M case passes with no constant of the M source. The policy review's
+  per-obligation feature table stays M-only (unpinned): a non-M case's measurement adds its row without a lapse.

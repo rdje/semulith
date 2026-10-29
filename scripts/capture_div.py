@@ -201,8 +201,12 @@ def review_authorities(case_id=P.CASE_ID, case=None) -> CurrentAuthorities:
     candidates = _unique(references["candidate"], "candidate")
     case = P.reviewed_case(case_id) if case is None else case
     require(case.case_id == case_id, "reviewed case differs from the selected case")
+    # The case declares its obligations and names the one its authority projects (a44-2c): each must be a
+    # catalogue obligation, so a case is accepted on its own authority, not on a count fixed for one source.
     require(case.requirement_id in requirements and case.source_id in source_index
-            and len(case.obligation_ids) == 1 and case.obligation_ids[0] in obligation_index
+            and 1 <= len(case.obligation_ids) <= len(obligation_index)
+            and all(item in obligation_index for item in case.obligation_ids)
+            and case.authority.obligation_id in case.obligation_ids
             and "sail-riscv" in candidates, "selected DIV authority is missing")
     try:
         scope = V.load_scope(ROOT / DIRECTORY, PROFILE, set(candidates))
@@ -213,7 +217,7 @@ def review_authorities(case_id=P.CASE_ID, case=None) -> CurrentAuthorities:
             "selected DIV authority is foreign or not effective")
     authority = P.project_authority(
         PROFILE, requirement=requirements[case.requirement_id],
-        obligation=obligation_index[case.obligation_ids[0]],
+        obligation=obligation_index[case.authority.obligation_id],
         source=source_index[case.source_id])
     require(authority == case.authority, "current DIV semantic authority differs from reviewed case")
     reference = I.bind_reference_identity(candidates["sail-riscv"])
@@ -385,18 +389,18 @@ def prepare_capture(case_id=P.CASE_ID) -> CaptureDeclaration:
     require(review["authorities"]["context"] == report(context), "authority views changed during preparation")
     rows = {row["path"]: row for row in review["files"]}
     children = []
-    normative = case.required_inputs[0]
+    normative = {item.path: item for item in case.required_inputs}
     for path in review["proposed_children"]:
         role = ("expected-author" if path == "scripts/derive_rv64gc_expectations.py" else
-                "normative-source" if path == normative.path else "dependency")
-        identity = normative.input_id if path == normative.path else "dependency-" + _digest(path.encode())
+                "normative-source" if path in normative else "dependency")
+        identity = normative[path].input_id if path in normative else "dependency-" + _digest(path.encode())
         children.append(Execution.InputBinding(role, identity, path, rows[path]["sha256"]))
     children = tuple(children)
     require(len(children) == review["counts"]["children"] and 1 <= len(children) <= F.MANIFEST_INPUTS,
             "reviewed flat population differs")
     require(set(Review.declaration_paths(case)) <= {item.path for item in children},
             "the case's declaration is not a pinned child")
-    require(normative in children, "reviewed normative input differs")
+    require(all(item in children for item in case.required_inputs), "reviewed normative input differs")
     dependencies = F.encode_dependencies(dict(format_version="matched-gpr-dependencies-v1",
                                              input=[_record(item) for item in children]),
                                          path=case_prefix + "/dependencies.sexp")

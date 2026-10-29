@@ -429,7 +429,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a and a44-2b done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c the checks still specific to the M source become catalogue checks; then `.15` slice g, a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a to a44-2c done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c done (the checks of the M source became checks of the case's own authority); next `.15` slice g, then a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — unblocked by `.14` a44-2b (the M capture is invalidated until v4): it lands before a44-4, so v4 pins the final report generator |
 
 ## Decisions
@@ -523,6 +523,28 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-2c / SEMULITH-P4-0316: the checks specific to the M source become checks of the case's own authority (completed)
+
+The rest of a44-1's generalization, before v4 so the capture pins the final code. `review_div_capture.check_retained_input`
+no longer compares a case with the DIV excerpt's constants (`RVI-M-DIV-STATEMENT`, `PRIMARY`, `retain_div_statement`'s
+`RETAINED_SHA` and `SOURCE_SHA`): a case declares 1–8 normative inputs (`RETAINED_INPUTS`), each retained under its
+profile's `retained/` directory with unique ids and paths, its bytes its pin, and its wrapper naming exactly one original
+publication (`Original page SHA256: <code>…</code>`, which both retained excerpts carry) equal to the case's source digest
+— which the authority review holds equal to the current source catalogue; an excerpt is never its own publication. The
+case's excerpts, not a fixed path, are its normative manifest children (`child_paths`, `prepare_capture`), and
+`capture_div.review_authorities` accepts the case's declared obligations, each in the catalogue, projecting the one its
+authority names (not exactly one, at index 0). Measured: both cases review `pending` with 67 children; the review probe
+33 tests — a non-M case (a synthetic `RVP-X` excerpt) accepted on its own authority and refused when its excerpt names
+another page, its excerpt the child in place of the M one — with `publication-authority` 2 → 4 and `retained-pin` 1 → 2
+losses and two new seams (`excerpt-not-publication`, `excerpt-population`, 1 each); the authority probe 19 tests, the
+new `obligation-binding` seam losing the projected-obligation test. The method checker's census lost the extractor (no
+checker code imports it now): `SOURCE_MODULES` excludes `retain_div_statement`, 39 checker sources (measured: the
+method review refused `project module population differs` until then). Not generalized here, by design: the policy
+review's per-obligation feature table holds `OB-GC-M` alone (`review_div_policy.py`, unpinned) — a non-M case's policy
+measurement adds its own row without a lapse. The first self-test run missed one arm (`1187 pass / 1 fail`): the
+method probe's `evaluation-accounting` in optimized mode, a child past its 20 s hang guard under the self-test pool (1–2 s
+idle, the arm green alone); the guard is 60 s now, as the probe's heavier children have 120 s. Next: `.15` slice g, then a44-3.
 
 ### .14 a44-2b / SEMULITH-P4-0315: the tools read the case declarations; the in-code tables removed; `CR-GC-M-1` retired (completed)
 
@@ -1105,6 +1127,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-2b **ROOT CAUSE** — the tools still read the cases from code after a44-2a: at HEAD `git show HEAD:scripts/matched_gpr_property.py | grep -c '^_CASES = '` = 1 and `git show HEAD:scripts/capture_div.py | grep -c '^CURATED_INPUTS = '` = 1, so declaring a case edited two pinned scripts; the review's population was a fixed 64 (`capture_div.py` `len(children) == 64`).
 - [x] `.14` a44-2b **ADDRESSED** — `grep -c "_CASES\|signed_division_case\|m_forms_case\|_REQUIRED_INPUT_ROWS" scripts/matched_gpr_property.py` = 0 and `grep -c CURATED_INPUTS scripts/capture_div.py` = 0, after target/p4-system-14/a44-2b/equality-before-removal.txt (both cases `case-equal True prepared-equal True`); `python3 scripts/review_div_capture.py --review` → `pending 38 27 13 39 67 82`, `False False`; the property probe's 36 arms measured against the table (property-arms.txt: `36 arms, 0 differ`); `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `0 credit(s)`; `python3 -B scripts/requirement_status.py` → `48 planned; 2 case(s), 0 credited … 0 drift, 0 finding(s)`.
 - [x] `.14` a44-2b **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1182 pass / 0 fail` (target/p4-system-14/a44-2b/pc-selftest-2.log, 478 s; the first run's 4 misses — `derived-status` 37 → 2 with the status change, the `case-pass-through` seam text — re-measured, pc-selftest-1.log); every matched-GPR/DIV/status probe green in both modes inside it; the staged prechecks green (target/p4-system-14/a44-2b/prechecks.txt) and the commit gate (chain log).
+- [x] `.14` a44-2c **ROOT CAUSE** — after a44-2b the review still bound a case to the M source's constants: `git show HEAD:scripts/review_div_capture.py | grep -c 'RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA'` = 1 and `git show HEAD:scripts/capture_div.py | grep -c 'len(case.obligation_ids) == 1'` = 1, so a non-M case would be refused by pinned code.
+- [x] `.14` a44-2c **ADDRESSED** — `grep -c "Retain\.\|RVI-M" scripts/review_div_capture.py` = 0; `grep -c "len(case.obligation_ids) == 1" scripts/capture_div.py` = 0; `python3 -B scripts/probe_div_capture_review.py` → `33 tests / 0 failures / 0 errors` (the non-M case accepted on its own authority); `python3 -B scripts/probe_div_authorities.py` → `19 tests / 0 failures / 0 errors`; seams measured: `publication-authority` 4, `excerpt-not-publication` 1, `excerpt-population` 1, `retained-pin` 2, `obligation-binding` 1.
+- [x] `.14` a44-2c **NO REGRESSION** — the 41 matched-GPR/DIV/status probes rc=0 (target/p4-system-14/a44-2c/green-1 and the method/policy re-runs); `python3 -B scripts/review_div_method.py` → `stale`, 39 checker sources; `PROFILE-CONSISTENCY --self-test: 1187 pass / 1 fail` (pc-selftest-1.log: the load timeout above, its arm green alone, `DIV-METHOD: 1 tests / 4 failures`, as expected), the guard raised; the staged prechecks (prechecks.txt) and the commit gate's self-test (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

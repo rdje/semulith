@@ -8290,7 +8290,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(0, "-O".to_owned());
         }
-        tally.score(&format!("GREEN DIV dependency review {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-REVIEW: 32 tests / 0 failures / 0 errors; synthetic population controls, no capture credit");
+        tally.score(&format!("GREEN DIV dependency review {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-REVIEW: 33 tests / 0 failures / 0 errors; synthetic population controls, no capture credit");
         for (mutation, losses) in [
             ("module-population", "2"),
             ("dynamic-import", "2"),
@@ -8305,8 +8305,10 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("aggregate-bound", "1"),
             ("byte-recheck", "2"),
             ("retained-identity", "3"),
-            ("publication-authority", "2"),
-            ("retained-pin", "1"),
+            ("publication-authority", "4"),
+            ("excerpt-not-publication", "1"),
+            ("excerpt-population", "1"),
+            ("retained-pin", "2"),
             ("authority-declaration", "1"),
             ("authority-preopen", "1"),
             ("authority-readonly", "1"),
@@ -8315,7 +8317,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED DIV dependency review {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-CAPTURE-REVIEW: 32 tests / {losses} failures / 0 errors; synthetic population controls, no capture credit"));
+            tally.score(&format!("RED DIV dependency review {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-CAPTURE-REVIEW: 33 tests / {losses} failures / 0 errors; synthetic population controls, no capture credit"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
@@ -8479,13 +8481,22 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             &format!("GREEN current DIV authorities {mode}"),
             prober.probe(repo, argv.clone()),
             0,
-            "DIV-AUTHORITIES: 18 tests / 0 failures / 0 errors; current views, no capture credit",
+            "DIV-AUTHORITIES: 19 tests / 0 failures / 0 errors; current views, no capture credit",
         );
-        for mutation in ["raw-validation", "registry-binding", "authority-binding"] {
-            let losses = if mutation == "registry-binding" { 1 } else { 3 };
+        for mutation in [
+            "raw-validation",
+            "registry-binding",
+            "authority-binding",
+            "obligation-binding",
+        ] {
+            let losses = if matches!(mutation, "registry-binding" | "obligation-binding") {
+                1
+            } else {
+                3
+            };
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED omitted DIV authority {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-AUTHORITIES: 18 tests / {losses} failures / 0 errors; current views, no capture credit"));
+            tally.score(&format!("RED omitted DIV authority {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-AUTHORITIES: 19 tests / {losses} failures / 0 errors; current views, no capture credit"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {

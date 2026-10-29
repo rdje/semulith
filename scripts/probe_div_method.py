@@ -336,7 +336,7 @@ class MethodTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, *(["-O"] if sys.flags.optimize else []), "-B", "-c", CHILD,
              str(self.runtime), mode, *([] if argument is None else [str(argument)])],
-            cwd=ROOT, capture_output=True, text=True, timeout=20)
+            cwd=ROOT, capture_output=True, text=True, timeout=60)  # a hang guard: 1-2 s idle, >20 s once under the self-test pool (a44-2c)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         payload = json.loads(result.stdout)
         self.assertEqual(payload["processes"], 0, payload)
@@ -350,7 +350,7 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(r["authenticated_files"], 88, r)  # 67 children + 9 principals + 12 observations (a44-2b)
         self.assertGreater(r["authenticated_bytes"], 0, r)
         self.assertGreater(r["snapshot_bytes"], 0, r)
-        self.assertEqual((r["checker_disposition"], r["checker_source_count"]), ("matched", 40), r)  # +matched_gpr_case
+        self.assertEqual((r["checker_disposition"], r["checker_source_count"]), ("matched", 39), r)  # +matched_gpr_case (a44-2b), -retain_div_statement (a44-2c)
         self.assertTrue(r["root"])
         self.assertEqual(r["replay_disposition"], "not-checked")
         self.assertFalse((self.runtime / ".git").exists())
@@ -385,7 +385,7 @@ class MethodTests(unittest.TestCase):
                              ("satisfied", "pending", "valid", "matched", "pending"), r)
             self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
                              (85, 1076834, 40438), r)  # the m-forms capture (a42ax)
-        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 40), r)
+        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
         self.assertEqual(r["replay_disposition"], "not-checked")
 
     def test_all_runtime_files_remain_exact_and_results_are_immutable(self):

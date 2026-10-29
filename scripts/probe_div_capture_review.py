@@ -16,7 +16,6 @@ from unittest.mock import patch
 
 import review_div_capture as R
 import matched_gpr_property as P
-import retain_div_statement as Retain
 import capture_div as A
 import matched_gpr_artifacts as F
 
@@ -39,18 +38,24 @@ MUTATIONS = {
     "aggregate-bound": ("self.total + info.st_size <= TOTAL_BYTES", "True", 1),
     "byte-recheck": ("self.read(path) == data", "True", 1),
     "retained-identity": (
-        "(primary.role, primary.input_id, primary.path, primary.sha256)\n"
-        '        == ("normative-source", "RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA)',
+        'item.role == "normative-source"\n'
+        '            and item.path.startswith("profiles/" + case.profile_id + "/retained/")',
         "True",
         1,
     ),
     "publication-authority": (
-        'case.authority.source_id == "RVI-M"\n'
-        "        and case.authority.source_sha256 == Retain.SOURCE_SHA",
+        "PUBLICATION.findall(payload) == [case.authority.source_sha256.encode()]",
         "True",
         1,
     ),
-    "retained-pin": ("hashlib.sha256(data).hexdigest() == primary.sha256", "True", 1),
+    "excerpt-not-publication": (
+        "case.authority.source_id not in {item.input_id for item in inputs}\n"
+        "        and case.authority.source_sha256 not in {item.sha256 for item in inputs}",
+        "True",
+        1,
+    ),
+    "excerpt-population": ("type(inputs) is tuple and 1 <= len(inputs) <= RETAINED_INPUTS", "True", 1),
+    "retained-pin": ("hashlib.sha256(payload).hexdigest() == item.sha256", "True", 1),
     "authority-declaration": ("set(A.VIEW_PATHS) == AUTHORITY_PATHS", "True", 1),
     "authority-preopen": ("relative in AUTHORITY_PATHS", "True", 1),
     "authority-readonly": ('not any(flag in mode for flag in "wax+")', "True", 1),
@@ -287,56 +292,77 @@ class ReviewTests(unittest.TestCase):
                 self.assertRaises(R.ReviewError):
             R.exercise_authorities(snapshots)
 
+    def excerpt(self, publication):
+        """A retained excerpt's wrapper naming one original publication, as the retention tools write it."""
+        return (b"<p>Source: a pinned publication.<br>\nOriginal page SHA256: <code>" + publication.encode()
+                + b"</code>.<br></p>\n<p>synthetic retained statement</p>\n")
+
     def retained_case(self, data):
         case = P.reviewed_case(P.CASE_ID)
         pin = replace(case.required_inputs[0], sha256=hashlib.sha256(data).hexdigest())
         return replace(case, required_inputs=(pin,))
 
     def test_retained_identity_and_population_are_exact(self):
-        data = b"synthetic retained statement"
+        data = self.excerpt(P.reviewed_case(P.CASE_ID).authority.source_sha256)
         case = self.retained_case(data)
-        with patch.object(Retain, "RETAINED_SHA", case.required_inputs[0].sha256):
-            R.check_retained_input(case, data)
-            for change in [
-                dict(role="implementation"),
-                dict(input_id="RVI-M"),
-                dict(path="other/statement.html"),
-                dict(sha256="a" * 64),
-            ]:
-                with self.subTest(change=change), self.assertRaises(R.ReviewError):
-                    R.check_retained_input(
-                        replace(
-                            case,
-                            required_inputs=(
-                                replace(case.required_inputs[0], **change),
-                            ),
-                        ),
-                        data,
-                    )
-            for pins in [(), case.required_inputs * 2]:
-                with self.subTest(count=len(pins)), self.assertRaises(R.ReviewError):
-                    R.check_retained_input(replace(case, required_inputs=pins), data)
+        R.check_retained_input(case, {case.required_inputs[0].path: data})
+        for change in [
+            dict(role="implementation"),
+            dict(path="other/statement.html"),
+            dict(path="profiles/rv64i-lab-v0/retained/div-statement.html"),
+            dict(sha256="a" * 64),
+        ]:
+            changed = replace(case, required_inputs=(replace(case.required_inputs[0], **change),))
+            with self.subTest(change=change), self.assertRaises(R.ReviewError):
+                R.check_retained_input(changed, {changed.required_inputs[0].path: data})
+        for pins in [(), case.required_inputs * 2]:
+            with self.subTest(count=len(pins)), self.assertRaises(R.ReviewError):
+                R.check_retained_input(replace(case, required_inputs=pins), {case.required_inputs[0].path: data})
+        for supplied in [{}, data]:
+            with self.subTest(supplied=type(supplied).__name__), self.assertRaises(R.ReviewError):
+                R.check_retained_input(case, supplied)
 
     def test_original_publication_authority_cannot_be_replaced_by_excerpt(self):
-        data = b"synthetic retained statement"
+        source = P.reviewed_case(P.CASE_ID).authority.source_sha256
+        data = self.excerpt(source)
         case = self.retained_case(data)
-        with patch.object(Retain, "RETAINED_SHA", case.required_inputs[0].sha256):
-            for change in [
-                dict(source_id="RVI-M-DIV-STATEMENT"),
-                dict(source_sha256=case.required_inputs[0].sha256),
-            ]:
-                with self.subTest(change=change), self.assertRaises(R.ReviewError):
-                    R.check_retained_input(
-                        replace(case, authority=replace(case.authority, **change)), data
-                    )
+        for change in [
+            dict(source_id=case.required_inputs[0].input_id),
+            dict(source_sha256=case.required_inputs[0].sha256),
+            dict(source_sha256="b" * 64),
+        ]:
+            with self.subTest(change=change), self.assertRaises(R.ReviewError):
+                R.check_retained_input(
+                    replace(case, authority=replace(case.authority, **change)), {case.required_inputs[0].path: data}
+                )
+        # An excerpt that names no publication, another one, or two.
+        for payload in [b"synthetic retained statement", self.excerpt("c" * 64), data + self.excerpt(source)]:
+            named = self.retained_case(payload)
+            with self.subTest(payload=payload[:24]), self.assertRaises(R.ReviewError):
+                R.check_retained_input(named, {named.required_inputs[0].path: payload})
 
     def test_changed_retained_bytes_refuse(self):
-        data = b"synthetic retained statement"
+        data = self.excerpt(P.reviewed_case(P.CASE_ID).authority.source_sha256)
         case = self.retained_case(data)
-        with patch.object(
-            Retain, "RETAINED_SHA", case.required_inputs[0].sha256
-        ), self.assertRaises(R.ReviewError):
-            R.check_retained_input(case, data + b" changed")
+        with self.assertRaises(R.ReviewError):
+            R.check_retained_input(case, {case.required_inputs[0].path: data + b" changed"})
+
+    def test_a_non_m_case_is_accepted_on_its_own_authority(self):
+        """A case of another source passes the excerpt binding with no constant of the M source, and its excerpt is
+        its manifest child in place of the M one; an excerpt naming another publication refuses (a44-2c)."""
+        case = P.reviewed_case(P.CASE_ID)
+        publication = "d" * 64
+        data = self.excerpt(publication)
+        pin = P.E.InputBinding("normative-source", "RVP-X-STATEMENT",
+                               "profiles/rv64gc-lab-v0/retained/x-statement.html", hashlib.sha256(data).hexdigest())
+        other = replace(case, source_id="RVP-X", required_inputs=(pin,),
+                        authority=replace(case.authority, source_id="RVP-X", source_sha256=publication))
+        R.check_retained_input(other, {pin.path: data})
+        children = R.child_paths(R.REVIEWED_MODULES, other)
+        self.assertIn(pin.path, children)
+        self.assertNotIn(R.PRIMARY, children)
+        with self.assertRaises(R.ReviewError):
+            R.check_retained_input(other, {pin.path: self.excerpt(case.authority.source_sha256)})
 
     def test_read_and_recheck(self):
         self.write("input", b"checked")

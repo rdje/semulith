@@ -15,6 +15,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import platform
+import re
 import stat
 import subprocess
 import sys
@@ -88,7 +89,10 @@ AUTHORITY_PATHS = frozenset(
 )
 GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"  # the retained case's guest; guest_path() for any case
 CASE_SCHEMA = "schema/matched-case.sexp"  # validates every case's declaration; declaration_paths() for any case
-PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"
+PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"  # the M cases' excerpt; a case's own are its required inputs
+RETAINED_INPUTS = 8  # a case's normative-source excerpts, at most
+# The one original publication a retained excerpt's wrapper names (retain_div_statement.py and its siblings write it).
+PUBLICATION = re.compile(rb"Original page SHA256: <code>([0-9a-f]{64})</code>")
 POLICY = "profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md"
 SELF = "scripts/review_div_capture.py"
 PRINCIPAL_CODE = frozenset(
@@ -276,7 +280,8 @@ def child_paths(modules, case):
         ({f"scripts/{name}.py" for name in modules} - PRINCIPAL_CODE)
         | DATA_PATHS
         | set(declaration_paths(case))
-        | {PRIMARY, POLICY, SELF}
+        | {item.path for item in case.required_inputs}
+        | {POLICY, SELF}
     )
     require(len(paths) <= F.MANIFEST_INPUTS, f"proposed manifest exceeds {F.MANIFEST_INPUTS} children")
     return tuple(sorted(paths))
@@ -362,25 +367,38 @@ def check_declaration(case, snapshots):
 
 
 def check_retained_input(case, data):
-    """Bind the curated bytes and their distinct original publication identity."""
-    import retain_div_statement as Retain
+    """Bind each curated excerpt's bytes and the original publication it names to the case's own authority.
 
-    require(len(case.required_inputs) == 1, "normative source population changed")
-    primary = case.required_inputs[0]
+    `data` maps each required input's path to its reviewed bytes. A case is accepted on its declared authority,
+    not on a source this module knows (P4-SYSTEM.14 a44-2c): each excerpt is a normative source retained under
+    the case's profile, its bytes are its pin, and the one publication its wrapper names is the case's source
+    publication — which the authority review holds equal to the current source catalogue. An excerpt is never
+    its own publication.
+    """
+    inputs = case.required_inputs
+    require(type(inputs) is tuple and 1 <= len(inputs) <= RETAINED_INPUTS, "normative source population changed")
     require(
-        (primary.role, primary.input_id, primary.path, primary.sha256)
-        == ("normative-source", "RVI-M-DIV-STATEMENT", PRIMARY, Retain.RETAINED_SHA),
-        "retained source identity changed",
+        len({item.input_id for item in inputs}) == len({item.path for item in inputs}) == len(inputs),
+        "normative source population changed",
     )
     require(
-        case.authority.source_id == "RVI-M"
-        and case.authority.source_sha256 == Retain.SOURCE_SHA,
+        case.authority.source_id not in {item.input_id for item in inputs}
+        and case.authority.source_sha256 not in {item.sha256 for item in inputs},
         "original publication authority changed",
     )
-    require(
-        hashlib.sha256(data).hexdigest() == primary.sha256,
-        "retained source pin differs",
-    )
+    for item in inputs:
+        require(
+            item.role == "normative-source"
+            and item.path.startswith("profiles/" + case.profile_id + "/retained/"),
+            "retained source identity changed",
+        )
+        payload = data.get(item.path) if type(data) is dict else None
+        require(type(payload) is bytes, "retained source bytes unavailable: " + item.path)
+        require(hashlib.sha256(payload).hexdigest() == item.sha256, "retained source pin differs")
+        require(
+            PUBLICATION.findall(payload) == [case.authority.source_sha256.encode()],
+            "original publication authority changed",
+        )
 
 
 def exercise_authorities(snapshots, case=None):
@@ -486,7 +504,7 @@ def review(case_id=None):
         and hashlib.sha256(snapshots.data[guest]).hexdigest() == case.source_sha256,
         "guest differs from reviewed case",
     )
-    check_retained_input(case, snapshots.data[PRIMARY])
+    check_retained_input(case, {item.path: snapshots.data[item.path] for item in case.required_inputs})
     exercised = exercise_loaders(snapshots.data[guest], snapshots, case)
     authorities = exercise_authorities(snapshots, case)
     snapshots.recheck()

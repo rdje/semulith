@@ -112,7 +112,14 @@ route consumes the already curated bytes and does not rerun extraction. Neither
 the full source page nor its licence-evidence page is a runtime input on that
 route. Their exact provenance remains in the retained artifact and terms record.
 The diagnostic checks the excerpt's metadata/bytes and original publication
-identity independently. Its37 modules and64 children reach the unchanged64-child
+identity independently. Since `P4-SYSTEM.14` a44-2c it does so from the case's own
+declaration, with no constant of the M source: each of the case's 1–8 normative
+inputs is retained under its profile's `retained/` directory, its bytes are its pin,
+its wrapper names exactly one original publication (`Original page SHA256: …`) equal
+to the case's source digest — which the authority review holds equal to the source
+catalogue — and an excerpt is never its own publication; the excerpts, not a fixed
+path, are the case's normative children, and the case's authority projects one of
+the obligations it declares. Its37 modules and64 children reach the unchanged64-child
 ceiling. The final execution composition must fit this reviewed population or
 receive another bounded design review before execution. A copied reviewed input set can
 run the diagnostic with no `.materials` directory; success still stays pending.

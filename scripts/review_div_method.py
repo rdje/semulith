@@ -22,7 +22,9 @@ import matched_gpr_adequacy as Adequacy
 
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCE_MODULES = frozenset((*A.Review.REVIEWED_MODULES,
+# The checker's own code, reached from review_div_method. The excerpt extractor is a producer root (the capture's
+# manifest pins it) but no checker code imports it since a44-2c bound excerpts to the case's own authority.
+SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement"}),
                             "matched_gpr_adequacy", "review_div_method"))
 # The retained, captured case this review reads. It lives here, in a consumer no case pins, so
 # moving it to the next captured case does not invalidate any declaration (a42av).
