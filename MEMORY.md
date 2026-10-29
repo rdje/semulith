@@ -20,15 +20,15 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0324` (P4-SYSTEM.14 a43a-2d) — the XLEN case re-declared before capture (control step cites §3.1.1,
-  10 boundary witnesses tagged); this commit is its declaration commit. Features 1-4 of 5 since XTASK-0073.
-- next_action: feature 5: a43a-2e the XLEN capture on a QUIET host (target/p4-system-14/a43a-2d/capture-when-quiet.sh pattern,
-  --declaration-commit <P4-0324's id>; FREEZE pinned inputs until then); then XTASK.13 slice b (GUEST-GEN); then a43a-2f the
-  reviews generalized to several retained cases (review_div_method/policy per case; boundary marker "(boundary"; form coverage
-  for a state requirement; OB-XLEN feature disposition) and the credit (CR-D-XLEN-1).
-  pointers per case; XLEN policy legs, defined/low) and the credit (CR-D-XLEN-1); then XTASK.13 slice b (GUEST-GEN).
-  Maintenance: ARTIFACT-CLEANUP.31 (due after 2026-10-29T09:49Z), the cleanup narrative's rollover. Watch hosted CI after
-  every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
+- last_unit: `SEMULITH-P4-0325` (P4-SYSTEM.14 a43a-2e) — the XLEN case captured once (AGREE, AGREE, control DIVERGE at
+  x31/24); this commit is its capture commit. Features 1-5 of 5 since XTASK-0073 done: the XTASK turn is next.
+- next_action: XTASK.13 slice b (GUEST-GEN): a REDUCED frozen pair (the full rv64gc corpus is 171 guests, its fixture ~1 MB):
+  drop the live in-sync arm (run judges live), the hand-edit and base-mirror arms on a small fixed subset; RED before/after on
+  the real tree with a restore trap (target/xtask/xt0073/red.sh pattern). Then a43a-2f: review_div_method/policy over several
+  retained cases (per-case pointers; boundary marker "(boundary"; form coverage for a state requirement; OB-XLEN feature
+  disposition; PROFILE-CONSISTENCY's real run per case) and the credit CR-D-XLEN-1 (REQ-D-XLEN implemented).
+  Watch hosted CI after every push; capture only on a quiet host (target/p4-system-14/a43a-2e/capture-when-quiet.sh);
+  after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —

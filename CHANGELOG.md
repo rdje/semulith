@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0325 (P4-SYSTEM.14 a43a-2e) — the XLEN case captured, exactly once: the first non-M capture
+
+One invocation of `retain_div_capture.py --case rv64gc-xlen-forms-v1`, started only on a quiet host (no sibling repository's verification for three minutes, load below 6): three zero-exit processes, baseline and repeat AGREE, the control DIVERGE exactly as declared — boundary 24, x31 holding 2^40 where the control expects 0 — complete, qualification false. The case holds 22 of 22 and the family all 89; the status reads 4 cases, 1 credited, XLEN pending. The receipt's limitation carried an M-specific phrase from the retention tool; future receipts name the case's own requirement, this one is retained as written.
+
 ## SEMULITH-P4-0324 (P4-SYSTEM.14 a43a-2d) — the XLEN case re-declared before its capture: its evidence fit for the policy's legs
 
 Caught before the capture, which was queued and stopped unrun: the policy's source-located leg needs the control's witness step to cite the requirement's own source and locator, and its boundary leg needs the case's boundary fixtures marked and predeclared — fixed for good once captured. The guest now cites RVI-RV64I §3.1.1 where the width and address claims rest on it (the control's step included) and tags ten boundary witnesses `(boundary: …)`, each a property's step; the marker occurs in no other guest. The uncaptured case was re-declared in place (the a42av precedent): only digests and sizes changed, the image byte-identical; review pending, preflight ready.

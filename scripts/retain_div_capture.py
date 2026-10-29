@@ -154,7 +154,8 @@ def receipt(case: P.ReviewedPropertyCase, declaration_commit: str, result) -> di
             authenticated_bytes=authentication.authenticated_bytes,
             charged_read_bytes=authentication.charged_read_bytes,
             snapshot_bytes=authentication.snapshot_bytes, snapshot_limit=SNAPSHOT_LIMIT),
-        limitations=[case.coverage + ", not all M or CPU acceptance", *GENERIC_LIMITATIONS],
+        # The case's own requirement, never a constant of the M source (a43a-2e: the XLEN receipt, retained, reads "M").
+        limitations=[case.coverage + ", not all " + case.requirement_id + " or CPU acceptance", *GENERIC_LIMITATIONS],
     )
 
 
