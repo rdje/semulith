@@ -113,12 +113,13 @@ Semantic currentness, input authentication and coverage remain distinct checks.
 
 ## Pure API contract
 
-`scripts/matched_gpr_property.py` owns the reviewed cases as a table (a42at):
-`reviewed_case(case_id)` returns a fresh frozen `ReviewedPropertyCase`, and
-`reviewed_case_ids()` lists them — `rv64gc-signed-div-truncation-v2`
-(`signed_division_case()`, the retained case, `CASE_ID`) and `rv64gc-m-forms-v3`
-(`m_forms_case()`, declared before its declaration record and capture; see the
-last section). A case carries its program, boundary budget, source size and
+Each reviewed case is declared as data, one file per case, `evidence/<case>/case.sexp`
+(`schema/matched-case.sexp`; `P4-SYSTEM.14` a44-2a, read by the tools since a44-2b; until then the
+cases were a table in this module, a42at). `reviewed_case(case_id)` reads the declaration through
+`scripts/matched_gpr_case.py`, which returns neutral data, and maps it onto a fresh frozen
+`ReviewedPropertyCase`; a case without a declaration is refused by name. `reviewed_case_ids()`
+lists the declared cases in name order — `rv64gc-m-forms-v3` and `rv64gc-signed-div-truncation-v2`
+(`CASE_ID`, the default the capture tools select). A case carries its program, boundary budget, source size and
 digest, its `properties` — one `ReviewedProperty` each with an identity, the
 policy cell it serves (`form:<mnemonic>` or `table1:<row>`), its statement, its
 typed `GprWitness` and its reviewed RV64 value — the identity of the one property
@@ -170,7 +171,9 @@ an unknown case or unsupported source-value scope. Unexpected programming
 failures propagate. A match establishes this reviewed finite property binding;
 file authentication, expected-author provenance, actual collection/control,
 review completeness, full policy and requirement-status derivation remain separate.
-No file, binary or process is opened. Existing raw schema, manifest, source-value
+Given the selected case (`bind_source_property(..., case=...)`, as the evaluation passes it), no file,
+binary or process is opened; given only a case id, the binding reads that case's declaration and nothing
+else (a44-2b). Existing raw schema, manifest, source-value
 and snapshot owners retain their contracts; this API does not reinterpret source
 code or introduce an arithmetic engine.
 
@@ -322,8 +325,9 @@ qualification credit. This supersedes the v1 optional acquired-page smoke.
 ## The m-forms case: twenty-five predeclared properties (a42at)
 
 The policy's two pending legs ask for one capture that predeclares every Table 1 row and
-every M form (see [Policy legs measured](policy-adequacy.md)). `m_forms_case()` is that
-case, declared in the binding before its declaration record and its capture:
+every M form (see [Policy legs measured](policy-adequacy.md)). `rv64gc-m-forms-v3` is that
+case, declared in the binding before its declaration record and its capture (as code at a42at, as
+data since a44-2a):
 `rv64gc-m-forms-v3`, 33 boundaries over `profiles/rv64gc-lab-v0/guests/m-forms.s`
 (3,886 bytes, SHA256 `232b4d96d87125c3ab876b2ec415d250a572433df57d5696afffde6a95f8d7a6`),
 the same requirement, obligation, contract and semantic authority as the retained case, and

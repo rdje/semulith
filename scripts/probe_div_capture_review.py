@@ -18,6 +18,7 @@ import review_div_capture as R
 import matched_gpr_property as P
 import retain_div_statement as Retain
 import capture_div as A
+import matched_gpr_artifacts as F
 
 ROOT = Path(__file__).resolve().parent.parent
 MUTATIONS = {
@@ -29,7 +30,9 @@ MUTATIONS = {
     ),
     "external-import": ("base in REVIEWED_EXTERNALS", "True", 1),
     "data-population": ("set(observed) == DATA_PATHS", "True", 1),
-    "child-bound": ("len(paths) <= 64", "True", 1),
+    "child-bound": ("len(paths) <= F.MANIFEST_INPUTS", "True", 1),
+    "declaration-children": ("        | set(declaration_paths(case))\n", "", 1),
+    "declaration-binding": ("declared == case", "True", 1),
     "symlink": ("path.lstat()", "path.stat()", 2),
     "git-boundary": ('not os.path.lexists(path / ".git")', "True", 1),
     "file-bound": ("0 <= info.st_size <= FILE_BYTES", "True", 1),
@@ -143,17 +146,36 @@ class ReviewTests(unittest.TestCase):
             R.check_data_population([*R.DATA_PATHS, "schema/unreviewed.sexp"])
 
     def test_child_population_and_inclusive_bound(self):
-        children = R.child_paths(R.REVIEWED_MODULES)
-        self.assertEqual(len(children), 64)
+        case = P.reviewed_case(P.CASE_ID)
+        children = R.child_paths(R.REVIEWED_MODULES, case)
+        self.assertEqual(len(children), 67)
+        self.assertLessEqual(len(children), F.MANIFEST_INPUTS)
         self.assertFalse(set(children) & R.PRINCIPAL_CODE)
         self.assertIn(R.SELF, children)
         self.assertIn(R.PRIMARY, children)
+        self.assertEqual(R.declaration_paths(case), ("evidence/" + P.CASE_ID + "/case.sexp", R.CASE_SCHEMA))
+        self.assertLessEqual(set(R.declaration_paths(case)), set(children))
         self.assertIn("retain_div_statement", R.ROOT_MODULES)
         self.assertIn("scripts/retain_div_statement.py", children)
         self.assertIn("capture_div", R.ROOT_MODULES)
-        self.assertEqual(len(R.child_paths(R.REVIEWED_MODULES - {"capture_div"})), 63)
+        self.assertEqual(len(R.child_paths(R.REVIEWED_MODULES - {"capture_div"}, case)), 66)
+        # The ceiling is inclusive: the population at the bound is accepted, one more child refused.
+        with patch.object(F, "MANIFEST_INPUTS", len(children)):
+            self.assertEqual(R.child_paths(R.REVIEWED_MODULES, case), children)
+            with self.assertRaises(R.ReviewError):
+                R.child_paths(R.REVIEWED_MODULES | {"extra_a"}, case)
+
+    def test_the_reviewed_case_is_its_pinned_declaration(self):
+        case = P.reviewed_case(P.CASE_ID)
+        snapshots = R.Snapshots(ROOT)
+        for path in R.declaration_paths(case):
+            snapshots.pin(path)
+        R.check_declaration(case, snapshots)
         with self.assertRaises(R.ReviewError):
-            R.child_paths(R.REVIEWED_MODULES | {"extra_a"})
+            R.check_declaration(replace(case, coverage="another coverage"), snapshots)
+        snapshots.data[R.declaration_paths(case)[0]] = b"(case (id \"rv64gc-signed-div-truncation-v2\"))\n"
+        with self.assertRaises(R.ReviewError):
+            R.check_declaration(case, snapshots)
 
     def authority_fixture(self):
         """Use current tracked views; substitute only the public owner's action."""
@@ -266,7 +288,7 @@ class ReviewTests(unittest.TestCase):
             R.exercise_authorities(snapshots)
 
     def retained_case(self, data):
-        case = P.signed_division_case()
+        case = P.reviewed_case(P.CASE_ID)
         pin = replace(case.required_inputs[0], sha256=hashlib.sha256(data).hexdigest())
         return replace(case, required_inputs=(pin,))
 

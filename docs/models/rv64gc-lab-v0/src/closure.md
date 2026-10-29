@@ -12,8 +12,8 @@ Optional `max_read_bytes` lowers that inclusive cap to a plain integer from zero
 to65536. Invalid values refuse before binding/I/O; the default is unchanged.
 See [delegated allowances and failed-read charging](read-allowance.md).
 
-The existing codec validates raw syntax before its single mapping, permits 1–64
-children and rejects duplicate child IDs/paths, unsafe paths, lexical self and
+The existing codec validates raw syntax before its single mapping, permits 1–96
+children (`MANIFEST_INPUTS`, a ceiling since `P4-SYSTEM.14` a44-2b; 64 before) and rejects duplicate child IDs/paths, unsafe paths, lexical self and
 nested-manifest roles. Child IDs retain the published nonempty-string grammar.
 The new binder allows an exact principal ID/role/path/SHA overlap once. A
 conflicting identity, a path assigned another ID or a child aliasing a run output
@@ -102,7 +102,7 @@ is counted once; an output alias refuses despite a matched manifest pin; changed
 bytes yield no parse or plan. The 33-test suite passes normal/optimized; eight
 independent omissions lose 4/2/16/4/1/1/1/1 assertions with no harness errors.
 PROFILE-CONSISTENCY runs both modes. Tests cover actual owned files, raw schema
-before mapping, all overlap/alias constraints, 64/65 children, inclusive byte
+before mapping, all overlap/alias constraints, the child ceiling and one over it, inclusive byte
 limits, pre-read oversized refusal, snapshots, immutable context/results and
 schema-tool unavailability. Temporary fixtures are cleaned after each test.
 
@@ -258,8 +258,8 @@ The helper authenticates the declared set; completeness of the dependency list,
 source/program/image relationships, impact and full method evaluation remain
 separate obligations.
 
-Before any new artifact I/O it checks and freezes the used context: 1–64 distinct
-children, 9–73 unique union inputs, nine consistent principal bindings and twelve
+Before any new artifact I/O it checks and freezes the used context: 1–96 distinct
+children, 9–105 unique union inputs, nine consistent principal bindings and twelve
 observations selected by the frozen three-run/four-role plan. IDs and paths are
 unique in their respective families, observation paths cannot alias inputs, and
 the union must equal the principals plus the declared child IDs. Exact principal

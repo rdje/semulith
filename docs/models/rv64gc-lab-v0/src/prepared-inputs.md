@@ -75,7 +75,9 @@ canonical schema/assembler data remain explicit tool dependencies. A separate
 75-file copied runtime/data set passes with neither the binary nor `.materials`.
 Ten damaged or missing input/authority/layout cases refuse in normal and optimized
 Python. The current [producer review](capture-plan.md#reviewing-the-authority-loader-within-the-producer-route)
-covers37 modules,27 execution-data files,13 current views and64 proposed children.
+covers 38 modules, 27 execution-data files, the case's declaration and its schema, 13 current views and 67
+proposed children (37 modules and 64 children for the two retained captures, before `P4-SYSTEM.14` a44-2b made the
+declaration a pinned child).
 Preparation's canonical override/schema and baseline remain curation inputs,
 separate from that declared execution-loader trace.
 The final manifest must still be constructed from the complete reviewed route.
@@ -104,7 +106,7 @@ import sexp as S
 root = Path.cwd()
 profile = root / "profiles/rv64gc-lab-v0"
 retained = root / "evidence/rv64gc-signed-div-truncation-v2"
-case = P.signed_division_case()
+case = P.reviewed_case(P.CASE_ID)
 def read(path):
     with path.open("rb") as stream:
         data = stream.read(65537)

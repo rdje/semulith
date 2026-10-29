@@ -43,8 +43,10 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name. Today the derivation is honest and small:
 48 requirements derive `planned`, both cases (`rv64gc-signed-div-truncation-v2`, invalidated
-history; `rv64gc-m-forms-v3`, the retained case whose ten policy legs measure satisfied) are
-uncredited at `pending`, the catalogue holds no record, and no recorded status drifts.
+history; `rv64gc-m-forms-v3`, whose ten policy legs measured satisfied, credited by `CR-GC-M-1`
+from 2026-10-26 until `P4-SYSTEM.14` a44-2b retired the record on 2026-10-29 and invalidated the
+capture by moving its pinned inputs) are uncredited at `pending`, the profile has no credit catalogue,
+and no recorded status drifts. The M case returns as `v4`, re-credited as `CR-GC-M-2` (a44-5).
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
 `CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22

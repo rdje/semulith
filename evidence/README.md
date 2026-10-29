@@ -4,15 +4,15 @@ This bounded index owns the evidence family: one directory per reviewed finite c
 `profiles/rv64gc-lab-v0` (the cases `scripts/matched_gpr_property.py` reviews), each with the
 same 22 declared slots. The [model book](../docs/models/rv64gc-lab-v0/src/prepared-inputs.md)
 explains the prepared identities; the [first canonical capture](../docs/models/rv64gc-lab-v0/src/canonical-division.md)
-records the observations of 2026-10-19 and 2026-10-22. The m-forms case is the retained one; its
-ten policy legs measure satisfied, credited (`CR-GC-M-1`, a42az): nothing here closes the M obligation or the CPU gate.
+records the observations of 2026-10-19 and 2026-10-22. Both captures are `invalidated`: a44-2b moved
+pinned inputs and retired `CR-GC-M-1`; the M case returns as v4. Nothing here closes the M obligation or the CPU gate.
 
 ## Cases (this table is the complete membership)
 
 | Case directory | State | Files | Holds |
 | --- | --- | --- | --- |
 | `rv64gc-signed-div-truncation-v2/` | captured 2026-10-19; `invalidated` since 2026-10-22 (a pinned input moved) | 22 of 22 | `m-div.s`, 27 boundaries, one predeclared property; baseline/repeat AGREE, wrong-quotient control DIVERGE; superseded by the next capture, never rerun |
-| `rv64gc-m-forms-v3/` | captured 2026-10-22 (one invocation of `scripts/retain_div_capture.py`); the retained case since 2026-10-23 (a42ax): method `satisfied`, 10 of 10 legs, credited | 22 of 22 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); baseline/repeat AGREE, the boundary 12 x15 −3 → −4 control DIVERGE; qualification false |
+| `rv64gc-m-forms-v3/` | captured 2026-10-22 (one invocation of `scripts/retain_div_capture.py`); retained 2026-10-23 (a42ax), 10 of 10 legs; `invalidated` since 2026-10-29 | 22 of 22 | `m-forms.s`, 33 boundaries, 25 predeclared properties (13 forms, 12 Table 1 cells); baseline/repeat AGREE, the boundary 12 x15 −3 → −4 control DIVERGE; qualification false |
 
 ## Declared files and lifecycle (per case)
 

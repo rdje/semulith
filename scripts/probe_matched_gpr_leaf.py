@@ -277,9 +277,9 @@ class LeafTests(unittest.TestCase):
 
     def test_child_and_union_counts_before_lookup(self):
         for plan in [replace(self.plan, child_input_ids=()),
-                     replace(self.plan, child_input_ids=(self.child["id"],) * 65),
+                     replace(self.plan, child_input_ids=(self.child["id"],) * (L.F.MANIFEST_INPUTS + 1)),
                      replace(self.plan, inputs=self.plan.inputs[:8]),
-                     replace(self.plan, inputs=(self.plan.inputs[0],) * 74)]:
+                     replace(self.plan, inputs=(self.plan.inputs[0],) * (9 + L.F.MANIFEST_INPUTS + 1))]:
             with self.subTest(plan_lengths=(len(plan.child_input_ids), len(plan.inputs))):
                 self.no_read("counts", manifest=plan)
 

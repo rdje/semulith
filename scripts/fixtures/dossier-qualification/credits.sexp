@@ -1,7 +1,8 @@
-;; credits.sexp — the credited dispositions of profile rv64gc-lab-v0 (schema/credits.sexp).
-;; A credit is a record the derivation authenticates on every read (decision_credit-is-a-catalogue-record.md):
-;; its pins must still describe the tree, its case's receipt must be a complete capture carrying no verdict,
-;; and its policy measurement must be satisfied; otherwise it is lapsed and the status falls back.
+;; credits.sexp — a FROZEN copy of the retired credit CR-GC-M-1 (profiles/rv64gc-lab-v0/credits.sexp as of
+;; a42az, 2026-10-26, until its retirement in P4-SYSTEM.14 a44-2b, 2026-10-29). Not a catalogue: only
+;; scripts/probe_dossier_qualification.py reads it, as the credit of its synthetic mirror root, so the
+;; qualification mechanism is judged against a fixed record whatever the live catalogue holds (ruling 5,
+;; decision_doctrine-controls-refuse-and-freeze.md). Never edit it to make a test pass.
 (credit (id "CR-GC-M-1") (profile_ids "rv64gc-lab-v0") (requirement_id "REQ-GC-M") (obligation_ids "OB-GC-M")
   (case_id "rv64gc-m-forms-v3")
   (measured (pin (path "evidence/rv64gc-m-forms-v3/measured-experiment.sexp") (sha256 "fb22d5e5554a0e132c231e5551ed8314ab4be35ff93e7f086fceeacb6235a152") (byte_size 16942)))

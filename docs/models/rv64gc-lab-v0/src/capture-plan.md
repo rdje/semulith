@@ -46,7 +46,7 @@ The proposed dependency children are the other35 imported project modules,
 27 exercised execution-data files, the retained DIV excerpt and the profile evidence
 policy:64 children, including the review tool and current-authority entrypoint.
 The diagnostic derives these counts from path sets and refuses overflow of the
-existing64-child limit. Its JSON lists the complete paths; the manifest must be
+child ceiling (64 then; `MANIFEST_INPUTS`, 96, since `P4-SYSTEM.14` a44-2b). Its JSON lists the complete paths; the manifest must be
 built from this reviewed population, rather than treating its own declarations
 as evidence that the review was complete.
 
@@ -355,11 +355,14 @@ reads. The nested public authority loader retains its separate 16 MiB direct
 snapshot contract and separate schema/catalogue/scope I/O. Runtime import I/O is
 also separate. Neither contract promises a combined process-I/O or RAM cap.
 
-The report now derives 37 project modules, 27 execution-data files, 13 current
+The report now derives 38 project modules, 27 execution-data files, 13 current
 view files and 39 unique data/view paths. `schema/references.sexp` belongs to both
-sets. Including the guest, retained excerpt and policy, the review snapshots
-79 unique files. The proposed flat execution children remain exactly 64: the
-current requirements, source/parent catalogues and registry are observed authority
+sets. Including the guest, retained excerpt, policy, and the case's declaration with
+its schema, the review snapshots 82 unique files, and the proposed flat execution
+children are 67 (37 modules, 79 files and 64 children until `P4-SYSTEM.14` a44-2b
+made each case's declaration a pinned child, read by `scripts/matched_gpr_case.py`;
+the review also requires the reviewed case to equal the one its pinned declaration
+bytes declare). The current requirements, source/parent catalogues and registry are observed authority
 views, not additional flat capture inputs. Their whole-file hashes stay diagnostic
 provenance. Relevant semantic/schema influence must be carried by the separately
 reviewed current/old impact projection, avoiding derived-status cycles.
@@ -373,12 +376,12 @@ python3 scripts/probe_div_capture_review.py
 python3 -O scripts/probe_div_capture_review.py
 ```
 
-The report prints `pending 37 27 13 39 64 79`, then `False False`. Each probe
-reports 31 tests with zero failures and errors. The five authority guard omissions
+The report prints `pending 38 27 13 39 67 82`, then `False False`. Each probe
+reports 32 tests with zero failures and errors. The five authority guard omissions
 (declaration, pre-open namespace, read-only mode, returned view pin and process)
 each lose one assertion with zero errors in both modes; existing thirteen guard
 omissions retain their measured losses. PROFILE-CONSISTENCY registers all outcomes.
-A copied 79-file runtime gives the same file facts and populations in both modes,
+A copied 82-file runtime gives the same file facts and populations in both modes,
 with the valid parent checkout available as its working directory and no copied
 binary or `.materials` directory. It writes no canonical output. The composed
 entrypoint, predeclarations and [canonical observations](canonical-division.md)

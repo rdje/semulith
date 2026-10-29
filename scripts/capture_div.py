@@ -21,6 +21,7 @@ import dossier_sexp as D
 import experiment_artifacts as Artifacts
 import experiment_verification as V
 import matched_gpr_artifacts as F
+import matched_gpr_case as Case
 import matched_gpr_execution as Execution
 import matched_gpr_expected_author as Author
 import matched_gpr_identity as I
@@ -55,51 +56,33 @@ def prefix(case_id):
     return "evidence/" + case_id
 
 
-# Curated inputs have identities distinct from their producer sources: (role, id, name, bytes,
-# sha256) per reviewed case, pinned when scripts/prepare_div_inputs.py curated them (a42af for the
-# retained case, a42au for the m-forms case). An unpinned case cannot be prepared, declared or captured.
-CURATED_INPUTS = {
-    P.CASE_ID: (
-        ("guest-image", "guest-image", "guest.elf", 4416,
-         "38a327660cb1c699e15694fe98d0467e909726555688074d558768300138e153"),
-        ("reference-config", "reference-config", "reference-config.json", 7609,
-         "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
-        ("expectation", "expectation", "baseline.expected.sexp", 5847,
-         "87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e"),
-        ("expectation", "mutant-expectation", "control.expected.sexp", 5443,
-         "3f8d591db326a6a83a47921b7743297edc758eb602fa70660b770d37a07c758e"),
-    ),
-    P.M_FORMS_CASE_ID: (
-        ("guest-image", "guest-image", "guest.elf", 4440,
-         "208865142e1569636925a5cea6abff6fc4495f317d5d8e79a06e48d3b0f061b1"),
-        ("reference-config", "reference-config", "reference-config.json", 7609,
-         "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
-        ("expectation", "expectation", "baseline.expected.sexp", 7937,
-         "561b5da3cf87ea4825fca4e1a001a9c7d26321e491d86515c571f47b0019f44f"),
-        ("expectation", "mutant-expectation", "control.expected.sexp", 7440,
-         "ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0"),
-    ),
-}
 # The selected execution identity is a profile input, shared by every case.
 IDENTITY_ROW = ("reference-identity", "reference-identity", IDENTITY_PATH, 711,
                 "b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77")
 
 
 def prepared_inputs(case_id):
-    """The case's four curated inputs as (role, id, path, bytes, sha256) rows, then the identity."""
-    if case_id not in CURATED_INPUTS:
-        raise AuthorityError("no pinned prepared inputs for case " + str(case_id))
+    """The case's four curated inputs as (role, id, path, bytes, sha256) rows, then the identity.
+
+    Curated inputs have identities distinct from their producer sources. Each case's are pinned in its
+    declaration (`evidence/<case>/case.sexp`, decision_case-declarations-as-data.md) when
+    scripts/prepare_div_inputs.py curated them; a case without a declaration cannot be prepared,
+    declared or captured.
+    """
+    try:
+        declared = Case.read_case(case_id)["prepared"]
+    except Case.CaseError as error:
+        raise AuthorityError("no pinned prepared inputs for case " + str(case_id) + ": " + str(error)) from None
     return tuple((role, identity, prefix(case_id) + "/" + name, size, digest)
-                 for role, identity, name, size, digest in CURATED_INPUTS[case_id]) + (IDENTITY_ROW,)
+                 for role, identity, name, size, digest in declared) + (IDENTITY_ROW,)
 
 
 class AuthorityError(ValueError):
     """Current validated views cannot supply this reviewed finite case."""
 
 
-# The retained case's constants: the method review, the command probe and the method probe read them.
+# The default case's directory: the command and retention probes read it.
 PREFIX = prefix(P.CASE_ID)
-PREPARED = prepared_inputs(P.CASE_ID)
 
 
 class CaptureUnavailable(OSError):
@@ -155,8 +138,11 @@ def _one(forms, head):
     return forms[0]
 
 
-def review_authorities(case_id=P.CASE_ID) -> CurrentAuthorities:
+def review_authorities(case_id=P.CASE_ID, case=None) -> CurrentAuthorities:
     """Freeze current selected scope, execution identity and DIV semantic authority.
+
+    A caller that has already reviewed the case passes it, so its declaration is read once, outside
+    the authority views (review_div_capture traces exactly those).
 
     No binary, retained capture or acquired material is read. The function starts
     no process and publishes no capture or authority file. Public tool reads are
@@ -213,7 +199,8 @@ def review_authorities(case_id=P.CASE_ID) -> CurrentAuthorities:
     require(references["profile"] == PROFILE, "reference authority profile differs")
     source_index = _unique(sources["source"], "source")
     candidates = _unique(references["candidate"], "candidate")
-    case = P.reviewed_case(case_id)
+    case = P.reviewed_case(case_id) if case is None else case
+    require(case.case_id == case_id, "reviewed case differs from the selected case")
     require(case.requirement_id in requirements and case.source_id in source_index
             and len(case.obligation_ids) == 1 and case.obligation_ids[0] in obligation_index
             and "sail-riscv" in candidates, "selected DIV authority is missing")
@@ -393,7 +380,7 @@ def prepare_capture(case_id=P.CASE_ID) -> CaptureDeclaration:
     case = P.reviewed_case(case_id)
     case_prefix = prefix(case.case_id)
     pinned = prepared_inputs(case.case_id)
-    context = review_authorities(case.case_id)
+    context = review_authorities(case.case_id, case)
     review = Review.review(case.case_id)
     require(review["authorities"]["context"] == report(context), "authority views changed during preparation")
     rows = {row["path"]: row for row in review["files"]}
@@ -405,7 +392,10 @@ def prepare_capture(case_id=P.CASE_ID) -> CaptureDeclaration:
         identity = normative.input_id if path == normative.path else "dependency-" + _digest(path.encode())
         children.append(Execution.InputBinding(role, identity, path, rows[path]["sha256"]))
     children = tuple(children)
-    require(len(children) == 64, "reviewed flat population differs")
+    require(len(children) == review["counts"]["children"] and 1 <= len(children) <= F.MANIFEST_INPUTS,
+            "reviewed flat population differs")
+    require(set(Review.declaration_paths(case)) <= {item.path for item in children},
+            "the case's declaration is not a pinned child")
     require(normative in children, "reviewed normative input differs")
     dependencies = F.encode_dependencies(dict(format_version="matched-gpr-dependencies-v1",
                                              input=[_record(item) for item in children]),

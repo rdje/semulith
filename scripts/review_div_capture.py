@@ -36,7 +36,7 @@ ROOT_MODULES = frozenset(
 REVIEWED_MODULES = frozenset(
     """capture_div change_impact check_sexp_schema compare_traces derive_rv64gc_expectations
     dossier_sexp expectations_text experiment_artifacts experiment_verification
-    gate_report matched_gpr_artifacts matched_gpr_collector matched_gpr_comparison
+    gate_report matched_gpr_artifacts matched_gpr_case matched_gpr_collector matched_gpr_comparison
     matched_gpr_evaluation matched_gpr_execution matched_gpr_expected_author
     matched_gpr_files matched_gpr_identity matched_gpr_image matched_gpr_impact
     matched_gpr_input_review matched_gpr_leaf matched_gpr_manifest
@@ -87,6 +87,7 @@ AUTHORITY_PATHS = frozenset(
     + ["crates/semulith-verify/src/contract_checks_rv64gc.rs"]
 )
 GUEST = "profiles/rv64gc-lab-v0/guests/m-div.s"  # the retained case's guest; guest_path() for any case
+CASE_SCHEMA = "schema/matched-case.sexp"  # validates every case's declaration; declaration_paths() for any case
 PRIMARY = "profiles/rv64gc-lab-v0/retained/div-statement.html"
 POLICY = "profiles/rv64gc-lab-v0/EVIDENCE_POLICY.md"
 SELF = "scripts/review_div_capture.py"
@@ -258,13 +259,26 @@ def check_data_population(observed):
     )
 
 
-def child_paths(modules):
+def declaration_paths(case):
+    """A reviewed case's declaration and the schema that validates it: pinned children of its manifest.
+
+    The declaration is the case's own file, so a new case's declaration touches no other case's pins.
+    """
+    import matched_gpr_case as Case
+
+    return (Case.case_path(case.case_id), CASE_SCHEMA)
+
+
+def child_paths(modules, case):
+    import matched_gpr_artifacts as F
+
     paths = (
         ({f"scripts/{name}.py" for name in modules} - PRINCIPAL_CODE)
         | DATA_PATHS
+        | set(declaration_paths(case))
         | {PRIMARY, POLICY, SELF}
     )
-    require(len(paths) <= 64, "proposed manifest exceeds64 children")
+    require(len(paths) <= F.MANIFEST_INPUTS, f"proposed manifest exceeds {F.MANIFEST_INPUTS} children")
     return tuple(sorted(paths))
 
 
@@ -334,6 +348,19 @@ def exercise_loaders(source, snapshots, case=None):
     }
 
 
+def check_declaration(case, snapshots):
+    """The reviewed case is the one its pinned declaration bytes declare."""
+    import matched_gpr_case as Case
+    import matched_gpr_property as P
+
+    path = declaration_paths(case)[0]
+    try:
+        declared = P._declared_case(Case.read_document(snapshots.data[path].decode("utf-8"), path))
+    except (Case.CaseError, UnicodeDecodeError) as error:
+        raise ReviewError("pinned case declaration refused: " + str(error)) from None
+    require(declared == case, "reviewed case differs from its pinned declaration")
+
+
 def check_retained_input(case, data):
     """Bind the curated bytes and their distinct original publication identity."""
     import retain_div_statement as Retain
@@ -394,7 +421,7 @@ def exercise_authorities(snapshots, case=None):
     with patch.object(Path, "open", opened), patch.object(
         subprocess, "Popen", denied_process
     ):
-        context = A.review_authorities(case.case_id)
+        context = A.review_authorities(case.case_id, case)
     require(set(observed) == AUTHORITY_PATHS, "authority read population differs")
     require(
         type(context) is A.CurrentAuthorities and type(context.views) is tuple
@@ -442,6 +469,7 @@ def exercise_authorities(snapshots, case=None):
 
 def review(case_id=None):
     """Review the producers for one reviewed case; the retained case when none is named."""
+    import matched_gpr_artifacts as F
     import matched_gpr_property as P
 
     case = P.reviewed_case(P.CASE_ID if case_id is None else case_id)
@@ -449,9 +477,10 @@ def review(case_id=None):
     require(case.case_id != P.CASE_ID or guest == GUEST, "retained guest constant differs from its case")
     snapshots = Snapshots(ROOT)
     modules, edges, external = import_census(snapshots)
-    children = child_paths(modules)
+    children = child_paths(modules, case)
     for path in (*children, guest, *sorted(AUTHORITY_PATHS)):
         snapshots.pin(path)
+    check_declaration(case, snapshots)
     require(
         len(snapshots.data[guest]) == case.source_size
         and hashlib.sha256(snapshots.data[guest]).hexdigest() == case.source_sha256,
@@ -483,8 +512,9 @@ def review(case_id=None):
             "data_files": len(DATA_PATHS),
             "authority_files": len(AUTHORITY_PATHS),
             "all_data_files": len(DATA_PATHS | AUTHORITY_PATHS),
+            "declaration_files": len(declaration_paths(case)),
             "children": len(children),
-            "child_limit": 64,
+            "child_limit": F.MANIFEST_INPUTS,
             "reviewed_files": len(files),
             "reviewed_bytes": sum(row["bytes"] for row in files),
         },

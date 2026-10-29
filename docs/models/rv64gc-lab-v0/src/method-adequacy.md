@@ -45,8 +45,9 @@ The reviewed influence graph selects the experiment's evidence node with the
 SHA256 of the planned native document and no file path. The measured record has
 its separate actual digest. Checking both identities connects this capture to
 the selected evidence; input reachability alone would leave that connection
-unproved. The independent inventory covers nine principals and 64 manifest
-children. All 73 selected input identities must agree with the declaration.
+unproved. The independent inventory covers nine principals and the manifest's
+children (64 for the two retained captures; 67 for a case reviewed since `P4-SYSTEM.14`
+a44-2b). All selected input identities (73; 76) must agree with the declaration.
 
 ## Computed findings and failure behavior
 
@@ -90,8 +91,9 @@ summary. Its 16 MiB snapshot ceiling is separate from the read allowance. This
 offline check's charge differs from the historical collection/evaluation charge
 of 24,337,600 bytes: no executable is read and no reference is launched here.
 
-The producer's reviewed import population remains 37 modules. The new consumer
-adds two modules outside that producer population, for 39 checked modules. Their
+The producer's reviewed import population is 38 modules (37 before a44-2b added the
+declaration reader). The new consumer adds two modules outside that producer population,
+for 40 checked modules. Their
 current bytes are read under the existing 1 MiB member/8 MiB pass contract and
 rechecked before returning source identities. Existing producer/authority
 preparation retains its separate limits, including the five curated principal

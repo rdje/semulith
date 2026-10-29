@@ -77,7 +77,7 @@ class Fixture(B.Fixture):
             self.child, b"# synthetic expected-author identity; never executed\n"
         )
         old_child.unlink()
-        required = E.G.signed_division_case().required_inputs[0]
+        required = E.G.reviewed_case(E.G.CASE_ID).required_inputs[0]
         self.normative = dict(
             id=required.input_id,
             role=required.role,
@@ -605,15 +605,15 @@ MUTATIONS = {
     ),
     "actual-statement": (
         'selected_property["statement"],',
-        "G.signed_division_case().control().statement,",
+        "G.reviewed_case(G.CASE_ID).control().statement,",
     ),
     "actual-requirement": (
         'selected_property["requirement_id"],',
-        "G.signed_division_case().requirement_id,",
+        "G.reviewed_case(G.CASE_ID).requirement_id,",
     ),
     "actual-obligations": (
         "tuple(obligations),",
-        "G.signed_division_case().obligation_ids,",
+        "G.reviewed_case(G.CASE_ID).obligation_ids,",
     ),
     "actual-program": (
         'scope.profile_id, experiment["id"], program, tuple(claims),',
@@ -646,8 +646,8 @@ MUTATIONS = {
         "(case.profile_id, case.program, case.control_property_id,\n                            case.claims(), case.authority)",
     ),
     "case-pass-through": (
-        "source_values=source_values, case_id=selected_case.case_id)",
-        "source_values=source_values, case_id=G.CASE_ID)",
+        "source_values=source_values, case_id=selected_case.case_id, case=selected_case)",
+        "source_values=source_values, case_id=G.CASE_ID, case=G.reviewed_case(G.CASE_ID))",
     ),
     "control-value": (
         "or next(item.value for item in observed if item.property_id == control.property_id)\n                           != source_values.facts.witness_value",

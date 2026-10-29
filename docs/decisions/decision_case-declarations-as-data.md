@@ -32,3 +32,22 @@ option C would repeat a lapse and re-credit for every new case. B pays the cost 
   kept beside the data (one definition).
 - Executed by `P4-SYSTEM.14`, slice a44 first; the XLEN, CSR-SET and SSTC declarations follow as data.
   The ZICNTR program is not covered (it needs a reference with Zicntr).
+
+## Addendum (2026-10-29, `P4-SYSTEM.14` a44-2b): what the switch measured
+
+- The declaration loader (`scripts/matched_gpr_case.py`) returns neutral data and the review maps it onto its
+  own records; it imports no record type. The property probe executes a mutated copy of
+  `matched_gpr_property.py` as a separate module, and a dataclass compares unequal across two class objects,
+  so loader-built records would have shifted every one of its loss counts (measured: all 35 arms unchanged).
+- A case's manifest children are its reviewed population counted, not a fixed 64: the declaration
+  (`evidence/<case>/case.sexp`), its schema (`schema/matched-case.sexp`) and its reader join the 64, so 67
+  for any case today. `matched_gpr_artifacts.MANIFEST_INPUTS` becomes a ceiling of 96 (a population above it
+  is refused and is a re-derivation); `capture_div.py` requires the declaration among the pinned children,
+  and the review requires the reviewed case to equal the one its pinned declaration bytes declare.
+- Binding stays pure: a caller that selected the case passes it to `bind_source_property`, which then opens
+  no file; the authority review takes the already-reviewed case, so its traced window still reads exactly
+  the 13 current views.
+- The switch is split so v4 pins the final code: a44-2b (the tools read the data, the tables removed, the
+  censuses re-derived, `CR-GC-M-1` retired) and a44-2c (the checks still specific to the M source — the
+  normative-source identity and publication in `review_div_capture.py`, the single obligation in
+  `capture_div.py` — become checks against the catalogues, so a non-M case is accepted on its own authority).

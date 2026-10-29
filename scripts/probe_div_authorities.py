@@ -55,8 +55,9 @@ def drift(snapshot):
  path.write_bytes(path.read_bytes()+b'\\n(comment "owned late change")\\n')
  return recheck(snapshot)
 try:
+ case=A.P.reviewed_case(A.P.CASE_ID)
  with patch.object(Path,'open',opened),patch.object(A.K,'validate_text',validated),patch.object(A.R,'form_to_dict',mapped(map_record)),patch.object(A.D,'sources_to_doc',mapped(map_sources)),patch.object(A.D,'references_to_doc',mapped(map_references)),patch.object(A.Review.Snapshots,'recheck',drift if mode=='drift' else recheck):
-  context=A.review_authorities()
+  context=A.review_authorities(case.case_id,case)
  report=A.report(context);frozen=[]
  for value,field in [(context,'views'),(context.scope,'profile_id'),(context.reference,'fields'),(context.property_authority,'profile_id'),(context.views[0],'sha256')]:
   try:setattr(value,field,None)
@@ -84,9 +85,11 @@ def field(form, name):
 class AuthorityTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.paths = {f"scripts/{name}.py" for name in A.Review.REVIEWED_MODULES
-                     | {"review_div_capture", "capture_div"}} | set(A.VIEW_PATHS)
-        cls.authority = asdict(A.P.signed_division_case().authority)
+        case = A.P.reviewed_case(A.P.CASE_ID)
+        cls.paths = ({f"scripts/{name}.py" for name in A.Review.REVIEWED_MODULES
+                      | {"review_div_capture", "capture_div"}} | set(A.VIEW_PATHS)
+                     | set(A.Review.declaration_paths(case)))
+        cls.authority = asdict(case.authority)
 
     def setUp(self):
         base = ROOT / "target/div-authority-controls"
@@ -141,7 +144,7 @@ class AuthorityTests(unittest.TestCase):
         report = result["report"]
         self.assertEqual(result["status"], "pending", result)
         self.assertEqual(len(A.VIEW_PATHS), 13)
-        self.assertEqual(len(self.paths), 50)
+        self.assertEqual(len(self.paths), 53)
         self.assertEqual({view["path"] for view in report["views"]}, set(A.VIEW_PATHS))
         self.assertEqual(set(result["reads"]), set(A.VIEW_PATHS))
         self.assertEqual(result["writes"], [])

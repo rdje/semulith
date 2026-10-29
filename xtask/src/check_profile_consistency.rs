@@ -8103,9 +8103,9 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(0, "-O".to_owned());
         }
-        tally.score(&format!("GREEN finite source property {mode}"), prober.probe(repo, argv.clone()), 0, "MATCHED-GPR-PROPERTY: 34 tests / 0 failures / 0 errors; synthetic metadata, finite source witnesses only");
+        tally.score(&format!("GREEN finite source property {mode}"), prober.probe(repo, argv.clone()), 0, "MATCHED-GPR-PROPERTY: 35 tests / 0 failures / 0 errors; synthetic metadata, finite source witnesses only");
         for (mutation, losses) in [
-            ("publication-authority", "36"),
+            ("publication-authority", "37"),
             ("record-roundtrip", "1"),
             ("authority-string-bound", "1"),
             ("authority-byte-bound", "1"),
@@ -8128,7 +8128,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("claim-values", "3"),
             ("authority-node-bound", "1"),
             ("authority-depth-bound", "1"),
-            ("derived-status", "36"),
+            ("derived-status", "2"),
             ("derived-links", "1"),
             ("requirement-meaning", "6"),
             ("obligation-meaning", "4"),
@@ -8137,13 +8137,14 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("source-fact-copy", "1"),
             ("authority-fact-copy", "1"),
             ("case-selection", "2"),
+            ("passed-case", "1"),
             ("source-unsupported", "1"),
             ("frozen-results", "8"),
-            ("finite-finding", "11"),
+            ("finite-finding", "12"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED finite source property {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-PROPERTY: 34 tests / {losses} failures / 0 errors; synthetic metadata, finite source witnesses only"));
+            tally.score(&format!("RED finite source property {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-PROPERTY: 35 tests / {losses} failures / 0 errors; synthetic metadata, finite source witnesses only"));
         }
     }
     // P4-SYSTEM.14 a44-2a: the matched cases' declarations as data (scripts/matched_gpr_case.py).
@@ -8156,7 +8157,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             &format!("GREEN case declarations {mode}"),
             prober.probe(repo, argv.clone()),
             0,
-            "MATCHED-GPR-CASE: 7 tests / 0 failures / 0 errors; declarations as data, no capture",
+            "MATCHED-GPR-CASE: 8 tests / 0 failures / 0 errors; declarations as data, no capture",
         );
         for (mutation, losses) in [
             ("missing-refusal", "1"),
@@ -8167,7 +8168,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 7 tests / {losses} failures / 0 errors; declarations as data, no capture"));
+            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 8 tests / {losses} failures / 0 errors; declarations as data, no capture"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
@@ -8289,13 +8290,15 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(0, "-O".to_owned());
         }
-        tally.score(&format!("GREEN DIV dependency review {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-REVIEW: 31 tests / 0 failures / 0 errors; synthetic population controls, no capture credit");
+        tally.score(&format!("GREEN DIV dependency review {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-REVIEW: 32 tests / 0 failures / 0 errors; synthetic population controls, no capture credit");
         for (mutation, losses) in [
             ("module-population", "2"),
             ("dynamic-import", "2"),
             ("external-import", "1"),
             ("data-population", "2"),
             ("child-bound", "1"),
+            ("declaration-children", "1"),
+            ("declaration-binding", "1"),
             ("symlink", "2"),
             ("git-boundary", "1"),
             ("file-bound", "1"),
@@ -8312,7 +8315,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED DIV dependency review {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-CAPTURE-REVIEW: 31 tests / {losses} failures / 0 errors; synthetic population controls, no capture credit"));
+            tally.score(&format!("RED DIV dependency review {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("DIV-CAPTURE-REVIEW: 32 tests / {losses} failures / 0 errors; synthetic population controls, no capture credit"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {

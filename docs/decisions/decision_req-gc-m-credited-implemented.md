@@ -46,3 +46,18 @@ answers: Who signs the first credit record, is one finite case enough for `imple
   pinned method input (verified 2026-10-26: `definitions/riscv/m.sexp` moved one byte → `credit CR-GC-M-1 …
   lapsed: manifest input … SHA256 differs`) — the status falls back to `planned`, the gate fails: the act's inputs
   (`measured-experiment.sexp`, `verification.json`, `EVIDENCE_POLICY.md`) are retained bytes and stay so.
+
+## Retirement (2026-10-29, `P4-SYSTEM.14` a44-2b)
+
+`CR-GC-M-1` was retired by removal, as "How to apply" prescribes, in the slice that moved the matched cases'
+declarations into data ([`decision_case-declarations-as-data.md`](decision_case-declarations-as-data.md)). That
+slice edits inputs the m-forms capture's dependency manifest pins (`scripts/matched_gpr_property.py`,
+`scripts/capture_div.py` among them; measured: `credit CR-GC-M-1 lapsed: manifest input scripts/capture_div.py:
+SHA256 differs`), and a lapsed record is a finding. In the same commit: `REQ-GC-M` records `planned`
+(`REQUIREMENT-STATUS: … 48 planned; 2 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`),
+the dossier copy of the case's measured record leaves `references.sexp` and its `G-TRACE` row leaves `gate.sexp`
+(an unqualified dossier experiment is a PROFILE-CONSISTENCY finding), the catalogue file leaves with its only
+record (RECORD-SCHEMA refuses an empty catalogue; an absent one is no credits, as before a42az), and the record's
+text is kept frozen as the qualification probe's fixture (`scripts/fixtures/dossier-qualification/credits.sexp`). The sufficiency and
+authority rulings above stand unchanged for the re-credit: the M case re-captured as `v4` under the new manifest
+(a44-3, a44-4) is credited by a new record, `CR-GC-M-2` (a44-5), through the same crediting act.

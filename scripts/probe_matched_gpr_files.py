@@ -235,9 +235,9 @@ class FileSetTests(unittest.TestCase):
 
     def test_child_union_and_observation_counts_before_lookup(self):
         plans = [replace(self.manifest.plan, child_input_ids=()),
-                 replace(self.manifest.plan, child_input_ids=(self.child["id"],) * 65),
+                 replace(self.manifest.plan, child_input_ids=(self.child["id"],) * (Q.F.MANIFEST_INPUTS + 1)),
                  replace(self.manifest.plan, inputs=self.manifest.plan.inputs[:8]),
-                 replace(self.manifest.plan, inputs=self.manifest.plan.inputs * 8)]
+                 replace(self.manifest.plan, inputs=(self.manifest.plan.inputs[0],) * (9 + Q.F.MANIFEST_INPUTS + 1))]
         for plan in plans:
             with self.subTest(children=len(plan.child_input_ids), inputs=len(plan.inputs)):
                 self.no_read("counts", manifest=replace(self.manifest, plan=plan))

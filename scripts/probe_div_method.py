@@ -278,7 +278,9 @@ class MethodTests(unittest.TestCase):
                      | {row[2] for row in A.prepared_inputs(cls.case)}
                      | {p.relative_to(ROOT).as_posix() for p in (ROOT / cls.prefix).iterdir()}
                      | {"scripts/matched_gpr_adequacy.py", "scripts/review_div_method.py"})
-        if len(cls.paths) != 104:  # +1: the case's declaration, evidence/<case>/case.sexp (P4-SYSTEM.14 a44-2a)
+        # 104 at a44-2a (+1: the case's declaration, evidence/<case>/case.sexp); 106 since a44-2b (+2: the
+        # declaration's schema and scripts/matched_gpr_case.py, both review children now).
+        if len(cls.paths) != 106:
             raise RuntimeError("retained method runtime population changed")
         # The deep arms exercise the method's logic against a CURRENT synthetic retained case built
         # once from the live modules and prepared inputs, so every seam stays reachable whether or
@@ -289,8 +291,9 @@ class MethodTests(unittest.TestCase):
         base.mkdir(parents=True, exist_ok=True)
         cls.template_directory = TemporaryDirectory(dir=base)
         cls.template = Path(cls.template_directory.name) / "runtime"
+        # The capture's outputs: the case directory less its prepared inputs and its declaration (inputs both).
         outputs = ({p.relative_to(ROOT).as_posix() for p in (ROOT / cls.prefix).iterdir()}
-                   - {row[2] for row in A.prepared_inputs(cls.case)})
+                   - {row[2] for row in A.prepared_inputs(cls.case)} - {A.Case.case_path(cls.case)})
         for name in sorted(cls.paths - outputs):
             target = cls.template / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -344,10 +347,10 @@ class MethodTests(unittest.TestCase):
         self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
                           r["capture_binding"], r["evaluation_disposition"]),
                          ("satisfied", "pending", "valid", "matched", "pending"), r)
-        self.assertEqual(r["authenticated_files"], 85, r)
+        self.assertEqual(r["authenticated_files"], 88, r)  # 67 children + 9 principals + 12 observations (a44-2b)
         self.assertGreater(r["authenticated_bytes"], 0, r)
         self.assertGreater(r["snapshot_bytes"], 0, r)
-        self.assertEqual((r["checker_disposition"], r["checker_source_count"]), ("matched", 39), r)
+        self.assertEqual((r["checker_disposition"], r["checker_source_count"]), ("matched", 40), r)  # +matched_gpr_case
         self.assertTrue(r["root"])
         self.assertEqual(r["replay_disposition"], "not-checked")
         self.assertFalse((self.runtime / ".git").exists())
@@ -382,7 +385,7 @@ class MethodTests(unittest.TestCase):
                              ("satisfied", "pending", "valid", "matched", "pending"), r)
             self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
                              (85, 1076834, 40438), r)  # the m-forms capture (a42ax)
-        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 39), r)
+        self.assertEqual((r["checker_disposition"], len(r["checker_sources"])), ("matched", 40), r)
         self.assertEqual(r["replay_disposition"], "not-checked")
 
     def test_all_runtime_files_remain_exact_and_results_are_immutable(self):

@@ -429,8 +429,8 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a done (the declarations as data, read beside the code and equal to it); a44-2b the tools read them (`CR-GC-M-1` retired for the one lapse), a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
-| 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — blocked on the M case's manifest pinning the report generator (re-capture or a ruling) |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28): a44-2a and a44-2b done (the declarations as data, read by the tools; `CR-GC-M-1` retired for the one lapse, `REQ-GC-M` `planned`); a44-2c the checks still specific to the M source become catalogue checks; then `.15` slice g, a44-3 the M v4 declaration, a44-4 its capture, a44-5 the re-credit, back to back; then the XLEN, CSR-SET and SSTC declarations as data; the ZICNTR program waits for a reference with Zicntr |
+| 2 | `P4-SYSTEM.15` | `active` | regression over the complete profile: slices a–f done (external I, M, A, C, F, D; the validator-mutation campaign 30 of 30; four compiled workloads recorded); slice g declares the workload kind — unblocked by `.14` a44-2b (the M capture is invalidated until v4): it lands before a44-4, so v4 pins the final report generator |
 
 ## Decisions
 
@@ -523,6 +523,43 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a44-2b / SEMULITH-P4-0315: the tools read the case declarations; the in-code tables removed; `CR-GC-M-1` retired (completed)
+
+The second half of a44-1's a44-2, and the one lapse. `scripts/matched_gpr_case.py` returns neutral data — a dictionary
+of the schema's fields, tuples for the repeated forms — and `matched_gpr_property.reviewed_case` maps it onto the
+review's records on every call; `capture_div.prepared_inputs` reads the declaration's pins. Removed (one definition):
+`_CASES`, both case builders and their tables (`_PUBLICATION_SHA`, `_REQUIRED_INPUT_ROWS`, the two semantic digests,
+`_DIV_*`, `_M_FORMS_*`) and `capture_div.CURATED_INPUTS` / `PREPARED`; before removal each declaration mapped equal to
+its in-code case and its prepared rows to the pins (target/p4-system-14/a44-2b/equality-before-removal.txt). Why
+neutral data: the property probe executes a mutated copy of the module as a separate module, and a dataclass compares
+unequal across two class objects, so loader-built records would have moved every loss count (measured: all 35 arms
+unchanged; knowledge card `records-built-by-a-loader-break-a-mutated-module-copy.md`). Re-derived, each measured: the
+producer review pins each case's declaration and its schema as children (`declaration_paths`) and requires the reviewed
+case to equal the one its pinned bytes declare (`check_declaration`): 38 modules, 67 children, 82 reviewed files (37,
+64, 79 before); `MANIFEST_INPUTS` becomes a ceiling of 96 (`capture_div.py` and `matched_gpr_adequacy.py` count the
+population instead of requiring 64, and `capture_div.py` requires the declaration among the pinned children); the
+binding stays pure when its caller passes the selected case (the evaluation does), the authority review takes the
+reviewed case so its traced window still reads exactly the 13 views, and the unit collector checks its scope before
+reading the case. 18 of 41 matched-GPR/DIV/status probes refused after the switch (green-1) and were re-pointed with
+every changed count measured: the authority, command, method and retention runtimes copy the declaration (53, 106
+files; a case directory stages 8 files, 22 after a capture); the review probe's populations (67, 66) and its inclusive
+ceiling patched to the population; the synthetic bound tests derive from the ceiling; the method probe's checker
+sources 40 and authenticated files 88. New controls: `passed-case` (property, 1 loss; 35 tests), `declaration-children`
+and `declaration-binding` (review, 1 each; 32 tests), the declaration probe's agreement with each retained planned
+record and manifest (8 tests); the retention probe asserts its first retain's code (a44-1's hardening). One count
+moves with the lapse itself: the property probe's `derived-status` mutation loses 2, not 37, while `REQ-GC-M` records
+`planned` (the mutation reads the record's own status, invisible on a planned record); a44-5 restates it. The lapse:
+`CR-GC-M-1` retired by removal, with the catalogue file (RECORD-SCHEMA refuses an empty catalogue and reads an absent
+one as no credits, the state before a42az; a44-5 recreates it) — its text frozen as
+`scripts/fixtures/dossier-qualification/credits.sexp`, the credit of the dossier probe's re-pinned mirror root; `REQ-GC-M` records `planned` (`REQUIREMENT-STATUS: … 48 planned; 2
+case(s), 0 credited … 0 drift`), the dossier copy and the `G-TRACE` row removed, the axis open and owned here (GS: 5 of
+10 open); the method review reports the m-forms capture `stale`, the policy review `invalidated — 8 of 10 legs`; the
+decision records carry the Retirement and the Addendum. `.15` slice g (the workload kind, which edits the pinned report
+generator) is no longer blocked by a current capture: it lands before a44-4, so v4 pins the final generator. The first
+commit chain refused before committing (§15, own defects): MATERIALS-BILL — the model book's dossier fragments were
+not regenerated after `references.sexp` changed (`gen_model_book.py --unit rv64gc-lab-v0`) — and RECORD-SCHEMA — the
+retirement left an empty `credits.sexp`, which the schema refuses (removed). Next: a44-2c.
 
 ### .14 a44-2a / SEMULITH-P4-0313: the matched cases' declarations as data — read beside the code, equal to it (completed)
 
@@ -1065,6 +1102,9 @@ Rows a42az–a43a-1: [retained verbatim](archive/P4-SYSTEM-22.md#acceptance-rows
 - [x] `.14` a44-2a **ROOT CAUSE** — a case's declaration lived only in two pinned scripts (`grep -c '_CASES = ' scripts/matched_gpr_property.py` = 1, `grep -c '^CURATED_INPUTS = ' scripts/capture_div.py` = 1); no schema described one (`ls schema | wc -l` = 26).
 - [x] `.14` a44-2a **ADDRESSED** — target/p4-system-14/a44-2a/probe.txt: `MATCHED-GPR-CASE: 7 tests / 0 failures / 0 errors` plain and `-O`; the five seams 1, 1, 1, 1 and 2 failures; generation: loaded == in-code, prepared == pinned, render(read) identical for both cases; `probe_div_capture_inputs.py` `34 tests / 0 failures`; `probe_schema_token_facets.py` OK (27 schemas, 122 facets).
 - [x] `.14` a44-2a **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1176 pass / 0 fail` (374 s); `RECORD-SCHEMA: ok (23 record file(s) …)`; `DERIVED-COUNTS: ok (5 derived count claim(s) re-derived)`; `cargo test -p xtask` `test result: ok. 17 passed` (the S-expression and schema corpus tests read the new files); no pinned path touched (`git diff --cached --name-only` against both `dependencies.sexp`: `grep -c` 0); `python3 -B scripts/requirement_status.py` → `1 of 1 credit record(s) current`.
+- [x] `.14` a44-2b **ROOT CAUSE** — the tools still read the cases from code after a44-2a: at HEAD `git show HEAD:scripts/matched_gpr_property.py | grep -c '^_CASES = '` = 1 and `git show HEAD:scripts/capture_div.py | grep -c '^CURATED_INPUTS = '` = 1, so declaring a case edited two pinned scripts; the review's population was a fixed 64 (`capture_div.py` `len(children) == 64`).
+- [x] `.14` a44-2b **ADDRESSED** — `grep -c "_CASES\|signed_division_case\|m_forms_case\|_REQUIRED_INPUT_ROWS" scripts/matched_gpr_property.py` = 0 and `grep -c CURATED_INPUTS scripts/capture_div.py` = 0, after target/p4-system-14/a44-2b/equality-before-removal.txt (both cases `case-equal True prepared-equal True`); `python3 scripts/review_div_capture.py --review` → `pending 38 27 13 39 67 82`, `False False`; the property probe's 36 arms measured against the table (property-arms.txt: `36 arms, 0 differ`); `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `0 credit(s)`; `python3 -B scripts/requirement_status.py` → `48 planned; 2 case(s), 0 credited … 0 drift, 0 finding(s)`.
+- [x] `.14` a44-2b **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1182 pass / 0 fail` (target/p4-system-14/a44-2b/pc-selftest-2.log, 478 s; the first run's 4 misses — `derived-status` 37 → 2 with the status change, the `case-pass-through` seam text — re-measured, pc-selftest-1.log); every matched-GPR/DIV/status probe green in both modes inside it; the staged prechecks green (target/p4-system-14/a44-2b/prechecks.txt) and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

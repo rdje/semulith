@@ -18,7 +18,10 @@ import sexp as S
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCUMENT_BYTES = 64 * 1024
-MANIFEST_INPUTS = 64
+# A ceiling, not the population: a case's reviewed children are counted by review_div_capture (67 for
+# a case since its declaration became a pinned child, P4-SYSTEM.14 a44-2b; 64 before). A population
+# above it is refused and is a re-derivation, as any bound here.
+MANIFEST_INPUTS = 96
 _OUTPUT_ROLES = frozenset({"raw-gpr", "process-stdout", "process-stderr"})
 
 

@@ -251,12 +251,13 @@ class ArtifactTests(unittest.TestCase):
         doc = dependencies(); doc["input"][1]["path"] = doc["input"][0]["path"]
         self.refuse(raw(doc, "dependencies"), "dependencies", "duplicate path")
 
-    def test_manifest_64_accepts_65_refuses(self):
+    def test_manifest_ceiling_accepts_and_one_more_refuses(self):
+        ceiling = A.MANIFEST_INPUTS
         doc = dependencies()
-        doc["input"] = [{**doc["input"][0], "id": f"leaf-{i}", "path": f"target/leaf-{i}"} for i in range(64)]
+        doc["input"] = [{**doc["input"][0], "id": f"leaf-{i}", "path": f"target/leaf-{i}"} for i in range(ceiling)]
         self.assertEqual(A.parse_dependencies(raw(doc, "dependencies"), path=DEPENDENCIES_PATH), doc)
-        doc["input"].append({**doc["input"][0], "id": "leaf-64", "path": "target/leaf-64"})
-        self.refuse(raw(doc, "dependencies"), "dependencies", "more than 64")
+        doc["input"].append({**doc["input"][0], "id": f"leaf-{ceiling}", "path": f"target/leaf-{ceiling}"})
+        self.refuse(raw(doc, "dependencies"), "dependencies", f"more than {ceiling}")
 
     def test_manifest_self_and_nested_role_refuse(self):
         doc = dependencies(); doc["input"][0]["path"] = DEPENDENCIES_PATH

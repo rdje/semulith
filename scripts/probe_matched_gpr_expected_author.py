@@ -244,7 +244,7 @@ class ExpectedAuthorTests(unittest.TestCase):
             (),
             [self.author.input_id],
             ("other",),
-            (self.author.input_id,) * 65,
+            (self.author.input_id,) * (A.T.MANIFEST_INPUTS + 1),
         ]:
             with self.subTest(children=str(children)[:60]):
                 self.outcome(

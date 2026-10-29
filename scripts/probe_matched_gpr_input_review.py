@@ -97,13 +97,13 @@ class ReviewTests(unittest.TestCase):
         self.refused(review((replace(pins()[0], path=pins()[1].path), *pins()[1:])), "path")
 
     def test_count_bounds_and_plain_container_precede_members(self):
-        for count in [9, 73]:
+        for count in [T.MIN_INPUTS, T.MAX_INPUTS]:
             self.assertEqual(len(self.freeze(review(pins(count))).inputs), count)
-        for count in [0, 8, 74]: self.refused(review(pins(count)), "tuple")
+        for count in [0, T.MIN_INPUTS - 1, T.MAX_INPUTS + 1]: self.refused(review(pins(count)), "tuple")
         class TrapTuple(tuple):
             def __len__(self): raise AssertionError("subclass length inspected")
         for value in [list(pins()), TrapTuple(pins())]: self.refused(review(value), "tuple")
-        self.refused(review((object(),) * 74), "tuple")
+        self.refused(review((object(),) * (T.MAX_INPUTS + 1)), "tuple")
 
     def test_review_and_results_are_frozen_and_bindings_are_copied(self):
         source = review(); frozen = self.freeze(source)
@@ -120,7 +120,7 @@ class ReviewTests(unittest.TestCase):
 
     def test_declared_inventory_has_the_same_strict_boundary(self):
         value = self.freeze(review())
-        for supplied in [list(pins()), pins(8), pins(74),
+        for supplied in [list(pins()), pins(T.MIN_INPUTS - 1), pins(T.MAX_INPUTS + 1),
                          (replace(pins()[0], path="../bad"), *pins()[1:])]:
             try: T.compare_inputs(value, supplied)
             except T.ReviewError: pass

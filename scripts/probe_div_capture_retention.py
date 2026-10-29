@@ -86,9 +86,10 @@ if mode == "retain":
         code, report = T.retain(runtime, case, commit)
     result = summary(code, report); result["launched"] = launched
 elif mode == "rerun":
-    T.retain(runtime, case, commit)
+    first_code, first = T.retain(runtime, case, commit)
     with patch.object(subprocess, "Popen", deny):
         result = refusal(lambda: T.retain(runtime, case, commit))
+    result["first"] = [first_code, first["disposition"], first.get("reason")]
     result["files"] = files()
 elif mode == "changed-declaration":
     path = directory / "planned-experiment.sexp"; path.write_bytes(path.read_bytes() + b"\n")
@@ -139,11 +140,17 @@ print(json.dumps(result, default=lambda value: str(value)))
 '''
 
 
+# A case directory before its capture: the four prepared inputs, the case's declaration (a44-2b) and the three
+# native declarations; one capture adds twelve observations and two results.
+STAGED = 4 + 1 + 3
+RETAINED = STAGED + 12 + 2
+
+
 class RetentionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         review = A.Review.review()
-        cls.paths = {row["path"] for row in review["files"]} | {row[2] for row in A.PREPARED} | {TOOL}
+        cls.paths = {row["path"] for row in review["files"]} | {row[2] for row in A.prepared_inputs(A.P.CASE_ID)} | {TOOL}
 
     def setUp(self):
         base = ROOT / "target/div-retention-controls"
@@ -173,7 +180,7 @@ class RetentionTests(unittest.TestCase):
     def test_one_invocation_retains_fourteen_files_and_an_uncredited_receipt(self):
         result = self.child("retain")
         self.assertEqual((result["code"], result["disposition"], result["complete"]), (0, "pending", True))
-        self.assertEqual(len(result["files"]), 4 + 3 + 12 + 2)
+        self.assertEqual(len(result["files"]), RETAINED)
         self.assertEqual(len(result["launched"]), 3)
         for argv in result["launched"]:
             self.assertTrue(any(Path(item).name == "sail_riscv_sim" for item in argv), argv)
@@ -210,21 +217,23 @@ class RetentionTests(unittest.TestCase):
 
     def test_a_second_invocation_refuses_before_any_process(self):
         result = self.child("rerun")
+        # The first retain must itself have succeeded, or the file count below reads a failure as a population.
+        self.assertEqual(result["first"][:2], [0, "pending"], result["first"])
         self.assertTrue(result["refused"], result)
         self.assertIn("outputs already exist; a capture is never rerun", result["reason"])
-        self.assertEqual(len(result["files"]), 21)
+        self.assertEqual(len(result["files"]), RETAINED)
 
     def test_a_changed_declaration_refuses_before_any_process(self):
         result = self.child("changed-declaration")
         self.assertTrue(result["refused"], result)
         self.assertIn("retained declaration differs from its regeneration: planned-experiment.sexp", result["reason"])
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_a_changed_binary_refuses_before_any_process(self):
         result = self.child("changed-binary")
         self.assertTrue(result["refused"], result)
         self.assertIn("reference binary differs from the retained identity", result["reason"])
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_a_failed_process_preserves_its_outputs_and_publishes_an_incomplete_receipt(self):
         result = self.child("failed", exit_code=7)
@@ -241,7 +250,7 @@ class RetentionTests(unittest.TestCase):
     def test_an_escaped_invocation_publishes_nothing(self):
         result = self.child("escaped")
         self.assertEqual((result["code"], result["disposition"], result["has_traceback"]), (1, "escaped", True))
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_publication_is_exclusive_and_never_replaces(self):
         result = self.child("publish")
@@ -254,7 +263,7 @@ class RetentionTests(unittest.TestCase):
         result = self.child("preflight")
         self.assertEqual((result["code"], result["disposition"], result["absent"]), (0, "ready", 14))
         self.assertTrue(result["binary"])
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_malformed_commit_and_unknown_case_refuse_before_anything(self):
         result = self.child("malformed")
@@ -262,14 +271,14 @@ class RetentionTests(unittest.TestCase):
         self.assertIn("40-hex object id", result["commit"]["reason"])
         self.assertFalse(result["unknown"]["refused"])
         self.assertIn("PropertyError", result["unknown"]["escaped"])
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_cli_exit_codes(self):
         result = self.child("cli")
         self.assertEqual(result["codes"]["preflight"], [0, "ready"])
         self.assertEqual(result["codes"]["bad-commit"], [1, "refused"])
         self.assertEqual(result["codes"]["unknown"], [1, "refused"])
-        self.assertEqual(len(result["files"]), 7)
+        self.assertEqual(len(result["files"]), STAGED)
 
     def test_the_tool_uses_no_git_and_launches_no_process_of_its_own(self):
         import re

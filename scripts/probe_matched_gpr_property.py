@@ -155,7 +155,7 @@ def fixture(case_id: str = G.CASE_ID):
             "canonical property metadata fixture refuses: " + relations.reason
         )
     execution = relations.plan.execution
-    normative = G.E.InputBinding(*G._REQUIRED_INPUT_ROWS[0])
+    normative = case.required_inputs[0]
     manifest = G.M.ManifestPlan(
         relations.plan,
         "dependency-manifest",
@@ -188,6 +188,7 @@ def fixture(case_id: str = G.CASE_ID):
     )
     return SimpleNamespace(
         case_id=case_id,
+        case=case,
         context=context,
         manifest=manifest,
         values=values,
@@ -376,8 +377,8 @@ class PropertyTests(unittest.TestCase):
         self.assertEqual(steps[2].writes, ((7, quotient & ((1 << 64) - 1)),))
 
     def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
-        case = G.m_forms_case()
-        self.assertEqual(G.reviewed_case_ids(), (G.CASE_ID, G.M_FORMS_CASE_ID))
+        case = G.reviewed_case(G.M_FORMS_CASE_ID)
+        self.assertEqual(G.reviewed_case_ids(), tuple(sorted((G.CASE_ID, G.M_FORMS_CASE_ID))))
         self.assertEqual(case.case_id, "rv64gc-m-forms-v3")
         self.assertEqual((case.program, case.instructions), ("m-forms.s", 33))
         source = (GUESTS / case.program).read_bytes()
@@ -416,12 +417,12 @@ class PropertyTests(unittest.TestCase):
         )
         self.assertEqual([row[0] for row in case.reviewed_steps], list(range(33)))
         self.assertEqual((case.requirement_id, case.obligation_ids, case.authority),
-                         ("REQ-GC-M", ("OB-GC-M",), G.signed_division_case().authority))
-        self.assertEqual(case.required_inputs, G.signed_division_case().required_inputs)
+                         ("REQ-GC-M", ("OB-GC-M",), G.reviewed_case(G.CASE_ID).authority))
+        self.assertEqual(case.required_inputs, G.reviewed_case(G.CASE_ID).required_inputs)
         self.refuses(lambda: G.reviewed_case("rv64gc-m-forms-v2"))
 
     def test_m_forms_words_and_values_are_independently_derived(self):
-        case = G.m_forms_case()
+        case = G.reviewed_case(G.M_FORMS_CASE_ID)
         lines = [
             line for line in (GUESTS / case.program).read_text().splitlines() if line.strip()
         ]
@@ -469,31 +470,37 @@ class PropertyTests(unittest.TestCase):
         self.assertEqual(checked.facts.source.sha256, case.source_sha256)
         self.assertEqual(checked.facts.authority_inputs, case.required_inputs)
 
+    def test_a_passed_case_must_be_the_selected_case(self):
+        """A caller passes the case it selected (the evaluation does); another case or a non-case refuses."""
+        self.outcome(case=self.f.case)
+        self.outcome("refused", "reviewed case differs from the selected case", case=self.m_template.case)
+        self.outcome("refused", "reviewed case differs from the selected case", case=object())
+
     def test_each_predeclared_value_is_held_to_the_derivation_beyond_the_reviewed_words(self):
         f = deepcopy(self.m_template)
         derived = f.values.facts.derivation
-        target = next(item for item in G.m_forms_case().properties if item.property_id == "table1-remw-overflow")
-        reviewed = G.m_forms_case()
-        prefix_only = lambda: replace(reviewed, reviewed_steps=reviewed.reviewed_steps[:3])  # noqa: E731
-        with mock.patch.dict(G._CASES, {G.M_FORMS_CASE_ID: prefix_only}):
-            self.outcome(fixture=f)
-            for writes, expected in [
-                (((12, 0x1234),), "predeclared value differs from the source derivation: table1-remw-overflow"),
-                (((13, 0),), "predeclared value differs from the source derivation: table1-remw-overflow"),
-                ((), "predeclared value differs from the source derivation: table1-remw-overflow"),
-            ]:
-                steps = list(derived.steps)
-                steps[target.witness.step_n] = replace(steps[target.witness.step_n], writes=writes)
-                with self.subTest(writes=writes):
-                    self.outcome(
-                        "refused",
-                        expected,
-                        fixture=f,
-                        source_values=replace(
-                            f.values,
-                            facts=replace(f.values.facts, derivation=replace(derived, steps=tuple(steps))),
-                        ),
-                    )
+        reviewed = G.reviewed_case(G.M_FORMS_CASE_ID)
+        target = next(item for item in reviewed.properties if item.property_id == "table1-remw-overflow")
+        prefix_only = replace(reviewed, reviewed_steps=reviewed.reviewed_steps[:3])
+        self.outcome(fixture=f, case=prefix_only)
+        for writes, expected in [
+            (((12, 0x1234),), "predeclared value differs from the source derivation: table1-remw-overflow"),
+            (((13, 0),), "predeclared value differs from the source derivation: table1-remw-overflow"),
+            ((), "predeclared value differs from the source derivation: table1-remw-overflow"),
+        ]:
+            steps = list(derived.steps)
+            steps[target.witness.step_n] = replace(steps[target.witness.step_n], writes=writes)
+            with self.subTest(writes=writes):
+                self.outcome(
+                    "refused",
+                    expected,
+                    fixture=f,
+                    case=prefix_only,
+                    source_values=replace(
+                        f.values,
+                        facts=replace(f.values.facts, derivation=replace(derived, steps=tuple(steps))),
+                    ),
+                )
 
     def test_m_forms_claims_must_match_the_case_exactly(self):
         f = deepcopy(self.m_template)
@@ -962,8 +969,8 @@ class PropertyTests(unittest.TestCase):
             (deepcopy(self.f.context), "program"),
             (deepcopy(self.f.context.claims[0]), "statement"),
             (deepcopy(self.f.context.authority), "source_id"),
-            (G.signed_division_case(), "coverage"),
-            (G.m_forms_case().properties[0], "expected_value"),
+            (G.reviewed_case(G.CASE_ID), "coverage"),
+            (G.reviewed_case(G.M_FORMS_CASE_ID).properties[0], "expected_value"),
             (checked, "reason"),
             (checked.facts, "observed"),
             (checked.facts.observed[0], "value"),
@@ -991,7 +998,7 @@ class PropertyTests(unittest.TestCase):
             checked.facts.authority_inputs[0].sha256,
             "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
         )
-        for builder in (G.signed_division_case, G.m_forms_case):
+        for builder in (lambda: G.reviewed_case(G.CASE_ID), lambda: G.reviewed_case(G.M_FORMS_CASE_ID)):
             first = builder()
             object.__setattr__(first.required_inputs[0], "sha256", "a" * 64)
             object.__setattr__(first.properties[0], "expected_value", 0)
@@ -1009,8 +1016,8 @@ class PropertyTests(unittest.TestCase):
             "subprocess.run", side_effect=AssertionError("process I/O")
         ):
             self.assertEqual(self.project(), self.f.context.authority)
-            self.outcome()
-            self.outcome(fixture=self.m_template)
+            self.outcome(case=self.f.case)
+            self.outcome(fixture=self.m_template, case=self.m_template.case)
 
     def test_unexpected_programming_failures_propagate(self):
         with mock.patch.object(
@@ -1031,8 +1038,8 @@ class PropertyTests(unittest.TestCase):
 
 MUTATIONS = {
     "publication-authority": (
-        "        _PUBLICATION_SHA,\n",
-        "        _REQUIRED_INPUT_ROWS[0][3],\n",
+        '            authority["source_sha256"],\n',
+        '            declaration["required_inputs"][0][3],\n',
     ),
     "record-roundtrip": (
         '_require(\n        str(form[0]) == family and Records.form_to_dict(form) == record,\n        "authority record does not round-trip through its canonical owner",\n    )',
@@ -1132,11 +1139,11 @@ MUTATIONS = {
     ),
     "requirement-meaning": (
         '_semantic_digest(requirement, "requirement")',
-        "_REQUIREMENT_SEMANTICS",
+        '"0deea596341b2462d8c61b90c37791e566d58ccfa95c4d30beaeebcd37e30989"',
     ),
     "obligation-meaning": (
         '_semantic_digest(obligation, "obligation")',
-        "_OBLIGATION_SEMANTICS",
+        '"b441b5339cbe879ba02970b69d7a1b51ce1e548a9c5f2bfe550b39beb04c8090"',
     ),
     "context-copy": (
         'return PropertyContext(\n        values[0],\n        values[1],\n        values[2],\n        tuple(sorted(frozen, key=lambda claim: claim.property_id)),\n        values[3],\n        _freeze_authority(getattr(context, "authority", None), profile_id),\n    )',
@@ -1151,7 +1158,11 @@ MUTATIONS = {
         "tuple(inputs[pin.input_id] for pin in case.required_inputs)",
         "tuple(next(item for item in manifest.inputs if item.input_id == pin.input_id) for pin in case.required_inputs)",
     ),
-    "case-selection": ("if case_id not in _CASES:", "if False:"),
+    "case-selection": ("if case_id not in reviewed_case_ids():", "if False:"),
+    "passed-case": (
+        "type(case) is ReviewedPropertyCase and case.case_id == case_id,",
+        "True,",
+    ),
     "source-unsupported": (
         'if source_values.disposition == "unsupported":',
         "if False:",

@@ -86,14 +86,16 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(nonmanifest(first), nonmanifest(second))
         self.assertEqual(first.child_input_ids, second.child_input_ids)
 
-    def test_inclusive_64_children_and_73_union(self):
-        self.doc["input"] = [dict(id=f"leaf-{n}", role="definition", path=f"deps/{n}", sha256="c" * 64) for n in range(64)]
-        self.publish(); self.assertEqual(len(self.result("matched").plan.inputs), 73)
+    def test_inclusive_ceiling_children_and_union(self):
+        ceiling = M.F.MANIFEST_INPUTS
+        self.doc["input"] = [dict(id=f"leaf-{n}", role="definition", path=f"deps/{n}", sha256="c" * 64) for n in range(ceiling)]
+        self.publish(); self.assertEqual(len(self.result("matched").plan.inputs), 9 + ceiling)
 
-    def test_65_children_refuse(self):
-        self.doc["input"] = [dict(id=f"leaf-{n}", role="definition", path=f"deps/{n}", sha256="c" * 64) for n in range(65)]
+    def test_one_child_over_the_ceiling_refuses(self):
+        ceiling = M.F.MANIFEST_INPUTS
+        self.doc["input"] = [dict(id=f"leaf-{n}", role="definition", path=f"deps/{n}", sha256="c" * 64) for n in range(ceiling + 1)]
         self.publish(M.F.R.render_forms([D.dependencies_to_form(self.doc)]).encode())
-        self.result("refused", "more than 64")
+        self.result("refused", f"more than {ceiling}")
 
     def test_principal_identity_conflicts_refuse(self):
         original = deepcopy(self.graph["input"][0])

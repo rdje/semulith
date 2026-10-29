@@ -341,10 +341,11 @@ def _evaluation_scope(scope):
 def _evaluation_plan(payload, scope, candidate, inventory, impact, author, authority, case_id):
     C._need(type(payload) is bytes and 0 < len(payload) <= EXPERIMENT_BYTES,
             "planned experiment requires1..65536 immutable bytes")
-    # The case is the caller's selection, frozen before any artifact I/O; an unknown case
-    # refuses here, not after a process ran.
-    case_id = Property.reviewed_case(case_id).case_id
     scope = _evaluation_scope(scope)
+    # The case is the caller's selection, read from its declaration and frozen before any
+    # artifact I/O (after the pure scope check); an unknown case refuses here, not after a
+    # process ran.
+    case_id = Property.reviewed_case(case_id).case_id
     forms = S.parse(payload.decode("utf-8"), "planned experiment")
     documents = [form for form in forms
                  if not (isinstance(form, list) and form and form[0] == "comment")]

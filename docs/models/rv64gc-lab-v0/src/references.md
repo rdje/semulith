@@ -45,8 +45,8 @@ property, with their controls and limitations recorded.
 
 Two prospective artifact documents now have schemas and one mapping owner,
 `scripts/dossier_sexp.py`. `schema/matched-gpr-dependencies.sexp` describes a
-`dependencies` root with version `matched-gpr-dependencies-v1` and 1–64 `input`
-children. Each input has `id`, `role`, canonical repository-relative `path` and
+`dependencies` root with version `matched-gpr-dependencies-v1` and 1–96 `input`
+children (the ceiling `MANIFEST_INPUTS`; 64 before `P4-SYSTEM.14` a44-2b). Each input has `id`, `role`, canonical repository-relative `path` and
 lowercase 64-hex `sha256`. IDs and paths are unique. The document cannot name
 itself or declare a child with role `dependency-manifest`. Detecting manifest
 content hidden behind another role is now covered by [leaf inspection](closure.md#inspecting-one-selected-dependency-leaf)
@@ -185,7 +185,7 @@ finding absent. Omitting the argument preserves the existing API and yields
 PROFILE-CONSISTENCY continues to refuse qualification.
 
 The boundary accepts plain frozen `InputReview` and `InputBinding` objects with
-plain tuples of 9–73 unique IDs/paths: nine principals plus at most 64 distinct
+plain tuples of 9–105 unique IDs/paths: nine principals plus at most 96 distinct
 manifest children. Role/ID and selected profile/experiment text is nonempty,
 at most 65,536 characters; canonical paths at most 4,096 characters, and digests
 are lowercase 64-hex SHA256. Existing child IDs may contain spaces. Bounds apply

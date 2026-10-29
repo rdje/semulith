@@ -144,6 +144,11 @@ print(json.dumps(result))
 '''
 
 
+# The children the reviewed population gained after the default case's capture (P4-SYSTEM.14 a44-2b): the case's
+# declaration, the schema that validates it and the module that reads it.
+GROWN = ("evidence/" + A.P.CASE_ID + "/case.sexp", "schema/matched-case.sexp", "scripts/matched_gpr_case.py")
+
+
 def moved_inputs(root: Path, case_id: str = A.P.CASE_ID) -> list[str]:
     """Pinned inputs whose current bytes differ from the case's manifest — read without the capture code.
 
@@ -206,14 +211,14 @@ def synthesize_reference(runtime: Path, *, exit_code=0, case_id=A.P.CASE_ID) -> 
     identity = runtime / A.IDENTITY_PATH
     identity.write_bytes(identity.read_bytes().replace(old.encode(), digest.encode()))
     entry = runtime / "scripts/capture_div.py"
-    entry.write_text(entry.read_text().replace(A.PREPARED[-1][-1], hashlib.sha256(identity.read_bytes()).hexdigest(), 1))
+    entry.write_text(entry.read_text().replace(A.IDENTITY_ROW[-1], hashlib.sha256(identity.read_bytes()).hexdigest(), 1))
 
 
 class CommandTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         review = A.Review.review()
-        cls.paths = {row["path"] for row in review["files"]} | {row[2] for row in A.PREPARED}
+        cls.paths = {row["path"] for row in review["files"]} | {row[2] for row in A.prepared_inputs(A.P.CASE_ID)}
 
     def setUp(self):
         base = ROOT / "target/div-command-controls"
@@ -248,7 +253,7 @@ class CommandTests(unittest.TestCase):
 
     def test_exact_real_declaration_inventory_and_readonly_copy(self):
         result = self.inspect()
-        self.assertEqual((result["status"], result["children"], result["inputs"]), ("pending", 64, 73))
+        self.assertEqual((result["status"], result["children"], result["inputs"]), ("pending", 67, 76))
         self.assertTrue(result["exact_inventory"])
         self.assertEqual(result["writes"], [])
         self.assertEqual(result["frozen"], [True] * 5)
@@ -258,7 +263,9 @@ class CommandTests(unittest.TestCase):
         self.assertTrue(all(0 < size <= 65536 for size in result["declarations"].values()))
         self.assertFalse((self.runtime / ".git").exists())
         self.assertFalse((self.runtime / ".materials").exists())
-        self.assertEqual(len(list((self.runtime / A.PREFIX).iterdir())), 4)
+        # The four prepared inputs and the case's declaration; nothing is written beside them.
+        self.assertEqual(sorted(path.name for path in (self.runtime / A.PREFIX).iterdir()),
+                         sorted(["case.sexp", *(Path(row[2]).name for row in A.prepared_inputs(A.P.CASE_ID)[:4])]))
 
     def test_retained_native_declarations_match_the_current_actual_package(self):
         """Every pin current: each tracked declaration equals its regeneration. A pinned input moved: the
@@ -283,7 +290,10 @@ class CommandTests(unittest.TestCase):
         if moved:
             tracked = manifest_pins((ROOT / A.PREFIX / "dependencies.sexp").read_bytes())
             current = manifest_pins(regenerated["dependencies.sexp"])
-            self.assertEqual(set(tracked), set(current))
+            # Nothing the capture pinned is dropped; the children added after it are exactly the ones a44-2b
+            # added (the declaration, its schema and its reader), never in its manifest.
+            self.assertEqual(set(tracked) - set(current), set())
+            self.assertEqual(sorted(set(current) - set(tracked)), sorted(GROWN))
             self.assertEqual(sorted(path for path in tracked if tracked[path] != current[path]), sorted(moved))
 
     def test_actual_canonical_capture_evaluates_offline_without_a_process(self):
@@ -410,22 +420,22 @@ class CommandTests(unittest.TestCase):
             self.assertEqual(observed, [True] * 3)
 
     def test_missing_prepared_input_is_unavailable(self):
-        (self.runtime / A.PREPARED[0][2]).unlink()
+        (self.runtime / A.prepared_inputs(A.P.CASE_ID)[0][2]).unlink()
         self.assertEqual(self.inspect("prepare")["status"], "unavailable")
         result = self.inspect("unavailable-kind")
         self.assertEqual((result["status"], result["kind"]), ("unavailable", "CaptureUnavailable"))
         self.assertIn("permission denied", result["reason"])
 
     def test_changed_prepared_input_refuses(self):
-        (self.runtime / A.PREPARED[0][2]).write_bytes(b"changed")
+        (self.runtime / A.prepared_inputs(A.P.CASE_ID)[0][2]).write_bytes(b"changed")
         self.assertEqual(self.inspect("prepare")["status"], "refused")
 
     def test_oversized_prepared_input_refuses(self):
-        (self.runtime / A.PREPARED[0][2]).write_bytes(b"x" * 65537)
+        (self.runtime / A.prepared_inputs(A.P.CASE_ID)[0][2]).write_bytes(b"x" * 65537)
         self.assertEqual(self.inspect("prepare")["status"], "refused")
 
     def test_linked_prepared_input_refuses_even_with_correct_bytes(self):
-        path = self.runtime / A.PREPARED[0][2]
+        path = self.runtime / A.prepared_inputs(A.P.CASE_ID)[0][2]
         payload = path.read_bytes()
         path.unlink()
         target = path.with_name("owned-copy")

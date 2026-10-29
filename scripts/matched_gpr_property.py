@@ -4,9 +4,12 @@ Each reviewed case was reviewed against the pinned source and canonical catalogu
 before collection: its program, its instruction words, its predeclared properties
 and their RV64 values. A case declares one to MAX_PROPERTIES properties; the
 control run discriminates exactly one of them, and every predeclared value is held
-to the source derivation. No file is opened here. Public graph/snapshot owners and
-file authentication remain prerequisites; a finite witness never closes an
-obligation, and a case with many witnesses closes none either.
+to the source derivation. A case is declared as data, `evidence/<case>/case.sexp`
+(decision_case-declarations-as-data.md): `reviewed_case` reads it through
+matched_gpr_case and maps it onto the records here; this module opens no file of
+its own. Public graph/snapshot owners and file authentication remain
+prerequisites; a finite witness never closes an obligation, and a case with many
+witnesses closes none either.
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import hashlib
 
+import matched_gpr_case as Case
 import matched_gpr_comparison as C
 import matched_gpr_execution as E
 import matched_gpr_input_review as T
@@ -22,137 +26,15 @@ import matched_gpr_relations as R
 import records_sexp as Records
 
 
-# The retained case: what the method/policy reviews and the capture command select.
+# The first captured case: the default the capture tools select when no case is named.
 CASE_ID = "rv64gc-signed-div-truncation-v2"
-# Declared here before its declaration record and its capture (P4-SYSTEM.14 a42at).
+# The M case declared in P4-SYSTEM.14 a42at, captured and retained since a42ax.
 M_FORMS_CASE_ID = "rv64gc-m-forms-v3"
 MAX_PROPERTIES = R.MAX_PROPERTIES
 _ENTRY = 0x80000000
-_PUBLICATION_SHA = "85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716"
-# The curated input is authenticated separately from current publication authority.
-_REQUIRED_INPUT_ROWS = (
-    (
-        "normative-source",
-        "RVI-M-DIV-STATEMENT",
-        "profiles/rv64gc-lab-v0/retained/div-statement.html",
-        "bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58",
-    ),
-)
-_REQUIREMENT_SEMANTICS = (
-    "0deea596341b2462d8c61b90c37791e566d58ccfa95c4d30beaeebcd37e30989"
-)
-_OBLIGATION_SEMANTICS = (
-    "b441b5339cbe879ba02970b69d7a1b51ce1e548a9c5f2bfe550b39beb04c8090"
-)
 _PLACEHOLDER_LIMITATION = (
     "The planned record uses zero output placeholders; collection replaces sizes, "
     "hashes and exits with measurements."
-)
-_ONES = (1 << 64) - 1
-_WORD_NEGATIVE_HALF = 0xFFFFFFFF80000000  # -2^31 as a word, sign-extended to XLEN
-
-# m-div.s: manually reviewed words and signed operands; source annotations are not authority.
-_DIV_SOURCE_SHA = "a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f"
-_DIV_STATEMENT = (
-    "For signed DIV with x5 = -7 and x6 = 2, the x7 change at boundary 2 "
-    "is -3 (rounding toward zero)."
-)
-_DIV_PREFIX = (
-    (0, 0x80000000, 0xFF900293, 4, 2, ((5, (1 << 64) - 7),)),
-    (1, 0x80000004, 0x00200313, 4, 2, ((6, 2),)),
-    (2, 0x80000008, 0x0262C3B3, 4, 2, ((7, (1 << 64) - 3),)),
-)
-
-# m-forms.s: every word and every value reviewed by hand against the chapter; the probe
-# re-derives each word from the encoding fields and each value from independent arithmetic.
-_M_FORMS_SOURCE_SHA = "232b4d96d87125c3ab876b2ec415d250a572433df57d5696afffde6a95f8d7a6"
-_M_FORMS_STEPS = (
-    (0, 0x80000000, 0xFF900293, 4, 2, ((5, (1 << 64) - 7),)),
-    (1, 0x80000004, 0x00200313, 4, 2, ((6, 2),)),
-    (2, 0x80000008, 0xFFF00393, 4, 2, ((7, _ONES),)),
-    (3, 0x8000000C, 0x00100413, 4, 2, ((8, 1),)),
-    (4, 0x80000010, 0x03F41413, 4, 2, ((8, 1 << 63),)),
-    (5, 0x80000014, 0x00100493, 4, 2, ((9, 1),)),
-    (6, 0x80000018, 0x01F49493, 4, 2, ((9, 1 << 31),)),
-    (7, 0x8000001C, 0x02628533, 4, 2, ((10, (1 << 64) - 14),)),
-    (8, 0x80000020, 0x026295B3, 4, 2, ((11, _ONES),)),
-    (9, 0x80000024, 0x0272A633, 4, 2, ((12, (1 << 64) - 7),)),
-    (10, 0x80000028, 0x0263B6B3, 4, 2, ((13, 1),)),
-    (11, 0x8000002C, 0x0292873B, 4, 2, ((14, _WORD_NEGATIVE_HALF),)),
-    (12, 0x80000030, 0x0262C7B3, 4, 2, ((15, (1 << 64) - 3),)),
-    (13, 0x80000034, 0x0263D833, 4, 2, ((16, (1 << 63) - 1),)),
-    (14, 0x80000038, 0x0262E8B3, 4, 2, ((17, _ONES),)),
-    (15, 0x8000003C, 0x0263F933, 4, 2, ((18, 1),)),
-    (16, 0x80000040, 0x0264C9BB, 4, 2, ((19, 0xFFFFFFFFC0000000),)),
-    (17, 0x80000044, 0x0264DA3B, 4, 2, ((20, 0x40000000),)),
-    (18, 0x80000048, 0x0254EABB, 4, 2, ((21, (1 << 64) - 2),)),
-    (19, 0x8000004C, 0x0254FB3B, 4, 2, ((22, _WORD_NEGATIVE_HALF),)),
-    (20, 0x80000050, 0x0202CBB3, 4, 2, ((23, _ONES),)),
-    (21, 0x80000054, 0x0202DC33, 4, 2, ((24, _ONES),)),
-    (22, 0x80000058, 0x0202ECB3, 4, 2, ((25, (1 << 64) - 7),)),
-    (23, 0x8000005C, 0x0202FD33, 4, 2, ((26, (1 << 64) - 7),)),
-    (24, 0x80000060, 0x02744DB3, 4, 2, ((27, 1 << 63),)),
-    (25, 0x80000064, 0x01C00E13, 4, 2, ((28, 28),)),
-    (26, 0x80000068, 0x02746E33, 4, 2, ((28, 0),)),
-    (27, 0x8000006C, 0x0204CEBB, 4, 2, ((29, _ONES),)),
-    (28, 0x80000070, 0x0204DF3B, 4, 2, ((30, _ONES),)),
-    (29, 0x80000074, 0x0204EFBB, 4, 2, ((31, _WORD_NEGATIVE_HALF),)),
-    (30, 0x80000078, 0x0204F53B, 4, 2, ((10, _WORD_NEGATIVE_HALF),)),
-    (31, 0x8000007C, 0x0274C5BB, 4, 2, ((11, _WORD_NEGATIVE_HALF),)),
-    (32, 0x80000080, 0x0274E63B, 4, 2, ((12, 0),)),
-)
-# (property id, policy cell, boundary, register, predeclared RV64 value, statement)
-_M_FORMS_PROPERTIES = (
-    ("form-mul", "form:mul", 7, "x10", (1 << 64) - 14,
-     "For MUL with x5 = -7 and x6 = 2, the x10 change at boundary 7 is -14 (the low 64 bits of the product)."),
-    ("form-mulh", "form:mulh", 8, "x11", _ONES,
-     "For MULH with x5 = -7 and x6 = 2, the x11 change at boundary 8 is -1 (the high 64 bits of the signed product -14)."),
-    ("form-mulhsu", "form:mulhsu", 9, "x12", (1 << 64) - 7,
-     "For MULHSU with x5 = -7 (signed) and x7 = 2^64 - 1 (unsigned), the x12 change at boundary 9 is -7 (the high 64 bits of -7 x 2^64 + 7)."),
-    ("form-mulhu", "form:mulhu", 10, "x13", 1,
-     "For MULHU with x7 = 2^64 - 1 and x6 = 2 (both unsigned), the x13 change at boundary 10 is 1 (the high 64 bits of 2^65 - 2)."),
-    ("form-mulw", "form:mulw", 11, "x14", _WORD_NEGATIVE_HALF,
-     "For MULW with x5 = -7 and x9 = 0x80000000, the x14 change at boundary 11 is 0xffffffff80000000 (the low 32 bits of the product, sign-extended)."),
-    ("form-div", "form:div", 12, "x15", (1 << 64) - 3,
-     "For DIV with x5 = -7 and x6 = 2, the x15 change at boundary 12 is -3 (rounding toward zero)."),
-    ("form-divu", "form:divu", 13, "x16", (1 << 63) - 1,
-     "For DIVU with x7 = 2^64 - 1 and x6 = 2 (both unsigned), the x16 change at boundary 13 is 2^63 - 1."),
-    ("form-rem", "form:rem", 14, "x17", _ONES,
-     "For REM with x5 = -7 and x6 = 2, the x17 change at boundary 14 is -1 (the remainder takes the dividend's sign)."),
-    ("form-remu", "form:remu", 15, "x18", 1,
-     "For REMU with x7 = 2^64 - 1 and x6 = 2 (both unsigned), the x18 change at boundary 15 is 1."),
-    ("form-divw", "form:divw", 16, "x19", 0xFFFFFFFFC0000000,
-     "For DIVW with the words -2^31 (x9) and 2 (x6), the x19 change at boundary 16 is -2^30, sign-extended."),
-    ("form-divuw", "form:divuw", 17, "x20", 0x40000000,
-     "For DIVUW with the unsigned words 0x80000000 (x9) and 2 (x6), the x20 change at boundary 17 is 0x40000000."),
-    ("form-remw", "form:remw", 18, "x21", (1 << 64) - 2,
-     "For REMW with the words -2^31 (x9) and -7 (x5), the x21 change at boundary 18 is -2 (the dividend's sign)."),
-    ("form-remuw", "form:remuw", 19, "x22", _WORD_NEGATIVE_HALF,
-     "For REMUW with the unsigned words 0x80000000 (x9) and 0xfffffff9 (x5), the x22 change at boundary 19 is 0x80000000 sign-extended (the whole dividend)."),
-    ("table1-div-by-zero", "table1:div-by-zero", 20, "x23", _ONES,
-     "For DIV with x5 = -7 and x0 = 0, the x23 change at boundary 20 is -1 (Table 1: division by zero, all bits set; no trap)."),
-    ("table1-divu-by-zero", "table1:divu-by-zero", 21, "x24", _ONES,
-     "For DIVU with x5 = 2^64 - 7 and x0 = 0, the x24 change at boundary 21 is 2^64 - 1 (Table 1: division by zero, all bits set)."),
-    ("table1-rem-by-zero", "table1:rem-by-zero", 22, "x25", (1 << 64) - 7,
-     "For REM with x5 = -7 and x0 = 0, the x25 change at boundary 22 is -7 (Table 1: the remainder of division by zero is the dividend)."),
-    ("table1-remu-by-zero", "table1:remu-by-zero", 23, "x26", (1 << 64) - 7,
-     "For REMU with x5 = 2^64 - 7 and x0 = 0, the x26 change at boundary 23 is 2^64 - 7 (Table 1: the dividend)."),
-    ("table1-div-overflow", "table1:div-overflow", 24, "x27", 1 << 63,
-     "For DIV with x8 = -2^63 and x7 = -1, the x27 change at boundary 24 is -2^63 (Table 1: signed overflow, the quotient equals the dividend; no trap)."),
-    ("table1-rem-overflow", "table1:rem-overflow", 26, "x28", 0,
-     "For REM with x8 = -2^63 and x7 = -1, the x28 change at boundary 26 is 0 (Table 1: the overflow remainder, replacing the sentinel 28)."),
-    ("table1-divw-by-zero", "table1:divw-by-zero", 27, "x29", _ONES,
-     "For DIVW with the word -2^31 (x9) and x0 = 0, the x29 change at boundary 27 is -1 (Table 1 at L = 32: all bits set, sign-extended)."),
-    ("table1-divuw-by-zero", "table1:divuw-by-zero", 28, "x30", _ONES,
-     "For DIVUW with the unsigned word 0x80000000 (x9) and x0 = 0, the x30 change at boundary 28 is 2^32 - 1 sign-extended (all bits set)."),
-    ("table1-remw-by-zero", "table1:remw-by-zero", 29, "x31", _WORD_NEGATIVE_HALF,
-     "For REMW with the word -2^31 (x9) and x0 = 0, the x31 change at boundary 29 is -2^31 sign-extended (Table 1: the dividend's word)."),
-    ("table1-remuw-by-zero", "table1:remuw-by-zero", 30, "x10", _WORD_NEGATIVE_HALF,
-     "For REMUW with the unsigned word 0x80000000 (x9) and x0 = 0, the x10 change at boundary 30 is 0x80000000 sign-extended (Table 1: the dividend's word), replacing the MUL result."),
-    ("table1-divw-overflow", "table1:divw-overflow", 31, "x11", _WORD_NEGATIVE_HALF,
-     "For DIVW with the words -2^31 (x9) and -1 (x7), the x11 change at boundary 31 is -2^31 sign-extended (Table 1: word overflow, the quotient equals the dividend), replacing the MULH result."),
-    ("table1-remw-overflow", "table1:remw-overflow", 32, "x12", 0,
-     "For REMW with the words -2^31 (x9) and -1 (x7), the x12 change at boundary 32 is 0 (Table 1: the word overflow remainder), replacing the MULHSU result."),
 )
 
 
@@ -416,106 +298,60 @@ def _freeze_authority(
     return PropertyAuthority(*values)
 
 
-def _m_authority() -> PropertyAuthority:
-    return PropertyAuthority(
-        "rv64gc-lab-v0",
-        "REQ-GC-M",
-        _REQUIREMENT_SEMANTICS,
-        "OB-GC-M",
-        _OBLIGATION_SEMANTICS,
-        "RVI-M",
-        _PUBLICATION_SHA,
-    )
-
-
-def signed_division_case() -> ReviewedPropertyCase:
-    """The retained case: one signed-DIV quotient witness over m-div.s (27 boundaries)."""
+def _declared_case(declaration: dict) -> ReviewedPropertyCase:
+    """Map a declaration's neutral data (matched_gpr_case.read_case) onto this review's records."""
+    authority, control = declaration["authority"], declaration["control"]
     return ReviewedPropertyCase(
-        CASE_ID,
-        "rv64gc-lab-v0",
-        "m-div.s",
-        27,
-        2512,
-        _DIV_SOURCE_SHA,
-        "REQ-GC-M",
-        ("OB-GC-M",),
-        "rv64gc-lab-env-v2",
-        "2",
-        (
-            ReviewedProperty(
-                "signed-quotient",
-                "form:div",
-                _DIV_STATEMENT,
-                C.GprWitness(2, "x7"),
-                (1 << 64) - 3,
-            ),
-        ),
-        "signed-quotient",
-        (1 << 64) - 4,
-        "Only boundary2 x7 expectation changes from -3 to -4.",
-        "One finite DIV witness; full source/risk/feature policy remains pending.",
-        _DIV_PREFIX,
-        "RVI-M",
-        "11.1.2",
-        "defined",
-        "medium",
-        "one signed-DIV quotient witness",
-        _m_authority(),
-        tuple(E.InputBinding(*row) for row in _REQUIRED_INPUT_ROWS),
-    )
-
-
-def m_forms_case() -> ReviewedPropertyCase:
-    """The crediting case: every M form and every Table 1 cell over m-forms.s (33 boundaries).
-
-    Declared before its declaration record and its capture. The control changes the DIV
-    rounding witness (boundary 12, x15) from -3 to -4, as the retained case's control did.
-    """
-    return ReviewedPropertyCase(
-        M_FORMS_CASE_ID,
-        "rv64gc-lab-v0",
-        "m-forms.s",
-        33,
-        3886,
-        _M_FORMS_SOURCE_SHA,
-        "REQ-GC-M",
-        ("OB-GC-M",),
-        "rv64gc-lab-env-v2",
-        "2",
+        declaration["id"],
+        declaration["profile_id"],
+        declaration["program"],
+        declaration["instructions"],
+        declaration["source_size"],
+        declaration["source_sha256"],
+        declaration["requirement_id"],
+        declaration["obligation_ids"],
+        declaration["contract_id"],
+        declaration["contract_version"],
         tuple(
-            ReviewedProperty(
-                property_id, cell, statement, C.GprWitness(step, register), value
-            )
-            for property_id, cell, step, register, value, statement in _M_FORMS_PROPERTIES
+            ReviewedProperty(property_id, cell, statement, C.GprWitness(step, register), value)
+            for property_id, cell, step, register, value, statement in declaration["properties"]
         ),
-        "form-div",
-        (1 << 64) - 4,
-        "Only boundary12 x15 expectation changes from -3 to -4.",
-        "Twenty-five finite M witnesses, the 13 forms and the 12 Table 1 cells, predeclared; "
-        "full source/risk/feature policy remains pending.",
-        _M_FORMS_STEPS,
-        "RVI-M",
-        "11.1.1 and 11.1.2 (Table 1)",
-        "defined",
-        "medium",
-        "thirteen M forms and twelve Table 1 cells, one finite witness each",
-        _m_authority(),
-        tuple(E.InputBinding(*row) for row in _REQUIRED_INPUT_ROWS),
+        control["property_id"],
+        control["value"],
+        control["reason"],
+        declaration["limitation"],
+        declaration["steps"],
+        declaration["source_id"],
+        declaration["source_locator"],
+        declaration["category"],
+        declaration["risk"],
+        declaration["coverage"],
+        PropertyAuthority(
+            declaration["profile_id"],
+            declaration["requirement_id"],
+            authority["requirement_semantic_sha256"],
+            authority["obligation_id"],
+            authority["obligation_semantic_sha256"],
+            declaration["source_id"],
+            authority["source_sha256"],
+        ),
+        tuple(E.InputBinding(*row) for row in declaration["required_inputs"]),
     )
-
-
-_CASES = {CASE_ID: signed_division_case, M_FORMS_CASE_ID: m_forms_case}
 
 
 def reviewed_case_ids() -> tuple[str, ...]:
-    return tuple(_CASES)
+    """Every case declared under evidence/, in name order."""
+    return Case.declared_case_ids()
 
 
 def reviewed_case(case_id: str) -> ReviewedPropertyCase:
-    """Return fresh nested facts for a reviewed case so a caller cannot alias the constants."""
+    """Return fresh nested facts for a declared case, read from its declaration on every call."""
     _require(_text(case_id), "invalid property case ID")
-    _require(case_id in _CASES, "no reviewed source property for selected case")
-    return _CASES[case_id]()
+    _require(case_id in reviewed_case_ids(), "no reviewed source property for selected case")
+    try:
+        return _declared_case(Case.read_case(case_id))
+    except Case.CaseError as error:
+        raise PropertyError("reviewed case declaration refused: " + str(error)) from None
 
 
 def _freeze_witness(witness) -> C.GprWitness:
@@ -627,6 +463,7 @@ def bind_source_property(
     manifest: M.ManifestPlan,
     source_values: C.SourceExpectationCheck,
     case_id: str = CASE_ID,
+    case: ReviewedPropertyCase | None = None,
 ) -> SourcePropertyCheck:
     """Bind one reviewed case; authentication and complete policy stay separate.
 
@@ -634,17 +471,24 @@ def bind_source_property(
     actual derived register change carrying exactly the reviewed value. The source-value
     finding's own witness is the control's; the other properties are read from the
     derivation it carries, so no second source read or arithmetic engine is introduced.
+    A caller that already selected the reviewed case passes it and the binding opens no
+    file; otherwise the case is read from its declaration here.
     """
     try:
         selected = freeze_context(
             context, profile_id=profile_id, experiment_id=experiment_id
         )
         _require(_text(case_id), "invalid property case ID")
-        if case_id not in _CASES:
-            return SourcePropertyCheck(
-                "unsupported", "no reviewed source property for selected case"
-            )
-        case = reviewed_case(case_id)
+        if case is None:
+            if case_id not in reviewed_case_ids():
+                return SourcePropertyCheck(
+                    "unsupported", "no reviewed source property for selected case"
+                )
+            case = reviewed_case(case_id)
+        _require(
+            type(case) is ReviewedPropertyCase and case.case_id == case_id,
+            "reviewed case differs from the selected case",
+        )
         control = case.control()
         _require(
             (

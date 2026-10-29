@@ -24,9 +24,13 @@ nothing is credited.
 | feature-rules | the seven feature families | satisfied by declaration: none applies to `OB-GC-M` |
 | form-coverage | every form the requirement names | satisfied: 13 of 13 forms predeclared and 13 exercised (`mul`, `mulh`, `mulhsu`, `mulhu`, `mulw`, `div`, `divu`, `rem`, `remu`, `divw`, `divuw`, `remw`, `remuw`) |
 
-Ten legs satisfied, none pending; the disposition is `satisfied`, and since 2026-10-26 `credited` is true:
+Ten legs satisfied, none pending; the disposition was `satisfied`, and from 2026-10-26 `credited` was true:
 the record `CR-GC-M-1` in `credits.sexp` (signed `review` under `decision_four-rulings-delegated.md`, per
-`decision_req-gc-m-credited-implemented.md`) credits the case, and `REQ-GC-M` derives `implemented`. The consumer reads boundary rows and forms from the
+`decision_req-gc-m-credited-implemented.md`) credited the case, and `REQ-GC-M` derived `implemented`. Since
+2026-10-29 the case is `invalidated`: `P4-SYSTEM.14` a44-2b moved pinned inputs of its capture (the matched
+cases' declarations became data) and retired the record (that decision's Retirement), so the consumer reports
+`DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness` and
+`REQ-GC-M` derives `planned` until the M case's v4 capture is measured and credited (a44-3 to a44-5). The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row is a directed boundary
 fixture; a step's mnemonic is its form), never from the chapter itself.
 
@@ -57,7 +61,8 @@ the rows for retained bytes is a new predeclaration the retained-identity contro
 (`decision_policy-legs-measured-two-pending.md`). The m-forms program below predeclared them;
 its capture (a42aw) is the retained case now, and the first case is `invalidated` history.
 
-The policy document is one of the 64 reviewed inputs each case pins by SHA256. An edit to
+The policy document is one of the reviewed inputs each case pins by SHA256 (64 for the two retained captures;
+67 for a case reviewed since a44-2b, which adds its declaration, the declaration's schema and its reader). An edit to
 it changes the dependency manifest's expected bytes and refuses the finite method, so the
 currentness leg fails until a fresh capture: a policy change is a capture, not a note.
 

@@ -223,4 +223,7 @@ It prints `pending valid satisfied`, `AGREE AGREE DIVERGE`, then `25 False`. Sin
 [all ten legs satisfied](policy-adequacy.md) with `credited` false. The first case is `invalidated`
 history, never rerun. Nothing here credits `REQ-GC-M`; `scripts/requirement_status.py` derives it
 `planned` with both cases pending, and the crediting act is a separately owned record
-(`decision_ten-legs-satisfied-credit-separate.md`).
+(`decision_ten-legs-satisfied-credit-separate.md`). That act came at a42az (`CR-GC-M-1`, 2026-10-26) and was
+retired at `P4-SYSTEM.14` a44-2b (2026-10-29): moving the matched cases' declarations into data moved pinned
+inputs of this capture, so the method review reports it `stale`, the policy review `invalidated`, and this
+capture joins the first as history; the M case returns as `v4`, captured under the new manifest.

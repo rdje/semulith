@@ -132,8 +132,8 @@ def freeze_review(*, planned_experiment: bytes, dependencies: bytes, scope: V.Sc
     _need(_digest(dependencies) == dependency.sha256, "manifest differs from planned principal")
     principals = planned["verification"]["input"]
     children = document["input"]
-    _need(len(principals) == T.MIN_INPUTS and len(children) == F.MANIFEST_INPUTS,
-          "review requires the declared nine principals and64 distinct children")
+    _need(len(principals) == T.MIN_INPUTS and 1 <= len(children) <= F.MANIFEST_INPUTS,
+          f"review requires the declared nine principals and 1..{F.MANIFEST_INPUTS} distinct children")
     declared = tuple(X.InputBinding(row["role"], row["id"], row["path"], row["sha256"])
                      for row in (*principals, *children))
     coverage = T.compare_inputs(frozen, declared)

@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """Dossier-qualification controls (P4-SYSTEM.14 a42bc): a verification-bearing experiment record in a
 dossier is qualified only through a CURRENT credit record naming its case and form-equality with the case's
-measured record. The credit decides, never the record. Real-tree arms pin the credited case; synthetic arms
-copy it and break one thing at a time."""
+measured record. The credit decides, never the record. The real-tree arm predicts the live catalogue's verdict
+on the m-forms case; the synthetic arms judge a mirror root whose credit is a FROZEN copy of the retired record
+CR-GC-M-1 (scripts/fixtures/dossier-qualification/credits.sexp, ruling 5) and whose dependency manifest is
+re-pinned to the mirror's own bytes — a current synthetic capture, as probe_div_method builds one — and break
+one thing at a time (P4-SYSTEM.14 a44-2b)."""
 from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import importlib.util
 from pathlib import Path
 import shutil
@@ -36,6 +40,7 @@ MUTATION_TESTS = {
 }
 UNIT = "rv64gc-lab-v0"
 CASE = "rv64gc-m-forms-v3"
+FROZEN_CREDITS = HERE / "fixtures" / "dossier-qualification" / "credits.sexp"
 
 
 def load_module(source: Path, name: str):
@@ -67,7 +72,7 @@ class DossierQualificationTests(unittest.TestCase):
         # never written.
         unit_src, case_src = ROOT / "profiles" / UNIT, ROOT / "evidence" / CASE
         pinned = set()
-        for text_path in (unit_src / "credits.sexp", case_src / "dependencies.sexp"):
+        for text_path in (FROZEN_CREDITS, case_src / "dependencies.sexp"):
             for form in S.read_file(text_path):
                 stack = [form]
                 while stack:
@@ -92,12 +97,25 @@ class DossierQualificationTests(unittest.TestCase):
                 (self.root / "profiles" / unit_dir.name).symlink_to(unit_dir)
         self.profile = self.root / "profiles" / UNIT
         shutil.copytree(unit_src, self.profile)
+        shutil.copy(FROZEN_CREDITS, self.profile / "credits.sexp")
         (self.root / "evidence").mkdir(exist_ok=True)
         for case_dir in (ROOT / "evidence").iterdir():
             if case_dir.name != CASE:
                 (self.root / "evidence" / case_dir.name).symlink_to(case_dir)
         self.case = self.root / "evidence" / CASE
         shutil.copytree(case_src, self.case)
+        # The mirror's capture is current: each manifest row re-pinned to the mirror's own bytes of its path.
+        manifest = self.case / "dependencies.sexp"
+        text = manifest.read_text()
+        for form in S.read_file(manifest):
+            for row in S.children(form, "input"):
+                path, pin = S.field(row, "path"), S.field(row, "sha256")
+                current = hashlib.sha256((self.root / path).read_bytes()).hexdigest()
+                old = f'(path "{path}") (sha256 "{pin}")'
+                if text.count(old) != 1:
+                    raise RuntimeError("manifest row is not singular: " + path)
+                text = text.replace(old, f'(path "{path}") (sha256 "{current}")')
+        manifest.write_text(text)
         self.cr = load_module(ROOT / "scripts" / "credit_records.py", "credit_records_under_test")
         self.measured = [f for f in S.read_file(self.case / "measured-experiment.sexp")
                          if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
@@ -105,10 +123,12 @@ class DossierQualificationTests(unittest.TestCase):
     def qualification(self, form, root=None):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
-    def test_the_credited_case_qualifies_on_the_real_tree(self):
+    def test_the_real_tree_predicts_the_live_catalogue(self):
+        """No live credit names the m-forms case since CR-GC-M-1's retirement (a44-2b), so its record does not
+        qualify on the real tree; the re-credit (CR-GC-M-2, a44-5) re-states this arm for the M v4 case."""
         real = [f for f in S.read_file(ROOT / "evidence" / CASE / "measured-experiment.sexp")
                 if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
-        self.assertEqual(self.qualification(real, ROOT), [])
+        self.assertEqual(self.qualification(real, ROOT), ["no credit record names the case " + CASE])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):
         self.assertEqual(self.qualification(self.measured), [])

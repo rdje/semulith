@@ -380,7 +380,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
         source_property = G.bind_source_property(
             property_context, profile_id=property_context.profile_id,
             experiment_id=property_context.experiment_id, manifest=manifest.plan,
-            source_values=source_values, case_id=selected_case.case_id)
+            source_values=source_values, case_id=selected_case.case_id, case=selected_case)
         property_disposition = getattr(source_property, "disposition", None)
         property_facts = getattr(source_property, "facts", None)
         if (type(source_property) is not G.SourcePropertyCheck
