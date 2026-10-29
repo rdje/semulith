@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0074 (leaf XTASK.13 slice b1) — GUEST-GEN's census and surgical controls judge frozen mini corpora
+
+A whole frozen copy would be 3 MB, so `scripts/fixtures/guest-gen/` holds what the arms use: three rv64i guests (the surgical arms' own) and three rv64gc guests with their byte fixture regenerated at its path, each with its own run-order record, over DEF-GEN's frozen definitions. The census's in-sync and hand-edit arms judge the frozen pair; the real run keeps judging the live pairs. On the real tree a hand-edited rv64gc fixture now fails by name instead of refusing; a missing guest and an unassemblable one still refuse through the base-mirror and parcel-count arms, which read the live corpus — slice b2. `GUEST-GEN --self-test: 400 pass / 0 fail`.
+
 ## SEMULITH-P4-0325 (P4-SYSTEM.14 a43a-2e) — the XLEN case captured, exactly once: the first non-M capture
 
 One invocation of `retain_div_capture.py --case rv64gc-xlen-forms-v1`, started only on a quiet host (no sibling repository's verification for three minutes, load below 6): three zero-exit processes, baseline and repeat AGREE, the control DIVERGE exactly as declared — boundary 24, x31 holding 2^40 where the control expects 0 — complete, qualification false. The case holds 22 of 22 and the family all 89; the status reads 4 cases, 1 credited, XLEN pending. The receipt's limitation carried an M-specific phrase from the retention tool; future receipts name the case's own requirement, this one is retained as written.

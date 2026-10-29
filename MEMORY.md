@@ -20,13 +20,12 @@
   measured finding (the .29 leaf: options A/B/C; design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0325` (P4-SYSTEM.14 a43a-2e) — the XLEN case captured once (AGREE, AGREE, control DIVERGE at
-  x31/24); this commit is its capture commit. Features 1-5 of 5 since XTASK-0073 done: the XTASK turn is next.
-- next_action: XTASK.13 slice b (GUEST-GEN): a REDUCED frozen pair (the full rv64gc corpus is 171 guests, its fixture ~1 MB):
-  drop the live in-sync arm (run judges live), the hand-edit and base-mirror arms on a small fixed subset; RED before/after on
-  the real tree with a restore trap (target/xtask/xt0073/red.sh pattern). Then a43a-2f: review_div_method/policy over several
-  retained cases (per-case pointers; boundary marker "(boundary"; form coverage for a state requirement; OB-XLEN feature
-  disposition; PROFILE-CONSISTENCY's real run per case) and the credit CR-D-XLEN-1 (REQ-D-XLEN implemented).
+- last_unit: `SEMULITH-XTASK-0074` (XTASK.13 slice b1) — GUEST-GEN's census and surgical arms judge frozen mini corpora;
+  the 5:1 turn after P4-0321 … P4-0325 (XLEN retained, declared, re-declared, captured).
+- next_action: ARTIFACT-CLEANUP.31 (due since 2026-10-29T09:49Z; maintenance), then features: a43a-2f the reviews over several
+  retained cases (review_div_method/policy per case; boundary marker "(boundary"; form coverage for a state requirement;
+  OB-XLEN feature disposition; PROFILE-CONSISTENCY's real run per case) and the credit CR-D-XLEN-1 (REQ-D-XLEN implemented);
+  then CSR-SET, SSTC as data; XTASK.13 slice b2 (GUEST-GEN mirror + count arms) at the next turn.
   Watch hosted CI after every push; capture only on a quiet host (target/p4-system-14/a43a-2e/capture-when-quiet.sh);
   after a catalogue edit gen_model_book.py --unit; GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).

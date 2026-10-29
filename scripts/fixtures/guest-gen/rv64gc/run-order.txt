@@ -1,0 +1,5 @@
+# run-order.txt — the run order of a FROZEN mini corpus (XTASK.13 slice b1, 2026-10-29): GUEST-GEN's controls judge
+# this copy, never the live guests (ruling 5); the live corpus is judged by the real run.
+smoke-arith
+bound-arith
+c-alu

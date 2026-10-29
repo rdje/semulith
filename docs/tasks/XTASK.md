@@ -441,12 +441,26 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   `gc-module-hand-edited`, `fragment-edited` and `encoding-missing` 2 (REFUSED, self-test failed) → 1, each named;
   `fragment-missing` 2 → 2, now the generator's named refusal (`fragment 'riscv/system' has no semantics document`), never
   the self-test's. `DEF-GEN --self-test: 56 pass / 0 fail` before and after. Next: slice b, GUEST-GEN.
+  Slice b1 (`2026-10-29`, `SEMULITH-XTASK-0074`; on clean e32cc645; evidence target/xtask/xt0074): `GUEST-GEN`'s census
+  and surgical controls judge frozen mini corpora. A whole frozen copy would be 3 MB (the rv64i set 512 KB, the rv64gc
+  set 2.5 MB with a 1 MB fixture), so `scripts/fixtures/guest-gen/` holds what the arms use: three rv64i guests
+  (smoke-arith, guest-control, smoke-trap — the surgical arms' own) and three rv64gc guests (smoke-arith, bound-arith,
+  c-alu) with their byte fixture regenerated at its path, each corpus with its own run-order record, composed over DEF-GEN's
+  frozen definitions (one frozen canonical definition, not two); 92 KB. The census's in-sync arm judges the frozen pair
+  (`run` judges the live pairs), its hand-edit arm edits a copy of the frozen fixture. `run` has no absence branch to expose
+  (it always judges both pairs and the mirror). Measured on the real tree, before → after (red.txt, restored, 0 paths
+  changed): `in-sync` 0 → 0; `gc-fixture-hand-edited` 2 (self-test failed) → 1, named; `gc-guest-missing` and
+  `rv64i-guest-unassemblable` 2 → 2, still through the self-test — the three base-mirror arms (the live owner/mirror pair)
+  and the parcel-count arms (the full live census) still read the live corpus, slice b2's scope, named by the after
+  binary's MISS lines. `GUEST-GEN --self-test: 400 pass / 0 fail` before and after. Next: slice b2 (the mirror arms over a
+  frozen self-consistent pair — the checker hard-codes seven re-derivations and three pinned source re-derivations — and
+  the census arms).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slice a (DEF-GEN) done; GUEST-GEN next, after five feature units |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN) and b1 (GUEST-GEN's census and surgical arms) done; b2 (GUEST-GEN's mirror and count arms) next, after five feature units |
 
 ## Decisions
 
@@ -572,6 +586,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] slice a **FIX** — scripts/fixtures/def-gen/ (25 frozen files; `python3 -B scripts/gen_definition.py --check` over the frozen pair rc=0); xtask/src/check_definition_gen.rs: the controls read `FIXTURE`, `run` fails an orphaned module by name; scripts/probe_c_engine.py `--data-root`; clippy `-D warnings` rc=0.
 - [x] slice a **ADDRESSED (verified)** — red.txt: `gc-module-hand-edited after rc=1 … out of sync`, `fragment-edited after rc=1 … out of sync`, `encoding-missing after rc=1 … is generated, but its encoding … is absent`, `fragment-missing after rc=2` naming the missing semantics document; `in-sync` rc=0 both; `tree restored: 0 paths changed`.
 - [x] slice a **NO REGRESSION** — `DEF-GEN --self-test: 56 pass / 0 fail`; `bash scripts/check_definition_gen.sh` rc=0 (both pairs `ok … matches …`); `cargo test -p xtask` `test result: ok. 17 passed`; `python3 -B scripts/probe_c_engine.py` (default root) passes; the commit gate green (chain log).
+- [x] slice b1 **ROOT CAUSE (WHY + WHERE)** — `self_test` copied the live rv64i guests and judged the live rv64gc pair (`grep -c 'repo.join(GUESTS_DIR)\|OUT_GC,' target/xtask/xt0074/check_guest_gen.rs.before` = 3); red.txt: `gc-fixture-hand-edited before rc=2 … self-test`.
+- [x] slice b1 **FIX** — scripts/fixtures/guest-gen/ (two mini corpora; `gen_guests.py --check` over the frozen rv64gc pair rc=0); xtask/src/check_guest_gen.rs: the surgical and census arms read `FIXTURE_*`; clippy `-D warnings` rc=0.
+- [x] slice b1 **ADDRESSED (verified)** — red.txt: `gc-fixture-hand-edited after rc=1 … out of sync`; `in-sync` rc=0 both; the two states still refused name their live arms (`GREEN the base mirror holds on the real tree`, `GREEN full historical parcel count census`) — b2; `tree restored: 0 paths changed`.
+- [x] slice b1 **NO REGRESSION** — `GUEST-GEN --self-test: 400 pass / 0 fail` (before and after); the commit gate green (chain log).
 
 ## Acceptance Checklist (leaf XTASK.12)
 
@@ -621,6 +639,7 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Changelog
 
+- `2026-10-29`: XTASK.13 slice b1 done — GUEST-GEN's census and surgical arms judge frozen mini corpora; the mirror and count arms are b2.
 - `2026-10-29`: XTASK.13 slice a done — DEF-GEN's controls judge a frozen copy (scripts/fixtures/def-gen); an orphaned module fails by name.
 - `2026-10-23`: Created task tree from the director's direction and the measured assessment
   (target/rustdoc-xtask-assessment/).
