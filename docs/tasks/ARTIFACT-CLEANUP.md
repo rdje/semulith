@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -879,17 +879,35 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   three live roots untouched. Ruling 4's record and `XTASK.9`'s leaf are corrected.
 
 - ID: `ARTIFACT-CLEANUP.34` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-11-02` UTC, `SEMULITH-AC-0090`)
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-10-30T11:07Z), create the fresh work directory (mode 700), repeat the
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0089.
 
+  Result (`2026-11-02T06:58Z`, `SEMULITH-AC-0090`): run at 92 h, after 7f1b8059 with a clean tree. The handoff census
+  first refused twice on a user disk monitor's read-only scans of the checkout (`du -kxd3`, then `find … -size +50M`,
+  both children of DiskWatch.app, PID 30194, up 2 d 15 h — not project work, so not killed); the act started at the
+  first `handoff: OK`, in target/artifact-cleanup/AC0090 (made first, mode 700) with run.log inside it (2026-11-02T06:50Z to
+  2026-11-02T06:58Z). Plan: 334 candidates (1,384,309,862 B), 25,175 retained files (269,002,853 B). Strict selection: 6 approved
+  (15,766,338 B), 328 unrecorded (1,368,543,524 B). The act's fresh census returned `handoff: OK`; the guarded core
+  removed exactly the 6, residue 0, journal `complete`/`verified`; `--inspect` confirms plan, selection and journal.
+  The one-entry record is overwritten. Re-census against AC0089 (AC0090/recensus.json): of AC0089's 328 unrecorded,
+  292 remain and 36 are gone; 36 are new (277,386,821 B). The population is stable: 36 were replaced one-for-one by the rebuilds of the gated commits since (18 under target/debug, 6 under each producer root, 6 under the wasm32 target), the byte total moved by 73,986 B, and every file still sits under the eight cargo incremental roots AC0089 found — the shared target's orphan sessions that `.29`'s ruled class C will remove. The act stays inside its recorded classes.
+  promotion: declined (routine recurrence).
+
+- ID: `ARTIFACT-CLEANUP.35` — **the next recurring cleanup**
+  Status: `pending`
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-11-03T06:58Z), create the fresh work directory (mode 700), repeat the
+  four acts with the log inside it; overwrite the record from the receipt;
+  sync and normal COMMIT. Re-census the unrecorded population against AC0090.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.34` | `pending` | the next recurring cleanup, due after 2026-10-30T11:07Z; until then the feature cycle (P4-SYSTEM) resumes; `.29` (class C, ruled 2026-10-28) waits for its unit |
+| 1 | `ARTIFACT-CLEANUP.35` | `pending` | the next recurring cleanup, due after 2026-11-03T06:58Z; until then the feature cycle (P4-SYSTEM) resumes; `.29` (class C, ruled 2026-10-28) waits for its unit |
 
 ## Decisions
 
@@ -924,7 +942,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 ## Blockers
 
 - `ARTIFACT-CLEANUP.29`: a ruling between options A, B and C (the leaf's finding, `2026-10-26`); until
-  then the recurring cleanups (`.34` …) run the supported act unchanged.
+  then the recurring cleanups (`.35` …) run the supported act unchanged.
 
 <!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
 Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).

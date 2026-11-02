@@ -15,20 +15,20 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count
-  restarted at XTASK-0074 (XTASK.13 b1); `ARTIFACT-CLEANUP.34` once due (after 2026-10-30T11:07Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
+  restarted at XTASK-0074 (XTASK.13 b1); `ARTIFACT-CLEANUP.35` once due (after 2026-11-03T06:58Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0327` (P4-SYSTEM.14 a43a-3; feature 2 of 5 after XTASK-0074) — CR-D-XLEN-1, REQ-D-XLEN
-  `implemented` (46 planned / 2 implemented), G-STATE 1 of 4. Before: P4-0326 (the reviews read every retained capture).
-- next_action: features (3 of 5 after XTASK-0074): a43b-2, the planned lapse window that opens CSR-SET
-  (decision_producer-debt-paid-before-the-next-case.md): design first (every pinned file, probe, count; the order), then
-  one pinned-edit commit (control id/statement declared per case; CSR-SET's high-risk second-method/adversarial
-  vocabulary; credits retired, statuses planned), v5 + xlen-v2 declared and captured once on a quiet host (traces
-  byte-identical), re-credited (CR-GC-M-3, CR-D-XLEN-2); then CSR-SET declared. P4-SYSTEM.md ~129 KB of 131,072:
-  archive closed records FIRST; CHANGELOG ~63 KB: shard soon. XTASK.13 slice b2 at the 5:1 turn.
-  Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit; GS regen after `git add`;
-  chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + the knowledge-map check first.
+- last_unit: `SEMULITH-AC-0090` (ARTIFACT-CLEANUP.34, maintenance: counts as neither) — 6 removed, residue 0, 328 unrecorded
+  stable (292 byte-identical). Before: P4-0327 (feature 2 of 5 after XTASK-0074; REQ-D-XLEN `implemented`, 46/2).
+- next_action: features (3 of 5 after XTASK-0074): a43b-2a, the window's design, documentation only — drafted in
+  target/p4-system-14/a43b-2a (inventory.md, design.md: D1 control id/statement optional in the schema and required by the
+  producer; D2 second_method/adversarial forms judged by risk-method's five conditions; D3 guard; D4 slices 2b–2e), plus
+  containment: move_closed_records.py moves a43a-2f … a44-2b to archive part 24 (P4-SYSTEM.md 129,223 B of 131,072) and
+  CHANGELOG (64,028 B of 65,536) is sharded with shard_history.py --max-bytes in the same unit. Then 2b (one pinned-edit
+  commit, the lapse), 2c (v5 + xlen-v2 declared, family 89 → 133), 2d (captured once on a quiet host), 2e (re-credit).
+  XTASK.13 slice b2 at the 5:1 turn. Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit;
+  GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -41,7 +41,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0089` (`docs/ARTIFACT_CLEANUP.md` last run `2026-10-29T11:07Z`).
+  cleanup act `target/artifact-cleanup/AC0090` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-02T06:58Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.
