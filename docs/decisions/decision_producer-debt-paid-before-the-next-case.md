@@ -48,3 +48,19 @@ answers: When and how are the M literals in the pinned producers (the control pr
   probe and count that moves with it, the order, and the capture script for a quiet host.
 - A literal the audit finds after this window is fixed in the next window that moves a pinned producer, and named in
   the credits of any case captured meanwhile.
+
+## Designed (`P4-SYSTEM.14` a43b-2a, `2026-11-02`, `SEMULITH-P4-0328`)
+
+The full design is the a43b-2a record in `docs/tasks/P4-SYSTEM.md`; its binding choices:
+
+- **The control's `id` and `statement` are optional in `schema/matched-case.sexp` and required by the producer.** The four
+  retained declarations are bytes that cannot gain fields; `capture_div.py` refuses by name to plan a case without them.
+  One schema, not a `-v2` beside it.
+- **CSR-SET's vocabulary is two optional case forms**, `second_method` (one of the policy's four named methods, at least two
+  producers, their common inputs, what is independently derived) and `adversarial` (the properties witnessing the failure
+  mode). For high or critical risk the `risk-method` leg holds only when the producers are the measured graph's, with
+  pairwise distinct versions; every pair of them is a recorded producer pair whose shared inputs intersect to the declared
+  common inputs; the independence text earns no credit beyond the pair's recorded assessment; and every adversarial
+  property is a declared property of a capture whose baseline agrees.
+- **Order:** a43b-2b the one pinned-edit commit (both credits retired, 48 / 0); a43b-2c v5 and xlen-v2 declared (the family
+  89 → 133 files); a43b-2d each captured once, traces byte-identical; a43b-2e both re-credited (46 / 2); then a43b-3.

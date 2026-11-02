@@ -159,17 +159,14 @@ parts1–12 use the checked reader; choose the part, for example archive9:
 python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
 ```
 
-Ordinary P4 parts/receipts stay native. Three containment archives retain whole
-closed units and LC0027's checklist; original headings link there:
+Ordinary P4 parts/receipts stay native. From part 13 on, the numbered parts retain whole
+closed units verbatim — each live heading links to its part — and the LIVE-CONTAINMENT
+archives retain that tree's closed units (`LIVE-CONTAINMENT-readers.md` holds LC0027's
+checklist); list the parts, then read the one a heading names:
 
 ```sh
-cat docs/tasks/archive/P4-SYSTEM-13.md
-cat docs/tasks/archive/P4-SYSTEM-14.md
-cat docs/tasks/archive/P4-SYSTEM-15.md
-cat docs/tasks/archive/P4-SYSTEM-16.md
-cat docs/tasks/archive/P4-SYSTEM-17.md
-cat docs/tasks/archive/P4-SYSTEM-18.md
-cat docs/tasks/archive/P4-SYSTEM-19.md
+ls docs/tasks/archive/P4-SYSTEM-[0-9]*.md   # every numbered part; 13 onward are plain markdown
+cat docs/tasks/archive/P4-SYSTEM-24.md      # e.g. the a44 window and the XLEN case's capture units
 cat docs/tasks/archive/LIVE-CONTAINMENT.md
 cat docs/tasks/archive/LIVE-CONTAINMENT-readers.md
 cat docs/tasks/archive/LIVE-CONTAINMENT-adoption.md

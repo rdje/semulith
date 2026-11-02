@@ -105,6 +105,43 @@ pending; the disposition is never inferred from the mnemonics. A control that di
 somewhere other than the step and register of the property the `control_run` names is not the
 stated reason; the leg reads that property, not the first one declared (a42at).
 
+## The second method, designed for CSR-SET (a43b-2a — not yet built)
+
+`REQ-D-CSR-SET` is `(risk high)`, so its case cannot be credited until the case can say what its
+second method and adversarial case are. The vocabulary is designed (2026-11-02) and lands in the
+one pinned-edit commit of the window that opens CSR-SET (a43b-2b,
+`decision_producer-debt-paid-before-the-next-case.md`); until then the leg reads as above. Two
+optional forms of the case declaration, as CSR-SET's will carry them:
+
+```lisp
+(second_method (kind "independent-exact-expectation")
+               (producer_ids "expected") (producer_ids "reference")
+               (common_input_ids "guest-source") (common_input_ids "dependency-manifest")
+               (independently_derived "The expected values are derived from the pinned privileged chapters by the source author, with no reference output among its inputs."))
+(adversarial (property_ids "csr-mhartid-write-refused") (property_ids "csr-mscratch-refused-from-s")
+             (failure_mode "A forbidden CSR write or access commits its destination or another architectural side effect."))
+```
+
+(The property ids and texts are illustrative; CSR-SET's own unit declares the real ones.) `kind` is one of
+the policy's four named methods as a token — `independent-exact-expectation`,
+`bounded-exhaustive-check`, `source-grounded-invariant-check`, `qualified-hardware-observation`.
+For high or critical risk, `risk-method` is satisfied only when all five conditions hold, and the
+cell names the first that fails:
+
+| # | Condition | What it rules out |
+| --- | --- | --- |
+| 1 | both forms are declared | a high-risk case with nothing to judge |
+| 2 | the producers are producers of the measured graph, with pairwise distinct versions | "two wrappers around one producer" — `expected` and `expected-mutant` share the author's digest |
+| 3 | every pair of them is a recorded producer pair, and their shared inputs intersect to the declared common inputs | common inputs restated rather than read from the record |
+| 4 | the independence text is reported beside the pair's recorded assessment and earns no credit beyond it | a claim of independent implementations over unexamined ancestry |
+| 5 | every adversarial property is a declared property of the capture, and its baseline agrees | an adversarial case named but never executed |
+
+Low and medium risk keep today's meaning; a case that declares the forms anyway is judged by
+conditions 2–5, never ignored. In the same commit the control's id and statement — today the
+producer's fixed M words, `wrong-quotient` and "wrong quotient must diverge", which the XLEN
+case's measured record carries too — become fields of each case's `control` form, and the M and
+XLEN cases are re-captured once each (v5, xlen-v2) and re-credited.
+
 ## What a moved pin does
 
 A `stale` finite method — one of the case's pinned inputs changed since the capture — is not

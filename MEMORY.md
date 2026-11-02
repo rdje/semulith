@@ -19,17 +19,17 @@
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-AC-0090` (ARTIFACT-CLEANUP.34, maintenance: counts as neither) — 6 removed, residue 0, 328 unrecorded
-  stable (292 byte-identical). Before: P4-0327 (feature 2 of 5 after XTASK-0074; REQ-D-XLEN `implemented`, 46/2).
-- next_action: features (3 of 5 after XTASK-0074): a43b-2a, the window's design, documentation only — drafted in
-  target/p4-system-14/a43b-2a (inventory.md, design.md: D1 control id/statement optional in the schema and required by the
-  producer; D2 second_method/adversarial forms judged by risk-method's five conditions; D3 guard; D4 slices 2b–2e), plus
-  containment: move_closed_records.py moves a43a-2f … a44-2b to archive part 24 (P4-SYSTEM.md 129,223 B of 131,072) and
-  CHANGELOG (64,028 B of 65,536) is sharded with shard_history.py --max-bytes in the same unit. Then 2b (one pinned-edit
-  commit, the lapse), 2c (v5 + xlen-v2 declared, family 89 → 133), 2d (captured once on a quiet host), 2e (re-credit).
-  XTASK.13 slice b2 at the 5:1 turn. Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit;
-  GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
-- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0315 (shard-0421).
+- last_unit: `SEMULITH-P4-0328` (P4-SYSTEM.14 a43b-2a, feature 3 of 5 after XTASK-0074) — the CSR-SET window designed (D1–D5:
+  its tree record, `decision_producer-debt-paid-before-the-next-case.md`); P4-SYSTEM.md → part 24, CHANGELOG → shard-0422.
+- next_action: features (4 of 5 after XTASK-0074): a43b-2b, the ONE pinned-edit commit, built from the a43b-2a record —
+  D1 (control `id`/`statement` optional in schema/matched-case.sexp, required by capture_div.py; emitted at :330/:337),
+  D2 (`second_method`/`adversarial` forms; review_div_policy.py's risk-method leg judged by the five conditions), D3 (the
+  capture-input probe's literal guard + one policy-probe arm per condition, each fired RED), `CR-GC-M-2`/`CR-D-XLEN-1`
+  retired by removal, `REQ-GC-M`/`REQ-D-XLEN` `planned` (48/0), v4/xlen-v1 dossier copies and G-TRACE rows out, GS regen.
+  Then 2c (v5 + xlen-v2 declared, family 89 → 133), 2d (captured once on a quiet host), 2e (re-credit). XTASK.13 slice
+  b2 at the 5:1 turn. Watch hosted CI after every push; after a catalogue edit gen_model_book.py --unit; GS regen after
+  `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
+- in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
   since a42ax the gate keeps the self-test output at target/profile-consistency-selftest.log: on the
@@ -37,7 +37,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43a-3, a43a-2f (`target/p4-system-14/a43a-3`, `…/a43a-2f`: before/, logs);
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-2a, a43a-3 (`target/p4-system-14/a43b-2a`: inventory.md, design.md, logs);
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
