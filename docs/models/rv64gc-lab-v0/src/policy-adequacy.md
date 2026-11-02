@@ -3,15 +3,16 @@
 The evidence policy names, for a `defined` requirement of low or medium risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
-holds a reviewed capture for — the M case's `rv64gc-m-forms-v4` and, since a43a-2f (2026-10-29),
-the XLEN case `rv64gc-xlen-forms-v1`; the earlier cases (`rv64gc-signed-div-truncation-v2`,
-`rv64gc-m-forms-v3`) are history below — on top of the finite method review. It opens only
+holds a reviewed capture for — since a43b-2e (2026-11-02) the M case's `rv64gc-m-forms-v5` and the XLEN
+case's `rv64gc-xlen-forms-v2`, each re-captured with its control declared; the earlier cases (v2, v3, v4 and
+xlen-v1) are history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
-opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both captures: each now reads
-`invalidated`, 8 of 10 legs, both credits are retired, and the tables below are their measurements while current.
-They return as v5 and xlen-v2, re-captured once and re-credited (a43b-2c … 2e).
+opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both captures, which read
+`invalidated`, 8 of 10 legs, their credits retired. Re-captured once each as v5 and xlen-v2, traces byte-identical
+(a43b-2d), both measure every leg satisfied again and are credited by `CR-GC-M-3` and `CR-D-XLEN-2` (a43b-2e); the
+tables below are the measurements of their predecessors, which the re-captures reproduce.
 
 ## The ten legs and what the bytes say
 
@@ -39,7 +40,8 @@ re-captured as `rv64gc-m-forms-v4` under the new manifest (a44-3 declared, a44-4
 v3's), and this review now reads v4 (`CASE_ID`): `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
 CR-GC-M-2` (a44-5), and `REQ-GC-M` derived `implemented` again — until a43b-2b, since which the line reads
 `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness; invalidated by
-schema/matched-case.sexp: SHA256 differs; no qualification credit`. The consumer reads boundary rows and forms from the
+schema/matched-case.sexp: SHA256 differs; no qualification credit` — and since a43b-2e the review reads v5:
+`DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3`. The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row, or carries a `(boundary: …)` tag, is a directed
 boundary fixture; a step's mnemonic is its form), never from the chapter itself.
 
@@ -66,7 +68,8 @@ forms, pending. Now:
 
 Measured at a43a-2f `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; since a43a-3 the
 record `CR-D-XLEN-1` credited it, the line ending `credited by CR-D-XLEN-1` (`decision_req-d-xlen-credited-implemented.md`),
-until a43b-2b retired it: the case reads `invalidated` like v4, named by the same moved schema.
+until a43b-2b retired it; its re-capture xlen-v2 measures 10 of 10 and is credited by `CR-D-XLEN-2` (a43b-2e),
+two limitations fewer: its receipt names `REQ-D-XLEN` and its record carries its own control.
 
 ## What a satisfied measurement is, and is not
 
@@ -169,8 +172,8 @@ keeps deriving `planned`, and the next capture supersedes it. A case declared be
 control id or statement, so the producer refuses to prepare it and the regenerated declarations cannot
 name the moved one; the method review then reads the capture's own manifest through the measured
 record's pin and re-checks the pins of the declaration's route — the case file, then its schema — so
-v4 and the XLEN case read `invalidated by schema/matched-case.sexp: SHA256 differs`, and a refusal
-with nothing moved stays a refusal. The finite method's probe keeps
+v4 and xlen-v1 read `invalidated by schema/matched-case.sexp: SHA256 differs` from a43b-2b until their
+re-captures took their rows (a43b-2e), and a refusal with nothing moved stays a refusal. The finite method's probe keeps
 every seam reachable meanwhile by running its deep arms against a synthetic current capture;
 its real-tree arm, like the command probe's, asserts the state the dependency manifest predicts
 (`decision_stale-method-invalidates-not-locks.md`, the director's ruling of 2026-10-22).
@@ -186,9 +189,8 @@ python3 -B -O scripts/probe_div_policy.py
 python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 ```
 
-The first command measures the default case, v4, and prints, since a43b-2b, `DIV-POLICY: invalidated — 8 of
-10 legs satisfied; missing matched-reference-comparison, currentness; invalidated by
-schema/matched-case.sexp: SHA256 differs; no qualification credit` (exit 0); `--json` puts the leg table on stdout within 64 KiB, with the twelve
+The first command measures the default case, v5 since a43b-2e, and prints `DIV-POLICY: satisfied — 10 of
+10 legs satisfied; credited by CR-GC-M-3`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
 the case, and exits with the worst code. The probe runs 33 tests in both interpreter modes on synthetic

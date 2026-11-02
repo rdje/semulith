@@ -29,12 +29,14 @@ SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement
 # The retained, captured cases this review reads. They live here, in a consumer no case pins, so
 # adding the next captured case does not invalidate any declaration (a42av).
 # a42ax: the m-forms capture (a42aw) retained in e775705; P4-SYSTEM.14 a44-5: the M case re-captured as v4 under the
-# declaration-as-data manifest (declared 177b43a1, captured 3c464095); v2 and v3 stay retained history, reviewed by
-# nothing. The default case keeps its named pins (the method probe's synthetic copy re-pins them).
-RETAINED_CASE_ID = "rv64gc-m-forms-v4"
-SOURCE_DECLARATION_COMMIT = "177b43a10745fc5406e787b601d8699b946dbb63"
-RETAINED_CAPTURE_COMMIT = "3c46409585272172d185a9d7ff864311706cde40"
-MEASURED_SHA256 = "aadb5ef3360f1d14a79258522eea098802d492889a747d5be41eeed69e106e08"
+# declaration-as-data manifest (declared 177b43a1, captured 3c464095); P4-SYSTEM.14 a43b-2e: the M case re-captured once
+# more as v5, its control declared (declared 7b1a8f44, captured 2988d6a2; traces byte-identical to v4's). v2, v3 and v4
+# stay retained history, reviewed by nothing. The default case keeps its named pins (the method probe's synthetic copy
+# re-pins them).
+RETAINED_CASE_ID = "rv64gc-m-forms-v5"
+SOURCE_DECLARATION_COMMIT = "7b1a8f44b06dee5464c356f278511ac062ad5fc6"
+RETAINED_CAPTURE_COMMIT = "2988d6a2bfc613d0b6be0677e785c7b42730214a"
+MEASURED_SHA256 = "1530832dd74c83297543d5fb5d1d150633cc3deeb46df7afcac11802ff657f8f"
 MEASURED_BYTES = 16942
 TOTAL_BYTES = A.Unit.Evaluation.Q.MAX_READ_BYTES
 
@@ -51,10 +53,11 @@ class RetainedCapture:
 # P4-SYSTEM.14 a43a-2f: one row per reviewed capture, each case's own pins; a case without a row is unsupported.
 RETAINED_CAPTURES = {
     RETAINED_CASE_ID: RetainedCapture(SOURCE_DECLARATION_COMMIT, RETAINED_CAPTURE_COMMIT, MEASURED_SHA256, MEASURED_BYTES),
-    # a43a-2d re-declared the XLEN case in 5c2cde93; a43a-2e captured it once in e32cc645.
-    "rv64gc-xlen-forms-v1": RetainedCapture(
-        "5c2cde93d5ba0940df03513d3e7cb788b364340e", "e32cc6457732e6ca8bb6673c88d6f5aed6fad21c",
-        "d39825b0b4d7ccbada20d4d0545f26bb5fce1a79b5003b16dd99997cce041e41", 14958),
+    # The XLEN case: xlen-v1 (declared 5c2cde93, captured e32cc645) is history since a43b-2b; its re-capture xlen-v2,
+    # its control declared, was declared in 7b1a8f44 and captured once in 2988d6a2 (a43b-2c, a43b-2d).
+    "rv64gc-xlen-forms-v2": RetainedCapture(
+        "7b1a8f44b06dee5464c356f278511ac062ad5fc6", "2988d6a2bfc613d0b6be0677e785c7b42730214a",
+        "3e536d08b739ffd8a1ffd75d9dcf8ca438b4f7f77cb99475718cb41984f58fad", 14979),
 }
 
 

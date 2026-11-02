@@ -60,3 +60,14 @@ records `planned`, the dossier copy and the `G-TRACE` row leave, and the catalog
 (`REQUIREMENT-STATUS: … 48 planned; 4 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`). The
 rulings above stand for the re-credit: the case re-captured once as `rv64gc-xlen-forms-v2`, its control declared
 (`truncated-address`), is credited by `CR-D-XLEN-2` through the same act (a43b-2e).
+
+## Second issue (2026-11-02, `P4-SYSTEM.14` a43b-2e)
+
+`CR-D-XLEN-2` credits `REQ-D-XLEN` through `rv64gc-xlen-forms-v2` by the same act and on the rulings above: the case
+re-captured once with its control declared (`truncated-address`, "Predeclared target: the address truncated to 32 bits must
+diverge."), every trace and stdout byte-identical to xlen-v1's (a43b-2d). Pinned: the measured record (14,979 B,
+`3e536d08…`), the receipt (7,064 B, `fbbfb66f…`), the policy; authority `review`; ten legs; **three** limitations, not
+four: the two that named the producer's M text — the receipt's "not all M or CPU acceptance" and the record's control
+prose and control-run id — no longer describe the evidence (the receipt names `REQ-D-XLEN`; the record carries the case's
+own control). That removal is what the planned lapse was for. Measured: `rv64gc-xlen-forms-v2: DIV-POLICY: satisfied — 10
+of 10 legs satisfied; credited by CR-D-XLEN-2`.

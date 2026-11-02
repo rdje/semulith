@@ -85,3 +85,12 @@ schema/matched-case.sexp …`). `REQ-GC-M` records `planned`, v4's dossier copy 
 owned by `P4-SYSTEM.14`), and the method review reads v4 `stale`, the policy review `invalidated`. The rulings above
 stand for the third issue: the M case re-captured once as `rv64gc-m-forms-v5` (control `wrong-quotient` and v4's
 statement, now declared, true for M) is credited by `CR-GC-M-3` through the same act (a43b-2e).
+
+## Third issue (2026-11-02, `P4-SYSTEM.14` a43b-2e)
+
+`CR-GC-M-3` credits `REQ-GC-M` through `rv64gc-m-forms-v5` by the same act and on the rulings above: the case re-captured
+once with its control declared (`wrong-quotient`, "Predeclared target: wrong quotient must diverge.", true for M), every
+trace and stdout byte-identical to v4's (a43b-2d). Pinned: the measured record (16,942 B, `1530832d…`), the receipt (7,021 B,
+`b5fb667a…`), the policy; authority `review`; ten legs; three limitations — the receipt's own now names `REQ-GC-M`.
+Measured: `rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3`; `REQUIREMENT-STATUS:
+… 46 planned, 2 implemented; 6 case(s), 2 credited … 2 of 2 credit record(s) current; 0 drift`.

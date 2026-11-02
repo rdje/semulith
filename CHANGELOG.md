@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0332 (leaf P4-SYSTEM.14 a43b-2e) — the reviews read v5 and xlen-v2 and both are re-credited: the window closed
+
+a43b-2e: the method review's rows name v5 and xlen-v2 (both `satisfied`, 88 authenticated files) and both measure 10 of 10 legs; `CR-GC-M-3` and `CR-D-XLEN-2` re-issue the credits by the same act, `CR-D-XLEN-2` with two limitations fewer than `CR-D-XLEN-1` — the producer's M words no longer describe its evidence; `REQ-GC-M` and `REQ-D-XLEN` `implemented` (46 planned / 2 implemented, 0 drift); both measured records in the dossier, their G-TRACE rows back, G-TRACE green (GS 3 of 10 axes open). The probes re-stated; `derived-status` 37 again. The planned lapse that opens CSR-SET ran a43b-2a … a43b-2e in one day. Containment: four closed records and 12 rows into `archive/P4-SYSTEM-25.md`. Next: a43b-3, CSR-SET.
+
 ## SEMULITH-P4-0331 (leaf P4-SYSTEM.14 a43b-2d) — v5 and xlen-v2 captured, exactly once each: traces byte-identical to their predecessors'
 
 a43b-2d: each re-capture ran once on a quiet host behind three guards (a clean tree, no frozen path moved since the declaration commit, the declarations equal to their regeneration) and the retention preflight: baseline and repeat AGREE, the control DIVERGE at its declared step, complete, qualification false. All six traces and six stdout streams are byte-identical to v4's and xlen-v1's; each stderr differs only by the case directory it prints; each measured record differs from its predecessor's only in the manifest, stderr and receipt digests and, for XLEN, the control's declared id and prose. The family holds all 133 files; v5 and xlen-v2 `pending`. The retained-capture rows move with the re-credits (a43b-2e): a row names its capture commit. Next: a43b-2e.

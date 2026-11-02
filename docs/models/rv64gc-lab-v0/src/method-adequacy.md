@@ -72,8 +72,9 @@ unsupported findings retain their distinct meanings. A case declared before
 prepare it; the review then reads the capture's own dependency manifest through the
 measured record's pin and re-checks the pins of the declaration's route (the case
 file, then its schema): the first that moved makes the method `stale`, naming it —
-v4 and the XLEN case read `stale: schema/matched-case.sexp: SHA256 differs` since
-2026-11-02 — and a refusal with nothing moved stays `refused`. A later checker-source
+v4 and xlen-v1 read `stale: schema/matched-case.sexp: SHA256 differs` from 2026-11-02
+until their re-captures took the rows (a43b-2e: the rows now name v5 and xlen-v2, each
+`satisfied` over 88 authenticated files) — and a refusal with nothing moved stays `refused`. A later checker-source
 change refuses the method result while preserving earlier computed record,
 binding and evaluation findings. No result silently becomes policy credit.
 

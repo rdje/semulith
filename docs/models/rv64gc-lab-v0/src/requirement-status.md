@@ -41,25 +41,24 @@ measurement that is not `satisfied` a finding (`decision_credit-is-a-catalogue-r
 
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
-edge and credits no successor by name. Today all 48 requirements derive `planned`: the
-planned lapse that opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02;
-`decision_producer-debt-paid-before-the-next-case.md`) moved pinned inputs of both credited
-captures, so their records were retired by removal — `CR-GC-M-2` (`REQ-GC-M`, naming
-`rv64gc-m-forms-v4`, a44-5) and `CR-D-XLEN-1` (`REQ-D-XLEN`, naming `rv64gc-xlen-forms-v1`, a43a-3)
-— with the profile's catalogue file, and the recorded statuses moved back to `planned` in the
-same commit. Every case is uncredited at `pending`: v2, invalidated history; v3, credited by
-`CR-GC-M-1` from 2026-10-26 until a44-2b; v4 and the XLEN case, invalidated since a43b-2b until
-their re-captures, v5 and xlen-v2, are credited (a43b-2e). Those two were declared at a43b-2c
-and captured once each at a43b-2d; their receipts carry qualification false, so they are
-`pending` too (`6 case(s), 0 credited, 0 declared`) until a credit record names them. No recorded
-status drifts.
+edge and credits no successor by name. Today 46 requirements derive `planned` and two
+`implemented` through two current records: `REQ-GC-M` through `CR-GC-M-3`, naming
+`rv64gc-m-forms-v5`, and `REQ-D-XLEN` — the first `state` requirement — through `CR-D-XLEN-2`,
+naming `rv64gc-xlen-forms-v2` (`P4-SYSTEM.14` a43b-2e, 2026-11-02). Both re-issue retired records:
+the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-before-the-next-case.md`)
+moved pinned inputs of the cases `CR-GC-M-2` (v4, a44-5) and `CR-D-XLEN-1` (xlen-v1, a43a-3) named,
+so both were removed with the catalogue file and the statuses read `planned` until the cases were
+re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other four cases
+are uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. No
+recorded status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
-`CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
+`CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
-re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b), under the rulings on its authority and on the
+re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, and a43b-2e for `CR-GC-M-3` and
+`CR-D-XLEN-2`), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
 since a43a-2a).

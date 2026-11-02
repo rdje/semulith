@@ -4,17 +4,17 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (4 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (3 of 10): `G-STATE`, `G-OBLIGATIONS`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
 | Axis | Required (§7) | Measured state | Verdict |
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
-| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
+| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 1 of 4 `state` requirements implemented | **incomplete** |
 | `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` frozen | **green** |
-| `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 48 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
+| `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 1 of 1 required kinds evidenced | **green** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 2 `implemented`, 46 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
@@ -28,16 +28,16 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-STATE` | `P4-SYSTEM.14` | The state requirements read planned: REQ-D-XLEN's credit CR-D-XLEN-1 was retired with the planned lapse that opens CSR-SET (P4-SYSTEM.14 a43b-2b, 2026-11-02) until the XLEN case returns as xlen-v2 (a43b-2e). REQ-D-CSR-SET and REQ-D-SSTC wait for their cases; REQ-D-ZICNTR waits for a reference with Zicntr (decision_state-capture-plan.md). |
-| `G-TRACE` | `P4-SYSTEM.14` | No matched experiment is evidenced while no current credit names a case: the v4 and XLEN records left with the retirement of CR-GC-M-2 and CR-D-XLEN-1 (a43b-2b, 2026-11-02), the slice that moved pinned inputs of both captures. P4-SYSTEM.14 owns their return: both cases re-captured once as v5 and xlen-v2, traces byte-identical, and re-credited (a43b-2c to a43b-2e; decision_producer-debt-paid-before-the-next-case.md). |
-| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one; none does during the planned lapse that opens CSR-SET (a43b-2b to a43b-2e). EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
+| `G-STATE` | `P4-SYSTEM.14` | One of the four state requirements is implemented, derived from evidence: REQ-D-XLEN through CR-D-XLEN-2, its case re-captured with its control declared (P4-SYSTEM.14 a43b-2e; first credited by CR-D-XLEN-1, a43a-3). REQ-D-CSR-SET and REQ-D-SSTC wait for their cases; REQ-D-ZICNTR waits for a reference with Zicntr (decision_state-capture-plan.md). |
+| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one (REQ-GC-M, REQ-D-XLEN). EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
 
 | Axis | Kind | Evidence | Verified |
 | --- | --- | --- | --- |
-| `G-TRACE` | `experiment` | — | **none declared** |
+| `G-TRACE` | `experiment` | experiment `rv64gc-m-forms-v5` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-xlen-forms-v2` | yes |
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
 | `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | yes |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
@@ -63,7 +63,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 1cd88899f9dff6c293346ff2e4c857ae3f0c5d487cffee9ae9d698ac684badbb`
+  `sha256 d183c4568f61cd148dcc02c8edf5e47be54d599fe08cf3d3238ed2d27749f6af`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

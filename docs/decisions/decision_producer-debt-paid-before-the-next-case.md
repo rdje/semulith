@@ -82,3 +82,11 @@ The pinned edit landed as designed, with four refinements the implementation mea
   (unique-token control, prose only from the case file or the reviewed neutral set); the case probe's
   retained-record agreement (`probe_matched_gpr_case.py`) holds each declared control id and statement equal to its
   planned record, from a43b-2c, the first declarations carrying them.
+
+## Closed (`P4-SYSTEM.14` a43b-2e, `2026-11-02`)
+
+The window ran a43b-2a … a43b-2e in one day: designed; one pinned-edit commit (both credits retired, 48 / 0); v5 and
+xlen-v2 declared, their predeclarations differing from their predecessors' only in what was declared; each captured once,
+traces byte-identical; both re-credited (`CR-GC-M-3`, `CR-D-XLEN-2`; 46 / 2; G-TRACE green). No first-case literal remains
+in what the producers write, the command probe guards against its return, and CSR-SET's second-method vocabulary waits
+in the schema for its case (a43b-3).

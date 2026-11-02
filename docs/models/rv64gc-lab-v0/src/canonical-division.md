@@ -239,4 +239,5 @@ traces and all six stdout streams are byte-identical to v4's and xlen-v1's (`cmp
 predecessor's with the case directory it prints substituted. With the case id substituted, each measured record
 differs from its predecessor's only in seven digests — the dependency manifest, the three stderr streams and the three
 receipts that record them — and, for XLEN, in the control's id and prose, now `truncated-address` and "the address
-truncated to 32 bits must diverge". The reviews read the two captures, and they are credited, at a43b-2e.
+truncated to 32 bits must diverge". Since a43b-2e the reviews read the two captures — each `satisfied` over 88
+authenticated files, all ten legs — and `CR-GC-M-3` and `CR-D-XLEN-2` credit them.

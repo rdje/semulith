@@ -59,7 +59,7 @@ MUTATION_TESTS = {
     "shared-pair": "test_second_method_never_rests_on_a_pair_recorded_as_shared",
     "adversarial-executed": "test_adversarial_case_names_declared_properties_of_an_agreeing_capture",
 }
-XLEN_CASE_ID = "rv64gc-xlen-forms-v1"  # the second reviewed capture (a43a-2e), measured since a43a-2f
+XLEN_CASE_ID = "rv64gc-xlen-forms-v2"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), re-captured as xlen-v2 (a43b-2e)
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
 STALE = dict(METHOD, disposition="stale", capture_binding=None, record_disposition=None,

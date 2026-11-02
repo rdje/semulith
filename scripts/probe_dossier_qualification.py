@@ -40,7 +40,7 @@ MUTATION_TESTS = {
 }
 UNIT = "rv64gc-lab-v0"
 CASE = "rv64gc-m-forms-v3"  # the mirror's case: the frozen credit CR-GC-M-1 names it
-LIVE_CASE = "rv64gc-m-forms-v4"  # the case the live catalogue credits (CR-GC-M-2, P4-SYSTEM.14 a44-5)
+LIVE_CASE = "rv64gc-m-forms-v5"  # the M case the live catalogue credits (CR-GC-M-3, P4-SYSTEM.14 a43b-2e)
 FROZEN_CREDITS = HERE / "fixtures" / "dossier-qualification" / "credits.sexp"
 
 
@@ -125,13 +125,15 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """No live credit names a case during the planned lapse that opens CSR-SET (P4-SYSTEM.14 a43b-2b retired
-        CR-GC-M-2 and CR-D-XLEN-1 with the profile's catalogue file): no measured record qualifies on the real tree —
-        v4's, the XLEN case's, nor v3's — until the re-credits (a43b-2e) re-state this arm."""
+        """The live catalogue credits v5 (CR-GC-M-3) and xlen-v2 (CR-D-XLEN-2), re-credited at P4-SYSTEM.14 a43b-2e after
+        the planned lapse that opens CSR-SET: both measured records qualify on the real tree; v4's, xlen-v1's and v3's,
+        which no live record names, do not."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
-        for case in (LIVE_CASE, "rv64gc-xlen-forms-v1", CASE):
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2"):
+            self.assertEqual(self.qualification(measured(case), ROOT), [], case)
+        for case in ("rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):

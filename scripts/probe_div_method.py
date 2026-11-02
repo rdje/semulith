@@ -389,8 +389,8 @@ class MethodTests(unittest.TestCase):
         through its own row: finite satisfied while every pin is current; stale, naming the first moved declaration
         and reading nothing beyond it, once a pinned input moved (the policy then measures `invalidated`). The
         expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
-        authenticated = {"rv64gc-m-forms-v4": (88, 1098379, 40438),  # a44-4 (v3's was 85, 1,076,834)
-                         "rv64gc-xlen-forms-v1": (88, 1092798, 35100)}  # a43a-2e
+        authenticated = {"rv64gc-m-forms-v5": (88, 1103074, 40438),  # a43b-2d (v4's was 88, 1,098,379)
+                         "rv64gc-xlen-forms-v2": (88, 1097514, 35100)}  # a43b-2d (xlen-v1's was 88, 1,092,798)
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):
