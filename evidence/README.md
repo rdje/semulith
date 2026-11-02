@@ -14,8 +14,8 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-m-forms-v3/` | captured 2026-10-22, 10 of 10 legs; `invalidated` 2026-10-29 (a44-2b) | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties (13 forms, 12 Table 1 cells) |
 | `rv64gc-m-forms-v4/` | captured 2026-10-29 (a44-4), credited `CR-GC-M-2`; `invalidated` 2026-11-02 (a43b-2b) | 22 of 22 | v3's program and prepared bytes; traces byte-identical to v3's |
 | `rv64gc-xlen-forms-v1/` | captured 2026-10-29 (a43a-2e), the first non-M case (REQ-D-XLEN), credited `CR-D-XLEN-1`; `invalidated` 2026-11-02 | 22 of 22 | `xlen-forms.s`, 25 boundaries, 17 properties |
-| `rv64gc-m-forms-v5/` | declared 2026-11-02 (a43b-2c), its control declared | 8 of 22 | v4's case and prepared bytes |
-| `rv64gc-xlen-forms-v2/` | declared 2026-11-02 (a43b-2c), its control declared | 8 of 22 | xlen-v1's case and prepared bytes |
+| `rv64gc-m-forms-v5/` | declared (a43b-2c) and captured (a43b-2d) 2026-11-02, its control declared | 22 of 22 | v4's case and prepared bytes; traces byte-identical to v4's |
+| `rv64gc-xlen-forms-v2/` | declared (a43b-2c) and captured (a43b-2d) 2026-11-02, its control declared | 22 of 22 | xlen-v1's case and prepared bytes; traces byte-identical to xlen-v1's |
 
 Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 
@@ -29,7 +29,7 @@ Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 133 files at most, 105 present. Prepared inputs come from canonical sources
+With this index: 133 files at most, all 133 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.

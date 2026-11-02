@@ -49,9 +49,10 @@ captures, so their records were retired by removal — `CR-GC-M-2` (`REQ-GC-M`, 
 — with the profile's catalogue file, and the recorded statuses moved back to `planned` in the
 same commit. Every case is uncredited at `pending`: v2, invalidated history; v3, credited by
 `CR-GC-M-1` from 2026-10-26 until a44-2b; v4 and the XLEN case, invalidated since a43b-2b until
-their re-captures, v5 and xlen-v2, are credited (a43b-2e). Those two are `declared` since a43b-2c
-(`6 case(s), 0 credited, 2 declared`): each binds its requirement before its capture and credits
-nothing. No recorded status drifts.
+their re-captures, v5 and xlen-v2, are credited (a43b-2e). Those two were declared at a43b-2c
+and captured once each at a43b-2d; their receipts carry qualification false, so they are
+`pending` too (`6 case(s), 0 credited, 0 declared`) until a credit record names them. No recorded
+status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
 `CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22

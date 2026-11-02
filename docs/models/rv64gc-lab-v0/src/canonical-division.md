@@ -231,3 +231,12 @@ captured once (a44-4, 3c464095) under the new manifest of 67 children: every tra
 v3's, the stderr streams differing only by the case directory they print. The retained reviews read v4 —
 `satisfied` over 88 authenticated files, all ten legs — and `CR-GC-M-2` credited it (a44-5) until the planned
 lapse that opens CSR-SET retired it (a43b-2b, 2026-11-02): v4 is history in turn, re-captured as v5 (a43b-2c … 2e).
+
+The re-capture is the window's proof that it changed only what was declared. `rv64gc-m-forms-v5` and the XLEN case's
+`rv64gc-xlen-forms-v2` were each captured exactly once on 2026-11-02 (a43b-2d), on a quiet host, from the declaration
+commit `7b1a8f44`: baseline and repeat AGREE, the control DIVERGE at its declared step (12 for M, 24 for XLEN). All six
+traces and all six stdout streams are byte-identical to v4's and xlen-v1's (`cmp`); each stderr stream equals its
+predecessor's with the case directory it prints substituted. With the case id substituted, each measured record
+differs from its predecessor's only in seven digests — the dependency manifest, the three stderr streams and the three
+receipts that record them — and, for XLEN, in the control's id and prose, now `truncated-address` and "the address
+truncated to 32 bits must diverge". The reviews read the two captures, and they are credited, at a43b-2e.

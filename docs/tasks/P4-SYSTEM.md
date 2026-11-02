@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4; the XLEN case as data (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, declared, captured once, ten of ten); both were credited (`CR-GC-M-2`, `CR-D-XLEN-1`) until a43b-2b, the one pinned edit of the planned lapse that opens CSR-SET (designed in a43b-2a, done 2026-11-02: the control declared per case, the second-method vocabulary judged by five conditions, both credits retired — 48 planned, G-TRACE open, G-STATE 0 of 4); v5 and xlen-v2 declared (a43b-2c, 2026-11-02: the predeclarations identical to their predecessors' but for the declared control); next their one capture each (a43b-2d, after XTASK.13 slice b2, which must touch no pinned input) and re-credit (a43b-2e), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4; the XLEN case as data (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, declared, captured once, ten of ten); both were credited (`CR-GC-M-2`, `CR-D-XLEN-1`) until a43b-2b, the one pinned edit of the planned lapse that opens CSR-SET (designed in a43b-2a, done 2026-11-02: the control declared per case, the second-method vocabulary judged by five conditions, both credits retired — 48 planned, G-TRACE open, G-STATE 0 of 4); v5 and xlen-v2 declared (a43b-2c, 2026-11-02: the predeclarations identical to their predecessors' but for the declared control); captured once each (a43b-2d, 2026-11-02: traces byte-identical to v4's and xlen-v1's); next a43b-2e (the reviews read them, both re-credited), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,28 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-2d / SEMULITH-P4-0331: v5 and xlen-v2 captured, exactly once each — traces byte-identical to their predecessors' (completed)
+
+`target/p4-system-14/a43b-2d/capture-when-quiet.sh <case>` ran each capture once, never retried, only after three
+consecutive quiet minutes (no sibling verification, 1-minute load below 6: 4.68 and 4.76, `<case>/wait.log`) and three
+guards: a clean tracked tree; no path frozen for the captures changed between the declaration commit `7b1a8f44` and HEAD
+(`f47ad4a7`, XTASK.13 b2 having landed between: `git diff --name-only` ∩ the 100 frozen paths = ∅); the committed
+declarations equal to a fresh `capture_div.py --declare`; then `retain_div_capture.py --preflight-only` `ready`. Each
+`retain_div_capture.py --case <id> --declaration-commit 7b1a8f44…` ran 1.3 s: three zero-exit processes, baseline and
+repeat AGREE, the control DIVERGE at its declared step (12 for M, x15; 24 for XLEN, x31), `complete_canonical_capture`
+true, qualification false; 14 files retained per case — v5's measured record 16,942 B (`1530832d…`), receipt 7,021 B;
+xlen-v2's 14,979 B (`3e536d08…`), 7,064 B. **The window changed only what was declared:** all six traces and all six
+stdout streams are byte-identical to v4's and xlen-v1's (`cmp`, cmp.txt); each stderr stream equals its predecessor's
+with the one case directory it prints substituted; with the case id substituted, each measured record differs from its
+predecessor's only in seven digests — the dependency manifest, the three stderr streams and the three receipts that
+record them, each matched to its file — and, for XLEN, in the control's id and prose (measured-vs-predecessor.txt).
+The family holds all 133 files (727,984 B); `REQUIREMENT-STATUS: … 48 planned; 6 case(s), 0 credited, 0 declared` — v5
+and xlen-v2 `pending` (receipts, no credit). Re-stated: the input probe's member count (105 → 133), the status probe's
+rows. Refined from a43b-2a's D4: the retained-capture rows move with the re-credits at a43b-2e, not here — a row names
+its capture commit, which is this commit (as a44-5 and a43a-2f followed their captures). Book: the division page (the
+re-capture's proof), the status and prepared-inputs pages; `evidence/README.md` (3,914 B). Next: a43b-2e, the reviews
+read v5 and xlen-v2 and both are re-credited.
 
 ### .14 a43b-2c / SEMULITH-P4-0330: v5 and xlen-v2 declared — the control the case's own, the predeclaration otherwise identical (completed)
 
@@ -1151,6 +1173,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 - [x] `.14` a43b-2c **ROOT CAUSE** — the re-captures had no declarations: at ac08c9e1 `ls evidence` held four case directories (v2, v3, v4, xlen-v1), each refused by the producer since a43b-2b (`case … declares no control id/statement`), and the family was bounded for four (`sed -n 488p doctrine/readme_routes.tsv` → 89 files, 67108864 B).
 - [x] `.14` a43b-2c **ADDRESSED** — `python3 -B scripts/prepare_div_inputs.py --verify --case rv64gc-m-forms-v5` `rc=0` and the same for xlen-v2; `cmp` 8 of 8 prepared inputs equal to the predecessors'; the planned records' diff against their predecessors with the id substituted: 1 atom (v5) and 3 atoms (xlen-v2), target/p4-system-14/a43b-2c/planned-vs-predecessor.txt; `python3 -B scripts/requirement_status.py` → `48 planned; 6 case(s), 0 credited, 2 declared … 0 drift`; `retention_limits()` → 133 slots, 82972672 B; `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` both modes; the control check fired RED (`MATCHED-GPR-CASE: 8 tests / 1 failures`, control-check-red.txt) and restored (`8 tests / 0 failures`).
 - [x] `.14` a43b-2c **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2c/selftest.log), traced: `ls target/p4-system-14/a43b-2c/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` on a quiet host (wait.log); `MATCHED-GPR-PROPERTY: 35 tests / 0 failures`, `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `DIV-COMMAND: 20 tests / 0 failures`; `README-STABILITY: OK`; the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43b-2d **ROOT CAUSE** — the two re-captures were declared and not captured: `git ls-tree --name-only f47ad4a7 evidence/rv64gc-m-forms-v5/ | wc -l` = 8 of the case's 22 slots, and 8 for xlen-v2 (the case file, four prepared inputs, three declarations); `retain_div_capture.py --preflight-only` → `ready` for both; `REQUIREMENT-STATUS: … 6 case(s), 0 credited, 2 declared` (a43b-2c).
+- [x] `.14` a43b-2d **ADDRESSED** — target/p4-system-14/a43b-2d/<case>/wait.log → `capture rc=0` once each; `verification.json`: baseline/repeat `AGREE`, control `DIVERGE` at step 12 (v5) and 24 (xlen-v2), `complete_canonical_capture` true, qualification false; cmp.txt: 6 of 6 traces and 6 of 6 stdout `identical`, the stderr equal but for the case directory (`True` ×6); measured-vs-predecessor.txt: 7 differing digests each, all named; `python3 -B scripts/requirement_status.py` → `6 case(s), 0 credited, 0 declared … 0 drift`; `DIV-CAPTURE-INPUTS: 34 tests / 0 failures` both modes.
+- [x] `.14` a43b-2d **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2d/selftest.log), traced: `ls target/p4-system-14/a43b-2d/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures` both modes; `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

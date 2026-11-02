@@ -221,7 +221,7 @@ without writing; `--write` creates the files exclusively and refuses any that al
 retained input is never replaced. The probe runs its controls over every declared case (34 tests in
 each Python mode) and holds the family census to 133 files / 80 MiB, the six-case envelope of
 `decision_evidence-family-two-cases.md` (105 files present at the v5 and xlen-v2 declarations,
-a43b-2c); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+a43b-2c; all 133 after their captures, a43b-2d); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id.

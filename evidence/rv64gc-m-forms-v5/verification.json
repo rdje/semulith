@@ -1,0 +1,211 @@
+{
+  "format_version": "div-capture-verification-v1",
+  "case_id": "rv64gc-m-forms-v5",
+  "profile_id": "rv64gc-lab-v0",
+  "source_declaration_commit": "7b1a8f44b06dee5464c356f278511ac062ad5fc6",
+  "disposition": "pending",
+  "reason": "fresh collection and retained findings; complete policy/qualification pending",
+  "canonical_capture_attempted": true,
+  "complete_canonical_capture": true,
+  "qualification": false,
+  "policy_disposition": "pending complete source/risk/feature policy",
+  "charged_read_bytes": 24426700,
+  "combined_limit": 134217728,
+  "collection": "recorded",
+  "evaluation": "pending",
+  "record": {
+    "disposition": "valid",
+    "issues": []
+  },
+  "findings": {
+    "manifest": "matched",
+    "identity": "matched",
+    "comparison": "satisfied",
+    "source_image": "matched",
+    "input_review": "matched",
+    "impact": "matched",
+    "source_values": "matched",
+    "expected_author": "matched",
+    "source_property": "matched"
+  },
+  "comparison": {
+    "disposition": "satisfied",
+    "reason": "finite supplied-byte comparison satisfied; authentication and qualification pending",
+    "runs": [
+      {
+        "run_kind": "baseline",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "33 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "repeat",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "33 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "control",
+        "comparison": {
+          "verdict": "DIVERGE",
+          "detail": "step 12 (div x15, x5, x6): Sail {'x15': 18446744073709551613}, expectations {'x15': 18446744073709551612}",
+          "gpr_difference": {
+            "step_n": 12,
+            "observed": [
+              [
+                "x15",
+                18446744073709551613
+              ]
+            ],
+            "expected": [
+              [
+                "x15",
+                18446744073709551612
+              ]
+            ]
+          }
+        },
+        "refusal": null
+      }
+    ]
+  },
+  "runs": [
+    {
+      "kind": "baseline",
+      "process": "recorded",
+      "pid": 4614,
+      "exit": 0,
+      "charge": 7774883,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "baseline-raw-gpr",
+          "object": "evidence/rv64gc-m-forms-v5/baseline.trace",
+          "byte_size": 2794,
+          "sha256": "784645dcd85f2ce0cc8e734cc22c8c50231ba28434958dec7a6f855ae1cb7f05"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "baseline-process-stdout",
+          "object": "evidence/rv64gc-m-forms-v5/baseline.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "baseline-process-stderr",
+          "object": "evidence/rv64gc-m-forms-v5/baseline.stderr",
+          "byte_size": 114,
+          "sha256": "ac59285212663e970f4886cd7b680d9d0069a45f8e7f73871d98ead30c3e67fd"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "baseline-process-receipt",
+          "object": "evidence/rv64gc-m-forms-v5/baseline.receipt.sexp",
+          "byte_size": 2417,
+          "sha256": "2940ba5871e297d4923faaf73f81ee35d440873efa9756f6818fb41d196cff95"
+        }
+      ]
+    },
+    {
+      "kind": "repeat",
+      "process": "recorded",
+      "pid": 4721,
+      "exit": 0,
+      "charge": 7774859,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "repeat-raw-gpr",
+          "object": "evidence/rv64gc-m-forms-v5/repeat.trace",
+          "byte_size": 2794,
+          "sha256": "784645dcd85f2ce0cc8e734cc22c8c50231ba28434958dec7a6f855ae1cb7f05"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "repeat-process-stdout",
+          "object": "evidence/rv64gc-m-forms-v5/repeat.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "repeat-process-stderr",
+          "object": "evidence/rv64gc-m-forms-v5/repeat.stderr",
+          "byte_size": 112,
+          "sha256": "648f72c7feff17dce7c75dd9162ef23eb2fde84387bc1fa524c6f78ddf2a3e0e"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "repeat-process-receipt",
+          "object": "evidence/rv64gc-m-forms-v5/repeat.receipt.sexp",
+          "byte_size": 2399,
+          "sha256": "d123448c0abae30043a0d68d1eaa820ef5fac3c590b92592fe650a3eae89c695"
+        }
+      ]
+    },
+    {
+      "kind": "control",
+      "process": "recorded",
+      "pid": 4879,
+      "exit": 0,
+      "charge": 7773884,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "control-raw-gpr",
+          "object": "evidence/rv64gc-m-forms-v5/control.trace",
+          "byte_size": 2794,
+          "sha256": "784645dcd85f2ce0cc8e734cc22c8c50231ba28434958dec7a6f855ae1cb7f05"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "control-process-stdout",
+          "object": "evidence/rv64gc-m-forms-v5/control.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "control-process-stderr",
+          "object": "evidence/rv64gc-m-forms-v5/control.stderr",
+          "byte_size": 113,
+          "sha256": "b73d1cea3d047d245f78af4b8d9212fae939134cec52766281d9dcb436eba355"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "control-process-receipt",
+          "object": "evidence/rv64gc-m-forms-v5/control.receipt.sexp",
+          "byte_size": 2415,
+          "sha256": "e8fcf7e4e0e8d57e8ae3e9fa1a4e357da3663bcbb637509d220619b8bcb7a7b8"
+        }
+      ]
+    }
+  ],
+  "authentication": {
+    "disposition": "matched",
+    "files": 88,
+    "authenticated_bytes": 1103074,
+    "charged_read_bytes": 1103074,
+    "snapshot_bytes": 40438,
+    "snapshot_limit": 16777216
+  },
+  "limitations": [
+    "thirteen M forms and twelve Table 1 cells, one finite witness each, not all REQ-GC-M or CPU acceptance",
+    "before/after byte checks under a trusted quiescent runtime, not an atomic input set",
+    "preparation/schema/runtime I/O and process RAM are outside the combined artifact-read allowance"
+  ],
+  "measured_experiment": {
+    "id": "measured-experiment",
+    "role": "measured-record",
+    "object": "evidence/rv64gc-m-forms-v5/measured-experiment.sexp",
+    "byte_size": 16942,
+    "sha256": "1530832dd74c83297543d5fb5d1d150633cc3deeb46df7afcac11802ff657f8f"
+  }
+}
