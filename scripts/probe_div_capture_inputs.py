@@ -34,11 +34,13 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 89  # four declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 64 * 1024 * 1024  # the fourth re-derivation (a43a-2b): four cases at most 55,316,480 B with the index
+FAMILY_FILES = 133  # six declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
+FAMILY_BYTES = 80 * 1024 * 1024  # the fifth re-derivation (a43b-2c): six cases at most 82,972,672 B with the index
 M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
 XLEN_V1 = "rv64gc-xlen-forms-v1"  # the first non-M case, REQ-D-XLEN (P4-SYSTEM.14 a43a-2b)
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1)
+# The planned lapse that opens CSR-SET re-captures both once, their control declared (P4-SYSTEM.14 a43b-2c).
+M_FORMS_V5, XLEN_V2 = "rv64gc-m-forms-v5", "rv64gc-xlen-forms-v2"
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -75,8 +77,13 @@ PREPARED[XLEN_V1] = {
     "control.expected.sexp": ("expectation", 5827,
         "97275174954728a68c1a247530a89dcdee0da0bb338c5701e7b7a4b07f1bf332"),
 }
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119}
-BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50)}
+# The re-captures' prepared inputs are their predecessors' bytes: they derive from the canonical program, override and
+# expectation only, never from the case id (prepare_div_inputs.py --show reported each pin; a43b-2c).
+PREPARED[M_FORMS_V5] = dict(PREPARED[M_FORMS_V4])
+PREPARED[XLEN_V2] = dict(PREPARED[XLEN_V1])
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119}
+BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50),
+           M_FORMS_V5: (33, 66), XLEN_V2: (25, 50)}
 
 
 def bounded_bytes(path):
@@ -376,12 +383,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 55316480)  # four cases of 13,828,096 B and the index (a43a-2b)
+        self.assertEqual(sum(limits.values()), 82972672)  # six cases of 13,828,096 B and the index (a43b-2c)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 22 + 22 + 22 + 22)  # the XLEN case captured (a43a-2e); 8 at its declaration
+        self.assertEqual(len(members), 1 + 4 * 22 + 2 * 8)  # v5 and xlen-v2 declared, not yet captured (a43b-2c); + 14 each at capture
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):

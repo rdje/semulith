@@ -93,3 +93,16 @@ re-derivation: **89** files (4 × 22 + the index; health **86**) and **67,108,86
 56 MiB, the 0.875 ratio); four cases and the index hold at most 55,316,480 B (`retention_limits()`). At declaration the
 family holds 72 files (the XLEN case's case file and four prepared inputs). The index stays under its 4,096 B cap.
 
+
+## Addendum (2026-11-02, `P4-SYSTEM.14` a43b-2c): the fifth and sixth cases — v5 and xlen-v2
+
+The planned lapse that opens CSR-SET re-captures the M and XLEN cases once each
+([`decision_producer-debt-paid-before-the-next-case.md`](decision_producer-debt-paid-before-the-next-case.md)), so two
+case directories are declared together, `rv64gc-m-forms-v5` and `rv64gc-xlen-forms-v2`: the fifth re-derivation,
+covering both. No earlier case is removed — v2, v3, v4 and xlen-v1 stay `invalidated` history. Measured: a case still
+holds at most 13,828,096 B, so six cases and the index hold at most 82,972,672 B (`retention_limits()`), above the
+64 MiB ceiling. The bounds move to **133** files (6 × 22 + the index; health **130**, three below) and **83,886,080** B
+(80 MiB; health **73,400,320** B, 70 MiB, the 0.875 ratio); the 4 MiB part bound is unchanged. At declaration the family
+holds 105 files (each new case's case file, four prepared inputs and three declarations), 133 after both captures.
+`evidence/README.md` was compressed to hold the two rows (3,795 B of its 4,096 B cap). A seventh case is a sixth
+re-derivation.

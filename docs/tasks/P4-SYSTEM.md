@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4; the XLEN case as data (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, declared, captured once, ten of ten); both were credited (`CR-GC-M-2`, `CR-D-XLEN-1`) until a43b-2b, the one pinned edit of the planned lapse that opens CSR-SET (designed in a43b-2a, done 2026-11-02: the control declared per case, the second-method vocabulary judged by five conditions, both credits retired — 48 planned, G-TRACE open, G-STATE 0 of 4); next a43b-2c, v5 and xlen-v2 declared, then their one capture each (a43b-2d) and re-credit (a43b-2e), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4; the XLEN case as data (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, declared, captured once, ten of ten); both were credited (`CR-GC-M-2`, `CR-D-XLEN-1`) until a43b-2b, the one pinned edit of the planned lapse that opens CSR-SET (designed in a43b-2a, done 2026-11-02: the control declared per case, the second-method vocabulary judged by five conditions, both credits retired — 48 planned, G-TRACE open, G-STATE 0 of 4); v5 and xlen-v2 declared (a43b-2c, 2026-11-02: the predeclarations identical to their predecessors' but for the declared control); next their one capture each (a43b-2d, after XTASK.13 slice b2, which must touch no pinned input) and re-credit (a43b-2e), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,35 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-2c / SEMULITH-P4-0330: v5 and xlen-v2 declared — the control the case's own, the predeclaration otherwise identical (completed)
+
+The window's re-captures, declared by a44-3's procedure, both in one commit. `evidence/rv64gc-m-forms-v5/case.sexp` is
+v4's declaration with the new id and the control declared — `wrong-quotient`, "Predeclared target: wrong quotient must
+diverge." (true for M); `evidence/rv64gc-xlen-forms-v2/case.sexp` is xlen-v1's with `truncated-address`, "Predeclared
+target: the address truncated to 32 bits must diverge." (its control's reason already said so). Each was rendered by
+`matched_gpr_case.render`, every field but the id and the control equal to its predecessor's
+(target/p4-system-14/a43b-2c/case-files.txt). The prepared inputs are case-independent: `prepare_div_inputs.py --show
+--case` reported each predecessor's four pins byte for byte, `--write` created them, `--verify` re-derived them, and
+`cmp` holds all eight identical to v4's and xlen-v1's. `capture_div.py --declare --case` emitted three declarations
+each (v5: planned 16,915 B, dependencies 15,166 B with 67 children, authorities 17,721 B; xlen-v2: 14,952, 15,173 and
+17,755 B), written exclusively from the output's `files` map and committed here — this commit is the declaration commit
+a43b-2d names. **The predeclaration changed only what was declared:** with the id substituted, v5's planned record
+differs from v4's in one atom, the dependency manifest's digest (the manifest pins the edited producer and the new case
+file), and xlen-v2's from xlen-v1's in three — that digest, the control-run id (`wrong-quotient` → `truncated-address`)
+and the control prose (planned-vs-predecessor.txt). The literal guard holds on both real records (no prose outside the
+case file and the neutral set; "quotient" absent from xlen-v2's). The case probe's retained-control check, written at
+a43b-2b, is live: both records equal their declarations, and xlen-v2's control id altered fails it naming both values
+(restored byte-exact; control-check-red.txt). The evidence family's fifth re-derivation
+(`decision_evidence-family-two-cases.md`, Addendum a43b-2c): 133 files / 80 MiB (health 130 / 70 MiB); six cases hold
+at most 82,972,672 B (`retention_limits()`), 105 files present at declaration; `evidence/README.md` compressed to hold
+both rows (3,795 B of 4,096). `REQUIREMENT-STATUS: … 48 planned; 6 case(s), 0 credited, 2 declared`. Re-stated: the
+input probe's census and case tables, the case probe's planned population, the property probe's case ids, the status
+probe's rows and counts. Frozen until the captures: each case's 67 manifest children (36 scripts, the definitions, the
+policy, the profile records and schemas) and the 13 authority views (`capture_div.VIEW_PATHS`, `requirements.sexp` and
+`references.sexp` among them) — XTASK.13's next slice, taken at the 5:1 turn before a43b-2d, must touch none of them.
+Book: the prepared-inputs page (the six-case envelope; its single- and two-case figures stale since a44-3) and the
+status page. Next: XTASK.13 slice b2, then a43b-2d.
 
 ### .14 a43b-2b / SEMULITH-P4-0329: the one pinned edit — the control declared per case, CSR-SET's second-method vocabulary, both credits retired (completed)
 
@@ -1119,6 +1148,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 - [x] `.14` a43b-2b **ROOT CAUSE** — the producer emitted the first case's control words: `git show 715ed26e:scripts/capture_div.py | grep -n 'wrong-quotient\|quotient must'` → lines 330 and 337, and `review_div_policy.py:277` read every high-risk case `second method and adversarial case undeclared` (target/p4-system-14/a43b-2b/before/literals-at-head.txt); once the producer refused history, the method review read both retained cases `refused` (before/method-without-route.txt: `refused | case rv64gc-m-forms-v4 declares no control id/statement …`) and five probes went red on the refusal alone (before/*.d1.log: `DIV-COMMAND: 19 tests / 7 failures / 4 errors`, `DIV-CAPTURE-RETENTION: 11 tests / 10 failures`).
 - [x] `.14` a43b-2b **ADDRESSED** — `grep -c 'wrong-quotient\|quotient must' scripts/capture_div.py` = 0; render identity 4 of 4 retained declarations; `python3 -B scripts/review_div_method.py --case rv64gc-m-forms-v4` `rc=1` → `stale | schema/matched-case.sexp: SHA256 differs | 110209` (xlen-v1 105395); `python3 -B scripts/review_div_policy.py --every-retained` `rc=0` → both `invalidated — 8 of 10 legs satisfied; … no qualification credit`; `python3 -B scripts/requirement_status.py` → `48 planned; 4 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`; `DIV-POLICY-PROBE: 33 tests / 0 failures / 0 errors`, `DIV-METHOD: 22 tests / 0 failures / 0 errors`, `DIV-COMMAND: 20 tests / 0 failures / 0 errors`, each new seam `1 failures / 0 errors` (`distinct-versions` one assertion over high and low risk).
 - [x] `.14` a43b-2b **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2b/selftest.log; the first run's `1218 pass / 6 fail`, selftest-1.log, measured and repaired: `derived-status` 37 → 2, the `capture-origin` target, the policy real-tree prediction), traced: `ls target/p4-system-14/a43b-2b/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` on a quiet host (wait.log); `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures`, `DIV-AUTHORITIES: 19 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; `cargo fmt --all -- --check` `rc=0`, `cargo clippy -p xtask --all-targets -- -D warnings` `rc=0`; `RECORD-SCHEMA --self-test: 81 pass / 0 fail` and `RECORD-SCHEMA: ok (25 record file(s) …)` after the focused stage's refusal (record-schema-selftest.log); `DERIVED-COUNTS: ok`; the staged prechecks and the commit gate (chain log).
+- [x] `.14` a43b-2c **ROOT CAUSE** — the re-captures had no declarations: at ac08c9e1 `ls evidence` held four case directories (v2, v3, v4, xlen-v1), each refused by the producer since a43b-2b (`case … declares no control id/statement`), and the family was bounded for four (`sed -n 488p doctrine/readme_routes.tsv` → 89 files, 67108864 B).
+- [x] `.14` a43b-2c **ADDRESSED** — `python3 -B scripts/prepare_div_inputs.py --verify --case rv64gc-m-forms-v5` `rc=0` and the same for xlen-v2; `cmp` 8 of 8 prepared inputs equal to the predecessors'; the planned records' diff against their predecessors with the id substituted: 1 atom (v5) and 3 atoms (xlen-v2), target/p4-system-14/a43b-2c/planned-vs-predecessor.txt; `python3 -B scripts/requirement_status.py` → `48 planned; 6 case(s), 0 credited, 2 declared … 0 drift`; `retention_limits()` → 133 slots, 82972672 B; `DIV-CAPTURE-INPUTS: 34 tests / 0 failures / 0 errors` both modes; the control check fired RED (`MATCHED-GPR-CASE: 8 tests / 1 failures`, control-check-red.txt) and restored (`8 tests / 0 failures`).
+- [x] `.14` a43b-2c **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2c/selftest.log), traced: `ls target/p4-system-14/a43b-2c/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` on a quiet host (wait.log); `MATCHED-GPR-PROPERTY: 35 tests / 0 failures`, `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `DIV-COMMAND: 20 tests / 0 failures`; `README-STABILITY: OK`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

@@ -159,19 +159,21 @@ independent expected-result producer.
 
 ## Declared output namespace and retention
 
-The bounded `evidence/README.md` index declares one finite case with22 total
-slots: this family index, four prepared inputs, twelve future observations and
-five declaration/result slots. Future runs use `baseline`, `repeat`
+The bounded `evidence/README.md` index owns the family: one directory per declared case, each
+with the same 22 slots — its `case.sexp` declaration, four prepared inputs, three native
+declarations, twelve observations and two results (the first case's single-case layout of a42af
+counted the index among its 22). Runs use `baseline`, `repeat`
 and `control`, each with `.trace`, `.stdout`, `.stderr` and `.receipt.sexp`.
 The metadata names are `planned-experiment.sexp`, `dependencies.sexp`,
 `authorities.sexp`, `measured-experiment.sexp` and `verification.json`.
 The three native declarations are now [retained](capture-plan.md#retained-native-predeclarations);
 the twelve observations and two result files are now [retained](canonical-division.md).
 
-The registry caps the family at22 files,16 MiB aggregate and4 MiB per member.
-Three traces at the collector's4 MiB bound, six streams and three receipts at
-64 KiB each, nine prepared/metadata slots at64 KiB, and the4 KiB index total at
-most13,766,656 bytes. The index also has an80-line ceiling. Existing family caps,
+Since a43b-2c the registry caps the family at 133 files, 80 MiB aggregate and 4 MiB per member —
+six declared cases (`decision_evidence-family-two-cases.md`, its fifth re-derivation). A case holds
+at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
+receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; six cases and the 4 KiB index hold at
+most 82,972,672 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
 the128 MiB combined artifact-read allowance and16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
@@ -216,7 +218,11 @@ python3 scripts/probe_div_capture_inputs.py
 to the retained bytes (`disposition: pending`); it does so for the retained case too, which is how
 the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints the sizes and digests
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
-retained input is never replaced. The probe now runs its controls over both cases (34 tests in each
-Python mode) and holds the family census to 43 files / 32 MiB, the two-case envelope of
-`decision_evidence-family-two-cases.md`; omitting the actual layout census loses six assertions.
+retained input is never replaced. The probe runs its controls over every declared case (34 tests in
+each Python mode) and holds the family census to 133 files / 80 MiB, the six-case envelope of
+`decision_evidence-family-two-cases.md` (105 files present at the v5 and xlen-v2 declarations,
+a43b-2c); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
+pins byte for byte, because every artifact derives from the canonical program, override and
+expectation, never from the case id.
 The m-forms case was captured once on 2026-10-22 ([the m-forms capture](canonical-division.md#the-m-forms-capture-a42aw)); its prepared inputs are unchanged by that, and no credit follows from it.

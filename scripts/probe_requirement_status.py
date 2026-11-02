@@ -310,17 +310,19 @@ class StatusTests(unittest.TestCase):
         # All three cases bind REQ-GC-M and no current record credits any: CR-GC-M-2 was retired with the planned lapse
         # that opens CSR-SET (P4-SYSTEM.14 a43b-2b), so the requirement derives `planned` and the recorded status agrees;
         # every receipt's qualification is false, so each case is pending. This arm is the manifest's prediction of the
-        # real tree: the re-credit (a43b-2e, CR-GC-M-3 over v5) re-states it.
+        # real tree: the re-credit (a43b-2e, CR-GC-M-3 over v5) re-states it. v5 is declared (a43b-2c): it binds REQ-GC-M
+        # before its capture and credits nothing.
         self.assertEqual((m["recorded"], m["derived"], m["why"]), ("planned", "planned", "no credited implementation or evidence"))
         self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-m-forms-v4:pending",
-                                           "rv64gc-signed-div-truncation-v2:pending"])
+                                           "rv64gc-m-forms-v5:declared", "rv64gc-signed-div-truncation-v2:pending"])
         # The XLEN case binds REQ-D-XLEN alone; CR-D-XLEN-1 was retired with it (a43b-2b) until xlen-v2's re-credit.
         x = next(r for r in gc["rows"] if r["id"] == "REQ-D-XLEN")
         self.assertEqual((x["recorded"], x["derived"], x["why"], x["uncredited"]),
-                         ("planned", "planned", "no credited implementation or evidence", ["rv64gc-xlen-forms-v1:pending"]))
+                         ("planned", "planned", "no credited implementation or evidence",
+                          ["rv64gc-xlen-forms-v1:pending", "rv64gc-xlen-forms-v2:declared"]))
         self.assertEqual(gc["derived"], {"planned": 48, "partial": 0, "implemented": 0, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (4, 0, 0, 0, 0))
+                         (6, 0, 2, 0, 0))
 
 
 def main():
