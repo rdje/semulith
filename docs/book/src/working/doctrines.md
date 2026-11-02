@@ -317,6 +317,33 @@ FRONTIER-SYNC self-test HARNESS: index() got 6 argument(s), expected 2 —
 FRONTIER-SYNC --self-test: 15 pass / 1 fail
 ```
 
+## A self-test judges frozen copies, so the real check can name the damage
+
+A doctrine runs its self-test first and refuses to judge if the self-test fails. A self-test
+whose arms read the live corpus therefore turns every damaged live file into the same
+answer — `REFUSED — the check does not discriminate (self-test failed)` — and hides the named
+failure the real check would have given. Ruling 5 (2026-10-28) and `XTASK.13` move the
+fragile doctrines' arms onto frozen copies under `scripts/fixtures/`, one doctrine at a time:
+`DEF-GEN` (slice a, `scripts/fixtures/def-gen/`), then `GUEST-GEN` — its surgical and census
+arms over two mini corpora (b1), and its base-mirror and parcel-count arms over a frozen
+owner→mirror pair under DEF-GEN's frozen encoding (b2, `scripts/fixtures/guest-gen/base-mirror/`:
+the eight guests the mirror governor's predicates need, from both units). The real check
+still judges the live files. Measured on GUEST-GEN, HEAD's binary over HEAD's tree against
+b2's over the working tree, with one live file damaged at a time:
+
+| Live state | Before b2 | After b2 |
+| --- | --- | --- |
+| a mirror record edited (`bound-arith.expected.sexp`) | refused: 2 base-mirror arms missed | `FAIL — …guests_rv64gc.rs is out of sync`, exit 1 |
+| an rv64i guest that no longer assembles | refused: 3 base-mirror arms missed | the generator's own refusal naming `smoke-arith.s` and `zzz9`, exit 2 |
+| an rv64gc guest deleted (`c-alu.s`) | refused: 8 arms missed | refused: 1 arm missed — the parcel author's cold probe, which copies every tracked input (slice b3) |
+
+The tools gained what the frozen arms need and nothing else: `scripts/check_gc_mirror.py
+--self-test --encoding F` takes its composition from that encoding's own root, and
+`scripts/derive_gc_parcel_counts.py --encoding F --guests D` counts any unit, its self-test's
+manifest census running over its own hand guests. One measurement trap is worth knowing: `cargo
+xtask` fixes its repository root at build time, so a "before" binary must run on the tree it
+was built in (`docs/knowledge/an-xtask-binary-judges-the-tree-it-was-built-in.md`).
+
 ## Two doctrines that are easy to misread
 
 **`WAIVER-ROUTING` does not punish honesty.** A waiver stays legal; it simply has to name the

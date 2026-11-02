@@ -69,24 +69,27 @@ def derive_counts(guests, asm, *, mutation=None):
     return rows
 
 
-def manifest(rows):
+def manifest(rows, encoding=None, guests=None):
+    """The census record: its rows and a digest of every input the counted unit composes from."""
+    encoding = UNIT / 'encoding.sexp' if encoding is None else encoding
+    guests = UNIT / 'guests' if guests is None else guests
     # Conservative fingerprint closure: all local Python producers/readers, schema
     # declarations and definition data, plus the unit metadata and paired records.
     # This names instrument inputs as well as inputs to the headline count.
     inputs = set((REPO / 'scripts').glob('*.py'))
     inputs.update((REPO / 'schema').glob('*.sexp'))
-    inputs.update((REPO / 'definitions').rglob('*.sexp'))
-    inputs.update(UNIT.glob('*.sexp'))
-    inputs.update((UNIT / 'guests').glob('*.s'))
-    inputs.update((UNIT / 'guests').glob('*.expected.sexp'))
+    inputs.update((encoding.resolve().parents[2] / 'definitions').rglob('*.sexp'))
+    inputs.update(encoding.resolve().parent.glob('*.sexp'))
+    inputs.update(guests.resolve().glob('*.s'))
+    inputs.update(guests.resolve().glob('*.expected.sexp'))
     return {'format_version': 1, 'profile': 'rv64gc-lab-v0',
             'producer': 'scripts/derive_gc_parcel_counts.py',
             'route': 'spec-side explicit-budget parcel execution; no processor engine',
-            'inputs': {p.relative_to(REPO).as_posix(): digest(p) for p in sorted(inputs)},
+            'inputs': {p.resolve().relative_to(REPO).as_posix(): digest(p) for p in sorted(inputs)},
             'guests': rows}
 
 
-def self_test(asm):
+def self_test(asm, encoding):
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='parcel-counts-', dir=parent) as td:
@@ -120,13 +123,16 @@ def self_test(asm):
             else:
                 raise AssertionError(f'count census accepted {mutation} mutation')
         out = (guests / 'manifest.json').relative_to(REPO).as_posix()
-        assert main(['--out', out]) == 0, 'manifest creation refused'
-        assert main(['--check', '--out', out]) == 0, 'fresh manifest drifted'
+        # The manifest census runs over these hand guests and the given encoding, never the live corpus
+        # (XTASK.13 slice b2): a damaged live guest fails the real check by name, not this self-test.
+        unit = ['--encoding', str(encoding), '--guests', str(guests)]
+        assert main(['--out', out, *unit]) == 0, 'manifest creation refused'
+        assert main(['--check', '--out', out, *unit]) == 0, 'fresh manifest drifted'
         path = REPO / out
         damaged = json.loads(path.read_text())
         damaged['guests'][0]['parcel_fetches'] += 1
         path.write_text(json.dumps(damaged, indent=2, sort_keys=True) + '\n')
-        assert main(['--check', '--out', out]) == 1, 'incorrect stored count escaped drift check'
+        assert main(['--check', '--out', out, *unit]) == 1, 'incorrect stored count escaped drift check'
     print('GC count self-test: hand word/mixed/runoff counts, repeat, manifest drift and both RED controls pass')
 
 
@@ -137,6 +143,10 @@ def main(argv=None):
     action.add_argument('--self-test', action='store_true')
     action.add_argument('--mutation', choices=['observation', 'extent'])
     parser.add_argument('--out', type=Path, default=DEFAULT_OUT)
+    parser.add_argument('--encoding', type=Path, default=UNIT / 'encoding.sexp',
+                        help='the unit encoding to compose (default the live rv64gc unit; the self-test arms pass a frozen copy)')
+    parser.add_argument('--guests', type=Path, default=UNIT / 'guests',
+                        help='the guest directory to count (default the live rv64gc corpus)')
     args = parser.parse_args(argv)
     out = args.out
     if out.is_absolute() or '..' in out.parts or not out.parts or out.parts[0] != 'target':
@@ -144,12 +154,12 @@ def main(argv=None):
     if not (REPO / out).resolve().is_relative_to(REPO):
         parser.error('--out must remain inside the repository')
     try:
-        asm = Assembler(UNIT / 'encoding.sexp')
+        asm = Assembler(args.encoding)
         if args.self_test:
-            self_test(asm)
+            self_test(asm, args.encoding)
             return 0
-        rows = derive_counts(UNIT / 'guests', asm, mutation=args.mutation)
-        text = json.dumps(manifest(rows), indent=2, sort_keys=True) + '\n'
+        rows = derive_counts(args.guests, asm, mutation=args.mutation)
+        text = json.dumps(manifest(rows, args.encoding, args.guests), indent=2, sort_keys=True) + '\n'
         if args.check:
             if not (REPO / out).is_file() or (REPO / out).read_text() != text:
                 print('GC parcel counts: DRIFT — rerun scripts/derive_gc_parcel_counts.py', file=sys.stderr)

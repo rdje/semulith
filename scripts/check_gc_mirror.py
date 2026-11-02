@@ -125,7 +125,17 @@ def judge_unit(owner, mirror, encoding, *, rederived=REDERIVED,
                  rederived=rederived, source_rederived=source_rederived)
 
 
-def self_test(asm, mutation):
+def self_test(encoding, mutation):
+    """Hand controls over the given encoding; the composition is taken from that encoding's own root.
+
+    The GUEST-GEN arms pass DEF-GEN's frozen encoding (XTASK.13 slice b2), so a damaged live unit fails the real
+    check by name instead of this self-test. The assembler composes from the encoding and the root's
+    `definitions/` alone (measured: no profile or state document is read), so nothing else is copied.
+    """
+    asm = Assembler(encoding)
+    definitions = encoding.resolve().parents[2] / 'definitions'
+    if not definitions.is_dir():
+        raise Counts.CensusRefused(f'{encoding}: no definitions/ beside its unit for the composition controls')
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='mirror-', dir=parent) as td:
@@ -165,12 +175,10 @@ def self_test(asm, mutation):
         # Exercise the same composition selection as the public command, regardless
         # of whether the live unit has reached its bind yet.
         root = Path(td) / 'composition'
-        shutil.copytree(REPO / 'definitions', root / 'definitions')
+        shutil.copytree(definitions, root / 'definitions')
         unit = root / 'profiles/rv64gc-lab-v0'
         unit.mkdir(parents=True)
-        for name in ('profile.sexp', 'state.sexp'):
-            shutil.copyfile(ENCODING.parent / name, unit / name)
-        original = ENCODING.read_text()
+        original = encoding.read_text()
         full = original.replace('(slot (id c) (requires "riscv/c"))', '(extensions "riscv/c")')
         (unit / 'encoding.sexp').write_text(full)
         assert '3 independently checked count-only' in judge_unit(owner, mirror, unit / 'encoding.sexp', rederived=frozenset())
@@ -254,7 +262,7 @@ def main():
         parser.error('--mutation requires --self-test')
     try:
         if args.self_test:
-            self_test(Assembler(args.encoding), args.mutation)
+            self_test(args.encoding, args.mutation)
         else:
             print(judge_unit(args.owner, args.mirror, args.encoding))
     except (Counts.CensusRefused, AssertionError) as exc:
