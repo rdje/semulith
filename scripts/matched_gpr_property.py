@@ -97,6 +97,8 @@ class ReviewedPropertyCase:
     control_property_id: str  # the property whose value the control expectation changes
     control_value: int  # the wrong value the control expectation carries there
     control_reason: str
+    control_id: str | None  # the control run's id in the planned record; None in a declaration retained before a43b-2b
+    control_statement: str | None  # the record's predeclared control target; None likewise
     limitation: str  # the case's own limitation line in the planned record
     reviewed_steps: tuple[tuple, ...]  # (n, pc, word, length, fetches, writes) reviewed by hand
     source_id: str
@@ -319,6 +321,8 @@ def _declared_case(declaration: dict) -> ReviewedPropertyCase:
         control["property_id"],
         control["value"],
         control["reason"],
+        control["id"],
+        control["statement"],
         declaration["limitation"],
         declaration["steps"],
         declaration["source_id"],

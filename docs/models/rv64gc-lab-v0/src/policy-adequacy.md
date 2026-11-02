@@ -7,8 +7,11 @@ holds a reviewed capture for — the M case's `rv64gc-m-forms-v4` and, since a43
 the XLEN case `rv64gc-xlen-forms-v1`; the earlier cases (`rv64gc-signed-div-truncation-v2`,
 `rv64gc-m-forms-v3`) are history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
-owned record in `credits.sexp`, never the measurement. Today every leg of both cases is
-satisfied; the M case is credited by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3).
+owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
+credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
+opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both captures: each now reads
+`invalidated`, 8 of 10 legs, both credits are retired, and the tables below are their measurements while current.
+They return as v5 and xlen-v2, re-captured once and re-credited (a43b-2c … 2e).
 
 ## The ten legs and what the bytes say
 
@@ -34,7 +37,9 @@ cases' declarations became data) and retired the record (that decision's Retirem
 `REQ-GC-M` derived `planned` until the M case's v4 capture was measured and credited. The same day the M case was
 re-captured as `rv64gc-m-forms-v4` under the new manifest (a44-3 declared, a44-4 captured: traces byte-identical to
 v3's), and this review now reads v4 (`CASE_ID`): `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
-CR-GC-M-2` (a44-5), and `REQ-GC-M` derives `implemented` again. The consumer reads boundary rows and forms from the
+CR-GC-M-2` (a44-5), and `REQ-GC-M` derived `implemented` again — until a43b-2b, since which the line reads
+`DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness; invalidated by
+schema/matched-case.sexp: SHA256 differs; no qualification credit`. The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row, or carries a `(boundary: …)` tag, is a directed
 boundary fixture; a step's mnemonic is its form), never from the chapter itself.
 
@@ -60,7 +65,8 @@ forms, pending. Now:
 | form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 17 predeclared witnesses stand for it |
 
 Measured at a43a-2f `DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; since a43a-3 the
-record `CR-D-XLEN-1` credits it, and the line ends `credited by CR-D-XLEN-1` (`decision_req-d-xlen-credited-implemented.md`).
+record `CR-D-XLEN-1` credited it, the line ending `credited by CR-D-XLEN-1` (`decision_req-d-xlen-credited-implemented.md`),
+until a43b-2b retired it: the case reads `invalidated` like v4, named by the same moved schema.
 
 ## What a satisfied measurement is, and is not
 
@@ -99,19 +105,17 @@ currentness leg fails until a fresh capture: a policy change is a capture, not a
 A receipt whose `qualification` is true while any leg is pending is a finding and fails
 `PROFILE-CONSISTENCY` ("No typed success word substitutes for executed evidence"). A refused,
 unavailable or unsupported finite method leaves the legs measured but `blocked`. A high- or
-critical-risk requirement stays pending on its second method, because no declaration
-vocabulary for one exists yet. An obligation without a declared feature disposition stays
+critical-risk requirement stays pending until its case declares a second method and an
+adversarial case that meet the five conditions below. An obligation without a declared feature disposition stays
 pending; the disposition is never inferred from the mnemonics. A control that diverges
 somewhere other than the step and register of the property the `control_run` names is not the
 stated reason; the leg reads that property, not the first one declared (a42at).
 
-## The second method, designed for CSR-SET (a43b-2a — not yet built)
+## The second method, first for CSR-SET (a43b-2b)
 
-`REQ-D-CSR-SET` is `(risk high)`, so its case cannot be credited until the case can say what its
-second method and adversarial case are. The vocabulary is designed (2026-11-02) and lands in the
-one pinned-edit commit of the window that opens CSR-SET (a43b-2b,
-`decision_producer-debt-paid-before-the-next-case.md`); until then the leg reads as above. Two
-optional forms of the case declaration, as CSR-SET's will carry them:
+`REQ-D-CSR-SET` is `(risk high)`: its case can be credited only once it says what its second
+method and adversarial case are. Since a43b-2b (2026-11-02) a case declaration may carry two
+optional forms (`schema/matched-case.sexp`), as CSR-SET's will:
 
 ```lisp
 (second_method (kind "independent-exact-expectation")
@@ -124,23 +128,33 @@ optional forms of the case declaration, as CSR-SET's will carry them:
 
 (The property ids and texts are illustrative; CSR-SET's own unit declares the real ones.) `kind` is one of
 the policy's four named methods as a token — `independent-exact-expectation`,
-`bounded-exhaustive-check`, `source-grounded-invariant-check`, `qualified-hardware-observation`.
-For high or critical risk, `risk-method` is satisfied only when all five conditions hold, and the
-cell names the first that fails:
+`bounded-exhaustive-check`, `source-grounded-invariant-check`, `qualified-hardware-observation`; the
+policy's text stays the authority. The review reads both forms from the case's `case.sexp`, which its
+manifest pins (so the method review's currentness authenticates it), and judges them against the
+record's own graph — the declaration restates nothing the record holds. A declaration is judged at
+any risk, never ignored, by five conditions; the cell names, numbered, every one that fails:
 
 | # | Condition | What it rules out |
 | --- | --- | --- |
-| 1 | both forms are declared | a high-risk case with nothing to judge |
-| 2 | the producers are producers of the measured graph, with pairwise distinct versions | "two wrappers around one producer" — `expected` and `expected-mutant` share the author's digest |
-| 3 | every pair of them is a recorded producer pair, and their shared inputs intersect to the declared common inputs | common inputs restated rather than read from the record |
-| 4 | the independence text is reported beside the pair's recorded assessment and earns no credit beyond it | a claim of independent implementations over unexamined ancestry |
+| 1 | a second method of one of the four kinds and an adversarial case are both declared | a declaration with nothing to judge |
+| 2 | its producers are two or more producers of the record, with distinct versions | "two wrappers around one producer" — `expected` and `expected-mutant` share the author's digest |
+| 3 | every pair of them is a recorded producer pair, and their shared inputs are exactly the declared common inputs | common inputs restated rather than read from the record |
+| 4 | no such pair is recorded `shared`, and what is independently derived is named — reported beside the recorded ancestry, which earns no independence credit | a claim of independent implementations over shared or unexamined ancestry |
 | 5 | every adversarial property is a declared property of the capture, and its baseline agrees | an adversarial case named but never executed |
 
-Low and medium risk keep today's meaning; a case that declares the forms anyway is judged by
-conditions 2–5, never ignored. In the same commit the control's id and statement — today the
-producer's fixed M words, `wrong-quotient` and "wrong quotient must diverge", which the XLEN
-case's measured record carries too — become fields of each case's `control` form, and the M and
-XLEN cases are re-captured once each (v5, xlen-v2) and re-credited.
+Without a declaration, low and medium risk need no second method and high or critical risk stays
+pending, as before. On the probe's CSR-SET-shaped declaration the cell reads
+
+```text
+risk high: second method independent-exact-expectation by ['expected', 'reference'] on common inputs
+['dependency-manifest', 'guest-source']; independently derived: the expected values derived from the
+pinned chapter, no reference output among the inputs; ancestry ['not-examined']: no independence credit;
+adversarial ['p0'] (a forbidden CSR write commits its destination) executed, baseline AGREE
+```
+
+and with the two producers given one version — two wrappers — `risk high: second method not
+satisfied — (2) producers ['expected', 'reference'] are not two or more producers of the record with
+distinct versions`. No retained case declares the forms yet; CSR-SET's will be the first (a43b-3).
 
 ## What a moved pin does
 
@@ -151,7 +165,12 @@ depend on the method (`matched-reference-comparison`, `currentness`) unsatisfied
 unless the receipt still claims `qualification`. That
 is the policy's own currentness rule ("changes invalidate dependent evidence") read as a status
 of the evidence rather than a lock on the tree: the invalidated case credits nothing, `REQ-GC-M`
-keeps deriving `planned`, and the next capture supersedes it. The finite method's probe keeps
+keeps deriving `planned`, and the next capture supersedes it. A case declared before a43b-2b names no
+control id or statement, so the producer refuses to prepare it and the regenerated declarations cannot
+name the moved one; the method review then reads the capture's own manifest through the measured
+record's pin and re-checks the pins of the declaration's route — the case file, then its schema — so
+v4 and the XLEN case read `invalidated by schema/matched-case.sexp: SHA256 differs`, and a refusal
+with nothing moved stays a refusal. The finite method's probe keeps
 every seam reachable meanwhile by running its deep arms against a synthetic current capture;
 its real-tree arm, like the command probe's, asserts the state the dependency manifest predicts
 (`decision_stale-method-invalidates-not-locks.md`, the director's ruling of 2026-10-22).
@@ -167,19 +186,23 @@ python3 -B -O scripts/probe_div_policy.py
 python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 ```
 
-The first command measures the default case, v4, and prints `DIV-POLICY: satisfied — 10 of 10 legs
-satisfied; credited by CR-GC-M-2`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
+The first command measures the default case, v4, and prints, since a43b-2b, `DIV-POLICY: invalidated — 8 of
+10 legs satisfied; missing matched-reference-comparison, currentness; invalidated by
+schema/matched-case.sexp: SHA256 differs; no qualification credit` (exit 0); `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 27 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 33 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
 through one `--every-retained` run (both cases' ten legs while every pin is current; `invalidated`
 with the two method legs missing once a pin moves) and three credit-record cases (a current record
 over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
-are findings); each of the ten seam omissions (`credit-pending`, `trust-receipt`,
-`infer-feature`, `any-control`, `coverage-optional`, `lock-stale`, `first-property`,
-`credit-any`, `state-vacuous`, `boundary-tag`) runs its one discriminating test and fails.
+are findings), and six second-method cases — the CSR-SET-shaped declaration satisfied, then one
+condition broken at a time, two wrappers judged at high and at low risk alike; each of the fifteen
+seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
+`coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `boundary-tag`,
+and one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
+`adversarial-executed`) runs its one discriminating test and fails.
 `PROFILE-CONSISTENCY` runs the probe in its self-test and `--every-retained` on the real path on
 every commit.
 

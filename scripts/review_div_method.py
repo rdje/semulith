@@ -156,6 +156,40 @@ class _ReadBudget:
         return result
 
 
+def _measured_record(case_id, retained):
+    """The reviewed capture's measured record, pinned by its row: the capture origin both review paths read."""
+    return dict(id="measured-experiment", path=A.prefix(case_id) + "/measured-experiment.sexp",
+                sha256=retained.measured_sha256, byte_size=retained.measured_bytes)
+
+
+def _stale_declaration_route(budget, case_id, retained):
+    """Ask whether a capture the producer refuses to prepare is stale (P4-SYSTEM.14 a43b-2b); return if it is not.
+
+    A declaration retained before a43b-2b names no control id/statement, so the producer refuses to prepare it and
+    the regenerated declarations cannot name the first moved one. Staleness is a moved pin (a42as), so it is measured
+    on the capture's own manifest instead, read through the measured record's dependency-manifest pin: the pins of the
+    declaration's route (the case file and its schema, the inputs a preparation reads first) are re-checked in order
+    and the first that moved stops the review `stale`, naming it. When none moved, the refusal stands.
+    """
+    measured = budget.snapshot("observation", _measured_record(case_id, retained))
+    experiments = [form for form in A.S.parse(measured.decode()) if form[0] == "experiment"]
+    graphs = A.S.children(experiments[0], "verification") if len(experiments) == 1 else []
+    pins = [item for item in (A.S.children(graphs[0], "input") if len(graphs) == 1 else [])
+            if A.S.field(item, "role") == "dependency-manifest"]
+    if len(pins) != 1:
+        raise _Stopped("refused", "measured record names no single dependency manifest")
+    manifest = budget.snapshot("input", dict(id="dependency-manifest", path=str(A.S.field(pins[0], "path")),
+                                             sha256=str(A.S.field(pins[0], "sha256"))))
+    documents = [form for form in A.S.parse(manifest.decode()) if form[0] == "dependencies"]
+    if len(documents) != 1:
+        raise _Stopped("refused", "dependency manifest is not one dependencies form")
+    rows = {str(A.S.field(item, "path")): (str(A.S.field(item, "id")), str(A.S.field(item, "sha256")))
+            for item in A.S.children(documents[0], "input")}
+    for path in A.Review.declaration_paths(A.P.reviewed_case(case_id)):
+        if path in rows:
+            budget.snapshot("input", dict(id=rows[path][0], path=path, sha256=rows[path][1]))
+
+
 def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> MethodCheck:
     """Check one reviewed retained case without Git, acquired caches or a binary.
 
@@ -222,7 +256,11 @@ def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> Me
         sources = A.Review.Snapshots(ROOT)
         A.Review.import_census(sources, roots=frozenset({"review_div_method"}), reviewed=SOURCE_MODULES)
         source_review_complete = True
-        declaration = A.prepare_capture(case_id)
+        try:
+            declaration = A.prepare_capture(case_id)
+        except A.AuthorityError:
+            _stale_declaration_route(budget, case_id, retained)  # stops `stale` on a moved pin of the route
+            raise
         context = Adequacy.freeze_review(
             planned_experiment=declaration.planned_experiment, dependencies=declaration.dependencies,
             scope=declaration.authorities.scope,
@@ -231,9 +269,7 @@ def review_method(*, case_id=RETAINED_CASE_ID, max_read_bytes=TOTAL_BYTES) -> Me
         for name, payload in A.declaration_files(declaration):
             budget.snapshot("input", dict(id=name, path=A.prefix(case_id) + "/" + name,
                                           sha256=hashlib.sha256(payload).hexdigest()), expected=payload)
-        measured = budget.snapshot("observation", dict(
-            id="measured-experiment", path=A.prefix(case_id) + "/measured-experiment.sexp",
-            sha256=retained.measured_sha256, byte_size=retained.measured_bytes))
+        measured = budget.snapshot("observation", _measured_record(case_id, retained))
         binding = Adequacy.bind_measured_capture(context, measured)
         if binding.disposition != "matched":
             return finish(binding.disposition, binding.reason)

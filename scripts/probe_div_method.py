@@ -80,6 +80,8 @@ SEAMS = {
     "checker-census": ("review_div_method.py", '''        A.Review.import_census(sources, roots=frozenset({"review_div_method"}), reviewed=SOURCE_MODULES)
 ''', ""),
     "checker-recheck": ("review_div_method.py", "                sources.recheck()\n", "                pass\n"),
+    "stale-route": ("review_div_method.py", "            _stale_declaration_route(budget, case_id, retained)  # stops `stale` on a moved pin of the route\n",
+                    "            pass\n"),
     "runtime-root": ("review_div_method.py", '''        if ROOT != A.ROOT or ROOT != A.Review.ROOT or ROOT != A.V.ROOT:
             raise _Stopped("refused", "method owners do not share the selected runtime root")
 ''', ""),
@@ -105,6 +107,7 @@ MUTATION_TESTS = {
     "checker-census": "test_checker_import_census_and_late_recheck_are_required",
     "checker-recheck": "test_late_checker_change_keeps_independent_computed_findings",
     "runtime-root": "test_runtime_root_cannot_fall_back_to_valid_parent_data",
+    "stale-route": "test_history_the_producer_refuses_is_stale_naming_its_moved_declaration",
     "native-envelope": "test_native_envelope_precedes_parsing",
 }
 
@@ -149,6 +152,9 @@ def report(result):
  value['processes']=len(processes);return value
 if mode=='normal':
  result=report(M.review_method())
+elif mode=='refused-unmoved':
+ with patch.object(A,'prepare_capture',side_effect=A.AuthorityError('synthetic refusal')):
+  result=report(M.review_method())
 elif mode=='unknown':
  with patch.object(A,'prepare_capture',side_effect=RuntimeError('unexpected preparation')):
   result=report(M.review_method(case_id='not-reviewed'))
@@ -298,6 +304,7 @@ class MethodTests(unittest.TestCase):
             target = cls.template / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / name, target)
+        Command.declare_control(cls.template, cls.case)  # a43b-2b, D1: a planned case declares its control
         Command.synthesize_reference(cls.template, case_id=cls.case)
         done = subprocess.run([sys.executable, "-B", "-c", SYNTHESIZE, str(cls.template)], cwd=ROOT,
                               capture_output=True, text=True, timeout=120)
@@ -342,6 +349,23 @@ class MethodTests(unittest.TestCase):
         self.assertEqual(payload["processes"], 0, payload)
         return payload
 
+    def test_history_the_producer_refuses_is_stale_naming_its_moved_declaration(self):
+        """A captured case whose declaration names no control id/statement is history the producer refuses to prepare
+        (P4-SYSTEM.14 a43b-2b, D1): the review reads the capture's manifest through the measured record and stops
+        `stale` at the first moved pin of the declaration route; a refusal with nothing moved stands."""
+        path = self.runtime / A.Case.case_path(self.case)
+        declaration = A.Case.read_document(path.read_text(), A.Case.case_path(self.case))
+        r = self.inspect("refused-unmoved")
+        self.assertEqual((r["disposition"], r["reason"]), ("refused", "synthetic refusal"), r)
+        declaration["control"] = {**declaration["control"], "id": None, "statement": None}
+        path.write_text(A.Case.render(declaration))
+        measured = self.runtime / self.prefix / "measured-experiment.sexp"
+        manifest = self.runtime / self.prefix / "dependencies.sexp"
+        r = self.inspect()
+        self.assertEqual((r["disposition"], r["record_disposition"], r["capture_binding"]), ("stale", None, None), r)
+        self.assertTrue(r["reason"].startswith(A.Case.case_path(self.case) + ": "), r["reason"])
+        self.assertEqual(r["charged_read_bytes"], measured.stat().st_size + manifest.stat().st_size + A.SMALL_BYTES, r)
+
     def test_synthetic_current_capture_is_finite_satisfied_and_policy_pending(self):
         r = self.inspect()
         self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
@@ -384,8 +408,19 @@ class MethodTests(unittest.TestCase):
                     self.assertEqual((r["disposition"], r["policy_disposition"], r["record_disposition"],
                                       r["capture_binding"], r["evaluation_disposition"]),
                                      ("stale", "pending", None, None, None), r)
-                    self.assertTrue(r["reason"].startswith(A.prefix(case_id) + "/"), r["reason"])
-                    self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
+                    if A.Case.read_case(case_id)["control"]["id"] is None:
+                        # History since a43b-2b: the producer refuses to prepare it, so the review measures the
+                        # declaration route on the capture's own manifest; predicted here from that manifest.
+                        route = [path for path in A.Review.declaration_paths(A.P.reviewed_case(case_id))]
+                        first = next(path for path in route if path in moved)
+                        unmoved = route[:route.index(first)]
+                        manifest = ROOT / A.prefix(case_id) / "dependencies.sexp"
+                        self.assertTrue(r["reason"].startswith(first + ": "), r["reason"])
+                        self.assertEqual(r["charged_read_bytes"], row.measured_bytes + manifest.stat().st_size
+                                         + sum((ROOT / path).stat().st_size for path in unmoved) + A.SMALL_BYTES, r)
+                    else:
+                        self.assertTrue(r["reason"].startswith(A.prefix(case_id) + "/"), r["reason"])
+                        self.assertEqual(r["charged_read_bytes"], A.SMALL_BYTES, r)
                     self.assertEqual((r["authenticated_files"], r["authenticated_bytes"], r["snapshot_bytes"]),
                                      (None, None, None), r)
                 else:

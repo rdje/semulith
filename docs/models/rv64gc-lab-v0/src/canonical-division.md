@@ -229,4 +229,5 @@ inputs of this capture, so the method review reports it `stale`, the policy revi
 capture joins the first as history. The M case returned as `rv64gc-m-forms-v4`, declared (a44-3, 177b43a1) and
 captured once (a44-4, 3c464095) under the new manifest of 67 children: every trace and stdout byte-identical to
 v3's, the stderr streams differing only by the case directory they print. The retained reviews read v4 —
-`satisfied` over 88 authenticated files, all ten legs — and `CR-GC-M-2` credits it (a44-5).
+`satisfied` over 88 authenticated files, all ten legs — and `CR-GC-M-2` credited it (a44-5) until the planned
+lapse that opens CSR-SET retired it (a43b-2b, 2026-11-02): v4 is history in turn, re-captured as v5 (a43b-2c … 2e).

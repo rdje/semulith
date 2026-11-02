@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/rv64gc-lab-v0/references.sexp`  `c191810c098ca403cb1edfdb2add221e6bf7c54ae9960aadff9487f9c3411e48`
+     `profiles/rv64gc-lab-v0/references.sexp`  `0848eaf23ec1af5b3758c909114314d663c4c3b13a4713656ba17650d0fff65d`
      Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
 
 | ID | Role | Status | Kind | Version | sha256 | Terms |

@@ -74,3 +74,14 @@ limitations. The capture reproduces v3's verdicts and witnesses with the manifes
 0 drift`), the dossier copy of v4's measured record in `references.sexp` and its `G-TRACE` row in `gate.sexp` (G-TRACE
 green, 3 of 10 axes open), the retained reviews pointed at v4 (`review_div_method.py`, `review_div_policy.py`).
 
+
+## Second retirement (2026-11-02, `P4-SYSTEM.14` a43b-2b)
+
+`CR-GC-M-2` was retired by removal, with `CR-D-XLEN-1` and the catalogue file, in the one pinned-edit commit of the
+planned lapse that opens CSR-SET
+([`decision_producer-debt-paid-before-the-next-case.md`](decision_producer-debt-paid-before-the-next-case.md)): the
+slice moved inputs v4's manifest pins (measured: `credit CR-GC-M-2 names this case but lapsed: manifest input
+schema/matched-case.sexp …`). `REQ-GC-M` records `planned`, v4's dossier copy and `G-TRACE` row leave (G-TRACE open,
+owned by `P4-SYSTEM.14`), and the method review reads v4 `stale`, the policy review `invalidated`. The rulings above
+stand for the third issue: the M case re-captured once as `rv64gc-m-forms-v5` (control `wrong-quotient` and v4's
+statement, now declared, true for M) is credited by `CR-GC-M-3` through the same act (a43b-2e).

@@ -34,5 +34,10 @@ The planned record exists at the declaration commit, before the capture: that is
 Retained bytes are never rewritten. Name the literal in the credit's limitations, then fix the producer before the
 next case is declared: every capture pins the producer, so each case captured on it adds a re-capture to the fix. Batch
 the fix with any pinned change the next case needs anyway, in one planned lapse window, and re-capture the existing
-cases once (their traces byte-identical). Evidence: `decision_producer-debt-paid-before-the-next-case.md`,
-`decision_req-d-xlen-credited-implemented.md`; `docs/tasks/P4-SYSTEM.md` a43a-2e and a43a-3.
+cases once (their traces byte-identical). This one was paid at `P4-SYSTEM.14` a43b-2b: the control's id and statement
+are fields of each case's declaration, the producer refuses a case without them, and the audit above is mechanical —
+`scripts/probe_div_command.py` plans a declaration whose control id and statement are unique tokens and requires every
+prose string of the planned record to come from the case file or the producer's reviewed neutral set (`NEUTRAL_PROSE`,
+five strings); restoring either literal fails it by name (seams `control-id-literal`, `control-statement-literal`).
+A new neutral sentence in the producer fails it too, until it is reviewed into the set. Evidence: `decision_producer-debt-paid-before-the-next-case.md`,
+`decision_req-d-xlen-credited-implemented.md`; `docs/tasks/P4-SYSTEM.md` a43a-2e, a43a-3 and a43b-2b.

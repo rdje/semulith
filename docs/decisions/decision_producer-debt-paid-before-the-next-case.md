@@ -64,3 +64,21 @@ The full design is the a43b-2a record in `docs/tasks/P4-SYSTEM.md`; its binding 
   property is a declared property of a capture whose baseline agrees.
 - **Order:** a43b-2b the one pinned-edit commit (both credits retired, 48 / 0); a43b-2c v5 and xlen-v2 declared (the family
   89 → 133 files); a43b-2d each captured once, traces byte-identical; a43b-2e both re-credited (46 / 2); then a43b-3.
+
+## Implemented (`P4-SYSTEM.14` a43b-2b, `2026-11-02`)
+
+The pinned edit landed as designed, with four refinements the implementation measured (the a43b-2b record):
+
+- **Copies declare the control.** Between the edit and the v5/xlen-v2 declarations no case in the tree can be planned,
+  so the probes that plan in runtime copies write a control into the copy (`probe_div_command.declare_control`: the
+  historical words for the M-family cases); the real tree's history is asserted refused by name.
+- **Stale without regeneration.** The method review detected `stale` by regenerating; history the producer refuses
+  read `refused` (a red gate). On a refused preparation it now re-checks the declaration route's pins on the capture's
+  own manifest, read through the measured record — v4 and xlen-v1 read `invalidated by schema/matched-case.sexp`
+  (knowledge card `a-producer-refusal-hides-staleness-detected-by-regeneration.md`).
+- **Condition 4 is a check, not only a report:** a producer pair recorded `shared` refuses the second method; a
+  declaration at low or medium risk is judged by all five conditions.
+- **The guard lives where planning lives:** the command probe, which plans in copies, holds the literal guard
+  (unique-token control, prose only from the case file or the reviewed neutral set); the case probe's
+  retained-record agreement (`probe_matched_gpr_case.py`) holds each declared control id and statement equal to its
+  planned record, from a43b-2c, the first declarations carrying them.

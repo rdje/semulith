@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4 and re-credited (`CR-GC-M-2`, `REQ-GC-M` `implemented`, G-TRACE green); the XLEN case as data done (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, the case declared, captured once, measured ten of ten and credited by `CR-D-XLEN-1` — `REQ-D-XLEN` `implemented`, G-STATE 1 of 4); a43b-2, the planned lapse window that opens CSR-SET, designed in a43b-2a (2026-11-02: the control declared per case, the high-risk predeclaration vocabulary judged by five conditions, v4 and XLEN re-captured once as v5 and xlen-v2 and re-credited); next a43b-2b, the one pinned-edit commit, then a43b-2c … a43b-2e, then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5, 2026-10-29): the declarations are data the tools read, a case is accepted on its own authority, the M case re-captured as v4; the XLEN case as data (a43a-2a … a43a-3: RVI-RV64I §3.1 retained, declared, captured once, ten of ten); both were credited (`CR-GC-M-2`, `CR-D-XLEN-1`) until a43b-2b, the one pinned edit of the planned lapse that opens CSR-SET (designed in a43b-2a, done 2026-11-02: the control declared per case, the second-method vocabulary judged by five conditions, both credits retired — 48 planned, G-TRACE open, G-STATE 0 of 4); next a43b-2c, v5 and xlen-v2 declared, then their one capture each (a43b-2d) and re-credit (a43b-2e), then CSR-SET and SSTC as data; the ZICNTR program waits for a reference with Zicntr |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,69 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-2b / SEMULITH-P4-0329: the one pinned edit — the control declared per case, CSR-SET's second-method vocabulary, both credits retired (completed)
+
+The window's pinned-edit commit, as a43b-2a designed it (`decision_producer-debt-paid-before-the-next-case.md`,
+Implemented). **D1.** The control form of `schema/matched-case.sexp` gains optional `id` and `statement`;
+`matched_gpr_case.py` reads them (absent → `None`) and renders them only when present, so the four retained declarations
+render to their own bytes (render identity 4 of 4) and a declaration carrying every new field round-trips;
+`matched_gpr_property.py` carries `control_id`/`control_statement`; `capture_div.py:330,337` emit them, and
+`prepare_capture` refuses by name a case declaring neither ("case … declares no control id/statement: a declaration older
+than a43b-2b is history, not a capture input"). `grep -c 'wrong-quotient\|quotient must' scripts/capture_div.py` = 0.
+**D2.** Two optional case forms: `second_method` (one of the policy's four kinds as a token, two or more unique
+producers, one or more common inputs, what is independently derived) and `adversarial` (one or more properties, the
+failure mode; the reader refuses an adversarial property the case does not declare). The risk-method leg of
+`review_div_policy.py` reads them from the case's `case.sexp` structurally, as it reads the planned record (the case
+reader validates the file at preparation and the manifest pins it; absent → undeclared), and judges a declaration at
+any risk by five one-line conditions against the record's graph: (1) both forms, the kind named; (2) two or more record
+producers with distinct versions; (3) every pair a recorded `producer_pair` whose shared inputs are exactly the declared
+common inputs; (4) no pair recorded `shared` and the independent derivation named, reported beside the recorded ancestry
+with no independence credit; (5) the adversarial properties declared in the capture and its baseline `AGREE`. Refined
+from the design: (4) refuses a `shared` pair (a value the schema's assessment vocabulary holds), and a low- or
+medium-risk declaration is judged by all five. Undeclared keeps today's meaning; no retained case declares the forms.
+**D3.** `probe_div_command.py`, the probe that plans in copies, holds the guard: a unique-token control planned verbatim,
+and every prose string of the planned record from the case file or the reviewed `NEUTRAL_PROSE` — the five producer
+strings the a43b-2a audit found neutral (measured on v4's and xlen-v1's retained planned records: of the producer's own
+prose, only the M control statement was case-specific). `probe_matched_gpr_case.py` maps the two fields and holds a
+declared control equal to its retained planned record (live from a43b-2c, the first declarations carrying it).
+**Found while measuring, repaired in the slice.** (a) Between the edit and the v5/xlen-v2 declarations no case can be
+planned, and five probes planned history — `DIV-COMMAND: 19 tests / 7 failures / 4 errors`, `DIV-CAPTURE-RETENTION: 11
+tests / 10 failures`, `DIV-METHOD` a setUpClass error, `DIV-AUTHORITIES` one failure, each the new refusal
+(target/p4-system-14/a43b-2b/before/*.d1.log): their runtime copies now declare a control (`declare_control`: the
+historical words, true for the M-family cases), and the command probe's two in-process arms assert the real tree's
+history refused by name — its regeneration check moved into the copy; the offline evaluation's positive branch had
+been unreachable since v2's invalidation (2026-10-22). (b) The method review detected `stale` by regenerating, so the
+history the producer refuses read `refused` (before/method-without-route.txt, both cases), which the policy review
+blocks on (exit 1) — against the 2026-10-22 ruling. On a refused preparation it now re-checks the pins of the
+declaration route (the case file, then its schema) on the capture's own manifest, read through the measured record's
+`dependency-manifest` pin; the first moved stops it `stale`, and a refusal with nothing moved stands. A walk over every
+pinned input was ruled out by measurement: one is 97,811 B, above the 64 KiB snapshot bound. Knowledge card
+`a-producer-refusal-hides-staleness-detected-by-regeneration.md`. (c) The first whole check measured `PROFILE-CONSISTENCY
+--self-test: 1218 pass / 6 fail` (selftest-1.log; no EPERM), three misses in both modes: the property probe's
+`derived-status` loss is status-dependent and fell 37 → 2 with `REQ-GC-M` `planned`, as at a44-2b (re-pinned, commented;
+37 returns with the re-credit); the method probe's `capture-origin` seam target was no longer singular because the
+route repeated the measured-record pin — now one helper, `_measured_record`, both paths read; and the policy probe's
+real-tree arm predicted a lapsed credit, so it now derives the credits from the live catalogue as it derives the moved
+pins from the manifests, holding through the whole window. (d) The commit chain's focused stage refused before the
+gate: `RECORD-SCHEMA: REFUSED — the check does not discriminate (self-test failed)` — the schema token-facet probe holds a
+closed inventory of anchored patterns, each with a reviewed example, and the five new facets had none
+(`no reviewed token example: matched-case.sexp/control/id`). The two new token languages are registered (a control id;
+the second method's kind), the inventory 122 → 127, and the measured mutation losses re-pinned in
+`check_requirements.rs` — `loose-end` 127 → 132 (one per facet), `ignore-pattern` 738 → 768 (six per facet),
+`fullmatch` 1 unchanged, each in both modes; `RECORD-SCHEMA --self-test: 81 pass / 0 fail`.
+**The lapse.** `CR-GC-M-2` and `CR-D-XLEN-1` lapsed (`… lapsed: manifest input schema/matched-case.sexp`) and were
+retired by removal with `credits.sexp` (both decision records); `REQ-GC-M` and `REQ-D-XLEN` `planned`; the v4 and XLEN
+dossier copies and `G-TRACE` rows removed, `G-TRACE` open (owner `P4-SYSTEM.14`); GS `Open axes (4 of 10)`.
+`REQUIREMENT-STATUS: … 48 planned; 4 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`; both
+cases `DIV-POLICY: invalidated — 8 of 10 legs satisfied; … invalidated by schema/matched-case.sexp: SHA256 differs; no
+qualification credit` (exit 0); the method `stale` (110,209 and 105,395 B charged, each predicted by the probe from its
+manifest). Re-stated: the status probe (48 / 0), the dossier probe (no record qualifies), the method probe's real-tree
+arm. Counts: DIV-COMMAND 20 tests (seams `control-id-literal`, `control-statement-literal`), DIV-METHOD 22 (seam
+`stale-route`), DIV-POLICY-PROBE 33 (seams `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
+`adversarial-executed`), each new seam one failure; `check_profile_consistency.rs` mirrors them. Books: the unit book's
+policy, method, status, capture-plan and division pages and its fragments; three toolbox rows, stale since v3 (21 and
+25 tests, eight seams, the capture CLI's default), made current. Next: a43b-2c, v5 and xlen-v2 declared.
 
 ### .14 a43b-2a / SEMULITH-P4-0328: the lapse window that opens CSR-SET, designed — the control declared per case, the high-risk vocabulary, the order (completed)
 
@@ -1053,6 +1116,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 - [x] `.14` a43b-2a **ROOT CAUSE** — the window had no design before its first pinned edit, and its two files sat at their ceilings: `grep -n 'wrong-quotient\|quotient must diverge' scripts/capture_div.py` → lines 330 and 337 (the M literals both captures pin); `grep -n 'no declaration vocabulary' scripts/review_div_policy.py` → line 34; `wc -c` → `docs/tasks/P4-SYSTEM.md` 129223 of 131072, `CHANGELOG.md` 64028 of 65536.
 - [x] `.14` a43b-2a **ADDRESSED** — the design (D1–D5) recorded here, in `decision_producer-debt-paid-before-the-next-case.md` and on the unit book's policy page; target/p4-system-14/a43b-2a/move.log → `records 11, row spans 1 (33 rows)`, each span's SHA256 re-checked in part 24, and independently 224 of 224 nonblank removed lines present in part 24 (removed-lines.txt); `python3 -B scripts/shard_history.py --max-bytes 49152` → `66 entries before == 51 kept + 15 moved, order and bytes exact`, `head: 64028 -> 48866 bytes` (shard.log); `bash scripts/check_changelog_shards.sh` → `SHARD-FREEZE: ok (424 shard row(s) frozen, 2 heads + shards append-only, exactly partitioned)`.
 - [x] `.14` a43b-2a **NO REGRESSION** — documentation only: `git diff --cached --name-only | grep -vE '\.md$'` → `docs/changelog/SHARDS.sha256` alone (the manifest the sharder regenerates); the focused stage and the commit gate (target/p4-system-14/a43b-2a chain log).
+- [x] `.14` a43b-2b **ROOT CAUSE** — the producer emitted the first case's control words: `git show 715ed26e:scripts/capture_div.py | grep -n 'wrong-quotient\|quotient must'` → lines 330 and 337, and `review_div_policy.py:277` read every high-risk case `second method and adversarial case undeclared` (target/p4-system-14/a43b-2b/before/literals-at-head.txt); once the producer refused history, the method review read both retained cases `refused` (before/method-without-route.txt: `refused | case rv64gc-m-forms-v4 declares no control id/statement …`) and five probes went red on the refusal alone (before/*.d1.log: `DIV-COMMAND: 19 tests / 7 failures / 4 errors`, `DIV-CAPTURE-RETENTION: 11 tests / 10 failures`).
+- [x] `.14` a43b-2b **ADDRESSED** — `grep -c 'wrong-quotient\|quotient must' scripts/capture_div.py` = 0; render identity 4 of 4 retained declarations; `python3 -B scripts/review_div_method.py --case rv64gc-m-forms-v4` `rc=1` → `stale | schema/matched-case.sexp: SHA256 differs | 110209` (xlen-v1 105395); `python3 -B scripts/review_div_policy.py --every-retained` `rc=0` → both `invalidated — 8 of 10 legs satisfied; … no qualification credit`; `python3 -B scripts/requirement_status.py` → `48 planned; 4 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`; `DIV-POLICY-PROBE: 33 tests / 0 failures / 0 errors`, `DIV-METHOD: 22 tests / 0 failures / 0 errors`, `DIV-COMMAND: 20 tests / 0 failures / 0 errors`, each new seam `1 failures / 0 errors` (`distinct-versions` one assertion over high and low risk).
+- [x] `.14` a43b-2b **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2b/selftest.log; the first run's `1218 pass / 6 fail`, selftest-1.log, measured and repaired: `derived-status` 37 → 2, the `capture-origin` target, the policy real-tree prediction), traced: `ls target/p4-system-14/a43b-2b/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)` on a quiet host (wait.log); `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures`, `DIV-AUTHORITIES: 19 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; `cargo fmt --all -- --check` `rc=0`, `cargo clippy -p xtask --all-targets -- -D warnings` `rc=0`; `RECORD-SCHEMA --self-test: 81 pass / 0 fail` and `RECORD-SCHEMA: ok (25 record file(s) …)` after the focused stage's refusal (record-schema-selftest.log); `DERIVED-COUNTS: ok`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.
 - [x] `.17` close **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); FRONTIER-SYNC and the prechecks green (target/p4-system-17/close/prechecks.txt); the commit gate (chain log).

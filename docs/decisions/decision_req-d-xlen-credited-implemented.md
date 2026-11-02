@@ -48,3 +48,15 @@ answers: Who signs the XLEN credit, is one finite case of seventeen witnesses en
   cell vocabulary is not widened.
 - Any pin movement lapses this credit as it does `CR-GC-M-2` (the three pins and every input of the case's manifest);
   the status falls back to `planned` and the gate fails.
+
+## Retirement (2026-11-02, `P4-SYSTEM.14` a43b-2b)
+
+`CR-D-XLEN-1` was retired by removal in the one pinned-edit commit of the planned lapse that opens CSR-SET
+([`decision_producer-debt-paid-before-the-next-case.md`](decision_producer-debt-paid-before-the-next-case.md)): the
+slice moved four inputs the case's manifest pins (`schema/matched-case.sexp`, `scripts/capture_div.py`,
+`scripts/matched_gpr_case.py`, `scripts/matched_gpr_property.py`; measured: `credit CR-D-XLEN-1 names this case but
+lapsed: manifest input schema/matched-case.sexp …`), and a lapsed record is a finding. In the same commit `REQ-D-XLEN`
+records `planned`, the dossier copy and the `G-TRACE` row leave, and the catalogue file leaves with its last records
+(`REQUIREMENT-STATUS: … 48 planned; 4 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`). The
+rulings above stand for the re-credit: the case re-captured once as `rv64gc-xlen-forms-v2`, its control declared
+(`truncated-address`), is credited by `CR-D-XLEN-2` through the same act (a43b-2e).

@@ -171,6 +171,7 @@ class RetentionTests(unittest.TestCase):
             path.write_text(source.replace(before, after, 1))
 
     def child(self, mode, *, exit_code=0):
+        Command.declare_control(self.runtime)  # a43b-2b, D1: a planned case declares its control
         Command.synthesize_reference(self.runtime, exit_code=exit_code)
         result = subprocess.run([sys.executable, *(["-O"] if sys.flags.optimize else []), "-B", "-c", CHILD,
                                  str(self.runtime), mode, COMMIT], cwd=ROOT, capture_output=True, text=True, timeout=300)

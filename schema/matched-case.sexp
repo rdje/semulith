@@ -26,17 +26,38 @@
   (field (name category) (type string) (min-length 1))
   (field (name risk) (type string) (min-length 1))
   (field (name coverage) (type string) (min-length 1))
+  (field (name second_method) (type form) (head second_method) (optional yes))
+  (field (name adversarial) (type form) (head adversarial) (optional yes))
   (field (name authority) (type form) (head authority))
   (field (name required_input) (type form) (head required_input) (repeat yes) (min 1))
   (field (name prepared) (type form) (head prepared) (repeat yes) (min 4))
   (field (name property) (type form) (head property) (repeat yes) (min 1))
   (field (name step) (type form) (head step) (repeat yes) (min 1)))
 
-;; The property the control expectation changes, and the wrong value it carries there.
+;; The property the control expectation changes, and the wrong value it carries there. `id` and `statement` name the
+;; control run and state its predeclared target in the planned record (P4-SYSTEM.14 a43b-2a, D1): optional here because
+;; the declarations retained before a43b-2b cannot gain fields, required by scripts/capture_div.py to plan a case.
 (construct (name control)
   (field (name property_id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
   (field (name value) (type integer))
-  (field (name reason) (type string) (min-length 1)))
+  (field (name reason) (type string) (min-length 1))
+  (field (name id) (type string) (pattern "^[a-z0-9][a-z0-9-]*\\Z") (optional yes))
+  (field (name statement) (type string) (min-length 1) (optional yes)))
+
+;; A high- or critical-risk case's second method (profiles/<profile>/EVIDENCE_POLICY.md "Risk and feature obligations";
+;; P4-SYSTEM.14 a43b-2a, D2): one of the policy's four named methods, the record's producers that carry it, the inputs
+;; they share, and what is independently derived. scripts/review_div_policy.py judges it against the measured record.
+(construct (name second_method)
+  (field (name kind) (type string)
+    (pattern "^(independent-exact-expectation|bounded-exhaustive-check|source-grounded-invariant-check|qualified-hardware-observation)\\Z"))
+  (field (name producer_ids) (type string) (repeat yes) (min 2) (unique yes) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
+  (field (name common_input_ids) (type string) (repeat yes) (min 1) (unique yes) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
+  (field (name independently_derived) (type string) (min-length 1)))
+
+;; The adversarial case for the feature's failure mode: the declared properties that witness it.
+(construct (name adversarial)
+  (field (name property_ids) (type string) (repeat yes) (min 1) (unique yes) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
+  (field (name failure_mode) (type string) (min-length 1)))
 
 ;; The selected authority beyond the case's own requirement and source: the catalogues' semantic digests.
 (construct (name authority)

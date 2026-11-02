@@ -33,6 +33,14 @@ SEAMS = {
                        '    witness_step, witness_register = next(iter(witnesses.values()))\n'),
     "credit-any": ('    credited_now = any(c["disposition"] == "current" for c in naming)\n',
                    '    credited_now = bool(naming)\n'),
+    # a43b-2b: the five conditions of the risk-method leg (P4-SYSTEM.14 a43b-2a, D2), one seam each.
+    "both-forms": ('    c1 = second is not None and adversarial is not None and kind in SECOND_METHODS\n', '    c1 = True\n'),
+    "distinct-versions": ('    c2 = len(ids) >= 2 and all(i in producers for i in ids) and len(versions) == len(ids)\n',
+                          '    c2 = True\n'),
+    "recorded-common": ('    c3 = bool(joined) and len(found) == len(joined) and bool(common) and shared == common\n',
+                        '    c3 = True\n'),
+    "shared-pair": ('    c4 = bool(found) and "shared" not in ancestry and bool(derived)\n', '    c4 = True\n'),
+    "adversarial-executed": ('    c5 = bool(props) and set(props) <= set(witnesses) and baseline == "AGREE"\n', '    c5 = True\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_undeclared_boundary_rows_keep_the_case_pending",
@@ -45,6 +53,11 @@ MUTATION_TESTS = {
     "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
     "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
     "boundary-tag": "test_boundary_tag_marks_a_directed_row",
+    "both-forms": "test_second_method_names_one_of_the_policy_methods",
+    "distinct-versions": "test_second_method_producers_have_distinct_versions_at_any_risk",
+    "recorded-common": "test_second_method_common_inputs_are_the_recorded_shared_inputs",
+    "shared-pair": "test_second_method_never_rests_on_a_pair_recorded_as_shared",
+    "adversarial-executed": "test_adversarial_case_names_declared_properties_of_an_agreeing_capture",
 }
 XLEN_CASE_ID = "rv64gc-xlen-forms-v1"  # the second reviewed capture (a43a-2e), measured since a43a-2f
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -89,8 +102,11 @@ def load_module(workdir: Path):
 def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div", "rem"), risk="medium", declare_boundaries=False,
             steps=None, expected_reads_reference=False, repeat=True, control="DIVERGE", control_step=0,
             control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1",
-            control_property="p0"):
-    """One synthetic retained case under profile fx-v0; every knob breaks exactly one leg."""
+            control_property="p0", versions=("v", "v"), pairs=(), declaration=None):
+    """One synthetic retained case under profile fx-v0; every knob breaks exactly one leg.
+
+    `pairs` adds recorded producer pairs (left, right, shared input ids, assessment) and `declaration` writes the
+    case's `case.sexp` (its second method and adversarial case, a43b-2b); by default the case declares neither."""
     profile = root / "profiles" / "fx-v0"; profile.mkdir(parents=True)
     obs = " ".join(f'(insns "{i}")' for i in insns)
     (profile / "requirements.sexp").write_text(
@@ -129,9 +145,14 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
         '    (input (id "reference-identity") (role "reference-identity") (path "profiles/fx-v0/retained/id.sexp") (sha256 "0"))\n'
         '    (input (id "expectation") (role "expectation") (path "evidence/cx/baseline.expected.sexp") (sha256 "0"))\n'
         '    (input (id "mutant-expectation") (role "expectation") (path "evidence/cx/control.expected.sexp") (sha256 "0"))\n'
-        '    (producer (id "reference") (role "reference") (version "v") (candidate_id "m") (input_ids "guest-source") '
+        f'    (producer (id "reference") (role "reference") (version "{versions[0]}") (candidate_id "m") (input_ids "guest-source") '
         '(input_ids "reference-config") (input_ids "reference-identity"))\n'
-        f'    (producer (id "expected") (role "expected") (version "v") {expected_inputs})))\n')
+        f'    (producer (id "expected") (role "expected") (version "{versions[1]}") {expected_inputs})'
+        + "".join(f'\n    (producer_pair (id "{left}-{right}") (left "{left}") (right "{right}") (subsystem "gpr-change") '
+                  f'(assessment "{assessment}") ' + " ".join(f'(shared_input_ids "{i}")' for i in shared)
+                  + ' (evidence "e") (consequence "c"))' for left, right, shared, assessment in pairs) + '))\n')
+    if declaration is not None:
+        (case / "case.sexp").write_text(declaration)
     runs = [dict(run_kind="baseline", comparison=dict(verdict="AGREE", gpr_difference=None))]
     if repeat:
         runs.append(dict(run_kind="repeat", comparison=dict(verdict="AGREE", gpr_difference=None)))
@@ -319,6 +340,57 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual((t["disposition"], len(t["findings"]), t["credited"]), ("invalidated", 1, False))
         self.assertIn("claims qualification", t["findings"][0]); self.assertEqual(self.M.summary(t)[0], 1)
 
+    def second(self, *, risk="high", kind="independent-exact-expectation", versions=("sail-v", "author-v"),
+               assessment="not-examined", shared=("guest-source", "dependency-manifest"),
+               common=("guest-source", "dependency-manifest"), adversarial=("p0",)):
+        """A CSR-SET-shaped declaration (a43b-2a, D2) on a fixture whose other legs are satisfied: the record's
+        reference and expected producers, their recorded pair and shared inputs, an adversarial witness. Every
+        knob breaks exactly one condition. Returns the risk-method leg and the table."""
+        declaration = (f'(case (second_method (kind "{kind}") (producer_ids "expected") (producer_ids "reference") '
+                       + " ".join(f'(common_input_ids "{i}")' for i in common)
+                       + ' (independently_derived "the expected values derived from the pinned chapter, no reference '
+                       'output among the inputs"))\n  (adversarial ' + " ".join(f'(property_ids "{i}")' for i in adversarial)
+                       + ' (failure_mode "a forbidden CSR write commits its destination")))\n')
+        fixture(self.root, declare_boundaries=True, risk=risk, versions=versions,
+                pairs=(("reference", "expected", shared, assessment),), declaration=declaration)
+        t = self.measure()
+        return next(leg for leg in t["legs"] if leg["id"] == "risk-method"), t
+
+    def test_second_method_satisfies_high_risk_when_all_five_conditions_hold(self):
+        leg, t = self.second()
+        self.assertEqual((leg["disposition"], t["disposition"], t["credited"]), ("satisfied", "satisfied", False), leg)
+        self.assertIn("ancestry ['not-examined']: no independence credit", leg["measured"])
+        self.assertIn("adversarial ['p0']", leg["measured"])
+
+    def test_second_method_names_one_of_the_policy_methods(self):
+        leg, t = self.second(kind="two-wrappers")
+        self.assertEqual((leg["disposition"], t["missing"]), ("pending", ["risk-method"]), leg)
+        self.assertIn("(1)", leg["measured"])
+
+    def test_second_method_producers_have_distinct_versions_at_any_risk(self):
+        """Two wrappers around one producer share a version; a low-risk declaration is judged, never ignored."""
+        measured = []
+        for risk in ("high", "low"):
+            leg, t = self.second(risk=risk, versions=("v", "v"))
+            measured.append((risk, leg["disposition"], t["missing"], "(2)" in leg["measured"]))
+            self.tearDown(); self.setUp()
+        self.assertEqual(measured, [("high", "pending", ["risk-method"], True), ("low", "pending", ["risk-method"], True)])
+
+    def test_second_method_common_inputs_are_the_recorded_shared_inputs(self):
+        leg, t = self.second(common=("guest-source",))
+        self.assertEqual((leg["disposition"], t["missing"]), ("pending", ["risk-method"]), leg)
+        self.assertIn("(3) common inputs ['guest-source'] are not the recorded pairs' shared inputs", leg["measured"])
+
+    def test_second_method_never_rests_on_a_pair_recorded_as_shared(self):
+        leg, t = self.second(assessment="shared")
+        self.assertEqual((leg["disposition"], t["missing"]), ("pending", ["risk-method"]), leg)
+        self.assertIn("(4) ancestry ['shared']", leg["measured"])
+
+    def test_adversarial_case_names_declared_properties_of_an_agreeing_capture(self):
+        leg, t = self.second(adversarial=("p0", "p9"))
+        self.assertEqual((leg["disposition"], t["missing"]), ("pending", ["risk-method"]), leg)
+        self.assertIn("(5) adversarial properties ['p0', 'p9']", leg["measured"])
+
     def test_high_risk_requires_a_second_method(self):
         fixture(self.root, declare_boundaries=True, risk="high")
         t = self.measure()
@@ -364,39 +436,47 @@ class PolicyTests(unittest.TestCase):
 
     def test_real_tree_measures_as_its_manifest_predicts(self):
         """Every reviewed capture, measured by the live consumer in the one `--every-retained` run PROFILE-CONSISTENCY
-        makes (a43a-2f), and again by the module under test from the same method results. M's v4 with current pins:
-        every leg satisfied, credited by CR-GC-M-2 (re-captured and re-credited, P4-SYSTEM.14 a44-5); the XLEN case:
-        every leg satisfied, credited by CR-D-XLEN-1 (a43a-3). A moved method pin: invalidated, naming it; the record
-        that cites the case lapses and is its one finding (a42ay), exit 1. The expectations come from each manifest."""
+        makes (a43a-2f), and again by the module under test from the same method results. The prediction comes from
+        each case's manifest and the live credit catalogue, never from the tree's history: current pins, every leg
+        satisfied — credited when a record names the case; a moved method pin, invalidated with the two method legs
+        missing — and a record that names the case lapses and is its one finding (a42ay), exit 1. Since the planned
+        lapse that opens CSR-SET (P4-SYSTEM.14 a43b-2b) no record names v4 or the XLEN case: invalidated, exit 0."""
         import subprocess
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
         self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
-        self.assertEqual(done.returncode, 1 if any(moved.values()) else 0, done.stderr)
+        catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
+        forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
+        naming = {t["case_id"]: [str(self.M._one(f, "id")) for f in forms if isinstance(f, list) and f and str(f[0]) == "credit"
+                                 and str(self.M._one(f, "case_id")) == t["case_id"]] for t in tables}
+        self.assertEqual(done.returncode, 1 if any(moved[c] and naming[c] for c in moved) else 0, done.stderr)
         self.assertEqual(done.stderr.splitlines(), [f"{t['case_id']}: {self.M.summary(t)[1]}" for t in tables])
         for live in tables:
             self.assertEqual(self.M.measure_policy(ROOT, method=live["method"], case_id=live["case_id"]), live)
+        for t in tables:
+            with self.subTest(case=t["case_id"]):
+                ids = naming[t["case_id"]]
+                self.assertEqual(t["credit_ids"], ids)
+                if moved[t["case_id"]]:
+                    # A moved pinned input invalidates the measurement and, through credit_records.authenticate's walk
+                    # of the same manifest, lapses any record naming the case: its one finding, exit 1.
+                    self.assertEqual((t["disposition"], t["missing"], t["credited"]),
+                                     ("invalidated", ["matched-reference-comparison", "currentness"], False))
+                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 8)
+                    self.assertEqual(t["method"]["disposition"], "stale"); self.assertTrue(t["invalidated_by"], t["method"])
+                    self.assertEqual([f.split(" names this case but lapsed: ")[0] for f in t["findings"]],
+                                     ["credit " + i for i in ids])
+                    self.assertEqual(self.M.summary(t)[0], 1 if ids else 0)
+                else:
+                    self.assertEqual((t["disposition"], t["missing"], t["findings"], t["credited"]),
+                                     ("satisfied", [], [], bool(ids)))
+                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 10)
+                    self.assertIsNone(t["invalidated_by"])
+                    self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; " + (
+                        "credited by " + ", ".join(ids) if ids else "no qualification credit")))
         table, xlen = tables
-        if moved[self.M.CASE_ID]:
-            # Every pinned method input is also read by the credit's authentication (credit_records.authenticate
-            # walks the case's dependency manifest), so a moved input invalidates the measurement AND lapses
-            # CR-GC-M-2: `credited` false, the lapsed record named as the one finding, exit 1, the status falls
-            # back to `planned` (drift) until the record is withdrawn or the case recaptured.
-            self.assertEqual((table["disposition"], table["missing"], table["credited"], table["credit_ids"]),
-                             ("invalidated", ["matched-reference-comparison", "currentness"], False, ["CR-GC-M-2"]))
-            self.assertEqual(len(table["findings"]), 1, table["findings"])
-            self.assertTrue(table["findings"][0].startswith("credit CR-GC-M-2 names this case but lapsed: "), table["findings"])
-            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 8)
-            self.assertEqual(table["method"]["disposition"], "stale"); self.assertEqual(self.M.summary(table)[0], 1)
-            self.assertTrue(table["invalidated_by"], table["method"])
-        else:
-            self.assertEqual((table["disposition"], table["missing"], table["findings"], table["credited"], table["credit_ids"]),
-                             ("satisfied", [], [], True, ["CR-GC-M-2"]))
-            self.assertEqual(sum(1 for leg in table["legs"] if leg["disposition"] == "satisfied"), 10)
-            self.assertIsNone(table["invalidated_by"])
-            self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-2"))
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]
@@ -404,16 +484,6 @@ class PolicyTests(unittest.TestCase):
                          (forms, forms, forms))
         self.assertEqual((table["requirement_id"], table["obligation_ids"], table["category"], table["risk"]),
                          ("REQ-GC-M", ["OB-GC-M"], "defined", "medium"))
-        # The XLEN case, credited by CR-D-XLEN-1 since a43a-3: a moved pin lapses that record as it does CR-GC-M-2's.
-        if moved[XLEN_CASE_ID]:
-            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["credited"], xlen["credit_ids"]),
-                             ("invalidated", ["matched-reference-comparison", "currentness"], False, ["CR-D-XLEN-1"]))
-            self.assertEqual(len(xlen["findings"]), 1, xlen["findings"])
-            self.assertTrue(xlen["findings"][0].startswith("credit CR-D-XLEN-1 names this case but lapsed: "), xlen["findings"])
-        else:
-            self.assertEqual((xlen["disposition"], xlen["missing"], xlen["findings"], xlen["credited"], xlen["credit_ids"]),
-                             ("satisfied", [], [], True, ["CR-D-XLEN-1"]))
-            self.assertEqual(self.M.summary(xlen), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-1"))
         boundaries = [1, 5, 6, 7, 8, 9, 10, 13, 16, 24]
         self.assertEqual(xlen["boundary"], dict(present=boundaries, predeclared=boundaries))
         self.assertEqual(xlen["coverage"], dict(required=[], exercised=[], predeclared=[]))

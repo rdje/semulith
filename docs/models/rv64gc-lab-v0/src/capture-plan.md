@@ -119,7 +119,11 @@ its wrapper names exactly one original publication (`Original page SHA256: …`)
 to the case's source digest — which the authority review holds equal to the source
 catalogue — and an excerpt is never its own publication; the excerpts, not a fixed
 path, are the case's normative children, and the case's authority projects one of
-the obligations it declares. Its37 modules and64 children reach the unchanged64-child
+the obligations it declares. Since a43b-2b the planned record's control-run id and its
+`control` prose are the case's own as well — its `control` form's `id` and `statement`,
+for example `(id "truncated-address")` and `(statement "Predeclared target: the address
+truncated to 32 bits must diverge.")` — and preparation refuses, by name, a case that
+declares neither: a declaration retained before then is history, not a capture input. Its37 modules and64 children reach the unchanged64-child
 ceiling. The final execution composition must fit this reviewed population or
 receive another bounded design review before execution. A copied reviewed input set can
 run the diagnostic with no `.materials` directory; success still stays pending.

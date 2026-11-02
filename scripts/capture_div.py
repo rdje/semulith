@@ -327,14 +327,14 @@ def _planned_record(context, inputs, author):
                                 obligation_ids=list(case.obligation_ids), observation_kinds=["gpr-change"],
                                 gpr_witness=asdict(item.witness))
                            for item in case.properties],
-                 control_run=[dict(id="wrong-quotient", run_id="control", baseline_id="baseline",
+                 control_run=[dict(id=case.control_id, run_id="control", baseline_id="baseline",
                                    property_ids=[case.control_property_id], mutation_input_ids=["mutant-expectation"],
                                    expected_verdict="DIVERGE", observed_verdict="DIVERGE",
                                    reason=case.control_reason)])
     experiment = dict(id=case.case_id, program=case.program, instructions=case.instructions,
                       models=["sail-riscv"], verdict="AGREE", verification=graph,
                       reproduced="Predeclared target: fresh baseline and exact-byte repeat.",
-                      control="Predeclared target: wrong quotient must diverge.")
+                      control=case.control_statement)
     # Use the sole dossier mapper; raw validation follows before any mapped use.
     candidate = dict(selected, role="selected execution identity", status="declared",
                      lineage="unexamined; no independence credit")
@@ -379,9 +379,13 @@ def prepare_capture(case_id=P.CASE_ID) -> CaptureDeclaration:
     principals are read twice at64KiB each (640KiB maximum), outside the later
     combined artifact allowance. Runtime/schema I/O and RAM are separate costs.
     The retained case is the default; any reviewed case with pinned prepared inputs
-    may be prepared, which is how a case is declared before its capture (a42au).
+    may be prepared, which is how a case is declared before its capture (a42au). A case must declare its
+    control's id and statement (P4-SYSTEM.14 a43b-2a, D1): the planned record carries no producer literal.
     """
     case = P.reviewed_case(case_id)
+    require(case.control_id is not None and case.control_statement is not None,
+            "case " + case.case_id + " declares no control id/statement: a declaration older than a43b-2b is "
+            "history, not a capture input")
     case_prefix = prefix(case.case_id)
     pinned = prepared_inputs(case.case_id)
     context = review_authorities(case.case_id, case)

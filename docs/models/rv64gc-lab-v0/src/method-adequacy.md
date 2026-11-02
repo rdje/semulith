@@ -67,7 +67,13 @@ and refuses a summary that retains payload data or substitutes another manifest.
 Baseline/repeat must agree and the declared wrong quotient must diverge.
 
 Missing findings remain pending. Failed, stale, unavailable, refused and
-unsupported findings retain their distinct meanings. A later checker-source
+unsupported findings retain their distinct meanings. A case declared before
+`P4-SYSTEM.14` a43b-2b names no control id or statement, so the producer refuses to
+prepare it; the review then reads the capture's own dependency manifest through the
+measured record's pin and re-checks the pins of the declaration's route (the case
+file, then its schema): the first that moved makes the method `stale`, naming it —
+v4 and the XLEN case read `stale: schema/matched-case.sexp: SHA256 differs` since
+2026-11-02 — and a refusal with nothing moved stays `refused`. A later checker-source
 change refuses the method result while preserving earlier computed record,
 binding and evaluation findings. No result silently becomes policy credit.
 
@@ -148,12 +154,15 @@ python3 -B -O scripts/probe_div_method.py
 python3 -B scripts/probe_div_method.py --mutation capture-origin
 ```
 
-Each unmutated mode passes 21 tests; the real-tree arm runs every row and requires a
-retained case without one (v3) to be `unsupported` having read nothing. The targeted origin omission runs one test
+Each unmutated mode passes 22 tests; the real-tree arm runs every row and requires a
+retained case without one (v3) to be `unsupported` having read nothing, and predicts each
+stale row's reason and charged bytes from its own manifest. A synthetic arm strips the
+control from a copy's declaration and expects `stale` naming the case file; a refusal
+with nothing moved stays `refused`. The targeted origin omission runs one test
 and reports one failure with no errors; that nonzero exit is the expected
-negative control. PROFILE-CONSISTENCY runs both modes and all fourteen targeted
-guard omissions. Their failure counts are respectively
-4/1/4/2/2/1/2/1/3/4/1/1/1/1, with no errors.
+negative control. PROFILE-CONSISTENCY runs both modes and all fifteen targeted
+guard omissions, the last `stale-route` (a43b-2b). Their failure counts are respectively
+4/1/4/2/2/1/2/1/3/4/1/1/1/1/1, with no errors.
 
 A 106-file runtime copy (the default case's) contains only the retained package and required code,
 without Git, acquired materials or a binary. Child process launching is denied;

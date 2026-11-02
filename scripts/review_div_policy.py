@@ -30,8 +30,10 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                producer, receipt identity and limitations are all named.
   currentness                  the policy document is pinned by the dependency manifest and
                                its current bytes equal the pin; the method binding matched.
-  risk-method                  low/medium risk needs no second method; high/critical does,
-                               and no declaration vocabulary exists yet for it.
+  risk-method                  low/medium risk needs no second method; high/critical needs the
+                               case's declared second method and adversarial case, judged against
+                               the record by five conditions (P4-SYSTEM.14 a43b-2b); a declaration
+                               is judged at any risk, never ignored.
   feature-rules                the obligation's feature disposition is declared below.
   form-coverage                every form the requirement names is exercised AND predeclared; a
                                state requirement naming no form is satisfied vacuously, and says so.
@@ -53,6 +55,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import asdict, dataclass
 import hashlib
+from itertools import combinations
 import json
 from pathlib import Path
 import sys
@@ -72,6 +75,9 @@ DOCUMENT_BYTES = 65536
 # guest's ten, a43a-2d) is a directed boundary fixture. The tag occurs in no M expectation, so M's rows do not move.
 BOUNDARY_MARKERS = ("Table", "(boundary")
 LOW_RISK = ("low", "medium")
+# The policy's four named second methods ("Risk and feature obligations"), one token each; its text stays the authority.
+SECOND_METHODS = ("independent-exact-expectation", "bounded-exhaustive-check", "source-grounded-invariant-check",
+                  "qualified-hardware-observation")
 # Declared feature dispositions (policy "the following feature rules apply regardless of the risk
 # field"). An obligation absent here has no disposition and stays pending — never inferred.
 FEATURE_DISPOSITIONS = {
@@ -141,6 +147,68 @@ def _digest(data: bytes) -> str:
 
 def _leg(legs: list[Leg], leg_id: str, ok: bool, measured: str) -> None:
     legs.append(Leg(leg_id, "satisfied" if ok else "pending", measured))
+
+
+def _declared_forms(case_dir: Path):
+    """The case declaration's `second_method` and `adversarial` forms, each `None` when undeclared.
+
+    Read structurally, as the planned record is: the finite method review validates the declaration through the
+    case reader when it prepares the case, and its manifest pins it. A directory without one declares neither.
+    """
+    path = case_dir / "case.sexp"
+    if not path.is_file():
+        return None, None
+    top = _one_form(path, "case")
+    found = [S.children(top, name) for name in ("second_method", "adversarial")]
+    _require(all(len(forms) <= 1 for forms in found), "a case declares at most one second method and one adversarial case")
+    return tuple(forms[0] if forms else None for forms in found)
+
+
+def _risk_method(risk, second, adversarial, producers, pairs, witnesses, baseline):
+    """The risk-method leg as (satisfied, measured) — P4-SYSTEM.14 a43b-2a, D2.
+
+    Undeclared, low and medium risk need no second method and high or critical risk stays pending. A declaration
+    is judged at any risk by five conditions read from the record, never restated by it: (1) a second method of a
+    named kind and an adversarial case are both declared; (2) its producers are two or more producers of the record
+    with distinct versions ("Two wrappers around one producer do not satisfy this requirement"); (3) every pair of
+    them is a recorded producer pair and their shared inputs are exactly the declared common inputs ("the producers
+    and common inputs recorded"); (4) no such pair is recorded as sharing the subsystem, and what is independently
+    derived is named — reported beside the recorded ancestry, which earns no independence credit; (5) every
+    adversarial property is a declared property of a capture whose baseline agrees (executed, not only named).
+    """
+    if second is None and adversarial is None:
+        return risk in LOW_RISK, f"risk {risk}: " + (
+            "no second method required" if risk in LOW_RISK else "second method and adversarial case undeclared")
+    kind = str(_one(second, "kind")) if second is not None else None
+    ids = _strings(second, "producer_ids") if second is not None else []
+    common = sorted(_strings(second, "common_input_ids")) if second is not None else []
+    derived = str(_one(second, "independently_derived") or "").strip() if second is not None else ""
+    versions = {str(_one(producers[i], "version")) for i in ids if i in producers}
+    recorded = {frozenset((str(_one(p, "left")), str(_one(p, "right")))): p for p in pairs}
+    joined = [recorded.get(frozenset(pair)) for pair in combinations(ids, 2)]
+    found = [p for p in joined if p is not None]
+    shared = sorted(set.intersection(*(set(_strings(p, "shared_input_ids")) for p in found))) if found else []
+    ancestry = sorted({str(_one(p, "assessment")) for p in found})
+    props = _strings(adversarial, "property_ids") if adversarial is not None else []
+    c1 = second is not None and adversarial is not None and kind in SECOND_METHODS
+    c2 = len(ids) >= 2 and all(i in producers for i in ids) and len(versions) == len(ids)
+    c3 = bool(joined) and len(found) == len(joined) and bool(common) and shared == common
+    c4 = bool(found) and "shared" not in ancestry and bool(derived)
+    c5 = bool(props) and set(props) <= set(witnesses) and baseline == "AGREE"
+    failed = [text for ok, text in (
+        (c1, "(1) a second method of a named kind and an adversarial case are not both declared"),
+        (c2, f"(2) producers {ids} are not two or more producers of the record with distinct versions"),
+        (c3, f"(3) common inputs {common} are not the recorded pairs' shared inputs {shared}"),
+        (c4, f"(4) ancestry {ancestry or '(no recorded pair)'}: a pair recorded as shared, or nothing independently "
+             "derived named"),
+        (c5, f"(5) adversarial properties {props} are not all declared properties of an agreeing capture "
+             f"(baseline {baseline})"),
+    ) if not ok]
+    if failed:
+        return False, f"risk {risk}: second method not satisfied — " + "; ".join(failed)
+    return True, (f"risk {risk}: second method {kind} by {ids} on common inputs {common}; independently derived: "
+                  f"{derived}; ancestry {ancestry}: no independence credit; adversarial {props} "
+                  f"({str(_one(adversarial, 'failure_mode') or '')}) executed, baseline {baseline}")
 
 
 def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
@@ -272,9 +340,10 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     _leg(legs, "currentness", policy_pin is not None and policy_pin == policy_now and method_ok,
          f"policy {'pinned' if policy_pin else 'unpinned'} and {'current' if policy_pin and policy_pin == policy_now else 'changed since the pin'}; "
          f"method binding {method.get('capture_binding')}")
-    # risk-method
-    _leg(legs, "risk-method", risk in LOW_RISK,
-         f"risk {risk}: {'no second method required' if risk in LOW_RISK else 'second method and adversarial case undeclared'}")
+    # risk-method (a43b-2a, D2): the case's declared second method and adversarial case, judged against the record
+    second, adversarial = _declared_forms(case_dir)
+    _leg(legs, "risk-method", *_risk_method(risk, second, adversarial, producers, S.children(graph, "producer_pair"),
+                                            witnesses, baseline))
     # feature-rules
     feature = [FEATURE_DISPOSITIONS.get(ob) for ob in obligation_ids]
     _leg(legs, "feature-rules", bool(obligation_ids) and all(feature),

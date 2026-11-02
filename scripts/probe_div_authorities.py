@@ -15,6 +15,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 import capture_div as A
+import probe_div_command as Command  # a43b-2b: a planned copy declares its control
 
 ROOT = Path(__file__).resolve().parent.parent
 MUTATION = None
@@ -102,6 +103,7 @@ class AuthorityTests(unittest.TestCase):
             target = self.runtime / path
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / path, target)
+        Command.declare_control(self.runtime)  # P4-SYSTEM.14 a43b-2b, D1: the producer refuses an undeclared control
         if MUTATION:
             path = self.runtime / "scripts/capture_div.py"
             source = path.read_text()

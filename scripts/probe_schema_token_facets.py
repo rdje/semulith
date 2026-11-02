@@ -52,6 +52,9 @@ TOKENS = {
     r'^(guest-image|reference-config|expectation)': 'guest-image',  # matched-case.sexp: a prepared input's role
     r'^[A-Za-z0-9][A-Za-z0-9._-]*': 'guest.elf',  # matched-case.sexp: a prepared input's file name
     r'^(form|table1):[A-Za-z0-9._-]+': 'form:div',  # matched-case.sexp: the policy cell a property serves
+    r'^[a-z0-9][a-z0-9-]*': 'truncated-address',  # matched-case.sexp: a control run's declared id (a43b-2b)
+    r'^(independent-exact-expectation|bounded-exhaustive-check|source-grounded-invariant-check|qualified-hardware-observation)':
+        'independent-exact-expectation',  # matched-case.sexp: a second method's kind, the policy's four (a43b-2b)
 }
 REAL_DOCUMENTS = (
     ('profiles/rv64gc-lab-v0/references.sexp', 'references', 'binary_sha256'),
@@ -114,7 +117,7 @@ class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
         self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 27)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a)
-        self.assertEqual(len(current), 122)  # +21: schema/matched-case.sexp's pattern facets (P4-SYSTEM.14 a44-2a)
+        self.assertEqual(len(current), 127)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):

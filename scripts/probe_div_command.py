@@ -29,6 +29,10 @@ SEAMS = {
     "impact-delegation": ('impact_review=declaration.impact,', 'impact_review=None,'),
     "property-delegation": ('property_authority=declaration.authorities.property_authority,',
                             'property_authority=None,'),
+    # a43b-2b (P4-SYSTEM.14 a43b-2a, D3): either first-case literal restored in the producer.
+    "control-id-literal": ('control_run=[dict(id=case.control_id,', 'control_run=[dict(id="wrong-quotient",'),
+    "control-statement-literal": ('control=case.control_statement)',
+                                  'control="Predeclared target: wrong quotient must diverge.")'),
 }
 CHILD = r'''
 from dataclasses import FrozenInstanceError
@@ -134,6 +138,9 @@ try:
    try:A._read_pinned(binding)
    except OSError as error:
     result=dict(status='unavailable',kind=type(error).__name__,reason=str(error))
+ elif mode=='declarations':
+  with patch.object(subprocess,'Popen',deny):d=declaration()
+  print(json.dumps({name:payload.decode() for name,payload in A.declaration_files(d)}));sys.exit(0)
  else:
   with patch.object(subprocess,'Popen',deny):declaration()
   result=dict(status='pending')
@@ -147,6 +154,37 @@ print(json.dumps(result))
 # The children the reviewed population gained after the default case's capture (P4-SYSTEM.14 a44-2b): the case's
 # declaration, the schema that validates it and the module that reads it.
 GROWN = ("evidence/" + A.P.CASE_ID + "/case.sexp", "schema/matched-case.sexp", "scripts/matched_gpr_case.py")
+# A copy of a historical case that a control plans must declare its control (P4-SYSTEM.14 a43b-2b, D1): the producer
+# refuses a declaration without the control's id and statement. These are the words it wrote for every case before the
+# literals left it, true for the signed-DIV and M cases alike (each control changes one quotient).
+HISTORICAL_CONTROL = ("wrong-quotient", "Predeclared target: wrong quotient must diverge.")
+# The prose the producer writes into every planned record whatever the case (the audit of P4-SYSTEM.14 a43b-2a: each
+# string `_planned_record` emits). Any other prose string in a planned record must come from the case's own file.
+NEUTRAL_PROSE = frozenset((
+    A.P._PLACEHOLDER_LIMITATION,
+    "Selected public reference; snapshot-parcels-v1 source author. Ancestry unexamined.",
+    "No producer-independence or qualification credit.",
+    "Predeclared target: fresh baseline and exact-byte repeat.",
+    "Predeclared claims, not observations or qualification.",
+))
+
+
+def declare_control(runtime: Path, case_id: str = A.P.CASE_ID, control=HISTORICAL_CONTROL) -> None:
+    """Write a control id and statement (by default the historical ones) into a runtime copy's declaration."""
+    relative = A.P.Case.case_path(case_id)
+    path = runtime / relative
+    declaration = A.P.Case.read_document(path.read_text(), relative)
+    declaration["control"] = {**declaration["control"], "id": control[0], "statement": control[1]}
+    path.write_text(A.P.Case.render(declaration))
+
+
+def string_atoms(form):
+    """Every string atom of a parsed form, symbols excluded."""
+    if isinstance(form, list):
+        for child in form:
+            yield from string_atoms(child)
+    elif isinstance(form, str) and not isinstance(form, A.S.Symbol):
+        yield form
 
 
 def moved_inputs(root: Path, case_id: str = A.P.CASE_ID) -> list[str]:
@@ -230,6 +268,7 @@ class CommandTests(unittest.TestCase):
             path = self.runtime / relative
             path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / relative, path)
+        declare_control(self.runtime)
         if MUTATION:
             path = self.runtime / "scripts/capture_div.py"
             source = path.read_text()
@@ -268,15 +307,18 @@ class CommandTests(unittest.TestCase):
                          sorted(["case.sexp", *(Path(row[2]).name for row in A.prepared_inputs(A.P.CASE_ID)[:4])]))
 
     def test_retained_native_declarations_match_the_current_actual_package(self):
-        """Every pin current: each tracked declaration equals its regeneration. A pinned input moved: the
-        regenerated manifest differs from the tracked one in exactly the moved inputs, the tracked manifest
-        pin reports mismatch, and no declaration is silently borrowed (a42as)."""
+        """The real tree's declaration of the case is history since a43b-2b (D1): its preparation is refused by
+        name before any process. The copy declaring the control regenerates the declarations — every pin current:
+        each tracked declaration equals its regeneration; a pinned input moved: the regenerated manifest differs
+        from the tracked one in exactly the moved inputs, the tracked manifest pin reports mismatch, and no
+        declaration is silently borrowed (a42as)."""
         from unittest.mock import patch
 
-        moved = moved_inputs(ROOT)
         with patch.object(subprocess, "Popen", side_effect=AssertionError("unexpected declaration process")):
-            declaration = A.prepare_capture()
-            regenerated = dict(A.declaration_files(declaration))
+            with self.assertRaisesRegex(A.AuthorityError, "declares no control id/statement"):
+                A.prepare_capture()
+        moved = moved_inputs(ROOT)
+        regenerated = {name: text.encode() for name, text in self.inspect("declarations").items()}
         for name, payload in regenerated.items():
             with self.subTest(name=name):
                 record = dict(id=name, role="declaration", path=A.PREFIX + "/" + name,
@@ -296,7 +338,23 @@ class CommandTests(unittest.TestCase):
             self.assertEqual(sorted(set(current) - set(tracked)), sorted(GROWN))
             self.assertEqual(sorted(path for path in tracked if tracked[path] != current[path]), sorted(moved))
 
-    def test_actual_canonical_capture_evaluates_offline_without_a_process(self):
+    def test_planned_record_carries_the_declared_control_and_no_producer_case_prose(self):
+        """D3 (P4-SYSTEM.14 a43b-2a): a declaration whose control id and statement are unique tokens plans a record
+        carrying exactly those tokens, and every prose string of the record comes from the case file or the
+        producer's reviewed neutral set — a case-specific literal in the producer fails here by name."""
+        token = ("token-a43b-control", "Token a43b: the declared control target, not a producer literal.")
+        declare_control(self.runtime, control=token)
+        planned = self.inspect("declarations")["planned-experiment.sexp"]
+        forms = A.S.parse(planned)
+        experiment = next(form for form in forms if isinstance(form, list) and form[0] == "experiment")
+        graph = A.S.children(experiment, "verification")[0]
+        self.assertEqual(([A.S.field(item, "id") for item in A.S.children(graph, "control_run")],
+                          A.S.field(experiment, "control")), ([token[0]], token[1]))
+        declared = set(string_atoms(A.S.parse((self.runtime / A.P.Case.case_path(A.P.CASE_ID)).read_text())))
+        foreign = sorted({atom for atom in string_atoms(forms) if " " in atom} - declared - NEUTRAL_PROSE)
+        self.assertEqual(foreign, [], "prose the producer wrote that the case does not declare")
+
+    def test_actual_canonical_capture_is_intact_and_history_is_not_prepared(self):
         from unittest.mock import patch
 
         with patch.object(subprocess, "Popen", side_effect=AssertionError("unexpected retained-check process")):
@@ -330,31 +388,12 @@ class CommandTests(unittest.TestCase):
             self.assertEqual(measured.pin.disposition, "matched", measured.pin.reason)
             forms = [form for form in A.S.parse(measured.data.decode()) if form[0] != "comment"]
             self.assertEqual(len(forms), 1)
-            declaration = A.prepare_capture()
-            self.assertEqual(A.V.check_experiment(forms[0], declaration.authorities.scope), [])
-            checked = A.Unit.Evaluation.evaluate_retained_unit(
-                ROOT, raw_experiment=forms[0], scope=declaration.authorities.scope,
-                current_candidate=dict(declaration.authorities.reference.fields),
-                reviewed_inputs=declaration.inventory, author_review=declaration.author,
-                impact_review=declaration.impact, property_authority=declaration.authorities.property_authority)
-            moved = moved_inputs(ROOT)
-            if moved:
-                # The retained outputs are intact (every pin above matched); the evaluation refuses the
-                # current inventory because a pinned input moved — invalidated, not borrowed (a42as).
-                self.assertEqual(checked.disposition, "refused", checked.reason)
-                self.assertTrue(checked.reason, checked)
-                return
-            self.assertEqual(checked.disposition, "pending", checked.reason)
-            self.assertEqual(checked.record.disposition, "valid")
-            self.assertEqual(checked.comparison.disposition, "satisfied")
-            self.assertEqual([run.comparison.verdict for run in checked.comparison.runs],
-                             ["AGREE", "AGREE", "DIVERGE"])
-            for name in ("identity", "source_image", "input_review", "impact", "source_values",
-                         "expected_author", "source_property"):
-                self.assertEqual(getattr(checked, name).disposition, "matched", name)
-            self.assertEqual(len(checked.authentication.files), 85)
-            self.assertLessEqual(checked.authentication.snapshot_bytes, 16777216)
-            self.assertTrue(all(item.data is None for item in checked.authentication.files))
+            # Every retained output above is intact. The case is history: pinned inputs moved since its capture
+            # (a42as), and since a43b-2b (D1) its declaration names no control id/statement, so no current inventory
+            # can be prepared to evaluate it against — refused by name, before any process.
+            self.assertTrue(moved_inputs(ROOT))
+            with self.assertRaisesRegex(A.AuthorityError, "declares no control id/statement"):
+                A.prepare_capture()
 
     def test_three_fresh_synthetic_processes_offline_evaluation_and_preserved_reuse(self):
         self.synthetic_reference()

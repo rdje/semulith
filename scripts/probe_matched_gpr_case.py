@@ -87,12 +87,13 @@ class CaseTests(unittest.TestCase):
             self.assertEqual(
                 (case.case_id, case.profile_id, case.program, case.instructions, case.source_size, case.source_sha256,
                  case.requirement_id, case.obligation_ids, case.contract_id, case.contract_version,
-                 case.control_property_id, case.control_value, case.control_reason, case.limitation,
-                 case.reviewed_steps, case.source_id, case.source_locator, case.category, case.risk, case.coverage),
+                 case.control_property_id, case.control_value, case.control_reason, case.control_id,
+                 case.control_statement, case.limitation, case.reviewed_steps, case.source_id, case.source_locator, case.category, case.risk, case.coverage),
                 tuple(d[name] for name in ("id", "profile_id", "program", "instructions", "source_size",
                                            "source_sha256", "requirement_id", "obligation_ids", "contract_id",
                                            "contract_version"))
-                + (d["control"]["property_id"], d["control"]["value"], d["control"]["reason"], d["limitation"],
+                + (d["control"]["property_id"], d["control"]["value"], d["control"]["reason"], d["control"]["id"],
+                   d["control"]["statement"], d["limitation"],
                    d["steps"], d["source_id"], d["source_locator"], d["category"], d["risk"], d["coverage"]))
             self.assertEqual(tuple((item.property_id, item.cell, item.witness.step_n, item.witness.register,
                                     item.expected_value, item.statement) for item in case.properties),
@@ -129,6 +130,9 @@ class CaseTests(unittest.TestCase):
             control = S.children(graph, "control_run")[0]
             self.assertEqual(([child[1] for child in S.children(control, "property_ids")], S.field(control, "reason")),
                              ([d["control"]["property_id"]], d["control"]["reason"]))
+            if d["control"]["id"] is not None:  # declared since a43b-2b (D1): the record carries the case's own words
+                self.assertEqual((S.field(control, "id"), S.field(experiment, "control")),
+                                 (d["control"]["id"], d["control"]["statement"]))
             self.assertIn(d["limitation"], [child[1] for child in S.children(graph, "limitations")])
             inputs = {(S.field(item, "role"), S.field(item, "id"), S.field(item, "path"), S.field(item, "sha256"))
                       for item in S.children(graph, "input")}

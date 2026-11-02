@@ -44,7 +44,9 @@ def read_document(text: str, where: str) -> dict:
     """Validate and parse one declaration's text into neutral data.
 
     The result maps each scalar field to its value; `obligation_ids` is a tuple; `control` and `authority`
-    are dictionaries; `required_inputs` holds (role, id, path, sha256) rows, `prepared` (role, id, name,
+    are dictionaries — the control's `id` and `statement` are `None` in a declaration retained before
+    P4-SYSTEM.14 a43b-2b; `second_method` and `adversarial` are dictionaries (their repeated fields tuples) or
+    `None` when undeclared; `required_inputs` holds (role, id, path, sha256) rows, `prepared` (role, id, name,
     byte_size, sha256) rows, `properties` (id, cell, step_n, register, expected, statement) rows and
     `steps` (n, pc, word, length, fetches, ((register, value), ...)) rows, each in declaration order.
     """
@@ -71,7 +73,9 @@ def read_document(text: str, where: str) -> dict:
 
     declaration = {name: single(name) for name in SCALARS}
     declaration["obligation_ids"] = tuple(child[1] for child in many("obligation_ids"))
-    declaration["control"] = sub(single_form(top, "control", where))
+    declaration["control"] = {"id": None, "statement": None, **sub(single_form(top, "control", where))}
+    declaration["second_method"] = optional_form(top, "second_method", ("producer_ids", "common_input_ids"), where)
+    declaration["adversarial"] = optional_form(top, "adversarial", ("property_ids",), where)
     declaration["authority"] = sub(single_form(top, "authority", where))
     declaration["required_inputs"] = tuple((item["role"], item["id"], item["path"], item["sha256"])
                                            for item in (sub(form) for form in many("required_input")))
@@ -89,6 +93,9 @@ def read_document(text: str, where: str) -> dict:
     declaration["steps"] = tuple(steps)
     if declaration["control"]["property_id"] not in {row[0] for row in declaration["properties"]}:
         raise CaseError(where + ": the control names no declared property")
+    adversarial = declaration["adversarial"]
+    if adversarial and not set(adversarial["property_ids"]) <= {row[0] for row in declaration["properties"]}:
+        raise CaseError(where + ": the adversarial case names a property the case does not declare")
     if sorted(row[0] for row in declaration["prepared"]) != sorted(PREPARED_ROLES + ("expectation",)):
         raise CaseError(where + ": the prepared inputs are not one image, one configuration and two expectations")
     return declaration
@@ -99,6 +106,19 @@ def single_form(top, name, where):
     if len(found) != 1:
         raise CaseError(f"{where}: field {name} occurs {len(found)} times")
     return found[0]
+
+
+def optional_form(top, name, repeated, where):
+    """An optional nested form as a dictionary — its `repeated` fields as tuples in order — or `None`."""
+    found = [child for child in top[1:] if str(child[0]) == name]
+    if not found:
+        return None
+    if len(found) != 1:
+        raise CaseError(f"{where}: field {name} occurs {len(found)} times")
+    form = found[0]
+    data = {key: tuple(child[1] for child in form[1:] if str(child[0]) == key) for key in repeated}
+    data.update({str(child[0]): child[1] for child in form[1:] if str(child[0]) not in repeated})
+    return data
 
 
 def read_case(case_id: str, root: Path | None = None) -> dict:
@@ -134,11 +154,23 @@ def render(declaration: dict) -> str:
         + "".join(" (obligation_ids " + q(item) + ")" for item in d["obligation_ids"]),
         "  (contract_id " + q(d["contract_id"]) + ") (contract_version " + q(d["contract_version"]) + ")",
         "  (control (property_id " + q(control["property_id"]) + ") (value " + _value(control["value"])
-        + ") (reason " + q(control["reason"]) + "))",
+        + ") (reason " + q(control["reason"]) + ")" + ("" if control.get("id") is None else " (id " + q(control["id"]) + ")")
+        + ("" if control.get("statement") is None else "\n    (statement " + q(control["statement"]) + ")") + ")",
         "  (limitation " + q(d["limitation"]) + ")",
         "  (source_id " + q(d["source_id"]) + ") (source_locator " + q(d["source_locator"]) + ") (category "
         + q(d["category"]) + ") (risk " + q(d["risk"]) + ")",
         "  (coverage " + q(d["coverage"]) + ")",
+    ]
+    method, adversarial = d.get("second_method"), d.get("adversarial")
+    if method is not None:
+        lines.append("  (second_method (kind " + q(method["kind"]) + ")"
+                     + "".join(" (producer_ids " + q(item) + ")" for item in method["producer_ids"])
+                     + "".join(" (common_input_ids " + q(item) + ")" for item in method["common_input_ids"]))
+        lines.append("    (independently_derived " + q(method["independently_derived"]) + "))")
+    if adversarial is not None:
+        lines.append("  (adversarial" + "".join(" (property_ids " + q(item) + ")" for item in adversarial["property_ids"]))
+        lines.append("    (failure_mode " + q(adversarial["failure_mode"]) + "))")
+    lines += [
         "  (authority (requirement_semantic_sha256 " + q(a["requirement_semantic_sha256"]) + ") (obligation_id "
         + q(a["obligation_id"]) + ")",
         "    (obligation_semantic_sha256 " + q(a["obligation_semantic_sha256"]) + ") (source_sha256 "
