@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); next a43b-3b, its retained statements, then the case, its capture, reviews and credit; then ZICNTR and SSTC on the same route |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); its statements retained (a43b-3b, RVP-CSR §1.1.1); next a43b-3c, the overlay, the program and the case, then its capture, reviews and credit; then ZICNTR and SSTC on the same route |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,24 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-3b / SEMULITH-P4-0334: CSR-SET's normative statements retained — RVP-CSR §1.1.1, the first from the privileged volume (completed)
+
+The first slice of a43b-3a's order. REQ-D-CSR-SET names six sources, and a case's excerpts name one publication
+(`check_retained_input`): RVP-CSR is the one stating what the case's refused accesses rest on. Five exact statements of §1.1.1 —
+`norm:Zicsr_higher_priv`, `norm:Zicsr_rw`, `norm:Zicsr_access`, `norm:Zicsr_illegal_mode`, `norm:Zicsr_illegal_acc` — are retained in
+`profiles/rv64gc-lab-v0/retained/rvp-csr-statements.html` (2,750 B, `0f2d75c5…`, `RVP-CSR-STATEMENTS`), naming the page's digest once. Licence
+evidence: `priv/priv-preface.html` (54,715 B, `6e4ba2ab…`), the privileged volume's own statement in the words the unprivileged
+preface uses; the SRC-01 record is `materials/RVP_CSR_RETENTION.md`, and the catalogue names it. **A table, not a fourth module:** the M and RV64I
+excerpts each have their own script, and ZICNTR and SSTC would make it five, so `scripts/retain_statements.py` holds one row per excerpt
+through one bounded transformation; a row is a page and its pin, the licence evidence and its pin, the statements and the retained pin. The
+earlier excerpts' scripts stay as they are: `retain_div_statement.py` is pinned by every capture. The spans' markup, measured before review, is
+`<code>` five times and one same-publication cross-reference; the allowlist's fragment admits the `:` that
+`hypervisor.html#sec:hcauses` carries, and refuses any other tag or attribute. Controls: `scripts/probe_statement_retention.py`, 19
+cache-free tests over a synthetic row and nine guard omissions, each fired RED in both modes (`span-markup` 7, `retained-pin` 2, the
+others 1, target/p4-system-14/a43b-3b/probe.txt), now arms of PROFILE-CONSISTENCY's self-test (20 more arms per mode), whose real run
+verifies every row offline. `--emit` is reproducible (`cmp` equal). No case, capture or credit yet: next a43b-3c, the overlay, the
+program, the case and the family's re-derivation.
 
 ### .14 a43b-3a / SEMULITH-P4-0333: the CSR-SET case designed — the reference configuration the case's own, all 33 CSRs witnessed, the category row judged (completed)
 
@@ -1071,6 +1089,9 @@ Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-ro
 - [x] `.14` a43b-2d **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2d/selftest.log), traced: `ls target/p4-system-14/a43b-2d/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures` both modes; `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; the staged prechecks and the commit gate (chain log).
 - [x] `.14` a43b-2e **ROOT CAUSE** — the re-captures were retained but unreviewed and uncredited: at 2988d6a2 `REQUIREMENT-STATUS: … 48 planned; 6 case(s), 0 credited, 0 declared` and `review_div_policy.py --every-retained` measured v4 and xlen-v1 `invalidated` (target/p4-system-14/a43b-2e/before/policy.txt); `grep -c 'rv64gc-m-forms-v5' scripts/review_div_method.py` = 0.
 - [x] `.14` a43b-2e **ADDRESSED** — `python3 -B scripts/review_div_method.py --case rv64gc-m-forms-v5` `rc=0` → `satisfied`, 88 files, 1103074 B (xlen-v2 1097514 B); `--every-retained` → both `10 of 10 legs satisfied; credited by CR-GC-M-3` / `CR-D-XLEN-2`; `CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed`; `REQUIREMENT-STATUS: … 46 planned, 2 implemented; 6 case(s), 2 credited … 0 drift`; both dossier records `dossier_qualification` → `[]`; GS `Open axes (3 of 10)`, G-TRACE green; move.log `records 4, row spans 1 (12 rows)`, 186 of 186 removed lines in part 25.
+- [x] `.14` a43b-3b **ROOT CAUSE** — CSR-SET had no retained normative input, and its publication had no retention route: at 5c58ce7b `git ls-tree --name-only HEAD profiles/rv64gc-lab-v0/retained/ | wc -l` = 4 (three excerpts and the Sail identity, none from the privileged volume), `git grep -c 'priv-preface' HEAD -- 'scripts/retain_*.py' | wc -l` = 0, and `check_retained_input` binds a case's excerpts to one page.
+- [x] `.14` a43b-3b **ADDRESSED** — `python3 -B scripts/retain_statements.py --verify` `rc=0` → `RVP-CSR-STATEMENTS` `matched` (2750 B, `0f2d75c5…`); `--emit` `cmp`-equal to the tracked excerpt; `STATEMENT-RETENTION: 19 tests / 0 failures / 0 errors` both modes, and each of the nine omissions `1 failures` (`span-markup` 7, `retained-pin` 2), target/p4-system-14/a43b-3b/probe.txt.
+- [x] `.14` a43b-3b **NO REGRESSION** — no pinned path touched: `git diff --cached --name-only` against both current `dependencies.sexp`: `grep -c` 0; `python3 -B scripts/requirement_status.py` unchanged, `46 planned, 2 implemented … 0 drift`; `cargo test -p xtask` and `cargo clippy -p xtask --all-targets -- -D warnings` `rc=0`; the staged prechecks and the commit gate (chain log).
 - [x] `.14` a43b-3a **ROOT CAUSE** — the design rested on a limit nobody had measured against the binary: `grep -n 'no Zicntr' docs/decisions/decision_state-capture-plan.md` and `sail_riscv_sim --validate-config` → `rc=0` with Zicntr and a CLINT device region (target/p4-system-14/a43b-3a/config-validation.txt); `review_div_policy.py:251` reads `category` and only reports it (`grep -n 'category' scripts/review_div_policy.py` → lines 251, 393).
 - [x] `.14` a43b-3a **ADDRESSED** — the design D1–D6 recorded here and in `decision_reference-config-per-case.md`; target/p4-system-14/a43b-3a/live-verdicts.txt: `AGREE 20 declared steps` (counters, one tick per instruction), `AGREE 157 declared steps` (the draft, all 33 CSRs), `DIVERGE step 34 (csrrs x20, mcycle, x0)` under the profile override; census-table.txt: 171 guests, 151 agree under both; before/pins.txt: `grep -c 'scripts/prepare_div_inputs.py' evidence/rv64gc-xlen-forms-v2/dependencies.sexp` = 0, `grep -c 'scripts/dossier_sexp.py'` = 1 on both manifests.
 - [x] `.14` a43b-3a **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); `python3 -B scripts/requirement_status.py` unchanged, `46 planned, 2 implemented`; the focused stage and the commit gate (target/p4-system-14/a43b-3a chain log).

@@ -8392,6 +8392,32 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED RV64I statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("RV64I-STATEMENT-RETENTION: 17 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a43b-3b: the one retained-statement table the later cases use (scripts/retain_statements.py).
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec![
+            "-B".to_owned(),
+            "scripts/probe_statement_retention.py".to_owned(),
+        ];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN statement retention {mode}"), prober.probe(repo, argv.clone()), 0, "STATEMENT-RETENTION: 19 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit");
+        for (mutation, losses) in [
+            ("input-pins", "1"),
+            ("licence-pins", "1"),
+            ("licence-statement", "1"),
+            ("unique-statement", "1"),
+            ("closing-span", "1"),
+            ("span-bound", "1"),
+            ("span-markup", "7"),
+            ("retained-bound", "1"),
+            ("retained-pin", "2"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("STATEMENT-RETENTION: 19 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
+        }
+    }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["scripts/probe_matched_gpr_read_allowance.py".to_owned()];
         if optimized {
@@ -8817,6 +8843,12 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
     );
     if rc != 0 {
         eprintln!("PROFILE-CONSISTENCY: retained RV64I statements refused: {out}");
+        return ExitCode::from(1);
+    }
+    // P4-SYSTEM.14 a43b-3b: every excerpt of the one retained-statement table, authenticated the same way.
+    let (rc, out) = tool(root, true, &["scripts/retain_statements.py", "--verify"]);
+    if rc != 0 {
+        eprintln!("PROFILE-CONSISTENCY: retained statements refused: {out}");
         return ExitCode::from(1);
     }
     // P4-SYSTEM.14 a42ap: every policy-declaring profile's recorded requirement statuses equal their derivation.

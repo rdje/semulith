@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0334 (leaf P4-SYSTEM.14 a43b-3b) — CSR-SET's normative statements retained: RVP-CSR §1.1.1, the first from the privileged volume
+
+a43b-3b: five exact statements of §1.1.1 in `profiles/rv64gc-lab-v0/retained/rvp-csr-statements.html` (2,750 B, `RVP-CSR-STATEMENTS`) under the privileged preface's licence statement (`materials/RVP_CSR_RETENTION.md`), through `scripts/retain_statements.py`, one table for the excerpts to come; 19 cache-free tests and nine omissions in PROFILE-CONSISTENCY. No case, capture or credit yet.
+
 ## SEMULITH-P4-0333 (leaf P4-SYSTEM.14 a43b-3a) — the CSR-SET case designed: the reference configuration the case's own, all 33 CSRs witnessed
 
 a43b-3a: measured before declaring on 28 of 33: the pinned Sail implements Zicntr under its public configuration (a CLINT device region, one tick per instruction), all five counter values agree, and over 171 guests the variant gains `mm-counters`, `mm-csr-ro-counters` and `c-irq` and loses `mip` readers, so it is per-case data, costing no lapse (`decision_reference-config-per-case.md`). The program is redesigned (136 instructions, 157 steps, M/S/U, all 33 CSRs, `AGREE` as a draft) and the policy review's category row is to be judged. This removes what ZICNTR waited for; raised to the director.
