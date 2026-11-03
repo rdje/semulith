@@ -22,6 +22,42 @@ That result is not a compressed arithmetic defect and is not acceptance for
 Sstc timing. Likewise disabled reference Zicntr and absent injected physical
 refusal regions leave those observations unmatched.
 
+## A case's own reference configuration (designed, `P4-SYSTEM.14` a43b-3a)
+
+"Disabled reference Zicntr" is a fact about the profile override, not about the
+reference: the pinned binary implements Zicntr. It only asks for a source of time
+in a defined memory region. The CSR-SET case will therefore carry its own
+configuration, a small overlay applied over the profile override when its
+prepared inputs are curated (it lands at a43b-3c; this page describes the design):
+
+```lisp
+(overlay (case_id "rv64gc-csr-set-v1")
+  (extension "Zicntr")                       ; the profile selects it
+  (clint (base 0x2000000) (size 0xC000))     ; Sail's only source of time, in its own device region
+  (instructions_per_tick 1))                 ; the laboratory's rate: one tick per step boundary
+```
+
+Measured over the guest corpus, with the same binary and no re-pin:
+
+| Guest | Profile override | With the overlay |
+| --- | --- | --- |
+| `mm-counters` (52 steps) | REFUSED | AGREE |
+| `mm-csr-ro-counters` (49 steps) | DIVERGE | AGREE |
+| `c-irq` (19 steps) | DIVERGE | AGREE |
+| `w-sw` | AGREE | DIVERGE at `csrrs x7, mip, x0` (130 where the laboratory reads 2) |
+| 151 others | AGREE | AGREE |
+
+The `w-sw` row is the cost. The reference's CLINT resets `mtimecmp` to 0, so
+`mip.MTIP` reads set, while the laboratory declares no such device; that is why the
+overlay belongs to a case and the profile override does not move. A case on this
+configuration reads `mip` with `rd` = x0 and witnesses its bits through `sip`, and
+names the device in its limitations: a passing case claims nothing about a CLINT.
+
+The overlay also gives the policy's `implementation-defined` row its observed effect.
+The same guest under the profile override traps at its first counter read:
+`DIVERGE step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`. A
+configuration without an observed effect would be insufficient; this one has one.
+
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
 is itself a defect, even if the reference program normally succeeds. Controls

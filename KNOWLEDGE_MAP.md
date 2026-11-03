@@ -148,6 +148,7 @@
 - [`decision_qualified-matched-experiment-contract.md`](docs/decisions/decision_qualified-matched-experiment-contract.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
+- [`decision_reference-config-per-case.md`](docs/decisions/decision_reference-config-per-case.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-d-xlen-credited-implemented.md`](docs/decisions/decision_req-d-xlen-credited-implemented.md)

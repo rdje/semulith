@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0333 (leaf P4-SYSTEM.14 a43b-3a) — the CSR-SET case designed: the reference configuration the case's own, all 33 CSRs witnessed
+
+a43b-3a: measured before declaring on 28 of 33: the pinned Sail implements Zicntr under its public configuration (a CLINT device region, one tick per instruction), all five counter values agree, and over 171 guests the variant gains `mm-counters`, `mm-csr-ro-counters` and `c-irq` and loses `mip` readers, so it is per-case data, costing no lapse (`decision_reference-config-per-case.md`). The program is redesigned (136 instructions, 157 steps, M/S/U, all 33 CSRs, `AGREE` as a draft) and the policy review's category row is to be judged. This removes what ZICNTR waited for; raised to the director.
+
 ## SEMULITH-AC-0091 (leaf ARTIFACT-CLEANUP.35) — the ninth recurring cleanup through the supported act
 
 .35: at 39 h, on a clean tree, the four acts ran in target/artifact-cleanup/AC0091 (log inside) at `handoff: OK`: 334 candidates planned, 6 captured Cargo incremental outputs (15,766,335 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 25,436 retained files kept. Re-census against AC0090: 328 unrecorded (1,368,785,623 B), 39 new and 39 gone; they stay for `.29`'s ruled class C. The record is overwritten; `.36` is due after 2026-11-04T21:49Z.

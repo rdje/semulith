@@ -74,6 +74,9 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
 
 ## Addendum — measured 2026-10-27 (a43b-1, `SEMULITH-P4-0307`)
 
+- **Corrected 2026-11-03 (a43b-3a, `decision_reference-config-per-case.md`):** the two limits below are statements about our override, not about
+  the reference. The pinned binary implements Zicntr and a timer source under a per-case configuration, all five counter values agree at one
+  tick per instruction, and item 2's "fixed-zero cycle" was a misreading. They stand as history; the plan no longer rests on them.
 - **The reference has no Zicntr under the pinned override.** `csrrs` of mcycle, minstret, cycle, time and instret each trap
   illegal-instruction in the pinned Sail sim (33-CSR probe; `profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`
   declares `Zicntr` unsupported; the dossier records "disabled reference Zicntr … leave those observations unmatched"). So

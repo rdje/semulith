@@ -19,15 +19,12 @@
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-AC-0091` (ARTIFACT-CLEANUP.35, counts for neither side); the last feature is `SEMULITH-P4-0332` (a43b-2e, feature 2 of 5
-  after XTASK-0075) — v5 / xlen-v2 re-credited (CR-GC-M-3, CR-D-XLEN-2; 46/2; G-TRACE green), the lapse window a43b-2a … 2e closed.
-- next_action: features (3 of 5 after XTASK-0075): a43b-3 — CSR-SET as data, the first high-risk case: design first (its
-  program, a43b-1's 28-of-33 matched witnesses, archive/P4-SYSTEM-23.md#a43b-1; decision_state-capture-plan.md item 2),
-  then its RVP retained statements (as a43a-2a for RV64I), the case file WITH second_method (independent-exact-expectation;
-  producers expected + reference; common inputs guest-source + dependency-manifest) and adversarial (the refused csrrw to
-  mhartid; mscratch from S), declared, captured once on a quiet host, reviewed (risk-method judged by the five conditions),
-  credited. Then SSTC. XTASK.13 slice b3 at the 5:1 turn. GS regen after `git add`; chain:
-  target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
+- last_unit: `SEMULITH-P4-0333` (P4-SYSTEM.14 a43b-3a, feature 3 of 5 after XTASK-0075) — CSR-SET designed: the pinned Sail implements Zicntr under
+  a per-case configuration, all 33 CSRs witnessed (decision_reference-config-per-case.md, raised to the director, who may overrule).
+- next_action: features (4 of 5 after XTASK-0075): a43b-3b — CSR-SET's retained statements from RVP-CSR (scripts/retain_rv64i_statements.py is the pattern;
+  review the privileged manual's licence evidence first; D3 names the five spans). Then a43b-3c (feature 5): overlay + prepare tool, the program
+  (draft target/p4-system-14/a43b-3/probe/gen_draft.py), the tracked census tool, the case, the family's re-derivation; XTASK.13 b3 at the 5:1
+  turn; a43b-3d … g per the a43b-3a record's D6. GS regen after `git add`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
   load); the gate's self-test refused silently twice (2026-10-21, 2026-10-23) and passed on rerun —
@@ -36,7 +33,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-2e, 2d (`target/p4-system-14/a43b-2e`, `…/a43b-2d`: cmp.txt, logs); XTASK.13 b2;
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-3a (`target/p4-system-14/a43b-3a`, `…/a43b-3/probe`), a43b-2e, 2d (`…/a43b-2e`, `…/a43b-2d`: cmp.txt, logs); XTASK.13 b2;
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

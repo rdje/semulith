@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); next a43b-3, CSR-SET declared with its second method and adversarial case, then SSTC as data; the ZICNTR program waits for a reference with Zicntr |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); next a43b-3b, its retained statements, then the case, its capture, reviews and credit; then ZICNTR and SSTC on the same route |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,53 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-3a / SEMULITH-P4-0333: the CSR-SET case designed — the reference configuration the case's own, all 33 CSRs witnessed, the category row judged (completed)
+
+Documentation only, as a43b-2a was: the design before the first slice (`decision_reference-config-per-case.md`). The plan was to
+declare CSR-SET as a43b-1 left it, 28 of 33 matched and the five counters named out, and credit `implemented` — on a
+requirement whose statement is "the committed minimum of 33". Before writing that credit the limit itself was measured,
+and it does not hold as stated. **M1: the pinned binary implements Zicntr; our override turns it off.** With `Zicntr`
+supported Sail refuses by name ("Zicntr is enabled but there is no source of time"); with a CLINT but no region, "The CLINT
+… is not in a defined memory region"; with a device region at the CLINT's default base, `--validate-config` `rc=0`, the same
+binary (`16de42a8…`, the identity both retained cases name). No re-pin (target/p4-system-14/a43b-3a/config-validation.txt).
+**M2: the values agree too.** At the default `instructions_per_tick` 2, `mcycle` reads 2 where the laboratory reads 4 — Sail counts
+ticks; at 1, all five counters agree step for step (`AGREE 20 declared steps`, live-verdicts.txt). So the plan's "fixed-zero
+cycle" and its declared value difference were misreadings (`mm-counters` step 0 writes nothing because x5 already holds 0);
+the laboratory's one tick per step boundary is a rate the reference can select. **M3: the census.** All 171 guests under both
+configurations (census-table.txt): 151 agree under both; `mm-counters` REFUSED → AGREE (52 steps), `mm-csr-ro-counters` DIVERGE →
+AGREE (49), `c-irq` DIVERGE → AGREE (19); `csr-set` and `w-sw` AGREE → DIVERGE at `mip` — the reference's CLINT resets
+`mtimecmp` to 0, so `MTIP` reads set — and `w-deleg`, `w-timer` move between DIVERGE and REFUSED. Better for the counters, worse
+for `mip` readers: not a profile-wide change. **M4: it costs no lapse.** `grep -c` over both current manifests:
+`scripts/prepare_div_inputs.py` 0, the override 0, `scripts/dossier_sexp.py` 1 (before/pins.txt) — the closed mapping
+`override_to_doc` (no `clint.base`, no `instructions_per_tick`) is pinned, the tool that renders each case's
+`reference-config.json` is not.
+**D1 — the configuration is the case's data.** `profiles/rv64gc-lab-v0/reference/<case-id>.overlay.sexp`, one small schema, read by
+`prepare_div_inputs.py` and applied over the mapped profile override: Zicntr on, a CLINT in its own device region,
+`instructions_per_tick` 1. The profile override does not move, so v5, xlen-v2 and every live corpus run keep their
+configuration; the case's prepared pin holds the result. **D2 — the program, rewritten before any capture.** `csr-set.s`: 136
+instructions, 157 steps (M 137, S 13, U 7), `AGREE 157 declared steps` as a draft (target/p4-system-14/a43b-3/probe/csr-draft.s).
+All 33 CSRs: 32 read into a sentinel; `mip` read with `rd` = x0 and a marker, because of M3, its value witnessed through
+the `sip` alias. Added: the `sip`/`mip` alias the plan named and a43b-1 dropped; `csrrs` with `rs1` ≠ x0 refused on `mhartid`
+beside `csrrw`; every refused access read back (`rd` kept, a GPR change the vocabulary can see); M writes `mscratch` 5 and
+`sscratch` 3, S's refused write to `mscratch` and U's to `sscratch` are read by the handler in M and still hold them; U enters
+through `sret`, reads `fflags` legally — so the feature rule's "legal/refused modes" covers M, S and U. **D3 — the case.** `source_id`
+RVP-CSR, locator 1.1 (a case's excerpts name one publication, `check_retained_input`), retained
+`norm:Zicsr_higher_priv`, `_rw`, `_access`, `_illegal_mode`, `_illegal_acc`; `second_method` `independent-exact-expectation`, producers
+`expected` and `reference`, common inputs `guest-source` and `dependency-manifest`; `adversarial` the refused-write
+properties; control `refused-write-committed`, x28 at the handler 9 where the case expects 5; `(boundary: …)` on the seven
+privilege and read-only edges, each a declared property. **D4 — the category row, now judged.** `review_div_policy.py:251` reads
+the category and only reports it: `matched-reference-comparison` measures `defined`'s row for every case. Measured gap, so
+the leg gains a category branch: `implementation-defined` needs the selection recorded in the catalogue and "a behavior-changing
+control", read offline from a retained alternative trace — this guest under the profile override, first differing at a
+declared property's step (the draft: step 34, `mcycle`, `Sail {}`, expected 34, an illegal-instruction trap). Any category
+without a branch reads pending. Ten legs still; M and XLEN do not move; the review is pinned by no manifest. **D5 — the credit.**
+`implemented` rests on all 33 witnessed; its limitations name `mip`'s value not compared and per-CSR field semantics
+staying with `P4-SYSTEM.2`. **D6 — the order.** a43b-3b the retained statements; a43b-3c the overlay, the program, the case and the
+family's re-derivation (a seventh case); XTASK.13 b3 at the 5:1 turn; a43b-3d the declarations; a43b-3e the capture once and the
+alternative trace; a43b-3f the reviews; a43b-3g the credit. Then ZICNTR and SSTC on the same route: this also removes what the
+ZICNTR program was waiting for (Open Questions; raised to the director, who may overrule). The scratch instruments become a tracked
+census tool at a43b-3c, and the census is re-derived there. Books: the references page. Next: a43b-3b.
 
 ### .14 a43b-2e / SEMULITH-P4-0332: the reviews read v5 and xlen-v2 and both are re-credited — the window closed (completed)
 
@@ -973,6 +1020,10 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
 - (2026-10-28, a44) Which reference the ZICNTR case is matched against: the pinned Sail build traps a succeeding counter read
   (Zicntr off), so the program cannot be matched against it at all. Options: re-pin a Sail build with Zicntr (a new reference
   identity, its own capture), or credit the counters through a named limitation. The director's.
+  **Measured 2026-11-03 (a43b-3a): a third option, no re-pin.** The pinned binary implements Zicntr; our override turns it off. A
+  per-case configuration (Zicntr, a CLINT device region, one tick per instruction) agrees on all five counter values
+  (`mm-counters` REFUSED → AGREE, 52 steps). The workflow's recommendation is this option, and ZICNTR is planned on it; the director
+  may overrule (`decision_reference-config-per-case.md`).
 
 ## Blockers
 
@@ -1020,6 +1071,9 @@ Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-ro
 - [x] `.14` a43b-2d **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2d/selftest.log), traced: `ls target/p4-system-14/a43b-2d/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures` both modes; `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; the staged prechecks and the commit gate (chain log).
 - [x] `.14` a43b-2e **ROOT CAUSE** — the re-captures were retained but unreviewed and uncredited: at 2988d6a2 `REQUIREMENT-STATUS: … 48 planned; 6 case(s), 0 credited, 0 declared` and `review_div_policy.py --every-retained` measured v4 and xlen-v1 `invalidated` (target/p4-system-14/a43b-2e/before/policy.txt); `grep -c 'rv64gc-m-forms-v5' scripts/review_div_method.py` = 0.
 - [x] `.14` a43b-2e **ADDRESSED** — `python3 -B scripts/review_div_method.py --case rv64gc-m-forms-v5` `rc=0` → `satisfied`, 88 files, 1103074 B (xlen-v2 1097514 B); `--every-retained` → both `10 of 10 legs satisfied; credited by CR-GC-M-3` / `CR-D-XLEN-2`; `CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed`; `REQUIREMENT-STATUS: … 46 planned, 2 implemented; 6 case(s), 2 credited … 0 drift`; both dossier records `dossier_qualification` → `[]`; GS `Open axes (3 of 10)`, G-TRACE green; move.log `records 4, row spans 1 (12 rows)`, 186 of 186 removed lines in part 25.
+- [x] `.14` a43b-3a **ROOT CAUSE** — the design rested on a limit nobody had measured against the binary: `grep -n 'no Zicntr' docs/decisions/decision_state-capture-plan.md` and `sail_riscv_sim --validate-config` → `rc=0` with Zicntr and a CLINT device region (target/p4-system-14/a43b-3a/config-validation.txt); `review_div_policy.py:251` reads `category` and only reports it (`grep -n 'category' scripts/review_div_policy.py` → lines 251, 393).
+- [x] `.14` a43b-3a **ADDRESSED** — the design D1–D6 recorded here and in `decision_reference-config-per-case.md`; target/p4-system-14/a43b-3a/live-verdicts.txt: `AGREE 20 declared steps` (counters, one tick per instruction), `AGREE 157 declared steps` (the draft, all 33 CSRs), `DIVERGE step 34 (csrrs x20, mcycle, x0)` under the profile override; census-table.txt: 171 guests, 151 agree under both; before/pins.txt: `grep -c 'scripts/prepare_div_inputs.py' evidence/rv64gc-xlen-forms-v2/dependencies.sexp` = 0, `grep -c 'scripts/dossier_sexp.py'` = 1 on both manifests.
+- [x] `.14` a43b-3a **NO REGRESSION** — documentation only (`git diff --cached --name-only | grep -cvE '\.md$'` = 0); `python3 -B scripts/requirement_status.py` unchanged, `46 planned, 2 implemented`; the focused stage and the commit gate (target/p4-system-14/a43b-3a chain log).
 - [x] `.14` a43b-2e **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2e/selftest.log), traced: `ls target/p4-system-14/a43b-2e/eperm | wc -l` = 0; the whole check `rc=0`; `MATCHED-GPR-PROPERTY: 35 tests / 37 failures` under `derived-status` (re-pinned); `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures`; `RECORD-SCHEMA: ok (26 record file(s) …)`, `GATE-REPORT: ok`; the staged prechecks and the commit gate (chain log).
 - [x] `.17` close **ROOT CAUSE** — the leaf waited for the matrix's first hosted run of both units (slice b); the run exists: `gh run view 40713852362 --json jobs --jq '.jobs[].conclusion' | grep -c success` = 6 (host ×4, miri, agree) on b917d1ba.
 - [x] `.17` close **ADDRESSED** — `grep -c 'agree byte-identically' target/p4-system-17/close/portability-run.log` ≥ 2 (rv64i-lab-v0 and rv64gc-lab-v0); `manifest sha256: 24c4f12a… (171 guests)` on both hosts, equal to target/p4-system-17/b/m-rv64gc.txt; jobs host ×4, miri, agree all `success`.

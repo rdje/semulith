@@ -34,4 +34,6 @@ read as wider than its words.
   2026-10-22 and credits nothing, so only the M case is re-captured — one re-capture, as recommended.
 - Ruling 1 does not reach the ZICNTR program: it waits for a pinned reference that implements Zicntr (the
   `.14` a43d-1 addendum), a reference re-pin no option addressed. It stays open, raised to the director.
+  **Measured 2026-11-03:** no re-pin is needed; the pinned binary implements Zicntr under a per-case configuration
+  (`decision_reference-config-per-case.md`). The workflow plans ZICNTR on that route and tells the director, who may overrule.
 - Ruling 3 covers the next push only; later pushes follow the 300-commit cadence or a new approval.
