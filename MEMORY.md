@@ -15,12 +15,12 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count
-  restarted at XTASK-0075 (XTASK.13 b2); `ARTIFACT-CLEANUP.35` once due (after 2026-11-03T06:58Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
+  restarted at XTASK-0075 (XTASK.13 b2); `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0332` (P4-SYSTEM.14 a43b-2e, feature 2 of 5 after XTASK-0075) — v5 / xlen-v2 reviewed and re-credited
-  (CR-GC-M-3, CR-D-XLEN-2; 46/2; G-TRACE green); the planned lapse window (a43b-2a … 2e) closed; P4-SYSTEM.md → part 25.
+- last_unit: `SEMULITH-AC-0091` (ARTIFACT-CLEANUP.35, counts for neither side); the last feature is `SEMULITH-P4-0332` (a43b-2e, feature 2 of 5
+  after XTASK-0075) — v5 / xlen-v2 re-credited (CR-GC-M-3, CR-D-XLEN-2; 46/2; G-TRACE green), the lapse window a43b-2a … 2e closed.
 - next_action: features (3 of 5 after XTASK-0075): a43b-3 — CSR-SET as data, the first high-risk case: design first (its
   program, a43b-1's 28-of-33 matched witnesses, archive/P4-SYSTEM-23.md#a43b-1; decision_state-capture-plan.md item 2),
   then its RVP retained statements (as a43a-2a for RV64I), the case file WITH second_method (independent-exact-expectation;
@@ -40,7 +40,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0090` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-02T06:58Z`).
+  cleanup act `target/artifact-cleanup/AC0091` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-03T21:49Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.

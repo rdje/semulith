@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0091 (leaf ARTIFACT-CLEANUP.35) — the ninth recurring cleanup through the supported act
+
+.35: at 39 h, on a clean tree, the four acts ran in target/artifact-cleanup/AC0091 (log inside) at `handoff: OK`: 334 candidates planned, 6 captured Cargo incremental outputs (15,766,335 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 25,436 retained files kept. Re-census against AC0090: 328 unrecorded (1,368,785,623 B), 39 new and 39 gone; they stay for `.29`'s ruled class C. The record is overwritten; `.36` is due after 2026-11-04T21:49Z.
+
 ## SEMULITH-P4-0332 (leaf P4-SYSTEM.14 a43b-2e) — the reviews read v5 and xlen-v2 and both are re-credited: the window closed
 
 a43b-2e: the method review's rows name v5 and xlen-v2 (both `satisfied`, 88 authenticated files) and both measure 10 of 10 legs; `CR-GC-M-3` and `CR-D-XLEN-2` re-issue the credits by the same act, `CR-D-XLEN-2` with two limitations fewer than `CR-D-XLEN-1` — the producer's M words no longer describe its evidence; `REQ-GC-M` and `REQ-D-XLEN` `implemented` (46 planned / 2 implemented, 0 drift); both measured records in the dossier, their G-TRACE rows back, G-TRACE green (GS 3 of 10 axes open). The probes re-stated; `derived-status` 37 again. The planned lapse that opens CSR-SET ran a43b-2a … a43b-2e in one day. Containment: four closed records and 12 rows into `archive/P4-SYSTEM-25.md`. Next: a43b-3, CSR-SET.
