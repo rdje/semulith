@@ -22,19 +22,37 @@ That result is not a compressed arithmetic defect and is not acceptance for
 Sstc timing. Likewise disabled reference Zicntr and absent injected physical
 refusal regions leave those observations unmatched.
 
-## A case's own reference configuration (designed, `P4-SYSTEM.14` a43b-3a)
+## A case's own reference configuration (`P4-SYSTEM.14` a43b-3a, a43b-3c)
 
 "Disabled reference Zicntr" is a fact about the profile override, not about the
 reference: the pinned binary implements Zicntr. It only asks for a source of time
-in a defined memory region. The CSR-SET case will therefore carry its own
-configuration, a small overlay applied over the profile override when its
-prepared inputs are curated (it lands at a43b-3c; this page describes the design):
+in a defined memory region. So a case may carry its own configuration, a small
+overlay beside the profile override, `reference/<case-id>.overlay.sexp`. The
+CSR-SET case's, with its `reason` shortened here:
 
 ```lisp
 (overlay (case_id "rv64gc-csr-set-v1")
+  (reason "The profile selects Zicntr, so ...")
   (extension "Zicntr")                       ; the profile selects it
   (clint (base 0x2000000) (size 0xC000))     ; Sail's only source of time, in its own device region
   (instructions_per_tick 1))                 ; the laboratory's rate: one tick per step boundary
+```
+
+`scripts/prepare_div_inputs.py` applies it over the mapped profile override when the
+case's prepared inputs are curated, and nowhere else. The case pins the result as its
+`reference-config.json`, so a retained case can never change under a later edit, and no
+other case's configuration moves. The vocabulary is closed (`schema/overlay.sexp`): a
+new knob is a schema change a reviewer sees. The tool refuses an overlay that would
+change nothing: an extension already on, a CLINT or tick rate the override already
+declares. It also refuses one that overlaps a region or names another case. To see
+what an overlay does before declaring a case on it:
+
+```console
+$ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v1
+171 guests
+ 151  profile AGREE -> case AGREE
+   8  profile DIVERGE -> case DIVERGE
+   ...
 ```
 
 Measured over the guest corpus, with the same binary and no re-pin:

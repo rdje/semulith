@@ -116,7 +116,7 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 27)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 28)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern)
         self.assertEqual(len(current), 127)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 

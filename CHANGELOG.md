@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0335 (leaf P4-SYSTEM.14 a43b-3c) — a case's reference configuration, as data: the overlay, its controls and the census tool
+
+a43b-3c: `schema/overlay.sexp` and the first overlay; `prepare_div_inputs.reference_config` applies it over the mapped profile override and refuses any overlay that changes nothing, overlaps or names another case (14 tests, nine omissions in PROFILE-CONSISTENCY). `scripts/census_reference_config.py` re-derives a43b-3a's table from the tracked route, identically. No lapse: v5 and xlen-v2 still `--verify` equal. Two defects logged and scheduled: 37 stale guest citations (a43b-c1) and the deriver's literal `{new}` (a43b-c2).
+
 ## SEMULITH-P4-0334 (leaf P4-SYSTEM.14 a43b-3b) — CSR-SET's normative statements retained: RVP-CSR §1.1.1, the first from the privileged volume
 
 a43b-3b: five exact statements of §1.1.1 in `profiles/rv64gc-lab-v0/retained/rvp-csr-statements.html` (2,750 B, `RVP-CSR-STATEMENTS`) under the privileged preface's licence statement (`materials/RVP_CSR_RETENTION.md`), through `scripts/retain_statements.py`, one table for the excerpts to come; 19 cache-free tests and nine omissions in PROFILE-CONSISTENCY. No case, capture or credit yet.

@@ -8418,6 +8418,32 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("STATEMENT-RETENTION: 19 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec![
+            "-B".to_owned(),
+            "scripts/probe_reference_overlay.py".to_owned(),
+        ];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN reference overlay {mode}"), prober.probe(repo, argv.clone()), 0, "REFERENCE-OVERLAY: 14 tests / 0 failures / 0 errors; synthetic configuration controls, no capture credit");
+        for (mutation, losses) in [
+            ("extension-known", "1"),
+            ("extension-changes", "1"),
+            ("clint-absent", "1"),
+            ("clint-positive", "2"),
+            ("tick-positive", "1"),
+            ("tick-absent", "1"),
+            ("region-overlap", "3"),
+            ("region-order", "2"),
+            ("case-binding", "1"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED reference overlay {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("REFERENCE-OVERLAY: 14 tests / {losses} failures / 0 errors; synthetic configuration controls, no capture credit"));
+        }
+    }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["scripts/probe_matched_gpr_read_allowance.py".to_owned()];
         if optimized {

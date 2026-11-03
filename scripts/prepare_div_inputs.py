@@ -15,6 +15,10 @@ source-value owners before it is reported.
   --verify  derive them and compare with the retained bytes under evidence/<case>/
   --write   create the four files under evidence/<case>/, refusing any that already exists
 
+A case may carry its own reference configuration: `reference/<case-id>.overlay.sexp` beside the
+profile override, applied over the mapped override here and nowhere else, so the profile override
+and every other case's configuration do not move (decision_reference-config-per-case.md).
+
 The tool launches no process, opens no acquired material and grants no capture, policy or
 qualification credit. Retained bytes are never replaced: a changed input needs a new case.
 """
@@ -46,6 +50,14 @@ ROOT = HERE.parent
 PROFILE = "rv64gc-lab-v0"
 GUESTS = "profiles/" + PROFILE + "/guests"
 OVERRIDE = "profiles/" + PROFILE + "/reference/sail-" + PROFILE + ".override.sexp"
+# The pinned binary's published MMIO region attributes (`sail_riscv_sim --print-default-config`), for a device an overlay places.
+DEVICE_REGION_ATTRIBUTES = {
+    "mem_type": "IOMemory", "cacheable": False, "coherent": True, "executable": False, "readable": True, "writable": True,
+    "read_idempotent": False, "write_idempotent": False,
+    "misaligned_exceptions": {"load_store": {"None": None}, "vector": {"None": None}, "amo": "AccessFault", "lrsc": "AccessFault"},
+    "atomic_support": "AMONone", "misaligned_atomicity_granule_size_exp": 0, "vector_misaligned_atomicity_granule_size_exp": 0,
+    "reservability": "RsrvNone", "supports_cbo_zero": False, "supports_pte_read": False, "supports_pte_write": False,
+}
 ENTRY = 0x80000000
 INPUT_BYTES = 65536
 NAMES = ("guest.elf", "reference-config.json", "baseline.expected.sexp", "control.expected.sexp")
@@ -92,6 +104,61 @@ def map_document(root: Path, payload: bytes, kind: str, mapper):
     return mapper(forms[0])
 
 
+def overlay_path(case_id: str) -> str:
+    return "profiles/" + PROFILE + "/reference/" + case_id + ".overlay.sexp"
+
+
+def overlay_to_doc(form) -> dict:
+    clint = S.children(form, "clint")[0]
+    return {
+        "case_id": str(S.children(form, "case_id")[0][1]),
+        "extensions": [str(child[1]) for child in S.children(form, "extension")],
+        "clint_base": S.children(clint, "base")[0][1],
+        "clint_size": S.children(clint, "size")[0][1],
+        "instructions_per_tick": S.children(form, "instructions_per_tick")[0][1],
+    }
+
+
+def apply_overlay(config: dict, overlay: dict) -> dict:
+    """The profile's mapped configuration with one case's overlay applied; every change must change something."""
+    result = deepcopy(config)
+    for name in overlay["extensions"]:
+        entry = result["extensions"].get(name)
+        _require(entry is not None, f"overlay names unknown extension {name}")
+        _require(entry["supported"] is False, f"overlay enables {name}, which the profile override already supports")
+        entry["supported"] = True
+    platform = result["platform"]
+    _require(platform["clint"] == {"supported": False}, "overlay places a CLINT over a profile override that declares one")
+    base, size = overlay["clint_base"], overlay["clint_size"]
+    _require(base > 0 and size > 0, "overlay's CLINT needs a positive base and size")
+    platform["clint"] = {"supported": True, "base": base, "size": size}
+    _require(overlay["instructions_per_tick"] >= 1, "overlay's tick rate must be positive")
+    _require("instructions_per_tick" not in platform, "overlay sets a tick rate the profile override already declares")
+    platform["instructions_per_tick"] = overlay["instructions_per_tick"]
+    regions = result["memory"]["regions"]
+    for region in regions:
+        start = int(region["base"]["value"], 16)
+        _require(base + size <= start or start + int(region["size"]["value"], 16) <= base,
+                 f"overlay's CLINT region overlaps the region at {region['base']['value']}")
+    device = {"base": {"len": 64, "value": f"0x{base:X}"}, "size": {"len": 64, "value": f"0x{size:X}"},
+              "attributes": deepcopy(DEVICE_REGION_ATTRIBUTES), "include_in_device_tree": False}
+    # The binary refuses regions out of order (measured, a43b-3a), so the device goes where its base puts it.
+    position = sum(1 for region in regions if int(region["base"]["value"], 16) < base)
+    regions.insert(position, device)
+    return result
+
+
+def reference_config(root: Path, case_id: str) -> dict:
+    """The case's reference configuration: the mapped profile override, under the case's overlay if it declares one."""
+    override = map_document(root, read_bounded(root / OVERRIDE), "override", D.override_to_doc)
+    path = root / overlay_path(case_id)
+    if not path.is_file():
+        return override
+    overlay = map_document(root, read_bounded(path), "overlay", overlay_to_doc)
+    _require(overlay["case_id"] == case_id, f"overlay {overlay_path(case_id)} declares case {overlay['case_id']}")
+    return apply_overlay(override, overlay)
+
+
 def control_note(case: P.ReviewedPropertyCase) -> str:
     control = case.control()
     return (
@@ -116,7 +183,7 @@ def curate(root: Path, case: P.ReviewedPropertyCase) -> tuple[PreparedInput, ...
         expected["program"] == case.program and expected["instructions"] == case.instructions,
         "canonical expectation differs from the reviewed case",
     )
-    override = map_document(root, read_bounded(root / OVERRIDE), "override", D.override_to_doc)
+    config = reference_config(root, case.case_id)
     control = case.control()
     values = C.compare_source_expectation(
         source=source, baseline_expectation=baseline, instructions=case.instructions,
@@ -145,7 +212,7 @@ def curate(root: Path, case: P.ReviewedPropertyCase) -> tuple[PreparedInput, ...
     _require(checked.disposition == "matched", "image does not correspond to the source: " + checked.reason)
     payloads = {
         "guest.elf": image.image,
-        "reference-config.json": (json.dumps(override, indent=2) + "\n").encode("utf-8"),
+        "reference-config.json": (json.dumps(config, indent=2) + "\n").encode("utf-8"),
         "baseline.expected.sexp": baseline,
         "control.expected.sexp": control_bytes,
     }

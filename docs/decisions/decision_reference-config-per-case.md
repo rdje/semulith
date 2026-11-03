@@ -58,6 +58,12 @@ declares no such device. So this is not a profile-wide change, and it is not fre
   CR-D-XLEN-2 stay current.
 - It is the same reference identity: one binary and one trace vocabulary, so nothing here adds a producer or claims independence.
 
+## Implemented (`P4-SYSTEM.14` a43b-3c, `2026-11-03`)
+
+`schema/overlay.sexp`, the case's `reference/<case-id>.overlay.sexp`, and `prepare_div_inputs.reference_config`, with
+`scripts/probe_reference_overlay.py` (14 tests, nine omissions) and `scripts/census_reference_config.py`, which re-derived the census above from
+the tracked route. v5 and xlen-v2 are untouched: both still `--verify` equal, and both credits stay current.
+
 ## How to apply
 
 - The overlay is small and reviewed, like an override: it enables what the case needs and says why. A new configuration is a new case's

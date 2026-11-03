@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); its statements retained (a43b-3b, RVP-CSR §1.1.1); next a43b-3c, the overlay, the program and the case, then its capture, reviews and credit; then ZICNTR and SSTC on the same route |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); its statements retained (a43b-3b, RVP-CSR §1.1.1) and a case's reference configuration made data (a43b-3c); next a43b-3d, the program and the case, then its capture, reviews and credit; then ZICNTR and SSTC on the same route; two logged defects scheduled (a43b-c1 stale citations, a43b-c2 the deriver's placeholder) |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,35 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-3c / SEMULITH-P4-0335: a case's reference configuration, as data — the overlay, its controls and the census tool (completed)
+
+a43b-3a's D1, and its census made reproducible. D6 put the overlay, the program, the case and the family's re-derivation in one slice;
+split on the way in, because the overlay moves a tool and a schema while the case moves six probes and the evidence family: this slice is the
+mechanism, and the next CSR-SET slice is the program and the case. `schema/overlay.sexp` is a closed vocabulary (`extension`,
+`clint`, `instructions_per_tick`, `case_id`, `reason`), and `profiles/rv64gc-lab-v0/reference/rv64gc-csr-set-v1.overlay.sexp` is the first
+overlay. `prepare_div_inputs.reference_config(root, case_id)` returns the mapped profile override, under the case's overlay if one
+exists; `apply_overlay` makes every change one that changes something, so it refuses an extension already on, a CLINT or a tick rate
+the override already declares, a non-positive base, size or rate, an overlapping region, and an overlay naming another case. The device region takes
+the pinned binary's published MMIO attributes (`--print-default-config`) and goes where its base puts it, because the binary refuses regions
+out of order (measured at a43b-3a). Rendered, the overlay's configuration validates (`sail_riscv_sim --validate-config` `rc=0`) and differs from
+a43b-3a's scratch variant only in the two attributes that variant had copied from RAM. **No lapse, and no case moves:** `prepare_div_inputs.py` and the
+override are pinned by neither current manifest (a43b-3a), `--verify` still reads `equal` for v5 and xlen-v2, and both credits stay current.
+`DOSSIER-SCHEMA` maps `.overlay.sexp` to its schema, and the token-facet probe's schema census moves 27 → 28 (the schema has no anchored pattern, so the facets stay 127); the chain's focused stage refused once on exactly that count. Controls: `scripts/probe_reference_overlay.py`, 14 tests and nine guard omissions each fired RED in
+both modes (target/p4-system-14/a43b-3c/probe.txt: `clint-positive` 2, `region-overlap` 3, `region-order` 2, the others 1), now arms of
+PROFILE-CONSISTENCY's self-test. **The census is now a tool:** `scripts/census_reference_config.py --case <id>` (live, not CI) re-derives a43b-3a's
+table from the tracked route, identically: 171 guests, 151 agreeing under both, the same seven movers (census.txt). Book: the references page. Next:
+XTASK.13 b3 (the 5:1 turn), then a43b-3d, the program, the case and the family's sixth re-derivation.
+
+**Two defects found while drafting the program, both logged here and scheduled (§15).** (1) *37 citations in 16 guests name sections their page does not
+have* (`RVP-INSNS §3.3.2` 22, `RVP-SSTC §2.1` 8, `RVP-SUPERVISOR §1.1.x` 6, `RVP-SSTC §1` 1; census of 1,577 citations against the pinned pages' headings,
+target/p4-system-14/a43b-3c/citation-census.txt), and others resolve but to the wrong section (`csr-set.s` cited `RVP-MACHINE §2.1.5` for `mtvec`, which is
+§2.1.1.7). `CITATION-QUOTES` checks quoted phrases and these carry no quote. Impact: a reader sent to the wrong place, no verdict; neither pinned guest
+carries one (`grep -c` 0 for `m-forms.s` and `xlen-forms.s`). Owner: `.14` a43b-c1, after the CSR-SET case; the new `csr-set.s` is written correct from the
+start. (2) *The deriver's docstring promises `{new}` interpolation that a guest's directive does not get:* retained expectations read literally "…, {new} — a
+64-bit register". Prose only; the value is in the step's write. The deriver is pinned by every capture, so the fix waits for the next window that moves it
+anyway (a pinned producer is not moved for prose, `decision_producer-debt-paid-before-the-next-case.md`); until then new sources do not use the key.
+Owner: `.14` a43b-c2.
 
 ### .14 a43b-3b / SEMULITH-P4-0334: CSR-SET's normative statements retained — RVP-CSR §1.1.1, the first from the privileged volume (completed)
 
@@ -1089,6 +1118,9 @@ Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-ro
 - [x] `.14` a43b-2d **NO REGRESSION** — `PROFILE-CONSISTENCY --self-test: 1224 pass / 0 fail` (target/p4-system-14/a43b-2d/selftest.log), traced: `ls target/p4-system-14/a43b-2d/eperm | wc -l` = 0; the whole check `rc=0` → `PROFILE-CONSISTENCY: ok (5 profile dossier(s) internally consistent)`; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures` both modes; `DIV-METHOD: 22 tests / 0 failures`, `DIV-POLICY-PROBE: 33 tests / 0 failures`, `MATCHED-GPR-CASE: 8 tests / 0 failures`; the staged prechecks and the commit gate (chain log).
 - [x] `.14` a43b-2e **ROOT CAUSE** — the re-captures were retained but unreviewed and uncredited: at 2988d6a2 `REQUIREMENT-STATUS: … 48 planned; 6 case(s), 0 credited, 0 declared` and `review_div_policy.py --every-retained` measured v4 and xlen-v1 `invalidated` (target/p4-system-14/a43b-2e/before/policy.txt); `grep -c 'rv64gc-m-forms-v5' scripts/review_div_method.py` = 0.
 - [x] `.14` a43b-2e **ADDRESSED** — `python3 -B scripts/review_div_method.py --case rv64gc-m-forms-v5` `rc=0` → `satisfied`, 88 files, 1103074 B (xlen-v2 1097514 B); `--every-retained` → both `10 of 10 legs satisfied; credited by CR-GC-M-3` / `CR-D-XLEN-2`; `CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed`; `REQUIREMENT-STATUS: … 46 planned, 2 implemented; 6 case(s), 2 credited … 0 drift`; both dossier records `dossier_qualification` → `[]`; GS `Open axes (3 of 10)`, G-TRACE green; move.log `records 4, row spans 1 (12 rows)`, 186 of 186 removed lines in part 25.
+- [x] `.14` a43b-3c **ROOT CAUSE** — a case could not carry its own configuration: `prepare_div_inputs.curate` read the one `OVERRIDE` for every case (`grep -n 'OVERRIDE' scripts/prepare_div_inputs.py`, target/p4-system-14/a43b-3c/before/verify.txt), and the closed `dossier_sexp.override_to_doc` has no `clint.base` or `instructions_per_tick` and is pinned (`grep -c 'scripts/dossier_sexp.py'` = 1 on both manifests); the a43b-3a census lived in a scratch script.
+- [x] `.14` a43b-3c **ADDRESSED** — `python3 -B scripts/probe_reference_overlay.py` → `REFERENCE-OVERLAY: 14 tests / 0 failures / 0 errors` both modes, each of the nine omissions RED (probe.txt); `sail_riscv_sim --validate-config` `rc=0` on the rendered configuration; `python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v1` → `171 guests`, `151  profile AGREE -> case AGREE`, a43b-3a's table re-derived (census.txt).
+- [x] `.14` a43b-3c **NO REGRESSION** — `python3 -B scripts/prepare_div_inputs.py --verify` `rc=0` for v5 and xlen-v2, all four inputs `equal`; `python3 -B scripts/requirement_status.py` → `46 planned, 2 implemented … 2 of 2 credit record(s) current; 0 drift`; `DIV-CAPTURE-INPUTS: 34 tests / 0 failures`; `bash scripts/check_dossier_schema.sh` ok; `RECORD-SCHEMA --self-test: 81 pass / 0 fail`; `cargo clippy -p xtask --all-targets -- -D warnings` `rc=0`; the staged prechecks and the commit gate (chain log).
 - [x] `.14` a43b-3b **ROOT CAUSE** — CSR-SET had no retained normative input, and its publication had no retention route: at 5c58ce7b `git ls-tree --name-only HEAD profiles/rv64gc-lab-v0/retained/ | wc -l` = 4 (three excerpts and the Sail identity, none from the privileged volume), `git grep -c 'priv-preface' HEAD -- 'scripts/retain_*.py' | wc -l` = 0, and `check_retained_input` binds a case's excerpts to one page.
 - [x] `.14` a43b-3b **ADDRESSED** — `python3 -B scripts/retain_statements.py --verify` `rc=0` → `RVP-CSR-STATEMENTS` `matched` (2750 B, `0f2d75c5…`); `--emit` `cmp`-equal to the tracked excerpt; `STATEMENT-RETENTION: 19 tests / 0 failures / 0 errors` both modes, and each of the nine omissions `1 failures` (`span-markup` 7, `retained-pin` 2), target/p4-system-14/a43b-3b/probe.txt.
 - [x] `.14` a43b-3b **NO REGRESSION** — no pinned path touched: `git diff --cached --name-only` against both current `dependencies.sexp`: `grep -c` 0; `python3 -B scripts/requirement_status.py` unchanged, `46 planned, 2 implemented … 0 drift`; `cargo test -p xtask` and `cargo clippy -p xtask --all-targets -- -D warnings` `rc=0`; the staged prechecks and the commit gate (chain log).
