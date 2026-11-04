@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0340 (leaf P4-SYSTEM.14 a43b-3h) — `REQ-D-CSR-SET` credited `implemented`: the first `implementation-defined` requirement, G-STATE 2 of 4
+
+a43b-3h: `CR-D-CSR-SET-1`, `authority review`, on one finite case of 53 witnesses: 45 planned, 3 implemented, 3 of 3 records current, 0 drift. Its limitations name what it does not claim: `mip`'s value directly, a CLINT or any device, a non-member address trapping, field semantics, counter rates, timer delivery, numerics. **Raised to the director (a43b-c3):** the dossier copy and its `G-TRACE` row are left out, a departure from the capture plan's step (iii): `references.sexp` would reach 77,669 B against the per-part 65,536 B, and moving the copies edits a tool all three manifests pin. Next: XTASK.13 b4, then ZICNTR.
+
 ## SEMULITH-P4-0339 (leaf P4-SYSTEM.14 a43b-3g) — the reviews read the CSR-SET case, and the comparison leg reads the requirement's category: 10 of 10
 
 a43b-3g: `review_div_policy.py`'s comparison leg measured `defined`'s row for every category, so a configuration alone would have satisfied it, against the policy's words. It now reads the category: `defined` is unchanged to the byte; `implementation-defined` needs the recorded selection and a retained effect, seven pins read against the case's own bytes and the first difference re-derived offline at a declared property's step; any other category stays pending and is named. `RETAINED_CAPTURES` names the case: method `satisfied` over 88 files; policy `satisfied`, 10 of 10 legs, no credit yet. `FEATURE_DISPOSITIONS["OB-CSR-SET"]` is the first that says a rule applies. `DIV-POLICY-PROBE`: 48 tests, 27 seams. Next: a43b-3h, the credit.

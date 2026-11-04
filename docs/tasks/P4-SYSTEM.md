@@ -438,7 +438,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); its statements retained (a43b-3b, RVP-CSR §1.1.1) and a case's reference configuration made data (a43b-3c); its program, case and declarations in place (a43b-3d, 3e: 157 steps, 53 witnesses) and captured exactly once (a43b-3f, 2026-11-04: AGREE, AGREE, the control DIVERGE at step 130; the configuration's effect retained, step 34) and reviewed, 10 of 10 legs (a43b-3g, the comparison leg now reading the requirement's category); next a43b-3h, its credit; then ZICNTR and SSTC on the same route; two logged defects scheduled (a43b-c1 stale citations, a43b-c2 the deriver's placeholder) |
+| 1 | `P4-SYSTEM.14` | `active` | ruling B (2026-10-28) carried out (a44-1 … a44-5): the declarations are data the tools read, a case is accepted on its own authority; the planned lapse that opens CSR-SET carried out on 2026-11-02 (a43b-2a … a43b-2e: the control declared per case, the second-method vocabulary judged by five conditions, the M and XLEN cases re-captured once as v5 and xlen-v2 with traces byte-identical and re-credited — `CR-GC-M-3`, `CR-D-XLEN-2`; `REQ-GC-M`, `REQ-D-XLEN` `implemented`, G-TRACE green, G-STATE 1 of 4); CSR-SET designed on 2026-11-03 (a43b-3a: the reference configuration the case's own, all 33 CSRs witnessed); its statements retained (a43b-3b, RVP-CSR §1.1.1) and a case's reference configuration made data (a43b-3c); its program, case and declarations in place (a43b-3d, 3e: 157 steps, 53 witnesses) and captured exactly once (a43b-3f, 2026-11-04: AGREE, AGREE, the control DIVERGE at step 130; the configuration's effect retained, step 34) reviewed, 10 of 10 legs (a43b-3g, the comparison leg now reading the requirement's category), and credited (a43b-3h, `CR-D-CSR-SET-1`, G-STATE 2 of 4); next, after XTASK.13 b4, ZICNTR and SSTC on the same route; two logged defects scheduled (a43b-c1 stale citations, a43b-c2 the deriver's placeholder) |
 | 2 | `P4-SYSTEM.18` | `pending` | the CPU-SYSTEM verdict and the release decision: waits on `.14` (G-STATE, G-OBLIGATIONS open) |
 
 ## Decisions
@@ -532,6 +532,18 @@ Remaining: complete canonical closure/impact/property/capture-provenance review;
 bounded retention/predeclared canonical captures and policy/status/mirrors.
 Existing byte/property/collection APIs do not qualify experiments. Source0192–
 0197 done; source/image:a42d3b; impact:a42g; three-run collector:a42x.
+
+### .14 a43b-3h / SEMULITH-P4-0340: `REQ-D-CSR-SET` credited `implemented` — the first `implementation-defined` requirement, G-STATE 2 of 4 (completed)
+
+The third step of the capture plan's route for its second case. `CR-D-CSR-SET-1` in `credits.sexp`, `authority review`: the measured record (`a0de4f8c…`, 27,346 B), the receipt
+(`69e526d5…`, 7,050 B), the policy pinned, `RVP-CSR-STATEMENTS` retained, seven limitations. `implementation_status implemented` on `REQ-D-CSR-SET`. `decision_req-d-csr-set-credited-implemented.md`
+(new, INDEX, KNOWLEDGE_MAP). Measured: `REQUIREMENT-STATUS: … 45 planned, 3 implemented; 7 case(s), 3 credited, 0 declared, 3 of 3 credit record(s) current; 0 drift`;
+`CREDIT-RECORDS: … 3 current, 0 lapsed`; `rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-1`. GS: `2 of 4 state requirements implemented`,
+3 of 10 axes open, G-TRACE green. **What the credit does not claim is in its record:** `mip`'s value directly, a CLINT or any device, a non-member address trapping (the deriver's vocabulary is the 33,
+pinned), field semantics, counter rates, timer delivery, numerics. **The dependencies stay `planned`:** the derivation reads obligations, and the plan orders CSR-SET before ZICNTR and SSTC; the status probe
+states it. **Departure from the plan's step (iii), raised to the director (a43b-c3):** the dossier copy and its `G-TRACE` row are left out. `references.sexp` is 50,323 B, the measured record 27,346 B, together 77,669 B against the
+per-part 65,536 B; all three manifests pin `scripts/gate_report.py` and `scripts/dossier_sexp.py` (`grep -c`, each 1), so a split lapses all three credits. The qualification still reads true (`probe_dossier_qualification`: the record qualifies, and a test holds the
+dossier to the other two, so a later copy re-states it). Stale claim fixed: LIVE_STATUS's "the pinned reference has no Zicntr or timer source", superseded by a43b-3a and missed there. Feature 5 of 5 after XTASK-0076: the turn is XTASK.13 b4, next.
 
 ### .14 a43b-3g / SEMULITH-P4-0339: the reviews read the CSR-SET case, and the comparison leg reads the requirement's category — 10 of 10 (completed)
 
@@ -1016,6 +1028,12 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
   per-case configuration (Zicntr, a CLINT device region, one tick per instruction) agrees on all five counter values
   (`mm-counters` REFUSED → AGREE, 52 steps). The workflow's recommendation is this option, and ZICNTR is planned on it; the director
   may overrule (`decision_reference-config-per-case.md`).
+- (2026-11-04, a43b-3h, a43b-c3) Where a credited case's measured record lives in the dossier. CSR-SET's copy would take `references.sexp` to
+  77,669 B against the per-part 65,536 B, ZICNTR's and SSTC's would add more, and every manifest pins `scripts/gate_report.py` and
+  `scripts/dossier_sexp.py`, so moving the copies lapses all three credits. Options: (a) retire the copies at the next pinned window, reading
+  a credited case's record from `evidence/` (the workflow's recommendation); (b) raise the family's per-part ceiling; (c) leave `G-TRACE` listing
+  the two records. The credit landed without the copy, which forecloses none. The director's
+  (`decision_req-d-csr-set-credited-implemented.md`).
 
 ## Blockers
 
@@ -1059,6 +1077,9 @@ Rows a44-1–a44-2a: [retained verbatim](archive/P4-SYSTEM-23.md#acceptance-rows
 Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-rows-a44-2b-to-a43a-2f).
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
+- [x] `.14` a43b-3h **ROOT CAUSE** — a satisfied measurement credits nothing by itself: at 94afcab2 `python3 -B scripts/requirement_status.py` read `46 planned, 2 implemented; 7 case(s), 2 credited` and `rv64gc-csr-set-v1: DIV-POLICY: satisfied … no qualification credit`.
+- [x] `.14` a43b-3h **ADDRESSED** — `python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0` → `45 planned, 3 implemented; 7 case(s), 3 credited, 0 declared, 3 of 3 credit record(s) current; 0 drift`; `python3 -B scripts/review_div_policy.py --every-retained` → `credited by CR-D-CSR-SET-1`; `grep -c 'implementation_status implemented' profiles/rv64gc-lab-v0/requirements.sexp` = 3; GS `2 of 4 state requirements implemented`.
+- [x] `.14` a43b-3h **NO REGRESSION** — `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `3 credit(s), 3 current, 0 lapsed`, the M and XLEN lines unchanged; `REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures`, `DOSSIER-QUALIFICATION-PROBE: 6 tests / 0 failures`, `DIV-POLICY-PROBE: 48 tests / 0 failures`; G-TRACE green on its two records (`grep -c 'axis G-TRACE' profiles/rv64gc-lab-v0/gate.sexp` = 2).
 - [x] `.14` a43b-3g **ROOT CAUSE** — the comparison leg judged one category's row for all: at a6f7d8fd `grep -c 'source_semantics' scripts/review_div_policy.py` = 1, the line reading the category into the report, never the leg; and `RETAINED_CAPTURES` held no row for the captured case (`python3 -B scripts/review_div_method.py --case rv64gc-csr-set-v1` → `unsupported`).
 - [x] `.14` a43b-3g **ADDRESSED** — `python3 -B scripts/review_div_policy.py --every-retained` → `rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit`; `python3 -B scripts/probe_div_policy.py` → `DIV-POLICY-PROBE: 48 tests / 0 failures / 0 errors`, the twelve new seams each `1 tests / 1 failures / 0 errors` in both modes (target/p4-system-14/a43b-3g/seams.txt); `DIV-METHOD: 22 tests / 0 failures`.
 - [x] `.14` a43b-3g **NO REGRESSION** — the M and XLEN lines unchanged, `credited by CR-GC-M-3` and `credited by CR-D-XLEN-2`; a `defined` case's measured text is pinned to the byte by `test_a_defined_requirements_comparison_reads_as_it_always_has`; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` → `2 credit(s), 2 current, 0 lapsed`; nothing pinned moved (`grep -c 'review_div_policy' evidence/rv64gc-m-forms-v5/dependencies.sexp` = 0).

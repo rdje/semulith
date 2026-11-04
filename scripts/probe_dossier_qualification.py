@@ -125,14 +125,19 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """The live catalogue credits v5 (CR-GC-M-3) and xlen-v2 (CR-D-XLEN-2), re-credited at P4-SYSTEM.14 a43b-2e after
-        the planned lapse that opens CSR-SET: both measured records qualify on the real tree; v4's, xlen-v1's and v3's,
-        which no live record names, do not."""
+        """The live catalogue credits v5 (CR-GC-M-3), xlen-v2 (CR-D-XLEN-2) and the CSR-SET case (CR-D-CSR-SET-1, P4-SYSTEM.14
+        a43b-3h): their measured records qualify on the real tree; v4's, xlen-v1's and v3's, which no live record names, do
+        not. The CSR-SET case's record qualifies and is not copied into the dossier, which holds the other two: the copy
+        would take references.sexp above its per-part ceiling (decision_req-d-csr-set-credited-implemented.md, item 6)."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
-        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2"):
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1"):
             self.assertEqual(self.qualification(measured(case), ROOT), [], case)
+        references = next(f for f in S.read_file(ROOT / "profiles" / UNIT / "references.sexp")
+                          if isinstance(f, list) and f and str(f[0]) == "references")
+        self.assertEqual([str(S.children(e, "id")[0][1]) for e in S.children(references, "experiment")
+                          if S.children(e, "verification")], [LIVE_CASE, "rv64gc-xlen-forms-v2"])
         for case in ("rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 

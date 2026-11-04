@@ -16,7 +16,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-xlen-forms-v1/` | the first non-M case (REQ-D-XLEN); `invalidated` 2026-11-02 | 22 of 22 | `xlen-forms.s`, 25 boundaries, 17 properties |
 | `rv64gc-m-forms-v5/` | captured 2026-11-02, credited `CR-GC-M-3` | 22 of 22 | v4's bytes, its control declared; identical traces |
 | `rv64gc-xlen-forms-v2/` | captured 2026-11-02, credited `CR-D-XLEN-2` | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
-| `rv64gc-csr-set-v1/` | declared (a43b-3e), captured 2026-11-04 (a43b-3f); its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
+| `rv64gc-csr-set-v1/` | captured 2026-11-04 (a43b-3f), credited `CR-D-CSR-SET-1`; its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
 
 Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 

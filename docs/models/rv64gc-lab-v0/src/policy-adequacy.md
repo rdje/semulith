@@ -119,8 +119,11 @@ A record without its trace, or a malformed one, refuses (exit 2): that pair cann
 $ python3 -B scripts/review_div_policy.py --every-retained
 rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3
 rv64gc-xlen-forms-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-2
-rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit
+rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-1
 ```
+
+Measured at a43b-3g with `no qualification credit`; the record `CR-D-CSR-SET-1` credits it since a43b-3h
+(`decision_req-d-csr-set-credited-implemented.md`).
 
 ## What a satisfied measurement is, and is not
 

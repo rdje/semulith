@@ -255,5 +255,5 @@ commit `02835e0f`, in 1.3 s:
 The control is the case's failure mode: an S-mode write of 9 to `mscratch`, refused, read back in M. Expecting 9 is what a
 refused write that had committed would look like, and it must diverge. All three traces are byte-identical (13,833 B,
 `cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with
-qualification false. Since a43b-3g the reviews read it, `satisfied` over 88 authenticated files, all ten legs; the case
-stays `pending` until a record credits it.
+qualification false. Since a43b-3g the reviews read it, `satisfied` over 88 authenticated files, all ten legs, and
+`CR-D-CSR-SET-1` credits it (a43b-3h).

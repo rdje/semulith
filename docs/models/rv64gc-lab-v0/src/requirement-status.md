@@ -41,24 +41,50 @@ measurement that is not `satisfied` a finding (`decision_credit-is-a-catalogue-r
 
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
-edge and credits no successor by name. Today 46 requirements derive `planned` and two
-`implemented` through two current records: `REQ-GC-M` through `CR-GC-M-3`, naming
-`rv64gc-m-forms-v5`, and `REQ-D-XLEN` — the first `state` requirement — through `CR-D-XLEN-2`,
-naming `rv64gc-xlen-forms-v2` (`P4-SYSTEM.14` a43b-2e, 2026-11-02). Both re-issue retired records:
+edge and credits no successor by name. Today 45 requirements derive `planned` and three
+`implemented` through three current records:
+
+| Requirement | Record | Case | Category, risk |
+| --- | --- | --- | --- |
+| `REQ-GC-M` | `CR-GC-M-3` | `rv64gc-m-forms-v5` | `defined`, medium |
+| `REQ-D-XLEN`, the first `state` requirement | `CR-D-XLEN-2` | `rv64gc-xlen-forms-v2` | `defined`, low |
+| `REQ-D-CSR-SET`, the first `implementation-defined` one | `CR-D-CSR-SET-1` (a43b-3h, 2026-11-04) | `rv64gc-csr-set-v1` | `implementation-defined`, high |
+
+The first two (`P4-SYSTEM.14` a43b-2e, 2026-11-02) re-issue retired records:
 the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-before-the-next-case.md`)
 moved pinned inputs of the cases `CR-GC-M-2` (v4, a44-5) and `CR-D-XLEN-1` (xlen-v1, a43a-3) named,
 so both were removed with the catalogue file and the statuses read `planned` until the cases were
-re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other five cases
-are uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4, xlen-v1 and the
-CSR-SET case, captured at a43b-3f, 10 of 10 legs at a43b-3g and not yet credited. No recorded status drifts.
+re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other four cases
+are uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. No
+recorded status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
-`CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed; records read and
+`CREDIT-RECORDS: rv64gc-lab-v0: 3 credit(s), 3 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
-re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, and a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`), under the rulings on its authority and on the
+re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
+`CR-D-XLEN-2`, and a43b-3h for `CR-D-CSR-SET-1`), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
-since a43a-2a).
+since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b).
+
+`CR-D-CSR-SET-1` claims the committed set, and its record says what that leaves out
+(`decision_req-d-csr-set-credited-implemented.md`):
+
+| Not claimed | Why | Whose it is |
+| --- | --- | --- |
+| `mip`'s value directly | the case's CLINT holds `mip.MTIP`; `mip` is read with `rd` = x0 and its bits witnessed through `sip` | this case's configuration |
+| a CLINT or any device | it is the reference's source of time for this case; the laboratory declares none | not claimed |
+| a non-member address trapping | the spec-side deriver's vocabulary is the 33, and it is a pinned input | not witnessed; the negative side is the refused write and the privilege-refused access |
+| field semantics | "Per-CSR field semantics (WPRI/WARL/WLRL) belong to the privilege leaf" | `P4-SYSTEM.2` |
+| counter rates, timer delivery, numerics | each is witnessed as a member of the set, not as its behaviour | `REQ-D-ZICNTR`, `REQ-D-SSTC`, the F and D cases |
+
+Its dependencies `REQ-D-PRIV-MODES`, `REQ-D-ZICNTR` and `REQ-D-SSTC` stay `planned`: the derivation reads
+obligations, and the capture plan orders CSR-SET before the other two.
+
+Its measured record is not copied into `references.sexp`, so `G-TRACE`'s table lists the M and XLEN records
+only. The copy would take the file to 77,669 B against the family's 65,536 B per-part ceiling, and moving the copies elsewhere
+would edit a pinned tool and lapse all three credits. The status does not rest on the copy: the record pins
+`evidence/rv64gc-csr-set-v1/measured-experiment.sexp`, and the method review validates its graph on every read. The
+question is the director's (a43b-c3).

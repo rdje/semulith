@@ -318,9 +318,14 @@ class StatusTests(unittest.TestCase):
         x = next(r for r in gc["rows"] if r["id"] == "REQ-D-XLEN")
         self.assertEqual((x["recorded"], x["derived"], x["why"], x["uncredited"]),
                          ("implemented", "implemented", "every obligation credited (1)", ["rv64gc-xlen-forms-v1:pending"]))
-        self.assertEqual(gc["derived"], {"planned": 46, "partial": 0, "implemented": 2, "not-applicable": 0})
+        # The CSR-SET case binds REQ-D-CSR-SET alone, credited by CR-D-CSR-SET-1 (a43b-3h); its dependencies stay planned: the
+        # derivation reads obligations, and the capture plan orders it before ZICNTR and SSTC.
+        c = next(r for r in gc["rows"] if r["id"] == "REQ-D-CSR-SET")
+        self.assertEqual((c["recorded"], c["derived"], c["why"], c["uncredited"]),
+                         ("implemented", "implemented", "every obligation credited (1)", []))
+        self.assertEqual(gc["derived"], {"planned": 45, "partial": 0, "implemented": 3, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (7, 2, 0, 2, 2))  # the CSR-SET case captured (a43b-3f): its receipt's qualification is false, pending, crediting nothing
+                         (7, 3, 0, 3, 3))
 
 
 def main():

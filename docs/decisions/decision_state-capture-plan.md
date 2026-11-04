@@ -97,5 +97,8 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
 - **The spec-side deriver's CSR vocabulary is the 33.** `derive_rv64gc_expectations.py` refuses any other CSR number
   (`csr 0x… outside the corpus's vocabulary`) and is a pinned input of the retained DIV case, so the "non-member address
   traps" witness is not derivable today; the negative side of CSR-SET is the refused write and the privilege-refused access.
+- **The dossier copy of step (iii) does not fit for CSR-SET** (2026-11-04, a43b-3h): `references.sexp` would reach 77,669 B against the
+  per-part 65,536 B, and moving the copies edits a pinned tool. The credit lands without it, and the question is the director's
+  ([`decision_req-d-csr-set-credited-implemented.md`](decision_req-d-csr-set-credited-implemented.md), item 6).
 - **A same-value write is not a change.** The GPR vocabulary records changes; a handler reading the same cause twice needs a
   sentinel between (the M program's own idiom). A trap before `mtvec` is set cascades into a fetch fault at address 0.
