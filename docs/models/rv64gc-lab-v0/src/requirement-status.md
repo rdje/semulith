@@ -50,7 +50,7 @@ moved pinned inputs of the cases `CR-GC-M-2` (v4, a44-5) and `CR-D-XLEN-1` (xlen
 so both were removed with the catalogue file and the statuses read `planned` until the cases were
 re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other five cases
 are uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4, xlen-v1 and the
-CSR-SET case, captured at a43b-3f and not yet reviewed. No recorded status drifts.
+CSR-SET case, captured at a43b-3f, 10 of 10 legs at a43b-3g and not yet credited. No recorded status drifts.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
 `CREDIT-RECORDS: rv64gc-lab-v0: 2 credit(s), 2 current, 0 lapsed; records read and
 authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22

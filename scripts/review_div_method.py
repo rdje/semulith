@@ -58,6 +58,10 @@ RETAINED_CAPTURES = {
     "rv64gc-xlen-forms-v2": RetainedCapture(
         "7b1a8f44b06dee5464c356f278511ac062ad5fc6", "2988d6a2bfc613d0b6be0677e785c7b42730214a",
         "3e536d08b739ffd8a1ffd75d9dcf8ca438b4f7f77cb99475718cb41984f58fad", 14979),
+    # The CSR-SET case, the first on its own reference configuration: declared in 02835e0f, captured once in a6f7d8fd (a43b-3e, a43b-3f).
+    "rv64gc-csr-set-v1": RetainedCapture(
+        "02835e0f357108cc12a139a1cd92687820279386", "a6f7d8fdfa1e863e21171bf97d2766b6ba0d2310",
+        "a0de4f8c848085eee2534fb7cdaf8a610420ed9866f0cbb7a9e470de38d84ce2", 27346),
 }
 
 

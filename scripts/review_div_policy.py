@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure the retained DIV case against the evidence policy's legs; measurement only, no credit.
 
-`profiles/<profile>/EVIDENCE_POLICY.md` names, for a `defined` requirement of low or medium
+`profiles/<profile>/EVIDENCE_POLICY.md` names, for a requirement's source-semantic category and
 risk, the evidence a credited disposition needs. This consumer measures which of those legs
 the retained bytes already satisfy, from the predeclaration, the expectation file, the
 derived receipt, the dependency manifest and the catalogue, on top of the finite method
@@ -21,7 +21,11 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                carries a `(boundary: …)` tag) are present AND each is predeclared
                                as a property.
   matched-reference-comparison the finite method is satisfied and the baseline agrees under
-                               the declared comparison rule and named observation vocabulary.
+                               the declared comparison rule and named observation vocabulary; and the
+                               requirement's category row holds: `defined` asks nothing more,
+                               `implementation-defined` the selection recorded in the catalogue and a
+                               behavior-changing control (`_config_effect`); a category with no branch
+                               here stays pending and is named (P4-SYSTEM.14 a43b-3g).
   repeated-execution           a repeat run agrees.
   discriminating-control       the control diverges at the step and register of the one property
                                the control_run names — it fails for the stated reason (wrong
@@ -88,6 +92,14 @@ FEATURE_DISPOSITIONS = {
                "handler's CSRRS of mtval are the route that observes the address, not a claimed trap, CSR or "
                "protection behaviour (the fault's selection is REQ-D-FAULT-PRIORITY's, mtval's presence "
                "REQ-D-CSR-SET's, the read REQ-GC-CSR-ACCESS's) (P4-SYSTEM.14 a43a-2f, 2026-10-29)",
+    "OB-CSR-SET": "the privilege and CSR rule applies, and the case's properties cover it: legal and refused modes (s-reads-sstatus, "
+                  "s-reads-sscratch, u-reads-fflags; refused-csrrw-cause, refused-csrrs-cause, s-refused-cause, u-refused-cause), "
+                  "aliases (alias-sie-mie, csr-sip-alias, alias-sip-clear, alias-sstatus-mstatus, alias-fcsr, fs-dirty-sd) and "
+                  "preserved state read back after every refusal, so a forbidden write commits neither its destination nor its rd "
+                  "(mhartid-kept, s-refused-mscratch-kept, u-refused-sscratch-kept, refused-csrrw-rd-kept, refused-csrrs-rd-kept, "
+                  "s-refused-rd-kept, u-refused-rd-kept). The counter and floating-point rules stay with their own requirements: "
+                  "each counter and fflags, frm and fcsr are witnessed as members of the set, not their scheduling or numerics "
+                  "(REQ-D-ZICNTR; the F and D cases) (P4-SYSTEM.14 a43b-3g, 2026-11-04)",
 }
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
@@ -211,6 +223,58 @@ def _risk_method(risk, second, adversarial, producers, pairs, witnesses, baselin
                   f"({str(_one(adversarial, 'failure_mode') or '')}) executed, baseline {baseline}")
 
 
+def _config_effect(root: Path, case_dir: Path, profile_dir: Path, case_id: str, expectation_path: Path, producers: dict,
+                   declared_steps: set) -> tuple[bool, str]:
+    """The `implementation-defined` row's behavior-changing control, as (satisfied, measured) (decision_reference-config-per-case.md).
+
+    `<case>.effect.sexp` names what ran, beside its raw trace (`measure_config_effect.py`); it carries no verdict and
+    none is trusted. The pins are read against the case's own bytes, and the first difference is re-derived from the
+    retained trace and the case's baseline expectation: it must fall at a declared property's step. No process runs.
+    """
+    record_path = profile_dir / "reference" / f"{case_id}.effect.sexp"
+    if not record_path.is_file():
+        return False, "no retained configuration effect"
+    import measure_config_effect as Effect
+    record = _one_form(record_path, "config_effect")
+    trace = _bounded_bytes(record_path.with_name(f"{case_id}.effect.trace"), Effect.TRACE_BYTES)
+    case_config = _digest(_bounded_bytes(case_dir / "reference-config.json"))
+    alternative = _one(record, "alternative_config_sha256")
+    reference = producers.get("reference")
+    pins = (("its case", _one(record, "case_id") == case_id),
+            ("the guest", _one(record, "guest_sha256") == _digest(_bounded_bytes(case_dir / "guest.elf"))),
+            ("the case's configuration", _one(record, "case_config_sha256") == case_config),
+            ("the reference producer's binary", reference is not None and f"sha256:{_one(record, 'binary_sha256')}" == str(_one(reference, "version"))),
+            ("a different configuration", alternative != case_config),
+            ("the profile override", alternative == _digest(Effect.profile_config(root))),
+            ("its trace", _one(record, "trace_sha256") == _digest(trace) and _one(record, "trace_bytes") == len(trace)))
+    unpinned = [name for name, held in pins if not held]
+    if unpinned:
+        return False, "the retained effect does not pin " + ", ".join(unpinned)
+    try:
+        result = Effect.Sail.compare_observations(Effect.D.load_expectations(expectation_path), trace.decode("utf-8"))
+    except (Effect.Sail.SailError, Effect.D.DossierError, UnicodeError) as error:
+        return False, f"the retained effect does not compare: {error}"
+    difference = result.gpr_difference
+    if result.verdict != "DIVERGE" or difference is None:
+        return False, f"the retained effect reads {result.verdict}: no observed effect"
+    if difference.step_n not in declared_steps:
+        return False, f"the retained effect first differs at step {difference.step_n}, no declared property's"
+    return True, f"observed effect under the profile override: {result.detail}"
+
+
+def _category_row(root: Path, case_dir: Path, profile_dir: Path, case_id: str, semantics: dict, expectation_path: Path,
+                  producers: dict, declared_steps: set) -> tuple[bool, str]:
+    """The policy's source-semantic row beyond the matched comparison, as (satisfied, measured text to append)."""
+    category = semantics["category"]
+    if category == "defined":
+        return True, ""
+    if category == "implementation-defined":
+        selection = bool(str(semantics.get("detail") or "").strip())
+        effect, measured = _config_effect(root, case_dir, profile_dir, case_id, expectation_path, producers, declared_steps)
+        return selection and effect, f"; category {category}: selection {'recorded' if selection else 'unrecorded'}; {measured}"
+    return False, f"; category {category}: no row measured for it here"
+
+
 def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     """The leg table for one retained case, given the finite method review's plain result."""
     root = Path(root)
@@ -310,8 +374,10 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     rule = str(_one(verification[0], "comparison_rule") or "")
     kinds = _strings(first, "observation_kinds")
     baseline, _ = verdict("baseline")
-    _leg(legs, "matched-reference-comparison", method_ok and baseline == "AGREE" and bool(rule) and bool(kinds),
-         f"method {method.get('disposition')}; baseline {baseline}; rule {rule or '(none)'}; vocabulary {kinds or '(unnamed)'}")
+    row, row_measured = _category_row(root, case_dir, profile_dir, case_id, requirement["source_semantics"], expectation_path,
+                                      producers, declared_steps)
+    _leg(legs, "matched-reference-comparison", method_ok and baseline == "AGREE" and bool(rule) and bool(kinds) and row,
+         f"method {method.get('disposition')}; baseline {baseline}; rule {rule or '(none)'}; vocabulary {kinds or '(unnamed)'}{row_measured}")
     repeat, _ = verdict("repeat")
     _leg(legs, "repeated-execution", repeat == "AGREE", f"repeat {repeat}")
     control, diff = verdict("control")

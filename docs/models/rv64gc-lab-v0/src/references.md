@@ -92,7 +92,7 @@ step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}
 
 The record, `reference/<case-id>.effect.sexp`, says what ran and carries no verdict: the
 first difference is re-derived from the raw `.effect.trace` and the case's own baseline
-expectation (today by the tool's probe; by the policy review from a43b-3g). The two raw traces
+expectation, by the [policy review](policy-adequacy.md) on every read. The two raw traces
 are the same up to line 67, step 34, where the case's reads `x20 <- 0x0000000000000022` and this
 one `trapping from M to M to handle illegal-instruction`. A second run refuses: existing names
 refuse reuse. A run that agrees retains nothing and exits 1: that configuration would have no

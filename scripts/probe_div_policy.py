@@ -41,6 +41,22 @@ SEAMS = {
                         '    c3 = True\n'),
     "shared-pair": ('    c4 = bool(found) and "shared" not in ancestry and bool(derived)\n', '    c4 = True\n'),
     "adversarial-executed": ('    c5 = bool(props) and set(props) <= set(witnesses) and baseline == "AGREE"\n', '    c5 = True\n'),
+    # a43b-3g: the category row of the matched comparison, one seam per judgement.
+    "category-row": ('    row, row_measured = _category_row(root, case_dir, profile_dir, case_id, requirement["source_semantics"], expectation_path,\n'
+                     '                                      producers, declared_steps)\n', '    row, row_measured = True, ""\n'),
+    "selection-recorded": ('        selection = bool(str(semantics.get("detail") or "").strip())\n', '        selection = True\n'),
+    "unknown-category": ('    return False, f"; category {category}: no row measured for it here"\n', '    return True, ""\n'),
+    "effect-case": ('("its case", _one(record, "case_id") == case_id)', '("its case", True)'),
+    "effect-guest": ('("the guest", _one(record, "guest_sha256") == _digest(_bounded_bytes(case_dir / "guest.elf")))', '("the guest", True)'),
+    "effect-config": ('("the case\'s configuration", _one(record, "case_config_sha256") == case_config)', '("the case\'s configuration", True)'),
+    "effect-binary": ('("the reference producer\'s binary", reference is not None and f"sha256:{_one(record, \'binary_sha256\')}" == str(_one(reference, "version")))',
+                      '("the reference producer\'s binary", True)'),
+    "effect-differs": ('("a different configuration", alternative != case_config)', '("a different configuration", True)'),
+    "effect-override": ('("the profile override", alternative == _digest(Effect.profile_config(root)))', '("the profile override", True)'),
+    "effect-trace": ('("its trace", _one(record, "trace_sha256") == _digest(trace) and _one(record, "trace_bytes") == len(trace))', '("its trace", True)'),
+    "effect-diverges": ('    if result.verdict != "DIVERGE" or difference is None:\n',
+                        '    if difference is None:\n        return True, "observed effect"\n    if False:\n'),
+    "effect-at-witness": ('    if difference.step_n not in declared_steps:\n', '    if False:\n'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_undeclared_boundary_rows_keep_the_case_pending",
@@ -58,8 +74,23 @@ MUTATION_TESTS = {
     "recorded-common": "test_second_method_common_inputs_are_the_recorded_shared_inputs",
     "shared-pair": "test_second_method_never_rests_on_a_pair_recorded_as_shared",
     "adversarial-executed": "test_adversarial_case_names_declared_properties_of_an_agreeing_capture",
+    "category-row": "test_implementation_defined_without_a_retained_effect_is_pending",
+    "selection-recorded": "test_implementation_defined_with_no_recorded_selection_is_pending",
+    "unknown-category": "test_a_category_with_no_branch_is_pending_and_named",
+    "effect-case": "test_a_retained_effect_for_another_case_is_pending",
+    "effect-guest": "test_a_retained_effect_of_another_guest_is_pending",
+    "effect-config": "test_a_retained_effect_of_another_case_configuration_is_pending",
+    "effect-binary": "test_a_retained_effect_of_another_binary_is_pending",
+    "effect-differs": "test_a_retained_effect_with_no_configuration_of_its_own_is_pending",
+    "effect-override": "test_a_retained_effect_under_another_configuration_is_pending",
+    "effect-trace": "test_a_retained_effect_whose_trace_moved_is_pending",
+    "effect-diverges": "test_a_retained_effect_that_agrees_is_pending",
+    "effect-at-witness": "test_a_retained_effect_differing_at_no_declared_step_is_pending",
 }
 XLEN_CASE_ID = "rv64gc-xlen-forms-v2"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), re-captured as xlen-v2 (a43b-2e)
+CSR_CASE_ID = "rv64gc-csr-set-v1"  # the first implementation-defined case (a43b-3g)
+OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
+BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
               charged_read_bytes=1, record_sha256="a", planned_sha256="b")
 STALE = dict(METHOD, disposition="stale", capture_binding=None, record_disposition=None,
@@ -102,7 +133,7 @@ def load_module(workdir: Path):
 def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div", "rem"), risk="medium", declare_boundaries=False,
             steps=None, expected_reads_reference=False, repeat=True, control="DIVERGE", control_step=0,
             control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1",
-            control_property="p0", versions=("v", "v"), pairs=(), declaration=None):
+            control_property="p0", versions=("v", "v"), pairs=(), declaration=None, category="defined", detail="d"):
     """One synthetic retained case under profile fx-v0; every knob breaks exactly one leg.
 
     `pairs` adds recorded producer pairs (left, right, shared input ids, assessment) and `declaration` writes the
@@ -112,7 +143,7 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
     (profile / "requirements.sexp").write_text(
         f'(requirement (id "REQ-X") (profile_ids "fx-v0") (kind {kind}) (statement "s") {obs} '
         f'(source_refs (source_id "SRC") (locator "1")) (applicability included) (research_status resolved) '
-        f'(implementation_status planned) (source_semantics (category defined) (detail "d")) (risk {risk}) '
+        f'(implementation_status planned) (source_semantics (category {category}) (detail "{detail}")) (risk {risk}) '
         f'(obligation_ids "{obligation}"))\n')
     (profile / "contract-obligations.sexp").write_text(
         f'(obligation (id "{obligation}") (contract_id "fx-env") (contract_version "1") (profile_ids "fx-v0") '
@@ -124,7 +155,7 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
                       (2, "div x9, x5, x0", "SRC §1 (Table 1)")]
     (case / "baseline.expected.sexp").write_text(
         '(expectations (program "p.s") (entry "0x0") (instructions 3) (fetches 6)\n' + "".join(
-            f'  (step (n {n}) (insn "{insn}") (writes (write (reg "x7") (value "0x1"))) (derivation "d") (source "{source}"))\n'
+            f'  (step (n {n}) (insn "{insn}") (writes (write (reg "x7") (value "0x{n + 1:x}"))) (derivation "d") (source "{source}"))\n'
             for n, insn, source in steps) + ')\n')
     props = [f'(property (id "p0") (requirement_id "REQ-X") (obligation_ids "{obligation}") (observation_kinds "gpr-change") '
              f'(statement "s") (gpr_witness (step_n 0) (register "x7")))']
@@ -166,6 +197,36 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
         f'(dependencies (format_version "v") (input (id "d1") (role "dependency") (path "profiles/fx-v0/EVIDENCE_POLICY.md") (sha256 "{pin}")))\n')
     (case / "measured-experiment.sexp").write_text('(experiment (id "cx") (program "p.s") (measured yes))\n')
     return case
+
+
+def retain_effect(root: Path, case: Path, *, differ_at=0, **pins):
+    """The case's retained configuration effect: its guest and configuration, the raw trace and a record pinning them.
+
+    `differ_at` is the step the trace first differs at (None: it agrees), and each of `pins` replaces one record field.
+    The alternative must be the profile override, so the fixture root carries the one the tool renders."""
+    sys.path.insert(0, str(HERE))
+    import measure_config_effect as Effect
+    (root / "schema").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "schema" / "override.sexp", root / "schema" / "override.sexp")
+    (root / OVERRIDE).parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(ROOT / OVERRIDE, root / OVERRIDE)
+    (case / "guest.elf").write_bytes(b"guest")
+    (case / "reference-config.json").write_bytes(b'{"own": true}\n')
+    rows = []
+    for n in range(3):
+        rows.append(f"[{n}] [M]: 0x{0x80000000 + 4 * n:016X} (0x00000013) nop")
+        if n != differ_at:
+            rows.append(f"x7 <- 0x{n + 1:016X}")
+    trace = ("\n".join(rows) + "\n").encode()
+    digest = lambda data: hashlib.sha256(data).hexdigest()
+    fields = dict(case_id="cx", binary_sha256=BINARY, guest_sha256=digest(b"guest"), case_config_sha256=digest(b'{"own": true}\n'),
+                  alternative_config_sha256=digest(Effect.profile_config(root)), trace_sha256=digest(trace))
+    fields.update(pins)
+    reference = root / "profiles" / "fx-v0" / "reference"
+    reference.mkdir(exist_ok=True)
+    (reference / "cx.effect.trace").write_bytes(trace)
+    (reference / "cx.effect.sexp").write_text("(config_effect " + " ".join(f'({k} "{v}")' for k, v in fields.items())
+                                              + f" (instructions 3) (trace_bytes {len(trace)}))\n")
 
 
 def credit(root: Path, *, case_id="cx", requirement="REQ-X", obligation="OB-GC-M", measured_sha=None, complete=True):
@@ -391,6 +452,90 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual((leg["disposition"], t["missing"]), ("pending", ["risk-method"]), leg)
         self.assertIn("(5) adversarial properties ['p0', 'p9']", leg["measured"])
 
+    def implementation_defined(self, *, differ_at=0, detail="the selection", effect=True, insns=("div", "rem"), boundaries=True, **pins):
+        """A case on its own configuration; every other leg satisfied. Returns the matched comparison's text and the table."""
+        case = fixture(self.root, declare_boundaries=boundaries, category="implementation-defined", detail=detail,
+                       versions=(f"sha256:{BINARY}", "author-v"), insns=insns)
+        if effect:
+            retain_effect(self.root, case, differ_at=differ_at, **pins)
+        t = self.measure()
+        return self.legs_text(t, "matched-reference-comparison"), t
+
+    def test_a_defined_requirements_comparison_reads_as_it_always_has(self):
+        fixture(self.root, declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual(self.legs_text(t, "matched-reference-comparison"),
+                         "method satisfied; baseline AGREE; rule rule-v1; vocabulary ['gpr-change']")
+
+    def test_implementation_defined_with_an_observed_effect_is_satisfied(self):
+        text, t = self.implementation_defined()
+        self.assertEqual((t["disposition"], t["missing"], t["category"], t["credited"]), ("satisfied", [], "implementation-defined", False))
+        self.assertIn("selection recorded; observed effect under the profile override: step 0 (div x7, x5, x6): Sail {}", text)
+
+    def test_implementation_defined_without_a_retained_effect_is_pending(self):
+        """The policy: "A configuration file without an observed effect" is insufficient by itself."""
+        text, t = self.implementation_defined(effect=False)
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["matched-reference-comparison"]))
+        self.assertIn("no retained configuration effect", text)
+
+    def test_implementation_defined_with_no_recorded_selection_is_pending(self):
+        text, t = self.implementation_defined(detail=" ")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"]); self.assertIn("selection unrecorded", text)
+
+    def test_a_category_with_no_branch_is_pending_and_named(self):
+        fixture(self.root, declare_boundaries=True, category="unspecified")
+        t = self.measure()
+        self.assertEqual(t["missing"], ["matched-reference-comparison"])
+        self.assertIn("category unspecified: no row measured for it here", self.legs_text(t, "matched-reference-comparison"))
+
+    def effect_pending(self, needle, **pins):
+        text, t = self.implementation_defined(**pins)
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["matched-reference-comparison"]), text)
+        self.assertIn(needle, text)
+
+    def test_a_retained_effect_for_another_case_is_pending(self):
+        self.effect_pending("does not pin its case", case_id="other-v1")
+
+    def test_a_retained_effect_of_another_guest_is_pending(self):
+        self.effect_pending("does not pin the guest", guest_sha256="0" * 64)
+
+    def test_a_retained_effect_of_another_case_configuration_is_pending(self):
+        self.effect_pending("does not pin the case's configuration", case_config_sha256="0" * 64)
+
+    def test_a_retained_effect_of_another_binary_is_pending(self):
+        self.effect_pending("does not pin the reference producer's binary", binary_sha256="0" * 64)
+
+    def test_a_retained_effect_with_no_configuration_of_its_own_is_pending(self):
+        own = hashlib.sha256(b'{"own": true}\n').hexdigest()
+        self.effect_pending("does not pin a different configuration", alternative_config_sha256=own)
+
+    def test_a_retained_effect_under_another_configuration_is_pending(self):
+        self.effect_pending("does not pin the profile override", alternative_config_sha256="0" * 64)
+
+    def test_a_retained_effect_whose_trace_moved_is_pending(self):
+        self.effect_pending("does not pin its trace", trace_sha256="0" * 64)
+
+    def test_a_retained_effect_that_agrees_is_pending(self):
+        self.effect_pending("reads AGREE: no observed effect", differ_at=None)
+
+    def test_a_retained_effect_differing_at_no_declared_step_is_pending(self):
+        """Only p0 (step 0) is declared here, so the case misses the boundary leg too; the comparison's own text names the step."""
+        text, t = self.implementation_defined(differ_at=1, insns=("div",), boundaries=False)
+        self.assertIn("matched-reference-comparison", t["missing"])
+        self.assertIn("first differs at step 1, no declared property's", text)
+
+    def test_a_retained_effect_with_no_trace_or_a_malformed_record_refuses(self):
+        case = fixture(self.root, declare_boundaries=True, category="implementation-defined", detail="the selection",
+                       versions=(f"sha256:{BINARY}", "author-v"))
+        retain_effect(self.root, case)
+        reference = self.root / "profiles" / "fx-v0" / "reference"
+        data = (reference / "cx.effect.trace").read_bytes()
+        (reference / "cx.effect.trace").unlink()
+        with self.assertRaises(self.M.Refused): self.measure()
+        (reference / "cx.effect.trace").write_bytes(data)
+        (reference / "cx.effect.sexp").write_text("(other)\n")
+        with self.assertRaises(self.M.Refused): self.measure()
+
     def test_high_risk_requires_a_second_method(self):
         fixture(self.root, declare_boundaries=True, risk="high")
         t = self.measure()
@@ -445,7 +590,7 @@ class PolicyTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
-        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID])
+        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
         catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
         forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
@@ -476,7 +621,7 @@ class PolicyTests(unittest.TestCase):
                     self.assertIsNone(t["invalidated_by"])
                     self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
-        table, xlen = tables
+        table, xlen, csr = tables
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]
@@ -491,6 +636,20 @@ class PolicyTests(unittest.TestCase):
         self.assertTrue(self.legs_text(xlen, "feature-rules").startswith("OB-XLEN: none applies: "))
         self.assertEqual((xlen["requirement_id"], xlen["obligation_ids"], xlen["category"], xlen["risk"]),
                          ("REQ-D-XLEN", ["OB-XLEN"], "defined", "low"))
+        self.assertEqual((csr["requirement_id"], csr["obligation_ids"], csr["category"], csr["risk"]),
+                         ("REQ-D-CSR-SET", ["OB-CSR-SET"], "implementation-defined", "high"))
+        self.assertIn("selection recorded; observed effect under the profile override: step 34 (csrrs x20, mcycle, x0): Sail {}, "
+                      "expectations {'x20': 34}", self.legs_text(csr, "matched-reference-comparison"))
+        self.assertIn("coverage is vacuous, its 53 predeclared witnesses", self.legs_text(csr, "form-coverage"))
+        self.assertIn("independent-exact-expectation", self.legs_text(csr, "risk-method"))
+        self.assertIn("step 130 registers ['x28']", self.legs_text(csr, "discriminating-control"))
+        # The feature disposition names properties; each is one this case declares.
+        declared = {str(self.M._one(p, "id")) for p in self.M.S.children(self.M.S.children(self.M._one_form(
+            ROOT / "evidence" / CSR_CASE_ID / "planned-experiment.sexp", "experiment"), "verification")[0], "property")}
+        words = {word.strip("(),.;:") for word in self.M.FEATURE_DISPOSITIONS["OB-CSR-SET"].split()}
+        cited = {word for word in words if word.startswith(("s-", "u-", "refused-", "alias-", "csr-", "mhartid-", "fs-"))}
+        self.assertEqual(len(cited), 20, sorted(cited))
+        self.assertEqual(cited - declared, set())
 
 
 def main():

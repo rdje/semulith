@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0339 (leaf P4-SYSTEM.14 a43b-3g) — the reviews read the CSR-SET case, and the comparison leg reads the requirement's category: 10 of 10
+
+a43b-3g: `review_div_policy.py`'s comparison leg measured `defined`'s row for every category, so a configuration alone would have satisfied it, against the policy's words. It now reads the category: `defined` is unchanged to the byte; `implementation-defined` needs the recorded selection and a retained effect, seven pins read against the case's own bytes and the first difference re-derived offline at a declared property's step; any other category stays pending and is named. `RETAINED_CAPTURES` names the case: method `satisfied` over 88 files; policy `satisfied`, 10 of 10 legs, no credit yet. `FEATURE_DISPOSITIONS["OB-CSR-SET"]` is the first that says a rule applies. `DIV-POLICY-PROBE`: 48 tests, 27 seams. Next: a43b-3h, the credit.
+
 ## SEMULITH-P4-0338 (leaf P4-SYSTEM.14 a43b-3f) — the CSR-SET case captured exactly once, and its configuration's effect retained
 
 a43b-3f: `rv64gc-csr-set-v1` ran once on a quiet host behind its guards: 157 steps, baseline and repeat AGREE, the control DIVERGE at its declared step 130 (x28 5 against the wrong 9), complete, qualification false, three traces byte-identical, 14 files retained; the family holds all 155; the case `pending`, both credits current. `scripts/measure_config_effect.py` (new; `schema/config-effect.sexp`; `scripts/probe_config_effect.py`, 10 tests and nine omissions) ran the same guest under the profile override, once, and retained the raw trace and what ran by digest, no verdict: `step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`, the observed effect the policy's `implementation-defined` row asks for. Next: a43b-3g, the reviews.

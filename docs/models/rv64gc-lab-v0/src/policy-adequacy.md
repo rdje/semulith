@@ -1,11 +1,11 @@
 # Policy legs measured
 
-The evidence policy names, for a `defined` requirement of low or medium risk, what a
+The evidence policy names, for a requirement's source-semantic category and risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43b-2e (2026-11-02) the M case's `rv64gc-m-forms-v5` and the XLEN
-case's `rv64gc-xlen-forms-v2`, each re-captured with its control declared; the earlier cases (v2, v3, v4 and
-xlen-v1) are history below — on top of the finite method review. It opens only
+case's `rv64gc-xlen-forms-v2`, each re-captured with its control declared, and since a43b-3g (2026-11-04) the CSR-SET
+case's `rv64gc-csr-set-v1`; the earlier cases (v2, v3, v4 and xlen-v1) are history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
@@ -71,10 +71,61 @@ record `CR-D-XLEN-1` credited it, the line ending `credited by CR-D-XLEN-1` (`de
 until a43b-2b retired it; its re-capture xlen-v2 measures 10 of 10 and is credited by `CR-D-XLEN-2` (a43b-2e),
 two limitations fewer: its receipt names `REQ-D-XLEN` and its record carries its own control.
 
+## The CSR-SET case: the first `implementation-defined` requirement
+
+The policy asks this category for more than a matched comparison: "pinned matching reference configuration with a
+behavior-changing control, or an explicitly observed and justified profile difference", and it calls "a configuration file
+without an observed effect" insufficient. Until a43b-3g the comparison leg measured `defined`'s row for every case, so a
+case on its own configuration would have satisfied it with the configuration alone. The leg now reads the category:
+
+| Category | The comparison leg also needs | Measured text |
+| --- | --- | --- |
+| `defined` | nothing | unchanged, to the byte, for the M and XLEN cases |
+| `implementation-defined` | the selection recorded in the catalogue, and a retained effect | `; category implementation-defined: selection recorded; observed effect under the profile override: step 34 …` |
+| any other | pending until a row is written for it | `; category unspecified: no row measured for it here` |
+
+The effect is [the run retained beside the overlay](references.md). The review trusts no verdict in it: it reads seven pins
+against the case's own bytes, then re-derives the first difference offline. Each failure leaves the leg pending and names
+what failed:
+
+| The record must pin | Against | The leg then reads |
+| --- | --- | --- |
+| its case | the case id | `the retained effect does not pin its case` |
+| the guest | `guest.elf`'s digest | `… does not pin the guest` |
+| the case's configuration | `reference-config.json`'s digest | `… does not pin the case's configuration` |
+| the binary | the reference producer's version | `… does not pin the reference producer's binary` |
+| a different configuration | the alternative's digest is not the case's | `… does not pin a different configuration` |
+| the profile override | the override as `prepare_div_inputs` renders it | `… does not pin the profile override` |
+| its trace | the raw trace's digest and size | `… does not pin its trace` |
+| *(re-derived)* a difference | the trace against the case's baseline expectation | `the retained effect reads AGREE: no observed effect` |
+| *(re-derived)* at a witness | a declared property's step | `the retained effect first differs at step N, no declared property's` |
+
+A record without its trace, or a malformed one, refuses (exit 2): that pair cannot be measured honestly.
+
+| Leg | Measured on `rv64gc-csr-set-v1` |
+| --- | --- |
+| source-located-expectations | satisfied: 157 of 157 steps carry a derivation and a source; witness step 130 cites `REQ-D-CSR-SET`'s source; the expected producer reads only its own inputs |
+| boundary-fixtures | satisfied: seven `(boundary: …)` rows at steps 101, 111, 113, 136, 138, 144 and 156, all predeclared |
+| matched-reference-comparison | satisfied: method satisfied (88 authenticated files), baseline AGREE under `sail-gpr-change-v1`, the selection recorded, the effect observed at step 34 |
+| repeated-execution | satisfied: repeat AGREE |
+| discriminating-control | satisfied: control DIVERGE at step 130, register x28 (5 observed, 9 in the control's expectation) |
+| record-linkage | satisfied: `REQ-D-CSR-SET`, `OB-CSR-SET`, collector, expected producer, three limitations |
+| currentness | satisfied: the policy pinned and unchanged; the method binding matched |
+| risk-method | satisfied: high risk, second method `independent-exact-expectation` by `expected` and `reference` on the guest source and the manifest; ancestry recorded, no independence credit; the seven refused-access properties executed |
+| feature-rules | satisfied by declaration: the privilege and CSR rule applies, and the disposition names the properties that cover it; the probe checks that each of its 20 names is one this case declares |
+| form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 53 predeclared witnesses stand for it |
+
+```text
+$ python3 -B scripts/review_div_policy.py --every-retained
+rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3
+rv64gc-xlen-forms-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-2
+rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; no qualification credit
+```
+
 ## What a satisfied measurement is, and is not
 
-The measurement says the retained bytes of one case meet every leg the policy names for a
-`defined` requirement of medium risk. It is not a credit: the policy makes a satisfied
+The measurement says the retained bytes of one case meet every leg the policy names for its
+category and risk. It is not a credit: the policy makes a satisfied
 measurement the input to a separately owned crediting record, and a retained receipt is never
 replaced (`decision_ten-legs-satisfied-credit-separate.md`). Since a42ay (2026-10-23) that
 record has a shape and a reader: a `(credit …)` record in `profiles/rv64gc-lab-v0/credits.sexp`
@@ -193,18 +244,21 @@ The first command measures the default case, v5 since a43b-2e, and prints `DIV-P
 10 legs satisfied; credited by CR-GC-M-3`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 33 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 48 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
-through one `--every-retained` run (both cases' ten legs while every pin is current; `invalidated`
+through one `--every-retained` run (each case's ten legs while every pin is current; `invalidated`
 with the two method legs missing once a pin moves) and three credit-record cases (a current record
 over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
-are findings), and six second-method cases — the CSR-SET-shaped declaration satisfied, then one
-condition broken at a time, two wrappers judged at high and at low risk alike; each of the fifteen
+are findings), six second-method cases — the CSR-SET-shaped declaration satisfied, then one
+condition broken at a time, two wrappers judged at high and at low risk alike — and fifteen category
+cases, one per row above; each of the twenty-seven
 seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
 `coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `boundary-tag`,
-and one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
-`adversarial-executed`) runs its one discriminating test and fails.
+one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
+`adversarial-executed`; and one per judgement of the category row: `category-row`, `selection-recorded`,
+`unknown-category`, `effect-case`, `effect-guest`, `effect-config`, `effect-binary`, `effect-differs`,
+`effect-override`, `effect-trace`, `effect-diverges`, `effect-at-witness`) runs its one discriminating test and fails.
 `PROFILE-CONSISTENCY` runs the probe in its self-test and `--every-retained` on the real path on
 every commit.
 

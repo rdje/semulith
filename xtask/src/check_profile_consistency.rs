@@ -8697,7 +8697,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 33 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 48 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8714,6 +8714,18 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "recorded-common",
             "shared-pair",
             "adversarial-executed",
+            "category-row",
+            "selection-recorded",
+            "unknown-category",
+            "effect-case",
+            "effect-guest",
+            "effect-config",
+            "effect-binary",
+            "effect-differs",
+            "effect-override",
+            "effect-trace",
+            "effect-diverges",
+            "effect-at-witness",
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8910,7 +8922,7 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         return ExitCode::from(u8::try_from(rc).unwrap_or(1));
     }
     // P4-SYSTEM.14 a42aq: the retained DIV case's policy legs are measured from its own bytes; since a43a-2f every
-    // case the finite method review holds a reviewed capture for (the M case's v4 and the XLEN case), one line each.
+    // case the finite method review holds a reviewed capture for, one line each.
     let (rc, out) = tool(
         root,
         true,

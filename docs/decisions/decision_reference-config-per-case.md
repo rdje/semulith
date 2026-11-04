@@ -64,6 +64,10 @@ declares no such device. So this is not a profile-wide change, and it is not fre
 `scripts/probe_reference_overlay.py` (14 tests, nine omissions) and `scripts/census_reference_config.py`, which re-derived the census above from
 the tracked route. v5 and xlen-v2 are untouched: both still `--verify` equal, and both credits stay current.
 
+The observed effect and its reading: `scripts/measure_config_effect.py` retained the run under the profile override, once
+(a43b-3f, 2026-11-04), and the policy review's comparison leg now reads the requirement's category (a43b-3g, 2026-11-04):
+`rv64gc-csr-set-v1` measures `satisfied`, 10 of 10 legs, and the leg reads pending without the retained effect.
+
 ## How to apply
 
 - The overlay is small and reviewed, like an override: it enables what the case needs and says why. A new configuration is a new case's
