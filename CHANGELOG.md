@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0341 (leaf P4-SYSTEM.14 a43c-1) — the ZICNTR case designed, and its normative statements retained
+
+a43c-1: CSR-SET's route for `REQ-D-ZICNTR`, in five units. A draft program, 163 instructions and 292 steps, agrees with the reference under the overlay and first differs at `rdcycle x5` under the profile override. Retained: `RVI-ZICNTR-STATEMENTS` (§6.1, §6.1.1), the normative input, and `RVP-COUNTEREN-STATEMENTS` (§2.1.1.11), what the refused reads rest on; `scounteren`'s statement has no anchor to select, so it is cited. Out of scope, named for the limitations: a write through `mcycle` or `minstret` (the pinned deriver refuses it) and Zihpm's absence. Next: a43c-2.
+
 ## SEMULITH-XTASK-0077 (leaf XTASK.13 slice b4) — GUEST-GEN's author probes judge a frozen owned corpus, and its real check re-derives the live one
 
 `scripts/fixtures/guest-gen/owned/` holds the 42 owned guests, laid out as the repository is; `scripts/frozen_owned.py` points the pinned deriver's `REPO` and `ENCODING` at them for the one call, so the deriver does not move. Eight author probes and `probe_gc_owned_extent` take them. `--check-owned` is now a real-run step, measured RED: a mirrored record's value edit goes from a refusal (`391 pass / 9 fail`) to `MIRROR DRIFT — inj-walk-l0.s` at 400 of 400, and one line of silent prose, which only this step can read, goes from a silent `rc=0` to `DRIFT — inj-walk-l0`. The probes' other corpus reads are still live: slice b5. Next: features, ZICNTR (a43c).

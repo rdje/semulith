@@ -99,6 +99,22 @@ refuse reuse. A run that agrees retains nothing and exits 1: that configuration 
 observed effect there. `schema/config-effect.sexp` holds the shape, and
 `scripts/probe_config_effect.py` runs ten controls and nine guard omissions in both Python modes.
 
+`REQ-D-ZICNTR` follows on the same route. The program a43c-1 drafted, 163 instructions and 292 steps, reads:
+
+| Section | What it witnesses | Example |
+| --- | --- | --- |
+| M, no gate | `cycle`, `time`, `instret`, and the machine views | `rdtime x7` at boundary 8 reads 8 |
+| Progress | `instret` moves by what retired, `cycle` by every boundary | `sub x16, x14, x11` reads 5 |
+| Read-only, in M | five write attempts refused, `rd` kept; `rs1` = x0 and `uimm` = 0 legal | `csrrw x18, cycle, x6`: cause 2, `x18` kept |
+| A trap retires nothing | `cycle` minus `instret` grows by the refused boundary | reads 1 |
+| S, each gate bit | closed, CY alone, then all three: each bit gates its own counter | `rdtime x20` refused while `rdcycle x22` reads |
+| U, both gates | `scounteren` clear, IR alone, then `mcounteren.IR` clear | `rdinstret x20` refused though `scounteren.IR` is set |
+| One count, two names | `mcycle`/`cycle`, `minstret`/`instret`, at adjacent boundaries | the difference reads 1 |
+
+It agrees with the reference under the overlay, and under the profile override it first differs at `rdcycle x5`. Two things stay out, both named in the limitations:
+a write through `mcycle` or `minstret`, which the spec-side deriver refuses, and Zihpm's absence, which its 33-CSR vocabulary cannot state. The laboratory's `time` is a view of
+`mcycle` (`state.sexp`), and the reference's comes from its CLINT, so a write would separate them; that is one more reason the deriver's refusal stands until someone models it.
+
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
 is itself a defect, even if the reference program normally succeeds. Controls

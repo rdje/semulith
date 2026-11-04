@@ -8411,7 +8411,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("span-bound", "1"),
             ("span-markup", "7"),
             ("retained-bound", "1"),
-            ("retained-pin", "2"),
+            ("retained-pin", "4"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);

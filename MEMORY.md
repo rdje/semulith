@@ -18,8 +18,8 @@
   `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-XTASK-0077` (XTASK.13 slice b4) — GUEST-GEN's author probes judge a frozen owned corpus; its real check re-derives the live one. Before it, `SEMULITH-P4-0340`: `REQ-D-CSR-SET` credited, the dossier copy left out and raised to the director (a43b-c3; `decision_req-d-csr-set-credited-implemented.md` item 6).
-- next_action: features (1 of 5 after XTASK-0077): ZICNTR (a43c): design and retained statements via `retain_statements.py` (RVI-ZICNTR; licence page unpriv/colophon.html), overlay, measured census per case, program, case, declarations, capture (quiet host), effect, reviews, credit. Then SSTC (a43d), a43b-c1, a43b-c2. XTASK.13 b5 at the 5:1 turn. `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z).
+- last_unit: `SEMULITH-P4-0341` (P4-SYSTEM.14 a43c-1, feature 1 of 5 after XTASK-0077) — ZICNTR designed, statements retained. Open for the director: the dossier copy (a43b-c3; `decision_req-d-csr-set-credited-implemented.md` item 6) and the per-case configuration (decision_reference-config-per-case.md).
+- next_action: features (2 of 5 after XTASK-0077): a43c-2 — `zicntr.s` from target/p4-system-14/a43c/draft (gen_program.py, zicntr.s, budget 292), its overlay, its case (adapt target/p4-system-14/a43b-3c/draft/draft_case.py, a43b-3d/authority.py), the engine judging it, the family's re-derivation (8 cases, or 9 with SSTC at once). Then a43c-3 declarations, a43c-4 capture and effect, a43c-5 reviews and credit. Then XTASK.13 b5, SSTC (a43d), a43b-c1, a43b-c2. `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z).
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -29,7 +29,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/XTASK.md` XTASK.13 b4, b3 (`target/xtask/xt0077`, `target/xtask/xt0076`); `docs/tasks/P4-SYSTEM.md` .14 a43b-3h, 3g, 3f, 3e, 3d (`target/p4-system-14/a43b-3h`, …); archive part 26 a43b-3c, 3b, 3a;
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43c-1, a43b-3h, 3g, 3f, 3e, 3d (`target/p4-system-14/a43c`, `…/a43b-3h`, …); archive part 26 a43b-3c, 3b, 3a; `docs/tasks/XTASK.md` XTASK.13 b4, b3 (`target/xtask/xt0077`, `target/xtask/xt0076`);
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

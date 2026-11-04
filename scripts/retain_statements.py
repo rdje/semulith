@@ -25,7 +25,7 @@ import experiment_artifacts as A
 ROOT = Path(__file__).resolve().parent.parent
 PAGES = ".materials/riscv/pinned-v20260120/"
 SITE = "https://docs.riscv.org/reference/isa/v20260120/"
-PAGE_BYTES = 262144
+PAGE_BYTES = 524288  # the longest pinned page a row names: priv/machine.html, 271,851 B
 LICENCE_BYTES = 131072
 RETAINED_BYTES = 8192
 SPAN_BYTES = 1024
@@ -65,6 +65,9 @@ class Excerpt:
 PRIVILEGED_LICENCE = Page("RVP-PRIV-LICENCE", "priv/priv-preface.html",
                           "6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59",
                           "privileged preface to Version 1.10")
+UNPRIVILEGED_LICENCE = Page("RVI-LICENCE", "unpriv/colophon.html",
+                            "7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c",
+                            "the unprivileged volume's preface")
 EXCERPTS = {
     "RVP-CSR-STATEMENTS": Excerpt(
         "RVP-CSR-STATEMENTS", "RVP-CSR §1.1.1: which privilege may access a CSR, and what an attempt without it does",
@@ -74,6 +77,23 @@ EXCERPTS = {
         (("norm:Zicsr_higher_priv", "§1.1.1"), ("norm:Zicsr_rw", "§1.1.1"), ("norm:Zicsr_access", "§1.1.1"),
          ("norm:Zicsr_illegal_mode", "§1.1.1"), ("norm:Zicsr_illegal_acc", "§1.1.1")),
         "This excerpt establishes no CSR-SET acceptance."),
+    "RVI-ZICNTR-STATEMENTS": Excerpt(
+        "RVI-ZICNTR-STATEMENTS", "RVI-ZICNTR §6.1: the counters are read-only CSRs, and what each of the base three counts",
+        Page("RVI-ZICNTR", "unpriv/counters.html", "8d619d6ef71d6cd87415342782aa615a0aff121a537342e4497658947f4fa81c",
+             "RISC-V Unprivileged Architecture, §6.1 \"Zicntr\" and \"Zihpm\" Extensions for Counters, Version 2.0"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-zicntr-statements.html", "ee5bca84e2b9cc3be2c797535adcf701892967687e379c5d4df3738e7e4aad49",
+        (("norm:zihpm_op_sz_mode_acc_count", "§6.1"), ("norm:zihpm_op_sz_mode_acc_priv", "§6.1"),
+         ("norm:zihpm_op_sz_mode_acc_partition", "§6.1"), ("norm:zicntr_rdcycle_op", "§6.1.1"),
+         ("norm:zicntr_rdtime_op", "§6.1.1"), ("norm:zicntr_rdinstret_op", "§6.1.1")),
+        "This excerpt establishes no ZICNTR acceptance."),
+    "RVP-COUNTEREN-STATEMENTS": Excerpt(
+        "RVP-COUNTEREN-STATEMENTS", "RVP-MACHINE §2.1.1.11: what mcounteren gates, and what a read it refuses does",
+        Page("RVP-MACHINE", "priv/machine.html", "b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea",
+             "RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-counteren-statements.html", "a47ba18329dd6d7d4079f2f37c96619a8cb4347b4e973d37cc80e10ede27890a",
+        (("norm:mcounteren_op", "§2.1.1.11"), ("norm:mcounteren_inc_inaccessible", "§2.1.1.11"),
+         ("norm:mcounteren_clr_ill_inst_exc", "§2.1.1.11"), ("norm:mcounteren_set_nxt_priv", "§2.1.1.11")),
+        "This excerpt establishes no ZICNTR acceptance; the scounteren statement has no anchor to select in its own page, so it is cited, not retained."),
 }
 
 

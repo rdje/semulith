@@ -68,6 +68,10 @@ The observed effect and its reading: `scripts/measure_config_effect.py` retained
 (a43b-3f, 2026-11-04), and the policy review's comparison leg now reads the requirement's category (a43b-3g, 2026-11-04):
 `rv64gc-csr-set-v1` measures `satisfied`, 10 of 10 legs, and the leg reads pending without the retained effect.
 
+ZICNTR's design, on this route (a43c-1, 2026-11-04): a new program, `zicntr.s`, 163 instructions, 292 steps, drafted and measured before any case names it: `AGREE` under the overlay,
+`DIVERGE step 6 (rdcycle x5)` under the profile override. A write through `mcycle` or `minstret` stays unwitnessed: the spec-side deriver refuses it ("writable counter rebasing is outside
+this bounded author's scope"), and it is pinned. Zihpm's absence too: its vocabulary is the 33. Both go in the case's limitations (`docs/tasks/P4-SYSTEM.md`, a43c-1).
+
 ## How to apply
 
 - The overlay is small and reviewed, like an override: it enables what the case needs and says why. A new configuration is a new case's

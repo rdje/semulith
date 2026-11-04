@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-MACHINE statements — v20260120</title>
+<body>
+<h1>RVP-MACHINE §2.1.1.11: what mcounteren gates, and what a read it refuses does</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/machine.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no ZICNTR acceptance; the scounteren statement has no anchor to select in its own page, so it is cited, not retained.</p>
+<h2>§2.1.1.11: <code>norm:mcounteren_op</code></h2>
+<blockquote><p><span id="norm:mcounteren_op">controls the availability of the hardware performance-monitoring
+counters to the next-lower privileged mode.</span></p></blockquote>
+<h2>§2.1.1.11: <code>norm:mcounteren_inc_inaccessible</code></h2>
+<blockquote><p><span id="norm:mcounteren_inc_inaccessible">The settings in this register only control accessibility. The act of
+reading or writing this register does not affect the underlying
+counters, which continue to increment even when not accessible.</span></p></blockquote>
+<h2>§2.1.1.11: <code>norm:mcounteren_clr_ill_inst_exc</code></h2>
+<blockquote><p><span id="norm:mcounteren_clr_ill_inst_exc">When the CY, TM, IR, or HPM<em>n</em> bit in the <code>mcounteren</code> register is
+clear, attempts to read the <code>cycle</code>, <code>time</code>, <code>instret</code>, or
+<code>hpmcountern</code> register while executing in S-mode or U-mode will cause an
+illegal-instruction exception.</span></p></blockquote>
+<h2>§2.1.1.11: <code>norm:mcounteren_set_nxt_priv</code></h2>
+<blockquote><p><span id="norm:mcounteren_set_nxt_priv">When one of these bits is set, access to
+the corresponding register is permitted in the next implemented
+privilege mode (S-mode if implemented, otherwise U-mode).</span></p></blockquote>
+</body></html>
