@@ -4,6 +4,10 @@
 Hand image/PC/write fixtures come from the pinned C and base chapters. Five legacy
 budgets were declared in P4-SYSTEM.12 before this experiment; their committed
 spec-derived writes check the repaired fetch/end route, without engine outputs.
+
+Every control judges frozen copies (ruling 5, XTASK.13 slice b3): DEF-GEN's frozen rv64gc encoding and definitions,
+and byte copies of the five legacy guests, so a deleted or damaged live file reaches the real check, which names it.
+The author's owned corpus is live data, and six sibling author probes still read it (XTASK.13 slice b4).
 """
 from __future__ import annotations
 
@@ -23,6 +27,9 @@ import dossier_sexp as D
 from riscv_asm import Assembler
 
 REPO = Path(__file__).resolve().parent.parent
+FROZEN = REPO / 'scripts/fixtures/def-gen'
+FROZEN_ENCODING = FROZEN / 'profiles/rv64gc-lab-v0/encoding.sexp'
+LEGACY_GUESTS = REPO / 'scripts/fixtures/guest-gen/parcel-legacy'
 IMAGE = bytes.fromhex('8150 13811000 0501 11a0 ffff 8a81')
 LEGACY = {'dir-runoff': (3, 5), 'fault-fetch': (3, 5), 'it-prio-jump': (4, 7),
           'sv39-straddle': (52, 104), 'sv39-perm-rwx': (114, 226)}
@@ -32,10 +39,9 @@ def check(author, root):
     assert hasattr(author, 'derive_parcel_guest'), 'explicit parcel guest API is absent'
     unit = root / 'profiles/rv64gc-lab-v0'
     unit.mkdir(parents=True)
-    shutil.copytree(REPO / 'definitions', root / 'definitions')
-    for name in ('profile.sexp', 'state.sexp'):
-        shutil.copyfile(REPO / 'profiles/rv64gc-lab-v0' / name, unit / name)
-    source = (REPO / 'profiles/rv64gc-lab-v0/encoding.sexp').read_text()
+    shutil.copytree(FROZEN / 'definitions', root / 'definitions')
+    shutil.copyfile(FROZEN_ENCODING.with_name('state.sexp'), unit / 'state.sexp')  # CSR names resolve through it
+    source = FROZEN_ENCODING.read_text()
     source = source.replace('(slot (id c) (requires "riscv/c"))', '(extensions "riscv/c")')
     encoding = unit / 'encoding.sexp'
     encoding.write_text(source)
@@ -144,10 +150,10 @@ c.nop
     assert rc == 2 and not good.with_suffix('.expected.sexp').exists(), 'refused batch wrote a partial record'
     with contextlib.redirect_stdout(io.StringIO()):
         assert author.main(['probe', '--encoding', str(encoding), '--parcels', '--steps', '5', '--check', str(mixed)]) == 0
-    base_asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
+    base_asm = Assembler(FROZEN_ENCODING)
     checked = 0
     for name, (budget, parcels) in LEGACY.items():
-        path = REPO / 'profiles/rv64gc-lab-v0/guests' / (name + '.s')
+        path = LEGACY_GUESTS / (name + '.s')
         run = author.derive_parcel_guest(path, base_asm, budget)
         previous = D.load_expectations(path.with_suffix('.expected.sexp'))
         expected = [{int(reg[1:]): int(value, 16) for reg, value in st['writes'].items()}
@@ -156,20 +162,21 @@ c.nop
         assert [st.writes for st in run.steps] == expected, f'{name}: legacy architectural observations changed'
         assert sum(st.fetch for st in run.steps) == parcels, f'{name}: derived parcel count changed'
         checked += budget
-    assert author.main(['probe', '--check-owned']) == 0
     print(f'GC parcel guest probe: mixed bytes, budgets, visibility and head boundaries passed; 5 legacy repairs / {checked} steps')
 
 
 def check_cold():
-    """Run the public probe from tracked inputs without the local reference cache."""
+    """Run the public probe from its tracked tools and frozen inputs alone, without the local reference cache."""
     parent = REPO / 'target/p4-system-12'
     parent.mkdir(parents=True, exist_ok=True)
-    paths = subprocess.check_output(
-        ['git', 'ls-files', '-z', '--', 'scripts', 'definitions', 'profiles', 'schema'],
-        cwd=REPO).decode().split('\0')
+    frozen = ('scripts/fixtures/def-gen/definitions/', 'scripts/fixtures/def-gen/profiles/rv64gc-lab-v0/',
+              'scripts/fixtures/guest-gen/parcel-legacy/', 'schema/')
+    paths = [name for name in subprocess.check_output(
+        ['git', 'ls-files', '-z', '--', 'scripts', 'schema'], cwd=REPO).decode().split('\0')
+        if name.startswith(frozen) or (name.startswith('scripts/') and name.count('/') == 1)]
     with tempfile.TemporaryDirectory(prefix='gc-parcel-cold-', dir=parent) as td:
         root = Path(td)
-        for name in filter(None, paths):
+        for name in paths:
             source = REPO / name
             if source.is_symlink() or not source.is_file():
                 raise RuntimeError(f'cold probe requires a regular tracked input: {name}')
@@ -230,7 +237,7 @@ def main():
             sys.modules[spec.name] = author
             spec.loader.exec_module(author)
             author.REPO = REPO
-            author.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
+            author.ENCODING = FROZEN_ENCODING
         check(author, root)
     return 0
 

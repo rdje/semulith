@@ -14,16 +14,16 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); 5 of 5 done after XTASK-0075, so the next unit is
-  XTASK.13 b3; `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0076 (XTASK.13 b3);
+  `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0335` (P4-SYSTEM.14 a43b-3c, feature 5 of 5) — a case's reference configuration as data (schema/overlay.sexp, prepare_div_inputs.reference_config,
-  census_reference_config.py). The design: decision_reference-config-per-case.md (raised to the director, who may overrule).
-- next_action: XTASK.13 slice b3 (GUEST-GEN parcel author cold/legacy; the tree's frontier row). Then features: a43b-3d — the program (target/p4-system-14/a43b-3c/draft/gen_program.py), its
-  expectations and fixture, the case (draft_case.py: 53 properties, 157 steps), prepared inputs, the family's sixth re-derivation; a43b-3e declarations; a43b-3f capture once + the
-  alternative trace; a43b-3g reviews (the category branch, FEATURE_DISPOSITIONS); a43b-3h credit. Then ZICNTR, SSTC, a43b-c1, a43b-c2.
+- last_unit: `SEMULITH-XTASK-0076` (XTASK.13 b3, the 5:1 turn) — GUEST-GEN's parcel author probe judges frozen copies. The last feature: `SEMULITH-P4-0335` (a43b-3c), a case's reference
+  configuration as data. The design: decision_reference-config-per-case.md (raised to the director, who may overrule).
+- next_action: features (1 of 5 after XTASK-0076): a43b-3d — the program (target/p4-system-14/a43b-3c/draft/gen_program.py), its expectations and fixture, the case (draft_case.py: 53
+  properties, 157 steps), prepared inputs, the family's sixth re-derivation; a43b-3e declarations; a43b-3f capture once + the alternative trace; a43b-3g reviews (the category branch,
+  FEATURE_DISPOSITIONS); a43b-3h credit. Then ZICNTR, SSTC, a43b-c1, a43b-c2. XTASK.13 b4 at the 5:1 turn.
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`); chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -33,7 +33,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-3c, 3b, 3a (`target/p4-system-14/a43b-3c`, `…/a43b-3b`, `…/a43b-3a`), a43b-2e, 2d (`…/a43b-2e`, `…/a43b-2d`); XTASK.13 b2;
+- evidence: `docs/tasks/XTASK.md` XTASK.13 b3 (`target/xtask/xt0076`); `docs/tasks/P4-SYSTEM.md` .14 a43b-3c, 3b, 3a (`target/p4-system-14/a43b-3c`, `…/a43b-3b`, `…/a43b-3a`); XTASK.13 b2;
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0076 (leaf XTASK.13 slice b3) — GUEST-GEN's parcel author probe judges frozen copies
+
+`scripts/fixtures/guest-gen/parcel-legacy/` holds the five legacy guests and the probe composes over DEF-GEN's frozen encoding, state and definitions; `--cold` copies what it reads. A deleted live guest now reaches the generator's refusal naming the file, the self-test at 400 of 400. A real-run `--check-owned` step was drafted and taken back: six author probes still read the live owned corpus, so it could not fire. That is slice b4.
+
 ## SEMULITH-P4-0335 (leaf P4-SYSTEM.14 a43b-3c) — a case's reference configuration, as data: the overlay, its controls and the census tool
 
 a43b-3c: `schema/overlay.sexp` and the first overlay; `prepare_div_inputs.reference_config` applies it over the mapped profile override and refuses any overlay that changes nothing, overlaps or names another case (14 tests, nine omissions in PROFILE-CONSISTENCY). `scripts/census_reference_config.py` re-derives a43b-3a's table from the tracked route, identically. No lapse: v5 and xlen-v2 still `--verify` equal. Two defects logged and scheduled: 37 stale guest citations (a43b-c1) and the deriver's literal `{new}` (a43b-c2).

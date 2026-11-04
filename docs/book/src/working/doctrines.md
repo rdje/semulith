@@ -327,15 +327,20 @@ fragile doctrines' arms onto frozen copies under `scripts/fixtures/`, one doctri
 `DEF-GEN` (slice a, `scripts/fixtures/def-gen/`), then `GUEST-GEN` — its surgical and census
 arms over two mini corpora (b1), and its base-mirror and parcel-count arms over a frozen
 owner→mirror pair under DEF-GEN's frozen encoding (b2, `scripts/fixtures/guest-gen/base-mirror/`:
-the eight guests the mirror governor's predicates need, from both units). The real check
-still judges the live files. Measured on GUEST-GEN, HEAD's binary over HEAD's tree against
-b2's over the working tree, with one live file damaged at a time:
+the eight guests the mirror governor's predicates need, from both units), then its parcel author
+probe (b3, `scripts/fixtures/guest-gen/parcel-legacy/`: the five legacy guests). The real check
+still judges the live files. Measured on GUEST-GEN, with one live file damaged at a time:
 
 | Live state | Before b2 | After b2 |
 | --- | --- | --- |
 | a mirror record edited (`bound-arith.expected.sexp`) | refused: 2 base-mirror arms missed | `FAIL — …guests_rv64gc.rs is out of sync`, exit 1 |
 | an rv64i guest that no longer assembles | refused: 3 base-mirror arms missed | the generator's own refusal naming `smoke-arith.s` and `zzz9`, exit 2 |
-| an rv64gc guest deleted (`c-alu.s`) | refused: 8 arms missed | refused: 1 arm missed — the parcel author's cold probe, which copies every tracked input (slice b3) |
+| an rv64gc guest deleted (`c-alu.s`) | refused: 8 arms missed | refused: 1 arm missed — the parcel author's cold probe; after b3, `gen_guests: REFUSED — …run-order.txt: lists c-alu — not on disk`, with the self-test at 400 of 400 |
+
+One state still ends in the old answer, and it is worth seeing why. Hand-edit a record the spec-side author owns *and* regenerate its fixture, and
+the fixture check has nothing to say; `scripts/derive_rv64gc_expectations.py --check-owned` reads `DRIFT — inj-walk-l0`, but six author probes still read that live
+corpus, so the self-test refuses first (`391 pass / 9 fail`). A real-run step for it was drafted at b3 and taken back: until those probes are frozen it can never fire, and a
+step never observed red is not known to work. Slice b4 freezes them and adds the step.
 
 The tools gained what the frozen arms need and nothing else: `scripts/check_gc_mirror.py
 --self-test --encoding F` takes its composition from that encoding's own root, and
