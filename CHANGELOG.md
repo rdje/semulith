@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0337 (leaf P4-SYSTEM.14 a43b-3e) — the CSR-SET case's three declarations, committed before its capture
+
+a43b-3e: planned experiment, dependency manifest (67 children, two of them the case's own) and authority record, from `capture_div.py --declare`; preflight `ready`; 7 cases, 1 declared, crediting nothing. The 67 children and 13 authority views are frozen until the capture.
+
 ## SEMULITH-P4-0336 (leaf P4-SYSTEM.14 a43b-3d) — the CSR-SET program and its case: all 33 CSRs, 53 predeclared witnesses, in M, S and U
 
 a43b-3d: `csr-set.s` rewritten before any capture (136 instructions, 157 steps), judged three ways: the spec-side author, the lab fixture, the pinned Sail under the overlay. `evidence/rv64gc-csr-set-v1/`: the case (second method and adversarial case declared, the first to do so), its prepared inputs. The evidence family re-derived for seven cases (155 files, 96 MiB). Uncaptured; status unchanged.

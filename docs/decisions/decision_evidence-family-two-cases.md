@@ -112,5 +112,5 @@ re-derivation.
 `rv64gc-csr-set-v1` is REQ-D-CSR-SET's case, the sixth re-derivation. No earlier case is removed. Measured: a case still holds at most
 13,828,096 B, so seven cases and the index hold at most 96,800,768 B (`retention_limits()`), above the 80 MiB ceiling. The bounds move to **155**
 files (7 × 22 + the index; health **152**, three below) and **100,663,296** B (96 MiB; health **88,080,384** B, 84 MiB, the 0.875 ratio); the
-4 MiB part bound is unchanged. At declaration the family holds 138 files (the case file and four prepared inputs), 155 after its capture. An eighth case
+4 MiB part bound is unchanged. The family holds 138 files with the case file and four prepared inputs, 141 at its declarations (a43b-3e), 155 after its capture. An eighth case
 is a seventh re-derivation.

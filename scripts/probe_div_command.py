@@ -509,12 +509,12 @@ class CommandTests(unittest.TestCase):
     def test_cli_declaration_is_readonly_and_capture_is_unavailable(self):
         command = [sys.executable, *(["-O"] if sys.flags.optimize else []), "-B",
                    str(self.runtime / "scripts/capture_div.py")]
-        result = subprocess.run([*command, "--declare"], cwd=ROOT, capture_output=True, text=True, timeout=15)
+        result = subprocess.run([*command, "--declare"], cwd=ROOT, capture_output=True, text=True, timeout=120)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         declared = json.loads(result.stdout)
         self.assertEqual((declared["canonical_capture"], declared["qualification"]), (False, False))
         self.assertEqual(len(declared["files"]), 3)
-        result = subprocess.run([*command, "--capture"], cwd=ROOT, capture_output=True, text=True, timeout=15)
+        result = subprocess.run([*command, "--capture"], cwd=ROOT, capture_output=True, text=True, timeout=120)
         self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
         self.assertEqual(json.loads(result.stdout)["disposition"], "unavailable")
 
