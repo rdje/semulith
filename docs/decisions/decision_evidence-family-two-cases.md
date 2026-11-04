@@ -106,3 +106,11 @@ holds at most 13,828,096 B, so six cases and the index hold at most 82,972,672 B
 holds 105 files (each new case's case file, four prepared inputs and three declarations), 133 after both captures.
 `evidence/README.md` was compressed to hold the two rows (3,795 B of its 4,096 B cap). A seventh case is a sixth
 re-derivation.
+
+## Addendum (2026-11-03, `P4-SYSTEM.14` a43b-3d): the seventh case — CSR-SET
+
+`rv64gc-csr-set-v1` is REQ-D-CSR-SET's case, the sixth re-derivation. No earlier case is removed. Measured: a case still holds at most
+13,828,096 B, so seven cases and the index hold at most 96,800,768 B (`retention_limits()`), above the 80 MiB ceiling. The bounds move to **155**
+files (7 × 22 + the index; health **152**, three below) and **100,663,296** B (96 MiB; health **88,080,384** B, 84 MiB, the 0.875 ratio); the
+4 MiB part bound is unchanged. At declaration the family holds 138 files (the case file and four prepared inputs), 155 after its capture. An eighth case
+is a seventh re-derivation.

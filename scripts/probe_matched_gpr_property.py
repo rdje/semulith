@@ -379,10 +379,10 @@ class PropertyTests(unittest.TestCase):
     def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
         case = G.reviewed_case(G.M_FORMS_CASE_ID)
         # The declared cases: v2, v3, the M case re-declared as v4 (a44-3), the XLEN case (a43a-2b) and both re-declared
-        # once more, their control declared, as v5 and xlen-v2 (a43b-2c).
+        # once more, their control declared, as v5 and xlen-v2 (a43b-2c); the CSR-SET case (a43b-3d).
         self.assertEqual(G.reviewed_case_ids(), tuple(sorted((G.CASE_ID, G.M_FORMS_CASE_ID, "rv64gc-m-forms-v4",
                                                               "rv64gc-m-forms-v5", "rv64gc-xlen-forms-v1",
-                                                              "rv64gc-xlen-forms-v2"))))
+                                                              "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1"))))
         self.assertEqual(case.case_id, "rv64gc-m-forms-v3")
         self.assertEqual((case.program, case.instructions), ("m-forms.s", 33))
         source = (GUESTS / case.program).read_bytes()

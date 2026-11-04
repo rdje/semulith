@@ -34,13 +34,14 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 133  # six declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 80 * 1024 * 1024  # the fifth re-derivation (a43b-2c): six cases at most 82,972,672 B with the index
+FAMILY_FILES = 155  # seven declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
+FAMILY_BYTES = 96 * 1024 * 1024  # the sixth re-derivation (a43b-3d): seven cases at most 96,800,768 B with the index
 M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
 XLEN_V1 = "rv64gc-xlen-forms-v1"  # the first non-M case, REQ-D-XLEN (P4-SYSTEM.14 a43a-2b)
 # The planned lapse that opens CSR-SET re-captures both once, their control declared (P4-SYSTEM.14 a43b-2c).
 M_FORMS_V5, XLEN_V2 = "rv64gc-m-forms-v5", "rv64gc-xlen-forms-v2"
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2)
+CSR_SET = "rv64gc-csr-set-v1"  # REQ-D-CSR-SET, the first case with its own reference configuration (P4-SYSTEM.14 a43b-3d)
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -81,9 +82,22 @@ PREPARED[XLEN_V1] = {
 # expectation only, never from the case id (prepare_div_inputs.py --show reported each pin; a43b-2c).
 PREPARED[M_FORMS_V5] = dict(PREPARED[M_FORMS_V4])
 PREPARED[XLEN_V2] = dict(PREPARED[XLEN_V1])
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119}
+# The CSR-SET case's own pins, stated here independently of its declaration; its configuration is the profile override under
+# its overlay, which is why that one pin differs from every other case's (decision_reference-config-per-case.md).
+PREPARED[CSR_SET] = {
+    "guest.elf": ("guest-image", 4856,
+        "a07daaefb204f47559c60adf8f2942515b6c56e8fdb757aad786c26042d1c7d4"),
+    "reference-config.json": ("reference-config", 8748,
+        "05746ed66c5f2805afe16c09b072edd373c284b73566a2252b4404f86fd59cea"),
+    "baseline.expected.sexp": ("expectation", 34930,
+        "92b53fad0ae9903d2a3a8f41941d5c46ab32083183b556bb34d24ef3553cb212"),
+    "control.expected.sexp": ("expectation", 33688,
+        "a8fb15bdc41fc8cb4d7e0bf4d5650df00a6bedf41d5286e6ab116571e6a01825"),
+}
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119,
+          CSR_SET: 82222}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50),
-           M_FORMS_V5: (33, 66), XLEN_V2: (25, 50)}
+           M_FORMS_V5: (33, 66), XLEN_V2: (25, 50), CSR_SET: (157, 314)}
 
 
 def bounded_bytes(path):
@@ -284,6 +298,9 @@ class CaseInputTests(unittest.TestCase):
 
     def test_config_is_exact_public_materialization(self):
         canonical = mapped(bounded_bytes(ROOT / OVERRIDE), "override", D.override_to_doc)
+        if self.CASE_ID == CSR_SET:  # its overlay's own controls are scripts/probe_reference_overlay.py
+            overlay = mapped(bounded_bytes(ROOT / Prep.overlay_path(CSR_SET)), "overlay", Prep.overlay_to_doc)
+            canonical = Prep.apply_overlay(canonical, overlay)
         payload = self.payloads["reference-config.json"]
         self.assertEqual(payload, (json.dumps(canonical, indent=2) + "\n").encode("utf-8"))
         self.assertEqual(json.loads(payload), canonical)
@@ -362,6 +379,11 @@ class MFormsCaseInputTests(CaseInputTests):
     CASE_ID = P.M_FORMS_CASE_ID
 
 
+class CsrSetCaseInputTests(CaseInputTests):
+    """The first case with its own reference configuration: the pins hold through the overlay."""
+    CASE_ID = CSR_SET
+
+
 class FamilyTests(unittest.TestCase):
     def setUp(self):
         base = ROOT / "target/prepared-div-input-controls"
@@ -383,12 +405,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 82972672)  # six cases of 13,828,096 B and the index (a43b-2c)
+        self.assertEqual(sum(limits.values()), 96800768)  # seven cases of 13,828,096 B and the index (a43b-3d)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 6 * 22)  # v5 and xlen-v2 captured once each (a43b-2d); 8 each at their declaration
+        self.assertEqual(len(members), 1 + 6 * 22 + 5)  # the CSR-SET case and its prepared inputs (a43b-3d); 8 at its declaration, 22 captured
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):
@@ -445,7 +467,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mutation", choices=["actual-layout"])
     args = parser.parse_args()
-    classes = (RetainedCaseInputTests, MFormsCaseInputTests, FamilyTests)
+    classes = (RetainedCaseInputTests, MFormsCaseInputTests, CsrSetCaseInputTests, FamilyTests)
     if args.mutation:
         before = "    check_retention_layout(root)\n    result = {}\n"
         source = Path(__file__).read_text()
@@ -456,7 +478,7 @@ def main():
         sys.modules[module.__name__] = module
         exec(compile(source.replace(before, "    result = {}\n", 1), __file__, "exec"),
              module.__dict__)
-        classes = (module.RetainedCaseInputTests, module.MFormsCaseInputTests, module.FamilyTests)
+        classes = (module.RetainedCaseInputTests, module.MFormsCaseInputTests, module.CsrSetCaseInputTests, module.FamilyTests)
     suite = unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromTestCase(cls) for cls in classes)
     result = unittest.TextTestRunner(verbosity=1).run(suite)
     print(f"DIV-CAPTURE-INPUTS: {result.testsRun} tests / {len(result.failures)} failures / "

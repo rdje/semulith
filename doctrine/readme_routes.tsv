@@ -485,5 +485,5 @@ LIVE_DOCUMENT_SIZE_CONTAINMENT.md	reader_navigation	normative	local neutral cont
 # four prepared inputs + twelve observations + five metadata files + bounded index.
 # At most3*(4MiB+3*64KiB)+9*64KiB+4KiB =13,766,656B, below16MiB;
 # actual prepared payloads23,315B. These are retention limits, not read/RAM budgets.
-evidence/	reader_navigation	partitioned	P4-SYSTEM.14 a42af, re-derived for two declared cases by a42au, three by a44-3, four by a43a-2b and six by a43b-2c (decision_evidence-family-two-cases.md); one directory per reviewed finite case, 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a); bounded evidence/README.md index and declared lifecycle; ordinary capture refuses existing outputs	130	73400320	133	83886080	4194304
+evidence/	reader_navigation	partitioned	P4-SYSTEM.14 a42af, re-derived for two declared cases by a42au, three by a44-3, four by a43a-2b, six by a43b-2c and seven by a43b-3d (decision_evidence-family-two-cases.md); one directory per reviewed finite case, 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a); bounded evidence/README.md index and declared lifecycle; ordinary capture refuses existing outputs	152	88080384	155	100663296	4194304
 evidence/README.md	reader_navigation	hot_live	P4-SYSTEM.14 a42af, a42au; bounded index of the retained finite cases	64	3890	80	4096	0

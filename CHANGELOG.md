@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0336 (leaf P4-SYSTEM.14 a43b-3d) — the CSR-SET program and its case: all 33 CSRs, 53 predeclared witnesses, in M, S and U
+
+a43b-3d: `csr-set.s` rewritten before any capture (136 instructions, 157 steps), judged three ways: the spec-side author, the lab fixture, the pinned Sail under the overlay. `evidence/rv64gc-csr-set-v1/`: the case (second method and adversarial case declared, the first to do so), its prepared inputs. The evidence family re-derived for seven cases (155 files, 96 MiB). Uncaptured; status unchanged.
+
 ## SEMULITH-XTASK-0076 (leaf XTASK.13 slice b3) — GUEST-GEN's parcel author probe judges frozen copies
 
 `scripts/fixtures/guest-gen/parcel-legacy/` holds the five legacy guests and the probe composes over DEF-GEN's frozen encoding, state and definitions; `--cold` copies what it reads. A deleted live guest now reaches the generator's refusal naming the file, the self-test at 400 of 400. A real-run `--check-owned` step was drafted and taken back: six author probes still read the live owned corpus, so it could not fire. That is slice b4.
