@@ -16,6 +16,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import dossier_sexp as D
 from riscv_asm import Assembler
 
@@ -128,7 +129,7 @@ def check(author):
         writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
         assert [st.writes for st in run.steps] == writes, f'{name}: privileged architectural observations differ'
         total += len(run.steps)
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print(f'GC privilege author probe: fixed misa, CSR/xRET/TVM/TSR legality passed; 5 corpus repairs / {total} steps')
 
 

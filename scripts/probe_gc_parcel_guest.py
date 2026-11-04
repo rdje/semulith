@@ -7,7 +7,7 @@ spec-derived writes check the repaired fetch/end route, without engine outputs.
 
 Every control judges frozen copies (ruling 5, XTASK.13 slice b3): DEF-GEN's frozen rv64gc encoding and definitions,
 and byte copies of the five legacy guests, so a deleted or damaged live file reaches the real check, which names it.
-The author's owned corpus is live data, and six sibling author probes still read it (XTASK.13 slice b4).
+The author's owned corpus is live data; its sibling author probes judge a frozen copy (`frozen_owned.py`, XTASK.13 slice b4).
 """
 from __future__ import annotations
 

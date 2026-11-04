@@ -15,6 +15,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 
 REPO = Path(__file__).resolve().parent.parent
 
@@ -176,7 +177,7 @@ def check(author):
     assert h.fetch_instruction() == ('fault', 1, 0x4ffe)
     assert fetches(h) == [('fetch', base + author.REGION + 0xffe, 2)]
     assert h.csr['mtval'] == 0x4ffe, 'physical refusal must report the virtual address'
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print('GC fetch probe: canonical/PTE/MPRV repairs and exact parcel schedules passed')
 
 

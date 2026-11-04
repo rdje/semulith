@@ -15,6 +15,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import spec_c as C
 
 REPO = Path(__file__).resolve().parent.parent
@@ -218,7 +219,7 @@ def check(author, decoder):
             assert 'reserved' in str(exc)
         else:
             raise AssertionError(f'reserved base word {word:#x} accepted')
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print('C author probe: 37 expansions/effects, 22 limits, 79 one-hot bits, 11 reserved, 10 hints and 42 owned records passed')
 
 

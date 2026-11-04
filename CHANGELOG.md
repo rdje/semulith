@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0077 (leaf XTASK.13 slice b4) — GUEST-GEN's author probes judge a frozen owned corpus, and its real check re-derives the live one
+
+`scripts/fixtures/guest-gen/owned/` holds the 42 owned guests, laid out as the repository is; `scripts/frozen_owned.py` points the pinned deriver's `REPO` and `ENCODING` at them for the one call, so the deriver does not move. Eight author probes and `probe_gc_owned_extent` take them. `--check-owned` is now a real-run step, measured RED: a mirrored record's value edit goes from a refusal (`391 pass / 9 fail`) to `MIRROR DRIFT — inj-walk-l0.s` at 400 of 400, and one line of silent prose, which only this step can read, goes from a silent `rc=0` to `DRIFT — inj-walk-l0`. The probes' other corpus reads are still live: slice b5. Next: features, ZICNTR (a43c).
+
 ## SEMULITH-P4-0340 (leaf P4-SYSTEM.14 a43b-3h) — `REQ-D-CSR-SET` credited `implemented`: the first `implementation-defined` requirement, G-STATE 2 of 4
 
 a43b-3h: `CR-D-CSR-SET-1`, `authority review`, on one finite case of 53 witnesses: 45 planned, 3 implemented, 3 of 3 records current, 0 drift. Its limitations name what it does not claim: `mip`'s value directly, a CLINT or any device, a non-member address trapping, field semantics, counter rates, timer delivery, numerics. **Raised to the director (a43b-c3):** the dossier copy and its `G-TRACE` row are left out, a departure from the capture plan's step (iii): `references.sexp` would reach 77,669 B against the per-part 65,536 B, and moving the copies edits a tool all three manifests pin. Next: XTASK.13 b4, then ZICNTR.

@@ -338,9 +338,19 @@ still judges the live files. Measured on GUEST-GEN, with one live file damaged a
 | an rv64gc guest deleted (`c-alu.s`) | refused: 8 arms missed | refused: 1 arm missed — the parcel author's cold probe; after b3, `gen_guests: REFUSED — …run-order.txt: lists c-alu — not on disk`, with the self-test at 400 of 400 |
 
 One state still ends in the old answer, and it is worth seeing why. Hand-edit a record the spec-side author owns *and* regenerate its fixture, and
-the fixture check has nothing to say; `scripts/derive_rv64gc_expectations.py --check-owned` reads `DRIFT — inj-walk-l0`, but six author probes still read that live
-corpus, so the self-test refuses first (`391 pass / 9 fail`). A real-run step for it was drafted at b3 and taken back: until those probes are frozen it can never fire, and a
-step never observed red is not known to work. Slice b4 freezes them and adds the step.
+the fixture check has nothing to say; `scripts/derive_rv64gc_expectations.py --check-owned` reads `DRIFT — inj-walk-l0`, but eight author probes read that live
+corpus, so the self-test refused first (`391 pass / 9 fail`). A real-run step for it was drafted at b3 and taken back: until those probes were frozen it could never fire, and a
+step never observed red is not known to work. Slice b4 froze them (`scripts/fixtures/guest-gen/owned/`, 42 guests, laid out as the repository is, and `scripts/frozen_owned.py`, which
+points the deriver's `REPO` and `ENCODING` at them, because the deriver is pinned and does not move) and added the step:
+
+| State of the tree | Before b4 | After b4 |
+| --- | --- | --- |
+| nothing damaged | `GUEST-GEN: ok` | `GUEST-GEN: ok` |
+| a mirrored owned record's value edited, fixture regenerated (`inj-walk-l0`) | refused: `391 pass / 9 fail` | `MIRROR DRIFT — inj-walk-l0.s: architectural observations differ at boundary 0`, the self-test at 400 of 400 |
+| one line of prose added to that record, fixture regenerated | refused the same way, since each of those probes asserts `--check-owned`, which reads this as drift; with the probes frozen and no step, it passes silently (`rc=0`) | `an owned expectation record does not re-derive from its guest.` `DRIFT — inj-walk-l0` |
+
+The third row is why the step earns its place: the mirror compares architectural observations and the fixture compares bytes it generated, so only `--check-owned` reads the record's prose.
+The author probes still read other live guests (`mm-sret`, for one: edit its record and `probe_gc_privilege_author.py` fails): slice b5.
 
 The tools gained what the frozen arms need and nothing else: `scripts/check_gc_mirror.py
 --self-test --encoding F` takes its composition from that encoding's own root, and

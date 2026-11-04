@@ -14,6 +14,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 
 REPO = Path(__file__).resolve().parent.parent
 RESERVED = [0x04000033, 0x04004033, 0x04006033, 0x04007033,
@@ -62,7 +63,7 @@ def check(author):
     assert hart.walk(va, 'load') == ('fault', 13), 'MXR=0 rejects an X-only load'
     hart.csr['mstatus'] |= 1 << 19
     assert hart.walk(va, 'load') == ('pa', author.ENTRY), 'MXR=1 permits an X-only load'
-    assert author.main(['probe', '--check-owned']) == 0, 'owned expectation corpus drift'
+    assert Frozen.check_owned(author) == 0, 'owned expectation corpus drift'
     print('GC author probe: 7 reserved words, named refusal, permissions and owned corpus passed')
 
 

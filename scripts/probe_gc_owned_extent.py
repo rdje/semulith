@@ -16,6 +16,7 @@ import tempfile
 
 import derive_gc_parcel_counts as Counts
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import dossier_sexp as D
 from expectations_text import with_fetches
 from riscv_asm import Assembler
@@ -37,10 +38,10 @@ def probe(root, mutation):
     for path in UNIT.glob('*.sexp'):
         shutil.copyfile(path, unit / path.name)
     for name in Q.OWNED_GUESTS:
-        shutil.copyfile(UNIT / 'guests' / (name + '.s'), guests / (name + '.s'))
+        shutil.copyfile(Frozen.GUESTS / (name + '.s'), guests / (name + '.s'))
     for name in Q.PARCEL_OWNED_GUESTS:
         for suffix in ('.s', '.expected.sexp'):
-            shutil.copyfile(UNIT / 'guests' / (name + suffix), guests / (name + suffix))
+            shutil.copyfile(Frozen.GUESTS / (name + suffix), guests / (name + suffix))
     original = (UNIT / 'encoding.sexp').read_text()
     full = original.replace('(slot (id c) (requires "riscv/c"))', '(extensions "riscv/c")')
     encoding = unit / 'encoding.sexp'

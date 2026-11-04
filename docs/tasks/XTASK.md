@@ -498,12 +498,20 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   cannot be observed RED is not known to work (`TOOLBOX.md`), so it waits for those probes: slice b4, next at the 5:1 turn, a frozen owned corpus for them and then the real-run step. The
   corpus lost nothing here: the same six keep asserting `--check-owned` meanwhile. `GUEST-GEN --self-test: 400 pass / 0 fail` (the arm count unchanged). No path a case pins moved, and none
   is frozen at this turn: CSR-SET's declarations come after it. Next: slice b4.
+  Slice b4 (`2026-11-04`, `SEMULITH-XTASK-0077`; on clean 7d846fac; evidence target/xtask/xt0077): the author probes judge a frozen owned corpus, and GUEST-GEN's real check re-derives the live one.
+  `scripts/fixtures/guest-gen/owned/profiles/rv64gc-lab-v0/guests/` holds byte copies of the 42 owned guests (84 files, 440 KB). `derive_rv64gc_expectations.py` is pinned by every retained case and does not move, and it selects its corpus and a record's
+  historical header under its `REPO`, so `scripts/frozen_owned.py` points the module under test at that tree and DEF-GEN's frozen encoding for the one call, and restores it. Eight probes take it (`probe_gc_author`, `probe_c_author`, `_fetch`, `_privilege_author`, `_integer_author`,
+  `_counter_author`, `_cache_author`, `_provenance`), and `probe_gc_owned_extent` starts its scratch tree from the frozen copies. `_provenance`'s `parcel-history` seam stopped firing at the first draft, because a frozen path was no longer the author's canonical one, so only the
+  route could refuse: `Frozen.rooted` gives it back its canonical path, and the arm fires again. **The real-run step**, `--check-owned` after the mirror governor: drafted at b3, taken back because it could not be observed RED; this time measured (red-before.txt, red-after.txt, red-step.txt). `inj-walk-l0`'s
+  value edited with its fixture regenerated: `391 pass / 9 fail`, refused, becomes `rc=1 MIRROR DRIFT — inj-walk-l0.s: architectural observations differ at boundary 0` with the self-test at `400 pass / 0 fail`; `f-arith` the same. **That state fires the mirror governor, not the step, and the first after run showed it:** so the step needed a state only it can name. One
+  line of prose added to the record, fixture regenerated: the binary without the step reads `rc=0` over the frozen tree, a silent pass; with it, `rc=1`, `an owned expectation record does not re-derive from its guest.`, `DRIFT — inj-walk-l0`. Each state restored byte-identical (`cmp`). `GUEST-GEN --self-test: 400 pass / 0 fail` (the arm count unchanged). No path a case pins moved (`staged.txt` ∩ each of the three manifests = ∅). **Still live, measured (remaining.txt):** the author
+  probes' other corpus reads, none of them owned: `mm-sret`'s record edited, `probe_gc_privilege_author` `rc=1`. Slice b5, next at the 5:1 turn; the count restarts here. Next: features, ZICNTR (a43c).
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) and b3 (its parcel author probe) done; b4 (the author probes' owned-corpus arms, then the real-run step) next, after five feature units |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe) and b4 (the author probes' owned corpus, and the real-run step) done; b4 (the author probes' owned-corpus arms, then the real-run step) next, after five feature units |
 
 ## Decisions
 
@@ -625,6 +633,9 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Acceptance Checklist (leaf XTASK.13)
 
+- [x] slice b4 **ROOT CAUSE** — target/xtask/xt0077/red-before.txt: `inj-walk-l0` edited with its fixture regenerated, `owned-record-edited before rc=2`, `GUEST-GEN --self-test: 391 pass / 9 fail`: eight author probes read the live owned corpus, so the self-test refused before any check could name the record, and no real-run step re-derived it.
+- [x] slice b4 **ADDRESSED** — target/xtask/xt0077/red-after.txt: the same state `rc=1`, `MIRROR DRIFT — inj-walk-l0.s`, `GUEST-GEN --self-test: 400 pass / 0 fail`; target/xtask/xt0077/red-step.txt: one line of prose, `prose before rc=0`, `prose after rc=1`, `DRIFT — inj-walk-l0`; `python3 -B scripts/probe_gc_provenance.py --mutation parcel-history` still `AssertionError: generic output inherited FP provenance`.
+- [x] slice b4 **NO REGRESSION** — `GUEST-GEN: ok` on the clean tree, `rc=0`; each state restored (`cmp`); `git diff --cached --name-only` holds no path of the three manifests (`grep -c` 0 each, target/xtask/xt0077/staged.txt); `python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0` → `3 of 3 credit record(s) current; 0 drift`; the deriver unchanged (`git diff --cached --name-only` holds no `scripts/derive_rv64gc_expectations.py`).
 - [x] slice b3 **ROOT CAUSE** — target/xtask/xt0076/red-before.txt: `gc-guest-missing` `rc=2` through the self-test, the miss `GREEN parcel author controls use only tracked inputs`; `legacy-guest-missing` `rc=2` with two arms missed, the first `GREEN byte guest budgets, visibility and head boundaries`; `grep -n 'profiles/rv64gc-lab-v0' scripts/probe_gc_parcel_guest.py` at b95a8f66 read the live encoding, guests and unit files, and `--cold` listed `definitions` and `profiles`.
 - [x] slice b3 **ADDRESSED** — target/xtask/xt0076/red-after.txt: `gc-guest-missing` and `legacy-guest-missing` `rc=2` on the generator's refusal naming the file, `GUEST-GEN --self-test: 400 pass / 0 fail` in every state; `python3 -B scripts/probe_gc_parcel_guest.py --cold` `rc=0` → `tracked-only inputs and no reference cache passed`; each of the eight `--mutation` arms `rc=1` with its reason (m.*.out); the owned state: `derive_rv64gc_expectations: DRIFT — inj-walk-l0`, the check `391 pass / 9 fail` (red-owned.txt), naming slice b4's scope.
 - [x] slice b3 **NO REGRESSION** — `in-sync` `rc=0` before and after, `GUEST-GEN: ok`; `git diff --cached --name-only` holds no path of `evidence/rv64gc-m-forms-v5/dependencies.sexp` or the xlen-v2 manifest (`grep -c` 0); `python3 -B scripts/requirement_status.py` → `46 planned, 2 implemented … 0 drift`; the staged prechecks and the commit gate (chain log).
@@ -689,6 +700,7 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Changelog
 
+- `2026-11-04`: XTASK.13 slice b4 done — the author probes judge a frozen owned corpus; GUEST-GEN's real check re-derives the live one; the probes' other corpus reads are b5.
 - `2026-11-03`: XTASK.13 slice b3 done — the parcel author probe judges frozen copies; the author probes' owned-corpus arms and the real-run step are b4.
 - `2026-11-02`: XTASK.13 slice b2 done — GUEST-GEN's base-mirror and parcel-count arms judge a frozen owner→mirror pair; the parcel author's cold and legacy arms are b3.
 - `2026-10-29`: XTASK.13 slice b1 done — GUEST-GEN's census and surgical arms judge frozen mini corpora; the mirror and count arms are b2.

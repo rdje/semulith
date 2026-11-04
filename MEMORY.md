@@ -14,12 +14,12 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); feature 5 of 5 after XTASK-0076 is this commit: the turn is XTASK.13 b4;
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0077 (XTASK.13 b4);
   `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0340` (P4-SYSTEM.14 a43b-3h) — `REQ-D-CSR-SET` credited (`CR-D-CSR-SET-1`), G-STATE 2 of 4. The dossier copy left out and raised to the director (a43b-c3; `decision_req-d-csr-set-credited-implemented.md` item 6). The per-case configuration: decision_reference-config-per-case.md (raised to the director, who may overrule).
-- next_action: XTASK.13 b4 (`docs/tasks/XTASK.md`): a census of `--check-owned` callers, a frozen owned corpus (41+1 guests), then a real-run `--check-owned` step in `xtask/src/check_guest_gen.rs::run`, fired RED on target/xtask/xt0076/red-owned.sh's state. Then features restart: ZICNTR (a43c, the overlay route, retained statements via `retain_statements.py`, measured census), SSTC (a43d), a43b-c1, a43b-c2. `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z).
+- last_unit: `SEMULITH-XTASK-0077` (XTASK.13 slice b4) — GUEST-GEN's author probes judge a frozen owned corpus; its real check re-derives the live one. Before it, `SEMULITH-P4-0340`: `REQ-D-CSR-SET` credited, the dossier copy left out and raised to the director (a43b-c3; `decision_req-d-csr-set-credited-implemented.md` item 6).
+- next_action: features (1 of 5 after XTASK-0077): ZICNTR (a43c): design and retained statements via `retain_statements.py` (RVI-ZICNTR; licence page unpriv/colophon.html), overlay, measured census per case, program, case, declarations, capture (quiet host), effect, reviews, credit. Then SSTC (a43d), a43b-c1, a43b-c2. XTASK.13 b5 at the 5:1 turn. `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z).
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -29,7 +29,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-3h, 3g, 3f, 3e, 3d (`target/p4-system-14/a43b-3h`, `…/a43b-3g`, `…/a43b-3f`, `…/a43b-3e`, `…/a43b-3d`); archive part 26 a43b-3c, 3b, 3a; `docs/tasks/XTASK.md` XTASK.13 b3 (`target/xtask/xt0076`); XTASK.13 b2;
+- evidence: `docs/tasks/XTASK.md` XTASK.13 b4, b3 (`target/xtask/xt0077`, `target/xtask/xt0076`); `docs/tasks/P4-SYSTEM.md` .14 a43b-3h, 3g, 3f, 3e, 3d (`target/p4-system-14/a43b-3h`, …); archive part 26 a43b-3c, 3b, 3a;
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

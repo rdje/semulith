@@ -14,6 +14,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import dossier_sexp as D
 import records_sexp as R
 import sexp as S
@@ -247,7 +248,7 @@ def check(author, root, *, positive=sstc_positive):
         writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
         assert [st.writes for st in run.steps] == writes, f'{name}: CSR/directive architectural observations differ'
         total += len(run.steps)
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print(f'GC counter author probe: enable masks/aliases, 30 mode gates, eight STIP source/write cases and retention, Sstc 31 boundaries / 62 parcels; terminal 35/70 misses forced S trap, direct witness refuses; quoted text/schema; 3 corpus refusals / {total} steps')
 
 

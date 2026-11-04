@@ -15,6 +15,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import dossier_sexp as D
 from riscv_asm import Assembler
 
@@ -263,7 +264,7 @@ def check(author):
     writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
     assert [st.writes for st in runs[0].steps] == writes, 'cached corpus architectural observations differ'
     assert runs[0].hart.log == runs[1].hart.log, 'cold cache repeat request trace differs'
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print('GC cache author probe: FIFO/scopes/ASIDs/globals/live permissions; cached corpus exact and cold repeat')
 
 

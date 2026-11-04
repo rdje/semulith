@@ -4095,6 +4095,23 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("{out}");
         return ExitCode::from(1);
     }
+    // ── the spec-side author's owned records on the live tree (XTASK.13 slice b4). The fixture check above cannot see a record
+    // hand-edited with its fixture regenerated; the author probes judge a frozen corpus, so this step is what names it. ──
+    let (owned_rc, owned) = merged(
+        Command::new("python3")
+            .args([
+                "-B",
+                "scripts/derive_rv64gc_expectations.py",
+                "--check-owned",
+            ])
+            .current_dir(root),
+    );
+    if owned_rc != 0 {
+        eprintln!("GUEST-GEN: an owned expectation record does not re-derive from its guest.");
+        eprint!("{owned}");
+        eprintln!("  The AUTHOR owns these records: never edit one by hand. Re-derive it, or fix the guest or the author.");
+        return ExitCode::from(u8::try_from(owned_rc).unwrap_or(1));
+    }
     println!("GUEST-GEN: ok ({out})");
     ExitCode::SUCCESS
 }

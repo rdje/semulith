@@ -14,6 +14,7 @@ import sys
 import tempfile
 
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 import dossier_sexp as D
 from riscv_asm import Assembler
 
@@ -60,8 +61,9 @@ def check(author, root):
     assert judged.returncode == 0, judged.stderr
 
     # The same owned source on a NEW route is a re-derivation, not its old capture.
-    owned = REPO / 'profiles/rv64gc-lab-v0/guests/f-arith.s'
-    text, _ = author.run_parcel_guest(owned, asm, 1)
+    owned = Frozen.GUESTS / 'f-arith.s'
+    with Frozen.rooted(author):  # its canonical path, for the author: only the route may refuse the history
+        text, _ = author.run_parcel_guest(owned, asm, 1)
     neutral(text, 'explicit-budget parcel route (C-capable)')
     try:
         author.emit(source, [], 0, [], route='unknown')
@@ -71,11 +73,11 @@ def check(author, root):
         raise AssertionError('unknown author route was accepted')
     assert len(author.OWNED_GUESTS) == 41
     assert author.PARCEL_OWNED_GUESTS == {'env-irq-sources': 13}
-    fresh = REPO / 'profiles/rv64gc-lab-v0/guests/env-irq-sources.s'
+    fresh = Frozen.GUESTS / 'env-irq-sources.s'
     text, count = author.check_owned_guest(fresh, asm)
     neutral(text, 'explicit-budget parcel route (C-capable)')
     assert count == 13 and text == fresh.with_suffix('.expected.sexp').read_text()
-    assert author.main(['probe', '--check-owned']) == 0
+    assert Frozen.check_owned(author) == 0
     print('GC provenance probe: generic/9 borrowed names/C/schema/new owned route; 41 historical captures + one fresh record exact')
 
 
