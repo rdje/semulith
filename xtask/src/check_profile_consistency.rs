@@ -8418,6 +8418,30 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("STATEMENT-RETENTION: 19 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a43b-3f: what a case's reference configuration does, measured once (scripts/measure_config_effect.py).
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> =
+            vec!["-B".to_owned(), "scripts/probe_config_effect.py".to_owned()];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN config effect {mode}"), prober.probe(repo, argv.clone()), 0, "CONFIG-EFFECT: 10 tests / 0 failures / 0 errors; synthetic configuration-effect controls, no capture credit");
+        for (mutation, failures, errors) in [
+            ("reuse", "0", "2"),
+            ("record-reuse", "1", "1"),
+            ("own-config", "1", "0"),
+            ("process-failed", "0", "1"),
+            ("trace-missing", "0", "1"),
+            ("trace-bound", "0", "1"),
+            ("no-effect", "1", "0"),
+            ("profile-config", "2", "0"),
+            ("binary-pin", "1", "0"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED config effect {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CONFIG-EFFECT: 10 tests / {failures} failures / {errors} errors; synthetic configuration-effect controls, no capture credit"));
+        }
+    }
     // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec![

@@ -16,7 +16,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-xlen-forms-v1/` | the first non-M case (REQ-D-XLEN); `invalidated` 2026-11-02 | 22 of 22 | `xlen-forms.s`, 25 boundaries, 17 properties |
 | `rv64gc-m-forms-v5/` | captured 2026-11-02, credited `CR-GC-M-3` | 22 of 22 | v4's bytes, its control declared; identical traces |
 | `rv64gc-xlen-forms-v2/` | captured 2026-11-02, credited `CR-D-XLEN-2` | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
-| `rv64gc-csr-set-v1/` | declared 2026-11-03 (a43b-3e); its own reference configuration | 8 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
+| `rv64gc-csr-set-v1/` | declared (a43b-3e), captured 2026-11-04 (a43b-3f); its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
 
 Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 
@@ -30,7 +30,7 @@ Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 155 files at most, 141 present. Prepared inputs come from canonical sources
+With this index: 155 files at most, all 155 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.

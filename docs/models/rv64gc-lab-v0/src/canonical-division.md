@@ -241,3 +241,19 @@ differs from its predecessor's only in seven digests — the dependency manifest
 receipts that record them — and, for XLEN, in the control's id and prose, now `truncated-address` and "the address
 truncated to 32 bits must diverge". Since a43b-2e the reviews read the two captures — each `satisfied` over 88
 authenticated files, all ten legs — and `CR-GC-M-3` and `CR-D-XLEN-2` credit them.
+
+`rv64gc-csr-set-v1` is the first case on [its own reference configuration](references.md) and the first whose requirement
+is `implementation-defined`. It was captured exactly once on 2026-11-04 (a43b-3f), on a quiet host, from its declaration
+commit `02835e0f`, in 1.3 s:
+
+| Run | Compared with | Verdict |
+| --- | --- | --- |
+| `baseline` | `baseline.expected.sexp` | AGREE, 157 declared steps |
+| `repeat` | `baseline.expected.sexp` | AGREE, 157 declared steps |
+| `control` | `control.expected.sexp`, boundary 130 wrong on purpose | DIVERGE at 130: `csrrs x28, mscratch, x0`, Sail x28 = 5, the expectation 9 |
+
+The control is the case's failure mode: an S-mode write of 9 to `mscratch`, refused, read back in M. Expecting 9 is what a
+refused write that had committed would look like, and it must diverge. All three traces are byte-identical (13,833 B,
+`cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with
+qualification false, so the case is `pending`: the reviews read it next (a43b-3g), and nothing is credited until a record
+names it.

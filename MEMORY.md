@@ -19,10 +19,10 @@
   ruling 4) and waits for its implementation unit (design target/artifact-cleanup/AC29/design.md).
 - pnt_status: running (resumed `2026-10-20` on the director's instruction);
   continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0337` (P4-SYSTEM.14 a43b-3e, feature 2 of 5 after XTASK-0076) — the CSR-SET case's declarations committed; THIS COMMIT is a43b-3f's declaration commit. The design:
+- last_unit: `SEMULITH-P4-0338` (P4-SYSTEM.14 a43b-3f, feature 3 of 5 after XTASK-0076) — the CSR-SET case captured once; its configuration's effect retained. THIS COMMIT is its capture commit. The design:
   decision_reference-config-per-case.md (raised to the director, who may overrule).
-- next_action: features (3 of 5 after XTASK-0076): a43b-3f — capture rv64gc-csr-set-v1 exactly once on a quiet host (target/p4-system-14/a43b-3f/capture-when-quiet.sh, a43b-2d's route), and the alternative trace under the profile override. FROZEN until then: the 67
-  manifest children and 13 authority views; touch none. Then a43b-3g reviews (the category branch, FEATURE_DISPOSITIONS), a43b-3h credit. Then ZICNTR, SSTC, a43b-c1, a43b-c2. XTASK.13 b4 at the 5:1 turn.
+- next_action: features (4 of 5 after XTASK-0076): a43b-3g — the reviews: `review_div_policy.py` FEATURE_DISPOSITIONS["OB-CSR-SET"] and the category branch of `matched-reference-comparison` reading `<case>.effect.sexp` (design: P4-SYSTEM.md a43b-3f and a43b-3a's D); `review_div_method.py` RETAINED_CAPTURES row (declared 02835e0f, captured this commit). Then a43b-3h credit CR-D-CSR-SET-1
+  (a profile's claims moved: surface it, as M and XLEN). Then ZICNTR, SSTC, a43b-c1, a43b-c2. XTASK.13 b4 at the 5:1 turn.
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -32,7 +32,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-3e, 3d, 3c, 3b, 3a (`target/p4-system-14/a43b-3e`, `…/a43b-3d`, `…/a43b-3c`, `…/a43b-3b`, `…/a43b-3a`); `docs/tasks/XTASK.md` XTASK.13 b3 (`target/xtask/xt0076`); XTASK.13 b2;
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-3f, 3e, 3d, 3c, 3b, 3a (`target/p4-system-14/a43b-3f`, `…/a43b-3e`, `…/a43b-3d`, `…/a43b-3c`, `…/a43b-3b`, `…/a43b-3a`); `docs/tasks/XTASK.md` XTASK.13 b3 (`target/xtask/xt0076`); XTASK.13 b2;
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

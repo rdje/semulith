@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0338 (leaf P4-SYSTEM.14 a43b-3f) — the CSR-SET case captured exactly once, and its configuration's effect retained
+
+a43b-3f: `rv64gc-csr-set-v1` ran once on a quiet host behind its guards: 157 steps, baseline and repeat AGREE, the control DIVERGE at its declared step 130 (x28 5 against the wrong 9), complete, qualification false, three traces byte-identical, 14 files retained; the family holds all 155; the case `pending`, both credits current. `scripts/measure_config_effect.py` (new; `schema/config-effect.sexp`; `scripts/probe_config_effect.py`, 10 tests and nine omissions) ran the same guest under the profile override, once, and retained the raw trace and what ran by digest, no verdict: `step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`, the observed effect the policy's `implementation-defined` row asks for. Next: a43b-3g, the reviews.
+
 ## SEMULITH-P4-0337 (leaf P4-SYSTEM.14 a43b-3e) — the CSR-SET case's three declarations, committed before its capture
 
 a43b-3e: planned experiment, dependency manifest (67 children, two of them the case's own) and authority record, from `capture_div.py --declare`; preflight `ready`; 7 cases, 1 declared, crediting nothing. The 67 children and 13 authority views are frozen until the capture.

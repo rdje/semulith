@@ -320,7 +320,7 @@ class StatusTests(unittest.TestCase):
                          ("implemented", "implemented", "every obligation credited (1)", ["rv64gc-xlen-forms-v1:pending"]))
         self.assertEqual(gc["derived"], {"planned": 46, "partial": 0, "implemented": 2, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (7, 2, 1, 2, 2))  # the CSR-SET case declared, binding REQ-D-CSR-SET and crediting nothing (a43b-3e)
+                         (7, 2, 0, 2, 2))  # the CSR-SET case captured (a43b-3f): its receipt's qualification is false, pending, crediting nothing
 
 
 def main():

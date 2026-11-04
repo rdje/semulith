@@ -75,6 +75,29 @@ The overlay also gives the policy's `implementation-defined` row its observed ef
 The same guest under the profile override traps at its first counter read:
 `DIVERGE step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`. A
 configuration without an observed effect would be insufficient; this one has one.
+That run is retained beside the overlay, measured exactly once (a43b-3f):
+
+```text
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v1
+step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}
+
+(config_effect (case_id "rv64gc-csr-set-v1")
+  (binary_sha256 "16de42a8…")             ; the binary of the case's capture
+  (guest_sha256 "a07daaef…")              ; the case's guest image
+  (case_config_sha256 "05746ed6…")        ; the case's configuration
+  (alternative_config_sha256 "666d9373…") ; the other six cases' configuration, byte for byte
+  (instructions 157)
+  (trace_sha256 "2a828052…") (trace_bytes 14236))
+```
+
+The record, `reference/<case-id>.effect.sexp`, says what ran and carries no verdict: the
+first difference is re-derived from the raw `.effect.trace` and the case's own baseline
+expectation (today by the tool's probe; by the policy review from a43b-3g). The two raw traces
+are the same up to line 67, step 34, where the case's reads `x20 <- 0x0000000000000022` and this
+one `trapping from M to M to handle illegal-instruction`. A second run refuses: existing names
+refuse reuse. A run that agrees retains nothing and exits 1: that configuration would have no
+observed effect there. `schema/config-effect.sexp` holds the shape, and
+`scripts/probe_config_effect.py` runs ten controls and nine guard omissions in both Python modes.
 
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value

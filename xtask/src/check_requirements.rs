@@ -1734,7 +1734,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=132)", // one per anchored facet: 127 + the five of a43b-2b
+        "FAILED (failures=138)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f
     );
     tally.arm(
         "RED normal token ignore-pattern mutation",
@@ -1745,7 +1745,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=768)", // six per anchored facet: 738 + 30 for the five of a43b-2b
+        "FAILED (failures=804)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f
     );
     tally.arm(
         "RED normal token fullmatch mutation",
@@ -1773,7 +1773,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=132)", // one per anchored facet: 127 + the five of a43b-2b
+        "FAILED (failures=138)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f
     );
     tally.arm(
         "RED optimized token ignore-pattern mutation",
@@ -1784,7 +1784,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=768)", // six per anchored facet: 738 + 30 for the five of a43b-2b
+        "FAILED (failures=804)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f
     );
     tally.arm(
         "RED optimized token fullmatch mutation",
