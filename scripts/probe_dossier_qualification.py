@@ -128,7 +128,7 @@ class DossierQualificationTests(unittest.TestCase):
         """The live catalogue credits v5 (CR-GC-M-3), xlen-v2 (CR-D-XLEN-2) and the CSR-SET case (CR-D-CSR-SET-1, P4-SYSTEM.14
         a43b-3h): their measured records qualify on the real tree; v4's, xlen-v1's and v3's, which no live record names, do
         not. The CSR-SET case's record qualifies and is not copied into the dossier, which holds the other two: the copy
-        would take references.sexp above its per-part ceiling (decision_req-d-csr-set-credited-implemented.md, item 6)."""
+        would take references.sexp above its per-part ceiling, and the next pinned window retires them all (decision_dossier-copies-retire-at-the-next-window.md)."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]

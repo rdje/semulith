@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0343 (leaf P4-SYSTEM.14 a43c-3) — the ZICNTR case's three declarations, and the director's ruling on the dossier copies
+
+a43c-3: planned experiment, dependency manifest (67 children, two of them the case's own) and authority record, from `capture_div.py --declare`; this commit is the declaration commit. **The director ruled (a43b-c3):** no dossier copy for a new case until the next pinned window, which retires them all (`decision_dossier-copies-retire-at-the-next-window.md`). Measured while recording it: `experiment_verification.py:39` is the one import that makes `gate_report.py` a pinned input of every experiment, so the window moves that function out too, and editing a report never lapses evidence again. Next: a43c-4, the capture.
+
 ## SEMULITH-P4-0342 (leaf P4-SYSTEM.14 a43c-2) — the ZICNTR program and its case: 292 steps, 44 predeclared witnesses, in M, S and U
 
 a43c-2: `zicntr.s` enters the corpus, all three producers agreeing (the author, the lab engine, the reference under the case's overlay, whose configuration is byte-identical to CSR-SET's). `rv64gc-zicntr-v1`: 44 witnesses, 26 boundary rows, control `refused-read-committed` (x21 at boundary 109, 21 against the wrong 102). The family's seventh re-derivation: 177 files, 112 MiB, 160 present. No retained case moved. Next: a43c-3, the declarations.

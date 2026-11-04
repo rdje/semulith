@@ -87,4 +87,6 @@ Its measured record is not copied into `references.sexp`, so `G-TRACE`'s table l
 only. The copy would take the file to 77,669 B against the family's 65,536 B per-part ceiling, and moving the copies elsewhere
 would edit a pinned tool and lapse all three credits. The status does not rest on the copy: the record pins
 `evidence/rv64gc-csr-set-v1/measured-experiment.sexp`, and the method review validates its graph on every read. The
-question is the director's (a43b-c3).
+director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`): ZICNTR and SSTC follow the same way, and the next pinned window retires
+all the copies, so `gate_report.py` reads each credited case's record from `evidence/`. That window also moves `contract_measure` out of `gate_report.py`, the one import that makes a
+report generator a pinned input of every experiment, so editing a report never lapses evidence again.

@@ -38,7 +38,7 @@ SEAMS = {
 # is named here when it lands, never skipped silently.
 # Sorted. csr-set-v1 is the first case with a second method and its own reference configuration (a43b-3e); v5 and xlen-v2 have their control declared (a43b-2c).
 PLANNED = ("rv64gc-csr-set-v1", "rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-signed-div-truncation-v2",
-           "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2")
+           "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-zicntr-v1")
 MUTATION = None
 
 

@@ -33,7 +33,7 @@ answers: Who signs the CSR-SET credit, what does one finite case of 53 witnesses
 5. **The dependencies stay planned, by the plan's order.** The requirement's `dependencies` name `REQ-D-PRIV-MODES`,
    `REQ-D-ZICNTR` and `REQ-D-SSTC`, all `planned`; the derivation reads obligations, not dependencies, and the plan's item 4
    orders CSR-SET before ZICNTR and SSTC. The credit says so: it is membership, and it does not stand for their semantics.
-6. **The dossier copy is left out, and the question goes to the director.** The plan's step (iii) records each case's measured
+6. **The dossier copy is left out; the director ruled on 2026-11-04** ([`decision_dossier-copies-retire-at-the-next-window.md`](decision_dossier-copies-retire-at-the-next-window.md)). The plan's step (iii) records each case's measured
    record in `references.sexp`, and the M and XLEN cases' are there. CSR-SET's does not fit:
 
    | | Bytes |
@@ -61,7 +61,4 @@ answers: Who signs the CSR-SET credit, what does one finite case of 53 witnesses
 - Any pin movement lapses this credit as it does the other two: the three pins and every input of the case's manifest.
 - The retained overlay, effect record and effect trace are read by the policy review on every read. Moving one reads the leg
   pending, and a current credit over a pending measurement is a finding, so the gate fails: never edit them; a new configuration is a new case.
-- The open question (a43b-c3), for the director, with the options measured: (a) retire the copies at the next pinned window, so
-  `gate_report.py` reads a credited case's record from `evidence/`; recommended, it removes 32 KB of duplication and the ZICNTR and
-  SSTC copies would otherwise add to it; (b) raise this family's per-part ceiling; (c) leave `G-TRACE` listing only the
-  two records.
+- The question (a43b-c3) is answered: the copy stays out until the next pinned window, which retires all the copies ([`decision_dossier-copies-retire-at-the-next-window.md`](decision_dossier-copies-retire-at-the-next-window.md)).

@@ -109,6 +109,7 @@
 - [`decision_doctrine-controls-refuse-and-freeze.md`](docs/decisions/decision_doctrine-controls-refuse-and-freeze.md)
 - [`decision_doctrine-enforcement-ceiling-rederivation.md`](docs/decisions/decision_doctrine-enforcement-ceiling-rederivation.md)
 - [`decision_document-everything.md`](docs/decisions/decision_document-everything.md)
+- [`decision_dossier-copies-retire-at-the-next-window.md`](docs/decisions/decision_dossier-copies-retire-at-the-next-window.md)
 - [`decision_dsp56300-lab-v0-subset.md`](docs/decisions/decision_dsp56300-lab-v0-subset.md)
 - [`decision_dual-mandate-production-and-teaching.md`](docs/decisions/decision_dual-mandate-production-and-teaching.md)
 - [`decision_encoding-resourcing-probe.md`](docs/decisions/decision_encoding-resourcing-probe.md)

@@ -119,4 +119,4 @@ is a seventh re-derivation.
 
 `rv64gc-zicntr-v1` is REQ-D-ZICNTR's case, the seventh re-derivation. No earlier case is removed. Measured: a case still holds at most 13,828,096 B, so eight cases and the index hold at most
 110,628,864 B (`retention_limits()`), above the 96 MiB ceiling. The bounds move to **177** files (8 × 22 + the index; health **174**, three below) and **117,440,512** B (112 MiB; health **102,760,448** B, 98 MiB, the 0.875 ratio); the
-4 MiB part bound is unchanged. At declaration the family holds 160 files (the case file and four prepared inputs), 177 after its capture. A ninth case, SSTC's, is an eighth re-derivation.
+4 MiB part bound is unchanged. With the case file and four prepared inputs the family holds 160 files, 163 at its declarations (a43c-3), 177 after its capture. A ninth case, SSTC's, is an eighth re-derivation.
