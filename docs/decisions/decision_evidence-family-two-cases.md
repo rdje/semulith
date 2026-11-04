@@ -114,3 +114,9 @@ re-derivation.
 files (7 × 22 + the index; health **152**, three below) and **100,663,296** B (96 MiB; health **88,080,384** B, 84 MiB, the 0.875 ratio); the
 4 MiB part bound is unchanged. The family holds 138 files with the case file and four prepared inputs, 141 at its declarations (a43b-3e), 155 after its capture. An eighth case
 is a seventh re-derivation.
+
+## Addendum (2026-11-04, `P4-SYSTEM.14` a43c-2): the eighth case — ZICNTR
+
+`rv64gc-zicntr-v1` is REQ-D-ZICNTR's case, the seventh re-derivation. No earlier case is removed. Measured: a case still holds at most 13,828,096 B, so eight cases and the index hold at most
+110,628,864 B (`retention_limits()`), above the 96 MiB ceiling. The bounds move to **177** files (8 × 22 + the index; health **174**, three below) and **117,440,512** B (112 MiB; health **102,760,448** B, 98 MiB, the 0.875 ratio); the
+4 MiB part bound is unchanged. At declaration the family holds 160 files (the case file and four prepared inputs), 177 after its capture. A ninth case, SSTC's, is an eighth re-derivation.

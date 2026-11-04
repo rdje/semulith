@@ -17,6 +17,7 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-m-forms-v5/` | captured 2026-11-02, credited `CR-GC-M-3` | 22 of 22 | v4's bytes, its control declared; identical traces |
 | `rv64gc-xlen-forms-v2/` | captured 2026-11-02, credited `CR-D-XLEN-2` | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
 | `rv64gc-csr-set-v1/` | captured 2026-11-04 (a43b-3f), credited `CR-D-CSR-SET-1`; its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
+| `rv64gc-zicntr-v1/` | case and prepared inputs 2026-11-04 (a43c-2); its own reference configuration | 5 of 22 | `zicntr.s`, 292 boundaries, 44 properties |
 
 Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 
@@ -30,7 +31,7 @@ Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 155 files at most, all 155 present. Prepared inputs come from canonical sources
+With this index: 177 files at most, 160 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.
@@ -41,12 +42,12 @@ truth; the JSON and the ELF are reproducible artifacts; the wrong expectation is
 
 ## Finite retention envelope
 
-The family is limited to 155 files, 96 MiB aggregate and 4 MiB per member
-(`decision_evidence-family-two-cases.md`, re-derived for seven cases by a43b-3d: seven cases and this
-index hold at most 96,800,768 B, `retention_limits()`; health 152 files / 84 MiB). Per case: three
+The family is limited to 177 files, 112 MiB aggregate and 4 MiB per member
+(`decision_evidence-family-two-cases.md`, re-derived for eight cases by a43c-2: eight cases and this
+index hold at most 110,628,864 B, `retention_limits()`; health 174 files / 98 MiB). Per case: three
 4 MiB traces and nine 64 KiB streams/receipts, ten 64 KiB prepared and metadata slots; this index
 4 KiB / 80 lines. The registry enforces the family and index bounds; the input probe checks member
 names, same-volume regular files and each role limit before authenticating prepared pins, never
-descending into an unknown directory. An eighth case is a new re-derivation. The 128 MiB
+descending into an unknown directory. A ninth case is a new re-derivation. The 128 MiB
 artifact-read and 16 MiB snapshot ceilings are unchanged; offline checking needs neither the
 reference executable nor an acquired source cache.

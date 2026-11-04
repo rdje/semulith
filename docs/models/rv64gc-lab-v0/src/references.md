@@ -99,7 +99,7 @@ refuse reuse. A run that agrees retains nothing and exits 1: that configuration 
 observed effect there. `schema/config-effect.sexp` holds the shape, and
 `scripts/probe_config_effect.py` runs ten controls and nine guard omissions in both Python modes.
 
-`REQ-D-ZICNTR` follows on the same route. The program a43c-1 drafted, 163 instructions and 292 steps, reads:
+`REQ-D-ZICNTR` follows on the same route. Its program, `guests/zicntr.s` (a43c-2), 163 instructions and 292 steps, reads:
 
 | Section | What it witnesses | Example |
 | --- | --- | --- |
@@ -111,7 +111,7 @@ observed effect there. `schema/config-effect.sexp` holds the shape, and
 | U, both gates | `scounteren` clear, IR alone, then `mcounteren.IR` clear | `rdinstret x20` refused though `scounteren.IR` is set |
 | One count, two names | `mcycle`/`cycle`, `minstret`/`instret`, at adjacent boundaries | the difference reads 1 |
 
-It agrees with the reference under the overlay, and under the profile override it first differs at `rdcycle x5`. Two things stay out, both named in the limitations:
+All three producers agree on it: the spec-side author, the lab engine, and the reference under `rv64gc-zicntr-v1`'s overlay, whose rendered configuration is byte-identical to CSR-SET's (`05746ed6…`); under the profile override the reference first differs at `rdcycle x5`. The case predeclares 44 witnesses, each value written from the chapters and held to the derivation, with one control: S's refused `rdcycle` at boundary 102 leaves `x20` at its sentinel, copied to `x21` at boundary 109, and the control's expectation holds the count it would have committed, 102 instead of 21. Two things stay out, both named in the limitations:
 a write through `mcycle` or `minstret`, which the spec-side deriver refuses, and Zihpm's absence, which its 33-CSR vocabulary cannot state. The laboratory's `time` is a view of
 `mcycle` (`state.sexp`), and the reference's comes from its CLINT, so a write would separate them; that is one more reason the deriver's refusal stands until someone models it.
 

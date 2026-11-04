@@ -169,11 +169,11 @@ The metadata names are `planned-experiment.sexp`, `dependencies.sexp`,
 The three native declarations are now [retained](capture-plan.md#retained-native-predeclarations);
 the twelve observations and two result files are now [retained](canonical-division.md).
 
-Since a43b-3d the registry caps the family at 155 files, 96 MiB aggregate and 4 MiB per member —
-seven declared cases (`decision_evidence-family-two-cases.md`, its sixth re-derivation). A case holds
+Since a43c-2 the registry caps the family at 177 files, 112 MiB aggregate and 4 MiB per member —
+eight declared cases (`decision_evidence-family-two-cases.md`, its seventh re-derivation). A case holds
 at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
-receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; seven cases and the 4 KiB index hold at
-most 96,800,768 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
+receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; eight cases and the 4 KiB index hold at
+most 110,628,864 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
 the128 MiB combined artifact-read allowance and16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
@@ -219,9 +219,9 @@ to the retained bytes (`disposition: pending`); it does so for the retained case
 the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints the sizes and digests
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
 retained input is never replaced. The probe runs its controls over every declared case (49 tests in
-each Python mode) and holds the family census to 155 files / 96 MiB, the seven-case envelope of
-`decision_evidence-family-two-cases.md` (141 files present at the CSR-SET case's declarations,
-a43b-3e; all 155 since its capture, a43b-3f); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+each Python mode) and holds the family census to 177 files / 112 MiB, the eight-case envelope of
+`decision_evidence-family-two-cases.md` (160 files present with the ZICNTR case's prepared inputs,
+a43c-2; 163 at its declarations; all 177 after its capture); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,

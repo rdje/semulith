@@ -144,9 +144,10 @@ m-word
 m-forms
 m-alias
 
-# P4-SYSTEM.14 a43a/a43b/a43d: the state cases' crediting programs (XLEN, CSR-SET, SSTC)
+# P4-SYSTEM.14 a43a/a43b/a43c/a43d: the state cases' crediting programs (XLEN, CSR-SET, ZICNTR, SSTC)
 xlen-forms
 csr-set
+zicntr
 sstc
 
 # P4-SYSTEM.12: independently staged compressed corpus
