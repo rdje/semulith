@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0080 (leaf XTASK.13 slice c) — BOOK-INDEX's controls judge a small frozen book
+
+A deleted chapter, `SUMMARY.md` or glossary now fails by its own name rather than reading as a check that stopped discriminating. Reading before freezing found the real run would then have read a deleted `SUMMARY.md` as `no project book yet`; it no longer does. 14 arms.
+
 ## SEMULITH-P4-0355 (leaf P4-SYSTEM.14 a43e-3) — the window's five cases declared on contract v3, committed before their captures
 
 `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, 67 manifest children each with no report or book generator; the evidence family re-derived for thirteen cases (287 files, 172 MiB). PNT resumed on the director's word. Nothing captured or credited.

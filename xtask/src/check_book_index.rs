@@ -8,6 +8,10 @@
 //! mirror. HONEST LIMIT, the script's: it says nothing about whether the chapters are true. The generator is spawned
 //! exactly as the driver spawned it and is not ported; status 1 denotes its named drift verdict, every other failure
 //! stays a refusal. Each self-test arm is one `tally.arm(` call, the idiom the `DERIVED-COUNTS` arm total counts.
+//!
+//! The controls judge a small frozen book, `scripts/fixtures/book-index/` (`XTASK.13`, ruling 5's rule): the real book's
+//! damage is the real check's to name, and it must not read as a check that stopped discriminating. So a chapter or a
+//! glossary deleted from the real tree fails below by its own name, and the self-test stays green.
 
 use std::fs;
 use std::path::Path;
@@ -18,14 +22,21 @@ use crate::harness::{combined, scratch};
 const BOOK: &str = "docs/book";
 const GLOSSARY: &str = "docs/GLOSSARY.md";
 const OUT: &str = "docs/book/src/index.md";
+/// The frozen book the controls judge: five chapters' worth of structure, its index generated and committed beside it.
+const FROZEN: &str = "scripts/fixtures/book-index";
 
 /// `python3 scripts/gen_book_index.py <args>` from the root, stdout and stderr together as `2>&1` joined them.
 fn generator(repo: &Path, args: &[&str]) -> (i32, String) {
+    generator_in(repo, repo, args)
+}
+
+/// The same generator with its relative paths read from `cwd`, so the real judgement runs over a frozen root unchanged.
+fn generator_in(repo: &Path, cwd: &Path, args: &[&str]) -> (i32, String) {
     combined(
         Command::new("python3")
-            .arg("scripts/gen_book_index.py")
+            .arg(repo.join("scripts/gen_book_index.py"))
             .args(args)
-            .current_dir(repo),
+            .current_dir(cwd),
     )
 }
 
@@ -56,6 +67,42 @@ fn judge_generator(rc: i32, output: &str) -> (i32, String) {
         "BOOK-INDEX: REFUSED — the generator cannot judge {OUT} (exit{rc}).\n"
     ));
     (2, err)
+}
+
+/// The real judgement of the book under `root`: the verdict, and the line it prints on success or the report on failure.
+/// `no project book yet` means there is no book directory at all: a book whose `SUMMARY.md` is gone is damage, and the
+/// generator refuses it by name.
+fn judge_book(repo: &Path, root: &Path) -> (i32, String) {
+    if !root.join(BOOK).is_dir() {
+        return (0, "BOOK-INDEX: ok (no project book yet)".to_owned());
+    }
+    let (rc, out) = generator_in(
+        repo,
+        root,
+        &[
+            "--check",
+            "--book",
+            BOOK,
+            "--glossary",
+            GLOSSARY,
+            "--out",
+            OUT,
+        ],
+    );
+    let (verdict, err) = judge_generator(rc, captured(&out));
+    if verdict != 0 {
+        return (verdict, err);
+    }
+    let terms = fs::read_to_string(root.join(OUT))
+        .map(|text| text.lines().filter(|l| l.starts_with("| ")).count())
+        .unwrap_or(0);
+    (
+        0,
+        format!(
+            "BOOK-INDEX: ok ({OUT} matches the book, {} table rows)",
+            terms as i64 - 2
+        ),
+    )
 }
 
 /// `cp -R src dst`: a directory tree copied, files and directories.
@@ -132,14 +179,16 @@ impl Tally {
     }
 }
 
-/// The RED/GREEN controls over a copy of the real book and glossary, then the judge's four status readings.
+/// The RED/GREEN controls over a copy of the frozen book and glossary, the judge's four status readings, then the real
+/// judgement over a frozen root.
 fn self_test(repo: &Path, verbose: bool) -> bool {
     let Ok(t) = scratch(repo, "target/doctrine-selftest", "bookindex") else {
         eprintln!("BOOK-INDEX self-test: cannot create a scratch directory under target/doctrine-selftest");
         return false;
     };
-    copy_tree(&repo.join(BOOK), &t.join("book"));
-    let _ = fs::copy(repo.join(GLOSSARY), t.join("GLOSSARY.md"));
+    let frozen = repo.join(FROZEN);
+    copy_tree(&frozen.join("book"), &t.join("book"));
+    let _ = fs::copy(frozen.join("GLOSSARY.md"), t.join("GLOSSARY.md"));
     let book = t.join("book").display().to_string();
     let glossary = t.join("GLOSSARY.md").display().to_string();
     let index = t.join("index.md").display().to_string();
@@ -163,13 +212,13 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         verbose,
         misses: Vec::new(),
     };
-    // GREEN: the generator emits an index from the real book.
+    // GREEN: the generator emits an index from the frozen book.
     let (rc, out) = generator(
         repo,
         &["--book", &book, "--glossary", &glossary, "--out", &index],
     );
     tally.arm(
-        "GREEN the generator emits an index from the real book",
+        "GREEN the generator emits an index from the frozen book",
         rc,
         0,
         captured(&out),
@@ -258,6 +307,46 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&err),
         "BOOK-INDEX: FAIL",
     );
+    // The real judgement over a frozen root: its committed index is the frozen pair of its text.
+    let root = t.join("root");
+    copy_tree(&frozen.join("book"), &root.join(BOOK));
+    let _ = fs::copy(frozen.join("GLOSSARY.md"), root.join(GLOSSARY));
+    let (rc, out) = judge_book(repo, &root);
+    tally.arm(
+        "GREEN the real judgement reads a faithful book, with its row count",
+        rc,
+        0,
+        captured(&out),
+        "matches the book, 5 table rows",
+    );
+    let _ = fs::remove_file(root.join(GLOSSARY));
+    let (rc, out) = judge_book(repo, &root);
+    tally.arm(
+        "RED a deleted glossary is refused by name",
+        rc,
+        2,
+        captured(&out),
+        "the canonical glossary docs/GLOSSARY.md is missing",
+    );
+    let _ = fs::copy(frozen.join("GLOSSARY.md"), root.join(GLOSSARY));
+    let _ = fs::remove_file(root.join(BOOK).join("src/SUMMARY.md"));
+    let (rc, out) = judge_book(repo, &root);
+    tally.arm(
+        "RED a book whose SUMMARY is gone is refused by name, never `no project book yet`",
+        rc,
+        2,
+        captured(&out),
+        "no SUMMARY.md under docs/book/src",
+    );
+    let _ = fs::remove_dir_all(root.join(BOOK));
+    let (rc, out) = judge_book(repo, &root);
+    tally.arm(
+        "GREEN a root with no book directory has no project book yet",
+        rc,
+        0,
+        captured(&out),
+        "no project book yet",
+    );
     let _ = fs::remove_dir_all(&t);
     if verbose {
         println!(
@@ -287,33 +376,11 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("BOOK-INDEX: REFUSED — the check does not discriminate (self-test failed).");
         return ExitCode::from(2);
     }
-    if !root.join(BOOK).join("src/SUMMARY.md").is_file() {
-        println!("BOOK-INDEX: ok (no project book yet)");
-        return ExitCode::SUCCESS;
-    }
-    let (rc, out) = generator(
-        root,
-        &[
-            "--check",
-            "--book",
-            BOOK,
-            "--glossary",
-            GLOSSARY,
-            "--out",
-            OUT,
-        ],
-    );
-    let (verdict, err) = judge_generator(rc, captured(&out));
+    let (verdict, report) = judge_book(root, root);
     if verdict != 0 {
-        eprint!("{err}");
+        eprint!("{report}");
         return ExitCode::from(u8::try_from(verdict).unwrap_or(2));
     }
-    let terms = fs::read_to_string(root.join(OUT))
-        .map(|text| text.lines().filter(|l| l.starts_with("| ")).count())
-        .unwrap_or(0);
-    println!(
-        "BOOK-INDEX: ok ({OUT} matches the book, {} table rows)",
-        terms as i64 - 2
-    );
+    println!("{report}");
     ExitCode::SUCCESS
 }

@@ -323,99 +323,13 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   the ruling's rule is general (a self-test judges frozen copies, never live data), and a deleted source must fail by name, not
   read as "nothing declared yet" — so slice d censuses every doctrine whose controls read live data (BOARD-GEN measured so,
   GUEST-GEN noted at 6aq) and one slice follows per doctrine found.
-  Slice a (`2026-10-28`, `SEMULITH-XTASK-0064`; on clean aafcbdfd; evidence target/xtask/xt0064): `CITATION-QUOTES`'
-  availability probe (`xtask/src/check_citation_quotes.rs` `AVAILABILITY`) now exits 2 with the exception's type and message
-  on any exception outside its named refusals, and exits 0 or 1 only after the call returns — a truncated manifest's
-  `DossierError` (the 6r finding) refuses instead of reading as "the pinned pages are absent". Two arms hold it: the probe's
-  own text with its call patched to raise a foreign `ValueError` must exit 2 naming it, and patched to return `False` must exit
-  1 (the named skip). Measured: `CITATION-QUOTES --self-test: 24 pass / 0 fail` (22 + the two); the real tree's verdict
-  unchanged (`115 attributed quote(s) judged … 0 finding(s)`); RED — the same crash program over the slice's predecessor text
-  exits 1 (the crash read as absent), so the arm discriminates. Next: slice b — `BOARD-VERDICT`'s frozen fixture board.
-  Slice b (`2026-10-28`, `SEMULITH-XTASK-0065`; on clean 37debc11; evidence target/xtask/xt0065): `BOARD-VERDICT`'s controls
-  judge frozen copies — `scripts/fixtures/board-verdict/` holds the four documents the controls copied from the live board
-  (`board.sexp`, `requirements.sexp`, `contract-obligations.sexp`, `sources.sexp`, taken from `profiles/netboard-lab-v0` today),
-  and `xtask/src/check_board_verdict.rs` copies them instead of the live ones; the verdict reads only a board's own documents and
-  the board schema, so the controls no longer depend on the corpus they judge. Measured with the binary before and after on the
-  6u corpus states, each applied to the tree and restored byte-identical (red.sh): a rejected live board `rc=2 REFUSED — the check
-  does not discriminate` → `rc=1 FAIL — the composition does not hold`; no board `rc=2 REFUSED` → `rc=0 ok (no board declares itself
-  yet)` [corrected in slice c: that is a silent pass on a deletion, not the ruled outcome — the gate still refuses the state
-  through BOARD-GEN, whose controls read the live board too; a board unit holding gen_board's artifacts without `board.sexp`
-  must fail by name — slice d's census owns it]; one good board and one of two rejected unchanged (0 and 1). `BOARD-VERDICT --self-test: 6 pass / 0 fail`, the real verdict
-  unchanged. Next: slice c — `STATE-GEN`'s frozen rv64gc pair.
-  Slice c (`2026-10-28`, `SEMULITH-XTASK-0066`; on clean 45f970c0, after the approved push; evidence target/xtask/xt0066):
-  `STATE-GEN`'s controls judge frozen copies — `scripts/fixtures/state-gen/` holds the rv64i descriptor, the arithmetic module and
-  an rv64gc pair (`rv64i/state.sexp`, `arith.rs`, `rv64gc/state.sexp` and `rv64gc/state_rv64gc.rs`, the module generated from the
-  frozen descriptor at its own path, since a module records its source path and digest; its body equals the live module's). The
-  first draft copied the live module and named the descriptor `rv64gc-state.sexp`: the generator refuses a descriptor not named
-  `state.sexp` and the copied header named the live path — 2 of 29 arms refused, caught before any commit. The real run now judges
-  each pair on its own: a generated module whose descriptor is absent fails by name (before, an absent rv64i descriptor returned
-  "ok (no state descriptor yet)" without judging rv64gc at all); only when no pair has either half is there no state yet.
-  Measured with the binary before and after on the 6x corpus states, each applied to the tree and restored byte-identical
-  (red.sh): the rv64gc module hand-edited 2 REFUSED → 1 FAIL by name; the rv64gc census silenced 2 → 1; the rv64i descriptor
-  removed 2 → 1 (`… is generated, but its descriptor … is absent`); the rv64i module hand-edited and the in-sync tree unchanged
-  (1, 0). `STATE-GEN --self-test: 29 pass / 0 fail`; the real verdict unchanged. Next: slice d — the census of every doctrine
-  whose controls read live data.
-  Slice d (`2026-10-28`, `SEMULITH-XTASK-0067`; on clean 8c622c02; evidence target/xtask/xt0067): the missing-board case
-  the 6u finding named, finished — `BOARD-VERDICT`'s real run fails by name a `profiles/*` unit holding `composition.sexp` (the
-  board generator's manifest, derived from `board.sexp`) without its `board.sexp`; a corpus with no board unit at all is still
-  "no board declares itself yet". Measured before and after (red.sh, each state applied to the tree and restored): `board.sexp`
-  deleted `rc=0 ok (no board declares itself yet)` → `rc=1 FAIL — profiles/netboard-lab-v0/composition.sexp is generated from a
-  board definition, but … board.sexp is absent`; no board unit at all 0 → 0; rejected, one of two rejected and one good board
-  unchanged. `BOARD-VERDICT --self-test: 6 pass / 0 fail`. The census (census.py → census.txt): 21 of 41 drivers' self-tests
-  reference live tracked data directly and `PROFILE-CONSISTENCY`'s runs 44 probes — some are false positives (route rows that
-  merely contain `docs/`), many are deliberate real-tree arms (`a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`),
-  and `BOARD-GEN` is a measured case (it refuses when the live `board.sexp` is absent). Next: slice e — classify the census
-  (which GREEN controls require a correct live corpus) and raise the remedies to the director: beyond ruling 5's named three.
-  Slice e (`2026-10-28`, `SEMULITH-XTASK-0068`; on clean 59f14afa; evidence target/xtask/xt0068/classification.md): the census
-  classified by reading each driver's self-test (two claims re-checked by hand: BOOK-INDEX copies the live `docs/book`; DEF-GEN's
-  GREEN in-sync arm runs `--check` on the live rv64gc encoding, state and module — the real check's own test). 11 drivers are
-  FRAGILE — a GREEN arm expects a verdict on the unmodified live corpus: BOARD-GEN, BOOK-INDEX, CONTRACT-FREEZE (partly mitigated:
-  it judges before its self-test), DEF-GEN, EXERCISE-COVERAGE, GUEST-GEN, MATERIALS-BILL, PLATFORM-GEN, RECORD-SCHEMA and
-  UNIT-BOOKS through one probe each, and PROFILE-CONSISTENCY through 14 probes; 10 are false positives (scratch paths, TSV row
-  literals); ARTIFACT-COHORT reads only its owned fixtures; DOSSIER-SCHEMA, outside the census, is likely fragile too. The most
-  consequential by commits since 2026-09-28: BOOK-INDEX (`docs/book`, 364), PROFILE-CONSISTENCY (`profiles/rv64gc-lab-v0`, 139;
-  it refused this way on 2026-10-26), DEF-GEN and GUEST-GEN (their live in-sync arms duplicate the real check). Ruling 5 named
-  three doctrines and its record states the rule generally; extending it to the other eleven is a programme of its own (some
-  PROFILE-CONSISTENCY real-tree arms are deliberate: `a-real-tree-probe-arm-is-a-prediction-the-act-re-states.md`), so it is
-  raised to the director as an Open Question with a recommended order. The leaf is done: its ruled scope is executed.
+  Slices 11a–11e: [retained verbatim](archive/XTASK-7.md#slice-paragraphs-11a-to-11e).
 
 - ID: `XTASK.12` — **a quiet refusal names the arm that missed**
   Status: `done` (`2026-10-29`, slices a–c; hosted CI green on cefb0d84: doctrines 40782096575 `=== all doctrines green ===`, rust 40782096560 success; opened by the hosted doctrines run 40746652030 on 45f970c0)
   Goal: when a doctrine's quiet self-test (the one its real run makes before judging) misses, the refusal names every missed arm
   and its output, so a hosted refusal can be diagnosed from its log.
-  Slice a (`2026-10-28`, `SEMULITH-XTASK-0069`; on clean 474efaa6; evidence target/xtask/xt0069): the granted push's hosted run
-  confirmed the ARTIFACT-COHORT fix and refused on `UNIT-BOOKS: REFUSED — the check does not discriminate (self-test failed)` —
-  with nothing more, because `check_unit_books.rs` printed a miss only in a verbose run. Its inputs did not change between the
-  passing hosted run (b917d1ba) and this one (`git diff --stat` empty over docs/book, materials, docs/models and its scripts), and
-  here it passes (`22 pass / 0 fail`): the cause is not yet known. The driver's tally now keeps every miss and a quiet run prints
-  them before the refusal line; verbose output is unchanged. RED: the navigation probe made to exit 1 (restored byte-identical) —
-  the quiet run prints `UNIT-BOOKS navigation probe failed` and the probe's own line, then the refusal. A census found 28 more
-  drivers whose quiet refusal hides its misses (quiet-miss.txt): slice b. Own slip, recorded: this slice's edit, build and RED ran
-  while slice e's commit gate was running — the gate passed, and this slice's gate re-validates the tree.
-  Slice b (`2026-10-28`, `SEMULITH-XTASK-0070`; on clean 18bfc69c, pushed as SEMULITH-PUSH-0004; evidence target/xtask/xt0070): the
-  28 other drivers the census found get the same report path, by one transformation (transform.py; each step had to match once
-  per file, every touched file backed up in before/): each `Tally` keeps a `misses` list, every guarded miss print goes through
-  `report()` (printed at once when verbose, kept always), and a quiet self-test prints its misses before the caller's refusal;
-  two literal-only reports became `.to_owned()` for clippy. Measured: a structural check over all 29 drivers (`misses.push`,
-  the quiet loop, no verbose-only miss print left) 29 of 29; every self-test unchanged and green (selftests.txt: 29 of 29 rc=0,
-  the same pass counts, from `BOARD-GEN 9` to `README-ROUTING-CLOSURE 94`); RED on the tree, each restored byte-identical
-  (red/): the frozen STATE-GEN module, the frozen board and the live rv64gc definition module hand-edited — each quiet run now
-  prints `… self-test MISS: GREEN …` before its refusal (1, 2 and 1 lines). The last one is open question (e) in miniature: a
-  live module edit refuses DEF-GEN instead of failing it by name. The leaf is done once the hosted run is green.
-  Slice c (`2026-10-28`, `SEMULITH-XTASK-0071`; on clean 447ad5f9; evidence target/xtask/xt0071): the hosted run of slice a's push
-  (40763391753 on 18bfc69c) named the miss — `probe_book_includes.IncludeTests.test_another_volume_and_changed_input_refuse`,
-  line 230, `AssertionError: 3 != 1`. The test patched `Path.stat` and asserted the include target was stat'ed exactly once, and
-  a sibling assertion counted `Path.lstat` calls; how many pathlib calls reach those methods is the interpreter's (3.11 and 3.12
-  route `is_symlink()`, `exists()` and `stat()` through `Path.stat`: 3; 3.14 only `stat()`: 1). The runner's `python3` is 3.12,
-  this host's 3.14. Reproduced exactly here under Python 3.12.15 (installed beside the default) and 3.11: `3 != 1`. The test now
-  holds the property — the refusal names `another volume` and the source is never opened (an `os.open` spy), the change test's
-  refusal names `changed` — with `calls >= 1` (and `>= 2`) proving the patch was consulted. RED: the volume refusal removed from
-  `book_paths.source_path` and `book_includes` (restored byte-identical) fails the test on 3.11 (wrong reason) and 3.14 (no
-  refusal). Parity: the whole doctrines suite with `python3` resolving to 3.12 — `=== all doctrines green ===` (13 checks,
-  1224 s). `probe_book_navigation.py`'s deep-nesting test fails on 3.11 only (exit 1 against 2), not on the runner's 3.12:
-  noted, out of scope. Card: `docs/knowledge/a-count-of-pathlib-calls-tests-the-interpreter.md`.
-  Closed (`2026-10-29`): the push of this slice (cefb0d84, SEMULITH-PUSH-0005) turned the hosted doctrines run green —
-  40782096575 `=== all doctrines green ===`, rust 40782096560 success — the first green hosted doctrines run since 2026-10-08.
+  Slices 12a–12c: [retained verbatim](archive/XTASK-7.md#slice-paragraphs-12a-to-12c).
 
 - ID: `XTASK.13` — **the eleven fragile doctrines judge frozen copies (ruling 5's rule)**
   Status: `active` (slice a done `2026-10-29`; opened `2026-10-29`; open question (e) answered by the workflow under the director's delegation of 2026-10-28:
@@ -427,77 +341,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   CONTRACT-FREEZE, the RECORD-SCHEMA and UNIT-BOOKS probes, then PROFILE-CONSISTENCY's 14 probes case by case (a real-tree arm
   that is a deliberate prediction stays, named); DOSSIER-SCHEMA's legacy arm is checked on the way. Scheduled between the
   feature units (5:1).
-  Slice a (`2026-10-29`, `SEMULITH-XTASK-0073`; on clean 1067faed; evidence target/xtask/xt0073): `DEF-GEN`'s controls judge
-  a frozen copy. `scripts/fixtures/def-gen/` mirrors the repository's layout (25 files, 440 KB): both units' `encoding.sexp`
-  and `state.sexp`, the twenty `definitions/riscv` fragments and `crates/semulith-core/src/definition_rv64gc.rs` regenerated
-  at its fixture path (`gen_definition.py --check` rc=0 over the frozen pair; its body equals the live module's but for the
-  input paths its manifest records). Every control reads `FIXTURE` — the surgical rv64i unit, the staged rv64gc compositions,
-  the fence mutator (it now takes its source as an argument instead of opening the live `system.sem.sexp`) and the census's
-  in-sync and hand-edit arms — and `scripts/probe_c_engine.py` gains `--data-root` (default the repository; the engine it
-  compiles is always the tracked one), which the controls point at the copy. The absence branch the freeze exposed: `run`
-  printed "ok (no encoding composition yet)" when the rv64i encoding was missing, which a deleted live encoding would now
-  reach; a generated module whose encoding or state descriptor is absent is now an orphan, failed by name. Measured on the
-  real tree, the binary before and after (red.txt, the tree restored, 0 paths changed): `in-sync` 0 → 0;
-  `gc-module-hand-edited`, `fragment-edited` and `encoding-missing` 2 (REFUSED, self-test failed) → 1, each named;
-  `fragment-missing` 2 → 2, now the generator's named refusal (`fragment 'riscv/system' has no semantics document`), never
-  the self-test's. `DEF-GEN --self-test: 56 pass / 0 fail` before and after. Next: slice b, GUEST-GEN.
-  Slice b1 (`2026-10-29`, `SEMULITH-XTASK-0074`; on clean e32cc645; evidence target/xtask/xt0074): `GUEST-GEN`'s census
-  and surgical controls judge frozen mini corpora. A whole frozen copy would be 3 MB (the rv64i set 512 KB, the rv64gc
-  set 2.5 MB with a 1 MB fixture), so `scripts/fixtures/guest-gen/` holds what the arms use: three rv64i guests
-  (smoke-arith, guest-control, smoke-trap — the surgical arms' own) and three rv64gc guests (smoke-arith, bound-arith,
-  c-alu) with their byte fixture regenerated at its path, each corpus with its own run-order record, composed over DEF-GEN's
-  frozen definitions (one frozen canonical definition, not two); 92 KB. The census's in-sync arm judges the frozen pair
-  (`run` judges the live pairs), its hand-edit arm edits a copy of the frozen fixture. `run` has no absence branch to expose
-  (it always judges both pairs and the mirror). Measured on the real tree, before → after (red.txt, restored, 0 paths
-  changed): `in-sync` 0 → 0; `gc-fixture-hand-edited` 2 (self-test failed) → 1, named; `gc-guest-missing` and
-  `rv64i-guest-unassemblable` 2 → 2, still through the self-test — the three base-mirror arms (the live owner/mirror pair)
-  and the parcel-count arms (the full live census) still read the live corpus, slice b2's scope, named by the after
-  binary's MISS lines. `GUEST-GEN --self-test: 400 pass / 0 fail` before and after. Next: slice b2 (the mirror arms over a
-  frozen self-consistent pair — the checker hard-codes seven re-derivations and three pinned source re-derivations — and
-  the census arms).
-  Slice b2 (`2026-11-02`, `SEMULITH-XTASK-0075`; on clean 7b1a8f44; evidence target/xtask/xt0075): `GUEST-GEN`'s
-  base-mirror and parcel-count arms judge frozen copies. `scripts/fixtures/guest-gen/base-mirror/` holds byte copies of
-  the eight guests the mirror governor's predicates need, from both units (16 files, 69,445 B): its seven recorded
-  re-derivations (three with pinned source re-derivations) and `bound-arith`, a count-only migration; under DEF-GEN's
-  frozen rv64gc encoding the governor reads it `5 file(s) byte-identical, 1 … count-only migration(s), 7 recorded
-  re-derivation(s), 3 pinned image-identical source re-derivation(s)` — every predicate the live pair exercises — and the
-  census counts its 8 guests exactly. The three base-mirror arms judge the pair (`judge_mirror` takes its encoding; `run`
-  keeps judging the live pair); the governor's seven self-test arms pass `--encoding` the frozen encoding, and
-  `check_gc_mirror.py --self-test` takes its composition from that encoding's own root — the assembler reads the encoding
-  and `definitions/` alone (measured over the four combinations of `profile.sexp` and `state.sexp`), so no other unit file
-  is copied; the five parcel-count arms run `derive_gc_parcel_counts.py --encoding … --guests` the frozen mirror (its
-  self-test's manifest census now over its own hand guests; `manifest()` fingerprints the unit it counts — the live
-  manifest differs from HEAD's only in the tool's own digest). Measured, HEAD's checker over HEAD's tree (a worktree, the
-  states applied there) against the slice's over the working tree, one live file damaged at a time (red-before.txt,
-  red-invalid-before/*.after.*): `in-sync` before `398 pass / 2 fail` — the two `artifact_cleanup.Boundary: ('.app-data',
-  'symlink')` misses the worktree's read-only link causes, in every before state — after `rc=0`; `gc-mirror-drift` before
-  +2 base-mirror arms → after `rc=1`, `FAIL — …guests_rv64gc.rs is out of sync`, 0 misses; `rv64i-guest-unassemblable`
-  before +3 base-mirror arms → after `rc=2`, the generator's own refusal naming `smoke-arith.s` and `zzz9`, 0 misses;
-  `gc-guest-missing` before +8 (the 3 base-mirror and 4 parcel-count arms and the cold probe) → after `399 pass / 1 fail`,
-  the one miss `GREEN parcel author controls use only tracked inputs`: `probe_gc_parcel_guest.py --cold` copies every
-  tracked input and its legacy arm reads five live guests — slice b3. The first before run was invalid and is kept as
-  such (red-invalid-before.txt): its binary, built in a worktree since removed, judged that worktree, because `cargo xtask`
-  fixes its repository root at build time — knowledge card `an-xtask-binary-judges-the-tree-it-was-built-in.md`. Taken at
-  the 5:1 turn between a43b-2c's declarations and a43b-2d's captures: none of the 100 paths frozen for the captures moved
-  (`comm -12` of the changed and frozen sets = 0; both declarations still regenerate byte-identically). `GUEST-GEN
-  --self-test: 400 pass / 0 fail` (the arm count unchanged; two arms renamed: `the base mirror holds on the frozen pair`,
-  `the frozen parcel count census`). The two tool rows of `docs/toolbox/guest-evidence.md` were rewritten within its part bound (16,374 of 16,384 B; README-ROUTING-CLOSURE refused the first draft at 16,666): its next row partitions the family. The chain's focused stage refused once, `BOOK-INDEX` (the book's index derives from its text and the new doctrines-page section was not yet in it); regenerated by `gen_book_index.py`. Next: slice b3 (the parcel author probe's cold and legacy arms).
-  Slice b3 (`2026-11-03`, `SEMULITH-XTASK-0076`; on clean b95a8f66; evidence target/xtask/xt0076): `GUEST-GEN`'s parcel author probe judges frozen copies.
-  `scripts/fixtures/guest-gen/parcel-legacy/` holds byte copies of the five legacy guests (10 files, 102 KB), and the probe's staged composition reads
-  DEF-GEN's frozen rv64gc encoding, state and definitions. `--cold` copies only what the probe reads now: the top-level `scripts/`, those frozen
-  directories and `schema/`, not `definitions` and `profiles`; a deleted live guest used to raise "cold probe requires a regular tracked input". The state
-  descriptor stays, measured: without it the probe passes only where the local reference cache is present, because CSR names then resolve through
-  target/refs/riscv-opcodes/csrs.csv (`--cold` refused `mtvec` naming that path). The eight mutation arms keep their reasons (each `rc=1`, target/xtask/xt0076/m.*.out). Measured
-  on the real tree, the binary before and after with the live file restored after each (red-before.txt, red-after.txt): `in-sync` 0 → 0; `gc-guest-missing` and
-  `legacy-guest-missing` 2 → 2, from `REFUSED — the check does not discriminate` (1 and 2 arms missed) to the generator's own refusal naming the file (`gen_guests:
-  REFUSED — …run-order.txt: lists c-alu — not on disk`), the self-test `400 pass / 0 fail` in every state; `legacy-expectation-edited` 1 → 1. The first after run was invalid
-  and is kept as such (red-after-invalid-untracked-fixtures.txt): the new fixtures were untracked, and `--cold` copies tracked files. **Drafted and taken back:** a real-run
-  step for `derive_rv64gc_expectations.py --check-owned`, moved out of this probe. Fired on the one state only it could name, an owned record hand-edited with its fixture
-  regenerated, the tool itself reads `DRIFT — inj-walk-l0` but the check never reaches the step: `391 pass / 9 fail`, six more probes (`probe_gc_fetch`, `_author`,
-  `_privilege_author`, `_integer_author`, `_counter_author`, `_cache_author`, with `_provenance` and `_owned_extent` beside them) still read the live owned corpus (red-owned.txt). A step that
-  cannot be observed RED is not known to work (`TOOLBOX.md`), so it waits for those probes: slice b4, next at the 5:1 turn, a frozen owned corpus for them and then the real-run step. The
-  corpus lost nothing here: the same six keep asserting `--check-owned` meanwhile. `GUEST-GEN --self-test: 400 pass / 0 fail` (the arm count unchanged). No path a case pins moved, and none
-  is frozen at this turn: CSR-SET's declarations come after it. Next: slice b4.
+  Slices 13a–13b3: [retained verbatim](archive/XTASK-7.md#slice-paragraphs-13a-to-13b3).
   Slice b4 (`2026-11-04`, `SEMULITH-XTASK-0077`; on clean 7d846fac; evidence target/xtask/xt0077): the author probes judge a frozen owned corpus, and GUEST-GEN's real check re-derives the live one.
   `scripts/fixtures/guest-gen/owned/profiles/rv64gc-lab-v0/guests/` holds byte copies of the 42 owned guests (84 files, 440 KB). `derive_rv64gc_expectations.py` is pinned by every retained case and does not move, and it selects its corpus and a record's
   historical header under its `REPO`, so `scripts/frozen_owned.py` points the module under test at that tree and DEF-GEN's frozen encoding for the one call, and restores it. Eight probes take it (`probe_gc_author`, `probe_c_author`, `_fetch`, `_privilege_author`, `_integer_author`,
@@ -509,12 +353,13 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Slice b5 (`2026-11-05`, `SEMULITH-XTASK-0078`; on clean 9fc2a5d7; evidence target/xtask/xt0078): the author probes' other corpus reads judge frozen copies, and no real-run step is added, because one already reads them. `scripts/fixtures/guest-gen/corpus/` holds byte copies of the 26 records the author does not own and must reproduce (52 files, 299,519 B, `cmp` silent against the live ones at this commit): 17 integer, 5 privilege, 3 counter, the cache guest. `frozen_owned.py` gains the table and `judge_corpus`, which replaces the same loop in three probes, and the probes' `Assembler` and `author.ENCODING` take DEF-GEN's frozen composition; `probe_gc_owned_extent` starts its scratch tree from it too. **The census, a new tool:** `scripts/live_reads.py`, an audit hook naming the files a probe opens, `--self-test` `ok`; a spawned process's reads are not traced, and the JSON's `spawned` says where that limits it. Before: `probe_gc_privilege_author` 33 live files, `_integer_` 57, `_counter_` 29, `_cache_` 25, `_provenance` 23. After: all five 0 (final-census.txt), and `_owned_extent` only `schema/`, the tool's own input.
   **Measured** (red-before.txt, red-after.txt, the before binary on the tree it was built in, under a stash): `mm-sret`'s value edited with its fixture regenerated: `rc=2`, `399 pass / 1 fail`, `GREEN fixed misa and privileged author legality` missed, becomes `rc=1 MIRROR DRIFT — mm-sret.s: architectural observations differ at boundary 0`, `400 pass / 0 fail`. **A step drafted and dropped:** b4's pattern suggested a real-run step for these records (`check_author_corpus.py`, probe and arms, target/xtask/xt0078/dropped/). That state fired the governor first, so before keeping the step I measured whether anything could reach it: one value edited in each of the 26 records of a scratch copy, one at a time, `check_gc_mirror.py --mirror <copy>` `rc=1`, each named (governor-census.txt, `not named by the governor: 0`, 0.4 s each). The governor derives every guest it is given, and the step compares a subset of what it compares, so the step could never fire alone: dropped, and the self-test stays at 400 arms. **Still live, measured (remaining.txt):** seven other probes read the composition's 23 files: `probe_c_assembler`, `probe_gc_sail`, `probe_gc_snapshot_author`, `probe_c_guest_image`, `probe_matched_gpr_derivation`, `_image`, `_source_image`. `zifencei.sexp` deleted: `rc=2`, `246 pass / 154 fail` (red/fragment-misses.txt). Slice b6, next at the 5:1 turn; `matched_gpr_image.py` is a pinned input and reads the canonical path by construction, so its probes need a seam the tool already has, or a tree around it. The count restarts here. Next: features, SSTC (a43d).
   Slice b6 (`2026-11-05`, `SEMULITH-XTASK-0079`; on clean 94b0ae58; evidence target/xtask/xt0079): the rest of GUEST-GEN's self-test judges frozen copies, so the doctrine meets ruling 5 whole. **Taken at 4 of 5 features, by reasoning recorded here:** the SSTC case waits on the director's pick (`decision_sstc-delivery-needs-the-pinned-window.md`), and each further P4 credit raises that window's cost, so feature work that does not depend on the answer ran out first; the 5:1 rule ranks features above tooling and does not ask tooling to wait for a feature that cannot run. The count restarts here. **The edits:** `probe_c_assembler`, `probe_c_guest_image`, `probe_gc_sail` and `stage_gc_c_corpus` take DEF-GEN's frozen composition; `frozen_owned.image_root` patches the one `ROOT` name of `matched_gpr_image.py`, which is pinned and does not move, for `probe_matched_gpr_image`, `_source_image`, `_derivation` and `probe_gc_snapshot_author`, the seam the image probe already used; the snapshot probe also fixes the deriver's `ENCODING`, what its `canonical-context` omission reads instead. `stage_gc_c_corpus` takes `sv39-straddle` from `corpus/`. **Found on the way:** DEF-GEN's frozen tree had no `profile.sexp`, so an assembler over it read IALIGN 32 where the live one reads 16: the image probes refused at once (`canonical GC context must declare IALIGN16`), and the author probes had passed without noticing since b4, because they compare writes. The tree gains the file, and all fifteen probes pass with the honest composition. **Measured** (`scripts/live_reads.py`, final-census.txt): the seven probes' 23 live composition files each go to 0, but for the Sail override `probe_gc_sail` still reads. **Six states on the real tree, each restored `cmp`** (red-states.sh, red-states.txt): `zifencei.sexp` deleted `rc=2`, `246 pass / 154 fail` becomes `rc=1`, `composes 'riscv/zifencei', but definitions/riscv/zifencei.sexp does not exist`, `400 pass / 0 fail`; garbled, that fragment, its semantics, `encoding.sexp`, `state.sexp` and `profile.sexp` each read `rc=1` naming the file and line, `400 pass / 0 fail`. Next at the 5:1 turn: BOOK-INDEX, the next doctrine in the leaf's order. Next: features.
+  Slice c (`2026-11-05`, `SEMULITH-XTASK-0080`; on clean 18a09566; evidence target/xtask/xt0080): `BOOK-INDEX`'s controls judge a small frozen book, so a damaged real book fails by its own name. **Taken at 4 of 5 features, by reasoning recorded here:** the fifth, a43e-4, waits on a quiet host, since a capture runs exactly once; the 5:1 rule ranks features above tooling and does not ask tooling to wait for a feature that cannot run. The count restarts here, and a43e-4 is feature 1 of the next five. **The change.** `scripts/fixtures/book-index/` holds five chapters' worth of structure, its glossary and its generated index, 1,785 B; the self-test copies it, never `docs/book`. **What freezing alone would have broken, read before it was made:** the real run answered `BOOK-INDEX: ok (no project book yet)` whenever `SUMMARY.md` was absent, and only the live self-test's failure stood between a deleted `SUMMARY.md` and a green gate. So `judge_book` now reads "no project book" as no book directory at all, and a book without its `SUMMARY.md` goes to the generator, which refuses by name. Four new arms, over a frozen root: the real judgement's GREEN with its row count, the deleted glossary, the missing `SUMMARY.md`, the absent book: 14 arms, `check_derived_counts` 1742. **Measured, each state on the real tree with both binaries, each restored** (red-states.sh, red-states.txt): a chapter, `docs/GLOSSARY.md` and `SUMMARY.md` deleted each read `rc=2` before, naming a missed control over a scratch path, then `gen_book_index: REFUSED — SUMMARY.md names 'claim-scope.md' but no such chapter exists`, `the canonical glossary docs/GLOSSARY.md is missing`, `no SUMMARY.md under docs/book/src`; the hand-edited index stays `rc=1` DRIFT; the frozen fixture damaged `rc=2`, the control that stopped discriminating, as it should. **Honest limit:** a removed `docs/book` directory reads `no project book yet`, the template's own case; other doctrines read the book, this one does not claim that state. **Containment:** this file stood at 129,709 B of its 131,072 B ceiling, so the closed slice paragraphs of `XTASK.11`, `XTASK.12` and `XTASK.13` a to b3 moved verbatim to `docs/tasks/archive/XTASK-7.md`. Next at the 5:1 turn: BOARD-GEN. Next: a43e-4 when the host is quiet.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads) and b6 (the rest of its self-test: GUEST-GEN whole) done; BOOK-INDEX next, after five feature units |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole) and c (BOOK-INDEX) done; BOARD-GEN next, after five feature units |
 
 ## Decisions
 
@@ -635,6 +480,10 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **LOCKSTEP** — the tree (XTASK.9 node, Children, changelog line), docs/TASK_TREE.md (8 of 9 leaves done), the knowledge card and its INDEX row, KNOWLEDGE_MAP.md, CHANGELOG.md, MEMORY.md.
 
 ## Acceptance Checklist (leaf XTASK.13)
+
+- [x] slice c **ROOT CAUSE** — `scripts/check_book_index.sh` self-test copied the live book: with `docs/book/src/claim-scope.md` deleted the before binary reads `rc=2`, `BOOK-INDEX self-test MISS: GREEN the generator emits an index from the real book` over a scratch path (target/xtask/xt0080/red-states.txt); `grep -n 'SUMMARY.md").is_file' xtask/src/check_book_index.rs` at 18a09566: the real run's only guard read a deleted `SUMMARY.md` as no book.
+- [x] slice c **ADDRESSED** — `cargo xtask check-book-index --self-test` `rc=0`, `14 pass / 0 fail`; the three deleted sources `rc=2` naming each file (`no SUMMARY.md under docs/book/src`), with the controls unaffected; the hand-edited index `rc=1` DRIFT; the fixture damaged `rc=2`; clean `rc=0`, `BOOK-INDEX: ok (… 40 table rows)`.
+- [x] slice c **NO REGRESSION** — every state restored (`git diff --quiet`, `cmp`); `DERIVED-COUNTS: ok`; `bash scripts/check_readme_routes.sh` `rc=0`; the focused stage and the commit gate (target/xtask/xt0080 chain log). No path a case pins moved: `git diff --cached --name-only` ∩ target/p4-system-14/a43e-4/frozen-paths.txt = ∅.
 
 - [x] slice b6 **ROOT CAUSE** — target/xtask/xt0078/red/fragment.err: `zifencei.sexp` deleted, `rc=2`, `GUEST-GEN --self-test: 246 pass / 154 fail`: `python3 -B scripts/live_reads.py` names 23 live composition files in each of seven probes, and `stage_gc_c_corpus.py` read them too, so one damaged live source refused the self-test instead of failing by name.
 - [x] slice b6 **ADDRESSED** — target/xtask/xt0079/red-states.txt: six states, each `rc=1` naming the file (`composes 'riscv/zifencei', but definitions/riscv/zifencei.sexp does not exist`; `sexp.SexpError: definitions/riscv/zifencei.sem.sexp: 3 unterminated list(s)`), `GUEST-GEN --self-test: 400 pass / 0 fail` in every one.
