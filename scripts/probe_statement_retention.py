@@ -117,6 +117,23 @@ class RetentionTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(R.RetentionError):
                 self.rebuilt_emit(spans={k: v for k, v in self.spans.items() if k != name})
 
+    def test_a_paragraph_is_quoted_from_inside_its_tags_by_its_anchor_or_its_opening_words(self):
+        """The two shapes beside the span: a span's own tags are quoted, and a paragraph's `<p>` and `</div>` are the page's, not the statement's."""
+        anchored = b'<div id="norm:para" class="paragraph">\n<p>An <em>anchored</em> paragraph.</p>\n</div>'
+        opening = b'<div class="paragraph">\n<p>These words open it, with <code>code</code>.</p>\n</div>'
+        self.assertEqual(R.select_span(anchored, "norm:para"), b"An <em>anchored</em> paragraph.")
+        self.assertEqual(R.select_span(b"before" + opening + b"after", "opening:These words open"), b"These words open it, with <code>code</code>.")
+        self.assertEqual(R.select_span(span("norm:s", b"x") + anchored, "norm:s"), span("norm:s", b"x"))
+
+    def test_an_opening_that_two_paragraphs_share_refuses_and_so_does_one_none_has(self):
+        paragraph = b'<div class="paragraph">\n<p>These words open it.</p>\n</div>'
+        with self.assertRaises(R.RetentionError):
+            R.select_span(paragraph + paragraph, "opening:These words")
+        with self.assertRaises(R.RetentionError):
+            R.select_span(paragraph, "opening:Other words")
+        with self.assertRaises(R.RetentionError):
+            R.select_span(b'<div class="paragraph">\n<p>These words <img src=x> open it.</p>\n</div>', "opening:These words")
+
     def test_duplicate_statement_refuses(self):
         with self.assertRaises(R.RetentionError):
             self.rebuilt_emit(extra=span(NAMES[0][0]))

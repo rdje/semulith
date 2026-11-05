@@ -8401,21 +8401,21 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN statement retention {mode}"), prober.probe(repo, argv.clone()), 0, "STATEMENT-RETENTION: 19 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit");
+        tally.score(&format!("GREEN statement retention {mode}"), prober.probe(repo, argv.clone()), 0, "STATEMENT-RETENTION: 21 tests / 0 failures / 0 errors; synthetic curation controls, no capture credit");
         for (mutation, losses) in [
             ("input-pins", "1"),
             ("licence-pins", "1"),
             ("licence-statement", "1"),
-            ("unique-statement", "1"),
+            ("unique-statement", "2"),
             ("closing-span", "1"),
             ("span-bound", "1"),
-            ("span-markup", "7"),
+            ("span-markup", "8"),
             ("retained-bound", "1"),
-            ("retained-pin", "4"),
+            ("retained-pin", "7"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("STATEMENT-RETENTION: 19 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
+            tally.score(&format!("RED statement retention {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("STATEMENT-RETENTION: 21 tests / {losses} failures / 0 errors; synthetic curation controls, no capture credit"));
         }
     }
     // P4-SYSTEM.14 a43b-3f: what a case's reference configuration does, measured once (scripts/measure_config_effect.py).

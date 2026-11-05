@@ -124,6 +124,22 @@ step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}
 
 The record names the case's guest (`41f2cbc2…`), the case's configuration (`05746ed6…`) and the same alternative as CSR-SET's (`666d9373…`, the profile override), and the raw trace (27,617 B, `896814f3…`). The two traces are the same up to line 13, step 6, where the case's reads `x5 <- 0x0000000000000006` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr at all, so the first counter read in the program traps.
 
+`REQ-D-SSTC` is the last on this route, and its design changes what `sstc.s` could say (a43d-1, before a case could carry its own configuration): delivery was named out, because the override had no timer source. The program a43d-2 drafted, 192 instructions and 315 steps, reads:
+
+| Section | What it witnesses | Example |
+| --- | --- | --- |
+| `stimecmp` in M | readable with both gates clear; all 64 bits hold | written 2^40, read back |
+| The gates, each alone | S refused with TM clear, with STCE clear, and with either alone; U refused whatever they say | `csrrs x20, stimecmp, x0`: cause 2, `x20` kept |
+| The kernel's own timer | S reads the value M wrote and programs its own | written 2^41, read back |
+| Pending | `sip.STIP` follows `time` against `stimecmp`, unsigned | compare all-ones reads 0, compare 0 reads `0x20` |
+| Suppressed | STIE clear; SIE clear in S; delegated, in M; STCE clear | the next instruction retires in sequence |
+| Delivered | to S, from S and from U, whatever SIE says below S; to M when not delegated | `scause` reads `0x8000000000000005`, `sepc` the next instruction |
+| Scheduled | S reads `time`, adds 8, writes `stimecmp` | the interrupt lands after 5 of 12 counted instructions |
+| Acknowledged | writing a compare above `time` clears it, with no M-mode action | `sip` reads 0 in the handler |
+
+It agrees with the reference on the same configuration as CSR-SET's and ZICNTR's, and under the profile override it first differs at `rdtime x5`. **What the exact boundary means.** The manual guarantees a changed comparison reaches STIP "eventually, but not necessarily immediately",
+so the scheduled row's boundary is what both producers do on this configuration, not a claim about latency, and the case's limitations will say so. An explicit write to a CSR the conditions depend on is different: they "must also be evaluated immediately following" it, so the delivery right after writing `sstatus.SIE` is normative.
+
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
 is itself a defect, even if the reference program normally succeeds. Controls

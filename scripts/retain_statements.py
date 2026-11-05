@@ -29,6 +29,9 @@ PAGE_BYTES = 524288  # the longest pinned page a row names: priv/machine.html, 2
 LICENCE_BYTES = 131072
 RETAINED_BYTES = 8192
 SPAN_BYTES = 1024
+OPENING = "opening:"
+PARAGRAPH = b'<div class="paragraph">\n<p>'
+PARAGRAPH_END = b"</p>\n</div>"
 # The sentence both volumes' prefaces state, line breaks included (materials/RVI_M_RETENTION.md).
 LICENCE_STATEMENT = (
     b"Commons Attribution 4.0 International License by the original authors,\n"
@@ -94,6 +97,29 @@ EXCERPTS = {
         (("norm:mcounteren_op", "§2.1.1.11"), ("norm:mcounteren_inc_inaccessible", "§2.1.1.11"),
          ("norm:mcounteren_clr_ill_inst_exc", "§2.1.1.11"), ("norm:mcounteren_set_nxt_priv", "§2.1.1.11")),
         "This excerpt establishes no ZICNTR acceptance; the scounteren statement has no anchor to select in its own page, so it is cited, not retained."),
+    "RVP-SSTC-STATEMENTS": Excerpt(
+        "RVP-SSTC-STATEMENTS", "RVP-SSTC §12.1: why supervisor mode has its own timer, and what the extension adds",
+        Page("RVP-SSTC", "priv/sstc.html", "30bea862eee800d485ce34636b2824bf9909a4676b39d2c5734e92fba14216e1",
+             "RISC-V Privileged Architecture, §12.1 \"Sstc\" Extension for Supervisor-mode Timer Interrupts, Version 1.0"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-sstc-statements.html", "8032b3fff7e2861adf58a2965f5cca55025242b9ae46f3f034c24677cbf3e7a6",
+        (("opening:This extension serves", "§12.1"), ("opening:The extension name is", "§12.1")),
+        "This excerpt establishes no SSTC acceptance; the chapter anchors none of its text, so each paragraph is selected by the words it opens with."),
+    "RVP-STIMECMP-STATEMENTS": Excerpt(
+        "RVP-STIMECMP-STATEMENTS", "RVP-SUPERVISOR §11.1.1.3 and §11.1.1.12: when a supervisor interrupt traps, and what stimecmp makes pending",
+        Page("RVP-SUPERVISOR", "priv/supervisor.html", "d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a",
+             "RISC-V Privileged Architecture, §11.1 Supervisor-Level ISA, Version 1.13"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-stimecmp-statements.html", "7f2362b1cc60afb3281c82e50e244b6dd4b971e13eae25c0aac46e3601d3b6e3",
+        (("norm:sie_sip_supervisor_strap", "§11.1.1.3"), ("norm:sie_sip_strap_time_constraint", "§11.1.1.3"),
+         ("norm:sip-stip_sie-stie", "§11.1.1.3"), ("norm:stimecmp-stimecmph_sz_acc", "§11.1.1.12"), ("norm:mip_sip-stip_op", "§11.1.1.12")),
+        "This excerpt establishes no SSTC acceptance."),
+    "RVP-STCE-STATEMENTS": Excerpt(
+        "RVP-STCE-STATEMENTS", "RVP-MACHINE §2.1.1.9 and §2.1.1.18: how stimecmp drives STIP, and what menvcfg.STCE gates",
+        Page("RVP-MACHINE", "priv/machine.html", "b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea",
+             "RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-stce-statements.html", "dd8a425e87b394c6bc655c98724debc3875f690c903685f8a3f84eb504306c15",
+        (("norm:mip_stip_stimecmp_acc", "§2.1.1.9"), ("norm:mip_stip_stimecmp_op2", "§2.1.1.9"), ("norm:mip_stip_stimecmp_clr", "§2.1.1.9"),
+         ("norm:menvcfg_stce_op1", "§2.1.1.18"), ("norm:menvcfg_stce_op2", "§2.1.1.18")),
+        "This excerpt establishes no SSTC acceptance."),
 }
 
 
@@ -111,16 +137,33 @@ def pinned(data, limit, digest, name):
     require(hashlib.sha256(data).hexdigest() == digest, name + " pin differs")
 
 
+def statement_marks(source: bytes, name: str) -> tuple[bytes, bytes, bytes]:
+    """What opens and closes a row's statement, and what opens its quoted bytes.
+
+    A statement is a span by its anchor, as most are. The manual also anchors a whole paragraph, and the Sstc chapter anchors nothing, so `opening:<words>`
+    selects the one paragraph that opens with exactly those words. A span is quoted with its own tags; a paragraph is quoted from inside its `<p>`.
+    """
+    if name.startswith(OPENING):
+        words = name[len(OPENING):].encode()
+        return PARAGRAPH + words, PARAGRAPH_END, words
+    span, anchored = b'<span id="' + name.encode() + b'">', b'<div id="' + name.encode() + b'" class="paragraph">\n<p>'
+    if span not in source and anchored in source:
+        return anchored, PARAGRAPH_END, b""
+    return span, b"</span>", span
+
+
 def select_span(source: bytes, name: str) -> bytes:
-    marker = b'<span id="' + name.encode() + b'">'
+    marker, closing, quoted = statement_marks(source, name)
     start = source.find(marker)
     require(start >= 0, f"{name}: statement is absent")
     require(source.count(marker) == 1, f"{name}: statement is duplicated")
-    end = source.find(b"</span>", start + len(marker))
+    end = source.find(closing, start + len(marker))
     require(end >= 0, f"{name}: statement is unterminated")
-    span = source[start: end + len(b"</span>")]
+    first = start + len(marker) - len(quoted)
+    tagged = closing == b"</span>"
+    span = source[first: end + len(closing)] if tagged else source[first: end]
     require(len(span) <= SPAN_BYTES, f"{name}: statement exceeds bound")
-    inner = span[len(marker): -len(b"</span>")]
+    inner = span[len(marker): -len(closing)] if tagged else span
     for tag in re.findall(rb"<[a-zA-Z0-9][^>]*>", inner):
         require(any(shape.fullmatch(tag) for shape in OPENING_TAGS), f"{name} carries unreviewed markup {tag[:40]!r}")
     span.decode("utf-8")

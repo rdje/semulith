@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-MACHINE statements — v20260120</title>
+<body>
+<h1>RVP-MACHINE §2.1.1.9 and §2.1.1.18: how stimecmp drives STIP, and what menvcfg.STCE gates</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/machine.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no SSTC acceptance.</p>
+<h2>§2.1.1.9: <code>norm:mip_stip_stimecmp_acc</code></h2>
+<blockquote><p><span id="norm:mip_stip_stimecmp_acc">If the <code>stimecmp</code> (supervisor-mode timer compare) register is
+implemented, STIP is read-only in mip</span></p></blockquote>
+<h2>§2.1.1.9: <code>norm:mip_stip_stimecmp_op2</code></h2>
+<blockquote><p><span id="norm:mip_stip_stimecmp_op2">reflects the supervisor-level timer
+interrupt signal resulting from stimecmp.</span></p></blockquote>
+<h2>§2.1.1.9: <code>norm:mip_stip_stimecmp_clr</code></h2>
+<blockquote><p><span id="norm:mip_stip_stimecmp_clr">This timer interrupt signal is
+cleared by writing <code>stimecmp</code> with a value greater than the current time value.</span></p></blockquote>
+<h2>§2.1.1.18: <code>norm:menvcfg_stce_op1</code></h2>
+<blockquote><p><span id="norm:menvcfg_stce_op1">The Sstc extension adds the <code>STCE</code> (STimecmp Enable) bit to <code>menvcfg</code> CSR.</span></p></blockquote>
+<h2>§2.1.1.18: <code>norm:menvcfg_stce_op2</code></h2>
+<blockquote><p><span id="norm:menvcfg_stce_op2">The <code>STCE</code> bit enables <code>stimecmp</code> for S-mode when set to one.
+When this extension is implemented and <code>STCE</code> in <code>menvcfg</code> is zero, an attempt to access <code>stimecmp</code>
+in a mode other than M-mode raises an illegal-instruction exception, <code>STCE</code> in
+<code>henvcfg</code> is read-only zero, and <code>STIP</code> in <code>mip</code> and <code>sip</code> reverts to its
+defined behavior as if this extension is not implemented. Further, if the H
+extension is implemented, then <code>hip</code>.VSTIP also reverts its defined behavior as
+if this extension is not implemented.</span></p></blockquote>
+</body></html>

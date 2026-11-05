@@ -72,6 +72,9 @@ ZICNTR's design, on this route (a43c-1, 2026-11-04): a new program, `zicntr.s`, 
 `DIVERGE step 6 (rdcycle x5)` under the profile override. A write through `mcycle` or `minstret` stays unwitnessed: the spec-side deriver refuses it ("writable counter rebasing is outside
 this bounded author's scope"), and it is pinned. Zihpm's absence too: its vocabulary is the 33. Both go in the case's limitations (`docs/tasks/P4-SYSTEM.md`, a43c-1).
 
+SSTC's design, on this route (a43d-2, 2026-11-05): a new program, `sstc-timer.s`, 192 instructions, 315 steps, drafted and measured before any case names it: `AGREE` under the overlay's configuration, `DIVERGE step 8 (rdtime x5)` under the
+profile override. Delivery, a scheduled delivery and five suppressions all agree. An exact delivery boundary is what both producers do on this configuration, not a claim about latency: the manual guarantees a changed comparison reaches STIP "eventually, but not necessarily immediately", and the case's limitations say so (`docs/tasks/P4-SYSTEM.md`, a43d-2).
+
 ## How to apply
 
 - The overlay is small and reviewed, like an override: it enables what the case needs and says why. A new configuration is a new case's

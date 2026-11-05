@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0346 (leaf P4-SYSTEM.14 a43d-2) — the SSTC case designed, delivery no longer named out, and its normative statements retained
+
+a43d-2: on the case's own configuration the reference has a timer source, so delivery, a scheduled delivery and five suppressions are in. A draft of 192 instructions and 315 steps reads `AGREE 315 declared steps`, and `DIVERGE step 8 (rdtime x5)` under the profile override. An exact delivery boundary is what both producers do here, not a latency claim. `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` retained; the tool selects a whole paragraph by its anchor or its opening words, its older excerpts byte-identical. A control caught a lost guard omission in the first draft.
+
 ## SEMULITH-XTASK-0078 (leaf XTASK.13 slice b5) — GUEST-GEN's author probes judge frozen copies of their other corpus reads; a drafted step dropped on a measurement
 
 `scripts/fixtures/guest-gen/corpus/` holds the 26 records the author does not own and must reproduce; `frozen_owned.py` gains `judge_corpus`; the five probes' live reads go from 33, 57, 29, 25 and 23 files to 0 (`scripts/live_reads.py`, new, an audit-hook census). `mm-sret` edited with its fixture regenerated: refused, `399 pass / 1 fail`, becomes `MIRROR DRIFT — mm-sret.s` with the self-test at 400 of 400. A real-run step drafted for these records was dropped: the mirror governor names each of the 26, measured one edit at a time, so the step could never fire alone. Seven other probes' composition reads are b6.

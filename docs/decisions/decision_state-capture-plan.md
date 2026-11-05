@@ -63,6 +63,9 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
   this profile (P4-SYSTEM.5/.9 own the rate semantics); the policy's implementation-defined row allows a justified
   observed difference, not a silent exclusion — so the case records it.
 
+- **SSTC's delivery is matched after all** (2026-11-05, a43d-2): a43d-1 named delivery, scheduled time and suppression out, because the reference's override carried no timer source and read `mip.STIP` 0.
+  On a case's own configuration ([`decision_reference-config-per-case.md`](decision_reference-config-per-case.md)) it has one, and a draft agrees over 315 steps, so item 2's list is what the case witnesses. `sstc.s` stays in the corpus, uncredited; `sstc-timer.s` is the case's program.
+
 ## How to apply
 
 - Before a43a's capture, review the case manifest's dependency closure: the M case's manifest pins `scripts/gate_report.py`

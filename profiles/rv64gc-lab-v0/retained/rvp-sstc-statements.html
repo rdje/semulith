@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-SSTC statements — v20260120</title>
+<body>
+<h1>RVP-SSTC §12.1: why supervisor mode has its own timer, and what the extension adds</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/sstc.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §12.1 "Sstc" Extension for Supervisor-mode Timer Interrupts, Version 1.0</a>.<br>
+Original page SHA256: <code>30bea862eee800d485ce34636b2824bf9909a4676b39d2c5734e92fba14216e1</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no SSTC acceptance; the chapter anchors none of its text, so each paragraph is selected by the words it opens with.</p>
+<h2>§12.1: <code>opening:This extension serves</code></h2>
+<blockquote><p>This extension serves to provide supervisor mode with its own CSR-based timer
+interrupt facility that it can directly manage to provide its own timer service
+(in the form of having its own <code>stimecmp</code> register) - thus eliminating the large
+overheads for emulating S/HS-mode timers and timer interrupt generation up in
+M-mode. Further, this extension adds a similar facility to the Hypervisor
+extension for VS-mode.</p></blockquote>
+<h2>§12.1: <code>opening:The extension name is</code></h2>
+<blockquote><p>The extension name is "Sstc" ('Ss' for Privileged arch and Supervisor-level
+extensions, and 'tc' for timecmp). This extension adds the S-level <code>stimecmp</code>
+CSR (<a href="supervisor.html#stimecmp" class="xref page">Supervisor Timer (<code>stimecmp</code>) Register</a>) and the VS-level <code>vstimecmp</code> CSR (<a href="hypervisor.html#vstimecmp" class="xref page">Virtual Supervisor Timer (<code>vstimecmp</code>) Register</a>.  This
+extension adds the <code>STCE</code> bit to the <code>menvcfg</code> (<a href="machine.html#sec:menvcfg" class="xref page">Machine Environment Configuration (<code>menvcfg</code>) Register</a>) and <code>henvcfg</code>
+(<a href="hypervisor.html#sec:henvcfg" class="xref page">Hypervisor Environment Configuration Register (<code>henvcfg</code>)</a>) CSRs.</p></blockquote>
+</body></html>
