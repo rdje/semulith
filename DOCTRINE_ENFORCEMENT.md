@@ -80,6 +80,7 @@ judged too.
 | `FACT-OWNERSHIP` | [governance](docs/doctrines/governance.md) |
 | `SCOPE-COVERAGE` | [definition](docs/doctrines/definition.md) |
 | `SEAM-INTEGRITY` | [governance](docs/doctrines/governance.md) |
+| `PROSE-SPACING` | [governance](docs/doctrines/governance.md) |
 | `BOOK-INDEX` | [governance](docs/doctrines/governance.md) |
 | `CITATION-QUOTES` | [definition](docs/doctrines/definition.md) |
 | `FP-VECTORS` | [definition](docs/doctrines/definition.md) |

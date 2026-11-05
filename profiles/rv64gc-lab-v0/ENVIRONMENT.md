@@ -44,12 +44,12 @@ ignored register fields, plus reservation/cache preservation. Reserved fence
 fields execute normally. Worked matrix: `docs/book/src/plan/p4/contract-memory.md`.
 
 ATOMIC-MISALIGN binds both widths, every atomic form and ordering bits, with
-full trap/request/state and prior-reservation observations. LR uses cause5;
-SC/AMO cause7 before data translation. Aligned LR/SC controls and worked limits:
+full trap/request/state and prior-reservation observations. LR uses cause 5;
+SC/AMO cause 7 before data translation. Aligned LR/SC controls and worked limits:
 `docs/book/src/plan/p4/contract-memory.md`.
 
-GC-FENCEI binds all4096 funct12 values/five register pairs/M/S/U, preserving
-full state and exact requests. Halfword patches of 16-/32-bit targets at0/2 mod4
+GC-FENCEI binds all 4096 funct12 values/five register pairs/M/S/U, preserving
+full state and exact requests. Halfword patches of 16-/32-bit targets at 0/2 mod 4
 remain visible with standard/nonzero FENCE.I and under the coherent no-fence
 control. Worked programs and controls: `docs/book/src/plan/p4/fence-i.md`.
 
@@ -60,7 +60,7 @@ retain their store/AMO fault kinds. Worked values, paths and finite limits:
 `docs/book/src/plan/p4/atomics.md#direct-contract-observations`.
 
 Explicit instruction writes to mcycle/minstret replace their own implicit
-boundary update, including unchanged writes (RVI-ZICSR5.1.1/RVP-MACHINE2.1.1.10).
+boundary update, including unchanged writes (RVI-ZICSR 5.1.1/RVP-MACHINE 2.1.1.10).
 The other counter follows its ordinary rule; refused writes retire nothing and
 advance cycle/time. Writing mcycle re-bases the domain, so determinism is from
 initial state and instruction/boundary history. Worked values/reference limits:
@@ -72,7 +72,7 @@ Dirty when stored flag bits change. RVP-MACHINE 2.1.1.6.7 permits the unchanged-
 write choice; public identical-write and read-only observations are documented
 in `docs/book/src/plan/p4/floating-point.md#public-fp-state-observations`.
 
-The matched Sail override sets scalar misaligned-atomicity granule exponent0.
+The matched Sail override sets scalar misaligned-atomicity granule exponent 0.
 A 16-byte granule permits contained AMOs despite AccessFault, so that former
 setting did not match the unconditional laboratory alignment rule. Public
 qualification: `scripts/probe_gc_sail_atomic_align.py`; worked evidence/limits:
@@ -221,39 +221,39 @@ set remains Bare/Sv39; valid field writes and the existing TLB policy remain.
 Core and independent-author controls plus finite public M-mode read-back support
 the repair. The Sv39 book section gives the example and limits; no binding credit.
 
-GC-D binds219960positive/14292refusal-fault boundaries across all32forms:
-123264numeric plus96696transfer/sign/format/directed/enabled-FS observations;
-FS-Off1152, reserved-rounding12996 and memory faults144. Full state/memory,
-468504parcels and2844D requests are observed. Literal raw64payloads, boxed
+GC-D binds 219960 positive/14292 refusal-fault boundaries across all 32 forms:
+123264 numeric plus 96696 transfer/sign/format/directed/enabled-FS observations;
+FS-Off 1152, reserved-rounding 12996 and memory faults 144. Full state/memory,
+468504 parcels and 2844 D requests are observed. Literal raw 64 payloads, boxed
 single interpretation, widening boxes, same-value Dirty and rounding examples
-are in the FP book. Fifteen new wrong effects/18actual disabled controls fail
-then restore; missing-binding RED precedes2entries, prior110exact. That D-binding
-checkpoint had registry112/effective110/114; GS-REPORT owns the current census.
+are in the FP book. Fifteen new wrong effects/18 actual disabled controls fail
+then restore; missing-binding RED precedes 2 entries, prior 110 exact. That D-binding
+checkpoint had registry 112/effective 110/114; GS-REPORT owns the current census.
 Independent author/new/prior matrices/corpus agree; shared specfp adds no numeric
 lineage. The SC pair and freeze now complete G-CONTRACT; GS owns its measure.
 
-GC-F binds203832positive/12852refusal-fault boundaries across all30forms:
-numeric111744, transfer/sign/boxing/directed92088, FS-Off1080,
-reserved-rounding11628 and ordinary memory faults144. Full state, exact
+GC-F binds 203832 positive/12852 refusal-fault boundaries across all 30 forms:
+numeric 111744, transfer/sign/boxing/directed 92088, FS-Off 1080,
+reserved-rounding 11628 and ordinary memory faults 144. Full state, exact
 parcels/W requests and surrounding memory precede expected comparisons.
 Payload transfers, improper-box computational qNaNs, same-value Dirty,
 sticky flags and selected reservation preservation have literal examples
-in the FP book. Twelve new wrong effects and16actual disabled controls
-discriminate. Prior108entries/frozen inputs remain exact; now registry110,
-effective108/114. Independent author agrees; its shared specfp origin adds
+in the FP book. Twelve new wrong effects and 16 actual disabled controls
+discriminate. Prior 108 entries/frozen inputs remain exact; now registry 110,
+effective 108/114. Independent author agrees; its shared specfp origin adds
 no numeric lineage. Reservation/SC and freeze now complete G-CONTRACT.
 
-GC-CSR-ACCESS binds4480legal/8480refused single boundaries across six forms,
-M/S/U, aliases, source-field/value suppression and15selected CSR contexts.
+GC-CSR-ACCESS binds 4480 legal/8480 refused single boundaries across six forms,
+M/S/U, aliases, source-field/value suppression and 15 selected CSR contexts.
 Full state/memory/exact requests are compared; refusal preserves destination
 and owners before M trap delivery. Actual disabled permissions/suppression/
 observers discriminate. An extra same-CSR read on rd0 swaps is dynamically
 indistinguishable for these side-effect-free CSRs; a separate published-table
 inspection rejects that branch. The privilege book explains this limit and
-worked examples. Independent author12096cases agree;864unknown CSR cases are
+worked examples. Independent author 12096 cases agree; 864 unknown CSR cases are
 named vocabulary refusals, not author trap evidence. Frozen records unchanged.
 
-GC-COUNTERS now binds direct Execution witnesses: 4032 legal and2880 gated
+GC-COUNTERS now binds direct Execution witnesses: 4032 legal and 2880 gated
 single-boundary reads across M/S/U, all enable masks, three views, three destination
 choices and four counter pairs. Full state, memory, requests and retirement are
 observed; named wrong effects, corrupted captures and disabled observers/gates
@@ -272,36 +272,36 @@ copies match the unchanged pins; only absent evidence permits a named skip.
 ### Qualified reservation and physical permission
 
 OB-GC-RESERVATION-V2 supersedes the frozen invalidation wording with selected
-physical/width/trap policies. Its two Execution checks run62176direct boundaries/
-124352parcels/194688requests, including1536architectural physical-permission
-cases; three unchanged companions add85boundaries/170parcels. Full state,
+physical/width/trap policies. Its two Execution checks run 62176 direct boundaries/
+124352 parcels/194688 requests, including 1536 architectural physical-permission
+cases; three unchanged companions add 85 boundaries/170 parcels. Full state,
 retained reservation fields, memory and exact requests are observed.
 [The atomics chapter](docs/book/src/plan/p4/atomics.md#qualified-reservation-guarantee)
 gives the selected transition table, worked histories, controls and finite limits.
 
-The prior60640history/fault cells retain their values and20736permission checks;
-newly bound permission cells add1536checks and1152walks. Cold failed SC to
-unmapped0 traps7 before retirement, matching the named fresh public observation.
+The prior 60640 history/fault cells retain their values and 20736 permission checks;
+newly bound permission cells add 1536 checks and 1152 walks. Cold failed SC to
+unmapped 0 traps 7 before retirement, matching the named fresh public observation.
 A failed SC obtains StorePermitted after translation without a data access;
 malformed answers remain typed provider violations. Current realization comes
-from GS-REPORT; at the reservation binding its checkpoint was112/114 with
-registry114 and13open-v2 members. The SC pair below completes effective coverage;
+from GS-REPORT; at the reservation binding its checkpoint was 112/114 with
+registry 114 and 13 open-v2 members. The SC pair below completes effective coverage;
 frozen v0/v1 remain exact, with no conformance or reference-lineage credit.
 
 ### Qualified deterministic SC
 
 OB-GC-SC-DETERMINISTIC-V2 replaces the frozen whole-outcome wording with
 permission-checked completed outcomes: exact physical/width match stores the
-original source and returns0, nonmatch returns1 without a data Load/Store, both
+original source and returns 0, nonmatch returns 1 without a data Load/Store, both
 clear validity; target faults preserve destination/reservation. Exact-width,
 physical-alias and no-spurious choices retain laboratory authority. The profile
 and requirement mirror that same statement; state inspection wording regenerates
 without changing storage, reset, legalization or CPU semantic expressions.
 
-Two new Execution entries explicitly reuse62176direct boundaries/194688requests;
+Two new Execution entries explicitly reuse 62176 direct boundaries/194688 requests;
 that is overlapping coverage with the reservation pair, not new unique cells.
-Pair+loop and mustfail+fault companions add96boundaries/192parcels. The atomics
-chapter gives the worked alias history,35actual guard/route controls and finite
-author/reference limits. Registry116 realizes all114effective checks under57
-obligations; latest v2 has14byte-pinned frozen members. Full five-leg CI passed at .13 signoff.
+Pair+loop and mustfail+fault companions add 96 boundaries/192 parcels. The atomics
+chapter gives the worked alias history, 35 actual guard/route controls and finite
+author/reference limits. Registry 116 realizes all 114 effective checks under 57
+obligations; latest v2 has 14 byte-pinned frozen members. Full five-leg CI passed at .13 signoff.
  GS-REPORT owns the current measure and incomplete CPU-SYSTEM verdict.

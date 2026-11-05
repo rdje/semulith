@@ -39,7 +39,7 @@ that a read never happened.
 
 Create or omit a reservation, translate the target, and independently select
 physical permission. A nonmatching reservation does not authorize bypassing the
-permission check. Distinguish completed failure code1 from a store-access trap;
+permission check. Distinguish completed failure code 1 from a store-access trap;
 observe destination/reservation preservation on the fault and exact request kinds.
 A test that checks only memory unchanged accepts both behaviors and misses the
 permission defect. The atomics chapter retains the repair and discriminating

@@ -19,10 +19,10 @@ It loads the existing project schema as needed and writes no file.
 | --- | --- |
 | `context` | Public frozen `ReferenceIdentity`; canonical required/optional execution fields, including optional absence versus empty presence. Malformed, duplicated, reordered or unknown fields refuse. |
 | `profile`, `retrieved` | Nonempty plain strings describing this descriptor; the caller supplies truthful metadata. No clock or host discovery occurs. |
-| `work_dir`, `path` | Canonical repository-relative paths. `path` is a diagnostic location, separately bounded to65536 characters; it is not opened or embedded in the document. |
+| `work_dir`, `path` | Canonical repository-relative paths. `path` is a diagnostic location, separately bounded to 65536 characters; it is not opened or embedded in the document. |
 | `host` | Exact dictionary with nonempty plain-string `os`, `kernel`, `arch`, `cxx`, plus optional plain-string `note`. Unknown keys refuse. Copied before serialization/schema I/O. |
-| Text budget | Supplied descriptor value text totals at most65536 characters before serialization; field names/counts are separately bounded. Caller allocation and escaping/parsing intermediates are outside a RAM guarantee. |
-| Output | One schema-valid `references` document, one candidate, no experiments or other parent records;1..65536 encoded bytes, inclusive. UTF-8 and escaping expansion must fit that byte ceiling. |
+| Text budget | Supplied descriptor value text totals at most 65536 characters before serialization; field names/counts are separately bounded. Caller allocation and escaping/parsing intermediates are outside a RAM guarantee. |
+| Output | One schema-valid `references` document, one candidate, no experiments or other parent records; 1..65536 encoded bytes, inclusive. UTF-8 and escaping expansion must fit that byte ceiling. |
 | Refusal | `IdentityError` for invalid context/metadata, unsafe paths, excess text/bytes, invalid UTF-8 or output the existing identity byte consumer cannot bind. No partial bytes return; identity schema unavailability also refuses. |
 
 The candidate contains the exact execution fields and fixed descriptive labels:
@@ -77,7 +77,7 @@ python3 -O scripts/probe_reference_identity_emission.py
 
 It prints `matched True`, `True`, `stale`, then `IdentityError` twice. Frozen
 context survives later parent changes; rebinding detects the changed binary
-identity. The diagnostic covers the exact64KiB edge, UTF-8/escaping expansion,
+identity. The diagnostic covers the exact 64 KiB edge, UTF-8/escaping expansion,
 optional presence, deterministic projection, copied metadata, malformed requests,
 schema failure and output drift through the existing reader. It grants no capture
 or qualification credit.

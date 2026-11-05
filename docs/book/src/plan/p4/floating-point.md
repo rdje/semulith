@@ -34,7 +34,7 @@ unchanged contents, rather than a requirement to copy a reference's default.
 The public observations below
 separately distinguish raw CSR storage from the computed SD view.
 
-The profile composes30 real F forms and32 real D forms from pinned encoding
+The profile composes 30 real F forms and 32 real D forms from pinned encoding
 tables and its own canonical semantics. D requires F. The encoding fields rs3
 and rm describe the third fused source and rounding selector; register-file
 choice belongs to the semantics. The assembler derives f0..f31 operand spelling
@@ -48,10 +48,10 @@ fadd.s   (set (freg rd) (fbox 32 (fadd 32 (rounding (field rm))
 fmv.x.w  (set (reg rd) (sext 64 (bits 31 0 (freg rs1))))   ; a transfer: bits, no unboxing
 ```
 
-A single occupies the low32bits with every upper bit set. `fbox` creates that
+A single occupies the low 32 bits with every upper bit set. `fbox` creates that
 representation; `funbox` treats any improper single box as canonical qNaN.
 Transfers copy raw bits under their width rules, while computational narrow
-operations check boxing. Double operations read the full64bits, so a boxed
+operations check boxing. Double operations read the full 64 bits, so a boxed
 single appears as a negative double qNaN. FCVT.S.D narrows with rounding and
 writes a boxed single; FCVT.D.S unboxes its source and widens exactly. Even
 exact numeric conversions still resolve their rounding selector under the
@@ -77,7 +77,7 @@ history is evidence about the named measurements, not permission to infer
 reference internals. The model's current conversion behavior is checked against
 the independent exact-arithmetic rules and the instruction witnesses below.
 
-`FP-VECTORS` regenerates230 directed vectors and3168 fixture rows byte-for-byte
+`FP-VECTORS` regenerates 230 directed vectors and 3168 fixture rows byte-for-byte
 from the spec-side exact-arithmetic reference and checks its RNE behavior against
 host IEEE hardware. Numeric instruction witnesses reuse those governed rows;
 the instruction author and generator share `specfp`, adding no numeric lineage.
@@ -87,7 +87,7 @@ measured cost: the recorded qualification found roughly three to seven times
 the bare arithmetic backend's operation cost. That finite benchmark does not
 promise a speed ratio on every host or input.
 
-The original10576-byte introduction, including staged checkpoint counts,
+The original 10576-byte introduction, including staged checkpoint counts,
 qualification corrections, corpus derivation and bind/closure receipts, is
 preserved byte-verbatim in `docs/tasks/archive/P4-SYSTEM-book-c33b0.md`. Its
 inverse map reconstructs this entire source chapter at the named commit.
@@ -112,8 +112,8 @@ or fcsr also marks Dirty, including an unchanged value. Read-only moves preserve
 Clean, while accrued flags mark Dirty when their stored bits change. Earlier book prose
 incorrectly generalized the flag rule to every FP write; it is corrected above.
 
-A twelve-instruction witness enables FP, writes1 to f1, sets FS Clean, writes
-the same1 to f1 again, and reads mstatus and f1 through integer registers:
+A twelve-instruction witness enables FP, writes 1 to f1, sets FS Clean, writes
+the same 1 to f1 again, and reads mstatus and f1 through integer registers:
 
 ```
 before identical FMV.D.X: mstatus = 0x0000000a00004000 (FS Clean, SD=0)
@@ -128,9 +128,9 @@ and architectural CSR views are distinguished: SD is computed by the public
 CSR-read interface. The temporary diagnostic is removed and its source file
 restored byte-for-byte before normal verification.
 
-The public reference agrees on all12 boundaries in two byte-identical traces.
-Changing only the expected post-write status to Clean is rejected at10.
-All24 existing f-/d-/fp- guests also agree over927 boundaries, each in two fresh
+The public reference agrees on all 12 boundaries in two byte-identical traces.
+Changing only the expected post-write status to Clean is rejected at 10.
+All 24 existing f-/d-/fp- guests also agree over 927 boundaries, each in two fresh
 identical traces. They include FS-Off, fcsr views, flag dirtiness and the numeric
 families. These are finite observations of the published interface, without a
 claim about the reference's internal functions or arithmetic backend.
@@ -200,8 +200,8 @@ instruction observations. The following c32b witnesses complete the F checks.
 `CHK-GC-F-POS` and `CHK-GC-F-NEG` now run direct instruction witnesses and
 tracked companion guests. The numeric matrix above remains unchanged. C32b
 adds **92,088 positive boundaries** and **12,852 refusal/fault boundaries**;
-together they observe all30 F forms over216,684 single-instruction boundaries.
-This realized the two F checks, taking effective G-CONTRACT to108/114.
+together they observe all 30 F forms over 216,684 single-instruction boundaries.
+This realized the two F checks, taking effective G-CONTRACT to 108/114.
 The D completion below advances that count; reservation/SC and freeze remain.
 Finite coverage does not mean an accepted processor profile.
 
@@ -220,28 +220,28 @@ cannot establish:
 Twelve low patterns cover all ten FP classes, with signed zeros, normals,
 subnormals, infinities and quiet/signaling payloads. The three sign operations
 cross both inputs, all four proper/improper-box layouts, M/S/U, six destination
-choices and two initial flag sets:62,208 cases. An improperly boxed sign input
+choices and two initial flag sets: 62,208 cases. An improperly boxed sign input
 first becomes canonical qNaN; a properly boxed signaling input retains its bits.
-Raw moves add2,592 cases over three upper patterns, including unboxed sources.
+Raw moves add 2,592 cases over three upper patterns, including unboxed sources.
 The integer x0 destination discards only its result; f0 remains writable.
 
-FLW adds1,296 cases and FSW1,944, at offsets0/4/8. Exact W requests, store data,
+FLW adds 1,296 cases and FSW 1,944, at offsets 0/4/8. Exact W requests, store data,
 full surrounding memory, preservation of Clean on a store, and all other state
 are compared. FSW preserves the overlapping reservation: this laboratory's
 selected policy changes it only through its own LR/SC. Seventy-two additional
 same-value FLW/FMV.W.X controls prove that even an unchanged f-register write
 makes FS Dirty. These start Clean and preserve the existing payload and flags.
 
-Invalid-box numeric cases cover all19 F forms that read floating operands,
-including each fused form and only operands that actually exist. Over12,456
-cases, arithmetic produces boxed canonical qNaN; classification yields bit9;
-FEQ yields0 without NV while FLT/FLE yield0 with NV. Min/max with one improper
+Invalid-box numeric cases cover all 19 F forms that read floating operands,
+including each fused form and only operands that actually exist. Over 12,456
+cases, arithmetic produces boxed canonical qNaN; classification yields bit 9;
+FEQ yields 0 without NV while FLT/FLE yield 0 with NV. Min/max with one improper
 input select the proper operand; two improper inputs yield canonical qNaN.
 Conversions of the resulting qNaN saturate to the signed/unsigned maximum
 with NV. An unsigned word result `0xffffffff` still sign-extends to XLEN.
 Aliases, static/DYN rounding, sticky flags and Dirty-on-new-flags remain observed.
 
-Another11,520 directed cases make rounding and range behavior explicit:
+Another 11,520 directed cases make rounding and range behavior explicit:
 
 | Inputs / operation | Expected bits and flags |
 | --- | --- |
@@ -249,7 +249,7 @@ Another11,520 directed cases make rounding and range behavior explicit:
 | `0x00800000 * 0x3f7fffff` | RNE/RUP/RMM:`0x00800000`; RTZ/RDN:`0x007fffff`; UF+NX in every mode. |
 | `0x00800000 * 0x3f7ffffe` | Exact largest subnormal:`0x007fffff`, no flags. |
 | Fused `(1+2^-23)*(1-2^-23)-1` | Exactly `-2^-46` (`0xa8800000`), no flags; all four forms use the signed-term construction above. |
-| Infinity, NaN or magnitude `2^64` converted to integer | Saturate by sign and destination range with NV; negative out-of-range unsigned inputs yield0. |
+| Infinity, NaN or magnitude `2^64` converted to integer | Saturate by sign and destination range with NV; negative out-of-range unsigned inputs yield 0. |
 
 The UF boundary uses the selected IEEE rule: judge the rounded result as if
 the exponent range were unbounded. Thus rounding to the smallest normal in
@@ -258,43 +258,43 @@ literal expectations are re-derived with the independent exact-arithmetic
 `specfp` reference. The instruction author and numeric generator share it;
 their agreement adds no new numeric lineage.
 
-The negative witness checks every F form with FS Off:30forms×M/S/U×six
+The negative witness checks every F form with FS Off: 30 forms×M/S/U×six
 register choices×two flag sets=1,080 cases. Loads/stores use an unmapped or
-misaligned data address, yet only the two fetch parcels occur before cause2.
-All17 rounded forms additionally cross19 reserved settings: static rm5/6
-with every frm value, plus DYN with frm5/6/7. These11,628 cases trap with the
+misaligned data address, yet only the two fetch parcels occur before cause 2.
+All 17 rounded forms additionally cross 19 reserved settings: static rm 5/6
+with every frm value, plus DYN with frm5/6/7. These 11,628 cases trap with the
 instruction word in mtval, instruction-start mepc, correct M privilege stack,
 one cycle increment, no retirement and no instruction-owned writes.
 Valid static rm ignoring reserved frm remains positive numeric evidence.
-Ordinary memory faults add144 cases: cause4/6 before a data request for
-misalignment, cause5/7 after exactly one W request at an unmapped address.
+Ordinary memory faults add 144 cases: cause 4/6 before a data request for
+misalignment, cause 5/7 after exactly one W request at an unmapped address.
 Faults retain FP state, flags, reservation, TLB cursor and memory.
 
 Every expected state is constructed before execution. The comparator checks
-all GPR/FPR values,26 raw CSR owners, PC/mode, reservation, TLB entries/FIFO
+all GPR/FPR values, 26 raw CSR owners, PC/mode, reservation, TLB entries/FIFO
 cursor, wait state, full memory, exact requests, fetch extent and outcome.
-Twelve new wrong effects/routes complement the earlier20 numeric controls;
-16 corrupted captures and16 actual disabled controls discriminate. Disabled
+Twelve new wrong effects/routes complement the earlier 20 numeric controls;
+16 corrupted captures and 16 actual disabled controls discriminate. Disabled
 FS/rounding/boxing/width/sign/f0/trap-write/Dirty paths and observers must fail,
 then source bytes are restored. The completed-check selector fails by the
-missing F check name before the two registry entries are added. Prior108
+missing F check name before the two registry entries are added. Prior 108
 entries and frozen/canonical inputs remain exact. Companion guests retain
-their original expectations, and the original167-guest corpus remains exact.
+their original expectations, and the original 167-guest corpus remains exact.
 
 
 ## Numeric D prerequisite before binding
 
 C33a generalizes the private numeric fixture by explicit source and result
 width. The shared module is now `floating.rs`, with F's remaining cases in
-`floating/single.rs`; all216,684 F boundaries remain unchanged in effect.
+`floating/single.rs`; all 216,684 F boundaries remain unchanged in effect.
 C33a deliberately gave D no registry credit; the completion below now binds it.
 
-The D matrix includes1,504 ordinary double rows and160 format-conversion rows
+The D matrix includes 1,504 ordinary double rows and 160 format-conversion rows
 from the same governed numeric data. Both destination widths belong to D.
-Four fused forms expand these to1,904 cases; static/DYN rounding yields3,424
+Four fused forms expand these to 1,904 cases; static/DYN rounding yields 3,424
 settings. Across M/S/U, six destinations including all source aliases, and
-flags0/31, **123,264 boundaries** require exactly246,528 fetch parcels.
-D operands and results retain full64bits. FCVT.D.S unboxes its single input;
+flags 0/31, **123,264 boundaries** require exactly 246,528 fetch parcels.
+D operands and results retain full 64 bits. FCVT.D.S unboxes its single input;
 FCVT.S.D NaN-boxes its single result. Word integer results still sign-extend.
 
 Two literal rows show the format distinction:
@@ -311,60 +311,60 @@ slice. Full state, memory, requests, sticky flags and selected Dirty behavior
 use the same pre-execution comparator as F. Sixteen wrong numeric routes and
 nine actual disabled controls must fail before source restoration. The
 independent instruction author agrees on all new cases; it shares `specfp`
-with the vector generator, adding no numeric lineage. The original167-guest
+with the vector generator, adding no numeric lineage. The original 167-guest
 corpus remains exact. The following completion supplies the remaining D checks.
 
 ## Complete finite D contract witnesses
 
-`CHK-GC-D-POS` and `CHK-GC-D-NEG` now bind all32 D forms with direct witnesses
-and tracked companion guests. The numeric prerequisite remains123,264 positive
-boundaries. Completion adds96,696 positive and14,292 refusal/fault boundaries:
-**234,252 boundaries, 468,504 fetch parcels and2,844 data requests** in total.
-Effective G-CONTRACT becomes110/114; reservation, deterministic SC and final
+`CHK-GC-D-POS` and `CHK-GC-D-NEG` now bind all 32 D forms with direct witnesses
+and tracked companion guests. The numeric prerequisite remains 123,264 positive
+boundaries. Completion adds 96,696 positive and 14,292 refusal/fault boundaries:
+**234,252 boundaries, 468,504 fetch parcels and 2,844 data requests** in total.
+Effective G-CONTRACT becomes 110/114; reservation, deterministic SC and final
 freeze remain open. These finite observations do not accept the CPU profile.
 
 | Operation / input | Expected observation |
 | --- | --- |
-| FLD / FMV.D.X, `0x7ff0123456789abc` | Full64 signaling payload retained, no NV, FS Dirty even when destination bits were identical. |
+| FLD / FMV.D.X, `0x7ff0123456789abc` | Full 64 signaling payload retained, no NV, FS Dirty even when destination bits were identical. |
 | FSD, same payload | Eight bytes `bc 9a 78 56 34 12 f0 7f`; neighboring bytes and FS preserved. |
-| FMV.X.D, `0xffffffff3f800000` | Exactly the same64bits, with no computational unboxing or word sign extension. |
+| FMV.X.D, `0xffffffff3f800000` | Exactly the same 64 bits, with no computational unboxing or word sign extension. |
 | FSGNJ.D with negative second sign | First magnitude/payload retained, second sign copied. FSGNJN negates that sign; FSGNJX XORs both signs. No flags. |
 | Boxed single `0xffffffff7fa12345` used by D arithmetic | A negative double quiet NaN; canonical D result, no signaling NV from its low single payload. |
-| FCVT.D.S, proper boxed `0x7fa12345` | Canonical double `0x7ff8000000000000`, NV. Improper upper32bits instead supply canonical single qNaN, no NV. |
+| FCVT.D.S, proper boxed `0x7fa12345` | Canonical double `0x7ff8000000000000`, NV. Improper upper 32 bits instead supply canonical single qNaN, no NV. |
 | `1 + 2^-53` | RNE/RTZ/RDN:`0x3ff0000000000000`; RUP/RMM:`0x3ff0000000000001`; NX. Negative tie distinguishes RDN/RUP. |
 | `0x0010000000000000 * 0x3fefffffffffffff` | RNE/RUP/RMM:minimum normal; RTZ/RDN:largest subnormal; UF+NX in every mode under the unbounded-exponent rounding rule above. |
 | Same minimum normal times `0x3feffffffffffffe` | Exact largest subnormal `0x000fffffffffffff`, no flags. |
 | Fused `(1+2^-52)*(1-2^-52)-1` | Exact `-2^-104`, bits `0xb970000000000000`, no flags; all four signed-term forms. |
 
-Sixteen raw64patterns cover all ten classes, signed NaN payloads, boxed singles
-and an ordinary non-boxed double. Sign operations cross both operands:27,648
-cases. Raw moves add1,152; loads1,728 and stores864 at offsets0/8/16 compare
-exact D requests and32 surrounding bytes. Stores retain an overlapping
-reservation under this selected one-hart policy. Same-value writes add72.
-All matrices cross M/S/U, source aliases, x0/f0 and flags0/31. Another2,304
+Sixteen raw 64 patterns cover all ten classes, signed NaN payloads, boxed singles
+and an ordinary non-boxed double. Sign operations cross both operands: 27,648
+cases. Raw moves add 1,152; loads 1,728 and stores 864 at offsets 0/8/16 compare
+exact D requests and 32 surrounding bytes. Stores retain an overlapping
+reservation under this selected one-hart policy. Same-value writes add 72.
+All matrices cross M/S/U, source aliases, x0/f0 and flags 0/31. Another 2,304
 representative cases exercise every form with FS Initial and Dirty; Clean is
 covered by the main matrices. x0 discards results; f0 remains writable.
 
-Boxed-single-as-double observations add38,448 cases over all20 numeric forms
+Boxed-single-as-double observations add 38,448 cases over all 20 numeric forms
 that read full-width FP operands and applicable operand positions. They retain
-min/max one-NaN selection, classification bit9, FEQ versus FLT/FLE NV behavior,
-integer saturation and sticky flags. FCVT.D.S adds12,960 proper/improper-box
+min/max one-NaN selection, classification bit 9, FEQ versus FLT/FLE NV behavior,
+integer saturation and sticky flags. FCVT.D.S adds 12,960 proper/improper-box
 cases. Directed ties, exact/tiny results, four fused forms and six signed
-range/NaN inputs across four integer conversions add11,520 cases, including
+range/NaN inputs across four integer conversions add 11,520 cases, including
 all legal static/DYN rounding modes. Word integer results sign-extend.
 
-Every D form refuses FS Off:1,152 cases. All19 rounded forms cross19 reserved
-rm/frm settings:12,996 cases, including exact FCVT.D.W[U]/D.S. Unmapped or
+Every D form refuses FS Off: 1,152 cases. All 19 rounded forms cross 19 reserved
+rm/frm settings: 12,996 cases, including exact FCVT.D.W[U]/D.S. Unmapped or
 misaligned data addresses establish FS gate priority: only fetch occurs before
-cause2. Ordinary memory faults add144 cases, with cause4/6 before data access
-or cause5/7 after one D request. Exact trap stack, nonretirement and suppression
+cause 2. Ordinary memory faults add 144 cases, with cause 4/6 before data access
+or cause 5/7 after one D request. Exact trap stack, nonretirement and suppression
 of instruction-owned writes are compared with full state, requests and memory.
 
-Fifteen new wrong transfer/sign/memory/format effects supplement16 numeric
-wrong routes. Sixteen corrupted captures and18 actual disabled controls fail
+Fifteen new wrong transfer/sign/memory/format effects supplement 16 numeric
+wrong routes. Sixteen corrupted captures and 18 actual disabled controls fail
 before byte restoration. A proposed unused Bits-node mutation did not reach
 the compiled sign operation; only the corrected masked-AND control is credited.
-Missing-binding failure precedes the two entries; prior110 entries remain exact.
+Missing-binding failure precedes the two entries; prior 110 entries remain exact.
 The independent instruction author agrees on all new and prior cases and the
 167-guest corpus. It shares `specfp` with the numeric generator; agreement adds
 no numeric lineage. Frozen records, numeric data and production core are exact.

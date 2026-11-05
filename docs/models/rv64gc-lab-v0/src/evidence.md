@@ -57,7 +57,7 @@ meaning; large power-of-two-base integers remain accepted. This parser has no
 artifact byte budget: bounded evidence consumers must enforce their own limits.
 
 The CLI reports expected parse, list-head, file-access and decoding failures as
-`REFUSED` on stderr with exit1 and no success report. Wrong usage exits2. Head errors describe types and shapes, never whole values;
+`REFUSED` on stderr with exit 1 and no success report. Wrong usage exits 2. Head errors describe types and shapes, never whole values;
 even a huge valid hexadecimal integer in head position gets a named refusal.
 `read_file` remains a library API: I/O/decode exceptions propagate to its caller.
 Empty lists are valid parser data but cannot supply the CLI's list-head summary.
@@ -82,7 +82,7 @@ except S.SexpError as exc:
 PYREADER
 ```
 
-Expect18/0 from each legacy self-test,29/0/0 from each refusal probe, values
+Expect 18/0 from each legacy self-test, 29/0/0 from each refusal probe, values
 `12,31,-2` and a refusal naming `example.sexp:2`. Eight independent omitted guards
 fail normally and optimized without test errors. Replacing `12` with `13` must
 fail the legacy test in both modes; explicit checks prevent `-O` false credit.
@@ -283,9 +283,9 @@ No fresh canonical capture or CPU acceptance credit is created by these checks.
 ## Sail comparison requires the complete declared budget
 
 The public Sail adapter compares finite GPR changes and witnessed interrupt/fetch
-deliveries. A one-step expectation permits only boundary0. Appending instruction
-row1, even with no register change, or a delivery at boundary1 is refused as
-`outside declared budget [0, 1)`. A distant row99 also refuses. All parsed rows and
+deliveries. A one-step expectation permits only boundary 0. Appending instruction
+row 1, even with no register change, or a delivery at boundary 1 is refused as
+`outside declared budget [0, 1)`. A distant row 99 also refuses. All parsed rows and
 witnessed deliveries are checked **before** value comparison; an earlier wrong
 value cannot hide a surplus tail behind a `DIVERGE` result. Missing required rows
 retain their existing refusal, and valid last-boundary rows/deliveries still agree.

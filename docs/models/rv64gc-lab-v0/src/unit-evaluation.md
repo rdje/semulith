@@ -22,7 +22,7 @@ result = capture_and_evaluate(
     property_authority=authority, max_read_bytes=134217728)
 ```
 
-`planned_experiment` is1..65536 immutable UTF-8 bytes containing exactly one raw
+`planned_experiment` is 1..65536 immutable UTF-8 bytes containing exactly one raw
 `experiment` form, with optional structured `(comment ...)` annotations. It uses
 the existing references grammar and scoped-record checks, then the sole dossier
 mapper. The planned graph supplies the nine principal inputs, three runs and
@@ -31,7 +31,7 @@ replaced by collection findings. Declared comparison/control verdicts remain
 caller claims and must agree with the evaluator's computed findings.
 
 A plain `experiment_verification.Scope` supplies immutable scoped ID sets, each
-with at most4096 plain-string IDs. The current candidate is selected from the
+with at most 4096 plain-string IDs. The current candidate is selected from the
 separately validated parent. Bind its execution identity and the public execution/
 relation plan before artifact I/O. Create the three-run request through the
 existing public unit binder; its fresh-name, same-volume, symlink/Git-boundary,
@@ -54,9 +54,9 @@ before parsing or schema work.
 
 ## Keep one allowance across both stages
 
-`max_read_bytes` is a plain integer from zero to134217728, inclusive; Boolean,
+`max_read_bytes` is a plain integer from zero to 134217728, inclusive; Boolean,
 subclass, negative, oversized and non-integer values refuse. The default is the
-unchanged128 MiB ceiling. The evaluator retains its fixed16 MiB snapshot-payload
+unchanged 128 MiB ceiling. The evaluator retains its fixed 16 MiB snapshot-payload
 ceiling and per-role bounds.
 
 1. Reserve the whole delegated allowance for `capture_unit`. A successful recorded
@@ -66,7 +66,7 @@ ceiling and per-role bounds.
 2. Bind actual sizes, digests and measured zero exits into a private parsed copy
    of the planned record. Keep every other field and structured comment form.
    Canonical rendering may change whitespace; the caller's planned bytes are
-   unchanged. Bound the resulting immutable record to65536 bytes before evaluation.
+   unchanged. Bound the resulting immutable record to 65536 bytes before evaluation.
 3. Reserve the remaining allowance for `evaluate_retained_unit`. It includes its
    initial manifest seed exactly once. Refund only a valid `pending` finding with
    matching seed identity, plain-integer accounting, seed-inclusive authenticated

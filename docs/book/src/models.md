@@ -49,7 +49,7 @@ python3 scripts/qualify_book_navigation.py --working-code --require-clean --outp
 python3 scripts/qualify_book_toc.py --require-clean --output target/toc-verified
 ```
 
-Use fresh paths. D77 depth1200 refuses2; immutable navigation replay retains16/1.
+Use fresh paths. D77 depth 1200 refuses 2; immutable navigation replay retains 16/1.
 Chapter TOCs match SUMMARY hierarchy/labels; page headings/search/resources remain open.
 
 ## What the gate establishes
@@ -69,4 +69,4 @@ this offline check. mdBook can render a missing SUMMARY chapter as a draft: a
 successful build alone does not prove chapter completeness or CPU acceptance.
 
 The pre-registration overview and completed partition receipts are preserved in
-ordinary history part14; the task-history chapter gives its reading command.
+ordinary history part 14; the task-history chapter gives its reading command.

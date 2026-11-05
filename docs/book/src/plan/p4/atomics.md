@@ -164,9 +164,9 @@ reference functions or every possible reservation history.
 
 The a-lrsc-fault guest is a concrete trap-retention witness: it reserves the
 aligned word, attempts a misaligned SC, resumes through the handler, then
-successfully stores42 with an aligned SC at boundary39 and reads42 at40.
-Changing only the expected SC code to1 makes the fresh public comparison
-DIVERGE at39. This control distinguishes the observed success from a comparator
+successfully stores 42 with an aligned SC at boundary 39 and reads 42 at 40.
+Changing only the expected SC code to 1 makes the fresh public comparison
+DIVERGE at 39. This control distinguishes the observed success from a comparator
 that would accept either outcome. Existing unchanged must-fail/pair/loop guests
 supply completed success/failure and constrained-loop observations; the declared
 policy remains the authority for behavior outside these finite cells.
@@ -175,7 +175,7 @@ Historical internal-source quotations remain preserved as receipts in the task
 archives, with a live evidence-boundary annotation in P4-SYSTEM.13 c29a. Current
 matching claims use the public observations above. That repair changed no
 instruction semantics, canonical guest, pin, frozen contract or registry entry;
-its102/114 checkpoint is historical. See [contract v2](contract-v2.md#runtime-guarantee-witnesses)
+its 102/114 checkpoint is historical. See [contract v2](contract-v2.md#runtime-guarantee-witnesses)
 for the current measure. Structured experiment registration remains
 P4-SYSTEM.14's work.
 
@@ -191,18 +191,18 @@ aliases and four data vectors vary. Distinct virtual addresses map to the same
 or different physical addresses; repeated SC checks a cached translation.
 
 For example, LR at A followed by LR at B replaces A's reservation. SC at A
-returns1 and clears B's reservation, so a following SC at B also returns1.
-If the first SC instead targets B, it stores and returns0; a repeated SC still
-returns1. Trapping LR/SC cases preserve the prior reservation under the selected
+returns 1 and clears B's reservation, so a following SC at B also returns 1.
+If the first SC instead targets B, it stores and returns 0; a repeated SC still
+returns 1. Trapping LR/SC cases preserve the prior reservation under the selected
 laboratory policy, including its retained fields when invalid.
 
 The direct observer compares every state owner, surrounding memory, exact
 request sequence and retirement. The finite total includes 121,280 fetch parcels,
-35,680 data requests,11,232 walk reads and20,736 permission checks:188,928
+35,680 data requests, 11,232 walk reads and 20,736 permission checks: 188,928
 requests in all. Sixteen wrong instruction effects,
-16 corrupt captures and23 disabled guards discriminate; paired outcomes catch
+16 corrupt captures and 23 disabled guards discriminate; paired outcomes catch
 broken construction helpers even when expected state uses those same helpers.
-The independent author checks every planned boundary and205 canonical words;
+The independent author checks every planned boundary and 205 canonical words;
 it does not observe explicit data requests or invalid retained reservation fields.
 The qualified v2 replacement now binds both reservation checks. The
 [current contract summary](contract-v2.md#runtime-guarantee-witnesses) owns
@@ -210,27 +210,27 @@ the realization measure; both qualified guarantees now bind these shared histori
 
 ## Failed SC still checks physical permission
 
-Cold `sc.w x7, x9, (x0)` to unmapped zero now takes cause7 with tval0,
+Cold `sc.w x7, x9, (x0)` to unmapped zero now takes cause 7 with tval 0,
 without writing x7 or retiring. Previously it returned ordinary failure before
 crossing the physical boundary. The pinned A12.1.2 requires memory permission
 before SC retirement; fresh public Sail/Spike observations also take this trap.
 
 After alignment and Store translation, a nonmatching SC issues
 `StorePermission { width, addr: physical_address }`. `StorePermitted` allows
-failure code1 and reservation clearing. A denied check traps with the original
+failure code 1 and reservation clearing. A denied check traps with the original
 VA and preserves the reservation. The check reads/writes no bytes and counts
 no fetch. Matching SC uses Store's existing permission check. A malformed
 permission answer is a typed provider violation, with no architectural trap.
-For example, a mapped nonmatching SC can retire with1 even if a provider would
+For example, a mapped nonmatching SC can retire with 1 even if a provider would
 refuse an actual Store that was never issued. The experiment's `store` refusal
 category covers both writes and permission checks; direct providers can
 select their exact request kind.
 
-The repair adds1,625full-state boundaries:1,152Bare and384translated permission
-cases,80malformed answers,8provider-misalignment answers and the unissued-Store
-control. The independent author cross-derives the1,536architectural permission
+The repair adds 1,625 full-state boundaries: 1,152 Bare and 384 translated permission
+cases, 80 malformed answers, 8 provider-misalignment answers and the unissued-Store
+control. The independent author cross-derives the 1,536 architectural permission
 cells; contract-error answers are direct boundary evidence. Six new disabled
-paths and all23prior guards discriminate and restore. Existing bound address,
+paths and all 23 prior guards discriminate and restore. Existing bound address,
 width/region and every-kind event fixtures cover the added operation; frozen
 v0/v1 remain unchanged. The reservation binding below includes all 1,536
 architectural permission cases. The other 89 cases remain direct tests. Existing
@@ -346,11 +346,11 @@ remains a permitted selected-policy difference, with no new reference result or
 lineage credit. Only inspection wording and source fingerprints regenerate in
 core state/definition mirrors; storage, reset, legalization and instruction
 semantics stay unchanged. The [current contract summary](contract-v2.md#runtime-guarantee-witnesses)
-owns the effective count; v2 membership is now frozen with all114checks realized.
+owns the effective count; v2 membership is now frozen with all 114 checks realized.
 
 ## Historical introduction and checkpoint receipt
 
 The original six-slice timeline and c29a checkpoint paragraph remain verbatim
 in `docs/tasks/archive/P4-SYSTEM-book-c33d.md`. Payload lengths/SHA256 and the
-complete14,853-byte source inverse preserve their context. Current policies,
+complete 14,853-byte source inverse preserve their context. Current policies,
 worked examples and public evidence remain above.

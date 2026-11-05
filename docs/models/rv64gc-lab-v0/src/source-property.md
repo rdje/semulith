@@ -7,7 +7,7 @@ historical scope. No requirement status or CPU gate changes here.
 
 ## Reviewed source and scope
 
-The pinned RISC-V Ratified Specifications Library v20260120, M version2.0,
+The pinned RISC-V Ratified Specifications Library v20260120, M version 2.0,
 RVI-M §11.1.2 defines signed DIV as division rounding toward zero. The verified
 35588-byte page has SHA256
 `85e1db6c831ba6d325722d728d257b3ac9a9bf0a654ba1dc385108e99df75716`.
@@ -16,7 +16,7 @@ property authentication uses the separately pinned retained excerpt described
 below; it does not need the acquired full page. No submodule implementation is read.
 
 The canonical catalogue classifies REQ-GC-M as `defined`, risk `medium`, and maps
-it to OB-GC-M in contract rv64gc-lab-env-v2/version2. The obligation covers all13
+it to OB-GC-M in contract rv64gc-lab-env-v2/version 2. The obligation covers all 13
 M forms and their boundary behavior. This case supports **one finite quotient
 observation**. It does not discharge the whole requirement or obligation.
 
@@ -24,16 +24,16 @@ Case `rv64gc-signed-div-truncation-v2` supersedes the pre-capture v1 full-page
 binding. It uses the existing `m-div.s` unchanged:
 2512 source bytes, SHA256
 `a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f`.
-The whole guest has27 boundaries. The witnessed prefix is:
+The whole guest has 27 boundaries. The witnessed prefix is:
 
 | Boundary | PC | Instruction word | Meaning / changed register |
 | --- | --- | --- | --- |
 | 0 | `0x80000000` | `0xff900293` | `addi x5,x0,-7`: x5 becomes −7. |
-| 1 | `0x80000004` | `0x00200313` | `addi x6,x0,2`: x6 becomes2. |
+| 1 | `0x80000004` | `0x00200313` | `addi x6,x0,2`: x6 becomes 2. |
 | 2 | `0x80000008` | `0x0262c3b3` | `div x7,x5,x6`: x7 becomes −3. |
 
-Each instruction is4 bytes/two parcels. The DIV word independently encodes
-opcode0x33, funct7=1, funct3=4, rd7, rs1=5 and rs2=6. The immediate words
+Each instruction is 4 bytes/two parcels. The DIV word independently encodes
+opcode 0x33, funct7=1, funct3=4, rd=7, rs1=5 and rs2=6. The immediate words
 independently encode the two operands; this is not an inference from a mnemonic
 or annotation supplied by a producer. At the cold entry, the prefix establishes
 the operands before division. The source rule gives magnitude floor(7/2)=3 and
@@ -45,7 +45,7 @@ The exact property statement is:
 
 > For signed DIV with x5 = -7 and x6 = 2, the x7 change at boundary 2 is -3 (rounding toward zero).
 
-This credits quotient meaning at step2/x7, not an observation of every internal
+This credits quotient meaning at step 2/x7, not an observation of every internal
 CSR, trap, memory request, reservation, later M result or absence of side effects.
 The complete source-value and three-run comparison owners retain their separate
 whole-budget checks. This API does not execute or credit the prospective control.
@@ -82,7 +82,7 @@ requires the selected profile in both records. It returns frozen PropertyAuthori
 with profile/requirement/obligation/source IDs and semantic/source digests.
 The caller must supply current canonical authority, not echo a capture's own
 claims. Mapping/schema validation stays with the existing owners. Trees are
-bounded per supplied record to4096 nodes, depth16,1MiB UTF8 string payload,
+bounded per supplied record to 4096 nodes, depth 16, 1 MiB UTF8 string payload,
 strings<=65536 characters and integers<=128 bits; malformed inputs raise
 PropertyError. Copy dictionaries in key order so mapped parameter order is stable.
 
@@ -93,7 +93,7 @@ identity differs from the original publication:
 | --- | --- | --- |
 | RVI-M-DIV-STATEMENT / normative-source | `profiles/rv64gc-lab-v0/retained/div-statement.html` | `bbe3ff9dd6d8e1b452589669cd676d998265327eeaf8ed370bb95fcf15af1a58` |
 
-The1576-byte artifact retains the exact182-byte `norm:div_divu_op` span, with
+The 1576-byte artifact retains the exact 182-byte `norm:div_divu_op` span, with
 attribution, source/licence pins and an extraction notice. The scoped terms and
 curation decision are in `materials/RVI_M_RETENTION.md`; the bounded extractor is
 `scripts/retain_div_statement.py`. The excerpt supplies the rounding rule for
@@ -255,7 +255,7 @@ pins refuse without retaining the invalid property finding. A typed refusal
 terminates refused; a typed unsupported result stays pending without credit.
 Earlier failures skip this phase. Matches remain pending full method/policy.
 
-The permanent composition controls copy the actual tracked1576-byte excerpt into
+The permanent composition controls copy the actual tracked 1576-byte excerpt into
 an owned temporary fixture and authenticate it with the real bounded reader.
 No primary-page authentication double or acquired materials cache is used. The
 23 declared files are read once each; the excerpt contributes its own exact byte
@@ -318,7 +318,7 @@ RETAINED EXCERPT SMOKE: pending / finite property matched / 23 authenticated fil
 ```
 
 The fixture copies the tracked excerpt into an owned on-volume temporary directory
-and removes the directory at exit. Missing bytes return2/UNAVAILABLE; a changed
+and removes the directory at exit. Missing bytes return 2/ UNAVAILABLE; a changed
 pin refuses. The checker runs no reference process and grants no whole-M or
 qualification credit. This supersedes the v1 optional acquired-page smoke.
 

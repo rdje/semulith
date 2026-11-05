@@ -1,7 +1,7 @@
 # The published selected Sail identity
 
 `profiles/rv64gc-lab-v0/retained/sail-identity.sexp` is the selected reference
-descriptor for the proposed first canonical division capture. Its711 bytes have
+descriptor for the proposed first canonical division capture. Its 711 bytes have
 SHA256 `b0d88c7ae4b3cbb6b856af338811947dd58c6d8e754043d901f2952aeaecea77`.
 It contains one candidate and no experiments. The existing bounded
 [identity emitter and reader](retained-method.md#emitting-a-selected-execution-descriptor)
@@ -28,7 +28,7 @@ Changing that prose cannot change this projection. Relevant execution-field
 changes must make the old descriptor stale even if its file pin still matches.
 
 The date `2026-10-19` records descriptor publication. Host fields record the
-publication host: Darwin, kernel27.0.0, arm64, and the observed Apple clang21
+publication host: Darwin, kernel 27.0.0, arm64, and the observed Apple clang 21
 version string. The host note explicitly says that this is publication rather
 than binary acquisition and attests no execution. Checking elsewhere preserves
 that historical metadata; it does not rediscover or compare the checking host.
@@ -81,7 +81,7 @@ python3 scripts/probe_retained_sail_identity.py
 python3 -O scripts/probe_retained_sail_identity.py
 ```
 
-It prints `matched matched 6`, then `stale matched`. The11 controls also rebuild
+It prints `matched matched 6`, then `stale matched`. The 11 controls also rebuild
 the exact published bytes through the emitter using fixed publication metadata,
 check optional presence and excluded prose, reject malformed or oversized
 descriptors, and distinguish a changed pin from changed execution identity.

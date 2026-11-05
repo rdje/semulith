@@ -21,8 +21,8 @@ writes. Public plans are prerequisites, not self-authenticating capabilities.
 `capture_run(root, request=...)` returns metadata only. Revalidate/copy the request;
 a caller mutation during reads cannot redirect execution or output cleanup.
 Authenticate the selected binary and eight input files before and after execution
-using the existing shared reader, at most8 MiB/file and128 MiB aggregate. The
-current pinned Mac-arm64 Sail binary is3801664B, within that existing bound.
+using the existing shared reader, at most 8 MiB/file and 128 MiB aggregate. The
+current pinned Mac-arm64 Sail binary is 3801664 B, within that existing bound.
 The [unit collector](unit-collector.md) shares an explicit allowance across all
 three runs; ordinary single-run calls retain their documented defaults.
 A missing, unsafe or changed pin refuses collection; hashes describe check-time
@@ -52,9 +52,9 @@ that owned group before returning, including descendants. This is a finite POSIX
 collector, not a portable claim about arbitrary process trees or hostile daemons
 that deliberately escape their session.
 
-After execution require a stable regular trace of at most4 MiB and stdout/stderr
-of at most64 KiB each. The hard file limit limits overflow on disk; a stream over
-its stricter64 KiB method bound still refuses, never truncates. The shared
+After execution require a stable regular trace of at most 4 MiB and stdout/stderr
+of at most 64 KiB each. The hard file limit limits overflow on disk; a stream over
+its stricter 64 KiB method bound still refuses, never truncates. The shared
 `observe_bounded_file` API hashes a fresh file with anchored traversal, bounded
 streaming and stability checks. Its `ObservedFile` result means **observed**, not
 matched against a supplied pin; it retains no payload and exposes no PinResult.
@@ -69,7 +69,7 @@ data when their files are complete and bounded; they cannot satisfy a control.
 Timeout, missing output, oversized observed files, unsafe paths or pin changes
 cannot produce `recorded`. A hard-limit write failure may leave a bounded partial
 trace and a failed exit; recording those bytes grants no completeness credit. Earlier refusals have no process identity. An old receipt is never
-reused or minted by this helper. Neither `recorded` nor exit0 asserts trace
+reused or minted by this helper. Neither `recorded` nor exit 0 asserts trace
 correctness, comparison success, source-property coverage or qualification.
 
 Controls must execute real synthetic child processes, separately identified from
@@ -122,8 +122,8 @@ the old trace first, so this run is unavailable and returns no output facts.
 Neither call publishes a receipt or qualifies the experiment.
 
 A separate development smoke used the pinned Mac-arm64 Sail executable: three
-fresh PIDs, all exit0, byte-identical27-boundary m-div traces. Public comparisons
-were AGREE/AGREE/DIVERGE, with control step2/x7 observed -3 versus expected -4.
+fresh PIDs, all exit 0, byte-identical 27-boundary m-div traces. Public comparisons
+were AGREE/AGREE/DIVERGE, with control step 2/x7 observed -3 versus expected -4.
 That smoke has no canonical capture, retained receipt, complete closure review or
 qualification credit. The finite property and complete-method boundaries still
 apply; synthetic process controls are not a substitute for that real run.
@@ -139,7 +139,7 @@ report and the live summary, then removes its unique on-volume scratch directory
 It uses the public override mapper without changing the shared materialized config.
 The prospective envelope still uses synthetic IDs; raw scoped-record validation,
 receipt publication, full closure and qualification are not established. Missing
-or changed reference inputs return2/unavailable or refused, never a green smoke.
+or changed reference inputs return 2/ unavailable or refused, never a green smoke.
 No mutation can be combined with this option. The normal CI command runs only
 synthetic children and requires no reference cache.
 
@@ -162,17 +162,17 @@ receipts. A collection failure publishes nothing and keeps its disposition.
 Publication authenticates the three collected outputs again, then opens the
 absent receipt name exclusively through anchored same-volume directories. It
 refuses existing names, symlinks and nested Git parents; it never truncates or
-replaces a receipt. Write at most64 KiB, handle short writes, fsync, authenticate
+replaces a receipt. Write at most 64 KiB, handle short writes, fsync, authenticate
 the resulting file and recheck the three outputs before success. Failure removes
 only the receipt inode created by this call, never a replacement at that path.
 No partial receipt is returned as recorded. Concurrent hostile namespace changes
 are outside this finite POSIX collector's trust model; checks detect observed
 replacement rather than claiming a filesystem transaction across all inputs.
 
-The existing collector's per-call128 MiB read budget still applies. Publication
-adds at most two reads of each bounded trace/stream and one64 KiB receipt read
+The existing collector's per-call 128 MiB read budget still applies. Publication
+adds at most two reads of each bounded trace/stream and one 64 KiB receipt read
 (8,716,288 B), with no output payload retention. The serialized receipt is bounded
-separately to64 KiB. An explicit read limit shares collection/publication accounting; the
+separately to 64 KiB. An explicit read limit shares collection/publication accounting; the
 [unit collector](unit-collector.md) carries the remainder across all three runs.
 The [first canonical capture](canonical-division.md) is retained. Complete closure/policy adequacy and qualification remain pending.
 

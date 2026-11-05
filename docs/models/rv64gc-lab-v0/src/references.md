@@ -359,7 +359,7 @@ label (1–65,536 characters) and a plain integer budget (1–4,096). Invalid in
 must refuse before canonical tool-data reads. The program is an opaque exact
 label; it is never opened as a source path.
 
-Use the current canonical RV64GC assembler with IALIGN16, independent of the
+Use the current canonical RV64GC assembler with IALIGN 16, independent of the
 legacy pre-bind `DERIVE_ENCODING` override. Share source preflight/context owners
 with image construction. Execute the exact assembled initial bytes, at most
 32 KiB, for exactly the budget; branches, modified instruction memory and

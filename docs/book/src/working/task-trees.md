@@ -49,7 +49,7 @@ even when asked to pivot immediately.
 python3 scripts/qualify_orientation_indexes.py --working-code --require-clean --output target/live-containment/orientation-verified/source
 ```
 
-D74/D75:22/0. Map/read failures refuse2, drift1; decision links exclude comments/
+D74/D75:22/0. Map/read failures refuse 2, drift 1; decision links exclude comments/
 fences. Knowledge links are checked; scaffold retains three repairs. Historical
 17/11, `--extended`21/14; finite controls.
 
@@ -63,8 +63,8 @@ python3 scripts/qualify_book_index.py --working-code --require-clean --output ta
 ### Decision navigation and the record it opens
 
 Indexes route questions; records retain receipts/corrections. D55 fixes UART:
-147+13 becomes151+9, total160 unchanged. D51 separates files from active work.
-Authorized pooled107 files;108 breaches. Health64 is advisory; byte/part caps stay
+147+13 becomes 151+9, total 160 unchanged. D51 separates files from active work.
+Authorized pooled 107 files; 108 breaches. Health 64 is advisory; byte/part caps stay
 fixed. Full classifications/derivations remain in the records:
 
 ```sh
@@ -86,10 +86,10 @@ bash scripts/check_readme_routes.sh --self-test
 ```
 
 D52–57 validate NUL totals/parts, metrics, links, hints and README/registry reads.
-Unavailable/diagnostic reads refuse2; breaches fail1; health is advisory.
+Unavailable/diagnostic reads refuse 2; breaches fail 1; health is advisory.
 Empty families/date-policy no-match remain valid; checked derived mirrors exempt.
-Registry: UTF-8, nine tab fields, unique relative paths, limits0..9223372036854775807.
-`00064` becomes64; `-1` refuses2. Sync retains the guards. D65 rejects missing/
+Registry: UTF-8, nine tab fields, unique relative paths, limits 0..9223372036854775807.
+`00064` becomes 64; `-1` refuses 2. Sync retains the guards. D65 rejects missing/
 ambiguous includes before expansion. Historical counts remain in retained book
 source; finite checks grant neither atomic measurements nor capacity authority.
 Graph/adoption remain open. Replay (fresh output):
@@ -153,7 +153,7 @@ cat docs/tasks/artifacts/live-containment/include-source-integration.md
 ### Read task history
 
 From the root, read live records with `cat docs/tasks/<TREE>.md`. Sealed
-parts1–12 use the checked reader; choose the part, for example archive9:
+parts 1–12 use the checked reader; choose the part, for example archive 9:
 
 ```sh
 python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-9.md
@@ -186,9 +186,9 @@ python3 scripts/task_history_preservation.py
 python3 scripts/probe_task_history_preservation.py
 ```
 
-Preservation0, changes1, unavailable2; Git/read/unsafe/malformed faults refuse.
+Preservation 0, changes 1, unavailable 2; Git/read/unsafe/malformed faults refuse.
 43 controls normal/O. Add files/corrections, preserve originals; this judges
-neither first publication nor truth. Separate12-file seals need owned transitions.
+neither first publication nor truth. Separate 12-file seals need owned transitions.
 
 Use a new owned output directory to test the full gate:
 
@@ -196,8 +196,8 @@ Use a new owned output directory to test the full gate:
 python3 scripts/task_archive_gate_probe.py --output target/p4-system-14/a42l2/replay
 ```
 
-Probe0 measures; `gate_rc` judges. Real views stay exact. A42k's edit passed;
-the publishing guard now rejects1.
+Probe 0 measures; `gate_rc` judges. Real views stay exact. A42k's edit passed;
+the publishing guard now rejects 1.
 
 ### Preserve completed task receipts and live development history
 
@@ -223,15 +223,15 @@ cat docs/tasks/artifacts/live-containment/include-source-validator.md
 ```
 
 **Include validation** checks whole text, ASCII anchors and one-based lines
-(`:2`, `::10`, `:2:`, `:2:10`) before expansion. Missing/ambiguous selections fail1;
-unsupported/unsafe/unreadable inputs or spaces after # refuse2. Valid books stay
+(`:2`, `::10`, `:2:`, `:2:10`) before expansion. Missing/ambiguous selections fail 1;
+unsupported/unsafe/unreadable inputs or spaces after # refuse 2. Valid books stay
 exact. Fences expand; nested paths follow selected included text. Cycles fail;
 empty files/regions pass. CRLF becomes LF; bare CR/Unicode separators remain
 inside physical lines. This qualifies source integrity, not prose truth.
 
 All seven books validate before links by default. UNIT-BOOKS forces validation
 even for scratch configurations, requires an execution witness and preserves
-source refusal2. Missing files/anchors and duplicate anchors fail1. From root:
+source refusal 2. Missing files/anchors and duplicate anchors fail 1. From root:
 
 ```sh
 python3 scripts/probe_book_includes.py
@@ -267,7 +267,7 @@ The first checks both views and the staged partition; the second previews a move
 
 ### Executed page-heading navigation
 
-LC0042 pins1226311: seven books/120 pages/1406 headings/589 entries. Independent
+LC0042 pins 1226311: seven books/120 pages/1406 headings/589 entries. Independent
 HTML/DOM readers reconcile labels/markup, targets, nesting, roles and active parents.
 Nonpersistent WebKit/strict Swift use local caches/temp. Four JS/HTTP witnesses,
 three omissions/fallback cause discriminate normal/O.
@@ -278,16 +278,16 @@ python3 scripts/qualify_book_headings.py --verify-record
 python3 -O scripts/qualify_book_headings.py --self-test
 ```
 
-Fresh captures exit0 when measured; D78 marks both Introduction and Index active.
+Fresh captures exit 0 when measured; D78 marks both Introduction and Index active.
 Removing the fallback
 fixes that page but breaks a unit index alias; LC0043 supplies the conditional repair.
-`--require-clean` fails1 for this source. Record queries verify the full retained
+`--require-clean` fails 1 for this source. Record queries verify the full retained
 metadata; nine damaged frames refuse. Replay needs pinned Git sources/producers
 and the OS Swift/WebKit tools. Raw DOM/HTTP streams remain generated diagnostics.
 Click/scroll/layout, search/resources, full graph/adoption and CPU stay unclaimed.
 
 LC0043's `additional-js` integration selects an explicit chapter before heading
-insertion; no direct match preserves the index alias. All120 current contracts
+insertion; no direct match preserves the index alias. All 120 current contracts
 pass; supported main alias and three actual omissions discriminate normal/O.
 
 ```sh
@@ -309,8 +309,8 @@ seven 404 origin-root asset bases under shared serving. Earlier claim limits app
 
 ## Reading sealed history
 
-Two tracked seals retain368 CH/DEV shards plus manifests:210 atff75610 and
-158 ata5bf4579. New shards/live heads stay native; sealing releases aggregate.
+Two tracked seals retain 368 CH/DEV shards plus manifests: 210 at ff 75610 and
+158 at a5bf4579. New shards/live heads stay native; sealing releases aggregate.
 
 ```sh
 python3 scripts/history_archive.py
@@ -326,21 +326,21 @@ restore committed bytes. Retired shard names are never reused.
 python3 scripts/history_archive.py --read docs/changelog/shard-0366.md
 ```
 
-The finite581897B bound covers both fixed objects and bounded index/front door.
-The original-context qualifier below stays at23fdb8:222 originals/six catalogues:
+The finite 581897 B bound covers both fixed objects and bounded index/front door.
+The original-context qualifier below stays at 23fdb8:222 originals/six catalogues:
 
 ```sh
 python3 scripts/qualify_query_consumers.py --working-code --require-clean --output target/query-repair-replay
 ```
 
-Use a fresh path. All263 observations pass normal/O. Malformed deflate now
-gives named refusal1 without stdout or traceback; removing its catch fails
+Use a fresh path. All 263 observations pass normal/O. Malformed deflate now
+gives named refusal 1 without stdout or traceback; removing its catch fails
 qualification. Three consumer omissions/seven ledger controls still discriminate.
 Immutable replay retains D76. Full containment adoption remains open.
 
 ### Reading closed P4 task histories
 
-The director approved the12-file P4 seal on2026-10-10. Original paths retain
+The director approved the 12-file P4 seal on 2026-10-10. Original paths retain
 navigation pages and eight incoming anchors; the active graph stays native.
 
 ```sh
@@ -351,7 +351,7 @@ python3 scripts/task_history_archive.py --read docs/tasks/archive/P4-SYSTEM-8.md
 bash scripts/check_task_history.sh
 ```
 
-All12 originals authenticate before output, without Git/network/extraction;
+All 12 originals authenticate before output, without Git/network/extraction;
 shallow clones carry the object. Bounded metadata/decompression, plain members
 and exact navigation refuse damaged/unsafe/excess content. Restore committed bytes.
 The [front door](../../../task-history/README.md) gives tar/search/failure help;
@@ -361,7 +361,7 @@ future captures need owned transitions.
 ### Reading closed qualification records
 
 LC0041's delegated four-record seal retains book-index, graph/query, include/
-navigation and orientation captures. Original paths preserve20 heading aliases/
+navigation and orientation captures. Original paths preserve 20 heading aliases/
 retrieval commands. Current inventory/retention inputs stay native; caps stay fixed.
 
 ```sh
@@ -373,12 +373,12 @@ python3 scripts/qualification_history_preservation.py
 python3 scripts/probe_qualification_history.py
 ```
 
-Five originals retain497850 bytes/modes/Git identities from968bc010: four
+Five originals retain 497850 bytes/modes/Git identities from 968bc010: four
 records and this chapter's prior source. Archive/navigation authenticate before
 output without Git/network/extraction; README is reader-bounded, publishing-frozen.
 Tar/shallow clones retrieve originals. First publication verifies source tree/
 originals/complete staged wiring; later both views freeze against HEAD. Unavailable
-evidence refuses2; reader failure1 emits no original.32 tests run normal/O.
+evidence refuses 2; reader failure 1 emits no original.32 tests run normal/O.
 Restore committed bytes after damage/unsafe/excess refusal; correct in new records.
 Replay still needs declared sources/producers/tools; Markdown retention promises
 neither raw output nor toolchain availability. Graph/adoption/CPU remain open.

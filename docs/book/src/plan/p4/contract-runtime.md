@@ -227,11 +227,11 @@ three counter addresses, rd=x0/x5/x31 and four initial counter pairs. Its
 4,032 legal and 2,880 gated cases each execute one boundary/two parcels.
 Expectations are literal transitions constructed before the CPU runs.
 
-With mcycle=41/minstret=17, legal cycle/time reads return41 and instret
-returns17; afterward storage is42/18. A closed gate delivers cause2 to M,
+With mcycle=41/minstret=17, legal cycle/time reads return 41 and instret
+returns 17; afterward storage is 42/18. A closed gate delivers cause 2 to M,
 records the exact instruction in mtval and 0x1000 in mepc, sets MPP to the
-origin, preserves rd and leaves storage42/17. Counting continues while
-access is gated. The high-bit and MAX cases check full64-bit reads and
+origin, preserves rd and leaves storage 42/17. Counting continues while
+access is gated. The high-bit and MAX cases check full 64-bit reads and
 wrapping increments. rd=x0 still checks permission and retirement.
 
 Each case compares all integer/floating registers, every CSR storage owner,
@@ -242,8 +242,8 @@ store or walk cannot hide behind the right destination value.
 Eleven wrong instruction effects and sixteen damaged captures fail named
 observations. Disabling the real CSR auditor, request logger or either
 counter gate makes its test fail; sources are restored before verification.
-Independent specification-side decoding/derivation confirms all6,912 cases.
-The original167-program corpus remains exact. These finite cases establish
+Independent specification-side decoding/derivation confirms all 6,912 cases.
+The original 167-program corpus remains exact. These finite cases establish
 the selected virtual-time/read/access contract, without claiming arbitrary
 initial CSR states, counter rates, overflow interrupts or Linux readiness.
 
@@ -365,7 +365,7 @@ software states, both compare conditions and both STCE settings. Five-bit CSR
 immediates cannot set bit 5; their other pending writes still obey the selected
 mask. The independent author tests eight literal source/write combinations and
 retention; four deliberate source/write/retention mutations each fail. The original public CSR
-reproduction changes from rc101 to rc0; the corrected public Sail diagnostic
+reproduction changes from rc 101 to rc 0; the corrected public Sail diagnostic
 still reports its qualified comparator-platform difference with STCE verified.
 
 The direct S-mode witnesses below earn the SSTC pair; neither prerequisite
@@ -406,7 +406,7 @@ Each row is one actual 32-bit instruction fetched as two parcels:
 
 Every boundary checks all 32 GPRs, S mode, exact next PC, raw compare, time,
 retirement and fetch count. After thirteen boundaries, time=instret=13 and the
-fixture has made 26 parcel requests. Full-width S write/read-back retains bit63. These observations establish actual S
+fixture has made 26 parcel requests. Full-width S write/read-back retains bit 63. These observations establish actual S
 programming/read-back and continuation without an M round trip. The selected
 laboratory immediately reflects comparator changes; the architectural source
 allows eventual reflection and possible spurious interrupts. This finite fixture
@@ -415,7 +415,7 @@ does not require every platform to share the laboratory's exact latency.
 The negative fixture has three cases: S with TM clear and STCE set; S with TM
 set and STCE clear; U with both gates set. Each starts with compare=101,
 x5=33 and destination x6=0x55, then executes CSRRW x6,stimecmp,x5 (0x14d29373).
-The instruction must deliver cause2 before changing source, destination or
+The instruction must deliver cause 2 before changing source, destination or
 compare. Actual M-handler instructions then read mcause=2, mtval=0x14d29373,
 mepc=0x1000 and stimecmp=101, followed by ADDI x11,x0,42. Every step checks
 all GPRs, M mode/PC, compare, time/retirement, parcel count and the three trap
@@ -424,7 +424,7 @@ retire, leaving five retired instructions. Direct POS+NEG total 31/62.
 
 The forced-all-S-access-illegal author copy still matches mm-stimecmp's old
 35 changes / 70 parcels, ending in M at the unexpected final trap. The new
-positive witness rejects that same defect model at boundary2. Disabling the
+positive witness rejects that same defect model at boundary 2. Disabling the
 positive verifier makes the terminal control fail explicitly; its RED arm is
 registered only after that failure is observed. Real-engine controls also reject
 unexpected traps when either permission gate is cleared, and reject a NEG case

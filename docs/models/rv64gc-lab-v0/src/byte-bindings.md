@@ -111,7 +111,7 @@ It prints `matched matched 1 None None`, `stale refused`, then
 bytes; rebinding detects the changed candidate version and exit. The inclusive
 64 KiB identity succeeds; its extra byte and byte-view receipt refuse.
 All 22 controls and fourteen independent omissions run in normal/optimized Python
-under PROFILE-CONSISTENCY, alongside unchanged legacy identity40/receipt43 controls.
+under PROFILE-CONSISTENCY, alongside unchanged legacy identity 40/receipt 43 controls.
 The suite also authenticates a real synthetic declared file set, changes its paths
 and caller context afterward, and binds all three retained receipt snapshots with
 artifact/process calls forbidden. This proves snapshot consumption, not adequacy

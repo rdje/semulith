@@ -2,10 +2,10 @@
 
 The first proposed canonical case now has four retained inputs under
 `evidence/rv64gc-signed-div-truncation-v2/`. They were curated without launching a
-reference process. Preparation checks source/image correspondence and all27
+reference process. Preparation checks source/image correspondence and all 27
 source-derived GPR-change boundaries; it grants no execution or qualification
 credit. The [reviewed finite property](source-property.md) remains the signed
-quotient change at boundary2, rather than complete M-extension coverage.
+quotient change at boundary 2, rather than complete M-extension coverage.
 
 | File under the case directory | Bytes | SHA256 |
 | --- | --- | --- |
@@ -14,13 +14,13 @@ quotient change at boundary2, rather than complete M-extension coverage.
 | `baseline.expected.sexp` | 5847 | `87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e` |
 | `control.expected.sexp` | 5443 | `3f8d591db326a6a83a47921b7743297edc758eb602fa70660b770d37a07c758e` |
 
-The four files total23,315 bytes. The selected [Sail identity](selected-identity.md)
+The four files total 23,315 bytes. The selected [Sail identity](selected-identity.md)
 and retained DIV statement remain separate existing inputs in the profile.
 An acquired executable is a separately pinned replay dependency.
 
 ## Canonical sources and construction
 
-The guest source is `profiles/rv64gc-lab-v0/guests/m-div.s`,2512 bytes with SHA256
+The guest source is `profiles/rv64gc-lab-v0/guests/m-div.s`, 2512 bytes with SHA256
 `a7cbbe8c3005a7c0da68bf356a0fb6b072dbe0cdcc659eff523e465c60ae907f`.
 `matched_gpr_image.build_guest_image` constructs the complete ELF at the fixed
 cold entry `0x80000000` through the canonical GC assembler. The public
@@ -28,21 +28,21 @@ cold entry `0x80000000` through the canonical GC assembler. The public
 Header, padding and instruction bytes are all included.
 
 The baseline is a byte-exact copy of the existing canonical `m-div.expected.sexp`
-beside that source. It declares27 boundaries and54 fetches. The public
+beside that source. It declares 27 boundaries and 54 fetches. The public
 `compare_source_expectation` rederives every declared GPR change through the
 existing snapshot author and binds the reviewed x7 witness. This finite check
 does not observe every architectural state dimension.
 
 The control maps that baseline through the existing expectations schema and
-dossier owner, changes only boundary2's x7 value from `0xfffffffffffffffd` (`-3`)
+dossier owner, changes only boundary 2's x7 value from `0xfffffffffffffffd` (`-3`)
 to `0xfffffffffffffffc` (`-4`), and renders through the existing serializer.
 A structured comment labels the deliberately wrong value. Every mapped field
 outside that one value, including the correct baseline derivation text, remains
-equal. The source author reports a difference at boundary2. That is a prepared
+equal. The source author reports a difference at boundary 2. That is a prepared
 negative expectation; the fresh reference control run still has to occur.
 
 The configuration's canonical source remains
-`profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`,6993 bytes with
+`profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp`, 6993 bytes with
 SHA256 `9d27a970c42bdcccfdf948c39868a788d0dd3ecb7eb961767a143af1d3545935`.
 Raw override-schema validation precedes its sole dossier mapping. The retained
 JSON is exactly `json.dumps(mapped_override, indent=2) + "\n"`, the representation
@@ -174,7 +174,7 @@ eight declared cases (`decision_evidence-family-two-cases.md`, its seventh re-de
 at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
 receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; eight cases and the 4 KiB index hold at
 most 110,628,864 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
-the128 MiB combined artifact-read allowance and16 MiB snapshot ceiling stay
+the 128 MiB combined artifact-read allowance and 16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
 The [capture declaration](capture-plan.md#complete-the-capture-declaration) and

@@ -11,8 +11,8 @@ no processor/board; slice-gated is conditional.
 
 Use `A of B leaves`, `B leaves`, or leading `A/B` after a known tree ID
 (optional dash/parenthesis). Later bare ratios are excluded. Guards validate
-backtick/bold statuses and whole archived ranges. Bad source refuses2; drift
-fails1. Closed counts allow semicolon/comma annotations. Syntax is finite.
+backtick/bold statuses and whole archived ranges. Bad source refuses 2; drift
+fails 1. Closed counts allow semicolon/comma annotations. Syntax is finite.
 
 ```sh
 bash scripts/check_tree_claims.sh

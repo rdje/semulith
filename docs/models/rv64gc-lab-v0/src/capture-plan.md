@@ -1,8 +1,8 @@
 # Predeclaring the first division capture
 
 The first canonical case is `rv64gc-signed-div-truncation-v2`, owned by
-`scripts/matched_gpr_property.py`. It runs `m-div.s` for27 boundaries. The finite
-claim is the x7 change at boundary2: signed `-7 / 2` produces `-3`. The negative
+`scripts/matched_gpr_property.py`. It runs `m-div.s` for 27 boundaries. The finite
+claim is the x7 change at boundary 2: signed `-7 / 2` produces `-3`. The negative
 control changes only that expected value to `-4`. Baseline, repeat and control
 must use three fresh reference processes with identical executed inputs. This
 does not accept all M instructions or close `REQ-GC-M`/`OB-GC-M`. The
@@ -42,9 +42,9 @@ supplies neither an experiment manifest nor qualification.
 ## Proposed flat input population
 
 The collector and public Sail adapter are two of the existing nine principals.
-The proposed dependency children are the other35 imported project modules,
+The proposed dependency children are the other 35 imported project modules,
 27 exercised execution-data files, the retained DIV excerpt and the profile evidence
-policy:64 children, including the review tool and current-authority entrypoint.
+policy: 64 children, including the review tool and current-authority entrypoint.
 The diagnostic derives these counts from path sets and refuses overflow of the
 child ceiling (64 then; `MANIFEST_INPUTS`, 96, since `P4-SYSTEM.14` a44-2b). Its JSON lists the complete paths; the manifest must be
 built from this reviewed population, rather than treating its own declarations
@@ -69,7 +69,7 @@ capture declaration must still be committed before execution.
 
 The source catalogue's former claim that the HTML snapshot contains no CC-BY
 statement was too broad. The [pinned unprivileged colophon](https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html), in its preface
-to Version2.2, states CC-BY4.0 applies to that manual and future versions. The
+to Version 2.2, states CC-BY 4.0 applies to that manual and future versions. The
 privileged preface has a corresponding statement for its own volume. Website
 footers and specification text have different scopes; this does not establish
 rights to redistribute the complete website rendering or its assets.
@@ -81,7 +81,7 @@ wrapper. The statement retains signed/unsigned XLEN division and rounding toward
 zero. It omits the diagrams, other operations, navigation, scripts and styles.
 Its identity is distinct from the original full-page identity. The wrapper names
 the original URL/digest, the licence-evidence URL/digest, RISC-V International,
-the CC-BY4.0 licence and the extraction/change notice. It grants no extra M
+the CC-BY 4.0 licence and the extraction/change notice. It grants no extra M
 coverage, execution, capture or qualification credit.
 
 The emitter requires the exact immutable M page and licence-evidence bytes,
@@ -96,7 +96,7 @@ python3 scripts/probe_div_statement_retention.py
 python3 -O scripts/probe_div_statement_retention.py
 ```
 
-`--emit` needs the acquired snapshot; a missing input exits2. `--verify` can work
+`--emit` needs the acquired snapshot; a missing input exits 2. `--verify` can work
 in a fresh checkout and reports byte identity only. Synthetic controls require
 no acquired materials. Review the retained text at the source path above.
 
@@ -104,7 +104,7 @@ The v2 property binding now authenticates this excerpt under the separate
 `RVI-M-DIV-STATEMENT` input ID. Current semantic authority retains the original
 `RVI-M` publication digest; the excerpt cannot replace that authority. The v1
 full-page input cannot substitute for the v2 excerpt. The property statement,
-guest,27-boundary budget, quotient and negative control are unchanged. No
+guest, 27-boundary budget, quotient and negative control are unchanged. No
 canonical capture used v1, and explicit v1 selection is unsupported.
 
 The reviewed producer population includes the extractor, even though the capture
@@ -123,7 +123,7 @@ the obligations it declares. Since a43b-2b the planned record's control-run id a
 `control` prose are the case's own as well — its `control` form's `id` and `statement`,
 for example `(id "truncated-address")` and `(statement "Predeclared target: the address
 truncated to 32 bits must diverge.")` — and preparation refuses, by name, a case that
-declares neither: a declaration retained before then is history, not a capture input. Its37 modules and64 children reach the unchanged64-child
+declares neither: a declaration retained before then is history, not a capture input. Its 37 modules and 64 children reach the unchanged 64-child
 ceiling. The final execution composition must fit this reviewed population or
 receive another bounded design review before execution. A copied reviewed input set can
 run the diagnostic with no `.materials` directory; success still stays pending.
@@ -147,13 +147,13 @@ its original publication remains separate current authority. The binary remains 
 offline observation checking and reference replay have different availability.
 
 Measure and register the actual retained family with its fixed count/byte caps.
-Keep the existing128 MiB aggregate read and16 MiB snapshot envelopes; a combined
+Keep the existing 128 MiB aggregate read and 16 MiB snapshot envelopes; a combined
 collector/evaluator must carry the collection charge forward. Evaluation now
 accepts a [delegated remainder](read-allowance.md), including its manifest seed;
 the [combined unit helper](unit-evaluation.md) now carries that allowance and
 validates seed-inclusive accounting. The [composed command](#the-composed-div-command)
 now delegates that helper. Commit its exact native declarations, then capture the
-three processes, authenticate every retained input/output and evaluate all27
+three processes, authenticate every retained input/output and evaluate all 27
 boundaries, exact repeat bytes and the intended control. Only after that may the
 full source/risk/feature policy and derived statuses be integrated. The blanket
 qualification refusal remains in force throughout this predeclaration slice.
@@ -172,8 +172,8 @@ python3 scripts/review_div_capture.py --review
 ```
 
 Its changing digests and byte totals are derived output, not constants to copy
-into this chapter. A missing retained excerpt exits2; a refused review exits1;
-`pending` exits0 and still grants no canonical capture or method credit.
+into this chapter. A missing retained excerpt exits 2; a refused review exits 1;
+`pending` exits 0 and still grants no canonical capture or method credit.
 
 ## Rejecting cyclic version ancestry
 
@@ -183,7 +183,7 @@ form passes the raw schema. The version-order check can report a gap without
 making an unguarded ancestry walk terminate.
 
 `scripts/check_contract_freeze.sh` now remembers the versions visited for each
-declared version. A repeat returns exit1 with `EXTENDS CYCLE`. The public
+declared version. A repeat returns exit 1 with `EXTENDS CYCLE`. The public
 `contract_measure` (`scripts/effective_contract.py` since `P4-SYSTEM.14` a43e-1; `gate_report.py` imports it) similarly refuses a repeat on the selected latest
 version's ancestry with `CONTRACT CYCLE`, through its existing `SystemExit`
 refusal channel. Scope loading and gate generation reuse that measure. Neither
@@ -200,9 +200,9 @@ python3 scripts/probe_contract_ancestry.py
 python3 -O scripts/probe_contract_ancestry.py
 ```
 
-Each command reports4 tests,0 failures and0 errors. CONTRACT-FREEZE registers both
+Each command reports 4 tests, 0 failures and 0 errors. CONTRACT-FREEZE registers both
 modes and two independent guard omissions; removing either guard loses three
-assertions with0 errors. The diagnostic gives each real owner a three-second
+assertions with 0 errors. The diagnostic gives each real owner a three-second
 deadline, kills and joins a hung process group, and removes its fixtures under
 `target/`. This deadline protects the regression harness; it is no production
 runtime guarantee. These are contract-reader controls, with no reference run,
@@ -334,9 +334,9 @@ PY_DIV_AUTHORITIES
 ```
 
 It prints `pending 13 REQ-GC-M`, `True`, then `frozen`. Direct Python callers retain
-the component owners' typed exceptions; the CLI emits JSON `pending` with exit0,
-`refused` with exit1 for expected invalid views, and `unavailable` with exit2 for
-I/O failure. Wrong usage also exits2 on stderr. Unexpected programming exceptions
+the component owners' typed exceptions; the CLI emits JSON `pending` with exit 0,
+`refused` with exit 1 for expected invalid views, and `unavailable` with exit 2 for
+I/O failure. Wrong usage also exits 2 on stderr. Unexpected programming exceptions
 propagate. Redirect diagnostic output only into an owned on-volume work directory
 when a local receipt is needed; it is no canonical authority-file publication.
 
@@ -417,9 +417,9 @@ S-expression remains the declaration format. The three fixed names under
 
 | Document | Meaning |
 | --- | --- |
-| `planned-experiment.sexp` | Nine principals,27 boundaries, three runs, twelve fresh output targets, the typed boundary2/x7 witness and the single wrong quotient. Zero output hashes/sizes and zero exits are explicitly unmeasured placeholders. Collection replaces them with actual metadata. Baseline/repeat AGREE and control DIVERGE are targets to test. |
-| `dependencies.sexp` | Exactly64 flat children from the independently enumerated source/data review, with current file pins. The retained normative input keeps its public ID. The snapshot expected author has the sole `expected-author` role. |
-| `authorities.sexp` | A native declaration of selected reference/property identities, the separate73-input inventory, expected-author route and conservative influence choice. It is checked for exact generated bytes before capture; it is not another authority loader. |
+| `planned-experiment.sexp` | Nine principals, 27 boundaries, three runs, twelve fresh output targets, the typed boundary 2/x7 witness and the single wrong quotient. Zero output hashes/sizes and zero exits are explicitly unmeasured placeholders. Collection replaces them with actual metadata. Baseline/repeat AGREE and control DIVERGE are targets to test. |
+| `dependencies.sexp` | Exactly 64 flat children from the independently enumerated source/data review, with current file pins. The retained normative input keeps its public ID. The snapshot expected author has the sole `expected-author` role. |
+| `authorities.sexp` | A native declaration of selected reference/property identities, the separate 73-input inventory, expected-author route and conservative influence choice. It is checked for exact generated bytes before capture; it is not another authority loader. |
 
 The input review is constructed from the separately selected nine principals and
 64 reviewed children before manifest consumption. Matching a manifest against a
@@ -441,8 +441,8 @@ The prepared image pin must match the public image reconstruction.
 
 Direct producer/authority reviews retain their separate snapshot bounds and
 canonical-tool I/O contracts. Five curated principals are additionally read twice
-through the anchored reader at64KiB each: at most640KiB, outside the later combined
-artifact allowance. Capture also reads at most three64KiB native declarations.
+through the anchored reader at 64 KiB each: at most 640 KiB, outside the later combined
+artifact allowance. Capture also reads at most three 64 KiB native declarations.
 These bounds neither combine all tool I/O into one budget nor promise atomic
 views or total process RAM. The runtime must remain trusted and quiescent.
 
@@ -473,23 +473,23 @@ or oversized declarations refuse before the combined helper can run.
 
 Execution delegates the existing `capture_and_evaluate` with current scope,
 selected candidate, separate input/author/impact reviews and property authority.
-It grants exactly one128MiB combined artifact-read allowance; the evaluator's
+It grants exactly one 128 MiB combined artifact-read allowance; the evaluator's
 16MiB snapshot ceiling stays fixed. The helper exclusively creates the twelve
 observation files and rejects output reuse. Failed/partial historical outputs are
 preserved without retry. The returned measured record and independent findings
 remain pending complete policy; the caller must retain them under the declared
 result names. CLI stdout is a JSON receipt with optional measured S-expression,
-not an automatic result-file publisher. It returns0 for pending,2 for unavailable
-and1 for other terminal findings. Unexpected programming exceptions propagate.
+not an automatic result-file publisher. It returns 0 for pending, 2 for unavailable
+and 1 for other terminal findings. Unexpected programming exceptions propagate.
 
-The package-copy controls use84 tracked runtime/data/principal files, keep the
+The package-copy controls use 84 tracked runtime/data/principal files, keep the
 valid parent checkout available as cwd and have no Git or acquired cache. The
 end-to-end fixture installs its own explicitly synthetic executable, changes its
 owned parent/descriptor pins and imports the copied code fresh. Three fresh
-processes, actual retained authentication, all27 source expectations, exact repeat,
+processes, actual retained authentication, all 27 source expectations, exact repeat,
 wrong quotient and the separate review findings are exercised together. A repeat
 call preserves outputs and refuses. The executable is then removed and the public
-retained evaluator still returns pending. A synthetic exit7 leaves its real
+retained evaluator still returns pending. A synthetic exit 7 leaves its real
 baseline receipt and stops before repeat. None of this is a Sail observation.
 
 Run the complete synthetic controls from the repository root:
@@ -499,7 +499,7 @@ python3 scripts/probe_div_command.py
 python3 -O scripts/probe_div_command.py
 ```
 
-Each mode runs19 tests with zero failures/errors, including actual native-file
+Each mode runs 19 tests with zero failures/errors, including actual native-file
 currentness and process-free retained-capture evaluation. Controls cover missing/changed
 native documents, prepared pins/sizes/links/Git boundaries, selected identity,
 authority drift, raw-schema-before-mapping, immutable facts, output reuse,
@@ -512,10 +512,10 @@ are registered in PROFILE-CONSISTENCY after being measured in both modes.
 ## Retained native predeclarations
 
 P4-SYSTEM.14 a42al retains the exact three documents under
-`evidence/rv64gc-signed-div-truncation-v2/`. Each fits its64KiB bound; the command
+`evidence/rv64gc-signed-div-truncation-v2/`. Each fits its 64 KiB bound; the command
 below derives the current byte sizes from the complete retained payloads. The
-evidence family now has22 files after the [canonical capture](canonical-division.md),
-within its22-file/16MiB envelope. That chapter reports the measured findings.
+evidence family now has 22 files after the [canonical capture](canonical-division.md),
+within its 22-file/16MiB envelope. That chapter reports the measured findings.
 
 Verify the complete current native bytes without a binary or reference process:
 
@@ -545,7 +545,7 @@ The emitted JSON remains transport; these retained documents remain native
 S-expression. Planned output hashes/sizes/exits are unmeasured placeholders and
 AGREE/DIVERGE values remain claims to test.
 
-An87-file runtime copy also verifies the exact published declarations with no
+An 87-file runtime copy also verifies the exact published declarations with no
 Git, acquired cache or executable. Its final collector is explicitly replaced by
 a recording delegate: no reference process runs. Six missing/changed native-file
 variants stop before that delegate. Derived requirement-status or unrelated

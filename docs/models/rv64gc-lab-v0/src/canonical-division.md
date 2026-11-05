@@ -13,7 +13,7 @@ Commit `b160c66e183dee267ebf12edf25066412fe96ff6` contains the reviewed entrypoi
 three exact native predeclarations and prepared inputs. The [capture plan](capture-plan.md)
 explains their separate execution, source, semantic and review identities.
 The preflight checked every selected input against that committed state and
-verified the pinned executable through the public anchored reader. Its3,801,664
+verified the pinned executable through the public anchored reader. Its 3,801,664
 bytes fit the collector's 8 MiB member bound. No reference implementation source
 was inspected.
 

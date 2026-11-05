@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0353 (leaf P4-SYSTEM.14 a43e-c1) — the prose of the books gets its spaces back, and a doctrine keeps them
+
+534 lost spaces in 37 documents (`All114effective`, `its102/114`), measured on a clean copy with every doctrine green, restored by a rewrite of prose alone. `PROSE-SPACING` names each breach by path, line and token; a real name ending in a number is listed in `doctrine/prose_identifiers.txt`. Evidence: `target/p4-system-14/a43e-c1`.
+
 ## SEMULITH-P4-0352 (leaf P4-SYSTEM.14 a43e-2) — the window's last pinned edits: a directive's `{new}` always resolves, and contract v3 lets four requirements say what holds
 
 a43e-2, no credit and no retained case moved. `{new}` is the value a step writes, on both routes; a key with no value is refused by name, and 41 literal placeholders in two records are gone. Contract v3 restates four successors with their requirement's id, so `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-ECALL-EBREAK` and `REQ-GC-PRIV-INSNS` stop stating what a frozen record said; `G-CONTRACT` stays 114 of 114 and `G-OBLIGATIONS` reads 0 not resolved. Rule 7 now skips superseded records. Evidence: `target/p4-system-14/a43e-2`.

@@ -164,6 +164,6 @@ pending matched matched
 refused matched refused
 ```
 
-Both calls authenticate22 declared files once. The first binds producer metadata;
+Both calls authenticate 22 declared files once. The first binds producer metadata;
 the second retains matched source values and the author refusal. These synthetic
 fixtures demonstrate composition only. Their author bytes are never executed.

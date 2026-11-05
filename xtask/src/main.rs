@@ -51,6 +51,8 @@
 //! - `cargo xtask check-book-index [--self-test]` is the `BOOK-INDEX` doctrine's driver (`XTASK.6` slice `6t`,
 //!   `check_book_index.rs`): the committed book index judged against a regeneration by `scripts/gen_book_index.py`,
 //!   spawned as the driver spawned it; `scripts/check_book_index.sh` is its shim.
+//! - `cargo xtask check-prose-spacing [--self-test]` is the `PROSE-SPACING` doctrine's driver (`P4-SYSTEM.14` a43e-c1,
+//!   `check_prose_spacing.rs`); `scripts/check_prose_spacing.sh` is its shim.
 //! - `cargo xtask check-board-verdict [--self-test]` is the `BOARD-VERDICT` doctrine's driver (`XTASK.6` slice `6u`,
 //!   `check_board_verdict.rs`): every tracked board's composition decided by `scripts/board_verdict.py`, spawned as the
 //!   driver spawned it; `scripts/check_board_verdict.sh` is its shim.
@@ -176,6 +178,7 @@ mod check_m_vectors;
 mod check_materials_bill;
 mod check_platform_gen;
 mod check_profile_consistency;
+mod check_prose_spacing;
 mod check_push_record;
 mod check_readme_routes;
 mod check_registry_mirror;
@@ -275,6 +278,7 @@ const NATIVE: &[&str] = &[
     "check-citation-quotes",
     "check-m-vectors",
     "check-book-index",
+    "check-prose-spacing",
     "check-board-verdict",
     "check-board-gen",
     "check-platform-gen",
@@ -349,6 +353,7 @@ const PORTED: &[(&str, &str)] = &[
     ("check-board-gen", "scripts/check_board_gen.sh"),
     ("check-board-verdict", "scripts/check_board_verdict.sh"),
     ("check-book-index", "scripts/check_book_index.sh"),
+    ("check-prose-spacing", "scripts/check_prose_spacing.sh"),
     ("check-m-vectors", "scripts/check_m_vectors.sh"),
     ("build-bench", "scripts/build_bench.sh"),
     ("check-wasm-build", "scripts/check_wasm_build.sh"),
@@ -405,6 +410,7 @@ fn main() -> ExitCode {
             "check-citation-quotes" => check_citation_quotes::run(&root, &args[1..]),
             "check-m-vectors" => check_m_vectors::run(&root, &args[1..]),
             "check-book-index" => check_book_index::run(&root, &args[1..]),
+            "check-prose-spacing" => check_prose_spacing::run(&root, &args[1..]),
             "check-board-verdict" => check_board_verdict::run(&root, &args[1..]),
             "check-board-gen" => check_board_gen::run(&root, &args[1..]),
             "check-platform-gen" => check_platform_gen::run(&root, &args[1..]),

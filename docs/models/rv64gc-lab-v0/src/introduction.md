@@ -7,10 +7,10 @@ materials census; it does not authorize a processor release or Linux boot claim.
 
 The canonical selection is `profiles/rv64gc-lab-v0/profile.sexp`: RV64I with
 M/A/F/D/C, Zicsr, Zicntr, Zifencei, privileged Sstc and Svade; M/S/U; one hart;
-little-endian; Sv39; IALIGN16/ILEN32. G alone does not select counters, a supervisor
+little-endian; Sv39; IALIGN 16/ILEN 32. G alone does not select counters, a supervisor
 timer, translation or firmware. The individual source chapters and profile
 closure select them. H, PMP, V, Zihpm, Sv48/Sv57 and hardware A/D updates are
-excluded. LP64D and SBI2.0 are declared software/firmware contracts, not services
+excluded. LP64D and SBI 2.0 are declared software/firmware contracts, not services
 silently supplied by the host.
 
 Three questions must be answered separately:

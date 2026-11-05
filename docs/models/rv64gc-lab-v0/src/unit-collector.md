@@ -31,10 +31,10 @@ against concurrent hostile namespace mutation or escaping daemons.
 
 The one-process APIs now accept `max_read_bytes` and report immutable
 `charged_read_bytes` counters. Limits are plain integers, inclusive, from zero
-to128 MiB; Boolean/negative/oversized values refuse before I/O. `capture_run`
-defaults to its existing128 MiB allowance. For compatibility,
-`capture_run_with_receipt` defaults to `None`, retaining the original128 MiB
-process allowance plus at most8,716,288 publication-read bytes. An explicit
+to 128 MiB; Boolean/negative/oversized values refuse before I/O. `capture_run`
+defaults to its existing 128 MiB allowance. For compatibility,
+`capture_run_with_receipt` defaults to `None`, retaining the original 128 MiB
+process allowance plus at most 8,716,288 publication-read bytes. An explicit
 integer instead shares that allowance across collection and publication.
 Existing positional result fields remain first; the counter is appended with
 a default of zero.
@@ -52,7 +52,7 @@ the entire delegated allowance and refuse. The unit's counter is therefore a
 conservative bound on artifact reads, including executable/input pin checks,
 output observations, receipt reads and publication rechecks. Schema/tool/runtime
 I/O and process RAM are separate from this artifact-read budget. Collection
-retains no trace/expectation payloads; the16 MiB retained-snapshot budget belongs
+retains no trace/expectation payloads; the 16 MiB retained-snapshot budget belongs
 to subsequent evaluation. A combined pipeline must carry this charge forward
 rather than reset its allowance for that evaluation. The evaluator now accepts
 that [remaining allowance](read-allowance.md). The public

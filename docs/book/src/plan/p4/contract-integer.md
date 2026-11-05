@@ -135,7 +135,7 @@ registers the shift pair after source-width repair and its independent controls.
 
 At c17b, both bound-shiftw programs append SRAW x16,x8,x10 at address
 0x800000dc, after all 55 original instructions. Its literal word is 0x40a4583b.
-The existing x8=0xffffffff80000001 and x10=96 make rs2[4:0]=0: low32 remains
+The existing x8=0xffffffff80000001 and x10=96 make rs2[4:0]=0: low 32 remains
 0x80000001, sign-extended to x16=0xffffffff80000001. That expected value was
 recorded before either engine ran.
 
@@ -202,7 +202,7 @@ rules. New sraw-width and sraiw-width controls were observed RED with their name
 arithmetic-word reasons before registration.
 
 The completed source-width program has 60 boundaries: 60 base word requests
-or120 GC parcels. Pinned Sail matches its declared rows/change observations
+or 120 GC parcels. Pinned Sail matches its declared rows/change observations
 and repeats identically; the base live smoke compares both Sail and Spike.
 These finite observations close the source-width evidence gaps without
 changing production rules; the standing reference/platform limits apply.
@@ -286,7 +286,7 @@ sign-extends bit 31 to 64 bits. Overflow is ignored. For example:
 | ADDIW on x10=0xdeadb7ef7fffffff, immediate 1 (bound-arith 17) | x12=0xffffffff80000000 | Zero-extension gives 0x0000000080000000; saturation gives 0x000000007fffffff |
 | ADDW on the same low-word overflow (bound-arith 19) | x14=0xffffffff80000000 | Signed saturation clamps to 0x7fffffff |
 | SUBW at signed INT32_MIN minus 1620 (scope-alu 24) | x23=0x000000007ffff9ac | Signed saturation instead gives 0xffffffff80000000 |
-| SRLIW by zero on low32 0x80000001 (bound-shiftw 34) | x20=0xffffffff80000001 | Word result still needs sign extension, even for a logical shift by zero |
+| SRLIW by zero on low 32 0x80000001 (bound-shiftw 34) | x20=0xffffffff80000001 | Word result still needs sign extension, even for a logical shift by zero |
 | SRAW/SRAIW on zero-extended 0x80000001 by one (bound-shiftw 58/59) | 0xffffffffc0000000 | A full-width source read gives 0x40000000 |
 
 Sixteen isolated author copies fail named observations before credit. Nine
@@ -315,7 +315,7 @@ Shared result finishes keep every other mnemonic's expression unchanged.
 
 The right-shift source width matters because upper bits can enter the retained
 word or change arithmetic fill. For addition/subtraction and left shift, reading
-upper bits before an otherwise correct final low32 truncation is observationally
+upper bits before an otherwise correct final low 32 truncation is observationally
 equivalent: those operations' low 32 result bits depend only on the low input
 bits. Such equivalent rewrites are not classified as faulty countermodels.
 

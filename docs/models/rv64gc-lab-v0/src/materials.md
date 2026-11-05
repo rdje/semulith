@@ -2,9 +2,9 @@
 
 The unit pins the RISC-V Ratified Specifications Library revision named in the
 ledger, not an interchangeable GitHub PDF or a newer live page. The HTML locators
-refer to that publication's numbering. Cached PDF pins use HTTP0 as an explicit
+refer to that publication's numbering. Cached PDF pins use HTTP 0 as an explicit
 cache-artifact declaration; it does not mean a successful web acquisition. At
-registration all24 source artifacts were authenticated against their unchanged
+registration all 24 source artifacts were authenticated against their unchanged
 hashes and byte lengths through the public cache routes. Acquisition grants no
 reuse terms, independence or conformance credit; release-time terms recording
 remains an owned dossier question. One licensed DIV statement has a scoped
@@ -32,7 +32,7 @@ The base register, instruction, control-flow and memory rules underlie the RV64 
 
 ### RVI-RV64I
 
-XLEN64, W operations, wider shifts and LD/SD/LWU supply the RV64 deltas.
+XLEN 64, W operations, wider shifts and LD/SD/LWU supply the RV64 deltas.
 
 **Does not supply:** the inherited base rules by itself, or any M/A/F/D/C extension.
 
@@ -68,7 +68,7 @@ Single-precision operations, flags, rounding and FP CSR dependencies specify tar
 
 ### RVI-D
 
-Double-precision operations, FLEN64 and NaN boxing extend F with explicit dependencies.
+Double-precision operations, FLEN 64 and NaN boxing extend F with explicit dependencies.
 
 **Does not supply:** a native-host float fallback or universal acceptance from a few matching values.
 
@@ -152,7 +152,7 @@ The ratified psABI defines LP64D calling conventions and ABI_FLEN64.
 
 ### RVI-SBI
 
-The ratified SBI2.0 specification defines the intended M-mode firmware interface.
+The ratified SBI 2.0 specification defines the intended M-mode firmware interface.
 
 **Does not supply:** implemented firmware, a board memory map, kernel compatibility or a host-modeled replacement service.
 

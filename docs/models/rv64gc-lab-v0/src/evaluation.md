@@ -41,8 +41,8 @@ analysis.
 3. Bind the authenticated manifest to frozen relations and optional inventory/
    impact reviews before file-set reads. The shared reader authenticates the whole
    declared set, counting the seed once. [Limits](read-allowance.md)
-   default to128 MiB, with16 MiB snapshots, role caps and terminal failures.
-   Source/image retention uses seventeen snapshots plus64 KiB unused rebuild room
+   default to 128 MiB, with 16 MiB snapshots, role caps and terminal failures.
+   Source/image retention uses seventeen snapshots plus 64 KiB unused rebuild room
    within that ceiling; the public default retains fifteen.
 4. Consume the exact retained identity and receipt bytes through the public
    [frozen byte consumers](byte-bindings.md). Bind each receipt's run/argv/exit,
@@ -398,7 +398,7 @@ supply no CPU acceptance, complete dependency adequacy or method qualification.
 constructs one first-method GC ELF from supplied immutable UTF-8 source bytes.
 The program is an exact label, not a path to reopen. The known canonical route
 is `profiles/rv64gc-lab-v0/encoding.sexp`; it must be an existing regular file
-without symlink aliases and declare IALIGN16. Directory/table discovery is refused.
+without symlink aliases and declare IALIGN 16. Directory/table discovery is refused.
 The assembler still supports labels, raw `.word`/`.half`, compressed instructions,
 FP and CSR forms. Canonical construction reads current project tool data.
 
@@ -526,7 +526,7 @@ are fixed bounded strings and never echo source text. Unexpected programming
 failures propagate rather than becoming successful findings.
 
 Run the complete example from the repository root. Its fixtures exist only in
-memory. Flipping byte120 changes unloaded file padding while preserving every
+memory. Flipping byte 120 changes unloaded file padding while preserving every
 loaded instruction, so it must still refuse:
 
 ```bash
@@ -559,7 +559,7 @@ It prints `matched 28 4320`, then
 both Python modes. The payload-only omission loses nine assertions, explicitly
 showing why whole-container equality matters. All 167 GC source/image pairs
 match; the complete 216 repaired RV64I/GC images remain byte-identical.
-Existing builder33/seventeen and ELF15/eight controls remain intact. None of
+Existing builder 33/ seventeen and ELF 15/ eight controls remain intact. None of
 these fixtures creates a canonical capture or advances CPU acceptance.
 
 ## Explicit expectation entry
