@@ -124,7 +124,7 @@ step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}
 
 The record names the case's guest (`41f2cbc2…`), the case's configuration (`05746ed6…`) and the same alternative as CSR-SET's (`666d9373…`, the profile override), and the raw trace (27,617 B, `896814f3…`). The two traces are the same up to line 13, step 6, where the case's reads `x5 <- 0x0000000000000006` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr at all, so the first counter read in the program traps.
 
-`REQ-D-SSTC` is the last on this route, and its design changes what `sstc.s` could say (a43d-1, before a case could carry its own configuration): delivery was named out, because the override had no timer source. The program a43d-2 drafted, 192 instructions and 315 steps, reads:
+`REQ-D-SSTC` is the last on this route, and its design changes what `sstc.s` could say (a43d-1, before a case could carry its own configuration): delivery was named out, because the override had no timer source. Its program, `guests/sstc-timer.s` (a43d-3), 192 instructions and 315 steps, reads:
 
 | Section | What it witnesses | Example |
 | --- | --- | --- |
@@ -137,8 +137,10 @@ The record names the case's guest (`41f2cbc2…`), the case's configuration (`05
 | Scheduled | S reads `time`, adds 8, writes `stimecmp` | the interrupt lands after 5 of 12 counted instructions |
 | Acknowledged | writing a compare above `time` clears it, with no M-mode action | `sip` reads 0 in the handler |
 
-It agrees with the reference on the same configuration as CSR-SET's and ZICNTR's, and under the profile override it first differs at `rdtime x5`. **What the exact boundary means.** The manual guarantees a changed comparison reaches STIP "eventually, but not necessarily immediately",
+All three producers agree on it: the spec-side author, the lab engine, and the reference on the same configuration as CSR-SET's and ZICNTR's; under the profile override the reference first differs at `rdtime x5`. **What the exact boundary means.** The manual guarantees a changed comparison reaches STIP "eventually, but not necessarily immediately",
 so the scheduled row's boundary is what both producers do on this configuration, not a claim about latency, and the case's limitations will say so. An explicit write to a CSR the conditions depend on is different: they "must also be evaluated immediately following" it, so the delivery right after writing `sstatus.SIE` is normative.
+
+**Its case waits for a decision.** A delivered interrupt is a boundary with no instruction word, and the case format has no way to say so: a `step` needs an integer `word` and `length`, and the comparison refuses, "unfetched boundaries need typed event binding". Those tools are pinned by all four credited cases, so adding the binding lapses every credit until each is re-captured: a window, raised to the director with its options and costs in `decision_sstc-delivery-needs-the-pinned-window.md`. Until then the program runs in the corpus and binds nothing.
 
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value

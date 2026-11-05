@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0347 (leaf P4-SYSTEM.14 a43d-3) — the SSTC program in the corpus, all three producers agreeing, and its case raised to the director
+
+a43d-3: `sstc-timer.s` enters the corpus, 192 instructions, 315 steps: the author, the lab engine and the reference on the case's configuration all agree. Its case cannot be written: a delivered interrupt is a boundary with no instruction word, and the pinned case tools refuse it by design ("unfetched boundaries need typed event binding"). Adding the binding lapses all four credits, so `decision_sstc-delivery-needs-the-pinned-window.md` raises it with options and a recommendation. No pinned path moved; the four credits stay current.
+
 ## SEMULITH-P4-0346 (leaf P4-SYSTEM.14 a43d-2) — the SSTC case designed, delivery no longer named out, and its normative statements retained
 
 a43d-2: on the case's own configuration the reference has a timer source, so delivery, a scheduled delivery and five suppressions are in. A draft of 192 instructions and 315 steps reads `AGREE 315 declared steps`, and `DIVERGE step 8 (rdtime x5)` under the profile override. An exact delivery boundary is what both producers do here, not a latency claim. `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` retained; the tool selects a whole paragraph by its anchor or its opening words, its older excerpts byte-identical. A control caught a lost guard omission in the first draft.

@@ -149,6 +149,7 @@ xlen-forms
 csr-set
 zicntr
 sstc
+sstc-timer
 
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
