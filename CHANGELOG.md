@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0349 (leaf P4-SYSTEM.14 a43e-0) — the pinned window proved on a throwaway clone: SSTC reaches 10 of 10 legs, and the open decision carries the numbers
+
+a43e-0: 15 changed lines add the typed event binding; `contract_measure` moves out, leaving 67 manifest children and no report or book generator; SSTC then captures and reads `DIV-POLICY: satisfied — 10 of 10 legs satisfied`, while `credit_records` reads all four credits lapsed, as predicted. No real evidence moved. The first run read 9 of 10, and `sstc-timer.s` now cites the requirement's own source at the control's witness. The pick stays the director's.
+
 ## SEMULITH-P4-0348 (leaf P4-SYSTEM.14 a43b-c1) — 285 guest citations re-pointed at sections the pinned pages have, and a check so they stay there
 
 a43b-c1: logged as 37; `check_citations.py --corpus`, extended to read both halves of a guest, fired RED on 285 of 9,437 citations in 54 files, an older manual's numbering. A reviewed mapping, one rule per stale pair, re-points them: 0 findings. SEMANTICS runs it on every commit from here, with five new self-test arms. It proves a section exists, not what it says. The 42 owned records re-derive byte-identically; nothing a case pins moved.

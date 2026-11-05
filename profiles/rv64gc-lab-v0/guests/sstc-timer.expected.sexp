@@ -352,7 +352,7 @@
   (step (n 171) (insn "addi x11, x0, -1") (writes (write (reg "x11") (value "0xffffffffffffffff")))
     (derivation "a sentinel the read must replace.") (source "RVI-RV32I §1.1.4"))
   (step (n 172) (insn "csrrs x11, sip, x0") (writes (write (reg "x11") (value "0x0000000000000000")))
-    (derivation "time below stimecmp, treated as unsigned: nothing is pending, and -1 is not read as a past time.") (source "RVP-SUPERVISOR §11.1.1.12 (boundary: not pending below the compare)"))
+    (derivation "time below stimecmp, treated as unsigned: nothing is pending, and -1 is not read as a past time.") (source "RVP-SSTC §12.1; RVP-SUPERVISOR §11.1.1.12 (boundary: not pending below the compare)"))
   (step (n 173) (insn "csrrw x0, stimecmp, x0") (writes)
     (derivation "a compare of 0: time has reached it.") (source "RVP-SUPERVISOR §11.1.1.12"))
   (step (n 174) (insn "addi x12, x0, -1") (writes (write (reg "x12") (value "0xffffffffffffffff")))

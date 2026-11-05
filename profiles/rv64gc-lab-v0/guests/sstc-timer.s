@@ -92,7 +92,7 @@ mret                         #: drop to S at mepc. | RVP-MACHINE §2.1.3.2
 addi x6, x0, -1              #: the largest compare value. | RVI-RV32I §1.1.4
 csrrw x0, stimecmp, x6       #: time has not reached it. | RVP-SUPERVISOR §11.1.1.12
 addi x11, x0, -1             #: a sentinel the read must replace. | RVI-RV32I §1.1.4
-csrrs x11, sip, x0           #: time below stimecmp, treated as unsigned: nothing is pending, and -1 is not read as a past time. | RVP-SUPERVISOR §11.1.1.12 (boundary: not pending below the compare)
+csrrs x11, sip, x0           #: time below stimecmp, treated as unsigned: nothing is pending, and -1 is not read as a past time. | RVP-SSTC §12.1; RVP-SUPERVISOR §11.1.1.12 (boundary: not pending below the compare)
 csrrw x0, stimecmp, x0       #: a compare of 0: time has reached it. | RVP-SUPERVISOR §11.1.1.12
 addi x12, x0, -1             #: a sentinel the read must replace. | RVI-RV32I §1.1.4
 csrrs x12, sip, x0           #: time at or above stimecmp: STIP reads set, without any M-mode action. | RVP-SUPERVISOR §11.1.1.12 (boundary: pending at the compare)
