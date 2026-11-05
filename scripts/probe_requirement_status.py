@@ -318,14 +318,18 @@ class StatusTests(unittest.TestCase):
         x = next(r for r in gc["rows"] if r["id"] == "REQ-D-XLEN")
         self.assertEqual((x["recorded"], x["derived"], x["why"], x["uncredited"]),
                          ("implemented", "implemented", "every obligation credited (1)", ["rv64gc-xlen-forms-v1:pending"]))
-        # The CSR-SET case binds REQ-D-CSR-SET alone, credited by CR-D-CSR-SET-1 (a43b-3h); its dependencies stay planned: the
-        # derivation reads obligations, and the capture plan orders it before ZICNTR and SSTC.
+        # The CSR-SET case binds REQ-D-CSR-SET alone, credited by CR-D-CSR-SET-1 (a43b-3h), while REQ-D-PRIV-MODES and REQ-D-SSTC,
+        # its dependencies, stay planned: the derivation reads obligations, and the capture plan orders it before ZICNTR and SSTC.
         c = next(r for r in gc["rows"] if r["id"] == "REQ-D-CSR-SET")
         self.assertEqual((c["recorded"], c["derived"], c["why"], c["uncredited"]),
                          ("implemented", "implemented", "every obligation credited (1)", []))
-        self.assertEqual(gc["derived"], {"planned": 45, "partial": 0, "implemented": 3, "not-applicable": 0})
+        # So the ZICNTR case binds REQ-D-ZICNTR alone, credited by CR-D-ZICNTR-1 (a43c-5); REQ-D-PRIV-MODES stays planned too.
+        z = next(r for r in gc["rows"] if r["id"] == "REQ-D-ZICNTR")
+        self.assertEqual((z["recorded"], z["derived"], z["why"], z["uncredited"]),
+                         ("implemented", "implemented", "every obligation credited (1)", []))
+        self.assertEqual(gc["derived"], {"planned": 44, "partial": 0, "implemented": 4, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (8, 3, 0, 3, 3))  # the ZICNTR case captured (a43c-4): its receipt's qualification is false, pending, crediting nothing
+                         (8, 4, 0, 4, 4))  # the ZICNTR case credited (a43c-5)
 
 
 def main():

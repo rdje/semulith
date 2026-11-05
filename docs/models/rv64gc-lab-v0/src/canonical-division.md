@@ -270,4 +270,4 @@ quiet host, from its declaration commit `86a35987`, in 1.4 s:
 The control is the case's failure mode: S's `rdcycle` at boundary 102, refused while `mcounteren.CY` is clear, leaves `x20` at its sentinel, and
 boundary 109 copies it to `x21`. Expecting 102 is what a refused read that had committed the count would look like, and it must diverge. All three traces
 are byte-identical (26,277 B, `cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with qualification
-false, so the case is `pending`: the reviews read it next (a43c-5), and nothing is credited until a record names it.
+false. Since a43c-5 the reviews read it, `satisfied` over 88 authenticated files, all ten legs, and `CR-D-ZICNTR-1` credits it.

@@ -62,6 +62,10 @@ RETAINED_CAPTURES = {
     "rv64gc-csr-set-v1": RetainedCapture(
         "02835e0f357108cc12a139a1cd92687820279386", "a6f7d8fdfa1e863e21171bf97d2766b6ba0d2310",
         "a0de4f8c848085eee2534fb7cdaf8a610420ed9866f0cbb7a9e470de38d84ce2", 27346),
+    # The ZICNTR case, on the same configuration byte for byte: declared in 86a35987, captured once in e5814f18 (a43c-3, a43c-4).
+    "rv64gc-zicntr-v1": RetainedCapture(
+        "86a3598741d8b0f0bfda593a24ed7919fa7ac826", "e5814f187a28360d1ad8b2df31785444b5701ed1",
+        "723c296705e3aa140c3e4bf13cd22e30e85aa0deef741e3c8aaec7dd212c5b43", 24162),
 }
 
 

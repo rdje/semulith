@@ -120,10 +120,32 @@ $ python3 -B scripts/review_div_policy.py --every-retained
 rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3
 rv64gc-xlen-forms-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-2
 rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-1
+rv64gc-zicntr-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-1
 ```
 
 Measured at a43b-3g with `no qualification credit`; the record `CR-D-CSR-SET-1` credits it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
+
+`rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the
+first to name the counter rule, "Counters, interrupts, wait and progress checks record scheduled time/events, delivery boundaries and
+suppression cases. Host timing is not guest time.":
+
+| Leg | Measured on `rv64gc-zicntr-v1` |
+| --- | --- |
+| source-located-expectations | satisfied: 292 of 292 steps carry a derivation and a source; witness step 109 cites `REQ-D-ZICNTR`'s source; the expected producer reads only its own inputs |
+| boundary-fixtures | satisfied: 26 `(boundary: …)` rows from step 22 to step 291, all predeclared |
+| matched-reference-comparison | satisfied: method satisfied (88 authenticated files), baseline AGREE under `sail-gpr-change-v1`, the selection recorded, the effect observed at step 6 |
+| repeated-execution | satisfied: repeat AGREE |
+| discriminating-control | satisfied: control DIVERGE at step 109, register x21 (21 observed, 102 in the control's expectation) |
+| record-linkage | satisfied: `REQ-D-ZICNTR`, `OB-ZICNTR`, collector, expected producer, three limitations |
+| currentness | satisfied: the policy pinned and unchanged; the method binding matched |
+| risk-method | satisfied: high risk, second method `independent-exact-expectation` by `expected` and `reference` on the guest source and the manifest; ancestry recorded, no independence credit; the 13 rd-kept properties executed |
+| feature-rules | satisfied by declaration: the counter rule and the privilege and CSR rule apply, and the disposition names the properties that cover them; the probe checks that each of its 26 names is one this case declares |
+| form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 44 predeclared witnesses stand for it |
+
+The disposition reads the counter rule's three parts honestly. The schedule is the step boundary itself, a guest count and never host time, and each value is
+recorded at its declared boundary. The suppression is the trap that retires nothing. Nothing is delivered, because no interrupt or wait is scheduled, so timer
+delivery stays with `REQ-D-SSTC` and rates with the environment contract.
 
 ## What a satisfied measurement is, and is not
 

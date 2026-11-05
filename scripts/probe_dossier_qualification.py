@@ -125,14 +125,15 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """The live catalogue credits v5 (CR-GC-M-3), xlen-v2 (CR-D-XLEN-2) and the CSR-SET case (CR-D-CSR-SET-1, P4-SYSTEM.14
-        a43b-3h): their measured records qualify on the real tree; v4's, xlen-v1's and v3's, which no live record names, do
-        not. The CSR-SET case's record qualifies and is not copied into the dossier, which holds the other two: the copy
-        would take references.sexp above its per-part ceiling, and the next pinned window retires them all (decision_dossier-copies-retire-at-the-next-window.md)."""
+        """The live catalogue credits v5 (CR-GC-M-3), xlen-v2 (CR-D-XLEN-2), the CSR-SET case (CR-D-CSR-SET-1, P4-SYSTEM.14
+        a43b-3h) and the ZICNTR case (CR-D-ZICNTR-1, a43c-5): their measured records qualify on the real tree; v4's, xlen-v1's
+        and v3's, which no live record names, do not. The last two records qualify and are not copied into the dossier, which
+        holds the other two: a copy would take references.sexp above its per-part ceiling, and the director ruled that no new
+        copy lands before the next pinned window (decision_dossier-copies-retire-at-the-next-window.md)."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
-        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1"):
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1", "rv64gc-zicntr-v1"):
             self.assertEqual(self.qualification(measured(case), ROOT), [], case)
         references = next(f for f in S.read_file(ROOT / "profiles" / UNIT / "references.sexp")
                           if isinstance(f, list) and f and str(f[0]) == "references")

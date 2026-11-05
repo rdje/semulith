@@ -154,6 +154,7 @@
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-d-csr-set-credited-implemented.md`](docs/decisions/decision_req-d-csr-set-credited-implemented.md)
 - [`decision_req-d-xlen-credited-implemented.md`](docs/decisions/decision_req-d-xlen-credited-implemented.md)
+- [`decision_req-d-zicntr-credited-implemented.md`](docs/decisions/decision_req-d-zicntr-credited-implemented.md)
 - [`decision_req-gc-m-credited-implemented.md`](docs/decisions/decision_req-gc-m-credited-implemented.md)
 - [`decision_reviews-read-every-retained-case.md`](docs/decisions/decision_reviews-read-every-retained-case.md)
 - [`decision_rust-native-tooling.md`](docs/decisions/decision_rust-native-tooling.md)

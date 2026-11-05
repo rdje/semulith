@@ -73,8 +73,8 @@ prepare it; the review then reads the capture's own dependency manifest through 
 measured record's pin and re-checks the pins of the declaration's route (the case
 file, then its schema): the first that moved makes the method `stale`, naming it —
 v4 and xlen-v1 read `stale: schema/matched-case.sexp: SHA256 differs` from 2026-11-02
-until their re-captures took the rows (a43b-2e: the rows now name v5 and xlen-v2, and since a43b-3g the
-CSR-SET case, each `satisfied` over 88 authenticated files) — and a refusal with nothing moved stays `refused`. A later checker-source
+until their re-captures took the rows (a43b-2e: the rows now name v5 and xlen-v2, since a43b-3g the
+CSR-SET case and since a43c-5 the ZICNTR case, each `satisfied` over 88 authenticated files) — and a refusal with nothing moved stays `refused`. A later checker-source
 change refuses the method result while preserving earlier computed record,
 binding and evaluation findings. No result silently becomes policy credit.
 
@@ -134,7 +134,7 @@ PY_METHOD
 
 The output is `satisfied pending not-checked | valid matched pending | 88 1098379 40438 |
 1165123 134217728 39` for v4, the same with `88 1092798 35100 | 1155615` for the XLEN case, and
-`88 1228197 141763 | 1315764` for the CSR-SET case, whose 157 steps make the larger snapshot.
+`88 1228197 141763 | 1315764` for the CSR-SET case and `88 1303183 207186 | 1384386` for the ZICNTR case, whose 157 and 292 steps make the larger snapshots.
 
 ```bash
 python3 -B scripts/review_div_method.py

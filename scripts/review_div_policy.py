@@ -100,6 +100,16 @@ FEATURE_DISPOSITIONS = {
                   "s-refused-rd-kept, u-refused-rd-kept). The counter and floating-point rules stay with their own requirements: "
                   "each counter and fflags, frm and fcsr are witnessed as members of the set, not their scheduling or numerics "
                   "(REQ-D-ZICNTR; the F and D cases) (P4-SYSTEM.14 a43b-3g, 2026-11-04)",
+    "OB-ZICNTR": "the counter rule and the privilege and CSR rule apply, and the case's properties cover them. The counter rule: the schedule "
+                 "is the step boundary itself, a guest count and never host time, and each value is recorded at its declared boundary (m-reads-cycle, "
+                 "m-reads-time, m-reads-instret, m-reads-mcycle, m-reads-minstret, instret-progress, cycle-progress); the suppression "
+                 "is the trap that retires nothing (trap-retires-nothing); nothing is delivered, since no interrupt or wait is scheduled, "
+                 "so timer delivery stays REQ-D-SSTC's and rates the environment contract's. The privilege and CSR rule: legal and refused "
+                 "modes (s-cy-reads-cycle, s-reads-time, s-reads-instret, u-reads-cycle, u-reads-time, u-reads-instret; s-closed-cycle-cause, "
+                 "s-closed-time-cause, s-closed-instret-cause, u-closed-cycle-cause, u-m-closed-instret-cause, ro-csrrw-cause), aliases "
+                 "(alias-mcycle-cycle, alias-minstret-instret) and preserved state read back after every refusal, so a refused read or write "
+                 "commits no rd (s-closed-cycle-rd-kept, u-closed-cycle-rd-kept, u-m-closed-instret-rd-kept, ro-csrrw-rd-kept) "
+                 "(P4-SYSTEM.14 a43c-5, 2026-11-05)",
 }
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",

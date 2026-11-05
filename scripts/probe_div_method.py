@@ -391,7 +391,8 @@ class MethodTests(unittest.TestCase):
         expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
         authenticated = {"rv64gc-m-forms-v5": (88, 1103074, 40438),  # a43b-2d (v4's was 88, 1,098,379)
                          "rv64gc-xlen-forms-v2": (88, 1097514, 35100),  # a43b-2d (xlen-v1's was 88, 1,092,798)
-                         "rv64gc-csr-set-v1": (88, 1228197, 141763)}  # a43b-3f: 157 steps against 33 and 25
+                         "rv64gc-csr-set-v1": (88, 1228197, 141763),  # a43b-3f: 157 steps against 33 and 25
+                         "rv64gc-zicntr-v1": (88, 1303183, 207186)}  # a43c-4: 292 steps
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

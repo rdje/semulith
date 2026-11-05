@@ -11,10 +11,10 @@
 | Axis | Required (§7) | Measured state | Verdict |
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
-| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 2 of 4 `state` requirements implemented | **incomplete** |
+| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 3 of 4 `state` requirements implemented | **incomplete** |
 | `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` frozen | **green** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 1 of 1 required kinds evidenced | **green** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 3 `implemented`, 45 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 4 `implemented`, 44 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
@@ -28,8 +28,8 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-STATE` | `P4-SYSTEM.14` | Two of the four state requirements are implemented, derived from evidence: REQ-D-XLEN through CR-D-XLEN-2 and REQ-D-CSR-SET through CR-D-CSR-SET-1 (P4-SYSTEM.14 a43b-3h), each on one finite case. REQ-D-ZICNTR and REQ-D-SSTC wait for their cases, on a case's own reference configuration (decision_reference-config-per-case.md). |
-| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one (REQ-GC-M, REQ-D-XLEN, REQ-D-CSR-SET). EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
+| `G-STATE` | `P4-SYSTEM.14` | Three of the four state requirements are implemented, derived from evidence: REQ-D-XLEN through CR-D-XLEN-2, REQ-D-CSR-SET through CR-D-CSR-SET-1 (P4-SYSTEM.14 a43b-3h) and REQ-D-ZICNTR through CR-D-ZICNTR-1 (a43c-5), each on one finite case. REQ-D-SSTC waits for its case, on a case's own reference configuration (decision_reference-config-per-case.md). |
+| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one (REQ-GC-M, REQ-D-XLEN, REQ-D-CSR-SET, REQ-D-ZICNTR). EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation; REQ-D-ECALL-EBREAK remains partial on OQ-5. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -63,7 +63,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 6989f365baacf7e03a7cef33eb2ffe7a806a92df149c2f2b3154e6a0b32fcf82`
+  `sha256 c19a4113b9b734d2cac7a1bcef8aba34c58122e9ad24686cd934709dbe847746`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

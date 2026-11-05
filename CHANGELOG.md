@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0345 (leaf P4-SYSTEM.14 a43c-5) — the reviews read the ZICNTR case and `REQ-D-ZICNTR` is credited `implemented`: G-STATE 3 of 4
+
+a43c-5: `rv64gc-zicntr-v1` reads `satisfied`, 10 of 10 legs, and the review needed no change. `FEATURE_DISPOSITIONS["OB-ZICNTR"]` is the first to name the counter rule. `CR-D-ZICNTR-1`, `authority review`, on one finite case of 44 witnesses: 44 planned, 4 implemented, 4 of 4 records current, 0 drift. Its limitations name what it does not claim: a write through `mcycle` or `minstret`, Zihpm's absence, rates, a CLINT, timer delivery. No dossier copy, by the director's ruling. The five closed CSR-SET records moved to archive part 27.
+
 ## SEMULITH-P4-0344 (leaf P4-SYSTEM.14 a43c-4) — the ZICNTR case captured exactly once, and its configuration's effect retained
 
 a43c-4: `rv64gc-zicntr-v1` ran once on a quiet host behind its guards: 292 steps, baseline and repeat AGREE, the control DIVERGE at its declared step 109 (x21 21 against the wrong 102), complete, qualification false, three traces byte-identical, 14 files retained; the family holds all 177; the case `pending`, the three credits current. `scripts/measure_config_effect.py` ran once under the profile override and retained the raw trace and the record: step 6, `rdcycle x5` traps there. The probe's retained-record test now judges every retained effect.
