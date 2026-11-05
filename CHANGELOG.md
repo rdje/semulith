@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0354 (leaf P4-SYSTEM.14) — PNT paused at a handoff-ready checkpoint, on the director's word
+
+`MEMORY.md` records the pause and the next action, a43e-3. The pinned window stays open meanwhile: no credit is current until a43e-5.
+
 ## SEMULITH-P4-0353 (leaf P4-SYSTEM.14 a43e-c1) — the prose of the books gets its spaces back, and a doctrine keeps them
 
 534 lost spaces in 37 documents (`All114effective`, `its102/114`), measured on a clean copy with every doctrine green, restored by a rewrite of prose alone. `PROSE-SPACING` names each breach by path, line and token; a real name ending in a number is listed in `doctrine/prose_identifiers.txt`. Evidence: `target/p4-system-14/a43e-c1`.
