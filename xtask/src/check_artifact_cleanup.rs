@@ -14,7 +14,7 @@ use std::process::{Command, ExitCode, Stdio};
 use crate::harness::combined;
 
 /// The instruments and controls the doctrine requires tracked, in the script's order.
-const TRACKED: [&str; 18] = [
+const TRACKED: [&str; 20] = [
     "scripts/artifact_cleanup.py",
     "scripts/probe_artifact_cleanup.py",
     "scripts/probe_legacy_artifact_cleanup.py",
@@ -31,6 +31,8 @@ const TRACKED: [&str; 18] = [
     "scripts/probe_artifact_cleanup_guarded.py",
     "scripts/artifact_cleanup_operator.py",
     "scripts/probe_artifact_cleanup_operator.py",
+    "scripts/artifact_cleanup_orphans.py",
+    "scripts/probe_artifact_cleanup_orphans.py",
     "scripts/probe_c_engine.py",
     "scripts/probe_c_guest_image.py",
 ];
@@ -300,6 +302,27 @@ fn self_test(repo: &Path) -> bool {
                 1,
                 &out,
                 ONE_RED,
+            );
+        }
+        let (rc, out) = tally.probe("scripts/probe_artifact_cleanup_orphans.py", None);
+        tally.score(
+            &format!("GREEN {mode} orphan act"),
+            rc,
+            0,
+            &out,
+            "12 tests / 0 failures / 0 errors",
+        );
+        for mutation in [
+            "anchor", "shape", "kind", "tracked", "recheck", "census", "fixtures",
+        ] {
+            let (rc, out) =
+                tally.probe("scripts/probe_artifact_cleanup_orphans.py", Some(mutation));
+            tally.score(
+                &format!("RED {mode} orphan {mutation}"),
+                rc,
+                1,
+                &out,
+                "12 tests / 1 failures / 0 errors",
             );
         }
         pass += tally.pass;

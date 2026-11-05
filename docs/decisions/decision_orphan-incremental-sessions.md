@@ -44,3 +44,7 @@ answers: What happens to Cargo incremental sessions that no later successful bui
   directory first; the acceptance row names it.
 - The class's definition lives in the selection tool and its probes, never in prose alone; a cleanup record
   reports `orphan` counts and bytes beside the other two groups.
+
+## Addendum (2026-11-05, `ARTIFACT-CLEANUP.29`): class C carried out, as its own act
+
+Ruling 4 of 2026-10-28 granted class C: whole sessions, in directories with no session younger than the last recorded act. Item 2 above said the class would be a branch of strict selection; it is `scripts/artifact_cleanup_orphans.py` instead, an act of its own before the plan, because the strict tools record cache-named files only and every past journal authenticates that shape, and a class whose members include `.o` files and locks would have widened all four and their history. The definition still lives in a tool and its probes, never in prose alone, and the cleanup record reports the class. Measured on the first act: 114 directories, 1,049,630,763 B, residue 0, and a build afterwards recompiled nothing.

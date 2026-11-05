@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -779,7 +779,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   tree: a refusal that names the path, or quarantines an unrepresentable entry and plans the rest.
 
 - ID: `ARTIFACT-CLEANUP.29` — **the recorded class "orphan incremental session"**
-  Status: `pending` (blocked on a ruling; see Blockers)
+  Status: `done` (`2026-11-05` UTC, `SEMULITH-AC-0093`; class C, ruling 4 of 2026-10-28)
   Goal: execute ruling 2 of `decision_orphan-incremental-sessions.md` — strict selection gains the
   class, approved as a group and recorded beside `approved`/`unrecorded` as `orphan`; the guarded core
   and the operator carry it; probe arms fired RED; then a cleanup act removes the backlog. Design:
@@ -802,6 +802,8 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   (C) B restricted to directories with no session younger than the last recorded cleanup act — keeps the
   live caches between daily cleanups, an age rule anchored to the record. The workflow holds ruling 2
   under the delegation; the scope widening in B and C is new, so it is raised, not taken.
+
+  Result (`2026-11-05T10:24Z`, `SEMULITH-AC-0093`; on clean d8cb9a11): class C, granted by ruling 4 of 2026-10-28, carried out. `scripts/artifact_cleanup_orphans.py` is its own act and not a branch of strict selection, as the 2026-10-26 decision had said it would be: the strict tools record cache-named files only, and every past act's journal authenticates that shape, so widening them would have touched four tools and their history to hold a class with a different rule. A crate-hash directory directly under a cargo `incremental` directory in `target/` is an orphan when it has cargo's shape, nothing in it, directories included, changed since the last recorded act, and everything is a regular file or directory on the repository's device, untracked. The whole directory goes, `.o`, `.rmeta`, locks and directories too: the 442 MB the `.bin`-only option would have stranded. Rule 2 is the class's safety: a configuration the gates still build keeps its caches. `--delete` needs a fresh green host census and re-decides each directory immediately before it goes, keeping and naming any that moved. **Controls:** `scripts/probe_artifact_cleanup_orphans.py`, 12 tests, seven guard omissions each RED by exactly one test, in both modes, in ARTIFACT-COHORT (`168 pass / 0 fail`). **The act on the real tree** (target/artifact-cleanup/AC29-act): plan 114 directories, 10,925 files, 1,049,630,763 B, under seven cargo roots; **removed 114, 1,049,630,763 B, residue 0, kept none**; 21 younger directories kept their 1.0 GB; `cargo build -p xtask` afterwards recompiled nothing. **The census did its job on me first:** the first `--delete`, piped through `tee` into the work directory, refused with "1 project-owned process STILL RUNNING", because `tee` held a repository file; nothing was removed, and the docstring now says to redirect instead. `.37` runs this act before its four. promotion: declined (the operator's own rule; the docstring carries it).
 
 - ID: `ARTIFACT-CLEANUP.30` — **the next recurring cleanup**
   Status: `done` (`2026-10-28` UTC, `SEMULITH-AC-0086`)
@@ -931,16 +933,23 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 - ID: `ARTIFACT-CLEANUP.37` — **the next recurring cleanup**
   Status: `pending`
+  Since `.29` it runs `scripts/artifact_cleanup_orphans.py --plan` and `--delete` in the fresh work directory before the four acts, each redirected to its log and never piped, and reports `orphan` beside `approved` and `unrecorded`.
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
-  2026-11-06T00:16Z), create the fresh work directory (mode 700), repeat the
+  2026-11-05T10:24Z + 24 h), create the fresh work directory (mode 700), repeat the
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0092.
+
+- ID: `ARTIFACT-CLEANUP.38` — **the owned rollover of the live ledger**
+  Status: `pending`
+  Goal: the live ledger reads 14,616 B against the 14,745 B its rollover percentage allows (`scripts/artifact_task_history.py`), so the next leaf with an acceptance checklist refuses: `.29`'s was cut to fit. Publish a third generation (`scripts/artifact_task_history_preservation.py`), as `.19` and `.23` did, before that leaf.
+  Found: 2026-11-05, `CLEANUP-TASK-PRESERVATION: REFUSED — cleanup live narrative requires owned rollover before ordinary growth`, at `.29`'s first draft.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.37` | `pending` | the next recurring cleanup, due after 2026-11-06T00:16Z; until then the feature cycle (P4-SYSTEM) resumes; `.29` (class C, ruled 2026-10-28) waits for its unit |
+| 1 | `ARTIFACT-CLEANUP.37` | `pending` | the next recurring cleanup, due 24 h after `2026-11-05T10:24Z`; `.29` done (class C) |
+| 2 | `ARTIFACT-CLEANUP.38` | `pending` | the owned rollover, before the next leaf that carries a checklist |
 
 ## Decisions
 
@@ -974,14 +983,19 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 ## Blockers
 
-- `ARTIFACT-CLEANUP.29`: a ruling between options A, B and C (the leaf's finding, `2026-10-26`); until
-  then the recurring cleanups (`.37` …) run the supported act unchanged.
+- ~~`ARTIFACT-CLEANUP.29`: a ruling between options A, B and C.~~ Ruled 2026-10-28, class C; carried out by `.29` (`SEMULITH-AC-0093`).
 
 <!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
 Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).
 The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.29)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `python3 -B scripts/artifact_cleanup_orphans.py --plan` `rc=0`: 114 directories no build collects.
+- [x] **ADDRESSED (verified)** — `--delete` `rc=0`: removed 114, residue 0 (AC29-act).
+- [x] **NO REGRESSION** — `ARTIFACT-COHORT --self-test: 168 pass / 0 fail`; `git diff --stat` of the strict tools empty.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.33)
 

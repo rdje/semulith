@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0093 (leaf ARTIFACT-CLEANUP.29) — the ruled class C carried out: whole orphan incremental directories go, 1.05 GB, and the strict tools do not move
+
+`scripts/artifact_cleanup_orphans.py`, its own act: a crate-hash directory of cargo's shape in which nothing changed since the last recorded act goes whole. 114 directories, 10,925 files, 1,049,630,763 B, residue 0, none kept; 21 younger ones kept; a build afterwards recompiled nothing. 12 tests, seven guard omissions each RED by one test, in ARTIFACT-COHORT. `.37` runs it before its four.
+
 ## SEMULITH-P4-0350 (leaf P4-SYSTEM.14 a45-1) — eight requirements that no credit could ever close, rebound to the effective contract, and a rule so none strands again
 
 a45-1: 8 of 48 rv64gc requirements named only superseded obligations, so `G-OBLIGATIONS` could never have gone green, with every gate passing. Seven rebind to the successor the contract names; `REQ-D-RESOLUTION-ROUTE` is `not-applicable`, a stage that ended: 43 planned, 4 implemented, 1 not-applicable. RECORD-SCHEMA's `SUPERSEDED OBLIGATION` holds it, fired RED on the real tree. Four statements read stale, and their words are owned by the pinned `profile.sexp` and frozen contract versions: a rider on the window.

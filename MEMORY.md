@@ -14,11 +14,11 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0079 (XTASK.13 b6, taken at 4 of 5 because the rest wait on the director's pick);
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0079 (taken at 4 of 5, because the rest wait on the director's pick); feature 1 of 5 is P4-0350. `ARTIFACT-CLEANUP.37` once due (24 h after 2026-11-05T10:24Z), the orphan act before its four.
   `ARTIFACT-CLEANUP.37` once due (after 2026-11-06T00:16Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28) and waits for its unit.
 - pnt_status: RUNNING since `2026-11-05` on the director's word ("Go in full PNT mode until all work is exhausted"); continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0350` (P4-SYSTEM.14 a45-1, feature 1 of 5 after XTASK-0079) — eight stranded requirements rebound, rule 16. Open for the director: `decision_sstc-delivery-needs-the-pinned-window.md` (recommendation: open the window; a43e-0 proved it, 10 of 10 legs) and the per-case configuration (decision_reference-config-per-case.md).
-- next_action: SSTC's case waits for the director's pick; on A: the decision record's four units (target/p4-system-14/a43e/pinned-edits.patch, prototype.sh; case draft target/p4-system-14/a43d-3). Do not add P4 credits before the pick: each one raises the window's cost. Meanwhile: `ARTIFACT-CLEANUP.29` class C (design: target/artifact-cleanup/AC29/design.md), then `ARTIFACT-CLEANUP.37` once due (after 2026-11-06T00:16Z). LAB-BENCH.2 waits for user feedback by its own non-goal; XTASK.13's BOOK-INDEX at the next turn.
+- last_unit: `SEMULITH-AC-0093` (ARTIFACT-CLEANUP.29, maintenance, counts as neither). Before it `SEMULITH-P4-0350` (a45-1, feature 1 of 5 after XTASK-0079). Open for the director: `decision_sstc-delivery-needs-the-pinned-window.md` (recommendation: open the window; a43e-0 proved it, 10 of 10 legs) and the per-case configuration (decision_reference-config-per-case.md).
+- next_action: SSTC's case waits for the director's pick; on A: the decision record's four units (target/p4-system-14/a43e/pinned-edits.patch, prototype.sh; case draft target/p4-system-14/a43d-3), with the four stale statements as a rider (decision_requirements-bound-to-the-effective-contract.md). Do not add P4 credits before the pick: each one raises the window's cost. Meanwhile `ARTIFACT-CLEANUP.37` once due, then `.38` (the owned rollover) before any cleanup leaf with a checklist. LAB-BENCH.2 waits for user feedback by its own non-goal; D79 waits on its terminal capture (a `sudo` the director runs); XTASK.13's BOOK-INDEX at the next turn, and XTASK.md is near its ceiling (129,709 of 131,072 B): archive first.
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report, and any moved probe's seams first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -32,7 +32,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0092` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-05T00:16Z`).
+  cleanup act `target/artifact-cleanup/AC29-act` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-05T10:24Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.
