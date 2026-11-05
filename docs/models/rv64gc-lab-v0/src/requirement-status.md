@@ -129,3 +129,24 @@ $ python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS --stdout | grep 'G-T
 ```
 
 Without `tail` it prints all five. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 is the proof: it edits `gate_report.py`, and all five credits stay current.
+
+## The route for the other 42 (`P4-SYSTEM.14` a46-0, 2026-11-06)
+
+`G-OBLIGATIONS` stays open on these, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+
+```text
+$ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out target/reference-config-census/sstc
+173 guests
+ 151  profile AGREE -> case AGREE
+```
+
+158 of the 173 agree on at least one of the two configurations. Crossed with each obligation's checks (`decision_obligations-route.md`):
+
+| Class | Count | Route |
+| --- | --- | --- |
+| Guests named, and Sail agrees | 15 | A case each, in batches |
+| A witness in Rust, so a program must be authored | 13 | A case each, in batches |
+| A statement of selection, checked by a scope predicate | 12 | Raised to the director after the batches |
+| Behaviour Sail does not show: `wfi`'s stall, injected faults | 2 | May rightly end `partial`; raised to the director |
+
+The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of four commits against about 140 commits one case at a time. Batch I, the RV64I base, is next. It also measures the estimate's weakest number, how much each case adds to the gate.

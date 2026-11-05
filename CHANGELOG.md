@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0358 (leaf P4-SYSTEM.14 a46-0) — G-OBLIGATIONS' other 42 routed: 28 in batches on the tools as they are, 14 raised for a ruling
+
+All 42 have their contract checks realized, and 158 of 173 guests agree with Sail. One case at a time would be 140 units and 56 hours of gate; five batches are 20 units and 8. Nothing moves here.
+
 ## SEMULITH-P4-0357 (leaf P4-SYSTEM.14 a43e-5) — five credits, REQ-D-SSTC implemented, G-STATE 4 of 4, and G-TRACE read from evidence/: the window closed
 
 `CR-GC-M-4`, `CR-D-XLEN-3`, `CR-D-CSR-SET-2`, `CR-D-ZICNTR-2` and `CR-D-SSTC-1`, 10 of 10 legs each. SSTC is the first case to witness delivered interrupts, from S, from U and to M. `gate_report.py` reads each credited record from `evidence/`, and a credited case with no `G-TRACE` row keeps the axis open. `CPU-SYSTEM` reads 2 of 10 axes open.

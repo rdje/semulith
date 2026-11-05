@@ -131,6 +131,7 @@
 - [`decision_mirror-status-is-per-profile.md`](docs/decisions/decision_mirror-status-is-per-profile.md)
 - [`decision_models-family-five-books.md`](docs/decisions/decision_models-family-five-books.md)
 - [`decision_obligation-catalog-parts.md`](docs/decisions/decision_obligation-catalog-parts.md)
+- [`decision_obligations-route.md`](docs/decisions/decision_obligations-route.md)
 - [`decision_one-definition-one-book.md`](docs/decisions/decision_one-definition-one-book.md)
 - [`decision_one-format-every-source-of-truth.md`](docs/decisions/decision_one-format-every-source-of-truth.md)
 - [`decision_orphan-incremental-sessions.md`](docs/decisions/decision_orphan-incremental-sessions.md)
