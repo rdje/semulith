@@ -101,12 +101,16 @@ const SOURCE_EXPECTATION_CASES: &[(&str, &str)] = &[
     ("program", "1"),
     ("fixed-entry", "1"),
     ("exclusions", "3"),
-    ("declared-events", "3"),
+    ("declared-events", "2"),
     ("source-forward", "21"),
     ("budget-forward", "12"),
-    ("source-reopen", "29"),
+    ("source-reopen", "38"),
     ("context-program", "1"),
-    ("unfetched", "2"),
+    ("unfetched", "10"),
+    ("undeclared-unfetched", "5"),
+    ("declared-fetched", "5"),
+    ("half-fetched", "2"),
+    ("bare-boundary", "5"),
     ("whole-budget", "2"),
     ("value-comparison", "6"),
     ("witness-change", "1"),
@@ -3975,10 +3979,10 @@ fn self_test(repo: &Path, report: &mut Report) -> bool {
                 &[],
             ),
             0,
-            "MATCHED-GPR-DERIVATION: 23 tests / 0 failures / 0 errors; no qualification",
+            "MATCHED-GPR-DERIVATION: 27 tests / 0 failures / 0 errors; no qualification",
         );
         for (mutation, losses) in SOURCE_EXPECTATION_CASES {
-            tally.arm(&format!("RED source-derived GPR {mutation} {mode}"), probe(repo, optimized, "scripts/probe_matched_gpr_derivation.py", &["--mutation", mutation]), 1, &format!("MATCHED-GPR-DERIVATION: 23 tests / {losses} failures / 0 errors; no qualification"));
+            tally.arm(&format!("RED source-derived GPR {mutation} {mode}"), probe(repo, optimized, "scripts/probe_matched_gpr_derivation.py", &["--mutation", mutation]), 1, &format!("MATCHED-GPR-DERIVATION: 27 tests / {losses} failures / 0 errors; no qualification"));
         }
     }
     let (pass, fail) = (tally.pass, tally.fail);

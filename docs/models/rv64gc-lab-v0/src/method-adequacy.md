@@ -74,7 +74,7 @@ measured record's pin and re-checks the pins of the declaration's route (the cas
 file, then its schema): the first that moved makes the method `stale`, naming it —
 v4 and xlen-v1 read `stale: schema/matched-case.sexp: SHA256 differs` from 2026-11-02
 until their re-captures took the rows (a43b-2e: the rows now name v5 and xlen-v2, since a43b-3g the
-CSR-SET case and since a43c-5 the ZICNTR case, each `satisfied` over 88 authenticated files) — and a refusal with nothing moved stays `refused`. A later checker-source
+CSR-SET case and since a43c-5 the ZICNTR case, each `satisfied` over 88 authenticated files, until the window that opens SSTC moved their pins at a43e-1, 2026-11-05) — and a refusal with nothing moved stays `refused`. A later checker-source
 change refuses the method result while preserving earlier computed record,
 binding and evaluation findings. No result silently becomes policy credit.
 

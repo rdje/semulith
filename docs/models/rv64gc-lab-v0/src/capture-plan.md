@@ -184,7 +184,7 @@ making an unguarded ancestry walk terminate.
 
 `scripts/check_contract_freeze.sh` now remembers the versions visited for each
 declared version. A repeat returns exit1 with `EXTENDS CYCLE`. The public
-`gate_report.contract_measure` similarly refuses a repeat on the selected latest
+`contract_measure` (`scripts/effective_contract.py` since `P4-SYSTEM.14` a43e-1; `gate_report.py` imports it) similarly refuses a repeat on the selected latest
 version's ancestry with `CONTRACT CYCLE`, through its existing `SystemExit`
 refusal channel. Scope loading and gate generation reuse that measure. Neither
 owner returns partial effective-contract credit for a cycle. Valid inheritance,
@@ -211,7 +211,7 @@ canonical capture or CPU acceptance credit.
 ## Gate roots follow the loaded source
 
 The public effective-contract owner now derives its repository root from
-`gate_report.py`'s source location. Importing it launches no Git process. A copied
+its own source location (`effective_contract.py` since a43e-1, and `gate_report.py` likewise). Importing it launches no Git process. A copied
 runtime therefore imports its own record/dossier/parser modules and reads its own
 declared registry, even when launched with the valid parent checkout as its
 working directory. Report operations that enumerate tracked files still use Git;

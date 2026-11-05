@@ -153,7 +153,9 @@ print(json.dumps(result))
 
 # The children the reviewed population gained after the default case's capture (P4-SYSTEM.14 a44-2b): the case's
 # declaration, the schema that validates it and the module that reads it.
-GROWN = ("evidence/" + A.P.CASE_ID + "/case.sexp", "schema/matched-case.sexp", "scripts/matched_gpr_case.py")
+GROWN = ("evidence/" + A.P.CASE_ID + "/case.sexp", "schema/matched-case.sexp", "scripts/effective_contract.py", "scripts/matched_gpr_case.py")
+# The child the manifest shed: the contract measure left the report generator for its own module (a43e-1), so a report's edit lapses no evidence.
+SHED = ("scripts/gate_report.py",)
 # A copy of a historical case that a control plans must declare its control (P4-SYSTEM.14 a43b-2b, D1): the producer
 # refuses a declaration without the control's id and statement. These are the words it wrote for every case before the
 # literals left it, true for the signed-DIV and M cases alike (each control changes one quotient).
@@ -332,11 +334,11 @@ class CommandTests(unittest.TestCase):
         if moved:
             tracked = manifest_pins((ROOT / A.PREFIX / "dependencies.sexp").read_bytes())
             current = manifest_pins(regenerated["dependencies.sexp"])
-            # Nothing the capture pinned is dropped; the children added after it are exactly the ones a44-2b
-            # added (the declaration, its schema and its reader), never in its manifest.
-            self.assertEqual(set(tracked) - set(current), set())
+            # Nothing the capture pinned is dropped but the report generator (a43e-1); the children added after it are exactly
+            # the ones a44-2b added (the declaration, its schema and its reader) and the measure's own module, never in its manifest.
+            self.assertEqual(sorted(set(tracked) - set(current)), sorted(SHED))
             self.assertEqual(sorted(set(current) - set(tracked)), sorted(GROWN))
-            self.assertEqual(sorted(path for path in tracked if tracked[path] != current[path]), sorted(moved))
+            self.assertEqual(sorted(path for path in tracked if path in current and tracked[path] != current[path]), sorted(set(moved) - set(SHED)))
 
     def test_planned_record_carries_the_declared_control_and_no_producer_case_prose(self):
         """D3 (P4-SYSTEM.14 a43b-2a): a declaration whose control id and statement are unique tokens plans a record

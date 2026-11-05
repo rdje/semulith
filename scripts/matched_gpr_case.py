@@ -89,8 +89,11 @@ def read_document(text: str, where: str) -> dict:
         item = sub(form)
         writes = tuple((sub(write)["register"], sub(write)["value"])
                        for write in form[1:] if str(write[0]) == "write")
-        steps.append((item["n"], item["pc"], item["word"], item["length"], item["fetches"], writes))
+        steps.append((item["n"], item["pc"], item.get("word"), item.get("length"), item["fetches"], writes))
     declaration["steps"] = tuple(steps)
+    for n, _pc, word, length, fetches, writes in steps:
+        if (word is None) != (length is None) or (word is None and (fetches or writes)):
+            raise CaseError(f"{where}: step {n} must fetch a word of a length, or be a delivery boundary that fetches and writes nothing")
     if declaration["control"]["property_id"] not in {row[0] for row in declaration["properties"]}:
         raise CaseError(where + ": the control names no declared property")
     adversarial = declaration["adversarial"]
@@ -187,8 +190,8 @@ def render(declaration: dict) -> str:
                      + ") (register " + q(register) + ") (expected " + _value(expected) + ")")
         lines.append("    (statement " + q(statement) + "))")
     for n, pc, word, length, fetches, writes in d["steps"]:
-        lines.append("  (step (n " + str(n) + ") (pc " + _value(pc) + ") (word " + _value(word) + ") (length "
-                     + str(length) + ") (fetches " + str(fetches) + ")"
+        fetched = "" if word is None else " (word " + _value(word) + ") (length " + str(length) + ")"  # a delivery boundary fetches nothing
+        lines.append("  (step (n " + str(n) + ") (pc " + _value(pc) + ")" + fetched + " (fetches " + str(fetches) + ")"
                      + "".join(" (write (register " + str(reg) + ") (value " + _value(value) + "))"
                                for reg, value in writes) + ")")
     lines[-1] += ")"

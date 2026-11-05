@@ -18,12 +18,15 @@ import record_catalog as C
 ROOT = Path(__file__).resolve().parent.parent
 PROFILE = ROOT / "profiles/rv64gc-lab-v0"
 REGISTRY = "crates/semulith-verify/src/contract_checks_rv64gc.rs"
-MODULES = ("gate_report", "records_sexp", "record_catalog", "dossier_sexp", "sexp")
+MODULES = ("gate_report", "effective_contract", "records_sexp", "record_catalog", "dossier_sexp", "sexp")
 MUTATION = None
 SOURCE_ROOT = "ROOT = Path(__file__).resolve().parent.parent\n"
-GIT_ROOT = '''ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
+GIT_ROOT = '''import subprocess
+ROOT = Path(subprocess.run(["git", "rev-parse", "--show-toplevel"],
                            capture_output=True, text=True, check=True).stdout.strip())
 '''
+# The omission's owners: both modules that hold a root, or the measure's alone (its own module since P4-SYSTEM.14 a43e-1).
+OMISSIONS = {"git-root": ("gate_report", "effective_contract"), "measure-git-root": ("effective_contract",)}
 
 # Only the owned child runs this program. It imports the actual copied module;
 # parent cwd/Git metadata cannot supply the runtime's modules or registry.
@@ -49,7 +52,7 @@ finally:
  subprocess.run=original_run;subprocess.Popen=original_popen
 report=dict(root_matches=owner.ROOT==runtime,commands=commands,
  local_modules={name:Path(module.__file__).resolve().is_relative_to(runtime)
-                for name,module in [('gate_report',owner),('records_sexp',owner.R),
+                for name,module in [('gate_report',owner),('effective_contract',sys.modules['effective_contract']),('records_sexp',owner.R),
                 ('record_catalog',owner.C),('dossier_sexp',owner.D),('sexp',owner.S)]})
 try:
  directory=runtime/'profiles/rv64gc-lab-v0'
@@ -82,11 +85,12 @@ class RuntimeRootTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(ROOT / "scripts" / (name + ".py"), target)
         if MUTATION:
-            target = self.runtime / "scripts/gate_report.py"
-            source = target.read_text()
-            if source.count(SOURCE_ROOT) != 1:
-                raise RuntimeError("root omission target must be singular")
-            target.write_text(source.replace(SOURCE_ROOT, GIT_ROOT, 1))
+            for name in OMISSIONS[MUTATION]:
+                target = self.runtime / "scripts" / (name + ".py")
+                source = target.read_text()
+                if source.count(SOURCE_ROOT) != 1:
+                    raise RuntimeError("root omission target must be singular")
+                target.write_text(source.replace(SOURCE_ROOT, GIT_ROOT, 1))
         directory = self.runtime / "profiles/rv64gc-lab-v0"
         directory.mkdir(parents=True)
         (directory / "contract.sexp").write_bytes((PROFILE / "contract.sexp").read_bytes())
@@ -144,7 +148,7 @@ class RuntimeRootTests(unittest.TestCase):
 def main():
     global MUTATION
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mutation", choices=("git-root",))
+    parser.add_argument("--mutation", choices=sorted(OMISSIONS))
     args = parser.parse_args()
     MUTATION = args.mutation
     result = unittest.TextTestRunner(verbosity=2).run(

@@ -376,6 +376,21 @@ class PropertyTests(unittest.TestCase):
         self.assertEqual((quotient, remainder), (-3, -1))
         self.assertEqual(steps[2].writes, ((7, quotient & ((1 << 64) - 1)),))
 
+    def test_a_delivery_boundary_is_reviewed_only_when_bare(self):
+        """The typed event binding (P4-SYSTEM.14 a43e-1): no word, no length, no fetch, no write, and the row agrees."""
+        def step(*fields):
+            return G.C.Author.SnapshotStep(3, 0x80000000, *fields, "synthetic", "synthetic")
+
+        try:
+            G._reviewed_step(step(None, None, 0, ()), (3, 0x80000000, None, None, 0, ()))
+        except G.PropertyError as error:
+            self.fail(f"a bare boundary refused: {error}")
+        for fields in ((None, 4, 0, ()), (19, None, 0, ())):
+            with self.subTest(fields=fields), self.assertRaises(G.PropertyError):
+                G._reviewed_step(step(*fields), (3, 0x80000000, *fields))
+        with self.assertRaises(G.PropertyError):  # a boundary the row reviewed as fetched
+            G._reviewed_step(step(None, None, 0, ()), (3, 0x80000000, 19, 4, 0, ()))
+
     def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
         case = G.reviewed_case(G.M_FORMS_CASE_ID)
         # The declared cases: v2, v3, the M case re-declared as v4 (a44-3), the XLEN case (a43a-2b) and both re-declared
@@ -1041,6 +1056,14 @@ class PropertyTests(unittest.TestCase):
 
 
 MUTATIONS = {
+    "delivery-bare": (
+        "delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()",
+        "delivered = True",
+    ),
+    "delivery-refused": (
+        "delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()",
+        "delivered = False",
+    ),
     "publication-authority": (
         '            authority["source_sha256"],\n',
         '            declaration["required_inputs"][0][3],\n',

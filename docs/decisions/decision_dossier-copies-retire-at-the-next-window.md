@@ -43,3 +43,7 @@ report generator is pinned for one reason: `scripts/experiment_verification.py:3
 - A credit for ZICNTR or SSTC names this record in its decision, and the gate report's `G-TRACE` table is read as "the records in the dossier", not "every credited case", until the window.
 - The window's design measures before it moves: re-derive the manifests' module closure with `contract_measure` moved, and confirm no other report or book generator is in it.
 - Its re-captures should be byte-identical to their predecessors, as a43b-2d's were; a difference is a finding, not a retry.
+
+## Carried out (2026-11-05, `P4-SYSTEM.14` a43e-1)
+
+This is the window ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md)). Item 3 is done: `contract_measure` lives in `scripts/effective_contract.py`, and `experiment_verification.py` imports it from there, so the next manifests pin no report or book generator. Item 2's first half is done: the two copies left `references.sexp` (50,323 B → 18,392 B) and `G-TRACE` lists nothing while no credit is current. Its second half, `gate_report.py` reading each credited record from `evidence/`, lands with the re-credits at a43e-5.

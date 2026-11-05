@@ -36,7 +36,7 @@ def load_scope(directory: Path, profile_id: str, candidate_ids: set[str]) -> Sco
     Catalogue/contract shape and integrity are owned by RECORD-SCHEMA and
     CONTRACT-FREEZE. Missing/unreadable scope is an error, never an empty success.
     """
-    from gate_report import contract_measure
+    from effective_contract import contract_measure
 
     requirements = R.load(directory / "requirements.sexp")
     obligations = R.load(directory / "contract-obligations.sexp")

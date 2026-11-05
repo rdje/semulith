@@ -272,8 +272,7 @@ def compare_source_expectation(*, source: bytes, baseline_expectation: bytes,
     excluded = doc.get("cross_model") is False or "expect_divergence" in doc or "refuse" in doc
     if excluded:
         return SourceExpectationCheck("unsupported", "expectation exclusions need another method")
-    if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"])
-           or Sail.DECLARED_INTERRUPT.match(step["derivation"]) for step in doc["step"]):
+    if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"]) for step in doc["step"]):
         return SourceExpectationCheck("unsupported", "declared event boundaries need typed event binding")
     try:
         derived = Author.derive_snapshot(source, program=program, instructions=instructions)
@@ -291,8 +290,14 @@ def compare_source_expectation(*, source: bytes, baseline_expectation: bytes,
             or any(type(step) is not Author.SnapshotStep or type(step.n) is not int or step.n != n
                    for n, step in enumerate(derived.steps))):
         return SourceExpectationCheck("refused", "snapshot author result differs from requested context")
-    if any(step.instruction_bits is None or step.instruction_length is None for step in derived.steps):
-        return SourceExpectationCheck("unsupported", "unfetched boundaries need typed event binding")
+    # The typed event binding (P4-SYSTEM.14 a43e-1): a boundary fetches nothing exactly when the record declares an interrupt
+    # delivered there, and it then writes nothing. Any other unfetched boundary, a wait or a fetch fault, stays unsupported.
+    for step, expected in zip(derived.steps, doc["step"]):
+        delivered = Sail.DECLARED_INTERRUPT.match(expected["derivation"]) is not None
+        fetched = step.instruction_bits is not None and step.instruction_length is not None
+        bare = step.instruction_bits is None and step.instruction_length is None and not step.writes and not step.fetches
+        if not (bare if delivered else fetched):
+            return SourceExpectationCheck("unsupported", "unfetched boundaries need typed event binding")
     value = dict(derived.steps[selected.step_n].writes).get(int(selected.register[1:]))
     facts = SourceExpectationFacts(derived, len(baseline_expectation),
                                    hashlib.sha256(baseline_expectation).hexdigest(), selected, value)

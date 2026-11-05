@@ -1,8 +1,8 @@
-# SSTC's delivery witnesses need a typed event binding, which only a pinned window can add: open for the director
+# SSTC's delivery witnesses need a typed event binding, which only a pinned window can add: A, opened 2026-11-05
 
 - **Type:** `decision`
 - **Date:** `2026-11-05`
-- **Status:** `active` (open: the director picks; the reversible default holds meanwhile)
+- **Status:** `active` (the director delegated the pick on 2026-11-05, "Pick yourself."; **A** was picked and is being carried out from a43e-1, `SEMULITH-P4-0351`)
 - **Owner / source:** `P4-SYSTEM.14` a43d-3, `SEMULITH-P4-0347`; raised on the rule of [`decision_four-rulings-delegated.md`](decision_four-rulings-delegated.md) that an item changing a retained case goes to the director first, and read against item 4 of
   [`decision_dossier-copies-retire-at-the-next-window.md`](decision_dossier-copies-retire-at-the-next-window.md) ("It rides with the next pinned edit that is needed anyway").
 answers: Why can the SSTC case not be written on the current tools, what would change that, what does each route cost, and what holds until the director picks?
@@ -51,7 +51,23 @@ The book has said so since the first consumer: "any source boundary without a co
 
 **The window, then, in four or five units:** (1) the pinned edits, the riders, the deriver's placeholder (a43b-c2) and the four stale requirement statements with `profile.sexp`'s decisions and a contract version that mirrors them (`decision_requirements-bound-to-the-effective-contract.md`, measured 2026-11-05), one commit, the credits retired by removal; (2) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1` declared, the family re-derived; (3) the five captured once each on a quiet host, with the three effects; (4) the reviews, the five credits, G-STATE 4 of 4 and `G-TRACE` listing every credited case.
 
+## The pick (2026-11-05)
+
+Asked to pick among A, B and C, the director answered: "Pick yourself." I picked **A**, for the reasons above: it removes the wall instead of working around it, and it costs least now, with four credits to lapse rather than five. The delegation is the authority; the director can overrule it, and the lapse is recoverable at each step, because every retained capture stays in place and a re-capture is a new case.
+
+| Unit | What it does |
+| --- | --- |
+| a43e-1, `SEMULITH-P4-0351` | the binding, the measure's move, the four credits retired by removal, the dossier copies and `G-TRACE`'s rows out |
+| a43e-2 | the deriver's placeholder (a43b-c2), the four stale statements with `profile.sexp`'s decisions and a contract version that mirrors them |
+| a43e-3 | five cases declared: `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2`, `rv64gc-sstc-v1` |
+| a43e-4 | each captured exactly once on a quiet host, and the effects of the three on their own configuration |
+| a43e-5 | the reviews read them, five credits, `REQ-D-SSTC` `implemented`, `G-STATE` 4 of 4, `gate_report.py` reading each credited record from `evidence/` |
+
+**What a43e-1 found that the prototype did not.** Eight probes moved, not the three predicted: the prototype counted the ones that fail on the binding, and did not run the two that read the measure's module (`probe_gate_runtime_root.py`, which lost all six tests, and `probe_contract_ancestry.py`, whose seam targets the guard that moved) or the three that predict the real tree's credits. And its check accepted a half-fetched boundary on a row declaring a delivery, a step with a length and no word, because it asked whether either field was missing. The real check asks for both, on both arms.
+
 ## What holds meanwhile
+
+(Written before the pick; history since a43e-1, except that `sstc-timer.s` still binds nothing until a43e-3.)
 
 - `sstc-timer.s` is in the corpus: useful on every route, and it binds nothing.
 - The overlay and the case wait in target/p4-system-14/a43d-3 (`held/`, `draft/`), the case draft's 39 witnesses each already checked against the derivation. A prototype run found one thing the draft could not: the control's witness row must cite the requirement's own source for the policy's first leg, so `sstc-timer.s` cites `RVP-SSTC §12.1` there since a43e-0.

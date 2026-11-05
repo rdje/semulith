@@ -378,7 +378,7 @@ python3 -O scripts/probe_matched_gpr_property.py
 python3 scripts/probe_matched_gpr_property.py --mutation claim-values
 ```
 
-The first two print `MATCHED-GPR-PROPERTY: 34 tests / 0 failures / 0 errors; synthetic
+The first two print `MATCHED-GPR-PROPERTY: 36 tests / 0 failures / 0 errors; synthetic
 metadata, finite source witnesses only`; the third omits the per-property value check and
 fails the three tests that depend on it. The binding grants the m-forms case nothing: no
 declaration record names it yet, no capture retains its runs, no receipt cites it, and

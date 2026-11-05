@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 from pathlib import Path
+import re
 import shutil
 import sys
 import tempfile
@@ -26,6 +27,8 @@ import sexp as S  # noqa: E402
 
 MODULE = ROOT / "scripts/matched_gpr_case.py"
 SEAMS = {
+    "delivery-binding": ("        if (word is None) != (length is None) or (word is None and (fetches or writes)):\n", "        if False:\n"),
+    "delivery-render": ('fetched = "" if word is None else ', 'fetched = " (word 0) (length 0)" if word is None else '),
     "missing-refusal": ("    if not path.is_file():\n", "    if False:\n"),
     "id-binding": ('    if declaration["id"] != case_id:\n', "    if False:\n"),
     "control-binding": ('    if declaration["control"]["property_id"] not in {row[0] for row in declaration["properties"]}:\n',
@@ -169,6 +172,27 @@ class CaseTests(unittest.TestCase):
             (root / "evidence/rv64gc-other-v9").mkdir(parents=True)
             shutil.copy2(ROOT / self.K.case_path(P.CASE_ID), root / "evidence/rv64gc-other-v9/case.sexp")
             self.refused(lambda: self.K.read_case("rv64gc-other-v9", root), "not its directory's rv64gc-other-v9")
+
+    def first_step(self, fields):
+        """The declaration of a case whose first step carries exactly these fields after its pc."""
+        text = (ROOT / self.K.case_path(P.CASE_ID)).read_text()
+        pc = re.search(r"\(step \(n 0\) \(pc (\S+?)\)", text).group(1)
+        row = "  (step (n 0) (pc " + pc + ") " + fields + ")\n"
+        changed, count = re.subn(r"  \(step \(n 0\) [^\n]*\n", row, text)
+        self.assertEqual(count, 1)
+        return changed
+
+    def test_a_delivery_boundary_reads_bare_and_renders_back(self):
+        """The typed event binding (P4-SYSTEM.14 a43e-1): a delivered interrupt is a boundary with no word and no length."""
+        text = self.first_step("(fetches 0)")
+        declaration = self.K.read_document(text, "boundary")
+        self.assertEqual(declaration["steps"][0][2:], (None, None, 0, ()))
+        self.assertEqual(self.K.render(declaration), text)
+
+    def test_a_step_half_fetched_or_writing_without_a_word_is_refused(self):
+        for fields in ("(word 19) (fetches 0)", "(length 4) (fetches 0)", "(fetches 1)", "(fetches 0) (write (register 1) (value 1))"):
+            with self.subTest(fields=fields):
+                self.refused(lambda: self.K.read_document(self.first_step(fields), "half"), "must fetch a word of a length")
 
     def test_a_control_naming_no_property_is_refused(self):
         text = (ROOT / self.K.case_path(P.CASE_ID)).read_text()

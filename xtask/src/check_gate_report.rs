@@ -211,6 +211,15 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             captured(&out),
             "GATE-RUNTIME-ROOT: 6 tests / 5 failures / 0 errors; local authority, no capture credit",
         );
+        // The measure's own module holds its own root (P4-SYSTEM.14 a43e-1): the fallback there alone is refused too.
+        let (rc, out) = probe(repo, optimized, Some("measure-git-root"));
+        tally.arm(
+            &format!("RED parent Git root fallback in the measure {mode}"),
+            rc,
+            1,
+            captured(&out),
+            "GATE-RUNTIME-ROOT: 6 tests / 4 failures / 0 errors; local authority, no capture credit",
+        );
     }
     // A profile with no report is skipped by the real run too, so it is not a control.
     for profile in profiles(repo) {

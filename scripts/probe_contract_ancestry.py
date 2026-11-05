@@ -27,7 +27,7 @@ FREEZE_GUARD = '''            if p in ancestry:
                 break
 '''
 SCOPE_GUARD = '''            if v["version"] in ancestry:
-                raise SystemExit(f"gate_report: {cdoc.relative_to(ROOT)}: CONTRACT CYCLE: "
+                raise SystemExit(f"effective_contract: {cdoc.relative_to(ROOT)}: CONTRACT CYCLE: "
                                  f"revisits version {v['version']}")
 '''
 
@@ -62,7 +62,7 @@ def run_owner(owner, directory):
         command = ["bash", "-c", judge + '\njudge "$1"', "ancestry-control",
                    str(directory.parent.parent)]
     else:
-        source = (ROOT / "scripts/gate_report.py").read_text()
+        source = (ROOT / "scripts/effective_contract.py").read_text()
         if MUTATION == "scope-cycle":
             source = without_guard(source, SCOPE_GUARD)
         # Compile the complete owner with its original __file__, ordinary imports
@@ -77,7 +77,7 @@ def run_owner(owner, directory):
             "root=d.parent.parent)))"
         )
         command = [sys.executable, *(["-O"] if sys.flags.optimize else []),
-                   "-c", program, str(directory), str(ROOT / "scripts/gate_report.py")]
+                   "-c", program, str(directory), str(ROOT / "scripts/effective_contract.py")]
     environment = dict(os.environ, PYTHONOPTIMIZE=str(sys.flags.optimize))
     process = subprocess.Popen(command, cwd=ROOT, env=environment,
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE,

@@ -306,30 +306,21 @@ class StatusTests(unittest.TestCase):
             self.assertEqual((t["drift"], t["findings"]), ([], []), t["profile"])
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
-        m = next(r for r in gc["rows"] if r["id"] == "REQ-GC-M")
-        # Four cases bind REQ-GC-M. v5, re-captured with its control declared (P4-SYSTEM.14 a43b-2d), is credited by the
-        # current record CR-GC-M-3 (a43b-2e, after CR-GC-M-2's retirement at a43b-2b), so the requirement derives
-        # `implemented` and the recorded status agrees; v2, v3 and v4 carry receipts whose qualification is false: pending.
-        # This arm is the manifest's prediction of the real tree: the next crediting act re-states it.
-        self.assertEqual((m["recorded"], m["derived"], m["why"]), ("implemented", "implemented", "every obligation credited (1)"))
-        self.assertEqual(m["uncredited"], ["rv64gc-m-forms-v3:pending", "rv64gc-m-forms-v4:pending",
-                                           "rv64gc-signed-div-truncation-v2:pending"])
-        # The XLEN case binds REQ-D-XLEN alone: xlen-v2 credited by CR-D-XLEN-2 (a43b-2e), xlen-v1 history, pending.
-        x = next(r for r in gc["rows"] if r["id"] == "REQ-D-XLEN")
-        self.assertEqual((x["recorded"], x["derived"], x["why"], x["uncredited"]),
-                         ("implemented", "implemented", "every obligation credited (1)", ["rv64gc-xlen-forms-v1:pending"]))
-        # The CSR-SET case binds REQ-D-CSR-SET alone, credited by CR-D-CSR-SET-1 (a43b-3h), while REQ-D-PRIV-MODES and REQ-D-SSTC,
-        # its dependencies, stay planned: the derivation reads obligations, and the capture plan orders it before ZICNTR and SSTC.
-        c = next(r for r in gc["rows"] if r["id"] == "REQ-D-CSR-SET")
-        self.assertEqual((c["recorded"], c["derived"], c["why"], c["uncredited"]),
-                         ("implemented", "implemented", "every obligation credited (1)", []))
-        # So the ZICNTR case binds REQ-D-ZICNTR alone, credited by CR-D-ZICNTR-1 (a43c-5); REQ-D-PRIV-MODES stays planned too.
-        z = next(r for r in gc["rows"] if r["id"] == "REQ-D-ZICNTR")
-        self.assertEqual((z["recorded"], z["derived"], z["why"], z["uncredited"]),
-                         ("implemented", "implemented", "every obligation credited (1)", []))
-        self.assertEqual(gc["derived"], {"planned": 43, "partial": 0, "implemented": 4, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
+        # No current record credits any case while the window that opens SSTC is open: the typed event binding moved pinned
+        # inputs, and CR-GC-M-3, CR-D-XLEN-2, CR-D-CSR-SET-1 and CR-D-ZICNTR-1 were retired with the profile's catalogue file
+        # (P4-SYSTEM.14 a43e-1). Each requirement derives `planned`, the recorded status agrees, and every case is pending.
+        # This arm is the manifest's prediction of the real tree: the re-credits re-state it.
+        none = ("planned", "planned", "no credited implementation or evidence")
+        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-signed-div-truncation-v2"]),
+                           ("REQ-D-XLEN", ["rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2"]),
+                           ("REQ-D-CSR-SET", ["rv64gc-csr-set-v1"]),
+                           ("REQ-D-ZICNTR", ["rv64gc-zicntr-v1"])):
+            row = next(r for r in gc["rows"] if r["id"] == rid)
+            self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]),
+                             (*none, [case + ":pending" for case in cases]), rid)
+        self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 0, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (8, 4, 0, 4, 4))  # the ZICNTR case credited (a43c-5)
+                         (8, 0, 0, 0, 0))
 
 
 def main():

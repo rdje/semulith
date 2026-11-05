@@ -445,8 +445,10 @@ def _reviewed_step(step, expected) -> None:
         for key in ("n", "pc", "instruction_bits", "instruction_length", "fetches")
     )
     writes = step.writes
+    # A delivery boundary fetches and writes nothing, and carries no word (the typed event binding, P4-SYSTEM.14 a43e-1).
+    delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()
     _require(
-        all(type(value) is int for value in numeric)
+        all(type(value) is int for value in (numeric[:2] + numeric[4:] if delivered else numeric))
         and type(writes) is tuple
         and all(
             type(write) is tuple

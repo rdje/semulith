@@ -94,3 +94,7 @@ trace and stdout byte-identical to v4's (a43b-2d). Pinned: the measured record (
 `b5fb667a…`), the policy; authority `review`; ten legs; three limitations — the receipt's own now names `REQ-GC-M`.
 Measured: `rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3`; `REQUIREMENT-STATUS:
 … 46 planned, 2 implemented; 6 case(s), 2 credited … 2 of 2 credit record(s) current; 0 drift`.
+
+## Retirement (2026-11-05, `P4-SYSTEM.14` a43e-1)
+
+`CR-GC-M-3` was retired by removal in the commit that opens the window for SSTC ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md)): the typed event binding moved four inputs the case's manifest pins (`schema/matched-case.sexp`, `scripts/matched_gpr_case.py`, `scripts/matched_gpr_comparison.py`, `scripts/matched_gpr_property.py`), and the measure's move a fifth and sixth, so the review reads `invalidated`, 8 of 10 legs. In the same commit `REQ-GC-M` records `planned` and the catalogue file leaves with its last records (`REQUIREMENT-STATUS: … 47 planned, 1 not-applicable; 8 case(s), 0 credited, 0 declared, 0 of 0 credit record(s) current; 0 drift`). The rulings above stand for the re-credit: the case is re-captured once as `rv64gc-m-forms-v6` and credited through the same act (a43e-5).

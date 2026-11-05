@@ -19,6 +19,9 @@ import matched_gpr_comparison as C
 import records_sexp as R
 
 
+DELIVERED = "pending interrupt 7 delivers in M before instruction fetch; no retirement."
+
+
 def expectation(writes, *, program="example.s", entry="0x80000000"):
     return dict(
         program=program,
@@ -335,10 +338,6 @@ class DerivationTests(unittest.TestCase):
         for field, text in [
             ("insn", "<fetch fault>"),
             ("insn", "<halted>"),
-            (
-                "derivation",
-                "pending interrupt 7 delivers in M before instruction fetch; no retirement.",
-            ),
         ]:
             doc = expectation([{"x1": "0x1"}])
             doc["step"][0][field] = text
@@ -359,6 +358,42 @@ class DerivationTests(unittest.TestCase):
                     expected=expectation([{}, {}]),
                     reason="unfetched boundaries",
                 )
+
+    def boundary(self, **fields):
+        """A real derivation whose second step is the boundary the author types for a delivered interrupt, these fields apart."""
+        source = b"addi x1, x0, 1\naddi x2, x0, 2\n"
+        real = C.Author.derive_snapshot(source, program=expectation([{}])["program"], instructions=2)
+        bare = dict(instruction_bits=None, instruction_length=None, fetches=0, writes=())
+        return source, replace(real, steps=(real.steps[0], replace(real.steps[1], **{**bare, **fields})))
+
+    def declared(self, *declared_at):
+        doc = expectation([{"x1": "0x1"}, {}])
+        for n in declared_at:
+            doc["step"][n]["derivation"] = DELIVERED
+        return doc
+
+    def test_a_delivery_boundary_the_record_declares_binds(self):
+        """The typed event binding (P4-SYSTEM.14 a43e-1): the record declares the delivery and the author typed it bare."""
+        source, derived = self.boundary()
+        with mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+            self.outcome(source=source, expected=self.declared(1))
+
+    def test_a_delivery_boundary_that_fetches_or_writes_stays_unsupported(self):
+        for fields in (dict(fetches=1), dict(writes=((2, 2),)), dict(instruction_length=4), dict(instruction_bits=19)):
+            source, derived = self.boundary(**fields)
+            with self.subTest(fields=fields), mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+                self.outcome("unsupported", source=source, expected=self.declared(1), reason="unfetched boundaries")
+
+    def test_an_unfetched_boundary_the_record_does_not_declare_stays_unsupported(self):
+        for fields in (dict(), dict(instruction_length=4), dict(instruction_bits=19)):
+            source, derived = self.boundary(**fields)
+            with self.subTest(fields=fields), mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+                self.outcome("unsupported", source=source, expected=self.declared(), reason="unfetched boundaries")
+
+    def test_a_delivery_the_record_declares_on_a_fetched_boundary_stays_unsupported(self):
+        source, derived = self.boundary(instruction_bits=19, instruction_length=4)
+        with mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+            self.outcome("unsupported", source=source, expected=self.declared(1), reason="unfetched boundaries")
 
     def test_source_refusals_and_unavailable_tools_stay_distinct(self):
         self.outcome("refused", source=b"not_an_instruction\n", reason="source derivation")
@@ -486,7 +521,7 @@ MUTATIONS = {
     "fixed-entry": ("if entry != Author.ENTRY:", "if False:"),
     "exclusions": ("if excluded:", "if False:"),
     "declared-events": (
-        'if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"])\n           or Sail.DECLARED_INTERRUPT.match(step["derivation"]) for step in doc["step"]):',
+        'if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"]) for step in doc["step"]):',
         "if False:",
     ),
     "source-forward": (
@@ -502,13 +537,16 @@ MUTATIONS = {
         "derived = Author.derive_snapshot(Path(program).read_bytes(), program=program, instructions=instructions)",
     ),
     "context-program": ("or derived.program != program", "or False"),
-    "unfetched": (
-        "if any(step.instruction_bits is None or step.instruction_length is None for step in derived.steps):",
-        "if False:",
-    ),
+    "unfetched": ("if not (bare if delivered else fetched):", "if False:"),
+    "undeclared-unfetched": ("if not (bare if delivered else fetched):", "if delivered and not bare:"),
+    "declared-fetched": ("if not (bare if delivered else fetched):", "if not delivered and not fetched:"),
+    "half-fetched": ("fetched = step.instruction_bits is not None and step.instruction_length is not None",
+                     "fetched = step.instruction_bits is not None or step.instruction_length is not None"),
+    "bare-boundary": ("bare = step.instruction_bits is None and step.instruction_length is None and not step.writes and not step.fetches",
+                      "bare = True"),
     "whole-budget": (
-        'for step, expected in zip(derived.steps, doc["step"]):',
-        'for step, expected in [(derived.steps[selected.step_n], doc["step"][selected.step_n])]:',
+        'for step, expected in zip(derived.steps, doc["step"]):\n        observed = ',
+        'for step, expected in [(derived.steps[selected.step_n], doc["step"][selected.step_n])]:\n        observed = ',
     ),
     "value-comparison": ("if observed != wanted:", "if False:"),
     "witness-change": ("if value is None:", "if False:"),

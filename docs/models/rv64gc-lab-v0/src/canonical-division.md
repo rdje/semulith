@@ -271,3 +271,5 @@ The control is the case's failure mode: S's `rdcycle` at boundary 102, refused w
 boundary 109 copies it to `x21`. Expecting 102 is what a refused read that had committed the count would look like, and it must diverge. All three traces
 are byte-identical (26,277 B, `cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with qualification
 false. Since a43c-5 the reviews read it, `satisfied` over 88 authenticated files, all ten legs, and `CR-D-ZICNTR-1` credits it.
+
+**Since `P4-SYSTEM.14` a43e-1 (2026-11-05) these four captures are history in their turn.** The window that opens SSTC moved inputs each manifest pins, so `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1` were retired. Each case is re-captured once under a new id; none of their steps is a delivery and neither their guests nor their configurations move, so their traces should be byte-identical, and a difference would be a finding (`decision_sstc-delivery-needs-the-pinned-window.md`).

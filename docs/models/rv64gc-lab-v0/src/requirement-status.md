@@ -43,8 +43,13 @@ Since a45-1 an included requirement may not name a superseded obligation (RECORD
 
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
-edge and credits no successor by name. Today 43 requirements derive `planned`, one `not-applicable` and four
-`implemented` through four current records:
+edge and credits no successor by name.
+
+**Today 47 requirements derive `planned`, one `not-applicable` and none `implemented`: the window that opens SSTC is open.**
+The typed event binding moved inputs every credited case pins, so all four records were retired by removal on 2026-11-05 (`P4-SYSTEM.14` a43e-1;
+`decision_sstc-delivery-needs-the-pinned-window.md`). Each case is re-captured once and credited again, with SSTC on the same tools.
+`python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints `CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
+authenticated, nothing granted`, and no recorded status drifts. The records the window retired, each of which the rest of this page describes:
 
 | Requirement | Record | Case | Category, risk |
 | --- | --- | --- | --- |
@@ -58,16 +63,12 @@ the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-befo
 moved pinned inputs of the cases `CR-GC-M-2` (v4, a44-5) and `CR-D-XLEN-1` (xlen-v1, a43a-3) named,
 so both were removed with the catalogue file and the statuses read `planned` until the cases were
 re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other four cases
-are uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. No
-recorded status drifts.
-`python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints
-`CREDIT-RECORDS: rv64gc-lab-v0: 4 credit(s), 4 current, 0 lapsed; records read and
-authenticated, nothing granted`. The probe `scripts/probe_requirement_status.py` runs 22
+were uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. The probe `scripts/probe_requirement_status.py` runs 22
 synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`), under the rulings on its authority and on the
+`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
 since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1).
@@ -106,5 +107,5 @@ only. The copy would take the file to 77,669 B against the family's 65,536 B per
 would edit a pinned tool and lapse all three credits. The status does not rest on the copy: the record pins
 `evidence/rv64gc-csr-set-v1/measured-experiment.sexp`, and the method review validates its graph on every read. The
 director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`): ZICNTR and SSTC follow the same way, and the next pinned window retires
-all the copies, so `gate_report.py` reads each credited case's record from `evidence/`. That window also moves `contract_measure` out of `gate_report.py`, the one import that makes a
-report generator a pinned input of every experiment, so editing a report never lapses evidence again.
+all the copies, so `gate_report.py` reads each credited case's record from `evidence/`. That window is this one: the copies left at a43e-1, and `G-TRACE` lists nothing until the re-credits. It also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a
+report generator a pinned input of every experiment, so editing a report never lapses the evidence captured from here on.

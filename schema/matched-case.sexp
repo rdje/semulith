@@ -94,8 +94,8 @@
 (construct (name step)
   (field (name n) (type integer))
   (field (name pc) (type integer))
-  (field (name word) (type integer))
-  (field (name length) (type integer))
+  (field (name word) (type integer) (optional yes))
+  (field (name length) (type integer) (optional yes))
   (field (name fetches) (type integer))
   (field (name write) (type form) (head write) (repeat yes)))
 

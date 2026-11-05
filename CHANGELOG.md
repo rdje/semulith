@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0351 (leaf P4-SYSTEM.14 a43e-1) — the window that opens SSTC: a delivered interrupt is a boundary a case can say, the report leaves the experiments' inputs, and four credits are retired
+
+a43e-1, on the director's "Pick yourself.": option A of `decision_sstc-delivery-needs-the-pinned-window.md`. `word` and `length` are optional in a `step`; a boundary may fetch nothing exactly when its record declares an interrupt delivered there, and it then writes nothing; a wait, a fetch fault and a half-fetched step stay unsupported. `contract_measure` moves to `scripts/effective_contract.py`, so the next manifests pin no report generator. The predicted cost, exactly: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1` retired by removal, 47 planned, 1 not-applicable, G-TRACE red, G-STATE 0 of 4, GS 4 of 10 open, until each case is re-captured once (a43e-3 … a43e-5). The dossier copies left. Eight probes moved rather than the three predicted, and the real check is stricter than the prototype's. No retained evidence byte moved.
+
 ## SEMULITH-AC-0093 (leaf ARTIFACT-CLEANUP.29) — the ruled class C carried out: whole orphan incremental directories go, 1.05 GB, and the strict tools do not move
 
 `scripts/artifact_cleanup_orphans.py`, its own act: a crate-hash directory of cargo's shape in which nothing changed since the last recorded act goes whole. 114 directories, 10,925 files, 1,049,630,763 B, residue 0, none kept; 21 younger ones kept; a build afterwards recompiled nothing. 12 tests, seven guard omissions each RED by one test, in ARTIFACT-COHORT. `.37` runs it before its four.

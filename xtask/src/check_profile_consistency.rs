@@ -8103,7 +8103,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(0, "-O".to_owned());
         }
-        tally.score(&format!("GREEN finite source property {mode}"), prober.probe(repo, argv.clone()), 0, "MATCHED-GPR-PROPERTY: 35 tests / 0 failures / 0 errors; synthetic metadata, finite source witnesses only");
+        tally.score(&format!("GREEN finite source property {mode}"), prober.probe(repo, argv.clone()), 0, "MATCHED-GPR-PROPERTY: 36 tests / 0 failures / 0 errors; synthetic metadata, finite source witnesses only");
         for (mutation, losses) in [
             ("publication-authority", "37"),
             ("record-roundtrip", "1"),
@@ -8124,11 +8124,13 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("witness-value", "3"),
             ("budget-binding", "2"),
             ("source-identity", "5"),
-            ("reviewed-words", "8"),
+            ("reviewed-words", "9"),
+            ("delivery-bare", "2"),
+            ("delivery-refused", "1"),
             ("claim-values", "3"),
             ("authority-node-bound", "1"),
             ("authority-depth-bound", "1"),
-            ("derived-status", "37"), // 37 while REQ-GC-M is implemented on the real tree (2 during the a43b-2 lapse)
+            ("derived-status", "2"), // 37 while REQ-GC-M is implemented on the real tree; 2 during a lapse (a43b-2, a43e-1)
             ("derived-links", "1"),
             ("requirement-meaning", "6"),
             ("obligation-meaning", "4"),
@@ -8144,7 +8146,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED finite source property {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-PROPERTY: 35 tests / {losses} failures / 0 errors; synthetic metadata, finite source witnesses only"));
+            tally.score(&format!("RED finite source property {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-PROPERTY: 36 tests / {losses} failures / 0 errors; synthetic metadata, finite source witnesses only"));
         }
     }
     // P4-SYSTEM.14 a44-2a: the matched cases' declarations as data (scripts/matched_gpr_case.py).
@@ -8157,18 +8159,20 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             &format!("GREEN case declarations {mode}"),
             prober.probe(repo, argv.clone()),
             0,
-            "MATCHED-GPR-CASE: 8 tests / 0 failures / 0 errors; declarations as data, no capture",
+            "MATCHED-GPR-CASE: 10 tests / 0 failures / 0 errors; declarations as data, no capture",
         );
         for (mutation, losses) in [
             ("missing-refusal", "1"),
             ("id-binding", "1"),
             ("control-binding", "1"),
             ("schema", "1"),
-            ("value-mapping", "2"),
+            ("value-mapping", "3"),
+            ("delivery-binding", "4"),
+            ("delivery-render", "1"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 8 tests / {losses} failures / 0 errors; declarations as data, no capture"));
+            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 10 tests / {losses} failures / 0 errors; declarations as data, no capture"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {

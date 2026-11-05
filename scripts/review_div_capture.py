@@ -37,7 +37,7 @@ ROOT_MODULES = frozenset(
 REVIEWED_MODULES = frozenset(
     """capture_div change_impact check_sexp_schema compare_traces derive_rv64gc_expectations
     dossier_sexp expectations_text experiment_artifacts experiment_verification
-    gate_report matched_gpr_artifacts matched_gpr_case matched_gpr_collector matched_gpr_comparison
+    effective_contract matched_gpr_artifacts matched_gpr_case matched_gpr_collector matched_gpr_comparison
     matched_gpr_evaluation matched_gpr_execution matched_gpr_expected_author
     matched_gpr_files matched_gpr_identity matched_gpr_image matched_gpr_impact
     matched_gpr_input_review matched_gpr_leaf matched_gpr_manifest

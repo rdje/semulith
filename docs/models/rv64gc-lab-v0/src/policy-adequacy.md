@@ -12,7 +12,8 @@ credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) 
 opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both captures, which read
 `invalidated`, 8 of 10 legs, their credits retired. Re-captured once each as v5 and xlen-v2, traces byte-identical
 (a43b-2d), both measure every leg satisfied again and are credited by `CR-GC-M-3` and `CR-D-XLEN-2` (a43b-2e); the
-tables below are the measurements of their predecessors, which the re-captures reproduce.
+tables below are the measurements of their predecessors, which the re-captures reproduce. **Since `P4-SYSTEM.14` a43e-1 (2026-11-05) the window that opens SSTC
+is open:** the four retained captures read `invalidated`, 8 of 10 legs, their credits retired, until each is re-captured once. The satisfied lines on this page are what they measured before it.
 
 ## The ten legs and what the bytes say
 
@@ -123,7 +124,7 @@ rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited b
 rv64gc-zicntr-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-1
 ```
 
-Measured at a43b-3g with `no qualification credit`; the record `CR-D-CSR-SET-1` credits it since a43b-3h
+Until the window opened (a43e-1); since then each line reads `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. Measured at a43b-3g with `no qualification credit`; the record `CR-D-CSR-SET-1` credits it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
 
 `rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the

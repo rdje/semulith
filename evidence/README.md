@@ -14,10 +14,10 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-m-forms-v3/` | `invalidated` 2026-10-29 | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties |
 | `rv64gc-m-forms-v4/` | `invalidated` 2026-11-02 | 22 of 22 | v3's program and prepared bytes; identical traces |
 | `rv64gc-xlen-forms-v1/` | the first non-M case (REQ-D-XLEN); `invalidated` 2026-11-02 | 22 of 22 | `xlen-forms.s`, 25 boundaries, 17 properties |
-| `rv64gc-m-forms-v5/` | captured 2026-11-02, credited `CR-GC-M-3` | 22 of 22 | v4's bytes, its control declared; identical traces |
-| `rv64gc-xlen-forms-v2/` | captured 2026-11-02, credited `CR-D-XLEN-2` | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
-| `rv64gc-csr-set-v1/` | captured 2026-11-04 (a43b-3f), credited `CR-D-CSR-SET-1`; its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
-| `rv64gc-zicntr-v1/` | captured 2026-11-05 (a43c-4), credited `CR-D-ZICNTR-1`; its own reference configuration | 22 of 22 | `zicntr.s`, 292 boundaries, 44 properties |
+| `rv64gc-m-forms-v5/` | `invalidated` 2026-11-05 (a43e-1), its credit retired | 22 of 22 | v4's bytes, its control declared; identical traces |
+| `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1), its credit retired | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
+| `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1), its credit retired; its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
+| `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1), its credit retired; its own reference configuration | 22 of 22 | `zicntr.s`, 292 boundaries, 44 properties |
 
 Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 

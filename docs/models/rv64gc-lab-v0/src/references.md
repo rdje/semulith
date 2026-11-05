@@ -140,7 +140,7 @@ The record names the case's guest (`41f2cbc2…`), the case's configuration (`05
 All three producers agree on it: the spec-side author, the lab engine, and the reference on the same configuration as CSR-SET's and ZICNTR's; under the profile override the reference first differs at `rdtime x5`. **What the exact boundary means.** The manual guarantees a changed comparison reaches STIP "eventually, but not necessarily immediately",
 so the scheduled row's boundary is what both producers do on this configuration, not a claim about latency, and the case's limitations will say so. An explicit write to a CSR the conditions depend on is different: they "must also be evaluated immediately following" it, so the delivery right after writing `sstatus.SIE` is normative.
 
-**Its case waits for a decision.** A delivered interrupt is a boundary with no instruction word, and the case format has no way to say so: a `step` needs an integer `word` and `length`, and the comparison refuses, "unfetched boundaries need typed event binding". Those tools are pinned by all four credited cases, so adding the binding lapses every credit until each is re-captured: a window, raised to the director with its options and costs in `decision_sstc-delivery-needs-the-pinned-window.md`. A throwaway clone proves that route (a43e-0): 15 changed lines add the binding, and SSTC then reaches `DIV-POLICY: satisfied — 10 of 10 legs satisfied`, while all four existing credits lapse, as predicted. Until the pick, the program runs in the corpus and binds nothing.
+**Its case needs a window, open since a43e-1.** A delivered interrupt is a boundary with no instruction word, and the case format could not say so. Since `P4-SYSTEM.14` a43e-1 (2026-11-05) it can: `word` and `length` are optional in a `step`, and a boundary may fetch nothing exactly when its record declares an interrupt delivered there, and it then writes nothing. Those tools are pinned by all four credited cases, so the binding retired every credit until each is re-captured (`decision_sstc-delivery-needs-the-pinned-window.md`). A throwaway clone proved the route first (a43e-0): SSTC reaches `DIV-POLICY: satisfied — 10 of 10 legs satisfied`. Until its case lands (a43e-3), the program runs in the corpus and binds nothing.
 
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
@@ -487,10 +487,12 @@ The existing expectation mapper validates exactly one complete ordered baseline
 document and RV64 GPR values; no second loader is introduced. Require the exact
 program/budget and an explicit RV64 entry. A valid entry outside the snapshot
 author's fixed cold context is unsupported. Cross-model exclusions, declared
-profile divergence and fault injection remain unsupported. Declared delivery/wait
-labels or derivation markers, and any source boundary without a complete fetched
-instruction, need a later typed event binding. This first consumer therefore
-credits ordinary fetched GPR changes only, including mixed widths and changed
+profile divergence and fault injection remain unsupported. A boundary without a
+complete fetched instruction needed a later typed event binding; since `P4-SYSTEM.14`
+a43e-1 it binds exactly when the record declares an interrupt delivered there and
+the boundary fetches and writes nothing. A wait, a fetch fault or a half-fetched
+step stays unsupported, and so do declared `<…>` labels. This consumer therefore
+credits fetched GPR changes and delivery boundaries, including mixed widths and changed
 instruction memory. Source directives cannot override the stock numerical rules.
 
 Derive once through `derive_snapshot`; bind its complete context/step sequence
@@ -563,7 +565,7 @@ unsupported
 ```
 
 `python3 scripts/probe_matched_gpr_derivation.py` and its `python3 -O` variant
-each pass 23 tests; 19 omissions each lose assertions with zero errors. Existing
+each pass 27 tests; 23 omissions each lose assertions with zero errors. Existing
 52-test byte-comparison controls and 14 omissions retain identical normal/optimized
 results. Canonical capability checks account for all 167 guests: 125 match over
 3,794 steps, 41 are explicitly unsupported (17 source-control/semantic, 17 event-boundary,
