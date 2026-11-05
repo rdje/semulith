@@ -39,9 +39,9 @@ SEAMS = {
 }
 # The cases whose capture declared a planned record and a dependency manifest; a declared case without them
 # is named here when it lands, never skipped silently.
-# Sorted. csr-set-v1 is the first case with a second method and its own reference configuration (a43b-3e); v5 and xlen-v2 have their control declared (a43b-2c).
-PLANNED = ("rv64gc-csr-set-v1", "rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-signed-div-truncation-v2",
-           "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-zicntr-v1")
+# Sorted. csr-set-v1 is the first case with a second method and its own reference configuration (a43b-3e); v5 and xlen-v2 have their control declared (a43b-2c); the window's five, a43e-3.
+PLANNED = ("rv64gc-csr-set-v1", "rv64gc-csr-set-v2", "rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-m-forms-v6", "rv64gc-signed-div-truncation-v2",
+           "rv64gc-sstc-v1", "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-xlen-forms-v3", "rv64gc-zicntr-v1", "rv64gc-zicntr-v2")
 MUTATION = None
 
 

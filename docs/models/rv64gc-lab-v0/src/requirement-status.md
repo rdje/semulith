@@ -47,7 +47,7 @@ edge and credits no successor by name.
 
 **Today 47 requirements derive `planned`, one `not-applicable` and none `implemented`: the window that opens SSTC is open.**
 The typed event binding moved inputs every credited case pins, so all four records were retired by removal on 2026-11-05 (`P4-SYSTEM.14` a43e-1;
-`decision_sstc-delivery-needs-the-pinned-window.md`). Each case is re-captured once and credited again, with SSTC on the same tools.
+`decision_sstc-delivery-needs-the-pinned-window.md`). Each case is re-captured once and credited again, with SSTC on the same tools; all five stand declared since a43e-3, on contract v3, and uncaptured.
 `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` prints `CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and
 authenticated, nothing granted`, and no recorded status drifts. The records the window retired, each of which the rest of this page describes:
 

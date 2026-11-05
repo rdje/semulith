@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0355 (leaf P4-SYSTEM.14 a43e-3) — the window's five cases declared on contract v3, committed before their captures
+
+`rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, 67 manifest children each with no report or book generator; the evidence family re-derived for thirteen cases (287 files, 172 MiB). PNT resumed on the director's word. Nothing captured or credited.
+
 ## SEMULITH-P4-0354 (leaf P4-SYSTEM.14) — PNT paused at a handoff-ready checkpoint, on the director's word
 
 `MEMORY.md` records the pause and the next action, a43e-3. The pinned window stays open meanwhile: no credit is current until a43e-5.

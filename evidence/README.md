@@ -8,18 +8,23 @@ observations. Nothing here closes the M obligation or the CPU gate.
 
 ## Cases (this table is the complete membership)
 
-| Case directory | State | Files | Holds |
-| --- | --- | --- | --- |
-| `rv64gc-signed-div-truncation-v2/` | `invalidated` 2026-10-22 | 22 of 22 | `m-div.s`, 27 boundaries, 1 property |
-| `rv64gc-m-forms-v3/` | `invalidated` 2026-10-29 | 22 of 22 | `m-forms.s`, 33 boundaries, 25 properties |
-| `rv64gc-m-forms-v4/` | `invalidated` 2026-11-02 | 22 of 22 | v3's program and prepared bytes; identical traces |
-| `rv64gc-xlen-forms-v1/` | the first non-M case (REQ-D-XLEN); `invalidated` 2026-11-02 | 22 of 22 | `xlen-forms.s`, 25 boundaries, 17 properties |
-| `rv64gc-m-forms-v5/` | `invalidated` 2026-11-05 (a43e-1), its credit retired | 22 of 22 | v4's bytes, its control declared; identical traces |
-| `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1), its credit retired | 22 of 22 | xlen-v1's bytes, its control declared; identical traces |
-| `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1), its credit retired; its own reference configuration | 22 of 22 | `csr-set.s`, 157 boundaries, 53 properties |
-| `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1), its credit retired; its own reference configuration | 22 of 22 | `zicntr.s`, 292 boundaries, 44 properties |
+| Case directory | State | Holds |
+| --- | --- | --- |
+| `rv64gc-signed-div-truncation-v2/` | `invalidated` 2026-10-22 | `m-div.s`, 27 boundaries, 1 property |
+| `rv64gc-m-forms-v3/` | `invalidated` 2026-10-29 | `m-forms.s`, 33 boundaries, 25 properties |
+| `rv64gc-m-forms-v4/` | `invalidated` 2026-11-02 | v3's bytes |
+| `rv64gc-xlen-forms-v1/` | `invalidated` 2026-11-02 | `xlen-forms.s`, 25 boundaries, 17 properties |
+| `rv64gc-m-forms-v5/` | `invalidated` 2026-11-05 (a43e-1) | v4's bytes, its control declared |
+| `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1) | xlen-v1's bytes, its control declared |
+| `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1) | `csr-set.s`, 157 boundaries, 53 properties |
+| `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1) | `zicntr.s`, 292 boundaries, 44 properties |
+| `rv64gc-m-forms-v6/` | declared | v5's bytes, contract v3 |
+| `rv64gc-xlen-forms-v3/` | declared | xlen-v2's guest; 21 derivation lines; contract v3 |
+| `rv64gc-csr-set-v2/` | declared | v1's bytes, contract v3 |
+| `rv64gc-zicntr-v2/` | declared | v1's bytes, contract v3 |
+| `rv64gc-sstc-v1/` | declared | `sstc-timer.s`, 315 boundaries, 39 properties |
 
-Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
+An `invalidated` case holds 22 of 22 files; a declared one 8 (a43e-3). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
 
 ## Declared files and lifecycle (per case)
 
@@ -31,7 +36,7 @@ Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 177 files at most, all 177 present. Prepared inputs come from canonical sources
+With this index: 287 files at most, 217 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.
@@ -42,12 +47,12 @@ truth; the JSON and the ELF are reproducible artifacts; the wrong expectation is
 
 ## Finite retention envelope
 
-The family is limited to 177 files, 112 MiB aggregate and 4 MiB per member
-(`decision_evidence-family-two-cases.md`, re-derived for eight cases by a43c-2: eight cases and this
-index hold at most 110,628,864 B, `retention_limits()`; health 174 files / 98 MiB). Per case: three
+The family is limited to 287 files, 172 MiB aggregate and 4 MiB per member
+(`decision_evidence-family-two-cases.md`, a43e-3: thirteen cases and this index hold at most
+179,769,344 B, `retention_limits()`; health 284 files / 150.5 MiB). Per case: three
 4 MiB traces and nine 64 KiB streams/receipts, ten 64 KiB prepared and metadata slots; this index
 4 KiB / 80 lines. The registry enforces the family and index bounds; the input probe checks member
 names, same-volume regular files and each role limit before authenticating prepared pins, never
-descending into an unknown directory. A ninth case is a new re-derivation. The 128 MiB
+descending into an unknown directory. A fourteenth case is a new re-derivation. The 128 MiB
 artifact-read and 16 MiB snapshot ceilings are unchanged; offline checking needs neither the
 reference executable nor an acquired source cache.

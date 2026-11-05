@@ -34,16 +34,19 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 177  # eight declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 112 * 1024 * 1024  # the seventh re-derivation (a43c-2): eight cases at most 110,628,864 B with the index
+FAMILY_FILES = 287  # thirteen declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
+FAMILY_BYTES = 172 * 1024 * 1024  # the eighth re-derivation (a43e-3): thirteen cases at most 179,769,344 B with the index
 M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
 XLEN_V1 = "rv64gc-xlen-forms-v1"  # the first non-M case, REQ-D-XLEN (P4-SYSTEM.14 a43a-2b)
 # The planned lapse that opens CSR-SET re-captures both once, their control declared (P4-SYSTEM.14 a43b-2c).
 M_FORMS_V5, XLEN_V2 = "rv64gc-m-forms-v5", "rv64gc-xlen-forms-v2"
 CSR_SET = "rv64gc-csr-set-v1"  # REQ-D-CSR-SET, the first case with its own reference configuration (P4-SYSTEM.14 a43b-3d)
 ZICNTR = "rv64gc-zicntr-v1"  # REQ-D-ZICNTR, on its own reference configuration, byte-identical to CSR-SET's (P4-SYSTEM.14 a43c-2)
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR)
-OWN_CONFIGURATION = (CSR_SET, ZICNTR)
+# The window that opens SSTC re-declares the four on contract v3 and adds SSTC (P4-SYSTEM.14 a43e-3).
+M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2 = "rv64gc-m-forms-v6", "rv64gc-xlen-forms-v3", "rv64gc-csr-set-v2", "rv64gc-zicntr-v2"
+SSTC = "rv64gc-sstc-v1"  # REQ-D-SSTC, the first case whose boundaries include delivered interrupts
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR, M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2, SSTC)
+OWN_CONFIGURATION = (CSR_SET, ZICNTR, CSR_SET_V2, ZICNTR_V2, SSTC)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -106,10 +109,34 @@ PREPARED[ZICNTR] = {
     "control.expected.sexp": ("expectation", 48335,
         "0df59ca83c31079227d425b70a0e5d5666c0a13c500869abdc7a43b03b780c5f"),
 }
+# The window's cases. Three carry their predecessor's bytes; XLEN's expectations moved in derivation prose alone (a43e-2: 21 lines, each {new} to its value), so its
+# pins are its own and its guest and configuration are not. SSTC's configuration is CSR-SET's and ZICNTR's, byte for byte.
+PREPARED[M_FORMS_V6] = dict(PREPARED[M_FORMS_V5])
+PREPARED[XLEN_V3] = {
+    "guest.elf": PREPARED[XLEN_V2]["guest.elf"],
+    "reference-config.json": PREPARED[XLEN_V2]["reference-config.json"],
+    "baseline.expected.sexp": ("expectation", 6548,
+        "5322f07f9df97863452a72f4dfb88bba17c3853c781fca6735235aa5947d5ffd"),
+    "control.expected.sexp": ("expectation", 6100,
+        "010b17f6a1b7bca1633c65d44a5b3c8f1ad8a9fb7d36cd1caa5e778507603510"),
+}
+PREPARED[CSR_SET_V2] = dict(PREPARED[CSR_SET])
+PREPARED[ZICNTR_V2] = dict(PREPARED[ZICNTR])
+PREPARED[SSTC] = {
+    "guest.elf": ("guest-image", 5080,
+        "e4b9a6c82738df70d30e59850a94c10f5e8390ebdd56c05181a74d1d0e491af9"),
+    "reference-config.json": ("reference-config", 8748,
+        "05746ed66c5f2805afe16c09b072edd373c284b73566a2252b4404f86fd59cea"),
+    "baseline.expected.sexp": ("expectation", 53750,
+        "05faa0dbaa4654542fde422f40e6bd0f3ef19a346800b00b9a1fc712e74df157"),
+    "control.expected.sexp": ("expectation", 51552,
+        "2dd7e190cc69431d698fa6d4b3f57e6e28d7e5c309b70208fc0083b76d6bbac6"),
+}
 TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119,
-          CSR_SET: 82222, ZICNTR: 112424}
+          CSR_SET: 82222, ZICNTR: 112424, M_FORMS_V6: 27426, XLEN_V3: 24665, CSR_SET_V2: 82222, ZICNTR_V2: 112424, SSTC: 119130}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50),
-           M_FORMS_V5: (33, 66), XLEN_V2: (25, 50), CSR_SET: (157, 314), ZICNTR: (292, 584)}
+           M_FORMS_V5: (33, 66), XLEN_V2: (25, 50), CSR_SET: (157, 314), ZICNTR: (292, 584),
+           M_FORMS_V6: (33, 66), XLEN_V3: (25, 50), CSR_SET_V2: (157, 314), ZICNTR_V2: (292, 584), SSTC: (315, 622)}
 
 
 def bounded_bytes(path):
@@ -401,6 +428,11 @@ class ZicntrCaseInputTests(CaseInputTests):
     CASE_ID = ZICNTR
 
 
+class SstcCaseInputTests(CaseInputTests):
+    """The SSTC case: its own overlay, CSR-SET's rendered configuration, and boundaries that fetch nothing."""
+    CASE_ID = SSTC
+
+
 class FamilyTests(unittest.TestCase):
     def setUp(self):
         base = ROOT / "target/prepared-div-input-controls"
@@ -422,12 +454,12 @@ class FamilyTests(unittest.TestCase):
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
         self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 110628864)  # eight cases of 13,828,096 B and the index (a43c-2)
+        self.assertEqual(sum(limits.values()), 179769344)  # thirteen cases of 13,828,096 B and the index (a43e-3)
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 8 * 22)  # the ZICNTR case captured once (a43c-4); 8 at its declarations
+        self.assertEqual(len(members), 1 + 8 * 22 + 5 * 8)  # the window's five at their declarations (a43e-3); 22 each after their captures
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):
@@ -484,7 +516,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mutation", choices=["actual-layout"])
     args = parser.parse_args()
-    classes = (RetainedCaseInputTests, MFormsCaseInputTests, CsrSetCaseInputTests, ZicntrCaseInputTests, FamilyTests)
+    classes = (RetainedCaseInputTests, MFormsCaseInputTests, CsrSetCaseInputTests, ZicntrCaseInputTests, SstcCaseInputTests, FamilyTests)
     if args.mutation:
         before = "    check_retention_layout(root)\n    result = {}\n"
         source = Path(__file__).read_text()
@@ -495,7 +527,7 @@ def main():
         sys.modules[module.__name__] = module
         exec(compile(source.replace(before, "    result = {}\n", 1), __file__, "exec"),
              module.__dict__)
-        classes = (module.RetainedCaseInputTests, module.MFormsCaseInputTests, module.CsrSetCaseInputTests, module.ZicntrCaseInputTests, module.FamilyTests)
+        classes = (module.RetainedCaseInputTests, module.MFormsCaseInputTests, module.CsrSetCaseInputTests, module.ZicntrCaseInputTests, module.SstcCaseInputTests, module.FamilyTests)
     suite = unittest.TestSuite(unittest.defaultTestLoader.loadTestsFromTestCase(cls) for cls in classes)
     result = unittest.TextTestRunner(verbosity=1).run(suite)
     print(f"DIV-CAPTURE-INPUTS: {result.testsRun} tests / {len(result.failures)} failures / "

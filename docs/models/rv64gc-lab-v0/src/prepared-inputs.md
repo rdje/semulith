@@ -169,11 +169,11 @@ The metadata names are `planned-experiment.sexp`, `dependencies.sexp`,
 The three native declarations are now [retained](capture-plan.md#retained-native-predeclarations);
 the twelve observations and two result files are now [retained](canonical-division.md).
 
-Since a43c-2 the registry caps the family at 177 files, 112 MiB aggregate and 4 MiB per member —
-eight declared cases (`decision_evidence-family-two-cases.md`, its seventh re-derivation). A case holds
+Since a43e-3 the registry caps the family at 287 files, 172 MiB aggregate and 4 MiB per member —
+thirteen declared cases (`decision_evidence-family-two-cases.md`, its eighth re-derivation). A case holds
 at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
-receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; eight cases and the 4 KiB index hold at
-most 110,628,864 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
+receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; thirteen cases and the 4 KiB index hold at
+most 179,769,344 bytes (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
 the 128 MiB combined artifact-read allowance and 16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
@@ -218,13 +218,14 @@ python3 scripts/probe_div_capture_inputs.py
 to the retained bytes (`disposition: pending`); it does so for the retained case too, which is how
 the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints the sizes and digests
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
-retained input is never replaced. The probe runs its controls over every declared case (49 tests in
-each Python mode) and holds the family census to 177 files / 112 MiB, the eight-case envelope of
-`decision_evidence-family-two-cases.md` (163 files present at the ZICNTR case's declarations,
-a43c-3; all 177 since its capture, a43c-4); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+retained input is never replaced. The probe runs its controls over five declared cases (79 tests in
+each Python mode) and holds the family census to 287 files / 172 MiB, the thirteen-case envelope of
+`decision_evidence-family-two-cases.md` (217 files present at the window's five declarations,
+a43e-3; 287 after their captures, a43e-4); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,
 an overlay file named for it ([references](references.md)): the CSR-SET case's `reference-config.json` is 8,748 B where every
-other case's is 7,609 B, and that one pin is why.
+other case's is 7,609 B, and that one pin is why (ZICNTR's and SSTC's render the same 8,748 B).
+**The window's five (a43e-3).** `m-forms-v6`, `csr-set-v2` and `zicntr-v2` report their predecessors' four pins byte for byte. `xlen-forms-v3`'s guest and configuration do too; its two expectations differ in 21 lines of derivation prose alone (a43e-2: `{new}` now reads the value), so they grew 273 B each and no value moved. `sstc-v1` is new: guest 5,080 B, baseline 53,750 B, control 51,552 B. Each case differs from its predecessor in its id, the contract (`rv64gc-lab-env-v3`, version 3) and the control reason's one lost space (`boundary 109`, not `boundary109`), which the prepared control's comment never carried.
 The m-forms case was captured once on 2026-10-22 ([the m-forms capture](canonical-division.md#the-m-forms-capture-a42aw)); its prepared inputs are unchanged by that, and no credit follows from it.

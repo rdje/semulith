@@ -8168,7 +8168,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("schema", "1"),
             ("value-mapping", "3"),
             ("delivery-binding", "4"),
-            ("delivery-render", "1"),
+            ("delivery-render", "2"), // a43e-3: SSTC is a real case with delivered boundaries, so the round trip over every declaration catches it too
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8571,10 +8571,10 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(0, "-O".to_owned());
         }
-        tally.score(&format!("GREEN prepared DIV capture inputs {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-INPUTS: 64 tests / 0 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit");
+        tally.score(&format!("GREEN prepared DIV capture inputs {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-CAPTURE-INPUTS: 79 tests / 0 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit");
         let mut mutated = argv.clone();
         mutated.extend(["--mutation".to_owned(), "actual-layout".to_owned()]);
-        tally.score(&format!("RED omitted actual DIV layout {mode}"), prober.probe(repo, mutated), 1, "DIV-CAPTURE-INPUTS: 64 tests / 6 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit");
+        tally.score(&format!("RED omitted actual DIV layout {mode}"), prober.probe(repo, mutated), 1, "DIV-CAPTURE-INPUTS: 79 tests / 6 failures / 0 errors; prepared artifacts of every reviewed case, no reference process or capture credit");
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["scripts/probe_div_authorities.py".to_owned()];
