@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0078 (leaf XTASK.13 slice b5) — GUEST-GEN's author probes judge frozen copies of their other corpus reads; a drafted step dropped on a measurement
+
+`scripts/fixtures/guest-gen/corpus/` holds the 26 records the author does not own and must reproduce; `frozen_owned.py` gains `judge_corpus`; the five probes' live reads go from 33, 57, 29, 25 and 23 files to 0 (`scripts/live_reads.py`, new, an audit-hook census). `mm-sret` edited with its fixture regenerated: refused, `399 pass / 1 fail`, becomes `MIRROR DRIFT — mm-sret.s` with the self-test at 400 of 400. A real-run step drafted for these records was dropped: the mirror governor names each of the 26, measured one edit at a time, so the step could never fire alone. Seven other probes' composition reads are b6.
+
 ## SEMULITH-P4-0345 (leaf P4-SYSTEM.14 a43c-5) — the reviews read the ZICNTR case and `REQ-D-ZICNTR` is credited `implemented`: G-STATE 3 of 4
 
 a43c-5: `rv64gc-zicntr-v1` reads `satisfied`, 10 of 10 legs, and the review needed no change. `FEATURE_DISPOSITIONS["OB-ZICNTR"]` is the first to name the counter rule. `CR-D-ZICNTR-1`, `authority review`, on one finite case of 44 witnesses: 44 planned, 4 implemented, 4 of 4 records current, 0 drift. Its limitations name what it does not claim: a write through `mcycle` or `minstret`, Zihpm's absence, rates, a CLINT, timer delivery. No dossier copy, by the director's ruling. The five closed CSR-SET records moved to archive part 27.

@@ -22,7 +22,7 @@ REPO = Path(__file__).resolve().parent.parent
 
 
 def check(author, root):
-    asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
+    asm = Assembler(Frozen.ENCODING)
 
     def neutral(text, route):
         header = text.split('(expectations ', 1)[0]

@@ -22,11 +22,11 @@ from expectations_text import with_fetches
 from riscv_asm import Assembler
 
 REPO = Path(__file__).resolve().parent.parent
-UNIT = REPO / 'profiles/rv64gc-lab-v0'
+UNIT = Frozen.ENCODING.parent  # DEF-GEN's frozen composition, its definitions beside it
 
 
 def probe(root, mutation):
-    shutil.copytree(REPO / 'definitions', root / 'definitions')
+    shutil.copytree(Frozen.ENCODING.parents[2] / 'definitions', root / 'definitions')
     shutil.copytree(REPO / 'schema', root / 'schema')
     scripts = root / 'scripts'
     scripts.mkdir()

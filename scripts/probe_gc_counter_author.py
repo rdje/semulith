@@ -106,8 +106,8 @@ def terminal_control(root, positive):
     sys.modules[spec.name] = forced
     spec.loader.exec_module(forced)
     forced.REPO = REPO
-    forced.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
-    guest = REPO / 'profiles/rv64gc-lab-v0/guests/mm-stimecmp.s'
+    forced.ENCODING = Frozen.ENCODING
+    guest = Frozen.CORPUS / 'mm-stimecmp.s'
     doc = D.load_expectations(guest.with_suffix('.expected.sexp'))
     run = forced.derive_parcel_guest(guest, Assembler(forced.ENCODING), 35)
     expected = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in doc['step']]
@@ -208,7 +208,7 @@ def check(author, root, *, positive=sstc_positive):
     sstc_negative(author)
     terminal_control(root, positive)
 
-    asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
+    asm = Assembler(Frozen.ENCODING)
     source = root / 'quoted.s'
     source.write_text('addi x1, x0, 1 #: quoted "rule" and path\\part §27 | source "label" \\ locator\n')
     run = author.derive_parcel_guest(source, asm, 1)
@@ -240,14 +240,7 @@ def check(author, root, *, positive=sstc_positive):
                              'schema/expectations.sexp'], cwd=REPO, capture_output=True, text=True)
     assert judged.returncode == 0, judged.stderr
 
-    total = 0
-    for name in ('a-lrsc-mustfail', 'mm-counters', 'mm-stimecmp'):
-        path = REPO / 'profiles/rv64gc-lab-v0/guests' / (name + '.s')
-        expected = D.load_expectations(path.with_suffix('.expected.sexp'))
-        run = author.derive_parcel_guest(path, asm, expected['instructions'])
-        writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
-        assert [st.writes for st in run.steps] == writes, f'{name}: CSR/directive architectural observations differ'
-        total += len(run.steps)
+    total = Frozen.judge_corpus(author, asm, 'counter', 'CSR/directive')
     assert Frozen.check_owned(author) == 0
     print(f'GC counter author probe: enable masks/aliases, 30 mode gates, eight STIP source/write cases and retention, Sstc 31 boundaries / 62 parcels; terminal 35/70 misses forced S trap, direct witness refuses; quoted text/schema; 3 corpus refusals / {total} steps')
 
@@ -292,7 +285,7 @@ def main():
             sys.modules[spec.name] = author
             spec.loader.exec_module(author)
             author.REPO = REPO
-            author.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
+            author.ENCODING = Frozen.ENCODING
         positive = (lambda author: None) if args.disable_sstc_witness else sstc_positive
         check(author, Path(td), positive=positive)
     return 0

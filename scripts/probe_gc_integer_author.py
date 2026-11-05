@@ -16,16 +16,12 @@ import tempfile
 
 import derive_rv64gc_expectations as Q
 import frozen_owned as Frozen
-import dossier_sexp as D
 from riscv_asm import Assembler
 
 REPO = Path(__file__).resolve().parent.parent
 MASK = 0xffffffffffffffff
 HIGH = 0x8000000000000000
-CORPUS = ('bound-alias', 'bound-arith', 'bound-ext', 'bound-shift', 'bound-shiftw',
-          'dir-chain', 'dir-cmp-branch', 'dir-ext-matrix', 'dir-x0-writes',
-          'fault-branch-nt', 'fault-hints', 'fault-shiftw-res', 'it-alias-bound',
-          'scope-alu', 'scope-branch', 'scope-mem', 'smoke-arith')
+CORPUS = Frozen.CORPUS_GUESTS['integer']
 
 
 def immediate(op, f3, value, rd=3):
@@ -116,7 +112,7 @@ def check(author, parent):
         assert hart.trapped and hart.csr['mcause'] == cause and hart.csr['mtval'] == Q.ENTRY + 0x101
         assert not info.get('writes') and (hart.mem, hart.x) == before
 
-    asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
+    asm = Assembler(Frozen.ENCODING)
     for word in (0x0210911b, 0x0210d11b, 0x4210d11b):
         hart = author.Hart()
         before = hart.x.copy(), hart.pc, hart.csr.copy(), hart.mem.copy()
@@ -133,14 +129,7 @@ def check(author, parent):
         assert (run.hart.trapped and run.hart.csr['mcause'] == 2
                 and run.hart.csr['mtval'] == word), 'reserved diagnostic lost raw word'
         assert run.hart.instret == 0 and run.steps[0].fetch == 2
-    total = 0
-    for name in CORPUS:
-        path = REPO / 'profiles/rv64gc-lab-v0/guests' / (name + '.s')
-        expected = D.load_expectations(path.with_suffix('.expected.sexp'))
-        run = author.derive_parcel_guest(path, asm, expected['instructions'])
-        writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
-        assert [st.writes for st in run.steps] == writes, f'{name}: integer architectural observations differ'
-        total += len(run.steps)
+    total = Frozen.judge_corpus(author, asm, 'integer', 'integer')
     assert Frozen.check_owned(author) == 0
     print(f'GC integer author probe: {len(cases)} arithmetic, 10 branches, narrow memory and reserved diagnostics; {len(CORPUS)} corpus gaps / {total} steps')
 
@@ -182,7 +171,7 @@ def main():
             sys.modules[spec.name] = author
             spec.loader.exec_module(author)
             author.REPO = REPO
-            author.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
+            author.ENCODING = Frozen.ENCODING
         check(author, Path(td))
     return 0
 

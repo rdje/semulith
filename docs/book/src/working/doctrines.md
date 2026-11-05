@@ -350,7 +350,16 @@ points the deriver's `REPO` and `ENCODING` at them, because the deriver is pinne
 | one line of prose added to that record, fixture regenerated | refused the same way, since each of those probes asserts `--check-owned`, which reads this as drift; with the probes frozen and no step, it passes silently (`rc=0`) | `an owned expectation record does not re-derive from its guest.` `DRIFT — inj-walk-l0` |
 
 The third row is why the step earns its place: the mirror compares architectural observations and the fixture compares bytes it generated, so only `--check-owned` reads the record's prose.
-The author probes still read other live guests (`mm-sret`, for one: edit its record and `probe_gc_privilege_author.py` fails): slice b5.
+The author probes read other live guests too, records the author does not own but must reproduce. Slice b5 froze those (`scripts/fixtures/guest-gen/corpus/`, 26 guests), and adding a step for them would have been a mistake, because one already reads them:
+
+| State of the tree | Before b5 | After b5 |
+| --- | --- | --- |
+| nothing damaged | `GUEST-GEN: ok` | `GUEST-GEN: ok` |
+| `mm-sret`'s record edited, fixture regenerated | refused: `399 pass / 1 fail` | `MIRROR DRIFT — mm-sret.s: architectural observations differ at boundary 0`, the self-test at 400 of 400 |
+
+A step was drafted for this and thrown away. Edit one value in each of the 26 records in a scratch copy, one at a time, and `scripts/check_gc_mirror.py --mirror <copy>` names every one, `rc=1`, because it derives
+every guest it is given. A second reader of the same fact could never fire first, and a step never observed red is not known to work. The measurement that settled it is a tool now: `python3 -B scripts/live_reads.py scripts/probe_x.py`
+reports the files a probe opens, through an audit hook, so "this probe reads no live corpus" is a number. The author probes read none. Seven others still read the composition: `probe_c_assembler`, `probe_gc_sail`, `probe_gc_snapshot_author`, `probe_c_guest_image` and three `probe_matched_gpr_*`. So a deleted fragment still refuses (`246 pass / 154 fail`). That is slice b6.
 
 The tools gained what the frozen arms need and nothing else: `scripts/check_gc_mirror.py
 --self-test --encoding F` takes its composition from that encoding's own root, and

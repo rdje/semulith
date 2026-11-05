@@ -6,6 +6,7 @@ diagnostic is tracked so a number it produced can be re-derived (`LIVE-CONTAINME
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `scripts/live_reads.py` | which repository files does a probe actually read? (a freeze's census, XTASK.13) | `python3 -B scripts/live_reads.py scripts/probe_x.py [args]`: JSON of `live`, `frozen`, `spawned`, through an audit hook; a spawned process's reads are not traced, so `live` is a floor there; `--self-test` |
 | `scripts/check_profile_consistency.sh` | does a profile dossier contradict itself, or cite nothing? — and which arm of its own self-test missed when the gate says `REFUSED — the check does not discriminate`? | `scripts/check_profile_consistency.sh`; `--self-test` runs the arms alone; the gate keeps the self-test's complete output at `target/profile-consistency-selftest.log` and prints its `self-test MISS` lines on REFUSED (a42ax) |
 | `scripts/validate_records.py` | does this record file satisfy its schema, line by line? | `scripts/validate_records.py <records.jsonl> <schema.json>` |
 | `semulith check-examples` | do the frozen records still validate — and hold together as a graph (orphans, stale hashes, unsupported `passed` claims, missing evidence, deleted links)? | `cargo run -p semulith-cli -- check-examples`; engine 2 of RECORD-SCHEMA after the Python phase (`P1-LAB.7`) |

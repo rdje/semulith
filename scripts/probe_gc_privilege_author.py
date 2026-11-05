@@ -17,7 +17,6 @@ import tempfile
 
 import derive_rv64gc_expectations as Q
 import frozen_owned as Frozen
-import dossier_sexp as D
 from riscv_asm import Assembler
 
 REPO = Path(__file__).resolve().parent.parent
@@ -120,15 +119,7 @@ def check(author):
     hart.csr['mstatus'], hart.csr['mepc'] = author.S << 11, Q.ENTRY + 2
     pc, _ = author.execute(hart, 0x30200073)
     assert pc == Q.ENTRY + 2 and hart.mode == author.S and not hart.trapped
-    asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
-    total = 0
-    for name in ('mm-readonly', 'mm-sfence', 'mm-sret', 'mm-csr-legality-s', 'mm-csr-legality-u'):
-        path = REPO / 'profiles/rv64gc-lab-v0/guests' / (name + '.s')
-        expected = D.load_expectations(path.with_suffix('.expected.sexp'))
-        run = author.derive_parcel_guest(path, asm, expected['instructions'])
-        writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
-        assert [st.writes for st in run.steps] == writes, f'{name}: privileged architectural observations differ'
-        total += len(run.steps)
+    total = Frozen.judge_corpus(author, Assembler(Frozen.ENCODING), 'privilege', 'privileged')
     assert Frozen.check_owned(author) == 0
     print(f'GC privilege author probe: fixed misa, CSR/xRET/TVM/TSR legality passed; 5 corpus repairs / {total} steps')
 
@@ -181,7 +172,7 @@ def main():
             sys.modules[spec.name] = author
             spec.loader.exec_module(author)
             author.REPO = REPO
-            author.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
+            author.ENCODING = Frozen.ENCODING
         check(author)
     return 0
 

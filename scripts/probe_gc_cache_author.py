@@ -257,8 +257,8 @@ def check(author):
         assert h.walk(va, 'load') == ('pa', base + va)
     assert tags(h) == {(0, 0, False), (1, 0, False)}, 'superpage must use independent 4-KiB cache keys'
 
-    asm = Assembler(REPO / 'profiles/rv64gc-lab-v0/encoding.sexp')
-    path = REPO / 'profiles/rv64gc-lab-v0/guests/sv39-tlb-fence.s'
+    asm = Assembler(Frozen.ENCODING)
+    path = Frozen.CORPUS / 'sv39-tlb-fence.s'
     expected = D.load_expectations(path.with_suffix('.expected.sexp'))
     runs = [author.derive_parcel_guest(path, asm, expected['instructions']) for _ in range(2)]
     writes = [{int(k[1:]): int(v, 16) for k, v in st['writes'].items()} for st in expected['step']]
@@ -320,7 +320,7 @@ def main():
             sys.modules[spec.name] = author
             spec.loader.exec_module(author)
             author.REPO = REPO
-            author.ENCODING = REPO / 'profiles/rv64gc-lab-v0/encoding.sexp'
+            author.ENCODING = Frozen.ENCODING
         check(author)
     return 0
 
