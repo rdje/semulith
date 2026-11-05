@@ -3,17 +3,16 @@
 The evidence policy names, for a requirement's source-semantic category and risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
-holds a reviewed capture for — since a43b-2e (2026-11-02) the M case's `rv64gc-m-forms-v5` and the XLEN
-case's `rv64gc-xlen-forms-v2`, each re-captured with its control declared, and since a43b-3g (2026-11-04) the CSR-SET
-case's `rv64gc-csr-set-v1`; the earlier cases (v2, v3, v4 and xlen-v1) are history below — on top of the finite method review. It opens only
+holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`; every earlier case is history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
 opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both captures, which read
 `invalidated`, 8 of 10 legs, their credits retired. Re-captured once each as v5 and xlen-v2, traces byte-identical
 (a43b-2d), both measure every leg satisfied again and are credited by `CR-GC-M-3` and `CR-D-XLEN-2` (a43b-2e); the
-tables below are the measurements of their predecessors, which the re-captures reproduce. **Since `P4-SYSTEM.14` a43e-1 (2026-11-05) the window that opens SSTC
-is open:** the four retained captures read `invalidated`, 8 of 10 legs, their credits retired, until each is re-captured once. The satisfied lines on this page are what they measured before it.
+tables below are the measurements of their predecessors, which the re-captures reproduce. **The window that opens SSTC did the same (`P4-SYSTEM.14`
+a43e-1 … a43e-5, 2026-11-05):** four captures read `invalidated`, 8 of 10 legs, their credits retired, until each was re-captured once, traces byte-identical, and credited again. Each table below names the case it measured; the re-captures reproduce it.
 
 ## The ten legs and what the bytes say
 
@@ -41,8 +40,8 @@ re-captured as `rv64gc-m-forms-v4` under the new manifest (a44-3 declared, a44-4
 v3's), and this review now reads v4 (`CASE_ID`): `DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by
 CR-GC-M-2` (a44-5), and `REQ-GC-M` derived `implemented` again — until a43b-2b, since which the line reads
 `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness; invalidated by
-schema/matched-case.sexp: SHA256 differs; no qualification credit` — and since a43b-2e the review reads v5:
-`DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3`. The consumer reads boundary rows and forms from the
+schema/matched-case.sexp: SHA256 differs; no qualification credit` — and since a43e-5 the review reads v6:
+`DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-4`. The consumer reads boundary rows and forms from the
 expectation file (a step whose source cites a chapter table row, or carries a `(boundary: …)` tag, is a directed
 boundary fixture; a step's mnemonic is its form), never from the chapter itself.
 
@@ -118,13 +117,14 @@ A record without its trace, or a malformed one, refuses (exit 2): that pair cann
 
 ```text
 $ python3 -B scripts/review_div_policy.py --every-retained
-rv64gc-m-forms-v5: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-3
-rv64gc-xlen-forms-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-2
-rv64gc-csr-set-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-1
-rv64gc-zicntr-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-1
+rv64gc-m-forms-v6: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-4
+rv64gc-xlen-forms-v3: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-3
+rv64gc-csr-set-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-2
+rv64gc-zicntr-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-2
+rv64gc-sstc-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-SSTC-1
 ```
 
-Until the window opened (a43e-1); since then each line reads `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. Measured at a43b-3g with `no qualification credit`; the record `CR-D-CSR-SET-1` credits it since a43b-3h
+Inside the window (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
 
 `rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the
@@ -147,6 +147,23 @@ suppression cases. Host timing is not guest time.":
 The disposition reads the counter rule's three parts honestly. The schedule is the step boundary itself, a guest count and never host time, and each value is
 recorded at its declared boundary. The suppression is the trap that retires nothing. Nothing is delivered, because no interrupt or wait is scheduled, so timer
 delivery stays with `REQ-D-SSTC` and rates with the environment contract.
+
+`rv64gc-sstc-v1` is the third case through that branch, and the review needed no change for it either (a43e-5). Its disposition is the first to witness all of the counter rule rather than to say why a part does not apply:
+
+| Leg | Measured on `rv64gc-sstc-v1` |
+| --- | --- |
+| source-located-expectations | satisfied: 315 of 315 steps carry a derivation and a source; witness step 172 cites `REQ-D-SSTC`'s source; the expected producer reads only its own inputs |
+| boundary-fixtures | satisfied: 17 `(boundary: …)` rows from step 33 to step 313, all predeclared |
+| matched-reference-comparison | satisfied: method satisfied (88 authenticated files), baseline AGREE under `sail-gpr-change-v1`, the selection recorded, the effect observed at step 8 |
+| repeated-execution | satisfied: repeat AGREE |
+| discriminating-control | satisfied: control DIVERGE at step 172, register x11 (0 observed, 32 in the control's expectation) |
+| record-linkage | satisfied: `REQ-D-SSTC`, `OB-SSTC`, collector, expected producer, three limitations |
+| currentness | satisfied: the policy pinned and unchanged; the method binding matched |
+| risk-method | satisfied: high risk, second method `independent-exact-expectation` by `expected` and `reference` on the guest source and the manifest; ancestry recorded, no independence credit |
+| feature-rules | satisfied by declaration: the counter rule and the privilege and CSR rule apply, and the disposition names every one of the 39 properties; the probe holds that set equal to the case's declaration |
+| form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 39 predeclared witnesses stand for it |
+
+The counter rule's three parts, each witnessed. Scheduled events are guest counts at declared boundaries, never host time, with pending read below and at the compare. Delivery boundaries are witnessed from S, on a schedule, from U and to M, each a boundary of its own in the case that fetches nothing and writes nothing, which is what the window added. Suppression is witnessed under four conditions: STIE clear, SIE clear in S, delegated while in M, and STCE clear, that last twice. One thing is held back: a scheduled delivery's exact boundary is what both producers do on this configuration, not a latency claim, and the disposition says so. No wait is scheduled, so `wfi`'s wake stays `P4-SYSTEM.5`'s.
 
 ## What a satisfied measurement is, and is not
 
@@ -266,8 +283,8 @@ python3 -B -O scripts/probe_div_policy.py
 python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 ```
 
-The first command measures the default case, v5 since a43b-2e, and prints `DIV-POLICY: satisfied — 10 of
-10 legs satisfied; credited by CR-GC-M-3`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
+The first command measures the default case, v6 since a43e-5, and prints `DIV-POLICY: satisfied — 10 of
+10 legs satisfied; credited by CR-GC-M-4`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
 the case, and exits with the worst code. The probe runs 48 tests in both interpreter modes on synthetic

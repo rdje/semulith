@@ -43,6 +43,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import records_sexp as R
+import credit_records as CR                              # noqa: E402
 import record_catalog as C                                # noqa: E402
 import dossier_sexp as D                                # noqa: E402
 import sexp as S                                        # noqa: E402
@@ -733,7 +734,7 @@ def _verify_evidence(ev: list, tracked: set[str], experiments: set[str], where: 
         return label, None
     if exp is not None:
         label = f"experiment `{exp}`"
-        return label, None if exp in experiments else "no such experiment record in references.sexp"
+        return label, None if exp in experiments else "no current credit names the case, and references.sexp holds no such record"
     label = f"`{record}`"
     if record not in tracked:
         return label, "the record is not tracked"
@@ -826,7 +827,14 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
                               bool(cells) and not empty)
 
     # The five declared axes — the manifest's evidence, verified; §7's kinds required.
-    experiments = {e["id"] for e in refs.get("experiment", [])}
+    # A credited case's record is read from evidence/, its one owner, never from a dossier copy (P4-SYSTEM.14 a43e-5,
+    # decision_dossier-copies-retire-at-the-next-window.md). A credit is current only while its pins still describe the
+    # tree, so a lapse or a moved record is no evidence here. A dossier's own records stay evidence for a unit that keeps them.
+    try:
+        credited = {c["case_id"] for c in CR.current_credits(ROOT, d) if c["disposition"] == "current"}
+    except CR.CreditRefused as error:
+        raise SystemExit(f"gate_report: {rel('credits.sexp')}: {error}")
+    experiments = {e["id"] for e in refs.get("experiment", [])} | credited
     found: dict[tuple[str, str], list[tuple[str, str | None]]] = {}
     for ev in _forms(manifest, "evidence"):
         axis, kind = _one(ev, "axis"), _one(ev, "kind")
@@ -848,6 +856,10 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
         axes[axis] = (f"{len(have)} of {len(kinds)} required kinds evidenced"
                       + (f" — open: {', '.join(f'`{k}`' for k in missing)}" if missing else ""),
                       not missing)
+    # The ruling's other half: G-TRACE lists every credited case, so a credit with no row keeps the axis open.
+    unlisted = credited - {_one(ev, "experiment") for ev in _forms(manifest, "evidence") if _one(ev, "axis") == "G-TRACE"}
+    if unlisted:
+        axes["G-TRACE"] = (axes["G-TRACE"][0] + " — credited, not listed: " + ", ".join(f"`{c}`" for c in sorted(unlisted)), False)
     others_green = all(g for a, (_, g) in axes.items())
     decided = any(v is None for _, v in found.get(("G-RELEASE", "decision"), []))
     axes["G-RELEASE"] = (("a release decision is recorded" if decided else "no release decision recorded")
@@ -1368,7 +1380,7 @@ def _selftest() -> int:
 
         # ---- the CPU-SYSTEM builder (`P4-SYSTEM.10` slice b) over a scratch copy of the unit ----
         docs = ("profile.sexp", "contract-obligations.sexp", "requirements.sexp", "references.sexp",
-                "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp")
+                "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp", "credits.sexp")
         live = _tracked()
 
         def gs(name, edits=None, extra_files=None):
@@ -1437,6 +1449,21 @@ def _selftest() -> int:
             lambda: gs_refuses("twoloc", {"gate.sexp": ev(
                 '(evidence (axis G-TRACE) (kind experiment) (experiment "x") (record "y") (statement "s"))')},
                 "names exactly one of test / record / experiment"))
+        # G-TRACE reads credited cases from evidence/, and only while each credit is current (P4-SYSTEM.14 a43e-5).
+        trace = "`G-TRACE` | `experiment`"
+        arm("GREEN a current credit's case is G-TRACE evidence, with no dossier record",
+            lambda: (assert_eq(any(e.get("id") == "rv64gc-sstc-v1" for e in D.load_references(real / "references.sexp").get("experiment", [])), False),
+                     has(rep0, trace + " | experiment `rv64gc-sstc-v1` | yes"), has(row(rep0, "G-TRACE"), "**green**")))
+        arm("RED with no credit, a case's measured record is not evidence",
+            lambda: (lambda r: (has(r, "experiment `rv64gc-sstc-v1` | **no** — no current credit names the case"), has(row(r, "G-TRACE"), "**incomplete**")))(
+                gs("uncredited", {"credits.sexp": lambda s: ";; no credit\n"})))
+        arm("RED a lapsed credit's case is not evidence, and the other cases still are",
+            lambda: (lambda r: (has(r, "experiment `rv64gc-m-forms-v6` | **no** — no current credit names the case"),
+                                has(r, "experiment `rv64gc-sstc-v1` | yes")))(
+                gs("lapsed", {"credits.sexp": lambda s: re.sub(r'\(sha256 "[0-9a-f]{64}"\)', '(sha256 "' + "0" * 64 + '")', s, count=1)})))
+        arm("RED a credited case with no G-TRACE row keeps the axis open, by name",
+            lambda: (lambda r: (has(row(r, "G-TRACE"), "credited, not listed: `rv64gc-sstc-v1`", "**incomplete**")))(
+                gs("unlisted", {"gate.sexp": lambda s: re.sub(r'\(evidence \(axis G-TRACE\) \(kind experiment\) \(experiment "rv64gc-sstc-v1"\)\n  \(statement "[^"]*"\)\)\n', "", s)})))
         def without(axis, kind):
             """The manifest less every evidence form for (axis, kind), cut at its parsed span: a control that must
             open a kind first, whatever the real manifest declares (P4-SYSTEM.15 slice g)."""
@@ -1505,7 +1532,7 @@ def _selftest() -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 24
+    want = 28
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")

@@ -40,7 +40,7 @@ MUTATION_TESTS = {
 }
 UNIT = "rv64gc-lab-v0"
 CASE = "rv64gc-m-forms-v3"  # the mirror's case: the frozen credit CR-GC-M-1 names it
-LIVE_CASE = "rv64gc-m-forms-v5"  # the M case the live catalogue credits (CR-GC-M-3, P4-SYSTEM.14 a43b-2e)
+LIVE_CASE = "rv64gc-m-forms-v6"  # the M case the live catalogue credits (CR-GC-M-4, P4-SYSTEM.14 a43e-5)
 FROZEN_CREDITS = HERE / "fixtures" / "dossier-qualification" / "credits.sexp"
 
 
@@ -125,17 +125,18 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """No live credit names a case while the window that opens SSTC is open (P4-SYSTEM.14 a43e-1 retired the four records
-        with the profile's catalogue file): no measured record qualifies on the real tree. The dossier holds no copy either:
-        the ruling that retired them took effect at this window (decision_dossier-copies-retire-at-the-next-window.md), so
-        the re-credits re-state the qualifying half of this arm and never the copies."""
+        """The live catalogue credits the window's five (P4-SYSTEM.14 a43e-5): their measured records qualify on the real tree; their
+        predecessors', which no live record names, do not. The dossier holds no copy of any of them, by the ruling
+        (decision_dossier-copies-retire-at-the-next-window.md): G-TRACE reads each from evidence/."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
         references = next(f for f in S.read_file(ROOT / "profiles" / UNIT / "references.sexp")
                           if isinstance(f, list) and f and str(f[0]) == "references")
         self.assertEqual([e for e in S.children(references, "experiment") if S.children(e, "verification")], [])
-        for case in (LIVE_CASE, "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1", "rv64gc-zicntr-v1", "rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1", CASE):
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v3", "rv64gc-csr-set-v2", "rv64gc-zicntr-v2", "rv64gc-sstc-v1"):
+            self.assertEqual(self.qualification(measured(case), ROOT), [], case)
+        for case in ("rv64gc-m-forms-v5", "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1", "rv64gc-zicntr-v1", "rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):

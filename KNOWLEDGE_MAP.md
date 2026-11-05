@@ -153,6 +153,7 @@
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-d-csr-set-credited-implemented.md`](docs/decisions/decision_req-d-csr-set-credited-implemented.md)
+- [`decision_req-d-sstc-credited-implemented.md`](docs/decisions/decision_req-d-sstc-credited-implemented.md)
 - [`decision_req-d-xlen-credited-implemented.md`](docs/decisions/decision_req-d-xlen-credited-implemented.md)
 - [`decision_req-d-zicntr-credited-implemented.md`](docs/decisions/decision_req-d-zicntr-credited-implemented.md)
 - [`decision_req-gc-m-credited-implemented.md`](docs/decisions/decision_req-gc-m-credited-implemented.md)

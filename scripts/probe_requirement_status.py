@@ -306,23 +306,22 @@ class StatusTests(unittest.TestCase):
             self.assertEqual((t["drift"], t["findings"]), ([], []), t["profile"])
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
-        # No current record credits any case while the window that opens SSTC is open: the typed event binding moved pinned
-        # inputs, and CR-GC-M-3, CR-D-XLEN-2, CR-D-CSR-SET-1 and CR-D-ZICNTR-1 were retired with the profile's catalogue file
-        # (P4-SYSTEM.14 a43e-1). Each requirement derives `planned`, the recorded status agrees, and every case is pending.
-        # This arm is the manifest's prediction of the real tree: the re-credits re-state it.
-        # The window's five are captured (a43e-4): each receipt's qualification is false, so they read pending and bind nothing until credited.
-        none = ("planned", "planned", "no credited implementation or evidence")
-        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-m-forms-v6", "rv64gc-signed-div-truncation-v2"]),
-                           ("REQ-D-XLEN", ["rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-xlen-forms-v3"]),
-                           ("REQ-D-CSR-SET", ["rv64gc-csr-set-v1", "rv64gc-csr-set-v2"]),
-                           ("REQ-D-ZICNTR", ["rv64gc-zicntr-v1", "rv64gc-zicntr-v2"]),
-                           ("REQ-D-SSTC", ["rv64gc-sstc-v1"])):
+        # The window that opens SSTC closed at P4-SYSTEM.14 a43e-5: each case re-captured once (a43e-4), its traces byte-identical, and
+        # credited again; REQ-D-SSTC joins them, so all four state requirements are implemented. Each binds its requirement alone, and
+        # its predecessors, which no record names, read pending. REQ-D-PRIV-MODES, a dependency of three of them, stays planned: the
+        # derivation reads obligations, and the capture plan orders them first. This arm is the manifest's prediction of the real tree.
+        done = ("implemented", "implemented", "every obligation credited (1)")
+        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-signed-div-truncation-v2"]),
+                           ("REQ-D-XLEN", ["rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2"]),
+                           ("REQ-D-CSR-SET", ["rv64gc-csr-set-v1"]),
+                           ("REQ-D-ZICNTR", ["rv64gc-zicntr-v1"]),
+                           ("REQ-D-SSTC", [])):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])),
-                             (*none, sorted(case + ":pending" for case in cases)), rid)
-        self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 0, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
+                             (*done, sorted(case + ":pending" for case in cases)), rid)
+        self.assertEqual(gc["derived"], {"planned": 42, "partial": 0, "implemented": 5, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (13, 0, 0, 0, 0))
+                         (13, 5, 0, 5, 5))
 
 
 def main():

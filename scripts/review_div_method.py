@@ -30,14 +30,14 @@ SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement
 # adding the next captured case does not invalidate any declaration (a42av).
 # a42ax: the m-forms capture (a42aw) retained in e775705; P4-SYSTEM.14 a44-5: the M case re-captured as v4 under the
 # declaration-as-data manifest (declared 177b43a1, captured 3c464095); P4-SYSTEM.14 a43b-2e: the M case re-captured once
-# more as v5, its control declared (declared 7b1a8f44, captured 2988d6a2; traces byte-identical to v4's). v2, v3 and v4
-# stay retained history, reviewed by nothing. The default case keeps its named pins (the method probe's synthetic copy
-# re-pins them).
-RETAINED_CASE_ID = "rv64gc-m-forms-v5"
-SOURCE_DECLARATION_COMMIT = "7b1a8f44b06dee5464c356f278511ac062ad5fc6"
-RETAINED_CAPTURE_COMMIT = "2988d6a2bfc613d0b6be0677e785c7b42730214a"
-MEASURED_SHA256 = "1530832dd74c83297543d5fb5d1d150633cc3deeb46df7afcac11802ff657f8f"
-MEASURED_BYTES = 16942
+# more as v5, its control declared (declared 7b1a8f44, captured 2988d6a2; traces byte-identical to v4's); P4-SYSTEM.14 a43e-5: as v6
+# in the window that opens SSTC (declared 18a09566, captured 178f9c6c; traces byte-identical to v5's). v2 … v5 stay retained
+# history, reviewed by nothing. The default case keeps its named pins (the method probe's synthetic copy re-pins them).
+RETAINED_CASE_ID = "rv64gc-m-forms-v6"
+SOURCE_DECLARATION_COMMIT = "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc"
+RETAINED_CAPTURE_COMMIT = "178f9c6cadb1b109de2367454272357036646671"
+MEASURED_SHA256 = "7998edb104616fff0980b41c3ec86eddd675a8ee8c782b6c682639e836497b4d"
+MEASURED_BYTES = 16943
 TOTAL_BYTES = A.Unit.Evaluation.Q.MAX_READ_BYTES
 
 
@@ -53,19 +53,23 @@ class RetainedCapture:
 # P4-SYSTEM.14 a43a-2f: one row per reviewed capture, each case's own pins; a case without a row is unsupported.
 RETAINED_CAPTURES = {
     RETAINED_CASE_ID: RetainedCapture(SOURCE_DECLARATION_COMMIT, RETAINED_CAPTURE_COMMIT, MEASURED_SHA256, MEASURED_BYTES),
-    # The XLEN case: xlen-v1 (declared 5c2cde93, captured e32cc645) is history since a43b-2b; its re-capture xlen-v2,
-    # its control declared, was declared in 7b1a8f44 and captured once in 2988d6a2 (a43b-2c, a43b-2d).
-    "rv64gc-xlen-forms-v2": RetainedCapture(
-        "7b1a8f44b06dee5464c356f278511ac062ad5fc6", "2988d6a2bfc613d0b6be0677e785c7b42730214a",
-        "3e536d08b739ffd8a1ffd75d9dcf8ca438b4f7f77cb99475718cb41984f58fad", 14979),
-    # The CSR-SET case, the first on its own reference configuration: declared in 02835e0f, captured once in a6f7d8fd (a43b-3e, a43b-3f).
-    "rv64gc-csr-set-v1": RetainedCapture(
-        "02835e0f357108cc12a139a1cd92687820279386", "a6f7d8fdfa1e863e21171bf97d2766b6ba0d2310",
-        "a0de4f8c848085eee2534fb7cdaf8a610420ed9866f0cbb7a9e470de38d84ce2", 27346),
-    # The ZICNTR case, on the same configuration byte for byte: declared in 86a35987, captured once in e5814f18 (a43c-3, a43c-4).
-    "rv64gc-zicntr-v1": RetainedCapture(
-        "86a3598741d8b0f0bfda593a24ed7919fa7ac826", "e5814f187a28360d1ad8b2df31785444b5701ed1",
-        "723c296705e3aa140c3e4bf13cd22e30e85aa0deef741e3c8aaec7dd212c5b43", 24162),
+    # The window that opens SSTC (P4-SYSTEM.14 a43e-3, a43e-4): all five declared in 18a09566 and captured once in 178f9c6c, the
+    # four's traces byte-identical to their predecessors' (xlen-v2, csr-set-v1, zicntr-v1), which are history since a43e-1.
+    "rv64gc-xlen-forms-v3": RetainedCapture(
+        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
+        "db2728201e01b4cccb0b51e37ec7f8f29f77d4af22513f16bd400846a520475f", 14980),
+    # rv64gc-csr-set-v2: the first on its own reference configuration.
+    "rv64gc-csr-set-v2": RetainedCapture(
+        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
+        "d8f18593b02019d49be142daaaac1cfc295c21e5cb4e3256d5507adb98db3b19", 27347),
+    # rv64gc-zicntr-v2: on the same configuration byte for byte.
+    "rv64gc-zicntr-v2": RetainedCapture(
+        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
+        "c2b55c2396067f9663ef61a4d9df029ae9261f0af57dbced2133937d5840620f", 24163),
+    # rv64gc-sstc-v1: the same configuration, and the first with a delivered interrupt.
+    "rv64gc-sstc-v1": RetainedCapture(
+        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
+        "801b9383ea21b40d582b662233dfc5f8abb3660aa1ed0e2db557261ec20a4396", 22241),
 }
 
 

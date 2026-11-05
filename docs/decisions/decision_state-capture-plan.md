@@ -105,3 +105,7 @@ answers: How do the four `kind state` requirements of rv64gc-lab-v0 leave `plann
   ([`decision_dossier-copies-retire-at-the-next-window.md`](decision_dossier-copies-retire-at-the-next-window.md)).
 - **A same-value write is not a change.** The GPR vocabulary records changes; a handler reading the same cause twice needs a
   sentinel between (the M program's own idiom). A trap before `mtvec` is set cascades into a fetch fault at address 0.
+
+## Done (2026-11-05, `P4-SYSTEM.14` a43e-5)
+
+`G-STATE` reads `4 of 4 state requirements implemented`, green: `REQ-D-XLEN`, `REQ-D-CSR-SET`, `REQ-D-ZICNTR` and `REQ-D-SSTC`, each on one finite case. The route held, with two departures, both recorded: counter values and timer delivery are witnessed on a case's own reference configuration rather than left corpus-judged ([`decision_reference-config-per-case.md`](decision_reference-config-per-case.md)), and SSTC took a pinned window ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md)). The other 42 `planned` requirements are `G-OBLIGATIONS`', not this plan's.

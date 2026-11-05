@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0357 (leaf P4-SYSTEM.14 a43e-5) — five credits, REQ-D-SSTC implemented, G-STATE 4 of 4, and G-TRACE read from evidence/: the window closed
+
+`CR-GC-M-4`, `CR-D-XLEN-3`, `CR-D-CSR-SET-2`, `CR-D-ZICNTR-2` and `CR-D-SSTC-1`, 10 of 10 legs each. SSTC is the first case to witness delivered interrupts, from S, from U and to M. `gate_report.py` reads each credited record from `evidence/`, and a credited case with no `G-TRACE` row keeps the axis open. `CPU-SYSTEM` reads 2 of 10 axes open.
+
 ## SEMULITH-P4-0356 (leaf P4-SYSTEM.14 a43e-4) — the window's five cases captured exactly once each, and three effects retained
 
 `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1`: AGREE, AGREE, each control DIVERGE where declared. The four's traces are byte-identical to their predecessors'. Run on the director's word with a sibling active, not on a quiet host: a load and spawn check before each case replaces the three-minute wait. Nothing credited.

@@ -290,7 +290,7 @@ $ python3 -B scripts/retain_div_capture.py --case rv64gc-sstc-v1 --declaration-c
 | `rv64gc-zicntr-v2` | AGREE, 292 steps | DIVERGE at 109: `addi x21, x20, 0`, Sail 21, the expectation 102 | 1.5 s | 24,163 B, `c2b55c23…` | 26,277 B |
 | `rv64gc-sstc-v1` | AGREE, 315 steps | DIVERGE at 172: `csrrs x11, sip, x0`, Sail 0, the expectation 32 | 1.5 s | 22,241 B, `801b9383…` | 26,417 B |
 
-SSTC's control is the case's failure mode: an all-ones `stimecmp` read as a signed -1 would sit below every `time`, so `sip` would read `0x20`, and the statement says the comparison is unsigned. Each capture is complete with qualification false, so each case is `pending` until its reviews (a43e-5).
+SSTC's control is the case's failure mode: an all-ones `stimecmp` read as a signed -1 would sit below every `time`, so `sip` would read `0x20`, and the statement says the comparison is unsigned. Each capture is complete with qualification false. Since a43e-5 the reviews read all five, `satisfied` over 88 authenticated files, all ten legs, and a record credits each ([requirement status](requirement-status.md)).
 
 **What the window changed.** You can check the prediction yourself:
 

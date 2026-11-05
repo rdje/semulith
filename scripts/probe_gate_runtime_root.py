@@ -18,7 +18,7 @@ import record_catalog as C
 ROOT = Path(__file__).resolve().parent.parent
 PROFILE = ROOT / "profiles/rv64gc-lab-v0"
 REGISTRY = "crates/semulith-verify/src/contract_checks_rv64gc.rs"
-MODULES = ("gate_report", "effective_contract", "records_sexp", "record_catalog", "dossier_sexp", "sexp")
+MODULES = ("gate_report", "effective_contract", "credit_records", "check_sexp_schema", "records_sexp", "record_catalog", "dossier_sexp", "sexp")
 MUTATION = None
 SOURCE_ROOT = "ROOT = Path(__file__).resolve().parent.parent\n"
 GIT_ROOT = '''import subprocess
@@ -52,7 +52,7 @@ finally:
  subprocess.run=original_run;subprocess.Popen=original_popen
 report=dict(root_matches=owner.ROOT==runtime,commands=commands,
  local_modules={name:Path(module.__file__).resolve().is_relative_to(runtime)
-                for name,module in [('gate_report',owner),('effective_contract',sys.modules['effective_contract']),('records_sexp',owner.R),
+                for name,module in [('gate_report',owner),('effective_contract',sys.modules['effective_contract']),('credit_records',owner.CR),('check_sexp_schema',sys.modules['check_sexp_schema']),('records_sexp',owner.R),
                 ('record_catalog',owner.C),('dossier_sexp',owner.D),('sexp',owner.S)]})
 try:
  directory=runtime/'profiles/rv64gc-lab-v0'

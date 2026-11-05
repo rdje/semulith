@@ -18,13 +18,13 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1) | xlen-v1's bytes, its control declared |
 | `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1) | `csr-set.s`, 157 boundaries, 53 properties |
 | `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1) | `zicntr.s`, 292 boundaries, 44 properties |
-| `rv64gc-m-forms-v6/` | captured | v5's bytes, contract v3 |
-| `rv64gc-xlen-forms-v3/` | captured | xlen-v2's guest; 21 derivation lines; contract v3 |
-| `rv64gc-csr-set-v2/` | captured | v1's bytes, contract v3 |
-| `rv64gc-zicntr-v2/` | captured | v1's bytes, contract v3 |
-| `rv64gc-sstc-v1/` | captured | `sstc-timer.s`, 315 boundaries, 39 properties |
+| `rv64gc-m-forms-v6/` | credited | v5's bytes, contract v3 |
+| `rv64gc-xlen-forms-v3/` | credited | xlen-v2's guest; 21 derivation lines; contract v3 |
+| `rv64gc-csr-set-v2/` | credited | v1's bytes, contract v3 |
+| `rv64gc-zicntr-v2/` | credited | v1's bytes, contract v3 |
+| `rv64gc-sstc-v1/` | credited | `sstc-timer.s`, 315 boundaries, 39 properties |
 
-Every case holds 22 of 22 files; the last five captured 2026-11-05 (a43e-4). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
+Every case holds 22 of 22 files; the last five credited 2026-11-05 (a43e-5). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
 
 ## Declared files and lifecycle (per case)
 

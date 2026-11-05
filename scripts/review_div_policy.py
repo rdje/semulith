@@ -73,7 +73,7 @@ import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
 
 FORMAT = "div-policy-review-v1"
-CASE_ID = "rv64gc-m-forms-v5"  # the default retained case (a42ax: v3; a44-5: v4; a43b-2e: v5); a consumer constant no case pins
+CASE_ID = "rv64gc-m-forms-v6"  # the default retained case (a42ax: v3; a44-5: v4; a43b-2e: v5; a43e-5: v6); a consumer constant no case pins
 DOCUMENT_BYTES = 65536
 # An expectation step whose source cites a chapter table row (M's Table 1) or carries a `(boundary: …)` tag (the XLEN
 # guest's ten, a43a-2d) is a directed boundary fixture. The tag occurs in no M expectation, so M's rows do not move.
@@ -110,6 +110,18 @@ FEATURE_DISPOSITIONS = {
                  "(alias-mcycle-cycle, alias-minstret-instret) and preserved state read back after every refusal, so a refused read or write "
                  "commits no rd (s-closed-cycle-rd-kept, u-closed-cycle-rd-kept, u-m-closed-instret-rd-kept, ro-csrrw-rd-kept) "
                  "(P4-SYSTEM.14 a43c-5, 2026-11-05)",
+    "OB-SSTC": "the counter rule and the privilege and CSR rule apply, and the case's properties cover them, all 39. The counter rule, its three parts. "
+               "Scheduled time and events: guest counts at declared boundaries, never host time (m-reads-time, s-reads-the-time, scheduled-count), and "
+               "pending below and at the compare (not-pending-below-compare, pending-at-compare). Delivery boundaries: from S (delivered-scause, delivered-sepc, "
+               "delivered-spp, delivered-acknowledged, delivery-resumes), on a schedule (scheduled-scause, scheduled-sepc, scheduled-acknowledged), from U "
+               "(u-delivered-scause, u-delivered-sepc, u-delivered-spp, u-acknowledged, u-resumes) and to M (undelegated-mcause, undelegated-mepc, undelegated-resumes). "
+               "Suppression cases: STIE clear, SIE clear in S, delegated while in M, STCE clear (suppressed-stie-clear, suppressed-sie-clear, suppressed-delegated-in-m, "
+               "m-still-pending, suppressed-stce-clear, stce-clear-not-delivered). A scheduled delivery's exact boundary is what both producers do on this configuration, "
+               "not a latency claim, since the statement guarantees a changed comparison reaches STIP only eventually. No wait is scheduled, so wfi's wake stays "
+               "P4-SYSTEM.5's. The privilege and CSR rule: legal and refused modes (m-stimecmp-reset, m-stimecmp-64bits, s-reads-stimecmp, s-programs-own; "
+               "s-tm-stce-clear-cause, s-stce-clear-cause, s-tm-clear-cause, u-refused-cause) and preserved state read back after every refusal, so a refused access "
+               "commits no rd (s-tm-stce-clear-rd-kept, s-stce-clear-rd-kept, s-tm-clear-rd-kept, u-refused-rd-kept). stimecmp has no alias to witness "
+               "(P4-SYSTEM.14 a43e-5, 2026-11-05)",
 }
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",

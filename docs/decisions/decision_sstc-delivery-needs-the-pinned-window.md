@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-05`
-- **Status:** `active` (the director delegated the pick on 2026-11-05, "Pick yourself."; **A** was picked and is being carried out from a43e-1, `SEMULITH-P4-0351`)
+- **Status:** `closed` 2026-11-05 at a43e-5, `SEMULITH-P4-0357` (the director delegated the pick that day, "Pick yourself."; **A** was picked and carried out from a43e-1, `SEMULITH-P4-0351`)
 - **Owner / source:** `P4-SYSTEM.14` a43d-3, `SEMULITH-P4-0347`; raised on the rule of [`decision_four-rulings-delegated.md`](decision_four-rulings-delegated.md) that an item changing a retained case goes to the director first, and read against item 4 of
   [`decision_dossier-copies-retire-at-the-next-window.md`](decision_dossier-copies-retire-at-the-next-window.md) ("It rides with the next pinned edit that is needed anyway").
 answers: Why can the SSTC case not be written on the current tools, what would change that, what does each route cost, and what holds until the director picks?
@@ -81,6 +81,21 @@ Asked to pick among A, B and C, the director answered: "Pick yourself." I picked
 **What replaced it** (`target/p4-system-14/a43e-4/capture-now.sh`): the same tree, frozen-path, regeneration and preflight guards, and before each case the 1-minute load below 8 and 50 of 50 children spawned and reaped the collector's way. Ten sibling processes ran throughout, at load 4.71 to 5.13. All five returned `rc=0`.
 
 **For later captures, this guard replaces the three-minute wait.** The wait cost 190 minutes at a43c-4 and 107 here, against about 15 seconds of work. One run proves it at load 5, not at load 28, which is why the load guard stays. A case burned by EPERM stays recoverable as a new case with a new declaration commit.
+
+## Closed (a43e-5, 2026-11-05)
+
+The window ran a43e-1 … a43e-5 in one day. What it left:
+
+| Asked for | Measured |
+| --- | --- |
+| The four credits back | `CR-GC-M-4`, `CR-D-XLEN-3`, `CR-D-CSR-SET-2`, `CR-D-ZICNTR-2`: `5 credit(s), 5 current, 0 lapsed` with SSTC's |
+| SSTC with real delivery | `CR-D-SSTC-1`, 10 of 10 legs, delivery witnessed from S, from U and to M ([`decision_req-d-sstc-credited-implemented.md`](decision_req-d-sstc-credited-implemented.md)) |
+| `G-STATE` 4 of 4 | `4 of 4 state requirements implemented`, green |
+| `G-TRACE` lists every credited case, from `evidence/` | five rows; a credited case with no row keeps the axis open by name |
+| A report's edit never lapses evidence | `grep -c gate_report evidence/rv64gc-sstc-v1/dependencies.sexp` = 0, and the proof is this very unit: it edits `gate_report.py`, and all five stay current |
+| The next interrupt case needs no format change | the binding: a boundary fetches nothing exactly when its record declares an interrupt delivered there |
+
+`CPU-SYSTEM` reads `incomplete` with 2 of 10 axes open, `G-OBLIGATIONS` and `G-RELEASE`, where it read 3 before the window and 4 inside it. The per-case configuration (`decision_reference-config-per-case.md`) and the crediting act's authority (`decision_credit-is-a-catalogue-record.md`) stay open for the director; both can still overrule what stands on them.
 
 ## What holds meanwhile
 

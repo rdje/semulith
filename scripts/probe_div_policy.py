@@ -87,9 +87,10 @@ MUTATION_TESTS = {
     "effect-diverges": "test_a_retained_effect_that_agrees_is_pending",
     "effect-at-witness": "test_a_retained_effect_differing_at_no_declared_step_is_pending",
 }
-XLEN_CASE_ID = "rv64gc-xlen-forms-v2"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), re-captured as xlen-v2 (a43b-2e)
-CSR_CASE_ID = "rv64gc-csr-set-v1"  # the first implementation-defined case (a43b-3g)
-ZICNTR_CASE_ID = "rv64gc-zicntr-v1"  # the second, on the same configuration (a43c-5)
+XLEN_CASE_ID = "rv64gc-xlen-forms-v3"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), xlen-v2 (a43b-2e), xlen-v3 (a43e-5)
+CSR_CASE_ID = "rv64gc-csr-set-v2"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5)
+ZICNTR_CASE_ID = "rv64gc-zicntr-v2"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5)
+SSTC_CASE_ID = "rv64gc-sstc-v1"  # the third, and the first with a delivered interrupt (a43e-5)
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -591,7 +592,7 @@ class PolicyTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
-        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID])
+        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
         catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
         forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
@@ -622,7 +623,7 @@ class PolicyTests(unittest.TestCase):
                     self.assertIsNone(t["invalidated_by"])
                     self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
-        table, xlen, csr, zicntr = tables
+        table, xlen, csr, zicntr, sstc = tables
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]
@@ -664,6 +665,20 @@ class PolicyTests(unittest.TestCase):
         cited = {word for word in words if word.startswith(("s-", "u-", "m-", "ro-", "alias-", "instret-", "cycle-", "trap-"))}
         self.assertEqual(len(cited), 26, sorted(cited))
         self.assertEqual(cited - declared, set())
+        self.assertEqual((sstc["requirement_id"], sstc["obligation_ids"], sstc["category"], sstc["risk"]),
+                         ("REQ-D-SSTC", ["OB-SSTC"], "implementation-defined", "high"))
+        self.assertIn("selection recorded; observed effect under the profile override: step 8 (rdtime x5): Sail {}, "
+                      "expectations {'x5': 8}", self.legs_text(sstc, "matched-reference-comparison"))
+        self.assertIn("coverage is vacuous, its 39 predeclared witnesses", self.legs_text(sstc, "form-coverage"))
+        self.assertIn("independent-exact-expectation", self.legs_text(sstc, "risk-method"))
+        self.assertIn("step 172 registers ['x11']", self.legs_text(sstc, "discriminating-control"))
+        # The rule asks for delivery boundaries and suppression cases: the disposition names every property, so none goes unread.
+        declared = {str(self.M._one(p, "id")) for p in self.M.S.children(self.M.S.children(self.M._one_form(
+            ROOT / "evidence" / SSTC_CASE_ID / "planned-experiment.sexp", "experiment"), "verification")[0], "property")}
+        words = {word.strip("(),.;:") for word in self.M.FEATURE_DISPOSITIONS["OB-SSTC"].split()}
+        cited = {word for word in words if word.startswith(("s-", "u-", "m-", "not-", "pending-", "suppressed-", "stce-", "delivered-",
+                                                            "delivery-", "scheduled-", "undelegated-"))}
+        self.assertEqual((len(declared), cited), (39, declared))
 
 
 def main():
