@@ -20,11 +20,12 @@ import check_sexp_schema as Schema
 import derive_gc_parcel_counts as Counts
 import derive_rv64gc_expectations as Q
 import dossier_sexp as D
+import frozen_owned as Frozen
 import records_sexp as R
 from riscv_asm import Assembler, AsmError
 
 REPO = Path(__file__).resolve().parent.parent
-UNIT = REPO / 'profiles/rv64gc-lab-v0'
+UNIT = Frozen.ENCODING.parent  # DEF-GEN's frozen composition (XTASK.13 slice b6): this staged the corpus once, and now checks the tool
 OUT = REPO / 'target/p4-system-12/e1d/corpus'
 MASK = (1 << 64) - 1
 
@@ -131,7 +132,7 @@ def programs(asm):
     # Reuse the repository's public guest program, not its expected values. Its
     # first VA page maps to itself; the next maps to PA +0x5000. Remove X from that
     # second leaf. The compressed variant changes only PA +0xffe to C.NOP.
-    original = (UNIT / 'guests/sv39-straddle.s').read_text().splitlines()
+    original = (Frozen.CORPUS / 'sv39-straddle.s').read_text().splitlines()
     units = asm.assemble_units(original, Q.ENTRY)
     assert sum(u.text == 'addi x10, x10, 1099' for u in units) == 1, 'straddle PTE source boundary'
     assert next(u.value for u in units if u.pc == Q.ENTRY + 0xffc) >> 16 == 0x0a93, 'straddle lower parcel boundary'
@@ -166,7 +167,7 @@ def build(root, *, mutation=None):
     unit = root / 'profiles/rv64gc-lab-v0'
     guests_dir = unit / 'guests'
     guests_dir.mkdir(parents=True)
-    shutil.copytree(REPO / 'definitions', root / 'definitions')
+    shutil.copytree(Frozen.ENCODING.parents[2] / 'definitions', root / 'definitions')
     for name in ('profile.sexp', 'state.sexp'):
         shutil.copyfile(UNIT / name, unit / name)
     encoding = (UNIT / 'encoding.sexp').read_text()

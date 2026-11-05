@@ -14,6 +14,7 @@ import unittest
 from unittest import mock
 
 import dossier_sexp as D
+import frozen_owned as Frozen
 import matched_gpr_comparison as C
 import records_sexp as R
 
@@ -41,6 +42,11 @@ def encode(doc):
 
 
 class DerivationTests(unittest.TestCase):
+    def setUp(self):
+        frozen = Frozen.image_root(C.G)
+        frozen.start()
+        self.addCleanup(frozen.stop)
+
     def compare(self, source, expected, witness, **changes):
         function = getattr(C, "compare_source_expectation", None)
         self.assertTrue(callable(function), "source-derived expectation binding API is missing")

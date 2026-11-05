@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
 
 import dossier_sexp as D
 
@@ -28,6 +29,11 @@ CORPUS_GUESTS = {
     'privilege': ('mm-readonly', 'mm-sfence', 'mm-sret', 'mm-csr-legality-s', 'mm-csr-legality-u'),
     'counter': ('a-lrsc-mustfail', 'mm-counters', 'mm-stimecmp'),
 }
+
+
+def image_root(image):
+    """`matched_gpr_image` reads the canonical composition under its `ROOT`, and it is pinned; this patcher points that one name at DEF-GEN's frozen tree (slice b6)."""
+    return mock.patch.object(image, 'ROOT', ENCODING.parents[2])
 
 
 @contextmanager

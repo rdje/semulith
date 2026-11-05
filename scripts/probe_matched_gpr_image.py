@@ -13,6 +13,7 @@ import types
 import unittest
 from unittest import mock
 
+import frozen_owned as Frozen
 import matched_gpr_image as I
 import probe_elf_writer as P
 import riscv_asm as A
@@ -27,6 +28,11 @@ class String(str):
 
 
 class ImageTests(unittest.TestCase):
+    def setUp(self):
+        frozen = Frozen.image_root(I)
+        frozen.start()
+        self.addCleanup(frozen.stop)
+
     def build(self, source=SOURCE, program="example.s", entry=ENTRY):
         return I.build_guest_image(source, program=program, entry=entry)
 
@@ -170,7 +176,7 @@ class ImageTests(unittest.TestCase):
         self.assertEqual(result.program, "missing-source/never-open.s")
 
     def test_missing_directory_and_symlink_contexts_do_not_select_tables(self):
-        parent = I.ROOT / "target/p4-system-14/a42c/context-fixtures"
+        parent = Path(__file__).resolve().parent.parent / "target/p4-system-14/a42c/context-fixtures"
         parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=parent) as scratch:
             root = Path(scratch)

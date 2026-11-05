@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0079 (leaf XTASK.13 slice b6) — the rest of GUEST-GEN's self-test judges frozen copies: the doctrine meets ruling 5 whole
+
+Seven probes and the staging tool take DEF-GEN's frozen composition; `frozen_owned.image_root` patches the one `ROOT` name of the pinned image module. Six damaged live states, each restored: a deleted fragment goes from refused, `246 pass / 154 fail`, to `rc=1` naming the file at 400 of 400, and garbled fragment, semantics, encoding, state and profile the same. DEF-GEN's frozen tree gains `profile.sexp`: without it the frozen assembler read IALIGN 32. Taken at 4 of 5 features, recorded why: the rest wait on the director's pick.
+
 ## SEMULITH-LC-0055 (leaf LIVE-CONTAINMENT.4) — every book's 404 page finds its own assets
 
 D80: each of the seven books wrote `base href="/"` into its 404 page, so on a static host that falls back to that page, 106 of 106 assets answered 404. One `site-url` line per `book.toml`, mdBook's public setting: 0 broken, and of 359 built files only the seven `404.html` differ. UNIT-BOOKS holds each book to its own path from here; `scripts/serve_book_404.py` is the reproduction.

@@ -359,7 +359,16 @@ The author probes read other live guests too, records the author does not own bu
 
 A step was drafted for this and thrown away. Edit one value in each of the 26 records in a scratch copy, one at a time, and `scripts/check_gc_mirror.py --mirror <copy>` names every one, `rc=1`, because it derives
 every guest it is given. A second reader of the same fact could never fire first, and a step never observed red is not known to work. The measurement that settled it is a tool now: `python3 -B scripts/live_reads.py scripts/probe_x.py`
-reports the files a probe opens, through an audit hook, so "this probe reads no live corpus" is a number. The author probes read none. Seven others still read the composition: `probe_c_assembler`, `probe_gc_sail`, `probe_gc_snapshot_author`, `probe_c_guest_image` and three `probe_matched_gpr_*`. So a deleted fragment still refuses (`246 pass / 154 fail`). That is slice b6.
+reports the files a probe opens, through an audit hook, so "this probe reads no live corpus" is a number. The author probes read none.
+
+Slice b6 froze the rest, so GUEST-GEN now meets the rule whole. Seven probes and the staging tool read the composition; a pinned tool, `matched_gpr_image.py`, fixes the canonical path by construction, so its probes point its one `ROOT` name at DEF-GEN's frozen tree for the test, the seam its own probe already used. Six states, each damaged on the real tree and restored:
+
+| Damaged | Before b6 | After b6 |
+| --- | --- | --- |
+| `zifencei.sexp` deleted | refused: `246 pass / 154 fail` | `composes 'riscv/zifencei', but definitions/riscv/zifencei.sexp does not exist`, the self-test at 400 of 400 |
+| that fragment, its semantics, `encoding.sexp`, `state.sexp`, `profile.sexp` each garbled | refused the same way | `rc=1`, naming the file and the line |
+
+The tree they read gained `profile.sexp`, because an assembler takes IALIGN from it; without it the frozen composition read IALIGN 32, which the image probes caught at once and the author probes had not needed. What stays live is named: `schema/`, the tools' own input, and the Sail override in `probe_gc_sail`.
 
 The tools gained what the frozen arms need and nothing else: `scripts/check_gc_mirror.py
 --self-test --encoding F` takes its composition from that encoding's own root, and

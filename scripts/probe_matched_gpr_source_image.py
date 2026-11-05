@@ -12,6 +12,7 @@ import types
 import unittest
 from unittest import mock
 
+import frozen_owned as Frozen
 import matched_gpr_source_image as M
 import probe_elf_writer as P
 
@@ -30,6 +31,11 @@ class Bytes(bytes):
 
 
 class SourceImageTests(unittest.TestCase):
+    def setUp(self):
+        frozen = Frozen.image_root(M.G)
+        frozen.start()
+        self.addCleanup(frozen.stop)
+
     def check(self, source=SOURCE, image=IMAGE, *, program="example.s", entry=ENTRY):
         try:
             return M.check_source_image(source, image, program=program, entry=entry)

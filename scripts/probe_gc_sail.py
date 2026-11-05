@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import tempfile
 
 import dossier_sexp as D
+import frozen_owned as Frozen
 import records_sexp as R
 import run_rv64gc_sail as S
 
@@ -153,7 +154,7 @@ def check(adapter, root):
     try:
         S.subprocess.run = lambda *a, **k: SimpleNamespace(returncode=0, stdout='', stderr='')
         refused(lambda: S.run_guest('nop', Path('fake-sail'), out,
-                                    REPO / 'profiles/rv64gc-lab-v0/encoding.sexp', guests),
+                                    Frozen.ENCODING, guests),
                 'reference produced no trace', 'stale traces accepted as a new run')
     finally:
         S.subprocess.run = original_run
@@ -174,7 +175,7 @@ def check(adapter, root):
     try:
         S.subprocess.run = fresh_run
         verdict, detail = S.run_guest('nop', Path('fake-sail'), out,
-                                     REPO / 'profiles/rv64gc-lab-v0/encoding.sexp', guests)
+                                     Frozen.ENCODING, guests)
         assert verdict == 'AGREE' and 'two traces byte-identical' in detail
         assert calls == [out / 'nop.0.trace', out / 'nop.1.trace']
     finally:

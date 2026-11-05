@@ -12,11 +12,20 @@ import types
 import unittest
 from unittest import mock
 import derive_rv64gc_expectations as Q
+import frozen_owned as Frozen
 
 SOURCE = b'addi x1, x0, 5\nc.addi x1, 1\n'
 
 
 class SnapshotTests(unittest.TestCase):
+    def setUp(self):
+        frozen = Frozen.image_root(Q.G)
+        frozen.start()
+        self.addCleanup(frozen.stop)
+        encoding = mock.patch.object(Q, 'ENCODING', Frozen.ENCODING)  # what the `canonical-context` omission would read instead
+        encoding.start()
+        self.addCleanup(encoding.stop)
+
     def derive(self, source=SOURCE, program='example.s', instructions=2):
         function = getattr(Q, 'derive_snapshot', None)
         self.assertTrue(callable(function), 'bounded immutable-source author API is missing')

@@ -17,6 +17,7 @@ import tempfile
 import tomllib
 
 import dossier_sexp as D
+import frozen_owned as Frozen
 import gen_definition as G
 import gen_guests as Q
 import records_sexp as R
@@ -63,10 +64,10 @@ def main():
         unit = root / 'profiles/rv64gc-lab-v0'
         guests = unit / 'guests'
         guests.mkdir(parents=True)
-        shutil.copytree(REPO / 'definitions', root / 'definitions')
-        for name in ('profile.sexp', 'state.sexp'):
-            shutil.copyfile(REPO / 'profiles/rv64gc-lab-v0' / name, unit / name)
-        text = (REPO / 'profiles/rv64gc-lab-v0/encoding.sexp').read_text()
+        # DEF-GEN's frozen composition (XTASK.13 slice b6): this checks the tool, not the live corpus.
+        shutil.copytree(Frozen.ENCODING.parents[2] / 'definitions', root / 'definitions')
+        shutil.copyfile(Frozen.ENCODING.parent / 'state.sexp', unit / 'state.sexp')
+        text = Frozen.ENCODING.read_text()
         text = text.replace('(slot (id c) (requires "riscv/c"))', '(extensions "riscv/c")')
         (unit / 'encoding.sexp').write_text(text)
         expectations(guests, 'mixed', MIXED, WRITES, DERIVATIONS, 6)
