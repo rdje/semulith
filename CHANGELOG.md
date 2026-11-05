@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0356 (leaf P4-SYSTEM.14 a43e-4) — the window's five cases captured exactly once each, and three effects retained
+
+`rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1`: AGREE, AGREE, each control DIVERGE where declared. The four's traces are byte-identical to their predecessors'. Run on the director's word with a sibling active, not on a quiet host: a load and spawn check before each case replaces the three-minute wait. Nothing credited.
+
 ## SEMULITH-XTASK-0080 (leaf XTASK.13 slice c) — BOOK-INDEX's controls judge a small frozen book
 
 A deleted chapter, `SUMMARY.md` or glossary now fails by its own name rather than reading as a check that stopped discriminating. Reading before freezing found the real run would then have read a deleted `SUMMARY.md` as `no project book yet`; it no longer does. 14 arms.

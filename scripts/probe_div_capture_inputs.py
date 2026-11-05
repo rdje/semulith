@@ -459,7 +459,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 8 * 22 + 5 * 8)  # the window's five at their declarations (a43e-3); 22 each after their captures
+        self.assertEqual(len(members), 1 + 13 * 22)  # the window's five captured once each (a43e-4); 8 each at their declarations
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):

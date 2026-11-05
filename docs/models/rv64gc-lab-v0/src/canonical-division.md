@@ -273,3 +273,31 @@ are byte-identical (26,277 B, `cmp`), and so are the stdout streams; each stderr
 false. Since a43c-5 the reviews read it, `satisfied` over 88 authenticated files, all ten legs, and `CR-D-ZICNTR-1` credits it.
 
 **Since `P4-SYSTEM.14` a43e-1 (2026-11-05) these four captures are history in their turn.** The window that opens SSTC moved inputs each manifest pins, so `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1` were retired. Each case is re-captured once under a new id; none of their steps is a delivery and neither their guests nor their configurations move, so their traces should be byte-identical, and a difference would be a finding (`decision_sstc-delivery-needs-the-pinned-window.md`).
+
+## The window's five (a43e-4)
+
+The four came back byte-identical, and `rv64gc-sstc-v1` joined them. Each was captured exactly once on 2026-11-05, from the declaration commit `18a09566`, with no retry:
+
+```text
+$ python3 -B scripts/retain_div_capture.py --case rv64gc-sstc-v1 --declaration-commit 18a09566408b1d78d24ee2c0eb83b7ef19eed3bc
+```
+
+| Case | Baseline, repeat | Control | Ran | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-m-forms-v6` | AGREE, 33 steps | DIVERGE at 12: `div x15, x5, x6`, Sail -3, the expectation -4 | 1.2 s | 16,943 B, `7998edb1…` | 2,794 B |
+| `rv64gc-xlen-forms-v3` | AGREE, 25 steps | DIVERGE at 24: `csrrs x31, mtval, x0`, Sail 2^40, the expectation 0 | 1.2 s | 14,980 B, `db272820…` | 2,260 B |
+| `rv64gc-csr-set-v2` | AGREE, 157 steps | DIVERGE at 130: `csrrs x28, mscratch, x0`, Sail 5, the expectation 9 | 1.4 s | 27,347 B, `d8f18593…` | 13,833 B |
+| `rv64gc-zicntr-v2` | AGREE, 292 steps | DIVERGE at 109: `addi x21, x20, 0`, Sail 21, the expectation 102 | 1.5 s | 24,163 B, `c2b55c23…` | 26,277 B |
+| `rv64gc-sstc-v1` | AGREE, 315 steps | DIVERGE at 172: `csrrs x11, sip, x0`, Sail 0, the expectation 32 | 1.5 s | 22,241 B, `801b9383…` | 26,417 B |
+
+SSTC's control is the case's failure mode: an all-ones `stimecmp` read as a signed -1 would sit below every `time`, so `sip` would read `0x20`, and the statement says the comparison is unsigned. Each capture is complete with qualification false, so each case is `pending` until its reviews (a43e-5).
+
+**What the window changed.** You can check the prediction yourself:
+
+```text
+$ cmp evidence/rv64gc-zicntr-v1/baseline.trace evidence/rv64gc-zicntr-v2/baseline.trace
+```
+
+All 12 traces and all 12 stdout streams of the four are byte-identical to their predecessors'. Each of the 12 stderr streams equals its predecessor's with the case id substituted. With the id substituted, each measured record moved in ten tokens: the dependency manifest's digest, three stderr digests, three receipt digests, the deriver's digest as the version of the two expected producers (a43e-2 edited the deriver), and the control reason's one recovered space. XLEN's moved in two more, its expectations' digests, which a43e-3 had already measured.
+
+**These five did not run on a quiet host.** Earlier captures waited for three minutes with no sibling repository's process. This one waited 107 minutes without reaching that, and the director then asked for the run ("try runnung"). Ten sibling processes were running, at a 1-minute load of 4.71 to 5.13. Every other guard held, and two took the wait's place: the load below 8, and 50 children spawned and reaped the collector's way before each case (`decision_sstc-delivery-needs-the-pinned-window.md`). A capture's bytes do not depend on the load: the four's traces are the proof.

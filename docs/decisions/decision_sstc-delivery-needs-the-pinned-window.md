@@ -65,6 +65,23 @@ Asked to pick among A, B and C, the director answered: "Pick yourself." I picked
 
 **What a43e-1 found that the prototype did not.** Eight probes moved, not the three predicted: the prototype counted the ones that fail on the binding, and did not run the two that read the measure's module (`probe_gate_runtime_root.py`, which lost all six tests, and `probe_contract_ancestry.py`, whose seam targets the guard that moved) or the three that predict the real tree's credits. And its check accepted a half-fetched boundary on a row declaring a delivery, a step with a length and no word, because it asked whether either field was missing. The real check asks for both, on both arms.
 
+## The captures (a43e-4, 2026-11-05): what the prototype left open, and what the quiet wait was for
+
+**The prototype's open point is measured.** All 12 traces and 12 stdout streams of the four are byte-identical to their predecessors' (`target/p4-system-14/a43e-4/check/compare.txt`). Each measured record moved only in what was declared to move: 10 tokens each, 12 for XLEN (`measured-diff.txt`). SSTC's control diverged at step 172, as on the clone.
+
+**They did not run on a quiet host, though the table above says so.** The waiter ran 107 one-minute checks without three quiet ones in a row. I asked the director for a quiet window; the answer was "try runnung". So I read what the wait guards against before removing it:
+
+| The wait's possible reason | Measured |
+| --- | --- |
+| A slow process hits the collector's limit | Each capture ran 1.2 s to 1.5 s of `PROCESS_SECONDS = 30` |
+| Load changes the bytes | It does not: the four's traces are identical to captures made on a quiet host |
+| A sibling writes an input | Siblings do not write in this repository; the manifest and the tree guards hold regardless |
+| `start_new_session` or the reap answers EPERM under load (a43a-2a; `target/p4-system-14/collector-race/FINDING.md`) | The one real exposure: a capture is never retried, so it would burn the case id. Seen in gates under pool load, never in a capture |
+
+**What replaced it** (`target/p4-system-14/a43e-4/capture-now.sh`): the same tree, frozen-path, regeneration and preflight guards, and before each case the 1-minute load below 8 and 50 of 50 children spawned and reaped the collector's way. Ten sibling processes ran throughout, at load 4.71 to 5.13. All five returned `rc=0`.
+
+**For later captures, this guard replaces the three-minute wait.** The wait cost 190 minutes at a43c-4 and 107 here, against about 15 seconds of work. One run proves it at load 5, not at load 28, which is why the load guard stays. A case burned by EPERM stays recoverable as a new case with a new declaration commit.
+
 ## What holds meanwhile
 
 (Written before the pick; history since a43e-1, except that `sstc-timer.s` still binds nothing until a43e-3.)

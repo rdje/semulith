@@ -25,7 +25,9 @@ CASE = "rv64gc-csr-set-v1"
 CASE_DIR = ROOT / "evidence" / CASE
 STEP, REGISTER, OBSERVED, EXPECTED = 34, "x20", [], 34
 # Every retained effect and the first difference it must show: case, step, register, observed, expected.
-RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v1", 6, "x5", [], 6))
+RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v1", 6, "x5", [], 6),
+            ("rv64gc-csr-set-v2", STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v2", 6, "x5", [], 6),
+            ("rv64gc-sstc-v1", 8, "x5", [], 8))
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),

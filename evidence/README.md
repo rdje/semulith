@@ -18,13 +18,13 @@ observations. Nothing here closes the M obligation or the CPU gate.
 | `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1) | xlen-v1's bytes, its control declared |
 | `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1) | `csr-set.s`, 157 boundaries, 53 properties |
 | `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1) | `zicntr.s`, 292 boundaries, 44 properties |
-| `rv64gc-m-forms-v6/` | declared | v5's bytes, contract v3 |
-| `rv64gc-xlen-forms-v3/` | declared | xlen-v2's guest; 21 derivation lines; contract v3 |
-| `rv64gc-csr-set-v2/` | declared | v1's bytes, contract v3 |
-| `rv64gc-zicntr-v2/` | declared | v1's bytes, contract v3 |
-| `rv64gc-sstc-v1/` | declared | `sstc-timer.s`, 315 boundaries, 39 properties |
+| `rv64gc-m-forms-v6/` | captured | v5's bytes, contract v3 |
+| `rv64gc-xlen-forms-v3/` | captured | xlen-v2's guest; 21 derivation lines; contract v3 |
+| `rv64gc-csr-set-v2/` | captured | v1's bytes, contract v3 |
+| `rv64gc-zicntr-v2/` | captured | v1's bytes, contract v3 |
+| `rv64gc-sstc-v1/` | captured | `sstc-timer.s`, 315 boundaries, 39 properties |
 
-An `invalidated` case holds 22 of 22 files; a declared one 8 (a43e-3). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
+Every case holds 22 of 22 files; the last five captured 2026-11-05 (a43e-4). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
 
 ## Declared files and lifecycle (per case)
 
@@ -36,7 +36,7 @@ An `invalidated` case holds 22 of 22 files; a declared one 8 (a43e-3). Each capt
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 287 files at most, 217 present. Prepared inputs come from canonical sources
+With this index: 287 files at most, all 287 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.
