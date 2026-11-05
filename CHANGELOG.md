@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-LC-0055 (leaf LIVE-CONTAINMENT.4) — every book's 404 page finds its own assets
+
+D80: each of the seven books wrote `base href="/"` into its 404 page, so on a static host that falls back to that page, 106 of 106 assets answered 404. One `site-url` line per `book.toml`, mdBook's public setting: 0 broken, and of 359 built files only the seven `404.html` differ. UNIT-BOOKS holds each book to its own path from here; `scripts/serve_book_404.py` is the reproduction.
+
 ## SEMULITH-P4-0349 (leaf P4-SYSTEM.14 a43e-0) — the pinned window proved on a throwaway clone: SSTC reaches 10 of 10 legs, and the open decision carries the numbers
 
 a43e-0: 15 changed lines add the typed event binding; `contract_measure` moves out, leaving 67 manifest children and no report or book generator; SSTC then captures and reads `DIV-POLICY: satisfied — 10 of 10 legs satisfied`, while `credit_records` reads all four credits lapsed, as predicted. No real evidence moved. The first run read 9 of 10, and `sstc-timer.s` now cites the requirement's own source at the control's witness. The pick stays the director's.

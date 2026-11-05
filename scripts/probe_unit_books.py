@@ -24,7 +24,8 @@ class BookTests(unittest.TestCase):
         self.write('materials/units.sexp', '(unit (id "u1") (kind processor) '
                    '(layer processor) (book "docs/models/u1/"))\n')
         for relative in ['docs/book', 'docs/models/u1']:
-            self.write(relative + '/book.toml', '[book]\ntitle = "fixture"\nsrc = "src"\n')
+            site = relative.removeprefix('docs/')
+            self.write(relative + '/book.toml', f'[book]\ntitle = "fixture"\nsrc = "src"\n[output.html]\nsite-url = "/{site}/book/"\n')
             self.write(relative + '/src/SUMMARY.md', '# Summary\n\n[Intro](intro.md)\n')
             self.write(relative + '/src/intro.md', '# Intro\n')
         self.catalogue = '- **`u1`** (kind: processor)\n'
@@ -46,6 +47,13 @@ class BookTests(unittest.TestCase):
         for name, body in (extra or {}).items():
             self.write('web/' + name, body)
         return B.navigation_findings(self.root / 'web', [output])
+
+    def test_a_book_without_its_own_site_url_is_named(self):
+        """A 404 page's assets resolve against `site-url`: another book's path, or none, breaks them (D80)."""
+        self.write('docs/models/u1/book.toml', '[book]\ntitle = "fixture"\nsrc = "src"\n')
+        self.assertTrue(any(f.startswith('BOOK SITE-URL u1') for f in B.check_books(self.root)[0]))
+        self.write('docs/models/u1/book.toml', '[book]\ntitle = "fixture"\nsrc = "src"\n[output.html]\nsite-url = "/book/book/"\n')
+        self.assertTrue(any("not '/models/u1/book/'" in f for f in B.check_books(self.root)[0]))
 
     def test_canonical_registry_and_catalogue(self):
         units = B.registered_units(self.root)

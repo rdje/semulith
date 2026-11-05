@@ -41,6 +41,7 @@ python3 -m http.server --bind 127.0.0.1 --directory docs 8000
 Open `http://127.0.0.1:8000/book/book/`; a model starts at, for example,
 `http://127.0.0.1:8000/models/rv64gc-lab-v0/book/`. Stop the server with Ctrl-C.
 Cross-unit links require the shared `docs` root and built destinations.
+Each `book.toml` names its path under that root in `site-url`, so on a static host that answers an unknown path with a book's `404.html`, the page finds its assets. Serving the collection under a further prefix means changing those lines: `python3 -B scripts/serve_book_404.py docs` checks all seven, and UNIT-BOOKS holds each to its own path.
 Sibling rewrites preserve queries, fragments and sources.
 
 ```sh

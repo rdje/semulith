@@ -6,6 +6,8 @@ language = "en"
 src = "src"
 
 [output.html]
+# The book's path under the shared `docs` root the book says to serve, so its 404 page finds its own assets (D80).
+site-url = "/models/dsp56300-lab-v0/book/"
 default-theme = "rust"
 git-repository-url = ""
 no-section-label = false

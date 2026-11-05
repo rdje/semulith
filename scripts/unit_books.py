@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 from urllib.parse import unquote, urlsplit
 
 import records_sexp as R
@@ -212,6 +213,17 @@ def require_include_execution(result, uid: str) -> None:
             raise BookRefused('include processor failed before a typed verdict ' + uid)
 
 
+def site_url_findings(root: Path, book: Path, uid: str) -> list[str]:
+    """A book's `site-url` is its own path under the shared `docs` root the project serves, or its 404 page asks for assets outside the book (D80)."""
+    try:
+        config = tomllib.loads(source_path(root, (book / 'book.toml').relative_to(root).as_posix()).read_text())
+    except tomllib.TOMLDecodeError:
+        return []  # a malformed file is the build's finding, by name
+    want = '/' + book.relative_to(root / 'docs').as_posix() + '/book/'
+    got = config.get('output', {}).get('html', {}).get('site-url')
+    return [] if got == want else [f'BOOK SITE-URL {uid}: {got!r}, not {want!r}']
+
+
 def check_books(root: Path) -> tuple[list[str], int, int]:
     root = owned_root(root)
     units = registered_units(root)
@@ -246,6 +258,7 @@ def check_books(root: Path) -> tuple[list[str], int, int]:
             if missing:
                 findings.append('INCOMPLETE BOOK ' + uid + ': ' + ', '.join(missing))
                 continue
+            findings.extend(site_url_findings(root, book, uid))
             output = scratch / book.relative_to(root) / 'book'
             result = subprocess.run(['mdbook', 'build', str(book), '-d', str(output)],
                                     capture_output=True, text=True, env=env)

@@ -100,7 +100,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         let dir = t.join("docs/models").join(name);
         write(
             &dir.join("book.toml"),
-            &format!("[book]\ntitle = \"{name}\"\nsrc = \"src\"\n"),
+            &format!("[book]\ntitle = \"{name}\"\nsrc = \"src\"\n[output.html]\nsite-url = \"/models/{name}/book/\"\n"),
         );
         write(
             &dir.join("src/SUMMARY.md"),
@@ -123,7 +123,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     tally.arm("RED   a unit whose book does not exist", 1, "NO BOOK u1");
     write(
         &t.join("docs/book/book.toml"),
-        "[book]\ntitle = \"project\"\nsrc = \"src\"\n",
+        "[book]\ntitle = \"project\"\nsrc = \"src\"\n[output.html]\nsite-url = \"/book/book/\"\n",
     );
     write(
         &t.join("docs/book/src/SUMMARY.md"),
@@ -154,6 +154,15 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     write(
         &t.join("docs/models/u1/book.toml"),
         "[book]\ntitle = \"u1\"\nsrc = \"src\"\n",
+    );
+    tally.arm(
+        "RED   a book whose 404 page would ask for assets outside it (no site-url)",
+        1,
+        "BOOK SITE-URL u1",
+    );
+    write(
+        &t.join("docs/models/u1/book.toml"),
+        "[book]\ntitle = \"u1\"\nsrc = \"src\"\n[output.html]\nsite-url = \"/models/u1/book/\"\n",
     );
     models("# Models\n");
     tally.arm(

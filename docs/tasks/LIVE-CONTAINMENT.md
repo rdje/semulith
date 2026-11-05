@@ -119,7 +119,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/D80/adoption scheduled alongside CPU delivery |
+| 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
 
 ### .4o / SEMULITH-LC-0054 — the tree's closed rows move to an archive part (complete)
 
@@ -942,7 +942,7 @@ observed. No app termination or sanctioned-process change was made. Original
 LC0047 witness stays retained; this external-state blocker is cleared at this
 measurement. Final census remains required; D79 terminal capture is next.
 
-###### .4i2b5c.404 / SEMULITH-LC-0046 — qualify and repair 404 asset bases (pending)
+###### .4i2b5c.404 / SEMULITH-LC-0055 — qualify and repair 404 asset bases (complete)
 
 Priority1 D80: actual generated seven-book 404 pages use origin-root base URLs;
 shared collection serving requests css/scripts outside their book and gets404.
@@ -951,7 +951,15 @@ local file/shared-root/hosted fallback contracts and fix the owned integration.
 Do not alter mdBook/Gitlink internals or claim resource completeness from heading
 success. Keep all URLs/old captures/prefixes/history/modes/caps exact or record
 owned explicit transitions; book/live sync and normal COMMIT before search.
-Immediate after D79 tracing/repair; current owner .4i2b5c.404.
+Scheduled "immediate after D79"; D79 still waits on its terminal capture, and nothing here depends on it, so it lands first.
+
+The three contracts, measured: a page opened from `file://` or served by the book's own `python3 -m http.server` command never shows `404.html` (that server answers its own page), so neither broke. A static host that answers an unknown path with the book's `404.html` does, and that is the broken one: `scripts/serve_book_404.py` serves the shared root that way, reads what each 404 page asks for and fetches it. Before: all seven `base href="/"`, **106 of 106 assets answering 404**. **The fix** is mdBook's public setting and nothing inside it: each `book.toml` names its own path under the shared root (`site-url = "/models/<unit>/book/"`, `/book/book/` for the project's), so a deployment at a different root changes that one line. After: 106 assets, 0 broken. Of the 359 files the seven books build, exactly the seven `404.html` differ (`shasum` of both builds, target/live-containment/lc0055). **The guard:** `scripts/unit_books.py`'s `BOOK SITE-URL`, so a new unit's book cannot regress it: fired RED on the real tree (`rv64gc-lab-v0`'s line removed, restored `cmp`), one arm and one probe test. Limits: it says nothing of what D79 owns, and a host serving the collection under a further prefix must change the lines.
+
+- [x] **ROOT CAUSE** — target/live-containment/lc0055/before.txt: `python3 -B scripts/serve_book_404.py docs` `rc=1`, `books 7, broken assets 106`, each `base '/'`: mdBook writes its 404 page's base from `site-url`, whose default is the origin root, and no `book.toml` set it (`grep -c site-url` 0 in all seven).
+- [x] **ADDRESSED** — target/live-containment/lc0055/after.txt: `books 7, broken assets 0`, `rc=0`; `diff` of the two builds' `shasum` lists names 7 files, all `404.html`, of 359.
+- [x] **NO REGRESSION** — `bash scripts/check_unit_books.sh` → `UNIT-BOOKS: ok (6 units + project book; catalogue and 3742 rendered hyperlinks checked in fresh bundle)`; `cargo xtask check-unit-books --self-test` → `23 pass / 0 fail`, its new arm RED on a missing line; red-real.txt: the real tree with one line removed `rc=1`, `BOOK SITE-URL rv64gc-lab-v0`; `python3 -B scripts/probe_unit_books.py` `OK` in both modes.
+- [x] **FIX** — one `site-url` line per `book.toml`; `site_url_findings` in `scripts/unit_books.py`; `scripts/serve_book_404.py`, the reproduction, tracked.
+- [x] **LOCKSTEP** — the project book's browse section, the toolbox's execution family, CHANGELOG, MEMORY; LIVE_STATUS's arm total re-derived (1707, the new arm), no row moves. promotion: declined (one setting; no lesson the existing "reproduce before fixing" card lacks).
 
 ###### .4i2b5b3 — qualify generated search (pending)
 
