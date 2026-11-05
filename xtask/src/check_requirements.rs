@@ -469,6 +469,7 @@ for cat in catalogues:
                     # lists the replacement.
                     if (r is not None
                             and o.get("id") not in r.get("obligation_ids", [])
+                            and o.get("id") not in gone  # history: its successor answers (P4-SYSTEM.14 a43e-2)
                             and (r.get("source_semantics") or {}).get("category") == "defined"
                             and o.get("authority") != ARCH_AUTHORITY):
                         findings.append(
@@ -741,6 +742,7 @@ if scenario == "unfrozen": status = "open"
 if scenario == "pin": pin = "0" * 64
 if scenario == "drift": records[2]["statement"] = "wrong"
 if scenario == "authority": records[2]["authority"] = "laboratory"
+if scenario == "historical-authority": records[0]["authority"] = "laboratory"
 if scenario == "no-mirror": records[2]["parameters"] = {}
 if scenario == "other-requirement": records[2]["parameters"] = {"requirement_id": "REQ-D-OTHER"}
 if scenario == "inheritance": parent = "p-env-v0"
@@ -749,7 +751,7 @@ if scenario == "absent": new = "OB-GHOST"
 if scenario == "duplicate": middle = "OB-A"
 if scenario == "live": records[2]["statement"] = "wrong"; records[0]["statement"] = "S"; records[1]["statement"] = "S"
 lines = R.dump(records).splitlines()
-if scenario == "live": pins = [hashlib.sha256(line.encode()).hexdigest() for line in lines]; pin = pins[0]
+if scenario in ("live", "historical-authority"): pins = [hashlib.sha256(line.encode()).hexdigest() for line in lines]; pin = pins[0]
 versions = [f'(contract (id "p-env-v0") (version "0") (profile_ids "p") (status {status}) (statement "v0") (member (id "OB-A") (sha256 "{pin}")))',
             f'(contract (id "p-env-v1") (version "1") (profile_ids "p") (extends "p-env-v0") (status frozen) (statement "v1") (member (id "{middle}") (sha256 "{pins[1]}")) (supersede (record "OB-A") (by "{middle}") (why "replacement")))',
             f'(contract (id "p-env-v2") (version "2") (profile_ids "p") (extends "{parent}") (status open) (statement "v2") (member (id "OB-A-V2")) (supersede (record "{old}") (by "{new}") (why "replacement")))']
@@ -1423,6 +1425,13 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         fx.judge(),
         1,
         "AUTHORITY DOWNGRADE",
+    );
+    versioned_mirror("historical-authority");
+    tally.arm(
+        "GREEN a superseded record's authority is history, and its successor answers",
+        fx.judge(),
+        0,
+        "__CHECKED__ 2",
     );
     let _ = fs::remove_file(p.join("contract.sexp"));
     let _ = fs::remove_file(p.join("contract-obligations.sexp"));

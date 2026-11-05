@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-05`
-- **Status:** `active`
+- **Status:** `active` (item 4 carried out at a43e-2)
 - **Owner / source:** `P4-SYSTEM.14` a45-1, `SEMULITH-P4-0350`; the workflow under [`decision_four-rulings-delegated.md`](decision_four-rulings-delegated.md): it makes no new claim, credits nothing and moves no retained case. Its statement rider goes with [`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md).
 answers: Why could eight rv64gc requirements never have reached implemented, what binds them now, and what about their stale statements?
 
@@ -27,6 +27,10 @@ The status derivation closes a requirement only when `set(obligation_ids) <= cre
 2. **Rule 16, `SUPERSEDED OBLIGATION`:** an included requirement may not name an obligation its contract supersedes. Fired RED on the real tree (`OB-RESERVATION` put back).
 3. **Rule 14 frees a mirror whose contract supersedes every obligation the owner's record names.** `REQ-D-ECALL-EBREAK` is mirrored from rv64i, whose record is right for rv64i; this profile's contract already left it behind (`why "the rv64i base mirror says no privileged modes…"`).
 4. **The statements wait for the window, and this is why.** Four read stale: `REQ-D-FP-DEFER` ("implements no floating point until…"), `REQ-D-ROUTE-FLIP` (a partial composition), `REQ-D-ECALL-EBREAK` ("no privileged modes", with OQ-5 open), `REQ-GC-PRIV-INSNS` (`wfi` a no-op). Measured by rewriting them and running RECORD-SCHEMA: the first two must equal `profile.sexp`'s decisions, and `profile.sexp` is pinned by every case; all four are mirrored by frozen contract versions whose successors do not name them. So correcting them takes the pinned window and a contract version that gives the successors their requirement mirrors. **None can honestly be credited before that.** It is a rider on the window, not a reason to open one.
+
+## Carried out (2026-11-05, a43e-2, `SEMULITH-P4-0352`)
+
+Contract v3 is the version item 4 asks for. It adds no guarantee: `OB-GC-FP-QUALIFIED-V3`, `OB-GC-DEFINITION-V3`, `OB-GC-ECALL-EBREAK-V3` and `OB-GC-PRIV-INSNS-V3` carry their requirement's id and state what it now states, and `D-FP-DEFER` and `D-ROUTE-FLIP` say the same. Each check moved with its evidence, so `G-CONTRACT` stays 114 of 114. `REQ-D-ECALL-EBREAK` became `defined` and `resolved`, which the design did not foresee would fire rule 7 on v0's frozen `OB-ECALL-EBREAK`; a superseded record is history, so the rule now skips it, and an effective replacement still refuses. RECORD-SCHEMA `--self-test`: 85 pass.
 
 ## Why
 

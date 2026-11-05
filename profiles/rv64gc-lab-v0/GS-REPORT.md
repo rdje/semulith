@@ -12,9 +12,9 @@
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v2` frozen | **green** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v3` frozen | **green** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 1 `not-applicable`, 47 `planned`; 1 not resolved (`REQ-D-ECALL-EBREAK`); policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 1 `not-applicable`, 47 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
@@ -63,7 +63,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 215ac58c4114458a760f9d6d98336bb98edaac9e864241feda75a1ac319f4e45`
+  `sha256 ab13f5353972319695db5113839bec0a484833dc38834fb803d1a7b84d0dbb86`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 from pathlib import Path
+import re
 import sys
 import tempfile
 
@@ -19,6 +20,38 @@ import frozen_owned as Frozen
 REPO = Path(__file__).resolve().parent.parent
 RESERVED = [0x04000033, 0x04004033, 0x04006033, 0x04007033,
             0x04001013, 0x04005013, 0x0000200F]
+
+
+def check_directive_keys(author):
+    """`{new}` resolves on both routes, even for a write the writes table drops; nothing unresolved reaches a record."""
+    asm = author.Assembler(Frozen.ENCODING)
+    own_value = ['addi x5, x0, 0  #: x5 already holds {new}. | RVI-RV32I §1.1.4',
+                 'addi x5, x0, 7  #: now {new}. | RVI-RV32I §1.1.4']
+    words = ['0x0000000000000000', '0x0000000000000007']
+
+    def word_route(lines):
+        parent = REPO / 'target/p4-system-12'
+        parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix='gc-author-keys-', dir=parent) as td:
+            guest = Path(td) / 'keys.s'
+            guest.write_text('\n'.join(lines + ['ebreak']) + '\n')
+            return re.findall(r'\(derivation "(.*?)"\)', author.run_guest(guest, asm)[0])
+
+    def parcel_route(lines):
+        run = author._derive_parcel_lines(lines, asm, len(lines), program='keys.s')
+        return [step.deriv for step in run.steps]
+
+    for name, route in (('word', word_route), ('parcel', parcel_route)):
+        derived = route(own_value)
+        assert derived[:2] == [f'x5 already holds {words[0]}.', f'now {words[1]}.'], f'{name} route: {derived[:2]}'
+        for directive, key in (('addi x0, x0, 1  #: x0 takes no write, {new}. | RVI-RV32I §1.1.4', '{new}'),
+                               ('addi x5, x0, 1  #: there is no such key, {old}. | RVI-RV32I §1.1.4', '{old}')):
+            try:
+                derived = route([directive])
+            except author.Refusal as exc:
+                assert f'{key} has no value' in str(exc), str(exc)
+            else:
+                raise AssertionError(f'{name} route: an unresolved {key} reached a record: {derived[0]}')
 
 
 def check(author):
@@ -63,14 +96,17 @@ def check(author):
     assert hart.walk(va, 'load') == ('fault', 13), 'MXR=0 rejects an X-only load'
     hart.csr['mstatus'] |= 1 << 19
     assert hart.walk(va, 'load') == ('pa', author.ENTRY), 'MXR=1 permits an X-only load'
+    check_directive_keys(author)
     assert Frozen.check_owned(author) == 0, 'owned expectation corpus drift'
-    print('GC author probe: 7 reserved words, named refusal, permissions and owned corpus passed')
+    print('GC author probe: 7 reserved words, named refusal, permissions, directive keys and owned corpus passed')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mutation', choices=['reserved-op', 'reserved-shift', 'division-rounding',
-                                              'ignore-sum', 'ignore-mxr', 'ignore-user'])
+                                              'ignore-sum', 'ignore-mxr', 'ignore-user',
+                                              'no-new', 'new-after-dropping', 'parcel-new-after-dropping',
+                                              'unresolved-kept'])
     args = parser.parse_args()
     if not args.mutation:
         check(Q)
@@ -92,6 +128,10 @@ def main():
             'ignore-sum': ('kind == "fetch" or not (self.csr["mstatus"] >> 18) & 1', 'True'),
             'ignore-mxr': ('r or (x and (self.csr["mstatus"] >> 19) & 1)', 'r'),
             'ignore-user': ('if mode == 0 and not u:', 'if False:'),
+            'no-new': ('text = text.replace("{new}", sx(next(iter(written.values()))))', 'pass'),
+            'new-after-dropping': ('written = dict(st.writes)', 'written = st.writes'),
+            'parcel-new-after-dropping': ('written = dict(step.writes)', 'written = step.writes'),
+            'unresolved-kept': ('raise Refusal(f"{where}: {left.group()} has no value on this step")', 'pass'),
         }
         old, new = changes[args.mutation]
         assert source.count(old) == 1, 'author mutation must match once'

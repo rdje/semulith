@@ -2180,6 +2180,51 @@ fn self_test(repo: &Path, report: &mut Report) -> bool {
         1,
         "U mode cannot read an S page",
     );
+    // a43b-c2: a directive's `{new}` is the value the step writes, and nothing unresolved reaches a record.
+    tally.arm(
+        "RED a directive's {new} left unresolved is caught",
+        probe(
+            repo,
+            false,
+            "scripts/probe_gc_author.py",
+            &["--mutation", "no-new"],
+        ),
+        1,
+        "{new} has no value",
+    );
+    tally.arm(
+        "RED {new} read after a register's own value is dropped is caught",
+        probe(
+            repo,
+            false,
+            "scripts/probe_gc_author.py",
+            &["--mutation", "new-after-dropping"],
+        ),
+        1,
+        "{new} has no value",
+    );
+    tally.arm(
+        "RED the parcel route reading {new} after that drop is caught",
+        probe(
+            repo,
+            false,
+            "scripts/probe_gc_author.py",
+            &["--mutation", "parcel-new-after-dropping"],
+        ),
+        1,
+        "{new} has no value",
+    );
+    tally.arm(
+        "RED an unresolved key reaching a record is caught",
+        probe(
+            repo,
+            false,
+            "scripts/probe_gc_author.py",
+            &["--mutation", "unresolved-kept"],
+        ),
+        1,
+        "an unresolved {new} reached a record",
+    );
     // d3b: absent ordinary rows/process output must never become reference agreement.
     tally.arm(
         "GREEN scalar reference processes, fresh output and binary pins",

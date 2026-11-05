@@ -153,7 +153,21 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     // v2's guarantees and assumptions as they bind, partial progress,
     // the eleven static selection pairs (P4-SYSTEM.13 b2/b3/b5), c1's three corrections,
     // and c8–c12's privilege-mode/Sv39/Svade/alignment/counter witnesses.
+    // v3 restated four guarantees for their requirements: each check moved to its successor with its
+    // evidence (P4-SYSTEM.14 a43e-2), so the four superseded records declare what nothing runs any more.
+    const RESTATED: [&str; 4] = [
+        "OB-GC-FP-QUALIFIED-V2",
+        "OB-GC-DEFINITION-V2",
+        "OB-GC-ECALL-EBREAK-V1",
+        "OB-GC-PRIV-INSNS-V1",
+    ];
     let declared = declared_checks(|l| {
+        if RESTATED
+            .iter()
+            .any(|ob| l.starts_with(&format!("(obligation (id \"{ob}\")")))
+        {
+            return false;
+        }
         !l.contains("(contract_version \"0\")")
             || l.starts_with("(obligation (id \"OB-GC-PARTIAL-PROGRESS\")")
             || l.starts_with("(obligation (id \"OB-GC-COMPOSITION\")")

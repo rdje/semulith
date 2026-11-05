@@ -88,5 +88,16 @@
   (supersede (record "OB-ROUTE-FLIP") (by "OB-GC-DEFINITION-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee"))
   (supersede (record "OB-FAULT-PRIORITY") (by "OB-GC-FAULT-PRIORITY-V2") (why "P4-SYSTEM.13 c1 replaces the obsolete stage or incorrect blanket absence with the current, checked guarantee")))
 
+(contract (id "rv64gc-lab-env-v3") (version "3") (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v2") (status frozen)
+  (statement "Version 3 (P4-SYSTEM.14 a43e-2, 2026-11-05): no new guarantee. Four successors carry their requirement's id and state what that requirement now states, so REQ-D-FP-DEFER, REQ-D-ROUTE-FLIP, REQ-D-ECALL-EBREAK and REQ-GC-PRIV-INSNS could be corrected while the frozen records they once mirrored stay as they are. Each check keeps its evidence; 57 effective obligations and 114 realized checks, as before.")
+  (member (id "OB-GC-FP-QUALIFIED-V3") (sha256 "517eeb64a125dca195961dfe09cc93927c41833485117e6680175067ac399162"))
+  (member (id "OB-GC-DEFINITION-V3") (sha256 "9b42739aa8ad2c39732cf60b50af0e52796d1749191ff8e97a509ac676f8185e"))
+  (member (id "OB-GC-ECALL-EBREAK-V3") (sha256 "16ed87108cc80b474f1dc686ae6686abbedc5314f92b3e87ab1ffc575ff4159d"))
+  (member (id "OB-GC-PRIV-INSNS-V3") (sha256 "463af276293e704e22f5b797953a643ccd4d760e25e20569d7f6039cfead3b21"))
+  (supersede (record "OB-GC-FP-QUALIFIED-V2") (by "OB-GC-FP-QUALIFIED-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited"))
+  (supersede (record "OB-GC-DEFINITION-V2") (by "OB-GC-DEFINITION-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited"))
+  (supersede (record "OB-GC-ECALL-EBREAK-V1") (by "OB-GC-ECALL-EBREAK-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited"))
+  (supersede (record "OB-GC-PRIV-INSNS-V1") (by "OB-GC-PRIV-INSNS-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited")))
+
 (registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")
   (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to tracked guests, a named typed-boundary fixture or a scope predicate. The registry tests run every guest under the corpus comparison rule, every direct fixture with its typed violation controls, and every scope check through its tracked predicate/violating copies (P4-SYSTEM.13 b2); scope evidence validates declarations, never instruction execution."))

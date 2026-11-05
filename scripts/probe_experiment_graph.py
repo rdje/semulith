@@ -202,7 +202,7 @@ def run_controls() -> int:
     judge("canonical scope is nonempty", [] if current.requirement_ids and current.obligation_ids else ["empty scope"])
     judge("canonical scope selects effective FP successor",
           [] if "OB-FP-DEFER" not in current.obligation_ids
-          and "OB-GC-FP-QUALIFIED-V2" in current.obligation_ids else ["wrong contract version"])
+          and "OB-GC-FP-QUALIFIED-V3" in current.obligation_ids else ["wrong contract version"])
     judge("scope filters another profile", [] if not V.load_scope(directory, "foreign", set()).requirement_ids
           and not V.load_scope(directory, "foreign", set()).obligation_ids else ["cross-profile IDs"])
     print(f"EXPERIMENT-GRAPH: {passed} pass / {failed} fail")

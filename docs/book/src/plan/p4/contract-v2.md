@@ -542,6 +542,25 @@ v0/v1 records and pins remain byte-for-byte unchanged. Seven explicit
 supersessions yield 57 effective obligations with 114 realized checks; the registry
 also retains two superseded checks, so its total is 116.
 
+## Version 3: requirements that say what holds
+
+Version 3 (`P4-SYSTEM.14` a43e-2) adds no guarantee, and the counts above stand. Four requirements
+still read as their stage did: no floating point, a partial composition, no privileged modes, and
+wfi as a no-op. They could not simply be corrected, because each was the mirror of a frozen record.
+So version 3 restates four successors with their requirement's id, and the requirement and, where
+one exists, its `profile.sexp` decision now state exactly what the effective record states:
+
+| Requirement | Effective record | It now says |
+| --- | --- | --- |
+| `REQ-D-FP-DEFER` | `OB-GC-FP-QUALIFIED-V3` | F and D are implemented over the qualified backend |
+| `REQ-D-ROUTE-FLIP` | `OB-GC-DEFINITION-V3` | the composition is complete, and the owners govern the generated mirrors |
+| `REQ-D-ECALL-EBREAK` | `OB-GC-ECALL-EBREAK-V3` | both are delivered to a handler, never reported to the harness |
+| `REQ-GC-PRIV-INSNS` | `OB-GC-PRIV-INSNS-V3` | a legal wfi enters the wait; sfence.vma invalidates the modelled TLB |
+
+Each check moved to its successor with its evidence unchanged. `REQ-D-ECALL-EBREAK` is now a
+`defined`, `resolved` requirement here: OQ-5 asks what pc is after a trap with no privileged mode, and
+this profile has them. rv64i keeps its own requirement and its open question.
+
 A later correction needs a new version. Scratch copies of the frozen candidate
 confirm that editing its SC record, omitting that record's pin or dropping its
 membership is refused; the intact candidate passes. The full five-leg local CI

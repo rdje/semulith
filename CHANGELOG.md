@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0352 (leaf P4-SYSTEM.14 a43e-2) — the window's last pinned edits: a directive's `{new}` always resolves, and contract v3 lets four requirements say what holds
+
+a43e-2, no credit and no retained case moved. `{new}` is the value a step writes, on both routes; a key with no value is refused by name, and 41 literal placeholders in two records are gone. Contract v3 restates four successors with their requirement's id, so `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-ECALL-EBREAK` and `REQ-GC-PRIV-INSNS` stop stating what a frozen record said; `G-CONTRACT` stays 114 of 114 and `G-OBLIGATIONS` reads 0 not resolved. Rule 7 now skips superseded records. Evidence: `target/p4-system-14/a43e-2`.
+
 ## SEMULITH-P4-0351 (leaf P4-SYSTEM.14 a43e-1) — the window that opens SSTC: a delivered interrupt is a boundary a case can say, the report leaves the experiments' inputs, and four credits are retired
 
 a43e-1, on the director's "Pick yourself.": option A of `decision_sstc-delivery-needs-the-pinned-window.md`. `word` and `length` are optional in a `step`; a boundary may fetch nothing exactly when its record declares an interrupt delivered there, and it then writes nothing; a wait, a fetch fault and a half-fetched step stay unsupported. `contract_measure` moves to `scripts/effective_contract.py`, so the next manifests pin no report generator. The predicted cost, exactly: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1` retired by removal, 47 planned, 1 not-applicable, G-TRACE red, G-STATE 0 of 4, GS 4 of 10 open, until each case is re-captured once (a43e-3 … a43e-5). The dossier copies left. Eight probes moved rather than the three predicted, and the real check is stricter than the prototype's. No retained evidence byte moved.

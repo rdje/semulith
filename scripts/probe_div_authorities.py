@@ -219,7 +219,7 @@ class AuthorityTests(unittest.TestCase):
                                      ("contract-obligations", "obligation", "OB-GC-M"),
                                      ("sources", "source", "RVI-M"),
                                      ("references", "candidate", "sail-riscv"),
-                                     ("contract", "contract", "rv64gc-lab-env-v2")):
+                                     ("contract", "contract", "rv64gc-lab-env-v3")):
             with self.subTest(family=head):
                 path, forms = self.load(name)
                 original = path.read_bytes()
@@ -328,14 +328,14 @@ class AuthorityTests(unittest.TestCase):
         self.refuses(needle="CONTRACT CYCLE")
         path.write_bytes(original)
         path, forms = self.load("contract")
-        forms += A.S.parse('''(contract (id "rv64gc-lab-env-v3") (version "3")
-          (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v2") (status open)
+        forms += A.S.parse('''(contract (id "rv64gc-lab-env-v4") (version "4")
+          (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v3") (status open)
           (statement "owned supersession fixture") (member (id "OB-AI-REPLACEMENT"))
           (supersede (record "OB-GC-M") (by "OB-AI-REPLACEMENT") (why "owned fixture")))''')
         self.save(path, forms)
         obligations, records = self.load("contract-obligations")
         replacement = deepcopy(self.record(records, "obligation", "OB-GC-M"))
-        for name, value in (("id", "OB-AI-REPLACEMENT"), ("contract_id", "rv64gc-lab-env-v3"), ("contract_version", "3")):
+        for name, value in (("id", "OB-AI-REPLACEMENT"), ("contract_id", "rv64gc-lab-env-v4"), ("contract_version", "4")):
             field(replacement, name)[1] = value
         records.append(replacement)
         self.save(obligations, records)

@@ -483,23 +483,23 @@ pub static CHECKS: &[ContractCheck] = &[
         ),
     },
     ContractCheck {
-        id: "CHK-GC-FP-QUALIFIED-V2-POS",
-        obligation: "OB-GC-FP-QUALIFIED-V2",
+        id: "CHK-GC-FP-QUALIFIED-V3-POS",
+        obligation: "OB-GC-FP-QUALIFIED-V3",
         evidence: Evidence::Scope,
     },
     ContractCheck {
-        id: "CHK-GC-FP-QUALIFIED-V2-NEG",
-        obligation: "OB-GC-FP-QUALIFIED-V2",
+        id: "CHK-GC-FP-QUALIFIED-V3-NEG",
+        obligation: "OB-GC-FP-QUALIFIED-V3",
         evidence: Evidence::Scope,
     },
     ContractCheck {
-        id: "CHK-GC-DEFINITION-V2-POS",
-        obligation: "OB-GC-DEFINITION-V2",
+        id: "CHK-GC-DEFINITION-V3-POS",
+        obligation: "OB-GC-DEFINITION-V3",
         evidence: Evidence::Scope,
     },
     ContractCheck {
-        id: "CHK-GC-DEFINITION-V2-NEG",
-        obligation: "OB-GC-DEFINITION-V2",
+        id: "CHK-GC-DEFINITION-V3-NEG",
+        obligation: "OB-GC-DEFINITION-V3",
         evidence: Evidence::Scope,
     },
     ContractCheck {
@@ -733,23 +733,23 @@ pub static CHECKS: &[ContractCheck] = &[
         evidence: Evidence::Guests(&["mm-csr-ro-write", "inj-walk-l2"]),
     },
     ContractCheck {
-        id: "CHK-GC-PRIV-INSNS-V1-POS",
-        obligation: "OB-GC-PRIV-INSNS-V1",
+        id: "CHK-GC-PRIV-INSNS-V3-POS",
+        obligation: "OB-GC-PRIV-INSNS-V3",
         evidence: Evidence::Guests(&["mm-wfi", "w-timer", "sv39-tlb-fence"]),
     },
     ContractCheck {
-        id: "CHK-GC-PRIV-INSNS-V1-NEG",
-        obligation: "OB-GC-PRIV-INSNS-V1",
+        id: "CHK-GC-PRIV-INSNS-V3-NEG",
+        obligation: "OB-GC-PRIV-INSNS-V3",
         evidence: Evidence::Guests(&["mm-csr-legality-u", "w-notrap"]),
     },
     ContractCheck {
-        id: "CHK-GC-ECALL-EBREAK-V1-POS",
-        obligation: "OB-GC-ECALL-EBREAK-V1",
+        id: "CHK-GC-ECALL-EBREAK-V3-POS",
+        obligation: "OB-GC-ECALL-EBREAK-V3",
         evidence: Evidence::Guests(&["mm-ecall-modes", "mm-ebreak"]),
     },
     ContractCheck {
-        id: "CHK-GC-ECALL-EBREAK-V1-NEG",
-        obligation: "OB-GC-ECALL-EBREAK-V1",
+        id: "CHK-GC-ECALL-EBREAK-V3-NEG",
+        obligation: "OB-GC-ECALL-EBREAK-V3",
         evidence: Evidence::Guests(&["mm-ecall-deleg"]),
     },
 ];

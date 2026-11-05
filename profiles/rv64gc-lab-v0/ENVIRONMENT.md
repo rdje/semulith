@@ -1,7 +1,7 @@
 # `rv64gc-lab-env` — the environment contract for `rv64gc-lab-v0`
 
-Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), and
-`rv64gc-lab-env-v2` (frozen, extends v1).
+Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), `rv64gc-lab-env-v2`
+(extends v1), and `rv64gc-lab-env-v3` (frozen, extends v2).
 The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp)
 and its explicitly included [v0](contract-v0.obligations.sexp) and
 [v1](contract-v1.obligations.sexp) parts; which
@@ -99,7 +99,7 @@ negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
 | Interrupts | **in scope — no external source** | `OB-GC-ENV-INTERRUPT-SOURCES-V2` (v2): no CLINT/PLIC; STCE=0 selects software STIP, STCE=1 the hart's comparator; raw software pending is retained behind that view |
 | Counter input | **in scope** | `OB-GC-ENV-VIRTUAL-TIME` (v1): the time supply is the virtual-time domain |
 | Reservations | **in scope — no external event** | `OB-GC-ENV-RESERVATION-EVENTS` (v1); qualified `OB-GC-RESERVATION-V2`, `OB-GC-SC-DETERMINISTIC-V2` (v2) |
-| Waiting | **in scope** | `OB-GC-PRIV-INSNS-V1` (v1): a legal wfi enters the wait; the wake needs no retirement |
+| Waiting | **in scope** | `OB-GC-PRIV-INSNS-V3` (v3): a legal wfi enters the wait; the wake needs no retirement |
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
 | Address units | **in scope — physical 8-bit bytes** | `OB-GC-ENV-ADDRESS-UNITS` (v2): full unsigned 64-bit addresses; translated instruction/data accesses and physical PTE reads; direct typed pair |
@@ -136,8 +136,8 @@ The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, [GS-REPORT.md](GS-REPORT.md) derives the
 effective realization census from the canonical catalog and registered checks.
-All114effective checks are realized; G-CONTRACT is green with frozen v2.
-Frozen v0/v1 text and pins are unchanged. CPU-SYSTEM retains seven open axes.
+All 114 effective checks are realized; G-CONTRACT is green with frozen v3.
+Frozen v0, v1 and v2 text and pins are unchanged. The GS report names CPU-SYSTEM's open axes.
 
 ## Supersessions (v1 corrects v0 without rewriting it)
 
@@ -146,8 +146,22 @@ Frozen v0/v1 text and pins are unchanged. CPU-SYSTEM retains seven open axes.
 | `OB-GC-PRIV-INSNS` | `OB-GC-PRIV-INSNS-V1` | v0 called wfi and sfence.vma's invalidation no-ops; the wait state (`.5`) and the TLB (`.3`) made both wrong |
 | `OB-ECALL-EBREAK` (rv64i mirror) | `OB-GC-ECALL-EBREAK-V1` | the mirror says no privileged modes and a harness report that stops; here the trap is delivered to a handler |
 
-The requirement mirrors of the two superseded records still carry v0's text — they mirror the
-frozen v0 obligations; the contract is where v1 corrects them.
+## Requirement mirrors (v3 gives the successors their requirements)
+
+Four requirements could not be corrected while their words were the only mirror of a frozen record:
+a frozen v0 obligation names its requirement, and the requirement had to state what it stated. So
+version 3 adds no guarantee. Each successor gains its requirement's id and states what that
+requirement now states, and the check keeps its evidence under the new id:
+
+| Requirement | Effective record | What the frozen record it mirrored said |
+| --- | --- | --- |
+| `REQ-D-FP-DEFER` | `OB-GC-FP-QUALIFIED-V3` | no floating point until the backend qualifies |
+| `REQ-D-ROUTE-FLIP` | `OB-GC-DEFINITION-V3` | a partial composition with six unbound slots |
+| `REQ-D-ECALL-EBREAK` | `OB-GC-ECALL-EBREAK-V3` | no privileged modes, and a report to the harness |
+| `REQ-GC-PRIV-INSNS` | `OB-GC-PRIV-INSNS-V3` | wfi and sfence.vma's invalidation as no-ops |
+
+RECORD-SCHEMA allows a frozen record to differ from its requirement only through an authenticated
+route to an effective record that names the same requirement and states the same fact.
 
 ## Positive and negative fixtures
 
@@ -173,8 +187,8 @@ pairs, including v2's direct interrupt-source check.
 | `CHK-GC-ENV-INTERRUPT-SOURCES-POS` / `-NEG` | i-timer, w-sw / env-irq-sources |
 | `CHK-GC-ENV-VIRTUAL-TIME-POS` / `-NEG` | mm-counters, i-timer / w-timer |
 | `CHK-GC-ENV-RESERVATION-EVENTS-POS` / `-NEG` | a-lrsc-loop, a-lrsc-pair / a-lrsc-mustfail |
-| `CHK-GC-PRIV-INSNS-V1-POS` / `-NEG` | mm-wfi, w-timer, sv39-tlb-fence / mm-csr-legality-u, w-notrap |
-| `CHK-GC-ECALL-EBREAK-V1-POS` / `-NEG` | mm-ecall-modes, mm-ebreak / mm-ecall-deleg |
+| `CHK-GC-PRIV-INSNS-V3-POS` / `-NEG` | mm-wfi, w-timer, sv39-tlb-fence / mm-csr-legality-u, w-notrap |
+| `CHK-GC-ECALL-EBREAK-V3-POS` / `-NEG` | mm-ecall-modes, mm-ebreak / mm-ecall-deleg |
 | `CHK-GC-PARTIAL-PROGRESS-POS` / `-NEG` | inj-carrier, inj-atomics, inj-fp, prio-sv39 / mm-csr-ro-write, inj-walk-l2 |
 
 ## What is deliberately not here

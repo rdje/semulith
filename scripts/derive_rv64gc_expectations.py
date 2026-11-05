@@ -20,10 +20,12 @@ Usage: python3 scripts/derive_rv64gc_expectations.py [--check] guest.s ...
 Writes guest.expected.sexp unless --check/--check-owned requests a non-writing comparison.
 A source directive overrides the stock derivation text and locator:
   addi x5, x0, 1  #: the marker begins at 1. | RVI-RV32I 1.1.4
-Interpolation keys {old}/{new}/{addr}/{code} come from the spec-side computation.
+{new} in either part is the value the step writes to its register, from the spec-side computation,
+even when the register already held it. A key with no value on its step is refused by name.
 """
 from __future__ import annotations
 
+import re
 import sys
 from dataclasses import dataclass
 import hashlib
@@ -104,6 +106,18 @@ class SnapshotDerivation:
 
 def sx(v: int) -> str:
     return f"0x{v:016x}"
+
+
+def interpolate(text: str, written: dict, where: str) -> str:
+    """A derivation or source with its `{new}` resolved: the value this step writes to its one register.
+    Nothing unresolved reaches a record: a key with no value on this step is refused by name, because a
+    placeholder in a retained expectation reads as prose and says nothing (P4-SYSTEM.14 a43b-c2)."""
+    if written:
+        text = text.replace("{new}", sx(next(iter(written.values()))))
+    left = re.search(r"\{[a-z_]+\}", text)
+    if left is not None:
+        raise Refusal(f"{where}: {left.group()} has no value on this step")
+    return text
 
 
 class Hart:
@@ -717,6 +731,7 @@ def run_guest(path: Path, asm: Assembler) -> tuple[str, int]:
                     prog[a] = (new_word, original_text
                                + f" (patched: the word now reads {new_word:#010x})")
         st.writes = info.pop("writes", {})
+        written = dict(st.writes)
         # the READS-AND-WRITES contract, by construction: execute() read the
         # PRE-instruction register file throughout; the instruction's writes land only
         # now, after the whole effect — exactly "register reads see pre-state"
@@ -742,10 +757,8 @@ def run_guest(path: Path, asm: Assembler) -> tuple[str, int]:
                 # slice c6: a leading '|' — absolute-value bars — is the separator)
                 raise Refusal(f"directive {directive.strip()!r} at pc {st.pc:#x}: the "
                               f"derivation before the first '|' is empty")
-        for k, v in info.items():
-            deriv = deriv.replace("{" + k + "}", str(v))
-            source = source.replace("{" + k + "}", str(v))
-        st.deriv, st.source = deriv, source
+        where = f"{path.name} step {len(steps)} ({code_text})"
+        st.deriv, st.source = interpolate(deriv, written, where), interpolate(source, written, where)
         steps.append(st)
         if code_text == end_at:
             break
@@ -885,6 +898,7 @@ def _derive_parcel_lines(lines, asm, budget, *, program, annotations=True,
                             'source': 'RVI-RV64I §3.1.2.1; D-RESERVED-DECODE'}
         info.pop('stored', None)  # every later fetch reads the updated memory directly
         step.writes = info.pop('writes', {})
+        written = dict(step.writes)
         hart.time += 1
         if not hart.trapped:
             hart.instret += 1
@@ -897,10 +911,8 @@ def _derive_parcel_lines(lines, asm, budget, *, program, annotations=True,
         if pc in directives and fetched[0] != 'fault':
             derivation, override = directives[pc]
             source = override or source
-        for key, value in info.items():
-            derivation = derivation.replace('{' + key + '}', str(value))
-            source = source.replace('{' + key + '}', str(value))
-        step.deriv, step.source = derivation, source
+        where = f'{program} step {len(steps)} ({step.insn})'
+        step.deriv, step.source = interpolate(derivation, written, where), interpolate(source, written, where)
         steps.append(step)
     return ParcelRun(hart, steps, never, refusals, image)
 
@@ -1084,7 +1096,7 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             val, mn = r if L == 64 else sext(u(r, 32), 32), "remu" if L == 64 else "remuw"
         else:
             raise Refusal(f"M funct3 {f3} at width {L} names no M instruction — refuse, never guess")
-        return next_pc, {"writes": w(rd, u(val)), **stock(mn), "new": sx(u(val))}
+        return next_pc, {"writes": w(rd, u(val)), **stock(mn)}
     if op == 0x1b:  # OP-IMM-32, with five-bit shifts and W result extension
         if f3 == 0:
             val, mn = x[rs1] + imm_i, "addiw"
