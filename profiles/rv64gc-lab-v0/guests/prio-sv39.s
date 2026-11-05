@@ -78,10 +78,10 @@ ld x14, x13, 0               #: aligned and mapped: translation SUCCEEDS, then t
 sd x14, 0, x13               #: the store twin: cause 7. | RVP-MACHINE (the priority table)
 flw f1, x15, 0               #: FS=Off (reset) AND unmapped: illegal-instruction outranks every explicit-access fault — cause 2, never 13. | RVP-MACHINE (the priority table); §2.1.1.6.7
 fld f1, x13, 4               #: FS=Off AND misaligned AND mapped-outside: illegal-instruction first — cause 2. | RVP-MACHINE (the priority table); §2.1.1.6.7
-addi x21, x0, 1              #: the continuation proof: every cell above trapped and resumed. | RVP-INSNS §3.3.2 (mret) #|end
+addi x21, x0, 1              #: the continuation proof: every cell above trapped and resumed. | RVP-MACHINE §2.1.3.2 (mret) #|end
 csrrs x7, mcause, x0         #: the handler: the cause. | RVP-MACHINE §2.1.3.1
 csrrs x8, mtval, x0          #: the faulting address (the word, for cause 2). | RVP-MACHINE §2.1.4
 csrrs x9, mepc, x0           #: the trapping instruction's own address. | RVP-MACHINE §2.1.3.1
 addi x9, x9, 4               #: step past it. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x9           #: mepc <- the next cell. | RVI-ZICSR §5.1.1
-mret                         #: back to S at mepc (MPP = S, the trap came from S). | RVP-INSNS §3.3.2 (mret)
+mret                         #: back to S at mepc (MPP = S, the trap came from S). | RVP-MACHINE §2.1.3.2 (mret)

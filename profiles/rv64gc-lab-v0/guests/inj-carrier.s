@@ -26,4 +26,4 @@ csrrs x30, mtval, x0         #: the faulting address. | RVP-MACHINE §2.1.4
 csrrs x31, mepc, x0          #: the trapping instruction's own address. | RVP-MACHINE §2.1.3.1
 addi x31, x31, 4             #: step past it. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x31          #: mepc <- the next instruction. | RVI-ZICSR §5.1.1
-mret                         #: back to M at mepc. | RVP-INSNS §3.3.2 (mret)
+mret                         #: back to M at mepc. | RVP-MACHINE §2.1.3.2 (mret)

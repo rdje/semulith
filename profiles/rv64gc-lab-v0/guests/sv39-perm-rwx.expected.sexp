@@ -184,7 +184,7 @@
   (step (n 88) (insn "csrrw x0, mepc, x4") (writes)
     (derivation "mepc := the first S/U-mode cell, pc-relative.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 89) (insn "mret") (writes)
-    (derivation "mret: pc <- mepc, the hart drops to MPP's mode (no GPR writes; the mode change is control flow).") (source "RVP-INSNS §3.3.2 (mret)"))
+    (derivation "mret: pc <- mepc, the hart drops to MPP's mode (no GPR writes; the mode change is control flow).") (source "RVP-MACHINE §2.1.3.2 (mret)"))
   (step (n 90) (insn "ld x14, x13, 0") (writes (write (reg "x14") (value "0x0000000042424242")))
     (derivation "the R-only page (L0T[3], V|R|A|D): a LOAD has R=1, so the walk permits it and the staged data returns.") (source "RVP-SUPERVISOR §11.1.3.2 (walk step 6: load needs R)"))
   (step (n 91) (insn "lui x15, 0x42424") (writes (write (reg "x15") (value "0x0000000042424000")))

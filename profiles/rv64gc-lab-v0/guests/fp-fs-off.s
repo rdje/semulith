@@ -22,4 +22,4 @@ csrrs x15, mcause, x0        #: the handler: cause 2 (illegal instruction). | RV
 csrrs x16, mepc, x0          #: mepc is the faulting access's own address. | RVP-MACHINE §2.1.3.1
 addi x16, x16, 4             #: step mepc past the faulting instruction. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x16          #: mepc <- the next instruction. | RVI-ZICSR §5.1.1
-mret                         #: MPP was set to M by the trap, so the return lands back in M at mepc. | RVP-INSNS §3.3.2 (mret)
+mret                         #: MPP was set to M by the trap, so the return lands back in M at mepc. | RVP-MACHINE §2.1.3.2 (mret)

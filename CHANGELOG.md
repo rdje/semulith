@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0348 (leaf P4-SYSTEM.14 a43b-c1) — 285 guest citations re-pointed at sections the pinned pages have, and a check so they stay there
+
+a43b-c1: logged as 37; `check_citations.py --corpus`, extended to read both halves of a guest, fired RED on 285 of 9,437 citations in 54 files, an older manual's numbering. A reviewed mapping, one rule per stale pair, re-points them: 0 findings. SEMANTICS runs it on every commit from here, with five new self-test arms. It proves a section exists, not what it says. The 42 owned records re-derive byte-identically; nothing a case pins moved.
+
 ## SEMULITH-P4-0347 (leaf P4-SYSTEM.14 a43d-3) — the SSTC program in the corpus, all three producers agreeing, and its case raised to the director
 
 a43d-3: `sstc-timer.s` enters the corpus, 192 instructions, 315 steps: the author, the lab engine and the reference on the case's configuration all agree. Its case cannot be written: a delivered interrupt is a boundary with no instruction word, and the pinned case tools refuse it by design ("unfetched boundaries need typed event binding"). Adding the binding lapses all four credits, so `decision_sstc-delivery-needs-the-pinned-window.md` raises it with options and a recommendation. No pinned path moved; the four credits stay current.

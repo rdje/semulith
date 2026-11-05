@@ -87,7 +87,7 @@ decoder from a different codebase) was run over the emitted bytes instead. The l
 **Feel it.**
 
 ```sh
-python3 scripts/check_citations.py      # every § a semantic rule cites resolves, offline
+python3 scripts/check_citations.py --corpus  # every § a semantic rule or a guest cites resolves, offline
 ```
 
 ## Step 2 — write the dossier: every decision gets an authority

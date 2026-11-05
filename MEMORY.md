@@ -17,8 +17,8 @@
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0078 (XTASK.13 b5);
   `ARTIFACT-CLEANUP.37` once due (after 2026-11-06T00:16Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28) and waits for its unit.
 - pnt_status: RUNNING since `2026-11-05` on the director's word ("Go in full PNT mode until all work is exhausted"); continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0347` (P4-SYSTEM.14 a43d-3, feature 2 of 5 after XTASK-0078) — SSTC's program in the corpus; its case raised. Open for the director: `decision_sstc-delivery-needs-the-pinned-window.md` (recommendation: open the window) and the per-case configuration (decision_reference-config-per-case.md).
-- next_action: SSTC's case waits for the director's pick; on A: design the window (typed event binding, the riders in decision_dossier-copies-retire-at-the-next-window.md, a43b-c2), case draft in target/p4-system-14/a43d-3. Meanwhile, work that does not depend on the answer: a43b-c1 (feature 3 of 5), then ARTIFACT-CLEANUP.29's class C, then the next feature tree. XTASK.13 b6 at the next turn.
+- last_unit: `SEMULITH-P4-0348` (P4-SYSTEM.14 a43b-c1, feature 3 of 5 after XTASK-0078) — 285 stale guest citations fixed and checked. Open for the director: `decision_sstc-delivery-needs-the-pinned-window.md` (recommendation: open the window) and the per-case configuration (decision_reference-config-per-case.md).
+- next_action: SSTC's case waits for the director's pick; on A: design the window (typed event binding, the riders in decision_dossier-copies-retire-at-the-next-window.md, a43b-c2), case draft in target/p4-system-14/a43d-3. Meanwhile, work that does not depend on the answer: a43e-0, the window prototyped on a scratch clone (target/p4-system-14/a43e: pinned-edits.patch, 15 changed lines; SSTC captures, method satisfied, policy 9 of 10 until the witness row cites RVP-SSTC §12.1) (feature 4 of 5), `ARTIFACT-CLEANUP.29` class C (maintenance). XTASK.13 b6 at the next turn. `ARTIFACT-CLEANUP.37` once due (after 2026-11-06T00:16Z).
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report, and any moved probe's seams first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -28,7 +28,7 @@
   (decision_credit-is-a-catalogue-record.md); the normative text it rests on is retained since a42bb.
   Raise a structural blocker (a cap, a rule whose cost dominates the work) in the first reply with
   numbers and options; it is a team decision, not a workaround.
-- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43d-3, a43d-2, a43c-5, a43c-4, a43c-1 (`target/p4-system-14/a43d-3`, `…/a43d-2`, `…/a43c-5`, `…/a43c-4`, `…/a43c`); archive part 27 a43b-3h … a43b-3d, part 26 a43b-3c, 3b, 3a; `docs/tasks/XTASK.md` XTASK.13 b5, b4 (`target/xtask/xt0078`, `target/xtask/xt0077`);
+- evidence: `docs/tasks/P4-SYSTEM.md` .14 a43b-c1, a43d-3, a43d-2, a43c-5, a43c-4, a43c-1 (`target/p4-system-14/a43b-c1`, `…/a43d-3`, `…/a43d-2`, `…/a43c-5`, `…/a43c-4`, `…/a43c`); archive part 27 a43b-3h … a43b-3d, part 26 a43b-3c, 3b, 3a; `docs/tasks/XTASK.md` XTASK.13 b5, b4 (`target/xtask/xt0078`, `target/xtask/xt0077`);
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;

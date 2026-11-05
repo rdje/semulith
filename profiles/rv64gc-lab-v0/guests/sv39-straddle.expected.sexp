@@ -92,7 +92,7 @@
   (step (n 42) (insn "csrrw x0, mepc, x4") (writes)
     (derivation "mepc := the first S/U-mode cell, pc-relative.") (source "RVI-RV32I §1.1.4 (D-LUI-AUIPC)"))
   (step (n 43) (insn "mret") (writes)
-    (derivation "mret: pc <- mepc, the hart drops to MPP's mode (no GPR writes; the mode change is control flow).") (source "RVP-INSNS §3.3.2 (mret)"))
+    (derivation "mret: pc <- mepc, the hart drops to MPP's mode (no GPR writes; the mode change is control flow).") (source "RVP-MACHINE §2.1.3.2 (mret)"))
   (step (n 44) (insn "addi x21, x0, 42") (writes (write (reg "x21") (value "0x000000000000002a")))
     (derivation "the straddled fetch: parcel 1 at VA 0x8000_0FFE walks page A to PA 0x8000_0FFE, parcel 2 at VA 0x8000_1000 walks page B to PA 0x8000_5000 — the pages map NON-CONTIGUOUSLY, so the fetch is two requests, one per parcel's unit — and the parcels compose 0x02a00a93 = addi x21, x0, 42.") (source "RVP-SUPERVISOR §11.1.3.2 (each parcel translates independently); DIFF-FETCH-GRANULARITY (the two-16-bit fetch); RVI-C 27.1 (IALIGN=16)"))
   (step (n 45) (insn "addi x22, x0, 7") (writes (write (reg "x22") (value "0x0000000000000007")))

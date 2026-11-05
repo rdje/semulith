@@ -18,4 +18,4 @@ csrrs x29, mcause, x0        #: the handler: the cause. | RVP-MACHINE §2.1.3.1
 csrrs x30, mepc, x0          #: mepc is the trapping instruction's own address. | RVP-MACHINE §2.1.3.1
 addi x30, x30, 4             #: step past it. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x30          #: mepc <- the next instruction. | RVI-ZICSR §5.1.1
-mret                         #: back to M at mepc. | RVP-INSNS §3.3.2 (mret)
+mret                         #: back to M at mepc. | RVP-MACHINE §2.1.3.2 (mret)

@@ -40,6 +40,8 @@ REPO = Path(__file__).resolve().parent.parent
 HEADING = re.compile(r"<h[1-6][^>]*>(.*?)</h[1-6]>", re.S)
 NUMBER = re.compile(r"((?:\d+\.)+)\s")
 LOCATOR = re.compile(r"([A-Z0-9-]+)\s+§([0-9.]+)")
+GUEST_LOCATOR = re.compile(r"\b(RV[IP]-[A-Z0-9-]+) §([0-9][0-9.]*)")
+GUEST_RECORD_SOURCE = re.compile(r'\(source "((?:[^"\\]|\\.)*)"\)')
 
 
 class CitationError(Exception):
@@ -212,6 +214,50 @@ def _work_dir(cfg: dict, repo: Path | None = None) -> tuple[Path, str]:
         raise CitationError(f"the pinned source route is unavailable: {exc}") from exc
 
 
+def guest_citations(text: str, suffix: str) -> list[tuple[int, str, str]]:
+    """Every `<SOURCE-ID> §<number>` a guest file cites: (line, id, number).
+
+    A source says it after the `|` of its `#:` annotation; a record says it in a step's `(source "…")`. The rest of either file is program text and prose, not a citation.
+    """
+    found = []
+    for number, line in enumerate(text.splitlines(), 1):
+        if suffix == ".s":
+            spans = [line.split("#:", 1)[1].split("|", 1)[1].split("#|", 1)[0]] if "#:" in line and "|" in line.split("#:", 1)[1] else []
+        else:
+            spans = GUEST_RECORD_SOURCE.findall(line)
+        for span in spans:
+            found.extend((number, sid, num.rstrip(".")) for sid, num in GUEST_LOCATOR.findall(span))
+    return found
+
+
+def guests(repo: Path) -> int:
+    """Every guest file's citations, against its own profile's pinned pages: a reader sent to a section the page does not have is sent nowhere."""
+    rc, total, profiles = 0, 0, 0
+    for sources in sorted((repo / "profiles").glob("*/sources.sexp")):
+        directory = sources.parent / "guests"
+        if not directory.is_dir():
+            continue
+        cited = [(path, *row) for path in sorted(p for p in directory.iterdir() if p.suffix == ".s" or p.name.endswith(".expected.sexp"))
+                 for row in guest_citations(path.read_text(), path.suffix)]
+        if not cited:  # as in `corpus`: a profile enters only if it cites a page, so no binary manual or other architecture is read
+            continue
+        cfg = _D.load_sources(sources)
+        declared = {s["id"] for s in cfg.get("source", [])}
+        work, _route = _work_dir(cfg, repo)
+        have = published(sources, work)
+        profiles += 1
+        for path, line, sid, num in cited:
+            total += 1
+            if sid not in declared:
+                print(f"  {_rel(path)}:{line}: {sid} §{num}: {sources.parent.name} does not pin {sid}", file=sys.stderr)
+                rc = 1
+            elif sid in have and num not in have[sid]:
+                print(f"  {_rel(path)}:{line}: {sid} §{num} does not exist in the pinned page", file=sys.stderr)
+                rc = 1
+    print(f"guests: {profiles} profile(s), {total} citation(s)")
+    return rc
+
+
 def corpus(repo: Path) -> int:
     """Every tracked sem file's citations, against the profile(s) that pin what it cites.
 
@@ -256,7 +302,7 @@ def corpus(repo: Path) -> int:
             rc |= check(sp, wd, sem)
             checked += 1
     print(f"corpus: {len(sems)} sem file(s), {checked} resolution(s)")
-    return rc
+    return rc | guests(repo)
 
 
 def main(argv: list[str]) -> int:
@@ -388,6 +434,33 @@ def _selftest() -> int:
     arm("RED   --corpus: a locator the pinning profile does not publish fails resolution",
         lambda: _eq((lambda d: (corpus_sem(d, "z.sem.sexp", "T §7.1.9"), corpus(d))[1])(
             corpus_fixture()), 1))
+    def guest_fixture(source, record):
+        """A profile pinning `RVP-X` (one page with §3.1), one guest and its record, in a scratch tree."""
+        d = corpus_fixture()
+        page = H.replace("3.1.2.1", "3.1")
+        w = d / "profiles" / "p1" / "w"
+        (w / "a.html").write_text(page)
+        (d / "profiles" / "p1" / "sources.sexp").write_text(
+            f'(sources (work_dir "profiles/p1/w") (source (id "RVP-X") (file "a.html") '
+            f'(sha256 "{hashlib.sha256(page.encode()).hexdigest()}") (bytes {len(page.encode())})))\n')
+        g = d / "profiles" / "p1" / "guests"
+        g.mkdir()
+        (g / "g.s").write_text(source)
+        (g / "g.expected.sexp").write_text(record)
+        return d
+
+    good_s, good_r = "addi x1, x0, 1 #: why | RVP-X §3.1\n", '(step (n 0) (source "RVP-X §3.1 (why)"))\n'
+    arm("GREEN a guest's citations resolve in its profile's pinned page",
+        lambda: _eq(guests(guest_fixture(good_s, good_r)), 0))
+    arm("RED   a guest source citing a section the page does not have is named",
+        lambda: _eq(guests(guest_fixture("addi x1, x0, 1 #: why | RVP-X §9.9\n", good_r)), 1))
+    arm("RED   a record citing a section the page does not have is named",
+        lambda: _eq(guests(guest_fixture(good_s, '(step (n 0) (source "RVP-X §9.9"))\n')), 1))
+    arm("RED   a guest citing a source its profile does not pin is named",
+        lambda: _eq(guests(guest_fixture(good_s, '(step (n 0) (source "RVP-Y §3.1"))\n')), 1))
+    arm("GREEN a locator in a guest's prose is not a citation",
+        lambda: _eq(guests(guest_fixture("addi x1, x0, 1 #: not RVP-X §9.9 here | RVP-X §3.1\n",
+                                         '(step (n 0) (derivation "not RVP-X §9.9") (source "RVP-X §3.1"))\n')), 0))
     arm("GREEN fetched-only artifacts are available without a materials cache",
         lambda: _eq(artifacts_available(corpus_fixture()), True))
     arm("GREEN an absent artifact set permits named-skip dispatch",
