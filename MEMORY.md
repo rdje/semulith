@@ -15,11 +15,10 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`); the count restarted at XTASK-0077 (XTASK.13 b4);
-  `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28,
-- pnt_status: PAUSED `2026-11-04` on the director's instruction ("pause at the next handoff-ready checkpoint"), at this commit;
-  resume on the director's word, then continue until the activities are exhausted or the director pauses it.
-- last_unit: `SEMULITH-P4-0343` (P4-SYSTEM.14 a43c-3, feature 3 of 5 after XTASK-0077) — ZICNTR declared; THIS COMMIT is a43c-4's declaration commit. The director ruled on the dossier copies (decision_dossier-copies-retire-at-the-next-window.md). Still open for the director: the per-case configuration (decision_reference-config-per-case.md), which may be overruled.
-- next_action: features (4 of 5 after XTASK-0077): a43c-4 — capture rv64gc-zicntr-v1 exactly once on a quiet host (adapt target/p4-system-14/a43b-3f/capture-when-quiet.sh: its case, directory and declaration-commit grep, with frozen-paths.txt rebuilt from this case's manifest children and authority views) and `measure_config_effect.py`. FROZEN until then: the 67 manifest children and 13 authority views; touch none. Then a43c-5 reviews and credit (no dossier copy). Then XTASK.13 b5, SSTC (a43d), a43b-c1. a43b-c2 and the dossier copies wait for the next pinned window. `ARTIFACT-CLEANUP.36` once due (after 2026-11-04T21:49Z).
+  `ARTIFACT-CLEANUP.37` once due (after 2026-11-06T00:16Z); `ARTIFACT-CLEANUP.29` class C was ruled (2026-10-28) and waits for its unit.
+- pnt_status: RUNNING since `2026-11-05` on the director's word ("Go in full PNT mode until all work is exhausted"); continue until the activities are exhausted or the director pauses it.
+- last_unit: `SEMULITH-AC-0092` (ARTIFACT-CLEANUP.36, maintenance, counts as neither). Before it `SEMULITH-P4-0343` (P4-SYSTEM.14 a43c-3, feature 3 of 5 after XTASK-0077): ZICNTR declared; 86a35987 is a43c-4's declaration commit. The director ruled on the dossier copies (decision_dossier-copies-retire-at-the-next-window.md). Still open for the director: the per-case configuration (decision_reference-config-per-case.md), which may be overruled.
+- next_action: features (4 of 5 after XTASK-0077): a43c-4 — capture rv64gc-zicntr-v1 exactly once on a quiet host (target/p4-system-14/a43c-4/capture-when-quiet.sh, adapted from a43b-3f's: its case, directory and declaration-commit grep, with frozen-paths.txt rebuilt from this case's manifest children and authority views) and `measure_config_effect.py`. FROZEN until then: the 67 manifest children and 13 authority views; touch none. Then a43c-5 reviews and credit (no dossier copy). Then XTASK.13 b5, SSTC (a43d), a43b-c1. a43b-c2 and the dossier copies wait for the next pinned window.
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report, and any moved probe's seams first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -33,7 +32,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0091` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-03T21:49Z`).
+  cleanup act `target/artifact-cleanup/AC0092` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-05T00:16Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.

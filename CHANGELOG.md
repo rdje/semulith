@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0092 (leaf ARTIFACT-CLEANUP.36) — the tenth recurring cleanup through the supported act
+
+.36: at 26 h, on a clean tree, the four acts ran in target/artifact-cleanup/AC0092 (log inside) at `handoff: OK`: 334 candidates planned, 6 captured Cargo incremental outputs (15,766,335 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 26,002 retained files kept. Re-census against AC0091: 328 unrecorded (1,371,671,258 B), 120 new and 120 gone; they stay for `.29`'s ruled class C. The record is overwritten; `.37` is due after 2026-11-06T00:16Z.
+
 ## SEMULITH-P4-0343 (leaf P4-SYSTEM.14 a43c-3) — the ZICNTR case's three declarations, and the director's ruling on the dossier copies
 
 a43c-3: planned experiment, dependency manifest (67 children, two of them the case's own) and authority record, from `capture_div.py --declare`; this commit is the declaration commit. **The director ruled (a43b-c3):** no dossier copy for a new case until the next pinned window, which retires them all (`decision_dossier-copies-retire-at-the-next-window.md`). Measured while recording it: `experiment_verification.py:39` is the one import that makes `gate_report.py` a pinned input of every experiment, so the window moves that function out too, and editing a report never lapses evidence again. Next: a43c-4, the capture.
