@@ -327,7 +327,7 @@ class StatusTests(unittest.TestCase):
         z = next(r for r in gc["rows"] if r["id"] == "REQ-D-ZICNTR")
         self.assertEqual((z["recorded"], z["derived"], z["why"], z["uncredited"]),
                          ("implemented", "implemented", "every obligation credited (1)", []))
-        self.assertEqual(gc["derived"], {"planned": 44, "partial": 0, "implemented": 4, "not-applicable": 0})
+        self.assertEqual(gc["derived"], {"planned": 43, "partial": 0, "implemented": 4, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
                          (8, 4, 0, 4, 4))  # the ZICNTR case credited (a43c-5)
 

@@ -39,10 +39,12 @@ the credit, the status falls back, the recorded status drifts and the gate fails
 policy review reports `credited` from the same catalogue and makes a record over a
 measurement that is not `satisfied` a finding (`decision_credit-is-a-catalogue-record.md`).
 
+Since a45-1 an included requirement may not name a superseded obligation (RECORD-SCHEMA's `SUPERSEDED OBLIGATION`): eight once did, and no credit could have closed them. One, `REQ-D-RESOLUTION-ROUTE`, is `not-applicable`, a stage that ended (`decision_requirements-bound-to-the-effective-contract.md`).
+
 A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
-edge and credits no successor by name. Today 45 requirements derive `planned` and three
-`implemented` through three current records:
+edge and credits no successor by name. Today 43 requirements derive `planned`, one `not-applicable` and four
+`implemented` through four current records:
 
 | Requirement | Record | Case | Category, risk |
 | --- | --- | --- | --- |

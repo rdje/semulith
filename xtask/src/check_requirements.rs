@@ -51,6 +51,16 @@ SEXP_SCHEMA_FOR = {
 }
 ARCH_AUTHORITY = "architecture"
 
+def superseded_obligations(directory):
+    """Every obligation a contract version in this unit supersedes; a unit with no contract document supersedes none."""
+    document = directory / "contract.sexp"
+    if not document.is_file():
+        return set()
+    return {str(S.field(row, "record", document.name))
+            for form in S.read_file(document) if isinstance(form, list) and form and str(form[0]) == "contract"
+            for row in S.children(form, "supersede")}
+
+
 def frozen_mirror_replacement(cat, obs, original):
     """Resolve a pinned historical mirror; every other mismatch stays a rejection.
 
@@ -418,6 +428,18 @@ for cat in catalogues:
                             f"required_checks {checks} lack a positive AND a negative fixture — "
                             f"a contract with only positive checks describes the cases that "
                             f"already work")
+                # 16. A requirement names what the effective contract holds: an included one bound
+                #     only to a superseded obligation can never be credited (P4-SYSTEM.14 a45-1).
+                gone = superseded_obligations(cat.parent)
+                for r in recs:
+                    if r.get("applicability") == "excluded":
+                        continue
+                    for oid in r.get("obligation_ids", []):
+                        if oid in gone:
+                            findings.append(
+                                f"SUPERSEDED OBLIGATION {cat.name} [{r['id']}]: names '{oid}', which "
+                                f"contract.sexp supersedes, so no credit can ever close it: bind the "
+                                f"requirement to its successor")
                 for r in recs:
                     for oid in r.get("obligation_ids", []):
                         o = by_ob.get(oid)
@@ -443,8 +465,8 @@ for cat in catalogues:
                     if not mirror_rid:
                         continue
                     r = by_id.get(mirror_rid)
-                    # Rule 7 also follows explicit mirrors: a versioned replacement
-                    # may not be listed in the requirement's historical obligation_ids.
+                    # Rule 7 also follows explicit mirrors, whether or not the requirement
+                    # lists the replacement.
                     if (r is not None
                             and o.get("id") not in r.get("obligation_ids", [])
                             and (r.get("source_semantics") or {}).get("category") == "defined"
@@ -627,6 +649,11 @@ if reg_path.is_file():
                                     f"incomplete")
                     continue
                 derived = {"implementation_status"} if RS.derives_statuses(mirror_p.parent) else set()
+                # A mirror's contract that supersedes every obligation the owner's record names has
+                # left that record behind: the mirror states its own (P4-SYSTEM.14 a45-1).
+                owned = set(want.get("obligation_ids", []))
+                if owned and owned <= superseded_obligations(mirror_p.parent):
+                    continue
                 for f_ in set(want) - {"profile_ids"} - derived:
                     if got.get(f_) != want.get(f_):
                         findings.append(f"MIRROR DRIFT {mirror_p.name} [{rid}]: field {f_!r} "
@@ -1282,7 +1309,23 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     // A frozen mirror is history only with an authenticated active replacement route.
     let ts = t.display().to_string();
     let versioned_mirror = |scenario: &str| fx.program(VERSIONED_MIRROR, &[&ts, scenario]);
+    // A requirement names what the effective contract holds (rule 16): these fixtures supersede OB-A, so it names the successor.
     fx.records("requirements.sexp", REQ);
+    versioned_mirror("valid");
+    tally.arm(
+        "RED   a requirement bound only to a superseded obligation can never be credited",
+        fx.judge(),
+        1,
+        "SUPERSEDED OBLIGATION",
+    );
+    fx.records("requirements.sexp", &mutated(repo, REQ, "import json,sys; r=json.load(sys.stdin); r['applicability']='excluded'; r['implementation_status']='not-applicable'; r['source_semantics']={'category':'not-applicable','detail':'A stage that ended.'}; print(json.dumps(r,ensure_ascii=False))", verbose));
+    tally.arm(
+        "GREEN an excluded requirement may keep the obligation its stage ended with",
+        fx.judge(),
+        0,
+        "__CHECKED__ 2",
+    );
+    fx.records("requirements.sexp", &mutated(repo, REQ, "import json,sys; r=json.load(sys.stdin); r['obligation_ids']=['OB-A-V2']; print(json.dumps(r,ensure_ascii=False))", verbose));
     versioned_mirror("valid");
     tally.arm(
         "GREEN a frozen mirror follows two authenticated replacements",
@@ -1407,6 +1450,14 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         1,
         "MIRROR DRIFT",
     );
+    let _ = fs::write(t.join("m/contract.sexp"), "(contract (id \"m-env-v1\") (supersede (record \"OB-A\") (by \"OB-B\") (why \"this unit's own\")))\n");
+    tally.arm(
+        "GREEN a mirror whose contract supersedes the record's every obligation states its own",
+        fx.judge(),
+        0,
+        "__CHECKED__ 7",
+    );
+    let _ = fs::remove_file(t.join("m/contract.sexp"));
     fx.program(DERIVE_STATUS, &[&ts, &root_s, "derived"]);
     tally.arm(
         "GREEN a mirror's status its own profile derives",

@@ -156,6 +156,7 @@
 - [`decision_req-d-xlen-credited-implemented.md`](docs/decisions/decision_req-d-xlen-credited-implemented.md)
 - [`decision_req-d-zicntr-credited-implemented.md`](docs/decisions/decision_req-d-zicntr-credited-implemented.md)
 - [`decision_req-gc-m-credited-implemented.md`](docs/decisions/decision_req-gc-m-credited-implemented.md)
+- [`decision_requirements-bound-to-the-effective-contract.md`](docs/decisions/decision_requirements-bound-to-the-effective-contract.md)
 - [`decision_reviews-read-every-retained-case.md`](docs/decisions/decision_reviews-read-every-retained-case.md)
 - [`decision_rust-native-tooling.md`](docs/decisions/decision_rust-native-tooling.md)
 - [`decision_rust-records-mapping.md`](docs/decisions/decision_rust-records-mapping.md)

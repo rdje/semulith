@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0350 (leaf P4-SYSTEM.14 a45-1) — eight requirements that no credit could ever close, rebound to the effective contract, and a rule so none strands again
+
+a45-1: 8 of 48 rv64gc requirements named only superseded obligations, so `G-OBLIGATIONS` could never have gone green, with every gate passing. Seven rebind to the successor the contract names; `REQ-D-RESOLUTION-ROUTE` is `not-applicable`, a stage that ended: 43 planned, 4 implemented, 1 not-applicable. RECORD-SCHEMA's `SUPERSEDED OBLIGATION` holds it, fired RED on the real tree. Four statements read stale, and their words are owned by the pinned `profile.sexp` and frozen contract versions: a rider on the window.
+
 ## SEMULITH-XTASK-0079 (leaf XTASK.13 slice b6) — the rest of GUEST-GEN's self-test judges frozen copies: the doctrine meets ruling 5 whole
 
 Seven probes and the staging tool take DEF-GEN's frozen composition; `frozen_owned.image_root` patches the one `ROOT` name of the pinned image module. Six damaged live states, each restored: a deleted fragment goes from refused, `246 pass / 154 fail`, to `rc=1` naming the file at 400 of 400, and garbled fragment, semantics, encoding, state and profile the same. DEF-GEN's frozen tree gains `profile.sexp`: without it the frozen assembler read IALIGN 32. Taken at 4 of 5 features, recorded why: the rest wait on the director's pick.

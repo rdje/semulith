@@ -49,7 +49,7 @@ The book has said so since the first consumer: "any source boundary without a co
 
 **What it does not prove:** the four re-captures' traces byte-identical to their predecessors. They should be, since none of their steps is a delivery and their guests and configurations do not move, as a43b-2d's were; a difference would be a finding. The prototype's `OB-SSTC` feature disposition is a placeholder.
 
-**The window, then, in four or five units:** (1) the pinned edits, the riders and the deriver's placeholder (a43b-c2), one commit, the credits retired by removal; (2) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1` declared, the family re-derived; (3) the five captured once each on a quiet host, with the three effects; (4) the reviews, the five credits, G-STATE 4 of 4 and `G-TRACE` listing every credited case.
+**The window, then, in four or five units:** (1) the pinned edits, the riders, the deriver's placeholder (a43b-c2) and the four stale requirement statements with `profile.sexp`'s decisions and a contract version that mirrors them (`decision_requirements-bound-to-the-effective-contract.md`, measured 2026-11-05), one commit, the credits retired by removal; (2) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`, `rv64gc-zicntr-v2` and `rv64gc-sstc-v1` declared, the family re-derived; (3) the five captured once each on a quiet host, with the three effects; (4) the reviews, the five credits, G-STATE 4 of 4 and `G-TRACE` listing every credited case.
 
 ## What holds meanwhile
 

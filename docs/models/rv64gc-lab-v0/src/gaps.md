@@ -43,9 +43,11 @@ arithmetic fixtures must state their own producer and shared inputs.
 
 ## Remaining research and engineering
 
-REQ-D-ECALL-EBREAK retains its partial OQ-5 disposition. Historical mirrored
-requirements and supersessions need mechanical reconciliation; requirement
-statuses remain unpromoted. Structured matched experiments, controls, producer
+REQ-D-ECALL-EBREAK retains its partial OQ-5 disposition, and three other requirements state
+what a superseded obligation said: their words are owned by the pinned `profile.sexp` and by
+frozen contract versions, so they wait for the next pinned window. Since a45-1 every included
+requirement names an obligation the effective contract holds, and RECORD-SCHEMA keeps it so
+(`decision_requirements-bound-to-the-effective-contract.md`). Structured matched experiments, controls, producer
 relationships and prospective policy adequacy remain .14 work. Full external,
 workload and validator-mutation regression is .15; host/portable qualification is
 .17; release decision is .18. GC snapshot/replay/reduction completed .16, with
