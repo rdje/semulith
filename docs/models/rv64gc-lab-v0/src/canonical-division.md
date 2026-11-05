@@ -257,3 +257,17 @@ refused write that had committed would look like, and it must diverge. All three
 `cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with
 qualification false. Since a43b-3g the reviews read it, `satisfied` over 88 authenticated files, all ten legs, and
 `CR-D-CSR-SET-1` credits it (a43b-3h).
+
+`rv64gc-zicntr-v1` follows it on the same configuration, byte for byte. It was captured exactly once on 2026-11-05 (a43c-4), on a
+quiet host, from its declaration commit `86a35987`, in 1.4 s:
+
+| Run | Compared with | Verdict |
+| --- | --- | --- |
+| `baseline` | `baseline.expected.sexp` | AGREE, 292 declared steps |
+| `repeat` | `baseline.expected.sexp` | AGREE, 292 declared steps |
+| `control` | `control.expected.sexp`, boundary 109 wrong on purpose | DIVERGE at 109: `addi x21, x20, 0`, Sail x21 = 21, the expectation 102 |
+
+The control is the case's failure mode: S's `rdcycle` at boundary 102, refused while `mcounteren.CY` is clear, leaves `x20` at its sentinel, and
+boundary 109 copies it to `x21`. Expecting 102 is what a refused read that had committed the count would look like, and it must diverge. All three traces
+are byte-identical (26,277 B, `cmp`), and so are the stdout streams; each stderr stream prints its own trace's name. The capture is complete with qualification
+false, so the case is `pending`: the reviews read it next (a43c-5), and nothing is credited until a record names it.

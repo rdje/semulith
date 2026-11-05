@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0344 (leaf P4-SYSTEM.14 a43c-4) — the ZICNTR case captured exactly once, and its configuration's effect retained
+
+a43c-4: `rv64gc-zicntr-v1` ran once on a quiet host behind its guards: 292 steps, baseline and repeat AGREE, the control DIVERGE at its declared step 109 (x21 21 against the wrong 102), complete, qualification false, three traces byte-identical, 14 files retained; the family holds all 177; the case `pending`, the three credits current. `scripts/measure_config_effect.py` ran once under the profile override and retained the raw trace and the record: step 6, `rdcycle x5` traps there. The probe's retained-record test now judges every retained effect.
+
 ## SEMULITH-AC-0092 (leaf ARTIFACT-CLEANUP.36) — the tenth recurring cleanup through the supported act
 
 .36: at 26 h, on a clean tree, the four acts ran in target/artifact-cleanup/AC0092 (log inside) at `handoff: OK`: 334 candidates planned, 6 captured Cargo incremental outputs (15,766,335 B) strictly selected and removed by the guarded core under a fresh census, residue 0, journal `complete`/`verified`, `--inspect` confirming; 26,002 retained files kept. Re-census against AC0091: 328 unrecorded (1,371,671,258 B), 120 new and 120 gone; they stay for `.29`'s ruled class C. The record is overwritten; `.37` is due after 2026-11-06T00:16Z.

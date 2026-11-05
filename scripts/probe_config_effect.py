@@ -24,6 +24,8 @@ ROOT = Path(__file__).resolve().parent.parent
 CASE = "rv64gc-csr-set-v1"
 CASE_DIR = ROOT / "evidence" / CASE
 STEP, REGISTER, OBSERVED, EXPECTED = 34, "x20", [], 34
+# Every retained effect and the first difference it must show: case, step, register, observed, expected.
+RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v1", 6, "x5", [], 6))
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),
@@ -160,20 +162,23 @@ class EffectTests(unittest.TestCase):
         self.assertIn("above", detail)
         self.assertEqual(self.retained(), [False, False])
 
-    def test_the_retained_effect_pins_its_case_and_differs_at_the_first_counter_read(self):
-        record, trace = M.effect_paths(ROOT, CASE)
-        forms = M.S.parse(record.read_text(), record.name)
-        fields = {child[0]: child[1] for form in forms for child in form[1:]}
-        data = trace.read_bytes()
-        self.assertEqual((fields["case_id"], fields["trace_sha256"], fields["trace_bytes"]), (CASE, sha(data), len(data)))
-        self.assertEqual(fields["guest_sha256"], sha((CASE_DIR / "guest.elf").read_bytes()))
-        self.assertEqual(fields["case_config_sha256"], sha((CASE_DIR / "reference-config.json").read_bytes()))
-        self.assertEqual(fields["alternative_config_sha256"], sha(M.profile_config(ROOT)))
-        self.assertNotEqual(fields["alternative_config_sha256"], fields["case_config_sha256"])
-        expected = M.D.load_expectations(CASE_DIR / "baseline.expected.sexp")
-        result = M.Sail.compare_observations(expected, data.decode("utf-8"))
-        self.assertEqual((result.verdict, result.gpr_difference.step_n), ("DIVERGE", STEP))
-        self.assertEqual((result.gpr_difference.observed, result.gpr_difference.expected), (tuple(OBSERVED), ((REGISTER, EXPECTED),)))
+    def test_each_retained_effect_pins_its_case_and_differs_at_the_first_counter_read(self):
+        for case, step, register, observed, value in RETAINED:
+            with self.subTest(case=case):
+                case_dir = ROOT / "evidence" / case
+                record, trace = M.effect_paths(ROOT, case)
+                forms = M.S.parse(record.read_text(), record.name)
+                fields = {child[0]: child[1] for form in forms for child in form[1:]}
+                data = trace.read_bytes()
+                self.assertEqual((fields["case_id"], fields["trace_sha256"], fields["trace_bytes"]), (case, sha(data), len(data)))
+                self.assertEqual(fields["guest_sha256"], sha((case_dir / "guest.elf").read_bytes()))
+                self.assertEqual(fields["case_config_sha256"], sha((case_dir / "reference-config.json").read_bytes()))
+                self.assertEqual(fields["alternative_config_sha256"], sha(M.profile_config(ROOT)))
+                self.assertNotEqual(fields["alternative_config_sha256"], fields["case_config_sha256"])
+                expected = M.D.load_expectations(case_dir / "baseline.expected.sexp")
+                result = M.Sail.compare_observations(expected, data.decode("utf-8"))
+                self.assertEqual((result.verdict, result.gpr_difference.step_n), ("DIVERGE", step))
+                self.assertEqual((result.gpr_difference.observed, result.gpr_difference.expected), (tuple(observed), ((register, value),)))
 
 
 def main():

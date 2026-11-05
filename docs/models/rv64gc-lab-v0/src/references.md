@@ -115,6 +115,15 @@ All three producers agree on it: the spec-side author, the lab engine, and the r
 a write through `mcycle` or `minstret`, which the spec-side deriver refuses, and Zihpm's absence, which its 33-CSR vocabulary cannot state. The laboratory's `time` is a view of
 `mcycle` (`state.sexp`), and the reference's comes from its CLINT, so a write would separate them; that is one more reason the deriver's refusal stands until someone models it.
 
+Its observed effect is retained the same way, measured exactly once (a43c-4):
+
+```text
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-zicntr-v1
+step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}
+```
+
+The record names the case's guest (`41f2cbc2…`), the case's configuration (`05746ed6…`) and the same alternative as CSR-SET's (`666d9373…`, the profile override), and the raw trace (27,617 B, `896814f3…`). The two traces are the same up to line 13, step 6, where the case's reads `x5 <- 0x0000000000000006` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr at all, so the first counter read in the program traps.
+
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
 is itself a defect, even if the reference program normally succeeds. Controls

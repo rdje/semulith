@@ -325,7 +325,7 @@ class StatusTests(unittest.TestCase):
                          ("implemented", "implemented", "every obligation credited (1)", []))
         self.assertEqual(gc["derived"], {"planned": 45, "partial": 0, "implemented": 3, "not-applicable": 0})
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (8, 3, 1, 3, 3))  # the ZICNTR case declared, binding REQ-D-ZICNTR and crediting nothing (a43c-3)
+                         (8, 3, 0, 3, 3))  # the ZICNTR case captured (a43c-4): its receipt's qualification is false, pending, crediting nothing
 
 
 def main():

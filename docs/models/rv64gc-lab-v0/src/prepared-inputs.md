@@ -221,7 +221,7 @@ without writing; `--write` creates the files exclusively and refuses any that al
 retained input is never replaced. The probe runs its controls over every declared case (49 tests in
 each Python mode) and holds the family census to 177 files / 112 MiB, the eight-case envelope of
 `decision_evidence-family-two-cases.md` (163 files present at the ZICNTR case's declarations,
-a43c-3; all 177 after its capture); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+a43c-3; all 177 since its capture, a43c-4); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,
