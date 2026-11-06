@@ -173,6 +173,7 @@
 - [`decision_rust-sexp-reader.md`](docs/decisions/decision_rust-sexp-reader.md)
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)
 - [`decision_schema-and-decisions-families-rederivation.md`](docs/decisions/decision_schema-and-decisions-families-rederivation.md)
+- [`decision_seven-with-a-switch.md`](docs/decisions/decision_seven-with-a-switch.md)
 - [`decision_sstc-delivery-needs-the-pinned-window.md`](docs/decisions/decision_sstc-delivery-needs-the-pinned-window.md)
 - [`decision_stale-method-invalidates-not-locks.md`](docs/decisions/decision_stale-method-invalidates-not-locks.md)
 - [`decision_state-capture-plan.md`](docs/decisions/decision_state-capture-plan.md)

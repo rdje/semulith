@@ -20,7 +20,7 @@ A case is a directory here holding a `case.sexp`; the input probe refuses any ot
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 1101 files at most, 551 present; 23 superseded directories left at a49-4, each
+With this index: 1101 files at most, 607 present; 23 superseded directories left at a49-4, each
 listed with its last commit in `docs/models/rv64gc-lab-v0/src/retired-cases.md`. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and

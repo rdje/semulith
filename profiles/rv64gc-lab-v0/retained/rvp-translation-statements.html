@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-SUPERVISOR statements — v20260120</title>
+<body>
+<h1>RVP-SUPERVISOR §11.1.1.11, §11.1.3.1 and §11.1.4: an unsupported MODE, the A and D schemes, and what Sv39 is</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/supervisor.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §11.1 Supervisor-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>d5186efc3ead1c1f693ac2b16aeccdcab95d990264f49b559252d2dc413a651a</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance. The walk's numbered steps, a list the tool does not read, are cited and not retained.</p>
+<h2>§11.1.1.11: <code>norm:satp-mode_op_unsupported</code></h2>
+<blockquote><p>Implementations are not required to support all MODE settings, and if
+<code>satp</code> is written with an unsupported MODE, the entire write has no
+effect; no fields in <code>satp</code> are modified.</p></blockquote>
+<h2>§11.1.3.1: <code>opening:Each leaf PTE contains an accessed</code></h2>
+<blockquote><p>Each leaf PTE contains an accessed (A) and dirty (D) bit. The A bit
+indicates the virtual page has been read, written, or fetched from since
+the last time the A bit was cleared. The D bit indicates the virtual
+page has been written since the last time the D bit was cleared.</p></blockquote>
+<h2>§11.1.3.1: <code>opening:Two schemes to manage the A and D bits are defined:</code></h2>
+<blockquote><p>Two schemes to manage the A and D bits are defined:</p></blockquote>
+<h2>§11.1.3.1: <code>opening:The A and D bits are never cleared</code></h2>
+<blockquote><p>The A and D bits are never cleared by the implementation. If the
+supervisor software does not rely on accessed and/or dirty bits, e.g. if
+it does not swap memory pages to secondary storage or if the pages are
+being used to map I/O space, it should always set them to 1 in the PTE
+to improve performance.</p></blockquote>
+<h2>§11.1.10: <code>norm:Svadu_disabled_hw_update_falls_back_to_svade</code></h2>
+<blockquote><p><span id="norm:Svadu_disabled_hw_update_falls_back_to_svade">When hardware updating of A/D bits is disabled, the Svade extension,
+which mandates exceptions when A/D bits need be set, instead takes effect.</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_sxlen</code></h2>
+<blockquote><p><span id="norm:Sv39_sxlen">simple paged virtual-memory system for
+SXLEN=64</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_va_sz</code></h2>
+<blockquote><p><span id="norm:Sv39_va_sz">supports 39-bit virtual address spaces</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_va_signext</code></h2>
+<blockquote><p><span id="norm:Sv39_va_signext">must have bits 63–39 all equal to bit 38, or else
+a page-fault exception will occur</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_levels</code></h2>
+<blockquote><p><span id="norm:Sv39_levels">three-level page table</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_leaf_any_level</code></h2>
+<blockquote><p><span id="norm:Sv39_leaf_any_level">Any level of PTE may be a leaf PTE</span></p></blockquote>
+<h2>§11.1.4: <code>norm:Sv39_page_sizes</code></h2>
+<blockquote><p><span id="norm:Sv39_page_sizes">2 MiB megapages and 1 GiB gigapages</span></p></blockquote>
+</body></html>

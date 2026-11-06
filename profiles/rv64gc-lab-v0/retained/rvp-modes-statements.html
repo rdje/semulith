@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-INTRO statements — v20260120</title>
+<body>
+<h1>RVP-INTRO §Introduction: the privilege levels and what each is for</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-intro.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, Introduction</a>.<br>
+Original page SHA256: <code>12c7a31aafbc32fa1f4fab82d60786c65af35f68e648aca7575a05034edf525e</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of a mode: REQ-D-PRIV-MODES is its own case.</p>
+<h2>Introduction: <code>norm:always-priv-level</code></h2>
+<blockquote><p><span id="norm:always-priv-level">At any time, a RISC-V hardware thread (<em>hart</em>) is running at some
+privilege level encoded as a mode in one or more CSRs (control and
+status registers).</span></p></blockquote>
+<h2>Introduction: <code>norm:m-level-high-priv-only-mandatory</code></h2>
+<blockquote><p><span id="norm:m-level-high-priv-only-mandatory">The machine level has the highest privileges and
+is the only mandatory privilege level for a RISC-V hardware platform.</span></p></blockquote>
+<h2>Introduction: <code>opening:Each privilege level has a core set</code></h2>
+<blockquote><p>Each privilege level has a core set of privileged ISA extensions with
+optional extensions and variants. For example, machine-mode supports an
+optional standard extension for memory protection. Also, supervisor mode
+can be extended to support Type-2 hypervisor execution as described in
+<a href="hypervisor.html#hypervisor" class="xref page">"H" Extension for Hypervisor Support</a>.</p></blockquote>
+<h2>Introduction: <code>opening:A hart normally runs application code in U-mode</code></h2>
+<blockquote><p>A hart normally runs application code in U-mode until some trap (e.g., a
+supervisor call or a timer interrupt) forces a switch to a trap handler,
+which usually runs in a more privileged mode. The hart will then execute
+the trap handler, which will eventually resume execution at or after the
+original trapped instruction in U-mode. Traps that increase privilege
+level are termed <em>vertical</em> traps, while traps that remain at the same
+privilege level are termed <em>horizontal</em> traps. The RISC-V privileged
+architecture provides flexible routing of traps to different privilege
+layers.</p></blockquote>
+</body></html>

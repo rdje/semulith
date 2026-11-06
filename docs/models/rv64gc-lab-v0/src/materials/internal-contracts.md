@@ -8,7 +8,7 @@
      `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
      `profiles/rv64gc-lab-v0/requirements.sexp`  `0cd4838b5855d2bbee1e2cfdda33cf5b86ea689b99b0d0aa901182f0cdafa11e`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`
-     `profiles/rv64gc-lab-v0/interactions.sexp`  `ac594f1bfc01502d5a3de269d81b93dd54858acbbc5a58edc73c38fff9954cd6`
+     `profiles/rv64gc-lab-v0/interactions.sexp`  `ade61cc81528441d7ab60ca4f8b33206143608bef7bc1f6495757d5a895861e3`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Document | Role | Derived contents |
@@ -18,5 +18,5 @@
 | `encoding.sexp` | the composed encoding space (fragments resolved, collision-free, gated by UNIT-COMPOSITION) | composes `riscv/rv64i`, `riscv/zicsr`, `riscv/zicntr`, `riscv/system`, `riscv/a`, `riscv/zifencei`, `riscv/f`, `riscv/d`, `riscv/m`, `riscv/c` |
 | `requirements.sexp` | the requirement catalogue; RECORD-SCHEMA cross-checks declared decision mirrors verbatim | 48 requirements |
 | `contract-obligations.sexp` | the declared environment-obligation catalogue (`rv64gc-lab-env-v0`, `rv64gc-lab-env-v1`, `rv64gc-lab-env-v2`, `rv64gc-lab-env-v3`): positive AND negative checks per record; counts include historical records | 70 catalogue obligations, 140 declared checks |
-| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 191 guests, 7959 expected steps |
+| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 198 guests, 9140 expected steps |
 | `interactions.sexp` | the unit's declared interaction matrix, gated by INTERACTION-MATRIX | 28 cells over 7 axes |

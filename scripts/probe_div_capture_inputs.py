@@ -43,8 +43,10 @@ CSR_SET, ZICNTR, SSTC = "rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2
 BATCH_II_B = ("rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1")
 # The window that carries fetch faults re-issues the 19 credited cases under new ids (P4-SYSTEM.14 a49-1).
 RENEWED = ("rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4", "rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-alu-imm-v2", "rv64gc-alu-reg-v2", "rv64gc-lui-auipc-v2", "rv64gc-jalr-lsb-v2", "rv64gc-no-delay-slots-v2", "rv64gc-shamt-v2", "rv64gc-wsuffix-v2", "rv64gc-load-ext-v2", "rv64gc-load-x0-v2", "rv64gc-ecall-ebreak-v2", "rv64gc-csr-access-v2", "rv64gc-counters-v2", "rv64gc-fencei-v2", "rv64gc-ialign-16-v2")
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED)  # the 23 superseded directories left the tree at P4-SYSTEM.14 a49-4
-OWN_CONFIGURATION = (CSR_SET, ZICNTR, SSTC, "rv64gc-counters-v2")
+# The seven with a real switch (P4-SYSTEM.14 a50-2).
+SWITCHES = ("rv64gc-svade-v1", "rv64gc-atomic-misalign-v1", "rv64gc-fault-priority-v1", "rv64gc-priv-modes-v1", "rv64gc-sv39-v1", "rv64gc-reservation-v1", "rv64gc-sc-deterministic-v1")
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED, *SWITCHES)  # the 23 superseded directories left the tree at P4-SYSTEM.14 a49-4
+OWN_CONFIGURATION = (CSR_SET, ZICNTR, SSTC, "rv64gc-counters-v2", "rv64gc-atomic-misalign-v1", "rv64gc-fault-priority-v1", "rv64gc-reservation-v1", "rv64gc-sc-deterministic-v1")
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -298,8 +300,80 @@ PREPARED["rv64gc-d-forms-v1"] = {
     "control.expected.sexp": ("expectation", 61609,
         "be9d0eafc629e9d9e9554c2ec12862fdfa02faa247b4f74835e5ac846a828757"),
 }
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, "rv64gc-m-forms-v7": 27426, "rv64gc-xlen-forms-v4": 24665, "rv64gc-csr-set-v3": 82222, "rv64gc-zicntr-v3": 112424, "rv64gc-sstc-v2": 119130, "rv64gc-alu-imm-v2": 21550, "rv64gc-alu-reg-v2": 20124, "rv64gc-lui-auipc-v2": 17569, "rv64gc-jalr-lsb-v2": 20307, "rv64gc-no-delay-slots-v2": 21329, "rv64gc-shamt-v2": 22539, "rv64gc-wsuffix-v2": 21035, "rv64gc-load-ext-v2": 25154, "rv64gc-load-x0-v2": 41401, "rv64gc-ecall-ebreak-v2": 55970, "rv64gc-csr-access-v2": 44325, "rv64gc-counters-v2": 42726, "rv64gc-fencei-v2": 19985, "rv64gc-ialign-16-v2": 17380, "rv64gc-atomics-v1": 102999, "rv64gc-c-forms-v1": 104416, "rv64gc-f-forms-v1": 134946, "rv64gc-d-forms-v1": 138824}
-BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), "rv64gc-m-forms-v7": (33, 66), "rv64gc-xlen-forms-v4": (25, 50), "rv64gc-csr-set-v3": (157, 314), "rv64gc-zicntr-v3": (292, 584), "rv64gc-sstc-v2": (315, 622), "rv64gc-alu-imm-v2": (19, 38), "rv64gc-alu-reg-v2": (18, 36), "rv64gc-lui-auipc-v2": (10, 20), "rv64gc-jalr-lsb-v2": (16, 32), "rv64gc-no-delay-slots-v2": (21, 42), "rv64gc-shamt-v2": (21, 42), "rv64gc-wsuffix-v2": (17, 34), "rv64gc-load-ext-v2": (32, 64), "rv64gc-load-x0-v2": (68, 136), "rv64gc-ecall-ebreak-v2": (116, 232), "rv64gc-csr-access-v2": (81, 162), "rv64gc-counters-v2": (84, 168), "rv64gc-fencei-v2": (18, 36), "rv64gc-ialign-16-v2": (11, 20), "rv64gc-atomics-v1": (246, 492), "rv64gc-c-forms-v1": (251, 424), "rv64gc-f-forms-v1": (338, 676), "rv64gc-d-forms-v1": (350, 700)}
+PREPARED["rv64gc-svade-v1"] = {
+    "guest.elf": ("guest-image", 4816,
+        "2d09c17ab89312e22b2de884f1ef4566660fe8fca936f6deb1c8004ebf1183d5"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 26235,
+        "97a60887bfe42a288b39809b00b23cfd3a240245f7f472df435f4b12c6f7b74b"),
+    "control.expected.sexp": ("expectation", 25116,
+        "221f025692c6b9d8160e5d6683561ca587befdf3ee4b17deda5434157d100d57"),
+}
+PREPARED["rv64gc-atomic-misalign-v1"] = {
+    "guest.elf": ("guest-image", 4864,
+        "c3e59e94c95f17cd8cc7b7deb40f79ea1708e83501aebceddde0f57f98ef2ee2"),
+    "reference-config.json": ("reference-config", 7669,
+        "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472"),
+    "baseline.expected.sexp": ("expectation", 34895,
+        "466242a143c549f494d80f6fd2308eee5005fa93bf04a7777bc98ad41ad4030f"),
+    "control.expected.sexp": ("expectation", 33490,
+        "1921ec87cc197b0733fee937b37e23f233c35a0c3c00c81ad799df1018d3e3c4"),
+}
+PREPARED["rv64gc-fault-priority-v1"] = {
+    "guest.elf": ("guest-image", 5072,
+        "03c7e6057bd749dbe1f34e268fbe07c21364eae9c14d1bfc10355d61fd8d6d33"),
+    "reference-config.json": ("reference-config", 7669,
+        "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472"),
+    "baseline.expected.sexp": ("expectation", 51258,
+        "6263dbf8f4c0a6197999e4ffd5d211aca405f0bde6a7084eb6b909a88fb86663"),
+    "control.expected.sexp": ("expectation", 49312,
+        "bb136b5381a20952d6e5b365c0d80e30ea9751d0c7f00fdade5594dc731126b2"),
+}
+PREPARED["rv64gc-priv-modes-v1"] = {
+    "guest.elf": ("guest-image", 4680,
+        "09b0687414532d8e1e5b87065e73bedf2f5f0d951bd54d019796552649155e62"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 20465,
+        "a56b18157bcbbea28ee5d050050bbb3cf58957bbd5e06757083425eb6b4766d9"),
+    "control.expected.sexp": ("expectation", 19537,
+        "1aef6285148b26f538763063073bda2ad6fbfad86401284e6e2564cd1f5db563"),
+}
+PREPARED["rv64gc-sv39-v1"] = {
+    "guest.elf": ("guest-image", 4848,
+        "ee1ee892a452ed0dbaf0f4d80446c5876df7e1c7220c61a5e89966b107d8cbf2"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 26165,
+        "7bf44f6a8674ebef780613278e006fd3dcf0909e36290d57917339db93cb7a8d"),
+    "control.expected.sexp": ("expectation", 25063,
+        "10a209260c197205acbe7f577af1b78e1acaaa6485223346be80473230fca110"),
+}
+PREPARED["rv64gc-reservation-v1"] = {
+    "guest.elf": ("guest-image", 5048,
+        "e6f5de4e3ea9e00d4c2aa6ddd1127944f6870d526e7041beb359f0496b161a4a"),
+    "reference-config.json": ("reference-config", 7682,
+        "e9d98b382f1533e1fb954ce009b306f54260c0063130108d3291c4ec1ffb65ee"),
+    "baseline.expected.sexp": ("expectation", 34439,
+        "98e67322615aaada21378f83f3ae3fae230dc4730466259495242a041a9d5523"),
+    "control.expected.sexp": ("expectation", 32968,
+        "d0b11f67e1b81bfe463648f5021cfee0566eebce861ae3f1e2ada1640c29b2fd"),
+}
+PREPARED["rv64gc-sc-deterministic-v1"] = {
+    "guest.elf": ("guest-image", 4928,
+        "5c613b81f9e07e632a896fcc13979947d0c1032998c1354432693121a7b9131f"),
+    "reference-config.json": ("reference-config", 7682,
+        "e9d98b382f1533e1fb954ce009b306f54260c0063130108d3291c4ec1ffb65ee"),
+    "baseline.expected.sexp": ("expectation", 29676,
+        "ada05dec997bf41bfcea757475042870e07c085e641633a213e3d61397b2bf37"),
+    "control.expected.sexp": ("expectation", 28394,
+        "d0443cb9520c903f554c64ce46a4733defdc26a9f5a01390ad6335de51dc043c"),
+}
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, "rv64gc-m-forms-v7": 27426, "rv64gc-xlen-forms-v4": 24665, "rv64gc-csr-set-v3": 82222, "rv64gc-zicntr-v3": 112424, "rv64gc-sstc-v2": 119130, "rv64gc-alu-imm-v2": 21550, "rv64gc-alu-reg-v2": 20124, "rv64gc-lui-auipc-v2": 17569, "rv64gc-jalr-lsb-v2": 20307, "rv64gc-no-delay-slots-v2": 21329, "rv64gc-shamt-v2": 22539, "rv64gc-wsuffix-v2": 21035, "rv64gc-load-ext-v2": 25154, "rv64gc-load-x0-v2": 41401, "rv64gc-ecall-ebreak-v2": 55970, "rv64gc-csr-access-v2": 44325, "rv64gc-counters-v2": 42726, "rv64gc-fencei-v2": 19985, "rv64gc-ialign-16-v2": 17380, "rv64gc-atomics-v1": 102999, "rv64gc-c-forms-v1": 104416, "rv64gc-f-forms-v1": 134946, "rv64gc-d-forms-v1": 138824,
+          "rv64gc-svade-v1": 63776, "rv64gc-atomic-misalign-v1": 80918, "rv64gc-fault-priority-v1": 113311, "rv64gc-priv-modes-v1": 52291, "rv64gc-sv39-v1": 63685, "rv64gc-reservation-v1": 80137, "rv64gc-sc-deterministic-v1": 70680}
+BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), "rv64gc-m-forms-v7": (33, 66), "rv64gc-xlen-forms-v4": (25, 50), "rv64gc-csr-set-v3": (157, 314), "rv64gc-zicntr-v3": (292, 584), "rv64gc-sstc-v2": (315, 622), "rv64gc-alu-imm-v2": (19, 38), "rv64gc-alu-reg-v2": (18, 36), "rv64gc-lui-auipc-v2": (10, 20), "rv64gc-jalr-lsb-v2": (16, 32), "rv64gc-no-delay-slots-v2": (21, 42), "rv64gc-shamt-v2": (21, 42), "rv64gc-wsuffix-v2": (17, 34), "rv64gc-load-ext-v2": (32, 64), "rv64gc-load-x0-v2": (68, 136), "rv64gc-ecall-ebreak-v2": (116, 232), "rv64gc-csr-access-v2": (81, 162), "rv64gc-counters-v2": (84, 168), "rv64gc-fencei-v2": (18, 36), "rv64gc-ialign-16-v2": (11, 20), "rv64gc-atomics-v1": (246, 492), "rv64gc-c-forms-v1": (251, 424), "rv64gc-f-forms-v1": (338, 676), "rv64gc-d-forms-v1": (350, 700),
+           "rv64gc-svade-v1": (137, 271), "rv64gc-atomic-misalign-v1": (180, 359), "rv64gc-fault-priority-v1": (271, 535), "rv64gc-priv-modes-v1": (109, 217), "rv64gc-sv39-v1": (135, 269), "rv64gc-reservation-v1": (190, 379), "rv64gc-sc-deterministic-v1": (159, 317)}
 
 
 def bounded_bytes(path):
@@ -624,7 +698,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 25 * 22)  # the 23 current cases and the two the tools name; the 23 superseded left at a49-4
+        self.assertEqual(len(members), 1 + 25 * 22 + 7 * 8)  # the 23 current and the two the tools name; the seven at their declarations (a50-2), 22 each after their captures
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_every_retired_case_reads_back_from_history(self):

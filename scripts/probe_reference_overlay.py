@@ -30,7 +30,9 @@ MUTATIONS = {
     "alternative-known": ('_require(entry is not None, f"alternative names unknown extension {name}")', 'entry = entry if entry is not None else {"supported": not wanted}'),
     "alternative-extension-changes": ('_require(entry["supported"] is not wanted, ', '_require(True, '),
     "alternative-misaligned-changes": ('_require(exceptions.get(kind) != rendered, ', '_require(True, '),
-    "alternative-reservation-changes": ('_require(reservation.get(knob) != value, ', '_require(True, '),
+    "overlay-amo-changes": ('_require(exceptions.get("amo") != rendered, ', '_require(True, '),
+    "overlay-exact-changes": ('_require("require_exact_reservation_addr" not in reservation, ', '_require(True, '),
+    "overlay-nothing": ('_require(result != config, "the overlay changes nothing")', '_require(True, "the overlay changes nothing")'),
     "alternative-nothing": ('_require(result != config, "the alternative changes nothing")', '_require(True, "the alternative changes nothing")'),
     "alternative-binding": ('_require(alternative["case_id"] == case_id, ', '_require(True, '),
     "alternative-over-case": ('return apply_alternative(reference_config(root, case_id), alternative)', 'return apply_alternative(map_document(root, read_bounded(root / OVERRIDE), "override", D.override_to_doc), alternative)'),
@@ -85,13 +87,12 @@ class OverlayTests(unittest.TestCase):
 
     def test_each_switch_changes_its_own_place_and_nothing_else_moves(self):
         root = self.declared(' (extension_off "S") (extension_off "Sstc") (extension_on "Sv48") (misaligned_load_store None) (misaligned_lrsc AlignmentException)'
-                             ' (misaligned_amo AccessFault) (reservation_set_size_exp 4) (invalidate_on_same_hart_store true)')
+                             ' (misaligned_amo AccessFault)')
         expected = self.canonical(root)
         expected["extensions"]["S"]["supported"] = False
         expected["extensions"]["Sstc"]["supported"] = False
         expected["extensions"]["Sv48"]["supported"] = True
         expected["memory"]["misaligned"]["exceptions"] = {"load_store": {"None": None}, "lrsc": {"Some": "AlignmentException"}, "amo": {"Some": "AccessFault"}}
-        expected["platform"]["reservation"] = {"reservation_set_size_exp": 4, "invalidate_on_same_hart_store": True}
         self.assertEqual(Prep.alternative_config(root, CASE), expected)
         self.assertEqual(json.loads(json.dumps(expected)), expected, "the configuration renders to JSON unchanged")
 
@@ -115,13 +116,25 @@ class OverlayTests(unittest.TestCase):
             with self.subTest(switches=switches), self.assertRaisesRegex(Prep.CurationRefused, needle):
                 Prep.alternative_config(self.declared(switches), CASE)
 
-    def test_a_reservation_knob_the_configuration_already_declares_refuses(self):
-        root = self.declared(' (invalidate_on_same_hart_store true)')
-        declared = Prep.alternative_to_doc(Prep.S.parse((root / Prep.alternative_path(CASE)).read_text(), "alternative")[0])
-        canonical = self.canonical(root)
-        canonical["platform"]["reservation"] = {"invalidate_on_same_hart_store": True}
-        with self.assertRaisesRegex(Prep.CurationRefused, "invalidate_on_same_hart_store"):
-            Prep.apply_alternative(canonical, declared)
+    def test_an_overlay_may_name_no_device_and_moves_only_what_it_names(self):
+        root = self.temporary_root('(overlay (case_id "%s") (reason "A selection.") (misaligned_amo AccessFault) (require_exact_reservation_addr true))' % CASE)
+        expected = self.canonical(root)
+        expected["memory"]["misaligned"]["exceptions"]["amo"] = {"Some": "AccessFault"}
+        expected["platform"]["reservation"] = {"require_exact_reservation_addr": True}
+        self.assertEqual(Prep.reference_config(root, CASE), expected)
+        self.assertEqual(expected["platform"]["clint"], {"supported": False})
+
+    def test_a_selection_the_override_already_declares_refuses(self):
+        canonical = self.canonical(self.temporary_root())
+        canonical["memory"]["misaligned"]["exceptions"]["amo"] = {"Some": "AccessFault"}
+        canonical["platform"]["reservation"] = {"require_exact_reservation_addr": True}
+        for doc, needle in (({"misaligned_amo": "AccessFault"}, "misaligned AMO"), ({"require_exact_reservation_addr": True}, "exact reservation")):
+            with self.subTest(doc=doc), self.assertRaisesRegex(Prep.CurationRefused, needle):
+                Prep.apply_overlay(canonical, {"case_id": CASE, "extensions": [], **doc})
+
+    def test_an_overlay_of_no_knob_refuses(self):
+        with self.assertRaisesRegex(Prep.CurationRefused, "changes nothing"):
+            Prep.apply_overlay(self.canonical(self.temporary_root()), {"case_id": CASE, "extensions": []})
 
     def test_an_alternative_of_no_switch_refuses(self):
         with self.assertRaisesRegex(Prep.CurationRefused, "changes nothing"):

@@ -13,8 +13,7 @@
 
 ;; `extension_off`, `extension_on`: `extensions.<name>.supported`; the binary refuses some alone (S, U, or Sv39 with S on), so a
 ;; set is declared together. `misaligned_*`: `memory.misaligned.exceptions.<kind>`, the checks made before address translation;
-;; the region's own attribute changes nothing while these hold. `reservation_set_size_exp`, `invalidate_on_same_hart_store`:
-;; `platform.reservation.<knob>`.
+;; the region's own attribute changes nothing while these hold.
 (construct (name alternative)
   (field (name case_id) (type string) (min-length 1))
   (field (name reason) (type string) (min-length 1))
@@ -22,6 +21,4 @@
   (field (name extension_on) (type string) (repeat yes) (unique yes) (min-length 1))
   (field (name misaligned_load_store) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
   (field (name misaligned_lrsc) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
-  (field (name misaligned_amo) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
-  (field (name reservation_set_size_exp) (type integer) (optional yes))
-  (field (name invalidate_on_same_hart_store) (type symbol) (values true) (optional yes)))
+  (field (name misaligned_amo) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes)))

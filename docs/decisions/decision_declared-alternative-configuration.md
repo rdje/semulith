@@ -10,7 +10,7 @@ answers: How does a requirement whose selection is already the profile override 
 
 1. **A case may declare an alternative.** `profiles/<profile>/reference/<case-id>.alternative.sexp` (`schema/alternative.sexp`) states, with its reason, the choice the profile did not make. `scripts/prepare_div_inputs.py` applies it over the case's own configuration, and `scripts/measure_config_effect.py` runs the same guest through the same binary under the result, once, retained. Without one, the tool compares with the profile override as it always has, and the eight retained effects' reads do not move.
 2. **The review pins it.** `_config_effect` re-renders the alternative and holds the record's `alternative_config_sha256` to it, so an effect measured under anything else reads pending, by name. It carries no verdict: the first difference is re-derived from the raw trace on every read, and it must fall at a declared property's step. An alternative the tool refuses leaves the leg pending, by name.
-3. **The vocabulary is closed, and each knob was measured.** `extension_off`, `extension_on`, `misaligned_load_store`, `misaligned_lrsc`, `misaligned_amo`, `reservation_set_size_exp`, `invalidate_on_same_hart_store`. A switch that changes nothing refuses, as does an alternative with no switch at all, one that names another case, and any knob or value the schema does not list. A new knob is a schema change a reviewer sees.
+3. **The vocabulary is closed, and each knob was measured.** `extension_off`, `extension_on`, `misaligned_load_store`, `misaligned_lrsc`, `misaligned_amo` (two more knobs left at a50-2, below). A switch that changes nothing refuses, as does an alternative with no switch at all, one that names another case, and any knob or value the schema does not list. A new knob is a schema change a reviewer sees.
 4. **The alternative selects no capture.** A case's `reference-config.json`, the override and every other case stay as they were. `measure_config_effect.py`, the review, the schema and `prepare_div_inputs.py` are not among the files a case pins, so no credit lapses: 23 current before and after.
 
 ## What the pinned binary does, measured
@@ -32,6 +32,8 @@ Three things the route's first table could not show:
 - **The binary refuses some switches alone.** `U`, `S`, or `Sv39` turned off singly is refused as an invalid configuration, and `Sv39` off with `Sv48` on too. So `PRIV-MODES` turns off the family together, and `SV39` selects otherwise by adding a mode, not by removing its own. That is why an alternative holds a set.
 - **The region's own misaligned attribute changes nothing here.** With `memory.misaligned.exceptions` set, `load_store` under the region's attributes moved 0 guests. Only the global check moves them, so the vocabulary names that one.
 - **Two agreeing corpora say nothing about two switches.** Zero guests moved under `Sv48` and under `invalidate_on_same_hart_store`. That is a hole in the corpus, not evidence the switch does nothing: each needs a guest written to witness it.
+
+**What the cases changed (a50-2).** Writing the three programs the table left open moved two rows. `RESERVATION` and `SC-DETERMINISTIC` do not use an alternative: the pinned binary's `require_exact_reservation_addr` matches the statement, so each case carries it in an overlay and the override is what selects otherwise, at a witness. So `reservation_set_size_exp` and `invalidate_on_same_hart_store` left the vocabulary, which holds what a case uses. `decision_seven-with-a-switch.md` carries the rest.
 
 ## What this does not prove
 

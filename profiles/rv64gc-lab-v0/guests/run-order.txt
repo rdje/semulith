@@ -175,6 +175,15 @@ c-forms
 f-forms
 d-forms
 
+# P4-SYSTEM.14 a50-2: G-OBLIGATIONS' seven with a real switch
+svade-forms
+atomic-misalign
+fault-priority
+priv-modes
+sv39-modes
+reservation-forms
+sc-deterministic
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

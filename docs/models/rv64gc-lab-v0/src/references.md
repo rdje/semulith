@@ -49,8 +49,8 @@ what an overlay does before declaring a case on it:
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
-191 guests
- 168  profile AGREE -> case AGREE
+198 guests
+ 171  profile AGREE -> case AGREE
    8  profile DIVERGE -> case DIVERGE
    ...
 ```
@@ -161,30 +161,31 @@ The effect above compares a case's own configuration with the profile override. 
   (extension_off "Svade"))
 ```
 
-The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, the three misaligned checks, the reservation set's size, and whether a same-hart store invalidates a reservation. A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. No case declares one yet; this is the file the next unit declares. See what one does across the corpus before declaring a case on it:
+The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, and the three misaligned checks. A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. See what one does across the corpus before declaring a case on it:
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative
-191 guests
- 168  case AGREE -> alternative AGREE
-  15  case DIVERGE -> alternative DIVERGE
+198 guests
+ 170  case AGREE -> alternative AGREE
+  19  case DIVERGE -> alternative DIVERGE
    6  case REFUSED -> alternative REFUSED
+   2  case AGREE -> alternative DIVERGE
    1  case NOT-COMPARED -> alternative NOT-COMPARED
-   1  case AGREE -> alternative DIVERGE
 sv39-svade            AGREE    -> DIVERGE  | step 90 (ld x14, x13, 0): Sail {'x14': 1111638594}, expectations {}
+svade-forms           AGREE    -> DIVERGE  | step 93 (csrrs x22, scause, x0): Sail {}, expectations {'x22': 13}
 ```
 
 Measured over the corpus for each:
 
 | Requirement | What selects otherwise | Guests moved | First difference |
 | --- | --- | --- | --- |
-| `SVADE` | `Svade` off | 1 | `sv39-svade` step 90 |
-| `FAULT-PRIORITY` | no misaligned check before translation | 1 | `prio-sv39` step 72: `mcause` 13, expected 4 |
-| `ATOMIC-MISALIGN` | misaligned LR/SC and AMO raise the misaligned causes | 1 | `a-lrsc-fault` step 11: `mcause` 4, expected 5 |
-| `PRIV-MODES` | `S`, `Sv39`, `Svade` and `Sstc` off | 53 | `mm-ecall-modes` step 28: `mcause` 8, expected 9 |
-| `SV39` | `Sv48` on | 0 | no guest yet |
-| `RESERVATION` | a same-hart store invalidates the reservation | 0 | no guest yet |
-| `SC-DETERMINISTIC` | a 16-byte reservation set | 0 agreeing | no guest yet |
+| `SVADE` | `Svade` off | 1 and its own | `svade-forms` step 93: `scause` reads nothing, expected 13 |
+| `FAULT-PRIORITY` | no misaligned check before translation | 1 and its own | `fault-priority` step 159: `scause` 13, expected 4 |
+| `ATOMIC-MISALIGN` | misaligned LR/SC and AMO raise the misaligned causes | 1 and its own | `atomic-misalign` step 24: `mcause` 4, expected 5 |
+| `PRIV-MODES` | `S`, `Sv39`, `Svade` and `Sstc` off | 53 and its own | `priv-modes` step 5: `misa` with S clear |
+| `SV39` | `Sv48` on | 1, a guest written for it | `sv39-modes` step 17: `satp` takes the write |
+
+`RESERVATION` and `SC-DETERMINISTIC` need no alternative: each runs on [its own overlay](#a-cases-own-reference-configuration-p4-system14-a43b-3a-a43b-3c), which selects the exact reservation address, so the profile override is what selects otherwise. A misaligned AMO is judged before translation only with `misaligned_amo AccessFault` selected, so `ATOMIC-MISALIGN` and `FAULT-PRIORITY` each carry that overlay too: under the override the pinned binary judges it after, which no guest had exercised (`decision_seven-with-a-switch.md`).
 
 The binary refuses `S`, `U` or `Sv39` turned off alone, which is why a declaration holds a set. A zero says the corpus has no witness, not that the switch does nothing. An observed effect shows this configuration matters to this guest at this step. It does not show that the selection is right, or that the alternative is a coherent machine: only that the pinned binary accepts it.
 

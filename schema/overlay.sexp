@@ -11,12 +11,17 @@
 
 ;; `extension`: extensions the profile selects and its override leaves off. `clint`: the reference's device, in its own
 ;; region, the one source of time the pinned binary accepts for Zicntr. `instructions_per_tick`: the reference's tick rate.
+;; `misaligned_amo`: `memory.misaligned.exceptions.amo`, so a misaligned AMO is judged before translation as the laboratory
+;; judges it; the binary's default judges it after. `require_exact_reservation_addr`: `platform.reservation.<knob>`, so an SC
+;; pairs only at its LR's own address (P4-SYSTEM.14 a50-2).
 (construct (name overlay)
   (field (name case_id) (type string) (min-length 1))
   (field (name reason) (type string) (min-length 1))
-  (field (name extension) (type string) (repeat yes) (min 1) (unique yes) (min-length 1))
-  (field (name clint) (type form) (head clint))
-  (field (name instructions_per_tick) (type integer)))
+  (field (name extension) (type string) (repeat yes) (unique yes) (min-length 1))
+  (field (name clint) (type form) (head clint) (optional yes))
+  (field (name instructions_per_tick) (type integer) (optional yes))
+  (field (name misaligned_amo) (type symbol) (values AccessFault) (optional yes))
+  (field (name require_exact_reservation_addr) (type symbol) (values true) (optional yes)))
 
 (construct (name clint)
   (field (name base) (type integer))

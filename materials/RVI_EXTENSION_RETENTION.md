@@ -30,3 +30,24 @@ The tool's selection did not change. Not retained: the accrued-flags and roundin
 
 Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvi-a-statements.html`, 4,452 B; `rvi-c-forms-statements.html`, 6,346 B; `rvi-f-statements.html`, 6,368 B; `rvi-d-statements.html`, 4,708 B, each pinned in `scripts/retain_statements.py`.
 Regenerate with `python3 scripts/retain_statements.py --emit <id>` using the acquired pages; check the tracked assets without that cache using `--verify`. The excerpts establish no acceptance; each case's declaration, capture, reviews and credit are their own units.
+
+## The seven's four excerpts (`P4-SYSTEM.14` a50-2, 2026-11-06)
+
+### Why
+
+The seven requirements of `decision_seven-with-a-switch.md` each need a case, and a case's normative input is a retained excerpt whose wrapper names the original page's digest.
+
+### Reviewed source identities
+
+Each page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0/sources.sexp`, and occurs in the snapshot manifest; the cache is the existing materials route, `.materials/riscv/pinned-v20260120/`: `priv/priv-intro.html` (RVP-INTRO), `priv/supervisor.html` (RVP-SUPERVISOR), `priv/machine.html` (RVP-MACHINE) and `unpriv/a-st-ext.html` (RVI-A). That supports retaining the manual text below; it does not establish terms for anything else on those pages.
+
+### Retention decision
+
+`RVP-MODES-STATEMENTS`, four statements: the privilege levels and what each is for.
+`RVP-TRANSLATION-STATEMENTS`, eleven statements: an unsupported MODE, the A and D schemes, and what Sv39 is.
+`RVP-PRIORITY-STATEMENTS`, one statement: the one position the priority table leaves open.
+`RVI-A-RESERVATION-STATEMENTS`, thirteen statements: what a reservation may cover, what an SC needs, and misaligned atomics.
+
+The tool's selection did not change. Not retained: the priority table itself and the opening sentence that points at it, which carry a link the tool's markup bound refuses; and the walk's numbered steps, including the misaligned-superpage step and the Svade step, which are list items the tool does not read. Each is cited by its section and not quoted.
+
+Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvp-modes-statements.html`, 3,173 B; `rvp-translation-statements.html`, 4,099 B; `rvp-priority-statements.html`, 1,743 B; `rvi-a-reservation-statements.html`, 5,467 B. Regenerate with `python3 scripts/retain_statements.py --emit <id>` using the acquired pages; check the tracked assets without that cache using `--verify`. The excerpts establish no acceptance.

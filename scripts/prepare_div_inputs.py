@@ -111,14 +111,19 @@ def overlay_path(case_id: str) -> str:
 
 
 def overlay_to_doc(form) -> dict:
-    clint = S.children(form, "clint")[0]
-    return {
+    doc = {
         "case_id": str(S.children(form, "case_id")[0][1]),
         "extensions": [str(child[1]) for child in S.children(form, "extension")],
-        "clint_base": S.children(clint, "base")[0][1],
-        "clint_size": S.children(clint, "size")[0][1],
-        "instructions_per_tick": S.children(form, "instructions_per_tick")[0][1],
     }
+    for clint in S.children(form, "clint"):
+        doc.update(clint_base=S.children(clint, "base")[0][1], clint_size=S.children(clint, "size")[0][1])
+    for tick in S.children(form, "instructions_per_tick"):
+        doc["instructions_per_tick"] = tick[1]
+    for amo in S.children(form, "misaligned_amo"):
+        doc["misaligned_amo"] = str(amo[1])
+    if S.children(form, "require_exact_reservation_addr"):
+        doc["require_exact_reservation_addr"] = True
+    return doc
 
 
 def apply_overlay(config: dict, overlay: dict) -> dict:
@@ -130,23 +135,35 @@ def apply_overlay(config: dict, overlay: dict) -> dict:
         _require(entry["supported"] is False, f"overlay enables {name}, which the profile override already supports")
         entry["supported"] = True
     platform = result["platform"]
-    _require(platform["clint"] == {"supported": False}, "overlay places a CLINT over a profile override that declares one")
-    base, size = overlay["clint_base"], overlay["clint_size"]
-    _require(base > 0 and size > 0, "overlay's CLINT needs a positive base and size")
-    platform["clint"] = {"supported": True, "base": base, "size": size}
-    _require(overlay["instructions_per_tick"] >= 1, "overlay's tick rate must be positive")
-    _require("instructions_per_tick" not in platform, "overlay sets a tick rate the profile override already declares")
-    platform["instructions_per_tick"] = overlay["instructions_per_tick"]
-    regions = result["memory"]["regions"]
-    for region in regions:
-        start = int(region["base"]["value"], 16)
-        _require(base + size <= start or start + int(region["size"]["value"], 16) <= base,
-                 f"overlay's CLINT region overlaps the region at {region['base']['value']}")
-    device = {"base": {"len": 64, "value": f"0x{base:X}"}, "size": {"len": 64, "value": f"0x{size:X}"},
-              "attributes": deepcopy(DEVICE_REGION_ATTRIBUTES), "include_in_device_tree": False}
-    # The binary refuses regions out of order (measured, a43b-3a), so the device goes where its base puts it.
-    position = sum(1 for region in regions if int(region["base"]["value"], 16) < base)
-    regions.insert(position, device)
+    if "clint_base" in overlay:
+        _require(platform["clint"] == {"supported": False}, "overlay places a CLINT over a profile override that declares one")
+        base, size = overlay["clint_base"], overlay["clint_size"]
+        _require(base > 0 and size > 0, "overlay's CLINT needs a positive base and size")
+        platform["clint"] = {"supported": True, "base": base, "size": size}
+        regions = result["memory"]["regions"]
+        for region in regions:
+            start = int(region["base"]["value"], 16)
+            _require(base + size <= start or start + int(region["size"]["value"], 16) <= base,
+                     f"overlay's CLINT region overlaps the region at {region['base']['value']}")
+        device = {"base": {"len": 64, "value": f"0x{base:X}"}, "size": {"len": 64, "value": f"0x{size:X}"},
+                  "attributes": deepcopy(DEVICE_REGION_ATTRIBUTES), "include_in_device_tree": False}
+        # The binary refuses regions out of order (measured, a43b-3a), so the device goes where its base puts it.
+        position = sum(1 for region in regions if int(region["base"]["value"], 16) < base)
+        regions.insert(position, device)
+    if "instructions_per_tick" in overlay:
+        _require(overlay["instructions_per_tick"] >= 1, "overlay's tick rate must be positive")
+        _require("instructions_per_tick" not in platform, "overlay sets a tick rate the profile override already declares")
+        platform["instructions_per_tick"] = overlay["instructions_per_tick"]
+    if "misaligned_amo" in overlay:
+        exceptions = result["memory"]["misaligned"]["exceptions"]
+        rendered = {"Some": overlay["misaligned_amo"]}
+        _require(exceptions.get("amo") != rendered, "overlay selects a misaligned AMO the profile override already declares")
+        exceptions["amo"] = rendered
+    if "require_exact_reservation_addr" in overlay:
+        reservation = platform.setdefault("reservation", {})
+        _require("require_exact_reservation_addr" not in reservation, "overlay sets an exact reservation the profile override already declares")
+        reservation["require_exact_reservation_addr"] = True
+    _require(result != config, "the overlay changes nothing")
     return result
 
 
@@ -169,14 +186,11 @@ def alternative_to_doc(form) -> dict:
     def one(name):
         found = S.children(form, name)
         return str(found[0][1]) if found else None
-    size = S.children(form, "reservation_set_size_exp")
     return {
         "case_id": one("case_id"),
         "extensions_off": [str(child[1]) for child in S.children(form, "extension_off")],
         "extensions_on": [str(child[1]) for child in S.children(form, "extension_on")],
         "misaligned": {kind: one("misaligned_" + kind) for kind in ("load_store", "lrsc", "amo") if one("misaligned_" + kind)},
-        "reservation": {**({"reservation_set_size_exp": size[0][1]} if size else {}),
-                        **({"invalidate_on_same_hart_store": True} if one("invalidate_on_same_hart_store") else {})},
     }
 
 
@@ -194,10 +208,6 @@ def apply_alternative(config: dict, alternative: dict) -> dict:
         rendered = {"None": None} if selected == "None" else {"Some": selected}
         _require(exceptions.get(kind) != rendered, f"alternative selects {selected} for misaligned {kind}, which this configuration already declares")
         exceptions[kind] = rendered
-    for knob, value in alternative["reservation"].items():
-        reservation = result["platform"].setdefault("reservation", {})
-        _require(reservation.get(knob) != value, f"alternative sets {knob} to {value}, which this configuration already declares")
-        reservation[knob] = value
     _require(result != config, "the alternative changes nothing")
     return result
 

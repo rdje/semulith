@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0373 (P4-SYSTEM.14 a50-2) — the seven with a real switch, declared, and what writing them found
+
+Seven cases, 149 witnesses, each statement traced clause by clause and rehearsed end to end on a clone: 11 of 11 legs each. The work found a setting the pinned override lacks: a misaligned AMO judged before translation, which no guest had exercised. Two cases select it themselves, and the override moves with the next window.
+
 ## SEMULITH-P4-0372 (P4-SYSTEM.14 a50-1) — a case may declare what selects otherwise, and its effect is measured against that
 
 For a requirement whose selection is already the profile override there was nothing to compare it with. A case can now state the other choice, in a closed vocabulary measured against the pinned binary, and the same guest runs under it. No case declares one yet, and no credit moved.
