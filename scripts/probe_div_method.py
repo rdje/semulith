@@ -393,7 +393,11 @@ class MethodTests(unittest.TestCase):
                          "rv64gc-xlen-forms-v3": (88, 1014785, 35646),  # a43e-5: 546 B of snapshot over xlen-v2's, the derivation prose (a43e-2)
                          "rv64gc-csr-set-v2": (88, 1144922, 141763),  # a43e-5: 157 steps against 33 and 25
                          "rv64gc-zicntr-v2": (88, 1219908, 207186),  # a43e-5: 292 steps
-                         "rv64gc-sstc-v1": (88, 1228962, 216358)}  # a43e-5: 315 steps
+                         "rv64gc-sstc-v1": (88, 1228962, 216358),  # a43e-5: 315 steps
+                         # G-OBLIGATIONS' Batch I (a46-4)
+                         "rv64gc-alu-imm-v1": (88, 1008657, 29555), "rv64gc-alu-reg-v1": (88, 1005321, 27194), "rv64gc-lui-auipc-v1": (88, 995992, 22161),
+                         "rv64gc-jalr-lsb-v1": (88, 1006135, 27996), "rv64gc-no-delay-slots-v1": (88, 1009720, 30489), "rv64gc-shamt-v1": (88, 1009349, 31315),
+                         "rv64gc-wsuffix-v1": (88, 1005634, 28414), "rv64gc-load-ext-v1": (88, 1014177, 36672), "rv64gc-load-x0-v1": (88, 1051503, 65957)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

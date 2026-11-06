@@ -27,6 +27,10 @@ SEAMS = {
     "coverage-optional": ('    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),\n',
                           '    _leg(legs, "form-coverage", vacuous or bool(required),\n'),
     "state-vacuous": ('    vacuous = requirement["kind"] == "state" and not required\n', '    vacuous = not required\n'),
+    # a46-4: a form that writes no GPR is predeclared by a later read, one seam per condition.
+    "silent-any-form": ('    silent = {f for f in required if not any(s["writes"] for s in steps.values() if mnemonic(s) == f)}\n', '    silent = set(required)\n'),
+    "silent-any-cell": ('if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})', 'if any(mnemonic(steps[m]) == f for m in steps if m < n)})'),
+    "silent-any-order": ('if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})', 'if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps)})'),
     "boundary-tag": ('BOUNDARY_MARKERS = ("Table", "(boundary")\n', 'BOUNDARY_MARKERS = ("Table",)\n'),
     "lock-stale": ('    stale = method.get("disposition") == "stale"\n', '    stale = False\n'),
     "first-property": ('    witness_step, witness_register = witnesses[named[0]]\n',
@@ -68,6 +72,9 @@ MUTATION_TESTS = {
     "first-property": "test_control_leg_reads_the_property_the_control_run_names",
     "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
     "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
+    "silent-any-form": "test_a_form_that_writes_a_gpr_gets_no_later_read",
+    "silent-any-cell": "test_a_silent_form_no_cell_names_stays_pending",
+    "silent-any-order": "test_a_silent_form_read_before_its_step_stays_pending",
     "boundary-tag": "test_boundary_tag_marks_a_directed_row",
     "both-forms": "test_second_method_names_one_of_the_policy_methods",
     "distinct-versions": "test_second_method_producers_have_distinct_versions_at_any_risk",
@@ -91,6 +98,10 @@ XLEN_CASE_ID = "rv64gc-xlen-forms-v3"  # the XLEN case's reviewed capture: xlen-
 CSR_CASE_ID = "rv64gc-csr-set-v2"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5)
 ZICNTR_CASE_ID = "rv64gc-zicntr-v2"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5)
 SSTC_CASE_ID = "rv64gc-sstc-v1"  # the third, and the first with a delivered interrupt (a43e-5)
+# G-OBLIGATIONS' Batch I (a46-4): the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
+BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high")}
+READ_AFTER = {"rv64gc-no-delay-slots-v1": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v1": ["sb", "sd", "sh", "sw"],
+              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"]}
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -135,7 +146,8 @@ def load_module(workdir: Path):
 def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div", "rem"), risk="medium", declare_boundaries=False,
             steps=None, expected_reads_reference=False, repeat=True, control="DIVERGE", control_step=0,
             control_register="x7", qualification=False, stale_policy=False, witness_source="SRC §1",
-            control_property="p0", versions=("v", "v"), pairs=(), declaration=None, category="defined", detail="d"):
+            control_property="p0", versions=("v", "v"), pairs=(), declaration=None, category="defined", detail="d",
+            silent_forms=(), witness_step=0):
     """One synthetic retained case under profile fx-v0; every knob breaks exactly one leg.
 
     `pairs` adds recorded producer pairs (left, right, shared input ids, assessment) and `declaration` writes the
@@ -157,10 +169,11 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
                       (2, "div x9, x5, x0", "SRC §1 (Table 1)")]
     (case / "baseline.expected.sexp").write_text(
         '(expectations (program "p.s") (entry "0x0") (instructions 3) (fetches 6)\n' + "".join(
-            f'  (step (n {n}) (insn "{insn}") (writes (write (reg "x7") (value "0x{n + 1:x}"))) (derivation "d") (source "{source}"))\n'
+            f'  (step (n {n}) (insn "{insn}") ' + ('(writes)' if insn.split()[0] in silent_forms else f'(writes (write (reg "x7") (value "0x{n + 1:x}")))')
+            + f' (derivation "d") (source "{source}"))\n'
             for n, insn, source in steps) + ')\n')
     props = [f'(property (id "p0") (requirement_id "REQ-X") (obligation_ids "{obligation}") (observation_kinds "gpr-change") '
-             f'(statement "s") (gpr_witness (step_n 0) (register "x7")))']
+             f'(statement "s") (gpr_witness (step_n {witness_step}) (register "x7")))']
     if declare_boundaries:
         props += [f'(property (id "p{n}") (requirement_id "REQ-X") (obligation_ids "{obligation}") (observation_kinds "gpr-change") '
                   f'(statement "s") (gpr_witness (step_n {n}) (register "x7")))' for n, _, s in steps if "Table" in s or "(boundary" in s]
@@ -297,6 +310,37 @@ class PolicyTests(unittest.TestCase):
         fixture(self.root, insns=(), declare_boundaries=True)
         t = self.measure()
         self.assertEqual(t["missing"], ["form-coverage"]); self.assertIn("0 of 0 forms predeclared", self.legs_text(t, "form-coverage"))
+
+    def silent(self, *, cell="form:sb", steps=None, witness=1, insns=("sb",), silent_forms=("sb",)):
+        """A store writes no GPR, so its witness is the read that observes it (P4-SYSTEM.14 a46-4)."""
+        fixture(self.root, insns=insns, silent_forms=silent_forms, witness_step=witness, control_step=witness,
+                steps=steps or [(0, "sb x7, 0, x1", "SRC §1"), (1, "lbu x8, x1, 0", "SRC §1 (boundary: the read)")],
+                declaration=f'(case (property (id "p0") (cell "{cell}")))\n')
+        table = self.measure()
+        return table, self.legs_text(table, "form-coverage")
+
+    def test_a_form_that_writes_no_gpr_is_predeclared_by_the_read_after_it(self):
+        table, text = self.silent()
+        self.assertEqual((table["disposition"], table["missing"]), ("satisfied", []))
+        self.assertIn("1 of 1 forms predeclared ['sb']", text)
+        self.assertIn("writing no GPR, read after their own step: ['sb']", text)
+
+    def test_a_silent_form_read_before_its_step_stays_pending(self):
+        table, text = self.silent(witness=0, steps=[(0, "lbu x8, x1, 0", "SRC §1 (boundary: the read)"), (1, "sb x7, 0, x1", "SRC §1")])
+        self.assertEqual((table["disposition"], table["missing"]), ("pending", ["form-coverage"]))
+        self.assertIn("0 of 1 forms predeclared []", text)
+
+    def test_a_silent_form_no_cell_names_stays_pending(self):
+        table, text = self.silent(cell="form:lbu")
+        self.assertEqual((table["disposition"], table["missing"]), ("pending", ["form-coverage"]))
+        self.assertIn("0 of 1 forms predeclared []", text)
+
+    def test_a_form_that_writes_a_gpr_gets_no_later_read(self):
+        """DIV writes rd, so it has a change to witness at its own step, and a later read stands in for nothing."""
+        table, text = self.silent(cell="form:div", insns=("div",), silent_forms=(),
+                                  steps=[(0, "div x7, x5, x6", "SRC §1"), (1, "add x8, x7, x0", "SRC §1 (boundary: the read)")])
+        self.assertEqual((table["disposition"], table["missing"]), ("pending", ["form-coverage"]))
+        self.assertIn("0 of 1 forms predeclared []", text)
 
     def test_partial_form_coverage_is_pending(self):
         fixture(self.root, insns=("div", "rem", "mul"), declare_boundaries=True)
@@ -592,7 +636,7 @@ class PolicyTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
-        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID])
+        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID, *BATCH_I])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
         catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
         forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
@@ -623,7 +667,12 @@ class PolicyTests(unittest.TestCase):
                     self.assertIsNone(t["invalidated_by"])
                     self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
-        table, xlen, csr, zicntr, sstc = tables
+        table, xlen, csr, zicntr, sstc, *batch = tables
+        for t in batch:
+            self.assertEqual((t["requirement_id"], t["obligation_ids"][0], t["risk"], t["category"]), (*BATCH_I[t["case_id"]], "defined"), t["case_id"])
+            self.assertEqual(t["coverage"]["required"], t["coverage"]["predeclared"], t["case_id"])
+            quiet = READ_AFTER.get(t["case_id"])
+            self.assertEqual(f"writing no GPR, read after their own step: {quiet}" in self.legs_text(t, "form-coverage"), bool(quiet), t["case_id"])
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]

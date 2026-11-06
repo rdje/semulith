@@ -70,6 +70,34 @@ RETAINED_CAPTURES = {
     "rv64gc-sstc-v1": RetainedCapture(
         "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
         "801b9383ea21b40d582b662233dfc5f8abb3660aa1ed0e2db557261ec20a4396", 22241),
+    # G-OBLIGATIONS' Batch I, the RV64I base (P4-SYSTEM.14 a46-2, a46-3): all nine declared in 506788a6 and captured once in 8a40a249.
+    "rv64gc-alu-imm-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "27bf858df65b21f4d50eb8b0392baba6b9d99774c9b7327c83d7006fb1e14680", 13251),
+    "rv64gc-alu-reg-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "41ec7ae6db63f83e1269e3803e4c2dcdc2f44c4b1ccf3ad2be348dc87bd094e1", 12154),
+    "rv64gc-lui-auipc-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "c9e17ce26016f2ffeb8d4a2270391e7d1fa95c0bfdcaa944014c93b966d4775c", 12201),
+    "rv64gc-jalr-lsb-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "04ff5c6f8e876365d04f9c7cdd213bec13d8b085b7f0c83941c23abdaf4816ed", 12476),
+    "rv64gc-no-delay-slots-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "e8d3d2756bba09c615fe016a1c61d3ffd710963f6e15b46112df99d497a0f44e", 13753),
+    "rv64gc-shamt-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "8fad52b38fce525ff8d0a9cce8461cc7cfe93310776f3c1ceb990be858a41120", 13497),
+    "rv64gc-wsuffix-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "961ce2c73a953c70d1754176b51bf1ae6e0094075fabacef304fffeb53838503", 12951),
+    "rv64gc-load-ext-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "bc4b2d3b214f09316a136fbab9ddbd3036581b7326b25563d9c30b13bf0d20a7", 12832),
+    "rv64gc-load-x0-v1": RetainedCapture(
+        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
+        "d5fda2b4c63c5cbcafd88484256046f5b56ee982255961d77c1a1dd493798394", 14719),
 }
 
 

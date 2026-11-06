@@ -123,6 +123,17 @@ FEATURE_DISPOSITIONS = {
                "commits no rd (s-tm-stce-clear-rd-kept, s-stce-clear-rd-kept, s-tm-clear-rd-kept, u-refused-rd-kept). stimecmp has no alias to witness "
                "(P4-SYSTEM.14 a43e-5, 2026-11-05)",
 }
+FEATURE_DISPOSITIONS.update({
+    "OB-ALU-IMM": "none applies: register-immediate arithmetic touches no privilege, translation, atomic, floating-point, counter, fetch or environment rule (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-ALU-REG": "none applies: register-register arithmetic touches no privilege, translation, atomic, floating-point, counter, fetch or environment rule (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-LUI-AUIPC": "none applies: LUI and AUIPC touch no privilege, translation, atomic, floating-point, counter or environment rule, and the fetch rule's parcel boundaries are not in play: AUIPC reads the address of a four-byte instruction (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-SHAMT": "none applies: shift amounts touch no privilege, translation, atomic, floating-point, counter, fetch or environment rule (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-WSUFFIX": "none applies: word arithmetic touches no privilege, translation, atomic, floating-point, counter, fetch or environment rule (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-JALR-LSB": "none applies: every target in the case is word-aligned once its least-significant bit clears, so the fetch rule's parcel and width boundaries are not in play; a halfword target is REQ-D-IALIGN-16's and REQ-GC-C's (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-NO-DELAY-SLOTS": "none applies: every transfer in the case lands on a word-aligned target in sequence, so the fetch rule's parcel and width boundaries are not in play; a halfword target is REQ-D-IALIGN-16's and REQ-GC-C's (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-LOAD-EXT": "none applies: translation is off and every access is aligned to readable memory, so the translation and protection rule is not in play; a misaligned or faulting access, and an atomic one, are other requirements' (P4-SYSTEM.14 a46-4, 2026-11-06)",
+    "OB-LOAD-X0": "none applies as a claim: the access fault at 2^40 and the handler's CSR reads and MRET are the route that observes the fault, not a claimed trap, CSR or protection behaviour (the fault's selection is REQ-D-FAULT-PRIORITY's, the reads REQ-GC-CSR-ACCESS's, the return REQ-GC-PRIV-INSNS's); translation is off, and the requirement's other side effects are named in the limitations (P4-SYSTEM.14 a46-4, 2026-11-06)",
+})
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
              "risk-method", "feature-rules", "form-coverage")
@@ -196,6 +207,14 @@ def _declared_forms(case_dir: Path):
     found = [S.children(top, name) for name in ("second_method", "adversarial")]
     _require(all(len(forms) <= 1 for forms in found), "a case declares at most one second method and one adversarial case")
     return tuple(forms[0] if forms else None for forms in found)
+
+
+def _declared_cells(case_dir):
+    """Each property's cell, from the case's own declaration: the planned record does not carry it."""
+    path = case_dir / "case.sexp"
+    if not path.is_file():
+        return {}
+    return {str(_one(p, "id")): str(_one(p, "cell")) for p in S.children(_one_form(path, "case"), "property")}
 
 
 def _risk_method(risk, second, adversarial, producers, pairs, witnesses, baseline):
@@ -347,7 +366,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
         n = _one(step, "n")
         _require(isinstance(n, int) and n not in steps, "expectation steps must carry unique integer n")
         steps[n] = dict(insn=str(_one(step, "insn") or ""), derivation=str(_one(step, "derivation") or ""),
-                        source=str(_one(step, "source") or ""))
+                        source=str(_one(step, "source") or ""), writes=any(S.children(w, "write") for w in S.children(step, "writes")))
     _require(steps, "expectation file declares no step")
     witnesses = {}
     for prop in properties:
@@ -440,14 +459,22 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     required = sorted(requirement["insns"])
     mnemonic = lambda s: s["insn"].split()[0].lower() if s["insn"].split() else ""
     exercised = sorted({mnemonic(s) for s in steps.values()} & set(required))
-    predeclared = sorted({mnemonic(steps[n]) for n in declared_steps} & set(required))
+    # A form that writes no GPR (a branch, a store, a load to x0) has no change to witness at its own step. In this vocabulary it is
+    # predeclared when a property's cell names it and that property's witness comes after a step of the form (P4-SYSTEM.14 a46-4):
+    # the read that observes it, stated by the property. A form with any GPR write, or never exercised, gets no such route.
+    silent = {f for f in required if not any(s["writes"] for s in steps.values() if mnemonic(s) == f)}
+    cells = _declared_cells(case_dir)
+    read_after = sorted({f for f in silent for pid, (n, _) in witnesses.items()
+                         if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})
+    predeclared = sorted(({mnemonic(steps[n]) for n in declared_steps} | set(read_after)) & set(required))
     # a43a-2f: a state requirement (REQ-D-XLEN: the register width and the address space) names no form, so there is
     # none to cover; its predeclared witnesses are its coverage. Any other requirement naming no form stays pending.
     vacuous = requirement["kind"] == "state" and not required
     _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),
          f"a state requirement names no form: coverage is vacuous, its {len(witnesses)} predeclared witnesses stand for it"
          if vacuous else
-         f"{len(predeclared)} of {len(required)} forms predeclared {predeclared}; {len(exercised)} exercised {exercised}")
+         f"{len(predeclared)} of {len(required)} forms predeclared {predeclared}; {len(exercised)} exercised {exercised}"
+         + (f"; writing no GPR, read after their own step: {read_after}" if read_after else ""))
 
     assert [leg.id for leg in legs] == list(LEG_ORDER)
     missing = [leg.id for leg in legs if leg.disposition != "satisfied"]

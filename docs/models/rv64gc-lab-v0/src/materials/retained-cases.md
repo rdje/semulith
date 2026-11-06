@@ -25,23 +25,23 @@
      `evidence/rv64gc-m-forms-v5/case.sexp`  `eb5570b3ceaa812897068a078fe7dc1c1f3eaa6334b0cf96c3b8cb1f96e628f7`
      `evidence/rv64gc-m-forms-v6/case.sexp`  `f4e5adb006ea051599576422792c1efc40d85baa9188c8a01c15102256d57261`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `3f606965ee0192a263980e313f917b89dbd4176367eae713d6698695783f2ac8`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `40ccc8cb28a4745046c0afadec9afa04507602b434ddbda530dfb1e8ce5306f7`
      Generator: `scripts/gen_model_book.py` (sha256 `37c536b0129a0a722773286177f09bf50d623ae65e118bfac58a8b8c345131b2`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rv64gc-alu-imm-v1` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
-| `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
+| `rv64gc-alu-imm-v1` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | credited, `CR-D-ALU-IMM-1` |
+| `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | credited, `CR-D-ALU-REG-1` |
 | `rv64gc-csr-set-v1` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | history: `rv64gc-csr-set-v2` holds the credit |
 | `rv64gc-csr-set-v2` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-2` |
-| `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | captured, credited by nothing |
-| `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | captured, credited by nothing |
-| `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | captured, credited by nothing |
-| `rv64gc-lui-auipc-v1` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | captured, credited by nothing |
-| `rv64gc-no-delay-slots-v1` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | captured, credited by nothing |
-| `rv64gc-shamt-v1` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | captured, credited by nothing |
+| `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-1` |
+| `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-1` |
+| `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-1` |
+| `rv64gc-lui-auipc-v1` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-1` |
+| `rv64gc-no-delay-slots-v1` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-1` |
+| `rv64gc-shamt-v1` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | credited, `CR-D-SHAMT-1` |
 | `rv64gc-sstc-v1` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-1` |
-| `rv64gc-wsuffix-v1` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | captured, credited by nothing |
+| `rv64gc-wsuffix-v1` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | credited, `CR-D-WSUFFIX-1` |
 | `rv64gc-xlen-forms-v1` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | history: `rv64gc-xlen-forms-v3` holds the credit |
 | `rv64gc-xlen-forms-v2` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | history: `rv64gc-xlen-forms-v3` holds the credit |
 | `rv64gc-xlen-forms-v3` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-3` |

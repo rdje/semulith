@@ -4,7 +4,7 @@ The evidence policy names, for a requirement's source-semantic category and risk
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
-`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`; every earlier case is history below — on top of the finite method review. It opens only
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, and since a46-4 (2026-11-06) Batch I's nine; every earlier case is history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
@@ -122,7 +122,10 @@ rv64gc-xlen-forms-v3: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credite
 rv64gc-csr-set-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-2
 rv64gc-zicntr-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-2
 rv64gc-sstc-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-SSTC-1
+rv64gc-alu-imm-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ALU-IMM-1
 ```
+
+That is six of the fourteen lines; Batch I's other eight read the same, each with its own credit.
 
 Inside the window (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
@@ -164,6 +167,12 @@ delivery stays with `REQ-D-SSTC` and rates with the environment contract.
 | form-coverage | satisfied vacuously, and said so: a state requirement names no form; its 39 predeclared witnesses stand for it |
 
 The counter rule's three parts, each witnessed. Scheduled events are guest counts at declared boundaries, never host time, with pending read below and at the compare. Delivery boundaries are witnessed from S, on a schedule, from U and to M, each a boundary of its own in the case that fetches nothing and writes nothing, which is what the window added. Suppression is witnessed under four conditions: STIE clear, SIE clear in S, delegated while in M, and STCE clear, that last twice. One thing is held back: a scheduled delivery's exact boundary is what both producers do on this configuration, not a latency claim, and the disposition says so. No wait is scheduled, so `wfi`'s wake stays `P4-SYSTEM.5`'s.
+
+**A form that writes no GPR (a46-4).** The form-coverage leg counts a form as predeclared at a witness of its own step. A branch, a store and a load to `x0` write no GPR, so they have no change to witness there, in this vocabulary. Such a form is also predeclared when a property's cell names it and that witness comes after a step of the form: the read that observes it, stated by the property. A form with any GPR write gets no such route, and neither does one never exercised. On `rv64gc-load-ext-v1` the leg reads:
+
+```text
+11 of 11 forms predeclared ['lb', 'lbu', 'ld', 'lh', 'lhu', 'lw', 'lwu', 'sb', 'sd', 'sh', 'sw']; 11 exercised [...]; writing no GPR, read after their own step: ['sb', 'sd', 'sh', 'sw']
+```
 
 ## What a satisfied measurement is, and is not
 
@@ -287,7 +296,7 @@ The first command measures the default case, v6 since a43e-5, and prints `DIV-PO
 10 legs satisfied; credited by CR-GC-M-4`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 48 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 52 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
 through one `--every-retained` run (each case's ten legs while every pin is current; `invalidated`

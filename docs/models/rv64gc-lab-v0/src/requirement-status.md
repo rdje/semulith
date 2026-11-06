@@ -45,13 +45,13 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**Today 42 requirements derive `planned`, five `implemented` and one `not-applicable`, and all four state requirements are among the five.**
+**Today 33 requirements derive `planned`, fourteen `implemented` and one `not-applicable`, and all four state requirements are among the fourteen.**
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
 
 ```text
 $ python3 -B scripts/credit_records.py --profile rv64gc-lab-v0
-CREDIT-RECORDS: rv64gc-lab-v0: 5 credit(s), 5 current, 0 lapsed; records read and authenticated, nothing granted
+CREDIT-RECORDS: rv64gc-lab-v0: 14 credit(s), 14 current, 0 lapsed; records read and authenticated, nothing granted
 ```
 
 No recorded status drifts. The records:
@@ -63,8 +63,17 @@ No recorded status drifts. The records:
 | `REQ-D-CSR-SET`, the first `implementation-defined` one | `CR-D-CSR-SET-2` | `rv64gc-csr-set-v2` | `implementation-defined`, high |
 | `REQ-D-ZICNTR` | `CR-D-ZICNTR-2` | `rv64gc-zicntr-v2` | `implementation-defined`, high |
 | `REQ-D-SSTC`, the first with a delivered interrupt | `CR-D-SSTC-1` | `rv64gc-sstc-v1` | `implementation-defined`, high |
+| `REQ-D-ALU-IMM` | `CR-D-ALU-IMM-1` | `rv64gc-alu-imm-v1` | `defined`, low |
+| `REQ-D-ALU-REG` | `CR-D-ALU-REG-1` | `rv64gc-alu-reg-v1` | `defined`, low |
+| `REQ-D-LUI-AUIPC` | `CR-D-LUI-AUIPC-1` | `rv64gc-lui-auipc-v1` | `defined`, medium |
+| `REQ-D-JALR-LSB` | `CR-D-JALR-LSB-1` | `rv64gc-jalr-lsb-v1` | `defined`, medium |
+| `REQ-D-NO-DELAY-SLOTS` | `CR-D-NO-DELAY-SLOTS-1` | `rv64gc-no-delay-slots-v1` | `defined`, low |
+| `REQ-D-SHAMT` | `CR-D-SHAMT-1` | `rv64gc-shamt-v1` | `defined`, high |
+| `REQ-D-WSUFFIX` | `CR-D-WSUFFIX-1` | `rv64gc-wsuffix-v1` | `defined`, high |
+| `REQ-D-LOAD-EXT` | `CR-D-LOAD-EXT-1` | `rv64gc-load-ext-v1` | `defined`, high |
+| `REQ-D-LOAD-X0` | `CR-D-LOAD-X0-1` | `rv64gc-load-x0-v1` | `defined`, high |
 
-The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited at `pending`. Below, a record's claims are read against its current id.
+The last nine are Batch I (`decision_batch-i-credited-implemented.md`), each new. The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited, read as history on [the retained cases](retained-cases.md). Below, a record's claims are read against its current id.
 
 An earlier window did the same to the first two (`P4-SYSTEM.14` a43b-2e, 2026-11-02):
 the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-before-the-next-case.md`)
@@ -76,10 +85,10 @@ synthetic-graph tests in both interpreter modes and seven seam omissions that ea
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, and a43e-5 for the five records above), under the rulings on its authority and on the
+`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, and a46-4 for the last nine), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
-since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1; `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` since a43d-2).
+since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1; `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` since a43d-2; `RVI-RV32I-STATEMENTS` and `RVI-RV64I-FORMS-STATEMENTS` since a46-1).
 
 `CR-D-CSR-SET-2` claims the committed set, and its record says what that leaves out
 (`decision_req-d-csr-set-credited-implemented.md`):
@@ -121,18 +130,18 @@ Its dependency `REQ-D-PRIV-MODES` stays `planned` for the same reason as CSR-SET
 
 Its dependency `REQ-D-PRIV-MODES` stays `planned` too.
 
-**No measured record is copied into `references.sexp`.** A third copy would have taken the file to 77,669 B against the family's 65,536 B per-part ceiling, and the director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`) that the next pinned window retire them all. That window was this one: the copies left at a43e-1, and since a43e-5 `gate_report.py` reads each credited case's record from `evidence/`. `G-TRACE` lists all five, and each row is evidence only while its credit is current:
+**No measured record is copied into `references.sexp`.** A third copy would have taken the file to 77,669 B against the family's 65,536 B per-part ceiling, and the director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`) that the next pinned window retire them all. That window was this one: the copies left at a43e-1, and since a43e-5 `gate_report.py` reads each credited case's record from `evidence/`. `G-TRACE` lists all fourteen, and each row is evidence only while its credit is current:
 
 ```text
 $ python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS --stdout | grep 'G-TRACE. | .experiment' | tail -1
-| `G-TRACE` | `experiment` | experiment `rv64gc-sstc-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-load-x0-v1` | yes |
 ```
 
-Without `tail` it prints all five. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 is the proof: it edits `gate_report.py`, and all five credits stay current.
+Without `tail` it prints all fourteen. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
 
-## The route for the other 42 (`P4-SYSTEM.14` a46-0, 2026-11-06)
+## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-`G-OBLIGATIONS` stays open on these, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+When this route was set, 42 were `planned`; Batch I has since credited nine, so 33 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out target/reference-config-census/sstc
@@ -149,4 +158,4 @@ $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out targ
 | A statement of selection, checked by a scope predicate | 12 | Raised to the director after the batches |
 | Behaviour Sail does not show: `wfi`'s stall, injected faults | 2 | May rightly end `partial`; raised to the director |
 
-The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, stands declared since a46-2 and captured since a46-3:** nine cases, 108 witnesses, each program agreeing with all three producers, [the retained cases](retained-cases.md) reading each as captured and credited by nothing, until the reviews read them (a46-4). It was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. Its commits also measure the estimate's weakest number, how much each case adds to the gate.
+The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **Batch II, system, is next.** It was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
