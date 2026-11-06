@@ -120,6 +120,28 @@ RETAINED_CAPTURES = {
     "rv64gc-d-forms-v1": RetainedCapture(
         "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
         "ab0630356bad8822b6d18a0bda62619680fff9091f32a6a1e1e9aeb7c57acb9b", 34607),
+    # The seven with a switch (P4-SYSTEM.14 a50-2, a50-3): declared in 40488d5b, captured once in 633fe0cb, every compared file byte-identical to the rehearsal.
+    "rv64gc-svade-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "d0ad7094446b2caaf54b471d5ce55aaf115c2a9bc59349e5e91bc622c41e8116", 13822),
+    "rv64gc-atomic-misalign-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "a78b331867bc0ca445acee6039303d7f2fe1eccf01f167a9fd44a29a8449c5e1", 17750),
+    "rv64gc-fault-priority-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "884f71918f6fecca4042341d0973668244b0b3ee4990f89847769520f62cc440", 21562),
+    "rv64gc-priv-modes-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "c25f84eab25b567be5174fe56ea5b7ae857fcc9f5d6600a307a7d84a6594159a", 13782),
+    "rv64gc-sv39-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "62ea14c63686b70c5761ba046967ecca485b70eafb8ed3bb0994014828ed79f7", 12765),
+    "rv64gc-reservation-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "9704f8d4b35857ea7006fcb0f863ca055f18cb12b67f9c4e997776e36d3da5b3", 17095),
+    "rv64gc-sc-deterministic-v1": RetainedCapture(
+        "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
+        "d956f455bbaff00e22184e4c1fc884f5f7dbcf5915b3fcfad1fdc63f2ce224dd", 16274),
 }
 
 

@@ -6,7 +6,7 @@
      `profiles/rv64gc-lab-v0/profile.sexp`  `f553f32cb1c4c48a2bc541a6680594ca21afb364b28a598aea0832683e622a90`
      `profiles/rv64gc-lab-v0/state.sexp`  `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`
      `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
-     `profiles/rv64gc-lab-v0/requirements.sexp`  `0cd4838b5855d2bbee1e2cfdda33cf5b86ea689b99b0d0aa901182f0cdafa11e`
+     `profiles/rv64gc-lab-v0/requirements.sexp`  `f13aaf0b69fe827eeac2c3d4efb057cbf0cf9e36c93b2ca02821fbafc9e6e811`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`
      `profiles/rv64gc-lab-v0/interactions.sexp`  `ade61cc81528441d7ab60ca4f8b33206143608bef7bc1f6495757d5a895861e3`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->

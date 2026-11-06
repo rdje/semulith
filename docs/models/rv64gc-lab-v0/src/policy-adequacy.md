@@ -28,7 +28,7 @@ a43e-1 … a43e-5, 2026-11-05):** four captures read `invalidated`, 8 of 10 legs
 
 ```text
 $ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 | tail -1
-STATEMENT-TRACE: rv64gc-lab-v0: 23 of 23 requirements with a declared case trace; annotation, not proof of semantics
+STATEMENT-TRACE: rv64gc-lab-v0: 30 of 30 requirements with a declared case trace; annotation, not proof of semantics
 $ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 --requirement REQ-D-LOAD-X0
 A load with rd = x0 must still raise any exceptions
     witness: lb-x0-faults
@@ -162,7 +162,7 @@ rv64gc-sstc-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by C
 rv64gc-alu-imm-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ALU-IMM-2
 ```
 
-That is six of the 23 lines; the other seventeen read the same, each with its own credit.
+That is six of the 30 lines; the other twenty-four read the same, each with its own credit.
 
 Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, until a49-3 named their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).

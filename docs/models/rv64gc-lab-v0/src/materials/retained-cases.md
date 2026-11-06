@@ -35,30 +35,30 @@
      `evidence/rv64gc-m-forms-v3/case.sexp`  `c1ec1d6555e01108a3cad5139573b4074a83af75f99a501b4b4f27f97cbfb214`
      `evidence/rv64gc-m-forms-v7/case.sexp`  `e517eeb6f09d7a0b8e4750309458918ee6c2e2b41740e2d1e2bc029a527d5c3e`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `9dc7f096193cc529e3106cd5c6664830feae10d881217ab79cb79b995376166c`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `42aa541cc992134c6ebee1f0dfe2b856846621c6f97fcbb9112294fd3f6ad5f3`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
 | `rv64gc-alu-imm-v2` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | credited, `CR-D-ALU-IMM-2` |
 | `rv64gc-alu-reg-v2` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | credited, `CR-D-ALU-REG-2` |
-| `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | its own, with a declared alternative | captured, credited by nothing |
+| `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | its own, with a declared alternative | credited, `CR-D-ATOMIC-MISALIGN-1` |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-3` |
 | `rv64gc-ecall-ebreak-v2` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | credited, `CR-D-ECALL-EBREAK-2` |
-| `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | its own, with a declared alternative | captured, credited by nothing |
+| `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | its own, with a declared alternative | credited, `CR-D-FAULT-PRIORITY-1` |
 | `rv64gc-ialign-16-v2` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | credited, `CR-D-IALIGN-16-2` |
 | `rv64gc-jalr-lsb-v2` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-2` |
 | `rv64gc-load-ext-v2` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-2` |
 | `rv64gc-load-x0-v2` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-2` |
 | `rv64gc-lui-auipc-v2` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-2` |
 | `rv64gc-no-delay-slots-v2` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-2` |
-| `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-reservation-v1` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | captured, credited by nothing |
-| `rv64gc-sc-deterministic-v1` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | captured, credited by nothing |
+| `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | credited, `CR-D-PRIV-MODES-1` |
+| `rv64gc-reservation-v1` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | credited, `CR-D-RESERVATION-1` |
+| `rv64gc-sc-deterministic-v1` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | credited, `CR-D-SC-DETERMINISTIC-1` |
 | `rv64gc-shamt-v2` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | credited, `CR-D-SHAMT-2` |
 | `rv64gc-sstc-v2` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-2` |
-| `rv64gc-sv39-v1` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-svade-v1` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-sv39-v1` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | credited, `CR-D-SV39-1` |
+| `rv64gc-svade-v1` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | credited, `CR-D-SVADE-1` |
 | `rv64gc-wsuffix-v2` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | credited, `CR-D-WSUFFIX-2` |
 | `rv64gc-xlen-forms-v4` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-4` |
 | `rv64gc-zicntr-v3` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-3` |

@@ -107,6 +107,8 @@ ZICNTR_CASE_ID = "rv64gc-zicntr-v3"  # the second, on the same configuration (a4
 SSTC_CASE_ID = "rv64gc-sstc-v2"  # the third, and the first with a delivered interrupt (a43e-5), re-captured as v2 (a49-3)
 # G-OBLIGATIONS' Batches I, II-a and II-b, re-issued or credited at a49-3: the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
 BATCH_I = {"rv64gc-alu-imm-v2": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v2": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v2": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v2": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v2": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v2": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v2": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v2": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v2": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v2": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-csr-access-v2": ("REQ-GC-CSR-ACCESS", "OB-GC-CSR-ACCESS", "high"), "rv64gc-counters-v2": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-fencei-v2": ("REQ-GC-FENCEI", "OB-GC-FENCEI", "low"), "rv64gc-ialign-16-v2": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium"), "rv64gc-atomics-v1": ("REQ-GC-ATOMICS", "OB-GC-ATOMICS", "high"), "rv64gc-c-forms-v1": ("REQ-GC-C", "OB-GC-C", "medium"), "rv64gc-f-forms-v1": ("REQ-GC-F", "OB-GC-F", "high"), "rv64gc-d-forms-v1": ("REQ-GC-D", "OB-GC-D", "high")}
+# The seven with a switch, credited at a50-4: each binds its requirement and reads its first difference from the retained effect.
+SWITCHES = {"rv64gc-svade-v1": ("REQ-D-SVADE", "OB-SVADE", "medium", "its declared alternative", "step 93 (csrrs x22, scause, x0): Sail {}, expectations {'x22': 13}"), "rv64gc-atomic-misalign-v1": ("REQ-D-ATOMIC-MISALIGN", "OB-ATOMIC-MISALIGN", "medium", "its declared alternative", "step 24 (csrrs x30, mcause, x0): Sail {'x30': 4}, expectations {'x30': 5}"), "rv64gc-fault-priority-v1": ("REQ-D-FAULT-PRIORITY", "OB-GC-FAULT-PRIORITY-V2", "medium", "its declared alternative", "step 159 (csrrs x22, scause, x0): Sail {'x22': 13}, expectations {'x22': 4}"), "rv64gc-priv-modes-v1": ("REQ-D-PRIV-MODES", "OB-PRIV-MODES", "high", "its declared alternative", "step 5 (csrrs x5, misa, x0): Sail {'x5': 9223372036855828781}, expectations {'x5': 9223372036856090925}"), "rv64gc-sv39-v1": ("REQ-D-SV39", "OB-SV39", "high", "its declared alternative", "step 17 (csrrs x5, satp, x0): Sail {'x5': 10376293541462147075}, expectations {'x5': 0}"), "rv64gc-reservation-v1": ("REQ-D-RESERVATION", "OB-GC-RESERVATION-V2", "medium", "the profile override", "step 23 (sc.w x15, x6, (x3)): Sail {'x15': 0}, expectations {'x15': 1}"), "rv64gc-sc-deterministic-v1": ("REQ-D-SC-DETERMINISTIC", "OB-GC-SC-DETERMINISTIC-V2", "medium", "the profile override", "step 21 (sc.w x15, x6, (x3)): Sail {'x15': 0}, expectations {'x15': 1}")}
 READ_AFTER = {"rv64gc-no-delay-slots-v2": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v2": ["sb", "sd", "sh", "sw"], "rv64gc-load-x0-v2": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v2": ["ebreak", "ecall"], "rv64gc-fencei-v2": ["fence.i"], "rv64gc-c-forms-v1": ["c.beqz", "c.bnez", "c.ebreak", "c.fld", "c.fldsp", "c.fsd", "c.fsdsp", "c.j", "c.jr", "c.nop", "c.sd", "c.sdsp", "c.sw", "c.swsp"], "rv64gc-f-forms-v1": ["fadd.s", "fcvt.s.l", "fcvt.s.lu", "fcvt.s.w", "fcvt.s.wu", "fdiv.s", "flw", "fmadd.s", "fmax.s", "fmin.s", "fmsub.s", "fmul.s", "fmv.w.x", "fnmadd.s", "fnmsub.s", "fsgnj.s", "fsgnjn.s", "fsgnjx.s", "fsqrt.s", "fsub.s", "fsw"], "rv64gc-d-forms-v1": ["fadd.d", "fcvt.d.l", "fcvt.d.lu", "fcvt.d.s", "fcvt.d.w", "fcvt.d.wu", "fcvt.s.d", "fdiv.d", "fld", "fmadd.d", "fmax.d", "fmin.d", "fmsub.d", "fmul.d", "fmv.d.x", "fnmadd.d", "fnmsub.d", "fsd", "fsgnj.d", "fsgnjn.d", "fsgnjx.d", "fsqrt.d", "fsub.d"]}
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
@@ -700,7 +702,7 @@ class PolicyTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
-        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID, *BATCH_I])
+        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID, *BATCH_I, *SWITCHES])
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
         catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
         forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
@@ -732,6 +734,16 @@ class PolicyTests(unittest.TestCase):
                     self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 11 of 11 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
         table, xlen, csr, zicntr, sstc, *batch = tables
+        switches = batch[len(BATCH_I):]; batch = batch[:len(BATCH_I)]
+        for t in switches:
+            requirement, obligation, risk, named, first = SWITCHES[t["case_id"]]
+            self.assertEqual((t["requirement_id"], t["obligation_ids"][0], t["risk"], t["category"]), (requirement, obligation, risk, "implementation-defined"), t["case_id"])
+            self.assertIn(f"selection recorded; observed effect under {named}: {first}", self.legs_text(t, "matched-reference-comparison"), t["case_id"])
+            declared = {str(self.M._one(p, "id")) for p in self.M.S.children(self.M.S.children(self.M._one_form(
+                ROOT / "evidence" / t["case_id"] / "planned-experiment.sexp", "experiment"), "verification")[0], "property")}
+            named_ids = {word.strip() for group in re.findall(r"\(([^()]*)\)", self.M.FEATURE_DISPOSITIONS[obligation])
+                         for word in re.split(r"[,;]", group) if re.fullmatch(r"[a-z][a-z0-9.]*(-[a-z0-9.]+)+", word.strip())}
+            self.assertTrue(named_ids, t["case_id"]); self.assertEqual(named_ids - declared, set(), t["case_id"])
         for t in batch:
             self.assertEqual((t["requirement_id"], t["obligation_ids"][0], t["risk"], t["category"]), (*BATCH_I[t["case_id"]], "defined"), t["case_id"])
             self.assertEqual(t["coverage"]["required"], t["coverage"]["predeclared"], t["case_id"])

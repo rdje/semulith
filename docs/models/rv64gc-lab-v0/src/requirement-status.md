@@ -45,14 +45,14 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**Today 24 requirements derive `planned`, 23 `implemented` and one `not-applicable`, and all four state requirements are among the 23.**
+**Today 17 requirements derive `planned`, 30 `implemented` and one `not-applicable`, and all four state requirements are among the 30.**
 The window that carries fetch faults retired all 19 earlier records on 2026-11-06 (`P4-SYSTEM.14` a49-1; `decision_the-window-that-carries-fetch-faults.md`), and credited them again the same day (a49-3): each case re-captured once, the 17 with unchanged guests byte-identical, under an eleventh leg that reads a requirement's every clause.
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
 
 ```text
 $ python3 -B scripts/credit_records.py --profile rv64gc-lab-v0
-CREDIT-RECORDS: rv64gc-lab-v0: 23 credit(s), 23 current, 0 lapsed; records read and authenticated, nothing granted
+CREDIT-RECORDS: rv64gc-lab-v0: 30 credit(s), 30 current, 0 lapsed; records read and authenticated, nothing granted
 ```
 
 No recorded status drifts. The records:
@@ -82,6 +82,13 @@ No recorded status drifts. The records:
 | `REQ-GC-C`, the first with a fetch fault | `CR-GC-C-1` | `rv64gc-c-forms-v1` | `defined`, medium |
 | `REQ-GC-F` | `CR-GC-F-1` | `rv64gc-f-forms-v1` | `defined`, high |
 | `REQ-GC-D` | `CR-GC-D-1` | `rv64gc-d-forms-v1` | `defined`, high |
+| `REQ-D-SVADE` | `CR-D-SVADE-1` | `rv64gc-svade-v1` | `implementation-defined`, medium |
+| `REQ-D-ATOMIC-MISALIGN` | `CR-D-ATOMIC-MISALIGN-1` | `rv64gc-atomic-misalign-v1` | `implementation-defined`, medium |
+| `REQ-D-FAULT-PRIORITY` | `CR-D-FAULT-PRIORITY-1` | `rv64gc-fault-priority-v1` | `implementation-defined`, medium |
+| `REQ-D-PRIV-MODES` | `CR-D-PRIV-MODES-1` | `rv64gc-priv-modes-v1` | `implementation-defined`, high |
+| `REQ-D-SV39` | `CR-D-SV39-1` | `rv64gc-sv39-v1` | `implementation-defined`, high |
+| `REQ-D-RESERVATION` | `CR-D-RESERVATION-1` | `rv64gc-reservation-v1` | `implementation-defined`, medium |
+| `REQ-D-SC-DETERMINISTIC` | `CR-D-SC-DETERMINISTIC-1` | `rv64gc-sc-deterministic-v1` | `implementation-defined`, medium |
 
 The last four are Batch II-b (`decision_batch-ii-b-credited-implemented.md`), new at a49-3. The five before them are Batch II-a (`decision_batch-ii-a-credited-implemented.md`), and the nine before those Batch I (`decision_batch-i-credited-implemented.md`). The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited, read as history on [the retained cases](retained-cases.md). Below, a record's claims are read against its current id.
 
@@ -95,7 +102,7 @@ synthetic-graph tests in both interpreter modes and eight seam omissions that ea
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, a47-3 for the next five, all 19 retired at a49-1, and a49-3 for all 23), under the rulings on its authority and on the
+`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, a47-3 for the next five, all 19 retired at a49-1, a49-3 for all 23, and a50-4 for the last seven), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
 since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1; `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` since a43d-2; `RVI-RV32I-STATEMENTS` and `RVI-RV64I-FORMS-STATEMENTS` since a46-1; `RVP-ECALL-STATEMENTS`, `RVI-ZICSR-STATEMENTS`, `RVI-ZIFENCEI-STATEMENTS` and `RVI-C-STATEMENTS` since a47-1).
@@ -111,7 +118,7 @@ since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `
 | field semantics | "Per-CSR field semantics (WPRI/WARL/WLRL) belong to the privilege leaf" | `P4-SYSTEM.2` |
 | counter rates, timer delivery, numerics | each is witnessed as a member of the set, not as its behaviour | `REQ-D-ZICNTR`, `REQ-D-SSTC`, the F and D cases |
 
-Its dependency `REQ-D-PRIV-MODES` stays `planned`: the derivation reads obligations, not dependencies.
+Its dependency `REQ-D-PRIV-MODES` stayed `planned` until a50-4: the derivation reads obligations, not dependencies.
 
 `CR-D-ZICNTR-2` claims what the case read: the three base counters and the two machine views in M, their
 progress, five refused write attempts with `rd` kept, a trap that retires nothing, each gate bit of `mcounteren` and
@@ -126,7 +133,7 @@ progress, five refused write attempts with `rd` kept, a trap that retires nothin
 | a CLINT or any device | it is the reference's source of time for this case; the laboratory declares none | not claimed |
 | timer delivery | no interrupt or wait is scheduled | `REQ-D-SSTC` |
 
-Its dependency `REQ-D-PRIV-MODES` stays `planned` for the same reason as CSR-SET's.
+Its dependency `REQ-D-PRIV-MODES` stayed `planned` for the same reason as CSR-SET's.
 
 `CR-D-SSTC-1` claims what the case read, and it is the first to witness delivery itself: `stimecmp` in M and all 64 bits, each gate alone with `rd` kept, the kernel programming its own timer, STIP below and at the compare, five suppressions under four conditions, delivery from S, from U and to M, one schedule, and its acknowledgement. Its record says what that leaves out (`decision_req-d-sstc-credited-implemented.md`):
 
@@ -138,20 +145,20 @@ Its dependency `REQ-D-PRIV-MODES` stays `planned` for the same reason as CSR-SET
 | the rate of `time` | the environment contract's to declare | `P4-SYSTEM.5`, `P4-SYSTEM.9` |
 | a CLINT or any device | it is the reference's source of time for this case; the laboratory declares none | not claimed |
 
-Its dependency `REQ-D-PRIV-MODES` stays `planned` too.
+Its dependency `REQ-D-PRIV-MODES` stayed `planned` too.
 
 **No measured record is copied into `references.sexp`.** A third copy would have taken the file to 77,669 B against the family's 65,536 B per-part ceiling, and the director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`) that the next pinned window retire them all. That window was this one: the copies left at a43e-1, and since a43e-5 `gate_report.py` reads each credited case's record from `evidence/`. `G-TRACE` lists all 23, and each row is evidence only while its credit is current:
 
 ```text
 $ python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS --stdout | grep 'G-TRACE. | .experiment' | tail -1
-| `G-TRACE` | `experiment` | experiment `rv64gc-d-forms-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-sc-deterministic-v1` | yes |
 ```
 
-Without `tail` it prints all 23. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
+Without `tail` it prints all 30. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
 
 ## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2 and captured once each at a50-3 (`decision_seven-with-a-switch.md`). None is credited yet, so they still read `planned`. When this route was set, 42 were `planned`; Batches I, II-a and II-b have since credited eighteen, so 24 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2, captured once each at a50-3 (`decision_seven-with-a-switch.md`) and credited at a50-4 (`decision_seven-credited-implemented.md`). When this route was set, 42 were `planned`; Batches I, II-a and II-b and the seven have since credited twenty-five, so 17 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc

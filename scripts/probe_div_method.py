@@ -412,7 +412,15 @@ class MethodTests(unittest.TestCase):
                          "rv64gc-atomics-v1": (88, 1201739, 187645),
                          "rv64gc-c-forms-v1": (88, 1200228, 188474),
                          "rv64gc-f-forms-v1": (88, 1278318, 249364),
-                         "rv64gc-d-forms-v1": (88, 1287269, 256669)}
+                         "rv64gc-d-forms-v1": (88, 1287269, 256669),
+                         # The seven with a switch (a50-4).
+                         "rv64gc-svade-v1": (88, 1102112, 111495),
+                         "rv64gc-atomic-misalign-v1": (88, 1144087, 145177),
+                         "rv64gc-fault-priority-v1": (88, 1213858, 207432),
+                         "rv64gc-priv-modes-v1": (88, 1077570, 90076),
+                         "rv64gc-sv39-v1": (88, 1101982, 111043),
+                         "rv64gc-reservation-v1": (88, 1143985, 145178),
+                         "rv64gc-sc-deterministic-v1": (88, 1121605, 125866)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

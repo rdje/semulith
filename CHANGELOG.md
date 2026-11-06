@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0375 (P4-SYSTEM.14 a50-4) — the seven credited, each measured against what selects otherwise
+
+Seven credits at 11 of 11 legs each, every selection shown to change something at a declared witness: 30 `implemented`, 17 `planned`, 1 `not-applicable`. All 17 left end at a ruling. `G-TRACE` lists all 30.
+
 ## SEMULITH-P4-0374 (P4-SYSTEM.14 a50-3) — the seven captured exactly once each, the guard's load limit measured, and a CSR write census
 
 Each of the seven once, each control where declared, each effect retained: all 77 compared files match the rehearsal, no finding. The capture guard's load limit moved from 8 to 32 on 0 refusals in 210 rehearsed captures at load 15 to 73. A census of CSR writes found a defect in the pinned expectations author on `medeleg`, `mtvec` and `stvec`, which no retained expectation reaches and the next window fixes.

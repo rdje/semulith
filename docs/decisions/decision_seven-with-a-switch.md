@@ -41,3 +41,7 @@ Each program was written for its statement, clause by clause, because a guest al
 ## The captures (a50-3, 2026-11-06)
 
 Each of the seven once, 1.2 s to 1.4 s, each control and each effect where declared. **All 77 compared files match the rehearsal byte for byte: no finding.** They ran at load 21 to 26 after a measured change to the guard ([`decision_capture-guard-measured-at-load.md`](decision_capture-guard-measured-at-load.md)). The medeleg witness dropped while drafting led to [`decision_csr-write-three-producers.md`](decision_csr-write-three-producers.md).
+
+## The credits (a50-4, 2026-11-06)
+
+Seven current credits, 11 of 11 legs each ([`decision_seven-credited-implemented.md`](decision_seven-credited-implemented.md)): 30 `implemented`, 17 `planned`, 1 `not-applicable`.

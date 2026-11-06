@@ -320,15 +320,14 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
         # The window that carries fetch faults closed at P4-SYSTEM.14 a49-3: each case re-captured once (a49-2), the unchanged ones' traces byte-identical, and credited again;
-        # Batch II-b joins them. The predecessors left the tree at a49-4, so only the M requirement still holds two, which no record names and the tools do, and they read pending. REQ-D-PRIV-MODES, a dependency
-        # of several, stays planned: the derivation reads obligations. This arm is the manifest's prediction of the real tree.
+        # Batch II-b joins them. The predecessors left the tree at a49-4, so only the M requirement still holds two, which no record names and the tools do, and they read pending. The seven with a switch joined at a50-4. This arm is the manifest's prediction of the real tree.
         done = ("implemented", "implemented", "every obligation credited (1)")
-        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-signed-div-truncation-v2"]), ("REQ-D-XLEN", []), ("REQ-D-CSR-SET", []), ("REQ-D-ZICNTR", []), ("REQ-D-SSTC", []), ("REQ-D-ALU-IMM", []), ("REQ-D-ALU-REG", []), ("REQ-D-LUI-AUIPC", []), ("REQ-D-JALR-LSB", []), ("REQ-D-NO-DELAY-SLOTS", []), ("REQ-D-SHAMT", []), ("REQ-D-WSUFFIX", []), ("REQ-D-LOAD-EXT", []), ("REQ-D-LOAD-X0", []), ("REQ-D-ECALL-EBREAK", []), ("REQ-GC-COUNTERS", []), ("REQ-D-IALIGN-16", []), ("REQ-GC-CSR-ACCESS", []), ("REQ-GC-FENCEI", []), ("REQ-GC-ATOMICS", []), ("REQ-GC-C", []), ("REQ-GC-F", []), ("REQ-GC-D", [])):
+        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-signed-div-truncation-v2"]), ("REQ-D-XLEN", []), ("REQ-D-ATOMIC-MISALIGN", []), ("REQ-D-FAULT-PRIORITY", []), ("REQ-D-PRIV-MODES", []), ("REQ-D-RESERVATION", []), ("REQ-D-SC-DETERMINISTIC", []), ("REQ-D-SV39", []), ("REQ-D-SVADE", []), ("REQ-D-CSR-SET", []), ("REQ-D-ZICNTR", []), ("REQ-D-SSTC", []), ("REQ-D-ALU-IMM", []), ("REQ-D-ALU-REG", []), ("REQ-D-LUI-AUIPC", []), ("REQ-D-JALR-LSB", []), ("REQ-D-NO-DELAY-SLOTS", []), ("REQ-D-SHAMT", []), ("REQ-D-WSUFFIX", []), ("REQ-D-LOAD-EXT", []), ("REQ-D-LOAD-X0", []), ("REQ-D-ECALL-EBREAK", []), ("REQ-GC-COUNTERS", []), ("REQ-D-IALIGN-16", []), ("REQ-GC-CSR-ACCESS", []), ("REQ-GC-FENCEI", []), ("REQ-GC-ATOMICS", []), ("REQ-GC-C", []), ("REQ-GC-F", []), ("REQ-GC-D", [])):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])), (*done, sorted(case + ":pending" for case in cases)), rid)
-        self.assertEqual(gc["derived"], {"planned": 24, "partial": 0, "implemented": 23, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
+        self.assertEqual(gc["derived"], {"planned": 17, "partial": 0, "implemented": 30, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (32, 23, 0, 23, 23))
+                         (32, 30, 0, 30, 30))
 
 
 def main():

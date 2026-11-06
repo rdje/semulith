@@ -400,4 +400,4 @@ Each of these requirements is the profile's choice among options the reference a
 | `rv64gc-reservation-v1` | the profile override | 23: `sc.w x15, x6, (x3` |
 | `rv64gc-sc-deterministic-v1` | the profile override | 21: `sc.w x15, x6, (x3` |
 
-**What moved, measured.** All 77 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Only `verification.json` differs between two runs of one case, in its process ids. Next, the reviews and credits.
+**What moved, measured.** All 77 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Only `verification.json` differs between two runs of one case, in its process ids. All seven were credited at a50-4.
