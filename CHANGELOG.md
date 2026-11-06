@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0369 (leaf P4-SYSTEM.14 a49-2) — the window's 23 cases captured exactly once each, and no behaviour moved
+
+Each once from the declaration commit, each control where declared. All 153 files compared with the 17 unchanged predecessors are byte-identical, every compared file matches its rehearsal, and the three effect traces match theirs: no finding.
+
 ## SEMULITH-P4-0368 (leaf P4-SYSTEM.14 a49-1) — the window opens: a case carries a fetch fault, the review reads every clause, and 23 cases declared on it
 
 A wordless boundary may now be a fetch fault. An eleventh review leg holds every clause of a requirement's statement to a witness or a stated limit, and it found five clauses the ten legs had passed. All 19 credits are retired until a49-3, and 23 cases are declared, F and D with up to 93 witnesses. Self-test arms that named real cases now judge a stub, so no later window breaks them.

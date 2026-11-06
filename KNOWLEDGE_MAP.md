@@ -144,6 +144,7 @@
 - [`decision_producer-debt-paid-before-the-next-case.md`](docs/decisions/decision_producer-debt-paid-before-the-next-case.md)
 - [`decision_profiles-family-composed-units.md`](docs/decisions/decision_profiles-family-composed-units.md)
 - [`decision_profiles-family-corpus-second-rederivation.md`](docs/decisions/decision_profiles-family-corpus-second-rederivation.md)
+- [`decision_profiles-family-corpus-third-rederivation.md`](docs/decisions/decision_profiles-family-corpus-third-rederivation.md)
 - [`decision_profiles-family-five-units.md`](docs/decisions/decision_profiles-family-five-units.md)
 - [`decision_profiles-family-four-units.md`](docs/decisions/decision_profiles-family-four-units.md)
 - [`decision_profiles-family-processor-corpus.md`](docs/decisions/decision_profiles-family-processor-corpus.md)

@@ -337,3 +337,37 @@ Five requirements, one case each, each captured exactly once on 2026-11-06 from 
 Each control is that case's failure mode: a cause that does not name its mode, a CSR immediate sign-extended, a refused read that committed, a stale fetch, a target rounded to a word. Each capture is complete with qualification false, and every compared file is byte-identical to the rehearsal's. Since a47-3 the reviews read all five, 10 of 10 legs each, and a record credits each.
 
 **The guard refused first, as it should.** Its first attempt held for its full ten minutes at a load above 8 and stopped, capturing nothing, so no case id was spent. Armed again, it ran when the load fell below 7.
+
+## The window that carries fetch faults (a49-2)
+
+23 cases, each captured exactly once on 2026-11-06 from the declaration commit `3b24bd52`. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness and nowhere else.
+
+| Case | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-m-forms-v7` | 33 | 25 | 12: `div x15, x5, x6` | 16,943 B, `7527a85c…` | 2,794 B |
+| `rv64gc-xlen-forms-v4` | 25 | 17 | 24: `csrrs x31, mtval, x0` | 14,980 B, `0b87cbce…` | 2,260 B |
+| `rv64gc-csr-set-v3` | 157 | 53 | 130: `csrrs x28, mscratch, x0` | 27,347 B, `bf24e258…` | 13,833 B |
+| `rv64gc-zicntr-v3` | 292 | 44 | 109: `addi x21, x20, 0` | 24,163 B, `88b6adfb…` | 26,277 B |
+| `rv64gc-sstc-v2` | 315 | 39 | 172: `csrrs x11, sip, x0` | 22,241 B, `0c84e833…` | 26,417 B |
+| `rv64gc-alu-imm-v2` | 19 | 13 | 12: `sltiu x16, x15, -1` | 13,251 B, `d8159cef…` | 1,628 B |
+| `rv64gc-alu-reg-v2` | 18 | 10 | 11: `sltu x15, x6, x5` | 12,154 B, `fc17ca34…` | 1,512 B |
+| `rv64gc-lui-auipc-v2` | 10 | 9 | 8: `auipc x11, 0x80000` | 12,201 B, `3bd11dba…` | 827 B |
+| `rv64gc-jalr-lsb-v2` | 16 | 10 | 3: `auipc x7, 0` | 12,476 B, `c4856561…` | 1,347 B |
+| `rv64gc-no-delay-slots-v2` | 21 | 11 | 3: `addi x10, x20, 10` | 13,753 B, `6c12cb8b…` | 1,596 B |
+| `rv64gc-shamt-v2` | 21 | 15 | 6: `sll x11, x5, x10` | 13,497 B, `84c147cd…` | 1,800 B |
+| `rv64gc-wsuffix-v2` | 17 | 12 | 11: `addw x16, x7, x8` | 12,951 B, `e036103d…` | 1,446 B |
+| `rv64gc-load-ext-v2` | 32 | 12 | 16: `lw x12, x1, 4` | 12,832 B, `c93bdd56…` | 2,507 B |
+| `rv64gc-load-x0-v2` | 68 | 16 | 10: `csrrs x30, mcause, x0` | 14,719 B, `de9b732a…` | 6,520 B |
+| `rv64gc-ecall-ebreak-v2` | 116 | 25 | 50: `csrrs x10, mcause, x0` | 17,655 B, `ed55336b…` | 10,386 B |
+| `rv64gc-csr-access-v2` | 81 | 25 | 15: `csrrs x15, mscratch, x0` | 17,178 B, `20f7d58d…` | 7,518 B |
+| `rv64gc-counters-v2` | 84 | 8 | 23: `addi x21, x20, 0` | 12,150 B, `3aa72b51…` | 7,198 B |
+| `rv64gc-fencei-v2` | 18 | 4 | 9: `.word 0x00700113` | 11,052 B, `bf596e7c…` | 1,349 B |
+| `rv64gc-ialign-16-v2` | 11 | 6 | 3: `auipc x3, 0` | 11,405 B, `3a6a0f30…` | 854 B |
+| `rv64gc-atomics-v1` | 246 | 64 | 21: `amoadd.w x5, x6, (x1` | 27,721 B, `a9c6a2f0…` | 20,411 B |
+| `rv64gc-c-forms-v1` | 251 | 52 | 108: `c.jalr x1` | 23,555 B, `a8795ba6…` | 21,088 B |
+| `rv64gc-f-forms-v1` | 338 | 90 | 127: `fmv.x.w x6, f8` | 33,297 B, `098f2565…` | 28,316 B |
+| `rv64gc-d-forms-v1` | 350 | 93 | 131: `fmv.x.d x6, f8` | 34,607 B, `ab063035…` | 28,949 B |
+
+**What moved, measured.** The 17 unchanged cases' 153 files, each trace, stream, image and expectation, are byte-identical to their predecessors'. That is what a re-capture is for: the tools moved and the behaviour did not. Every file is also byte-identical to the rehearsal's on a clone, and the three effects retained for `rv64gc-csr-set-v3`, `rv64gc-zicntr-v3` and `rv64gc-sstc-v2` read steps 34, 6 and 8 as before, each trace byte-identical to its predecessor's. Each capture is complete with qualification false.
+
+`rv64gc-c-forms-v1` is the first case to carry fetch faults. Step 225's `<fetch page fault>` reads the first parcel at the page's last halfword and faults at the second, and the handler reads that parcel's address and the instruction's start; step 245's comes only at the next instruction, after a sixteen-bit form in that last halfword ran. Next, the reviews and credits.

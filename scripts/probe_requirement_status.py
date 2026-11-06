@@ -320,7 +320,7 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
         # The window that carries fetch faults is open (P4-SYSTEM.14 a49-1): the typed fetch fault moved pinned inputs, and the 19 records were
-        # retired with the profile's catalogue file. Each requirement derives `planned`, the recorded status agrees, each new case reads declared.
+        # retired with the profile's catalogue file. Each requirement derives `planned`, the recorded status agrees, and each new case, captured at a49-2, reads pending: its receipt's qualification is false.
         # This arm is the manifest's prediction of the real tree: the re-credits re-state it.
         none = ("planned", "planned", "no credited implementation or evidence")
         for rid, case in (("REQ-GC-M", "rv64gc-m-forms-v7"), ("REQ-D-XLEN", "rv64gc-xlen-forms-v4"), ("REQ-D-CSR-SET", "rv64gc-csr-set-v3"), ("REQ-D-ZICNTR", "rv64gc-zicntr-v3"),
@@ -331,10 +331,10 @@ class StatusTests(unittest.TestCase):
                           ("REQ-GC-C", "rv64gc-c-forms-v1"), ("REQ-GC-F", "rv64gc-f-forms-v1"), ("REQ-GC-D", "rv64gc-d-forms-v1")):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"]), none, rid)
-            self.assertIn(case + ":declared", row["uncredited"], rid)
+            self.assertIn(case + ":pending", row["uncredited"], rid)
         self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 0, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (48, 0, 23, 0, 0))
+                         (48, 0, 0, 0, 0))
 
 
 def main():

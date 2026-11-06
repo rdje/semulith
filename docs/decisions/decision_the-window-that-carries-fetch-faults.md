@@ -78,3 +78,7 @@ A window is the only cheap time to move a pinned file, so it takes what else nee
 **The family's cap, once more:** 50 cases, the peak, `decision_evidence-family-two-cases.md`'s tenth re-derivation.
 
 **The rehearsal earned its place again.** On a throwaway clone of the staged tree, 23 of 23 captured in 40 s, and all 153 files compared with the 17 unchanged predecessors are byte-identical. It also found what the probes could not: `review_div_policy.py` still refused a case above 64 properties, after the tools moved to 96, and `F` and `D` are above it. That review imports no pinned tool, so it keeps its own constant, and a probe now holds the two equal. Nothing real had been captured.
+
+## The captures (a49-2, 2026-11-06)
+
+Each of the 23 once, 1.2 s to 1.6 s, each control where declared. **All 153 files compared with the 17 unchanged predecessors are byte-identical, every compared file of all 23 matches its rehearsal, and the three effect traces match their predecessors': no finding.** So the window's edits changed no behaviour of any unchanged guest, which is the question its stop condition asked.
