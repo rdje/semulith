@@ -20,7 +20,7 @@ A case is a directory here holding a `case.sexp`; the input probe refuses any ot
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 903 files at most, 359 present. Prepared inputs come from canonical sources
+With this index: 903 files at most, 485 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.

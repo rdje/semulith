@@ -30,18 +30,18 @@
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rv64gc-alu-imm-v1` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | declared |
-| `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | declared |
+| `rv64gc-alu-imm-v1` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
+| `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
 | `rv64gc-csr-set-v1` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | history: `rv64gc-csr-set-v2` holds the credit |
 | `rv64gc-csr-set-v2` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-2` |
-| `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | declared |
-| `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | declared |
-| `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | declared |
-| `rv64gc-lui-auipc-v1` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | declared |
-| `rv64gc-no-delay-slots-v1` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | declared |
-| `rv64gc-shamt-v1` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | declared |
+| `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | captured, credited by nothing |
+| `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | captured, credited by nothing |
+| `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | captured, credited by nothing |
+| `rv64gc-lui-auipc-v1` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | captured, credited by nothing |
+| `rv64gc-no-delay-slots-v1` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | captured, credited by nothing |
+| `rv64gc-shamt-v1` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | captured, credited by nothing |
 | `rv64gc-sstc-v1` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-1` |
-| `rv64gc-wsuffix-v1` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | declared |
+| `rv64gc-wsuffix-v1` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | captured, credited by nothing |
 | `rv64gc-xlen-forms-v1` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | history: `rv64gc-xlen-forms-v3` holds the credit |
 | `rv64gc-xlen-forms-v2` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | history: `rv64gc-xlen-forms-v3` holds the credit |
 | `rv64gc-xlen-forms-v3` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-3` |

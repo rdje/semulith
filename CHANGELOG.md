@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0361 (leaf P4-SYSTEM.14 a46-3) — Batch I captured exactly once each, byte-identical to its rehearsal
+
+The nine cases of the RV64I base: AGREE, AGREE, each control DIVERGE where declared. Every compared file matches the rehearsal on the clone. Nothing credited.
+
 ## SEMULITH-XTASK-0081 (leaf XTASK.13 slice d) — BOARD-GEN's controls judge a small frozen tree
 
 A deleted `board.sexp` or part catalogue now fails by its own name rather than reading as a check that stopped discriminating. Reading before freezing found the real run would then have read a deleted definition as `no board declares itself yet`; a manifest with no definition beside it now fails by name. 11 arms.

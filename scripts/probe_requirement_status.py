@@ -319,14 +319,14 @@ class StatusTests(unittest.TestCase):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])),
                              (*done, sorted(case + ":pending" for case in cases)), rid)
-        # G-OBLIGATIONS' Batch I is declared (a46-2): each binds its requirement and credits nothing until it is captured and credited.
+        # G-OBLIGATIONS' Batch I is captured (a46-3): each receipt's qualification is false, so each reads pending and binds nothing until credited.
         none = ("planned", "planned", "no credited implementation or evidence")
         for rid, case in (("REQ-D-ALU-IMM", "rv64gc-alu-imm-v1"), ("REQ-D-ALU-REG", "rv64gc-alu-reg-v1"), ("REQ-D-LUI-AUIPC", "rv64gc-lui-auipc-v1"), ("REQ-D-JALR-LSB", "rv64gc-jalr-lsb-v1"), ("REQ-D-NO-DELAY-SLOTS", "rv64gc-no-delay-slots-v1"), ("REQ-D-SHAMT", "rv64gc-shamt-v1"), ("REQ-D-WSUFFIX", "rv64gc-wsuffix-v1"), ("REQ-D-LOAD-EXT", "rv64gc-load-ext-v1"), ("REQ-D-LOAD-X0", "rv64gc-load-x0-v1")):
             row = next(r for r in gc["rows"] if r["id"] == rid)
-            self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*none, [case + ":declared"]), rid)
+            self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*none, [case + ":pending"]), rid)
         self.assertEqual(gc["derived"], {"planned": 42, "partial": 0, "implemented": 5, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (22, 5, 9, 5, 5))
+                         (22, 5, 0, 5, 5))
 
 
 def main():

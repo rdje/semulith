@@ -69,7 +69,7 @@ Several probes read every case on every run, and their arms run in both Python m
 
 ## How to apply
 
-- Batch I stands declared (a46-2). A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
+- Batch I stands captured (a46-3). A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
 - A batch's declarations and captures are each one commit, so a moved child between them refuses every case in the batch, not one: freeze the union.
 - One requirement, one case, one control. A witness that would serve two requirements is written twice.
 - A difference is a finding, never a reason to drop a witness quietly: observed and justified under the `implementation-defined` row, or left uncredited and named.
@@ -84,3 +84,5 @@ Nine programs and nine cases, 108 witnesses. **All three producers agree on ever
 | The new rule read an empty `(writes)` form as a write, so no silent form counted | A failed review, fixable, since the review is not pinned |
 
 **The rule the review needs, and lands with the credits (a46-3 on):** the form-coverage leg counts a form as predeclared only at a witness of its own step, and a branch, a store or a load to `x0` writes no GPR. So it may also be predeclared when a property's cell names it and that witness comes after a step of the form. All nine then read 10 of 10 on the clone.
+
+**Captured (a46-3, 2026-11-06).** Each once, 1.2 s to 1.4 s, every control where declared, and every compared file byte-identical to the rehearsal's. The guard's second run: it held for four and a half minutes at load 13.74 down to 8.21, then ran beside seven to nine sibling processes at load 7.3 to 7.8.

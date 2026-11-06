@@ -301,3 +301,23 @@ $ cmp evidence/rv64gc-zicntr-v1/baseline.trace evidence/rv64gc-zicntr-v2/baselin
 All 12 traces and all 12 stdout streams of the four are byte-identical to their predecessors'. Each of the 12 stderr streams equals its predecessor's with the case id substituted. With the id substituted, each measured record moved in ten tokens: the dependency manifest's digest, three stderr digests, three receipt digests, the deriver's digest as the version of the two expected producers (a43e-2 edited the deriver), and the control reason's one recovered space. XLEN's moved in two more, its expectations' digests, which a43e-3 had already measured.
 
 **These five did not run on a quiet host.** Earlier captures waited for three minutes with no sibling repository's process. This one waited 107 minutes without reaching that, and the director then asked for the run ("try runnung"). Ten sibling processes were running, at a 1-minute load of 4.71 to 5.13. Every other guard held, and two took the wait's place: the load below 8, and 50 children spawned and reaped the collector's way before each case (`decision_sstc-delivery-needs-the-pinned-window.md`). A capture's bytes do not depend on the load: the four's traces are the proof.
+
+## Batch I, the RV64I base (a46-3)
+
+The first batch of `decision_obligations-route.md`: nine requirements, one case each, on the profile's own override. Each was captured exactly once on 2026-11-06, from the declaration commit `506788a6`, with no retry:
+
+| Case | Baseline, repeat | Control | Measured record | Each trace |
+| --- | --- | --- | --- | --- |
+| `rv64gc-alu-imm-v1` | AGREE, 19 steps | DIVERGE at 12: `sltiu x16, x15, -1`, Sail 1, the expectation 0 | 13,251 B, `27bf858d…` | 1,628 B |
+| `rv64gc-alu-reg-v1` | AGREE, 18 steps | DIVERGE at 11: `sltu x15, x6, x5`, Sail 0, the expectation 1 | 12,154 B, `41ec7ae6…` | 1,512 B |
+| `rv64gc-lui-auipc-v1` | AGREE, 10 steps | DIVERGE at 8: `auipc x11, 0x80000`, Sail 32, the expectation `0x100000020` | 12,201 B, `c9e17ce2…` | 827 B |
+| `rv64gc-jalr-lsb-v1` | AGREE, 16 steps | DIVERGE at 3: `auipc x7, 0`, Sail base + 20, the expectation base + 21 | 12,476 B, `04ff5c6f…` | 1,347 B |
+| `rv64gc-no-delay-slots-v1` | AGREE, 21 steps | DIVERGE at 3: `addi x10, x20, 10`, Sail 10, the expectation 109 | 13,753 B, `e8d3d275…` | 1,596 B |
+| `rv64gc-shamt-v1` | AGREE, 21 steps | DIVERGE at 6: `sll x11, x5, x10`, Sail 2, the expectation 0 | 13,497 B, `8fad52b3…` | 1,800 B |
+| `rv64gc-wsuffix-v1` | AGREE, 17 steps | DIVERGE at 11: `addw x16, x7, x8`, Sail the sign-extended word, the expectation `0x80000000` | 12,951 B, `961ce2c7…` | 1,446 B |
+| `rv64gc-load-ext-v1` | AGREE, 32 steps | DIVERGE at 16: `lw x12, x1, 4`, Sail the sign-extended word, the expectation `0x88776655` | 12,832 B, `bc4b2d3b…` | 2,507 B |
+| `rv64gc-load-x0-v1` | AGREE, 68 steps | DIVERGE at 10: `csrrs x30, mcause, x0`, Sail 5, the expectation 77 | 14,719 B, `d5fda2b4…` | 6,520 B |
+
+Each control is that case's failure mode, predeclared: an immediate not sign-extended, a compare read as signed, a target that keeps its low bit, a delay slot that ran, an amount not masked, a word not sign-extended, a load extended the wrong way, a discarded load that skipped its fault. Each capture is complete with qualification false, and each case's three traces are byte-identical.
+
+**They were rehearsed first.** Every compared file of the real capture, traces, stdout, guest, expectations, case and declaration, is byte-identical to the throwaway clone's. So a capture's bytes do not depend on which commit declared it, or on the load, which stood at 7.3 to 7.8 beside seven to nine sibling processes. The guard held the first case for four and a half minutes, until the load fell below 8.
