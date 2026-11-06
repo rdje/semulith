@@ -97,7 +97,7 @@ are the same up to line 67, step 34, where the case's reads `x20 <- 0x0000000000
 one `trapping from M to M to handle illegal-instruction`. A second run refuses: existing names
 refuse reuse. A run that agrees retains nothing and exits 1: that configuration would have no
 observed effect there. `schema/config-effect.sexp` holds the shape, and
-`scripts/probe_config_effect.py` runs ten controls and nine guard omissions in both Python modes.
+`scripts/probe_config_effect.py` runs thirteen controls and eleven guard omissions in both Python modes, and judges each of the ten retained effects.
 
 `REQ-D-ZICNTR` follows on the same route. Its program, `guests/zicntr.s` (a43c-2), 163 instructions and 292 steps, reads:
 

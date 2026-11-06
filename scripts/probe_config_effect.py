@@ -26,7 +26,11 @@ CASE = "rv64gc-csr-set-v3"
 CASE_DIR = ROOT / "evidence" / CASE
 STEP, REGISTER, OBSERVED, EXPECTED = 34, "x20", [], 34
 # Every retained effect and the first difference it must show: case, step, register, observed, expected.
-RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v3", 6, "x5", [], 6), ("rv64gc-sstc-v2", 8, "x5", [], 8))
+RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v3", 6, "x5", [], 6), ("rv64gc-sstc-v2", 8, "x5", [], 8),
+            ("rv64gc-svade-v1", 93, "x22", [], 13), ("rv64gc-atomic-misalign-v1", 24, "x30", [("x30", 4)], 5),
+            ("rv64gc-fault-priority-v1", 159, "x22", [("x22", 13)], 4), ("rv64gc-priv-modes-v1", 5, "x5", [("x5", 9223372036855828781)], 9223372036856090925),
+            ("rv64gc-sv39-v1", 17, "x5", [("x5", 10376293541462147075)], 0), ("rv64gc-reservation-v1", 23, "x15", [("x15", 0)], 1),
+            ("rv64gc-sc-deterministic-v1", 21, "x15", [("x15", 0)], 1))
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),
@@ -197,7 +201,9 @@ class EffectTests(unittest.TestCase):
         self.assertIn("above", detail)
         self.assertEqual(self.retained(), [False, False])
 
-    def test_each_retained_effect_pins_its_case_and_differs_at_the_first_counter_read(self):
+    def test_each_retained_effect_pins_its_case_and_differs_where_recorded(self):
+        held = sorted(path.name.removesuffix(".effect.sexp") for path in (ROOT / "profiles/rv64gc-lab-v0/reference").glob("*.effect.sexp"))
+        self.assertEqual(held, sorted(row[0] for row in RETAINED), "a retained effect this table does not judge")
         for case, step, register, observed, value in RETAINED:
             with self.subTest(case=case):
                 case_dir = ROOT / "evidence" / case
@@ -208,7 +214,7 @@ class EffectTests(unittest.TestCase):
                 self.assertEqual((fields["case_id"], fields["trace_sha256"], fields["trace_bytes"]), (case, sha(data), len(data)))
                 self.assertEqual(fields["guest_sha256"], sha((case_dir / "guest.elf").read_bytes()))
                 self.assertEqual(fields["case_config_sha256"], sha((case_dir / "reference-config.json").read_bytes()))
-                self.assertEqual(fields["alternative_config_sha256"], sha(M.profile_config(ROOT)))
+                self.assertEqual(fields["alternative_config_sha256"], sha(M.alternative_config(ROOT, case)[0]))
                 self.assertNotEqual(fields["alternative_config_sha256"], fields["case_config_sha256"])
                 expected = M.D.load_expectations(case_dir / "baseline.expected.sexp")
                 result = M.Sail.compare_observations(expected, data.decode("utf-8"))

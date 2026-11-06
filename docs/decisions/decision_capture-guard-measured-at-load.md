@@ -37,4 +37,4 @@ answers: What did the capture guard's load limit protect, what was measured, and
 
 - If a capture refuses, read its `capture.err`, trace it as `FINDING.md` says, never retry, and declare a new case.
 - A load above the limit still holds for ten minutes at most and spends nothing. Re-run the guard, which skips any case already holding `verification.json`.
-- **The guard is scratch, and that is a gap.** Every capture since a43e-4 used a copy of it under `target/`, which git does not track, so a lost `target/` would lose the procedure. `a50-c2` moves it to a tracked script before the next capture.
+- **The guard is `scripts/capture_guarded.py` since a50-c2.** Every capture from a43e-4 to a50-3 used a copy under `target/`, which git does not track, so a lost `target/` would have lost the procedure. `scripts/probe_capture_guarded.py` holds its 17 guards, and it ran seven real captures end to end on a clone before it landed.

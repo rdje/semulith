@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0377 (P4-SYSTEM.14 a50-c2) — the capture guard is a tracked tool, and it held on a real run
+
+`scripts/capture_guarded.py` replaces a script that lived under `target/`: 22 tests, 17 mutations caught, and seven real captures on a clone byte-identical to the retained ones. `probe_config_effect.py` now reads all ten retained effects, not three.
+
 ## SEMULITH-P4-0376 (P4-SYSTEM.14 a50-c1) — the CLI reads what its usage says
 
 `semulith run x.elf --steps 3` now works, as the usage always said: `--name VALUE` and `--name=VALUE` are one request for every value option, a missing value is refused by name, and a test holds the option list to the parsers and the usage.

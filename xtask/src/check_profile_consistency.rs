@@ -8454,12 +8454,46 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("no-effect", "2", "0"),
             ("profile-config", "3", "0"),
             ("binary-pin", "1", "0"),
-            ("declared-ignored", "3", "0"),
+            ("declared-ignored", "8", "0"),
             ("declared-refusal", "0", "1"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
             tally.score(&format!("RED config effect {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CONFIG-EFFECT: 13 tests / {failures} failures / {errors} errors; synthetic configuration-effect controls, no capture credit"));
+        }
+    }
+    // P4-SYSTEM.14 a50-c2: the procedure around a capture (scripts/capture_guarded.py), on stand-ins.
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec![
+            "-B".to_owned(),
+            "scripts/probe_capture_guarded.py".to_owned(),
+        ];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN capture guard {mode}"), prober.probe(repo, argv.clone()), 0, "CAPTURE-GUARD: 22 tests / 0 failures / 0 errors; stand-in host and capture, no capture credit");
+        for (mutation, failures, errors) in [
+            ("object-id", "1", "0"),
+            ("ancestor", "1", "0"),
+            ("clean", "2", "0"),
+            ("moved", "2", "0"),
+            ("views", "2", "0"),
+            ("empty-manifest", "1", "0"),
+            ("own-gate", "1", "0"),
+            ("already", "1", "0"),
+            ("unfit-host", "2", "0"),
+            ("judged-again", "1", "0"),
+            ("preflight", "1", "0"),
+            ("first-nonzero", "1", "0"),
+            ("check-captures", "1", "0"),
+            ("limit", "2", "0"),
+            ("spawn", "1", "0"),
+            ("spawn-refusal", "1", "0"),
+            ("deadline", "0", "2"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED capture guard {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CAPTURE-GUARD: 22 tests / {failures} failures / {errors} errors; stand-in host and capture, no capture credit"));
         }
     }
     // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).

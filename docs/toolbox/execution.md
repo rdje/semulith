@@ -8,6 +8,7 @@ per-part ceiling (`P4-SYSTEM.14` a42au).
 
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
+| `scripts/capture_guarded.py` / `scripts/probe_capture_guarded.py` | is this tree and host fit to spend these cases' one capture? Runs `retain_div_capture.py` once each behind the guard, skips a captured case, stops at the first non-zero | `python3 -B scripts/capture_guarded.py --case <id> --declaration-commit <40-hex> [--check]`; `--check` captures nothing. `python3 -B scripts/probe_capture_guarded.py [--mutation <guard>]` (also `-O`) |
 | `scripts/serve_book_404.py` | does each book's 404 page find its own assets on a static host that falls back to it? | `python3 -B scripts/serve_book_404.py docs` after `make book`; `rc=1` names the books and counts the broken assets |
 | `crates/semulith-core/src/env/tests.rs` | do success responses match their request kind/raw width and preserve target failures as distinct from provider violations? | `cargo test -p semulith-core env::tests`; 25 kind combinations, width edges and real GC/scalar/translation paths; all CPU crossings share `env::request_checked` |
 | `crates/semulith-verify/src/contract_boundary_rv64gc.rs` | do direct GC boundary fixtures discriminate physical byte addresses and typed provider violations from target exceptions? | `cargo test -p semulith-verify contract_checks_rv64gc`; `Evidence::Boundary` runs the named pair, full-width offsets, exact Sv39 requests and three deliberately distorted providers |

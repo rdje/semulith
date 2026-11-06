@@ -537,6 +537,12 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
 
+### .14 a50-c2 / SEMULITH-P4-0377: the capture guard is a tracked tool, and it held on a real run (completed)
+
+Maintenance, counted neither way. Every capture from a43e-4 to a50-3 ran behind a copy of a script under `target/`, which git does not track, so a lost `target/` would have lost the procedure. **The tool.** `scripts/capture_guarded.py` holds what that script held, with three changes: the tree is judged again after any hold, the declaration commit must be an ancestor of HEAD, and regenerating the declarations is left to the preflight that already does it. **The proof.** `scripts/probe_capture_guarded.py`, 22 tests on stand-ins, 17 mutations each caught. It also ran seven real captures on a clone at the declaration commit: `rc=0` each, a second run skipping all seven, and all 35 compared files byte-identical to the retained captures. It is not an input of what it guards, so no credit moved.
+
+**Also found and fixed.** `probe_config_effect.py` claimed "every retained effect" and read three of ten, since a50-3. It now reads all ten and refuses a retained effect its table does not judge. Book: `capture-plan.md`. Toolbox: `div-evidence.md`.
+
 ### .14 a50-c1 / SEMULITH-P4-0376: the CLI reads what its usage says (completed)
 
 Maintenance, counted neither way. The live file reached its ceiling, so the closed records a49-0 to a49-4 and their rows moved verbatim to archive part 35. Found running the census at a50-3: the usage writes `--profile NAME` and `--steps N`, and every parser read only `--profile=NAME` and `--steps=N`, so `semulith run x.elf --profile rv64gc-lab-v0` answered `unknown option`. Both spellings now read the same, because a user following the usage is right and the book's and tests' `=` spelling must keep working: `joined_option_values` joins them once, before dispatch. A value option with no value is a usage refusal by name, and an unknown option stays its command's refusal. A unit test holds `VALUE_OPTIONS` to what the parsers read and what the usage shows, so a new option cannot bring this back. No path a case pins moved. Book: `plan/p1.md`.
@@ -1122,7 +1128,7 @@ Closed .13 designs: [Record](archive/P4-SYSTEM-12.md#designs).
   may overrule (`decision_reference-config-per-case.md`).
 - (2026-11-06, a50-3) Two small defects, owned and scheduled after a50-4, as maintenance:
   **`a50-c1`** closed at SEMULITH-P4-0376: the CLI reads both `--name VALUE` and `--name=VALUE`.
-  **`a50-c2`** the capture guard lives under `target/`, so `scripts/` takes it as a tracked tool before the next capture (`decision_capture-guard-measured-at-load.md`).
+  **`a50-c2`** closed at SEMULITH-P4-0377: `scripts/capture_guarded.py`.
   What the next pinned window carries is listed in `decision_csr-write-three-producers.md`.
 - ~~Where a credited case's measured record lives in the dossier (a43b-c3).~~ Closed `2026-11-04` by the director: no copies until the next pinned window, which retires them all and takes `gate_report.py` out of the experiments' inputs (`decision_dossier-copies-retire-at-the-next-window.md`).
 
@@ -1169,6 +1175,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.14` a50-c2 **ROOT CAUSE** — the guard was untracked: at 25be8741 `git ls-tree -r 25be8741 --name-only scripts | grep -c capture_guarded` = 0, and `git check-ignore -q target/p4-system-14/a50-3/capture.sh` `rc=0`.
+- [x] `.14` a50-c2 **ADDRESSED** — `CAPTURE-GUARD: 22 tests / 0 failures / 0 errors`; every mutation caught: `grep -c 'capture guard' target/p4-system-14/a50-c2/mutations.txt` = 34, the 17 in both Python modes, and `grep -c '0 failures / 0 errors' target/p4-system-14/a50-c2/mutations.txt` = 0; on a clone `grep -c 'capture rc=0' target/p4-system-14/a50-c2/clone-run.txt` = 7, and `grep -c 'byte-identical 35 differ 0' target/p4-system-14/a50-c2/clone-run.txt` = 1.
+- [x] `.14` a50-c2 **NO REGRESSION** — `CONFIG-EFFECT: 13 tests / 0 failures / 0 errors`; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `30 credit(s), 30 current, 0 lapsed`; `grep -c capture_guarded evidence/rv64gc-svade-v1/dependencies.sexp` = 0.
 - [x] `.14` a50-c1 **ROOT CAUSE** — the usage named a spelling no parser read: at 524914a8 `git show 524914a8:crates/semulith-cli/src/main.rs | grep -c 'strip_prefix("--steps ")'` = 0, while the usage's `[--steps N]` was on every `run` line; `semulith run x.elf --profile rv64gc-lab-v0` answered `run: unknown option --profile`, rc=2.
 - [x] `.14` a50-c1 **ADDRESSED** — `cargo test -p semulith-cli --bin semulith` `rc=0`, 4 passed; `cargo test -p semulith-cli --test option_spellings` `rc=0`, 4 passed. They discriminate: `grep -c FAILED target/p4-system-14/a50-c1/mutations.txt` = 2, a list missing `--warmup` (1 of 4 unit tests) and the join removed (3 of 4 integration tests).
 - [x] `.14` a50-c1 **NO REGRESSION** — `cargo test -p semulith-cli` `rc=0`, every target ok, including the `=` spelling the existing replay and reduce tests use; `git diff --name-only 524914a8 | grep -c evidence/` = 0.

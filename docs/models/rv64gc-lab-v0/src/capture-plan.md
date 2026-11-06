@@ -574,3 +574,34 @@ capture review takes the same selector (`scripts/review_div_capture.py --review 
 exercises the loaders over that case's guest. A declared case without a receipt is reported
 `declared` by `scripts/requirement_status.py` and credits nothing. The case was captured once at a42aw
 by `scripts/retain_div_capture.py` ([the m-forms capture](canonical-division.md#the-m-forms-capture-a42aw)).
+
+## The guard around a capture
+
+A case's capture is spent once, so the procedure around it is a tool, `scripts/capture_guarded.py`, which runs `scripts/retain_div_capture.py` behind these holds:
+
+| Holds | If not |
+| --- | --- |
+| The declaration commit is a 40-hex ancestor of HEAD | refused, rc=3 |
+| The tracked tree is clean, and this checkout's own gate is not running | refused, rc=3 |
+| Nothing a case's manifest pins, and no authority view it does not name, has moved since that commit | refused, naming what moved, rc=3 |
+| The 1-minute load is below 32, and 50 children spawn and reap the collector's way, before each case | holds for ten minutes at most, then stops with nothing spent, rc=4 |
+| The tree is judged again after any hold, and the case's preflight is ready | refused, rc=3 |
+| The case holds no `verification.json` yet | skipped, and never run again |
+| The capture returns zero | the run stops at that case's own exit, and nothing is retried |
+
+Read `decision_capture-guard-measured-at-load.md` for why the limit is 32. `--check` runs every hold but the host's and captures nothing, so it's safe at any time. A commit that isn't an ancestor of HEAD is refused before anything else:
+
+```text
+$ python3 -B scripts/capture_guarded.py --case rv64gc-svade-v1 --declaration-commit 1111111111111111111111111111111111111111 --check
+22:51:41Z refused: 1111111111111111111111111111111111111111 is not an ancestor of HEAD
+```
+
+Run for real on a clone at the seven's declaration commit, then a second time, it printed this for the first case. All 35 files compared with the retained captures were byte-identical:
+
+```text
+22:51:21Z host ready: load 14.80, 50 of 50 spawned and reaped
+22:51:24Z rv64gc-svade-v1 capture rc=0
+22:51:41Z rv64gc-svade-v1: already captured; never run again
+```
+
+Each case's output goes to `target/captures/<commit>/<case>/`, and the holds to `guard.log` beside them.
