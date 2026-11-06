@@ -143,7 +143,7 @@ class DossierQualificationTests(unittest.TestCase):
         self.assertEqual([e for e in S.children(references, "experiment") if S.children(e, "verification")], [])
         for case in (LIVE_CASE, "rv64gc-xlen-forms-v4", "rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-alu-imm-v2", "rv64gc-alu-reg-v2", "rv64gc-lui-auipc-v2", "rv64gc-jalr-lsb-v2", "rv64gc-no-delay-slots-v2", "rv64gc-shamt-v2", "rv64gc-wsuffix-v2", "rv64gc-load-ext-v2", "rv64gc-load-x0-v2", "rv64gc-ecall-ebreak-v2", "rv64gc-csr-access-v2", "rv64gc-counters-v2", "rv64gc-fencei-v2", "rv64gc-ialign-16-v2", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1"):
             self.assertEqual(self.qualification(measured(case), ROOT), [], case)
-        for case in ("rv64gc-m-forms-v6", "rv64gc-xlen-forms-v3", "rv64gc-sstc-v1", "rv64gc-alu-imm-v1", CASE):
+        for case in ("rv64gc-signed-div-truncation-v2", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):

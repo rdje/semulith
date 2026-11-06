@@ -19,6 +19,7 @@
 [Combining collection and evaluation](unit-evaluation.md)
 [Predeclaring the first division capture](capture-plan.md)
 [The first canonical division capture](canonical-division.md)
+[Cases retired from the tree](retired-cases.md)
 [The retained cases](retained-cases.md)
 [Checking finite method adequacy](method-adequacy.md)
 [Dependency manifest and leaf inspection](closure.md)

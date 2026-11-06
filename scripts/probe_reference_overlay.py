@@ -16,7 +16,7 @@ import unittest
 import prepare_div_inputs as Prep
 
 ROOT = Path(__file__).resolve().parent.parent
-CASE = "rv64gc-csr-set-v1"
+CASE = "rv64gc-csr-set-v3"
 MUTATIONS = {
     "extension-known": ('_require(entry is not None, f"overlay names unknown extension {name}")', 'entry = entry if entry is not None else {"supported": False}'),
     "extension-changes": ('_require(entry["supported"] is False, ', '_require(True, '),

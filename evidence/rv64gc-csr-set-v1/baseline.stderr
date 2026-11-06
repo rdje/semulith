@@ -1,2 +1,0 @@
-using evidence/rv64gc-csr-set-v1/baseline.trace for trace output.
-Unable to locate tohost symbol; disabling HTIF.

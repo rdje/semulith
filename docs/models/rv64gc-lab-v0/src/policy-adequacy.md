@@ -4,7 +4,7 @@ The evidence policy names, for a requirement's source-semantic category and risk
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
-`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five, each re-issued at a49-3 with Batch II-b's four and read by eleven legs; every earlier case is history below — on top of the finite method review. It opens only
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five, each re-issued at a49-3 with Batch II-b's four and read by eleven legs; every earlier case is history below, and most have [left the tree](retired-cases.md) — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that

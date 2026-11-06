@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-06`
-- **Status:** `active`, opened by `P4-SYSTEM.14` a49-0, `SEMULITH-P4-0367`, carried out from a49-1, `SEMULITH-P4-0368`
+- **Status:** `closed` 2026-11-06 at a49-4, `SEMULITH-P4-0371`; opened by `P4-SYSTEM.14` a49-0, `SEMULITH-P4-0367`, carried out from a49-1, `SEMULITH-P4-0368`
 - **Owner / source:** the engineer's call under [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md); it reverses option B of `decision_obligations-route.md`, "What the `defined` remainder found", and follows the reasoning of [`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md).
 answers: Why open a pinned window now, what does it carry, what does it cost, and what did the clone prove?
 
@@ -63,7 +63,7 @@ A window is the only cheap time to move a pinned file, so it takes what else nee
 | a49-1 | the window opens: pinned edits, the policy and its leg, the 19 credits retired by removal, 23 cases declared, the family's cap re-derived for its peak |
 | a49-2 | each captured exactly once, and three effects retained |
 | a49-3 | the reviews, 23 credits, `G-STATE` and `G-TRACE` restored |
-| a49-4 | the 23 superseded directories left in the tree out, listed with their commits and digests |
+| a49-4 | the 23 superseded directories left in the tree out, listed with their commits and digests (`decision_superseded-cases-retired.md`) |
 
 **Between a49-1 and a49-3, `G-STATE` reads 0 of 4 and `G-TRACE` is open.** That is the cost, it is recoverable at each step, and it is what the numbers are for. Any trace of an unchanged guest that differs from its predecessor stops the window as a finding.
 

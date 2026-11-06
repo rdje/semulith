@@ -1,5 +1,7 @@
 # The first retained canonical division capture
 
+Most versioned cases this page names have since left the tree. Each is listed with its last commit in [Cases retired from the tree](retired-cases.md); the tables here stay as what was measured.
+
 On 2026-10-19, `P4-SYSTEM.14` a42am collected the predeclared
 `rv64gc-signed-div-truncation-v2` case. Three fresh executions of the selected
 public Sail executable exited zero. Baseline and repeat agreed across all 27
@@ -295,7 +297,7 @@ SSTC's control is the case's failure mode: an all-ones `stimecmp` read as a sign
 **What the window changed.** You can check the prediction yourself:
 
 ```text
-$ cmp evidence/rv64gc-zicntr-v1/baseline.trace evidence/rv64gc-zicntr-v2/baseline.trace
+$ cmp <(git show e5814f18:evidence/rv64gc-zicntr-v1/baseline.trace) <(git show 178f9c6c:evidence/rv64gc-zicntr-v2/baseline.trace)
 ```
 
 All 12 traces and all 12 stdout streams of the four are byte-identical to their predecessors'. Each of the 12 stderr streams equals its predecessor's with the case id substituted. With the id substituted, each measured record moved in ten tokens: the dependency manifest's digest, three stderr digests, three receipt digests, the deriver's digest as the version of the two expected producers (a43e-2 edited the deriver), and the control reason's one recovered space. XLEN's moved in two more, its expectations' digests, which a43e-3 had already measured.

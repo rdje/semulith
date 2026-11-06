@@ -31,7 +31,7 @@ overlay beside the profile override, `reference/<case-id>.overlay.sexp`. The
 CSR-SET case's, with its `reason` shortened here:
 
 ```lisp
-(overlay (case_id "rv64gc-csr-set-v1")
+(overlay (case_id "rv64gc-csr-set-v3")
   (reason "The profile selects Zicntr, so ...")
   (extension "Zicntr")                       ; the profile selects it
   (clint (base 0x2000000) (size 0xC000))     ; Sail's only source of time, in its own device region
@@ -48,9 +48,9 @@ declares. It also refuses one that overlaps a region or names another case. To s
 what an overlay does before declaring a case on it:
 
 ```console
-$ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v1
-171 guests
- 151  profile AGREE -> case AGREE
+$ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
+191 guests
+ 168  profile AGREE -> case AGREE
    8  profile DIVERGE -> case DIVERGE
    ...
 ```
@@ -75,17 +75,17 @@ The overlay also gives the policy's `implementation-defined` row its observed ef
 The same guest under the profile override traps at its first counter read:
 `DIVERGE step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`. A
 configuration without an observed effect would be insufficient; this one has one.
-That run is retained beside the overlay, measured exactly once (a43b-3f):
+That run is retained beside the overlay, measured exactly once per case (a43b-3f on the first, a49-2 on this one, byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v1
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v3
 step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}
 
-(config_effect (case_id "rv64gc-csr-set-v1")
+(config_effect (case_id "rv64gc-csr-set-v3")
   (binary_sha256 "16de42a8…")             ; the binary of the case's capture
   (guest_sha256 "a07daaef…")              ; the case's guest image
   (case_config_sha256 "05746ed6…")        ; the case's configuration
-  (alternative_config_sha256 "666d9373…") ; the other six cases' configuration, byte for byte
+  (alternative_config_sha256 "666d9373…") ; the profile override, as every case without an overlay renders it
   (instructions 157)
   (trace_sha256 "2a828052…") (trace_bytes 14236))
 ```
@@ -111,14 +111,14 @@ observed effect there. `schema/config-effect.sexp` holds the shape, and
 | U, both gates | `scounteren` clear, IR alone, then `mcounteren.IR` clear | `rdinstret x20` refused though `scounteren.IR` is set |
 | One count, two names | `mcycle`/`cycle`, `minstret`/`instret`, at adjacent boundaries | the difference reads 1 |
 
-All three producers agree on it: the spec-side author, the lab engine, and the reference under `rv64gc-zicntr-v1`'s overlay, whose rendered configuration is byte-identical to CSR-SET's (`05746ed6…`); under the profile override the reference first differs at `rdcycle x5`. The case predeclares 44 witnesses, each value written from the chapters and held to the derivation, with one control: S's refused `rdcycle` at boundary 102 leaves `x20` at its sentinel, copied to `x21` at boundary 109, and the control's expectation holds the count it would have committed, 102 instead of 21. Two things stay out, both named in the limitations:
+All three producers agree on it: the spec-side author, the lab engine, and the reference under `rv64gc-zicntr-v3`'s overlay, whose rendered configuration is byte-identical to CSR-SET's (`05746ed6…`); under the profile override the reference first differs at `rdcycle x5`. The case predeclares 44 witnesses, each value written from the chapters and held to the derivation, with one control: S's refused `rdcycle` at boundary 102 leaves `x20` at its sentinel, copied to `x21` at boundary 109, and the control's expectation holds the count it would have committed, 102 instead of 21. Two things stay out, both named in the limitations:
 a write through `mcycle` or `minstret`, which the spec-side deriver refuses, and Zihpm's absence, which its 33-CSR vocabulary cannot state. The laboratory's `time` is a view of
 `mcycle` (`state.sexp`), and the reference's comes from its CLINT, so a write would separate them; that is one more reason the deriver's refusal stands until someone models it.
 
-Its observed effect is retained the same way, measured exactly once (a43c-4):
+Its observed effect is retained the same way, measured exactly once per case (a43c-4 on the first, a49-2 on this one, byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-zicntr-v1
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-zicntr-v3
 step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}
 ```
 
@@ -142,10 +142,10 @@ so the scheduled row's boundary is what both producers do on this configuration,
 
 **Its case needs a window, open since a43e-1.** A delivered interrupt is a boundary with no instruction word, and the case format could not say so. Since `P4-SYSTEM.14` a43e-1 (2026-11-05) it can: `word` and `length` are optional in a `step`, and a boundary may fetch nothing exactly when its record declares an interrupt delivered there, and it then writes nothing. Those tools are pinned by all four credited cases, so the binding retired every credit until each is re-captured (`decision_sstc-delivery-needs-the-pinned-window.md`). A throwaway clone proved the route first (a43e-0): SSTC reaches `DIV-POLICY: satisfied — 10 of 10 legs satisfied`. Its case is declared since a43e-3, on contract v3: 39 witnesses, the control `compare-read-as-signed` at x11 of boundary 172, 67 manifest children and no report or book generator among them. Captured since a43e-4 ([the captures](canonical-division.md#the-windows-five-a43e-4)), `CR-D-SSTC-1` credits it since a43e-5.
 
-Its observed effect is retained the same way as CSR-SET's and ZICNTR's, measured exactly once (a43e-4):
+Its observed effect is retained the same way as CSR-SET's and ZICNTR's, measured exactly once per case (a43e-4 on the first, a49-2 on this one, byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-sstc-v1
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-sstc-v2
 step 8 (rdtime x5): Sail {}, expectations {'x5': 8}
 ```
 

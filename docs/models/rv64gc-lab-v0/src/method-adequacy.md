@@ -3,12 +3,13 @@
 The retained matched cases have a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-It reads every case it holds a reviewed capture for: the M case's
-`rv64gc-m-forms-v4` (the default; v3 from a42ax and the first case,
-`rv64gc-signed-div-truncation-v2`, from a42ao, are `invalidated` history) and,
-since a43a-2f (2026-10-29), the XLEN case `rv64gc-xlen-forms-v1`. For each the
+It reads every case it holds a reviewed capture for, the 23 current credits' since
+a49-3 (2026-11-06): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
+is `rv64gc-xlen-forms-v4`. Earlier versions are history, reviewed by nothing, and most have
+[left the tree](retired-cases.md); v3 from a42ax and the first case,
+`rv64gc-signed-div-truncation-v2`, from a42ao, stay as the tools' fixture. For each the
 method result is `satisfied`, full policy is `pending` as the method sees it (the
-[policy legs](policy-adequacy.md) measure all ten satisfied), and replay is
+[policy legs](policy-adequacy.md) measure all eleven satisfied), and replay is
 `not-checked`. The M case is thirteen M forms and twelve Table 1 cells under one
 program, with the −7/2 rounding witness's wrong quotient as the control; the XLEN
 case is seventeen witnesses of the 64-bit registers, the `*W` family and the
@@ -27,8 +28,8 @@ The consumer selects each case's measured record by its reviewed identity:
 
 | Case | Measured record | Declared in | Captured in |
 | --- | --- | --- | --- |
-| `rv64gc-m-forms-v4` | 16,942 B, `aadb5ef3…` | `177b43a1` (a44-3) | `3c464095` (a44-4) |
-| `rv64gc-xlen-forms-v1` | 14,958 B, `d39825b0…` | `5c2cde93` (a43a-2d) | `e32cc645` (a43a-2e) |
+| `rv64gc-m-forms-v7` | 16,943 B, `7527a85c…` | `3b24bd52` (a49-1) | `57544407` (a49-2) |
+| `rv64gc-xlen-forms-v4` | 14,980 B, `0b87cbce…` | `3b24bd52` (a49-1) | `57544407` (a49-2) |
 
 v3's row was 16,942 B `fb22d5e5…`, declared in `4af5a68b` and retained in `e775705e`. Those labels
 are historical review facts, not a runtime Git check or independent execution attestation. The review
@@ -122,7 +123,7 @@ Run from the repository root:
 ```bash
 PYTHONPATH=scripts python3 -B - <<'PY_METHOD'
 from review_div_method import review_method
-for case in ("rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1"):
+for case in ("rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4"):
     r = review_method(case_id=case)
     print(r.disposition, r.policy_disposition, r.replay_disposition, "|",
           r.record_disposition, r.capture_binding, r.evaluation_disposition, "|",
@@ -131,17 +132,17 @@ for case in ("rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1"):
 PY_METHOD
 ```
 
-The output is `satisfied pending not-checked | valid matched pending | 88 1098379 40438 |
-1165123 134217728 39` for v4, the same with `88 1092798 35100 | 1155615` for the XLEN case, and
-`88 1228197 141763 | 1315764` for the CSR-SET case and `88 1303183 207186 | 1384386` for the ZICNTR case, whose 157 and 292 steps make the larger snapshots.
+The output is `satisfied pending not-checked | valid matched pending | 88 1021565 40438 |
+1088325 134217728 39` for v7, the same with `88 1016551 35646 | 1079426` for the XLEN case, and
+`88 1146688 141763 | 1234271` for `rv64gc-csr-set-v3` and `88 1221674 207186 | 1302893` for `rv64gc-zicntr-v3`, whose 157 and 292 steps make the larger snapshots.
 
 ```bash
 python3 -B scripts/review_div_method.py
-python3 -B scripts/review_div_method.py --max-read-bytes 1165123
-python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v1 --max-read-bytes 1155615
+python3 -B scripts/review_div_method.py --max-read-bytes 1088325
+python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v4 --max-read-bytes 1079426
 ```
 
-All emit derived JSON within 64 KiB and exit zero. One byte less (1,165,122; 1,155,614)
+All emit derived JSON within 64 KiB and exit zero. One byte less (1,088,324; 1,079,425)
 cannot satisfy the method (`refused files: artifact exceeds snapshot byte limit`,
 exit 1). Exit 2 means unavailable or unsupported; exit 1 means
 another unsatisfied disposition. These commands neither write historical

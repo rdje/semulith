@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0371 (P4-SYSTEM.14 a49-4) — the superseded cases leave the tree, listed, and the list reads back from history
+
+23 directories and 16 overlay and effect files are out, 3.8 MB; `evidence/` holds 25 cases and 23 credits stay current. A new book page lists all of them and a test reads each row back from history. The book's runnable examples, which had drifted at a49-3, name today's cases with re-measured numbers. The window that carries fetch faults closes.
+
 ## SEMULITH-XTASK-0084 (leaf XTASK.13 slice f) — MATERIALS-BILL's controls judge frozen dossiers, and a lost board definition is named
 
 A deleted dossier file, device source or board definition, or an edited bill, used to make the doctrine refuse itself with no name, and now fails by its unit's name. The self-test reads 29 frozen files, 245,396 B, and two tracebacks became refusals.

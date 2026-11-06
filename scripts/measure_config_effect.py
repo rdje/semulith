@@ -12,7 +12,7 @@ The record carries no verdict. The policy review re-derives the first difference
 baseline expectation, on every read. Existing names refuse reuse, so this measures exactly once, like a capture. It needs the untracked
 reference binary; it grants no credit. A run that does not differ retains nothing: that configuration has no observed effect here.
 
-  python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v1
+  python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v3
 
 Exit: 0 retained; 1 the run does not differ, nothing retained; 2 refused, nothing run or retained.
 """

@@ -1,3 +1,0 @@
-;; rv64gc-csr-set-v2.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
-;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
-(config_effect (case_id "rv64gc-csr-set-v2") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "a07daaefb204f47559c60adf8f2942515b6c56e8fdb757aad786c26042d1c7d4") (case_config_sha256 "05746ed66c5f2805afe16c09b072edd373c284b73566a2252b4404f86fd59cea") (alternative_config_sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2") (instructions 157) (trace_sha256 "2a82805291293290c84cdd0e70ed95e0a29e7596610c0f6d5928849902dcb798") (trace_bytes 14236))
