@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0366 (leaf P4-SYSTEM.14 a48-1) — Batch II-b's four programs and cases, declared before their captures, and what writing them found
+
+The A, C, F and D extensions: 239 witnesses, all three producers agreeing, rehearsed first. A case cannot carry a fetch fault, so REQ-GC-C's second-parcel fault stays the corpus guest's until the next window, raised to the director. Forms are not the requirement: the first drafts agreed with Sail and missed most of what the statements say.
+
 ## SEMULITH-XTASK-0082 (leaf XTASK.13 slice e) — PLATFORM-GEN's controls judge a small frozen tree, and two arms stop passing for the wrong reason
 
 A deleted board, dossier or manifest now fails by its own name. Two RED arms were firing on a path in the fingerprint whatever the bytes said; they now judge the generation just found in sync. A manifest with no definition beside it fails by name. 13 arms. `CHANGELOG.md` sharded.

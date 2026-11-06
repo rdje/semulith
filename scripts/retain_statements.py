@@ -167,6 +167,34 @@ EXCERPTS = {
         UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-c-statements.html", "29d8088d19c6cebcefe3445b3d5574343094c5d0a1edb58a6d665be73c1c5db8",
         (("norm:Zca_align16", "§27.1"), ("norm:Zca_no_misaligned", "§27.1")),
         "This excerpt establishes no acceptance of a compressed form: REQ-GC-C is its own case."),
+    "RVI-A-STATEMENTS": Excerpt(
+        "RVI-A-STATEMENTS", "RVI-A §12.1.1, §12.1.2 and §12.1.4: what LR and SC do and what ends a reservation, and what a word AMO does with its operands",
+        Page("RVI-A", "unpriv/a-st-ext.html", "afbd8def7bdf64287ef51a9cb14dd654fba0f0cfeef63bccdfd47408f5b0dff2",
+             "RISC-V Unprivileged Architecture, §12.1 \"A\" Extension for Atomic Instructions, Version 2.1"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-a-statements.html", "897382a40a917d98f563d7ca10525c7ef80392bfbfd6d779e086a0b10ddb9db0",
+        (("norm:a_no_aq_rl", "§12.1.1"), ("norm:lr_w_op", "§12.1.2"), ("norm:sc_w_success", "§12.1.2"), ("norm:sc_w_failure", "§12.1.2"), ("norm:sc_reservation_invalidate", "§12.1.2"), ("norm:lr_sc_rv64", "§12.1.2"), ("norm:sc_failure_code", "§12.1.2"), ("norm:sc_intervening_sc_fail", "§12.1.2"), ("norm:constrained_lrsc_compressed_allowed", "§12.1.3"), ("norm:amo_operand_size", "§12.1.4")),
+        "This excerpt establishes no acceptance. The misaligned rule, which REQ-D-ATOMIC-MISALIGN owns, is not retained, nor RVP-SUPERVISOR's translation text, which is cited."),
+    "RVI-C-FORMS-STATEMENTS": Excerpt(
+        "RVI-C-FORMS-STATEMENTS", "RVI-C §27.1.3 to §27.1.7: control transfers, the scaled stack forms, what is reserved, and what a HINT leaves alone",
+        Page("RVI-C", "unpriv/c-st-ext.html", "3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb",
+             "RISC-V Unprivileged Architecture, §27.1 \"C\" Extension for Compressed Instructions, Version 2.0"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-c-forms-statements.html", "1680a609cf1a4acaeb5856ecb8c21a59ddd940f15ef4e5776393e98b7fe80332",
+        (("norm:c-lwsp_rsv", "§27.1.3.1"), ("norm:c-fld_op", "§27.1.3.2"), ("norm:c-jr_op", "§27.1.4"), ("norm:c-jr_rsv", "§27.1.4"), ("norm:c-jalr_op", "§27.1.4"), ("norm:c-beqz_op", "§27.1.4"), ("norm:c-bnez_op", "§27.1.4"), ("norm:c-addi16sp_op", "§27.1.5.2"), ("norm:c-addi4spn_op", "§27.1.5.2"), ("norm:Zca_illegal", "§27.1.5.4"), ("norm:c-nop_op", "§27.1.5.5"), ("norm:c-ebreak_op", "§27.1.5.6"), ("norm:Zca_hints", "§27.1.7")),
+        "This excerpt establishes no acceptance; RVI-C-STATEMENTS keeps §27.1's own two statements."),
+    "RVI-F-STATEMENTS": Excerpt(
+        "RVI-F-STATEMENTS", "RVI-F §20.1.2 to §20.1.8: reserved rounding modes, the canonical NaN, tininess, what the transfers keep, how conversions clip, and how compares signal",
+        Page("RVI-F", "unpriv/f-st-ext.html", "8e42e6ae9b3ab18fcf9c3d4f26a1a251310e3fd08b67368235fb5e9affd32edd",
+             "RISC-V Unprivileged Architecture, §20.1 \"F\" Extension for Single-Precision Floating-Point, Version 2.2"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-f-statements.html", "b5098ef80b88e5a3651e524f5dd314bc3977912e61441f9bd3217859f9ce6e33",
+        (("norm:roundingmode_rsv", "§20.1.2"), ("norm:F_canonical_NaN", "§20.1.3"), ("norm:ieee_std_tininess", "§20.1.4"), ("norm:fsw_flw_bits_maintained", "§20.1.5"), ("norm:fmin-s_fmax-s_zero_compare", "§20.1.6"), ("norm:fmin-s_fmax-s_one_nan_input", "§20.1.6"), ("norm:fcvt_unrepresentable_nv", "§20.1.7"), ("norm:fcvt_round", "§20.1.7"), ("norm:fsgnj-s_fsgnjn-s_fsgnjx-s_op", "§20.1.7"), ("norm:fmv-x-w_op", "§20.1.7"), ("norm:fmv-w-x_op", "§20.1.7"), ("norm:flt-s_fle-s_signaling", "§20.1.8"), ("norm:feq-s_quiet", "§20.1.8")),
+        "This excerpt establishes no acceptance. The accrued-flags and rounding-mode paragraphs carry links the tool's markup bound refuses, and the conversion and classify tables are not statements: each is cited, not retained."),
+    "RVI-D-STATEMENTS": Excerpt(
+        "RVI-D-STATEMENTS", "RVI-D §21.1.2 to §21.1.7: NaN boxing, what the transfers keep, the two format conversions, and how the double forms read their single counterparts",
+        Page("RVI-D", "unpriv/d-st-ext.html", "fe3beb3c4db381063bccf03f5451d0a6184100ac37bb39b4dd1ec726a2befde4",
+             "RISC-V Unprivileged Architecture, §21.1 \"D\" Extension for Double-Precision Floating-Point, Version 2.2"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-d-statements.html", "86bad16178d4bcf476687044f0e612fc7c013d31d25cde8d19c1f5966705d9df",
+        (("norm:fp_nan-boxing", "§21.1.2"), ("norm:FP_transfer_instrs_narrow_transfer_in", "§21.1.2"), ("norm:FP_nontransfer_instrs_improper_nan-boxed_input", "§21.1.2"), ("norm:fld_fsd_bits_maintained", "§21.1.3"), ("norm:D_computational_instrs", "§21.1.4"), ("norm:fcvt-w-d_fcvt-wu-d_sign_ext", "§21.1.5"), ("norm:fcvt_float_rounding", "§21.1.5"), ("norm:fmv_bits_preserved", "§21.1.5"), ("norm:D_compare_instrs", "§21.1.6"), ("norm:fclass-d_op", "§21.1.7")),
+        "This excerpt establishes no acceptance; RVI-F-STATEMENTS holds the rules these forms read as defined analogously."),
 }
 
 

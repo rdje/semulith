@@ -22,8 +22,12 @@
      `evidence/rv64gc-xlen-forms-v3/case.sexp`  `4413bd45d71c18f7a8578a7a73502b4825c518876cb5d9aa6a2e2e036160c5b7`
      `evidence/rv64gc-zicntr-v1/case.sexp`  `023bcfe4483801354c55c6857cd7f3698e0ba5f81803a66c0d0b0b00c59659c3`
      `evidence/rv64gc-zicntr-v2/case.sexp`  `82392e36a6a6e3cdcbba9e04127b6921cede895ad5970d73c7ac8ba618361589`
+     `evidence/rv64gc-atomics-v1/case.sexp`  `b0d920c40548d070b5ba33f45c27f4d68e1d13215a61c8383061649d2652e71a`
+     `evidence/rv64gc-c-forms-v1/case.sexp`  `b496dab22b8035454ab11dec04fc443c93114afbd0051792577ca095905fbd7c`
      `evidence/rv64gc-counters-v1/case.sexp`  `0fc939f641407083c14fdf2362720c1093ff933b71325ed65fc823eb0326eb84`
      `evidence/rv64gc-csr-access-v1/case.sexp`  `da3c11618dfb76eec9d6c6699558041f6b8de28172efd9764f56e5ea75fa9175`
+     `evidence/rv64gc-d-forms-v1/case.sexp`  `7e334f4d4fa1c7a12c1ee16177ed77dabd431f9f5c339f175ac2d15b5b8b78c2`
+     `evidence/rv64gc-f-forms-v1/case.sexp`  `e80b47499780971d7c87add413cba2882ad86904dc118acd0da320119004279e`
      `evidence/rv64gc-fencei-v1/case.sexp`  `62dcfe58656842d5d056c110d0fd65c50e1c9396767e197b8c4af1fc01ea1371`
      `evidence/rv64gc-m-forms-v3/case.sexp`  `c1ec1d6555e01108a3cad5139573b4074a83af75f99a501b4b4f27f97cbfb214`
      `evidence/rv64gc-m-forms-v4/case.sexp`  `5e5eba6f4ef2921243371f2fd2b8d030426620286af771b4c769721e461e1e72`
@@ -54,8 +58,12 @@
 | `rv64gc-xlen-forms-v3` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-3` |
 | `rv64gc-zicntr-v1` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | history: `rv64gc-zicntr-v2` holds the credit |
 | `rv64gc-zicntr-v2` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-2` |
+| `rv64gc-atomics-v1` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | declared |
+| `rv64gc-c-forms-v1` | `REQ-GC-C` | `c-forms.s` | 223 | 47 | the override | declared |
 | `rv64gc-counters-v1` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | credited, `CR-GC-COUNTERS-1` |
 | `rv64gc-csr-access-v1` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 66 | 21 | the override | credited, `CR-GC-CSR-ACCESS-1` |
+| `rv64gc-d-forms-v1` | `REQ-GC-D` | `d-forms.s` | 326 | 64 | the override | declared |
+| `rv64gc-f-forms-v1` | `REQ-GC-F` | `f-forms.s` | 293 | 64 | the override | declared |
 | `rv64gc-fencei-v1` | `REQ-GC-FENCEI` | `fencei-forms.s` | 10 | 2 | the override | credited, `CR-GC-FENCEI-1` |
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |
 | `rv64gc-m-forms-v4` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |

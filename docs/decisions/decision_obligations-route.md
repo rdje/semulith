@@ -116,3 +116,23 @@ So the row can be met honestly for most of them: the same guest under a configur
 **Batch II-a captured (a47-2, 2026-11-06).** Each once, 1.1 s to 1.3 s, every control where declared, every compared file byte-identical to the rehearsal's. The guard's first attempt held for ten minutes at a load above 8 and refused, capturing nothing. Re-armed, it waited 19 minutes more and ran at load 6.6 to 7.0. That cost a wait and no case id, which is the trade the guard was set up to make.
 
 **Batch II-a credited (a47-3, 2026-11-06).** Five credits, 10 of 10 legs each ([`decision_batch-ii-a-credited-implemented.md`](decision_batch-ii-a-credited-implemented.md)): 19 `implemented`, 28 `planned`. **The tripwire, read again:** the pre-commit gate took 20.6 minutes at a47-1 and 21.3 at a47-2, with 27 cases, against 19.3 at 13 cases (a43e-5): about 9 seconds per added case, under loads that moved by more than that. The limit of a minute a case is not close.
+
+## What the `defined` remainder found (a48-1, 2026-11-06)
+
+Batch II-b is `ATOMICS`, `C`, `F` and `D`, one case each: 239 witnesses, all three producers agreeing, rehearsed on a throwaway clone, each 10 of 10 legs there. Writing them found three things.
+
+**1. A case cannot carry a fetch fault.** `REQ-GC-C` says a second-parcel translation fault reports that parcel's address in `xtval` and the instruction's start in `xepc`, before any effect. `matched_gpr_case.read_document` takes a step that fetches a word of a length, or a delivery boundary that fetches and writes nothing. A fetch fault reads a parcel and retires nothing, so it is neither, and that file is one of the 67 pinned children: to teach it lapses every credit. The first draft of `c-forms` carried the fault, and the spec-side derivation and the pinned Sail agreed on it, a measurement with nothing retained.
+
+| Option | Cost | Taken |
+| --- | --- | --- |
+| A. Open a window for this now | Lapses every current credit, 19 today and 23 once this batch is credited, each re-captured as a new case | No: one sentence of one requirement |
+| B. Witness what the format can carry, name the rest | `REQ-GC-C`'s limitation says so; the corpus guest `c-page-straddle` holds the fault against the backend | **Yes** |
+| C. Add the boundary at the next window, whatever opens it | A small format change, carried with the next pinned movement | **Yes, with B** |
+
+So the case witnesses the fetch width positively: C.JR in a page's very last parcel, before an invalid page, runs and lands. **Raised to the director, who may overrule**, as for the case's own configuration. `REQ-GC-C` credited `implemented` will say this in its limitations.
+
+**2. The forms are not the requirement.** The first drafts covered every form, and agreed with Sail on every step. Read against the requirements' statements they missed the ordering bits, one store-rules translation, the HINTs, the reserved encodings, the FS gate, sticky flags, most of the reserved rounding modes and most of the NaN rules. **Read the statement before the form list.** Forms are one leg of ten, and the review would not have caught these.
+
+**3. Two bounds, met.** `d-forms.expected.sexp` first came to 78,908 B against a prepared input's 65,536 B. Loading each constant in the fewest rows its bits allow brought it to 59,439 B, and the program from 427 steps to 326, with no witness lost. And a case holds 64 properties: `F` and `D` are at that bound, and `ATOMICS` too, so each drops what it can, and `D`'s limitation names what is witnessed only at format 32.
+
+Holding the declared values to the derivation refused 13 at first, each mine: seven read-backs of negative singles not sign-extended, which the chapter's own `FMV.X.W` statement says they are, and six from one wrong patch address and one sentinel equal to its value. That is the procedure working: values written first, from the statement, then held.

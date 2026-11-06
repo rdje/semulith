@@ -340,9 +340,14 @@ class StatusTests(unittest.TestCase):
         for rid in ("REQ-D-ECALL-EBREAK", "REQ-GC-CSR-ACCESS", "REQ-GC-COUNTERS", "REQ-GC-FENCEI", "REQ-D-IALIGN-16"):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*done, []), rid)
+        # Batch II-b is declared (a48-1): each binds its requirement and credits nothing until it is captured and credited.
+        none = ("planned", "planned", "no credited implementation or evidence")
+        for rid, case in (("REQ-GC-ATOMICS", "rv64gc-atomics-v1"), ("REQ-GC-C", "rv64gc-c-forms-v1"), ("REQ-GC-F", "rv64gc-f-forms-v1"), ("REQ-GC-D", "rv64gc-d-forms-v1")):
+            row = next(r for r in gc["rows"] if r["id"] == rid)
+            self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*none, [case + ":declared"]), rid)
         self.assertEqual(gc["derived"], {"planned": 28, "partial": 0, "implemented": 19, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (27, 19, 0, 19, 19))
+                         (31, 19, 4, 19, 19))
 
 
 def main():

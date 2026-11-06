@@ -169,6 +169,12 @@ counters-reads
 fencei-forms
 ialign-16
 
+# P4-SYSTEM.14 a48-1: G-OBLIGATIONS' Batch II-b, the defined remainder
+atomics-forms
+c-forms
+f-forms
+d-forms
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

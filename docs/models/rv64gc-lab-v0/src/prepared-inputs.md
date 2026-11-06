@@ -173,7 +173,7 @@ Since a46-2 the registry caps the family at 903 files, 541 MiB aggregate and 4 M
 forty-one cases, set once for every batch of `decision_obligations-route.md` (`decision_evidence-family-two-cases.md`, its ninth re-derivation). A case holds
 at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
 receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; forty-one cases and the 4 KiB index hold at
-most 566,956,032 bytes, and the twenty-seven declared today 373,362,688 (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
+most 566,956,032 bytes, and the thirty-one declared today 428,675,072 (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
 the 128 MiB combined artifact-read allowance and 16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
@@ -220,7 +220,7 @@ the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints th
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
 retained input is never replaced. The probe runs its controls over five declared cases (79 tests in
 each Python mode) and holds the family census to 903 files / 541 MiB, the forty-one-case envelope of
-`decision_evidence-family-two-cases.md` (525 files present at Batch II-a's declarations, a47-1; 595 since their captures, a47-2); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+`decision_evidence-family-two-cases.md` (627 files present at Batch II-b's declarations, a48-1); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,

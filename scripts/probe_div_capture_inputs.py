@@ -49,7 +49,9 @@ SSTC = "rv64gc-sstc-v1"  # REQ-D-SSTC, the first case whose boundaries include d
 BATCH_I = ("rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-lui-auipc-v1", "rv64gc-jalr-lsb-v1", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-wsuffix-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1")
 # Batch II-a, the defined half of system (P4-SYSTEM.14 a47-1).
 BATCH_II_A = ("rv64gc-ecall-ebreak-v1", "rv64gc-csr-access-v1", "rv64gc-counters-v1", "rv64gc-fencei-v1", "rv64gc-ialign-16-v1")
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR, M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2, SSTC, *BATCH_I, *BATCH_II_A)
+# Batch II-b, the defined remainder (P4-SYSTEM.14 a48-1).
+BATCH_II_B = ("rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1")
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR, M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2, SSTC, *BATCH_I, *BATCH_II_A, *BATCH_II_B)
 OWN_CONFIGURATION = (CSR_SET, ZICNTR, CSR_SET_V2, ZICNTR_V2, SSTC, "rv64gc-counters-v1")
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
@@ -276,14 +278,56 @@ PREPARED["rv64gc-ialign-16-v1"] = {
     "control.expected.sexp": ("expectation", 2527,
         "5b1257b4f5d14fc95104fc922b479b5cc2c9d902c1288faa5716830cc9a399a8"),
 }
+PREPARED["rv64gc-atomics-v1"] = {
+    "guest.elf": ("guest-image", 5280,
+        "a152841108b6b539ce542abd2093aa78107c5a0f350f18b46bfe62bd7a7fc588"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 46012,
+        "2d08f9b6ec5f4288c09ac8a7c4966beb80a58b6780add0c046e79112933d6413"),
+    "control.expected.sexp": ("expectation", 44226,
+        "52123f8b5a9ac4af8d545adb9e9d9d2a34ddfcc3293ceae3022d3ec010f0b558"),
+}
+PREPARED["rv64gc-c-forms-v1"] = {
+    "guest.elf": ("guest-image", 4960,
+        "9d9ef85a7980808bbf3ab707f7c1f4758d7912703453bb6db70541d50a8abf89"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 41349,
+        "650241902e2a18890ba9e928a0fd9f4e3d6aed7d3e8a958bb183388bfb87cbc7"),
+    "control.expected.sexp": ("expectation", 39728,
+        "a42c4ce71c680774cabf6542f991960be5746cd54fdef043831d563fbc0932b4"),
+}
+PREPARED["rv64gc-f-forms-v1"] = {
+    "guest.elf": ("guest-image", 5432,
+        "6845930d5197388da77dce31df90db902f2eeadde7bee008e56ad60a2ac22138"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 53570,
+        "d1563a535a030f194c9a6e080280263442e9237f9079eaec44318b1bf4fd2a73"),
+    "control.expected.sexp": ("expectation", 51529,
+        "3ad9a079d6234a4ed9b4781d845827a474ecaeadd784d5ec0fbb15e1c2d69c7e"),
+}
+PREPARED["rv64gc-d-forms-v1"] = {
+    "guest.elf": ("guest-image", 5568,
+        "ab86da72267c6e5f74abef0c3753e4232c91eebfea8777b2aee8463fca30a10d"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 59439,
+        "f870ba5fd42a6a6431e5f5c05fe45c895541943dd1d8eb150e73c02700d56525"),
+    "control.expected.sexp": ("expectation", 57218,
+        "9f0761fd821ed19df6019382967ecd18cad23e455e76de552e1295869200b08c"),
+}
 TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119,
           CSR_SET: 82222, ZICNTR: 112424, M_FORMS_V6: 27426, XLEN_V3: 24665, CSR_SET_V2: 82222, ZICNTR_V2: 112424, "rv64gc-alu-imm-v1": 21550, "rv64gc-alu-reg-v1": 20124, "rv64gc-lui-auipc-v1": 17569, "rv64gc-jalr-lsb-v1": 20307, "rv64gc-no-delay-slots-v1": 21329, "rv64gc-shamt-v1": 22539, "rv64gc-wsuffix-v1": 21035, "rv64gc-load-ext-v1": 25154, "rv64gc-load-x0-v1": 41401, SSTC: 119130,
-          "rv64gc-ecall-ebreak-v1": 55970, "rv64gc-csr-access-v1": 38443, "rv64gc-counters-v1": 42726, "rv64gc-fencei-v1": 16661, "rv64gc-ialign-16-v1": 17380}
+          "rv64gc-ecall-ebreak-v1": 55970, "rv64gc-csr-access-v1": 38443, "rv64gc-counters-v1": 42726, "rv64gc-fencei-v1": 16661, "rv64gc-ialign-16-v1": 17380,
+          "rv64gc-atomics-v1": 103127, "rv64gc-c-forms-v1": 93646, "rv64gc-f-forms-v1": 118140, "rv64gc-d-forms-v1": 129834}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50),
            M_FORMS_V5: (33, 66), XLEN_V2: (25, 50), CSR_SET: (157, 314), ZICNTR: (292, 584),
            M_FORMS_V6: (33, 66), XLEN_V3: (25, 50), CSR_SET_V2: (157, 314), ZICNTR_V2: (292, 584), SSTC: (315, 622),
            "rv64gc-alu-imm-v1": (19, 38), "rv64gc-alu-reg-v1": (18, 36), "rv64gc-lui-auipc-v1": (10, 20), "rv64gc-jalr-lsb-v1": (16, 32), "rv64gc-no-delay-slots-v1": (21, 42), "rv64gc-shamt-v1": (21, 42), "rv64gc-wsuffix-v1": (17, 34), "rv64gc-load-ext-v1": (32, 64), "rv64gc-load-x0-v1": (68, 136),
-           "rv64gc-ecall-ebreak-v1": (116, 232), "rv64gc-csr-access-v1": (66, 132), "rv64gc-counters-v1": (84, 168), "rv64gc-fencei-v1": (10, 20), "rv64gc-ialign-16-v1": (11, 20)}
+           "rv64gc-ecall-ebreak-v1": (116, 232), "rv64gc-csr-access-v1": (66, 132), "rv64gc-counters-v1": (84, 168), "rv64gc-fencei-v1": (10, 20), "rv64gc-ialign-16-v1": (11, 20),
+           "rv64gc-atomics-v1": (246, 492), "rv64gc-c-forms-v1": (223, 371), "rv64gc-f-forms-v1": (293, 586), "rv64gc-d-forms-v1": (326, 652)}
 
 
 def bounded_bytes(path):
@@ -608,7 +652,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 27 * 22)  # Batch II-a captured once each (a47-2); 8 each at their declarations
+        self.assertEqual(len(members), 1 + 27 * 22 + 4 * 8)  # Batch II-b at its declarations (a48-1); 22 each after their captures
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):
