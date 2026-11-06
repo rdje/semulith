@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0083 (leaf XTASK.14) — a killed gate cannot block a cleanup: printable prefetch keys
+
+The prefetch named its record files with control characters, so a gate that died left names the artifact census refuses, and one killed gate blocked every later cleanup. Keys are percent-encoded now, on both sides, and a new arm holds the two equal. Over a whole self-test: 0 misses.
+
 ## SEMULITH-AC-0094 (leaf ARTIFACT-CLEANUP.37) — the eleventh recurring cleanup, and a defect its census found
 
 At 24 h, on a clean tree: the orphan act found 0, then 133 candidates planned and 6 captured Cargo incremental outputs (15,766,340 B) removed by the guarded core, residue 0. The first plan refused: a gate that died left self-test files named with control characters, so any killed gate could block every later cleanup. That residue is removed, and printable record keys are next, `XTASK.8`'s.

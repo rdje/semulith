@@ -38,6 +38,10 @@ names and the acts ran.
   it as "unrepresentable" and plans the rest, would have turned a blocked recurrence into a listed item.
   Recorded in the `.28` result as an open design item for the ARTIFACT-CLEANUP tree, not changed here.
 
-Evidence: target/artifact-cleanup/AC0085-run-1-refused.log; the census (`os.walk` over `target/`, bytes
+## It came back, and what closed it
+
+On 2026-11-06 `ARTIFACT-CLEANUP.37`'s plan refused the same way: 1,842 names under `target/doctrine-selftest/prefetch.14560-…`, left by a gate that died on 2026-11-05 before its own cleanup ran. "The gate's version cleans up" holds only for a gate that lives to do it, and a lesson that names a fix without scheduling one comes back. `XTASK.14` closed it: a record key is now each argument percent-encoded and joined by commas, printable on both sides, with an arm holding the two equal. Over a whole self-test, 0 misses. A dead gate's scratch can still sit there, but it no longer stops a cleanup. The planner's refusal stays as it was: its contract is right.
+
+Evidence: target/artifact-cleanup/AC0094-refused/run.log; target/xtask/xt0083; target/artifact-cleanup/AC0085-run-1-refused.log; the census (`os.walk` over `target/`, bytes
 < 0x20 / 0x7F / `\` / > 4096) in the leaf's result; `scripts/artifact_cleanup.py` `relative()` and its
 call at the walk (`name = relative(path + "/" + entry.name)`); `docs/tasks/ARTIFACT-CLEANUP.md` `.28`.

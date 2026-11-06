@@ -4,12 +4,14 @@
 `doctrine_prefetch.py <argv-file> <out-dir> [--jobs N]` reads the invocations a self-test recorded on its
 recording pass — one per line, the arguments after `python3` separated by U+001F — runs each DISTINCT one once,
 in parallel, from the repository root, and writes its combined output and exit status to <out-dir>/<key>.out
-and <key>.rc, where <key> is the line itself with every `/` as U+001E (a file name the self-test rebuilds from
-its own argv by parameter expansion alone). The self-test then answers an invocation from the record when the
+and <key>.rc, where <key> is each argument percent-encoded, joined by commas: a printable file name the self-test
+rebuilds from its own argv, and one the artifact census can read if a killed gate leaves it behind
+(`ARTIFACT-CLEANUP.37`). The self-test then answers an invocation from the record when the
 argv matches exactly and runs it live otherwise — a missed shape costs time, never a wrong answer. Nothing here
 decides a verdict: the outputs are the probes' own, scored by the check as before.
 
-`--list` prints the distinct invocations (fields separated by U+001F) and runs nothing.
+`--list` prints the distinct invocations (fields separated by U+001F) and runs nothing. `--key ARG...` prints the
+record key of those arguments and runs nothing, so the doctrine can hold its own key to this one.
 """
 from __future__ import annotations
 
@@ -25,6 +27,7 @@ sys.dont_write_bytecode = True
 # measure before it is tracked)
 ROOT = next(p for p in Path(__file__).resolve().parents if (p / "scripts" / "sexp.py").is_file())
 SEP = "\x1f"
+KEY_SAFE = frozenset(b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-+=:")
 
 
 def read_invocations(path: Path) -> list[list[str]]:
@@ -37,7 +40,7 @@ def read_invocations(path: Path) -> list[list[str]]:
 
 
 def key(args: list[str]) -> str:
-    return SEP.join(args).replace("/", "\x1e")
+    return ",".join("".join(chr(b) if b in KEY_SAFE else f"%{b:02X}" for b in arg.encode()) for arg in args)
 
 
 def run_one(args: list[str], out_dir: Path) -> int:
@@ -50,6 +53,9 @@ def run_one(args: list[str], out_dir: Path) -> int:
 
 
 def main(argv: list[str]) -> int:
+    if len(argv) > 1 and argv[1] == "--key":
+        print(key(argv[2:]))
+        return 0
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("argv_file")
     parser.add_argument("out_dir", nargs="?")

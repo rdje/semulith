@@ -29,8 +29,8 @@ right; it would have stayed slow.
   tomorrow after someone adds an arm. Nothing to keep in step with the script's text.
 - **Compare the two lists before trusting either.** The instrumented run's argv against the
   enumerator's output (`comm -23`, `comm -13`): the misses AND the phantoms are the finding.
-- **Keep the answer exact and the fallback live.** The record is keyed by the argv itself (joined by
-  U+001F, `/` as U+001E — a file name bash builds by expansion alone, no process per lookup); an
+- **Keep the answer exact and the fallback live.** The record is keyed by the argv itself (since `XTASK.14`, each
+  argument percent-encoded and joined by commas: `a-name-one-tool-writes-is-a-path-another-tool-refuses.md`); an
   exact match is answered, anything else runs live, and the verdict is still the self-test's own
   `score` over the bytes — a tampered record is a MISS, not a pass (`control_shadow.sh`).
 

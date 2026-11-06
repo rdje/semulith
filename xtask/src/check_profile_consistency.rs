@@ -639,9 +639,23 @@ enum Prober {
     },
 }
 
-/// The record's key: the argv U+001F-joined with `/` as U+001E (`doctrine_prefetch.key`).
+/// The record's key: each argument percent-encoded, joined by commas (`doctrine_prefetch.key`). A file name the artifact census
+/// can read: a killed gate's control-character names once refused every later cleanup (`ARTIFACT-CLEANUP.37`).
 fn record_key(argv: &[String]) -> String {
-    argv.join("\u{1f}").replace('/', "\u{1e}")
+    argv.iter()
+        .map(|arg| {
+            let mut key = String::new();
+            for byte in arg.bytes() {
+                if byte.is_ascii_alphanumeric() || b"._-+=:".contains(&byte) {
+                    key.push(char::from(byte));
+                } else {
+                    key.push_str(&format!("%{byte:02X}"));
+                }
+            }
+            key
+        })
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 /// `python3 <argv…>` from the repository root — stdout and stderr merged (`2>&1`) or stdout alone with stderr through.
@@ -8697,6 +8711,23 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED omitted requirement status {mutation} {mode}"), prober.probe(repo, mutated), 1, "REQUIREMENT-STATUS-PROBE: 1 tests / 1 failures / 0 errors; derivation only, no qualification credit");
         }
     }
+    // The prefetch's two sides name one file: a difference would cost every arm its record, silently (`XTASK.14`).
+    let sample: Vec<String> = ["-B", "scripts/probe x.py", "--mutation", "a,b%c"]
+        .iter()
+        .map(|arg| (*arg).to_owned())
+        .collect();
+    let mut asked: Vec<String> = vec![
+        "-B".to_owned(),
+        "scripts/doctrine_prefetch.py".to_owned(),
+        "--key".to_owned(),
+    ];
+    asked.extend(sample.iter().cloned());
+    tally.score(
+        "GREEN the prefetch's record key, one on both sides, printable",
+        prober.probe(repo, asked),
+        0,
+        &record_key(&sample),
+    );
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec![
             "-B".to_owned(),
