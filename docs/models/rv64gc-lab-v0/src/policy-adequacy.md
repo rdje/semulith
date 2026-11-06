@@ -14,6 +14,43 @@ opens CSR-SET (`P4-SYSTEM.14` a43b-2b, 2026-11-02) moved pinned inputs of both c
 tables below are the measurements of their predecessors, which the re-captures reproduce. **The window that opens SSTC did the same (`P4-SYSTEM.14`
 a43e-1 … a43e-5, 2026-11-05):** four captures read `invalidated`, 8 of 10 legs, their credits retired, until each was re-captured once, traces byte-identical, and credited again. Each table below names the case it measured; the re-captures reproduce it.
 
+## The eleventh leg: every clause of the statement (a49-1)
+
+`EVIDENCE_POLICY.md` declares it, "Statement trace". A case can cover every form, agree with the reference on every step, and leave clauses of its requirement's statement unread: first drafts of the A, C, F and D cases did, and reading the 19 credited statements clause by clause found two more the ten legs had passed. So `profiles/rv64gc-lab-v0/statement-trace.sexp` splits each statement into clauses, and `scripts/statement_trace.py` holds it on every read:
+
+| Held | Refused when |
+| --- | --- |
+| The clauses' words, in order, are exactly the statement's | a clause is skipped, reordered or added to |
+| Each clause names declared properties, a limit, or both | a clause names neither |
+| A named property is one the case declares | it names a witness that is not there |
+| A limit is a literal part of the case's `limitation` | it names a limit the case does not state |
+| Every declared property stands for some clause | a witness goes unread |
+
+```text
+$ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 | tail -1
+STATEMENT-TRACE: rv64gc-lab-v0: 23 of 23 requirements with a declared case trace; annotation, not proof of semantics
+$ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 --requirement REQ-D-LOAD-X0
+A load with rd = x0 must still raise any exceptions
+    witness: lb-x0-faults
+    …
+and cause any other side effects,
+    limit: the other side effects a load may cause are not witnessed
+even though the loaded value is discarded.
+    witness: x0-reads-zero
+```
+
+**What it found.** With the first trace written:
+
+| Requirement | The clause | What the ten legs had passed |
+| --- | --- | --- |
+| `REQ-GC-CSR-ACCESS` | "a satp access in S with mstatus.TVM=1" | No witness and no limit: now `satp-tvm-cause`, `satp-tvm-rd-kept` |
+| `REQ-GC-CSR-ACCESS` | "csrrs/csrrc with rs1=x0 and csrrsi/csrrci with uimm=0" | Half witnessed: now `csrrc-x0-no-write`, `csrrci-zero-no-write` |
+| `REQ-GC-FENCEI` | "a fence.i word with nonzero fields executes, never raises" | No witness and no limit: now `fence-i-fields-ignored` |
+| `REQ-GC-FENCEI` | "a store to a later-fetched address is visible to the next fetch immediately" | Named only as a limit: now `store-visible-without-fence` |
+| `REQ-D-IALIGN-16` | "while ILEN remains 32" | No witness and no limit: now a named limit, `REQ-GC-C`'s all-ones case holding it |
+
+**What it does not do.** A trace is annotation, not proof of semantics (RULES EVD-06): it says which witness a reader should hold a clause to, and that reader can still disagree. What it cannot do is leave a clause out. `scripts/probe_statement_trace.py` runs 15 tests in both interpreter modes and seven seam omissions, and the policy probe holds the leg itself.
+
 ## The ten legs and what the bytes say
 
 | Leg | Policy words | Measured on the M case (v4) |
@@ -127,7 +164,7 @@ rv64gc-alu-imm-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited b
 
 That is six of the nineteen lines; Batch I's other eight and Batch II-a's five read the same, each with its own credit.
 
-Inside the window (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
+Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, and the listing shows them until a49-3 names their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
 
 `rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the
@@ -298,7 +335,7 @@ The first command measures the default case, v6 since a43e-5, and prints `DIV-PO
 10 legs satisfied; credited by CR-GC-M-4`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 53 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 55 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
 through one `--every-retained` run (each case's ten legs while every pin is current; `invalidated`

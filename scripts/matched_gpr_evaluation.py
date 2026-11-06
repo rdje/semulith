@@ -189,7 +189,7 @@ def evaluate_retained_unit(root: Path, *, raw_experiment: list, scope: V.Scope,
             selected_case = G.reviewed_case(case_id)
             declared = graph["property"]
             if type(declared) is not list or not 1 <= len(declared) <= G.MAX_PROPERTIES:
-                raise ValueError("source property requires 1..64 bounded declared properties")
+                raise ValueError(f"source property requires 1..{G.MAX_PROPERTIES} bounded declared properties")
             # The relation plan validated every witness; claims carry the record's own words.
             witnesses = {item.property_id: item.witness for item in relations.plan.properties}
             claims = []

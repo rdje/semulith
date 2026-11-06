@@ -39,28 +39,28 @@ class RetainedCases(unittest.TestCase):
     def test_every_case_directory_has_exactly_one_row(self):
         self.assertEqual(set(self.rows()), {path.parent.name for path in (G.REPO / "evidence").glob("*/case.sexp")})
 
+    # A stub credit on a case that stays in the tree: authenticating one is CREDIT-RECORDS', and these hold through a window (a49-1).
+    ONE = dict(id="CR-FX-1", case_id="rv64gc-m-forms-v3", requirement_id="REQ-GC-M", disposition="current")
+
     def test_a_current_credit_is_read_and_a_lapsed_one_is_not(self):
-        credits = G.CR.current_credits(G.REPO, self.unit)
-        one = credits[0]
-        self.assertIn(f"credited, `{one['id']}`", self.rows()[one["case_id"]])
-        lapsed = [dict(c, disposition="lapsed") if c is one else c for c in credits]
-        with patch.object(G.CR, "current_credits", return_value=lapsed):
-            self.assertIn("captured, credited by nothing", self.rows()[one["case_id"]])
+        with patch.object(G.CR, "current_credits", return_value=[self.ONE]):
+            self.assertIn("credited, `CR-FX-1`", self.rows()[self.ONE["case_id"]])
+        with patch.object(G.CR, "current_credits", return_value=[dict(self.ONE, disposition="lapsed")]):
+            self.assertIn("captured, credited by nothing", self.rows()[self.ONE["case_id"]])
 
     def test_a_case_with_no_receipt_reads_declared(self):
-        one = G.CR.current_credits(G.REPO, self.unit)[0]
         real = Path.is_file
         with patch.object(G.CR, "current_credits", return_value=[]), patch.object(
                 Path, "is_file", lambda path: path.name != "verification.json" and real(path)):
-            self.assertIn("| declared |", self.rows()[one["case_id"]])
+            self.assertIn("| declared |", self.rows()[self.ONE["case_id"]])
 
     def test_a_superseded_case_names_the_one_holding_the_credit(self):
-        rows = self.rows()
-        one = G.CR.current_credits(G.REPO, self.unit)[0]
-        same = [r for case, r in rows.items() if case != one["case_id"] and f"`{one['requirement_id']}`" in r]
+        with patch.object(G.CR, "current_credits", return_value=[self.ONE]):
+            rows = self.rows()
+        same = [r for case, r in rows.items() if case != self.ONE["case_id"] and "`REQ-GC-M`" in r and "| declared |" not in r]
         self.assertTrue(same)
         for row in same:
-            self.assertIn(f"history: `{one['case_id']}` holds the credit", row)
+            self.assertIn(f"history: `{self.ONE['case_id']}` holds the credit", row)
 
     def test_a_unit_holding_no_case_has_no_fragment(self):
         other = G.REPO / "profiles" / "rv64i-lab-v0"

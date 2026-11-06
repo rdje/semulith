@@ -336,7 +336,7 @@ class DerivationTests(unittest.TestCase):
 
     def test_declared_event_markers_are_unsupported_before_author(self):
         for field, text in [
-            ("insn", "<fetch fault>"),
+            ("insn", "<fetch page fault at -0x7fbfd000>"),
             ("insn", "<halted>"),
         ]:
             doc = expectation([{"x1": "0x1"}])
@@ -371,6 +371,25 @@ class DerivationTests(unittest.TestCase):
         for n in declared_at:
             doc["step"][n]["derivation"] = DELIVERED
         return doc
+
+    def faulted(self, spelling="<fetch page fault>"):
+        doc = expectation([{"x1": "0x1"}, {}])
+        doc["step"][1]["insn"] = spelling
+        return doc
+
+    def test_a_fetch_fault_the_record_declares_binds(self):
+        """The typed event binding widened (P4-SYSTEM.14 a49-1): no word retires, nothing is written, and at most one parcel was read."""
+        for spelling in ("<fetch page fault>", "<fetch fault>"):
+            for fetches in (0, 1):
+                source, derived = self.boundary(fetches=fetches)
+                with self.subTest(spelling=spelling, fetches=fetches), mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+                    self.outcome(source=source, expected=self.faulted(spelling))
+
+    def test_a_fetch_fault_that_reads_two_parcels_or_writes_stays_unsupported(self):
+        for fields in (dict(fetches=2), dict(writes=((2, 2),)), dict(instruction_length=4), dict(instruction_bits=19)):
+            source, derived = self.boundary(**fields)
+            with self.subTest(fields=fields), mock.patch.object(C.Author, "derive_snapshot", return_value=derived):
+                self.outcome("unsupported", source=source, expected=self.faulted(), reason="unfetched boundaries")
 
     def test_a_delivery_boundary_the_record_declares_binds(self):
         """The typed event binding (P4-SYSTEM.14 a43e-1): the record declares the delivery and the author typed it bare."""
@@ -521,7 +540,8 @@ MUTATIONS = {
     "fixed-entry": ("if entry != Author.ENTRY:", "if False:"),
     "exclusions": ("if excluded:", "if False:"),
     "declared-events": (
-        'if any(step["insn"].startswith("<") or Sail.LEGACY_FETCH.fullmatch(step["insn"]) for step in doc["step"]):',
+        '''if any((step["insn"].startswith("<") and not Sail.DECLARED_FETCH_FAULT.fullmatch(step["insn"]))
+           or Sail.LEGACY_FETCH.fullmatch(step["insn"]) for step in doc["step"]):''',
         "if False:",
     ),
     "source-forward": (
@@ -537,12 +557,14 @@ MUTATIONS = {
         "derived = Author.derive_snapshot(Path(program).read_bytes(), program=program, instructions=instructions)",
     ),
     "context-program": ("or derived.program != program", "or False"),
-    "unfetched": ("if not (bare if delivered else fetched):", "if False:"),
-    "undeclared-unfetched": ("if not (bare if delivered else fetched):", "if delivered and not bare:"),
-    "declared-fetched": ("if not (bare if delivered else fetched):", "if not delivered and not fetched:"),
+    "unfetched": ("if not ((bare and not step.fetches) if delivered else (bare and step.fetches in (0, 1)) if faulted else fetched):", "if False:"),
+    "undeclared-unfetched": ("if not ((bare and not step.fetches) if delivered else (bare and step.fetches in (0, 1)) if faulted else fetched):", "if (delivered or faulted) and not bare:"),
+    "declared-fetched": ("if not ((bare and not step.fetches) if delivered else (bare and step.fetches in (0, 1)) if faulted else fetched):", "if not (delivered or faulted) and not fetched:"),
+    "fault-reads-any": ("(bare and step.fetches in (0, 1))", "bare"),
+    "delivery-reads-any": ("(bare and not step.fetches)", "bare"),
     "half-fetched": ("fetched = step.instruction_bits is not None and step.instruction_length is not None",
                      "fetched = step.instruction_bits is not None or step.instruction_length is not None"),
-    "bare-boundary": ("bare = step.instruction_bits is None and step.instruction_length is None and not step.writes and not step.fetches",
+    "bare-boundary": ("bare = step.instruction_bits is None and step.instruction_length is None and not step.writes",
                       "bare = True"),
     "whole-budget": (
         'for step, expected in zip(derived.steps, doc["step"]):\n        observed = ',

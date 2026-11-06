@@ -27,6 +27,7 @@ SEAMS = {
                     '    at_witness = True\n'),
     "coverage-optional": ('    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),\n',
                           '    _leg(legs, "form-coverage", vacuous or bool(required),\n'),
+    "trace-optional": ('    _leg(legs, "statement-trace", traced, trace_measured)\n', '    _leg(legs, "statement-trace", True, trace_measured)\n'),
     "state-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = not required\n'),
     "configuration-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = requirement["kind"] == "state" and not required\n'),
     # a46-4: a form that writes no GPR is predeclared by a later read, one seam per condition.
@@ -73,6 +74,7 @@ MUTATION_TESTS = {
     "lock-stale": "test_stale_method_is_invalidated_not_blocked",
     "first-property": "test_control_leg_reads_the_property_the_control_run_names",
     "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
+    "trace-optional": "test_a_requirement_with_no_statement_trace_stays_pending",
     "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
     "configuration-vacuous": "test_a_configuration_requirement_naming_no_form_is_vacuous_too",
     "silent-any-form": "test_a_form_that_writes_a_gpr_gets_no_later_read",
@@ -102,10 +104,9 @@ CSR_CASE_ID = "rv64gc-csr-set-v2"  # the first implementation-defined case (a43b
 ZICNTR_CASE_ID = "rv64gc-zicntr-v2"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5)
 SSTC_CASE_ID = "rv64gc-sstc-v1"  # the third, and the first with a delivered interrupt (a43e-5)
 # G-OBLIGATIONS' Batch I (a46-4) and Batch II-a (a47-3): the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
-BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v1": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-csr-access-v1": ("REQ-GC-CSR-ACCESS", "OB-GC-CSR-ACCESS", "high"), "rv64gc-counters-v1": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-fencei-v1": ("REQ-GC-FENCEI", "OB-GC-FENCEI", "low"), "rv64gc-ialign-16-v1": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium")}
+BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v1": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-counters-v1": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-ialign-16-v1": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium")}
 READ_AFTER = {"rv64gc-no-delay-slots-v1": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v1": ["sb", "sd", "sh", "sw"],
-              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v1": ["ebreak", "ecall"],
-              "rv64gc-fencei-v1": ["fence.i"]}
+              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v1": ["ebreak", "ecall"]}
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -137,10 +138,11 @@ def load_module(workdir: Path):
         assert src.count(old) == 1, MUTATION
         src = src.replace(old, new, 1)
     target = workdir / "scripts"; target.mkdir(exist_ok=True)
-    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py", "credit_records.py"):
+    for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py", "credit_records.py", "statement_trace.py"):
         shutil.copy(ROOT / "scripts" / name, target / name)
     (workdir / "schema").mkdir(exist_ok=True)
     shutil.copy(ROOT / "schema" / "credits.sexp", workdir / "schema" / "credits.sexp")
+    shutil.copy(ROOT / "schema" / "statement-trace.sexp", workdir / "schema" / "statement-trace.sexp")
     (target / "review_div_policy.py").write_text(src)
     spec = importlib.util.spec_from_file_location("review_div_policy_under_test", target / "review_div_policy.py")
     module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module)
@@ -168,6 +170,8 @@ def fixture(root: Path, *, obligation="OB-GC-M", kind="instruction", insns=("div
         f'(direction cpu-guarantee) (statement "s") (authority architecture) (source_refs (source_id "SRC") (locator "1")) '
         f'(parameters) (required_checks "c1"))\n')
     policy = b"# policy\n"; (profile / "EVIDENCE_POLICY.md").write_bytes(policy)
+    declared = ["p0"] + ([f"p{n}" for n, _, s in (steps or [(0, "", witness_source), (1, "", "SRC §1 (Table 1)"), (2, "", "SRC §1 (Table 1)")]) if "Table" in s or "(boundary" in s] if declare_boundaries else [])
+    (profile / "statement-trace.sexp").write_text('(trace (requirement_id "REQ-X") (clause (text "s")' + "".join(f' (properties "{p}")' for p in declared) + '))\n')
     case = root / "evidence" / "cx"; case.mkdir(parents=True)
     steps = steps or [(0, "div x7, x5, x6", witness_source), (1, "rem x8, x5, x6", "SRC §1 (Table 1)"),
                       (2, "div x9, x5, x0", "SRC §1 (Table 1)")]
@@ -303,6 +307,19 @@ class PolicyTests(unittest.TestCase):
         t = self.measure()
         self.assertEqual((t["disposition"], t["boundary"]), ("satisfied", dict(present=[1, 2], predeclared=[1, 2])))
 
+    def test_the_property_bound_is_the_tools_own(self):
+        """The rehearsal found this review still refusing above 64 after the tools moved to 96 (a49-1): one bound, held equal."""
+        bound = re.search(r"^MAX_PROPERTIES = (\d+)", (ROOT / "scripts" / "matched_gpr_relations.py").read_text(), re.M)
+        self.assertEqual(self.M.MAX_PROPERTIES, int(bound[1]))
+
+    def test_a_requirement_with_no_statement_trace_stays_pending(self):
+        """A case that covers every form and agrees on every step can still leave a clause unread (a49-1)."""
+        fixture(self.root, declare_boundaries=True)
+        (self.root / "profiles" / "fx-v0" / "statement-trace.sexp").unlink()
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["statement-trace"]))
+        self.assertIn("REQ-X has no statement trace", self.legs_text(t, "statement-trace"))
+
     def test_state_requirement_without_forms_is_vacuous_but_explicit(self):
         """A state requirement names no form (REQ-D-XLEN): satisfied, and the leg says why; another kind naming none stays pending."""
         fixture(self.root, kind="state", insns=(), declare_boundaries=True)
@@ -411,7 +428,7 @@ class PolicyTests(unittest.TestCase):
         table = self.measure()
         self.assertEqual((table["disposition"], table["credited"], table["credit_ids"], table["findings"]),
                          ("satisfied", True, ["CR-cx"], []))
-        self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-cx"))
+        self.assertEqual(self.M.summary(table), (0, "DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-cx"))
 
     def test_credit_over_a_pending_measurement_is_a_finding(self):
         fixture(self.root); credit(self.root)
@@ -449,7 +466,7 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(t["missing"], ["matched-reference-comparison", "currentness"])
         self.assertEqual(t["invalidated_by"], STALE["reason"]); self.assertEqual(t["method"]["reason"], STALE["reason"])
         code, line = self.M.summary(t)
-        self.assertEqual(code, 0); self.assertIn("DIV-POLICY: invalidated — 8 of 10", line)
+        self.assertEqual(code, 0); self.assertIn("DIV-POLICY: invalidated — 9 of 11", line)
         self.assertIn("invalidated by evidence/cx/dependencies.sexp", line); self.assertIn("no qualification credit", line)
 
     def test_qualification_over_invalidated_method_is_a_finding(self):
@@ -664,9 +681,10 @@ class PolicyTests(unittest.TestCase):
                 if moved[t["case_id"]]:
                     # A moved pinned input invalidates the measurement and, through credit_records.authenticate's walk
                     # of the same manifest, lapses any record naming the case: its one finding, exit 1.
-                    self.assertEqual((t["disposition"], t["missing"], t["credited"]),
+                    # A predecessor may lack a limit its successor's trace names: statement-trace is read on the case the requirement's credit will name (a49-1).
+                    self.assertEqual((t["disposition"], [m for m in t["missing"] if m != "statement-trace"], t["credited"]),
                                      ("invalidated", ["matched-reference-comparison", "currentness"], False))
-                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 8)
+                    self.assertGreaterEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 8)
                     self.assertEqual(t["method"]["disposition"], "stale"); self.assertTrue(t["invalidated_by"], t["method"])
                     self.assertEqual([f.split(" names this case but lapsed: ")[0] for f in t["findings"]],
                                      ["credit " + i for i in ids])
@@ -674,9 +692,9 @@ class PolicyTests(unittest.TestCase):
                 else:
                     self.assertEqual((t["disposition"], t["missing"], t["findings"], t["credited"]),
                                      ("satisfied", [], [], bool(ids)))
-                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 10)
+                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 11)
                     self.assertIsNone(t["invalidated_by"])
-                    self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 10 of 10 legs satisfied; " + (
+                    self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 11 of 11 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
         table, xlen, csr, zicntr, sstc, *batch = tables
         for t in batch:

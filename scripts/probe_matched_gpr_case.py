@@ -27,7 +27,7 @@ import sexp as S  # noqa: E402
 
 MODULE = ROOT / "scripts/matched_gpr_case.py"
 SEAMS = {
-    "delivery-binding": ("        if (word is None) != (length is None) or (word is None and (fetches or writes)):\n", "        if False:\n"),
+    "delivery-binding": ("        if (word is None) != (length is None) or (word is None and (writes or fetches not in (0, 1))):\n", "        if False:\n"),
     "delivery-render": ('fetched = "" if word is None else ', 'fetched = " (word 0) (length 0)" if word is None else '),
     "missing-refusal": ("    if not path.is_file():\n", "    if False:\n"),
     "id-binding": ('    if declaration["id"] != case_id:\n', "    if False:\n"),
@@ -40,7 +40,7 @@ SEAMS = {
 # The cases whose capture declared a planned record and a dependency manifest; a declared case without them
 # is named here when it lands, never skipped silently.
 # Sorted. csr-set-v1 is the first case with a second method and its own reference configuration (a43b-3e); v5 and xlen-v2 have their control declared (a43b-2c); the window's five, a43e-3.
-PLANNED = ("rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-counters-v1", "rv64gc-csr-access-v1", "rv64gc-csr-set-v1", "rv64gc-csr-set-v2", "rv64gc-d-forms-v1", "rv64gc-ecall-ebreak-v1", "rv64gc-f-forms-v1", "rv64gc-fencei-v1", "rv64gc-ialign-16-v1", "rv64gc-jalr-lsb-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1", "rv64gc-lui-auipc-v1", "rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-m-forms-v6", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-signed-div-truncation-v2", "rv64gc-sstc-v1", "rv64gc-wsuffix-v1", "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-xlen-forms-v3", "rv64gc-zicntr-v1", "rv64gc-zicntr-v2")
+PLANNED = ("rv64gc-alu-imm-v1", "rv64gc-alu-imm-v2", "rv64gc-alu-reg-v1", "rv64gc-alu-reg-v2", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-counters-v1", "rv64gc-counters-v2", "rv64gc-csr-access-v2", "rv64gc-csr-set-v1", "rv64gc-csr-set-v2", "rv64gc-csr-set-v3", "rv64gc-d-forms-v1", "rv64gc-ecall-ebreak-v1", "rv64gc-ecall-ebreak-v2", "rv64gc-f-forms-v1", "rv64gc-fencei-v2", "rv64gc-ialign-16-v1", "rv64gc-ialign-16-v2", "rv64gc-jalr-lsb-v1", "rv64gc-jalr-lsb-v2", "rv64gc-load-ext-v1", "rv64gc-load-ext-v2", "rv64gc-load-x0-v1", "rv64gc-load-x0-v2", "rv64gc-lui-auipc-v1", "rv64gc-lui-auipc-v2", "rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-m-forms-v6", "rv64gc-m-forms-v7", "rv64gc-no-delay-slots-v1", "rv64gc-no-delay-slots-v2", "rv64gc-shamt-v1", "rv64gc-shamt-v2", "rv64gc-signed-div-truncation-v2", "rv64gc-sstc-v1", "rv64gc-sstc-v2", "rv64gc-wsuffix-v1", "rv64gc-wsuffix-v2", "rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-xlen-forms-v3", "rv64gc-xlen-forms-v4", "rv64gc-zicntr-v1", "rv64gc-zicntr-v2", "rv64gc-zicntr-v3")
 MUTATION = None
 
 
@@ -188,8 +188,15 @@ class CaseTests(unittest.TestCase):
         self.assertEqual(declaration["steps"][0][2:], (None, None, 0, ()))
         self.assertEqual(self.K.render(declaration), text)
 
+    def test_a_fetch_fault_boundary_may_read_one_parcel(self):
+        """A straddling fetch reads its first parcel and faults at its second: no word retires, and nothing is written (a49-1)."""
+        text = self.first_step("(fetches 1)")
+        declaration = self.K.read_document(text, "boundary")
+        self.assertEqual(declaration["steps"][0][2:], (None, None, 1, ()))
+        self.assertEqual(self.K.render(declaration), text)
+
     def test_a_step_half_fetched_or_writing_without_a_word_is_refused(self):
-        for fields in ("(word 19) (fetches 0)", "(length 4) (fetches 0)", "(fetches 1)", "(fetches 0) (write (register 1) (value 1))"):
+        for fields in ("(word 19) (fetches 0)", "(length 4) (fetches 0)", "(fetches 2)", "(fetches 0) (write (register 1) (value 1))", "(fetches 1) (write (register 1) (value 1))"):
             with self.subTest(fields=fields):
                 self.refused(lambda: self.K.read_document(self.first_step(fields), "half"), "must fetch a word of a length")
 

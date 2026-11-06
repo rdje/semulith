@@ -138,7 +138,7 @@ schema/scoped graph validation remains the existing owner's responsibility.
 Construct the claims from the actual declared properties and the parent program;
 the pure API cannot recover fields absent from RelationPlan. Authenticated
 composition binds those fields before reads.
-Strings are 1..65536 characters, a context carries 1..64 claims with distinct
+Strings are 1..65536 characters, a context carries 1..96 claims with distinct
 identities and distinct witnesses and names its control among them, obligation
 IDs form a plain unique tuple of 1..64 per claim, and each copied witness uses
 step 0..4095 and x1..x31. Malformed context raises `PropertyError`; this is not a
@@ -238,7 +238,7 @@ and a record that is not that case's refuses by name (a42av: the capture of a de
 names it, so no constant inside a pinned module has to move). Build PropertyContext from **every** declared property
 of the actual validated record — its ID, requirement, obligations and statement,
 with the relation plan's witness for it — the frozen parent program, scoped IDs
-and the property the control run names. Bound the property count (1..64) and
+and the property the control run names. Bound the property count (1..96) and
 each property's obligations before tuple copying. Freeze context and its supplied current canonical authority before the
 manifest or any artifact read. Caller-supplied context text cannot replace the
 selected raw property.

@@ -8125,12 +8125,12 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("budget-binding", "2"),
             ("source-identity", "5"),
             ("reviewed-words", "9"),
-            ("delivery-bare", "2"),
+            ("delivery-bare", "3"),
             ("delivery-refused", "1"),
             ("claim-values", "3"),
             ("authority-node-bound", "1"),
             ("authority-depth-bound", "1"),
-            ("derived-status", "37"), // 37 while REQ-GC-M is implemented on the real tree; 2 during a lapse (a43b-2, a43e-1)
+            ("derived-status", "2"), // 37 while REQ-GC-M is implemented on the real tree; 2 during a lapse (a43b-2, a43e-1)
             ("derived-links", "1"),
             ("requirement-meaning", "6"),
             ("obligation-meaning", "4"),
@@ -8159,20 +8159,20 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             &format!("GREEN case declarations {mode}"),
             prober.probe(repo, argv.clone()),
             0,
-            "MATCHED-GPR-CASE: 10 tests / 0 failures / 0 errors; declarations as data, no capture",
+            "MATCHED-GPR-CASE: 11 tests / 0 failures / 0 errors; declarations as data, no capture",
         );
         for (mutation, losses) in [
             ("missing-refusal", "1"),
             ("id-binding", "1"),
             ("control-binding", "1"),
             ("schema", "1"),
-            ("value-mapping", "3"),
-            ("delivery-binding", "4"),
-            ("delivery-render", "2"), // a43e-3: SSTC is a real case with delivered boundaries, so the round trip over every declaration catches it too
+            ("value-mapping", "4"),
+            ("delivery-binding", "5"),
+            ("delivery-render", "3"), // a43e-3: SSTC is a real case with delivered boundaries, so the round trip over every declaration catches it too
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 10 tests / {losses} failures / 0 errors; declarations as data, no capture"));
+            tally.score(&format!("RED case declarations {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("MATCHED-GPR-CASE: 11 tests / {losses} failures / 0 errors; declarations as data, no capture"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
@@ -8698,17 +8698,41 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec![
+            "-B".to_owned(),
+            "scripts/probe_statement_trace.py".to_owned(),
+        ];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN statement trace {mode}"), prober.probe(repo, argv.clone()), 0, "STATEMENT-TRACE-PROBE: 15 tests / 0 failures / 0 errors; synthetic traces, no capture credit");
+        for mutation in [
+            "words-optional",
+            "unknown-ok",
+            "unread-ok",
+            "limit-anywhere",
+            "bare-ok",
+            "twice-ok",
+            "any-size",
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED omitted statement trace {mutation} {mode}"), prober.probe(repo, mutated), 1, "STATEMENT-TRACE-PROBE: 1 tests / 1 failures / 0 errors; synthetic traces, no capture credit");
+        }
+    }
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["-B".to_owned(), "scripts/probe_div_policy.py".to_owned()];
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 53 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 55 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
             "infer-feature",
             "any-control",
             "coverage-optional",
+            "trace-optional",
             "configuration-vacuous",
             "silent-any-form",
             "silent-any-cell",

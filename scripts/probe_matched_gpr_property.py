@@ -381,11 +381,12 @@ class PropertyTests(unittest.TestCase):
         def step(*fields):
             return G.C.Author.SnapshotStep(3, 0x80000000, *fields, "synthetic", "synthetic")
 
-        try:
-            G._reviewed_step(step(None, None, 0, ()), (3, 0x80000000, None, None, 0, ()))
-        except G.PropertyError as error:
-            self.fail(f"a bare boundary refused: {error}")
-        for fields in ((None, 4, 0, ()), (19, None, 0, ())):
+        for fetches in (0, 1):  # a fetch fault may have read the parcel before the one that faulted (a49-1)
+            try:
+                G._reviewed_step(step(None, None, fetches, ()), (3, 0x80000000, None, None, fetches, ()))
+            except G.PropertyError as error:
+                self.fail(f"a bare boundary refused: {error}")
+        for fields in ((None, 4, 0, ()), (19, None, 0, ()), (None, None, 2, ())):
             with self.subTest(fields=fields), self.assertRaises(G.PropertyError):
                 G._reviewed_step(step(*fields), (3, 0x80000000, *fields))
         with self.assertRaises(G.PropertyError):  # a boundary the row reviewed as fetched
@@ -394,12 +395,12 @@ class PropertyTests(unittest.TestCase):
     def test_m_forms_case_declares_every_form_and_every_table1_cell(self):
         case = G.reviewed_case(G.M_FORMS_CASE_ID)
         # The declared cases: v2, v3, the M case re-declared as v4 (a44-3), the XLEN case (a43a-2b) and both re-declared
-        # once more, their control declared, as v5 and xlen-v2 (a43b-2c); the CSR-SET case (a43b-3d); the ZICNTR case (a43c-2); the window's five (a43e-3); G-OBLIGATIONS' Batch I (a46-2), Batch II-a (a47-1) and Batch II-b (a48-1).
+        # once more, their control declared, as v5 and xlen-v2 (a43b-2c); the CSR-SET case (a43b-3d); the ZICNTR case (a43c-2); the window's five (a43e-3); G-OBLIGATIONS' Batch I (a46-2), Batch II-a (a47-1), Batch II-b (a48-1) and the window's re-issues (a49-1).
         self.assertEqual(G.reviewed_case_ids(), tuple(sorted((G.CASE_ID, G.M_FORMS_CASE_ID, "rv64gc-m-forms-v4",
                                                               "rv64gc-m-forms-v5", "rv64gc-xlen-forms-v1",
                                                               "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1", "rv64gc-zicntr-v1",
                                                               "rv64gc-m-forms-v6", "rv64gc-xlen-forms-v3", "rv64gc-csr-set-v2", "rv64gc-zicntr-v2",
-                                                              "rv64gc-sstc-v1", "rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-lui-auipc-v1", "rv64gc-jalr-lsb-v1", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-wsuffix-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1", "rv64gc-ecall-ebreak-v1", "rv64gc-csr-access-v1", "rv64gc-counters-v1", "rv64gc-fencei-v1", "rv64gc-ialign-16-v1", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1"))))
+                                                              "rv64gc-sstc-v1", "rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-lui-auipc-v1", "rv64gc-jalr-lsb-v1", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-wsuffix-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1", "rv64gc-ecall-ebreak-v1", "rv64gc-counters-v1", "rv64gc-ialign-16-v1", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1", "rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4", "rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-alu-imm-v2", "rv64gc-alu-reg-v2", "rv64gc-lui-auipc-v2", "rv64gc-jalr-lsb-v2", "rv64gc-no-delay-slots-v2", "rv64gc-shamt-v2", "rv64gc-wsuffix-v2", "rv64gc-load-ext-v2", "rv64gc-load-x0-v2", "rv64gc-ecall-ebreak-v2", "rv64gc-csr-access-v2", "rv64gc-counters-v2", "rv64gc-fencei-v2", "rv64gc-ialign-16-v2"))))
         self.assertEqual(case.case_id, "rv64gc-m-forms-v3")
         self.assertEqual((case.program, case.instructions), ("m-forms.s", 33))
         source = (GUESTS / case.program).read_bytes()
@@ -697,7 +698,7 @@ class PropertyTests(unittest.TestCase):
             (),
             [one],
             (one,) * 2,
-            (one, *[replace(one, property_id=f"p{n}", witness=G.C.GprWitness(n, "x1")) for n in range(64)]),
+            (one, *[replace(one, property_id=f"p{n}", witness=G.C.GprWitness(n, "x1")) for n in range(G.MAX_PROPERTIES)]),
             (one, replace(one, property_id="other")),
             (one, replace(one, witness=G.C.GprWitness(3, "x8"))),
             (asdict(one),),
@@ -1059,12 +1060,12 @@ class PropertyTests(unittest.TestCase):
 
 MUTATIONS = {
     "delivery-bare": (
-        "delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()",
-        "delivered = True",
+        "event = numeric[2] is None and numeric[3] is None and numeric[4] in (0, 1) and writes == ()",
+        "event = True",
     ),
     "delivery-refused": (
-        "delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()",
-        "delivered = False",
+        "event = numeric[2] is None and numeric[3] is None and numeric[4] in (0, 1) and writes == ()",
+        "event = False",
     ),
     "publication-authority": (
         '            authority["source_sha256"],\n',

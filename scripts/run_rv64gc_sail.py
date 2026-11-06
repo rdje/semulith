@@ -39,6 +39,8 @@ INTERRUPTS = {'supervisor-software-interrupt': 1, 'machine-software-interrupt': 
 INT_LABELS = {'SSI': 1, 'MSI': 3, 'STI': 5, 'MTI': 7, 'SEI': 9, 'MEI': 11}
 # The historical word-less target-fetch record predates the parcel author's spelling.
 LEGACY_FETCH = re.compile(r'the fetch at 0x[0-9A-Fa-f]+ — no word fetched')
+# The parcel author's spelling of a fetch that faults: the page-fault cause 12 or the access-fault cause 1, and nothing else.
+DECLARED_FETCH_FAULT = re.compile(r'<fetch (?:page )?fault>')
 DECLARED_INTERRUPT = re.compile(
     r'^(?:the pending evaluation takes the (?P<label>SSI|MSI|STI|MTI|SEI|MEI) interrupt in [MSU]:'
     r'|pending interrupt (?P<cause>1|3|5|7|9|11) delivers in [MSU] before instruction fetch;)')
@@ -151,8 +153,9 @@ def compare_observations(expected: dict, text: str, returncode: int = 0) -> Comp
                           else INT_LABELS[declared['label']] if declared else None)
         if n not in rows:
             interrupt = declared is not None and event == ('int', declared_cause)
+            causes = {'<fetch page fault>': (12,), '<fetch fault>': (1,)}.get(e['insn'], (1, 12))
             fetch_fault = (fetch_declared and event is not None
-                           and event[0] == 'exc' and event[1] in (1, 12))
+                           and event[0] == 'exc' and event[1] in causes)
             if not want and (interrupt or fetch_fault):
                 continue
             raise SailError(f'missing expected step {n} ({e["insn"]}); absent evidence is not agreement')

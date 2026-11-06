@@ -17,6 +17,8 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                witness step cites the requirement's source; the expected
                                producer reads no reference-only input (no model output as
                                its own expectation).
+  statement-trace              every clause of the requirement's statement names a witness or a limit the case states, and every
+                               declared property stands for some clause (scripts/statement_trace.py; a49-1)
   boundary-fixtures            directed boundary rows (a step whose source cites a table row or
                                carries a `(boundary: …)` tag) are present AND each is predeclared
                                as a property.
@@ -71,6 +73,7 @@ if str(HERE) not in sys.path:
 import credit_records as CR  # noqa: E402
 import records_sexp as R  # noqa: E402
 import sexp as S  # noqa: E402
+import statement_trace as ST  # noqa: E402
 
 FORMAT = "div-policy-review-v1"
 CASE_ID = "rv64gc-m-forms-v6"  # the default retained case (a42ax: v3; a44-5: v4; a43b-2e: v5; a43e-5: v6); a consumer constant no case pins
@@ -141,9 +144,10 @@ FEATURE_DISPOSITIONS.update({
     "OB-IALIGN-16": "the fetch rule applies, and the case's properties cover its parcel and width boundaries: a 32-bit instruction on a halfword (jalr-halfword-landing), each kind of transfer to a halfword target with no misaligned exception (jalr-halfword-link, branch-halfword-landing, jal-halfword-link, jal-halfword-landing), and a 16-bit form advancing the PC by two (c-form-advances-two). Each compressed form's expansion is REQ-GC-C's (P4-SYSTEM.14 a47-3, 2026-11-06)",
     "OB-GC-FENCEI": "the fetch rule's instruction visibility applies, and the case's properties cover it: a store ordered before a later fetch, so the patched instruction runs (fence-i-orders-the-store), and FENCE.I itself retiring with no other effect (fence-i-no-other-effect). That a fetch with no FENCE.I may read either value is not witnessed, since this machine re-reads memory on every fetch (P4-SYSTEM.14 a47-3, 2026-11-06)",
 })
+MAX_PROPERTIES = 96  # matched_gpr_relations.MAX_PROPERTIES, held equal by the probe: this review imports no pinned tool (a49-1)
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
-             "risk-method", "feature-rules", "form-coverage")
+             "risk-method", "feature-rules", "form-coverage", "statement-trace")
 
 
 class Refused(Exception):
@@ -214,6 +218,12 @@ def _declared_forms(case_dir: Path):
     found = [S.children(top, name) for name in ("second_method", "adversarial")]
     _require(all(len(forms) <= 1 for forms in found), "a case declares at most one second method and one adversarial case")
     return tuple(forms[0] if forms else None for forms in found)
+
+
+def _declared_limitation(case_dir):
+    """What the case's own declaration says it does not witness: the limits a statement trace may name."""
+    path = case_dir / "case.sexp"
+    return str(_one(_one_form(path, "case"), "limitation") or "") if path.is_file() else ""
 
 
 def _declared_cells(case_dir):
@@ -341,7 +351,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     verification = S.children(planned, "verification")
     _require(len(verification) == 1, "planned experiment needs exactly one verification form")
     properties = S.children(verification[0], "property")
-    _require(1 <= len(properties) <= 64, "planned experiment declares no property, or more than 64")
+    _require(1 <= len(properties) <= MAX_PROPERTIES, f"planned experiment declares no property, or more than {MAX_PROPERTIES}")
     graph = verification[0]  # the scoped graph: properties, inputs, producers and observations
     inputs = {str(_one(i, "id")): i for i in S.children(graph, "input")}
     producers = {str(_one(p, "id")): p for p in S.children(graph, "producer")}
@@ -483,6 +493,15 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
          if vacuous else
          f"{len(predeclared)} of {len(required)} forms predeclared {predeclared}; {len(exercised)} exercised {exercised}"
          + (f"; writing no GPR, read after their own step: {read_after}" if read_after else ""))
+
+    # statement-trace (a49-1): every clause of the requirement's statement, in order, names a witness or a limit the case states.
+    try:
+        clauses = ST.load_trace(root, profile_dir).get(req_id)
+    except ST.TraceRefused as error:
+        raise Refused(f"{profile}: unreadable statement trace: {error}") from error
+    traced, trace_measured = (False, f"{req_id} has no statement trace") if clauses is None else ST.measure(
+        requirement["statement"], clauses, list(witnesses), _declared_limitation(case_dir))
+    _leg(legs, "statement-trace", traced, trace_measured)
 
     assert [leg.id for leg in legs] == list(LEG_ORDER)
     missing = [leg.id for leg in legs if leg.disposition != "satisfied"]

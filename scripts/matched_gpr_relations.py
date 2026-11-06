@@ -18,7 +18,7 @@ import matched_gpr_execution as E
 
 ASSESSMENTS = frozenset(("shared", "not-shared", "no-evidence-of-sharing", "not-examined"))
 VERDICTS = frozenset(("AGREE", "DIVERGE", "REFUSED"))
-MAX_PROPERTIES = 64  # predeclared properties per case; the m-forms case declares 25 (P4-SYSTEM.14 a42at)
+MAX_PROPERTIES = 96  # predeclared properties per case: raised from 64 at a49-1, where the F and D cases met it
 
 
 @dataclass(frozen=True)

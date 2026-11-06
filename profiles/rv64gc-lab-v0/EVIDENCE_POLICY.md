@@ -79,6 +79,21 @@ The following feature rules apply regardless of the risk field:
   at the typed boundary, independently of the instruction handler where required
   by `docs/CPU_ENVIRONMENT.md`. Distinguish a contract violation from a target trap.
 
+## Statement trace
+
+Declared by `P4-SYSTEM.14` a49-1, `SEMULITH-P4-0368`, on 2026-11-06, before the
+re-qualification that window runs.
+
+A requirement's statement says more than its forms: a case can cover every form,
+agree with the reference on every step, and leave clauses unread. So
+`statement-trace.sexp` splits each traced statement into clauses, in order. The words
+of the clauses must be exactly the statement's. Each clause names declared properties
+of the case that witness it, or a limit that is a literal part of the case's
+`limitation`, or both. Every declared property stands for some clause. A trace is
+annotation, not proof of semantics (RULES EVD-06): it makes an omission visible, and a
+reader can still disagree with what it claims. A clause naming a limit is not fully
+witnessed, and says so where a reader of the credit will find it.
+
 ## Records, controls and currentness
 
 Each credited disposition links the requirement, effective obligation,

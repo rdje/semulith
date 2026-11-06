@@ -102,15 +102,9 @@ RETAINED_CAPTURES = {
     "rv64gc-ecall-ebreak-v1": RetainedCapture(
         "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
         "61742b70513c85f5cda60ef4cdb12227f24147649642ee579c439a560cbf68aa", 17655),
-    "rv64gc-csr-access-v1": RetainedCapture(
-        "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
-        "b6f7c30b7275e3b0187707d4653f8a2e4c1f450ebf459649747dc5fb7ebc41ee", 15911),
     "rv64gc-counters-v1": RetainedCapture(
         "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
         "76d4a37bb94ae910f6817a66ae73eca2951e48f98e7fed14a3dfeceee6e108b6", 12150),
-    "rv64gc-fencei-v1": RetainedCapture(
-        "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
-        "9fc3b954fa305809fe4b65580f3d0d583fe025572b8710aaaf5bb8f9fb99481f", 10225),
     "rv64gc-ialign-16-v1": RetainedCapture(
         "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
         "bad8453d8c2f03806ab44d7d85e4cdf6b925eb597cde58e13da2577cccfed19b", 11368),

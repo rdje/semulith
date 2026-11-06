@@ -131,7 +131,7 @@ class RelationTests(unittest.TestCase):
                 with self.subTest(family=family, change=change):
                     original = self.graph[family]
                     self.graph[family] = original[:-1] if change == "missing" else original + [None]
-                    # Properties are bounded 1..64, so a surplus None is an invalid record, not a count.
+                    # Properties are bounded 1..96, so a surplus None is an invalid record, not a count.
                     try: self.result("refused", "record" if (family, change) == ("property", "extra") else "method requires")
                     finally: self.graph[family] = original
 
@@ -224,15 +224,15 @@ class RelationTests(unittest.TestCase):
         self.assertEqual((plan.control_property_id, plan.control_witness), ("p3", M.GprWitness(0, "x3")))
         self.control["property_ids"] = ["p4"]; self.result("refused", "declared property")
 
-    def test_property_population_is_bounded_to_one_through_sixty_four(self):
+    def test_property_population_is_bounded_to_one_through_its_maximum(self):
         self.experiment["instructions"] = 4096
         for run in self.graph["run"]: run["argv"][4] = "4096"
-        self.more_properties(63, register=lambda n: "x1")
+        self.more_properties(95, register=lambda n: "x1")
         for n, prop in enumerate(self.graph["property"]): prop["gpr_witness"]["step_n"] = n
-        self.assertEqual(len(self.graph["property"]), 64); self.result("matched")
-        self.more_properties(1); self.graph["property"][-1]["gpr_witness"]["step_n"] = 64
-        self.result("refused", "1..64 property")
-        self.graph["property"] = []; self.result("refused", "1..64 property")
+        self.assertEqual(len(self.graph["property"]), 96); self.result("matched")
+        self.more_properties(1); self.graph["property"][-1]["gpr_witness"]["step_n"] = 96
+        self.result("refused", "1..96 property")
+        self.graph["property"] = []; self.result("refused", "1..96 property")
 
     def test_every_property_witness_is_validated_and_distinct(self):
         self.more_properties(1)

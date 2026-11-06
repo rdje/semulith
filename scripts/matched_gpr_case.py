@@ -92,8 +92,10 @@ def read_document(text: str, where: str) -> dict:
         steps.append((item["n"], item["pc"], item.get("word"), item.get("length"), item["fetches"], writes))
     declaration["steps"] = tuple(steps)
     for n, _pc, word, length, fetches, writes in steps:
-        if (word is None) != (length is None) or (word is None and (fetches or writes)):
-            raise CaseError(f"{where}: step {n} must fetch a word of a length, or be a delivery boundary that fetches and writes nothing")
+        # A boundary with no word is an event, and writes nothing: a delivered interrupt reads no parcel, and a fetch fault reads
+        # none or one, the parcel before the one that faulted (P4-SYSTEM.14 a43e-1, a49-1).
+        if (word is None) != (length is None) or (word is None and (writes or fetches not in (0, 1))):
+            raise CaseError(f"{where}: step {n} must fetch a word of a length, or be an event boundary that reads at most one parcel and writes nothing")
     if declaration["control"]["property_id"] not in {row[0] for row in declaration["properties"]}:
         raise CaseError(where + ": the control names no declared property")
     adversarial = declaration["adversarial"]
@@ -190,7 +192,7 @@ def render(declaration: dict) -> str:
                      + ") (register " + q(register) + ") (expected " + _value(expected) + ")")
         lines.append("    (statement " + q(statement) + "))")
     for n, pc, word, length, fetches, writes in d["steps"]:
-        fetched = "" if word is None else " (word " + _value(word) + ") (length " + str(length) + ")"  # a delivery boundary fetches nothing
+        fetched = "" if word is None else " (word " + _value(word) + ") (length " + str(length) + ")"  # an event boundary retires no word
         lines.append("  (step (n " + str(n) + ") (pc " + _value(pc) + ")" + fetched + " (fetches " + str(fetches) + ")"
                      + "".join(" (write (register " + str(reg) + ") (value " + _value(value) + "))"
                                for reg, value in writes) + ")")

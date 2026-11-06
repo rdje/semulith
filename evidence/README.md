@@ -20,7 +20,7 @@ A case is a directory here holding a `case.sexp`; the input probe refuses any ot
 | Observations | `baseline`, `repeat`, `control`, each `.trace`, `.stdout`, `.stderr`, `.receipt.sexp` | 12 |
 | Results | `measured-experiment.sexp`, `verification.json` | 2 |
 
-With this index: 903 files at most, 627 present. Prepared inputs come from canonical sources
+With this index: 1101 files at most, 735 present. Prepared inputs come from canonical sources
 (`scripts/prepare_div_inputs.py --case <id>`, `--verify` re-derives); the declarations from
 `scripts/capture_div.py --declare --case <id>`, committed before the capture; observations and
 results from `scripts/retain_div_capture.py --case <id> --declaration-commit <id>`, exactly once.
@@ -31,12 +31,12 @@ truth; the JSON and the ELF are reproducible artifacts; the wrong expectation is
 
 ## Finite retention envelope
 
-The family is limited to 903 files, 541 MiB aggregate and 4 MiB per member
-(`decision_evidence-family-two-cases.md`, a46-2: forty-one cases and this index hold at most
-566,956,032 B, `retention_limits()`; health 900 files / 473.4 MiB). Per case: three
+The family is limited to 1101 files, 660 MiB aggregate and 4 MiB per member
+(`decision_evidence-family-two-cases.md`, a49-1: fifty cases and this index hold at most
+691,408,896 B, `retention_limits()`; health 1098 files / 577.5 MiB). Per case: three
 4 MiB traces and nine 64 KiB streams/receipts, ten 64 KiB prepared and metadata slots; this index
 4 KiB / 80 lines. The registry enforces the family and index bounds; the input probe checks member
 names, same-volume regular files and each role limit before authenticating prepared pins, never
-descending into an unknown directory. A forty-second case is a new re-derivation. The 128 MiB
+descending into an unknown directory. A fifty-first case is a new re-derivation. The 128 MiB
 artifact-read and 16 MiB snapshot ceilings are unchanged; offline checking needs neither the
 reference executable nor an acquired source cache.

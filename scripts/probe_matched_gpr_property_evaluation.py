@@ -572,9 +572,9 @@ class PropertyEvaluationTests(unittest.TestCase):
         self.assertEqual(checked.source_values.disposition, "matched")
         self.f.graph["property"] = [self.f.graph["property"][0]] + [
             dict(extra, id=f"p{n}", gpr_witness=dict(step_n=n % 27, register=f"x{8 + n // 27}"))
-            for n in range(64)
+            for n in range(96)
         ]
-        self.outcome("refused", "relations: method requires 1..64 property", finding=None)
+        self.outcome("refused", "relations: method requires 1..96 property", finding=None)
 
     def test_canned_authority_pin_must_belong_to_authenticated_manifest(self):
         good = self.outcome().source_property

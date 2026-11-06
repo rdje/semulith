@@ -116,8 +116,8 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 29)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f)
-        self.assertEqual(len(current), 133)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 30)  # schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f)
+        self.assertEqual(len(current), 135)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):

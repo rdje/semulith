@@ -1379,8 +1379,9 @@ def _selftest() -> int:
             lambda: refuses(unit("tworeg", lambda s: s + s[s.index("(registry "):]), "at most one registry"))
 
         # ---- the CPU-SYSTEM builder (`P4-SYSTEM.10` slice b) over a scratch copy of the unit ----
-        docs = ("profile.sexp", "contract-obligations.sexp", "requirements.sexp", "references.sexp",
-                "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp", "credits.sexp")
+        docs = tuple(doc for doc in ("profile.sexp", "contract-obligations.sexp", "requirements.sexp", "references.sexp",
+                                     "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp", "credits.sexp")
+                     if (real / doc).is_file())  # a window retires the credits with their catalogue
         live = _tracked()
 
         def gs(name, edits=None, extra_files=None):
@@ -1451,19 +1452,28 @@ def _selftest() -> int:
                 "names exactly one of test / record / experiment"))
         # G-TRACE reads credited cases from evidence/, and only while each credit is current (P4-SYSTEM.14 a43e-5).
         trace = "`G-TRACE` | `experiment`"
+        # How the report reads a credit is judged on a stub: authenticating one is CREDIT-RECORDS', and these arms name no real case, so they
+        # hold through a window, when no credit is current (P4-SYSTEM.14 a49-1).
+        def credited(credits, name, *cases):
+            listed = "\n".join(f'(evidence (axis G-TRACE) (kind experiment) (experiment "{c}") (statement "s"))' for c in cases)
+            current = CR.current_credits
+            CR.current_credits = lambda root, unit: credits
+            try:
+                return gs(name, {"gate.sexp": ev(listed)})
+            finally:
+                CR.current_credits = current
+        state = lambda disposition, *cases: [dict(case_id=c, disposition=disposition) for c in cases]  # noqa: E731
         arm("GREEN a current credit's case is G-TRACE evidence, with no dossier record",
-            lambda: (assert_eq(any(e.get("id") == "rv64gc-sstc-v1" for e in D.load_references(real / "references.sexp").get("experiment", [])), False),
-                     has(rep0, trace + " | experiment `rv64gc-sstc-v1` | yes"), has(row(rep0, "G-TRACE"), "**green**")))
+            lambda: (lambda r: (has(r, trace + " | experiment `fx-a` | yes"), assert_eq(kinds(r, "G-TRACE"), 1)))(credited(state("current", "fx-a"), "credited", "fx-a")))
         arm("RED with no credit, a case's measured record is not evidence",
-            lambda: (lambda r: (has(r, "experiment `rv64gc-sstc-v1` | **no** — no current credit names the case"), has(row(r, "G-TRACE"), "**incomplete**")))(
-                gs("uncredited", {"credits.sexp": lambda s: ";; no credit\n"})))
+            lambda: (lambda r: (has(r, "experiment `fx-a` | **no** — no current credit names the case"), has(row(r, "G-TRACE"), "**incomplete**")))(
+                credited([], "uncredited", "fx-a")))
         arm("RED a lapsed credit's case is not evidence, and the other cases still are",
-            lambda: (lambda r: (has(r, "experiment `rv64gc-m-forms-v6` | **no** — no current credit names the case"),
-                                has(r, "experiment `rv64gc-sstc-v1` | yes")))(
-                gs("lapsed", {"credits.sexp": lambda s: re.sub(r'\(sha256 "[0-9a-f]{64}"\)', '(sha256 "' + "0" * 64 + '")', s, count=1)})))
+            lambda: (lambda r: (has(r, "experiment `fx-a` | **no** — no current credit names the case"), has(r, "experiment `fx-b` | yes")))(
+                credited(state("lapsed", "fx-a") + state("current", "fx-b"), "lapsed", "fx-a", "fx-b")))
         arm("RED a credited case with no G-TRACE row keeps the axis open, by name",
-            lambda: (lambda r: (has(row(r, "G-TRACE"), "credited, not listed: `rv64gc-sstc-v1`", "**incomplete**")))(
-                gs("unlisted", {"gate.sexp": lambda s: re.sub(r'\(evidence \(axis G-TRACE\) \(kind experiment\) \(experiment "rv64gc-sstc-v1"\)\n  \(statement "[^"]*"\)\)\n', "", s)})))
+            lambda: (lambda r: (has(row(r, "G-TRACE"), "credited, not listed: `fx-b`", "**incomplete**")))(
+                credited(state("current", "fx-a", "fx-b"), "unlisted", "fx-a")))
         def without(axis, kind):
             """The manifest less every evidence form for (axis, kind), cut at its parsed span: a control that must
             open a kind first, whatever the real manifest declares (P4-SYSTEM.15 slice g)."""

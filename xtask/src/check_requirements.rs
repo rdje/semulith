@@ -26,6 +26,7 @@ import sexp as S
 import records_sexp as R
 import record_catalog as C
 import credit_records as CR
+import statement_trace as ST
 import dossier_sexp as D
 import check_sexp_schema as K
 import requirement_status as RS
@@ -44,6 +45,7 @@ SEXP_SCHEMA_FOR = {
     "requirements.sexp": "schema/requirements.sexp",
     "contract-obligations.sexp": "schema/contract-obligations.sexp",
     "credits.sexp": "schema/credits.sexp",
+    "statement-trace.sexp": "schema/statement-trace.sexp",
     "units.sexp": "schema/units.sexp",
     "category-needs.sexp": "schema/category-needs.sexp",
     "act4.sexp": "schema/act4.sexp",
@@ -333,6 +335,15 @@ for cat in catalogues:
         if str(_val(run_f, "verdicts")) != derived:
             findings.append(f"WORKLOAD VERDICTS {cat.name}: run.verdicts = "
                             f"'{_val(run_f, 'verdicts')}' but the rows derive '{derived}'")
+        continue
+    if cat.name == "statement-trace.sexp":
+        # 15. STATEMENT TRACE (a49-1): read by its own reader, like the credits. What each clause claims is the policy
+        #     review's to hold, against the statement and the case, on every read.
+        try:
+            ST.load_trace(root, cat.parent)
+        except (ST.TraceRefused, S.SexpError) as exc:
+            findings.append(f"UNREADABLE {cat.relative_to(root)}: conforms to its schema but does "
+                            f"not read as a trace — {exc}")
         continue
     if cat.name == "credits.sexp":
         # 14. CREDITS — the credited-disposition catalogue (a42ay) is read by its own unpinned
@@ -1794,7 +1805,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=138)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f
+        "FAILED (failures=140)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f + the two of a49-1
     );
     tally.arm(
         "RED normal token ignore-pattern mutation",
@@ -1805,7 +1816,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=804)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f
+        "FAILED (failures=816)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
     );
     tally.arm(
         "RED normal token fullmatch mutation",
@@ -1833,7 +1844,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=138)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f
+        "FAILED (failures=140)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f + the two of a49-1
     );
     tally.arm(
         "RED optimized token ignore-pattern mutation",
@@ -1844,7 +1855,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=804)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f
+        "FAILED (failures=816)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
     );
     tally.arm(
         "RED optimized token fullmatch mutation",

@@ -45,16 +45,16 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**Today 28 requirements derive `planned`, nineteen `implemented` and one `not-applicable`, and all four state requirements are among the nineteen.**
+**A window is open (a49-1 to a49-3; `decision_the-window-that-carries-fetch-faults.md`): today 47 requirements derive `planned` and one `not-applicable`.** It moved pinned inputs so that a case can carry a fetch fault, so all 19 credits were retired, with their catalogue file, until each case is re-captured and credited again; the table below is what stood until then, and returns with new case ids at a49-3.
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
 
 ```text
 $ python3 -B scripts/credit_records.py --profile rv64gc-lab-v0
-CREDIT-RECORDS: rv64gc-lab-v0: 19 credit(s), 19 current, 0 lapsed; records read and authenticated, nothing granted
+CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and authenticated, nothing granted
 ```
 
-No recorded status drifts. The records:
+No recorded status drifts. The records as they stood until a49-1:
 
 | Requirement | Record | Case | Category, risk |
 | --- | --- | --- | --- |
@@ -165,4 +165,4 @@ $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out targ
 
 Batch II found what that table had not: ten of the 28 are `implementation-defined`, a category the review measures against a case's own configuration, and for them the profile's override is the selection. The pinned Sail has a real switch for most of them, so a behaviour-changing control exists; the tool does not read one yet (`decision_obligations-route.md`, "What Batch II found").
 
-The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **So is Batch II-a, the five `defined` requirements of system:** `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`, credited at a47-3. **The `defined` remainder stands declared since a48-1:** `ATOMICS`, `C`, `F`, `D`, 239 witnesses, rehearsed first. Their captures wait for a window, decided at a49-0: a case learns to carry a fetch fault, the review to read a requirement's every clause, and the 19 credits are re-issued on it (`decision_the-window-that-carries-fetch-faults.md`). Batch II-a was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
+The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **So is Batch II-a, the five `defined` requirements of system:** `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`, credited at a47-3. **The `defined` remainder stands declared since a48-1:** `ATOMICS`, `C`, `F`, `D`, 239 witnesses, rehearsed first. They wait for a window, open since a49-1: a case carries a fetch fault, the review reads a requirement's every clause, and these four and the 19 credited cases are declared on it, 23 in all, next their captures (`decision_the-window-that-carries-fetch-faults.md`). Batch II-a was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.

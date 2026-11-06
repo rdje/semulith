@@ -376,7 +376,7 @@ def _evaluation_plan(payload, scope, candidate, inventory, impact, author, autho
         C._need(author is not None, "source property requires author review")
         declared = graph["property"]
         C._need(type(declared) is list and 1 <= len(declared) <= Property.MAX_PROPERTIES,
-                "source property requires 1..64 declared properties")
+                f"source property requires 1..{Property.MAX_PROPERTIES} declared properties")
         witnesses = {item.property_id: item.witness for item in relations.plan.properties}
         claims = tuple(Property.PropertyClaim(
             prop["id"], prop["requirement_id"], tuple(prop["obligation_ids"]), prop["statement"],

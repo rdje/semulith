@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import re
 import hashlib
 import importlib.util
 from pathlib import Path
@@ -98,7 +99,13 @@ class DossierQualificationTests(unittest.TestCase):
                 (self.root / "profiles" / unit_dir.name).symlink_to(unit_dir)
         self.profile = self.root / "profiles" / UNIT
         shutil.copytree(unit_src, self.profile)
-        shutil.copy(FROZEN_CREDITS, self.profile / "credits.sexp")
+        # The frozen record's policy pin follows the mirror's own policy, as its manifest does below: a rule added to the policy is no reason for this
+        # record to lapse here (a49-1).
+        policy = (self.profile / "EVIDENCE_POLICY.md").read_bytes()
+        (self.profile / "credits.sexp").write_text(re.sub(
+            r'\(policy \(pin \(path "([^"]+)"\) \(sha256 "[0-9a-f]{64}"\) \(byte_size \d+\)\)\)',
+            lambda m: f'(policy (pin (path "{m[1]}") (sha256 "{hashlib.sha256(policy).hexdigest()}") (byte_size {len(policy)})))',
+            FROZEN_CREDITS.read_text()))
         (self.root / "evidence").mkdir(exist_ok=True)
         for case_dir in (ROOT / "evidence").iterdir():
             if case_dir.name != CASE:
@@ -125,18 +132,16 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """The live catalogue credits the window's five (P4-SYSTEM.14 a43e-5) Batch I's nine (a46-4) and Batch II-a's five (a47-3): their measured records qualify on the real tree; their
-        predecessors', which no live record names, do not. The dossier holds no copy of any of them, by the ruling
-        (decision_dossier-copies-retire-at-the-next-window.md): G-TRACE reads each from evidence/."""
+        """No live credit names a case while the window that carries fetch faults is open (P4-SYSTEM.14 a49-1 retired the 19 records with the
+        profile's catalogue file): no measured record qualifies on the real tree. The dossier holds no copy of any of them, by the ruling
+        (decision_dossier-copies-retire-at-the-next-window.md): G-TRACE reads each from evidence/. The re-credits re-state this arm."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
                     if isinstance(f, list) and f and str(f[0]) == "experiment"][0]
         references = next(f for f in S.read_file(ROOT / "profiles" / UNIT / "references.sexp")
                           if isinstance(f, list) and f and str(f[0]) == "references")
         self.assertEqual([e for e in S.children(references, "experiment") if S.children(e, "verification")], [])
-        for case in (LIVE_CASE, "rv64gc-xlen-forms-v3", "rv64gc-csr-set-v2", "rv64gc-zicntr-v2", "rv64gc-sstc-v1", "rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-lui-auipc-v1", "rv64gc-jalr-lsb-v1", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-wsuffix-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1", "rv64gc-ecall-ebreak-v1", "rv64gc-csr-access-v1", "rv64gc-counters-v1", "rv64gc-fencei-v1", "rv64gc-ialign-16-v1"):
-            self.assertEqual(self.qualification(measured(case), ROOT), [], case)
-        for case in ("rv64gc-m-forms-v5", "rv64gc-xlen-forms-v2", "rv64gc-csr-set-v1", "rv64gc-zicntr-v1", "rv64gc-m-forms-v4", "rv64gc-xlen-forms-v1", CASE):
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v3", "rv64gc-sstc-v1", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 
     def test_the_credited_case_qualifies_in_the_mirror_root(self):

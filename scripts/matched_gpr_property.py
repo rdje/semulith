@@ -416,7 +416,7 @@ def freeze_context(
     claims = getattr(context, "claims", None)
     _require(
         type(claims) is tuple and 1 <= len(claims) <= MAX_PROPERTIES,
-        "property claims require a plain tuple of 1..64 claims",
+        f"property claims require a plain tuple of 1..{MAX_PROPERTIES} claims",
     )
     frozen = tuple(_freeze_claim(claim) for claim in claims)
     identities = tuple(claim.property_id for claim in frozen)
@@ -445,10 +445,10 @@ def _reviewed_step(step, expected) -> None:
         for key in ("n", "pc", "instruction_bits", "instruction_length", "fetches")
     )
     writes = step.writes
-    # A delivery boundary fetches and writes nothing, and carries no word (the typed event binding, P4-SYSTEM.14 a43e-1).
-    delivered = numeric[2] is None and numeric[3] is None and numeric[4] == 0 and writes == ()
+    # An event boundary carries no word and writes nothing, and reads at most one parcel (the typed event binding, P4-SYSTEM.14 a43e-1, a49-1).
+    event = numeric[2] is None and numeric[3] is None and numeric[4] in (0, 1) and writes == ()
     _require(
-        all(type(value) is int for value in (numeric[:2] + numeric[4:] if delivered else numeric))
+        all(type(value) is int for value in (numeric[:2] + numeric[4:] if event else numeric))
         and type(writes) is tuple
         and all(
             type(write) is tuple

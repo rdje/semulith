@@ -6,7 +6,7 @@
      `profiles/rv64gc-lab-v0/profile.sexp`  `f553f32cb1c4c48a2bc541a6680594ca21afb364b28a598aea0832683e622a90`
      `profiles/rv64gc-lab-v0/state.sexp`  `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`
      `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
-     `profiles/rv64gc-lab-v0/requirements.sexp`  `5f1dd3a29beb5153c323f60412e1bd0f50d7b1053d4e8ed862d9432314fe13aa`
+     `profiles/rv64gc-lab-v0/requirements.sexp`  `69d04d1ef7637acefe6817036db8a2fa2f5edb13c804bc553a0419678cbba93c`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`
      `profiles/rv64gc-lab-v0/interactions.sexp`  `ac594f1bfc01502d5a3de269d81b93dd54858acbbc5a58edc73c38fff9954cd6`
      Generator: `scripts/gen_model_book.py` (sha256 `37c536b0129a0a722773286177f09bf50d623ae65e118bfac58a8b8c345131b2`) -->
@@ -18,5 +18,5 @@
 | `encoding.sexp` | the composed encoding space (fragments resolved, collision-free, gated by UNIT-COMPOSITION) | composes `riscv/rv64i`, `riscv/zicsr`, `riscv/zicntr`, `riscv/system`, `riscv/a`, `riscv/zifencei`, `riscv/f`, `riscv/d`, `riscv/m`, `riscv/c` |
 | `requirements.sexp` | the requirement catalogue; RECORD-SCHEMA cross-checks declared decision mirrors verbatim | 48 requirements |
 | `contract-obligations.sexp` | the declared environment-obligation catalogue (`rv64gc-lab-env-v0`, `rv64gc-lab-env-v1`, `rv64gc-lab-env-v2`, `rv64gc-lab-env-v3`): positive AND negative checks per record; counts include historical records | 70 catalogue obligations, 140 declared checks |
-| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 191 guests, 7839 expected steps |
+| `guests/` | the EVD-05 guest corpus: canonically encoded programs and specification-derived expectations | 191 guests, 7959 expected steps |
 | `interactions.sexp` | the unit's declared interaction matrix, gated by INTERACTION-MATRIX | 28 cells over 7 axes |

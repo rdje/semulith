@@ -27,6 +27,10 @@ addi x20, x0, 77             #: a sentinel, so reading mhartid's 0 is a change. 
 csrrs x20, mhartid, x0       #: mhartid is read-only, but rs1 = x0 attempts no write, so no trap: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.5 (boundary: CSRRS with rs1 = x0 on a read-only CSR)
 addi x21, x0, 77             #: a sentinel, so reading mhartid's 0 is a change. | RVI-RV32I §1.1.4
 csrrsi x21, mhartid, 0       #: uimm = 0 attempts no write, so no trap: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.5 (boundary: CSRRSI with zero on a read-only CSR)
+addi x22, x0, 77             #: a sentinel, so reading mhartid's 0 is a change. | RVI-RV32I §1.1.4
+csrrc x22, mhartid, x0       #: rs1 = x0 attempts no write, so no trap here either: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.4
+addi x19, x0, 77             #: a sentinel, so reading mhartid's 0 is a change. | RVI-RV32I §1.1.4
+csrrci x19, mhartid, 0       #: uimm = 0 attempts no write: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.4
 addi x24, x0, 41             #: a sentinel: a refused access must leave it. | RVI-RV32I §1.1.4
 addi x30, x0, 77             #: a sentinel for the cause. | RVI-RV32I §1.1.4
 csrrw x24, mhartid, x5       #: a write to a read-only CSR is illegal, so rd keeps its value. | RVP-CSR §1.1.1; RVI-ZICSR §5.1.1
@@ -39,7 +43,10 @@ csrrsi x24, mhartid, 1       #: uimm is not zero, so this attempts a write: ille
 addi x27, x24, 0             #: copied: {new}, nothing committed. | RVP-CSR §1.1.1; RVI-ZICSR §5.1.1 (boundary: a refused CSRRSI keeps rd)
 addi x3, x0, 1               #: 1, for the MPP field. | RVI-RV32I §1.1.4
 slli x3, x3, 11              #: at bit 11: mstatus.MPP = S: {new}. | RVI-RV64I §3.1.2.1
-csrrw x0, mstatus, x3        #: MPP <- S; no GPR written. | RVP-MACHINE §2.1.1.6
+addi x2, x0, 1               #: 1, for mstatus.TVM. | RVI-RV32I §1.1.4
+slli x2, x2, 20              #: at bit 20: {new}. | RVI-RV64I §3.1.2.1
+or x3, x3, x2                #: MPP = S, and TVM set: {new}. | RVI-RV32I §1.1.4
+csrrw x0, mstatus, x3        #: MPP <- S, TVM <- 1; no GPR written. | RVP-MACHINE §2.1.1.6.6
 auipc x4, 0                  #: the base for the drop: {new}. | RVI-RV64I §3.1.2.1
 addi x4, x4, 16              #: the instruction after mret: {new}. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x4           #: mepc <- that address; no GPR written. | RVP-MACHINE §2.1.1.14
@@ -49,3 +56,6 @@ csrrs x24, mscratch, x0      #: S is below mscratch's privilege: illegal. | RVP-
 addi x28, x24, 0             #: copied: {new}, nothing committed. | RVP-CSR §1.1.1; RVI-ZICSR §5.1.1 (boundary: S refused an M CSR keeps rd)
 csrrw x31, sscratch, x5      #: S reaches sscratch: the old 0 replaces nothing, and sscratch <- 0x55. | RVI-ZICSR §5.1.1
 csrrs x31, sscratch, x0      #: S reads what it wrote: {new}. | RVI-ZICSR §5.1.1; RVP-CSR §1.1.1 (boundary: S reaches its own CSR)
+addi x30, x0, 77             #: a sentinel for the cause. | RVI-RV32I §1.1.4
+csrrs x24, satp, x0          #: with mstatus.TVM set, S's access to satp is illegal. | RVP-MACHINE §2.1.1.6.6; RVP-CSR §1.1.1
+addi x23, x24, 0             #: copied: {new}, nothing committed. | RVP-MACHINE §2.1.1.6.6; RVP-CSR §1.1.1 (boundary: S's satp with TVM set)

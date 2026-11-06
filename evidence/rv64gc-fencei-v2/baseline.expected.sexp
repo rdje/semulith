@@ -1,0 +1,46 @@
+;; fencei-forms.expected.sexp — spec-side observations for `fencei-forms.s`.
+;; Author: scripts/derive_rv64gc_expectations.py; explicit-budget parcel route (C-capable).
+;; EVD-05: values derive from independent spec-side rules and the declared
+;; laboratory policies; each step names its derivation and source.
+;; This derivation makes no processor conformance or original-capture claim.
+;; Validate with
+;;   python3 scripts/check_sexp_schema.py fencei-forms.expected.sexp schema/expectations.sexp
+
+(expectations (program "fencei-forms.s") (entry "0x0000000080000000") (instructions 18) (fetches 36)
+  (step (n 0) (insn "addi x6, x0, 6") (writes (write (reg "x6") (value "0x0000000000000006")))
+    (derivation "6, before the first FENCE.I.") (source "RVI-RV32I §1.1.4"))
+  (step (n 1) (insn "fence.i") (writes)
+    (derivation "FENCE.I retires: no trap and no register written.") (source "RVI-ZIFENCEI §4.1"))
+  (step (n 2) (insn "addi x7, x6, 1") (writes (write (reg "x7") (value "0x0000000000000007")))
+    (derivation "the next instruction, in sequence, with nothing in between: 0x0000000000000007.") (source "RVI-ZIFENCEI §4.1 (boundary: FENCE.I has no other effect)"))
+  (step (n 3) (insn "lui x1, 0x00700") (writes (write (reg "x1") (value "0x0000000000700000")))
+    (derivation "the upper half of the patch's word: 0x0000000000700000.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 4) (insn "addi x1, x1, 0x113") (writes (write (reg "x1") (value "0x0000000000700113")))
+    (derivation "0x00700113, the encoding of addi x2, x0, 7: 0x0000000000700113.") (source "RVI-RV32I §1.1.4"))
+  (step (n 5) (insn "auipc x3, 0") (writes (write (reg "x3") (value "0x0000000080000014")))
+    (derivation "this instruction's own address: 0x0000000080000014.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 6) (insn "sw x1, 16, x3") (writes)
+    (derivation "the patch: the word four instructions on from that AUIPC.") (source "RVI-RV32I §1.1.6"))
+  (step (n 7) (insn "fence.i") (writes)
+    (derivation "orders that store before every later fetch.") (source "RVI-ZIFENCEI §4.1"))
+  (step (n 8) (insn "addi x4, x0, 4") (writes (write (reg "x4") (value "0x0000000000000004")))
+    (derivation "an ordinary instruction between.") (source "RVI-RV32I §1.1.4"))
+  (step (n 9) (insn ".word 0x00700113") (writes (write (reg "x2") (value "0x0000000000000007")))
+    (derivation "fetched after the store and the FENCE.I: this runs as the patch, 0x0000000000000007.") (source "RVI-ZIFENCEI §4.1 (boundary: FENCE.I orders a store before a fetch)"))
+  (step (n 10) (insn ".word 0x0011118F") (writes)
+    (derivation "a FENCE.I word with nonzero funct12, rs1 and rd: the fields are ignored, and it never raises.") (source "RVI-ZIFENCEI §4.1"))
+  (step (n 11) (insn "addi x9, x0, 42") (writes (write (reg "x9") (value "0x000000000000002a")))
+    (derivation "the next instruction, in sequence: 0x000000000000002a.") (source "RVI-ZIFENCEI §4.1 (boundary: FENCE.I with nonzero fields)"))
+  (step (n 12) (insn "lui x1, 0x00800") (writes (write (reg "x1") (value "0x0000000000800000")))
+    (derivation "the upper half of a second patch: 0x0000000000800000.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 13) (insn "addi x1, x1, 0x193") (writes (write (reg "x1") (value "0x0000000000800193")))
+    (derivation "0x00800193, the encoding of addi x3, x0, 8: 0x0000000000800193.") (source "RVI-RV32I §1.1.4"))
+  (step (n 14) (insn "auipc x3, 0") (writes (write (reg "x3") (value "0x0000000080000038")))
+    (derivation "this instruction's own address: 0x0000000080000038.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 15) (insn "sw x1, 12, x3") (writes)
+    (derivation "the patch, with no FENCE.I after it.") (source "RVI-RV32I §1.1.6"))
+  (step (n 16) (insn "addi x4, x0, 5") (writes (write (reg "x4") (value "0x0000000000000005")))
+    (derivation "an ordinary instruction between: 0x0000000000000005.") (source "RVI-RV32I §1.1.4"))
+  (step (n 17) (insn ".word 0x00800193") (writes (write (reg "x3") (value "0x0000000000000008")))
+    (derivation "this machine re-reads memory on every fetch, so this runs as the patch: 0x0000000000000008.") (source "RVI-ZIFENCEI §4.1 (boundary: the declared visibility with no FENCE.I)"))
+)

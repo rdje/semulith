@@ -1,8 +1,8 @@
 ;; evidence/rv64gc-atomics-v1/case.sexp — the reviewed declaration of matched case rv64gc-atomics-v1 (schema/matched-case.sexp).
 ;; Data, not code (decision_case-declarations-as-data.md): read by scripts/matched_gpr_case.py.
 (case (id "rv64gc-atomics-v1") (profile_id "rv64gc-lab-v0")
-  (program "atomics-forms.s") (instructions 246) (source_size 22727)
-  (source_sha256 "8f72a431c336c50d5ac43a77b346894232bb97407757a5b63d10e7b466f8c584")
+  (program "atomics-forms.s") (instructions 246) (source_size 22663)
+  (source_sha256 "cdbf6b06f1396c6f8dad37bc07c34d8bd00c715b5dad30d98c73c5e34bba978f")
   (requirement_id "REQ-GC-ATOMICS") (obligation_ids "OB-GC-ATOMICS")
   (contract_id "rv64gc-lab-env-v3") (contract_version "3")
   (control (property_id "amoadd-w-old") (value 0xfffffffb) (reason "Only boundary 21 x5 expectation changes from -5 to 0xfffffffb, what a word AMO that did not sign-extend would read.") (id "word-not-sign-extended")
@@ -19,8 +19,8 @@
   (required_input (role "normative-source") (id "RVI-A-STATEMENTS") (path "profiles/rv64gc-lab-v0/retained/rvi-a-statements.html") (sha256 "897382a40a917d98f563d7ca10525c7ef80392bfbfd6d779e086a0b10ddb9db0"))
   (prepared (role "guest-image") (id "guest-image") (name "guest.elf") (byte_size 5280) (sha256 "a152841108b6b539ce542abd2093aa78107c5a0f350f18b46bfe62bd7a7fc588"))
   (prepared (role "reference-config") (id "reference-config") (name "reference-config.json") (byte_size 7609) (sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"))
-  (prepared (role "expectation") (id "expectation") (name "baseline.expected.sexp") (byte_size 46012) (sha256 "2d08f9b6ec5f4288c09ac8a7c4966beb80a58b6780add0c046e79112933d6413"))
-  (prepared (role "expectation") (id "mutant-expectation") (name "control.expected.sexp") (byte_size 44226) (sha256 "52123f8b5a9ac4af8d545adb9e9d9d2a34ddfcc3293ceae3022d3ec010f0b558"))
+  (prepared (role "expectation") (id "expectation") (name "baseline.expected.sexp") (byte_size 45948) (sha256 "b8e9448e06ac1570cd878d8c48256a0803ae80f7846a623c0831b8b3c5428c73"))
+  (prepared (role "expectation") (id "mutant-expectation") (name "control.expected.sexp") (byte_size 44162) (sha256 "a34c4e9d1ea3eb0bca137787f36e99a12dc3fa500e325db5e0f7f53c90913fa2"))
   (property (id "amoswap-w-old") (cell "form:amoswap.w") (step_n 16) (register "x5") (expected 0xfffffffffffffffb)
     (statement "AMOSWAP.W reads the old -5 into rd, replacing a sentinel, sign-extended (RVI-A §12.1.4)."))
   (property (id "amoswap-w-new") (cell "form:amoswap.w") (step_n 18) (register "x8") (expected 7)

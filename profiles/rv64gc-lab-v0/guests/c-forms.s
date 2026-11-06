@@ -6,22 +6,22 @@ csrrs x30, mcause, x0          #: the handler reads mcause: {new}. | RVI-ZICSR �
 csrrs x29, mtval, x0           #: and mtval: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.16
 csrrs x28, mepc, x0            #: and mepc, the instruction's own address: {new}. | RVI-ZICSR §5.1.1; RVP-MACHINE §2.1.1.14
 jalr x0, x27, 0                #: on, to where x27 says, still in M. | RVI-RV32I §1.1.5.1
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 c.fld f8, x8, 0                #: FS is Off: C.FLD obeys the D extension's gate, and is illegal. | RVI-C §27.1.3.2; RVP-MACHINE §2.1.1.6.7
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 c.fsdsp f9, 8                  #: and C.FSDSP likewise. | RVI-C §27.1.3.1; RVP-MACHINE §2.1.1.6.7
 addi x31, x0, 1                #: 1, for the FS field: {new}. | RVI-RV32I §1.1.4
 slli x31, x31, 13              #: at bit 13: {new}. | RVI-RV64I §3.1.2.1
 csrrs x0, mstatus, x31         #: FS = Initial: the floating-point state is enabled; no GPR written. | RVP-MACHINE §2.1.1.6.7
-addi x22, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x22, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 fmv.x.d x22, f8                #: f8 is untouched by the refused C.FLD: {new}. | RVI-D §21.1.5
 c.li x8, -1                    #: C.LI sign-extends its immediate: {new}. | RVI-C §27.1.5.1
 c.addi x8, 2                   #: C.ADDI adds its immediate: {new}. | RVI-C §27.1.5.2
@@ -112,38 +112,38 @@ c.li x14, 14                   #: landed at the old x1: {new}. | RVI-C §27.1.4 
 c.mv x8, x2                    #: the stack pointer again: {new}. | RVI-C §27.1.5.3
 c.li x9, 5                     #: 5: {new}. | RVI-C §27.1.5.1
 c.sd x8, x9, 0                 #: the cell holds 5. | RVI-C §27.1.3.2
-addi x10, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x10, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 lr.d x10, (x8)                 #: the reservation: {new}. | RVI-A §12.1.2
 c.addi x10, 1                  #: a C form between: {new}. | RVI-C §27.1.6
-addi x11, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x11, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 sc.d x11, x10, (x8)            #: the C form kept the reservation: {new}. | RVI-C §27.1.6; RVI-A §12.1.2
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 c.ebreak                       #: C.EBREAK raises a breakpoint. | RVI-C §27.1.5.6; RVP-MACHINE §2.1.1.15
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 .half 0x4002                   #: C.LWSP with rd = x0 is reserved. | RVI-C §27.1.3.1; RVP-MACHINE §2.1.1.16
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 .half 0x8002                   #: C.JR with rs1 = x0 is reserved. | RVI-C §27.1.4; RVP-MACHINE §2.1.1.16
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 10              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 .half 0x0000                   #: all sixteen bits zero: permanently reserved. | RVI-C §27.1.5.4; RVP-MACHINE §2.1.1.16
-addi x30, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x29, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
-addi x28, x0, 77               #: a sentinel, so the next read is a change. | RVI-RV32I §1.1.4
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
 auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 12              #: the row after the refused instruction: {new}. | RVI-RV32I §1.1.4
 .word 0xffffffff               #: the all-ones instruction: no wider instruction is selected, and ILEN is 32. | RVP-MACHINE §2.1.1.16
@@ -186,17 +186,35 @@ lui x6, 6                      #: 0x6000: {new}. | RVI-RV64I §3.1.2.1
 add x6, x6, x10                #: the page S will run: {new}. | RVI-RV32I §1.1.4
 addi x6, x6, 2047              #: towards its end: {new}. | RVI-RV32I §1.1.4
 addi x6, x6, 2045              #: its last word, at 0xffc: {new}. | RVI-RV32I §1.1.4
-addi x7, x0, 71                #: C.LI x21, 13, then C.JR x27: {new}. | RVI-RV32I §1.1.4
-slli x7, x7, 13                #: C.LI x21, 13, then C.JR x27: {new}. | RVI-RV64I §3.1.2.1
-addi x7, x7, -2011             #: C.LI x21, 13, then C.JR x27: {new}. | RVI-RV32I §1.1.4
-slli x7, x7, 12                #: C.LI x21, 13, then C.JR x27: {new}. | RVI-RV64I §3.1.2.1
-addi x7, x7, -1355             #: C.LI x21, 13, then C.JR x27: {new}. | RVI-RV32I §1.1.4
+addi x7, x0, 5                 #: C.LI x21, 13, then the first parcel of ADDI x10, x0, 7: {new}. | RVI-RV32I §1.1.4
+slli x7, x7, 12                #: C.LI x21, 13, then the first parcel of ADDI x10, x0, 7: {new}. | RVI-RV64I §3.1.2.1
+addi x7, x7, 309               #: C.LI x21, 13, then the first parcel of ADDI x10, x0, 7: {new}. | RVI-RV32I §1.1.4
+slli x7, x7, 12                #: C.LI x21, 13, then the first parcel of ADDI x10, x0, 7: {new}. | RVI-RV64I §3.1.2.1
+addi x7, x7, -1355             #: C.LI x21, 13, then the first parcel of ADDI x10, x0, 7: {new}. | RVI-RV32I §1.1.4
 sw x7, 0, x6                   #: written to the page's last word. | RVI-RV64I §3.1.3
 fence.i                        #: the patched parcels are visible to a later fetch. | RVI-ZIFENCEI §4.1
+addi x10, x0, 77               #: a sentinel the straddling ADDI would replace: {new}. | RVI-RV32I §1.1.4
 lui x4, 0x401                  #: VA 0x401000, the invalid page: {new}. | RVI-RV64I §3.1.2.1
 addi x4, x4, -4                #: the mapped page's last word: {new}. | RVI-RV32I §1.1.4
 csrrw x0, mepc, x4             #: mepc = there; no GPR written. | RVI-ZICSR §5.1.1
-auipc x27, 0                   #: C.JR's target, relative to here: {new}. | RVI-RV64I §3.1.2.1
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
 addi x27, x27, 12              #: past MRET: {new}. | RVI-RV32I §1.1.4
 mret                           #: to S, at the page's last word. | RVP-MACHINE §2.1.3.2
-c.li x23, 15                   #: C.JR ran from the page's very last parcel, and landed: {new}. | RVI-C §27.1.4 (boundary: a page's very last parcel)
+addi x16, x10, 0               #: the sentinel stands: nothing of the straddling ADDI took effect: {new}. | RVI-RV32I §1.1.4 (boundary: a second-parcel fault has no effect)
+addi x7, x0, 5                 #: C.LI x23, 15: {new}. | RVI-RV32I §1.1.4
+slli x7, x7, 12                #: C.LI x23, 15: {new}. | RVI-RV64I §3.1.2.1
+addi x7, x7, -1091             #: C.LI x23, 15: {new}. | RVI-RV32I §1.1.4
+sh x7, 2, x6                   #: written over the page's last parcel, in place of the straddling instruction. | RVI-RV64I §3.1.3
+fence.i                        #: the patched parcel is visible to a later fetch. | RVI-ZIFENCEI §4.1
+addi x4, x4, 2                 #: the page's last parcel: {new}. | RVI-RV32I §1.1.4
+csrrw x0, mepc, x4             #: mepc = there; no GPR written. | RVI-ZICSR §5.1.1
+addi x30, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x29, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+addi x28, x0, 77               #: a sentinel, so the next read changes it. | RVI-RV32I §1.1.4
+auipc x27, 0                   #: the handler resumes relative to here: {new}. | RVI-RV64I §3.1.2.1
+addi x27, x27, 12              #: past MRET: {new}. | RVI-RV32I §1.1.4
+mret                           #: to S again: a trap from S left MPP = S. | RVP-MACHINE §2.1.3.2
+c.nop                          #: the end of the program. | RVI-C §27.1.5.5

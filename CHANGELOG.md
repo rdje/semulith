@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0368 (leaf P4-SYSTEM.14 a49-1) — the window opens: a case carries a fetch fault, the review reads every clause, and 23 cases declared on it
+
+A wordless boundary may now be a fetch fault. An eleventh review leg holds every clause of a requirement's statement to a witness or a stated limit, and it found five clauses the ten legs had passed. All 19 credits are retired until a49-3, and 23 cases are declared, F and D with up to 93 witnesses. Self-test arms that named real cases now judge a stub, so no later window breaks them.
+
 ## SEMULITH-P4-0367 (leaf P4-SYSTEM.14 a49-0) — the director's ruling recorded, a call reversed on its measurement, and the window proved on a throwaway clone
 
 The calls on the engineer's findings are the engineer's, to the director's standard. Three planned requirements state a fetch fault, not one, so a case learns to carry one now, at the window's lowest price. On a clone: 23 of 23 captured in 42 s, and all 171 files compared with the 19 predecessors byte-identical.

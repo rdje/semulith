@@ -497,11 +497,13 @@ document and RV64 GPR values; no second loader is introduced. Require the exact
 program/budget and an explicit RV64 entry. A valid entry outside the snapshot
 author's fixed cold context is unsupported. Cross-model exclusions, declared
 profile divergence and fault injection remain unsupported. A boundary without a
-complete fetched instruction needed a later typed event binding; since `P4-SYSTEM.14`
-a43e-1 it binds exactly when the record declares an interrupt delivered there and
-the boundary fetches and writes nothing. A wait, a fetch fault or a half-fetched
-step stays unsupported, and so do declared `<…>` labels. This consumer therefore
-credits fetched GPR changes and delivery boundaries, including mixed widths and changed
+complete fetched instruction needed a later typed event binding. Since `P4-SYSTEM.14`
+a43e-1 it binds when the record declares an interrupt delivered there and the
+boundary reads no parcel and writes nothing, and since a49-1 when the record spells a
+fetch fault, `<fetch page fault>` or `<fetch fault>`, and the boundary reads at most
+one parcel, the one before the parcel that faulted, and writes nothing. A wait or a
+half-fetched step stays unsupported, and so do other declared `<…>` labels. This
+consumer therefore credits fetched GPR changes, delivery boundaries and fetch faults, including mixed widths and changed
 instruction memory. Source directives cannot override the stock numerical rules.
 
 Derive once through `derive_snapshot`; bind its complete context/step sequence
