@@ -37,3 +37,7 @@ Each program was written for its statement, clause by clause, because a guest al
 - **The two reservation cases and the two AMO cases carry overlays with no device.** `schema/overlay.sexp` now allows that, and refuses an overlay that changes nothing. The four existing overlays render byte-identically: `prepare_div_inputs.py --verify` `rc=0` each.
 - **The next window takes the override's AMO setting.** When it does, `atomic-misalign` and `fault-priority` need no overlay for it, and the existing cases' traces should not move: 0 of the 190 guests compared before these seven moved under the setting (`target/p4-system-14/a50-0/more2.txt`).
 - **Four guests now read DIVERGE under the bare override**, by design: those four cases' own configurations are what they run on. A census of the override alone reads 19 and not 15 for that reason.
+
+## The captures (a50-3, 2026-11-06)
+
+Each of the seven once, 1.2 s to 1.4 s, each control and each effect where declared. **All 77 compared files match the rehearsal byte for byte: no finding.** They ran at load 21 to 26 after a measured change to the guard ([`decision_capture-guard-measured-at-load.md`](decision_capture-guard-measured-at-load.md)). The medeleg witness dropped while drafting led to [`decision_csr-write-three-producers.md`](decision_csr-write-three-producers.md).

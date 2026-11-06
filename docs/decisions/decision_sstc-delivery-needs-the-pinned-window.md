@@ -80,7 +80,7 @@ Asked to pick among A, B and C, the director answered: "Pick yourself." I picked
 
 **What replaced it** (`target/p4-system-14/a43e-4/capture-now.sh`): the same tree, frozen-path, regeneration and preflight guards, and before each case the 1-minute load below 8 and 50 of 50 children spawned and reaped the collector's way. Ten sibling processes ran throughout, at load 4.71 to 5.13. All five returned `rc=0`.
 
-**For later captures, this guard replaces the three-minute wait.** The wait cost 190 minutes at a43c-4 and 107 here, against about 15 seconds of work. One run proves it at load 5, not at load 28, which is why the load guard stays. A case burned by EPERM stays recoverable as a new case with a new declaration commit.
+**For later captures, this guard replaces the three-minute wait.** The wait cost 190 minutes at a43c-4 and 107 here, against about 15 seconds of work. One run proves it at load 5, not at load 28, which is why the load guard stays. (The limit was measured and raised to 32 at a50-3: [`decision_capture-guard-measured-at-load.md`](decision_capture-guard-measured-at-load.md).) A case burned by EPERM stays recoverable as a new case with a new declaration commit.
 
 ## Closed (a43e-5, 2026-11-05)
 

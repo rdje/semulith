@@ -1,0 +1,211 @@
+{
+  "format_version": "div-capture-verification-v1",
+  "case_id": "rv64gc-sc-deterministic-v1",
+  "profile_id": "rv64gc-lab-v0",
+  "source_declaration_commit": "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf",
+  "disposition": "pending",
+  "reason": "fresh collection and retained findings; complete policy/qualification pending",
+  "canonical_capture_attempted": true,
+  "complete_canonical_capture": true,
+  "qualification": false,
+  "policy_disposition": "pending complete source/risk/feature policy",
+  "charged_read_bytes": 24737283,
+  "combined_limit": 134217728,
+  "collection": "recorded",
+  "evaluation": "pending",
+  "record": {
+    "disposition": "valid",
+    "issues": []
+  },
+  "findings": {
+    "manifest": "matched",
+    "identity": "matched",
+    "comparison": "satisfied",
+    "source_image": "matched",
+    "input_review": "matched",
+    "impact": "matched",
+    "source_values": "matched",
+    "expected_author": "matched",
+    "source_property": "matched"
+  },
+  "comparison": {
+    "disposition": "satisfied",
+    "reason": "finite supplied-byte comparison satisfied; authentication and qualification pending",
+    "runs": [
+      {
+        "run_kind": "baseline",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "159 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "repeat",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "159 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "control",
+        "comparison": {
+          "verdict": "DIVERGE",
+          "detail": "step 21 (sc.w x15, x6, (x3)): Sail {'x15': 1}, expectations {'x15': 0}",
+          "gpr_difference": {
+            "step_n": 21,
+            "observed": [
+              [
+                "x15",
+                1
+              ]
+            ],
+            "expected": [
+              [
+                "x15",
+                0
+              ]
+            ]
+          }
+        },
+        "refusal": null
+      }
+    ]
+  },
+  "runs": [
+    {
+      "kind": "baseline",
+      "process": "recorded",
+      "pid": 29134,
+      "exit": 0,
+      "charge": 7872757,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "baseline-raw-gpr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/baseline.trace",
+          "byte_size": 13331,
+          "sha256": "6dc838c7f7a49251d7b15a938bad29230ab625ef21a57c8f8b38a45665739b8d"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "baseline-process-stdout",
+          "object": "evidence/rv64gc-sc-deterministic-v1/baseline.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "baseline-process-stderr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/baseline.stderr",
+          "byte_size": 123,
+          "sha256": "99363a97324efc9f4c3fe7d8e33e3b1bbb27f4719fe22966c92e9e971f513fc1"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "baseline-process-receipt",
+          "object": "evidence/rv64gc-sc-deterministic-v1/baseline.receipt.sexp",
+          "byte_size": 2473,
+          "sha256": "abbb3d7efaf9508345ebe66c4e43a98db2e8b7ef46280786c2461b3dc359c7a3"
+        }
+      ]
+    },
+    {
+      "kind": "repeat",
+      "process": "recorded",
+      "pid": 29143,
+      "exit": 0,
+      "charge": 7872733,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "repeat-raw-gpr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/repeat.trace",
+          "byte_size": 13331,
+          "sha256": "6dc838c7f7a49251d7b15a938bad29230ab625ef21a57c8f8b38a45665739b8d"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "repeat-process-stdout",
+          "object": "evidence/rv64gc-sc-deterministic-v1/repeat.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "repeat-process-stderr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/repeat.stderr",
+          "byte_size": 121,
+          "sha256": "0c7d100cffa4e751b31ea0a774e330d2846214188e637bdf1e7a75fe56b828cb"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "repeat-process-receipt",
+          "object": "evidence/rv64gc-sc-deterministic-v1/repeat.receipt.sexp",
+          "byte_size": 2455,
+          "sha256": "d394d3a3921c6bed70ce9d5df6e225846890a5ae646dc166ea9d8447559b132d"
+        }
+      ]
+    },
+    {
+      "kind": "control",
+      "process": "recorded",
+      "pid": 29173,
+      "exit": 0,
+      "charge": 7870188,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "control-raw-gpr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/control.trace",
+          "byte_size": 13331,
+          "sha256": "6dc838c7f7a49251d7b15a938bad29230ab625ef21a57c8f8b38a45665739b8d"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "control-process-stdout",
+          "object": "evidence/rv64gc-sc-deterministic-v1/control.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "control-process-stderr",
+          "object": "evidence/rv64gc-sc-deterministic-v1/control.stderr",
+          "byte_size": 122,
+          "sha256": "64f998d3940140a36d526a9812ce7f57a63c89773f952684abec9dcadcc3b73d"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "control-process-receipt",
+          "object": "evidence/rv64gc-sc-deterministic-v1/control.receipt.sexp",
+          "byte_size": 2471,
+          "sha256": "f3af54c82733125b252c1628d300c5277ef2712fbf954920ff4c885febf32ffd"
+        }
+      ]
+    }
+  ],
+  "authentication": {
+    "disposition": "matched",
+    "files": 88,
+    "authenticated_bytes": 1121605,
+    "charged_read_bytes": 1121605,
+    "snapshot_bytes": 125866,
+    "snapshot_limit": 16777216
+  },
+  "limitations": [
+    "21 witnesses: an exact pair at each width and what it stores, each failure and what it leaves, the three destination aliases, permission before the failure code, and a target fault's address and what it keeps, not all REQ-D-SC-DETERMINISTIC or CPU acceptance",
+    "before/after byte checks under a trusted quiescent runtime, not an atomic input set",
+    "preparation/schema/runtime I/O and process RAM are outside the combined artifact-read allowance"
+  ],
+  "measured_experiment": {
+    "id": "measured-experiment",
+    "role": "measured-record",
+    "object": "evidence/rv64gc-sc-deterministic-v1/measured-experiment.sexp",
+    "byte_size": 16274,
+    "sha256": "d956f455bbaff00e22184e4c1fc884f5f7dbcf5915b3fcfad1fdc63f2ce224dd"
+  }
+}

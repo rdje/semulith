@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0374 (P4-SYSTEM.14 a50-3) — the seven captured exactly once each, the guard's load limit measured, and a CSR write census
+
+Each of the seven once, each control where declared, each effect retained: all 77 compared files match the rehearsal, no finding. The capture guard's load limit moved from 8 to 32 on 0 refusals in 210 rehearsed captures at load 15 to 73. A census of CSR writes found a defect in the pinned expectations author on `medeleg`, `mtvec` and `stvec`, which no retained expectation reaches and the next window fixes.
+
 ## SEMULITH-P4-0373 (P4-SYSTEM.14 a50-2) — the seven with a real switch, declared, and what writing them found
 
 Seven cases, 149 witnesses, each statement traced clause by clause and rehearsed end to end on a clone: 11 of 11 legs each. The work found a setting the pinned override lacks: a misaligned AMO judged before translation, which no guest had exercised. Two cases select it themselves, and the override moves with the next window.

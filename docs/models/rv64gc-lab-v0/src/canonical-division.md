@@ -373,3 +373,31 @@ Each control is that case's failure mode: a cause that does not name its mode, a
 **What moved, measured.** The 17 unchanged cases' 153 files, each trace, stream, image and expectation, are byte-identical to their predecessors'. That is what a re-capture is for: the tools moved and the behaviour did not. Every file is also byte-identical to the rehearsal's on a clone, and the three effects retained for `rv64gc-csr-set-v3`, `rv64gc-zicntr-v3` and `rv64gc-sstc-v2` read steps 34, 6 and 8 as before, each trace byte-identical to its predecessor's. Each capture is complete with qualification false.
 
 `rv64gc-c-forms-v1` is the first case to carry fetch faults. Step 225's `<fetch page fault>` reads the first parcel at the page's last halfword and faults at the second, and the handler reads that parcel's address and the instruction's start; step 245's comes only at the next instruction, after a sixteen-bit form in that last halfword ran. Since a49-3 the reviews read all 23, 11 of 11 legs each, and a record credits each.
+
+## The seven with a switch (a50-3)
+
+Seven cases, each captured exactly once on 2026-11-06 from the declaration commit `40488d5b`, at load 21 to 26, 1.2 s to 1.4 s each. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness.
+
+| Case | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-svade-v1` | 137 | 15 | 129: `ld x6, x8, 0` | 13,822 B, `d0ad7094…` | 11,519 B |
+| `rv64gc-atomic-misalign-v1` | 180 | 26 | 24: `csrrs x30, mcause, x0` | 17,750 B, `a78b3318…` | 16,572 B |
+| `rv64gc-fault-priority-v1` | 271 | 37 | 159: `csrrs x22, scause, x0` | 21,562 B, `884f7191…` | 24,888 B |
+| `rv64gc-priv-modes-v1` | 109 | 15 | 5: `csrrs x5, misa, x0` | 13,782 B, `c25f84ea…` | 9,529 B |
+| `rv64gc-sv39-v1` | 135 | 11 | 17: `csrrs x5, satp, x0` | 12,765 B, `62ea14c6…` | 11,144 B |
+| `rv64gc-reservation-v1` | 190 | 24 | 23: `sc.w x15, x6, (x3` | 17,095 B, `9704f8d4…` | 15,676 B |
+| `rv64gc-sc-deterministic-v1` | 159 | 21 | 21: `sc.w x15, x6, (x3` | 16,274 B, `d956f455…` | 13,331 B |
+
+Each of these requirements is the profile's choice among options the reference also offers, so each case retains an effect: the same guest through the same binary under what selects otherwise, with the first difference at a declared witness.
+
+| Case | Compared with | First difference |
+| --- | --- | --- |
+| `rv64gc-svade-v1` | its declared alternative | 93: `csrrs x22, scause, x0` |
+| `rv64gc-atomic-misalign-v1` | its declared alternative | 24: `csrrs x30, mcause, x0` |
+| `rv64gc-fault-priority-v1` | its declared alternative | 159: `csrrs x22, scause, x0` |
+| `rv64gc-priv-modes-v1` | its declared alternative | 5: `csrrs x5, misa, x0` |
+| `rv64gc-sv39-v1` | its declared alternative | 17: `csrrs x5, satp, x0` |
+| `rv64gc-reservation-v1` | the profile override | 23: `sc.w x15, x6, (x3` |
+| `rv64gc-sc-deterministic-v1` | the profile override | 21: `sc.w x15, x6, (x3` |
+
+**What moved, measured.** All 77 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Only `verification.json` differs between two runs of one case, in its process ids. Next, the reviews and credits.
