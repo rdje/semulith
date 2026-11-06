@@ -192,7 +192,45 @@ const USAGE: &str = "semulith — the laboratory control surface\n\
                      \x20       semulith reduce --guest NAME --mutate NAME [--profile NAME] [--evaluations N]\n\
                      \x20       semulith bench [--iterations N] [--reps R] [--warmup W]\n\
                      \x20       profiles: rv64i-lab-v0 (default) · rv64gc-lab-v0 (run, demo, snapshot, resume, bundle, replay;\n\
-                     \x20       other commands refuse the rv64gc profile by name; GC snapshots allow up to 64 MiB)\n";
+                     \x20       other commands refuse the rv64gc profile by name; GC snapshots allow up to 64 MiB)\n\
+                     \x20       either spelling reads the same: --steps 3 or --steps=3\n";
+
+/// The options that take a value. [`USAGE`] writes them `--name VALUE` and the command
+/// parsers read `--name=VALUE`; both spellings are one request, so [`joined_option_values`]
+/// joins them before dispatch. A test holds this list to the parsers and to [`USAGE`].
+const VALUE_OPTIONS: &[&str] = &[
+    "--at",
+    "--base",
+    "--evaluations",
+    "--guest",
+    "--iterations",
+    "--mutate",
+    "--profile",
+    "--reps",
+    "--root",
+    "--size",
+    "--steps",
+    "--warmup",
+];
+
+/// Join each `--name VALUE` into the `--name=VALUE` the command parsers read. A value
+/// option with no value is refused by name; anything else passes through for its command
+/// to judge, so an unknown option stays that command's refusal.
+fn joined_option_values(args: &[String]) -> Result<Vec<String>, String> {
+    let mut joined = Vec::with_capacity(args.len());
+    let mut rest = args.iter();
+    while let Some(arg) = rest.next() {
+        if VALUE_OPTIONS.contains(&arg.as_str()) {
+            match rest.next() {
+                Some(value) if !value.starts_with("--") => joined.push(format!("{arg}={value}")),
+                _ => return Err(format!("{arg} needs a value")),
+            }
+        } else {
+            joined.push(arg.clone());
+        }
+    }
+    Ok(joined)
+}
 
 /// The process-wide counting allocator (`P1-LAB.11`): allocation counts are measured
 /// per benchmark cell by resetting around the timed run; for every other command the
@@ -208,6 +246,10 @@ const DEFAULT_STEPS: usize = 1_000_000;
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
+    let args = match joined_option_values(&args) {
+        Ok(args) => args,
+        Err(why) => return usage(&why),
+    };
     match args.first().map(String::as_str) {
         Some("check-examples") => {
             let root = args
@@ -1676,4 +1718,59 @@ fn parse_u64(text: &str) -> Result<u64, std::num::ParseIntError> {
 fn usage(why: &str) -> ExitCode {
     eprintln!("{why}\n{USAGE}");
     ExitCode::from(2)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{joined_option_values, USAGE, VALUE_OPTIONS};
+    use std::collections::BTreeSet;
+
+    fn joined(args: &[&str]) -> Result<Vec<String>, String> {
+        let args: Vec<String> = args.iter().map(ToString::to_string).collect();
+        joined_option_values(&args)
+    }
+
+    #[test]
+    fn both_spellings_are_one_request() {
+        assert_eq!(
+            joined(&["run", "x.elf", "--steps", "3", "--base=0x10"]).unwrap(),
+            ["run", "x.elf", "--steps=3", "--base=0x10"]
+        );
+    }
+
+    #[test]
+    fn a_value_option_with_no_value_is_refused_by_name() {
+        for args in [&["run", "--steps"][..], &["run", "--steps", "--base=1"][..]] {
+            assert_eq!(joined(args).unwrap_err(), "--steps needs a value");
+        }
+    }
+
+    #[test]
+    fn flags_and_unknown_options_pass_through_for_their_command() {
+        let args = ["run", "--trace-stores", "--nope", "1"];
+        assert_eq!(joined(&args).unwrap(), args);
+    }
+
+    /// A value option added to a parser or to the usage and missed here would be an
+    /// `unknown option` again, in the spelling the usage shows.
+    #[test]
+    fn the_list_is_what_the_parsers_read_and_what_the_usage_shows() {
+        let listed: BTreeSet<&str> = VALUE_OPTIONS.iter().copied().collect();
+        let source = include_str!("main.rs");
+        let tests = source.rfind("#[cfg(test)]").unwrap();
+        let parsed: BTreeSet<&str> = source[..tests]
+            .split("strip_prefix(\"")
+            .skip(1)
+            .filter_map(|tail| tail.split_once("=\")").map(|(name, _)| name))
+            .collect();
+        assert_eq!(parsed, listed);
+        let words: Vec<&str> = USAGE.split_whitespace().collect();
+        let shown: BTreeSet<&str> = words
+            .windows(2)
+            .filter(|pair| pair[1].starts_with(|c: char| c.is_ascii_uppercase()))
+            .map(|pair| pair[0].trim_start_matches('['))
+            .filter(|word| word.starts_with("--"))
+            .collect();
+        assert_eq!(shown, listed);
+    }
 }

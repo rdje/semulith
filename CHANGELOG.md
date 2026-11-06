@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0376 (P4-SYSTEM.14 a50-c1) — the CLI reads what its usage says
+
+`semulith run x.elf --steps 3` now works, as the usage always said: `--name VALUE` and `--name=VALUE` are one request for every value option, a missing value is refused by name, and a test holds the option list to the parsers and the usage.
+
 ## SEMULITH-P4-0375 (P4-SYSTEM.14 a50-4) — the seven credited, each measured against what selects otherwise
 
 Seven credits at 11 of 11 legs each, every selection shown to change something at a declared witness: 30 `implemented`, 17 `planned`, 1 `not-applicable`. All 17 left end at a ruling. `G-TRACE` lists all 30.
