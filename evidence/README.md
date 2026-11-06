@@ -6,25 +6,9 @@ This bounded index owns the evidence family: one directory per reviewed finite c
 the [canonical captures](../docs/models/rv64gc-lab-v0/src/canonical-division.md) record the
 observations. Nothing here closes the M obligation or the CPU gate.
 
-## Cases (this table is the complete membership)
+## Cases
 
-| Case directory | State | Holds |
-| --- | --- | --- |
-| `rv64gc-signed-div-truncation-v2/` | `invalidated` 2026-10-22 | `m-div.s`, 27 boundaries, 1 property |
-| `rv64gc-m-forms-v3/` | `invalidated` 2026-10-29 | `m-forms.s`, 33 boundaries, 25 properties |
-| `rv64gc-m-forms-v4/` | `invalidated` 2026-11-02 | v3's bytes |
-| `rv64gc-xlen-forms-v1/` | `invalidated` 2026-11-02 | `xlen-forms.s`, 25 boundaries, 17 properties |
-| `rv64gc-m-forms-v5/` | `invalidated` 2026-11-05 (a43e-1) | v4's bytes, its control declared |
-| `rv64gc-xlen-forms-v2/` | `invalidated` 2026-11-05 (a43e-1) | xlen-v1's bytes, its control declared |
-| `rv64gc-csr-set-v1/` | `invalidated` 2026-11-05 (a43e-1) | `csr-set.s`, 157 boundaries, 53 properties |
-| `rv64gc-zicntr-v1/` | `invalidated` 2026-11-05 (a43e-1) | `zicntr.s`, 292 boundaries, 44 properties |
-| `rv64gc-m-forms-v6/` | credited | v5's bytes, contract v3 |
-| `rv64gc-xlen-forms-v3/` | credited | xlen-v2's guest; 21 derivation lines; contract v3 |
-| `rv64gc-csr-set-v2/` | credited | v1's bytes, contract v3 |
-| `rv64gc-zicntr-v2/` | credited | v1's bytes, contract v3 |
-| `rv64gc-sstc-v1/` | credited | `sstc-timer.s`, 315 boundaries, 39 properties |
-
-Every case holds 22 of 22 files; the last five credited 2026-11-05 (a43e-5). Each capture: AGREE, AGREE, the control DIVERGE where its case declares. `csr-set`, `zicntr` and `sstc` have their own reference configuration.
+A case is a directory here holding a `case.sexp`; the input probe refuses any other member. [The retained cases](../docs/models/rv64gc-lab-v0/src/retained-cases.md) are generated from those declarations and the credit catalogue, so the membership, each case's requirement and its state are never typed: `python3 -B scripts/gen_model_book.py --unit rv64gc-lab-v0`. A captured case holds 22 files, a declared one 8. Each capture: AGREE, AGREE, the control DIVERGE where its case declares.
 
 ## Declared files and lifecycle (per case)
 

@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-06`
-- **Status:** `active` (the route for 28 is picked and being carried out from a46-1; the other 14 are raised to the director when their turn comes)
+- **Status:** `active` (the route for 28 is picked and being carried out from a46-1 on; the other 14 are raised to the director when their turn comes)
 - **Owner / source:** `P4-SYSTEM.14` a46-0, `SEMULITH-P4-0358`; raised early because its cost would otherwise dominate the work, and read against the director's standard ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md) closed the case before it). **The director can overrule any of it.**
 answers: What does it take to close the 42 requirements still `planned`, by what route, what would one case at a time cost, and what can that route not close?
 
@@ -59,7 +59,7 @@ The numbers: a commit takes 24 minutes through the gate today at 13 cases, under
 
 | Wall | Measured | When it hits | What moves it |
 | --- | --- | --- | --- |
-| `evidence/README.md`'s cap | 4,094 of 4,096 B, with a table its text calls the complete membership | The next row: Batch I | The table leaves for a generated page, read from each `case.sexp` (a46-1) |
+| `evidence/README.md`'s cap | 4,094 of 4,096 B, with a table its text calls the complete membership | The next row: Batch I | **Done at a46-1:** the table left for a generated page, [the retained cases](../models/rv64gc-lab-v0/src/retained-cases.md), read from each `case.sexp` |
 | `credits.sexp`'s document bound | 10,049 B for five, against 65,536 B: about 32 records | Batch V | Split by family, or a raised bound, measured then. `MAX_CREDITS` is 64 |
 | The family's census | Re-derived by hand per case: registry row, `FAMILY_FILES`, tables, one probe class | Every batch | Derive what can be derived from the cases |
 
@@ -69,7 +69,7 @@ Several probes read every case on every run, and their arms run in both Python m
 
 ## How to apply
 
-- The next case is `a46-1`'s. A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
+- The next case is `a46-2`'s. A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
 - A batch's declarations and captures are each one commit, so a moved child between them refuses every case in the batch, not one: freeze the union.
 - One requirement, one case, one control. A witness that would serve two requirements is written twice.
 - A difference is a finding, never a reason to drop a witness quietly: observed and justified under the `implementation-defined` row, or left uncredited and named.

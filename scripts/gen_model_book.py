@@ -41,7 +41,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+import credit_records as CR                        # noqa: E402
 import dossier_sexp as D                           # noqa: E402
+import matched_gpr_case as K                       # noqa: E402
 import records_sexp as R                           # noqa: E402
 import sexp as S                                   # noqa: E402
 
@@ -501,8 +503,46 @@ EMITTERS = {
 }
 
 
+def emit_cases(profile_dir: Path) -> str | None:
+    """Every retained finite case of this unit, each row read from the case's own declaration and its state from the
+    credit catalogue, so the membership is never typed (P4-SYSTEM.14 a46-1). None for a unit that holds no case."""
+    if unit_shape(profile_dir) != "processor":
+        return None
+    profile = _load(D.load_profile, profile_dir / "profile.sexp")["profile"]["id"]
+    evidence = REPO / "evidence"
+    try:
+        cases = [K.read_case(path.parent.name, REPO) for path in sorted(evidence.glob("*/case.sexp"))]
+        cases = sorted((d for d in cases if d["profile_id"] == profile), key=lambda d: (d["requirement_id"], d["id"]))
+        if not cases:
+            return None
+        current = [c for c in CR.current_credits(REPO, profile_dir) if c["disposition"] == "current"]
+    except (K.CaseError, CR.CreditRefused) as error:
+        raise GenError(f"the retained cases cannot be read: {error}") from error
+    credit = {c["case_id"]: c["id"] for c in current}
+    credited_case = {c["requirement_id"]: c["case_id"] for c in current}
+
+    def state(d: dict) -> str:
+        if d["id"] in credit:
+            return f"credited, `{credit[d['id']]}`"
+        if not (evidence / d["id"] / "verification.json").is_file():
+            return "declared"
+        later = credited_case.get(d["requirement_id"])
+        return f"history: `{later}` holds the credit" if later else "captured, credited by nothing"
+
+    catalogue = [profile_dir / "credits.sexp"] if (profile_dir / "credits.sexp").is_file() else []
+    a = _header([evidence / d["id"] / "case.sexp" for d in cases] + catalogue)
+    a += ["| Case | Requirement | Program | Steps | Witnesses | Configuration | State |", "| --- | --- | --- | --- | --- | --- | --- |"]
+    for d in cases:
+        own = (profile_dir / "reference" / f"{d['id']}.overlay.sexp").is_file()
+        a.append(f"| `{d['id']}` | `{d['requirement_id']}` | `{d['program']}` | {d['instructions']} | {len(d['properties'])} | "
+                 f"{'its own' if own else 'the override'} | {state(d)} |")
+    return "\n".join(a) + "\n"
+
+
 def generate(profile_dir: Path) -> dict[str, str]:
-    return {name: emitter(profile_dir) for name, emitter in EMITTERS.items()}
+    fragments = {name: emitter(profile_dir) for name, emitter in EMITTERS.items()}
+    cases = emit_cases(profile_dir)
+    return fragments if cases is None else {**fragments, "retained-cases.md": cases}
 
 
 def main(argv: list[str]) -> int:

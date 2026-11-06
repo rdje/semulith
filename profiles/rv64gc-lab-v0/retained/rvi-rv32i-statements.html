@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-RV32I statements — v20260120</title>
+<body>
+<h1>RVI-RV32I §1.1.2 and §1.1.4 to §1.1.6: what the base's integer, jump and branch forms do, and what a load to x0 still does</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Unprivileged Architecture, §1.1 RV32I Base Integer Instruction Set, Version 2.1</a>.<br>
+Original page SHA256: <code>3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of any form or of RV32: the profile is RV64, and RV64I §3.1 inherits these statements at XLEN 64.</p>
+<h2>§1.1.2: <code>norm:imm_always_sex</code></h2>
+<blockquote><p><span id="norm:imm_always_sex">Except for the 5-bit immediates used in CSR instructions (<a href="zicsr.html#csrinsts" class="xref page">CSR Instructions</a>),
+immediates are always sign-extended</span></p></blockquote>
+<h2>§1.1.4.1: <code>norm:addi_op</code></h2>
+<blockquote><p><span id="norm:addi_op">ADDI adds the sign-extended 12-bit immediate to register <em>rs1</em>.</span></p></blockquote>
+<h2>§1.1.4.1: <code>norm:addi_overflow</code></h2>
+<blockquote><p><span id="norm:addi_overflow">Arithmetic overflow is ignored and the result is simply the low XLEN bits of the result.</span></p></blockquote>
+<h2>§1.1.4.1: <code>norm:slti_sltiu_op</code></h2>
+<blockquote><p><span id="norm:slti_sltiu_op">SLTI (set less than immediate) places the value 1 in register <em>rd</em> if
+register <em>rs1</em> is less than the sign-extended immediate when both are
+treated as signed numbers, else 0 is written to <em>rd</em>. SLTIU is similar
+but compares the values as unsigned numbers (i.e., the immediate is
+first sign-extended to XLEN bits then treated as an unsigned number).</span></p></blockquote>
+<h2>§1.1.4.1: <code>norm:andi_ori_xori_op</code></h2>
+<blockquote><p><span id="norm:andi_ori_xori_op">ANDI, ORI, XORI are logical operations that perform bitwise AND, OR, and
+XOR on register <em>rs1</em> and the sign-extended 12-bit immediate and place
+the result in <em>rd</em>.</span></p></blockquote>
+<h2>§1.1.4.2: <code>norm:add_op</code></h2>
+<blockquote><p><span id="norm:add_op">ADD performs the addition of <em>rs1</em> and <em>rs2</em>.</span></p></blockquote>
+<h2>§1.1.4.2: <code>norm:sub_op</code></h2>
+<blockquote><p><span id="norm:sub_op">SUB performs the subtraction of <em>rs2</em> from <em>rs1</em>.</span></p></blockquote>
+<h2>§1.1.4.2: <code>norm:add_sub_overflow</code></h2>
+<blockquote><p><span id="norm:add_sub_overflow">Overflows are ignored and the low XLEN bits of results are written to the destination <em>rd</em>.</span></p></blockquote>
+<h2>§1.1.4.2: <code>norm:slt_sltu_op</code></h2>
+<blockquote><p><span id="norm:slt_sltu_op">SLT and SLTU perform signed and unsigned compares respectively, writing 1 to <em>rd</em> if
+<em>rs1</em> &lt; <em>rs2</em>, 0 otherwise.</span></p></blockquote>
+<h2>§1.1.4.2: <code>norm:and_or_xor_op</code></h2>
+<blockquote><p><span id="norm:and_or_xor_op">AND, OR, and XOR perform bitwise logical operations.</span></p></blockquote>
+<h2>§1.1.5: <code>norm:no_cti_delay_slots</code></h2>
+<blockquote><p><span id="norm:no_cti_delay_slots">Control transfer instructions in RV32I
+do <em>not</em> have architecturally visible delay slots.</span></p></blockquote>
+<h2>§1.1.5.1: <code>norm:jal_target</code></h2>
+<blockquote><p><span id="norm:jal_target">The offset is sign-extended and added to the address of the jump instruction to
+form the jump target address.</span></p></blockquote>
+<h2>§1.1.5.1: <code>norm:jal_op</code></h2>
+<blockquote><p><span id="norm:jal_op">JAL stores the address of the instruction
+following the jump ('pc'+4) into register <em>rd</em>.</span></p></blockquote>
+<h2>§1.1.5.1: <code>norm:jalr_target</code></h2>
+<blockquote><p><span id="norm:jalr_target">The target address is obtained by adding the
+sign-extended 12-bit I-immediate to the register <em>rs1</em>, then setting the
+least-significant bit of the result to zero.</span></p></blockquote>
+<h2>§1.1.5.1: <code>norm:jalr_op</code></h2>
+<blockquote><p><span id="norm:jalr_op">The address of the
+instruction following the jump (<code>pc</code>+4) is written to register <em>rd</em>.</span></p></blockquote>
+<h2>§1.1.5.2: <code>norm:br_target</code></h2>
+<blockquote><p><span id="norm:br_target">The 12-bit B-immediate encodes signed offsets in multiples of 2 bytes. The offset
+is sign-extended and added to the address of the branch instruction to give the target address.</span></p></blockquote>
+<h2>§1.1.5.2: <code>norm:beq_bne_op</code></h2>
+<blockquote><p><span id="norm:beq_bne_op">BEQ and BNE take the branch if registers <em>rs1</em> and <em>rs2</em> are equal or unequal respectively.</span></p></blockquote>
+<h2>§1.1.5.2: <code>norm:blt_bltu_op</code></h2>
+<blockquote><p><span id="norm:blt_bltu_op">BLT and BLTU take the branch if <em>rs1</em> is less than <em>rs2</em>, using signed and
+unsigned comparison respectively.</span></p></blockquote>
+<h2>§1.1.5.2: <code>norm:bge_bgeu_op</code></h2>
+<blockquote><p><span id="norm:bge_bgeu_op">BGE and BGEU take the branch if <em>rs1</em> is greater than or equal to <em>rs2</em>,
+using signed and unsigned comparison respectively.</span></p></blockquote>
+<h2>§1.1.6: <code>norm:load_exc_x0</code></h2>
+<blockquote><p><span id="norm:load_exc_x0">Loads with a destination of
+<code>x0</code> must still raise any exceptions and cause any other side effects
+even though the load value is discarded.</span></p></blockquote>
+</body></html>

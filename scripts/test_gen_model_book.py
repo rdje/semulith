@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Regression cases for the processor catalogue's version and coverage disclosure."""
 
+from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 import gen_model_book as G
 
@@ -25,6 +27,50 @@ class ProcessorCatalogueRole(unittest.TestCase):
     def test_empty_catalogue_refuses_instead_of_describing_coverage(self):
         with self.assertRaisesRegex(G.GenError, "obligation catalogue is empty"):
             G._processor_catalogue_role([])
+
+
+class RetainedCases(unittest.TestCase):
+    """The case index is generated, so these judge the rule and name no particular case or credit (P4-SYSTEM.14 a46-1)."""
+    unit = G.REPO / "profiles" / "rv64gc-lab-v0"
+
+    def rows(self):
+        return {line.split("`")[1]: line for line in G.emit_cases(self.unit).splitlines() if line.startswith("| `")}
+
+    def test_every_case_directory_has_exactly_one_row(self):
+        self.assertEqual(set(self.rows()), {path.parent.name for path in (G.REPO / "evidence").glob("*/case.sexp")})
+
+    def test_a_current_credit_is_read_and_a_lapsed_one_is_not(self):
+        credits = G.CR.current_credits(G.REPO, self.unit)
+        one = credits[0]
+        self.assertIn(f"credited, `{one['id']}`", self.rows()[one["case_id"]])
+        lapsed = [dict(c, disposition="lapsed") if c is one else c for c in credits]
+        with patch.object(G.CR, "current_credits", return_value=lapsed):
+            self.assertIn("captured, credited by nothing", self.rows()[one["case_id"]])
+
+    def test_a_case_with_no_receipt_reads_declared(self):
+        one = G.CR.current_credits(G.REPO, self.unit)[0]
+        real = Path.is_file
+        with patch.object(G.CR, "current_credits", return_value=[]), patch.object(
+                Path, "is_file", lambda path: path.name != "verification.json" and real(path)):
+            self.assertIn("| declared |", self.rows()[one["case_id"]])
+
+    def test_a_superseded_case_names_the_one_holding_the_credit(self):
+        rows = self.rows()
+        one = G.CR.current_credits(G.REPO, self.unit)[0]
+        same = [r for case, r in rows.items() if case != one["case_id"] and f"`{one['requirement_id']}`" in r]
+        self.assertTrue(same)
+        for row in same:
+            self.assertIn(f"history: `{one['case_id']}` holds the credit", row)
+
+    def test_a_unit_holding_no_case_has_no_fragment(self):
+        other = G.REPO / "profiles" / "rv64i-lab-v0"
+        self.assertIsNone(G.emit_cases(other))
+        self.assertNotIn("retained-cases.md", G.generate(other))
+
+    def test_a_case_that_cannot_be_read_refuses(self):
+        with patch.object(G.K, "read_case", side_effect=G.K.CaseError("no declaration")):
+            with self.assertRaisesRegex(G.GenError, "the retained cases cannot be read: no declaration"):
+                G.emit_cases(self.unit)
 
 
 if __name__ == "__main__":

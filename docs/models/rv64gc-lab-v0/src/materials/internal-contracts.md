@@ -9,7 +9,7 @@
      `profiles/rv64gc-lab-v0/requirements.sexp`  `d93aee65765a7878f0f59497624e6d9aaaa8e112cd11ad27e1d76812d3796ab9`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`
      `profiles/rv64gc-lab-v0/interactions.sexp`  `978494f1481fb32fa3b1c528b03112b701049d986be4ac1d606a5d35bc96d288`
-     Generator: `scripts/gen_model_book.py` (sha256 `ceee0c7f5d535eac700536827bcac2c6563d69b982fe132ba7fff0bd0cbd7afc`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `37c536b0129a0a722773286177f09bf50d623ae65e118bfac58a8b8c345131b2`) -->
 
 | Document | Role | Derived contents |
 | --- | --- | --- |

@@ -120,6 +120,25 @@ EXCERPTS = {
         (("norm:mip_stip_stimecmp_acc", "§2.1.1.9"), ("norm:mip_stip_stimecmp_op2", "§2.1.1.9"), ("norm:mip_stip_stimecmp_clr", "§2.1.1.9"),
          ("norm:menvcfg_stce_op1", "§2.1.1.18"), ("norm:menvcfg_stce_op2", "§2.1.1.18")),
         "This excerpt establishes no SSTC acceptance."),
+    "RVI-RV32I-STATEMENTS": Excerpt(
+        "RVI-RV32I-STATEMENTS", "RVI-RV32I §1.1.2 and §1.1.4 to §1.1.6: what the base's integer, jump and branch forms do, and what a load to x0 still does",
+        Page("RVI-RV32I", "unpriv/rv32.html", "3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec",
+             "RISC-V Unprivileged Architecture, §1.1 RV32I Base Integer Instruction Set, Version 2.1"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-rv32i-statements.html", "c476fd879407a93271d504e8cff80bdae93822d8319951b1252485715e0256ef",
+        (("norm:imm_always_sex", "§1.1.2"), ("norm:addi_op", "§1.1.4.1"), ("norm:addi_overflow", "§1.1.4.1"), ("norm:slti_sltiu_op", "§1.1.4.1"),
+         ("norm:andi_ori_xori_op", "§1.1.4.1"), ("norm:add_op", "§1.1.4.2"), ("norm:sub_op", "§1.1.4.2"), ("norm:add_sub_overflow", "§1.1.4.2"),
+         ("norm:slt_sltu_op", "§1.1.4.2"), ("norm:and_or_xor_op", "§1.1.4.2"), ("norm:no_cti_delay_slots", "§1.1.5"), ("norm:jal_target", "§1.1.5.1"),
+         ("norm:jal_op", "§1.1.5.1"), ("norm:jalr_target", "§1.1.5.1"), ("norm:jalr_op", "§1.1.5.1"), ("norm:br_target", "§1.1.5.2"),
+         ("norm:beq_bne_op", "§1.1.5.2"), ("norm:blt_bltu_op", "§1.1.5.2"), ("norm:bge_bgeu_op", "§1.1.5.2"), ("norm:load_exc_x0", "§1.1.6")),
+        "This excerpt establishes no acceptance of any form or of RV32: the profile is RV64, and RV64I §3.1 inherits these statements at XLEN 64."),
+    "RVI-RV64I-FORMS-STATEMENTS": Excerpt(
+        "RVI-RV64I-FORMS-STATEMENTS", "RVI-RV64I §3.1.2.1 and §3.1.3: AUIPC at 64 bits, and what each load and store width does",
+        Page("RVI-RV64I", "unpriv/rv64.html", "6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd",
+             "RISC-V Unprivileged Architecture, §3.1 RV64I Base Integer Instruction Set, Version 2.1"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-rv64i-forms-statements.html", "f254c3fe90773b67f282984d61498f2f1008ffe214b8bc952baa628189b5d816",
+        (("norm:auipc_op_rv64i", "§3.1.2.1"), ("norm:ld_op_rv64i", "§3.1.3"), ("norm:lw_op_rv64i", "§3.1.3"), ("norm:lwu_op", "§3.1.3"),
+         ("norm:lh_lhu_lb_lbu_op_rv64i", "§3.1.3"), ("norm:sd_sw_sh_sb_op_rv64i", "§3.1.3")),
+        "This excerpt establishes no acceptance of any form; RVI-RV64I-STATEMENTS holds the rest of §3.1.2 for the XLEN case."),
 }
 
 

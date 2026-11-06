@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0359 (leaf P4-SYSTEM.14 a46-1) — Batch I's walls cleared: the case index generated, its statements retained
+
+`evidence/README.md` could not take another row, so the membership now comes from each `case.sexp` and the credit catalogue, into [the retained cases](docs/models/rv64gc-lab-v0/src/retained-cases.md). Two excerpts retained for Batch I. Nothing credited or captured.
+
 ## SEMULITH-P4-0358 (leaf P4-SYSTEM.14 a46-0) — G-OBLIGATIONS' other 42 routed: 28 in batches on the tools as they are, 14 raised for a ruling
 
 All 42 have their contract checks realized, and 158 of 173 guests agree with Sail. One case at a time would be 140 units and 56 hours of gate; five batches are 20 units and 8. Nothing moves here.

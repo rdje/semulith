@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-RV64I statements — v20260120</title>
+<body>
+<h1>RVI-RV64I §3.1.2.1 and §3.1.3: AUIPC at 64 bits, and what each load and store width does</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/rv64.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Unprivileged Architecture, §3.1 RV64I Base Integer Instruction Set, Version 2.1</a>.<br>
+Original page SHA256: <code>6eadb316c2d535ccb87a7a6feb03ff54af6f4b5bbeb5c1a5102a02af81f13abd</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of any form; RVI-RV64I-STATEMENTS holds the rest of §3.1.2 for the XLEN case.</p>
+<h2>§3.1.2.1: <code>norm:auipc_op_rv64i</code></h2>
+<blockquote><p><span id="norm:auipc_op_rv64i">AUIPC forms a 32-bit offset from the U-immediate, filling in the lowest
+12 bits with zeros, sign-extends the result to 64 bits, adds it to the
+address of the AUIPC instruction, then places the result in register <em>rd</em>.</span></p></blockquote>
+<h2>§3.1.3: <code>norm:ld_op_rv64i</code></h2>
+<blockquote><p><span id="norm:ld_op_rv64i">The LD instruction loads a 64-bit value from memory into register <em>rd</em>
+for RV64I.</span></p></blockquote>
+<h2>§3.1.3: <code>norm:lw_op_rv64i</code></h2>
+<blockquote><p><span id="norm:lw_op_rv64i">The LW instruction loads a 32-bit value from memory and sign-extends
+this to 64 bits before storing it in register <em>rd</em> for RV64I.</span></p></blockquote>
+<h2>§3.1.3: <code>norm:lwu_op</code></h2>
+<blockquote><p><span id="norm:lwu_op">The LWU instruction, on the other hand, zero-extends the 32-bit value from
+memory for RV64I.</span></p></blockquote>
+<h2>§3.1.3: <code>norm:lh_lhu_lb_lbu_op_rv64i</code></h2>
+<blockquote><p><span id="norm:lh_lhu_lb_lbu_op_rv64i">LH and LHU are defined analogously for 16-bit values,
+as are LB and LBU for 8-bit values.</span></p></blockquote>
+<h2>§3.1.3: <code>norm:sd_sw_sh_sb_op_rv64i</code></h2>
+<blockquote><p><span id="norm:sd_sw_sh_sb_op_rv64i">The SD, SW, SH, and SB instructions
+store 64-bit, 32-bit, 16-bit, and 8-bit values from the low bits of
+register <em>rs2</em> to memory respectively.</span></p></blockquote>
+</body></html>
