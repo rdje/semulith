@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0365 (leaf P4-SYSTEM.14 a47-3) — Batch II-a credited: five more requirements implemented, and a configuration requirement that names no form
+
+ECALL and EBREAK, Zicsr, the counters, FENCE.I and IALIGN: 19 `implemented`, 28 `planned`, 10 of 10 legs each. A stale claim about `REQ-D-ECALL-EBREAK` left the gate's statement.
+
 ## SEMULITH-P4-0364 (leaf P4-SYSTEM.14 a47-2) — Batch II-a captured exactly once each, byte-identical to its rehearsal, after the guard refused once
 
 AGREE, AGREE, each control DIVERGE where declared. The load guard's first attempt stopped at its ten-minute limit, capturing nothing and spending no case id. Nothing credited.

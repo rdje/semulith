@@ -86,6 +86,7 @@
 - [`decision_alternate-port-and-features.md`](docs/decisions/decision_alternate-port-and-features.md)
 - [`decision_append-history-predecessors.md`](docs/decisions/decision_append-history-predecessors.md)
 - [`decision_batch-i-credited-implemented.md`](docs/decisions/decision_batch-i-credited-implemented.md)
+- [`decision_batch-ii-a-credited-implemented.md`](docs/decisions/decision_batch-ii-a-credited-implemented.md)
 - [`decision_book-record-navigation.md`](docs/decisions/decision_book-record-navigation.md)
 - [`decision_browser-wasm-target.md`](docs/decisions/decision_browser-wasm-target.md)
 - [`decision_c-guest-routing-and-toolchain.md`](docs/decisions/decision_c-guest-routing-and-toolchain.md)

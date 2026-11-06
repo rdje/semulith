@@ -134,6 +134,13 @@ FEATURE_DISPOSITIONS.update({
     "OB-LOAD-EXT": "none applies: translation is off and every access is aligned to readable memory, so the translation and protection rule is not in play; a misaligned or faulting access, and an atomic one, are other requirements' (P4-SYSTEM.14 a46-4, 2026-11-06)",
     "OB-LOAD-X0": "none applies as a claim: the access fault at 2^40 and the handler's CSR reads and MRET are the route that observes the fault, not a claimed trap, CSR or protection behaviour (the fault's selection is REQ-D-FAULT-PRIORITY's, the reads REQ-GC-CSR-ACCESS's, the return REQ-GC-PRIV-INSNS's); translation is off, and the requirement's other side effects are named in the limitations (P4-SYSTEM.14 a46-4, 2026-11-06)",
 })
+FEATURE_DISPOSITIONS.update({
+    "OB-GC-ECALL-EBREAK-V3": "the privilege, CSR, trap and return rule applies, and the case's properties cover it: each mode's cause (m-ecall-cause, m-ebreak-cause, s-ecall-cause, s-ebreak-cause, u-ecall-cause, u-ebreak-cause, u-ecall-delegated-cause, u-ebreak-delegated-cause, u-illegal-cause), its trap value and exception PC, and the mode taking it, delegated or not. A delegated cause taken in M stays in M (m-ebreak-cause), so a trap never moves to a lower mode (P4-SYSTEM.14 a47-3, 2026-11-06)",
+    "OB-GC-CSR-ACCESS": "the privilege, CSR, trap and return rule applies, and the case's properties cover it: legal and refused modes (csrrs-x0-no-write, csrrsi-zero-no-write, s-reaches-own; refused-cause-0, refused-cause-1, refused-cause-2, refused-cause-3) and preserved state read back after every refusal, so a refused access commits no rd (refused-csrrw-rd-kept, refused-csrrs-rd-kept, refused-csrrsi-rd-kept, s-refused-rd-kept). Aliases are REQ-D-CSR-SET's and counter gates REQ-GC-COUNTERS' (P4-SYSTEM.14 a47-3, 2026-11-06)",
+    "OB-GC-COUNTERS": "the counter rule and the privilege and CSR rule apply, and the case's properties cover them. The counter rule: each read at its declared boundary, a guest count and never host time (m-reads-cycle, m-reads-time, m-reads-instret, s-open-reads, u-open-reads); nothing is scheduled or delivered, so that stays REQ-D-SSTC's and rates the environment contract's. The privilege and CSR rule: each gate bit deciding the read, and a refused read committing no rd (s-closed-rd-kept, s-time-gate-own-bit, u-needs-scounteren) (P4-SYSTEM.14 a47-3, 2026-11-06)",
+    "OB-IALIGN-16": "the fetch rule applies, and the case's properties cover its parcel and width boundaries: a 32-bit instruction on a halfword (jalr-halfword-landing), each kind of transfer to a halfword target with no misaligned exception (jalr-halfword-link, branch-halfword-landing, jal-halfword-link, jal-halfword-landing), and a 16-bit form advancing the PC by two (c-form-advances-two). Each compressed form's expansion is REQ-GC-C's (P4-SYSTEM.14 a47-3, 2026-11-06)",
+    "OB-GC-FENCEI": "the fetch rule's instruction visibility applies, and the case's properties cover it: a store ordered before a later fetch, so the patched instruction runs (fence-i-orders-the-store), and FENCE.I itself retiring with no other effect (fence-i-no-other-effect). That a fetch with no FENCE.I may read either value is not witnessed, since this machine re-reads memory on every fetch (P4-SYSTEM.14 a47-3, 2026-11-06)",
+})
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
              "risk-method", "feature-rules", "form-coverage")
@@ -468,10 +475,11 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
                          if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})
     predeclared = sorted(({mnemonic(steps[n]) for n in declared_steps} | set(read_after)) & set(required))
     # a43a-2f: a state requirement (REQ-D-XLEN: the register width and the address space) names no form, so there is
-    # none to cover; its predeclared witnesses are its coverage. Any other requirement naming no form stays pending.
-    vacuous = requirement["kind"] == "state" and not required
+    # none to cover; its predeclared witnesses are its coverage. a47-3: so does a configuration requirement (REQ-D-IALIGN-16:
+    # where an instruction may start). An instruction or event requirement naming no form stays pending: it is a catalogue fault.
+    vacuous = requirement["kind"] in ("state", "configuration") and not required
     _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),
-         f"a state requirement names no form: coverage is vacuous, its {len(witnesses)} predeclared witnesses stand for it"
+         f"a {requirement['kind']} requirement names no form: coverage is vacuous, its {len(witnesses)} predeclared witnesses stand for it"
          if vacuous else
          f"{len(predeclared)} of {len(required)} forms predeclared {predeclared}; {len(exercised)} exercised {exercised}"
          + (f"; writing no GPR, read after their own step: {read_after}" if read_after else ""))

@@ -397,7 +397,10 @@ class MethodTests(unittest.TestCase):
                          # G-OBLIGATIONS' Batch I (a46-4)
                          "rv64gc-alu-imm-v1": (88, 1008657, 29555), "rv64gc-alu-reg-v1": (88, 1005321, 27194), "rv64gc-lui-auipc-v1": (88, 995992, 22161),
                          "rv64gc-jalr-lsb-v1": (88, 1006135, 27996), "rv64gc-no-delay-slots-v1": (88, 1009720, 30489), "rv64gc-shamt-v1": (88, 1009349, 31315),
-                         "rv64gc-wsuffix-v1": (88, 1005634, 28414), "rv64gc-load-ext-v1": (88, 1014177, 36672), "rv64gc-load-x0-v1": (88, 1051503, 65957)}
+                         "rv64gc-wsuffix-v1": (88, 1005634, 28414), "rv64gc-load-ext-v1": (88, 1014177, 36672), "rv64gc-load-x0-v1": (88, 1051503, 65957),
+                         # Batch II-a (a47-3)
+                         "rv64gc-ecall-ebreak-v1": (88, 1083654, 94604), "rv64gc-csr-access-v1": (88, 1047149, 62955), "rv64gc-counters-v1": (88, 1051517, 70019),
+                         "rv64gc-fencei-v1": (88, 991491, 20681), "rv64gc-ialign-16-v1": (88, 994390, 22252)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

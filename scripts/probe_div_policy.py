@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 from pathlib import Path
 import shutil
 import sys
@@ -26,7 +27,8 @@ SEAMS = {
                     '    at_witness = True\n'),
     "coverage-optional": ('    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),\n',
                           '    _leg(legs, "form-coverage", vacuous or bool(required),\n'),
-    "state-vacuous": ('    vacuous = requirement["kind"] == "state" and not required\n', '    vacuous = not required\n'),
+    "state-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = not required\n'),
+    "configuration-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = requirement["kind"] == "state" and not required\n'),
     # a46-4: a form that writes no GPR is predeclared by a later read, one seam per condition.
     "silent-any-form": ('    silent = {f for f in required if not any(s["writes"] for s in steps.values() if mnemonic(s) == f)}\n', '    silent = set(required)\n'),
     "silent-any-cell": ('if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})', 'if any(mnemonic(steps[m]) == f for m in steps if m < n)})'),
@@ -72,6 +74,7 @@ MUTATION_TESTS = {
     "first-property": "test_control_leg_reads_the_property_the_control_run_names",
     "credit-any": "test_lapsed_credit_is_a_finding_and_credits_nothing",
     "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
+    "configuration-vacuous": "test_a_configuration_requirement_naming_no_form_is_vacuous_too",
     "silent-any-form": "test_a_form_that_writes_a_gpr_gets_no_later_read",
     "silent-any-cell": "test_a_silent_form_no_cell_names_stays_pending",
     "silent-any-order": "test_a_silent_form_read_before_its_step_stays_pending",
@@ -98,10 +101,11 @@ XLEN_CASE_ID = "rv64gc-xlen-forms-v3"  # the XLEN case's reviewed capture: xlen-
 CSR_CASE_ID = "rv64gc-csr-set-v2"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5)
 ZICNTR_CASE_ID = "rv64gc-zicntr-v2"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5)
 SSTC_CASE_ID = "rv64gc-sstc-v1"  # the third, and the first with a delivered interrupt (a43e-5)
-# G-OBLIGATIONS' Batch I (a46-4): the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
-BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high")}
+# G-OBLIGATIONS' Batch I (a46-4) and Batch II-a (a47-3): the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
+BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v1": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-csr-access-v1": ("REQ-GC-CSR-ACCESS", "OB-GC-CSR-ACCESS", "high"), "rv64gc-counters-v1": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-fencei-v1": ("REQ-GC-FENCEI", "OB-GC-FENCEI", "low"), "rv64gc-ialign-16-v1": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium")}
 READ_AFTER = {"rv64gc-no-delay-slots-v1": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v1": ["sb", "sd", "sh", "sw"],
-              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"]}
+              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v1": ["ebreak", "ecall"],
+              "rv64gc-fencei-v1": ["fence.i"]}
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -310,6 +314,13 @@ class PolicyTests(unittest.TestCase):
         fixture(self.root, insns=(), declare_boundaries=True)
         t = self.measure()
         self.assertEqual(t["missing"], ["form-coverage"]); self.assertIn("0 of 0 forms predeclared", self.legs_text(t, "form-coverage"))
+
+    def test_a_configuration_requirement_naming_no_form_is_vacuous_too(self):
+        """REQ-D-IALIGN-16 says where an instruction may start, and names no form: its witnesses are its coverage (a47-3)."""
+        fixture(self.root, kind="configuration", insns=(), declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []))
+        self.assertIn("a configuration requirement names no form: coverage is vacuous, its 3 predeclared witnesses", self.legs_text(t, "form-coverage"))
 
     def silent(self, *, cell="form:sb", steps=None, witness=1, insns=("sb",), silent_forms=("sb",)):
         """A store writes no GPR, so its witness is the read that observes it (P4-SYSTEM.14 a46-4)."""
@@ -673,6 +684,12 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(t["coverage"]["required"], t["coverage"]["predeclared"], t["case_id"])
             quiet = READ_AFTER.get(t["case_id"])
             self.assertEqual(f"writing no GPR, read after their own step: {quiet}" in self.legs_text(t, "form-coverage"), bool(quiet), t["case_id"])
+            # Each property a disposition names in its lists is one the case declares (a47-3).
+            declared = {str(self.M._one(p, "id")) for p in self.M.S.children(self.M.S.children(self.M._one_form(
+                ROOT / "evidence" / t["case_id"] / "planned-experiment.sexp", "experiment"), "verification")[0], "property")}
+            named = {word.strip() for group in re.findall(r"\(([^()]*)\)", self.M.FEATURE_DISPOSITIONS[t["obligation_ids"][0]])
+                     for word in re.split(r"[,;]", group) if re.fullmatch(r"[a-z][a-z0-9.]*(-[a-z0-9.]+)+", word.strip())}
+            self.assertEqual(named - declared, set(), t["case_id"])
         rows = [20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31, 32]
         self.assertEqual(table["boundary"], dict(present=rows, predeclared=rows))
         forms = ["div", "divu", "divuw", "divw", "mul", "mulh", "mulhsu", "mulhu", "mulw", "rem", "remu", "remuw", "remw"]

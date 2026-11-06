@@ -4,7 +4,7 @@ The evidence policy names, for a requirement's source-semantic category and risk
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
-`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, and since a46-4 (2026-11-06) Batch I's nine; every earlier case is history below — on top of the finite method review. It opens only
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five; every earlier case is history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
@@ -125,7 +125,7 @@ rv64gc-sstc-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by C
 rv64gc-alu-imm-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ALU-IMM-1
 ```
 
-That is six of the fourteen lines; Batch I's other eight read the same, each with its own credit.
+That is six of the nineteen lines; Batch I's other eight and Batch II-a's five read the same, each with its own credit.
 
 Inside the window (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
@@ -173,6 +173,8 @@ The counter rule's three parts, each witnessed. Scheduled events are guest count
 ```text
 11 of 11 forms predeclared ['lb', 'lbu', 'ld', 'lh', 'lhu', 'lw', 'lwu', 'sb', 'sd', 'sh', 'sw']; 11 exercised [...]; writing no GPR, read after their own step: ['sb', 'sd', 'sh', 'sw']
 ```
+
+**A `configuration` requirement naming no form (a47-3).** The leg allowed a requirement to name no form only for kind `state`. `REQ-D-IALIGN-16` says where an instruction may start and names none, so the same reading holds, and the leg says `a configuration requirement names no form: coverage is vacuous, its 6 predeclared witnesses stand for it`. An `instruction` or `event` requirement naming no form stays pending: that would be a fault in the catalogue.
 
 ## What a satisfied measurement is, and is not
 
@@ -296,7 +298,7 @@ The first command measures the default case, v6 since a43e-5, and prints `DIV-PO
 10 legs satisfied; credited by CR-GC-M-4`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 52 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 53 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
 through one `--every-retained` run (each case's ten legs while every pin is current; `invalidated`

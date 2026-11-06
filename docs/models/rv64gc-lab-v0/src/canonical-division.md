@@ -334,6 +334,6 @@ Five requirements, one case each, each captured exactly once on 2026-11-06 from 
 | `rv64gc-fencei-v1` | AGREE, 10 steps | DIVERGE at 9: `.word 0x00700113`, Sail 7, the expectation 2 | 10,225 B, `9fc3b954…` | 732 B |
 | `rv64gc-ialign-16-v1` | AGREE, 11 steps | DIVERGE at 3: `auipc x3, 0`, Sail base + 14, the expectation base + 12 | 11,368 B, `bad8453d…` | 854 B |
 
-Each control is that case's failure mode: a cause that does not name its mode, a CSR immediate sign-extended, a refused read that committed, a stale fetch, a target rounded to a word. Each capture is complete with qualification false, and every compared file is byte-identical to the rehearsal's.
+Each control is that case's failure mode: a cause that does not name its mode, a CSR immediate sign-extended, a refused read that committed, a stale fetch, a target rounded to a word. Each capture is complete with qualification false, and every compared file is byte-identical to the rehearsal's. Since a47-3 the reviews read all five, 10 of 10 legs each, and a record credits each.
 
 **The guard refused first, as it should.** Its first attempt held for its full ten minutes at a load above 8 and stopped, capturing nothing, so no case id was spent. Armed again, it ran when the load fell below 7.
