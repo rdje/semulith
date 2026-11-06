@@ -4,6 +4,6 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/sifive-uart-lab-v0/profile.sexp`  `a44a7ddbff330cdec752e2541f95b2288e4bf4c333878c910a7d25be4695f401`
-     Generator: `scripts/gen_model_book.py` (sha256 `37c536b0129a0a722773286177f09bf50d623ae65e118bfac58a8b8c345131b2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
 
 This unit pins **no reference models**: it declares `(comparison register-expectations)` — the comparison surface is the dossier's own datasheet-derived register-read expectations (`expectations/`), recorded before any model exists (EVD-05 at the device layer). A reference that shares an ancestor with the datasheet would not be a second opinion; an independent implementation may be pinned here the day one is acquired through the materials channel.

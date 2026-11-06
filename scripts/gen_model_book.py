@@ -506,7 +506,8 @@ EMITTERS = {
 def emit_cases(profile_dir: Path) -> str | None:
     """Every retained finite case of this unit, each row read from the case's own declaration and its state from the
     credit catalogue, so the membership is never typed (P4-SYSTEM.14 a46-1). None for a unit that holds no case."""
-    if unit_shape(profile_dir) != "processor":
+    # A case belongs to a unit of this repository: a dossier re-rooted elsewhere, as MATERIALS-BILL's controls re-root a frozen one, holds none (XTASK.13 slice f).
+    if unit_shape(profile_dir) != "processor" or Path(profile_dir).resolve().parent != (REPO / "profiles").resolve():
         return None
     profile = _load(D.load_profile, profile_dir / "profile.sexp")["profile"]["id"]
     evidence = REPO / "evidence"
@@ -540,6 +541,11 @@ def emit_cases(profile_dir: Path) -> str | None:
 
 
 def generate(profile_dir: Path) -> dict[str, str]:
+    # Without either declaration `unit_shape` falls to its processor default, and a
+    # board that lost its definition would be read as a processor and crash on a key.
+    if not any((Path(profile_dir) / name).is_file() for name in ("profile.sexp", "board.sexp")):
+        raise GenError(f"{rel(Path(profile_dir))} holds neither profile.sexp nor board.sexp: "
+                       "it declares no shape to generate")
     fragments = {name: emitter(profile_dir) for name, emitter in EMITTERS.items()}
     cases = emit_cases(profile_dir)
     return fragments if cases is None else {**fragments, "retained-cases.md": cases}
@@ -558,7 +564,7 @@ def main(argv: list[str]) -> int:
     book_dir = args.book_dir or REPO / "docs" / "models" / args.unit
     try:
         fragments = generate(profile_dir)
-    except (GenError, S.SexpError) as exc:
+    except (GenError, S.SexpError, OSError) as exc:
         print(f"gen_model_book: REFUSED — {exc}", file=sys.stderr)
         return 2
 

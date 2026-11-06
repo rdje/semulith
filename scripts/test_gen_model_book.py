@@ -2,6 +2,7 @@
 """Regression cases for the processor catalogue's version and coverage disclosure."""
 
 from pathlib import Path
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -29,43 +30,56 @@ class ProcessorCatalogueRole(unittest.TestCase):
             G._processor_catalogue_role([])
 
 
+class DeclaredShape(unittest.TestCase):
+    """A dossier holding neither declaration is refused by name, not read as a processor."""
+
+    def test_a_dossier_declaring_no_shape_is_refused_by_its_name(self):
+        with tempfile.TemporaryDirectory(dir=G.REPO / "target") as held:
+            unit = Path(held) / "no-shape-lab-v0"
+            unit.mkdir()
+            with self.assertRaisesRegex(G.GenError, "no-shape-lab-v0 holds neither"):
+                G.generate(unit)
+
+
 class RetainedCases(unittest.TestCase):
-    """The case index is generated, so these judge the rule and name no particular case or credit (P4-SYSTEM.14 a46-1)."""
-    unit = G.REPO / "profiles" / "rv64gc-lab-v0"
+    """The case index is generated, so these judge the rule on three small frozen cases: a damaged real one fails the real check by name (XTASK.13 slice f)."""
+    root = Path(__file__).resolve().parent / "fixtures" / "materials-bill"
+    unit = root / "profiles" / "rv64i-lab-v0"
+    ONE = dict(id="CR-FX-1", case_id="rv64gc-fx-one-v2", requirement_id="REQ-FX-ONE", disposition="current")
+
+    def setUp(self):
+        patcher = patch.object(G, "REPO", self.root)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        credits = patch.object(G.CR, "current_credits", return_value=[self.ONE])
+        self.current = credits.start()
+        self.addCleanup(credits.stop)
 
     def rows(self):
         return {line.split("`")[1]: line for line in G.emit_cases(self.unit).splitlines() if line.startswith("| `")}
 
     def test_every_case_directory_has_exactly_one_row(self):
-        self.assertEqual(set(self.rows()), {path.parent.name for path in (G.REPO / "evidence").glob("*/case.sexp")})
-
-    # A stub credit on a case that stays in the tree: authenticating one is CREDIT-RECORDS', and these hold through a window (a49-1).
-    ONE = dict(id="CR-FX-1", case_id="rv64gc-m-forms-v3", requirement_id="REQ-GC-M", disposition="current")
+        self.assertEqual(set(self.rows()), {path.parent.name for path in (self.root / "evidence").glob("*/case.sexp")})
 
     def test_a_current_credit_is_read_and_a_lapsed_one_is_not(self):
-        with patch.object(G.CR, "current_credits", return_value=[self.ONE]):
-            self.assertIn("credited, `CR-FX-1`", self.rows()[self.ONE["case_id"]])
-        with patch.object(G.CR, "current_credits", return_value=[dict(self.ONE, disposition="lapsed")]):
-            self.assertIn("captured, credited by nothing", self.rows()[self.ONE["case_id"]])
+        self.assertIn("credited, `CR-FX-1`", self.rows()["rv64gc-fx-one-v2"])
+        self.current.return_value = [dict(self.ONE, disposition="lapsed")]
+        self.assertIn("captured, credited by nothing", self.rows()["rv64gc-fx-one-v2"])
 
     def test_a_case_with_no_receipt_reads_declared(self):
-        real = Path.is_file
-        with patch.object(G.CR, "current_credits", return_value=[]), patch.object(
-                Path, "is_file", lambda path: path.name != "verification.json" and real(path)):
-            self.assertIn("| declared |", self.rows()[self.ONE["case_id"]])
+        self.assertIn("| declared |", self.rows()["rv64gc-fx-two-v1"])
 
     def test_a_superseded_case_names_the_one_holding_the_credit(self):
-        with patch.object(G.CR, "current_credits", return_value=[self.ONE]):
-            rows = self.rows()
-        same = [r for case, r in rows.items() if case != self.ONE["case_id"] and "`REQ-GC-M`" in r and "| declared |" not in r]
-        self.assertTrue(same)
-        for row in same:
-            self.assertIn(f"history: `{self.ONE['case_id']}` holds the credit", row)
+        self.assertIn("history: `rv64gc-fx-one-v2` holds the credit", self.rows()["rv64gc-fx-one-v1"])
 
     def test_a_unit_holding_no_case_has_no_fragment(self):
-        other = G.REPO / "profiles" / "rv64i-lab-v0"
+        other = self.root / "profiles" / "sifive-uart-lab-v0"
         self.assertIsNone(G.emit_cases(other))
         self.assertNotIn("retained-cases.md", G.generate(other))
+
+    def test_a_dossier_re_rooted_elsewhere_holds_no_case(self):
+        with patch.object(G, "REPO", self.root.parent):
+            self.assertIsNone(G.emit_cases(self.unit))
 
     def test_a_case_that_cannot_be_read_refuses(self):
         with patch.object(G.K, "read_case", side_effect=G.K.CaseError("no declaration")):

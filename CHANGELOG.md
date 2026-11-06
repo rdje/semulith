@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0084 (leaf XTASK.13 slice f) — MATERIALS-BILL's controls judge frozen dossiers, and a lost board definition is named
+
+A deleted dossier file, device source or board definition, or an edited bill, used to make the doctrine refuse itself with no name, and now fails by its unit's name. The self-test reads 29 frozen files, 245,396 B, and two tracebacks became refusals.
+
 ## SEMULITH-XTASK-0083 (leaf XTASK.14) — a killed gate cannot block a cleanup: printable prefetch keys
 
 The prefetch named its record files with control characters, so a gate that died left names the artifact census refuses, and one killed gate blocked every later cleanup. Keys are percent-encoded now, on both sides, and a new arm holds the two equal. Over a whole self-test: 0 misses.

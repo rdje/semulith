@@ -4,6 +4,6 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/netboard-lab-v0/board.sexp`  `accb4e78fbacdae5e1905c3068f5a0072229707a2982a29443df67f7402ffc03`
-     Generator: `scripts/gen_model_book.py` (sha256 `37c536b0129a0a722773286177f09bf50d623ae65e118bfac58a8b8c345131b2`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
 
 A board pins no reference models of its own: the references that matter are its processor's, standing behind the pinned dossier digest (`board.sexp`), and its devices' datasheets, pinned as materials. The composition's own evidence is `.4`'s verdict and `.5`'s probes — never a reference implementation's say-so.

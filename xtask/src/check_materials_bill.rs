@@ -7,8 +7,10 @@
 //! (`check_bills`, over the pinned `sexp`, `dossier_sexp` and `gen_model_book`); it runs verbatim through `python3 -`, as
 //! the script ran it, and is not ported — nor are the generator (`scripts/gen_model_book.py`), its catalogue tests
 //! (`scripts/test_gen_model_book.py`) or the four inline Python edits of the controls, each spawned as the script spawned
-//! them. The controls re-root the REAL dossiers and book (the processor's, the UART's, the board's) into scratch, as the
-//! script did. Each self-test arm is one `tally.arm(` call, the idiom the `DERIVED-COUNTS` arm total counts.
+//! them. The controls re-root FROZEN dossiers and a frozen book (the processor's, the UART's, the board's, in
+//! `scripts/fixtures/materials-bill/`) into scratch, so a damaged real dossier fails the real check by its own name and
+//! not this self-test (`XTASK.13` slice f, ruling 5). Each self-test arm is one `tally.arm(` call, the idiom the
+//! `DERIVED-COUNTS` arm total counts.
 
 use std::fs;
 use std::io::Write;
@@ -16,6 +18,9 @@ use std::path::Path;
 use std::process::{Command, ExitCode, Stdio};
 
 use crate::harness::{on_path, scratch};
+
+/// The frozen tree the controls judge: dossiers under `profiles/`, a book under `books/`, three small cases under `evidence/`.
+const FROZEN: &str = "scripts/fixtures/materials-bill";
 
 /// The judge, verbatim: `python3 - <root>` from the repository root (`scripts/` on its path) — the per-unit lines,
 /// the findings, `__CHECKED__ N`; exit 1 on a finding, 2 when it cannot judge.
@@ -99,7 +104,7 @@ for u in unit_forms:
                 refs = D.load_references(profile_dir / "references.sexp")
                 required += ([e["id"] for e in refs.get("encoding_source", [])]
                              + [c["id"] for c in refs.get("candidate", [])])
-        except D.DossierError as exc:
+        except (D.DossierError, OSError) as exc:
             findings.append(f"CANNOT JUDGE {uid}: the pinned dossier does not map — {exc}")
             continue
     required += list(G.shape_contracts(shape))
@@ -265,6 +270,11 @@ fn append(path: &Path, text: &str) {
     }
 }
 
+/// The board control's definition, in the scratch corpus.
+fn t_board_definition(t: &Path) -> std::path::PathBuf {
+    t.join("profiles/b/board.sexp")
+}
+
 /// A synthetic bill: `# Materials bill`, then one `###` section per material, each with its does-not-supply.
 fn synthetic_bill(path: &Path, materials: &[&str]) {
     let mut text = String::from("# Materials bill\n\n");
@@ -349,7 +359,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         misses: Vec::new(),
     };
     let units = t.join("materials/units.sexp");
-    // A scratch corpus: the REAL profile dossier and book, re-rooted as unit "p" — the fragments are regenerated into
+    // A scratch corpus: the FROZEN processor dossier and book, re-rooted as unit "p" — the fragments are regenerated into
     // the fixture by the real generator.
     let fixture = |verbose: bool| {
         let _ = fs::remove_dir_all(t.join("profiles/p"));
@@ -357,8 +367,14 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         for d in ["profiles", "books", "materials"] {
             let _ = fs::create_dir_all(t.join(d));
         }
-        copy_dir(&repo.join("profiles/rv64i-lab-v0"), &t.join("profiles/p"));
-        copy_dir(&repo.join("docs/models/rv64i-lab-v0"), &t.join("books/p"));
+        copy_dir(
+            &repo.join(FROZEN).join("profiles/rv64i-lab-v0"),
+            &t.join("profiles/p"),
+        );
+        copy_dir(
+            &repo.join(FROZEN).join("books/rv64i-lab-v0"),
+            &t.join("books/p"),
+        );
         let _ = fs::write(
             &units,
             "(unit (id \"p\") (kind processor) (layer processor) (book \"books/p\"))\n",
@@ -368,7 +384,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     tally.arm("REFUSE no units registry at all", 2, "REFUSED");
     fixture(verbose);
     tally.arm(
-        "GREEN the real bill over the real dossier",
+        "GREEN a frozen bill over its frozen dossier",
         0,
         "every section carries its does-not-supply",
     );
@@ -397,7 +413,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     tally.arm("RED   a book with no bill chapter", 1, "NO BILL");
     let _ = fs::remove_file(t.join("books/p/book.toml"));
     tally.arm("RED   a book with no skeleton", 1, "NO BOOK");
-    // P5-BOARD.11: the device and board shapes — the census follows the declaration. The fixtures re-root the REAL
+    // P5-BOARD.11: the device and board shapes — the census follows the declaration. The fixtures re-root the FROZEN
     // dossiers (the UART's, the board's) exactly as the processor fixture does, and the bills name every material the
     // shape enumerates.
     let shaped = |id: &str, kind: &str, source: &str, materials: &[&str], verbose: bool| {
@@ -406,7 +422,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         let _ = fs::remove_dir_all(&profile);
         let _ = fs::remove_dir_all(&book);
         let _ = fs::create_dir_all(book.join("src/materials"));
-        copy_dir(&repo.join(format!("profiles/{source}")), &profile);
+        copy_dir(&repo.join(FROZEN).join("profiles").join(source), &profile);
         let _ = fs::write(
             &units,
             format!("(unit (id \"{id}\") (kind {kind}) (layer {kind}) (book \"books/{id}\"))\n"),
@@ -474,6 +490,13 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "RED   a board bill omitting a device material pin",
         1,
         "MISSING SECTION b",
+    );
+    // A dossier that lost its defining file reads as another shape, and is named: it never reaches a traceback (`XTASK.13` slice f).
+    let _ = fs::remove_file(t_board_definition(&t));
+    tally.arm(
+        "RED   a board dossier that lost board.sexp is named",
+        1,
+        "CANNOT JUDGE",
     );
     let _ = fs::remove_dir_all(&t);
     if verbose {
