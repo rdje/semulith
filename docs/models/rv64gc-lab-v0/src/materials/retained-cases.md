@@ -7,6 +7,8 @@
      `evidence/rv64gc-alu-reg-v1/case.sexp`  `60eef262735606a23e1773732bca9ed10e0ab4bcf6fe1a528008d7ca146e4168`
      `evidence/rv64gc-csr-set-v1/case.sexp`  `6b45c94b94408be618bb509fa011837708477da59ca1c2246d52cda990d69910`
      `evidence/rv64gc-csr-set-v2/case.sexp`  `90a04d87453670e6ed40a34ce5a18950049a8cff6ee1f612af2f77d8c12885a8`
+     `evidence/rv64gc-ecall-ebreak-v1/case.sexp`  `aec8c544b1dbaaaef68da593fd022ab190b9a8385452bf6d8f44c29e270da349`
+     `evidence/rv64gc-ialign-16-v1/case.sexp`  `33836ad08c7c2a100b82e98180f4a8eed9a3e8d2c65789682a8f92e8174c8e27`
      `evidence/rv64gc-jalr-lsb-v1/case.sexp`  `222cf99e678db3f3faa3d05758a8d524d64598b618cf8516a5cabdd7cc698dcb`
      `evidence/rv64gc-load-ext-v1/case.sexp`  `e4fd0c831a3feda3b8f4c2c73566399a91f67c51bce0d4950cc66561dab20a19`
      `evidence/rv64gc-load-x0-v1/case.sexp`  `208dc0975d51b30279effdb9ffcaa7176eb440dff5d8b4da06cc90f0a06aa583`
@@ -20,6 +22,9 @@
      `evidence/rv64gc-xlen-forms-v3/case.sexp`  `4413bd45d71c18f7a8578a7a73502b4825c518876cb5d9aa6a2e2e036160c5b7`
      `evidence/rv64gc-zicntr-v1/case.sexp`  `023bcfe4483801354c55c6857cd7f3698e0ba5f81803a66c0d0b0b00c59659c3`
      `evidence/rv64gc-zicntr-v2/case.sexp`  `82392e36a6a6e3cdcbba9e04127b6921cede895ad5970d73c7ac8ba618361589`
+     `evidence/rv64gc-counters-v1/case.sexp`  `0fc939f641407083c14fdf2362720c1093ff933b71325ed65fc823eb0326eb84`
+     `evidence/rv64gc-csr-access-v1/case.sexp`  `da3c11618dfb76eec9d6c6699558041f6b8de28172efd9764f56e5ea75fa9175`
+     `evidence/rv64gc-fencei-v1/case.sexp`  `62dcfe58656842d5d056c110d0fd65c50e1c9396767e197b8c4af1fc01ea1371`
      `evidence/rv64gc-m-forms-v3/case.sexp`  `c1ec1d6555e01108a3cad5139573b4074a83af75f99a501b4b4f27f97cbfb214`
      `evidence/rv64gc-m-forms-v4/case.sexp`  `5e5eba6f4ef2921243371f2fd2b8d030426620286af771b4c769721e461e1e72`
      `evidence/rv64gc-m-forms-v5/case.sexp`  `eb5570b3ceaa812897068a078fe7dc1c1f3eaa6334b0cf96c3b8cb1f96e628f7`
@@ -34,6 +39,8 @@
 | `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | credited, `CR-D-ALU-REG-1` |
 | `rv64gc-csr-set-v1` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | history: `rv64gc-csr-set-v2` holds the credit |
 | `rv64gc-csr-set-v2` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-2` |
+| `rv64gc-ecall-ebreak-v1` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | declared |
+| `rv64gc-ialign-16-v1` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | declared |
 | `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-1` |
 | `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-1` |
 | `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-1` |
@@ -47,6 +54,9 @@
 | `rv64gc-xlen-forms-v3` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-3` |
 | `rv64gc-zicntr-v1` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | history: `rv64gc-zicntr-v2` holds the credit |
 | `rv64gc-zicntr-v2` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-2` |
+| `rv64gc-counters-v1` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | declared |
+| `rv64gc-csr-access-v1` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 66 | 21 | the override | declared |
+| `rv64gc-fencei-v1` | `REQ-GC-FENCEI` | `fencei-forms.s` | 10 | 2 | the override | declared |
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |
 | `rv64gc-m-forms-v4` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |
 | `rv64gc-m-forms-v5` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |

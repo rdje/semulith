@@ -20,7 +20,7 @@
 ;
 ; ⛔ A CACHE IS NOT A SOURCE OF TRUTH. `.materials/` is gitignored: these are large third-party
 ; documents and the repository does not redistribute the complete fetched artifacts. The
-; scoped licensed statement exceptions are materials/RVI_M_RETENTION.md, RVI_RV64I_RETENTION.md, RVP_CSR_RETENTION.md, RVI_ZICNTR_RETENTION.md, RVP_SSTC_RETENTION.md and RVI_BASE_RETENTION.md. Tracked here are the
+; scoped licensed statement exceptions are materials/RVI_M_RETENTION.md, RVI_RV64I_RETENTION.md, RVP_CSR_RETENTION.md, RVI_ZICNTR_RETENTION.md, RVP_SSTC_RETENTION.md, RVI_BASE_RETENTION.md and RVI_SYSTEM_RETENTION.md. Tracked here are the
 ; identity, the revision, the digest and the licence — so a missing cache is a REFUSAL WITH
 ; INSTRUCTIONS rather than a wrong answer. Run `scripts/materials.py --fetch` to populate it.
 
@@ -683,7 +683,8 @@
                        materials/RVP_CSR_RETENTION.md (CSR §1.1.1) and
                        materials/RVI_ZICNTR_RETENTION.md (Zicntr §6.1, mcounteren §2.1.1.11) and
                        materials/RVP_SSTC_RETENTION.md (Sstc §12.1, stimecmp, STCE) and
-                       materials/RVI_BASE_RETENTION.md (RV32I §1.1, RV64I §3.1). The
+                       materials/RVI_BASE_RETENTION.md (RV32I §1.1, RV64I §3.1) and
+                       materials/RVI_SYSTEM_RETENTION.md (ECALL, Zicsr, Zifencei, C). The
                        complete site rendering/assets remain unassessed and untracked.")
     (corpus "chipdoc")
     (corpus-path "risc-v/isa/pinned/v20260120")

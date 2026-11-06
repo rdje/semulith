@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0363 (leaf P4-SYSTEM.14 a47-1) — Batch II-a's five programs and cases, declared before their captures, and what reading them found
+
+ECALL and EBREAK, Zicsr, the counters, FENCE.I and IALIGN: 62 witnesses, all three producers agreeing, rehearsed first. Reading them found that ten of the remaining 28 need a tool that reads a declared alternative, and that three of those have no switch, so 17 end at a ruling. A declared case now belongs to the profile it names.
+
 ## SEMULITH-P4-0362 (leaf P4-SYSTEM.14 a46-4) — Batch I credited: nine more requirements implemented, and a form that writes no GPR read after its step
 
 The RV64I base: 14 `implemented`, 33 `planned`, 10 of 10 legs each. The coverage leg now predeclares a branch, a store or a load to `x0` by the read that observes it, named in advance. The gate added about 20 seconds per captured case, against a limit of a minute.

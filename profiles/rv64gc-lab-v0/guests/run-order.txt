@@ -162,6 +162,13 @@ wsuffix-forms
 load-ext-forms
 load-x0
 
+# P4-SYSTEM.14 a47-1: G-OBLIGATIONS' Batch II-a, the defined half of system
+ecall-ebreak
+csr-access
+counters-reads
+fencei-forms
+ialign-16
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

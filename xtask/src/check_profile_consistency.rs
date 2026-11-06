@@ -8415,7 +8415,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("span-bound", "1"),
             ("span-markup", "8"),
             ("retained-bound", "1"),
-            ("retained-pin", "9"),
+            ("retained-pin", "13"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8681,7 +8681,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN requirement status derivation {mode}"), prober.probe(repo, argv.clone()), 0, "REQUIREMENT-STATUS-PROBE: 22 tests / 0 failures / 0 errors; derivation only, no qualification credit");
+        tally.score(&format!("GREEN requirement status derivation {mode}"), prober.probe(repo, argv.clone()), 0, "REQUIREMENT-STATUS-PROBE: 23 tests / 0 failures / 0 errors; derivation only, no qualification credit");
         for mutation in [
             "credit-pending",
             "ignore-drift",
@@ -8690,6 +8690,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "argument-optional",
             "unknown-case-credit",
             "qualification-word",
+            "declared-any-profile",
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);

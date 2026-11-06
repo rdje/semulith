@@ -80,8 +80,8 @@ the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-befo
 moved pinned inputs of the cases `CR-GC-M-2` (v4, a44-5) and `CR-D-XLEN-1` (xlen-v1, a43a-3) named,
 so both were removed with the catalogue file and the statuses read `planned` until the cases were
 re-captured with their control declared (a43b-2c, a43b-2d) and credited again. The other four cases
-were uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. The probe `scripts/probe_requirement_status.py` runs 22
-synthetic-graph tests in both interpreter modes and seven seam omissions that each fail
+were uncredited at `pending`: v2, v3 (`CR-GC-M-1` from 2026-10-26 until a44-2b), v4 and xlen-v1. The probe `scripts/probe_requirement_status.py` runs 23
+synthetic-graph tests in both interpreter modes and eight seam omissions that each fail
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
@@ -158,4 +158,6 @@ $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out targ
 | A statement of selection, checked by a scope predicate | 12 | Raised to the director after the batches |
 | Behaviour Sail does not show: `wfi`'s stall, injected faults | 2 | May rightly end `partial`; raised to the director |
 
-The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **Batch II, system, is next.** It was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
+Batch II found what that table had not: ten of the 28 are `implementation-defined`, a category the review measures against a case's own configuration, and for them the profile's override is the selection. The pinned Sail has a real switch for most of them, so a behaviour-changing control exists; the tool does not read one yet (`decision_obligations-route.md`, "What Batch II found").
+
+The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **Batch II's five `defined` requirements stand declared since a47-1** (`ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`), rehearsed first, next their captures. It was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.

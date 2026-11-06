@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-06`
-- **Status:** `active` (the route for 28 is picked and being carried out from a46-1 on; the other 14 are raised to the director when their turn comes)
+- **Status:** `active` (the route is picked and being carried out from a46-1 on; 17 are raised to the director when their turn comes: see "What Batch II found")
 - **Owner / source:** `P4-SYSTEM.14` a46-0, `SEMULITH-P4-0358`; raised early because its cost would otherwise dominate the work, and read against the director's standard ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md) closed the case before it). **The director can overrule any of it.**
 answers: What does it take to close the 42 requirements still `planned`, by what route, what would one case at a time cost, and what can that route not close?
 
@@ -88,3 +88,27 @@ Nine programs and nine cases, 108 witnesses. **All three producers agree on ever
 **Captured (a46-3, 2026-11-06).** Each once, 1.2 s to 1.4 s, every control where declared, and every compared file byte-identical to the rehearsal's. The guard's second run: it held for four and a half minutes at load 13.74 down to 8.21, then ran beside seven to nine sibling processes at load 7.3 to 7.8.
 
 **Credited (a46-4, 2026-11-06).** Nine credits, 10 of 10 legs each ([`decision_batch-i-credited-implemented.md`](decision_batch-i-credited-implemented.md)): 14 `implemented`, 33 `planned`. **The tripwire, read:** the pre-commit gate took 19.3 minutes at 13 cases and 5 credits (a43e-5), 20.1 at Batch I's declarations, 21.3 for the next commit, and 22.3 at the captures, under loads of 8 to 24: about 20 seconds per captured case, against the limit of a minute. The credits' own cost is measured at the next batch. **The route holds.** Batch I took three commits and a preparing one, and needed one rule.
+
+## What Batch II found (a47-1, 2026-11-06)
+
+Reading the next requirements before writing their programs found two walls that the first table did not show, and one false finding.
+
+**1. Ten of the 28 are `implementation-defined`.** Batch I was all `defined`. This category's row asks for a "pinned matching reference configuration with a behavior-changing control", and `_config_effect` measures it as the case's own configuration against the profile override. For these ten the override already is the selection, so there is nothing to compare. They are `PRIV-MODES`, `FAULT-PRIORITY`, `ENDIAN`, `FENCE`, `SV39`, `SVADE`, `WALK-IMPLICIT`, `RESERVATION`, `SC-DETERMINISTIC` and `ATOMIC-MISALIGN`. Measured against the pinned binary's `--print-default-config`:
+
+| Requirement | A real switch? |
+| --- | --- |
+| `PRIV-MODES` | `extensions.S`, `extensions.U` |
+| `SV39` | `extensions.Sv39` |
+| `SVADE` | `extensions.Svade`, `extensions.Svadu` |
+| `FAULT-PRIORITY` | `memory.misaligned` |
+| `ATOMIC-MISALIGN` | `memory.misaligned.exceptions` |
+| `RESERVATION`, `SC-DETERMINISTIC` | `memory.reservation` (to be measured against each witness) |
+| `ENDIAN`, `FENCE`, `WALK-IMPLICIT` | none found |
+
+So the row can be met honestly for most of them: the same guest under a configuration that selects otherwise, the difference retained, which is what the policy asks. It needs the tool to read a case's declared alternative, not only the override. `measure_config_effect.py` and the review are not pinned, so no credit lapses. **It lands with the batch that first needs it.** The three with no switch join what is raised for a ruling, so that group is **17** today, not 14: the 12 selection statements, the 2 past the reference, and these 3.
+
+**2. A `configuration` requirement naming no form could never satisfy the coverage leg**, which allowed that only for `state`. `REQ-D-IALIGN-16` is the first. The reasoning is the same as for state, and an `instruction` or `event` requirement naming no form stays pending. It lands with this batch's credits.
+
+**3. A false finding, fixed here.** A declared case guessed its profile from whichever catalogue names its requirement, and `REQ-D-ECALL-EBREAK` is in both `rv64i` and `rv64gc` with different obligations, so `rv64i` claimed the case and reported it outside its contract. A case's own `case.sexp` names its profile, and that is now what decides. It cost nothing until a mirrored requirement's obligations differed.
+
+**The order, restated.** Batch II-a, the five `defined`: `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`. Then the `defined` remainder: `ATOMICS`, `C`, `F`, `D`. Then the tool for a declared alternative, and the seven with a switch. Then the ruling.

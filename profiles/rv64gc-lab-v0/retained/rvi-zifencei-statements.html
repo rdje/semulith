@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-ZIFENCEI statements — v20260120</title>
+<body>
+<h1>RVI-ZIFENCEI §4.1: what FENCE.I orders</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/zifencei.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Unprivileged Architecture, §4.1 "Zifencei" Extension for Instruction-Fetch Fence, Version 2.0</a>.<br>
+Original page SHA256: <code>4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance.</p>
+<h2>§4.1: <code>norm:fence_i_op</code></h2>
+<blockquote><p>A FENCE.I instruction orders all explicit memory accesses that precede the
+FENCE.I in program order before all instruction fetches that follow the
+FENCE.I in program order.</p></blockquote>
+</body></html>

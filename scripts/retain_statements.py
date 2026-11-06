@@ -139,6 +139,34 @@ EXCERPTS = {
         (("norm:auipc_op_rv64i", "§3.1.2.1"), ("norm:ld_op_rv64i", "§3.1.3"), ("norm:lw_op_rv64i", "§3.1.3"), ("norm:lwu_op", "§3.1.3"),
          ("norm:lh_lhu_lb_lbu_op_rv64i", "§3.1.3"), ("norm:sd_sw_sh_sb_op_rv64i", "§3.1.3")),
         "This excerpt establishes no acceptance of any form; RVI-RV64I-STATEMENTS holds the rest of §3.1.2 for the XLEN case."),
+    "RVP-ECALL-STATEMENTS": Excerpt(
+        "RVP-ECALL-STATEMENTS", "RVP-MACHINE §2.1.1.8, §2.1.1.14 to §2.1.1.16 and §2.1.3.1: what ECALL and EBREAK raise, what a trap records, and what delegation does",
+        Page("RVP-MACHINE", "priv/machine.html", "b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea",
+             "RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-ecall-statements.html", "2ee5d450e951ab07758ebc20d46898084adac83acfc9c502965783bdc9b3027b",
+        (("norm:medeleg_mideleg_op1", "§2.1.1.8"), ("norm:mepc_op", "§2.1.1.14"), ("norm:mcause_op", "§2.1.1.15"), ("norm:mtval_op", "§2.1.1.16"), ("norm:mtval_other_traps_zero", "§2.1.1.16"), ("norm:ecall_op2", "§2.1.3.1"), ("norm:ebreak_op2", "§2.1.3.1")),
+        "This excerpt establishes no acceptance of a trap, or of the laboratory's halting report, which is not one."),
+    "RVI-ZICSR-STATEMENTS": Excerpt(
+        "RVI-ZICSR-STATEMENTS", "RVI-ZICSR §5.1.1: what each CSR instruction reads and writes, and when it writes nothing",
+        Page("RVI-ZICSR", "unpriv/zicsr.html", "0c06e00db7343b293a120e6378a4eee7e4c101a5786a9b661513ceed7dcf047d",
+             "RISC-V Unprivileged Architecture, §5.1 \"Zicsr\" Extension for Control and Status Register Instructions, Version 2.0"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-zicsr-statements.html", "cb4e86950ad1c41daf2824369ee3a39142dae14df47f33d4fa2facb5b21718d3",
+        (("norm:csrrw_op", "§5.1.1"), ("norm:csrrs_op", "§5.1.1"), ("norm:csrrc_op", "§5.1.1"), ("norm:csrrs_csrrc_rs1_x0", "§5.1.1"), ("norm:csrrw_rs1_x0", "§5.1.1"), ("norm:csrrsi_csrrci_uimm_zero", "§5.1.1"), ("norm:csrrwi_rd_x0", "§5.1.1")),
+        "This excerpt establishes no acceptance; the immediate forms' own paragraph carries a nested span the tool's markup bound refuses, so it is cited, not retained."),
+    "RVI-ZIFENCEI-STATEMENTS": Excerpt(
+        "RVI-ZIFENCEI-STATEMENTS", "RVI-ZIFENCEI §4.1: what FENCE.I orders",
+        Page("RVI-ZIFENCEI", "unpriv/zifencei.html", "4026de34713f4b898595eb4a17bb58176a0e2905196705a904d3d8fab4432a91",
+             "RISC-V Unprivileged Architecture, §4.1 \"Zifencei\" Extension for Instruction-Fetch Fence, Version 2.0"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-zifencei-statements.html", "3f1d5189db9a452e9ee5e798eebed1d5e58bd2a62351856bf44e424ed7649616",
+        (("norm:fence_i_op", "§4.1"),),
+        "This excerpt establishes no acceptance."),
+    "RVI-C-STATEMENTS": Excerpt(
+        "RVI-C-STATEMENTS", "RVI-C §27.1: where an instruction may start with C present, and what no longer raises an exception",
+        Page("RVI-C", "unpriv/c-st-ext.html", "3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb",
+             "RISC-V Unprivileged Architecture, §27.1 \"C\" Extension for Compressed Instructions, Version 2.0"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-c-statements.html", "29d8088d19c6cebcefe3445b3d5574343094c5d0a1edb58a6d665be73c1c5db8",
+        (("norm:Zca_align16", "§27.1"), ("norm:Zca_no_misaligned", "§27.1")),
+        "This excerpt establishes no acceptance of a compressed form: REQ-GC-C is its own case."),
 }
 
 

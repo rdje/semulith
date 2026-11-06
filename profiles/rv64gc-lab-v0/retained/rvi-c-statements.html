@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-C statements — v20260120</title>
+<body>
+<h1>RVI-C §27.1: where an instruction may start with C present, and what no longer raises an exception</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/c-st-ext.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Unprivileged Architecture, §27.1 "C" Extension for Compressed Instructions, Version 2.0</a>.<br>
+Original page SHA256: <code>3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of a compressed form: REQ-GC-C is its own case.</p>
+<h2>§27.1: <code>norm:Zca_align16</code></h2>
+<blockquote><p><span id="norm:Zca_align16">The C extension allows 16-bit instructions to be freely
+intermixed with 32-bit instructions, with the latter now able to start
+on any 16-bit boundary, i.e., IALIGN=16.</span></p></blockquote>
+<h2>§27.1: <code>norm:Zca_no_misaligned</code></h2>
+<blockquote><p><span id="norm:Zca_no_misaligned">With the addition of the C
+extension, no instructions can raise instruction-address-misaligned
+exceptions.</span></p></blockquote>
+</body></html>

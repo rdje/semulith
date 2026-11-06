@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-MACHINE statements — v20260120</title>
+<body>
+<h1>RVP-MACHINE §2.1.1.8, §2.1.1.14 to §2.1.1.16 and §2.1.3.1: what ECALL and EBREAK raise, what a trap records, and what delegation does</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/machine.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of a trap, or of the laboratory's halting report, which is not one.</p>
+<h2>§2.1.1.8: <code>norm:medeleg_mideleg_op1</code></h2>
+<blockquote><p><span id="norm:medeleg_mideleg_op1">implementations can provide individual read/write bits within <code>medeleg</code>
+and <code>mideleg</code> to indicate that certain exceptions and interrupts should
+be processed directly by a lower privilege level.</span></p></blockquote>
+<h2>§2.1.1.14: <code>norm:mepc_op</code></h2>
+<blockquote><p><span id="norm:mepc_op">When a trap is taken into M-mode, <code>mepc</code> is written with the virtual
+address of the instruction that was interrupted or that encountered the
+exception. Otherwise, <code>mepc</code> is never written by the implementation,
+though it may be explicitly written by software.</span></p></blockquote>
+<h2>§2.1.1.15: <code>norm:mcause_op</code></h2>
+<blockquote><p><span id="norm:mcause_op">When a trap is taken into
+M-mode, <code>mcause</code> is written with a code indicating the event that
+caused the trap. Otherwise, <code>mcause</code> is never written by the
+implementation, though it may be explicitly written by software.</span></p></blockquote>
+<h2>§2.1.1.16: <code>norm:mtval_op</code></h2>
+<blockquote><p><span id="norm:mtval_op">When a trap is taken into M-mode,
+<code>mtval</code> is either set to zero or written with exception-specific
+information to assist software in handling the trap. Otherwise, <code>mtval</code>
+is never written by the implementation, though it may be explicitly
+written by software.</span></p></blockquote>
+<h2>§2.1.1.16: <code>norm:mtval_other_traps_zero</code></h2>
+<blockquote><p><span id="norm:mtval_other_traps_zero">For other traps, <code>mtval</code> is set to zero</span></p></blockquote>
+<h2>§2.1.3.1: <code>norm:ecall_op2</code></h2>
+<blockquote><p>The ECALL instruction is used to make a request to the supporting
+execution environment. When executed in U-mode, S-mode, or M-mode, it
+generates an environment-call-from-U-mode exception,
+environment-call-from-S-mode exception, or environment-call-from-M-mode
+exception, respectively, and performs no other operation.</p></blockquote>
+<h2>§2.1.3.1: <code>norm:ebreak_op2</code></h2>
+<blockquote><p>The EBREAK instruction is used by debuggers to cause control to be
+transferred back to a debugging environment.
+Unless overridden by an external debug environment, EBREAK raises
+a breakpoint exception and performs no other operation.</p></blockquote>
+</body></html>

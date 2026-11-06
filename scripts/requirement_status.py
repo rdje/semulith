@@ -122,10 +122,10 @@ def load_cases(root: Path) -> list[dict]:
             bindings.append((req, tuple(_strings(prop, "obligation_ids"))))
         if not receipt_path.exists():
             # A declared case awaiting its capture (P4-SYSTEM.14 a42au): the declaration binds
-            # requirements but carries no receipt, so it credits nothing. Its profile is derived
-            # from the requirements it names; it is never read as a verdict.
+            # requirements but carries no receipt, so it credits nothing. Its profile is the one its
+            # case.sexp names (a47-1); it is never read as a verdict.
             _require(case.name == _one(exp, "id"), f"case directory and experiment id disagree: {case.name}")
-            cases.append(dict(id=case.name, profile=None, evaluation="declared",
+            cases.append(dict(id=case.name, profile=_declared_profile(case), evaluation="declared",
                               disposition="declared", bindings=bindings))
             continue
         try:
@@ -142,6 +142,20 @@ def load_cases(root: Path) -> list[dict]:
                           evaluation=receipt["evaluation"], disposition=receipt["disposition"],
                           bindings=bindings))
     return cases
+
+
+def _declared_profile(case: Path) -> str | None:
+    """The profile a declared case's own `case.sexp` names; None for a directory with no declaration."""
+    path = case / "case.sexp"
+    if not path.is_file():
+        return None
+    try:
+        forms = S.parse(_bounded_bytes(path).decode("utf-8"), str(path))
+    except (S.SexpError, UnicodeError) as error:
+        raise Refused(f"unreadable case declaration {path}: {error}") from error
+    tops = [f for f in forms if isinstance(f, list) and f and str(f[0]) == "case"]
+    _require(len(tops) == 1, f"exactly one case form expected in {path}")
+    return _one(tops[0], "profile_id")
 
 
 def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
@@ -173,8 +187,9 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
             findings.append(f"credit {credit['id']} names unknown requirement {credit['requirement_id']}")
     credited_cases: set[str] = set()
     def belongs(case):
-        # A receipt names its profile; a declared case belongs to the profile whose catalogue
-        # names every requirement it binds, and to no other.
+        # A receipt or a case declaration names its profile. A requirement's id alone cannot decide it: rv64i and rv64gc share
+        # REQ-D-ECALL-EBREAK with different obligations (a47-1). A declared case naming none belongs to the profile whose
+        # catalogue names every requirement it binds, and to no other.
         if case["profile"] is not None:
             return case["profile"] == profile
         return bool(case["bindings"]) and all(req_id in by_id for req_id, _ in case["bindings"])

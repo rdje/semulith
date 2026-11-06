@@ -29,6 +29,7 @@ SEAMS = {
                           '        elif r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n'),
     "argument-optional": ('        if excluded and argued:\n', '        if excluded:\n'),
     "unknown-case-credit": ('        if credit["case_id"] not in case_ids:\n', '        if False:\n'),
+    "declared-any-profile": ('profile=_declared_profile(case), evaluation="declared"', 'profile=None, evaluation="declared"'),
 }
 MUTATION_TESTS = {
     "credit-pending": "test_lapsed_credit_credits_nothing",
@@ -38,6 +39,7 @@ MUTATION_TESTS = {
     "unresolved-closes": "test_unresolved_source_caps_closure_at_partial",
     "argument-optional": "test_exclusion_without_argument_is_a_finding",
     "unknown-case-credit": "test_credit_naming_unknown_case_or_incomplete_capture_credits_nothing",
+    "declared-any-profile": "test_a_declared_case_belongs_to_the_profile_it_names",
 }
 
 
@@ -251,6 +253,17 @@ class StatusTests(unittest.TestCase):
         case(self.root, "c2", [("R1", ["OB-A"])], receipt="{not json")
         with self.assertRaises(self.M.Refused): self.run_root()
 
+    def test_a_declared_case_belongs_to_the_profile_it_names(self):
+        """A requirement's id does not decide it: a shared id with other obligations would raise a false finding (a47-1)."""
+        graph(self.root, [req("R1", ["OB-A"])])
+        graph(self.root, [req("R1", ["OB-Z"])], obligations=("OB-Z",), profile="fy-v0")
+        case(self.root, "c1", [("R1", ["OB-A"])])
+        (self.root / "evidence" / "c1" / "verification.json").unlink()
+        (self.root / "evidence" / "c1" / "case.sexp").write_text('(case (id "c1") (profile_id "fx-v0"))\n')
+        tables = {t["profile"]: t for t in self.run_root()}
+        self.assertEqual((tables["fx-v0"]["cases"], tables["fy-v0"]["cases"]), (1, 0))
+        self.assertEqual(tables["fy-v0"]["findings"], [])
+
     def test_declared_case_without_receipt_credits_nothing(self):
         """A planned record with no receipt is a declared case: counted, bound, never credited."""
         graph(self.root, [req("R1", ["OB-A"]), req("R2", ["OB-B"])])
@@ -323,9 +336,14 @@ class StatusTests(unittest.TestCase):
         for rid in ("REQ-D-ALU-IMM", "REQ-D-ALU-REG", "REQ-D-LUI-AUIPC", "REQ-D-JALR-LSB", "REQ-D-NO-DELAY-SLOTS", "REQ-D-SHAMT", "REQ-D-WSUFFIX", "REQ-D-LOAD-EXT", "REQ-D-LOAD-X0"):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*done, []), rid)
+        # Batch II-a is declared (a47-1): each binds its requirement and credits nothing until it is captured and credited.
+        none = ("planned", "planned", "no credited implementation or evidence")
+        for rid, case in (("REQ-D-ECALL-EBREAK", "rv64gc-ecall-ebreak-v1"), ("REQ-GC-CSR-ACCESS", "rv64gc-csr-access-v1"), ("REQ-GC-COUNTERS", "rv64gc-counters-v1"), ("REQ-GC-FENCEI", "rv64gc-fencei-v1"), ("REQ-D-IALIGN-16", "rv64gc-ialign-16-v1")):
+            row = next(r for r in gc["rows"] if r["id"] == rid)
+            self.assertEqual((row["recorded"], row["derived"], row["why"], row["uncredited"]), (*none, [case + ":declared"]), rid)
         self.assertEqual(gc["derived"], {"planned": 33, "partial": 0, "implemented": 14, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (22, 14, 0, 14, 14))
+                         (27, 14, 5, 14, 14))
 
 
 def main():
