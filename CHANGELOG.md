@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0372 (P4-SYSTEM.14 a50-1) — a case may declare what selects otherwise, and its effect is measured against that
+
+For a requirement whose selection is already the profile override there was nothing to compare it with. A case can now state the other choice, in a closed vocabulary measured against the pinned binary, and the same guest runs under it. No case declares one yet, and no credit moved.
+
 ## SEMULITH-P4-0371 (P4-SYSTEM.14 a49-4) — the superseded cases leave the tree, listed, and the list reads back from history
 
 23 directories and 16 overlay and effect files are out, 3.8 MB; `evidence/` holds 25 cases and 23 credits stay current. A new book page lists all of them and a test reads each row back from history. The book's runnable examples, which had drifted at a49-3, name today's cases with re-measured numbers. The window that carries fetch faults closes.

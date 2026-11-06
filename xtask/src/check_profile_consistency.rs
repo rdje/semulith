@@ -8443,7 +8443,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN config effect {mode}"), prober.probe(repo, argv.clone()), 0, "CONFIG-EFFECT: 10 tests / 0 failures / 0 errors; synthetic configuration-effect controls, no capture credit");
+        tally.score(&format!("GREEN config effect {mode}"), prober.probe(repo, argv.clone()), 0, "CONFIG-EFFECT: 13 tests / 0 failures / 0 errors; synthetic configuration-effect controls, no capture credit");
         for (mutation, failures, errors) in [
             ("reuse", "0", "2"),
             ("record-reuse", "1", "1"),
@@ -8451,13 +8451,15 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("process-failed", "0", "1"),
             ("trace-missing", "0", "1"),
             ("trace-bound", "0", "1"),
-            ("no-effect", "1", "0"),
-            ("profile-config", "2", "0"),
+            ("no-effect", "2", "0"),
+            ("profile-config", "3", "0"),
             ("binary-pin", "1", "0"),
+            ("declared-ignored", "3", "0"),
+            ("declared-refusal", "0", "1"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED config effect {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CONFIG-EFFECT: 10 tests / {failures} failures / {errors} errors; synthetic configuration-effect controls, no capture credit"));
+            tally.score(&format!("RED config effect {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CONFIG-EFFECT: 13 tests / {failures} failures / {errors} errors; synthetic configuration-effect controls, no capture credit"));
         }
     }
     // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).
@@ -8469,7 +8471,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN reference overlay {mode}"), prober.probe(repo, argv.clone()), 0, "REFERENCE-OVERLAY: 14 tests / 0 failures / 0 errors; synthetic configuration controls, no capture credit");
+        tally.score(&format!("GREEN reference overlay {mode}"), prober.probe(repo, argv.clone()), 0, "REFERENCE-OVERLAY: 24 tests / 0 failures / 0 errors; synthetic configuration controls, no capture credit");
         for (mutation, losses) in [
             ("extension-known", "1"),
             ("extension-changes", "1"),
@@ -8480,10 +8482,17 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("region-overlap", "3"),
             ("region-order", "2"),
             ("case-binding", "1"),
+            ("alternative-known", "1"),
+            ("alternative-extension-changes", "2"),
+            ("alternative-misaligned-changes", "1"),
+            ("alternative-reservation-changes", "1"),
+            ("alternative-nothing", "1"),
+            ("alternative-binding", "1"),
+            ("alternative-over-case", "1"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED reference overlay {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("REFERENCE-OVERLAY: 14 tests / {losses} failures / 0 errors; synthetic configuration controls, no capture credit"));
+            tally.score(&format!("RED reference overlay {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("REFERENCE-OVERLAY: 24 tests / {losses} failures / 0 errors; synthetic configuration controls, no capture credit"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
@@ -8756,7 +8765,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 55 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 58 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8787,6 +8796,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "effect-binary",
             "effect-differs",
             "effect-override",
+            "effect-declared-refused",
             "effect-trace",
             "effect-diverges",
             "effect-at-witness",

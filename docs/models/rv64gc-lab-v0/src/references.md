@@ -151,6 +151,43 @@ step 8 (rdtime x5): Sail {}, expectations {'x5': 8}
 
 The record names the case's guest (`e4b9a6c8…`), the case's configuration (`05746ed6…`) and the same alternative as the other two (`666d9373…`, the profile override), and the raw trace (25,773 B, `2b673858…`). The two traces are the same up to line 16, step 8, where the case's reads `x5 <- 0x0000000000000008` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr, so the program's first read of `time` traps before any Sstc behaviour is reached. `rv64gc-csr-set-v2` and `rv64gc-zicntr-v2` re-measured theirs on the same terms (step 34, step 6), and each raw trace is byte-identical to its predecessor's (14,236 B, 27,617 B).
 
+## When the override is the selection
+
+The effect above compares a case's own configuration with the profile override. For seven requirements the override already is the selection: `SVADE` says the hart faults instead of updating A and D, and the override says so too, so there is nothing to compare it with. So a case may declare the choice the profile did not make, `reference/<case-id>.alternative.sexp` (`P4-SYSTEM.14` a50-1, `decision_declared-alternative-configuration.md`):
+
+```lisp
+(alternative (case_id "rv64gc-svade-v1")
+  (reason "The specification's other A/D scheme: the hart updates the bits itself.")
+  (extension_off "Svade"))
+```
+
+The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, the three misaligned checks, the reservation set's size, and whether a same-hart store invalidates a reservation. A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. No case declares one yet; this is the file the next unit declares. See what one does across the corpus before declaring a case on it:
+
+```console
+$ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative
+191 guests
+ 168  case AGREE -> alternative AGREE
+  15  case DIVERGE -> alternative DIVERGE
+   6  case REFUSED -> alternative REFUSED
+   1  case NOT-COMPARED -> alternative NOT-COMPARED
+   1  case AGREE -> alternative DIVERGE
+sv39-svade            AGREE    -> DIVERGE  | step 90 (ld x14, x13, 0): Sail {'x14': 1111638594}, expectations {}
+```
+
+Measured over the corpus for each:
+
+| Requirement | What selects otherwise | Guests moved | First difference |
+| --- | --- | --- | --- |
+| `SVADE` | `Svade` off | 1 | `sv39-svade` step 90 |
+| `FAULT-PRIORITY` | no misaligned check before translation | 1 | `prio-sv39` step 72: `mcause` 13, expected 4 |
+| `ATOMIC-MISALIGN` | misaligned LR/SC and AMO raise the misaligned causes | 1 | `a-lrsc-fault` step 11: `mcause` 4, expected 5 |
+| `PRIV-MODES` | `S`, `Sv39`, `Svade` and `Sstc` off | 53 | `mm-ecall-modes` step 28: `mcause` 8, expected 9 |
+| `SV39` | `Sv48` on | 0 | no guest yet |
+| `RESERVATION` | a same-hart store invalidates the reservation | 0 | no guest yet |
+| `SC-DETERMINISTIC` | a 16-byte reservation set | 0 agreeing | no guest yet |
+
+The binary refuses `S`, `U` or `Sv39` turned off alone, which is why a declaration holds a set. A zero says the corpus has no witness, not that the switch does nothing. An observed effect shows this configuration matters to this guest at this step. It does not show that the selection is right, or that the alternative is a coherent machine: only that the pinned binary accepts it.
+
 A deliberately wrong C.LI result must diverge through a fresh reference run.
 An adapter that accepts a failed producer, stale trace or changed expected value
 is itself a defect, even if the reference program normally succeeds. Controls

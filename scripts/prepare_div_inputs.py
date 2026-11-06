@@ -17,7 +17,9 @@ source-value owners before it is reported.
 
 A case may carry its own reference configuration: `reference/<case-id>.overlay.sexp` beside the
 profile override, applied over the mapped override here and nowhere else, so the profile override
-and every other case's configuration do not move (decision_reference-config-per-case.md).
+and every other case's configuration do not move (decision_reference-config-per-case.md). A case
+may also declare what selects otherwise, `reference/<case-id>.alternative.sexp`: it renders here and
+is run only by `measure_config_effect.py` (decision_declared-alternative-configuration.md).
 
 The tool launches no process, opens no acquired material and grants no capture, policy or
 qualification credit. Retained bytes are never replaced: a changed input needs a new case.
@@ -157,6 +159,57 @@ def reference_config(root: Path, case_id: str) -> dict:
     overlay = map_document(root, read_bounded(path), "overlay", overlay_to_doc)
     _require(overlay["case_id"] == case_id, f"overlay {overlay_path(case_id)} declares case {overlay['case_id']}")
     return apply_overlay(override, overlay)
+
+
+def alternative_path(case_id: str) -> str:
+    return "profiles/" + PROFILE + "/reference/" + case_id + ".alternative.sexp"
+
+
+def alternative_to_doc(form) -> dict:
+    def one(name):
+        found = S.children(form, name)
+        return str(found[0][1]) if found else None
+    size = S.children(form, "reservation_set_size_exp")
+    return {
+        "case_id": one("case_id"),
+        "extensions_off": [str(child[1]) for child in S.children(form, "extension_off")],
+        "extensions_on": [str(child[1]) for child in S.children(form, "extension_on")],
+        "misaligned": {kind: one("misaligned_" + kind) for kind in ("load_store", "lrsc", "amo") if one("misaligned_" + kind)},
+        "reservation": {**({"reservation_set_size_exp": size[0][1]} if size else {}),
+                        **({"invalidate_on_same_hart_store": True} if one("invalidate_on_same_hart_store") else {})},
+    }
+
+
+def apply_alternative(config: dict, alternative: dict) -> dict:
+    """A case's configuration as its declared alternative selects otherwise; every switch must change something."""
+    result = deepcopy(config)
+    for names, wanted, word in ((alternative["extensions_off"], False, "off"), (alternative["extensions_on"], True, "on")):
+        for name in names:
+            entry = result["extensions"].get(name)
+            _require(entry is not None, f"alternative names unknown extension {name}")
+            _require(entry["supported"] is not wanted, f"alternative turns {name} {word}, which this configuration already has")
+            entry["supported"] = wanted
+    exceptions = result["memory"]["misaligned"]["exceptions"]
+    for kind, selected in alternative["misaligned"].items():
+        rendered = {"None": None} if selected == "None" else {"Some": selected}
+        _require(exceptions.get(kind) != rendered, f"alternative selects {selected} for misaligned {kind}, which this configuration already declares")
+        exceptions[kind] = rendered
+    for knob, value in alternative["reservation"].items():
+        reservation = result["platform"].setdefault("reservation", {})
+        _require(reservation.get(knob) != value, f"alternative sets {knob} to {value}, which this configuration already declares")
+        reservation[knob] = value
+    _require(result != config, "the alternative changes nothing")
+    return result
+
+
+def alternative_config(root: Path, case_id: str) -> dict | None:
+    """What the case declares to select otherwise, over its own configuration; None when it declares nothing."""
+    path = root / alternative_path(case_id)
+    if not path.is_file():
+        return None
+    alternative = map_document(root, read_bounded(path), "alternative", alternative_to_doc)
+    _require(alternative["case_id"] == case_id, f"alternative {alternative_path(case_id)} declares case {alternative['case_id']}")
+    return apply_alternative(reference_config(root, case_id), alternative)
 
 
 def control_note(case: P.ReviewedPropertyCase) -> str:

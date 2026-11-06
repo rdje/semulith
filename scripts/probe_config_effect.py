@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import shutil
 import stat
@@ -36,6 +37,8 @@ MUTATIONS = {
     "no-effect": ('if result.verdict != "DIVERGE":', "if False:"),
     "profile-config": ('config.write_bytes(alternative)', 'config.write_bytes(case_config.read_bytes())'),
     "binary-pin": ("binary=sha(binary.read_bytes())", 'binary=sha(guest.read_bytes())'),
+    "declared-ignored": ("    declared = Prep.alternative_config(root, case_id)\n", "    declared = None\n"),
+    "declared-refusal": ("    except REFUSALS as refused:\n        return 2, f\"REFUSED: {case_id}'s declared alternative: {refused}\"\n", "    except ZeroDivisionError as refused:\n        return 2, str(refused)\n"),
 }
 
 
@@ -55,6 +58,7 @@ class EffectTests(unittest.TestCase):
             shutil.copy(CASE_DIR / name, case / name)
         (self.root / "schema").mkdir()
         shutil.copy(ROOT / "schema" / "override.sexp", self.root / "schema" / "override.sexp")
+        shutil.copy(ROOT / "schema" / "alternative.sexp", self.root / "schema" / "alternative.sexp")
         override = self.root / M.Prep.OVERRIDE
         override.parent.mkdir(parents=True)
         shutil.copy(ROOT / M.Prep.OVERRIDE, override)
@@ -114,6 +118,37 @@ class EffectTests(unittest.TestCase):
         self.assertEqual(self.seen.read_bytes(), M.profile_config(self.root))
         self.assertNotEqual(self.seen.read_bytes(), (CASE_DIR / "reference-config.json").read_bytes())
         self.assertIn(f"--inst-limit 157", self.ran.read_text())
+
+    def declare(self, switches):
+        (self.root / M.Prep.alternative_path(CASE)).write_text(f'(alternative (case_id "{CASE}") (reason "Selects otherwise."){switches})\n')
+
+    def test_a_declared_alternative_is_what_runs_and_what_the_record_names(self):
+        self.differ()
+        self.declare(' (extension_off "Svade")')
+        binary = self.binary()
+        code, detail = M.measure(self.root, CASE, binary)
+        self.assertEqual(code, 0, detail)
+        config = json.loads(self.seen.read_text())
+        self.assertIs(config["extensions"]["Svade"]["supported"], False)
+        self.assertEqual(self.seen.read_bytes(), M.alternative_config(self.root, CASE)[0])
+        self.assertNotEqual(self.seen.read_bytes(), M.profile_config(self.root))
+        self.assertIn(f'(alternative_config_sha256 "{sha(self.seen.read_bytes())}")', M.effect_paths(self.root, CASE)[0].read_text())
+
+    def test_a_refused_alternative_runs_nothing_and_retains_nothing(self):
+        self.differ()
+        self.declare(' (extension_off "NotAnExtension")')
+        code, detail = M.measure(self.root, CASE, self.binary())
+        self.assertEqual(code, 2, detail)
+        self.assertIn("declared alternative", detail)
+        self.assertFalse(self.ran.exists())
+        self.assertEqual(self.retained(), [False, False])
+
+    def test_an_agreeing_run_under_a_declared_alternative_names_it_and_retains_nothing(self):
+        self.declare(' (extension_off "Svade")')
+        code, detail = M.measure(self.root, CASE, self.binary())
+        self.assertEqual(code, 1, detail)
+        self.assertIn("under its declared alternative", detail)
+        self.assertEqual(self.retained(), [False, False])
 
     def test_an_agreeing_run_retains_nothing(self):
         code, detail = M.measure(self.root, CASE, self.binary())

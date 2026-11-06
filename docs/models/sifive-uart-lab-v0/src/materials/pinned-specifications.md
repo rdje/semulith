@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/sifive-uart-lab-v0/sources.sexp`  `f723943561eba48d768d48be6e668b4998274e8d97f89b4315479bce1cc4a016`
-     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 Pinned publication: **SiFive FU540-C000 Manual — SiFive, Inc. (chipdoc materials corpus)**, revision `v1p5`, retrieved 2026-10-02 — explicitly NOT third-party mirrors and the legacy v1p0/v1p3/v1p4 issues — the pin is v1p5 via the corpus.
 

@@ -9,6 +9,7 @@ This is a live experiment and not CI: it needs the untracked reference binary. I
 credit, and says what a configuration changes across the corpus before a case is declared on it (decision_reference-config-per-case.md).
 
   python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
+  python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative   # the case's own against what it declares
 
 Writes only under --out (default target/reference-config-census/<case>), and reads the tracked guests.
 """
@@ -56,10 +57,19 @@ def verdict(binary: Path, config: Path, elf: Path, trace: Path, expected: dict) 
     return dict(verdict=outcome, detail=detail)
 
 
-def census(case_id: str, out: Path, binary: Path) -> list[dict]:
+def configurations(case_id: str, alternative: bool) -> dict:
+    """The two configurations compared, in report order and named for the report."""
+    case = Prep.reference_config(ROOT, case_id)
+    if alternative:
+        declared = Prep.alternative_config(ROOT, case_id)
+        if declared is None:
+            raise Prep.CurationRefused(f"{case_id} declares no alternative")
+        return {"case": case, "alternative": declared}
+    return {"profile": Prep.map_document(ROOT, Prep.read_bounded(ROOT / Prep.OVERRIDE), "override", D.override_to_doc), "case": case}
+
+
+def census(configs: dict, out: Path, binary: Path) -> list[dict]:
     out.mkdir(parents=True, exist_ok=True)
-    configs = {"profile": Prep.map_document(ROOT, Prep.read_bounded(ROOT / Prep.OVERRIDE), "override", D.override_to_doc),
-               "case": Prep.reference_config(ROOT, case_id)}
     for name, config in configs.items():
         (out / f"{name}.json").write_text(json.dumps(config, indent=2) + "\n")
     assembler = Assembler(UNIT / "encoding.sexp")
@@ -67,8 +77,7 @@ def census(case_id: str, out: Path, binary: Path) -> list[dict]:
     for name in run_order():
         expected = D.load_expectations(GUESTS / f"{name}.expected.sexp")
         if not expected.get("cross_model", True):
-            rows.append(dict(guest=name, profile=dict(verdict="NOT-COMPARED", detail="cross-model comparison disabled by its record"),
-                             case=dict(verdict="NOT-COMPARED", detail="cross-model comparison disabled by its record")))
+            rows.append(dict(guest=name, **{config: dict(verdict="NOT-COMPARED", detail="cross-model comparison disabled by its record") for config in configs}))
             continue
         entry = int(expected["entry"], 16)
         elf = out / f"{name}.elf"
@@ -78,24 +87,30 @@ def census(case_id: str, out: Path, binary: Path) -> list[dict]:
     return rows
 
 
-def report(rows: list[dict]) -> str:
-    moved = Counter((row["profile"]["verdict"], row["case"]["verdict"]) for row in rows)
+def report(rows: list[dict], first: str = "profile", second: str = "case") -> str:
+    moved = Counter((row[first]["verdict"], row[second]["verdict"]) for row in rows)
     lines = [f"{len(rows)} guests"]
-    lines += [f"{count:4d}  profile {before} -> case {after}" for (before, after), count in moved.most_common()]
-    lines += [f"{row['guest']:<22}{row['profile']['verdict']:<9}-> {row['case']['verdict']:<9}| {row['case']['detail'][:80]}"
-              for row in rows if row["profile"]["verdict"] != row["case"]["verdict"]]
+    lines += [f"{count:4d}  {first} {before} -> {second} {after}" for (before, after), count in moved.most_common()]
+    lines += [f"{row['guest']:<22}{row[first]['verdict']:<9}-> {row[second]['verdict']:<9}| {row[second]['detail'][:80]}"
+              for row in rows if row[first]["verdict"] != row[second]["verdict"]]
     return "\n".join(lines) + "\n"
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--case", required=True, help="the case whose configuration to compare with the profile override")
+    parser.add_argument("--alternative", action="store_true", help="compare the case's configuration with the alternative it declares")
     parser.add_argument("--out", type=Path, help="working directory, default target/reference-config-census/<case>")
     args = parser.parse_args(argv)
     out = args.out or ROOT / "target" / "reference-config-census" / args.case
-    rows = census(args.case, out, Sail.reference_binary())
+    try:
+        configs = configurations(args.case, args.alternative)
+    except Prep.CurationRefused as refused:
+        print(f"REFUSED: {refused}", file=sys.stderr)
+        return 2
+    rows = census(configs, out, Sail.reference_binary())
     (out / "census.json").write_text(json.dumps(rows, indent=1) + "\n")
-    text = report(rows)
+    text = report(rows, *configs)
     (out / "census.txt").write_text(text)
     sys.stdout.write(text)
     return 0

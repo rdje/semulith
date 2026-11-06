@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/rv64i-lab-v0/references.sexp`  `c38a4c0bb624c6d12c69d21e92931ad738114ef316552f3015136344095f1ba9`
-     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | ID | Role | Status | Kind | Version | sha256 | Terms |
 | --- | --- | --- | --- | --- | --- | --- |

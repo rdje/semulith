@@ -535,8 +535,9 @@ def emit_cases(profile_dir: Path) -> str | None:
     a += ["| Case | Requirement | Program | Steps | Witnesses | Configuration | State |", "| --- | --- | --- | --- | --- | --- | --- |"]
     for d in cases:
         own = (profile_dir / "reference" / f"{d['id']}.overlay.sexp").is_file()
+        alternative = ", with a declared alternative" if (profile_dir / "reference" / f"{d['id']}.alternative.sexp").is_file() else ""
         a.append(f"| `{d['id']}` | `{d['requirement_id']}` | `{d['program']}` | {d['instructions']} | {len(d['properties'])} | "
-                 f"{'its own' if own else 'the override'} | {state(d)} |")
+                 f"{'its own' if own else 'the override'}{alternative} | {state(d)} |")
     return "\n".join(a) + "\n"
 
 

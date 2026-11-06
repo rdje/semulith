@@ -132,12 +132,12 @@ what failed:
 | the case's configuration | `reference-config.json`'s digest | `… does not pin the case's configuration` |
 | the binary | the reference producer's version | `… does not pin the reference producer's binary` |
 | a different configuration | the alternative's digest is not the case's | `… does not pin a different configuration` |
-| the profile override | the override as `prepare_div_inputs` renders it | `… does not pin the profile override` |
+| the alternative | the one the case declares, rendered by `prepare_div_inputs` ([a50-1](references.md#when-the-override-is-the-selection)), else the profile override as it renders it | `… does not pin its declared alternative`, `… does not pin the profile override` |
 | its trace | the raw trace's digest and size | `… does not pin its trace` |
 | *(re-derived)* a difference | the trace against the case's baseline expectation | `the retained effect reads AGREE: no observed effect` |
 | *(re-derived)* at a witness | a declared property's step | `the retained effect first differs at step N, no declared property's` |
 
-A record without its trace, or a malformed one, refuses (exit 2): that pair cannot be measured honestly.
+A record without its trace, or a malformed one, refuses (exit 2): that pair cannot be measured honestly. An alternative the tool refuses reads pending, `the case's declared alternative refuses: …`.
 
 | Leg | Measured on `rv64gc-csr-set-v1` |
 | --- | --- |

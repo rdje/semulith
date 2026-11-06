@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Measure what a case's reference configuration does: the case's guest under the profile override, once, retained.
+"""Measure what a case's reference configuration does: the case's guest under another configuration, once, retained.
 
 The policy's `implementation-defined` row asks for a "pinned matching reference configuration with a behavior-changing control" and
 calls "a configuration file without an observed effect" insufficient. A case's capture observes only its own configuration, so this
-tool runs the same guest through the same pinned binary under the profile override, and retains the raw trace beside the case's overlay:
+tool runs the same guest through the same pinned binary under the alternative the case declares (`<case-id>.alternative.sexp`), or
+under the profile override when it declares none, and retains the raw trace beside the case's configuration:
 
   profiles/<profile>/reference/<case-id>.effect.trace   the reference's raw trace, never edited
   profiles/<profile>/reference/<case-id>.effect.sexp    what ran: the binary, the guest and both configurations, by digest (schema/config-effect.sexp)
@@ -38,6 +39,7 @@ import sexp as S  # noqa: E402
 
 ROOT = HERE.parent
 TIMEOUT_SECONDS = 120
+REFUSALS = (Prep.CurationRefused, Prep.K.SchemaError, S.SexpError)
 TRACE_BYTES = 4 * 1024 * 1024  # the collector's bound on a trace
 
 
@@ -55,6 +57,14 @@ def profile_config(root: Path) -> bytes:
     """The profile override's configuration, rendered as `prepare_div_inputs` renders every case's."""
     config = Prep.map_document(root, Prep.read_bounded(root / Prep.OVERRIDE), "override", D.override_to_doc)
     return (json.dumps(config, indent=2) + "\n").encode("utf-8")
+
+
+def alternative_config(root: Path, case_id: str) -> tuple[bytes, str]:
+    """What the case's configuration is compared with, and its name: the alternative it declares, else the profile override."""
+    declared = Prep.alternative_config(root, case_id)
+    if declared is None:
+        return profile_config(root), "the profile override"
+    return (json.dumps(declared, indent=2) + "\n").encode("utf-8"), "its declared alternative"
 
 
 def record_text(case_id: str, *, binary: str, guest: str, case_config: str, alternative: str, instructions: int, trace: bytes) -> str:
@@ -75,13 +85,16 @@ def measure(root: Path, case_id: str, binary: Path) -> tuple[int, str]:
         return 2, f"REFUSED: {case_id}'s configuration effect is already retained; existing names refuse reuse"
     guest, case_config = case_dir / "guest.elf", case_dir / "reference-config.json"
     expected = D.load_expectations(case_dir / "baseline.expected.sexp")
-    alternative = profile_config(root)
+    try:
+        alternative, named = alternative_config(root, case_id)
+    except REFUSALS as refused:
+        return 2, f"REFUSED: {case_id}'s declared alternative: {refused}"
     if sha(alternative) == sha(case_config.read_bytes()):
         return 2, f"REFUSED: {case_id} has no configuration of its own to measure"
     scratch = root / "target" / "tmp"
     scratch.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=scratch) as td:
-        config, trace = Path(td) / "profile-override.json", Path(td) / "effect.trace"
+        config, trace = Path(td) / "alternative.json", Path(td) / "effect.trace"
         config.write_bytes(alternative)
         process = subprocess.run([str(binary), "--config-override", str(config), "--inst-limit", str(expected["instructions"]),
                                   "--trace-instr", "--trace-gpr", "--trace-exception", "--trace-output", str(trace), str(guest)],
@@ -93,7 +106,7 @@ def measure(root: Path, case_id: str, binary: Path) -> tuple[int, str]:
         return 2, f"REFUSED: the trace holds {len(data)} bytes, above {TRACE_BYTES}"
     result = Sail.compare_observations(expected, data.decode("utf-8"), process.returncode)
     if result.verdict != "DIVERGE":
-        return 1, f"{case_id}'s guest reads {result.verdict} under the profile override: this configuration has no observed effect here"
+        return 1, f"{case_id}'s guest reads {result.verdict} under {named}: this configuration has no observed effect here"
     text = record_text(case_id, binary=sha(binary.read_bytes()), guest=sha(guest.read_bytes()), case_config=sha(case_config.read_bytes()),
                        alternative=sha(alternative), instructions=expected["instructions"], trace=data)
     with trace_path.open("xb") as stream:

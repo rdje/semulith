@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/dsp56300-lab-v0/references.sexp`  `3f844efe5200c8456596e083fa568bdf00b044e60bf9c7a3072b3b7c6aede372`
-     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | ID | Role | Status | Kind | Version | sha256 | Terms |
 | --- | --- | --- | --- | --- | --- | --- |

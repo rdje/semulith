@@ -151,7 +151,7 @@ Without `tail` it prints all 23. A credited case with no row keeps the axis open
 
 ## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-When this route was set, 42 were `planned`; Batches I, II-a and II-b have since credited eighteen, so 24 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). When this route was set, 42 were `planned`; Batches I, II-a and II-b have since credited eighteen, so 24 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc

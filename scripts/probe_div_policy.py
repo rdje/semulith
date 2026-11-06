@@ -59,7 +59,8 @@ SEAMS = {
     "effect-binary": ('("the reference producer\'s binary", reference is not None and f"sha256:{_one(record, \'binary_sha256\')}" == str(_one(reference, "version")))',
                       '("the reference producer\'s binary", True)'),
     "effect-differs": ('("a different configuration", alternative != case_config)', '("a different configuration", True)'),
-    "effect-override": ('("the profile override", alternative == _digest(Effect.profile_config(root)))', '("the profile override", True)'),
+    "effect-override": ('(named, alternative == _digest(declared)),', '(named, True),'),
+    "effect-declared-refused": ('        return False, f"the case\'s declared alternative refuses: {refused}"\n', '        declared, named = b"", "nothing"\n'),
     "effect-trace": ('("its trace", _one(record, "trace_sha256") == _digest(trace) and _one(record, "trace_bytes") == len(trace))', '("its trace", True)'),
     "effect-diverges": ('    if result.verdict != "DIVERGE" or difference is None:\n',
                         '    if difference is None:\n        return True, "observed effect"\n    if False:\n'),
@@ -95,6 +96,7 @@ MUTATION_TESTS = {
     "effect-binary": "test_a_retained_effect_of_another_binary_is_pending",
     "effect-differs": "test_a_retained_effect_with_no_configuration_of_its_own_is_pending",
     "effect-override": "test_a_retained_effect_under_another_configuration_is_pending",
+    "effect-declared-refused": "test_a_case_whose_declared_alternative_refuses_is_pending",
     "effect-trace": "test_a_retained_effect_whose_trace_moved_is_pending",
     "effect-diverges": "test_a_retained_effect_that_agrees_is_pending",
     "effect-at-witness": "test_a_retained_effect_differing_at_no_declared_step_is_pending",
@@ -544,6 +546,41 @@ class PolicyTests(unittest.TestCase):
         text, t = self.implementation_defined()
         self.assertEqual((t["disposition"], t["missing"], t["category"], t["credited"]), ("satisfied", [], "implementation-defined", False))
         self.assertIn("selection recorded; observed effect under the profile override: step 0 (div x7, x5, x6): Sail {}", text)
+
+    def declared_alternative(self, switches=' (extension_off "Svade")'):
+        """A case on the profile override that declares what selects otherwise: the record pins that rendering, not the override."""
+        sys.path.insert(0, str(HERE))
+        import measure_config_effect as Effect
+        case = fixture(self.root, declare_boundaries=True, category="implementation-defined", detail="the selection",
+                       versions=(f"sha256:{BINARY}", "author-v"), insns=("div", "rem"))
+        retain_effect(self.root, case)
+        shutil.copy(ROOT / "schema" / "alternative.sexp", self.root / "schema" / "alternative.sexp")
+        path = self.root / Effect.Prep.alternative_path("cx")
+        path.write_text(f'(alternative (case_id "cx") (reason "Selects otherwise."){switches})\n')
+        return Effect, case, path
+
+    def test_a_case_with_a_declared_alternative_is_read_against_it(self):
+        Effect, case, path = self.declared_alternative()
+        record = self.root / "profiles" / "fx-v0" / "reference" / "cx.effect.sexp"
+        rendered = Effect.alternative_config(self.root, "cx")[0]
+        before = hashlib.sha256(Effect.profile_config(self.root)).hexdigest()
+        record.write_text(record.read_text().replace(before, hashlib.sha256(rendered).hexdigest()))
+        t = self.measure()
+        text = self.legs_text(t, "matched-reference-comparison")
+        self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []), text)
+        self.assertIn("selection recorded; observed effect under its declared alternative: step 0 (div x7, x5, x6): Sail {}", text)
+
+    def test_a_retained_effect_of_the_override_when_the_case_declares_otherwise_is_pending(self):
+        self.declared_alternative()
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["matched-reference-comparison"]))
+        self.assertIn("does not pin its declared alternative", self.legs_text(t, "matched-reference-comparison"))
+
+    def test_a_case_whose_declared_alternative_refuses_is_pending(self):
+        self.declared_alternative(' (extension_off "NotAnExtension")')
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["matched-reference-comparison"]))
+        self.assertIn("declared alternative refuses: alternative names unknown extension", self.legs_text(t, "matched-reference-comparison"))
 
     def test_implementation_defined_without_a_retained_effect_is_pending(self):
         """The policy: "A configuration file without an observed effect" is insufficient by itself."""

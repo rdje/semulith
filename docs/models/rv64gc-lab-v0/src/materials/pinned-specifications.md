@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/rv64gc-lab-v0/sources.sexp`  `0eb01f82ba9be00ec46fae525e389570d5c6388c87f5c19a536b0d626b28f641`
-     Generator: `scripts/gen_model_book.py` (sha256 `45ca77489c2e5070b090ce3e8c7f078d2520a12679412f55c7c62899b39e3e5a`) -->
+     Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 Pinned publication: **RISC-V Ratified Specifications Library (docs.riscv.org), pinned snapshot v20260120 — plus three catalog-cached artifacts declared in the comment above**, revision `v20260120`, retrieved 2026-10-02 — explicitly NOT github.com/riscv/riscv-isa-manual releases — different section numbering (the numbering trap).
 

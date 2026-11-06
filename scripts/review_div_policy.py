@@ -303,13 +303,17 @@ def _config_effect(root: Path, case_dir: Path, profile_dir: Path, case_id: str, 
     trace = _bounded_bytes(record_path.with_name(f"{case_id}.effect.trace"), Effect.TRACE_BYTES)
     case_config = _digest(_bounded_bytes(case_dir / "reference-config.json"))
     alternative = _one(record, "alternative_config_sha256")
+    try:
+        declared, named = Effect.alternative_config(root, case_id)
+    except Effect.REFUSALS as refused:
+        return False, f"the case's declared alternative refuses: {refused}"
     reference = producers.get("reference")
     pins = (("its case", _one(record, "case_id") == case_id),
             ("the guest", _one(record, "guest_sha256") == _digest(_bounded_bytes(case_dir / "guest.elf"))),
             ("the case's configuration", _one(record, "case_config_sha256") == case_config),
             ("the reference producer's binary", reference is not None and f"sha256:{_one(record, 'binary_sha256')}" == str(_one(reference, "version"))),
             ("a different configuration", alternative != case_config),
-            ("the profile override", alternative == _digest(Effect.profile_config(root))),
+            (named, alternative == _digest(declared)),
             ("its trace", _one(record, "trace_sha256") == _digest(trace) and _one(record, "trace_bytes") == len(trace)))
     unpinned = [name for name, held in pins if not held]
     if unpinned:
@@ -323,7 +327,7 @@ def _config_effect(root: Path, case_dir: Path, profile_dir: Path, case_id: str, 
         return False, f"the retained effect reads {result.verdict}: no observed effect"
     if difference.step_n not in declared_steps:
         return False, f"the retained effect first differs at step {difference.step_n}, no declared property's"
-    return True, f"observed effect under the profile override: {result.detail}"
+    return True, f"observed effect under {named}: {result.detail}"
 
 
 def _category_row(root: Path, case_dir: Path, profile_dir: Path, case_id: str, semantics: dict, expectation_path: Path,

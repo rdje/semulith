@@ -27,7 +27,15 @@ MUTATIONS = {
     "region-overlap": ('_require(base + size <= start or start + int(region["size"]["value"], 16) <= base,', '_require(True,'),
     "region-order": ('position = sum(1 for region in regions if int(region["base"]["value"], 16) < base)', 'position = len(regions)'),
     "case-binding": ('_require(overlay["case_id"] == case_id, ', '_require(True, '),
+    "alternative-known": ('_require(entry is not None, f"alternative names unknown extension {name}")', 'entry = entry if entry is not None else {"supported": not wanted}'),
+    "alternative-extension-changes": ('_require(entry["supported"] is not wanted, ', '_require(True, '),
+    "alternative-misaligned-changes": ('_require(exceptions.get(kind) != rendered, ', '_require(True, '),
+    "alternative-reservation-changes": ('_require(reservation.get(knob) != value, ', '_require(True, '),
+    "alternative-nothing": ('_require(result != config, "the alternative changes nothing")', '_require(True, "the alternative changes nothing")'),
+    "alternative-binding": ('_require(alternative["case_id"] == case_id, ', '_require(True, '),
+    "alternative-over-case": ('return apply_alternative(reference_config(root, case_id), alternative)', 'return apply_alternative(map_document(root, read_bounded(root / OVERRIDE), "override", D.override_to_doc), alternative)'),
 }
+ALTERNATIVE_TEXT = """(alternative (case_id "{case}") (reason "What selects otherwise."){switches})"""
 
 
 def region(base, size):
@@ -58,7 +66,7 @@ class OverlayTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
         (root / "schema").mkdir()
-        for name in ("override.sexp", "overlay.sexp", "schema.sexp"):
+        for name in ("override.sexp", "overlay.sexp", "alternative.sexp", "schema.sexp"):
             shutil.copy(ROOT / "schema" / name, root / "schema" / name)
         override = root / Prep.OVERRIDE
         override.parent.mkdir(parents=True)
@@ -66,6 +74,70 @@ class OverlayTests(unittest.TestCase):
         if overlay_text is not None:
             (root / Prep.overlay_path(CASE)).write_text(overlay_text)
         return root
+
+    def declared(self, switches, case=CASE, overlay=None):
+        root = self.temporary_root(overlay)
+        (root / Prep.alternative_path(CASE)).write_text(ALTERNATIVE_TEXT.format(case=case, switches=switches))
+        return root
+
+    def canonical(self, root):
+        return Prep.map_document(root, Prep.read_bounded(root / Prep.OVERRIDE), "override", Prep.D.override_to_doc)
+
+    def test_each_switch_changes_its_own_place_and_nothing_else_moves(self):
+        root = self.declared(' (extension_off "S") (extension_off "Sstc") (extension_on "Sv48") (misaligned_load_store None) (misaligned_lrsc AlignmentException)'
+                             ' (misaligned_amo AccessFault) (reservation_set_size_exp 4) (invalidate_on_same_hart_store true)')
+        expected = self.canonical(root)
+        expected["extensions"]["S"]["supported"] = False
+        expected["extensions"]["Sstc"]["supported"] = False
+        expected["extensions"]["Sv48"]["supported"] = True
+        expected["memory"]["misaligned"]["exceptions"] = {"load_store": {"None": None}, "lrsc": {"Some": "AlignmentException"}, "amo": {"Some": "AccessFault"}}
+        expected["platform"]["reservation"] = {"reservation_set_size_exp": 4, "invalidate_on_same_hart_store": True}
+        self.assertEqual(Prep.alternative_config(root, CASE), expected)
+        self.assertEqual(json.loads(json.dumps(expected)), expected, "the configuration renders to JSON unchanged")
+
+    def test_a_case_declaring_no_alternative_has_none(self):
+        self.assertIsNone(Prep.alternative_config(self.temporary_root(), CASE))
+
+    def test_an_alternative_applies_over_the_cases_own_configuration(self):
+        root = self.declared(' (extension_off "S")', overlay=OVERLAY_TEXT.format(case=CASE, extra=""))
+        expected = Prep.reference_config(root, CASE)
+        self.assertTrue(expected["platform"]["clint"]["supported"])
+        expected["extensions"]["S"]["supported"] = False
+        self.assertEqual(Prep.alternative_config(root, CASE), expected)
+
+    def test_an_alternative_naming_an_unknown_extension_refuses(self):
+        with self.assertRaisesRegex(Prep.CurationRefused, "unknown extension"):
+            Prep.alternative_config(self.declared(' (extension_off "NotAnExtension")'), CASE)
+
+    def test_a_switch_that_changes_nothing_refuses_on_every_knob(self):
+        for switches, needle in ((' (extension_off "Sv48")', "turns Sv48 off"), (' (extension_on "S")', "turns S on"),
+                                 (' (misaligned_load_store AlignmentException)', "for misaligned load_store")):
+            with self.subTest(switches=switches), self.assertRaisesRegex(Prep.CurationRefused, needle):
+                Prep.alternative_config(self.declared(switches), CASE)
+
+    def test_a_reservation_knob_the_configuration_already_declares_refuses(self):
+        root = self.declared(' (invalidate_on_same_hart_store true)')
+        declared = Prep.alternative_to_doc(Prep.S.parse((root / Prep.alternative_path(CASE)).read_text(), "alternative")[0])
+        canonical = self.canonical(root)
+        canonical["platform"]["reservation"] = {"invalidate_on_same_hart_store": True}
+        with self.assertRaisesRegex(Prep.CurationRefused, "invalidate_on_same_hart_store"):
+            Prep.apply_alternative(canonical, declared)
+
+    def test_an_alternative_of_no_switch_refuses(self):
+        with self.assertRaisesRegex(Prep.CurationRefused, "changes nothing"):
+            Prep.alternative_config(self.declared(""), CASE)
+
+    def test_an_alternative_naming_another_case_refuses(self):
+        with self.assertRaisesRegex(Prep.CurationRefused, "declares case"):
+            Prep.alternative_config(self.declared(' (extension_off "S")', case="rv64gc-some-other-v1"), CASE)
+
+    def test_the_schema_refuses_a_knob_the_alternative_does_not_name(self):
+        with self.assertRaises(Prep.CurationRefused):
+            Prep.alternative_config(self.declared(' (writable_misa true)'), CASE)
+
+    def test_the_schema_refuses_a_value_the_binary_does_not_publish(self):
+        with self.assertRaises(Prep.CurationRefused):
+            Prep.alternative_config(self.declared(' (misaligned_amo AlignmentFault)'), CASE)
 
     def test_every_change_is_the_overlays_and_nothing_else_moves(self):
         before = configuration()
