@@ -1,5 +1,5 @@
 # ARTIFACT CLEANUP — last run
 
 <!-- ANCHOR: latest -->
-- `2026-11-05T10:24Z`: removed 114 orphan incremental directories (10,925 files, 1,049,630,763 B) through `scripts/artifact_cleanup_orphans.py` (class C, ruling 4 of 2026-10-28; fresh host census, each re-decided before it went, journal complete); residue 0, none kept; 21 younger directories kept (`ARTIFACT-CLEANUP.29`, `SEMULITH-AC-0093`).
+- `2026-11-06T10:47Z`: removed 6 captured Cargo incremental `.bin` outputs (15,766,340 B) through the supported act (fresh host census, guarded core, journal `complete`/`verified`), after the orphan act found 0; residue 0; 127 cache-named candidates (824,333,368 B) kept, unrecorded by any session; four self-test scratch directories of dead processes removed outside the plan (`ARTIFACT-CLEANUP.37`, `SEMULITH-AC-0094`).
 <!-- ANCHOR_END: latest -->

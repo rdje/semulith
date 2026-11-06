@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`, `ARTIFACT-CLEANUP.39`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -932,23 +932,36 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   promotion: declined (routine recurrence).
 
 - ID: `ARTIFACT-CLEANUP.37` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-11-06` UTC, `SEMULITH-AC-0094`)
   Since `.29` it runs `scripts/artifact_cleanup_orphans.py --plan` and `--delete` in the fresh work directory before the four acts, each redirected to its log and never piped, and reports `orphan` beside `approved` and `unrecorded`.
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-11-05T10:24Z + 24 h), create the fresh work directory (mode 700), repeat the
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0092.
 
+  Result (`2026-11-06T10:47Z`, `SEMULITH-AC-0094`): run at 24 h, after 05d78b8c with a clean tree and `handoff: OK`, in target/artifact-cleanup/AC0094 (made first, mode 700) with run.log inside it (2026-11-06T10:38Z to 2026-11-06T10:47Z). The orphan act first: 0 orphan directories, 0 removed, residue 0. Plan: 133 candidates (840,099,708 B), 27,020 retained files (271,964,437 B). Strict selection: 6 approved (15,766,340 B), 127 unrecorded (824,333,368 B). The act's fresh census returned `handoff: OK`; the guarded core removed exactly the 6, residue 0, journal `complete`/`verified`; `--inspect` confirms plan, selection and journal.
+  The one-entry record is overwritten. Re-census against AC0092 (AC0094/recensus.json): of AC0092's 328 unrecorded, 1 remains and 327 are gone, class C having removed the orphan directories at AC0093; 126 are new (824,333,343 B), the rebuilds of the gated commits since. The act stays inside its recorded classes.
+  **A defect found, and its owner.** The first plan refused, `unsafe relative path`, and removed nothing (AC0094-refused/run.log): `target/doctrine-selftest/prefetch.14560-…`, 1,843 files, left by a gate that died on 2026-11-05, names its files with U+001F and U+001E, and the census rightly refuses control characters. So any gate killed at the wrong moment can block every later cleanup. **Removed, outside the plan (§15):** that directory and three other self-test scratch directories of dead processes, 1,880 files, 5,772,459 B, none tracked, each process checked gone and `handoff: OK` first (AC0094-refused/stale-selftest-dirs.txt). The fix is `XTASK.8`'s to own, since its prefetch writes those names: printable record keys, next.
+  promotion: declined (routine recurrence).
+
 - ID: `ARTIFACT-CLEANUP.38` — **the owned rollover of the live ledger**
   Status: `pending`
   Goal: the live ledger reads 14,616 B against the 14,745 B its rollover percentage allows (`scripts/artifact_task_history.py`), so the next leaf with an acceptance checklist refuses: `.29`'s was cut to fit. Publish a third generation (`scripts/artifact_task_history_preservation.py`), as `.19` and `.23` did, before that leaf.
   Found: 2026-11-05, `CLEANUP-TASK-PRESERVATION: REFUSED — cleanup live narrative requires owned rollover before ordinary growth`, at `.29`'s first draft.
 
+- ID: `ARTIFACT-CLEANUP.39` — **the next recurring cleanup**
+  Status: `pending`
+  Runs `scripts/artifact_cleanup_orphans.py --plan` and `--delete` in the fresh work directory before the four acts, each redirected to its log and never piped, and reports `orphan` beside `approved` and `unrecorded`.
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-11-06T10:47Z + 24 h), create the fresh work directory (mode 700), repeat the
+  four acts with the log inside it; overwrite the record from the receipt;
+  sync and normal COMMIT. Re-census the unrecorded population against AC0094.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.37` | `pending` | the next recurring cleanup, due 24 h after `2026-11-05T10:24Z`; `.29` done (class C) |
+| 1 | `ARTIFACT-CLEANUP.39` | `pending` | the next recurring cleanup, due 24 h after `2026-11-06T10:47Z` |
 | 2 | `ARTIFACT-CLEANUP.38` | `pending` | the owned rollover, before the next leaf that carries a checklist |
 
 ## Decisions

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0094 (leaf ARTIFACT-CLEANUP.37) — the eleventh recurring cleanup, and a defect its census found
+
+At 24 h, on a clean tree: the orphan act found 0, then 133 candidates planned and 6 captured Cargo incremental outputs (15,766,340 B) removed by the guarded core, residue 0. The first plan refused: a gate that died left self-test files named with control characters, so any killed gate could block every later cleanup. That residue is removed, and printable record keys are next, `XTASK.8`'s.
+
 ## SEMULITH-P4-0370 (leaf P4-SYSTEM.14 a49-3) — 23 credits under eleven legs, G-STATE and G-TRACE restored, and Batch II-b implemented
 
 The 19 re-issued and REQ-GC-ATOMICS, REQ-GC-C, REQ-GC-F and REQ-GC-D new, each case 11 of 11 legs: 23 implemented, 24 planned, 2 of 10 axes open. REQ-GC-C witnesses its second-parcel fetch fault.
