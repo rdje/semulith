@@ -1,0 +1,211 @@
+{
+  "format_version": "div-capture-verification-v1",
+  "case_id": "rv64gc-fencei-v1",
+  "profile_id": "rv64gc-lab-v0",
+  "source_declaration_commit": "507c301781ef2694e06f9ede7f278f23905d044f",
+  "disposition": "pending",
+  "reason": "fresh collection and retained findings; complete policy/qualification pending",
+  "canonical_capture_attempted": true,
+  "complete_canonical_capture": true,
+  "qualification": false,
+  "policy_disposition": "pending complete source/risk/feature policy",
+  "charged_read_bytes": 24247279,
+  "combined_limit": 134217728,
+  "collection": "recorded",
+  "evaluation": "pending",
+  "record": {
+    "disposition": "valid",
+    "issues": []
+  },
+  "findings": {
+    "manifest": "matched",
+    "identity": "matched",
+    "comparison": "satisfied",
+    "source_image": "matched",
+    "input_review": "matched",
+    "impact": "matched",
+    "source_values": "matched",
+    "expected_author": "matched",
+    "source_property": "matched"
+  },
+  "comparison": {
+    "disposition": "satisfied",
+    "reason": "finite supplied-byte comparison satisfied; authentication and qualification pending",
+    "runs": [
+      {
+        "run_kind": "baseline",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "10 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "repeat",
+        "comparison": {
+          "verdict": "AGREE",
+          "detail": "10 declared steps; every change-observation and required row present",
+          "gpr_difference": null
+        },
+        "refusal": null
+      },
+      {
+        "run_kind": "control",
+        "comparison": {
+          "verdict": "DIVERGE",
+          "detail": "step 9 (.word 0x00700113): Sail {'x2': 7}, expectations {'x2': 2}",
+          "gpr_difference": {
+            "step_n": 9,
+            "observed": [
+              [
+                "x2",
+                7
+              ]
+            ],
+            "expected": [
+              [
+                "x2",
+                2
+              ]
+            ]
+          }
+        },
+        "refusal": null
+      }
+    ]
+  },
+  "runs": [
+    {
+      "kind": "baseline",
+      "process": "recorded",
+      "pid": 59714,
+      "exit": 0,
+      "charge": 7752191,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "baseline-raw-gpr",
+          "object": "evidence/rv64gc-fencei-v1/baseline.trace",
+          "byte_size": 732,
+          "sha256": "56f9d922f8af50c639945c713abf644b3f2b469a8c7098b8b926531fbef2795a"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "baseline-process-stdout",
+          "object": "evidence/rv64gc-fencei-v1/baseline.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "baseline-process-stderr",
+          "object": "evidence/rv64gc-fencei-v1/baseline.stderr",
+          "byte_size": 113,
+          "sha256": "dac5c66925e298592012b09e592ff497576ca401abfb60c54f28fa290e0e1c4a"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "baseline-process-receipt",
+          "object": "evidence/rv64gc-fencei-v1/baseline.receipt.sexp",
+          "byte_size": 2410,
+          "sha256": "91e65b629092384ae9ff7704d574184ba23617ff290f26b673bab159e5523c8b"
+        }
+      ]
+    },
+    {
+      "kind": "repeat",
+      "process": "recorded",
+      "pid": 59718,
+      "exit": 0,
+      "charge": 7752167,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "repeat-raw-gpr",
+          "object": "evidence/rv64gc-fencei-v1/repeat.trace",
+          "byte_size": 732,
+          "sha256": "56f9d922f8af50c639945c713abf644b3f2b469a8c7098b8b926531fbef2795a"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "repeat-process-stdout",
+          "object": "evidence/rv64gc-fencei-v1/repeat.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "repeat-process-stderr",
+          "object": "evidence/rv64gc-fencei-v1/repeat.stderr",
+          "byte_size": 111,
+          "sha256": "b66ba4e797dba2d9eab97199df92d5f35913ae66db5c217b040b3a753df3c2f8"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "repeat-process-receipt",
+          "object": "evidence/rv64gc-fencei-v1/repeat.receipt.sexp",
+          "byte_size": 2392,
+          "sha256": "df8a5ed5d43374c055cb89c9f8f060968bf1a1254d98e7c9b7e058c19a88fc6f"
+        }
+      ]
+    },
+    {
+      "kind": "control",
+      "process": "recorded",
+      "pid": 59726,
+      "exit": 0,
+      "charge": 7751430,
+      "outputs": [
+        {
+          "role": "raw-gpr",
+          "observation_id": "control-raw-gpr",
+          "object": "evidence/rv64gc-fencei-v1/control.trace",
+          "byte_size": 732,
+          "sha256": "56f9d922f8af50c639945c713abf644b3f2b469a8c7098b8b926531fbef2795a"
+        },
+        {
+          "role": "process-stdout",
+          "observation_id": "control-process-stdout",
+          "object": "evidence/rv64gc-fencei-v1/control.stdout",
+          "byte_size": 24,
+          "sha256": "dad91584c8119ecfd85e2d91c6ede26f33ba2ddbf3bda015c4ccd8442fb29b89"
+        },
+        {
+          "role": "process-stderr",
+          "observation_id": "control-process-stderr",
+          "object": "evidence/rv64gc-fencei-v1/control.stderr",
+          "byte_size": 112,
+          "sha256": "4ff1ba0f40997610a7e1ec73ca0275ab92ec4b3ef9f6fa38c432f5c32d8d24e6"
+        },
+        {
+          "role": "process-receipt",
+          "observation_id": "control-process-receipt",
+          "object": "evidence/rv64gc-fencei-v1/control.receipt.sexp",
+          "byte_size": 2408,
+          "sha256": "b066e168e1ef58902109b083d9e998d339edd959c70b12bac64a03f278232125"
+        }
+      ]
+    }
+  ],
+  "authentication": {
+    "disposition": "matched",
+    "files": 88,
+    "authenticated_bytes": 991491,
+    "charged_read_bytes": 991491,
+    "snapshot_bytes": 20681,
+    "snapshot_limit": 16777216
+  },
+  "limitations": [
+    "two witnesses: no other effect, and a store ordered before a fetch, not all REQ-GC-FENCEI or CPU acceptance",
+    "before/after byte checks under a trusted quiescent runtime, not an atomic input set",
+    "preparation/schema/runtime I/O and process RAM are outside the combined artifact-read allowance"
+  ],
+  "measured_experiment": {
+    "id": "measured-experiment",
+    "role": "measured-record",
+    "object": "evidence/rv64gc-fencei-v1/measured-experiment.sexp",
+    "byte_size": 10225,
+    "sha256": "9fc3b954fa305809fe4b65580f3d0d583fe025572b8710aaaf5bb8f9fb99481f"
+  }
+}

@@ -112,3 +112,5 @@ So the row can be met honestly for most of them: the same guest under a configur
 **3. A false finding, fixed here.** A declared case guessed its profile from whichever catalogue names its requirement, and `REQ-D-ECALL-EBREAK` is in both `rv64i` and `rv64gc` with different obligations, so `rv64i` claimed the case and reported it outside its contract. A case's own `case.sexp` names its profile, and that is now what decides. It cost nothing until a mirrored requirement's obligations differed.
 
 **The order, restated.** Batch II-a, the five `defined`: `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`. Then the `defined` remainder: `ATOMICS`, `C`, `F`, `D`. Then the tool for a declared alternative, and the seven with a switch. Then the ruling.
+
+**Batch II-a captured (a47-2, 2026-11-06).** Each once, 1.1 s to 1.3 s, every control where declared, every compared file byte-identical to the rehearsal's. The guard's first attempt held for ten minutes at a load above 8 and refused, capturing nothing. Re-armed, it waited 19 minutes more and ran at load 6.6 to 7.0. That cost a wait and no case id, which is the trade the guard was set up to make.

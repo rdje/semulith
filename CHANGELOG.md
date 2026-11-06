@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0364 (leaf P4-SYSTEM.14 a47-2) — Batch II-a captured exactly once each, byte-identical to its rehearsal, after the guard refused once
+
+AGREE, AGREE, each control DIVERGE where declared. The load guard's first attempt stopped at its ten-minute limit, capturing nothing and spending no case id. Nothing credited.
+
 ## SEMULITH-P4-0363 (leaf P4-SYSTEM.14 a47-1) — Batch II-a's five programs and cases, declared before their captures, and what reading them found
 
 ECALL and EBREAK, Zicsr, the counters, FENCE.I and IALIGN: 62 witnesses, all three producers agreeing, rehearsed first. Reading them found that ten of the remaining 28 need a tool that reads a declared alternative, and that three of those have no switch, so 17 end at a ruling. A declared case now belongs to the profile it names.

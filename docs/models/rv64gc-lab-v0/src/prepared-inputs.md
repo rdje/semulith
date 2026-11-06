@@ -220,7 +220,7 @@ the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints th
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
 retained input is never replaced. The probe runs its controls over five declared cases (79 tests in
 each Python mode) and holds the family census to 903 files / 541 MiB, the forty-one-case envelope of
-`decision_evidence-family-two-cases.md` (525 files present at Batch II-a's declarations, a47-1); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+`decision_evidence-family-two-cases.md` (525 files present at Batch II-a's declarations, a47-1; 595 since their captures, a47-2); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reports xlen-v1's four
 pins byte for byte, because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,

@@ -39,8 +39,8 @@
 | `rv64gc-alu-reg-v1` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | credited, `CR-D-ALU-REG-1` |
 | `rv64gc-csr-set-v1` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | history: `rv64gc-csr-set-v2` holds the credit |
 | `rv64gc-csr-set-v2` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-2` |
-| `rv64gc-ecall-ebreak-v1` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | declared |
-| `rv64gc-ialign-16-v1` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | declared |
+| `rv64gc-ecall-ebreak-v1` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | captured, credited by nothing |
+| `rv64gc-ialign-16-v1` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | captured, credited by nothing |
 | `rv64gc-jalr-lsb-v1` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-1` |
 | `rv64gc-load-ext-v1` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-1` |
 | `rv64gc-load-x0-v1` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-1` |
@@ -54,9 +54,9 @@
 | `rv64gc-xlen-forms-v3` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-3` |
 | `rv64gc-zicntr-v1` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | history: `rv64gc-zicntr-v2` holds the credit |
 | `rv64gc-zicntr-v2` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-2` |
-| `rv64gc-counters-v1` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | declared |
-| `rv64gc-csr-access-v1` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 66 | 21 | the override | declared |
-| `rv64gc-fencei-v1` | `REQ-GC-FENCEI` | `fencei-forms.s` | 10 | 2 | the override | declared |
+| `rv64gc-counters-v1` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | captured, credited by nothing |
+| `rv64gc-csr-access-v1` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 66 | 21 | the override | captured, credited by nothing |
+| `rv64gc-fencei-v1` | `REQ-GC-FENCEI` | `fencei-forms.s` | 10 | 2 | the override | captured, credited by nothing |
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |
 | `rv64gc-m-forms-v4` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |
 | `rv64gc-m-forms-v5` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v6` holds the credit |

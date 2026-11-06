@@ -1,0 +1,2 @@
+using evidence/rv64gc-ialign-16-v1/control.trace for trace output.
+Unable to locate tohost symbol; disabling HTIF.

@@ -321,3 +321,19 @@ The first batch of `decision_obligations-route.md`: nine requirements, one case 
 Each control is that case's failure mode, predeclared: an immediate not sign-extended, a compare read as signed, a target that keeps its low bit, a delay slot that ran, an amount not masked, a word not sign-extended, a load extended the wrong way, a discarded load that skipped its fault. Each capture is complete with qualification false, and each case's three traces are byte-identical. Since a46-4 the reviews read all nine, 10 of 10 legs each, and a record credits each.
 
 **They were rehearsed first.** Every compared file of the real capture, traces, stdout, guest, expectations, case and declaration, is byte-identical to the throwaway clone's. So a capture's bytes do not depend on which commit declared it, or on the load, which stood at 7.3 to 7.8 beside seven to nine sibling processes. The guard held the first case for four and a half minutes, until the load fell below 8.
+
+## Batch II-a, the `defined` half of system (a47-2)
+
+Five requirements, one case each, each captured exactly once on 2026-11-06 from the declaration commit `507c3017`. The counters case carries its own overlay; the other four run under the profile's override.
+
+| Case | Baseline, repeat | Control | Measured record | Each trace |
+| --- | --- | --- | --- | --- |
+| `rv64gc-ecall-ebreak-v1` | AGREE, 116 steps | DIVERGE at 50: `csrrs x10, mcause, x0`, Sail 9, the expectation 11 | 17,655 B, `61742b70…` | 10,386 B |
+| `rv64gc-csr-access-v1` | AGREE, 66 steps | DIVERGE at 15: `csrrs x15, mscratch, x0`, Sail 31, the expectation all ones | 15,911 B, `b6f7c30b…` | 6,106 B |
+| `rv64gc-counters-v1` | AGREE, 84 steps | DIVERGE at 23: `addi x21, x20, 0`, Sail 21, the expectation 15 | 12,150 B, `76d4a37b…` | 7,198 B |
+| `rv64gc-fencei-v1` | AGREE, 10 steps | DIVERGE at 9: `.word 0x00700113`, Sail 7, the expectation 2 | 10,225 B, `9fc3b954…` | 732 B |
+| `rv64gc-ialign-16-v1` | AGREE, 11 steps | DIVERGE at 3: `auipc x3, 0`, Sail base + 14, the expectation base + 12 | 11,368 B, `bad8453d…` | 854 B |
+
+Each control is that case's failure mode: a cause that does not name its mode, a CSR immediate sign-extended, a refused read that committed, a stale fetch, a target rounded to a word. Each capture is complete with qualification false, and every compared file is byte-identical to the rehearsal's.
+
+**The guard refused first, as it should.** Its first attempt held for its full ten minutes at a load above 8 and stopped, capturing nothing, so no case id was spent. Armed again, it ran when the load fell below 7.
