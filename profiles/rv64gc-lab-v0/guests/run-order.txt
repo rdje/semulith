@@ -151,6 +151,17 @@ zicntr
 sstc
 sstc-timer
 
+# P4-SYSTEM.14 a46-2: G-OBLIGATIONS' Batch I, the RV64I base's crediting programs
+alu-imm-forms
+alu-reg-forms
+lui-auipc-forms
+jalr-lsb
+no-delay-slots
+shamt-forms
+wsuffix-forms
+load-ext-forms
+load-x0
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

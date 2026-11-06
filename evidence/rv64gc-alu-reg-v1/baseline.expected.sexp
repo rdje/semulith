@@ -1,0 +1,46 @@
+;; alu-reg-forms.expected.sexp — spec-side observations for `alu-reg-forms.s`.
+;; Author: scripts/derive_rv64gc_expectations.py; explicit-budget parcel route (C-capable).
+;; EVD-05: values derive from independent spec-side rules and the declared
+;; laboratory policies; each step names its derivation and source.
+;; This derivation makes no processor conformance or original-capture claim.
+;; Validate with
+;;   python3 scripts/check_sexp_schema.py alu-reg-forms.expected.sexp schema/expectations.sexp
+
+(expectations (program "alu-reg-forms.s") (entry "0x0000000080000000") (instructions 18) (fetches 36)
+  (step (n 0) (insn "addi x5, x0, 5") (writes (write (reg "x5") (value "0x0000000000000005")))
+    (derivation "5, the operand the first forms read.") (source "RVI-RV32I §1.1.4"))
+  (step (n 1) (insn "addi x6, x0, -7") (writes (write (reg "x6") (value "0xfffffffffffffff9")))
+    (derivation "-7: negative when signed, huge when unsigned.") (source "RVI-RV32I §1.1.4"))
+  (step (n 2) (insn "add x7, x5, x6") (writes (write (reg "x7") (value "0xfffffffffffffffe")))
+    (derivation "ADD: 5 + -7 = 0xfffffffffffffffe.") (source "RVI-RV32I §1.1.4"))
+  (step (n 3) (insn "sub x8, x5, x6") (writes (write (reg "x8") (value "0x000000000000000c")))
+    (derivation "SUB subtracts rs2 from rs1: 5 - -7 = 0x000000000000000c.") (source "RVI-RV32I §1.1.4 (boundary: SUB's operand order)"))
+  (step (n 4) (insn "sub x9, x6, x5") (writes (write (reg "x9") (value "0xfffffffffffffff4")))
+    (derivation "the other order: -7 - 5 = 0xfffffffffffffff4.") (source "RVI-RV32I §1.1.4"))
+  (step (n 5) (insn "addi x10, x0, -1") (writes (write (reg "x10") (value "0xffffffffffffffff")))
+    (derivation "all 64 bits set: 0xffffffffffffffff.") (source "RVI-RV32I §1.1.4"))
+  (step (n 6) (insn "srli x11, x10, 1") (writes (write (reg "x11") (value "0x7fffffffffffffff")))
+    (derivation "2^63 - 1, the largest positive value: 0x7fffffffffffffff.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 7) (insn "add x12, x11, x5") (writes (write (reg "x12") (value "0x8000000000000004")))
+    (derivation "overflow is ignored: 2^63 - 1 + 5 keeps the low 64 bits, 0x8000000000000004.") (source "RVI-RV32I §1.1.4 (boundary: ADD overflow ignored)"))
+  (step (n 8) (insn "sub x13, x12, x5") (writes (write (reg "x13") (value "0x7fffffffffffffff")))
+    (derivation "and back through the same wrap: 0x7fffffffffffffff.") (source "RVI-RV32I §1.1.4 (boundary: SUB overflow ignored)"))
+  (step (n 9) (insn "slt x14, x6, x5") (writes (write (reg "x14") (value "0x0000000000000001")))
+    (derivation "SLT, signed: -7 < 5, so 0x0000000000000001.") (source "RVI-RV32I §1.1.4 (boundary: SLT reads rs1 as negative)"))
+  (step (n 10) (insn "addi x15, x0, 77") (writes (write (reg "x15") (value "0x000000000000004d")))
+    (derivation "a sentinel, so the 0 that follows is a change.") (source "RVI-RV32I §1.1.4"))
+  (step (n 11) (insn "sltu x15, x6, x5") (writes (write (reg "x15") (value "0x0000000000000000")))
+    (derivation "SLTU, unsigned: rs1 reads 2^64 - 7, not below 5, so 0x0000000000000000.") (source "RVI-RV32I §1.1.4 (boundary: SLTU reads the same rs1 as huge)"))
+  (step (n 12) (insn "sltu x16, x5, x6") (writes (write (reg "x16") (value "0x0000000000000001")))
+    (derivation "SLTU, unsigned: 5 < 2^64 - 7, so 0x0000000000000001.") (source "RVI-RV32I §1.1.4"))
+  (step (n 13) (insn "addi x17, x0, 77") (writes (write (reg "x17") (value "0x000000000000004d")))
+    (derivation "a sentinel, so the 0 that follows is a change.") (source "RVI-RV32I §1.1.4"))
+  (step (n 14) (insn "slt x17, x5, x5") (writes (write (reg "x17") (value "0x0000000000000000")))
+    (derivation "equal is not less: 0x0000000000000000.") (source "RVI-RV32I §1.1.4 (boundary: SLT on equal operands)"))
+  (step (n 15) (insn "xor x18, x5, x6") (writes (write (reg "x18") (value "0xfffffffffffffffc")))
+    (derivation "XOR: 0xfffffffffffffffc.") (source "RVI-RV32I §1.1.4"))
+  (step (n 16) (insn "or x19, x5, x6") (writes (write (reg "x19") (value "0xfffffffffffffffd")))
+    (derivation "OR: 0xfffffffffffffffd.") (source "RVI-RV32I §1.1.4"))
+  (step (n 17) (insn "and x20, x5, x6") (writes (write (reg "x20") (value "0x0000000000000001")))
+    (derivation "AND: 0x0000000000000001.") (source "RVI-RV32I §1.1.4"))
+)

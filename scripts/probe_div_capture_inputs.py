@@ -34,8 +34,8 @@ ROOT = Path(__file__).resolve().parent.parent
 GUESTS = "profiles/rv64gc-lab-v0/guests"
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 INPUT_BYTES = 65536
-FAMILY_FILES = 287  # thirteen declared cases of 22 slots each (the case declaration since P4-SYSTEM.14 a44-2a), plus the index
-FAMILY_BYTES = 172 * 1024 * 1024  # the eighth re-derivation (a43e-3): thirteen cases at most 179,769,344 B with the index
+FAMILY_FILES = 903  # forty-one cases of 22 slots each and the index: the ninth re-derivation, once for all of G-OBLIGATIONS' batches (P4-SYSTEM.14 a46-2)
+FAMILY_BYTES = 541 * 1024 * 1024  # forty-one cases at most 566,956,032 B with the index
 M_FORMS_V4 = "rv64gc-m-forms-v4"  # the M case re-captured under the declaration-as-data manifest (P4-SYSTEM.14 a44-3)
 XLEN_V1 = "rv64gc-xlen-forms-v1"  # the first non-M case, REQ-D-XLEN (P4-SYSTEM.14 a43a-2b)
 # The planned lapse that opens CSR-SET re-captures both once, their control declared (P4-SYSTEM.14 a43b-2c).
@@ -45,7 +45,9 @@ ZICNTR = "rv64gc-zicntr-v1"  # REQ-D-ZICNTR, on its own reference configuration,
 # The window that opens SSTC re-declares the four on contract v3 and adds SSTC (P4-SYSTEM.14 a43e-3).
 M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2 = "rv64gc-m-forms-v6", "rv64gc-xlen-forms-v3", "rv64gc-csr-set-v2", "rv64gc-zicntr-v2"
 SSTC = "rv64gc-sstc-v1"  # REQ-D-SSTC, the first case whose boundaries include delivered interrupts
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR, M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2, SSTC)
+# G-OBLIGATIONS" Batch I, the RV64I base, one case per requirement (P4-SYSTEM.14 a46-2).
+BATCH_I = ("rv64gc-alu-imm-v1", "rv64gc-alu-reg-v1", "rv64gc-lui-auipc-v1", "rv64gc-jalr-lsb-v1", "rv64gc-no-delay-slots-v1", "rv64gc-shamt-v1", "rv64gc-wsuffix-v1", "rv64gc-load-ext-v1", "rv64gc-load-x0-v1")
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, M_FORMS_V4, XLEN_V1, M_FORMS_V5, XLEN_V2, CSR_SET, ZICNTR, M_FORMS_V6, XLEN_V3, CSR_SET_V2, ZICNTR_V2, SSTC, *BATCH_I)
 OWN_CONFIGURATION = (CSR_SET, ZICNTR, CSR_SET_V2, ZICNTR_V2, SSTC)
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
@@ -132,11 +134,102 @@ PREPARED[SSTC] = {
     "control.expected.sexp": ("expectation", 51552,
         "2dd7e190cc69431d698fa6d4b3f57e6e28d7e5c309b70208fc0083b76d6bbac6"),
 }
+PREPARED["rv64gc-alu-imm-v1"] = {
+    "guest.elf": ("guest-image", 4384,
+        "57b272f57b150c920591f5204da5743e06f5d1ed31f545162aad6405ba2cd9db"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4995,
+        "0ac0b935338a6fa6e2aa59a1d4d9e416140212ba0d5dee434d8767124a4be06e"),
+    "control.expected.sexp": ("expectation", 4562,
+        "762fda139eba49a6e39b3a0b28bd9c07312eb3e7a49d11d858858110205f75e9"),
+}
+PREPARED["rv64gc-alu-reg-v1"] = {
+    "guest.elf": ("guest-image", 4384,
+        "69da28692b0480a098c69c4d60f7ad9b9abbbe8c72615c3e191e5d777b820c06"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4279,
+        "4538368202c2b80d650a753022c8dc39546f5a300a3911da39b8bb4f0a31f4a0"),
+    "control.expected.sexp": ("expectation", 3852,
+        "a154b3c901de3111d36dc1246a006397c351d37652e88e72c4f96cb9b6a3c15e"),
+}
+PREPARED["rv64gc-lui-auipc-v1"] = {
+    "guest.elf": ("guest-image", 4352,
+        "bbe166bf5ac9f0a76c6f6067ab67beed31f1914b5f368776ee3bd3d004b4b744"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 2992,
+        "ac74d4902255b2de8d2d909df0954b346bcb565cbab126cb25fe65fbc5159c8c"),
+    "control.expected.sexp": ("expectation", 2616,
+        "a3ae72f57e97051ef706611f77a758b558a3c1df7c746f1c703bad978380878b"),
+}
+PREPARED["rv64gc-jalr-lsb-v1"] = {
+    "guest.elf": ("guest-image", 4416,
+        "0d830b676e5361da3c94402a01b7e670a72f8f4078f8c11020c2d74a0e69c558"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4333,
+        "f402a88a663394093a9768a009b845029bd20035442854c001f1bcc6a7833176"),
+    "control.expected.sexp": ("expectation", 3949,
+        "e333fffd1df790ffd26ae758ceed71f8fefe89d253234808714edaefc23127b1"),
+}
+PREPARED["rv64gc-no-delay-slots-v1"] = {
+    "guest.elf": ("guest-image", 4424,
+        "2fec987f5539f5c9000bce8e341583f6e159d6e8bd6f575de991e4c72afdc379"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4871,
+        "4cf28a0d8e26aa668b3698f67b4c011793d5a7efc6469e0c82b7187609c5dc19"),
+    "control.expected.sexp": ("expectation", 4425,
+        "9d1fbbabda9ea2920106b47c05b78a4a8fa0e94baf601fb54b335f1c3bfc81d7"),
+}
+PREPARED["rv64gc-shamt-v1"] = {
+    "guest.elf": ("guest-image", 4392,
+        "1366f75906e44d5fee1f73c8b790d23885c1ad1f6472d7a9f38a67f851fef02a"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 5489,
+        "4b3f01ba67f72f6667c47e456a25503845960bbeefdab415ebc213859c5a43d5"),
+    "control.expected.sexp": ("expectation", 5049,
+        "4af588ed3f48aa80a07b951496bc2d274f4a42c3df6b0308826ca0541a06626d"),
+}
+PREPARED["rv64gc-wsuffix-v1"] = {
+    "guest.elf": ("guest-image", 4376,
+        "9988499616f9410bcc274f27252593d605578ecddad4b049239ab355643b5df7"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4726,
+        "bf773362eb009abf337e54cb6bc2f350bae2b950caa19d6c272c833ed955cddb"),
+    "control.expected.sexp": ("expectation", 4324,
+        "e2ecc2831e600059031b9e7bc784e7916ce6ac72dc8bb8a9337dbdec120122eb"),
+}
+PREPARED["rv64gc-load-ext-v1"] = {
+    "guest.elf": ("guest-image", 4440,
+        "2f23f23d967dcad3430b910087b3a1689969eac70def5448e994b843fa9d8fde"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 6800,
+        "d2f06692dd2ca6dac19265e682aea52a4fdf0da50b0e470287b5244f6f23e7f8"),
+    "control.expected.sexp": ("expectation", 6305,
+        "da6d28c4ca6cf4ca06560f80396a992f594387bc708648e109a45305bc960a29"),
+}
+PREPARED["rv64gc-load-x0-v1"] = {
+    "guest.elf": ("guest-image", 4448,
+        "2b80ee55661ebb6857d76d4475c1589adacf55d1b666e46653bfeb1b920aef7a"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 15026,
+        "cd912e422c36c992fed5e12ac3e669b080353d5ffd107ea43abc9a7b18c0d2a3"),
+    "control.expected.sexp": ("expectation", 14318,
+        "d01ae7f16c7cb2e4b37678123c2eece30330ea57e83ad51bbea1ff0b2ca6a327"),
+}
 TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, M_FORMS_V4: 27426, XLEN_V1: 24119, M_FORMS_V5: 27426, XLEN_V2: 24119,
-          CSR_SET: 82222, ZICNTR: 112424, M_FORMS_V6: 27426, XLEN_V3: 24665, CSR_SET_V2: 82222, ZICNTR_V2: 112424, SSTC: 119130}
+          CSR_SET: 82222, ZICNTR: 112424, M_FORMS_V6: 27426, XLEN_V3: 24665, CSR_SET_V2: 82222, ZICNTR_V2: 112424, "rv64gc-alu-imm-v1": 21550, "rv64gc-alu-reg-v1": 20124, "rv64gc-lui-auipc-v1": 17569, "rv64gc-jalr-lsb-v1": 20307, "rv64gc-no-delay-slots-v1": 21329, "rv64gc-shamt-v1": 22539, "rv64gc-wsuffix-v1": 21035, "rv64gc-load-ext-v1": 25154, "rv64gc-load-x0-v1": 41401, SSTC: 119130}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), M_FORMS_V4: (33, 66), XLEN_V1: (25, 50),
            M_FORMS_V5: (33, 66), XLEN_V2: (25, 50), CSR_SET: (157, 314), ZICNTR: (292, 584),
-           M_FORMS_V6: (33, 66), XLEN_V3: (25, 50), CSR_SET_V2: (157, 314), ZICNTR_V2: (292, 584), SSTC: (315, 622)}
+           M_FORMS_V6: (33, 66), XLEN_V3: (25, 50), CSR_SET_V2: (157, 314), ZICNTR_V2: (292, 584), SSTC: (315, 622),
+           "rv64gc-alu-imm-v1": (19, 38), "rv64gc-alu-reg-v1": (18, 36), "rv64gc-lui-auipc-v1": (10, 20), "rv64gc-jalr-lsb-v1": (16, 32), "rv64gc-no-delay-slots-v1": (21, 42), "rv64gc-shamt-v1": (21, 42), "rv64gc-wsuffix-v1": (17, 34), "rv64gc-load-ext-v1": (32, 64), "rv64gc-load-x0-v1": (68, 136)}
 
 
 def bounded_bytes(path):
@@ -453,13 +546,15 @@ class FamilyTests(unittest.TestCase):
         self.assertEqual((Collector.TRACE_BYTES, Collector.STREAM_BYTES, F.DOCUMENT_BYTES),
                          (4 * 1024 * 1024, INPUT_BYTES, INPUT_BYTES))
         limits = retention_limits()
-        self.assertEqual(len(limits), FAMILY_FILES)
-        self.assertEqual(sum(limits.values()), 179769344)  # thirteen cases of 13,828,096 B and the index (a43e-3)
+        # The envelope is the ceiling, set once for every batch (a46-2): the declared cases must fit it, and each case is still exactly its slots.
+        self.assertEqual(len(limits), 1 + 22 * len(CASES))
+        self.assertLessEqual(len(limits), FAMILY_FILES)
+        self.assertEqual(sum(limits.values()), 4096 + 13828096 * len(CASES))
         self.assertLess(sum(limits.values()), FAMILY_BYTES)
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 13 * 22)  # the window's five captured once each (a43e-4); 8 each at their declarations
+        self.assertEqual(len(members), 1 + 13 * 22 + 9 * 8)  # Batch I at its declarations (a46-2); 22 each after their captures
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_undeclared_linked_and_oversized_members_refuse(self):

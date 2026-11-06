@@ -1,0 +1,48 @@
+;; alu-imm-forms.expected.sexp — spec-side observations for `alu-imm-forms.s`.
+;; Author: scripts/derive_rv64gc_expectations.py; explicit-budget parcel route (C-capable).
+;; EVD-05: values derive from independent spec-side rules and the declared
+;; laboratory policies; each step names its derivation and source.
+;; This derivation makes no processor conformance or original-capture claim.
+;; Validate with
+;;   python3 scripts/check_sexp_schema.py alu-imm-forms.expected.sexp schema/expectations.sexp
+
+(expectations (program "alu-imm-forms.s") (entry "0x0000000080000000") (instructions 19) (fetches 38)
+  (step (n 0) (insn "addi x5, x0, 5") (writes (write (reg "x5") (value "0x0000000000000005")))
+    (derivation "5, the operand the first forms read.") (source "RVI-RV32I §1.1.4"))
+  (step (n 1) (insn "addi x6, x5, -7") (writes (write (reg "x6") (value "0xfffffffffffffffe")))
+    (derivation "ADDI adds the sign-extended immediate: 5 + -7 = 0xfffffffffffffffe.") (source "RVI-RV32I §1.1.4 (boundary: a negative immediate)"))
+  (step (n 2) (insn "addi x7, x0, -1") (writes (write (reg "x7") (value "0xffffffffffffffff")))
+    (derivation "the immediate -1 sign-extends to all 64 bits: 0xffffffffffffffff.") (source "RVI-RV32I §1.1.4"))
+  (step (n 3) (insn "srli x8, x7, 1") (writes (write (reg "x8") (value "0x7fffffffffffffff")))
+    (derivation "2^63 - 1, the largest positive value: 0x7fffffffffffffff.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 4) (insn "addi x9, x8, 1") (writes (write (reg "x9") (value "0x8000000000000000")))
+    (derivation "overflow is ignored: 2^63 - 1 + 1 keeps the low 64 bits, 0x8000000000000000.") (source "RVI-RV32I §1.1.4 (boundary: ADDI overflow ignored)"))
+  (step (n 5) (insn "addi x10, x0, 2047") (writes (write (reg "x10") (value "0x00000000000007ff")))
+    (derivation "the largest 12-bit immediate: 0x00000000000007ff.") (source "RVI-RV32I §1.1.4 (boundary: the largest immediate)"))
+  (step (n 6) (insn "addi x11, x0, -2048") (writes (write (reg "x11") (value "0xfffffffffffff800")))
+    (derivation "the smallest 12-bit immediate, sign-extended: 0xfffffffffffff800.") (source "RVI-RV32I §1.1.4 (boundary: the smallest immediate)"))
+  (step (n 7) (insn "slti x12, x5, 6") (writes (write (reg "x12") (value "0x0000000000000001")))
+    (derivation "SLTI, signed: 5 < 6, so 0x0000000000000001.") (source "RVI-RV32I §1.1.4"))
+  (step (n 8) (insn "addi x13, x0, 77") (writes (write (reg "x13") (value "0x000000000000004d")))
+    (derivation "a sentinel, so the 0 that follows is a change.") (source "RVI-RV32I §1.1.4"))
+  (step (n 9) (insn "slti x13, x5, -1") (writes (write (reg "x13") (value "0x0000000000000000")))
+    (derivation "SLTI, signed: 5 < -1 is false, so 0x0000000000000000.") (source "RVI-RV32I §1.1.4 (boundary: SLTI against a negative immediate)"))
+  (step (n 10) (insn "slti x14, x7, 0") (writes (write (reg "x14") (value "0x0000000000000001")))
+    (derivation "SLTI, signed: -1 < 0, so 0x0000000000000001.") (source "RVI-RV32I §1.1.4 (boundary: SLTI with a negative operand)"))
+  (step (n 11) (insn "lui x15, 1") (writes (write (reg "x15") (value "0x0000000000001000")))
+    (derivation "4096, which no unextended 12-bit immediate can reach: 0x0000000000001000.") (source "RVI-RV64I §3.1.2.1"))
+  (step (n 12) (insn "sltiu x16, x15, -1") (writes (write (reg "x16") (value "0x0000000000000001")))
+    (derivation "SLTIU sign-extends first, then compares unsigned: 4096 < 2^64 - 1, so 0x0000000000000001.") (source "RVI-RV32I §1.1.4 (boundary: SLTIU's immediate is sign-extended first)"))
+  (step (n 13) (insn "addi x17, x0, 77") (writes (write (reg "x17") (value "0x000000000000004d")))
+    (derivation "a sentinel, so the 0 that follows is a change.") (source "RVI-RV32I §1.1.4"))
+  (step (n 14) (insn "sltiu x17, x7, 1") (writes (write (reg "x17") (value "0x0000000000000000")))
+    (derivation "SLTIU, unsigned: 2^64 - 1 < 1 is false, so 0x0000000000000000.") (source "RVI-RV32I §1.1.4 (boundary: SLTIU with a negative operand)"))
+  (step (n 15) (insn "sltiu x18, x0, 1") (writes (write (reg "x18") (value "0x0000000000000001")))
+    (derivation "SLTIU rd, rs1, 1 sets rd when rs1 is zero: 0x0000000000000001.") (source "RVI-RV32I §1.1.4 (boundary: SLTIU below 1)"))
+  (step (n 16) (insn "xori x19, x5, -1") (writes (write (reg "x19") (value "0xfffffffffffffffa")))
+    (derivation "XORI with -1 is the bitwise NOT of 5: 0xfffffffffffffffa.") (source "RVI-RV32I §1.1.4 (boundary: XORI's immediate is sign-extended)"))
+  (step (n 17) (insn "ori x20, x5, -16") (writes (write (reg "x20") (value "0xfffffffffffffff5")))
+    (derivation "ORI with the sign-extended -16: 0xfffffffffffffff5.") (source "RVI-RV32I §1.1.4 (boundary: ORI's immediate is sign-extended)"))
+  (step (n 18) (insn "andi x21, x7, -16") (writes (write (reg "x21") (value "0xfffffffffffffff0")))
+    (derivation "ANDI with the sign-extended -16: 0xfffffffffffffff0.") (source "RVI-RV32I §1.1.4 (boundary: ANDI's immediate is sign-extended)"))
+)

@@ -39,7 +39,7 @@ The numbers: a commit takes 24 minutes through the gate today at 13 cases, under
 | **B. Batches, one case per requirement** | 5 batches × 4 = 20 | 8 hours | 28 cases | **Picked.** No pinned file moves and no credit lapses. Each commit is larger, which a gate already judges |
 | **C. A family case binding several requirements** | Fewer cases, plus a window | Lower, later | About 8 cases | Rejected for now. A case's `requirement_id` is one field of a pinned schema, so it would lapse all five credits; `authenticate` holds a declaration to the credited requirement alone; and the policy allows one control for several requirements "only when the graph states why its failure would be detected for each one", which each review leg would have to learn |
 
-**B's unit:** (1) the batch's programs, cases and statements; (2) its declarations, committed before capture; (3) each captured once, with any effect; (4) the reviews and credits.
+**B's unit**, three commits since Batch I joined the first two: (1) the batch's programs, cases, statements and declarations, committed before capture; (2) each captured once, with any effect; (3) the reviews and credits. So 15 units and about 6 hours of gate. Each batch is rehearsed end to end on a throwaway clone before (1): a capture is never retried, so a fault found after it spends a case id.
 
 | Batch | Requirements | The rule it brings |
 | --- | --- | --- |
@@ -69,7 +69,18 @@ Several probes read every case on every run, and their arms run in both Python m
 
 ## How to apply
 
-- The next case is `a46-2`'s. A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
+- Batch I stands declared (a46-2). A later capture's guard is `target/p4-system-14/a43e-4/capture-now.sh`, not the three-minute wait.
 - A batch's declarations and captures are each one commit, so a moved child between them refuses every case in the batch, not one: freeze the union.
 - One requirement, one case, one control. A witness that would serve two requirements is written twice.
 - A difference is a finding, never a reason to drop a witness quietly: observed and justified under the `implementation-defined` row, or left uncredited and named.
+
+## Batch I, as measured so far (a46-2, 2026-11-06)
+
+Nine programs and nine cases, 108 witnesses. **All three producers agree on every program:** the spec-side author, the lab engine (`every_guest_matches_its_expectations`, 182 guests) and the pinned Sail. **The rehearsal** (`target/p4-system-14/a46-2/rehearse.sh`) ran the route end to end on a throwaway clone: every control diverged where declared, and it found what no table check had.
+
+| Found by rehearsing | What it would have cost after a real capture |
+| --- | --- |
+| `REQ-D-NO-DELAY-SLOTS` had no witness at a `JAL` or `JALR` step, though both write a link | A case id: the case is pinned at its declaration |
+| The new rule read an empty `(writes)` form as a write, so no silent form counted | A failed review, fixable, since the review is not pinned |
+
+**The rule the review needs, and lands with the credits (a46-3 on):** the form-coverage leg counts a form as predeclared only at a witness of its own step, and a branch, a store or a load to `x0` writes no GPR. So it may also be predeclared when a property's cell names it and that witness comes after a step of the form. All nine then read 10 of 10 on the clone.

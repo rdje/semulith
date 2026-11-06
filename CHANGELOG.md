@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0360 (leaf P4-SYSTEM.14 a46-2) — Batch I's nine programs and cases, declared before their captures, and rehearsed first
+
+The RV64I base: nine requirements, one case each, 108 witnesses. All three producers agree on every program. A full rehearsal on a throwaway clone found two faults before they could spend a case id. The family's bound is re-derived once, for all five batches. Nothing captured or credited.
+
 ## SEMULITH-P4-0359 (leaf P4-SYSTEM.14 a46-1) — Batch I's walls cleared: the case index generated, its statements retained
 
 `evidence/README.md` could not take another row, so the membership now comes from each `case.sexp` and the credit catalogue, into [the retained cases](docs/models/rv64gc-lab-v0/src/retained-cases.md). Two excerpts retained for Batch I. Nothing credited or captured.

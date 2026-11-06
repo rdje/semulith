@@ -26,6 +26,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-mustfail.s`  `e82dfc03b6071a66ffa1aca05786cbea1114d39cf7d855f5a7cc4b175e4cf0d8`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-pair.expected.sexp`  `c50202389aea5627e2156463d63ad1854d40d4c47e9304f9298bc40efd6cb3b4`
 //!   `profiles/rv64gc-lab-v0/guests/a-lrsc-pair.s`  `3aa803d0df7134a5229cd173525053e3662045f1b96c8cd421f49a7c5583644a`
+//!   `profiles/rv64gc-lab-v0/guests/alu-imm-forms.expected.sexp`  `0ac0b935338a6fa6e2aa59a1d4d9e416140212ba0d5dee434d8767124a4be06e`
+//!   `profiles/rv64gc-lab-v0/guests/alu-imm-forms.s`  `0d51fba267ff77fd43f6861062ee6968f9a295207b8cc5cf1930f472ee524f17`
+//!   `profiles/rv64gc-lab-v0/guests/alu-reg-forms.expected.sexp`  `4538368202c2b80d650a753022c8dc39546f5a300a3911da39b8bb4f0a31f4a0`
+//!   `profiles/rv64gc-lab-v0/guests/alu-reg-forms.s`  `27138d7bed9feced39132071ee4c03b84a1a0c8997c763d500917a08c293d0c3`
 //!   `profiles/rv64gc-lab-v0/guests/bound-alias.expected.sexp`  `43fe72b302f8560af50747d0f6b16d1e6f70c254880b6493e37c3a266749440a`
 //!   `profiles/rv64gc-lab-v0/guests/bound-alias.s`  `e180f4df21803411a70c7b652425d780c51dd880c59ee7e80c70b8fad58fd65f`
 //!   `profiles/rv64gc-lab-v0/guests/bound-arith.expected.sexp`  `5c487858898481a9e0a04abbdac97328b39cbdad6a3225ee71087dd4c0c6da92`
@@ -246,6 +250,14 @@
 //!   `profiles/rv64gc-lab-v0/guests/it-prio-load.s`  `ad39fe5f0a602818f486e66ea50ac30be9fc8975da300250b10d050eebd7a05a`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.expected.sexp`  `4ae864b4b05a4464d92cd78bc45b970f7b36c45fe452ae079845b3b22c7f9a27`
 //!   `profiles/rv64gc-lab-v0/guests/it-progress-loop.s`  `98f034a39a435a823b639d7655b7213f591e30e6c166310626988973883a0f3f`
+//!   `profiles/rv64gc-lab-v0/guests/jalr-lsb.expected.sexp`  `f402a88a663394093a9768a009b845029bd20035442854c001f1bcc6a7833176`
+//!   `profiles/rv64gc-lab-v0/guests/jalr-lsb.s`  `be895f870d35f3383aec4e1d150338cc04eeeb9d5490bb539eb20677438e91ed`
+//!   `profiles/rv64gc-lab-v0/guests/load-ext-forms.expected.sexp`  `d2f06692dd2ca6dac19265e682aea52a4fdf0da50b0e470287b5244f6f23e7f8`
+//!   `profiles/rv64gc-lab-v0/guests/load-ext-forms.s`  `64b16545b6ce0a06767b7fc88831ad133341bea0f8fa9b2baee5067aedd67b78`
+//!   `profiles/rv64gc-lab-v0/guests/load-x0.expected.sexp`  `cd912e422c36c992fed5e12ac3e669b080353d5ffd107ea43abc9a7b18c0d2a3`
+//!   `profiles/rv64gc-lab-v0/guests/load-x0.s`  `0382da79adc732dea715d66de3f913592f6de96b0fec7ccac9daf5581a8705a2`
+//!   `profiles/rv64gc-lab-v0/guests/lui-auipc-forms.expected.sexp`  `ac74d4902255b2de8d2d909df0954b346bcb565cbab126cb25fe65fbc5159c8c`
+//!   `profiles/rv64gc-lab-v0/guests/lui-auipc-forms.s`  `49b2c11e4bfd35d051183ebef4c8d976d2fc7b3cc92cd951829a36966e7069e9`
 //!   `profiles/rv64gc-lab-v0/guests/m-alias.expected.sexp`  `e0c1676f7f33b064bc03d13d2d8179ead869f144f7f09b22e2993e0a189d0232`
 //!   `profiles/rv64gc-lab-v0/guests/m-alias.s`  `b403f5a4617078cba591f88ac319117ce8cdc94e0d08a2b2eece257f625c91a8`
 //!   `profiles/rv64gc-lab-v0/guests/m-div.expected.sexp`  `87a5b54c50e147017a2dc60d69869d36679067026d7f449d75db6a344199907e`
@@ -288,6 +300,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/mm-stimecmp.s`  `ca7d3c4d3660b9864c45100475d4f9b00daf7077f7573f653aec2d3fb77fe434`
 //!   `profiles/rv64gc-lab-v0/guests/mm-wfi.expected.sexp`  `4afa7dd7e646a4eebc79cae93222a2189d262e8ee84431251569963be879f2a3`
 //!   `profiles/rv64gc-lab-v0/guests/mm-wfi.s`  `4c0b927ad1240156fec6912a411d5381848849cf79dc6253e2aa36bb075bc838`
+//!   `profiles/rv64gc-lab-v0/guests/no-delay-slots.expected.sexp`  `4cf28a0d8e26aa668b3698f67b4c011793d5a7efc6469e0c82b7187609c5dc19`
+//!   `profiles/rv64gc-lab-v0/guests/no-delay-slots.s`  `19fd669f6589f0ea6b61c04f0df6d8f2978af4155b67eb00cf8482555df74f0d`
 //!   `profiles/rv64gc-lab-v0/guests/prio-sv39.expected.sexp`  `cdd539c87c03a9fd351f4b8511d4f65a29ae56706c1e3c7aec998f950538f7a3`
 //!   `profiles/rv64gc-lab-v0/guests/prio-sv39.s`  `5e525f15efab27f90df8bdc8321aa4d30f001301ab88ab81376ddc95dcd2e8ce`
 //!   `profiles/rv64gc-lab-v0/guests/scope-alu.expected.sexp`  `a04bf841d49ef59a39b307188cb72876ca4ea66b6268d8d81a8691e1e9d8a3fe`
@@ -300,6 +314,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/scope-ecall.s`  `e35b711474b88ca35d593ff4227ed2129c22e8df7f2d5e75773bf2911272b23f`
 //!   `profiles/rv64gc-lab-v0/guests/scope-mem.expected.sexp`  `32e989149a7f31ef1317b4a933c2d58c95b2d9b162d69d81230e205feb9b2d8f`
 //!   `profiles/rv64gc-lab-v0/guests/scope-mem.s`  `e30e3b0f9464a75e79fba148d6185acab64613b0a7ceffa3d7aa7fa4b56a6321`
+//!   `profiles/rv64gc-lab-v0/guests/shamt-forms.expected.sexp`  `4b3f01ba67f72f6667c47e456a25503845960bbeefdab415ebc213859c5a43d5`
+//!   `profiles/rv64gc-lab-v0/guests/shamt-forms.s`  `5e8bb28e265359002693a7e16eb142619805121a13f9ab8480106ffd11622c4a`
 //!   `profiles/rv64gc-lab-v0/guests/smoke-arith.expected.sexp`  `2003aec0844fdff64e5a5da93166132461f3e9530c5d969d70b5c1d2dcd87284`
 //!   `profiles/rv64gc-lab-v0/guests/smoke-arith.s`  `00e86c26cf8a113499fc2c3f3abaf96953347efb620a031771147001018fd84b`
 //!   `profiles/rv64gc-lab-v0/guests/smoke-trap.expected.sexp`  `7d8753ad247fe705ce64cee74ef82fbbdb5c214a2dfe5e9adaabc72dcfd95de7`
@@ -344,6 +360,8 @@
 //!   `profiles/rv64gc-lab-v0/guests/w-sw.s`  `22d952146776d415f32c58e36427d40707ab7aa47522208fdf2eb2330d709363`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.expected.sexp`  `3e67f6003c5e46b6c080f1de31d00c0e3f5aaf0d3d42b46ca84f744d651329b4`
 //!   `profiles/rv64gc-lab-v0/guests/w-timer.s`  `3be147608a1765f2a0bc16a585e4ce7342c7b0ad36911051b95b85a49e083f85`
+//!   `profiles/rv64gc-lab-v0/guests/wsuffix-forms.expected.sexp`  `bf773362eb009abf337e54cb6bc2f350bae2b950caa19d6c272c833ed955cddb`
+//!   `profiles/rv64gc-lab-v0/guests/wsuffix-forms.s`  `7c729650a07074c23d2adf9e4e2389606f6789dde2a2de90bbafc393d5ee7810`
 //!   `profiles/rv64gc-lab-v0/guests/xlen-forms.expected.sexp`  `5322f07f9df97863452a72f4dfb88bba17c3853c781fca6735235aa5947d5ffd`
 //!   `profiles/rv64gc-lab-v0/guests/xlen-forms.s`  `639442998f70299660776bf0fbd917f0cc7b95294e6f19d9c7619645e2e7f446`
 //!   `profiles/rv64gc-lab-v0/guests/zicntr.expected.sexp`  `91dac468939659f85b048989d244978963430c745927e8aa4db81531f20d60fb`
@@ -10188,6 +10206,347 @@ static EXPECTED_SSTC_TIMER: &[Expectation] = &[
 ];
 
 #[rustfmt::skip]
+static IMAGE_ALU_IMM_FORMS: &[u8] = &[
+    0x93, 0x02, 0x50, 0x00, 0x13, 0x83, 0x92, 0xFF, 0x93, 0x03, 0xF0, 0xFF, 0x13, 0xD4, 0x13, 0x00,
+    0x93, 0x04, 0x14, 0x00, 0x13, 0x05, 0xF0, 0x7F, 0x93, 0x05, 0x00, 0x80, 0x13, 0xA6, 0x62, 0x00,
+    0x93, 0x06, 0xD0, 0x04, 0x93, 0xA6, 0xF2, 0xFF, 0x13, 0xA7, 0x03, 0x00, 0xB7, 0x17, 0x00, 0x00,
+    0x13, 0xB8, 0xF7, 0xFF, 0x93, 0x08, 0xD0, 0x04, 0x93, 0xB8, 0x13, 0x00, 0x13, 0x39, 0x10, 0x00,
+    0x93, 0xC9, 0xF2, 0xFF, 0x13, 0xEA, 0x02, 0xFF, 0x93, 0xFA, 0x03, 0xFF,
+];
+#[rustfmt::skip]
+static EXPECTED_ALU_IMM_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000005)] },
+    Expectation { step: 1, writes: &[(6, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 2, writes: &[(7, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 3, writes: &[(8, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(9, 0x8000000000000000)] },
+    Expectation { step: 5, writes: &[(10, 0x00000000000007FF)] },
+    Expectation { step: 6, writes: &[(11, 0xFFFFFFFFFFFFF800)] },
+    Expectation { step: 7, writes: &[(12, 0x0000000000000001)] },
+    Expectation { step: 8, writes: &[(13, 0x000000000000004D)] },
+    Expectation { step: 9, writes: &[(13, 0x0000000000000000)] },
+    Expectation { step: 10, writes: &[(14, 0x0000000000000001)] },
+    Expectation { step: 11, writes: &[(15, 0x0000000000001000)] },
+    Expectation { step: 12, writes: &[(16, 0x0000000000000001)] },
+    Expectation { step: 13, writes: &[(17, 0x000000000000004D)] },
+    Expectation { step: 14, writes: &[(17, 0x0000000000000000)] },
+    Expectation { step: 15, writes: &[(18, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(19, 0xFFFFFFFFFFFFFFFA)] },
+    Expectation { step: 17, writes: &[(20, 0xFFFFFFFFFFFFFFF5)] },
+    Expectation { step: 18, writes: &[(21, 0xFFFFFFFFFFFFFFF0)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_ALU_REG_FORMS: &[u8] = &[
+    0x93, 0x02, 0x50, 0x00, 0x13, 0x03, 0x90, 0xFF, 0xB3, 0x83, 0x62, 0x00, 0x33, 0x84, 0x62, 0x40,
+    0xB3, 0x04, 0x53, 0x40, 0x13, 0x05, 0xF0, 0xFF, 0x93, 0x55, 0x15, 0x00, 0x33, 0x86, 0x55, 0x00,
+    0xB3, 0x06, 0x56, 0x40, 0x33, 0x27, 0x53, 0x00, 0x93, 0x07, 0xD0, 0x04, 0xB3, 0x37, 0x53, 0x00,
+    0x33, 0xB8, 0x62, 0x00, 0x93, 0x08, 0xD0, 0x04, 0xB3, 0xA8, 0x52, 0x00, 0x33, 0xC9, 0x62, 0x00,
+    0xB3, 0xE9, 0x62, 0x00, 0x33, 0xFA, 0x62, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_ALU_REG_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000005)] },
+    Expectation { step: 1, writes: &[(6, 0xFFFFFFFFFFFFFFF9)] },
+    Expectation { step: 2, writes: &[(7, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 3, writes: &[(8, 0x000000000000000C)] },
+    Expectation { step: 4, writes: &[(9, 0xFFFFFFFFFFFFFFF4)] },
+    Expectation { step: 5, writes: &[(10, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 6, writes: &[(11, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 7, writes: &[(12, 0x8000000000000004)] },
+    Expectation { step: 8, writes: &[(13, 0x7FFFFFFFFFFFFFFF)] },
+    Expectation { step: 9, writes: &[(14, 0x0000000000000001)] },
+    Expectation { step: 10, writes: &[(15, 0x000000000000004D)] },
+    Expectation { step: 11, writes: &[(15, 0x0000000000000000)] },
+    Expectation { step: 12, writes: &[(16, 0x0000000000000001)] },
+    Expectation { step: 13, writes: &[(17, 0x000000000000004D)] },
+    Expectation { step: 14, writes: &[(17, 0x0000000000000000)] },
+    Expectation { step: 15, writes: &[(18, 0xFFFFFFFFFFFFFFFC)] },
+    Expectation { step: 16, writes: &[(19, 0xFFFFFFFFFFFFFFFD)] },
+    Expectation { step: 17, writes: &[(20, 0x0000000000000001)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_LUI_AUIPC_FORMS: &[u8] = &[
+    0xB7, 0x52, 0x34, 0x12, 0x37, 0x03, 0x00, 0x80, 0xB7, 0xF3, 0xFF, 0x7F, 0x37, 0xF4, 0xFF, 0xFF,
+    0x93, 0x06, 0xD0, 0x04, 0xB7, 0x06, 0x00, 0x00, 0x97, 0x04, 0x00, 0x00, 0x17, 0x15, 0x00, 0x00,
+    0x97, 0x05, 0x00, 0x80, 0x17, 0xF6, 0xFF, 0x7F,
+];
+#[rustfmt::skip]
+static EXPECTED_LUI_AUIPC_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000012345000)] },
+    Expectation { step: 1, writes: &[(6, 0xFFFFFFFF80000000)] },
+    Expectation { step: 2, writes: &[(7, 0x000000007FFFF000)] },
+    Expectation { step: 3, writes: &[(8, 0xFFFFFFFFFFFFF000)] },
+    Expectation { step: 4, writes: &[(13, 0x000000000000004D)] },
+    Expectation { step: 5, writes: &[(13, 0x0000000000000000)] },
+    Expectation { step: 6, writes: &[(9, 0x0000000080000018)] },
+    Expectation { step: 7, writes: &[(10, 0x000000008000101C)] },
+    Expectation { step: 8, writes: &[(11, 0x0000000000000020)] },
+    Expectation { step: 9, writes: &[(12, 0x00000000FFFFF024)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_JALR_LSB: &[u8] = &[
+    0x97, 0x02, 0x00, 0x00, 0x13, 0x83, 0x52, 0x01, 0xE7, 0x00, 0x03, 0x00, 0x13, 0x0A, 0x30, 0x06,
+    0x13, 0x0A, 0x30, 0x06, 0x97, 0x03, 0x00, 0x00, 0x13, 0x84, 0x82, 0x02, 0xE7, 0x04, 0x14, 0x00,
+    0x13, 0x0A, 0x30, 0x06, 0x13, 0x0A, 0x30, 0x06, 0x17, 0x05, 0x00, 0x00, 0x93, 0x85, 0x92, 0x03,
+    0x67, 0x86, 0xF5, 0xFF, 0x13, 0x0A, 0x30, 0x06, 0x97, 0x06, 0x00, 0x00, 0x13, 0x87, 0x92, 0x07,
+    0xE7, 0x07, 0x87, 0xFD, 0x13, 0x0A, 0x30, 0x06, 0x13, 0x0A, 0x30, 0x06, 0x13, 0x0A, 0x30, 0x06,
+    0x17, 0x08, 0x00, 0x00, 0x93, 0x88, 0x52, 0x06, 0xE7, 0x88, 0x08, 0x00, 0x13, 0x0A, 0x30, 0x06,
+    0x13, 0x0A, 0x30, 0x06, 0x17, 0x09, 0x00, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_JALR_LSB: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(6, 0x0000000080000015)] },
+    Expectation { step: 2, writes: &[(1, 0x000000008000000C)] },
+    Expectation { step: 3, writes: &[(7, 0x0000000080000014)] },
+    Expectation { step: 4, writes: &[(8, 0x0000000080000028)] },
+    Expectation { step: 5, writes: &[(9, 0x0000000080000020)] },
+    Expectation { step: 6, writes: &[(10, 0x0000000080000028)] },
+    Expectation { step: 7, writes: &[(11, 0x0000000080000039)] },
+    Expectation { step: 8, writes: &[(12, 0x0000000080000034)] },
+    Expectation { step: 9, writes: &[(13, 0x0000000080000038)] },
+    Expectation { step: 10, writes: &[(14, 0x0000000080000079)] },
+    Expectation { step: 11, writes: &[(15, 0x0000000080000044)] },
+    Expectation { step: 12, writes: &[(16, 0x0000000080000050)] },
+    Expectation { step: 13, writes: &[(17, 0x0000000080000065)] },
+    Expectation { step: 14, writes: &[(17, 0x000000008000005C)] },
+    Expectation { step: 15, writes: &[(18, 0x0000000080000064)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_NO_DELAY_SLOTS: &[u8] = &[
+    0x93, 0x03, 0x10, 0x00, 0x13, 0x04, 0x20, 0x00, 0xEF, 0x00, 0x80, 0x00, 0x13, 0x0A, 0x30, 0x06,
+    0x13, 0x05, 0xAA, 0x00, 0x17, 0x01, 0x00, 0x00, 0xE7, 0x01, 0xC1, 0x00, 0x13, 0x0A, 0x30, 0x06,
+    0x93, 0x05, 0xBA, 0x00, 0x63, 0x84, 0x73, 0x00, 0x13, 0x0A, 0x30, 0x06, 0x13, 0x06, 0xCA, 0x00,
+    0x63, 0x94, 0x83, 0x00, 0x13, 0x0A, 0x30, 0x06, 0x93, 0x06, 0xDA, 0x00, 0x63, 0xC4, 0x83, 0x00,
+    0x13, 0x0A, 0x30, 0x06, 0x13, 0x07, 0xEA, 0x00, 0x63, 0x54, 0x74, 0x00, 0x13, 0x0A, 0x30, 0x06,
+    0x93, 0x07, 0xFA, 0x00, 0x63, 0xE4, 0x83, 0x00, 0x13, 0x0A, 0x30, 0x06, 0x13, 0x08, 0x0A, 0x01,
+    0x63, 0x74, 0x74, 0x00, 0x13, 0x0A, 0x30, 0x06, 0x93, 0x08, 0x1A, 0x01, 0x63, 0x94, 0x73, 0x00,
+    0x13, 0x09, 0x2A, 0x01,
+];
+#[rustfmt::skip]
+static EXPECTED_NO_DELAY_SLOTS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(7, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(8, 0x0000000000000002)] },
+    Expectation { step: 2, writes: &[(1, 0x000000008000000C)] },
+    Expectation { step: 3, writes: &[(10, 0x000000000000000A)] },
+    Expectation { step: 4, writes: &[(2, 0x0000000080000014)] },
+    Expectation { step: 5, writes: &[(3, 0x000000008000001C)] },
+    Expectation { step: 6, writes: &[(11, 0x000000000000000B)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(12, 0x000000000000000C)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(13, 0x000000000000000D)] },
+    Expectation { step: 11, writes: &[] },
+    Expectation { step: 12, writes: &[(14, 0x000000000000000E)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[(15, 0x000000000000000F)] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[(16, 0x0000000000000010)] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(17, 0x0000000000000011)] },
+    Expectation { step: 19, writes: &[] },
+    Expectation { step: 20, writes: &[(18, 0x0000000000000012)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_SHAMT_FORMS: &[u8] = &[
+    0x93, 0x02, 0x10, 0x00, 0x13, 0x93, 0xF2, 0x03, 0x93, 0x53, 0xF3, 0x03, 0x13, 0x54, 0xF3, 0x43,
+    0x93, 0x94, 0x02, 0x02, 0x13, 0x05, 0x10, 0x04, 0xB3, 0x95, 0xA2, 0x00, 0x33, 0x56, 0xA3, 0x00,
+    0xB3, 0x56, 0xA3, 0x40, 0x13, 0x07, 0x00, 0x04, 0xB3, 0x97, 0xE2, 0x00, 0x13, 0x08, 0x10, 0x02,
+    0xB7, 0x08, 0x00, 0x80, 0x3B, 0x99, 0x02, 0x01, 0xBB, 0xD9, 0x08, 0x01, 0x3B, 0xDA, 0x08, 0x41,
+    0x93, 0x0A, 0x00, 0x02, 0x3B, 0x9B, 0x52, 0x01, 0x9B, 0x9B, 0xF2, 0x01, 0x1B, 0xDC, 0xF8, 0x01,
+    0x9B, 0xDC, 0xF8, 0x41,
+];
+#[rustfmt::skip]
+static EXPECTED_SHAMT_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(6, 0x8000000000000000)] },
+    Expectation { step: 2, writes: &[(7, 0x0000000000000001)] },
+    Expectation { step: 3, writes: &[(8, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 4, writes: &[(9, 0x0000000100000000)] },
+    Expectation { step: 5, writes: &[(10, 0x0000000000000041)] },
+    Expectation { step: 6, writes: &[(11, 0x0000000000000002)] },
+    Expectation { step: 7, writes: &[(12, 0x4000000000000000)] },
+    Expectation { step: 8, writes: &[(13, 0xC000000000000000)] },
+    Expectation { step: 9, writes: &[(14, 0x0000000000000040)] },
+    Expectation { step: 10, writes: &[(15, 0x0000000000000001)] },
+    Expectation { step: 11, writes: &[(16, 0x0000000000000021)] },
+    Expectation { step: 12, writes: &[(17, 0xFFFFFFFF80000000)] },
+    Expectation { step: 13, writes: &[(18, 0x0000000000000002)] },
+    Expectation { step: 14, writes: &[(19, 0x0000000040000000)] },
+    Expectation { step: 15, writes: &[(20, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 16, writes: &[(21, 0x0000000000000020)] },
+    Expectation { step: 17, writes: &[(22, 0x0000000000000001)] },
+    Expectation { step: 18, writes: &[(23, 0xFFFFFFFF80000000)] },
+    Expectation { step: 19, writes: &[(24, 0x0000000000000001)] },
+    Expectation { step: 20, writes: &[(25, 0xFFFFFFFFFFFFFFFF)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_WSUFFIX_FORMS: &[u8] = &[
+    0xB7, 0x02, 0x00, 0x80, 0x13, 0x03, 0xF0, 0xFF, 0x93, 0x53, 0x13, 0x02, 0x13, 0x04, 0x10, 0x00,
+    0x93, 0x14, 0x04, 0x02, 0x1B, 0x85, 0x13, 0x00, 0x9B, 0x85, 0x54, 0x00, 0x1B, 0x16, 0xF4, 0x01,
+    0x9B, 0xD6, 0x02, 0x00, 0x1B, 0xD7, 0x12, 0x00, 0x9B, 0xD7, 0x12, 0x40, 0x3B, 0x88, 0x83, 0x00,
+    0xBB, 0x88, 0x84, 0x00, 0x3B, 0x89, 0x82, 0x40, 0xBB, 0x99, 0x83, 0x00, 0x3B, 0x5A, 0x83, 0x00,
+    0xBB, 0xDA, 0x82, 0x40,
+];
+#[rustfmt::skip]
+static EXPECTED_WSUFFIX_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(5, 0xFFFFFFFF80000000)] },
+    Expectation { step: 1, writes: &[(6, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 2, writes: &[(7, 0x000000007FFFFFFF)] },
+    Expectation { step: 3, writes: &[(8, 0x0000000000000001)] },
+    Expectation { step: 4, writes: &[(9, 0x0000000100000000)] },
+    Expectation { step: 5, writes: &[(10, 0xFFFFFFFF80000000)] },
+    Expectation { step: 6, writes: &[(11, 0x0000000000000005)] },
+    Expectation { step: 7, writes: &[(12, 0xFFFFFFFF80000000)] },
+    Expectation { step: 8, writes: &[(13, 0xFFFFFFFF80000000)] },
+    Expectation { step: 9, writes: &[(14, 0x0000000040000000)] },
+    Expectation { step: 10, writes: &[(15, 0xFFFFFFFFC0000000)] },
+    Expectation { step: 11, writes: &[(16, 0xFFFFFFFF80000000)] },
+    Expectation { step: 12, writes: &[(17, 0x0000000000000001)] },
+    Expectation { step: 13, writes: &[(18, 0x000000007FFFFFFF)] },
+    Expectation { step: 14, writes: &[(19, 0xFFFFFFFFFFFFFFFE)] },
+    Expectation { step: 15, writes: &[(20, 0x000000007FFFFFFF)] },
+    Expectation { step: 16, writes: &[(21, 0xFFFFFFFFC0000000)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_LOAD_EXT_FORMS: &[u8] = &[
+    0x13, 0x05, 0x10, 0x00, 0x13, 0x15, 0xF5, 0x01, 0x93, 0x00, 0x05, 0x20, 0x13, 0x81, 0x00, 0x01,
+    0x93, 0x81, 0x00, 0x02, 0x13, 0x82, 0x00, 0x03, 0xB7, 0x22, 0x33, 0x44, 0x93, 0x82, 0x12, 0x21,
+    0x37, 0x63, 0x77, 0x88, 0x13, 0x03, 0x53, 0x65, 0x13, 0x13, 0x03, 0x02, 0xB3, 0x03, 0x53, 0x00,
+    0x93, 0x04, 0xF0, 0xFF, 0x23, 0xB0, 0x70, 0x00, 0x83, 0xB5, 0x00, 0x00, 0x03, 0xBB, 0x00, 0x00,
+    0x03, 0xA6, 0x40, 0x00, 0x83, 0xE6, 0x40, 0x00, 0x03, 0xA7, 0x00, 0x00, 0x83, 0x97, 0x60, 0x00,
+    0x03, 0xD8, 0x60, 0x00, 0x83, 0x88, 0x70, 0x00, 0x03, 0xC9, 0x70, 0x00, 0x23, 0x30, 0x91, 0x00,
+    0x23, 0x00, 0x71, 0x00, 0x83, 0x39, 0x01, 0x00, 0x23, 0xB0, 0x91, 0x00, 0x23, 0x90, 0x71, 0x00,
+    0x03, 0xBA, 0x01, 0x00, 0x23, 0x30, 0x92, 0x00, 0x23, 0x20, 0x72, 0x00, 0x83, 0x3A, 0x02, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_LOAD_EXT_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(10, 0x0000000000000001)] },
+    Expectation { step: 1, writes: &[(10, 0x0000000080000000)] },
+    Expectation { step: 2, writes: &[(1, 0x0000000080000200)] },
+    Expectation { step: 3, writes: &[(2, 0x0000000080000210)] },
+    Expectation { step: 4, writes: &[(3, 0x0000000080000220)] },
+    Expectation { step: 5, writes: &[(4, 0x0000000080000230)] },
+    Expectation { step: 6, writes: &[(5, 0x0000000044332000)] },
+    Expectation { step: 7, writes: &[(5, 0x0000000044332211)] },
+    Expectation { step: 8, writes: &[(6, 0xFFFFFFFF88776000)] },
+    Expectation { step: 9, writes: &[(6, 0xFFFFFFFF88776655)] },
+    Expectation { step: 10, writes: &[(6, 0x8877665500000000)] },
+    Expectation { step: 11, writes: &[(7, 0x8877665544332211)] },
+    Expectation { step: 12, writes: &[(9, 0xFFFFFFFFFFFFFFFF)] },
+    Expectation { step: 13, writes: &[] },
+    Expectation { step: 14, writes: &[(11, 0x8877665544332211)] },
+    Expectation { step: 15, writes: &[(22, 0x8877665544332211)] },
+    Expectation { step: 16, writes: &[(12, 0xFFFFFFFF88776655)] },
+    Expectation { step: 17, writes: &[(13, 0x0000000088776655)] },
+    Expectation { step: 18, writes: &[(14, 0x0000000044332211)] },
+    Expectation { step: 19, writes: &[(15, 0xFFFFFFFFFFFF8877)] },
+    Expectation { step: 20, writes: &[(16, 0x0000000000008877)] },
+    Expectation { step: 21, writes: &[(17, 0xFFFFFFFFFFFFFF88)] },
+    Expectation { step: 22, writes: &[(18, 0x0000000000000088)] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[] },
+    Expectation { step: 25, writes: &[(19, 0xFFFFFFFFFFFFFF11)] },
+    Expectation { step: 26, writes: &[] },
+    Expectation { step: 27, writes: &[] },
+    Expectation { step: 28, writes: &[(20, 0xFFFFFFFFFFFF2211)] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[(21, 0xFFFFFFFF44332211)] },
+];
+
+#[rustfmt::skip]
+static IMAGE_LOAD_X0: &[u8] = &[
+    0x97, 0x00, 0x00, 0x00, 0x93, 0x80, 0x40, 0x02, 0x73, 0x90, 0x50, 0x30, 0x93, 0x0A, 0x10, 0x00,
+    0x93, 0x9A, 0x8A, 0x02, 0x13, 0x01, 0x10, 0x00, 0x13, 0x11, 0xF1, 0x01, 0x6F, 0x00, 0x40, 0x02,
+    0x13, 0x0A, 0x30, 0x06, 0x73, 0x2F, 0x20, 0x34, 0xF3, 0x2F, 0x30, 0x34, 0xF3, 0x2E, 0x10, 0x34,
+    0x93, 0x8E, 0x4E, 0x00, 0x73, 0x90, 0x1E, 0x34, 0x73, 0x00, 0x20, 0x30, 0x13, 0x0A, 0x30, 0x06,
+    0x13, 0x0F, 0xD0, 0x04, 0x03, 0x80, 0x0A, 0x00, 0x13, 0x0F, 0xD0, 0x04, 0x03, 0x90, 0x2A, 0x00,
+    0x13, 0x0F, 0xD0, 0x04, 0x03, 0xA0, 0x4A, 0x00, 0x13, 0x0F, 0xD0, 0x04, 0x03, 0xC0, 0x1A, 0x00,
+    0x13, 0x0F, 0xD0, 0x04, 0x03, 0xD0, 0x6A, 0x00, 0x13, 0x0F, 0xD0, 0x04, 0x03, 0xE0, 0x8A, 0x00,
+    0x13, 0x0F, 0xD0, 0x04, 0x03, 0xB0, 0x0A, 0x01, 0x03, 0x20, 0x01, 0x00, 0x13, 0x0B, 0x50, 0x00,
+    0x13, 0x0C, 0x50, 0x00, 0xB3, 0x0C, 0x0C, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_LOAD_X0: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000024)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[(21, 0x0000000000000001)] },
+    Expectation { step: 4, writes: &[(21, 0x0000010000000000)] },
+    Expectation { step: 5, writes: &[(2, 0x0000000000000001)] },
+    Expectation { step: 6, writes: &[(2, 0x0000000080000000)] },
+    Expectation { step: 7, writes: &[] },
+    Expectation { step: 8, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 11, writes: &[(31, 0x0000010000000000)] },
+    Expectation { step: 12, writes: &[(29, 0x0000000080000044)] },
+    Expectation { step: 13, writes: &[(29, 0x0000000080000048)] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 19, writes: &[(31, 0x0000010000000002)] },
+    Expectation { step: 20, writes: &[(29, 0x000000008000004C)] },
+    Expectation { step: 21, writes: &[(29, 0x0000000080000050)] },
+    Expectation { step: 22, writes: &[] },
+    Expectation { step: 23, writes: &[] },
+    Expectation { step: 24, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 27, writes: &[(31, 0x0000010000000004)] },
+    Expectation { step: 28, writes: &[(29, 0x0000000080000054)] },
+    Expectation { step: 29, writes: &[(29, 0x0000000080000058)] },
+    Expectation { step: 30, writes: &[] },
+    Expectation { step: 31, writes: &[] },
+    Expectation { step: 32, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 33, writes: &[] },
+    Expectation { step: 34, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 35, writes: &[(31, 0x0000010000000001)] },
+    Expectation { step: 36, writes: &[(29, 0x000000008000005C)] },
+    Expectation { step: 37, writes: &[(29, 0x0000000080000060)] },
+    Expectation { step: 38, writes: &[] },
+    Expectation { step: 39, writes: &[] },
+    Expectation { step: 40, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 41, writes: &[] },
+    Expectation { step: 42, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 43, writes: &[(31, 0x0000010000000006)] },
+    Expectation { step: 44, writes: &[(29, 0x0000000080000064)] },
+    Expectation { step: 45, writes: &[(29, 0x0000000080000068)] },
+    Expectation { step: 46, writes: &[] },
+    Expectation { step: 47, writes: &[] },
+    Expectation { step: 48, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 49, writes: &[] },
+    Expectation { step: 50, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 51, writes: &[(31, 0x0000010000000008)] },
+    Expectation { step: 52, writes: &[(29, 0x000000008000006C)] },
+    Expectation { step: 53, writes: &[(29, 0x0000000080000070)] },
+    Expectation { step: 54, writes: &[] },
+    Expectation { step: 55, writes: &[] },
+    Expectation { step: 56, writes: &[(30, 0x000000000000004D)] },
+    Expectation { step: 57, writes: &[] },
+    Expectation { step: 58, writes: &[(30, 0x0000000000000005)] },
+    Expectation { step: 59, writes: &[(31, 0x0000010000000010)] },
+    Expectation { step: 60, writes: &[(29, 0x0000000080000074)] },
+    Expectation { step: 61, writes: &[(29, 0x0000000080000078)] },
+    Expectation { step: 62, writes: &[] },
+    Expectation { step: 63, writes: &[] },
+    Expectation { step: 64, writes: &[] },
+    Expectation { step: 65, writes: &[(22, 0x0000000000000005)] },
+    Expectation { step: 66, writes: &[(24, 0x0000000000000005)] },
+    Expectation { step: 67, writes: &[(25, 0x0000000000000005)] },
+];
+
+#[rustfmt::skip]
 static IMAGE_C_IMMEDIATES: &[u8] = &[
     0x81, 0x50, 0xFD, 0x00, 0x85, 0x00, 0xFD, 0x41, 0x81, 0x11, 0x01, 0x72, 0xFD, 0x62, 0x41, 0x41,
     0x01, 0x71, 0x7D, 0x61, 0xE0, 0x1F, 0x13, 0x01, 0xF0, 0xFF, 0x41, 0x61, 0x5C, 0x00, 0x01, 0x00,
@@ -15228,6 +15587,105 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 315,
         expected_fetches: 622,
         expected: EXPECTED_SSTC_TIMER,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "alu-imm-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_ALU_IMM_FORMS,
+        executed_steps: 19,
+        expected_fetches: 38,
+        expected: EXPECTED_ALU_IMM_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "alu-reg-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_ALU_REG_FORMS,
+        executed_steps: 18,
+        expected_fetches: 36,
+        expected: EXPECTED_ALU_REG_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "lui-auipc-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_LUI_AUIPC_FORMS,
+        executed_steps: 10,
+        expected_fetches: 20,
+        expected: EXPECTED_LUI_AUIPC_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "jalr-lsb",
+        entry: 0x0000000080000000,
+        image: IMAGE_JALR_LSB,
+        executed_steps: 16,
+        expected_fetches: 32,
+        expected: EXPECTED_JALR_LSB,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "no-delay-slots",
+        entry: 0x0000000080000000,
+        image: IMAGE_NO_DELAY_SLOTS,
+        executed_steps: 21,
+        expected_fetches: 42,
+        expected: EXPECTED_NO_DELAY_SLOTS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "shamt-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_SHAMT_FORMS,
+        executed_steps: 21,
+        expected_fetches: 42,
+        expected: EXPECTED_SHAMT_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "wsuffix-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_WSUFFIX_FORMS,
+        executed_steps: 17,
+        expected_fetches: 34,
+        expected: EXPECTED_WSUFFIX_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "load-ext-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_LOAD_EXT_FORMS,
+        executed_steps: 32,
+        expected_fetches: 64,
+        expected: EXPECTED_LOAD_EXT_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "load-x0",
+        entry: 0x0000000080000000,
+        image: IMAGE_LOAD_X0,
+        executed_steps: 68,
+        expected_fetches: 136,
+        expected: EXPECTED_LOAD_X0,
         never_written: &[],
         refusals: &[],
         cross_model: true,
