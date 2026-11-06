@@ -389,17 +389,30 @@ class MethodTests(unittest.TestCase):
         through its own row: finite satisfied while every pin is current; stale, naming the first moved declaration
         and reading nothing beyond it, once a pinned input moved (the policy then measures `invalidated`). The
         expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
-        authenticated = {"rv64gc-m-forms-v6": (88, 1019799, 40438),  # a43e-5; 83,275 B below v5's: the manifests shed the report generator (a43e-1)
-                         "rv64gc-xlen-forms-v3": (88, 1014785, 35646),  # a43e-5: 546 B of snapshot over xlen-v2's, the derivation prose (a43e-2)
-                         "rv64gc-csr-set-v2": (88, 1144922, 141763),  # a43e-5: 157 steps against 33 and 25
-                         "rv64gc-zicntr-v2": (88, 1219908, 207186),  # a43e-5: 292 steps
-                         "rv64gc-sstc-v1": (88, 1228962, 216358),  # a43e-5: 315 steps
-                         # G-OBLIGATIONS' Batch I (a46-4)
-                         "rv64gc-alu-imm-v1": (88, 1008657, 29555), "rv64gc-alu-reg-v1": (88, 1005321, 27194), "rv64gc-lui-auipc-v1": (88, 995992, 22161),
-                         "rv64gc-jalr-lsb-v1": (88, 1006135, 27996), "rv64gc-no-delay-slots-v1": (88, 1009720, 30489), "rv64gc-shamt-v1": (88, 1009349, 31315),
-                         "rv64gc-wsuffix-v1": (88, 1005634, 28414), "rv64gc-load-ext-v1": (88, 1014177, 36672), "rv64gc-load-x0-v1": (88, 1051503, 65957),
-                         # Batch II-a (a47-3)
-                         "rv64gc-ecall-ebreak-v1": (88, 1083654, 94604), "rv64gc-counters-v1": (88, 1051517, 70019), "rv64gc-ialign-16-v1": (88, 994390, 22252)}
+        # The window that carries fetch faults re-issued the 19 and credited Batch II-b (a49-3).
+        authenticated = {"rv64gc-m-forms-v7": (88, 1021565, 40438),
+                         "rv64gc-xlen-forms-v4": (88, 1016551, 35646),
+                         "rv64gc-csr-set-v3": (88, 1146688, 141763),
+                         "rv64gc-zicntr-v3": (88, 1221674, 207186),
+                         "rv64gc-sstc-v2": (88, 1230728, 216358),
+                         "rv64gc-alu-imm-v2": (88, 1010423, 29555),
+                         "rv64gc-alu-reg-v2": (88, 1007087, 27194),
+                         "rv64gc-lui-auipc-v2": (88, 997758, 22161),
+                         "rv64gc-jalr-lsb-v2": (88, 1007901, 27996),
+                         "rv64gc-no-delay-slots-v2": (88, 1011486, 30489),
+                         "rv64gc-shamt-v2": (88, 1011115, 31315),
+                         "rv64gc-wsuffix-v2": (88, 1007400, 28414),
+                         "rv64gc-load-ext-v2": (88, 1015943, 36672),
+                         "rv64gc-load-x0-v2": (88, 1053269, 65957),
+                         "rv64gc-ecall-ebreak-v2": (88, 1085420, 94604),
+                         "rv64gc-csr-access-v2": (88, 1062507, 74103),
+                         "rv64gc-counters-v2": (88, 1053283, 70019),
+                         "rv64gc-fencei-v2": (88, 1000874, 26797),
+                         "rv64gc-ialign-16-v2": (88, 996193, 22252),
+                         "rv64gc-atomics-v1": (88, 1201739, 187645),
+                         "rv64gc-c-forms-v1": (88, 1200228, 188474),
+                         "rv64gc-f-forms-v1": (88, 1278318, 249364),
+                         "rv64gc-d-forms-v1": (88, 1287269, 256669)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

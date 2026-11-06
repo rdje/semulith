@@ -319,22 +319,16 @@ class StatusTests(unittest.TestCase):
             self.assertEqual((t["drift"], t["findings"]), ([], []), t["profile"])
         self.assertEqual(self.M.report(tables)[0], 0)
         gc = next(t for t in tables if t["profile"] == "rv64gc-lab-v0")
-        # The window that carries fetch faults is open (P4-SYSTEM.14 a49-1): the typed fetch fault moved pinned inputs, and the 19 records were
-        # retired with the profile's catalogue file. Each requirement derives `planned`, the recorded status agrees, and each new case, captured at a49-2, reads pending: its receipt's qualification is false.
-        # This arm is the manifest's prediction of the real tree: the re-credits re-state it.
-        none = ("planned", "planned", "no credited implementation or evidence")
-        for rid, case in (("REQ-GC-M", "rv64gc-m-forms-v7"), ("REQ-D-XLEN", "rv64gc-xlen-forms-v4"), ("REQ-D-CSR-SET", "rv64gc-csr-set-v3"), ("REQ-D-ZICNTR", "rv64gc-zicntr-v3"),
-                          ("REQ-D-SSTC", "rv64gc-sstc-v2"), ("REQ-D-ALU-IMM", "rv64gc-alu-imm-v2"), ("REQ-D-ALU-REG", "rv64gc-alu-reg-v2"), ("REQ-D-LUI-AUIPC", "rv64gc-lui-auipc-v2"),
-                          ("REQ-D-JALR-LSB", "rv64gc-jalr-lsb-v2"), ("REQ-D-NO-DELAY-SLOTS", "rv64gc-no-delay-slots-v2"), ("REQ-D-SHAMT", "rv64gc-shamt-v2"), ("REQ-D-WSUFFIX", "rv64gc-wsuffix-v2"),
-                          ("REQ-D-LOAD-EXT", "rv64gc-load-ext-v2"), ("REQ-D-LOAD-X0", "rv64gc-load-x0-v2"), ("REQ-D-ECALL-EBREAK", "rv64gc-ecall-ebreak-v2"), ("REQ-GC-CSR-ACCESS", "rv64gc-csr-access-v2"),
-                          ("REQ-GC-COUNTERS", "rv64gc-counters-v2"), ("REQ-GC-FENCEI", "rv64gc-fencei-v2"), ("REQ-D-IALIGN-16", "rv64gc-ialign-16-v2"), ("REQ-GC-ATOMICS", "rv64gc-atomics-v1"),
-                          ("REQ-GC-C", "rv64gc-c-forms-v1"), ("REQ-GC-F", "rv64gc-f-forms-v1"), ("REQ-GC-D", "rv64gc-d-forms-v1")):
+        # The window that carries fetch faults closed at P4-SYSTEM.14 a49-3: each case re-captured once (a49-2), the unchanged ones' traces byte-identical, and credited again;
+        # Batch II-b joins them. Each requirement's predecessors, which no record names, read pending, and two left the tree with their moved guests. REQ-D-PRIV-MODES, a dependency
+        # of several, stays planned: the derivation reads obligations. This arm is the manifest's prediction of the real tree.
+        done = ("implemented", "implemented", "every obligation credited (1)")
+        for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-m-forms-v4", "rv64gc-m-forms-v5", "rv64gc-m-forms-v6", "rv64gc-signed-div-truncation-v2"]), ("REQ-D-XLEN", ["rv64gc-xlen-forms-v1", "rv64gc-xlen-forms-v2", "rv64gc-xlen-forms-v3"]), ("REQ-D-CSR-SET", ["rv64gc-csr-set-v1", "rv64gc-csr-set-v2"]), ("REQ-D-ZICNTR", ["rv64gc-zicntr-v1", "rv64gc-zicntr-v2"]), ("REQ-D-SSTC", ["rv64gc-sstc-v1"]), ("REQ-D-ALU-IMM", ["rv64gc-alu-imm-v1"]), ("REQ-D-ALU-REG", ["rv64gc-alu-reg-v1"]), ("REQ-D-LUI-AUIPC", ["rv64gc-lui-auipc-v1"]), ("REQ-D-JALR-LSB", ["rv64gc-jalr-lsb-v1"]), ("REQ-D-NO-DELAY-SLOTS", ["rv64gc-no-delay-slots-v1"]), ("REQ-D-SHAMT", ["rv64gc-shamt-v1"]), ("REQ-D-WSUFFIX", ["rv64gc-wsuffix-v1"]), ("REQ-D-LOAD-EXT", ["rv64gc-load-ext-v1"]), ("REQ-D-LOAD-X0", ["rv64gc-load-x0-v1"]), ("REQ-D-ECALL-EBREAK", ["rv64gc-ecall-ebreak-v1"]), ("REQ-GC-COUNTERS", ["rv64gc-counters-v1"]), ("REQ-D-IALIGN-16", ["rv64gc-ialign-16-v1"]), ("REQ-GC-CSR-ACCESS", []), ("REQ-GC-FENCEI", []), ("REQ-GC-ATOMICS", []), ("REQ-GC-C", []), ("REQ-GC-F", []), ("REQ-GC-D", [])):
             row = next(r for r in gc["rows"] if r["id"] == rid)
-            self.assertEqual((row["recorded"], row["derived"], row["why"]), none, rid)
-            self.assertIn(case + ":pending", row["uncredited"], rid)
-        self.assertEqual(gc["derived"], {"planned": 47, "partial": 0, "implemented": 0, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
+            self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])), (*done, sorted(case + ":pending" for case in cases)), rid)
+        self.assertEqual(gc["derived"], {"planned": 24, "partial": 0, "implemented": 23, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (48, 0, 0, 0, 0))
+                         (48, 23, 0, 23, 23))
 
 
 def main():

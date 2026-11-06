@@ -31,12 +31,12 @@ SOURCE_MODULES = frozenset((*(A.Review.REVIEWED_MODULES - {"retain_div_statement
 # a42ax: the m-forms capture (a42aw) retained in e775705; P4-SYSTEM.14 a44-5: the M case re-captured as v4 under the
 # declaration-as-data manifest (declared 177b43a1, captured 3c464095); P4-SYSTEM.14 a43b-2e: the M case re-captured once
 # more as v5, its control declared (declared 7b1a8f44, captured 2988d6a2; traces byte-identical to v4's); P4-SYSTEM.14 a43e-5: as v6
-# in the window that opens SSTC (declared 18a09566, captured 178f9c6c; traces byte-identical to v5's). v2 … v5 stay retained
-# history, reviewed by nothing. The default case keeps its named pins (the method probe's synthetic copy re-pins them).
-RETAINED_CASE_ID = "rv64gc-m-forms-v6"
-SOURCE_DECLARATION_COMMIT = "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc"
-RETAINED_CAPTURE_COMMIT = "178f9c6cadb1b109de2367454272357036646671"
-MEASURED_SHA256 = "7998edb104616fff0980b41c3ec86eddd675a8ee8c782b6c682639e836497b4d"
+# in the window that opens SSTC (declared 18a09566, captured 178f9c6c; traces byte-identical to v5's). P4-SYSTEM.14 a49-3: as v7, in the window that carries fetch faults
+# (declared 3b24bd52, captured 57544407; traces byte-identical to v6's). Earlier versions are retained history, reviewed by nothing. The default case keeps its named pins (the method probe's synthetic copy re-pins them).
+RETAINED_CASE_ID = "rv64gc-m-forms-v7"
+SOURCE_DECLARATION_COMMIT = "3b24bd526765c389db476ba8d4bdda918ec6557d"
+RETAINED_CAPTURE_COMMIT = "57544407914f8374faaadc1a756ff9fef8e7f40b"
+MEASURED_SHA256 = "7527a85c33acaae90d929a70f008adaa892dd3af7a67664d1db51e275176748e"
 MEASURED_BYTES = 16943
 TOTAL_BYTES = A.Unit.Evaluation.Q.MAX_READ_BYTES
 
@@ -53,61 +53,73 @@ class RetainedCapture:
 # P4-SYSTEM.14 a43a-2f: one row per reviewed capture, each case's own pins; a case without a row is unsupported.
 RETAINED_CAPTURES = {
     RETAINED_CASE_ID: RetainedCapture(SOURCE_DECLARATION_COMMIT, RETAINED_CAPTURE_COMMIT, MEASURED_SHA256, MEASURED_BYTES),
-    # The window that opens SSTC (P4-SYSTEM.14 a43e-3, a43e-4): all five declared in 18a09566 and captured once in 178f9c6c, the
-    # four's traces byte-identical to their predecessors' (xlen-v2, csr-set-v1, zicntr-v1), which are history since a43e-1.
-    "rv64gc-xlen-forms-v3": RetainedCapture(
-        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
-        "db2728201e01b4cccb0b51e37ec7f8f29f77d4af22513f16bd400846a520475f", 14980),
-    # rv64gc-csr-set-v2: the first on its own reference configuration.
-    "rv64gc-csr-set-v2": RetainedCapture(
-        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
-        "d8f18593b02019d49be142daaaac1cfc295c21e5cb4e3256d5507adb98db3b19", 27347),
-    # rv64gc-zicntr-v2: on the same configuration byte for byte.
-    "rv64gc-zicntr-v2": RetainedCapture(
-        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
-        "c2b55c2396067f9663ef61a4d9df029ae9261f0af57dbced2133937d5840620f", 24163),
-    # rv64gc-sstc-v1: the same configuration, and the first with a delivered interrupt.
-    "rv64gc-sstc-v1": RetainedCapture(
-        "18a09566408b1d78d24ee2c0eb83b7ef19eed3bc", "178f9c6cadb1b109de2367454272357036646671",
-        "801b9383ea21b40d582b662233dfc5f8abb3660aa1ed0e2db557261ec20a4396", 22241),
-    # G-OBLIGATIONS' Batch I, the RV64I base (P4-SYSTEM.14 a46-2, a46-3): all nine declared in 506788a6 and captured once in 8a40a249.
-    "rv64gc-alu-imm-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "27bf858df65b21f4d50eb8b0392baba6b9d99774c9b7327c83d7006fb1e14680", 13251),
-    "rv64gc-alu-reg-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "41ec7ae6db63f83e1269e3803e4c2dcdc2f44c4b1ccf3ad2be348dc87bd094e1", 12154),
-    "rv64gc-lui-auipc-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "c9e17ce26016f2ffeb8d4a2270391e7d1fa95c0bfdcaa944014c93b966d4775c", 12201),
-    "rv64gc-jalr-lsb-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "04ff5c6f8e876365d04f9c7cdd213bec13d8b085b7f0c83941c23abdaf4816ed", 12476),
-    "rv64gc-no-delay-slots-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "e8d3d2756bba09c615fe016a1c61d3ffd710963f6e15b46112df99d497a0f44e", 13753),
-    "rv64gc-shamt-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "8fad52b38fce525ff8d0a9cce8461cc7cfe93310776f3c1ceb990be858a41120", 13497),
-    "rv64gc-wsuffix-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "961ce2c73a953c70d1754176b51bf1ae6e0094075fabacef304fffeb53838503", 12951),
-    "rv64gc-load-ext-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "bc4b2d3b214f09316a136fbab9ddbd3036581b7326b25563d9c30b13bf0d20a7", 12832),
-    "rv64gc-load-x0-v1": RetainedCapture(
-        "506788a65dea6edafbb9a04b8c54f1e9e7696db9", "8a40a2495533bdb90d16c8eb283229122097bb8b",
-        "d5fda2b4c63c5cbcafd88484256046f5b56ee982255961d77c1a1dd493798394", 14719),
-    # Batch II-a, the defined half of system (P4-SYSTEM.14 a47-1, a47-2): all five declared in 507c3017 and captured once in 3eb61efd.
-    "rv64gc-ecall-ebreak-v1": RetainedCapture(
-        "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
-        "61742b70513c85f5cda60ef4cdb12227f24147649642ee579c439a560cbf68aa", 17655),
-    "rv64gc-counters-v1": RetainedCapture(
-        "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
-        "76d4a37bb94ae910f6817a66ae73eca2951e48f98e7fed14a3dfeceee6e108b6", 12150),
-    "rv64gc-ialign-16-v1": RetainedCapture(
-        "507c301781ef2694e06f9ede7f278f23905d044f", "3eb61efdb4d606e39be10ed3eb7415bbabd6f078",
-        "bad8453d8c2f03806ab44d7d85e4cdf6b925eb597cde58e13da2577cccfed19b", 11368),
+    # The window that carries fetch faults (P4-SYSTEM.14 a49-1, a49-2): all 23 declared in 3b24bd52 and captured once in 57544407, the 17 unchanged cases' traces byte-identical to their predecessors', which are history since a49-1.
+    "rv64gc-xlen-forms-v4": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "0b87cbce6ce388e25523a05262ab432d77625a3242c201b51a72504a98cd5342", 14980),
+    "rv64gc-csr-set-v3": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "bf24e2583a868fc5d1f90aabf3989830afeaf4c1b9e3c6c314ef35905d2d5cde", 27347),
+    "rv64gc-zicntr-v3": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "88b6adfb8b78c0bbba0ffafc8709784242fd24415bb36e411434733501f90a6a", 24163),
+    "rv64gc-sstc-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "0c84e833b2862001263d74210105dabb36219483f5d6e7bf65fb69477a2ed1a8", 22241),
+    "rv64gc-alu-imm-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "d8159cefb9e8ddd209d8aa9205be6499a69b99c00ee9600b6547bf4bd91c7624", 13251),
+    "rv64gc-alu-reg-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "fc17ca34d3ca147cff3bd1812f184b16a398555a02e244385a5e02086001f1de", 12154),
+    "rv64gc-lui-auipc-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "3bd11dba2f5b9e7bad63cc4e30af7bba7a8751c5b83ee138aa35679a9f17e520", 12201),
+    "rv64gc-jalr-lsb-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "c4856561e770ab01887f80e227d08fb3158c2e790782c6747e5cc57a5680dbc0", 12476),
+    "rv64gc-no-delay-slots-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "6c12cb8b6adff8049d57518bd08eac50bf79d680ff9257d40acc60ade530397e", 13753),
+    "rv64gc-shamt-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "84c147cd2a7aeac6cfcba8fb99530ecdfa0fd8a00afe03bfa1fab855136e26e8", 13497),
+    "rv64gc-wsuffix-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "e036103d04a959701f571058d2a566da09db0123d75218cdf34cd8eb488a9475", 12951),
+    "rv64gc-load-ext-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "c93bdd565a20a629e7e311b2a083833a2973b7ddcfb371904ee50d9fda6c80ba", 12832),
+    "rv64gc-load-x0-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "de9b732a58b0f1f69690fa4ee6b892796db1fb881d1845dcf29408622d4f184b", 14719),
+    "rv64gc-ecall-ebreak-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "ed55336b939390102d1b8956e67f7b8a4cd3e56c924dbc1326e2096a735e0134", 17655),
+    "rv64gc-csr-access-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "20f7d58dabe54d5636d6abbfeec581a6c0a2c50eb91b660232d81773383b2b9c", 17178),
+    "rv64gc-counters-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "3aa72b511c401a619fb37085218c754629020a156b5e90fa459ecec9bec7e364", 12150),
+    "rv64gc-fencei-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "bf596e7c7944ed142d09c4201b0e60622f920a2f82befacecc1b676c37bbf963", 11052),
+    "rv64gc-ialign-16-v2": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "3a6a0f30be5173c6f7b9b99c59d7f843098bb25264e5404f654edbc86a29d387", 11405),
+    "rv64gc-atomics-v1": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "a9c6a2f0256b40fa38c8c42661b7840cc0abc75b727d6469bbaa7331e24f2896", 27721),
+    "rv64gc-c-forms-v1": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "a8795ba63d55ec942cb8786f99651b90bb09addc0a0633be6d8a16e20f6362c5", 23555),
+    "rv64gc-f-forms-v1": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "098f2565f8045da5eaf1f5f75b6a2fd2b942c275175cabfa7fdf378894da9f99", 33297),
+    "rv64gc-d-forms-v1": RetainedCapture(
+        "3b24bd526765c389db476ba8d4bdda918ec6557d", "57544407914f8374faaadc1a756ff9fef8e7f40b",
+        "ab0630356bad8822b6d18a0bda62619680fff9091f32a6a1e1e9aeb7c57acb9b", 34607),
 }
 
 

@@ -99,14 +99,13 @@ MUTATION_TESTS = {
     "effect-diverges": "test_a_retained_effect_that_agrees_is_pending",
     "effect-at-witness": "test_a_retained_effect_differing_at_no_declared_step_is_pending",
 }
-XLEN_CASE_ID = "rv64gc-xlen-forms-v3"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), xlen-v2 (a43b-2e), xlen-v3 (a43e-5)
-CSR_CASE_ID = "rv64gc-csr-set-v2"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5)
-ZICNTR_CASE_ID = "rv64gc-zicntr-v2"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5)
-SSTC_CASE_ID = "rv64gc-sstc-v1"  # the third, and the first with a delivered interrupt (a43e-5)
-# G-OBLIGATIONS' Batch I (a46-4) and Batch II-a (a47-3): the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
-BATCH_I = {"rv64gc-alu-imm-v1": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v1": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v1": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v1": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v1": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v1": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v1": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v1": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v1": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v1": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-counters-v1": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-ialign-16-v1": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium")}
-READ_AFTER = {"rv64gc-no-delay-slots-v1": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v1": ["sb", "sd", "sh", "sw"],
-              "rv64gc-load-x0-v1": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v1": ["ebreak", "ecall"]}
+XLEN_CASE_ID = "rv64gc-xlen-forms-v4"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), xlen-v2 (a43b-2e), xlen-v3 (a43e-5), xlen-v4 (a49-3)
+CSR_CASE_ID = "rv64gc-csr-set-v3"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5) and v3 (a49-3)
+ZICNTR_CASE_ID = "rv64gc-zicntr-v3"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5) and v3 (a49-3)
+SSTC_CASE_ID = "rv64gc-sstc-v2"  # the third, and the first with a delivered interrupt (a43e-5), re-captured as v2 (a49-3)
+# G-OBLIGATIONS' Batches I, II-a and II-b, re-issued or credited at a49-3: the requirement each case binds, and the forms that write no GPR, so a later read predeclares them.
+BATCH_I = {"rv64gc-alu-imm-v2": ("REQ-D-ALU-IMM", "OB-ALU-IMM", "low"), "rv64gc-alu-reg-v2": ("REQ-D-ALU-REG", "OB-ALU-REG", "low"), "rv64gc-lui-auipc-v2": ("REQ-D-LUI-AUIPC", "OB-LUI-AUIPC", "medium"), "rv64gc-jalr-lsb-v2": ("REQ-D-JALR-LSB", "OB-JALR-LSB", "medium"), "rv64gc-no-delay-slots-v2": ("REQ-D-NO-DELAY-SLOTS", "OB-NO-DELAY-SLOTS", "low"), "rv64gc-shamt-v2": ("REQ-D-SHAMT", "OB-SHAMT", "high"), "rv64gc-wsuffix-v2": ("REQ-D-WSUFFIX", "OB-WSUFFIX", "high"), "rv64gc-load-ext-v2": ("REQ-D-LOAD-EXT", "OB-LOAD-EXT", "high"), "rv64gc-load-x0-v2": ("REQ-D-LOAD-X0", "OB-LOAD-X0", "high"), "rv64gc-ecall-ebreak-v2": ("REQ-D-ECALL-EBREAK", "OB-GC-ECALL-EBREAK-V3", "high"), "rv64gc-csr-access-v2": ("REQ-GC-CSR-ACCESS", "OB-GC-CSR-ACCESS", "high"), "rv64gc-counters-v2": ("REQ-GC-COUNTERS", "OB-GC-COUNTERS", "medium"), "rv64gc-fencei-v2": ("REQ-GC-FENCEI", "OB-GC-FENCEI", "low"), "rv64gc-ialign-16-v2": ("REQ-D-IALIGN-16", "OB-IALIGN-16", "medium"), "rv64gc-atomics-v1": ("REQ-GC-ATOMICS", "OB-GC-ATOMICS", "high"), "rv64gc-c-forms-v1": ("REQ-GC-C", "OB-GC-C", "medium"), "rv64gc-f-forms-v1": ("REQ-GC-F", "OB-GC-F", "high"), "rv64gc-d-forms-v1": ("REQ-GC-D", "OB-GC-D", "high")}
+READ_AFTER = {"rv64gc-no-delay-slots-v2": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v2": ["sb", "sd", "sh", "sw"], "rv64gc-load-x0-v2": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v2": ["ebreak", "ecall"], "rv64gc-fencei-v2": ["fence.i"], "rv64gc-c-forms-v1": ["c.beqz", "c.bnez", "c.ebreak", "c.fld", "c.fldsp", "c.fsd", "c.fsdsp", "c.j", "c.jr", "c.nop", "c.sd", "c.sdsp", "c.sw", "c.swsp"], "rv64gc-f-forms-v1": ["fadd.s", "fcvt.s.l", "fcvt.s.lu", "fcvt.s.w", "fcvt.s.wu", "fdiv.s", "flw", "fmadd.s", "fmax.s", "fmin.s", "fmsub.s", "fmul.s", "fmv.w.x", "fnmadd.s", "fnmsub.s", "fsgnj.s", "fsgnjn.s", "fsgnjx.s", "fsqrt.s", "fsub.s", "fsw"], "rv64gc-d-forms-v1": ["fadd.d", "fcvt.d.l", "fcvt.d.lu", "fcvt.d.s", "fcvt.d.w", "fcvt.d.wu", "fcvt.s.d", "fdiv.d", "fld", "fmadd.d", "fmax.d", "fmin.d", "fmsub.d", "fmul.d", "fmv.d.x", "fnmadd.d", "fnmsub.d", "fsd", "fsgnj.d", "fsgnjn.d", "fsgnjx.d", "fsqrt.d", "fsub.d"]}
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -681,10 +680,9 @@ class PolicyTests(unittest.TestCase):
                 if moved[t["case_id"]]:
                     # A moved pinned input invalidates the measurement and, through credit_records.authenticate's walk
                     # of the same manifest, lapses any record naming the case: its one finding, exit 1.
-                    # A predecessor may lack a limit its successor's trace names: statement-trace is read on the case the requirement's credit will name (a49-1).
-                    self.assertEqual((t["disposition"], [m for m in t["missing"] if m != "statement-trace"], t["credited"]),
+                    self.assertEqual((t["disposition"], t["missing"], t["credited"]),
                                      ("invalidated", ["matched-reference-comparison", "currentness"], False))
-                    self.assertGreaterEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 8)
+                    self.assertEqual(sum(1 for leg in t["legs"] if leg["disposition"] == "satisfied"), 9)
                     self.assertEqual(t["method"]["disposition"], "stale"); self.assertTrue(t["invalidated_by"], t["method"])
                     self.assertEqual([f.split(" names this case but lapsed: ")[0] for f in t["findings"]],
                                      ["credit " + i for i in ids])

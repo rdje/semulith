@@ -4,7 +4,7 @@ The evidence policy names, for a requirement's source-semantic category and risk
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
-`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five; every earlier case is history below — on top of the finite method review. It opens only
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five, each re-issued at a49-3 with Batch II-b's four and read by eleven legs; every earlier case is history below — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
@@ -154,17 +154,17 @@ A record without its trace, or a malformed one, refuses (exit 2): that pair cann
 
 ```text
 $ python3 -B scripts/review_div_policy.py --every-retained
-rv64gc-m-forms-v6: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-GC-M-4
-rv64gc-xlen-forms-v3: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-XLEN-3
-rv64gc-csr-set-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-CSR-SET-2
-rv64gc-zicntr-v2: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ZICNTR-2
-rv64gc-sstc-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-SSTC-1
-rv64gc-alu-imm-v1: DIV-POLICY: satisfied — 10 of 10 legs satisfied; credited by CR-D-ALU-IMM-1
+rv64gc-m-forms-v7: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-GC-M-5
+rv64gc-xlen-forms-v4: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-XLEN-4
+rv64gc-csr-set-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-CSR-SET-3
+rv64gc-zicntr-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ZICNTR-3
+rv64gc-sstc-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-SSTC-2
+rv64gc-alu-imm-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ALU-IMM-2
 ```
 
-That is six of the nineteen lines; Batch I's other eight and Batch II-a's five read the same, each with its own credit.
+That is six of the 23 lines; the other seventeen read the same, each with its own credit.
 
-Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, and the listing shows them until a49-3 names their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
+Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, until a49-3 named their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
 
 `rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the

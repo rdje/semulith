@@ -82,3 +82,7 @@ A window is the only cheap time to move a pinned file, so it takes what else nee
 ## The captures (a49-2, 2026-11-06)
 
 Each of the 23 once, 1.2 s to 1.6 s, each control where declared. **All 153 files compared with the 17 unchanged predecessors are byte-identical, every compared file of all 23 matches its rehearsal, and the three effect traces match their predecessors': no finding.** So the window's edits changed no behaviour of any unchanged guest, which is the question its stop condition asked.
+
+## The credits (a49-3, 2026-11-06)
+
+23 current credits, each `11 of 11 legs`, `G-STATE` 4 of 4 and `G-TRACE` green again: 23 `implemented`, 24 `planned`, 1 `not-applicable`, 2 of 10 axes open. Each re-issued record's id moves one on (`CR-GC-M-4` to `CR-GC-M-5`, `CR-D-ALU-IMM-1` to `CR-D-ALU-IMM-2`), keeps the decision it names, and carries the same limitations but for the three whose case changed. Batch II-b's four are new: [`decision_batch-ii-b-credited-implemented.md`](decision_batch-ii-b-credited-implemented.md). **What is left of the window:** a49-4, the superseded directories out.

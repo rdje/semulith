@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0370 (leaf P4-SYSTEM.14 a49-3) — 23 credits under eleven legs, G-STATE and G-TRACE restored, and Batch II-b implemented
+
+The 19 re-issued and REQ-GC-ATOMICS, REQ-GC-C, REQ-GC-F and REQ-GC-D new, each case 11 of 11 legs: 23 implemented, 24 planned, 2 of 10 axes open. REQ-GC-C witnesses its second-parcel fetch fault.
+
 ## SEMULITH-P4-0369 (leaf P4-SYSTEM.14 a49-2) — the window's 23 cases captured exactly once each, and no behaviour moved
 
 Each once from the declaration commit, each control where declared. All 153 files compared with the 17 unchanged predecessors are byte-identical, every compared file matches its rehearsal, and the three effect traces match theirs: no finding.

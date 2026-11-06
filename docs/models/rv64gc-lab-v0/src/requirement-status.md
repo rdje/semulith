@@ -45,40 +45,45 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**A window is open (a49-1 to a49-3; `decision_the-window-that-carries-fetch-faults.md`): today 47 requirements derive `planned` and one `not-applicable`.** It moved pinned inputs so that a case can carry a fetch fault, so all 19 credits were retired, with their catalogue file, until each case is re-captured and credited again; the table below is what stood until then, and returns with new case ids at a49-3.
+**Today 24 requirements derive `planned`, 23 `implemented` and one `not-applicable`, and all four state requirements are among the 23.**
+The window that carries fetch faults retired all 19 earlier records on 2026-11-06 (`P4-SYSTEM.14` a49-1; `decision_the-window-that-carries-fetch-faults.md`), and credited them again the same day (a49-3): each case re-captured once, the 17 with unchanged guests byte-identical, under an eleventh leg that reads a requirement's every clause.
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
 
 ```text
 $ python3 -B scripts/credit_records.py --profile rv64gc-lab-v0
-CREDIT-RECORDS: rv64gc-lab-v0: 0 credit(s), 0 current, 0 lapsed; records read and authenticated, nothing granted
+CREDIT-RECORDS: rv64gc-lab-v0: 23 credit(s), 23 current, 0 lapsed; records read and authenticated, nothing granted
 ```
 
-No recorded status drifts. The records as they stood until a49-1:
+No recorded status drifts. The records:
 
 | Requirement | Record | Case | Category, risk |
 | --- | --- | --- | --- |
-| `REQ-GC-M` | `CR-GC-M-4` | `rv64gc-m-forms-v6` | `defined`, medium |
-| `REQ-D-XLEN`, the first `state` requirement | `CR-D-XLEN-3` | `rv64gc-xlen-forms-v3` | `defined`, low |
-| `REQ-D-CSR-SET`, the first `implementation-defined` one | `CR-D-CSR-SET-2` | `rv64gc-csr-set-v2` | `implementation-defined`, high |
-| `REQ-D-ZICNTR` | `CR-D-ZICNTR-2` | `rv64gc-zicntr-v2` | `implementation-defined`, high |
-| `REQ-D-SSTC`, the first with a delivered interrupt | `CR-D-SSTC-1` | `rv64gc-sstc-v1` | `implementation-defined`, high |
-| `REQ-D-ALU-IMM` | `CR-D-ALU-IMM-1` | `rv64gc-alu-imm-v1` | `defined`, low |
-| `REQ-D-ALU-REG` | `CR-D-ALU-REG-1` | `rv64gc-alu-reg-v1` | `defined`, low |
-| `REQ-D-LUI-AUIPC` | `CR-D-LUI-AUIPC-1` | `rv64gc-lui-auipc-v1` | `defined`, medium |
-| `REQ-D-JALR-LSB` | `CR-D-JALR-LSB-1` | `rv64gc-jalr-lsb-v1` | `defined`, medium |
-| `REQ-D-NO-DELAY-SLOTS` | `CR-D-NO-DELAY-SLOTS-1` | `rv64gc-no-delay-slots-v1` | `defined`, low |
-| `REQ-D-SHAMT` | `CR-D-SHAMT-1` | `rv64gc-shamt-v1` | `defined`, high |
-| `REQ-D-WSUFFIX` | `CR-D-WSUFFIX-1` | `rv64gc-wsuffix-v1` | `defined`, high |
-| `REQ-D-LOAD-EXT` | `CR-D-LOAD-EXT-1` | `rv64gc-load-ext-v1` | `defined`, high |
-| `REQ-D-LOAD-X0` | `CR-D-LOAD-X0-1` | `rv64gc-load-x0-v1` | `defined`, high |
-| `REQ-D-ECALL-EBREAK` | `CR-D-ECALL-EBREAK-1` | `rv64gc-ecall-ebreak-v1` | `defined`, high |
-| `REQ-GC-CSR-ACCESS` | `CR-GC-CSR-ACCESS-1` | `rv64gc-csr-access-v1` | `defined`, high |
-| `REQ-GC-COUNTERS` | `CR-GC-COUNTERS-1` | `rv64gc-counters-v1` | `defined`, medium |
-| `REQ-GC-FENCEI` | `CR-GC-FENCEI-1` | `rv64gc-fencei-v1` | `defined`, low |
-| `REQ-D-IALIGN-16` | `CR-D-IALIGN-16-1` | `rv64gc-ialign-16-v1` | `defined`, medium |
+| `REQ-GC-M` | `CR-GC-M-5` | `rv64gc-m-forms-v7` | `defined`, medium |
+| `REQ-D-XLEN`, the first `state` requirement | `CR-D-XLEN-4` | `rv64gc-xlen-forms-v4` | `defined`, low |
+| `REQ-D-CSR-SET`, the first `implementation-defined` one | `CR-D-CSR-SET-3` | `rv64gc-csr-set-v3` | `implementation-defined`, high |
+| `REQ-D-ZICNTR` | `CR-D-ZICNTR-3` | `rv64gc-zicntr-v3` | `implementation-defined`, high |
+| `REQ-D-SSTC`, the first with a delivered interrupt | `CR-D-SSTC-2` | `rv64gc-sstc-v2` | `implementation-defined`, high |
+| `REQ-D-ALU-IMM` | `CR-D-ALU-IMM-2` | `rv64gc-alu-imm-v2` | `defined`, low |
+| `REQ-D-ALU-REG` | `CR-D-ALU-REG-2` | `rv64gc-alu-reg-v2` | `defined`, low |
+| `REQ-D-LUI-AUIPC` | `CR-D-LUI-AUIPC-2` | `rv64gc-lui-auipc-v2` | `defined`, medium |
+| `REQ-D-JALR-LSB` | `CR-D-JALR-LSB-2` | `rv64gc-jalr-lsb-v2` | `defined`, medium |
+| `REQ-D-NO-DELAY-SLOTS` | `CR-D-NO-DELAY-SLOTS-2` | `rv64gc-no-delay-slots-v2` | `defined`, low |
+| `REQ-D-SHAMT` | `CR-D-SHAMT-2` | `rv64gc-shamt-v2` | `defined`, high |
+| `REQ-D-WSUFFIX` | `CR-D-WSUFFIX-2` | `rv64gc-wsuffix-v2` | `defined`, high |
+| `REQ-D-LOAD-EXT` | `CR-D-LOAD-EXT-2` | `rv64gc-load-ext-v2` | `defined`, high |
+| `REQ-D-LOAD-X0` | `CR-D-LOAD-X0-2` | `rv64gc-load-x0-v2` | `defined`, high |
+| `REQ-D-ECALL-EBREAK` | `CR-D-ECALL-EBREAK-2` | `rv64gc-ecall-ebreak-v2` | `defined`, high |
+| `REQ-GC-CSR-ACCESS` | `CR-GC-CSR-ACCESS-2` | `rv64gc-csr-access-v2` | `defined`, high |
+| `REQ-GC-COUNTERS` | `CR-GC-COUNTERS-2` | `rv64gc-counters-v2` | `defined`, medium |
+| `REQ-GC-FENCEI` | `CR-GC-FENCEI-2` | `rv64gc-fencei-v2` | `defined`, low |
+| `REQ-D-IALIGN-16` | `CR-D-IALIGN-16-2` | `rv64gc-ialign-16-v2` | `defined`, medium |
+| `REQ-GC-ATOMICS` | `CR-GC-ATOMICS-1` | `rv64gc-atomics-v1` | `defined`, high |
+| `REQ-GC-C`, the first with a fetch fault | `CR-GC-C-1` | `rv64gc-c-forms-v1` | `defined`, medium |
+| `REQ-GC-F` | `CR-GC-F-1` | `rv64gc-f-forms-v1` | `defined`, high |
+| `REQ-GC-D` | `CR-GC-D-1` | `rv64gc-d-forms-v1` | `defined`, high |
 
-The last five are Batch II-a (`decision_batch-ii-a-credited-implemented.md`), and the nine before them Batch I (`decision_batch-i-credited-implemented.md`), each new. The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited, read as history on [the retained cases](retained-cases.md). Below, a record's claims are read against its current id.
+The last four are Batch II-b (`decision_batch-ii-b-credited-implemented.md`), new at a49-3. The five before them are Batch II-a (`decision_batch-ii-a-credited-implemented.md`), and the nine before those Batch I (`decision_batch-i-credited-implemented.md`). The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited, read as history on [the retained cases](retained-cases.md). Below, a record's claims are read against its current id.
 
 An earlier window did the same to the first two (`P4-SYSTEM.14` a43b-2e, 2026-11-02):
 the planned lapse that opens CSR-SET (a43b-2b; `decision_producer-debt-paid-before-the-next-case.md`)
@@ -90,7 +95,7 @@ synthetic-graph tests in both interpreter modes and eight seam omissions that ea
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, and a47-3 for the last five), under the rulings on its authority and on the
+`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, a47-3 for the next five, all 19 retired at a49-1, and a49-3 for all 23), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
 since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1; `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` since a43d-2; `RVI-RV32I-STATEMENTS` and `RVI-RV64I-FORMS-STATEMENTS` since a46-1; `RVP-ECALL-STATEMENTS`, `RVI-ZICSR-STATEMENTS`, `RVI-ZIFENCEI-STATEMENTS` and `RVI-C-STATEMENTS` since a47-1).
@@ -135,18 +140,18 @@ Its dependency `REQ-D-PRIV-MODES` stays `planned` for the same reason as CSR-SET
 
 Its dependency `REQ-D-PRIV-MODES` stays `planned` too.
 
-**No measured record is copied into `references.sexp`.** A third copy would have taken the file to 77,669 B against the family's 65,536 B per-part ceiling, and the director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`) that the next pinned window retire them all. That window was this one: the copies left at a43e-1, and since a43e-5 `gate_report.py` reads each credited case's record from `evidence/`. `G-TRACE` lists all nineteen, and each row is evidence only while its credit is current:
+**No measured record is copied into `references.sexp`.** A third copy would have taken the file to 77,669 B against the family's 65,536 B per-part ceiling, and the director ruled on 2026-11-04 (`decision_dossier-copies-retire-at-the-next-window.md`) that the next pinned window retire them all. That window was this one: the copies left at a43e-1, and since a43e-5 `gate_report.py` reads each credited case's record from `evidence/`. `G-TRACE` lists all 23, and each row is evidence only while its credit is current:
 
 ```text
 $ python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS --stdout | grep 'G-TRACE. | .experiment' | tail -1
-| `G-TRACE` | `experiment` | experiment `rv64gc-ialign-16-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-d-forms-v1` | yes |
 ```
 
-Without `tail` it prints all nineteen. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
+Without `tail` it prints all 23. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
 
 ## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-When this route was set, 42 were `planned`; Batch I and Batch II-a have since credited fourteen, so 28 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+When this route was set, 42 were `planned`; Batches I, II-a and II-b have since credited eighteen, so 24 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out target/reference-config-census/sstc
@@ -165,4 +170,4 @@ $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v1 --out targ
 
 Batch II found what that table had not: ten of the 28 are `implementation-defined`, a category the review measures against a case's own configuration, and for them the profile's override is the selection. The pinned Sail has a real switch for most of them, so a behaviour-changing control exists; the tool does not read one yet (`decision_obligations-route.md`, "What Batch II found").
 
-The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **So is Batch II-a, the five `defined` requirements of system:** `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`, credited at a47-3. **The `defined` remainder stands declared since a48-1:** `ATOMICS`, `C`, `F`, `D`, 239 witnesses, rehearsed first. They wait for a window, open since a49-1: a case carries a fetch fault, the review reads a requirement's every clause, and these four and the 19 credited cases are declared on it, 23 in all, and captured once each since a49-2, next their reviews and credits (`decision_the-window-that-carries-fetch-faults.md`). Batch II-a was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
+The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **So is Batch II-a, the five `defined` requirements of system:** `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`, credited at a47-3. **So is the `defined` remainder:** `ATOMICS`, `C`, `F`, `D`, 299 witnesses, credited at a49-3 on the tools of a window that let a case carry a fetch fault and the review read a requirement's every clause (`decision_the-window-that-carries-fetch-faults.md`). Batch II-a was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
