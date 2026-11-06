@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0085 (leaf XTASK.13 slice g) — EXERCISE-COVERAGE judges frozen fragments, so a damaged real one names itself
+
+A deleted or broken definition fragment used to make the check refuse as non-discriminating, pointing into its own scratch copy. Its controls now read frozen copies, so the real check fails by the fragment's own name, on all five damaged states measured.
+
 ## SEMULITH-P4-0377 (P4-SYSTEM.14 a50-c2) — the capture guard is a tracked tool, and it held on a real run
 
 `scripts/capture_guarded.py` replaces a script that lived under `target/`: 22 tests, 17 mutations caught, and seven real captures on a clone byte-identical to the retained ones. `probe_config_effect.py` now reads all ten retained effects, not three.

@@ -11,7 +11,9 @@
 //! their `.a56` corpus in both directions; `device-model` and `profile-resolution` routes make both legs n/a
 //! by declaration, and a document that contradicts the declaration is a finding. The script's inline Python
 //! is ported line for line (the first consumer of the Rust S-expression reader, `sexp.rs`); each self-test
-//! arm is one `tally.arm(` call, the idiom the `DERIVED-COUNTS` arm total counts.
+//! arm is one `tally.arm(` call, the idiom the `DERIVED-COUNTS` arm total counts. The controls read FROZEN fragments
+//! (`scripts/fixtures/exercise-coverage/`), so a damaged real fragment fails the real check by its own name and not
+//! this self-test (`XTASK.13` slice g, ruling 5).
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -21,6 +23,9 @@ use std::process::{Command, ExitCode};
 use crate::composition::resolve_composition;
 use crate::harness::scratch;
 use crate::sexp::{self, Sexp, SexpError};
+
+/// The frozen fragments the controls compose, which the real check never reads.
+const FROZEN: &str = "scripts/fixtures/exercise-coverage/definitions/riscv";
 
 /// Which profile dossiers a run judges: the tracked ones (the real run) or every one on disk (the fixtures).
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -469,9 +474,18 @@ fn write(path: &Path, text: &str) {
     let _ = fs::write(path, text);
 }
 
-/// The RED/GREEN controls over a scratch unit: a two-form scope over the REAL rv64i fragment (copied),
+/// The RED/GREEN controls over a scratch unit: a two-form scope over a FROZEN rv64i fragment (copied),
 /// exercised by synthetic expectation documents. The fixture writers rebuild the unit per arm.
 fn self_test(root: &Path, verbose: bool) -> bool {
+    let frozen = root.join(FROZEN);
+    for name in ["rv64i.sexp", "zicsr.sexp", "zicntr.sexp"] {
+        if !frozen.join(name).is_file() {
+            eprintln!(
+                "EXERCISE-COVERAGE self-test: the frozen fragment {FROZEN}/{name} is missing"
+            );
+            return false;
+        }
+    }
     let Ok(t) = scratch(root, "target/doctrine-selftest", "exercise") else {
         eprintln!("EXERCISE-COVERAGE self-test: cannot create a scratch directory under target/doctrine-selftest");
         return false;
@@ -480,7 +494,7 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     let _ = fs::create_dir_all(p.join("guests"));
     let _ = fs::create_dir_all(t.join("definitions/riscv"));
     let _ = fs::copy(
-        root.join("definitions/riscv/rv64i.sexp"),
+        frozen.join("rv64i.sexp"),
         t.join("definitions/riscv/rv64i.sexp"),
     );
     let profile = |scope: &str| {
@@ -570,11 +584,11 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     );
 
     let _ = fs::copy(
-        root.join("definitions/riscv/zicsr.sexp"),
+        frozen.join("zicsr.sexp"),
         t.join("definitions/riscv/zicsr.sexp"),
     );
     let _ = fs::copy(
-        root.join("definitions/riscv/zicntr.sexp"),
+        frozen.join("zicntr.sexp"),
         t.join("definitions/riscv/zicntr.sexp"),
     );
     write(
