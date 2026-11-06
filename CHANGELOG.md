@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0081 (leaf XTASK.13 slice d) — BOARD-GEN's controls judge a small frozen tree
+
+A deleted `board.sexp` or part catalogue now fails by its own name rather than reading as a check that stopped discriminating. Reading before freezing found the real run would then have read a deleted definition as `no board declares itself yet`; a manifest with no definition beside it now fails by name. 11 arms.
+
 ## SEMULITH-P4-0360 (leaf P4-SYSTEM.14 a46-2) — Batch I's nine programs and cases, declared before their captures, and rehearsed first
 
 The RV64I base: nine requirements, one case each, 108 witnesses. All three producers agree on every program. A full rehearsal on a throwaway clone found two faults before they could spend a case id. The family's bound is re-derived once, for all five batches. Nothing captured or credited.

@@ -4,10 +4,12 @@
 //! A board's manifest, composed catalogues, hardware description and map are GENERATED from the canonical definition
 //! (`profiles/*/board.sexp`) by `scripts/gen_board.py`; this check regenerates them in memory and refuses the day a
 //! committed artifact stops byte-matching its derivation — a hand-edited or stale artifact is a running total. The
-//! generator is spawned exactly as the driver spawned it and is not ported; the controls run over a scratch copy of the
-//! real definition (the generator's part resolution falls back to the repository's units): the seven artifacts emitted,
+//! generator is spawned exactly as the driver spawned it and is not ported. Since `XTASK.13` the controls judge a small
+//! frozen tree, never the real board or its units, so a damaged real one fails by its own name (ruling 5): `BOARD-VERDICT`'s
+//! frozen definition and three tiny part units, which the generator prefers to the repository's: the seven artifacts emitted,
 //! two derivations byte-identical, a faithful generation in sync, three hand-edited artifacts and a moved definition
-//! named as DRIFT, an overlapping region and an undeclared device refused at generation. HONEST LIMIT, the script's: it
+//! named as DRIFT, an overlapping region and an undeclared device refused at generation, and "no board" told apart from a
+//! board whose definition was deleted. HONEST LIMIT, the script's: it
 //! says nothing about whether the definition is TRUE. Each self-test arm is one `tally.arm(` call, the idiom the
 //! `DERIVED-COUNTS` arm total counts.
 
@@ -17,7 +19,10 @@ use std::process::{Command, ExitCode, Stdio};
 
 use crate::harness::{combined, locale_sorted, scratch};
 
-const BOARD: &str = "profiles/netboard-lab-v0";
+/// The frozen definition the controls judge: the one `BOARD-VERDICT`'s controls read, so neither reads the real board.
+const FROZEN_BOARD: &str = "scripts/fixtures/board-verdict/board.sexp";
+/// Three tiny part units beside it, one record each: `gen_board.part_dirs` prefers a board's sibling units to the repository's.
+const FROZEN_PARTS: &str = "scripts/fixtures/board-gen";
 
 /// `python3 scripts/gen_board.py <args>` from the root, stdout and stderr together as `2>&1` joined them.
 fn generator(repo: &Path, args: &[&str]) -> (i32, String) {
@@ -128,7 +133,7 @@ impl Tally {
     }
 }
 
-/// The RED/GREEN controls over a scratch copy of the real board definition.
+/// The RED/GREEN controls over a scratch copy of the frozen tree.
 fn self_test(repo: &Path, verbose: bool) -> bool {
     let Ok(t) = scratch(repo, "target/doctrine-selftest", "boardgen") else {
         eprintln!(
@@ -137,10 +142,8 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         return false;
     };
     let _ = fs::create_dir_all(t.join("board"));
-    let _ = fs::copy(
-        repo.join(BOARD).join("board.sexp"),
-        t.join("board/board.sexp"),
-    );
+    let _ = fs::copy(repo.join(FROZEN_BOARD), t.join("board/board.sexp"));
+    copy_tree(&repo.join(FROZEN_PARTS), &t);
     let p = |rel: &str| t.join(rel).display().to_string();
     let mut tally = Tally {
         pass: 0,
@@ -151,7 +154,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     // GREEN: the generator emits all seven artifacts from the real definition.
     let (rc, out) = generator(repo, &["--board-dir", &p("board"), "--out-dir", &p("out")]);
     tally.arm(
-        "GREEN the generator emits the artifacts from the real definition",
+        "GREEN the generator emits the artifacts from the frozen definition",
         rc,
         0,
         captured(&out),
@@ -297,6 +300,30 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&out),
         "undeclared device",
     );
+    // GREEN: a tree that declares no board reads as one, and says so.
+    let _ = fs::create_dir_all(t.join("none/profiles/a-unit"));
+    let (rc, out) = judge(repo, &t.join("none"));
+    tally.arm(
+        "GREEN a tree with no board reads as none",
+        rc,
+        0,
+        &out,
+        "no board declares itself yet",
+    );
+    // RED: a generated manifest with no definition beside it is a deleted board, not "no board", and it is named.
+    let _ = fs::create_dir_all(t.join("gone/profiles/a-board"));
+    let _ = fs::write(
+        t.join("gone/profiles/a-board/composition.sexp"),
+        "(composition)\n",
+    );
+    let (rc, out) = judge(repo, &t.join("gone"));
+    tally.arm(
+        "RED a manifest whose board.sexp is gone is refused by name",
+        rc,
+        1,
+        &out,
+        "profiles/a-board/board.sexp: missing",
+    );
     let _ = fs::remove_dir_all(&t);
     if verbose {
         println!(
@@ -326,6 +353,65 @@ fn boards(root: &Path) -> Vec<String> {
     locale_sorted(found)
 }
 
+/// `profiles/*/composition.sexp` with no `board.sexp` beside it. The manifest is only ever generated from a board, so this is
+/// a board whose definition was deleted, which must not read as "no board declares itself" (ruling 5: `XTASK.13`).
+fn orphaned(root: &Path) -> Vec<String> {
+    let found: Vec<String> = fs::read_dir(root.join("profiles"))
+        .map(|entries| {
+            entries
+                .flatten()
+                .filter(|e| {
+                    e.path().join("composition.sexp").is_file()
+                        && !e.path().join("board.sexp").is_file()
+                })
+                .map(|e| format!("profiles/{}/board.sexp", e.file_name().to_string_lossy()))
+                .collect()
+        })
+        .unwrap_or_default();
+    locale_sorted(found)
+}
+
+/// The real run's verdict over the units under `root`, as (status, what it prints); the generator runs from `repo`.
+fn judge(repo: &Path, root: &Path) -> (i32, String) {
+    let gone = orphaned(root);
+    if !gone.is_empty() {
+        let names: Vec<String> = gone
+            .iter()
+            .map(|path| {
+                format!("{path}: missing, though its generated composition.sexp is present")
+            })
+            .collect();
+        return (
+            1,
+            format!(
+                "{}\nBOARD-GEN: FAIL — a board's canonical definition is gone.",
+                names.join("\n")
+            ),
+        );
+    }
+    let defs = boards(root);
+    if defs.is_empty() {
+        return (0, "BOARD-GEN: ok (no board declares itself yet)".to_owned());
+    }
+    let (rc, out) = generator(repo, &["--check"]);
+    if rc != 0 {
+        return (
+            1,
+            format!(
+                "{}\nBOARD-GEN: FAIL — a generated board artifact is out of sync with its canonical definition.",
+                captured(&out)
+            ),
+        );
+    }
+    (
+        0,
+        format!(
+            "BOARD-GEN: ok ({} board(s) — manifest, composed catalogues, hardware description and map all byte-exact functions of the canonical definition)",
+            defs.len()
+        ),
+    )
+}
+
 /// `cargo xtask check-board-gen [--self-test]`: the shell driver's verdict lines and exit statuses.
 pub fn run(root: &Path, args: &[String]) -> ExitCode {
     if args.first().is_some_and(|arg| arg == "--self-test") {
@@ -340,20 +426,11 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
         eprintln!("BOARD-GEN: REFUSED — the check does not discriminate (self-test failed).");
         return ExitCode::from(2);
     }
-    let defs = boards(root);
-    if defs.is_empty() {
-        println!("BOARD-GEN: ok (no board declares itself yet)");
-        return ExitCode::SUCCESS;
-    }
-    let (rc, out) = generator(root, &["--check"]);
+    let (rc, out) = judge(root, root);
     if rc != 0 {
-        eprintln!("{}", captured(&out));
-        eprintln!("BOARD-GEN: FAIL — a generated board artifact is out of sync with its canonical definition.");
+        eprintln!("{out}");
         return ExitCode::from(1);
     }
-    println!(
-        "BOARD-GEN: ok ({} board(s) — manifest, composed catalogues, hardware description and map all byte-exact functions of the canonical definition)",
-        defs.len()
-    );
+    println!("{out}");
     ExitCode::SUCCESS
 }
