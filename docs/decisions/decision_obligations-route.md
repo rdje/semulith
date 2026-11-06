@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-06`
-- **Status:** `active` (the route is picked and being carried out from a46-1 on; 17 are raised to the director when their turn comes: see "What Batch II found")
+- **Status:** `active` (the route is picked and being carried out from a46-1 on; 17 end at a ruling, called by the engineer when their turn comes under [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md): see "What Batch II found")
 - **Owner / source:** `P4-SYSTEM.14` a46-0, `SEMULITH-P4-0358`; raised early because its cost would otherwise dominate the work, and read against the director's standard ([`decision_sstc-delivery-needs-the-pinned-window.md`](decision_sstc-delivery-needs-the-pinned-window.md) closed the case before it). **The director can overrule any of it.**
 answers: What does it take to close the 42 requirements still `planned`, by what route, what would one case at a time cost, and what can that route not close?
 
@@ -129,7 +129,9 @@ Batch II-b is `ATOMICS`, `C`, `F` and `D`, one case each: 239 witnesses, all thr
 | B. Witness what the format can carry, name the rest | `REQ-GC-C`'s limitation says so; the corpus guest `c-page-straddle` holds the fault against the backend | **Yes** |
 | C. Add the boundary at the next window, whatever opens it | A small format change, carried with the next pinned movement | **Yes, with B** |
 
-So the case witnesses the fetch width positively: C.JR in a page's very last parcel, before an invalid page, runs and lands. **Raised to the director, who may overrule**, as for the case's own configuration. `REQ-GC-C` credited `implemented` will say this in its limitations.
+So the case witnessed the fetch width positively: C.JR in a page's very last parcel, before an invalid page, runs and lands.
+
+**Reversed the same day (a49-0).** The table's "one sentence of one requirement" was a claim, not a measurement: three planned requirements state a fetch fault. Option A is taken, at its lowest price, with what else only a window can move: [`decision_the-window-that-carries-fetch-faults.md`](decision_the-window-that-carries-fetch-faults.md).
 
 **2. The forms are not the requirement.** The first drafts covered every form, and agreed with Sail on every step. Read against the requirements' statements they missed the ordering bits, one store-rules translation, the HINTs, the reserved encodings, the FS gate, sticky flags, most of the reserved rounding modes and most of the NaN rules. **Read the statement before the form list.** Forms are one leg of ten, and the review would not have caught these.
 

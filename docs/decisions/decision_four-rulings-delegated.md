@@ -33,3 +33,4 @@ the same gate as any other.
 - A future open item of the same kind (a design choice the measurements already decide) is decided by the
   workflow under this standard and recorded; an item that changes a profile's claims, a retained case or
   a policy still goes to the director first ([[raise-blockers-early-and-loud]]).
+- **Widened 2026-11-06:** the calls on the engineer's own findings, including an item changing a retained case, are the engineer's: [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md).

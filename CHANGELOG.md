@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0367 (leaf P4-SYSTEM.14 a49-0) — the director's ruling recorded, a call reversed on its measurement, and the window proved on a throwaway clone
+
+The calls on the engineer's findings are the engineer's, to the director's standard. Three planned requirements state a fetch fault, not one, so a case learns to carry one now, at the window's lowest price. On a clone: 23 of 23 captured in 42 s, and all 171 files compared with the 19 predecessors byte-identical.
+
 ## SEMULITH-P4-0366 (leaf P4-SYSTEM.14 a48-1) — Batch II-b's four programs and cases, declared before their captures, and what writing them found
 
 The A, C, F and D extensions: 239 witnesses, all three producers agreeing, rehearsed first. A case cannot carry a fetch fault, so REQ-GC-C's second-parcel fault stays the corpus guest's until the next window, raised to the director. Forms are not the requirement: the first drafts agreed with Sail and missed most of what the statements say.
