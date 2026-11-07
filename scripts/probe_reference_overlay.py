@@ -30,6 +30,8 @@ MUTATIONS = {
     "alternative-known": ('_require(entry is not None, f"alternative names unknown extension {name}")', 'entry = entry if entry is not None else {"supported": not wanted}'),
     "alternative-extension-changes": ('_require(entry["supported"] is not wanted, ', '_require(True, '),
     "alternative-misaligned-changes": ('_require(exceptions.get(kind) != rendered, ', '_require(True, '),
+    "overlay-wfi-changes": ('_require(platform.get("wfi_is_nop") is True, ', '_require(True, '),
+    "overlay-wfi-unread": ('    if S.children(form, "wfi_is_nop"):\n        doc["wfi_is_nop"] = False\n', ''),
     "overlay-amo-changes": ('_require(exceptions.get("amo") != rendered, ', '_require(True, '),
     "overlay-exact-changes": ('_require("require_exact_reservation_addr" not in reservation, ', '_require(True, '),
     "overlay-nothing": ('_require(result != config, "the overlay changes nothing")', '_require(True, "the overlay changes nothing")'),
@@ -123,6 +125,23 @@ class OverlayTests(unittest.TestCase):
         expected["platform"]["reservation"] = {"require_exact_reservation_addr": True}
         self.assertEqual(Prep.reference_config(root, CASE), expected)
         self.assertEqual(expected["platform"]["clint"], {"supported": False})
+
+    def test_an_overlay_lets_wfi_wait_and_moves_only_that(self):
+        root = self.temporary_root('(overlay (case_id "%s") (reason "A selection.") (wfi_is_nop false))' % CASE)
+        expected = self.canonical(root)
+        self.assertIs(expected["platform"]["wfi_is_nop"], True)
+        expected["platform"]["wfi_is_nop"] = False
+        try:
+            taken = Prep.reference_config(root, CASE)
+        except Prep.CurationRefused as refused:
+            self.fail(str(refused))
+        self.assertEqual(taken, expected)
+
+    def test_wfi_already_waiting_refuses_the_overlay(self):
+        canonical = self.canonical(self.temporary_root())
+        canonical["platform"]["wfi_is_nop"] = False
+        with self.assertRaisesRegex(Prep.CurationRefused, "already does"):
+            Prep.apply_overlay(canonical, {"case_id": CASE, "extensions": [], "wfi_is_nop": False})
 
     def test_a_selection_the_override_already_declares_refuses(self):
         canonical = self.canonical(self.temporary_root())

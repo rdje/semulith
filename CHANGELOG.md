@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0379 (P4-SYSTEM.14 a51-1) — the first six of the last 17 declared, and the reference's wfi turned on
+
+Six cases, 68 witnesses, each statement traced clause by clause and rehearsed on a clone: 11 of 11 legs each. The override's `wfi_is_nop` had been hiding the reference's `wfi`; with it off, all 345 steps of the privileged forms agree, including `wfi` refused under `TW`.
+
 ## SEMULITH-P4-0378 (P4-SYSTEM.14 a51-0) — the last 17 called, and measuring the reference overturned the route's reading of them
 
 Each of the 17 now has a route. The pinned binary has switches and traces the route assumed it lacked, so most get real cases, not arguments. `REQ-D-SBI` moved out of the CPU's scope to `P6-LINUX.2`: 30 `implemented`, 2 `not-applicable`, 16 `planned`.

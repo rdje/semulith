@@ -28,8 +28,9 @@ SEAMS = {
     "coverage-optional": ('    _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),\n',
                           '    _leg(legs, "form-coverage", vacuous or bool(required),\n'),
     "trace-optional": ('    _leg(legs, "statement-trace", traced, trace_measured)\n', '    _leg(legs, "statement-trace", True, trace_measured)\n'),
-    "state-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = not required\n'),
-    "configuration-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration") and not required\n', '    vacuous = requirement["kind"] == "state" and not required\n'),
+    "state-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration", "memory") and not required\n', '    vacuous = not required\n'),
+    "configuration-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration", "memory") and not required\n', '    vacuous = requirement["kind"] in ("state", "memory") and not required\n'),
+    "memory-vacuous": ('    vacuous = requirement["kind"] in ("state", "configuration", "memory") and not required\n', '    vacuous = requirement["kind"] in ("state", "configuration") and not required\n'),
     # a46-4: a form that writes no GPR is predeclared by a later read, one seam per condition.
     "silent-any-form": ('    silent = {f for f in required if not any(s["writes"] for s in steps.values() if mnemonic(s) == f)}\n', '    silent = set(required)\n'),
     "silent-any-cell": ('if cells.get(pid) == "form:" + f and any(mnemonic(steps[m]) == f for m in steps if m < n)})', 'if any(mnemonic(steps[m]) == f for m in steps if m < n)})'),
@@ -78,6 +79,7 @@ MUTATION_TESTS = {
     "trace-optional": "test_a_requirement_with_no_statement_trace_stays_pending",
     "state-vacuous": "test_state_requirement_without_forms_is_vacuous_but_explicit",
     "configuration-vacuous": "test_a_configuration_requirement_naming_no_form_is_vacuous_too",
+    "memory-vacuous": "test_a_memory_requirement_naming_no_form_is_vacuous_too",
     "silent-any-form": "test_a_form_that_writes_a_gpr_gets_no_later_read",
     "silent-any-cell": "test_a_silent_form_no_cell_names_stays_pending",
     "silent-any-order": "test_a_silent_form_read_before_its_step_stays_pending",
@@ -341,6 +343,13 @@ class PolicyTests(unittest.TestCase):
         t = self.measure()
         self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []))
         self.assertIn("a configuration requirement names no form: coverage is vacuous, its 3 predeclared witnesses", self.legs_text(t, "form-coverage"))
+
+    def test_a_memory_requirement_naming_no_form_is_vacuous_too(self):
+        """REQ-D-IALIGN-16 says where an instruction may start, and names no form: its witnesses are its coverage (a47-3)."""
+        fixture(self.root, kind="memory", insns=(), declare_boundaries=True)
+        t = self.measure()
+        self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []))
+        self.assertIn("a memory requirement names no form: coverage is vacuous, its 3 predeclared witnesses", self.legs_text(t, "form-coverage"))
 
     def silent(self, *, cell="form:sb", steps=None, witness=1, insns=("sb",), silent_forms=("sb",)):
         """A store writes no GPR, so its witness is the read that observes it (P4-SYSTEM.14 a46-4)."""

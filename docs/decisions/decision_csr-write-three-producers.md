@@ -44,5 +44,6 @@ Both fixes move pinned inputs (`scripts/derive_rv64gc_expectations.py`, `profile
 | The author legalizes `medeleg`, `mtvec` and `stvec` by the table | This record |
 | The table's `medeleg` narrows to `0xb3ff` | This record |
 | A probe holding the author to the engine, each CSR field by field | This record, so the class stays closed |
+| The author's vocabulary: every SYSTEM word and CSR the profile leaves out, so a case can show them refused | [`decision_the-seventeen-called.md`](decision_the-seventeen-called.md) |
 
 Until then, a witness writes values all three producers keep.

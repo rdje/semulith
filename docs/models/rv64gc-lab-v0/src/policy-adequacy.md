@@ -211,6 +211,8 @@ The counter rule's three parts, each witnessed. Scheduled events are guest count
 11 of 11 forms predeclared ['lb', 'lbu', 'ld', 'lh', 'lhu', 'lw', 'lwu', 'sb', 'sd', 'sh', 'sw']; 11 exercised [...]; writing no GPR, read after their own step: ['sb', 'sd', 'sh', 'sw']
 ```
 
+**A `memory` requirement naming no form (a51-1).** `REQ-D-RVWMO` says what one hart sees of the memory model and names no form, so the same reading holds. And `REQ-D-PRIV-INSNS`, an `instruction` requirement that named none, read pending as the rule says, which was a fault in the catalogue: its four instructions are named now.
+
 **A `configuration` requirement naming no form (a47-3).** The leg allowed a requirement to name no form only for kind `state`. `REQ-D-IALIGN-16` says where an instruction may start and names none, so the same reading holds, and the leg says `a configuration requirement names no form: coverage is vacuous, its 6 predeclared witnesses stand for it`. An `instruction` or `event` requirement naming no form stays pending: that would be a fault in the catalogue.
 
 ## What a satisfied measurement is, and is not
@@ -345,7 +347,7 @@ are findings), six second-method cases — the CSR-SET-shaped declaration satisf
 condition broken at a time, two wrappers judged at high and at low risk alike — and fifteen category
 cases, one per row above; each of the twenty-seven
 seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
-`coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `boundary-tag`,
+`coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `memory-vacuous`, `boundary-tag`,
 one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
 `adversarial-executed`; and one per judgement of the category row: `category-row`, `selection-recorded`,
 `unknown-category`, `effect-case`, `effect-guest`, `effect-config`, `effect-binary`, `effect-differs`,

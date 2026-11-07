@@ -184,6 +184,14 @@ sv39-modes
 reservation-forms
 sc-deterministic
 
+# P4-SYSTEM.14 a51-1: the six defined of the last 17
+composition-forms
+ext-closure-forms
+priv-revision-forms
+rvwmo-forms
+priv-insns-forms
+priv-forms
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

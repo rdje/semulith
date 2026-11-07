@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-RVWMO statements — v20260120</title>
+<body>
+<h1>RVI-RVWMO §17.1: what the memory model is defined over</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/rvwmo.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Instruction Set Manual, §17.1 RVWMO Memory Consistency Model, Version 2.0</a>.<br>
+Original page SHA256: <code>6126b0e31c33f3ff492308c14f264e9f86ae0d30dfeddaa6f834191c0ab37d91</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of a memory model, and one hart cannot: REQ-D-RVWMO says what its case leaves out.</p>
+<h2>§17.1: <code>opening:The RVWMO memory model is defined in terms of</code></h2>
+<blockquote><p>The RVWMO memory model is defined in terms of the <em>global memory order</em>,
+a total ordering of the memory operations produced by all harts. In
+general, a multithreaded program has many different possible executions,
+with each execution having its own corresponding global memory order.
+</p></blockquote>
+</body></html>

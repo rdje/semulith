@@ -49,9 +49,9 @@ what an overlay does before declaring a case on it:
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
-198 guests
- 171  profile AGREE -> case AGREE
-   8  profile DIVERGE -> case DIVERGE
+204 guests
+ 175  profile AGREE -> case AGREE
+  13  profile DIVERGE -> case DIVERGE
    ...
 ```
 
@@ -165,9 +165,9 @@ The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, and
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative
-198 guests
- 170  case AGREE -> alternative AGREE
-  19  case DIVERGE -> alternative DIVERGE
+204 guests
+ 174  case AGREE -> alternative AGREE
+  21  case DIVERGE -> alternative DIVERGE
    6  case REFUSED -> alternative REFUSED
    2  case AGREE -> alternative DIVERGE
    1  case NOT-COMPARED -> alternative NOT-COMPARED

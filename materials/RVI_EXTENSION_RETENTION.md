@@ -51,3 +51,20 @@ Each page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0
 The tool's selection did not change. Not retained: the priority table itself and the opening sentence that points at it, which carry a link the tool's markup bound refuses; and the walk's numbered steps, including the misaligned-superpage step and the Svade step, which are list items the tool does not read. Each is cited by its section and not quoted.
 
 Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvp-modes-statements.html`, 3,173 B; `rvp-translation-statements.html`, 4,099 B; `rvp-priority-statements.html`, 1,743 B; `rvi-a-reservation-statements.html`, 5,467 B. Regenerate with `python3 scripts/retain_statements.py --emit <id>` using the acquired pages; check the tracked assets without that cache using `--verify`. The excerpts establish no acceptance.
+
+## The six `defined` cases of the last 17 (`P4-SYSTEM.14` a51-1, 2026-11-07)
+
+### Reviewed source identities
+
+Each page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0/sources.sexp`, and occurs in the snapshot manifest; the cache is the existing materials route.
+
+### Retention decision
+
+`RVI-NAMING-STATEMENTS`, two statements: what the letters name, and what G abbreviates.
+`RVI-ZC-STATEMENTS`, four statements: what C decomposes into, and where Zcf exists.
+`RVI-RVWMO-STATEMENTS`, one statement: what the memory model is defined over.
+`RVP-XRET-STATEMENTS`, nine statements: trap returns, WFI, and the bits that intercept them.
+
+The tool's selection did not change. Not retained: the privileged listings' table and the TVM statement, which the tool's markup bound does not read; the statements of what Zcf and Zcd depend on, which carry links the bound refuses; and SFENCE.VMA's, because a case retains one publication and `rv64gc-priv-forms-v1`'s is the Machine-Level chapter. All are cited.
+
+Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvi-naming-statements.html`, 2,310 B; `rvi-zc-statements.html`, 2,438 B; `rvi-rvwmo-statements.html`, 1,852 B; `rvp-xret-statements.html`, 4,367 B.

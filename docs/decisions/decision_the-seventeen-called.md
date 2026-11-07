@@ -57,3 +57,22 @@ The binary also traces what the collector does not ask for. `--trace-ptw` prints
 
 - A requirement moved to `source-specific` needs its disposition committed before its case is declared.
 - The verdict counts above are this unit's, on these guests. They are scratch output, re-derivable with `variants.py`, and they carry no credit.
+
+## Track 1 declared, and what writing it found (a51-1, 2026-11-07)
+
+Six cases, 68 witnesses over 549 steps, each statement traced clause by clause. Each agrees with the spec-side author, the lab engine and the pinned Sail, and all six read 11 of 11 legs on a clone before declaring.
+
+| Case | Program | Steps | Witnesses | Control |
+| --- | --- | --- | --- | --- |
+| `rv64gc-composition-v1` | `composition-forms.s` | 41 | 12 | a hart without C |
+| `rv64gc-ext-closure-v1` | `ext-closure-forms.s` | 64 | 12 | this encoding read as Zcf |
+| `rv64gc-priv-revision-v1` | `priv-revision-forms.s` | 36 | 5 | a menvcfg holding no STCE |
+| `rv64gc-rvwmo-v1` | `rvwmo-forms.s` | 33 | 11 | a load missing its own hart's store |
+| `rv64gc-priv-insns-v1` | `priv-insns-forms.s` | 30 | 4 | a wfi that did not retire |
+| `rv64gc-priv-forms-v1` | `priv-forms.s` | 345 | 24 | a TSR that did not trap |
+
+1. **The override had been hiding `wfi`.** It sets `wfi_is_nop`, so the reference's `wfi` retired whatever the program had done. Two cases now select the other value through their overlays, which gained the knob. With it, all 345 steps of `priv-forms` agree, including `wfi` refused under `TW`, which the no-op cannot show.
+2. **One real difference, both sides legal.** With an interrupt pending under `TW`, the reference completes the `wfi` and the laboratory refuses it. The specification lets each do so: "An implementation may have WFI always raise an illegal-instruction exception in modes less privileged than M when TW=1, even if there are pending globally-disabled interrupts". So the case tests `TW` on an idle hart and says so in its limitation.
+3. **A fault in the catalogue.** `REQ-D-PRIV-INSNS` is an `instruction` requirement that named no form, which the policy review holds pending by rule. Its four instructions are named now. `REQ-D-RVWMO` is a `memory` requirement with no form to name, so the leg reads it as it reads `state` and `configuration`.
+4. **A case retains one publication.** The capture review refuses retained statements from two pages. So `priv-forms` retains the Machine-Level chapter and cites SFENCE.VMA's, and `priv-insns` cites the listings.
+5. **The pinned author refuses every SYSTEM word outside its corpus,** so the listings' other instructions cannot be shown refused. That joins the next window's list in [`decision_csr-write-three-producers.md`](decision_csr-write-three-producers.md).

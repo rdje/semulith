@@ -505,8 +505,9 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     predeclared = sorted(({mnemonic(steps[n]) for n in declared_steps} | set(read_after)) & set(required))
     # a43a-2f: a state requirement (REQ-D-XLEN: the register width and the address space) names no form, so there is
     # none to cover; its predeclared witnesses are its coverage. a47-3: so does a configuration requirement (REQ-D-IALIGN-16:
-    # where an instruction may start). An instruction or event requirement naming no form stays pending: it is a catalogue fault.
-    vacuous = requirement["kind"] in ("state", "configuration") and not required
+    # where an instruction may start). a51-1: so does a memory requirement (REQ-D-RVWMO: what one hart sees of the model). An instruction
+    # or event requirement naming no form stays pending: it is a catalogue fault, and REQ-D-PRIV-INSNS's was fixed at a51-1.
+    vacuous = requirement["kind"] in ("state", "configuration", "memory") and not required
     _leg(legs, "form-coverage", vacuous or (bool(required) and predeclared == required),
          f"a {requirement['kind']} requirement names no form: coverage is vacuous, its {len(witnesses)} predeclared witnesses stand for it"
          if vacuous else

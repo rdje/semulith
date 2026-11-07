@@ -162,8 +162,8 @@ The tool the seven with a switch need landed at a50-1: [a case may declare what 
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc
-198 guests
- 171  profile AGREE -> case AGREE
+204 guests
+ 175  profile AGREE -> case AGREE
 ```
 
 When the route was set the corpus held 182 guests, and 167 of them agreed on at least one of the two configurations. Crossed with each obligation's checks (`decision_obligations-route.md`):
@@ -191,7 +191,7 @@ The route left 17 at a ruling, 12 of them as selections with "no behaviour a ref
 | Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | `source-specific`, with a record pinning the facts and naming its controls |
 | Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, done; `P6-LINUX.2` is its successor |
 
-The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it.
+The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases are declared since a51-1, not yet captured or credited, so they still read `planned`.
 
 ```text
 $ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1

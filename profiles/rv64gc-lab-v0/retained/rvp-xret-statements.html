@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-MACHINE statements — v20260120</title>
+<body>
+<h1>RVP-MACHINE §2.1.1.6, §2.1.3.2 and §2.1.3.3: trap returns, WFI, and the bits that intercept them</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/machine.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance. The listings' table and the TVM statement, which the tool's markup bound does not read, are cited and not retained.</p>
+<h2>§2.1.3.2: <code>norm:xret_in_higher_mode</code></h2>
+<blockquote><p><span id="norm:xret_in_higher_mode">An <em>x</em>RET instruction can be executed in privilege mode <em>x</em> or higher,
+where executing a lower-privilege <em>x</em>RET instruction will pop the relevant lower-privilege
+interrupt enable and privilege mode stack.</span></p></blockquote>
+<h2>§2.1.3.2: <code>norm:xret_in_lower_mode</code></h2>
+<blockquote><p><span id="norm:xret_in_lower_mode">Attempting to execute an <em>x</em>RET
+instruction in a mode less privileged than <em>x</em> will raise an
+illegal-instruction exception.</span></p></blockquote>
+<h2>§2.1.1.6.3: <code>norm:mstatus_mprv_clr_mret_sret_less_priv</code></h2>
+<blockquote><p><span id="norm:mstatus_mprv_clr_mret_sret_less_priv">An MRET or SRET instruction that changes the privilege mode to a mode
+less privileged than M also sets MPRV=0.</span></p></blockquote>
+<h2>§2.1.1.6.6: <code>norm:mstatus_tsr_op</code></h2>
+<blockquote><p><span id="norm:mstatus_tsr_op">When TSR=1, attempts to
+execute SRET while executing in S-mode will raise an illegal-instruction
+exception. When TSR=0, this operation is permitted in S-mode.</span></p></blockquote>
+<h2>§2.1.1.6.6: <code>norm:mstatus_tw_op</code></h2>
+<blockquote><p><span id="norm:mstatus_tw_op">When TW=0, the WFI
+instruction may execute in modes less privileged than M when not prevented for
+some other reason. When TW=1, then if WFI is executed in any
+less-privileged mode, and it does not complete within an
+implementation-specific, bounded time limit, the WFI instruction causes
+an illegal-instruction exception.</span></p></blockquote>
+<h2>§2.1.1.6.6: <code>norm:mstatus_tw_always_illegal</code></h2>
+<blockquote><p><span id="norm:mstatus_tw_always_illegal">An implementation may have WFI always
+raise an illegal-instruction exception in modes less privileged than M when
+TW=1, even if there are pending globally-disabled interrupts when the
+instruction is executed.</span></p></blockquote>
+<h2>§2.1.3.3: <code>norm:wfi_op</code></h2>
+<blockquote><p><span id="norm:wfi_op">The Wait for Interrupt instruction (WFI) informs the
+implementation that the current hart can be stalled until an interrupt
+might need servicing. Execution of the WFI instruction can also be used
+to inform the hardware platform that suitable interrupts should
+preferentially be routed to this hart.</span></p></blockquote>
+<h2>§2.1.3.3: <code>norm:wfi_intr_dis</code></h2>
+<blockquote><p><span id="norm:wfi_intr_dis">The WFI instruction can also be executed when interrupts are disabled.</span></p></blockquote>
+<h2>§2.1.3.3: <code>norm:wfi_no_intr_pc</code></h2>
+<blockquote><p><span id="norm:wfi_no_intr_pc">If the event that causes the hart to resume execution
+does not cause an interrupt to be taken, execution will resume at <code>pc</code> + 4</span></p></blockquote>
+</body></html>

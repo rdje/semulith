@@ -8429,7 +8429,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("span-bound", "1"),
             ("span-markup", "8"),
             ("retained-bound", "1"),
-            ("retained-pin", "21"),
+            ("retained-pin", "25"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8505,7 +8505,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN reference overlay {mode}"), prober.probe(repo, argv.clone()), 0, "REFERENCE-OVERLAY: 26 tests / 0 failures / 0 errors; synthetic configuration controls, no capture credit");
+        tally.score(&format!("GREEN reference overlay {mode}"), prober.probe(repo, argv.clone()), 0, "REFERENCE-OVERLAY: 28 tests / 0 failures / 0 errors; synthetic configuration controls, no capture credit");
         for (mutation, losses) in [
             ("extension-known", "1"),
             ("extension-changes", "1"),
@@ -8519,6 +8519,8 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("alternative-known", "1"),
             ("alternative-extension-changes", "2"),
             ("alternative-misaligned-changes", "1"),
+            ("overlay-wfi-changes", "1"),
+            ("overlay-wfi-unread", "1"),
             ("overlay-amo-changes", "1"),
             ("overlay-exact-changes", "1"),
             ("overlay-nothing", "1"),
@@ -8528,7 +8530,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
-            tally.score(&format!("RED reference overlay {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("REFERENCE-OVERLAY: 26 tests / {losses} failures / 0 errors; synthetic configuration controls, no capture credit"));
+            tally.score(&format!("RED reference overlay {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("REFERENCE-OVERLAY: 28 tests / {losses} failures / 0 errors; synthetic configuration controls, no capture credit"));
         }
     }
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
@@ -8801,7 +8803,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 58 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 59 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8810,6 +8812,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "coverage-optional",
             "trace-optional",
             "configuration-vacuous",
+            "memory-vacuous",
             "silent-any-form",
             "silent-any-cell",
             "silent-any-order",

@@ -121,6 +121,8 @@ def overlay_to_doc(form) -> dict:
         doc["instructions_per_tick"] = tick[1]
     for amo in S.children(form, "misaligned_amo"):
         doc["misaligned_amo"] = str(amo[1])
+    if S.children(form, "wfi_is_nop"):
+        doc["wfi_is_nop"] = False
     if S.children(form, "require_exact_reservation_addr"):
         doc["require_exact_reservation_addr"] = True
     return doc
@@ -154,6 +156,9 @@ def apply_overlay(config: dict, overlay: dict) -> dict:
         _require(overlay["instructions_per_tick"] >= 1, "overlay's tick rate must be positive")
         _require("instructions_per_tick" not in platform, "overlay sets a tick rate the profile override already declares")
         platform["instructions_per_tick"] = overlay["instructions_per_tick"]
+    if "wfi_is_nop" in overlay:
+        _require(platform.get("wfi_is_nop") is True, "overlay lets wfi wait where the profile override already does")
+        platform["wfi_is_nop"] = False
     if "misaligned_amo" in overlay:
         exceptions = result["memory"]["misaligned"]["exceptions"]
         rendered = {"Some": overlay["misaligned_amo"]}
