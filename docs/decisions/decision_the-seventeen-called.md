@@ -152,3 +152,5 @@ Each disposition is committed before its record is taken, with every fact and th
 | `SEL-FP-DEFER` | `REQ-D-FP-DEFER` | 9 | 4 | 3,389 B |
 | `SEL-ROUTE-FLIP` | `REQ-D-ROUTE-FLIP` | 6 | 2 | 2,703 B |
 | `SEL-SCOPE-CENSUS` | `REQ-D-SCOPE-CENSUS` | 5 | 2 | 1,941 B |
+
+**Credited, and the axis closed (a51-14, 2026-11-07).** [`decision_the-four-with-nothing-to-run-credited-implemented.md`](decision_the-four-with-nothing-to-run-credited-implemented.md): 46 `implemented`, 2 `not-applicable`, none `planned`. All 17 routes are carried out.

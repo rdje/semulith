@@ -47,7 +47,7 @@
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
      `evidence/rv64gc-partial-progress-v1/case.sexp`  `5729203836f25b49a1de0992416fec093f8096acf24ba873e10655d696659efc`
      `evidence/rv64gc-priv-forms-v1/case.sexp`  `ab8bcd2c48b6e6e8fba3d162385b1aa9cde14940d142e2a2e2218b71a12e9e75`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `7a3e1e4654b285abdb8e6b19e86c30cf6aa77187a6afadcf72f817267093a572`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `ec4489adb3cd577cfb29fe3f5b2b1a20d74e5415a7f7779ed098ad902bbf7039`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |

@@ -1395,6 +1395,9 @@ def _selftest() -> int:
                         text = fn(text)
                 (g / doc).write_text(text, encoding="utf-8")
             files = {(g / doc).relative_to(ROOT).as_posix() for doc in docs}
+            # The axis reads the policy's presence; the copy is the unit, so it holds the policy too (P4-SYSTEM.14 a51-14).
+            (g / "EVIDENCE_POLICY.md").write_text((real / "EVIDENCE_POLICY.md").read_text(encoding="utf-8"), encoding="utf-8")
+            files.add((g / "EVIDENCE_POLICY.md").relative_to(ROOT).as_posix())
             for fname, text in (extra_files or {}).items():
                 (g / fname).write_text(text, encoding="utf-8")
                 files.add((g / fname).relative_to(ROOT).as_posix())

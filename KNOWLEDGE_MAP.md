@@ -193,6 +193,7 @@
 - [`decision_task-tree-per-part-growth.md`](docs/decisions/decision_task-tree-per-part-growth.md)
 - [`decision_ten-legs-satisfied-credit-separate.md`](docs/decisions/decision_ten-legs-satisfied-credit-separate.md)
 - [`decision_the-four-with-no-switch-credited-implemented.md`](docs/decisions/decision_the-four-with-no-switch-credited-implemented.md)
+- [`decision_the-four-with-nothing-to-run-credited-implemented.md`](docs/decisions/decision_the-four-with-nothing-to-run-credited-implemented.md)
 - [`decision_the-seventeen-called.md`](docs/decisions/decision_the-seventeen-called.md)
 - [`decision_the-two-with-a-switch-credited-implemented.md`](docs/decisions/decision_the-two-with-a-switch-credited-implemented.md)
 - [`decision_the-window-that-carries-fetch-faults.md`](docs/decisions/decision_the-window-that-carries-fetch-faults.md)

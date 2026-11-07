@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0392 (P4-SYSTEM.14 a51-14) — the four with nothing to run credited, and `G-OBLIGATIONS` closes
+
+Each on a selection's record: 46 `implemented`, 2 `not-applicable`, none `planned`. `CPU-SYSTEM` reads 1 of 10 axes open, `G-RELEASE`, and a closed axis grants no release.
+
 ## SEMULITH-P4-0391 (P4-SYSTEM.14 a51-13) — the four with nothing to run measured once each
 
 Each record taken once: all 25 facts read their declared value, and all 11 runs exited 0 and repeated byte for byte. Nothing is credited yet.
