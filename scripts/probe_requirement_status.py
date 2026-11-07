@@ -325,7 +325,7 @@ class StatusTests(unittest.TestCase):
         for rid, cases in (("REQ-GC-M", ["rv64gc-m-forms-v3", "rv64gc-signed-div-truncation-v2"]), ("REQ-D-XLEN", []), ("REQ-D-ATOMIC-MISALIGN", []), ("REQ-D-FAULT-PRIORITY", []), ("REQ-D-PRIV-MODES", []), ("REQ-D-RESERVATION", []), ("REQ-D-SC-DETERMINISTIC", []), ("REQ-D-SV39", []), ("REQ-D-SVADE", []), ("REQ-D-CSR-SET", []), ("REQ-D-ZICNTR", []), ("REQ-D-SSTC", []), ("REQ-D-ALU-IMM", []), ("REQ-D-ALU-REG", []), ("REQ-D-LUI-AUIPC", []), ("REQ-D-JALR-LSB", []), ("REQ-D-NO-DELAY-SLOTS", []), ("REQ-D-SHAMT", []), ("REQ-D-WSUFFIX", []), ("REQ-D-LOAD-EXT", []), ("REQ-D-LOAD-X0", []), ("REQ-D-ECALL-EBREAK", []), ("REQ-GC-COUNTERS", []), ("REQ-D-IALIGN-16", []), ("REQ-GC-CSR-ACCESS", []), ("REQ-GC-FENCEI", []), ("REQ-GC-ATOMICS", []), ("REQ-GC-C", []), ("REQ-GC-F", []), ("REQ-GC-D", [])):
             row = next(r for r in gc["rows"] if r["id"] == rid)
             self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])), (*done, sorted(case + ":pending" for case in cases)), rid)
-        self.assertEqual(gc["derived"], {"planned": 17, "partial": 0, "implemented": 30, "not-applicable": 1})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
+        self.assertEqual(gc["derived"], {"planned": 16, "partial": 0, "implemented": 30, "not-applicable": 2})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
                          (32, 30, 0, 30, 30))
 

@@ -45,7 +45,7 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**Today 17 requirements derive `planned`, 30 `implemented` and one `not-applicable`, and all four state requirements are among the 30.**
+**Today 16 requirements derive `planned`, 30 `implemented` and two `not-applicable`, and all four state requirements are among the 30.**
 The window that carries fetch faults retired all 19 earlier records on 2026-11-06 (`P4-SYSTEM.14` a49-1; `decision_the-window-that-carries-fetch-faults.md`), and credited them again the same day (a49-3): each case re-captured once, the 17 with unchanged guests byte-identical, under an eleventh leg that reads a requirement's every clause.
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
@@ -158,7 +158,7 @@ Without `tail` it prints all 30. A credited case with no row keeps the axis open
 
 ## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2, captured once each at a50-3 (`decision_seven-with-a-switch.md`) and credited at a50-4 (`decision_seven-credited-implemented.md`). When this route was set, 42 were `planned`; Batches I, II-a and II-b and the seven have since credited twenty-five, so 17 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2, captured once each at a50-3 (`decision_seven-with-a-switch.md`) and credited at a50-4 (`decision_seven-credited-implemented.md`). When this route was set, 42 were `planned`; Batches I, II-a and II-b and the seven have since credited twenty-five, which left 17. [How each of those closes](#how-the-last-17-close-p4-system14-a51-0-2026-11-07) was called at a51-0, and `REQ-D-SBI` left the CPU's scope, so 16 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc
@@ -178,3 +178,22 @@ When the route was set the corpus held 182 guests, and 167 of them agreed on at 
 Batch II found what that table had not: ten of the 28 are `implementation-defined`, a category the review measures against a case's own configuration, and for them the profile's override is the selection. The pinned Sail has a real switch for most of them, so a behaviour-changing control exists; the tool does not read one yet (`decision_obligations-route.md`, "What Batch II found").
 
 The batches run one case per requirement, so no pinned file moves and no credit lapses: five batches of three commits against about 140 commits one case at a time. **Batch I, the RV64I base, is done:** declared at a46-2, captured at a46-3, credited at a46-4. Nine cases, 108 witnesses, each program agreeing with all three producers, each 10 of 10 legs. **So is Batch II-a, the five `defined` requirements of system:** `ECALL-EBREAK`, `CSR-ACCESS`, `COUNTERS`, `IALIGN-16`, `FENCEI`, credited at a47-3. **So is the `defined` remainder:** `ATOMICS`, `C`, `F`, `D`, 299 witnesses, credited at a49-3 on the tools of a window that let a case carry a fetch fault and the review read a requirement's every clause (`decision_the-window-that-carries-fetch-faults.md`). Batch II-a was rehearsed end to end on a throwaway clone first, which found two faults a real capture would have spent a case id on. The estimate's weakest number, how much each case adds to the gate, read about 20 seconds per captured case, against a limit of a minute.
+
+## How the last 17 close (`P4-SYSTEM.14` a51-0, 2026-11-07)
+
+The route left 17 at a ruling, 12 of them as selections with "no behaviour a reference could be compared on". Measuring the binary's own switches, all 198 guests under each, showed otherwise: `H` on moves 45 guests' verdicts, 16 PMP entries move 51, and `--trace-ptw` and `--trace-mem` print the walks the route thought were out of reach.
+
+| Track | Requirements | How it closes |
+| --- | --- | --- |
+| A real case, `defined` | `REQ-D-GC-COMPOSITION`, `REQ-D-EXT-CLOSURE`, `REQ-D-PRIV-REVISION`, `REQ-D-RVWMO`, `REQ-D-PRIV-INSNS`, `REQ-GC-PRIV-INSNS` | One case each, on today's tools |
+| A real case with a switch | `REQ-D-NO-H`, `REQ-D-NO-PMP` | A declared alternative, measured as the seven's were |
+| A real case, no switch to move | `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT`, `REQ-GC-PARTIAL-PROGRESS` | `source-specific`, with a disposition declared first |
+| Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | `source-specific`, with a record pinning the facts and naming its controls |
+| Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, done; `P6-LINUX.2` is its successor |
+
+The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it.
+
+```text
+$ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1
+REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 16 planned, 30 implemented, 2 not-applicable; 32 case(s), 30 credited, 0 declared, 30 of 30 credit record(s) current; 0 drift, 0 finding(s))
+```

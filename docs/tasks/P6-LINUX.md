@@ -38,7 +38,7 @@ kernel banner alone is insufficient.**
 
 - ID: `P6-LINUX.2` — **the firmware/SBI contract**
   Status: `pending`
-  Goal: run compatible M-mode firmware providing the selected SBI services before entering the S-mode kernel.
+  Goal: run compatible M-mode firmware providing the selected SBI services before entering the S-mode kernel. Successor of `profiles/rv64gc-lab-v0`'s `REQ-D-SBI`.
   Acceptance: a host-modelled SBI is a **different contract** and is never silently substituted (`ROADMAP.md` §P6). Which route is in use is stated in the report.
 
 - ID: `P6-LINUX.3` — **entry state and placement**
@@ -85,7 +85,7 @@ kernel banner alone is insufficient.**
 
 ## Open Questions
 
-- Which firmware implementation, and which SBI revision. Due before `.2`.
+- Which firmware implementation. Due before `.2`. The revision is selected: SBI 2.0, by `REQ-D-SBI`, which moved here from `CPU-SYSTEM`'s scope (`decision_the-seventeen-called.md`).
 
 ## Blockers
 
@@ -93,11 +93,13 @@ kernel banner alone is insufficient.**
 
 ## Acceptance Checklist (filled per leaf at execution time)
 
-- [ ] **ROOT CAUSE (WHY + WHERE)** — <the command run and its real output>
-- [ ] **ADDRESSED (verified)** — <measured before → after>
-- [ ] **NO REGRESSION** — <the suite or gate re-run, and its result>
-- [ ] **FIX** — <the change made>
-- [ ] **LOCKSTEP** — <docs, contracts and indexes updated>
+Each leaf adds its own rows when it runs. These record one amendment to `.2`, from `P4-SYSTEM.14` a51-0; no P6 leaf has run.
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — `REQ-D-SBI` sat in the CPU's catalogue though no firmware runs before this tree, and this tree did not name it: `git show 620afecd:docs/tasks/P6-LINUX.md | grep -c REQ-D-SBI` = 0.
+- [x] **ADDRESSED (verified)** — `grep -c 'Successor of' docs/tasks/P6-LINUX.md` = 1: `.2` names it as its predecessor, and the open question keeps only the firmware implementation.
+- [x] **NO REGRESSION** — `python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0` `rc=0`, `0 drift, 0 finding(s)`.
+- [x] **FIX** — `.2`'s goal and the open question name `REQ-D-SBI` and its selection, SBI 2.0.
+- [x] **LOCKSTEP** — `decision_the-seventeen-called.md`, `docs/models/rv64gc-lab-v0/src/requirement-status.md`.
 
 ## Verification Log
 

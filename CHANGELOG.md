@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0378 (P4-SYSTEM.14 a51-0) — the last 17 called, and measuring the reference overturned the route's reading of them
+
+Each of the 17 now has a route. The pinned binary has switches and traces the route assumed it lacked, so most get real cases, not arguments. `REQ-D-SBI` moved out of the CPU's scope to `P6-LINUX.2`: 30 `implemented`, 2 `not-applicable`, 16 `planned`.
+
 ## SEMULITH-XTASK-0085 (leaf XTASK.13 slice g) — EXERCISE-COVERAGE judges frozen fragments, so a damaged real one names itself
 
 A deleted or broken definition fragment used to make the check refuse as non-discriminating, pointing into its own scratch copy. Its controls now read frozen copies, so the real check fails by the fragment's own name, on all five damaged states measured.

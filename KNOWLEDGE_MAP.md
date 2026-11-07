@@ -190,6 +190,7 @@
 - [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
 - [`decision_task-tree-per-part-growth.md`](docs/decisions/decision_task-tree-per-part-growth.md)
 - [`decision_ten-legs-satisfied-credit-separate.md`](docs/decisions/decision_ten-legs-satisfied-credit-separate.md)
+- [`decision_the-seventeen-called.md`](docs/decisions/decision_the-seventeen-called.md)
 - [`decision_the-window-that-carries-fetch-faults.md`](docs/decisions/decision_the-window-that-carries-fetch-faults.md)
 - [`decision_universal-registry-checks-stay-bash.md`](docs/decisions/decision_universal-registry-checks-stay-bash.md)
 - [`decision_work-unit-prefix-semulith.md`](docs/decisions/decision_work-unit-prefix-semulith.md)
