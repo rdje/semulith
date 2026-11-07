@@ -159,6 +159,7 @@
 - [`decision_push-cadence.md`](docs/decisions/decision_push-cadence.md)
 - [`decision_qualified-matched-experiment-contract.md`](docs/decisions/decision_qualified-matched-experiment-contract.md)
 - [`decision_readme-routing-closure.md`](docs/decisions/decision_readme-routing-closure.md)
+- [`decision_recorded-evidence-states-what-it-covers.md`](docs/decisions/decision_recorded-evidence-states-what-it-covers.md)
 - [`decision_reference-acquisition-route.md`](docs/decisions/decision_reference-acquisition-route.md)
 - [`decision_reference-config-per-case.md`](docs/decisions/decision_reference-config-per-case.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)

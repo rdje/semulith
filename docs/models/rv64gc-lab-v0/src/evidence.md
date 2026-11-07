@@ -9,6 +9,23 @@ Requirements, frozen records and acceptance have their own authorities.
 
 {{#include ../../../ARCHITECTURE.md:rv64gc-snapshot}}
 
+## What a recorded row covers
+
+A row with a recorded verdict is one past run, so it states what that run was measured over, and it stops being evidence when any of that moves (`decision_recorded-evidence-states-what-it-covers.md`):
+
+```lisp
+(evidence (axis G-PORTABILITY) (kind miri) (record "profiles/rv64gc-lab-v0/portability.sexp")
+  (covers (path "crates/semulith-core/src") (sha256 "…"))
+  (covers (path "definitions") (sha256 "…"))
+  (statement "…"))
+```
+
+```sh
+python3 -B scripts/gate_report.py --covers crates/semulith-core/src definitions
+```
+
+If the engine moves, the row's table entry reads `**no** — the record covers another`, followed by the path, and its axis reads `incomplete` until the run is repeated. Portability was re-measured over the 210 guests on 2026-11-07, locally, with x86-64 under Rosetta. The hosted matrix last ran over 171.
+
 ## Experiment identities
 
 `PROFILE-CONSISTENCY` checks the existing `references.sexp` experiment grammar:

@@ -717,6 +717,17 @@ def _tracked() -> set[str]:
                               check=True).stdout.split())
 
 
+def _covered_digest(path: str, tracked: set[str]) -> str | None:
+    """What a recorded row covers, as the tree holds it now: a file, or every tracked file below a directory, each by path and bytes."""
+    under = sorted(f for f in tracked if f == path or f.startswith(path.rstrip("/") + "/"))
+    if not under:
+        return None
+    digest = hashlib.sha256()
+    for name in under:
+        digest.update(name.encode("utf-8") + b"\0" + hashlib.sha256((ROOT / name).read_bytes()).digest())
+    return digest.hexdigest()
+
+
 def _verify_evidence(ev: list, tracked: set[str], experiments: set[str], where: str) -> tuple[str, str | None]:
     """(what the evidence names, None if verified — else why it is not)."""
     test, record, exp = S.children(ev, "test"), _one(ev, "record"), _one(ev, "experiment")
@@ -739,6 +750,14 @@ def _verify_evidence(ev: list, tracked: set[str], experiments: set[str], where: 
     if record not in tracked:
         return label, "the record is not tracked"
     if kind in GS_VERDICT_KINDS:
+        # A recorded verdict is one past run: it stands for the tree only over what it says it was measured on (P4-SYSTEM.18 slice a).
+        covers = S.children(ev, "covers")
+        if not covers:
+            return label, "the record states nothing it covers, so nothing says it is current"
+        for row in covers:
+            path = _one(row, "path")
+            if _covered_digest(path, tracked) != _one(row, "sha256"):
+                return label, f"the record covers another `{path}`: it was measured before this one"
         text = (ROOT / record).read_text(encoding="utf-8")
         m = re.search(r'\(verdicts "([0-9]+) pass / ([0-9]+) fail"\)', text)
         v = re.search(r'\(verdict "([a-z]+)"\)', text)
@@ -1499,8 +1518,18 @@ def _selftest() -> int:
             lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION")),
                                 has(r, "**no** — the record reads 1 fail")))(
                 gs("failrec", {"gate.sexp": ev(
-                    f'(evidence (axis G-REGRESSION) (kind external) (record "{rec}") (statement "s"))')},
+                    f'(evidence (axis G-REGRESSION) (kind external) (record "{rec}") '
+                    f'(covers (path "definitions") (sha256 "{_covered_digest("definitions", live)}")) (statement "s"))')},
                    {"act.sexp": '(campaign (verdicts "3 pass / 1 fail"))\n'})))
+        first_covers = lambda s: re.sub(r'(\(covers \(path "[^"]+"\) \(sha256 ")[0-9a-f]{64}', lambda m: m.group(1) + "0" * 64, s, count=1)  # noqa: E731
+        arm("RED a recorded row whose inputs moved is not evidence (-1 regression kind)",
+            lambda: (lambda r: (assert_eq(kinds(r, "G-REGRESSION"), kinds(rep0, "G-REGRESSION") - 1),
+                                has(r, "**no** — the record covers another")))(
+                gs("covers-moved", {"gate.sexp": first_covers})))
+        arm("RED a recorded row that states nothing it covers is not evidence",
+            lambda: (lambda r: (assert_eq(kinds(r, "G-PORTABILITY"), 0),
+                                has(r, "**no** — the record states nothing it covers")))(
+                gs("covers-absent", {"gate.sexp": lambda s: re.sub(r'\(covers \(path "[^"]+"\) \(sha256 "[0-9a-f]{64}"\)\)\s*', "", s)})))
         arm("RED an open axis with no declared owner reads unowned",
             lambda: has(gs("unowned", {"gate.sexp": lambda s: s[:s.index('(open (axis G-RELEASE)')]}),
                         "**Unowned open axes: `G-RELEASE`**"))
@@ -1545,7 +1574,7 @@ def _selftest() -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 28
+    want = 30
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")
@@ -1555,6 +1584,14 @@ def _selftest() -> int:
 def main(argv: list[str]) -> int:
     if argv[1:] == ["--self-test"]:
         return _selftest()
+    if argv[1:2] == ["--covers"]:
+        tracked = _tracked()
+        for path in argv[2:]:
+            digest = _covered_digest(path, tracked)
+            if digest is None:
+                raise SystemExit(f"gate_report: --covers: nothing tracked at {path}")
+            print(f'(covers (path "{path}") (sha256 "{digest}"))')
+        return 0
     gate = "G0"
     rest: list[str] = []
     i = 1

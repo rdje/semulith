@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0393 (leaf P4-SYSTEM.18 slice a) — a recorded row states what it covers, and portability re-measured
+
+`G-PORTABILITY` read green on a record of 168 guests with 210 in the tree. Each row with a recorded verdict now states what it covers and stops being evidence when that moves. Portability was re-measured over the 210: all four legs green, the x86-64 manifest byte-identical.
+
 ## SEMULITH-XTASK-0088 (leaf XTASK.13 slice j) — UNIT-BOOKS' probes judge a fixture of their own
 
 The navigation probe's command-line tests ran the real tool, so a damaged real registry read as a probe that failed. They now run a copy inside the fixture, and the same damage fails by its own name.

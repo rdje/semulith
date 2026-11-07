@@ -8,7 +8,7 @@
 (portability
   (for-gate G-PORTABILITY)
   (unit "rv64gc-lab-v0")
-  (recorded "2026-10-27")
+  (recorded "2026-11-07")
   (recorded-by "scripts/check_portability.sh --profile rv64gc-lab-v0 --record (P4-SYSTEM.17 slice a)")
   (rederive "bash scripts/check_portability.sh --profile rv64gc-lab-v0")
   (host
@@ -21,13 +21,13 @@
   (verdict "passed")
   (legs
     (leg (id "native-arm64") (verdict "green")
-         (evidence "cargo test --all — the commit gate's own run: 503 suites passed, 0 failed")
+         (evidence "cargo test --all — the commit gate's own run: 519 suites passed, 0 failed")
          (note "the offline differential against the pinned expectations; runs on every commit"))
     (leg (id "fixture-digest-manifest") (verdict "green")
-         (evidence "sha256 2e0835dd325c0834915be74b27ad8cefdfd187e4f11227fad27daf442d67f6ab over the 168 tracked guests' demo outputs")
+         (evidence "sha256 0aaf081f941a5fb526ba5283f1e9948aa18729569902ee19378ad5e5bafaeafe over the 210 tracked guests' demo outputs")
          (note "the cross-host contract: a second host's run must reproduce this digest BYTE-IDENTICALLY — it is recomputed, never carried"))
     (leg (id "native-x86-64") (verdict "green (Rosetta translation; the manifest agrees byte-identically)")
-         (evidence "cargo test --all --target x86_64-apple-darwin: 503 suites passed, 0 failed; the x86-64 manifest equals the native digest")
+         (evidence "cargo test --all --target x86_64-apple-darwin: 519 suites passed, 0 failed; the x86-64 manifest equals the native digest")
          (note "MANDATORY per docs/EVIDENCE_AND_GATES.md §7 — met VIA TRANSLATION (Rosetta 2) on this host; the bare-metal leg is the CI matrix's"))
     (leg (id "miri") (verdict "green")
          (evidence "cargo +nightly-2026-09-13 miri test -p semulith-core — 178 suites passed, 0 failed, interpreted")

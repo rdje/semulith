@@ -27,7 +27,14 @@
   (field (name test) (type form) (head test) (optional yes))
   (field (name record) (type string) (optional yes) (pattern "^[A-Za-z0-9_./-]+\\Z"))
   (field (name experiment) (type string) (optional yes) (min-length 1))
+  (field (name covers) (type form) (head covers) (repeat yes))
   (field (name statement) (type string) (min-length 1)))
+
+;; What a recorded row was measured over, each path's digest as scripts/gate_report.py --covers prints it. A row carrying a recorded
+;; verdict states these, and it stops being evidence when one moves (decision_recorded-evidence-states-what-it-covers.md).
+(construct (name covers)
+  (field (name path) (type string) (pattern "^[A-Za-z0-9_./-]+\\Z"))
+  (field (name sha256) (type string) (pattern "^[0-9a-f]{64}\\Z")))
 
 ;; A test function in a tracked Rust file — run by `cargo test`, which `make check` runs before
 ;; every commit.
