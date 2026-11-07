@@ -161,6 +161,13 @@ RETAINED_CAPTURES = {
     "rv64gc-priv-forms-v1": RetainedCapture(
         "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
         "79e752e4f8976dd39bf5bacc92012e85b783bbfde3c8aedfe297d6c2055193f5", 16584),
+    # The two with a switch of the last 17 (P4-SYSTEM.14 a51-4, a51-5): declared in daadeb52, captured once in 45a334a2, every compared file byte-identical to the rehearsal.
+    "rv64gc-no-h-v1": RetainedCapture(
+        "daadeb524e789d01dbfa187e9ab3446083b70edc", "45a334a27e2e0b45855da920648abf9559b33a09",
+        "0f6a17552aedb68de0aeb09af4d2f8d11d8815e0baa0da08957678738e00c158", 10785),
+    "rv64gc-no-pmp-v1": RetainedCapture(
+        "daadeb524e789d01dbfa187e9ab3446083b70edc", "45a334a27e2e0b45855da920648abf9559b33a09",
+        "8e6da2e5d1cf7f598704b0c019cb48b57d9812e4f114ec5b11bf03270c334f5e", 10960),
 }
 
 

@@ -427,7 +427,10 @@ class MethodTests(unittest.TestCase):
                          "rv64gc-priv-revision-v1": (88, 1016245, 38998),
                          "rv64gc-rvwmo-v1": (88, 1013885, 37035),
                          "rv64gc-priv-insns-v1": (88, 1010844, 33559),
-                         "rv64gc-priv-forms-v1": (88, 1265459, 252334)}
+                         "rv64gc-priv-forms-v1": (88, 1265459, 252334),
+                         # The two with a switch of the last 17 (a51-6).
+                         "rv64gc-no-h-v1": (88, 1004307, 28573),
+                         "rv64gc-no-pmp-v1": (88, 1017786, 41165)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

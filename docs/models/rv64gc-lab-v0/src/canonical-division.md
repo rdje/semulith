@@ -433,4 +433,4 @@ Each is the profile's choice among options the reference also offers, so each re
 | `rv64gc-no-h-v1` | its declared alternative | 5: `csrrs x5, misa, x0` |
 | `rv64gc-no-pmp-v1` | its declared alternative | 22: `ld x7, x1, 0` |
 
-**What moved, measured.** All 22 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Next, the reviews and credits.
+**What moved, measured.** All 22 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Both were credited at a51-6.

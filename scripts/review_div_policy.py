@@ -168,6 +168,10 @@ FEATURE_DISPOSITIONS.update({
     "OB-PRIV-INSNS": "the privilege and CSR rule applies, and the case's properties cover what this statement names: each of the four executes where it may (mret-executes, sret-executes, wfi-retires, sfence-retires). Refusal below their modes is REQ-GC-PRIV-INSNS's case.",
     "OB-GC-PRIV-INSNS-V3": "the privilege and CSR rule and the wait rule apply, and the case's properties cover them. Each return at and below its mode and under TSR (mret-in-s, mret-in-u, sret-in-u, sret-tsr, sret-in-m, sret-reached-u, ecall-from-s); what each pops and where each lands, MPRV among them (mret-pops, sret-pops, mret-clears-mprv, mret-sets-pc, sret-sets-pc); wfi waking regardless of the global enables and of mideleg, and refused in U and under TW, on a reference whose own wfi waits (wfi-wakes-undelegated, wfi-wakes-delegated, wfi-in-s, wfi-tw, wfi-in-u); sfence.vma refused, and its rs1 and rs2 cases, with no write to the page's data between fences (sfence-in-u, sfence-tvm, before-the-fences, sfence-all, sfence-va, sfence-asid, sfence-va-asid).",
 })
+FEATURE_DISPOSITIONS.update({
+    "OB-NO-H": "the privilege and CSR rule applies, and the case's properties cover what a hart without H shows. misa's bit and the state H would add, each read back after a write that tried to set it (misa-no-h, mstatus-no-h-bits, mideleg-no-vs, mie-no-vs), on the one hart (one-hart). A hart with H is the retained effect's.",
+    "OB-NO-PMP": "the translation and protection rule applies, and the case's properties cover what a hart without PMP shows: a load and a store at S's privilege and at U's reach memory with nothing configured (s-load, s-store, u-load, u-store). A hart with entries implemented is the retained effect's.",
+})
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
              "risk-method", "feature-rules", "form-coverage", "statement-trace")

@@ -95,3 +95,5 @@ Both read 11 of 11 legs on a clone before declaring.
 3. **The call holds, with one change of route.** This record said 16 PMP entries "differ at a handler reading S's refused fetch". They differ at a load instead, for the reason above.
 
 **Captured (a51-5, 2026-11-07).** Each of the two once, each effect retained: all 22 compared files match the rehearsal, no finding.
+
+**Credited (a51-6, 2026-11-07).** [`decision_the-two-with-a-switch-credited-implemented.md`](decision_the-two-with-a-switch-credited-implemented.md): 38 `implemented`, 2 `not-applicable`, 8 `planned`.

@@ -43,7 +43,7 @@
      `evidence/rv64gc-m-forms-v7/case.sexp`  `e517eeb6f09d7a0b8e4750309458918ee6c2e2b41740e2d1e2bc029a527d5c3e`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
      `evidence/rv64gc-priv-forms-v1/case.sexp`  `ab8bcd2c48b6e6e8fba3d162385b1aa9cde14940d142e2a2e2218b71a12e9e75`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `0396b375ac487142836d0d4acc626b36cd50cf06d9ddf8b03b0135d3467bad8f`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `e64bf23eab52309dd6cc63a76b2ce2a84259d03cb99b97f25f7e66e569b40dc6`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
@@ -62,8 +62,8 @@
 | `rv64gc-load-x0-v2` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-2` |
 | `rv64gc-lui-auipc-v2` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-2` |
 | `rv64gc-no-delay-slots-v2` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-2` |
-| `rv64gc-no-h-v1` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-no-pmp-v1` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-no-h-v1` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | credited, `CR-D-NO-H-1` |
+| `rv64gc-no-pmp-v1` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | credited, `CR-D-NO-PMP-1` |
 | `rv64gc-priv-insns-v1` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | credited, `CR-D-PRIV-INSNS-1` |
 | `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | credited, `CR-D-PRIV-MODES-1` |
 | `rv64gc-priv-revision-v1` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | credited, `CR-D-PRIV-REVISION-1` |

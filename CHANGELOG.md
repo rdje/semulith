@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0384 (P4-SYSTEM.14 a51-6) — the two with a switch credited
+
+`REQ-D-NO-H` and `REQ-D-NO-PMP` at 11 of 11 legs, each measured against a hart that has what the profile excludes: 38 `implemented`, 8 `planned`, 2 `not-applicable`.
+
 ## SEMULITH-P4-0383 (P4-SYSTEM.14 a51-5) — the two with a switch captured exactly once each, each effect at a witness
 
 Each once, each control where declared, each effect retained: all 22 compared files byte-identical to the rehearsal, no finding.

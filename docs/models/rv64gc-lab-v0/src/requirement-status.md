@@ -45,14 +45,14 @@ A case naming an obligation outside the effective contract, or a requirement the
 catalogue does not hold, is a finding: supersession preserves the old record and
 edge and credits no successor by name.
 
-**Today 10 requirements derive `planned`, 36 `implemented` and two `not-applicable`, and all four state requirements are among the 36.**
+**Today 8 requirements derive `planned`, 38 `implemented` and two `not-applicable`, and all four state requirements are among the 38.**
 The window that carries fetch faults retired all 19 earlier records on 2026-11-06 (`P4-SYSTEM.14` a49-1; `decision_the-window-that-carries-fetch-faults.md`), and credited them again the same day (a49-3): each case re-captured once, the 17 with unchanged guests byte-identical, under an eleventh leg that reads a requirement's every clause.
 The window that opens SSTC retired all four earlier records on 2026-11-05 (`P4-SYSTEM.14` a43e-1; `decision_sstc-delivery-needs-the-pinned-window.md`), and it closed the same day (a43e-5):
 each case re-captured once, its traces byte-identical, and credited again, with SSTC on the same tools.
 
 ```text
 $ python3 -B scripts/credit_records.py --profile rv64gc-lab-v0
-CREDIT-RECORDS: rv64gc-lab-v0: 36 credit(s), 36 current, 0 lapsed; records read and authenticated, nothing granted
+CREDIT-RECORDS: rv64gc-lab-v0: 38 credit(s), 38 current, 0 lapsed; records read and authenticated, nothing granted
 ```
 
 No recorded status drifts. The records:
@@ -95,6 +95,8 @@ No recorded status drifts. The records:
 | `REQ-D-RVWMO` | `CR-D-RVWMO-1` | `rv64gc-rvwmo-v1` | `defined`, medium |
 | `REQ-D-PRIV-INSNS` | `CR-D-PRIV-INSNS-1` | `rv64gc-priv-insns-v1` | `defined`, medium |
 | `REQ-GC-PRIV-INSNS` | `CR-GC-PRIV-INSNS-1` | `rv64gc-priv-forms-v1` | `defined`, high |
+| `REQ-D-NO-H` | `CR-D-NO-H-1` | `rv64gc-no-h-v1` | `implementation-defined`, low |
+| `REQ-D-NO-PMP` | `CR-D-NO-PMP-1` | `rv64gc-no-pmp-v1` | `implementation-defined`, low |
 
 The last four are Batch II-b (`decision_batch-ii-b-credited-implemented.md`), new at a49-3. The five before them are Batch II-a (`decision_batch-ii-a-credited-implemented.md`), and the nine before those Batch I (`decision_batch-i-credited-implemented.md`). The first four re-issue their predecessors on the same rulings and limitations: `CR-GC-M-3`, `CR-D-XLEN-2`, `CR-D-CSR-SET-1` and `CR-D-ZICNTR-1`, whose cases are history since a43e-1. The other eight cases are uncredited, read as history on [the retained cases](retained-cases.md). Below, a record's claims are read against its current id.
 
@@ -108,7 +110,7 @@ synthetic-graph tests in both interpreter modes and eight seam omissions that ea
 their discriminating test. Nothing here advances a status: a credit record, with the recorded
 status moving in the same commit, is the crediting act (a42az for `CR-GC-M-1`, a44-5 for its
 re-issue `CR-GC-M-2`, a43a-3 for `CR-D-XLEN-1`, both retired at a43b-2b, a43b-2e for `CR-GC-M-3` and
-`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, a47-3 for the next five, all 19 retired at a49-1, a49-3 for all 23, a50-4 for seven more, and a51-3 for the last six), under the rulings on its authority and on the
+`CR-D-XLEN-2`, a43b-3h for `CR-D-CSR-SET-1`, and a43c-5 for `CR-D-ZICNTR-1`, all four retired at a43e-1, a43e-5 for the first five records above, a46-4 for the next nine, a47-3 for the next five, all 19 retired at a49-1, a49-3 for all 23, a50-4 for seven more, a51-3 for six more, and a51-6 for the last two), under the rulings on its authority and on the
 sufficiency of one finite case (`decision_req-gc-m-credited-implemented.md`). The normative text each
 rests on is retained (`RVI-M-DIV-STATEMENT`, and `RVI-M-STATEMENTS` since a42bb; `RVI-RV64I-STATEMENTS`
 since a43a-2a; `RVP-CSR-STATEMENTS` since a43b-3b; `RVI-ZICNTR-STATEMENTS` and `RVP-COUNTEREN-STATEMENTS` since a43c-1; `RVP-SSTC-STATEMENTS`, `RVP-STIMECMP-STATEMENTS` and `RVP-STCE-STATEMENTS` since a43d-2; `RVI-RV32I-STATEMENTS` and `RVI-RV64I-FORMS-STATEMENTS` since a46-1; `RVP-ECALL-STATEMENTS`, `RVI-ZICSR-STATEMENTS`, `RVI-ZIFENCEI-STATEMENTS` and `RVI-C-STATEMENTS` since a47-1).
@@ -157,14 +159,14 @@ Its dependency `REQ-D-PRIV-MODES` stayed `planned` too.
 
 ```text
 $ python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS --stdout | grep 'G-TRACE. | .experiment' | tail -1
-| `G-TRACE` | `experiment` | experiment `rv64gc-priv-forms-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-no-pmp-v1` | yes |
 ```
 
-Without `tail` it prints all 36. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
+Without `tail` it prints all 38. A credited case with no row keeps the axis open and names the case, so "every credited case" is a check and not a promise. The window also moved `contract_measure` out of `gate_report.py` into `scripts/effective_contract.py`, the one import that made a report generator a pinned input of every experiment. a43e-5 was the proof: it edited `gate_report.py`, and all five credits stayed current.
 
 ## The route for the rest (`P4-SYSTEM.14` a46-0, 2026-11-06)
 
-The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2, captured once each at a50-3 (`decision_seven-with-a-switch.md`) and credited at a50-4 (`decision_seven-credited-implemented.md`). When this route was set, 42 were `planned`; Batches I, II-a and II-b and the seven have since credited twenty-five, which left 17. [How each of those closes](#how-the-last-17-close-p4-system14-a51-0-2026-11-07) was called at a51-0, `REQ-D-SBI` left the CPU's scope, and the first six are credited, so 10 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
+The tool the seven with a switch need landed at a50-1: [a case may declare what selects otherwise](references.md#when-the-override-is-the-selection). The seven's cases were declared at a50-2, captured once each at a50-3 (`decision_seven-with-a-switch.md`) and credited at a50-4 (`decision_seven-credited-implemented.md`). When this route was set, 42 were `planned`; Batches I, II-a and II-b and the seven have since credited twenty-five, which left 17. [How each of those closes](#how-the-last-17-close-p4-system14-a51-0-2026-11-07) was called at a51-0, `REQ-D-SBI` left the CPU's scope, and the first eight are credited, so 8 remain. `G-OBLIGATIONS` stays open on them, and each already has its two contract checks realized. What is missing is the matched comparison and a credit. Run the corpus against the pinned Sail yourself, with nothing retained:
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc
@@ -197,7 +199,7 @@ The route left 17 at a ruling, 12 of them as selections with "no behaviour a ref
 | Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | `source-specific`, with a record pinning the facts and naming its controls |
 | Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, done; `P6-LINUX.2` is its successor |
 
-The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4 and captured once each at a51-5. Neither is credited yet, so they still read `planned`.
+The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4, captured once each at a51-5 and credited at a51-6 (`decision_the-two-with-a-switch-credited-implemented.md`).
 
 ```text
 $ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1
