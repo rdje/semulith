@@ -168,6 +168,19 @@ RETAINED_CAPTURES = {
     "rv64gc-no-pmp-v1": RetainedCapture(
         "daadeb524e789d01dbfa187e9ab3446083b70edc", "45a334a27e2e0b45855da920648abf9559b33a09",
         "8e6da2e5d1cf7f598704b0c019cb48b57d9812e4f114ec5b11bf03270c334f5e", 10960),
+    # The four with no switch of the last 17 (P4-SYSTEM.14 a51-8, a51-9): declared in ac03c460, captured once in 815c7afb, every compared file byte-identical to the rehearsal.
+    "rv64gc-endian-v1": RetainedCapture(
+        "ac03c4605563e99218afa534ef56cca1d5417342", "815c7afb896830c40a810b8305e3be26761424e7",
+        "f1519eb530e37b0ebf23216ad579fcf2fa894b9f52c17af7a90e6e74c9b22bbb", 11568),
+    "rv64gc-fence-v1": RetainedCapture(
+        "ac03c4605563e99218afa534ef56cca1d5417342", "815c7afb896830c40a810b8305e3be26761424e7",
+        "ba631299a09d72809a3f04ceea00aac23b159f42b298b1f41603b93639fb9ef9", 12448),
+    "rv64gc-walk-implicit-v1": RetainedCapture(
+        "ac03c4605563e99218afa534ef56cca1d5417342", "815c7afb896830c40a810b8305e3be26761424e7",
+        "a1652370c5748e2bbafe5d797d380d1c1b24cfe71011a20a599f5cfa6978ce7f", 11507),
+    "rv64gc-partial-progress-v1": RetainedCapture(
+        "ac03c4605563e99218afa534ef56cca1d5417342", "815c7afb896830c40a810b8305e3be26761424e7",
+        "e6ae0e6a333fc3f6566aa759d9c86121a9c5a231ed5d4a8b08df17e6c0e9e09d", 15978),
 }
 
 

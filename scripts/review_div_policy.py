@@ -174,6 +174,12 @@ FEATURE_DISPOSITIONS.update({
     "OB-NO-H": "the privilege and CSR rule applies, and the case's properties cover what a hart without H shows. misa's bit and the state H would add, each read back after a write that tried to set it (misa-no-h, mstatus-no-h-bits, mideleg-no-vs, mie-no-vs), on the one hart (one-hart). A hart with H is the retained effect's.",
     "OB-NO-PMP": "the translation and protection rule applies, and the case's properties cover what a hart without PMP shows: a load and a store at S's privilege and at U's reach memory with nothing configured (s-load, s-store, u-load, u-store). A hart with entries implemented is the retained effect's.",
 })
+FEATURE_DISPOSITIONS.update({
+    "OB-ENDIAN": "none applies: this states the hart's byte order. Each width's order and a byte's own address (byte-0, byte-7, half-0, word-4, invariant-byte, invariant-word), and the three bits that could select otherwise holding nothing (no-big-endian-bits, still-little).",
+    "OB-FENCE": "none applies beyond what one hart sees: FENCE and FENCE.TSO retire and change nothing (fence-rw-rw, fence-iorw, fence-tso), the reserved configurations execute as FENCE (fence-empty, fence-tso-reserved, fence-fm-reserved, fence-fm-top), and rs1 and rd are ignored (fence-rs1-rd-ignored, rd-kept, rs1-kept).",
+    "OB-WALK-IMPLICIT": "the translation rule applies, and the case's properties cover it with the retained walk record, which reads the walk the rule asks for. Walks of three levels and of two (walk-three, walk-two); no implicit write, each PTE reading back and a store needing D faulting (leaf-unchanged, pointer-unchanged, root-unchanged, store-needs-d). The record compares which PTEs each producer read, and their values.",
+    "OB-GC-PARTIAL-PROGRESS": "the privilege and fault rules apply, and the case's properties cover them: each faulting form's cause (hartid-before, csr-write-cause, load-cause, fload-cause, store-cause, amo-cause, sc-cause) and its report (load-tval), and what each left as it was (csr-rd-kept, load-rd-kept, f-before, f-kept, fflags-kept, fs-kept, store-memory-kept, amo-rd-kept, amo-memory-kept, lr-takes, sc-rd-kept, reservation-kept).",
+})
 LEG_ORDER = ("source-located-expectations", "boundary-fixtures", "matched-reference-comparison",
              "repeated-execution", "discriminating-control", "record-linkage", "currentness",
              "risk-method", "feature-rules", "form-coverage", "statement-trace")

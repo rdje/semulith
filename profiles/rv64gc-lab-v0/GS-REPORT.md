@@ -14,7 +14,7 @@
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 4 of 4 `state` requirements implemented | **green** |
 | `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v3` frozen | **green** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 1 of 1 required kinds evidenced | **green** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 38 `implemented`, 2 `not-applicable`, 8 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 42 `implemented`, 2 `not-applicable`, 4 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
@@ -28,7 +28,7 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one: thirty-eight of the 48. Two are out of scope, and 8 stay planned, each with its route in decision_the-seventeen-called.md. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation. |
+| `G-OBLIGATIONS` | `P4-SYSTEM.14` | Requirement statuses remain planned except where a current credit record implements one: forty-two of the 48. Two are out of scope, and 4 stay planned, each with its route in decision_the-seventeen-called.md. EVIDENCE_POLICY.md declares the forthcoming requalification policy after the existing implementation; document presence alone proves neither timing nor adequate evidence. P4-SYSTEM.14 still owns structured records, policy/status checks and mirror reconciliation. |
 | `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -73,6 +73,10 @@ is not a claim with a denominator.
 | `G-TRACE` | `experiment` | experiment `rv64gc-priv-forms-v1` | yes |
 | `G-TRACE` | `experiment` | experiment `rv64gc-no-h-v1` | yes |
 | `G-TRACE` | `experiment` | experiment `rv64gc-no-pmp-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-endian-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-fence-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-walk-implicit-v1` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-partial-progress-v1` | yes |
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
 | `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | yes |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
@@ -98,7 +102,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 14e664b368ef9944fea30582e0c4e00001f2cb05064573c555f6079e136db995`
+  `sha256 68c7b2a4dc255193ff817af6243f739292467f675902d62454086c52857e7f1d`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

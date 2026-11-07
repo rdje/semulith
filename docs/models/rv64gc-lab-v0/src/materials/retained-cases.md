@@ -47,7 +47,7 @@
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
      `evidence/rv64gc-partial-progress-v1/case.sexp`  `5729203836f25b49a1de0992416fec093f8096acf24ba873e10655d696659efc`
      `evidence/rv64gc-priv-forms-v1/case.sexp`  `ab8bcd2c48b6e6e8fba3d162385b1aa9cde14940d142e2a2e2218b71a12e9e75`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `c9232bcd26c23672e50a306c1c4ccfaec6514b32f07b8a30f5009ba7acd49a9e`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `7a3e1e4654b285abdb8e6b19e86c30cf6aa77187a6afadcf72f817267093a572`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
@@ -57,10 +57,10 @@
 | `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | its own, with a declared alternative | credited, `CR-D-ATOMIC-MISALIGN-1` |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-3` |
 | `rv64gc-ecall-ebreak-v2` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | credited, `CR-D-ECALL-EBREAK-2` |
-| `rv64gc-endian-v1` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | captured, credited by nothing |
+| `rv64gc-endian-v1` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | credited, `CR-D-ENDIAN-1` |
 | `rv64gc-ext-closure-v1` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | credited, `CR-D-EXT-CLOSURE-1` |
 | `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | its own, with a declared alternative | credited, `CR-D-FAULT-PRIORITY-1` |
-| `rv64gc-fence-v1` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | captured, credited by nothing |
+| `rv64gc-fence-v1` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | credited, `CR-D-FENCE-1` |
 | `rv64gc-composition-v1` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | credited, `CR-D-GC-COMPOSITION-1` |
 | `rv64gc-ialign-16-v2` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | credited, `CR-D-IALIGN-16-2` |
 | `rv64gc-jalr-lsb-v2` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-2` |
@@ -80,7 +80,7 @@
 | `rv64gc-sstc-v2` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-2` |
 | `rv64gc-sv39-v1` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | credited, `CR-D-SV39-1` |
 | `rv64gc-svade-v1` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | credited, `CR-D-SVADE-1` |
-| `rv64gc-walk-implicit-v1` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | captured, credited by nothing |
+| `rv64gc-walk-implicit-v1` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | credited, `CR-D-WALK-IMPLICIT-1` |
 | `rv64gc-wsuffix-v2` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | credited, `CR-D-WSUFFIX-2` |
 | `rv64gc-xlen-forms-v4` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-4` |
 | `rv64gc-zicntr-v3` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-3` |
@@ -94,5 +94,5 @@
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v7` holds the credit |
 | `rv64gc-m-forms-v7` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | credited, `CR-GC-M-5` |
 | `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | history: `rv64gc-m-forms-v7` holds the credit |
-| `rv64gc-partial-progress-v1` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | captured, credited by nothing |
+| `rv64gc-partial-progress-v1` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | credited, `CR-GC-PARTIAL-PROGRESS-1` |
 | `rv64gc-priv-forms-v1` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | credited, `CR-GC-PRIV-INSNS-1` |

@@ -448,4 +448,4 @@ Four cases, each captured exactly once on 2026-11-07 from the declaration commit
 
 The pinned reference offers nothing to select otherwise for these, so each has a declared disposition and no effect. `rv64gc-walk-implicit-v1` also retains a comparison of its page-table reads: 6 distinct PTEs read on both with the same values, in a different order, which TLB replacement allows; each read 8 bytes, at most 3 per walk, and no PTE written from the first walk on.
 
-**What moved, measured.** All 42 files compared are byte-identical to the rehearsal, ten for each case and the walk record's two traces. Next, the reviews and credits.
+**What moved, measured.** All 42 files compared are byte-identical to the rehearsal, ten for each case and the walk record's two traces. All four were credited at a51-10.

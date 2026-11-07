@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0388 (P4-SYSTEM.14 a51-10) — the four with no switch credited
+
+`REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT` and `REQ-GC-PARTIAL-PROGRESS` at 11 of 11 legs, each on a declared disposition because the pinned reference offers nothing to select otherwise: 42 `implemented`, 4 `planned`, 2 `not-applicable`.
+
 ## SEMULITH-XTASK-0087 (leaf XTASK.13 slice i) — RECORD-SCHEMA judges a frozen copy, and a damaged real schema is named
 
 The controls read the real grammars, so damage read as a check that cannot discriminate. They now read a frozen copy, and a real step before the judge names each real facet and document that fails. Measuring also found a JSON schema that is not JSON crashed the judge into an empty report: it now refuses, naming the file.
