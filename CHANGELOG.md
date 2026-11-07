@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0095 (leaf ARTIFACT-CLEANUP.39) — the twelfth recurring cleanup
+
+At 24 h, on a clean tree: the orphan act removed 1 directory (62,595,188 B), then 169 candidates planned and 6 captured Cargo incremental outputs (15,766,339 B) removed, residue 0.
+
 ## SEMULITH-P4-0388 (P4-SYSTEM.14 a51-10) — the four with no switch credited
 
 `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT` and `REQ-GC-PARTIAL-PROGRESS` at 11 of 11 legs, each on a declared disposition because the pinned reference offers nothing to select otherwise: 42 `implemented`, 4 `planned`, 2 `not-applicable`.
