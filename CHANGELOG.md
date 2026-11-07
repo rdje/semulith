@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0394 (leaf P4-SYSTEM.18) — the release decision comes before the next pinned window
+
+No item on the window's list changes a claim any credit makes, so each goes into the capability limits by name and the window follows as its own version. The director may reverse the order. What remains is a hosted run, which needs a push the director approves, and then the named decision.
+
 ## SEMULITH-P4-0393 (leaf P4-SYSTEM.18 slice a) — a recorded row states what it covers, and portability re-measured
 
 `G-PORTABILITY` read green on a record of 168 guests with 210 in the tree. Each row with a recorded verdict now states what it covers and stops being evidence when that moves. Portability was re-measured over the 210: all four legs green, the x86-64 manifest byte-identical.

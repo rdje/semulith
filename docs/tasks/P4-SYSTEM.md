@@ -537,6 +537,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
 
+### .18 the order / SEMULITH-P4-0394: the release decision comes before the next pinned window (completed)
+
+Feature 2 of 5 after XTASK-0088. **The call.** `decision_release-before-the-next-window.md`: no item on the window's list changes a claim any credit makes, each goes into the capability limits by name, and the director may reverse the order. **What it leaves.** The hosted run, which needs a push the director approves, and then the named decision. Book: `evidence.md`.
+
 ### .18 a / SEMULITH-P4-0393: a recorded row states what it covers, and portability re-measured (completed)
 
 Feature 1 of 5 after XTASK-0088. **The finding.** `G-PORTABILITY` read green on a record of 168 guests with 210 in the tree, and nothing tied the two. `decision_recorded-evidence-states-what-it-covers.md`. **The call.** Each row with a recorded verdict states what it covers, and `gate_report.py` reads a row whose input moved as no evidence. **Measured.** All four legs over 210 guests in 2 h 8 min: 519 suites on arm64 and under Rosetta, manifest `0aaf081f…` byte-identical on both, Miri and big-endian powerpc64 green. `act4.sexp` and `workload.sexp` postdate the engine's last change, so they stand. **What stays open.** The hosted matrix last ran over 171 guests. `.14` closes. Book: `evidence.md`.

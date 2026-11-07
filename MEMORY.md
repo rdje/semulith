@@ -14,11 +14,11 @@
 ## Current state
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
-- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`). **XTASK.13 slice j took the last turn, after a51-14. `P4-SYSTEM.18` slice a is feature 1 of 5.**
+- active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`). **XTASK.13 slice j took the last turn, after a51-14. `P4-SYSTEM.18` slice a is feature 1 of 5, the order feature 2.**
   `ARTIFACT-CLEANUP.40` once due (24 h after 2026-11-07T11:06Z), the orphan act before its four; `.38` (the owned rollover) before any cleanup leaf with a checklist.
 - pnt_status: RUNNING since 2026-11-05 on the director's word ("Go in full PNT mode until all work is exhausted."). 46 credits current; CPU-SYSTEM 1 of 10 axes open, G-RELEASE.
-- last_unit: `SEMULITH-P4-0393` (`.18` a: a recorded row states what it covers; portability re-measured over 210 guests). Before it `SEMULITH-XTASK-0088` (XTASK.13 j). Before it `SEMULITH-P4-0392` (a51-14: 46 `implemented`, none `planned`; `G-OBLIGATIONS` green; `.14` closed).
-- next_action: **the director's call:** a hosted run on this tree needs a push (`scripts/approved_push.sh`, 100+ commits ahead, below the 300 cadence); the release decision (`.18` c) follows it. Meanwhile, what needs no push: the next pinned window's list (`decision_csr-write-three-producers.md`), and XTASK.13's PROFILE-CONSISTENCY probes at the 5:1 turn.
+- last_unit: `SEMULITH-P4-0394` (`.18`: the release comes before the next window; the director may reverse it). Before it `SEMULITH-P4-0393` (`.18` a: a recorded row states what it covers; portability re-measured over 210 guests). Before it `SEMULITH-XTASK-0088` (XTASK.13 j).
+- next_action: **waiting on the director:** a hosted run on this tree needs a push (`scripts/approved_push.sh '<their reason>'`, 105 commits ahead, below the 300 cadence). Then `.18` b reads it and `.18` c records the decision (`decision_release-before-the-next-window.md`). Then the next pinned window. What needs no approval, at the 5:1 turn: XTASK.13's PROFILE-CONSISTENCY probes; `ARTIFACT-CLEANUP.40` when due.
   GS regen after `git add` (`gate_report.py rv64gc-lab-v0 --gate GS`), model fragments `gen_model_book.py --unit rv64gc-lab-v0`; chain: target/xtask/xt0002/commit-chain.sh <dir>; prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report, and any moved probe's seams first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in P4-0328 (shard-0422).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under

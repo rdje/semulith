@@ -9,6 +9,15 @@ Requirements, frozen records and acceptance have their own authorities.
 
 {{#include ../../../ARCHITECTURE.md:rv64gc-snapshot}}
 
+## Where the release stands
+
+All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and two things remain (`decision_release-before-the-next-window.md`):
+
+1. A hosted matrix run on this tree, since the last one covered 171 guests of today's 210. That needs a push, which is the director's to approve.
+2. The named release decision, with its capability limits and versioned artifact.
+
+The next pinned window follows the release as its own version, because nothing on its list changes a claim any credit makes. The director may reverse that order.
+
 ## What a recorded row covers
 
 A row with a recorded verdict is one past run, so it states what that run was measured over, and it stops being evidence when any of that moves (`decision_recorded-evidence-states-what-it-covers.md`):
