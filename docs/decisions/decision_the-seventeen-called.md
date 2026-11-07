@@ -78,3 +78,5 @@ Six cases, 68 witnesses over 549 steps, each statement traced clause by clause. 
 5. **The pinned author refuses every SYSTEM word outside its corpus,** so the listings' other instructions cannot be shown refused. That joins the next window's list in [`decision_csr-write-three-producers.md`](decision_csr-write-three-producers.md).
 
 **Captured (a51-2, 2026-11-07).** Each of the six once, through `scripts/capture_guarded.py`, its first use on the real tree. All 60 compared files match the rehearsal: no finding.
+
+**Credited (a51-3, 2026-11-07).** [`decision_six-defined-credited-implemented.md`](decision_six-defined-credited-implemented.md): 36 `implemented`, 2 `not-applicable`, 10 `planned`.

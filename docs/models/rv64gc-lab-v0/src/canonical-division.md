@@ -415,4 +415,4 @@ Six cases, each captured exactly once on 2026-11-07 from the declaration commit 
 | `rv64gc-priv-insns-v1` | 30 | 4 | 13: `addi x6, x0, 1` | 10,682 B, `5aaf7155…` | 2,256 B |
 | `rv64gc-priv-forms-v1` | 345 | 24 | 130: `csrrs x30, mcause, x0` | 16,584 B, `79e752e4…` | 29,936 B |
 
-**What moved, measured.** All 60 files compared are byte-identical to the rehearsal, ten for each case. All six are `defined`, so there is no effect to retain. Next, the reviews and credits.
+**What moved, measured.** All 60 files compared are byte-identical to the rehearsal, ten for each case. All six are `defined`, so there is no effect to retain. All six were credited at a51-3.

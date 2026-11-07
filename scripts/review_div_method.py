@@ -142,6 +142,25 @@ RETAINED_CAPTURES = {
     "rv64gc-sc-deterministic-v1": RetainedCapture(
         "40488d5b5ef2c24049a1f7a1b9760cc6d24d6bcf", "633fe0cb0c00d689fdfa3da785b531b49864d8f5",
         "d956f455bbaff00e22184e4c1fc884f5f7dbcf5915b3fcfad1fdc63f2ce224dd", 16274),
+    # The six `defined` of the last 17 (P4-SYSTEM.14 a51-1, a51-2): declared in 83f9ca4d, captured once in b3d1f8e8, every compared file byte-identical to the rehearsal.
+    "rv64gc-composition-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "d6a4446a9d07fc5933a2cc276973b6d89e56193370ae0b3e032c42773111395c", 12769),
+    "rv64gc-ext-closure-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "c74bf7c641c3dffa13fb8070b06f3fdf5c8e97c92385bd53ff1e42666fd6cd82", 12981),
+    "rv64gc-priv-revision-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "224522d8f20effca248ba8233c1060589241977f5ec9b641fbb8a87783776ea2", 11259),
+    "rv64gc-rvwmo-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "889d11ea2aa3912049e976970792410f68f0b8e9f98c0c9ecbcf9e6c26ad33e4", 12483),
+    "rv64gc-priv-insns-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "5aaf71559610c6d61b04a883d969a51b29fb44ffd943aed0e7fd31dd043c2192", 10682),
+    "rv64gc-priv-forms-v1": RetainedCapture(
+        "83f9ca4dc4ff4d3e299a6d1a47261f0f48623a24", "b3d1f8e8f19114b25810b4144b730337cf934457",
+        "79e752e4f8976dd39bf5bacc92012e85b783bbfde3c8aedfe297d6c2055193f5", 16584),
 }
 
 

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0381 (P4-SYSTEM.14 a51-3) — the first six of the last 17 credited
+
+Six credits at 11 of 11 legs each: 36 `implemented`, 10 `planned`, 2 `not-applicable`. `REQ-GC-PRIV-INSNS`, which the route expected to end `partial`, reads `implemented`, with what stays out named.
+
 ## SEMULITH-P4-0380 (P4-SYSTEM.14 a51-2) — the first six of the last 17 captured exactly once each, through the tracked guard
 
 Each once, each control where declared, all 60 compared files byte-identical to the rehearsal: no finding. The first real use of `scripts/capture_guarded.py`.

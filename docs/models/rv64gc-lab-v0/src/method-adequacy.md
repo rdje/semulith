@@ -3,8 +3,8 @@
 The retained matched cases have a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-It reads every case it holds a reviewed capture for, the 30 current credits' since
-a50-4 (2026-11-06): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
+It reads every case it holds a reviewed capture for, the 36 current credits' since
+a51-3 (2026-11-07): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
 is `rv64gc-xlen-forms-v4`. Earlier versions are history, reviewed by nothing, and most have
 [left the tree](retired-cases.md); v3 from a42ax and the first case,
 `rv64gc-signed-div-truncation-v2`, from a42ao, stay as the tools' fixture. For each the
