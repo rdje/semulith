@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0391 (P4-SYSTEM.14 a51-13) — the four with nothing to run measured once each
+
+Each record taken once: all 25 facts read their declared value, and all 11 runs exited 0 and repeated byte for byte. Nothing is credited yet.
+
 ## SEMULITH-P4-0390 (P4-SYSTEM.14 a51-12) — the four with nothing to run declared, each fact with its expected value
 
 `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP` and `REQ-D-SCOPE-CENSUS`, declared before anything runs. Measuring found all 44 retained guests are tagged soft-float, on purpose, so the ABI statement holds for what the compiler builds, and the record names that as a limit.

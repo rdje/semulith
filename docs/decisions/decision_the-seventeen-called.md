@@ -143,3 +143,12 @@ Each disposition is committed before its record is taken, with every fact and th
 
 1. **The retained guests are tagged soft-float, on purpose.** All 44 retained `guest.elf` files read `flags=0x1`: RVC, with no float ABI. `scripts/riscv_asm.py` does that deliberately, and `scripts/probe_elf_writer.py` holds it, because they make no calls across an ABI. The ACT suites assemble under `-mabi=lp64` for the same reason. So "the toolchain ABI is LP64D" holds for what the pinned compiler builds, the workload suite, and the record says so as a limit. A reader of the statement alone would assume more.
 2. **One function tells the three ABIs apart.** `double abi_probe(long, double)` under `lp64d` is `c.jr ra`, flags `0x5`: the double arrives and returns in `fa0`, so nothing moves. Under `lp64` and `lp64f` it is `c.mv a0,a1; c.jr ra`, flags `0x1` and `0x3`. `lp64f` moving it is what shows `ABI_FLEN=64` rather than 32.
+
+**Measured (a51-13, 2026-11-07).** Each of the four once, through `scripts/selections.py --record`. All 25 facts read the value their disposition declared, and all 11 runs exited 0 and repeated byte for byte. Each record matches the rehearsal on a clone, so no finding.
+
+| Record | Requirement | Facts | Runs | Size |
+| --- | --- | --- | --- | --- |
+| `SEL-ABI` | `REQ-D-ABI` | 5 | 3 | 2,692 B |
+| `SEL-FP-DEFER` | `REQ-D-FP-DEFER` | 9 | 4 | 3,389 B |
+| `SEL-ROUTE-FLIP` | `REQ-D-ROUTE-FLIP` | 6 | 2 | 2,703 B |
+| `SEL-SCOPE-CENSUS` | `REQ-D-SCOPE-CENSUS` | 5 | 2 | 1,941 B |

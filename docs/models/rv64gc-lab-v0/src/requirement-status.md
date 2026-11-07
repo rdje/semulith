@@ -219,4 +219,6 @@ python3 -B scripts/selections.py --profile rv64gc-lab-v0 --requirement REQ-D-ABI
 python3 scripts/probe_selections.py
 ```
 
+The four were declared at a51-12 and measured once each at a51-13. None is credited yet, so they still read `planned`.
+
 A read starts no process. A fact that moves lapses the credit by name, for example `fact backend-artifact: the tree reads …, the record …`. A file's bytes moving without changing the fact does not.
