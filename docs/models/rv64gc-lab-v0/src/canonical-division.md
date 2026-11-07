@@ -434,3 +434,18 @@ Each is the profile's choice among options the reference also offers, so each re
 | `rv64gc-no-pmp-v1` | its declared alternative | 22: `ld x7, x1, 0` |
 
 **What moved, measured.** All 22 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Both were credited at a51-6.
+
+## The four with no switch, of the last 17 (a51-9)
+
+Four cases, each captured exactly once on 2026-11-07 from the declaration commit `ac03c460`, through `scripts/capture_guarded.py`. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness.
+
+| Case | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-endian-v1` | 42 | 8 | 19: `lbu x6, x1, 0` | 11,568 B, `f1519eb5…` | 3,367 B |
+| `rv64gc-fence-v1` | 41 | 10 | 29: `ld x6, x1, 0` | 12,448 B, `ba631299…` | 3,093 B |
+| `rv64gc-walk-implicit-v1` | 95 | 6 | 74: `ld x6, x13, 0` | 11,507 B, `a1652370…` | 7,727 B |
+| `rv64gc-partial-progress-v1` | 163 | 20 | 103: `add x18, x6, x0` | 15,978 B, `e6ae0e6a…` | 14,070 B |
+
+The pinned reference offers nothing to select otherwise for these, so each has a declared disposition and no effect. `rv64gc-walk-implicit-v1` also retains a comparison of its page-table reads: 6 distinct PTEs read on both with the same values, in a different order, which TLB replacement allows; each read 8 bytes, at most 3 per walk, and no PTE written from the first walk on.
+
+**What moved, measured.** All 42 files compared are byte-identical to the rehearsal, ten for each case and the walk record's two traces. Next, the reviews and credits.

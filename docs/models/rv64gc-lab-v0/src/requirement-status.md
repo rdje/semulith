@@ -199,7 +199,7 @@ The route left 17 at a ruling, 12 of them as selections with "no behaviour a ref
 | Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | A disposition, with a record pinning the facts and naming its controls |
 | Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, done; `P6-LINUX.2` is its successor |
 
-The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4, captured once each at a51-5 and credited at a51-6 (`decision_the-two-with-a-switch-credited-implemented.md`). The four with no switch are declared since a51-8, not yet captured or credited, so they still read `planned`.
+The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4, captured once each at a51-5 and credited at a51-6 (`decision_the-two-with-a-switch-credited-implemented.md`). The four with no switch were declared at a51-8 and captured once each at a51-9. None is credited yet, so they still read `planned`.
 
 ```text
 $ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1

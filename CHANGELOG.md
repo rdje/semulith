@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0387 (P4-SYSTEM.14 a51-9) — the four with no switch captured exactly once each, and the walks compared
+
+Each once, each control where declared, the walk record retained: all 42 compared files byte-identical to the rehearsal, no finding.
+
 ## SEMULITH-P4-0386 (P4-SYSTEM.14 a51-8) — the four with no switch declared, each with its disposition, and a call corrected
 
 `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT` and `REQ-GC-PARTIAL-PROGRESS` get real cases, rehearsed at 11 of 11 legs. Each has a declared disposition and keeps the category its source gives it: a51-0's move to `source-specific` was wrong, and the mirror rule caught it.

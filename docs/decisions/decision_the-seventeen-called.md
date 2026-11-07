@@ -123,3 +123,5 @@ All four read 11 of 11 legs on a clone before declaring.
 2. **The reference agrees on every reserved fence.** All eight fence configurations execute as FENCE on both producers, and rs1 and rd are ignored.
 3. **The two producers' walks.** 6 distinct PTEs read on both with the same values, in a different order, 8 bytes each, at most 3 per walk, and none written from the first walk on.
 4. **`partial-progress` reaches past where the route expected.** The route counted 2 of 6 named guests agreeing and expected `partial`. Faults injected at a chosen suboperation stay past the reference and are named, but ordinary faults leave rd, f, fflags, FS, memory and the reservation visibly as they were, on both producers.
+
+**Captured (a51-9, 2026-11-07).** Each of the four once, the walk record retained: all 42 compared files match the rehearsal, no finding.
