@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0088 (leaf XTASK.13 slice j) — UNIT-BOOKS' probes judge a fixture of their own
+
+The navigation probe's command-line tests ran the real tool, so a damaged real registry read as a probe that failed. They now run a copy inside the fixture, and the same damage fails by its own name.
+
 ## SEMULITH-P4-0392 (P4-SYSTEM.14 a51-14) — the four with nothing to run credited, and `G-OBLIGATIONS` closes
 
 Each on a selection's record: 46 `implemented`, 2 `not-applicable`, none `planned`. `CPU-SYSTEM` reads 1 of 10 axes open, `G-RELEASE`, and a closed axis grants no release.

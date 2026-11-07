@@ -6,6 +6,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -18,6 +19,10 @@ import book_navigation as N
 def chapter(path, content, children=None):
     return {'Chapter': {'path': path, 'source_path': path, 'content': content,
                         'name': 'étiquette', 'sub_items': [] if children is None else children}}
+
+
+# What the tool imports, copied beside it.
+TOOL = ('book_navigation.py', 'unit_books.py', 'book_paths.py', 'records_sexp.py', 'record_catalog.py', 'sexp.py')
 
 
 class NavigationTests(unittest.TestCase):
@@ -92,12 +97,12 @@ class NavigationTests(unittest.TestCase):
             N.preprocess(context, {'items': []}, self.root)
 
     def test_cli_model_json_protocol(self):
-        context = {'root': str(N.ROOT / 'docs/models/lan9118-lab-v0'), 'renderer': 'html'}
-        book = {'items': [chapter('introduction.md', '[Board](../../netboard-lab-v0/src/introduction.md)')]}
+        context = {'root': str(self.models()), 'renderer': 'html'}
+        book = {'items': [chapter('intro.md', '[Other](../../u2/src/intro.md)')]}
         result = self.cli(payload=json.dumps([context, book]))
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(json.loads(result.stdout)['items'][0]['Chapter']['content'],
-                         '[Board](../../netboard-lab-v0/book/introduction.html)')
+                         '[Other](../../u2/book/intro.html)')
 
     def rewrite(self, text, path='status.md'):
         return N.rewrite_links(self.root, path, text)
@@ -183,7 +188,7 @@ class NavigationTests(unittest.TestCase):
             with self.assertRaisesRegex(N.NavigationRefused, 'book nesting exceeds supported depth'):
                 N.preprocess(self.context, book, self.root)
 
-        context = {'root': str(N.ROOT / 'docs/book'), 'renderer': 'html'}
+        context = {'root': str(self.root / 'docs/book'), 'renderer': 'html'}
         node = '{"Chapter":{"path":null,"content":"","sub_items":['
         payload = ('[' + json.dumps(context) + ',{"items":[' + node * 1200
                    + ']}}' * 1200 + ']}]')
@@ -191,7 +196,7 @@ class NavigationTests(unittest.TestCase):
         env.pop('PYTHONOPTIMIZE', None)
         for flags in [[], ['-O']]:
             with self.subTest(flags=flags):
-                result = subprocess.run([sys.executable, *flags, N.__file__],
+                result = subprocess.run([sys.executable, *flags, str(self.tool())],
                                         input=payload, text=True, capture_output=True,
                                         env=env, timeout=60)
                 self.assertEqual(result.returncode, 2)
@@ -232,8 +237,16 @@ class NavigationTests(unittest.TestCase):
         with self.assertRaisesRegex(N.NavigationRefused, 'missing or symlinked'):
             self.rewrite('[Symlink](tasks/P4-SYSTEM.md)')
 
+    def tool(self):
+        """The tool as a copy inside the fixture: its root is where it stands, so nothing it reads is the real tree's (XTASK.13 slice j)."""
+        scripts = self.root / 'scripts'
+        scripts.mkdir(exist_ok=True)
+        for name in TOOL:
+            shutil.copy(N.ROOT / 'scripts' / name, scripts / name)
+        return scripts / 'book_navigation.py'
+
     def cli(self, args=(), payload=''):
-        return subprocess.run([sys.executable, str(N.ROOT / 'scripts/book_navigation.py'), *args],
+        return subprocess.run([sys.executable, str(self.tool()), *args],
                               input=payload, text=True, capture_output=True)
 
     def test_cli_supports_and_arity(self):
@@ -245,7 +258,7 @@ class NavigationTests(unittest.TestCase):
                 self.assertEqual(result.stdout, '')
 
     def test_cli_actual_json_protocol(self):
-        context = {'root': str(N.ROOT / 'docs/book'), 'renderer': 'html'}
+        context = {'root': str(self.root / 'docs/book'), 'renderer': 'html'}
         book = {'items': [chapter('status.md', '[Task](docs/tasks/P4-SYSTEM.md)')]}
         result = self.cli(payload=json.dumps([context, book]))
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -255,7 +268,7 @@ class NavigationTests(unittest.TestCase):
 
     def test_cli_refuses_without_partial_stdout(self):
         for payload in ['{', '{}', '[{}, {}, {}]', '[null, {}]',
-                        json.dumps([{'root': str(N.ROOT / 'docs/book'), 'renderer': 'pdf'}, {'items': []}])]:
+                        json.dumps([{'root': str(self.root / 'docs/book'), 'renderer': 'pdf'}, {'items': []}])]:
             with self.subTest(payload=payload):
                 result = self.cli(payload=payload)
                 self.assertEqual(result.returncode, 2)

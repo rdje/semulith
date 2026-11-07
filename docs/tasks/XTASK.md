@@ -343,6 +343,17 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   feature units (5:1).
   Slices 13a–13b3: [retained verbatim](archive/XTASK-7.md#slice-paragraphs-13a-to-13b3).
   Slices 13b4–13c: [retained verbatim](archive/XTASK-8.md#slice-paragraphs-13b4-to-13c).
+  Slice j (`2026-11-07`, `SEMULITH-XTASK-0088`; on clean ee6829b7; evidence target/xtask/xt0088): `UNIT-BOOKS`' probes judge a fixture of their own. The 5:1 turn, after a51-14. **What measuring found.** The doctrine's arms and `probe_unit_books.py` already read synthetic trees. The real reads were in `probe_book_navigation.py`'s command-line tests, which ran the real tool, so its root was the real tree: `lan9118-lab-v0` and `netboard-lab-v0`, the real registry and the real `docs/tasks/P4-SYSTEM.md`. **The change.** Those tests run a copy of the tool inside the fixture, so its root is where it stands, and nothing it reads is the real tree's. The tool gains no knob for this.
+
+  | Damaged state | Before | After |
+  | --- | --- | --- |
+  | none | `rc=0` | `rc=0` |
+  | a unit's row removed from `materials/units.sexp` | `rc=2`, navigation probe failed | `rc=1`, `MODEL-CATALOGUE unregistered lan9118-lab-v0` |
+  | the registry unreadable | `rc=2`, navigation probe failed | `rc=2`, `REFUSED — cannot read materials/units.sexp` |
+  | `docs/tasks/P4-SYSTEM.md` moved | `rc=2`, navigation probe failed | `rc=1`, `BOOK DOES NOT BUILD project` |
+  | the tool's renderer check removed | not measured | `rc=2`, navigation probe failed: the controls still discriminate |
+
+  Self-test unchanged, and 27 probe tests. No path a case pins moved. Next at the 5:1 turn: PROFILE-CONSISTENCY's probes, case by case.
   Slice i (`2026-11-07`, `SEMULITH-XTASK-0087`; on clean 815c7afb; evidence target/xtask/xt0087): `RECORD-SCHEMA`'s controls judge a frozen copy, so a damaged real schema fails by its own name. The 5:1 turn, after a51-9. **The change.** `scripts/fixtures/record-schema/`, 21 files, 61,774 B: the 15 grammars the controls read, `schema-tokens.sexp` with one facet per token language, and five documents shrunk to what their schemas require. The names are flat because the judge finds catalogues by basename anywhere in the tree: the first layout kept a `schema/` directory in the fixture, and the first real run judged those grammars as records. The self-test's fixture root held a link to the real `schema/` and copied the real JSON schemas, so a damaged grammar missed arms about something else. It now copies the frozen grammars into scratch, so no arm can reach a real directory. A new real step runs before the judge, `probe_schema_token_facets.py --live`: every real facet, the inventory and the five complete documents, each finding by name. **A defect measuring found:** a JSON schema that is not JSON crashed the judge, and the report was a traceback, then "a record file contradicts its schema" with an empty body. It now refuses, naming the file, with an arm of its own. **Stated counts.** A new anchored facet now moves one number, `LIVE_FACETS` in the probe. It used to restate three, 143 in the probe and 148 and 864 in the driver.
 
   | Damaged state | Before | After |
@@ -408,7 +419,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE) and i (RECORD-SCHEMA) done; UNIT-BOOKS' probes next, after five feature units |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes next, case by case, after five feature units |
 
 ## Decisions
 
@@ -533,6 +544,9 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Acceptance Checklist (leaf XTASK.13)
 
+- [x] slice j **ROOT CAUSE** — the navigation probe's command line ran the real tool over the real tree: `grep -c 'unit-row-removed before rc=2' target/xtask/xt0088/red-states.txt` = 1, and `git show ee6829b7:scripts/probe_book_navigation.py | grep -c "N.ROOT / 'docs/models/lan9118-lab-v0'"` = 1.
+- [x] slice j **ADDRESSED** — `grep -c 'unit-row-removed after rc=1' target/xtask/xt0088/red-states.txt` = 1, naming it: `grep -c 'MODEL-CATALOGUE unregistered lan9118-lab-v0' target/xtask/xt0088/red-unit-row-removed-after.txt` = 1; `grep -c 'task-file-moved after rc=1' target/xtask/xt0088/red-states.txt` = 1; the controls still discriminate: `grep -c 'tool-damaged after rc=2' target/xtask/xt0088/red-states.txt` = 1.
+- [x] slice j **NO REGRESSION** — `grep -c 'green-control after rc=0' target/xtask/xt0088/red-states.txt` = 1; `git diff --cached --name-only | grep -c evidence/` = 0; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`.
 - [x] slice i **ROOT CAUSE** — the controls read the real grammars, so damage read as a check that cannot discriminate: `grep -c 'unreviewed-language before rc=2' target/xtask/xt0087/red-states.txt` = 1, `grep -c 'lost-facet before rc=2' target/xtask/xt0087/red-states.txt` = 1, and the unnamed crash: `grep -c 'Traceback' target/xtask/xt0087/red-json-schema-damaged-before.txt` = 4.
 - [x] slice i **ADDRESSED** — `cargo xtask check-requirements --self-test` `rc=0`, `89 pass / 0 fail`; `grep -c 'unreviewed-language after rc=1' target/xtask/xt0087/red-states.txt` = 1, `grep -c 'schema-unreadable after rc=1' target/xtask/xt0087/red-states.txt` = 2, `grep -c 'json-schema-damaged after rc=2' target/xtask/xt0087/red-states.txt` = 1, `grep -c 'frozen-deleted after rc=2' target/xtask/xt0087/red-states.txt` = 1; `python3 -B scripts/probe_schema_token_facets.py --live` `rc=0`; each mutation still fails its control: `python3 -B scripts/probe_schema_token_facets.py --mutation loose-end` → `FAILED (failures=43)`.
 - [x] slice i **NO REGRESSION** — `grep -c 'green-control after rc=0' target/xtask/xt0087/red-states.txt` = 1; `git diff --cached --name-only | grep -c evidence/` = 0; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `38 credit(s), 38 current, 0 lapsed`.
