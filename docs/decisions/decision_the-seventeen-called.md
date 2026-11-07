@@ -76,3 +76,5 @@ Six cases, 68 witnesses over 549 steps, each statement traced clause by clause. 
 3. **A fault in the catalogue.** `REQ-D-PRIV-INSNS` is an `instruction` requirement that named no form, which the policy review holds pending by rule. Its four instructions are named now. `REQ-D-RVWMO` is a `memory` requirement with no form to name, so the leg reads it as it reads `state` and `configuration`.
 4. **A case retains one publication.** The capture review refuses retained statements from two pages. So `priv-forms` retains the Machine-Level chapter and cites SFENCE.VMA's, and `priv-insns` cites the listings.
 5. **The pinned author refuses every SYSTEM word outside its corpus,** so the listings' other instructions cannot be shown refused. That joins the next window's list in [`decision_csr-write-three-producers.md`](decision_csr-write-three-producers.md).
+
+**Captured (a51-2, 2026-11-07).** Each of the six once, through `scripts/capture_guarded.py`, its first use on the real tree. All 60 compared files match the rehearsal: no finding.

@@ -51,20 +51,20 @@
 | `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | its own, with a declared alternative | credited, `CR-D-ATOMIC-MISALIGN-1` |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-3` |
 | `rv64gc-ecall-ebreak-v2` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | credited, `CR-D-ECALL-EBREAK-2` |
-| `rv64gc-ext-closure-v1` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | declared |
+| `rv64gc-ext-closure-v1` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | captured, credited by nothing |
 | `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | its own, with a declared alternative | credited, `CR-D-FAULT-PRIORITY-1` |
-| `rv64gc-composition-v1` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | declared |
+| `rv64gc-composition-v1` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | captured, credited by nothing |
 | `rv64gc-ialign-16-v2` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | credited, `CR-D-IALIGN-16-2` |
 | `rv64gc-jalr-lsb-v2` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-2` |
 | `rv64gc-load-ext-v2` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-2` |
 | `rv64gc-load-x0-v2` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-2` |
 | `rv64gc-lui-auipc-v2` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-2` |
 | `rv64gc-no-delay-slots-v2` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-2` |
-| `rv64gc-priv-insns-v1` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | declared |
+| `rv64gc-priv-insns-v1` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | captured, credited by nothing |
 | `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | credited, `CR-D-PRIV-MODES-1` |
-| `rv64gc-priv-revision-v1` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | declared |
+| `rv64gc-priv-revision-v1` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | captured, credited by nothing |
 | `rv64gc-reservation-v1` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | credited, `CR-D-RESERVATION-1` |
-| `rv64gc-rvwmo-v1` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | declared |
+| `rv64gc-rvwmo-v1` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | captured, credited by nothing |
 | `rv64gc-sc-deterministic-v1` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | credited, `CR-D-SC-DETERMINISTIC-1` |
 | `rv64gc-shamt-v2` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | credited, `CR-D-SHAMT-2` |
 | `rv64gc-sstc-v2` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-2` |
@@ -83,4 +83,4 @@
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v7` holds the credit |
 | `rv64gc-m-forms-v7` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | credited, `CR-GC-M-5` |
 | `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | history: `rv64gc-m-forms-v7` holds the credit |
-| `rv64gc-priv-forms-v1` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | declared |
+| `rv64gc-priv-forms-v1` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | captured, credited by nothing |

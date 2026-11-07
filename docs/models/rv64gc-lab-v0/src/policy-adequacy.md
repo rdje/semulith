@@ -333,20 +333,20 @@ python3 -B -O scripts/probe_div_policy.py
 python3 -B scripts/probe_div_policy.py --mutation trust-receipt
 ```
 
-The first command measures the default case, v6 since a43e-5, and prints `DIV-POLICY: satisfied — 10 of
-10 legs satisfied; credited by CR-GC-M-4`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
+The first command measures the default case, v7 since a49-3, and prints `DIV-POLICY: satisfied — 11 of
+11 legs satisfied; credited by CR-GC-M-5`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 55 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 59 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
-through one `--every-retained` run (each case's ten legs while every pin is current; `invalidated`
+through one `--every-retained` run (each case's eleven legs while every pin is current; `invalidated`
 with the two method legs missing once a pin moves) and three credit-record cases (a current record
 over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
 are findings), six second-method cases — the CSR-SET-shaped declaration satisfied, then one
 condition broken at a time, two wrappers judged at high and at low risk alike — and fifteen category
-cases, one per row above; each of the twenty-seven
-seam omissions (`credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
+cases, one per row above; each of the 34
+seam omissions (among them `credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
 `coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `memory-vacuous`, `boundary-tag`,
 one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,
 `adversarial-executed`; and one per judgement of the category row: `category-row`, `selection-recorded`,

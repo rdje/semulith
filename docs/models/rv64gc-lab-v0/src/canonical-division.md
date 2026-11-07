@@ -401,3 +401,18 @@ Each of these requirements is the profile's choice among options the reference a
 | `rv64gc-sc-deterministic-v1` | the profile override | 21: `sc.w x15, x6, (x3` |
 
 **What moved, measured.** All 77 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Only `verification.json` differs between two runs of one case, in its process ids. All seven were credited at a50-4.
+
+## The first six of the last 17 (a51-2)
+
+Six cases, each captured exactly once on 2026-11-07 from the declaration commit `83f9ca4d`, through `scripts/capture_guarded.py`, at load 14. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness.
+
+| Case | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-composition-v1` | 41 | 12 | 5: `csrrs x5, misa, x0` | 12,769 B, `d6a4446a…` | 3,207 B |
+| `rv64gc-ext-closure-v1` | 64 | 12 | 60: `c.ld x11, x8, 8` | 12,981 B, `c74bf7c6…` | 4,986 B |
+| `rv64gc-priv-revision-v1` | 36 | 5 | 16: `csrrs x8, menvcfg, x0` | 11,259 B, `224522d8…` | 2,774 B |
+| `rv64gc-rvwmo-v1` | 33 | 11 | 11: `ld x6, x1, 0` | 12,483 B, `889d11ea…` | 2,610 B |
+| `rv64gc-priv-insns-v1` | 30 | 4 | 13: `addi x6, x0, 1` | 10,682 B, `5aaf7155…` | 2,256 B |
+| `rv64gc-priv-forms-v1` | 345 | 24 | 130: `csrrs x30, mcause, x0` | 16,584 B, `79e752e4…` | 29,936 B |
+
+**What moved, measured.** All 60 files compared are byte-identical to the rehearsal, ten for each case. All six are `defined`, so there is no effect to retain. Next, the reviews and credits.

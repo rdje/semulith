@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0380 (P4-SYSTEM.14 a51-2) — the first six of the last 17 captured exactly once each, through the tracked guard
+
+Each once, each control where declared, all 60 compared files byte-identical to the rehearsal: no finding. The first real use of `scripts/capture_guarded.py`.
+
 ## SEMULITH-P4-0379 (P4-SYSTEM.14 a51-1) — the first six of the last 17 declared, and the reference's wfi turned on
 
 Six cases, 68 witnesses, each statement traced clause by clause and rehearsed on a clone: 11 of 11 legs each. The override's `wfi_is_nop` had been hiding the reference's `wfi`; with it off, all 345 steps of the privileged forms agree, including `wfi` refused under `TW`.

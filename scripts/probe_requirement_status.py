@@ -327,7 +327,7 @@ class StatusTests(unittest.TestCase):
             self.assertEqual((row["recorded"], row["derived"], row["why"], sorted(row["uncredited"])), (*done, sorted(case + ":pending" for case in cases)), rid)
         self.assertEqual(gc["derived"], {"planned": 16, "partial": 0, "implemented": 30, "not-applicable": 2})  # REQ-D-RESOLUTION-ROUTE, a stage that ended (a45-1)
         self.assertEqual((gc["cases"], gc["credited_cases"], gc["declared_cases"], gc["credits"], gc["current_credits"]),
-                         (38, 30, 6, 30, 30))
+                         (38, 30, 0, 30, 30))
 
 
 def main():
