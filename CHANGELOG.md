@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0383 (P4-SYSTEM.14 a51-5) — the two with a switch captured exactly once each, each effect at a witness
+
+Each once, each control where declared, each effect retained: all 22 compared files byte-identical to the rehearsal, no finding.
+
 ## SEMULITH-XTASK-0086 (leaf XTASK.13 slice h) — CONTRACT-FREEZE judges a frozen unit, and a lost contract is named
 
 Measuring first found the self-test was the only thing catching a deleted contract: the judge alone read `ok (0 versioned unit(s))`. The judge now names it, and the controls read a small frozen unit, so a damaged real contract fails by its own name.

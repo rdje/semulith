@@ -8454,7 +8454,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("no-effect", "2", "0"),
             ("profile-config", "3", "0"),
             ("binary-pin", "1", "0"),
-            ("declared-ignored", "8", "0"),
+            ("declared-ignored", "10", "0"),
             ("declared-refusal", "0", "1"),
         ] {
             let mut mutated = argv.clone();

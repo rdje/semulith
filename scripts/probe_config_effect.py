@@ -30,7 +30,8 @@ RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v3", 6, 
             ("rv64gc-svade-v1", 93, "x22", [], 13), ("rv64gc-atomic-misalign-v1", 24, "x30", [("x30", 4)], 5),
             ("rv64gc-fault-priority-v1", 159, "x22", [("x22", 13)], 4), ("rv64gc-priv-modes-v1", 5, "x5", [("x5", 9223372036855828781)], 9223372036856090925),
             ("rv64gc-sv39-v1", 17, "x5", [("x5", 10376293541462147075)], 0), ("rv64gc-reservation-v1", 23, "x15", [("x15", 0)], 1),
-            ("rv64gc-sc-deterministic-v1", 21, "x15", [("x15", 0)], 1))
+            ("rv64gc-sc-deterministic-v1", 21, "x15", [("x15", 0)], 1),
+            ("rv64gc-no-h-v1", 5, "x5", [("x5", 9223372036856091053)], 9223372036856090925), ("rv64gc-no-pmp-v1", 22, "x7", [], 66))
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),

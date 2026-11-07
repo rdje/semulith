@@ -93,3 +93,5 @@ Both read 11 of 11 legs on a clone before declaring.
 1. **A hart with H prints S as `HS`, and the comparison refuses that row.** So `no-h-forms` stays in M, where the difference lands first, and reads what H would add: `misa`, `mstatus`, `mideleg` and `mie`.
 2. **A refused fetch reads as absent evidence, not as a difference.** The comparison finds no row for that step and refuses, which is right, but it means an effect cannot land there. So `no-pmp-forms` makes its accesses at S's and U's privilege through `MPRV`, from M, and a refused load is a difference at its own witness. S and U fetching with nothing configured is witnessed by every case that runs there, and the limitation says so.
 3. **The call holds, with one change of route.** This record said 16 PMP entries "differ at a handler reading S's refused fetch". They differ at a load instead, for the reason above.
+
+**Captured (a51-5, 2026-11-07).** Each of the two once, each effect retained: all 22 compared files match the rehearsal, no finding.

@@ -416,3 +416,21 @@ Six cases, each captured exactly once on 2026-11-07 from the declaration commit 
 | `rv64gc-priv-forms-v1` | 345 | 24 | 130: `csrrs x30, mcause, x0` | 16,584 B, `79e752e4…` | 29,936 B |
 
 **What moved, measured.** All 60 files compared are byte-identical to the rehearsal, ten for each case. All six are `defined`, so there is no effect to retain. All six were credited at a51-3.
+
+## The two with a switch, of the last 17 (a51-5)
+
+Two cases, each captured exactly once on 2026-11-07 from the declaration commit `daadeb52`, through `scripts/capture_guarded.py`. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness.
+
+| Case | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-no-h-v1` | 21 | 5 | 5: `csrrs x5, misa, x0` | 10,785 B, `0f6a1755…` | 1,631 B |
+| `rv64gc-no-pmp-v1` | 40 | 4 | 22: `ld x7, x1, 0` | 10,960 B, `8e6da2e5…` | 3,048 B |
+
+Each is the profile's choice among options the reference also offers, so each retains an effect: the same guest through the same binary under what selects otherwise, with the first difference at a declared witness.
+
+| Case | Compared with | First difference |
+| --- | --- | --- |
+| `rv64gc-no-h-v1` | its declared alternative | 5: `csrrs x5, misa, x0` |
+| `rv64gc-no-pmp-v1` | its declared alternative | 22: `ld x7, x1, 0` |
+
+**What moved, measured.** All 22 files compared are byte-identical to the rehearsal: the eleven each case keeps for comparison, its effect trace among them. Next, the reviews and credits.

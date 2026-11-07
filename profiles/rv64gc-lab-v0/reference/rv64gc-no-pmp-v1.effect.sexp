@@ -1,0 +1,3 @@
+;; rv64gc-no-pmp-v1.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
+;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
+(config_effect (case_id "rv64gc-no-pmp-v1") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "5a52d533c794ed2046c4713ca0fbdda20b42390900f029cf3962bd6423a6cdeb") (case_config_sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2") (alternative_config_sha256 "ef991c80addcceedda1a605ebf015d10eb225aa2db46d1c027febb564d6dc332") (instructions 40) (trace_sha256 "81f8cc9309da7f2057b1f83d4e57665682eaee50d2df88375610ee307ceb9bc4") (trace_bytes 3433))

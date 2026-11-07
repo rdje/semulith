@@ -1,0 +1,2 @@
+using evidence/rv64gc-no-pmp-v1/baseline.trace for trace output.
+Unable to locate tohost symbol; disabling HTIF.

@@ -62,8 +62,8 @@
 | `rv64gc-load-x0-v2` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-2` |
 | `rv64gc-lui-auipc-v2` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-2` |
 | `rv64gc-no-delay-slots-v2` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-2` |
-| `rv64gc-no-h-v1` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | declared |
-| `rv64gc-no-pmp-v1` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | declared |
+| `rv64gc-no-h-v1` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-no-pmp-v1` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | captured, credited by nothing |
 | `rv64gc-priv-insns-v1` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | credited, `CR-D-PRIV-INSNS-1` |
 | `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | credited, `CR-D-PRIV-MODES-1` |
 | `rv64gc-priv-revision-v1` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | credited, `CR-D-PRIV-REVISION-1` |
