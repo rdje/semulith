@@ -8521,7 +8521,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         }
     }
     // P4-SYSTEM.14 a51-11: a selection's record and a credit with no case, on a frozen fixture tree.
-    let total = 31;
+    let total = 46;
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec!["-B".to_owned(), "scripts/probe_selections.py".to_owned()];
         if optimized {
@@ -8544,7 +8544,11 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("trace", "0", "1"),
             ("reuse", "1", "0"),
             ("undeclared-run", "0", "1"),
-            ("unremembered-read", "20", "0"),
+            ("unremembered-read", "22", "0"),
+            ("elf-flags", "2", "0"),
+            ("comment-consumer", "1", "0"),
+            ("other-enumeration", "1", "0"),
+            ("unbound-slot", "1", "0"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);

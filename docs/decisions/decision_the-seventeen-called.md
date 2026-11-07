@@ -129,3 +129,17 @@ All four read 11 of 11 legs on a clone before declaring.
 **Credited (a51-10, 2026-11-07).** [`decision_the-four-with-no-switch-credited-implemented.md`](decision_the-four-with-no-switch-credited-implemented.md): 42 `implemented`, 2 `not-applicable`, 4 `planned`. Track 4 is what remains.
 
 **Track 4's tool (a51-11, 2026-11-07).** [`decision_a-credit-with-no-case.md`](decision_a-credit-with-no-case.md): a credit may name a selection's record in place of a case. Measuring found the controls this record promised already exist, in `scripts/check_gc_contract_scope.py`, and that they leave three things the statements say unread.
+
+## Track 4 declared, and what measuring it found (a51-12, 2026-11-07)
+
+Each disposition is committed before its record is taken, with every fact and the value its statement expects.
+
+| Disposition | Requirement, risk | Facts | Named controls | What it reads that the named checks do not |
+| --- | --- | --- | --- | --- |
+| `DS-ABI` | `REQ-D-ABI`, medium | 5 | 5 copies refused | what the compiler builds: flags and instructions, under three ABIs |
+| `DS-FP-DEFER` | `REQ-D-FP-DEFER`, high | 9 | 5 copies refused | every other user of the backend; a second producer, `cargo tree`; `FP-VECTORS` |
+| `DS-ROUTE-FLIP` | `REQ-D-ROUTE-FLIP`, low | 6 | 4 copies refused | each mirror's generated header and owning gate |
+| `DS-SCOPE-CENSUS` | `REQ-D-SCOPE-CENSUS`, low | 5 | 2 copies refused | the base census against `rv64i-lab-v0`'s enumeration and source |
+
+1. **The retained guests are tagged soft-float, on purpose.** All 44 retained `guest.elf` files read `flags=0x1`: RVC, with no float ABI. `scripts/riscv_asm.py` does that deliberately, and `scripts/probe_elf_writer.py` holds it, because they make no calls across an ABI. The ACT suites assemble under `-mabi=lp64` for the same reason. So "the toolchain ABI is LP64D" holds for what the pinned compiler builds, the workload suite, and the record says so as a limit. A reader of the statement alone would assume more.
+2. **One function tells the three ABIs apart.** `double abi_probe(long, double)` under `lp64d` is `c.jr ra`, flags `0x5`: the double arrives and returns in `fa0`, so nothing moves. Under `lp64` and `lp64f` it is `c.mv a0,a1; c.jr ra`, flags `0x1` and `0x3`. `lp64f` moving it is what shows `ABI_FLEN=64` rather than 32.

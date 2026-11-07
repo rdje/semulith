@@ -46,10 +46,15 @@ def _strings(form, name) -> list[str]:
 
 
 def load_trace(root: Path, profile_dir: Path) -> dict[str, list[dict]]:
-    """Each traced requirement's clauses, schema-validated; an absent catalogue traces nothing."""
-    path = Path(profile_dir) / CATALOGUE
-    if not path.exists():
-        return {}
+    """Each traced requirement's clauses, schema-validated; an absent catalogue traces nothing. A selection's trace lives beside its record."""
+    trace: dict[str, list[dict]] = {}
+    for path in (Path(profile_dir) / CATALOGUE, Path(profile_dir) / "selections" / CATALOGUE):
+        if path.exists():
+            _read_trace(root, path, trace)
+    return trace
+
+
+def _read_trace(root: Path, path: Path, trace: dict[str, list[dict]]) -> None:
     _require(path.is_file() and path.stat().st_size <= DOCUMENT_BYTES, f"{path}: not a bounded regular file")
     schema = Path(root) / SCHEMA
     _require(schema.is_file(), f"{SCHEMA} is missing")
@@ -60,7 +65,6 @@ def load_trace(root: Path, profile_dir: Path) -> dict[str, list[dict]]:
     except (K.SchemaError, S.SexpError, UnicodeError, OSError) as error:
         raise TraceRefused(f"{path}: {error}") from error
     _require(not errors, f"{path}: " + "; ".join(str(e) for e in errors[:3]))
-    trace: dict[str, list[dict]] = {}
     for form in S.parse(text, str(path)):
         if not (isinstance(form, list) and form and str(form[0]) == "trace"):
             continue
@@ -69,7 +73,6 @@ def load_trace(root: Path, profile_dir: Path) -> dict[str, list[dict]]:
         _require(ids[0] not in trace, f"{path}: {ids[0]} is traced twice")
         trace[ids[0]] = [dict(text=str(_strings(c, "text")[0]), properties=_strings(c, "properties"), limits=_strings(c, "limits"))
                          for c in S.children(form, "clause")]
-    return trace
 
 
 def measure(statement: str, clauses: list[dict], properties: list[str], limitation: str) -> tuple[bool, str]:

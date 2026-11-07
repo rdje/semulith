@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0390 (P4-SYSTEM.14 a51-12) — the four with nothing to run declared, each fact with its expected value
+
+`REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP` and `REQ-D-SCOPE-CENSUS`, declared before anything runs. Measuring found all 44 retained guests are tagged soft-float, on purpose, so the ABI statement holds for what the compiler builds, and the record names that as a limit.
+
 ## SEMULITH-P4-0389 (P4-SYSTEM.14 a51-11) — track 4's tool: a credit may name a selection's record
 
 Four requirements have nothing to run. A credit may now name a selection's record in place of a case: facts declared before anything runs, one measurement retained, and each read reading the facts again. Nothing is credited yet.

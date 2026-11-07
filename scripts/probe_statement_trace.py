@@ -14,6 +14,8 @@ import sys
 import tempfile
 import unittest
 
+import dispositions as DS
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 MUTATION = None
@@ -142,7 +144,9 @@ class Trace(unittest.TestCase):
         real = load_real()
         profile = ROOT / "profiles" / "rv64gc-lab-v0"
         self.assertEqual(real.main(["--profile", "rv64gc-lab-v0"]), 0)
-        self.assertEqual(sorted(real.load_trace(ROOT, profile)), sorted(real._declared_cases(ROOT, "rv64gc-lab-v0")))
+        # A requirement with nothing to run is traced from its disposition's declaration, as a case's is from its own (a51-12).
+        declared = {requirement for requirement, row in DS.load(ROOT, profile).items() if row["kind"] == "record"}
+        self.assertEqual(sorted(real.load_trace(ROOT, profile)), sorted(set(real._declared_cases(ROOT, "rv64gc-lab-v0")) | declared))
 
 
 def load_real():
