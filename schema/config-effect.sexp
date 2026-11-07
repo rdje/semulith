@@ -18,3 +18,14 @@
   (field (name instructions) (type integer))
   (field (name trace_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
   (field (name trace_bytes) (type integer)))
+
+;; A retained comparison of a case's page-table reads (<case-id>.walk.sexp, scripts/measure_walk_trace.py): what ran, by digest, and both
+;; raw traces. No verdict either: the policy review re-derives it on every read (decision_the-seventeen-called.md; P4-SYSTEM.14 a51-7).
+(construct (name walk_trace)
+  (field (name case_id) (type string) (pattern "^[a-z0-9][a-z0-9-]*-v[0-9]+\\Z"))
+  (field (name binary_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
+  (field (name guest_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
+  (field (name case_config_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
+  (field (name instructions) (type integer))
+  (field (name reference_trace_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z"))
+  (field (name engine_trace_sha256) (type string) (pattern "^[0-9a-f]{64}\\Z")))

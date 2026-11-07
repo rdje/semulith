@@ -721,3 +721,23 @@ failed satisfied matched (('x1', 1),) (('x1', 9),)
 The first result earns no complete-method credit. The second retains a satisfied
 three-run byte comparison and matching source/ELF bytes while the source-derived
 GPR values fail. The trace/expectation pair cannot supply its own source proof.
+
+## What a walk reads, on both producers (`P4-SYSTEM.14` a51-7)
+
+The matched comparison is of GPRs, so it can't see a page-table read: the policy says "a successful final load alone cannot establish the absence of an extra access". But the pinned binary can print them (`--trace-ptw`, `--trace-mem`), and the engine records each as its own request kind, which `semulith run --trace-walks` prints:
+
+```console
+$ target/debug/semulith run evidence/rv64gc-svade-v1/guest.elf --profile rv64gc-lab-v0 --steps 137 --trace-walks | grep -m1 '^ptw'
+ptw[0x0000000080003010] -> 0x00000000200000cf
+```
+
+`scripts/measure_walk_trace.py --case <id>` runs a case's guest through both, once, and retains the two raw traces. The policy review re-derives the comparison from them on every read. What must hold:
+
+| Holds | Otherwise |
+| --- | --- |
+| Both read the same PTEs, with the same values | the leg reads pending, with how many each side alone read |
+| Each read is 8 bytes | named |
+| Each walk reads at most 3 | named |
+| Nothing writes a PTE that was read, from the first walk on | named |
+
+The order and the number of reads may differ, because TLB replacement is not architectural. Measured on the corpus: 23 of the 30 translating guests read in the same order, 3 read nothing in the steps they run, and in the other 7 the reference walks again for a page the engine still holds.

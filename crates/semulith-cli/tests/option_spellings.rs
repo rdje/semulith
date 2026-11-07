@@ -78,3 +78,27 @@ fn an_unknown_option_stays_its_commands_refusal() {
     assert_eq!(done.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&done.stderr).starts_with("run: unknown option --nope\n"));
 }
+
+#[test]
+fn trace_walks_prints_each_page_table_read_on_its_own_line() {
+    let elf = root().join("evidence/rv64gc-svade-v1/guest.elf");
+    let elf = elf.to_str().unwrap();
+    let plain = cli(&["run", elf, "--profile", "rv64gc-lab-v0", "--steps", "137"]);
+    let walks = cli(&[
+        "run",
+        elf,
+        "--profile",
+        "rv64gc-lab-v0",
+        "--steps",
+        "137",
+        "--trace-walks",
+    ]);
+    assert!(walks.status.success());
+    let plain = String::from_utf8_lossy(&plain.stdout);
+    let walks = String::from_utf8_lossy(&walks.stdout);
+    assert!(!plain.contains("ptw["));
+    assert!(walks
+        .lines()
+        .any(|l| l.starts_with("ptw[0x") && l.contains("] -> 0x")));
+    assert!(walks.starts_with(plain.as_ref()));
+}

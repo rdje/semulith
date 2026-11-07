@@ -211,6 +211,8 @@ The counter rule's three parts, each witnessed. Scheduled events are guest count
 11 of 11 forms predeclared ['lb', 'lbu', 'ld', 'lh', 'lhu', 'lw', 'lwu', 'sb', 'sd', 'sh', 'sw']; 11 exercised [...]; writing no GPR, read after their own step: ['sb', 'sd', 'sh', 'sw']
 ```
 
+**The `source-specific` row (a51-7).** `EVIDENCE_POLICY.md` asks of this category for "a disposition declared for that precise source category and constraints before its qualification run". The leg now reads one: `profiles/<profile>/dispositions.sexp` (`schema/dispositions.sexp`, `scripts/dispositions.py`), one record per requirement, stating the source, the argument and the controls. A record of `kind case` must name this case's own declared control, or the leg reads pending, and so does a requirement with no record. RECORD-SCHEMA holds the two together: a record answering a requirement that isn't `source-specific` is a finding, and so is such a requirement with no record. Four requirements take this route: see [how the last 17 close](requirement-status.md#how-the-last-17-close-p4-system14-a51-0-2026-11-07).
+
 **A `memory` requirement naming no form (a51-1).** `REQ-D-RVWMO` says what one hart sees of the memory model and names no form, so the same reading holds. And `REQ-D-PRIV-INSNS`, an `instruction` requirement that named none, read pending as the rule says, which was a fault in the catalogue: its four instructions are named now.
 
 **A `configuration` requirement naming no form (a47-3).** The leg allowed a requirement to name no form only for kind `state`. `REQ-D-IALIGN-16` says where an instruction may start and names none, so the same reading holds, and the leg says `a configuration requirement names no form: coverage is vacuous, its 6 predeclared witnesses stand for it`. An `instruction` or `event` requirement naming no form stays pending: that would be a fault in the catalogue.
@@ -337,7 +339,7 @@ The first command measures the default case, v7 since a49-3, and prints `DIV-POL
 11 legs satisfied; credited by CR-GC-M-5`; `--json` puts the leg table on stdout within 64 KiB, with the twelve
 boundary rows present and predeclared and the thirteen forms required, predeclared and
 exercised. `--every-retained` measures every case with a reviewed capture, one line each prefixed by
-the case, and exits with the worst code. The probe runs 59 tests in both interpreter modes on synthetic
+the case, and exits with the worst code. The probe runs 68 tests in both interpreter modes on synthetic
 cases where each knob breaks exactly one leg (a `(boundary: …)` tag marks a row; a state requirement
 naming no form is satisfied vacuously, any other kind naming none stays pending), plus the real tree
 through one `--every-retained` run (each case's eleven legs while every pin is current; `invalidated`
@@ -345,7 +347,7 @@ with the two method legs missing once a pin moves) and three credit-record cases
 over a satisfied measurement reports `credited`; one over a pending measurement and a lapsed one
 are findings), six second-method cases — the CSR-SET-shaped declaration satisfied, then one
 condition broken at a time, two wrappers judged at high and at low risk alike — and fifteen category
-cases, one per row above; each of the 34
+cases, one per row above; each of the 41
 seam omissions (among them `credit-pending`, `trust-receipt`, `infer-feature`, `any-control`,
 `coverage-optional`, `lock-stale`, `first-property`, `credit-any`, `state-vacuous`, `memory-vacuous`, `boundary-tag`,
 one per condition: `both-forms`, `distinct-versions`, `recorded-common`, `shared-pair`,

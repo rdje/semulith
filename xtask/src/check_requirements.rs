@@ -26,6 +26,7 @@ import sexp as S
 import records_sexp as R
 import record_catalog as C
 import credit_records as CR
+import dispositions as DS
 import statement_trace as ST
 import dossier_sexp as D
 import check_sexp_schema as K
@@ -45,6 +46,7 @@ SEXP_SCHEMA_FOR = {
     "requirements.sexp": "schema/requirements.sexp",
     "contract-obligations.sexp": "schema/contract-obligations.sexp",
     "credits.sexp": "schema/credits.sexp",
+    "dispositions.sexp": "schema/dispositions.sexp",
     "statement-trace.sexp": "schema/statement-trace.sexp",
     "units.sexp": "schema/units.sexp",
     "category-needs.sexp": "schema/category-needs.sexp",
@@ -344,6 +346,24 @@ for cat in catalogues:
         except (ST.TraceRefused, S.SexpError) as exc:
             findings.append(f"UNREADABLE {cat.relative_to(root)}: conforms to its schema but does "
                             f"not read as a trace — {exc}")
+        continue
+    if cat.name == "dispositions.sexp":
+        # 15. DISPOSITIONS — each answers a requirement of its catalogue whose category is `source-specific`,
+        #     and each such requirement has one (decision_the-seventeen-called.md).
+        try:
+            declared = DS.load(root, cat.parent)
+            catalogue = {r["id"]: r for r in R.load(cat.parent / "requirements.sexp", root=root)}
+        except (DS.DispositionRefused, R.RecordRefused, S.SexpError, OSError) as exc:
+            findings.append(f"UNREADABLE {cat.relative_to(root)}: does not read as dispositions — {exc}")
+            continue
+        for rid, row in declared.items():
+            if rid not in catalogue:
+                findings.append(f"DISPOSITION {cat.relative_to(root)}: {row['id']} answers unknown requirement {rid}")
+            elif catalogue[rid]["source_semantics"]["category"] != "source-specific":
+                findings.append(f"DISPOSITION {cat.relative_to(root)}: {row['id']} answers {rid}, whose category is not source-specific")
+        for rid, row in catalogue.items():
+            if row["source_semantics"]["category"] == "source-specific" and rid not in declared:
+                findings.append(f"DISPOSITION {cat.relative_to(root)}: {rid} is source-specific and declares no disposition")
         continue
     if cat.name == "credits.sexp":
         # 14. CREDITS — the credited-disposition catalogue (a42ay) is read by its own unpinned
@@ -1728,6 +1748,36 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "contains no records",
     );
     let _ = fs::remove_file(p.join("credits.sexp"));
+    // ---- rule 15 DISPOSITIONS: each answers a source-specific requirement, and each such requirement has one -------------
+    let requirements = fs::read_to_string(p.join("requirements.sexp")).unwrap_or_default();
+    let disposition = "(disposition (id \"DS-A\") (requirement_id \"REQ-D-A\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))";
+    let _ = fs::write(p.join("dispositions.sexp"), format!("{disposition}\n"));
+    tally.arm(
+        "RED   a disposition answering a requirement that is not source-specific",
+        fx.judge(),
+        1,
+        "whose category is not source-specific",
+    );
+    let _ = fs::write(p.join("dispositions.sexp"), "(disposition (id \"DS-B\") (requirement_id \"REQ-NOWHERE\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))\n");
+    tally.arm(
+        "RED   a disposition answering no requirement",
+        fx.judge(),
+        1,
+        "answers unknown requirement",
+    );
+    let _ = fs::write(
+        p.join("requirements.sexp"),
+        requirements.replace("(category defined)", "(category source-specific)"),
+    );
+    let _ = fs::write(p.join("dispositions.sexp"), format!("{disposition}\n"));
+    tally.arm(
+        "GREEN a source-specific requirement with its disposition",
+        fx.judge(),
+        0,
+        "__CHECKED__",
+    );
+    let _ = fs::write(p.join("requirements.sexp"), &requirements);
+    let _ = fs::remove_file(p.join("dispositions.sexp"));
     // ---- the JSONL track (examples stay JSONL) -------------------------------------------------
     let _ = fs::write(p.join("requirements.jsonl"), format!("{REQ}\n"));
     tally.arm(
@@ -1805,7 +1855,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=140)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f + the two of a49-1
+        "FAILED (failures=148)", // one per anchored facet: 127 + the five of a43b-2b, + eight (a51-7) + the six of a43b-3f + the two of a49-1
     );
     tally.arm(
         "RED normal token ignore-pattern mutation",
@@ -1816,7 +1866,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=816)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
+        "FAILED (failures=864)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
     );
     tally.arm(
         "RED normal token fullmatch mutation",
@@ -1844,7 +1894,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=140)", // one per anchored facet: 127 + the five of a43b-2b + the six of a43b-3f + the two of a49-1
+        "FAILED (failures=148)", // one per anchored facet: 127 + the five of a43b-2b, + eight (a51-7) + the six of a43b-3f + the two of a49-1
     );
     tally.arm(
         "RED optimized token ignore-pattern mutation",
@@ -1855,7 +1905,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=816)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
+        "FAILED (failures=864)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
     );
     tally.arm(
         "RED optimized token fullmatch mutation",

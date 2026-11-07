@@ -43,6 +43,7 @@ SUFFIX_SCHEMAS = ((".expected.sexp", "expectations.sexp"),
                   (".overlay.sexp", "overlay.sexp"),
                   (".alternative.sexp", "alternative.sexp"),
                   (".effect.sexp", "config-effect.sexp"),
+                  (".walk.sexp", "config-effect.sexp"),
                   (".obligations.sexp", "contract-obligations.sexp"))
 for doc in sorted(docs):
     schema_name = doc.name

@@ -51,7 +51,14 @@ SEAMS = {
     "adversarial-executed": ('    c5 = bool(props) and set(props) <= set(witnesses) and baseline == "AGREE"\n', '    c5 = True\n'),
     # a43b-3g: the category row of the matched comparison, one seam per judgement.
     "category-row": ('    row, row_measured = _category_row(root, case_dir, profile_dir, case_id, requirement["source_semantics"], expectation_path,\n'
-                     '                                      producers, declared_steps)\n', '    row, row_measured = True, ""\n'),
+                     '                                      producers, declared_steps, requirement["id"], named[0])\n', '    row, row_measured = True, ""\n'),
+    "source-specific-absent": ('    if row is None:\n        return False, f"no disposition declared for {requirement_id}"\n', '    if row is None:\n        return True, ""\n'),
+    "source-specific-kind": ('    if row["kind"] != "case":\n', '    if False:\n'),
+    "source-specific-control": ('    if row["control_property"] != control_property:\n', '    if False:\n'),
+    "walk-absent": ('    if not record_path.is_file():\n        return False, "no retained page-table comparison"\n', '    if not record_path.is_file():\n        return True, ""\n'),
+    "walk-guest": ('("the guest", _one(record, "guest_sha256") == _digest(_bounded_bytes(case_dir / "guest.elf"))),\n            ("the case\'s configuration", _one(record, "case_config_sha256") == _digest(_bounded_bytes(case_dir / "reference-config.json")))', '("the guest", True),\n            ("the case\'s configuration", _one(record, "case_config_sha256") == _digest(_bounded_bytes(case_dir / "reference-config.json")))'),
+    "walk-trace": ('("the reference\'s trace", _one(record, "reference_trace_sha256") == _digest(reference))', '("the reference\'s trace", True)'),
+    "walk-compare": ('        return Walk.compare(reference.decode("utf-8"), engine.decode("utf-8"))\n', '        return True, ""\n'),
     "selection-recorded": ('        selection = bool(str(semantics.get("detail") or "").strip())\n', '        selection = True\n'),
     "unknown-category": ('    return False, f"; category {category}: no row measured for it here"\n', '    return True, ""\n'),
     "effect-case": ('("its case", _one(record, "case_id") == case_id)', '("its case", True)'),
@@ -92,6 +99,13 @@ MUTATION_TESTS = {
     "category-row": "test_implementation_defined_without_a_retained_effect_is_pending",
     "selection-recorded": "test_implementation_defined_with_no_recorded_selection_is_pending",
     "unknown-category": "test_a_category_with_no_branch_is_pending_and_named",
+    "source-specific-absent": "test_source_specific_with_no_disposition_is_pending",
+    "source-specific-kind": "test_source_specific_closing_through_a_record_is_pending_on_a_case",
+    "source-specific-control": "test_source_specific_naming_another_control_is_pending",
+    "walk-absent": "test_a_disposition_asking_for_walks_with_none_retained_is_pending",
+    "walk-guest": "test_a_walk_record_of_another_guest_is_pending",
+    "walk-trace": "test_a_walk_trace_that_moved_is_pending",
+    "walk-compare": "test_a_walk_comparison_that_does_not_hold_is_pending",
     "effect-case": "test_a_retained_effect_for_another_case_is_pending",
     "effect-guest": "test_a_retained_effect_of_another_guest_is_pending",
     "effect-config": "test_a_retained_effect_of_another_case_configuration_is_pending",
@@ -606,6 +620,86 @@ class PolicyTests(unittest.TestCase):
     def test_implementation_defined_with_no_recorded_selection_is_pending(self):
         text, t = self.implementation_defined(detail=" ")
         self.assertEqual(t["missing"], ["matched-reference-comparison"]); self.assertIn("selection unrecorded", text)
+
+    def source_specific(self, *, disposition=True, kind="case", control="p0", walks=False, walk_files=None):
+        """A case whose requirement is `source-specific`: every other leg satisfied. Returns the comparison's text and the table."""
+        case = fixture(self.root, declare_boundaries=True, category="source-specific", detail="the source's own category",
+                       versions=(f"sha256:{BINARY}", "author-v"))
+        shutil.copy(ROOT / "schema" / "dispositions.sexp", self.root / "schema" / "dispositions.sexp")
+        if disposition:
+            extra = f' (control_property "{control}")' if kind == "case" else ""
+            extra += " (walk_record yes)" if walks else ""
+            (self.root / "profiles" / "fx-v0" / "dispositions.sexp").write_text(
+                f'(disposition (id "DS-X") (requirement_id "REQ-X") (kind {kind}) (source_id "SRC") (source_locator "§1") '
+                f'(argument "The reference has one behaviour.") (controls "the case\'s control"){extra})\n')
+        if walk_files is not None:
+            sys.path.insert(0, str(HERE))
+            import measure_walk_trace as Walk
+            record, trace, lab = Walk.walk_paths(self.root, "cx")
+            record = self.root / "profiles" / "fx-v0" / "reference" / record.name
+            record.parent.mkdir(parents=True, exist_ok=True)
+            reference, engine = walk_files
+            (case / "guest.elf").write_bytes(b"guest"); (case / "reference-config.json").write_bytes(b'{"own": true}\n')
+            record.with_name("cx.walk.trace").write_text(reference); record.with_name("cx.walk.lab").write_text(engine)
+            digest = lambda data: hashlib.sha256(data).hexdigest()
+            record.write_text(f'(walk_trace (case_id "cx") (binary_sha256 "{BINARY}") (guest_sha256 "{digest((case / "guest.elf").read_bytes())}") '
+                              f'(case_config_sha256 "{digest((case / "reference-config.json").read_bytes())}") (instructions 2) '
+                              f'(reference_trace_sha256 "{digest(reference.encode())}") (engine_trace_sha256 "{digest(engine.encode())}"))\n')
+        t = self.measure()
+        return self.legs_text(t, "matched-reference-comparison"), t
+
+    WALK = "PTW: Start, vpn=0x400, access_type=R, privilege=S\nmem[R,0x0000000080003000] -> 0x0000000020001001\nPTW: Step, level=2, pte=0x20001001, pte_addr=0x80003000\nPTW: Success, final_ppn=0x80007, level=2\n"
+    OURS = "ptw[0x0000000080003000] -> 0x0000000020001001\n"
+
+    def test_source_specific_with_its_disposition_is_satisfied(self):
+        text, t = self.source_specific()
+        self.assertEqual((t["disposition"], t["missing"], t["category"]), ("satisfied", [], "source-specific"), text)
+        self.assertIn("category source-specific: disposition DS-X declared, its control p0", text)
+
+    def test_source_specific_with_no_disposition_is_pending(self):
+        text, t = self.source_specific(disposition=False)
+        self.assertEqual((t["disposition"], t["missing"]), ("pending", ["matched-reference-comparison"]), text)
+        self.assertIn("no disposition declared for REQ-X", text)
+
+    def test_source_specific_closing_through_a_record_is_pending_on_a_case(self):
+        text, t = self.source_specific(kind="record")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("closes through a record, not a case", text)
+
+    def test_source_specific_naming_another_control_is_pending(self):
+        text, t = self.source_specific(control="p9")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("names the control p9, and this case's is p0", text)
+
+    def test_a_disposition_asking_for_walks_with_none_retained_is_pending(self):
+        text, t = self.source_specific(walks=True)
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("no retained page-table comparison", text)
+
+    def test_a_retained_walk_comparison_that_holds_is_satisfied(self):
+        text, t = self.source_specific(walks=True, walk_files=(self.WALK, self.OURS))
+        self.assertEqual((t["disposition"], t["missing"]), ("satisfied", []), text)
+        self.assertIn("1 distinct PTEs read on both with the same values", text)
+
+    def test_a_walk_record_of_another_guest_is_pending(self):
+        text, t = self.source_specific(walks=True, walk_files=(self.WALK, self.OURS))
+        record = self.root / "profiles" / "fx-v0" / "reference" / "cx.walk.sexp"
+        record.write_text(re.sub(r'\(guest_sha256 "[0-9a-f]{64}"\)', f'(guest_sha256 "{"e" * 64}")', record.read_text()))
+        t = self.measure(); text = self.legs_text(t, "matched-reference-comparison")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("does not pin the guest", text)
+
+    def test_a_walk_trace_that_moved_is_pending(self):
+        self.source_specific(walks=True, walk_files=(self.WALK, self.OURS))
+        (self.root / "profiles" / "fx-v0" / "reference" / "cx.walk.trace").write_text(self.WALK + "\n")
+        t = self.measure(); text = self.legs_text(t, "matched-reference-comparison")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("does not pin the reference's trace", text)
+
+    def test_a_walk_comparison_that_does_not_hold_is_pending(self):
+        text, t = self.source_specific(walks=True, walk_files=(self.WALK, "ptw[0x0000000080003000] -> 0x0000000000000001\n"))
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("different PTEs", text)
 
     def test_a_category_with_no_branch_is_pending_and_named(self):
         fixture(self.root, declare_boundaries=True, category="unspecified")

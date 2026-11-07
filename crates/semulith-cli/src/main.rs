@@ -13,7 +13,8 @@
 //!   `planned` fixture evidence); 1 — the bundle is rejected, every finding
 //!   named; 2 — the command could not run (usage, unreadable inputs).
 //! - `semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES]
-//!   [--trace-stores]` —
+//!   [--trace-stores] [--trace-walks]` — (`--trace-walks`, rv64gc only, follows the step
+//!   trace with every page-table read that crossed the boundary, `P4-SYSTEM.14` a51-7) —
 //!   execute a
 //!   freestanding guest under the laboratory environment (`P1-LAB.8`, T006). The profile
 //!   is a runtime selection (`P4-SYSTEM.2` slice h, the route flip): `rv64i-lab-v0` by
@@ -183,7 +184,7 @@ use semulith_verify::snapshot::Snapshot;
 
 const USAGE: &str = "semulith — the laboratory control surface\n\
                      usage: semulith check-examples [--root DIR]\n\
-                     \x20       semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES] [--trace-stores]\n\
+                     \x20       semulith run <elf> [--profile NAME] [--steps N] [--base ADDR] [--size BYTES] [--trace-stores] [--trace-walks]\n\
                      \x20       semulith demo [--profile NAME] [--guest NAME] [--mutate NAME] [--json]\n\
                      \x20       semulith bundle --guest NAME [--mutate NAME] [--profile NAME]\n\
                      \x20       semulith replay <file.json> [--profile NAME]\n\
@@ -370,6 +371,7 @@ fn run_guest(args: &[String]) -> ExitCode {
     let mut base = DEFAULT_BASE;
     let mut size = DEFAULT_SIZE;
     let mut trace_stores = false;
+    let mut trace_walks = false;
     for arg in &args {
         if let Some(n) = arg.strip_prefix("--steps=") {
             steps = match n.parse() {
@@ -388,6 +390,8 @@ fn run_guest(args: &[String]) -> ExitCode {
             };
         } else if arg == "--trace-stores" {
             trace_stores = true;
+        } else if arg == "--trace-walks" {
+            trace_walks = true;
         } else if arg.starts_with("--") {
             return usage(&format!("run: unknown option {arg}"));
         } else if elf_path.is_none() {
@@ -433,7 +437,7 @@ fn run_guest(args: &[String]) -> ExitCode {
         );
     }
     if profile == Profile::Rv64gcLabV0 {
-        return run_guest_rv64gc(&mut env, image.entry, steps, trace_stores);
+        return run_guest_rv64gc(&mut env, image.entry, steps, trace_stores, trace_walks);
     }
     let (trace, crossings) = semulith_verify::run::run(&mut env, image.entry, steps);
     let mut out = format_steps(&trace.steps, 0);
@@ -497,6 +501,8 @@ fn run_guest(args: &[String]) -> ExitCode {
 struct RecordStores<'a> {
     inner: &'a mut FlatMemory,
     stores: Vec<(u64, u64, u64)>,
+    /// Every page-table read that crossed the boundary, in order: the PTE's address and value.
+    walks: Vec<(u64, u64)>,
 }
 
 impl semulith_core::env::Environment for RecordStores<'_> {
@@ -505,6 +511,13 @@ impl semulith_core::env::Environment for RecordStores<'_> {
         request: semulith_core::env::Request,
     ) -> Result<semulith_core::env::Response, semulith_core::env::BoundaryError> {
         let response = self.inner.request(request);
+        if let (
+            semulith_core::env::Request::WalkAccess { addr },
+            Ok(semulith_core::env::Response::WalkAccess(value)),
+        ) = (request, &response)
+        {
+            self.walks.push((addr, *value));
+        }
         if let (
             semulith_core::env::Request::Store { width, addr, data },
             Ok(semulith_core::env::Response::StoreDone),
@@ -527,11 +540,13 @@ fn run_guest_rv64gc(
     entry: u64,
     steps: usize,
     trace_stores: bool,
+    trace_walks: bool,
 ) -> ExitCode {
     let mut state = semulith_core::state_rv64gc::ArchitecturalState::zeroed_at(entry);
     let mut recording = RecordStores {
         inner: env,
         stores: Vec::new(),
+        walks: Vec::new(),
     };
     let mut out = String::new();
     for n in 0..steps {
@@ -561,6 +576,12 @@ fn run_guest_rv64gc(
         // The same spelling as the rv64i path's, so the campaign's one extractor reads both.
         for (bytes, addr, masked) in &recording.stores {
             out.push_str(&format!("mem[{bytes},0x{addr:016x}] <- 0x{masked:016x}\n"));
+        }
+    }
+    if trace_walks {
+        // Every page-table read, in order: `scripts/measure_walk_trace.py` holds these to the reference's.
+        for (addr, value) in &recording.walks {
+            out.push_str(&format!("ptw[0x{addr:016x}] -> 0x{value:016x}\n"));
         }
     }
     print!("{out}");

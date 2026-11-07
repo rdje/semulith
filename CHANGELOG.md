@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0385 (P4-SYSTEM.14 a51-7) — track 3's tools: a declared disposition is a row the review reads, and a walk's reads are compared
+
+The policy's `source-specific` row now reads a declared record, which must name the case's own control. `semulith run --trace-walks` and `scripts/measure_walk_trace.py` compare what a walk reads on both producers. `credits.sexp` went from 63,828 B to 54,439 B, with one repeated sentence moved to its header.
+
 ## SEMULITH-P4-0384 (P4-SYSTEM.14 a51-6) — the two with a switch credited
 
 `REQ-D-NO-H` and `REQ-D-NO-PMP` at 11 of 11 legs, each measured against a hart that has what the profile excludes: 38 `implemented`, 8 `planned`, 2 `not-applicable`.

@@ -97,3 +97,13 @@ Both read 11 of 11 legs on a clone before declaring.
 **Captured (a51-5, 2026-11-07).** Each of the two once, each effect retained: all 22 compared files match the rehearsal, no finding.
 
 **Credited (a51-6, 2026-11-07).** [`decision_the-two-with-a-switch-credited-implemented.md`](decision_the-two-with-a-switch-credited-implemented.md): 38 `implemented`, 2 `not-applicable`, 8 `planned`.
+
+## Track 3's tools (a51-7, 2026-11-07)
+
+Three things landed before any of the four cases is declared, as the policy asks of a disposition.
+
+1. **The review's `source-specific` row**, reading `profiles/<profile>/dispositions.sexp`. A case's record must name that case's own control. RECORD-SCHEMA holds records and requirements together.
+2. **What a walk reads, on both producers.** `semulith run --trace-walks` and `scripts/measure_walk_trace.py`. On 30 translating guests the two read the same PTEs, and on 23 in the same order. So the comparison is of what is read and with what value, and the order is named as free, because TLB replacement is not architectural.
+3. **`credits.sexp` kept inside its bound.** The same sentence stood in each of 38 records' limitations. It moved to the file's header, from 63,828 B to 54,439 B, which leaves room for the last eight records. Each record's `decision` still names the step.
+
+A fourth tool, for a credit with no case, comes with track 4.

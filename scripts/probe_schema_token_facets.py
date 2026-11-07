@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 # Named valid tokens, independent of anchor implementation. A new token language
 # needs a reviewed example here; silently skipping an unknown pattern is forbidden.
 TOKENS = {
+    r'^DS-[A-Z0-9-]+': 'DS-A',
     r'^[A-Z][A-Za-z]*-[a-z0-9.]+-[0-9]+\.S': 'Zaamo-amoadd.d-00.S',  # act4.sexp: <Suite>-<mnemonic>-<nn>.S since P4-SYSTEM.15 slice b
     r'^wl-[a-z]+\.c': 'wl-integer.c',  # workload.sexp: a tracked workload source, P4-SYSTEM.15 slice f
     r'^[0-9a-f]{64}': 'a' * 64,
@@ -116,8 +117,8 @@ def changed_document(name, field):
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 31)  # schema/alternative.sexp (P4-SYSTEM.14 a50-1); schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f)
-        self.assertEqual(len(current), 135)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f)
+        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 32)  # schema/alternative.sexp (P4-SYSTEM.14 a50-1); schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f); schema/dispositions.sexp (a51-7)
+        self.assertEqual(len(current), 143)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f); +8: dispositions.sexp's two and config-effect.sexp's walk_trace's six (a51-7)
         self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):

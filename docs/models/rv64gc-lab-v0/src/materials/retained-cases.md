@@ -43,7 +43,7 @@
      `evidence/rv64gc-m-forms-v7/case.sexp`  `e517eeb6f09d7a0b8e4750309458918ee6c2e2b41740e2d1e2bc029a527d5c3e`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
      `evidence/rv64gc-priv-forms-v1/case.sexp`  `ab8bcd2c48b6e6e8fba3d162385b1aa9cde14940d142e2a2e2218b71a12e9e75`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `e64bf23eab52309dd6cc63a76b2ce2a84259d03cb99b97f25f7e66e569b40dc6`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `c9232bcd26c23672e50a306c1c4ccfaec6514b32f07b8a30f5009ba7acd49a9e`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |

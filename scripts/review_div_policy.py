@@ -26,7 +26,8 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                the declared comparison rule and named observation vocabulary; and the
                                requirement's category row holds: `defined` asks nothing more,
                                `implementation-defined` the selection recorded in the catalogue and a
-                               behavior-changing control (`_config_effect`); a category with no branch
+                               behavior-changing control (`_config_effect`), `source-specific` a disposition declared
+                               for the requirement and naming the case's own control; a category with no branch
                                here stays pending and is named (P4-SYSTEM.14 a43b-3g).
   repeated-execution           a repeat run agrees.
   discriminating-control       the control diverges at the step and register of the one property
@@ -351,8 +352,53 @@ def _config_effect(root: Path, case_dir: Path, profile_dir: Path, case_id: str, 
     return True, f"observed effect under {named}: {result.detail}"
 
 
+def _walk_record(case_dir: Path, profile_dir: Path, case_id: str, producers: dict) -> tuple[bool, str]:
+    """A retained comparison of the case's page-table reads, re-derived from its two raw traces; no process runs."""
+    import measure_walk_trace as Walk
+    record_path = profile_dir / "reference" / f"{case_id}.walk.sexp"
+    if not record_path.is_file():
+        return False, "no retained page-table comparison"
+    record = _one_form(record_path, "walk_trace")
+    reference = _bounded_bytes(record_path.with_name(f"{case_id}.walk.trace"), Walk.TRACE_BYTES)
+    engine = _bounded_bytes(record_path.with_name(f"{case_id}.walk.lab"), Walk.TRACE_BYTES)
+    producer = producers.get("reference")
+    pins = (("its case", _one(record, "case_id") == case_id),
+            ("the guest", _one(record, "guest_sha256") == _digest(_bounded_bytes(case_dir / "guest.elf"))),
+            ("the case's configuration", _one(record, "case_config_sha256") == _digest(_bounded_bytes(case_dir / "reference-config.json"))),
+            ("the reference producer's binary", producer is not None and f"sha256:{_one(record, 'binary_sha256')}" == str(_one(producer, "version"))),
+            ("the reference's trace", _one(record, "reference_trace_sha256") == _digest(reference)),
+            ("the engine's trace", _one(record, "engine_trace_sha256") == _digest(engine)))
+    unpinned = [name for name, held in pins if not held]
+    if unpinned:
+        return False, "the retained page-table comparison does not pin " + ", ".join(unpinned)
+    try:
+        return Walk.compare(reference.decode("utf-8"), engine.decode("utf-8"))
+    except UnicodeError as error:
+        return False, f"the retained page-table comparison does not read: {error}"
+
+
+def _source_specific_row(case_dir: Path, profile_dir: Path, root: Path, case_id: str, requirement_id: str, control_property: str, producers: dict) -> tuple[bool, str]:
+    """The `source-specific` row: a disposition declared for this requirement, naming this case's own control (decision_the-seventeen-called.md)."""
+    import dispositions as Dis
+    try:
+        row = Dis.load(root, profile_dir).get(requirement_id)
+    except Dis.DispositionRefused as refused:
+        return False, f"its dispositions refuse: {refused}"
+    if row is None:
+        return False, f"no disposition declared for {requirement_id}"
+    if row["kind"] != "case":
+        return False, f"{row['id']} closes through a record, not a case"
+    if row["control_property"] != control_property:
+        return False, f"{row['id']} names the control {row['control_property']}, and this case's is {control_property}"
+    measured = f"disposition {row['id']} declared, its control {control_property}"
+    if not row["walk_record"]:
+        return True, measured
+    held, walks = _walk_record(case_dir, profile_dir, case_id, producers)
+    return held, f"{measured}; {walks}"
+
+
 def _category_row(root: Path, case_dir: Path, profile_dir: Path, case_id: str, semantics: dict, expectation_path: Path,
-                  producers: dict, declared_steps: set) -> tuple[bool, str]:
+                  producers: dict, declared_steps: set, requirement_id: str, control_property: str) -> tuple[bool, str]:
     """The policy's source-semantic row beyond the matched comparison, as (satisfied, measured text to append)."""
     category = semantics["category"]
     if category == "defined":
@@ -361,6 +407,9 @@ def _category_row(root: Path, case_dir: Path, profile_dir: Path, case_id: str, s
         selection = bool(str(semantics.get("detail") or "").strip())
         effect, measured = _config_effect(root, case_dir, profile_dir, case_id, expectation_path, producers, declared_steps)
         return selection and effect, f"; category {category}: selection {'recorded' if selection else 'unrecorded'}; {measured}"
+    if category == "source-specific":
+        held, measured = _source_specific_row(case_dir, profile_dir, root, case_id, requirement_id, control_property, producers)
+        return held, f"; category {category}: {measured}"
     return False, f"; category {category}: no row measured for it here"
 
 
@@ -464,7 +513,7 @@ def measure_policy(root: Path, *, method: dict, case_id: str = CASE_ID) -> dict:
     kinds = _strings(first, "observation_kinds")
     baseline, _ = verdict("baseline")
     row, row_measured = _category_row(root, case_dir, profile_dir, case_id, requirement["source_semantics"], expectation_path,
-                                      producers, declared_steps)
+                                      producers, declared_steps, requirement["id"], named[0])
     _leg(legs, "matched-reference-comparison", method_ok and baseline == "AGREE" and bool(rule) and bool(kinds) and row,
          f"method {method.get('disposition')}; baseline {baseline}; rule {rule or '(none)'}; vocabulary {kinds or '(unnamed)'}{row_measured}")
     repeat, _ = verdict("repeat")

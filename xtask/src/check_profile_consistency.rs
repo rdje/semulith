@@ -8496,6 +8496,30 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED capture guard {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("CAPTURE-GUARD: 22 tests / {failures} failures / {errors} errors; stand-in host and capture, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a51-7: a case's page-table reads, on both producers (scripts/measure_walk_trace.py), on stand-ins.
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec!["-B".to_owned(), "scripts/probe_walk_trace.py".to_owned()];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(&format!("GREEN walk trace {mode}"), prober.probe(repo, argv.clone()), 0, "WALK-TRACE: 15 tests / 0 failures / 0 errors; synthetic traces and stand-in binaries, no capture credit");
+        for (mutation, failures, errors) in [
+            ("no-walk", "1", "0"),
+            ("different-ptes", "3", "0"),
+            ("width", "1", "0"),
+            ("per-walk", "1", "0"),
+            ("written", "1", "0"),
+            ("reuse", "0", "1"),
+            ("reference-failed", "1", "0"),
+            ("engine-failed", "1", "0"),
+            ("trace-bound", "1", "0"),
+            ("held-only", "1", "0"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(&format!("RED walk trace {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("WALK-TRACE: 15 tests / {failures} failures / {errors} errors; synthetic traces and stand-in binaries, no capture credit"));
+        }
+    }
     // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec![
@@ -8806,7 +8830,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 59 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 68 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8814,6 +8838,13 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "any-control",
             "coverage-optional",
             "trace-optional",
+            "source-specific-absent",
+            "source-specific-kind",
+            "source-specific-control",
+            "walk-absent",
+            "walk-guest",
+            "walk-trace",
+            "walk-compare",
             "configuration-vacuous",
             "memory-vacuous",
             "silent-any-form",
