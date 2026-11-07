@@ -180,6 +180,8 @@ for rf in jsonl_files:
             findings.append(f"INVALID    {err}")
     except UnsupportedSchema as exc:
         print(f"UNSUPPORTED {exc}"); print("__CHECKED__ 0"); sys.exit(2)
+    except json.JSONDecodeError as exc:  # A record's own line is judged inside; only the schema's bytes reach here.
+        print(f"UNSUPPORTED {schema.relative_to(root)}: not valid JSON: {exc}"); print("__CHECKED__ 0"); sys.exit(2)
 
 # ------------------------------------------------------- the SEXP track (the profile records)
 # A file named requirements.sexp / contract-obligations.sexp is a catalogue everywhere EXCEPT
@@ -1106,9 +1108,33 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         return false;
     };
     let _ = fs::create_dir_all(t.join("schemas"));
+    let _ = fs::create_dir_all(t.join("schema"));
     let _ = fs::create_dir_all(t.join("p"));
+    // The frozen grammars, copied (`XTASK.13` slice i): a damaged real one is the real run's finding by its own name, and no
+    // arm can reach the real directories.
+    let frozen = repo.join("scripts/fixtures/record-schema");
     for s in ["requirement.schema.json", "contract-obligation.schema.json"] {
-        let _ = fs::copy(repo.join("schemas").join(s), t.join("schemas").join(s));
+        let _ = fs::copy(
+            frozen.join(format!("schema-{s}")),
+            t.join("schemas").join(s),
+        );
+    }
+    for s in [
+        "requirements",
+        "contract-obligations",
+        "contract",
+        "credits",
+        "dispositions",
+        "statement-trace",
+        "units",
+        "category-needs",
+        "act4",
+        "workload",
+    ] {
+        let _ = fs::copy(
+            frozen.join(format!("schema-{s}.sexp")),
+            t.join("schema").join(format!("{s}.sexp")),
+        );
     }
     let fx = Fixture {
         repo,
@@ -1122,9 +1148,6 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         misses: Vec::new(),
     };
     let p = t.join("p");
-    // schema-layer access: the fixture root must SEE schema/ for load_schema — symlink it
-    #[cfg(unix)]
-    let _ = std::os::unix::fs::symlink(repo.join("schema"), t.join("schema"));
     fx.text(
         "sources.sexp",
         r#"(sources (source (id "SRC-A") (file "a.html")))"#,
@@ -1720,7 +1743,6 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     );
     let _ = fs::remove_file(p.join("workload.sexp"));
     // ---- rule 14 CREDITS: the credit catalogue reads through its own reader, never the pinned one -
-    // ($t/schema is the fixture's link to the real schema directory: never copy into or remove under it)
     let credit = format!(
         "(credit (id \"CR-1\") (profile_ids \"p\") (requirement_id \"REQ-D-A\") (obligation_ids \"OB-A\") (case_id \"case\") (measured (pin (path \"m\") (sha256 \"{a}\") (byte_size 1))) (receipt (pin (path \"r\") (sha256 \"{b}\") (byte_size 1))) (policy (pin (path \"p\") (sha256 \"{c}\") (byte_size 1))) (retained_sources \"S\") (authority review) (date \"2026-10-26\") (decision \"decision_x.md\") (legs 10) (limitations \"l\"))",
         a = "a".repeat(64),
@@ -1787,6 +1809,18 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         0,
         "__CHECKED__ 2",
     );
+    // A JSON schema that is not JSON is a refusal naming it, never a traceback (`XTASK.13` slice i).
+    let _ = fs::write(t.join("schemas/requirement.schema.json"), "[[not json");
+    tally.arm(
+        "REFUSE a JSON schema that cannot be read",
+        fx.judge(),
+        2,
+        "schemas/requirement.schema.json: not valid JSON",
+    );
+    let _ = fs::copy(
+        frozen.join("schema-requirement.schema.json"),
+        t.join("schemas/requirement.schema.json"),
+    );
     let _ = fs::write(p.join("mystery.jsonl"), "not json at all\n");
     tally.arm(
         "RED   a record file no schema governs",
@@ -1845,7 +1879,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         "GREEN exact-token facets normal",
         probe(repo, false, "scripts/probe_schema_token_facets.py", None),
         0,
-        "Ran 7 tests",
+        "Ran 8 tests",
     );
     tally.arm(
         "RED normal token loose-end mutation",
@@ -1856,7 +1890,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=148)", // one per anchored facet: 127 + the five of a43b-2b, + eight (a51-7) + the six of a43b-3f + the two of a49-1
+        "FAILED (failures=43)", // one per frozen facet (FROZEN_FACETS) and one per complete document
     );
     tally.arm(
         "RED normal token ignore-pattern mutation",
@@ -1867,7 +1901,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=864)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
+        "FAILED (failures=234)", // six per frozen facet, five complete documents and the generic search
     );
     tally.arm(
         "RED normal token fullmatch mutation",
@@ -1878,13 +1912,13 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("fullmatch"),
         ),
         1,
-        "FAILED (failures=1)",
+        "FAILED (failures=2)", // the generic search and the step's own `$` facet
     );
     tally.arm(
         "GREEN exact-token facets optimized",
         probe(repo, true, "scripts/probe_schema_token_facets.py", None),
         0,
-        "Ran 7 tests",
+        "Ran 8 tests",
     );
     tally.arm(
         "RED optimized token loose-end mutation",
@@ -1895,7 +1929,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("loose-end"),
         ),
         1,
-        "FAILED (failures=148)", // one per anchored facet: 127 + the five of a43b-2b, + eight (a51-7) + the six of a43b-3f + the two of a49-1
+        "FAILED (failures=43)", // one per frozen facet (FROZEN_FACETS) and one per complete document
     );
     tally.arm(
         "RED optimized token ignore-pattern mutation",
@@ -1906,7 +1940,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("ignore-pattern"),
         ),
         1,
-        "FAILED (failures=864)", // six per anchored facet: 738 + 30 for the five of a43b-2b + 36 for the six of a43b-3f + 12 for the two of a49-1
+        "FAILED (failures=234)", // six per frozen facet, five complete documents and the generic search
     );
     tally.arm(
         "RED optimized token fullmatch mutation",
@@ -1917,7 +1951,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
             Some("fullmatch"),
         ),
         1,
-        "FAILED (failures=1)",
+        "FAILED (failures=2)", // the generic search and the step's own `$` facet
     );
     let _ = fs::remove_dir_all(&t);
     if verbose {
@@ -1974,6 +2008,18 @@ pub fn run(root: &Path, args: &[String]) -> ExitCode {
     if !self_test(root, false) {
         eprintln!("RECORD-SCHEMA: REFUSED — the check does not discriminate (self-test failed).");
         return ExitCode::from(2);
+    }
+    // Every real token facet and complete document, each finding by its own name (`XTASK.13` slice i): the controls
+    // above read a frozen copy, so a damaged real schema reaches this step and is not called a check that cannot discriminate.
+    let (facets_rc, facets_raw) = combined(
+        Command::new("python3")
+            .args(["-B", "scripts/probe_schema_token_facets.py", "--live"])
+            .current_dir(root),
+    );
+    if facets_rc != 0 {
+        eprintln!("RECORD-SCHEMA: a real schema's token facet or a complete document fails its boundary control.");
+        indented(captured(&facets_raw));
+        return ExitCode::from(1);
     }
     // `out="$(check_records .)"`: the root as `.`, stdout captured, stderr through.
     let (rc, raw) = {

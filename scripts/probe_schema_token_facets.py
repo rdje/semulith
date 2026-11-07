@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Exact-token regressions through the public schema kernel, without changing search semantics."""
+"""Exact-token regressions through the public schema kernel, without changing search semantics.
+
+The controls and their mutations judge a frozen copy, `scripts/fixtures/record-schema/`, so a damaged real schema
+cannot read as a check that does not discriminate. `--live` is RECORD-SCHEMA's real-run step: every real facet and the
+five complete documents, each finding by its own name (XTASK.13 slice i).
+"""
 from __future__ import annotations
 
 import argparse
 import copy
 from pathlib import Path
 import sys
+import tempfile
 import types
 import unittest
 
@@ -14,6 +20,12 @@ import records_sexp as R
 import sexp as S
 
 ROOT = Path(__file__).resolve().parent.parent
+FROZEN = ROOT / 'scripts/fixtures/record-schema'
+FROZEN_FACETS = 38  # one per token language at the freeze; a later language joins TOKENS and the real inventory only
+# What the real tree states. A new or lost facet moves these two and nothing else.
+LIVE_SCHEMAS = 32  # schema/alternative.sexp (P4-SYSTEM.14 a50-1); schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f); schema/dispositions.sexp (a51-7)
+LIVE_FACETS = 143  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f); +8: dispositions.sexp's two and config-effect.sexp's walk_trace's six (a51-7)
+BOUNDARY_BREAKERS = (lambda v: v + '\n', lambda v: '\n' + v, lambda v: v + '\r\n', lambda v: v + '\n\n', lambda v: v + '\x00', lambda v: v + '\t')
 # Named valid tokens, independent of anchor implementation. A new token language
 # needs a reviewed example here; silently skipping an unknown pattern is forbidden.
 TOKENS = {
@@ -66,25 +78,20 @@ REAL_DOCUMENTS = (
 )
 
 
+def language(pattern):
+    """A facet's token language, or None when no reviewed boundary ends it."""
+    if pattern.endswith(r'\Z'):
+        return pattern[:-2]
+    return pattern[:-1] if pattern.endswith('$') else None
+
+
 def cases():
-    found = []
-    for path in sorted((ROOT / 'schema').glob('*.sexp')):
-        constructs, _ = K.load_schema(path)
-        for head, construct in constructs.items():
-            for name, field in construct.fields.items():
-                if field.pattern is None:
-                    continue
-                pattern = field.pattern
-                if pattern.endswith(r'\Z'):
-                    body = pattern[:-2]
-                elif pattern.endswith('$'):
-                    body = pattern[:-1]
-                else:
-                    raise ValueError(f'no reviewed token boundary: {path.name}/{head}/{name}')
-                if body not in TOKENS:
-                    raise ValueError(f'no reviewed token example: {path.name}/{head}/{name}: {body}')
-                found.append((f'{path.name}/{head}/{name}', field, TOKENS[body]))
-    return found
+    """The controls' facets: the frozen copy's, one per token language."""
+    path = FROZEN / 'schema-tokens.sexp'
+    constructs, _ = K.load_schema(path)
+    return [(f'{path.name}/{head}/{name}', field, TOKENS[language(field.pattern)])
+            for head, construct in constructs.items()
+            for name, field in construct.fields.items()]
 
 
 def judge(field, value):
@@ -100,8 +107,9 @@ def judge(field, value):
                            {'fixture': construct}, {}, 'facet control')
 
 
-def changed_document(name, field):
-    forms = S.parse((ROOT / name).read_text(), name)
+def changed_document(path, field):
+    name = path.name
+    forms = S.parse(path.read_text(), name)
     stack = list(forms)
     while stack:
         node = stack.pop(0)
@@ -114,12 +122,58 @@ def changed_document(name, field):
     raise ValueError(f'{name}: no {field} regression target')
 
 
+def live_findings(root, documents=REAL_DOCUMENTS, stated=(LIVE_SCHEMAS, LIVE_FACETS)):
+    """Every real facet and complete document, each finding by its own name; the real run's step."""
+    findings, used, facets = [], set(), 0
+    paths = sorted((root / 'schema').glob('*.sexp'))
+    for path in paths:
+        try:
+            constructs, _ = K.load_schema(path)
+        except Exception as error:  # A schema that cannot load is a finding about that schema.
+            findings.append(f"schema/{path.name}: cannot load: {str(error).replace(f'{root}/', '')}")
+            continue
+        for head, construct in constructs.items():
+            for name, field in construct.fields.items():
+                if field.pattern is None:
+                    continue
+                facets += 1
+                tag = f'schema/{path.name}/{head}/{name}'
+                body = language(field.pattern)
+                if body is None:
+                    findings.append(f'{tag}: no reviewed token boundary: {field.pattern}')
+                elif body not in TOKENS:
+                    findings.append(f'{tag}: no reviewed token example: {body}')
+                else:
+                    used.add(body)
+                    if judge(field, TOKENS[body]):
+                        findings.append(f'{tag}: refuses its reviewed example {TOKENS[body]!r}')
+                    for breaker in BOUNDARY_BREAKERS:
+                        bad = breaker(TOKENS[body])
+                        if not any('does not match' in error for error in judge(field, bad)):
+                            findings.append(f'{tag}: admits {bad!r}')
+    if len(paths) != stated[0]:
+        findings.append(f'schema/: {len(paths)} schema file(s), the inventory states {stated[0]}')
+    if facets != stated[1]:
+        findings.append(f'schema/: {facets} anchored facet(s), the inventory states {stated[1]}')
+    findings.extend(f'TOKENS: a reviewed example no facet uses: {body}' for body in sorted(set(TOKENS) - used))
+    for name, schema, field in documents:
+        try:
+            constructs, operators = K.load_schema(root / f'schema/{schema}.sexp')
+            errors = K.validate_text((root / name).read_text(), constructs, operators, name)
+            findings.extend(errors)  # Each already names the document.
+            if not errors and not any('does not match' in error for error in K.validate_text(
+                    changed_document(root / name, field), constructs, operators, name)):
+                findings.append(f'{name}: admits a terminal newline in its {field}')
+        except Exception as error:  # A document that cannot be read is a finding about that document.
+            findings.append(f"{name}: cannot judge: {str(error).replace(f'{root}/', '')}")
+    return findings
+
+
 class TokenFacetTests(unittest.TestCase):
     def test_closed_inventory_and_examples(self):
         current = cases()
-        self.assertEqual(len(list((ROOT / 'schema').glob('*.sexp'))), 32)  # schema/alternative.sexp (P4-SYSTEM.14 a50-1); schema/credits.sexp (a42ay); schema/workload.sexp (P4-SYSTEM.15 slice f); schema/matched-case.sexp (P4-SYSTEM.14 a44-2a); schema/overlay.sexp (a43b-3c, no anchored pattern); schema/config-effect.sexp (a43b-3f); schema/dispositions.sexp (a51-7)
-        self.assertEqual(len(current), 143)  # +21: matched-case.sexp's facets (a44-2a); +5: its control id and second-method forms (a43b-2b); +6: config-effect.sexp's case id and five digests (a43b-3f); +8: dispositions.sexp's two and config-effect.sexp's walk_trace's six (a51-7)
-        self.assertEqual({field.pattern.removesuffix(r'\Z').removesuffix('$') for _, field, _ in current}, set(TOKENS))
+        self.assertEqual(len(current), FROZEN_FACETS)
+        self.assertLessEqual({language(field.pattern) for _, field, _ in current}, set(TOKENS))
 
     def test_named_positive_tokens(self):
         for tag, field, value in cases():
@@ -137,18 +191,40 @@ class TokenFacetTests(unittest.TestCase):
                 with self.subTest(facet=tag, bad=bad):
                     self.assertTrue(any('does not match' in error for error in judge(field, bad)))
 
-    def test_real_complete_documents_stay_valid(self):
+    def test_complete_documents_stay_valid(self):
         for name, schema, _ in REAL_DOCUMENTS:
             with self.subTest(document=name):
-                constructs, operators = K.load_schema(ROOT / f'schema/{schema}.sexp')
-                self.assertEqual(K.validate_text((ROOT / name).read_text(), constructs, operators, name), [])
+                constructs, operators = K.load_schema(FROZEN / f'schema-{schema}.sexp')
+                path = FROZEN / f'document-{Path(name).name}'
+                self.assertEqual(K.validate_text(path.read_text(), constructs, operators, path.name), [])
 
-    def test_real_complete_document_newlines_refuse(self):
+    def test_complete_document_newlines_refuse(self):
         for name, schema, field in REAL_DOCUMENTS:
             with self.subTest(document=name):
-                constructs, operators = K.load_schema(ROOT / f'schema/{schema}.sexp')
-                errors = K.validate_text(changed_document(name, field), constructs, operators, name)
+                constructs, operators = K.load_schema(FROZEN / f'schema-{schema}.sexp')
+                path = FROZEN / f'document-{Path(name).name}'
+                errors = K.validate_text(changed_document(path, field), constructs, operators, path.name)
                 self.assertTrue(any('does not match' in error for error in errors))
+
+    def test_the_real_run_step_names_what_it_finds(self):
+        base = ROOT / 'target/record-catalog-probe'
+        base.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=base) as scratch:
+            root = Path(scratch)
+            (root / 'schema').mkdir()
+            (root / 'schema/a.sexp').write_text('(schema (id "a"))\n(construct (name a)\n'
+                                                '  (field (name kept) (type string) (pattern "^[0-9]+\\\\Z"))\n'
+                                                '  (field (name loose) (type string) (pattern "^[0-9]+$"))\n'
+                                                '  (field (name open) (type string) (pattern "needle"))\n'
+                                                '  (field (name unknown) (type string) (pattern "^unreviewed\\\\Z")))\n')
+            (root / 'schema/b.sexp').write_text('(schema (id "b"))\n(construct')
+            found = live_findings(root, documents=(('absent.sexp', 'a', 'kept'),), stated=(3, 5))
+        for want in ('schema/a.sexp/a/loose: admits', 'schema/a.sexp/a/open: no reviewed token boundary',
+                     'schema/a.sexp/a/unknown: no reviewed token example', 'schema/b.sexp: cannot load',
+                     'schema/: 2 schema file(s), the inventory states 3',
+                     'schema/: 4 anchored facet(s), the inventory states 5',
+                     'TOKENS: a reviewed example no facet uses', 'absent.sexp: cannot judge'):
+            self.assertTrue(any(line.startswith(want) for line in found), (want, found))
 
     def test_generic_unanchored_pattern_remains_a_search(self):
         form = S.parse('(field (name value) (type string) (pattern "needle"))')[0]
@@ -164,7 +240,17 @@ def main():
     global K
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('--mutation', choices=MODES)
+    cli.add_argument('--live', action='store_true', help="judge the real schemas and documents, RECORD-SCHEMA's real-run step")
     args = cli.parse_args()
+    if args.live:
+        if args.mutation:
+            cli.error('--live judges the real tree; the mutations belong to the controls')
+        found = live_findings(ROOT)
+        for finding in found:
+            print(finding)
+        if not found:
+            print(f'TOKEN-FACETS: ok ({LIVE_FACETS} anchored facet(s) in {LIVE_SCHEMAS} schema(s) and {len(REAL_DOCUMENTS)} complete document(s) hold their boundaries)')
+        return int(bool(found))
     if args.mutation == 'loose-end':
         original = K.load_schema
 

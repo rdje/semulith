@@ -293,13 +293,17 @@ facets now use strict end anchors. For example a 64-hex SHA256 followed by a new
 `"AGREE\n"`, `"baseline\n"` or `"x31\n"` refuses schema validation, rather than
 becoming a subtly different identity/verdict. Generic `pattern "needle"` still
 accepts `"hayneedlehay"`; the schema kernel deliberately implements substring
-search, so exactness belongs to the declared token pattern. The repair changes
-83 declarations in 13 schemas; all 91 patterned fields have positive and boundary
-controls, including five complete canonical-document regressions. Run:
+search, so exactness belongs to the declared token pattern. The repair changed
+83 declarations in 13 schemas. Every patterned field has positive and boundary
+controls, including five complete canonical-document regressions. The controls and
+their mutations judge a frozen copy, one facet per token language. `--live` judges the
+real schemas and documents, and RECORD-SCHEMA runs it before the records, so a damaged
+real schema fails by its own name. Run:
 
 ```bash
 python3 scripts/probe_schema_token_facets.py
 python3 -O scripts/probe_schema_token_facets.py
+python3 scripts/probe_schema_token_facets.py --live
 bash scripts/check_requirements.sh --self-test
 ```
 

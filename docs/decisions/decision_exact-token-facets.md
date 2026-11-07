@@ -25,5 +25,7 @@ contract needs a reviewed example rather than being silently skipped.
 newline/other boundary refusals and five real complete documents through the
 public kernel. Normal/optimized controls and loose-end, ignored-pattern and
 fullmatch mutations discriminate. RECORD-SCHEMA runs them before judging records.
+**Since `XTASK.13` slice i (2026-11-07).** The controls and their mutations judge a frozen copy, `scripts/fixtures/record-schema/`, with one facet per token language. Every real facet and the five real documents are still judged before the records, by the real run's step `--live`, each finding by its own name. A new token language still needs its reviewed example in `TOKENS`.
+
 These are grammar controls, not artifact authentication, execution or qualification.
 Canonical bytes, mappings, fixed seals/caps and CPU status remain unchanged.

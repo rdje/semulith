@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0087 (leaf XTASK.13 slice i) — RECORD-SCHEMA judges a frozen copy, and a damaged real schema is named
+
+The controls read the real grammars, so damage read as a check that cannot discriminate. They now read a frozen copy, and a real step before the judge names each real facet and document that fails. Measuring also found a JSON schema that is not JSON crashed the judge into an empty report: it now refuses, naming the file.
+
 ## SEMULITH-P4-0387 (P4-SYSTEM.14 a51-9) — the four with no switch captured exactly once each, and the walks compared
 
 Each once, each control where declared, the walk record retained: all 42 compared files byte-identical to the rehearsal, no finding.

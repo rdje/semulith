@@ -35,7 +35,8 @@ def run(mutation: str | None) -> int:
     base = ROOT / "target/record-catalog-probe"
     base.mkdir(parents=True, exist_ok=True)
     failures, ran = [], 0
-    constructs, operators = K.load_schema(ROOT / "schema/contract-obligations.sexp")
+    # Frozen (XTASK.13 slice i): a damaged real schema is RECORD-SCHEMA's finding, by its own name, not a missed control.
+    constructs, operators = K.load_schema(ROOT / "scripts/fixtures/record-schema/schema-contract-obligations.sexp")
     with tempfile.TemporaryDirectory(dir=base) as scratch:
         parent = Path(scratch)
 
