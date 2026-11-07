@@ -51,3 +51,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** director 2026-10-28: 'right now I need the GitHub CI to go green' - push the fix for the hosted UNIT-BOOKS refusal (a probe counted Python 3.12's pathlib calls; run 40763391753)
 - **Range:** origin/main..48473252390a6852359dae96e89170d4a5ff957a — 2 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 48473252390a6852359dae96e89170d4a5ff957a before this record was written
+
+## SEMULITH-PUSH-0006 — 2026-11-07T22:26:43+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-11-07: 'You can do the push if you deem it necessary, but that shall stay exceptional.' - hosted matrix for the CPU-SYSTEM release decision: 106 commits, last hosted run covered 171 of 210 guests
+- **Range:** origin/main..21097de83d6bc3882fed422acd3b3775017a49ba — 106 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 21097de83d6bc3882fed422acd3b3775017a49ba before this record was written
