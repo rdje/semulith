@@ -110,6 +110,17 @@ def _declared_cases(root: Path, profile: str) -> dict[str, list[tuple[str, list[
     return found
 
 
+def _declared_selections(root: Path, profile_dir: Path) -> dict[str, list[tuple[str, list[str], str]]]:
+    """A selection's facts stand as a case's properties do, and its limitations as a case's limitation (decision_a-credit-with-no-case.md)."""
+    found: dict[str, list[tuple[str, list[str], str]]] = {}
+    for path in sorted((Path(profile_dir) / "selections").glob("*.selection.sexp")):
+        forms = [f for f in S.parse(path.read_text("utf-8"), str(path)) if isinstance(f, list) and f and str(f[0]) == "selection"]
+        _require(len(forms) == 1, f"{path}: exactly one selection form expected")
+        facts = sorted(str(_strings(f, "id")[0]) for f in S.children(forms[0], "fact"))
+        found.setdefault(_strings(forms[0], "requirement_id")[0], []).append((_strings(forms[0], "id")[0], facts, "; ".join(_strings(forms[0], "limitation"))))
+    return found
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--profile", required=True)
@@ -126,6 +137,8 @@ def main(argv=None) -> int:
         if isinstance(form, list) and form and str(form[0]) == "requirement":
             statements[_strings(form, "id")[0]] = _strings(form, "statement")[0]
     cases = _declared_cases(ROOT, args.profile)
+    for requirement, rows in _declared_selections(ROOT, profile_dir).items():
+        cases.setdefault(requirement, []).extend(rows)
     if args.requirement:
         clauses = trace.get(args.requirement)
         if clauses is None:
@@ -149,7 +162,7 @@ def main(argv=None) -> int:
         case, holds, measured = next((row for row in results if row[1]), results[-1])
         failed += not holds
         print(f"{requirement} ({case}): {measured}")
-    print(f"STATEMENT-TRACE: {args.profile}: {len(cases) - failed} of {len(cases)} requirements with a declared case trace; annotation, not proof of semantics")
+    print(f"STATEMENT-TRACE: {args.profile}: {len(cases) - failed} of {len(cases)} requirements with a declared trace; annotation, not proof of semantics")
     return 1 if failed else 0
 
 

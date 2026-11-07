@@ -127,3 +127,5 @@ All four read 11 of 11 legs on a clone before declaring.
 **Captured (a51-9, 2026-11-07).** Each of the four once, the walk record retained: all 42 compared files match the rehearsal, no finding.
 
 **Credited (a51-10, 2026-11-07).** [`decision_the-four-with-no-switch-credited-implemented.md`](decision_the-four-with-no-switch-credited-implemented.md): 42 `implemented`, 2 `not-applicable`, 4 `planned`. Track 4 is what remains.
+
+**Track 4's tool (a51-11, 2026-11-07).** [`decision_a-credit-with-no-case.md`](decision_a-credit-with-no-case.md): a credit may name a selection's record in place of a case. Measuring found the controls this record promised already exist, in `scripts/check_gc_contract_scope.py`, and that they leave three things the statements say unread.

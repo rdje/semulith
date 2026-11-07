@@ -83,6 +83,7 @@
 
 ## Decision records
 
+- [`decision_a-credit-with-no-case.md`](docs/decisions/decision_a-credit-with-no-case.md)
 - [`decision_alternate-port-and-features.md`](docs/decisions/decision_alternate-port-and-features.md)
 - [`decision_append-history-predecessors.md`](docs/decisions/decision_append-history-predecessors.md)
 - [`decision_batch-i-credited-implemented.md`](docs/decisions/decision_batch-i-credited-implemented.md)

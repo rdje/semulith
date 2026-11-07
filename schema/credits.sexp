@@ -5,6 +5,8 @@
 ;; record. A credit is a RECORD here, never a flag in a retained receipt (a42ay, 2026-10-2x): the
 ;; derivation (scripts/requirement_status.py) credits a case only through a record whose pins
 ;; authenticate against the retained bytes and whose policy measurement is satisfied at read time.
+;; A credit names a case or a selection, never both. A selection has no case and so no receipt: its record is what
+;; `measured` pins, and scripts/selections.py reads it (decision_a-credit-with-no-case.md; P4-SYSTEM.14 a51-11).
 
 (schema (id "credits"))
 
@@ -15,9 +17,10 @@
   (field (name requirement_id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
   (field (name obligation_ids) (type string) (repeat yes) (min 1) (unique yes)
          (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
-  (field (name case_id) (type string) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
+  (field (name case_id) (type string) (optional yes) (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))
+  (field (name selection) (type string) (optional yes) (pattern "^SEL-[A-Z0-9-]+\\Z"))
   (field (name measured) (type form) (head pin))
-  (field (name receipt) (type form) (head pin))
+  (field (name receipt) (type form) (head pin) (optional yes))
   (field (name policy) (type form) (head pin))
   (field (name retained_sources) (type string) (repeat yes) (min 1) (unique yes)
          (pattern "^[A-Za-z][A-Za-z0-9._:/-]*\\Z"))

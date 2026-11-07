@@ -1773,7 +1773,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let _ = fs::remove_file(p.join("credits.sexp"));
     // ---- rule 15 DISPOSITIONS: each answers a source-specific requirement, and each such requirement has one -------------
     let requirements = fs::read_to_string(p.join("requirements.sexp")).unwrap_or_default();
-    let disposition = "(disposition (id \"DS-A\") (requirement_id \"REQ-D-A\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))";
+    let disposition = "(disposition (id \"DS-A\") (requirement_id \"REQ-D-A\") (kind case) (control_property \"p\") (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))";
     let _ = fs::write(p.join("dispositions.sexp"), format!("{disposition}\n"));
     tally.arm(
         "RED   a disposition answering a requirement whose category takes none",
@@ -1781,7 +1781,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         1,
         "whose category takes no disposition",
     );
-    let _ = fs::write(p.join("dispositions.sexp"), "(disposition (id \"DS-B\") (requirement_id \"REQ-NOWHERE\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))\n");
+    let _ = fs::write(p.join("dispositions.sexp"), "(disposition (id \"DS-B\") (requirement_id \"REQ-NOWHERE\") (kind case) (control_property \"p\") (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))\n");
     tally.arm(
         "RED   a disposition answering no requirement",
         fx.judge(),

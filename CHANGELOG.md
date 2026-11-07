@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0389 (P4-SYSTEM.14 a51-11) — track 4's tool: a credit may name a selection's record
+
+Four requirements have nothing to run. A credit may now name a selection's record in place of a case: facts declared before anything runs, one measurement retained, and each read reading the facts again. Nothing is credited yet.
+
 ## SEMULITH-AC-0095 (leaf ARTIFACT-CLEANUP.39) — the twelfth recurring cleanup
 
 At 24 h, on a clean tree: the orphan act removed 1 directory (62,595,188 B), then 169 candidates planned and 6 captured Cargo incremental outputs (15,766,339 B) removed, residue 0.

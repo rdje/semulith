@@ -631,7 +631,7 @@ class PolicyTests(unittest.TestCase):
                        versions=(f"sha256:{BINARY}", "author-v"))
         shutil.copy(ROOT / "schema" / "dispositions.sexp", self.root / "schema" / "dispositions.sexp")
         if disposition:
-            extra = f' (control_property "{control}")' if kind == "case" else ""
+            extra = f' (control_property "{control}")' if kind == "case" else ' (expect (fact "f") (value "v"))'
             extra += " (walk_record yes)" if walks else ""
             (self.root / "profiles" / "fx-v0" / "dispositions.sexp").write_text(
                 f'(disposition (id "DS-X") (requirement_id "REQ-X") (kind {kind}) (source_id "SRC") (source_locator "§1") '

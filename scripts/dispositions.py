@@ -56,13 +56,16 @@ def load(root: Path, profile_dir: Path) -> dict[str, dict]:
         row = dict(id=_one(form, "id"), requirement_id=_one(form, "requirement_id"), kind=_one(form, "kind"),
                    source_id=_one(form, "source_id"), source_locator=_one(form, "source_locator"), argument=_one(form, "argument"),
                    controls=[str(c[1]) for c in S.children(form, "controls")], control_property=_one(form, "control_property"),
-                   walk_record=_one(form, "walk_record") == "yes")
+                   walk_record=_one(form, "walk_record") == "yes",
+                   expect={_one(e, "fact"): _one(e, "value") for e in S.children(form, "expect")})
         if row["id"] in ids:
             raise DispositionRefused(f"{path}: duplicate disposition id {row['id']}")
         if row["requirement_id"] in records:
             raise DispositionRefused(f"{path}: two dispositions answer {row['requirement_id']}")
         if row["kind"] == "case" and row["control_property"] is None:
             raise DispositionRefused(f"{path}: {row['id']} closes through a case and names no control_property")
+        if (row["kind"] == "record") != bool(row["expect"]):
+            raise DispositionRefused(f"{path}: {row['id']}: a kind record disposition declares each fact it expects, and only that kind does")
         ids.add(row["id"])
         records[row["requirement_id"]] = row
     return records

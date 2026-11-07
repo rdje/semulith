@@ -28,7 +28,7 @@ a43e-1 … a43e-5, 2026-11-05):** four captures read `invalidated`, 8 of 10 legs
 
 ```text
 $ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 | tail -1
-STATEMENT-TRACE: rv64gc-lab-v0: 42 of 42 requirements with a declared case trace; annotation, not proof of semantics
+STATEMENT-TRACE: rv64gc-lab-v0: 42 of 42 requirements with a declared trace; annotation, not proof of semantics
 $ python3 -B scripts/statement_trace.py --profile rv64gc-lab-v0 --requirement REQ-D-LOAD-X0
 A load with rd = x0 must still raise any exceptions
     witness: lb-x0-faults

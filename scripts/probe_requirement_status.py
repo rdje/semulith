@@ -24,11 +24,11 @@ SEAMS = {
     "qualification-word": ('        if case.get("qualification_word") is True:\n', '        if False:\n'),
     "ignore-drift": ('    drift = [row for row in rows if row["recorded"] != row["derived"]]\n',
                      '    drift = []\n'),
-    "skip-supersession": ('                if ob not in effective:\n', '                if False:\n'),
+    "skip-supersession": ('            for ob in obligation_ids:\n                if ob not in effective:\n', '            for ob in obligation_ids:\n                if False:\n'),
     "unresolved-closes": ('        elif r["research_status"] == "resolved" and r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n',
                           '        elif r["obligation_ids"] and set(r["obligation_ids"]) <= credited_set:\n'),
     "argument-optional": ('        if excluded and argued:\n', '        if excluded:\n'),
-    "unknown-case-credit": ('        if credit["case_id"] not in case_ids:\n', '        if False:\n'),
+    "unknown-case-credit": ('        if credit["case_id"] is not None and credit["case_id"] not in case_ids:\n', '        if False:\n'),
     "declared-any-profile": ('profile=_declared_profile(case), evaluation="declared"', 'profile=None, evaluation="declared"'),
 }
 MUTATION_TESTS = {
@@ -48,7 +48,8 @@ def load_module(workdir: Path):
     src = (HERE / "requirement_status.py").read_text()
     if MUTATION:
         old, new = SEAMS[MUTATION]
-        assert src.count(old) == 1, MUTATION
+        if src.count(old) != 1:  # An assert would pass silently under -O, and the arm would read a mutation that never applied.
+            raise SystemExit(f"REQUIREMENT-STATUS-PROBE: mutation {MUTATION} no longer applies")
         src = src.replace(old, new, 1)
     target = workdir / "scripts"; target.mkdir(exist_ok=True)
     for name in ("records_sexp.py", "sexp.py", "record_catalog.py", "check_sexp_schema.py", "credit_records.py"):

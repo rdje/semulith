@@ -209,3 +209,14 @@ The policy's text is unchanged, so no credit lapsed for this. Read `decision_the
 $ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1
 REQUIREMENT-STATUS: ok (rv64gc-lab-v0: 48 requirements derived 16 planned, 30 implemented, 2 not-applicable; 32 case(s), 30 credited, 0 declared, 30 of 30 credit record(s) current; 0 drift, 0 finding(s))
 ```
+
+## A credit with no case
+
+Four requirements state what was selected and have no behaviour of their own: their behaviour is each extension's credit. Each closes on a selection's record instead of a case (`decision_a-credit-with-no-case.md`). A `kind record` disposition declares each fact and its expected value before anything runs. Then one measurement retains what it read, in `profiles/rv64gc-lab-v0/selections/`, and each read of the status reads those facts again.
+
+```sh
+python3 -B scripts/selections.py --profile rv64gc-lab-v0 --requirement REQ-D-ABI
+python3 scripts/probe_selections.py
+```
+
+A read starts no process. A fact that moves lapses the credit by name, for example `fact backend-artifact: the tree reads …, the record …`. A file's bytes moving without changing the fact does not.

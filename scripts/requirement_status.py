@@ -179,12 +179,21 @@ def derive_profile(root: Path, profile_dir: Path, cases: list[dict]) -> dict:
         raise Refused(f"{profile}: {error}") from error
     case_ids = {c["id"] for c in cases}
     for credit in credits:
-        if credit["case_id"] not in case_ids:
+        if credit["case_id"] is not None and credit["case_id"] not in case_ids:
             findings.append(f"credit {credit['id']} names unknown case {credit['case_id']}")
         elif credit["disposition"] != "current":
             findings.append(f"credit {credit['id']} lapsed: {credit['reasons'][0]}")
         if credit["requirement_id"] not in by_id:
             findings.append(f"credit {credit['id']} names unknown requirement {credit['requirement_id']}")
+        elif credit.get("selection") is not None and credit["disposition"] == "current":
+            # A credit with no case credits its obligations itself, under the rules a case's binding meets below.
+            for ob in credit["obligation_ids"]:
+                if ob not in effective:
+                    findings.append(f"credit {credit['id']} names obligation {ob} outside the effective contract (superseded or unknown)")
+                elif ob not in by_id[credit["requirement_id"]]["obligation_ids"]:
+                    findings.append(f"credit {credit['id']} binds {ob} to {credit['requirement_id']}, which does not name it")
+                else:
+                    credited_obligations.setdefault(credit["requirement_id"], set()).add(ob)
     credited_cases: set[str] = set()
     def belongs(case):
         # A receipt or a case declaration names its profile. A requirement's id alone cannot decide it: rv64i and rv64gc share

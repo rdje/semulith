@@ -8520,6 +8520,44 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED walk trace {mutation} {mode}"), prober.probe(repo, mutated), 1, &format!("WALK-TRACE: 15 tests / {failures} failures / {errors} errors; synthetic traces and stand-in binaries, no capture credit"));
         }
     }
+    // P4-SYSTEM.14 a51-11: a selection's record and a credit with no case, on a frozen fixture tree.
+    let total = 31;
+    for (mode, optimized) in [("normal", false), ("optimized", true)] {
+        let mut argv: Vec<String> = vec!["-B".to_owned(), "scripts/probe_selections.py".to_owned()];
+        if optimized {
+            argv.insert(1, "-O".to_owned());
+        }
+        tally.score(
+            &format!("GREEN selection record {mode}"),
+            prober.probe(repo, argv.clone()),
+            0,
+            &format!("SELECTIONS-PROBE: {total} tests / 0 failures / 0 errors;"),
+        );
+        for (mutation, failures, errors) in [
+            ("live-fact", "3", "0"),
+            ("expected", "1", "0"),
+            ("declared-set", "1", "0"),
+            ("kind", "1", "0"),
+            ("required-check", "1", "0"),
+            ("run-rc", "1", "0"),
+            ("repeat", "0", "1"),
+            ("trace", "0", "1"),
+            ("reuse", "1", "0"),
+            ("undeclared-run", "0", "1"),
+            ("unremembered-read", "20", "0"),
+        ] {
+            let mut mutated = argv.clone();
+            mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
+            tally.score(
+                &format!("RED selection record {mutation} {mode}"),
+                prober.probe(repo, mutated),
+                1,
+                &format!(
+                    "SELECTIONS-PROBE: {total} tests / {failures} failures / {errors} errors;"
+                ),
+            );
+        }
+    }
     // P4-SYSTEM.14 a43b-3c: one case's reference-configuration overlay (scripts/prepare_div_inputs.py).
     for (mode, optimized) in [("normal", false), ("optimized", true)] {
         let mut argv: Vec<String> = vec![

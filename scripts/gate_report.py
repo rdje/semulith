@@ -831,7 +831,7 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     # decision_dossier-copies-retire-at-the-next-window.md). A credit is current only while its pins still describe the
     # tree, so a lapse or a moved record is no evidence here. A dossier's own records stay evidence for a unit that keeps them.
     try:
-        credited = {c["case_id"] for c in CR.current_credits(ROOT, d) if c["disposition"] == "current"}
+        credited = {c["case_id"] for c in CR.current_credits(ROOT, d) if c["disposition"] == "current" and c["case_id"] is not None}
     except CR.CreditRefused as error:
         raise SystemExit(f"gate_report: {rel('credits.sexp')}: {error}")
     experiments = {e["id"] for e in refs.get("experiment", [])} | credited

@@ -31,6 +31,7 @@ MAX_CREDITS = 64
 DOCUMENT_BYTES = 65536
 PIN_BYTES = 16 * 1024 * 1024
 PINS = ("measured", "receipt", "policy")
+SELECTION_PINS = ("measured", "policy")  # A selection has no case, so no receipt (decision_a-credit-with-no-case.md).
 
 
 class CreditRefused(Exception):
@@ -60,9 +61,13 @@ def _pin(form, name) -> dict:
 
 
 def credit_to_dict(form) -> dict:
-    return dict(id=str(_one(form, "id")), profile_ids=_strings(form, "profile_ids"),
+    ident, case_id, selection = str(_one(form, "id")), _one(form, "case_id"), _one(form, "selection")
+    _require((case_id is None) != (selection is None), f"credit {ident} names exactly one of a case_id and a selection")
+    _require(bool(S.children(form, "receipt")) == (case_id is not None), f"credit {ident}: a receipt belongs to a case, and a case has one")
+    return dict(id=ident, profile_ids=_strings(form, "profile_ids"),
                 requirement_id=str(_one(form, "requirement_id")), obligation_ids=_strings(form, "obligation_ids"),
-                case_id=str(_one(form, "case_id")), **{name: _pin(form, name) for name in PINS},
+                case_id=None if case_id is None else str(case_id), selection=None if selection is None else str(selection),
+                **{name: _pin(form, name) for name in (PINS if case_id is not None else SELECTION_PINS)},
                 retained_sources=_strings(form, "retained_sources"), authority=str(_one(form, "authority")),
                 date=str(_one(form, "date")), decision=str(_one(form, "decision")), legs=int(_one(form, "legs")),
                 limitations=_strings(form, "limitations"))
@@ -102,7 +107,8 @@ def authenticate(root: Path, credit: dict) -> dict:
     capture whose declaration binds the credited requirement; otherwise `lapsed`, every reason named."""
     root = Path(root)
     reasons: list[str] = []
-    for name in PINS:
+    selection = credit.get("selection")
+    for name in (PINS if selection is None else SELECTION_PINS):
         pin = credit[name]
         target = root / pin["path"]
         if not target.is_file():
@@ -110,6 +116,8 @@ def authenticate(root: Path, credit: dict) -> dict:
         digest, size = _digest_file(target)
         if (digest, size) != (pin["sha256"], pin["byte_size"]):
             reasons.append(f"{name} pin {pin['path']}: SHA256 or size differs")
+    if selection is not None:
+        return _authenticate_selection(root, credit, reasons)
     case_dir = root / "evidence" / credit["case_id"]
     receipt_path, planned_path, manifest_path = (case_dir / "verification.json", case_dir / "planned-experiment.sexp",
                                                  case_dir / "dependencies.sexp")
@@ -169,6 +177,19 @@ def authenticate(root: Path, credit: dict) -> dict:
     return dict(id=credit["id"], case_id=credit["case_id"], requirement_id=credit["requirement_id"],
                 obligation_ids=list(credit["obligation_ids"]), disposition="lapsed" if reasons else "current",
                 reasons=reasons)
+
+
+def _authenticate_selection(root: Path, credit: dict, reasons: list[str]) -> dict:
+    """A credit with no case: its pins, and everything `scripts/selections.py` holds its record to on this read."""
+    import selections as SEL  # Here, not above: a case's credit never needs it.
+
+    profile_dir = root / "profiles" / credit["profile_ids"][0]
+    path = SEL.record_path(profile_dir, credit["selection"])
+    if credit["measured"]["path"] != path.relative_to(root).as_posix():
+        reasons.append("measured pin does not name the selection's record")
+    reasons.extend(SEL.review(root, profile_dir, credit["selection"], credit["requirement_id"], credit["obligation_ids"]))
+    return dict(id=credit["id"], case_id=None, selection=credit["selection"], requirement_id=credit["requirement_id"],
+                obligation_ids=list(credit["obligation_ids"]), disposition="lapsed" if reasons else "current", reasons=reasons)
 
 
 def current_credits(root: Path, profile_dir: Path) -> list[dict]:
