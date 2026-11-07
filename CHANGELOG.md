@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0395 (leaf P4-SYSTEM.18) — what the director said, and D79 needs no `sudo`
+
+The director's words of 2026-11-07 are on the record: technical questions are the engineer's to settle, and the one push is allowed as an exception. D79's capture of 2026-10-17 is intact, so it needs no `sudo`.
+
 ## SEMULITH-P4-0394 (leaf P4-SYSTEM.18) — the release decision comes before the next pinned window
 
 No item on the window's list changes a claim any credit makes, so each goes into the capability limits by name and the window follows as its own version. The director may reverse the order. What remains is a hosted run, which needs a push the director approves, and then the named decision.

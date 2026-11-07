@@ -3,7 +3,7 @@
 - **Type:** `decision`
 - **Date:** `2026-11-07`
 - **Status:** `active`
-- **Owner / source:** `P4-SYSTEM.18`, `SEMULITH-P4-0394`; the engineer's call under [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md), **and the director may overrule it**.
+- **Owner / source:** `P4-SYSTEM.18`, `SEMULITH-P4-0394`; the engineer's call under [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md), whose note of 2026-11-07 leaves it there.
 answers: Should the next pinned window run before or after `rv64gc-lab-v0`'s release decision, and what does that decision still need?
 
 ## The question
@@ -30,11 +30,11 @@ The window costs 42 case credits lapsing and re-issued. Narrowing the table move
 2. Each item goes into the decision's capability limits by name, so nothing is hidden.
 3. `P5-BOARD` and `AG-OS` wait on this gate, and the window's cost does not grow while they run: a board adds no credits to this profile.
 
-If the director prefers the list closed first, the cost is about a day of gated units and nothing else, and the order reverses.
+Closing the list first would have cost about a day of gated units.
 
 ## What the release decision still needs
 
-1. **A hosted matrix run on this tree.** [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home. Its last run covered 171 guests, and the tree holds 210. **This needs a push, and a push below the 300-commit cadence is the director's to approve.** The act is `scripts/approved_push.sh '<the director's reason>'`.
+1. **A hosted matrix run on this tree.** [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home. Its last run covered 171 guests, and the tree holds 210. **This needs a push below the 300-commit cadence.** The director allowed it on 2026-11-07, as an exception. The act is `scripts/approved_push.sh`, and `docs/push-approvals.md` records it.
 2. **The named decision** (`P4-SYSTEM.18` slice c), recorded in `gate.sexp` as `G-RELEASE`'s evidence, with the versioned artifact digest-pinned. `accepted` only on `passed`, and it never exceeds the report.
 
 ## The capability limits it will name

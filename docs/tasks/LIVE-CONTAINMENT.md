@@ -237,7 +237,8 @@ PCAP SHA25657caa0279593d78a39727321bfcb1e523222e6ecf5d1363b03e05ff53152c844.
 Only the pending Git parent was briefly SIGSTOP-held to preserve capture's
 source/index/HEAD guard, then SIGCONT-resumed after the capture exited; AC0065
 normal COMMIT and final host census passed. No rerun is needed. Packet access is
-unblocked; LC0045/48 retain D79 analysis, LC0046 D80, .4i full adoption. Captured
+unblocked; LC0045/48 retain D79 analysis, LC0046 D80, .4i full adoption. Re-verified 2026-11-07:
+the PCAP still reads that SHA256, and the analysis needs no administrator access. Captured
 packets/passing replays alone do not establish D79 cause or CPU acceptance.
 
 ## Approved task-history migration — .4c / SEMULITH-LC-0006

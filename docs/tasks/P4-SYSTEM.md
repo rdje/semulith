@@ -433,13 +433,13 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the report regenerated over the complete profile; the named release decision.
   Acceptance: the decision never exceeds the report — `accepted` only on `passed`; otherwise it
   names what stands open.
-  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b is the hosted matrix on this tree, which needs a push the director approves. c is the release decision, with its capability limits and versioned artifact.
+  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b is the hosted matrix on this tree, through the exceptional push the director allowed on 2026-11-07. c is the release decision, with its capability limits and versioned artifact.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.18` | `active` | the verdict and the release decision. Slice a holds recorded evidence to what it covers and re-measured portability over today's 210 guests, so the report reads 1 of 10 axes open. Next the hosted matrix on this tree, which needs a push the director approves, then the named decision |
+| 1 | `P4-SYSTEM.18` | `active` | the verdict and the release decision. Slice a holds recorded evidence to what it covers and re-measured portability over today's 210 guests, so the report reads 1 of 10 axes open. Next the hosted matrix on this tree, through the exceptional push the director allowed on 2026-11-07, then the named decision |
 
 ## Decisions
 
@@ -536,6 +536,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .18 the note / SEMULITH-P4-0395: what the director said, and D79 needs no `sudo` (completed)
+
+Feature 3 of 5 after XTASK-0088. `decision_findings-are-the-engineers-to-call.md` records the director's words of 2026-11-07, and why the one push is judged necessary. **A correction.** I had told the director D79 needed a `sudo`. The capture of 2026-10-17 is intact and still reads its recorded SHA256, so what is left is analysis, which needs no privilege. Book: `evidence.md`.
 
 ### .18 the order / SEMULITH-P4-0394: the release decision comes before the next pinned window (completed)
 

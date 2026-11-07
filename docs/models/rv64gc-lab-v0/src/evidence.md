@@ -13,10 +13,10 @@ Requirements, frozen records and acceptance have their own authorities.
 
 All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and two things remain (`decision_release-before-the-next-window.md`):
 
-1. A hosted matrix run on this tree, since the last one covered 171 guests of today's 210. That needs a push, which is the director's to approve.
+1. A hosted matrix run on this tree, since the last one covered 171 guests of today's 210. That needs a push, which the director allowed on 2026-11-07 as an exception.
 2. The named release decision, with its capability limits and versioned artifact.
 
-The next pinned window follows the release as its own version, because nothing on its list changes a claim any credit makes. The director may reverse that order.
+The next pinned window follows the release as its own version, because nothing on its list changes a claim any credit makes.
 
 ## What a recorded row covers
 

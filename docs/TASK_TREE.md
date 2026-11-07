@@ -49,7 +49,7 @@ on the same commit. One commit per completed leaf.
 <!-- ANCHOR: trees -->
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.18` — the verdict and the release decision: recorded evidence is held to what it covers and portability is re-measured over 210 guests (slice a); next the hosted matrix on this tree, which needs a push the director approves, then the named decision. All 48 requirements are settled: 46 `implemented`, 2 `not-applicable` (a51-14). 17/18 leaves done; CPU-SYSTEM `incomplete`, 1 of 10 axes open, `G-RELEASE` | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.18` — the verdict and the release decision: recorded evidence is held to what it covers and portability is re-measured over 210 guests (slice a); next the hosted matrix on this tree, through the exceptional push the director allowed on 2026-11-07, then the named decision. All 48 requirements are settled: 46 `implemented`, 2 `not-applicable` (a51-14). 17/18 leaves done; CPU-SYSTEM `incomplete`, 1 of 10 axes open, `G-RELEASE` | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.5` — firmware probes, gated on the CPU's acceptance trajectory (10/12 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

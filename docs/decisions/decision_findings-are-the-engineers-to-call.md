@@ -23,3 +23,13 @@ A surfaced finding left waiting on the director costs a day and adds nothing the
 - Measure before calling, and weigh what the choice costs on its next ten uses.
 - A call changing a retained case still goes through a clone first, and every retained capture stays reachable.
 - Report the call and its reason at the end of the reply; do not ask for it to be confirmed.
+
+## What the director said on 2026-11-07
+
+"Please handle all you open questions or concerned yourself but they better be sota, signoff and production-grade, why? because your questions are way too technical."
+
+And, on the one push then being asked about: "You can do the push if you deem it necessary, but that shall stay exceptional."
+
+1. **Technical open questions and concerns are the engineer's to settle**, to the same standard, and reported in plain words.
+2. **That push is judged necessary:** 105 commits had not been through hosted CI, and the last hosted run covered 171 of today's 210 guests, while [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes that matrix the x86-64 leg's permanent home.
+3. **Item 5 above stands.** Pushes stay exceptional: the 300-commit cadence and `scripts/approved_push.sh` are unchanged, and this speaks to that one push. A later one below the cadence goes to the director first, in one plain sentence.
