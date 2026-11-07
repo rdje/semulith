@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-RV32I statements — v20260120</title>
+<body>
+<h1>RVI-RV32I §1.1.6 and §1.1.7: byte order, and what a fence is</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Instruction Set Manual, §1.1 RV32I Base Integer Instruction Set</a>.<br>
+Original page SHA256: <code>3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance: REQ-D-ENDIAN and REQ-D-FENCE are their own cases.</p>
+<h2>§1.1.6: <code>norm:ENDIANNESS_LITTLE_OR_BIG</code></h2>
+<blockquote><p><span id="norm:ENDIANNESS_LITTLE_OR_BIG">The EEI will define whether the memory system is little-endian or big-endian.</span></p></blockquote>
+<h2>§1.1.6: <code>norm:ldst_endian_byte_invariant</code></h2>
+<blockquote><p><span id="norm:ldst_endian_byte_invariant">In RISC-V, endianness is byte-address invariant.</span></p></blockquote>
+<h2>§1.1.6: <code>norm:ldst_endian_byte_op</code></h2>
+<blockquote><p>In a system for which endianness is byte-address invariant, the
+following property holds: if a byte is stored to memory at some address
+in some endianness, then a byte-sized load from that address in any
+endianness returns the stored value.</p></blockquote>
+<h2>§1.1.7: <code>norm:fence_op</code></h2>
+<blockquote><p><span id="norm:fence_op">A <code>FENCE</code>
+(with <em>fm</em>=<code>0000</code>) orders all memory operations in its predecessor set
+before all memory operations in its successor set.</span></p></blockquote>
+<h2>§1.1.7: <code>norm:fence-tso_op</code></h2>
+<blockquote><p><span id="norm:fence-tso_op"><code>FENCE.TSO</code> orders
+all load operations in its predecessor set before all memory operations
+in its successor set, and all store operations in its predecessor set
+before all store operations in its successor set. This leaves <code>non-AMO</code>
+store operations in the <code>FENCE.TSO&#8217;s</code> predecessor set unordered with
+<code>non-AMO</code> loads in its successor set.</span></p></blockquote>
+<h2>§1.1.7: <code>norm:fence-tso_ordering_rw_rw_ok</code></h2>
+<blockquote><p>Because <code>FENCE RW,RW</code> imposes a superset of the orderings that <code>FENCE.TSO</code>
+imposes, it is correct to ignore the <em>fm</em> field and implement <code>FENCE.TSO</code> as <code>FENCE RW,RW</code>.</p></blockquote>
+<h2>§1.1.7: <code>norm:fence_unused_flds_rsv</code></h2>
+<blockquote><p><span id="norm:fence_unused_flds_rsv">The unused fields in the FENCE
+instructions--<em>rs1</em> and <em>rd</em>--are reserved
+for finer-grain fences in future extensions. For forward compatibility,
+base implementations shall ignore these fields</span></p></blockquote>
+</body></html>

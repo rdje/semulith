@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Declared source-specific dispositions: the catalogue `profiles/<profile>/dispositions.sexp`, read and held to the catalogue.
+"""Declared alternative dispositions: the catalogue `profiles/<profile>/dispositions.sexp`, read and held to the catalogue.
 
-EVIDENCE_POLICY.md's `source-specific` row asks for a disposition "declared for that precise source category and constraints
-before its qualification run", and its next sentence for "an explicit source-grounded argument and its own controls before
-execution". This module reads those records. It grants nothing: `scripts/review_div_policy.py` reads a `kind case` record as the
-category row of that case's comparison, and a requirement with no record stays `planned`
+EVIDENCE_POLICY.md: "Any alternative disposition needs an explicit source-grounded argument and its own controls before
+execution." Its `source-specific` row asks the same of that category. This module reads those records. It grants nothing:
+`scripts/review_div_policy.py` reads a `kind case` record as the category row of that case's comparison, and a requirement that
+needs one and has none stays `planned`
 (decision_the-seventeen-called.md; P4-SYSTEM.14 a51-7). Read-only; no Git; no process.
 """
 from __future__ import annotations

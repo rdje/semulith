@@ -8429,7 +8429,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("span-bound", "1"),
             ("span-markup", "8"),
             ("retained-bound", "1"),
-            ("retained-pin", "26"),
+            ("retained-pin", "28"),
         ] {
             let mut mutated = argv.clone();
             mutated.extend(["--mutation".to_owned(), mutation.to_owned()]);
@@ -8830,7 +8830,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         if optimized {
             argv.insert(1, "-O".to_owned());
         }
-        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 68 tests / 0 failures / 0 errors; measurement only, no qualification credit");
+        tally.score(&format!("GREEN policy legs measured {mode}"), prober.probe(repo, argv.clone()), 0, "DIV-POLICY-PROBE: 70 tests / 0 failures / 0 errors; measurement only, no qualification credit");
         for mutation in [
             "credit-pending",
             "trust-receipt",
@@ -8839,6 +8839,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             "coverage-optional",
             "trace-optional",
             "source-specific-absent",
+            "implementation-disposition",
             "source-specific-kind",
             "source-specific-control",
             "walk-absent",

@@ -1,9 +1,10 @@
 ;; dispositions.sexp — the schema for a profile's declared source-specific dispositions (profiles/<profile>/dispositions.sexp).
 ;;
-;; EVIDENCE_POLICY.md's `source-specific` row: "A disposition declared for that precise source category and constraints
-;; before its qualification run." And its next sentence: "Any alternative disposition needs an explicit source-grounded
-;; argument and its own controls before execution." So each record states why the requirement's other rows cannot be met, and
-;; names the controls that stand for them. `kind case`: it closes through a matched case, whose declared control it names.
+;; EVIDENCE_POLICY.md: "Any alternative disposition needs an explicit source-grounded argument and its own controls before
+;; execution." Its `source-specific` row asks the same: "A disposition declared for that precise source category and constraints
+;; before its qualification run." So each record states why the requirement's row cannot be met, and names the controls that
+;; stand for it. A requirement keeps the category its source gives it: an `implementation-defined` one takes a record only where
+;; the pinned reference offers nothing to select otherwise. `kind case`: it closes through a matched case, whose declared control it names.
 ;; `kind record`: nothing runs, and it closes through a retained record of its checks. `walk_record yes`: the case also
 ;; retains a comparison of its page-table reads (scripts/measure_walk_trace.py). scripts/dispositions.py reads this; a
 ;; requirement with no record stays `planned` (decision_the-seventeen-called.md; P4-SYSTEM.14 a51-7).

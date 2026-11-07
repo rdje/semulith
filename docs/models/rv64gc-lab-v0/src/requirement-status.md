@@ -170,8 +170,8 @@ The tool the seven with a switch need landed at a50-1: [a case may declare what 
 
 ```text
 $ python3 -B scripts/census_reference_config.py --case rv64gc-sstc-v2 --out target/reference-config-census/sstc
-206 guests
- 177  profile AGREE -> case AGREE
+210 guests
+ 181  profile AGREE -> case AGREE
 ```
 
 When the route was set the corpus held 182 guests, and 167 of them agreed on at least one of the two configurations. Crossed with each obligation's checks (`decision_obligations-route.md`):
@@ -195,11 +195,11 @@ The route left 17 at a ruling, 12 of them as selections with "no behaviour a ref
 | --- | --- | --- |
 | A real case, `defined` | `REQ-D-GC-COMPOSITION`, `REQ-D-EXT-CLOSURE`, `REQ-D-PRIV-REVISION`, `REQ-D-RVWMO`, `REQ-D-PRIV-INSNS`, `REQ-GC-PRIV-INSNS` | One case each, on today's tools |
 | A real case with a switch | `REQ-D-NO-H`, `REQ-D-NO-PMP` | A declared alternative, measured as the seven's were |
-| A real case, no switch to move | `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT`, `REQ-GC-PARTIAL-PROGRESS` | `source-specific`, with a disposition declared first |
-| Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | `source-specific`, with a record pinning the facts and naming its controls |
+| A real case, no switch to move | `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT`, `REQ-GC-PARTIAL-PROGRESS` | A disposition declared first, with the category kept as the source gives it |
+| Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | A disposition, with a record pinning the facts and naming its controls |
 | Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, done; `P6-LINUX.2` is its successor |
 
-The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4, captured once each at a51-5 and credited at a51-6 (`decision_the-two-with-a-switch-credited-implemented.md`).
+The policy's text is unchanged, so no credit lapsed for this. Read `decision_the-seventeen-called.md` for each argument and what each leaves out. If a call fails on its measurement, that record reopens it. The first track's six cases were declared at a51-1, captured once each at a51-2 and credited at a51-3 (`decision_six-defined-credited-implemented.md`). The two with a switch were declared at a51-4, captured once each at a51-5 and credited at a51-6 (`decision_the-two-with-a-switch-credited-implemented.md`). The four with no switch are declared since a51-8, not yet captured or credited, so they still read `planned`.
 
 ```text
 $ python3 -B scripts/requirement_status.py --profile rv64gc-lab-v0 2>&1 | tail -1

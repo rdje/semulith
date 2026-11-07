@@ -72,3 +72,7 @@ Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvi-naming-statements.
 ## The two with a switch of the last 17 (`P4-SYSTEM.14` a51-4, 2026-11-07)
 
 `RVP-PMP-STATEMENTS`, two statements: whose accesses a PMP unit checks, and what an access matching no entry does. The page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0/sources.sexp`. The tool's selection did not change. Curated input under `profiles/rv64gc-lab-v0/retained/`: `rvp-pmp-statements.html`, 2,194 B.
+
+## The four with no switch of the last 17 (`P4-SYSTEM.14` a51-8, 2026-11-07)
+
+`RVI-MEMORY-STATEMENTS`, seven statements: byte order, and what a fence is. `RVI-PRECISE-STATEMENTS`, one statement: who defines whether a trap is precise. Each page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0/sources.sexp`. The tool's selection did not change. Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvi-memory-statements.html`, 3,583 B; `rvi-precise-statements.html`, 2,079 B.

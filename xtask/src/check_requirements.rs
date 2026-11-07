@@ -348,8 +348,9 @@ for cat in catalogues:
                             f"not read as a trace — {exc}")
         continue
     if cat.name == "dispositions.sexp":
-        # 15. DISPOSITIONS — each answers a requirement of its catalogue whose category is `source-specific`,
-        #     and each such requirement has one (decision_the-seventeen-called.md).
+        # 15. DISPOSITIONS — each answers a requirement of its catalogue whose category takes one: `source-specific`, whose
+        #     row is one, and `implementation-defined`, where the reference offers no switch. Each `source-specific` requirement
+        #     has one (decision_the-seventeen-called.md).
         try:
             declared = DS.load(root, cat.parent)
             catalogue = {r["id"]: r for r in R.load(cat.parent / "requirements.sexp", root=root)}
@@ -359,8 +360,8 @@ for cat in catalogues:
         for rid, row in declared.items():
             if rid not in catalogue:
                 findings.append(f"DISPOSITION {cat.relative_to(root)}: {row['id']} answers unknown requirement {rid}")
-            elif catalogue[rid]["source_semantics"]["category"] != "source-specific":
-                findings.append(f"DISPOSITION {cat.relative_to(root)}: {row['id']} answers {rid}, whose category is not source-specific")
+            elif catalogue[rid]["source_semantics"]["category"] not in ("source-specific", "implementation-defined"):
+                findings.append(f"DISPOSITION {cat.relative_to(root)}: {row['id']} answers {rid}, whose category takes no disposition")
         for rid, row in catalogue.items():
             if row["source_semantics"]["category"] == "source-specific" and rid not in declared:
                 findings.append(f"DISPOSITION {cat.relative_to(root)}: {rid} is source-specific and declares no disposition")
@@ -1753,10 +1754,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let disposition = "(disposition (id \"DS-A\") (requirement_id \"REQ-D-A\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))";
     let _ = fs::write(p.join("dispositions.sexp"), format!("{disposition}\n"));
     tally.arm(
-        "RED   a disposition answering a requirement that is not source-specific",
+        "RED   a disposition answering a requirement whose category takes none",
         fx.judge(),
         1,
-        "whose category is not source-specific",
+        "whose category takes no disposition",
     );
     let _ = fs::write(p.join("dispositions.sexp"), "(disposition (id \"DS-B\") (requirement_id \"REQ-NOWHERE\") (kind record) (source_id \"S\") (source_locator \"1\") (argument \"a\") (controls \"c\"))\n");
     tally.arm(

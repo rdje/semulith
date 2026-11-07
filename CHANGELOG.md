@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0386 (P4-SYSTEM.14 a51-8) — the four with no switch declared, each with its disposition, and a call corrected
+
+`REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT` and `REQ-GC-PARTIAL-PROGRESS` get real cases, rehearsed at 11 of 11 legs. Each has a declared disposition and keeps the category its source gives it: a51-0's move to `source-specific` was wrong, and the mirror rule caught it.
+
 ## SEMULITH-P4-0385 (P4-SYSTEM.14 a51-7) — track 3's tools: a declared disposition is a row the review reads, and a walk's reads are compared
 
 The policy's `source-specific` row now reads a declared record, which must name the case's own control. `semulith run --trace-walks` and `scripts/measure_walk_trace.py` compare what a walk reads on both producers. `credits.sexp` went from 63,828 B to 54,439 B, with one repeated sentence moved to its header.

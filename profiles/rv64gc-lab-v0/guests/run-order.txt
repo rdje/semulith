@@ -196,6 +196,12 @@ priv-forms
 no-h-forms
 no-pmp-forms
 
+# P4-SYSTEM.14 a51-8: the four with no switch of the last 17
+endian-forms
+fence-forms
+walk-implicit-forms
+partial-progress-forms
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

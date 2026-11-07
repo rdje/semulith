@@ -9,7 +9,7 @@ per-part ceiling (`P4-SYSTEM.14` a42au).
 | Tool | Answers | How to invoke |
 | --- | --- | --- |
 | `scripts/measure_walk_trace.py` / `scripts/probe_walk_trace.py` | do both producers read the same PTEs? | `python3 -B scripts/measure_walk_trace.py --case <id>`: once |
-| `scripts/dispositions.py` | which `source-specific` disposition answers this requirement? | the policy review reads it |
+| `scripts/dispositions.py` | which declared disposition answers this requirement? | the policy review reads it |
 | `scripts/capture_guarded.py` / `scripts/probe_capture_guarded.py` | is this tree and host fit to capture these cases? | `python3 -B scripts/capture_guarded.py --case <id> --declaration-commit <40-hex> [--check]` |
 | `scripts/serve_book_404.py` | does each book's 404 page find its own assets on a static host that falls back to it? | `python3 -B scripts/serve_book_404.py docs` after `make book`; `rc=1` names the books and counts the broken assets |
 | `crates/semulith-core/src/env/tests.rs` | do success responses match their request kind/raw width and preserve target failures as distinct from provider violations? | `cargo test -p semulith-core env::tests`; 25 kind combinations, width edges and real GC/scalar/translation paths; all CPU crossings share `env::request_checked` |

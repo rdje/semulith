@@ -30,11 +30,11 @@ The binary also traces what the collector does not ask for. `--trace-ptw` prints
 | --- | --- | --- | --- |
 | 1. A real case, `defined` | `REQ-D-GC-COMPOSITION`, `REQ-D-EXT-CLOSURE`, `REQ-D-PRIV-REVISION`, `REQ-D-RVWMO`, `REQ-D-PRIV-INSNS`, `REQ-GC-PRIV-INSNS` | One case each on today's tools: the `defined` row asks for located expectations, boundary fixtures and a matched comparison, and these have behaviour to compare | `RVWMO`: any multicore claim, as the policy says. `PRIV-REVISION`: 1.12 against 1.13, which the binary does not tell apart. `GC-PRIV-INSNS`: the stall's length and the fetches it withholds, named as a limit, as exact width is for `CR-D-RESERVATION-1` |
 | 2. A real case with a switch | `REQ-D-NO-H`, `REQ-D-NO-PMP` | A declared alternative, measured as the seven's were: `H` on differs at `misa`; 16 PMP entries differ at a handler reading S's refused fetch | The CSRs themselves: `hstatus` and `pmpcfg0` are past the pinned author's vocabulary |
-| 3. A real case, no switch to move | `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT`, `REQ-GC-PARTIAL-PROGRESS` | Category `source-specific`, with a declared disposition, below | Each named in its disposition |
-| 4. Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | Category `source-specific`, with a record that pins the facts and names its positive and negative controls, below | Behaviour: these state what was selected and how it stays true, and the behaviour is each extension's own credit |
+| 3. A real case, no switch to move | `REQ-D-ENDIAN`, `REQ-D-FENCE`, `REQ-D-WALK-IMPLICIT`, `REQ-GC-PARTIAL-PROGRESS` | A declared disposition, below, with the category kept | Each named in its case |
+| 4. Nothing to run | `REQ-D-ABI`, `REQ-D-FP-DEFER`, `REQ-D-ROUTE-FLIP`, `REQ-D-SCOPE-CENSUS` | A declared disposition, below, with a record that pins the facts and names its positive and negative controls | Behaviour: these state what was selected and how it stays true, and the behaviour is each extension's own credit |
 | 5. Out of the CPU's scope | `REQ-D-SBI` | `not-applicable`, carried out in this unit, with `P6-LINUX.2` as its successor | The firmware itself, which runs nowhere before P6 |
 
-**`source-specific` is the policy's own row:** "A disposition declared for that precise source category and constraints before its qualification run." Its other sentence sets the bar: "Any alternative disposition needs an explicit source-grounded argument and its own controls before execution; it cannot be manufactured by relabeling an unrelated passing result." So tracks 3 and 4 write each disposition down before running anything, in a tracked record the review reads, and a requirement with no record stays `planned`.
+**The policy provides for this:** "Any alternative disposition needs an explicit source-grounded argument and its own controls before execution; it cannot be manufactured by relabeling an unrelated passing result." So tracks 3 and 4 write each disposition down before running anything, in a tracked record the review reads, and a requirement with no record stays `planned`. **Each requirement keeps the category its source gives it** (corrected at a51-8; this record first said to move them to `source-specific`, and writing it found why not, below).
 
 - **Track 3's argument.** The `implementation-defined` row asks for a reference configuration with a behaviour-changing control, or an observed and justified difference. For these four the reference has one behaviour and agrees with it, so neither arm can be met. The control's purpose can still be met: a discriminating control shows the comparison would see the other choice. `WALK-IMPLICIT` gets more, because it is high risk and the policy says a successful final load cannot establish the absence of an extra access: a retained `--trace-ptw --trace-mem` record compared with the engine's own walk crossings, read by address.
 - **Track 4's argument.** Each statement is about what the laboratory built and selected. `ABI` is readable from the workload's ELF headers, with `lp64` as its negative. `FP-DEFER` from `Cargo.toml` and `Cargo.lock`, with the backend's own vector doctrine as control. `ROUTE-FLIP` from the generators' drift gates, whose self-tests are its controls. `SCOPE-CENSUS` from `EXERCISE-COVERAGE`, whose `DENOMINATOR LIE` arm is its negative. A case would add nothing, and a credit with no case needs the catalogue to allow one.
@@ -55,7 +55,7 @@ The binary also traces what the collector does not ask for. `--trace-ptw` prints
 
 ## How to apply
 
-- A requirement moved to `source-specific` needs its disposition committed before its case is declared.
+- A requirement closing by a disposition needs that disposition committed no later than its case's declaration.
 - The verdict counts above are this unit's, on these guests. They are scratch output, re-derivable with `variants.py`, and they carry no credit.
 
 ## Track 1 declared, and what writing it found (a51-1, 2026-11-07)
@@ -107,3 +107,19 @@ Three things landed before any of the four cases is declared, as the policy asks
 3. **`credits.sexp` kept inside its bound.** The same sentence stood in each of 38 records' limitations. It moved to the file's header, from 63,828 B to 54,439 B, which leaves room for the last eight records. Each record's `decision` still names the step.
 
 A fourth tool, for a credit with no case, comes with track 4.
+
+## Track 3 declared, and what writing it found (a51-8, 2026-11-07)
+
+| Case | Program | Steps | Witnesses | Control | Disposition |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-endian-v1` | `endian-forms.s` | 42 | 8 | a big-endian byte 0 | `DS-ENDIAN` |
+| `rv64gc-fence-v1` | `fence-forms.s` | 41 | 10 | a reserved fm that trapped | `DS-FENCE` |
+| `rv64gc-walk-implicit-v1` | `walk-implicit-forms.s` | 95 | 6 | a walk reaching another page | `DS-WALK-IMPLICIT`, with a retained walk record |
+| `rv64gc-partial-progress-v1` | `partial-progress-forms.s` | 163 | 20 | a faulting load that wrote rd | `DS-PARTIAL-PROGRESS` |
+
+All four read 11 of 11 legs on a clone before declaring.
+
+1. **Moving these to `source-specific` was wrong, and RECORD-SCHEMA caught it.** `REQ-D-ENDIAN` and `REQ-D-FENCE` are mirrored from `rv64i-lab-v0`, and a mirror may not differ from its owner. Changing the owner would have rewritten another profile's record for a reason about this one's reference. More to the point, the source really does delegate these to the EEI, so `implementation-defined` is the true category, and moving it to fit a route is close to the relabeling the policy forbids. So the category stays, and the review reads a declared disposition as what stands for the row's two arms. `source-specific` remains for a requirement whose source is that.
+2. **The reference agrees on every reserved fence.** All eight fence configurations execute as FENCE on both producers, and rs1 and rd are ignored.
+3. **The two producers' walks.** 6 distinct PTEs read on both with the same values, in a different order, 8 bytes each, at most 3 per walk, and none written from the first walk on.
+4. **`partial-progress` reaches past where the route expected.** The route counted 2 of 6 named guests agreeing and expected `partial`. Faults injected at a chosen suboperation stay past the reference and are named, but ordinary faults leave rd, f, fflags, FS, memory and the reservation visibly as they were, on both producers.

@@ -52,7 +52,8 @@ SEAMS = {
     # a43b-3g: the category row of the matched comparison, one seam per judgement.
     "category-row": ('    row, row_measured = _category_row(root, case_dir, profile_dir, case_id, requirement["source_semantics"], expectation_path,\n'
                      '                                      producers, declared_steps, requirement["id"], named[0])\n', '    row, row_measured = True, ""\n'),
-    "source-specific-absent": ('    if row is None:\n        return False, f"no disposition declared for {requirement_id}"\n', '    if row is None:\n        return True, ""\n'),
+    "source-specific-absent": ("""        if declared is None:\n            return False, f"; category {category}: {unreadable or f'no disposition declared for {requirement_id}'}"\n""", """        if declared is None:\n            return True, ""\n"""),
+    "implementation-disposition": ("""        if declared is not None:\n            held, measured = _disposition_row(declared,""", """        if False:\n            held, measured = _disposition_row(declared,"""),
     "source-specific-kind": ('    if row["kind"] != "case":\n', '    if False:\n'),
     "source-specific-control": ('    if row["control_property"] != control_property:\n', '    if False:\n'),
     "walk-absent": ('    if not record_path.is_file():\n        return False, "no retained page-table comparison"\n', '    if not record_path.is_file():\n        return True, ""\n'),
@@ -100,6 +101,7 @@ MUTATION_TESTS = {
     "selection-recorded": "test_implementation_defined_with_no_recorded_selection_is_pending",
     "unknown-category": "test_a_category_with_no_branch_is_pending_and_named",
     "source-specific-absent": "test_source_specific_with_no_disposition_is_pending",
+    "implementation-disposition": "test_implementation_defined_with_a_disposition_is_read_by_it",
     "source-specific-kind": "test_source_specific_closing_through_a_record_is_pending_on_a_case",
     "source-specific-control": "test_source_specific_naming_another_control_is_pending",
     "walk-absent": "test_a_disposition_asking_for_walks_with_none_retained_is_pending",
@@ -621,9 +623,9 @@ class PolicyTests(unittest.TestCase):
         text, t = self.implementation_defined(detail=" ")
         self.assertEqual(t["missing"], ["matched-reference-comparison"]); self.assertIn("selection unrecorded", text)
 
-    def source_specific(self, *, disposition=True, kind="case", control="p0", walks=False, walk_files=None):
-        """A case whose requirement is `source-specific`: every other leg satisfied. Returns the comparison's text and the table."""
-        case = fixture(self.root, declare_boundaries=True, category="source-specific", detail="the source's own category",
+    def source_specific(self, *, disposition=True, kind="case", control="p0", walks=False, walk_files=None, category="source-specific"):
+        """A case whose requirement closes by a declared disposition: every other leg satisfied. Returns the comparison's text and the table."""
+        case = fixture(self.root, declare_boundaries=True, category=category, detail="the source's own category",
                        versions=(f"sha256:{BINARY}", "author-v"))
         shutil.copy(ROOT / "schema" / "dispositions.sexp", self.root / "schema" / "dispositions.sexp")
         if disposition:
@@ -655,6 +657,17 @@ class PolicyTests(unittest.TestCase):
         text, t = self.source_specific()
         self.assertEqual((t["disposition"], t["missing"], t["category"]), ("satisfied", [], "source-specific"), text)
         self.assertIn("category source-specific: disposition DS-X declared, its control p0", text)
+
+    def test_implementation_defined_with_a_disposition_is_read_by_it(self):
+        """The policy's "alternative disposition": the reference offers no switch, and the category stays what the source says."""
+        text, t = self.source_specific(category="implementation-defined")
+        self.assertEqual((t["disposition"], t["missing"], t["category"]), ("satisfied", [], "implementation-defined"), text)
+        self.assertIn("selection recorded; disposition DS-X declared, its control p0", text)
+
+    def test_implementation_defined_with_a_disposition_naming_another_control_is_pending(self):
+        text, t = self.source_specific(category="implementation-defined", control="p9")
+        self.assertEqual(t["missing"], ["matched-reference-comparison"], text)
+        self.assertIn("names the control p9, and this case's is p0", text)
 
     def test_source_specific_with_no_disposition_is_pending(self):
         text, t = self.source_specific(disposition=False)

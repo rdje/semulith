@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVI-INTRO statements — v20260120</title>
+<body>
+<h1>RVI-INTRO Exceptions, Traps, and Interrupts: who defines whether a trap is precise</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/intro.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Instruction Set Manual, Introduction</a>.<br>
+Original page SHA256: <code>3d65f713115bfd58f783fcebcce3f243f508d0af71bbac79a59e5ff79e13bf0c</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/unpriv/colophon.html">the unprivileged volume's preface</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>7f48c2cb52c7d325520b00a02153222492bd5c4ffa0ae02adecda7ecc4c2a25c</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of preciseness: REQ-GC-PARTIAL-PROGRESS is its own case.</p>
+<h2>Exceptions, Traps, and Interrupts: <code>opening:The EEI defines for each trap whether</code></h2>
+<blockquote><p>The EEI defines for each trap whether it is handled precisely, though
+the recommendation is to maintain preciseness where possible. Contained
+and requested traps can be observed to be imprecise by software inside
+the execution environment. Invisible traps, by definition, cannot be
+observed to be precise or imprecise by software running inside the
+execution environment. Fatal traps can be observed to be imprecise by
+software running inside the execution environment, if known-errorful
+instructions do not cause immediate termination.</p></blockquote>
+</body></html>

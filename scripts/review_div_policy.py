@@ -26,8 +26,9 @@ Legs (policy sections "Source-semantic dispositions", "Risk and feature obligati
                                the declared comparison rule and named observation vocabulary; and the
                                requirement's category row holds: `defined` asks nothing more,
                                `implementation-defined` the selection recorded in the catalogue and a
-                               behavior-changing control (`_config_effect`), `source-specific` a disposition declared
-                               for the requirement and naming the case's own control; a category with no branch
+                               behavior-changing control (`_config_effect`) or, where the reference offers no switch, a
+                               declared disposition naming the case's own control; `source-specific` that disposition;
+                               a category with no branch
                                here stays pending and is named (P4-SYSTEM.14 a43b-3g).
   repeated-execution           a repeat run agrees.
   discriminating-control       the control diverges at the step and register of the one property
@@ -377,15 +378,17 @@ def _walk_record(case_dir: Path, profile_dir: Path, case_id: str, producers: dic
         return False, f"the retained page-table comparison does not read: {error}"
 
 
-def _source_specific_row(case_dir: Path, profile_dir: Path, root: Path, case_id: str, requirement_id: str, control_property: str, producers: dict) -> tuple[bool, str]:
-    """The `source-specific` row: a disposition declared for this requirement, naming this case's own control (decision_the-seventeen-called.md)."""
+def _declared_disposition(root: Path, profile_dir: Path, requirement_id: str) -> tuple[dict | None, str | None]:
+    """(the disposition declared for this requirement or None, why the catalogue could not be read or None)."""
     import dispositions as Dis
     try:
-        row = Dis.load(root, profile_dir).get(requirement_id)
+        return Dis.load(root, profile_dir).get(requirement_id), None
     except Dis.DispositionRefused as refused:
-        return False, f"its dispositions refuse: {refused}"
-    if row is None:
-        return False, f"no disposition declared for {requirement_id}"
+        return None, f"its dispositions refuse: {refused}"
+
+
+def _disposition_row(row: dict, case_dir: Path, profile_dir: Path, case_id: str, control_property: str, producers: dict) -> tuple[bool, str]:
+    """A declared disposition (the policy's "alternative disposition", or its `source-specific` row): it names this case's own control (decision_the-seventeen-called.md)."""
     if row["kind"] != "case":
         return False, f"{row['id']} closes through a record, not a case"
     if row["control_property"] != control_property:
@@ -405,10 +408,21 @@ def _category_row(root: Path, case_dir: Path, profile_dir: Path, case_id: str, s
         return True, ""
     if category == "implementation-defined":
         selection = bool(str(semantics.get("detail") or "").strip())
+        # Where the pinned reference offers nothing to select otherwise, neither arm of this row can be met, and the policy allows
+        # "an explicit source-grounded argument and its own controls before execution". The category stays what the source says.
+        declared, unreadable = _declared_disposition(root, profile_dir, requirement_id)
+        if unreadable is not None:
+            return False, f"; category {category}: {unreadable}"
+        if declared is not None:
+            held, measured = _disposition_row(declared, case_dir, profile_dir, case_id, control_property, producers)
+            return selection and held, f"; category {category}: selection {'recorded' if selection else 'unrecorded'}; {measured}"
         effect, measured = _config_effect(root, case_dir, profile_dir, case_id, expectation_path, producers, declared_steps)
         return selection and effect, f"; category {category}: selection {'recorded' if selection else 'unrecorded'}; {measured}"
     if category == "source-specific":
-        held, measured = _source_specific_row(case_dir, profile_dir, root, case_id, requirement_id, control_property, producers)
+        declared, unreadable = _declared_disposition(root, profile_dir, requirement_id)
+        if declared is None:
+            return False, f"; category {category}: {unreadable or f'no disposition declared for {requirement_id}'}"
+        held, measured = _disposition_row(declared, case_dir, profile_dir, case_id, control_property, producers)
         return held, f"; category {category}: {measured}"
     return False, f"; category {category}: no row measured for it here"
 

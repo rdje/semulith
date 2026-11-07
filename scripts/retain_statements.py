@@ -237,6 +237,20 @@ EXCERPTS = {
         PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-pmp-statements.html", "c0f8739aa65e2d50559698f12e7ba7ca79ff2848e62caf715f8373d87c622ba5",
         (("norm:pmp_check_priv_modes", "§2.1.7"), ("norm:pmp_no_entry_match", "§2.1.7")),
         "This excerpt establishes no acceptance of a hart with no PMP: REQ-D-NO-PMP is its own case."),
+    "RVI-MEMORY-STATEMENTS": Excerpt(
+        "RVI-MEMORY-STATEMENTS", "RVI-RV32I §1.1.6 and §1.1.7: byte order, and what a fence is",
+        Page("RVI-RV32I", "unpriv/rv32.html", "3b20e92f067509535f95883832e84b32dbea43a29e1347b7925c374213ad75ec",
+             "RISC-V Instruction Set Manual, §1.1 RV32I Base Integer Instruction Set"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-memory-statements.html", "f8fb95e2c500035f77e88bb43d0606ed397d16c5faceefae8ef6ecff74cbf963",
+        (("norm:ENDIANNESS_LITTLE_OR_BIG", "§1.1.6"), ("norm:ldst_endian_byte_invariant", "§1.1.6"), ("norm:ldst_endian_byte_op", "§1.1.6"), ("norm:fence_op", "§1.1.7"), ("norm:fence-tso_op", "§1.1.7"), ("norm:fence-tso_ordering_rw_rw_ok", "§1.1.7"), ("norm:fence_unused_flds_rsv", "§1.1.7")),
+        "This excerpt establishes no acceptance: REQ-D-ENDIAN and REQ-D-FENCE are their own cases."),
+    "RVI-PRECISE-STATEMENTS": Excerpt(
+        "RVI-PRECISE-STATEMENTS", "RVI-INTRO Exceptions, Traps, and Interrupts: who defines whether a trap is precise",
+        Page("RVI-INTRO", "unpriv/intro.html", "3d65f713115bfd58f783fcebcce3f243f508d0af71bbac79a59e5ff79e13bf0c",
+             "RISC-V Instruction Set Manual, Introduction"),
+        UNPRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvi-precise-statements.html", "7017aec4225dfb76cd3fdbf05c5c8e937ff74d212b8c9f57e4e63b00a2009c4c",
+        (("opening:The EEI defines for each trap whether", "Exceptions, Traps, and Interrupts"),),
+        "This excerpt establishes no acceptance of preciseness: REQ-GC-PARTIAL-PROGRESS is its own case."),
     "RVI-C-FORMS-STATEMENTS": Excerpt(
         "RVI-C-FORMS-STATEMENTS", "RVI-C §27.1.3 to §27.1.7: control transfers, the scaled stack forms, what is reserved, and what a HINT leaves alone",
         Page("RVI-C", "unpriv/c-st-ext.html", "3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb",
