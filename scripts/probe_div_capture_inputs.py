@@ -47,7 +47,9 @@ RENEWED = ("rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4", "rv64gc-csr-set-v3", "rv
 SWITCHES = ("rv64gc-svade-v1", "rv64gc-atomic-misalign-v1", "rv64gc-fault-priority-v1", "rv64gc-priv-modes-v1", "rv64gc-sv39-v1", "rv64gc-reservation-v1", "rv64gc-sc-deterministic-v1")
 # The six `defined` of the last 17 (P4-SYSTEM.14 a51-1).
 LAST_DEFINED = ("rv64gc-composition-v1", "rv64gc-ext-closure-v1", "rv64gc-priv-revision-v1", "rv64gc-rvwmo-v1", "rv64gc-priv-insns-v1", "rv64gc-priv-forms-v1")
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED, *SWITCHES, *LAST_DEFINED)  # the 23 superseded directories left the tree at P4-SYSTEM.14 a49-4
+# The two with a switch of the last 17 (P4-SYSTEM.14 a51-4).
+LAST_SWITCHES = ("rv64gc-no-h-v1", "rv64gc-no-pmp-v1")
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED, *SWITCHES, *LAST_DEFINED, *LAST_SWITCHES)  # the 23 superseded directories left the tree at P4-SYSTEM.14 a49-4
 OWN_CONFIGURATION = (CSR_SET, ZICNTR, SSTC, "rv64gc-counters-v2", "rv64gc-atomic-misalign-v1", "rv64gc-fault-priority-v1", "rv64gc-reservation-v1", "rv64gc-sc-deterministic-v1", "rv64gc-composition-v1", "rv64gc-priv-insns-v1", "rv64gc-priv-forms-v1")
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
@@ -432,12 +434,34 @@ PREPARED["rv64gc-priv-forms-v1"] = {
     "control.expected.sexp": ("expectation", 59472,
         "fcea08045620f2f47c8037b7b75ab3a682dfcb5688427df8e4349149ddf1e081"),
 }
+PREPARED["rv64gc-no-h-v1"] = {
+    "guest.elf": ("guest-image", 4408,
+        "04ca2a8c244b321a2a09d0565df288fc76bef12950ca8dd2a9960e6292a50791"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 4450,
+        "9edb7928b5cb2697a50640a81f94942ff4a812a493367f64f563da3a5c80a278"),
+    "control.expected.sexp": ("expectation", 4050,
+        "3260b574a9024338106941db17f477405f5e3f9ac40f8e5f867d255d91f6a9cb"),
+}
+PREPARED["rv64gc-no-pmp-v1"] = {
+    "guest.elf": ("guest-image", 4480,
+        "5a52d533c794ed2046c4713ca0fbdda20b42390900f029cf3962bd6423a6cdeb"),
+    "reference-config.json": ("reference-config", 7609,
+        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
+    "baseline.expected.sexp": ("expectation", 7762,
+        "5599f718a9f9fb7e0a91226320cddb48c3b121c1480c4614047129f249881f17"),
+    "control.expected.sexp": ("expectation", 7207,
+        "f2a58246da5ed823f08b94dee837336491497da6e776dc4cbbd928cb640addea"),
+}
 TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, "rv64gc-m-forms-v7": 27426, "rv64gc-xlen-forms-v4": 24665, "rv64gc-csr-set-v3": 82222, "rv64gc-zicntr-v3": 112424, "rv64gc-sstc-v2": 119130, "rv64gc-alu-imm-v2": 21550, "rv64gc-alu-reg-v2": 20124, "rv64gc-lui-auipc-v2": 17569, "rv64gc-jalr-lsb-v2": 20307, "rv64gc-no-delay-slots-v2": 21329, "rv64gc-shamt-v2": 22539, "rv64gc-wsuffix-v2": 21035, "rv64gc-load-ext-v2": 25154, "rv64gc-load-x0-v2": 41401, "rv64gc-ecall-ebreak-v2": 55970, "rv64gc-csr-access-v2": 44325, "rv64gc-counters-v2": 42726, "rv64gc-fencei-v2": 19985, "rv64gc-ialign-16-v2": 17380, "rv64gc-atomics-v1": 102999, "rv64gc-c-forms-v1": 104416, "rv64gc-f-forms-v1": 134946, "rv64gc-d-forms-v1": 138824,
           "rv64gc-svade-v1": 63776, "rv64gc-atomic-misalign-v1": 80918, "rv64gc-fault-priority-v1": 113311, "rv64gc-priv-modes-v1": 52291, "rv64gc-sv39-v1": 63685, "rv64gc-reservation-v1": 80137, "rv64gc-sc-deterministic-v1": 70680,
-          "rv64gc-composition-v1": 28623, "rv64gc-ext-closure-v1": 35673, "rv64gc-priv-revision-v1": 25594, "rv64gc-rvwmo-v1": 24960, "rv64gc-priv-insns-v1": 22769, "rv64gc-priv-forms-v1": 134445}
+          "rv64gc-composition-v1": 28623, "rv64gc-ext-closure-v1": 35673, "rv64gc-priv-revision-v1": 25594, "rv64gc-rvwmo-v1": 24960, "rv64gc-priv-insns-v1": 22769, "rv64gc-priv-forms-v1": 134445,
+          "rv64gc-no-h-v1": 20517, "rv64gc-no-pmp-v1": 27058}
 BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), "rv64gc-m-forms-v7": (33, 66), "rv64gc-xlen-forms-v4": (25, 50), "rv64gc-csr-set-v3": (157, 314), "rv64gc-zicntr-v3": (292, 584), "rv64gc-sstc-v2": (315, 622), "rv64gc-alu-imm-v2": (19, 38), "rv64gc-alu-reg-v2": (18, 36), "rv64gc-lui-auipc-v2": (10, 20), "rv64gc-jalr-lsb-v2": (16, 32), "rv64gc-no-delay-slots-v2": (21, 42), "rv64gc-shamt-v2": (21, 42), "rv64gc-wsuffix-v2": (17, 34), "rv64gc-load-ext-v2": (32, 64), "rv64gc-load-x0-v2": (68, 136), "rv64gc-ecall-ebreak-v2": (116, 232), "rv64gc-csr-access-v2": (81, 162), "rv64gc-counters-v2": (84, 168), "rv64gc-fencei-v2": (18, 36), "rv64gc-ialign-16-v2": (11, 20), "rv64gc-atomics-v1": (246, 492), "rv64gc-c-forms-v1": (251, 424), "rv64gc-f-forms-v1": (338, 676), "rv64gc-d-forms-v1": (350, 700),
            "rv64gc-svade-v1": (137, 271), "rv64gc-atomic-misalign-v1": (180, 359), "rv64gc-fault-priority-v1": (271, 535), "rv64gc-priv-modes-v1": (109, 217), "rv64gc-sv39-v1": (135, 269), "rv64gc-reservation-v1": (190, 379), "rv64gc-sc-deterministic-v1": (159, 317),
-           "rv64gc-composition-v1": (41, 80), "rv64gc-ext-closure-v1": (64, 123), "rv64gc-priv-revision-v1": (36, 71), "rv64gc-rvwmo-v1": (33, 65), "rv64gc-priv-insns-v1": (30, 59), "rv64gc-priv-forms-v1": (345, 689)}
+           "rv64gc-composition-v1": (41, 80), "rv64gc-ext-closure-v1": (64, 123), "rv64gc-priv-revision-v1": (36, 71), "rv64gc-rvwmo-v1": (33, 65), "rv64gc-priv-insns-v1": (30, 59), "rv64gc-priv-forms-v1": (345, 689),
+           "rv64gc-no-h-v1": (21, 41), "rv64gc-no-pmp-v1": (40, 79)}
 
 
 def bounded_bytes(path):
@@ -762,7 +786,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 38 * 22)  # the 30 current, the two the tools name, and the six since their captures (a51-2)
+        self.assertEqual(len(members), 1 + 38 * 22 + 2 * 8)  # the 36 current and the two the tools name; the two at their declarations (a51-4), 22 each after their captures
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_every_retired_case_reads_back_from_history(self):

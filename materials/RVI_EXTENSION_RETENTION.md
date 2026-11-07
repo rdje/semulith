@@ -68,3 +68,7 @@ Each page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0
 The tool's selection did not change. Not retained: the privileged listings' table and the TVM statement, which the tool's markup bound does not read; the statements of what Zcf and Zcd depend on, which carry links the bound refuses; and SFENCE.VMA's, because a case retains one publication and `rv64gc-priv-forms-v1`'s is the Machine-Level chapter. All are cited.
 
 Curated inputs under `profiles/rv64gc-lab-v0/retained/`: `rvi-naming-statements.html`, 2,310 B; `rvi-zc-statements.html`, 2,438 B; `rvi-rvwmo-statements.html`, 1,852 B; `rvp-xret-statements.html`, 4,367 B.
+
+## The two with a switch of the last 17 (`P4-SYSTEM.14` a51-4, 2026-11-07)
+
+`RVP-PMP-STATEMENTS`, two statements: whose accesses a PMP unit checks, and what an access matching no entry does. The page's pin is in `scripts/retain_statements.py` and `profiles/rv64gc-lab-v0/sources.sexp`. The tool's selection did not change. Curated input under `profiles/rv64gc-lab-v0/retained/`: `rvp-pmp-statements.html`, 2,194 B.

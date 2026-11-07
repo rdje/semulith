@@ -196,6 +196,7 @@ def alternative_to_doc(form) -> dict:
         "extensions_off": [str(child[1]) for child in S.children(form, "extension_off")],
         "extensions_on": [str(child[1]) for child in S.children(form, "extension_on")],
         "misaligned": {kind: one("misaligned_" + kind) for kind in ("load_store", "lrsc", "amo") if one("misaligned_" + kind)},
+        "pmp_count": S.children(form, "pmp_count")[0][1] if S.children(form, "pmp_count") else None,
     }
 
 
@@ -213,6 +214,11 @@ def apply_alternative(config: dict, alternative: dict) -> dict:
         rendered = {"None": None} if selected == "None" else {"Some": selected}
         _require(exceptions.get(kind) != rendered, f"alternative selects {selected} for misaligned {kind}, which this configuration already declares")
         exceptions[kind] = rendered
+    if alternative.get("pmp_count") is not None:
+        _require(alternative["pmp_count"] in (16, 64), "alternative's PMP count must be one the binary accepts, 16 or 64")
+        pmp = result["memory"]["pmp"]
+        _require(pmp["count"] != alternative["pmp_count"], f"alternative selects {alternative['pmp_count']} PMP entries, which this configuration already has")
+        pmp.update(count=alternative["pmp_count"], usable_count=alternative["pmp_count"], tor_supported=True, na4_supported=True, napot_supported=True)
     _require(result != config, "the alternative changes nothing")
     return result
 

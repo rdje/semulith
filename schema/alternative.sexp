@@ -13,7 +13,8 @@
 
 ;; `extension_off`, `extension_on`: `extensions.<name>.supported`; the binary refuses some alone (S, U, or Sv39 with S on), so a
 ;; set is declared together. `misaligned_*`: `memory.misaligned.exceptions.<kind>`, the checks made before address translation;
-;; the region's own attribute changes nothing while these hold.
+;; the region's own attribute changes nothing while these hold. `pmp_count`: `memory.pmp`, so the hart implements that many
+;; entries, the binary accepting 16 or 64, with none configured; an access at S's or U's privilege then matches none and fails.
 (construct (name alternative)
   (field (name case_id) (type string) (min-length 1))
   (field (name reason) (type string) (min-length 1))
@@ -21,4 +22,5 @@
   (field (name extension_on) (type string) (repeat yes) (unique yes) (min-length 1))
   (field (name misaligned_load_store) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
   (field (name misaligned_lrsc) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
-  (field (name misaligned_amo) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes)))
+  (field (name misaligned_amo) (type symbol) (values None) (values AccessFault) (values AlignmentException) (optional yes))
+  (field (name pmp_count) (type integer) (optional yes)))

@@ -192,6 +192,10 @@ rvwmo-forms
 priv-insns-forms
 priv-forms
 
+# P4-SYSTEM.14 a51-4: the two with a switch of the last 17
+no-h-forms
+no-pmp-forms
+
 # P4-SYSTEM.12: independently staged compressed corpus
 c-immediates
 c-alu

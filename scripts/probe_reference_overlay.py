@@ -35,6 +35,9 @@ MUTATIONS = {
     "overlay-amo-changes": ('_require(exceptions.get("amo") != rendered, ', '_require(True, '),
     "overlay-exact-changes": ('_require("require_exact_reservation_addr" not in reservation, ', '_require(True, '),
     "overlay-nothing": ('_require(result != config, "the overlay changes nothing")', '_require(True, "the overlay changes nothing")'),
+    "alternative-pmp-count": ('_require(alternative["pmp_count"] in (16, 64), ', '_require(True, '),
+    "alternative-pmp-changes": ('_require(pmp["count"] != alternative["pmp_count"], ', '_require(True, '),
+    "alternative-pmp-whole": ('pmp.update(count=alternative["pmp_count"], usable_count=alternative["pmp_count"], tor_supported=True, na4_supported=True, napot_supported=True)', 'pmp.update(count=alternative["pmp_count"])'),
     "alternative-nothing": ('_require(result != config, "the alternative changes nothing")', '_require(True, "the alternative changes nothing")'),
     "alternative-binding": ('_require(alternative["case_id"] == case_id, ', '_require(True, '),
     "alternative-over-case": ('return apply_alternative(reference_config(root, case_id), alternative)', 'return apply_alternative(map_document(root, read_bounded(root / OVERRIDE), "override", D.override_to_doc), alternative)'),
@@ -154,6 +157,22 @@ class OverlayTests(unittest.TestCase):
     def test_an_overlay_of_no_knob_refuses(self):
         with self.assertRaisesRegex(Prep.CurationRefused, "changes nothing"):
             Prep.apply_overlay(self.canonical(self.temporary_root()), {"case_id": CASE, "extensions": []})
+
+    def test_an_alternative_may_give_the_hart_pmp_entries(self):
+        root = self.declared(' (pmp_count 16)')
+        expected = Prep.reference_config(root, CASE)
+        expected["memory"]["pmp"].update(count=16, usable_count=16, tor_supported=True, na4_supported=True, napot_supported=True)
+        self.assertEqual(Prep.alternative_config(root, CASE), expected)
+
+    def test_an_alternative_pmp_count_the_binary_refuses_is_refused(self):
+        with self.assertRaisesRegex(Prep.CurationRefused, "16 or 64"):
+            Prep.alternative_config(self.declared(' (pmp_count 8)'), CASE)
+
+    def test_an_alternative_pmp_count_this_configuration_has_refuses(self):
+        canonical = self.canonical(self.temporary_root())
+        canonical["memory"]["pmp"]["count"] = 16
+        with self.assertRaisesRegex(Prep.CurationRefused, "already has"):
+            Prep.apply_alternative(canonical, {"extensions_off": [], "extensions_on": [], "misaligned": {}, "pmp_count": 16})
 
     def test_an_alternative_of_no_switch_refuses(self):
         with self.assertRaisesRegex(Prep.CurationRefused, "changes nothing"):

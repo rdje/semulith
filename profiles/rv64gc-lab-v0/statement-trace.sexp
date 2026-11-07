@@ -250,3 +250,14 @@
   (clause (text "xRET pops the two-level privilege stack (xIE<-xPIE, mode<-xPP, xPIE<-1, xPP<-U),") (properties "mret-pops") (properties "sret-pops"))
   (clause (text "clears MPRV when the target is not M,") (properties "mret-clears-mprv"))
   (clause (text "and sets pc<-xepc.") (properties "mret-sets-pc") (properties "sret-sets-pc")))
+
+(trace (requirement_id "REQ-D-NO-H")
+  (clause (text "The hypervisor extension is excluded:") (properties "misa-no-h") (properties "mstatus-no-h-bits") (properties "mideleg-no-vs") (properties "mie-no-vs") (limits "hstatus and the other H state are past the pinned author's vocabulary, so H's absence is read from misa, mstatus, mideleg and mie"))
+  (clause (text "the profile has one hart and no virtualization workload in the first Linux profile;") (properties "one-hart") (limits "that no virtualization workload needs it is the selection's reasoning, not behaviour a run can witness"))
+  (clause (text "H would arrive with a consumer, never ahead of one.") (limits "that H arrives with a consumer is a rule for later, not behaviour a run can witness")))
+
+(trace (requirement_id "REQ-D-NO-PMP")
+  (clause (text "PMP is excluded at v0:") (properties "s-load") (properties "s-store") (properties "u-load") (properties "u-store") (limits "S and U fetching with nothing configured is witnessed by every case that runs there and not by this one: a refused fetch reads as absent evidence, not as a difference, so the alternative could not compare it"))
+  (clause (text "the privileged architecture's physical memory protection unit is optional,") (limits "pmpcfg0 and pmpaddr0 are past the pinned author's vocabulary, so the CSRs' absence is not read"))
+  (clause (text "and the first boot contract does not require it;") (limits "that the first boot contract does not require it, and that a board branch may revisit it, are the selection's reasoning, not behaviour a run can witness"))
+  (clause (text "the decision is revisited by the board branch that needs it.") (limits "that the first boot contract does not require it, and that a board branch may revisit it, are the selection's reasoning, not behaviour a run can witness")))

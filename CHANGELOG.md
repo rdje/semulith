@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0382 (P4-SYSTEM.14 a51-4) — the two with a switch of the last 17 declared
+
+`REQ-D-NO-H` and `REQ-D-NO-PMP` get real cases, rehearsed at 11 of 11 legs: a hart with H differs at `misa`, and a hart with 16 PMP entries at a load at S's privilege. The alternative gains `pmp_count`.
+
 ## SEMULITH-P4-0381 (P4-SYSTEM.14 a51-3) — the first six of the last 17 credited
 
 Six credits at 11 of 11 legs each: 36 `implemented`, 10 `planned`, 2 `not-applicable`. `REQ-GC-PRIV-INSNS`, which the route expected to end `partial`, reads `implemented`, with what stays out named.

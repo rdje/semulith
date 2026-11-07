@@ -230,6 +230,13 @@ EXCERPTS = {
         PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-xret-statements.html", "67c69760bc4dffcdf0f2cb10c3b5bc29d7143fb4a746c4b85a6abb375e034ae5",
         (("norm:xret_in_higher_mode", "§2.1.3.2"), ("norm:xret_in_lower_mode", "§2.1.3.2"), ("norm:mstatus_mprv_clr_mret_sret_less_priv", "§2.1.1.6.3"), ("norm:mstatus_tsr_op", "§2.1.1.6.6"), ("norm:mstatus_tw_op", "§2.1.1.6.6"), ("norm:mstatus_tw_always_illegal", "§2.1.1.6.6"), ("norm:wfi_op", "§2.1.3.3"), ("norm:wfi_intr_dis", "§2.1.3.3"), ("norm:wfi_no_intr_pc", "§2.1.3.3")),
         "This excerpt establishes no acceptance. The listings' table and the TVM statement, which the tool's markup bound does not read, are cited and not retained."),
+    "RVP-PMP-STATEMENTS": Excerpt(
+        "RVP-PMP-STATEMENTS", "RVP-MACHINE §2.1.7: whose accesses a PMP unit checks, and what an access matching no entry does",
+        Page("RVP-MACHINE", "priv/machine.html", "b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea",
+             "RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13"),
+        PRIVILEGED_LICENCE, "profiles/rv64gc-lab-v0/retained/rvp-pmp-statements.html", "c0f8739aa65e2d50559698f12e7ba7ca79ff2848e62caf715f8373d87c622ba5",
+        (("norm:pmp_check_priv_modes", "§2.1.7"), ("norm:pmp_no_entry_match", "§2.1.7")),
+        "This excerpt establishes no acceptance of a hart with no PMP: REQ-D-NO-PMP is its own case."),
     "RVI-C-FORMS-STATEMENTS": Excerpt(
         "RVI-C-FORMS-STATEMENTS", "RVI-C §27.1.3 to §27.1.7: control transfers, the scaled stack forms, what is reserved, and what a HINT leaves alone",
         Page("RVI-C", "unpriv/c-st-ext.html", "3f7e7d853d6e12e9d44c3d1bb488d1c312179a308d608182fb01db43a49d6aeb",

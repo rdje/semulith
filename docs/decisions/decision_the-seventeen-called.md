@@ -80,3 +80,16 @@ Six cases, 68 witnesses over 549 steps, each statement traced clause by clause. 
 **Captured (a51-2, 2026-11-07).** Each of the six once, through `scripts/capture_guarded.py`, its first use on the real tree. All 60 compared files match the rehearsal: no finding.
 
 **Credited (a51-3, 2026-11-07).** [`decision_six-defined-credited-implemented.md`](decision_six-defined-credited-implemented.md): 36 `implemented`, 2 `not-applicable`, 10 `planned`.
+
+## Track 2 declared, and what writing it found (a51-4, 2026-11-07)
+
+| Case | Program | Steps | Witnesses | Control | What selects otherwise, first difference |
+| --- | --- | --- | --- | --- | --- |
+| `rv64gc-no-h-v1` | `no-h-forms.s` | 21 | 5 | a hart with H | `extension_on "H"`, step 5, `misa` |
+| `rv64gc-no-pmp-v1` | `no-pmp-forms.s` | 40 | 4 | a load a PMP unit refused | `pmp_count 16`, step 22, a load at S's privilege |
+
+Both read 11 of 11 legs on a clone before declaring.
+
+1. **A hart with H prints S as `HS`, and the comparison refuses that row.** So `no-h-forms` stays in M, where the difference lands first, and reads what H would add: `misa`, `mstatus`, `mideleg` and `mie`.
+2. **A refused fetch reads as absent evidence, not as a difference.** The comparison finds no row for that step and refuses, which is right, but it means an effect cannot land there. So `no-pmp-forms` makes its accesses at S's and U's privilege through `MPRV`, from M, and a refused load is a difference at its own witness. S and U fetching with nothing configured is witnessed by every case that runs there, and the limitation says so.
+3. **The call holds, with one change of route.** This record said 16 PMP entries "differ at a handler reading S's refused fetch". They differ at a load instead, for the reason above.

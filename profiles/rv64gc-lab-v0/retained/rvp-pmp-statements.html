@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8">
+<title>Retained RVP-MACHINE statements — v20260120</title>
+<body>
+<h1>RVP-MACHINE §2.1.7: whose accesses a PMP unit checks, and what an access matching no entry does</h1>
+<p>Copyright © RISC-V International.
+Manual text by RISC-V International and the original RISC-V ISA manual authors.
+The quoted statements are licensed under
+<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.
+Semulith adds this wrapper and retains only the named statements; all surrounding
+text, diagrams and website assets are omitted. Each quoted span is unmodified.
+No endorsement is implied.</p>
+<p>Source: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/machine.html">RISC-V Ratified Specifications Library,
+v20260120, RISC-V Privileged Architecture, §2.1 Machine-Level ISA, Version 1.13</a>.<br>
+Original page SHA256: <code>b63fe33517fef2dabe53cdbc45b05d656bf808eebf83f0af5a4ab74549617fea</code>.<br>
+Licence evidence: <a href="https://docs.riscv.org/reference/isa/v20260120/priv/priv-preface.html">privileged preface to Version 1.10</a>,
+whose statement also covers future manual versions.<br>
+Licence-evidence page SHA256: <code>6e4ba2ab3ea5174ff04881c48df7dfaf9402a0d070a76805535f1c7754645e59</code>.<br>
+Transformation: <code>scripts/retain_statements.py</code>.
+This excerpt establishes no acceptance of a hart with no PMP: REQ-D-NO-PMP is its own case.</p>
+<h2>§2.1.7: <code>norm:pmp_check_priv_modes</code></h2>
+<blockquote><p><span id="norm:pmp_check_priv_modes">PMP checks are applied to all accesses whose effective privilege mode is
+S or U, including instruction fetches and data accesses in S and U mode,
+and data accesses in M-mode when the MPRV bit in <code>mstatus</code> is set and
+the MPP field in <code>mstatus</code> contains S or U.</span></p></blockquote>
+<h2>§2.1.7: <code>norm:pmp_no_entry_match</code></h2>
+<blockquote><p><span id="norm:pmp_no_entry_match">If no PMP entry matches an M-mode memory operation, the operation succeeds.
+If no PMP entry matches an S-mode or U-mode memory operation, but at least
+one PMP entry is implemented, the operation fails.</span></p></blockquote>
+</body></html>

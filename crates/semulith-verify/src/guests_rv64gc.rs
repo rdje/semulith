@@ -328,6 +328,10 @@
 //!   `profiles/rv64gc-lab-v0/guests/mm-wfi.s`  `4c0b927ad1240156fec6912a411d5381848849cf79dc6253e2aa36bb075bc838`
 //!   `profiles/rv64gc-lab-v0/guests/no-delay-slots.expected.sexp`  `4cf28a0d8e26aa668b3698f67b4c011793d5a7efc6469e0c82b7187609c5dc19`
 //!   `profiles/rv64gc-lab-v0/guests/no-delay-slots.s`  `19fd669f6589f0ea6b61c04f0df6d8f2978af4155b67eb00cf8482555df74f0d`
+//!   `profiles/rv64gc-lab-v0/guests/no-h-forms.expected.sexp`  `9edb7928b5cb2697a50640a81f94942ff4a812a493367f64f563da3a5c80a278`
+//!   `profiles/rv64gc-lab-v0/guests/no-h-forms.s`  `b52e0e712a614abb61622b413dab9d2a90c5c6137590be9b3e751df6fe699ee5`
+//!   `profiles/rv64gc-lab-v0/guests/no-pmp-forms.expected.sexp`  `5599f718a9f9fb7e0a91226320cddb48c3b121c1480c4614047129f249881f17`
+//!   `profiles/rv64gc-lab-v0/guests/no-pmp-forms.s`  `426f40ae721bb0363e699c2f93f6279b1c5ae2054ed24d3cc303a6d324272e9f`
 //!   `profiles/rv64gc-lab-v0/guests/prio-sv39.expected.sexp`  `cdd539c87c03a9fd351f4b8511d4f65a29ae56706c1e3c7aec998f950538f7a3`
 //!   `profiles/rv64gc-lab-v0/guests/prio-sv39.s`  `5e525f15efab27f90df8bdc8321aa4d30f001301ab88ab81376ddc95dcd2e8ce`
 //!   `profiles/rv64gc-lab-v0/guests/priv-forms.expected.sexp`  `7a3d54a4906fa5c73c1436340db36affb646dc9deef79d6899076df100f923d4`
@@ -14687,6 +14691,99 @@ static EXPECTED_PRIV_FORMS: &[Expectation] = &[
 ];
 
 #[rustfmt::skip]
+static IMAGE_NO_H_FORMS: &[u8] = &[
+    0x97, 0x00, 0x00, 0x00, 0x93, 0x80, 0x00, 0x01, 0x73, 0x90, 0x50, 0x30, 0x6F, 0x00, 0x40, 0x01,
+    0x73, 0x2F, 0x20, 0x34, 0xF3, 0x2E, 0x30, 0x34, 0x73, 0x2E, 0x10, 0x34, 0x67, 0x80, 0x0D, 0x00,
+    0x93, 0x02, 0xD0, 0x04, 0xF3, 0x22, 0x10, 0x30, 0x13, 0x03, 0x30, 0x00, 0x13, 0x13, 0x63, 0x02,
+    0x73, 0x20, 0x03, 0x30, 0x93, 0x03, 0xD0, 0x04, 0xF3, 0x23, 0x00, 0x30, 0x13, 0x04, 0x40, 0x44,
+    0x73, 0x20, 0x34, 0x30, 0x93, 0x04, 0xD0, 0x04, 0xF3, 0x24, 0x30, 0x30, 0x73, 0x20, 0x44, 0x30,
+    0x13, 0x05, 0xD0, 0x04, 0x73, 0x25, 0x40, 0x30, 0x93, 0x05, 0xD0, 0x04, 0xF3, 0x25, 0x40, 0xF1,
+    0x01, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_NO_H_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000010)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(5, 0x000000000000004D)] },
+    Expectation { step: 5, writes: &[(5, 0x800000000014112D)] },
+    Expectation { step: 6, writes: &[(6, 0x0000000000000003)] },
+    Expectation { step: 7, writes: &[(6, 0x000000C000000000)] },
+    Expectation { step: 8, writes: &[] },
+    Expectation { step: 9, writes: &[(7, 0x000000000000004D)] },
+    Expectation { step: 10, writes: &[(7, 0x0000000A00000000)] },
+    Expectation { step: 11, writes: &[(8, 0x0000000000000444)] },
+    Expectation { step: 12, writes: &[] },
+    Expectation { step: 13, writes: &[(9, 0x000000000000004D)] },
+    Expectation { step: 14, writes: &[(9, 0x0000000000000000)] },
+    Expectation { step: 15, writes: &[] },
+    Expectation { step: 16, writes: &[(10, 0x000000000000004D)] },
+    Expectation { step: 17, writes: &[(10, 0x0000000000000000)] },
+    Expectation { step: 18, writes: &[(11, 0x000000000000004D)] },
+    Expectation { step: 19, writes: &[(11, 0x0000000000000000)] },
+    Expectation { step: 20, writes: &[] },
+];
+
+#[rustfmt::skip]
+static IMAGE_NO_PMP_FORMS: &[u8] = &[
+    0x97, 0x00, 0x00, 0x00, 0x93, 0x80, 0x00, 0x01, 0x73, 0x90, 0x50, 0x30, 0x6F, 0x00, 0x40, 0x01,
+    0x73, 0x2F, 0x20, 0x34, 0xF3, 0x2E, 0x30, 0x34, 0x73, 0x2E, 0x10, 0x34, 0x67, 0x80, 0x0D, 0x00,
+    0x13, 0x05, 0x10, 0x00, 0x13, 0x15, 0xF5, 0x01, 0xB7, 0x70, 0x00, 0x00, 0xB3, 0x80, 0xA0, 0x00,
+    0x93, 0x02, 0x20, 0x04, 0x23, 0xB0, 0x50, 0x00, 0x93, 0x01, 0x30, 0x00, 0x93, 0x91, 0xB1, 0x00,
+    0x13, 0x01, 0x10, 0x00, 0x13, 0x11, 0x11, 0x01, 0x73, 0xB0, 0x01, 0x30, 0x93, 0x09, 0x10, 0x00,
+    0x93, 0x99, 0xB9, 0x00, 0x73, 0xA0, 0x09, 0x30, 0x73, 0x20, 0x01, 0x30, 0x97, 0x0D, 0x00, 0x00,
+    0x93, 0x8D, 0x8D, 0x01, 0x93, 0x03, 0xD0, 0x04, 0x83, 0xB3, 0x00, 0x00, 0x13, 0x04, 0x80, 0x05,
+    0x23, 0xB0, 0x80, 0x00, 0x73, 0x30, 0x01, 0x30, 0x93, 0x04, 0xD0, 0x04, 0x83, 0xB4, 0x00, 0x00,
+    0x73, 0xB0, 0x01, 0x30, 0x73, 0x20, 0x01, 0x30, 0x97, 0x0D, 0x00, 0x00, 0x93, 0x8D, 0x8D, 0x01,
+    0x93, 0x03, 0xD0, 0x04, 0x83, 0xB3, 0x00, 0x00, 0x13, 0x04, 0x30, 0x06, 0x23, 0xB0, 0x80, 0x00,
+    0x73, 0x30, 0x01, 0x30, 0x93, 0x04, 0xD0, 0x04, 0x83, 0xB4, 0x00, 0x00, 0x01, 0x00,
+];
+#[rustfmt::skip]
+static EXPECTED_NO_PMP_FORMS: &[Expectation] = &[
+    Expectation { step: 0, writes: &[(1, 0x0000000080000000)] },
+    Expectation { step: 1, writes: &[(1, 0x0000000080000010)] },
+    Expectation { step: 2, writes: &[] },
+    Expectation { step: 3, writes: &[] },
+    Expectation { step: 4, writes: &[(10, 0x0000000000000001)] },
+    Expectation { step: 5, writes: &[(10, 0x0000000080000000)] },
+    Expectation { step: 6, writes: &[(1, 0x0000000000007000)] },
+    Expectation { step: 7, writes: &[(1, 0x0000000080007000)] },
+    Expectation { step: 8, writes: &[(5, 0x0000000000000042)] },
+    Expectation { step: 9, writes: &[] },
+    Expectation { step: 10, writes: &[(3, 0x0000000000000003)] },
+    Expectation { step: 11, writes: &[(3, 0x0000000000001800)] },
+    Expectation { step: 12, writes: &[(2, 0x0000000000000001)] },
+    Expectation { step: 13, writes: &[(2, 0x0000000000020000)] },
+    Expectation { step: 14, writes: &[] },
+    Expectation { step: 15, writes: &[(19, 0x0000000000000001)] },
+    Expectation { step: 16, writes: &[(19, 0x0000000000000800)] },
+    Expectation { step: 17, writes: &[] },
+    Expectation { step: 18, writes: &[] },
+    Expectation { step: 19, writes: &[(27, 0x000000008000005C)] },
+    Expectation { step: 20, writes: &[(27, 0x0000000080000074)] },
+    Expectation { step: 21, writes: &[(7, 0x000000000000004D)] },
+    Expectation { step: 22, writes: &[(7, 0x0000000000000042)] },
+    Expectation { step: 23, writes: &[(8, 0x0000000000000058)] },
+    Expectation { step: 24, writes: &[] },
+    Expectation { step: 25, writes: &[] },
+    Expectation { step: 26, writes: &[(9, 0x000000000000004D)] },
+    Expectation { step: 27, writes: &[(9, 0x0000000000000058)] },
+    Expectation { step: 28, writes: &[] },
+    Expectation { step: 29, writes: &[] },
+    Expectation { step: 30, writes: &[(27, 0x0000000080000088)] },
+    Expectation { step: 31, writes: &[(27, 0x00000000800000A0)] },
+    Expectation { step: 32, writes: &[(7, 0x000000000000004D)] },
+    Expectation { step: 33, writes: &[(7, 0x0000000000000058)] },
+    Expectation { step: 34, writes: &[(8, 0x0000000000000063)] },
+    Expectation { step: 35, writes: &[] },
+    Expectation { step: 36, writes: &[] },
+    Expectation { step: 37, writes: &[(9, 0x000000000000004D)] },
+    Expectation { step: 38, writes: &[(9, 0x0000000000000063)] },
+    Expectation { step: 39, writes: &[] },
+];
+
+#[rustfmt::skip]
 static IMAGE_C_IMMEDIATES: &[u8] = &[
     0x81, 0x50, 0xFD, 0x00, 0x85, 0x00, 0xFD, 0x41, 0x81, 0x11, 0x01, 0x72, 0xFD, 0x62, 0x41, 0x41,
     0x01, 0x71, 0x7D, 0x61, 0xE0, 0x1F, 0x13, 0x01, 0xF0, 0xFF, 0x41, 0x61, 0x5C, 0x00, 0x01, 0x00,
@@ -20068,6 +20165,28 @@ pub static GUESTS: &[Guest] = &[
         executed_steps: 345,
         expected_fetches: 689,
         expected: EXPECTED_PRIV_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "no-h-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_NO_H_FORMS,
+        executed_steps: 21,
+        expected_fetches: 41,
+        expected: EXPECTED_NO_H_FORMS,
+        never_written: &[],
+        refusals: &[],
+        cross_model: true,
+    },
+    Guest {
+        name: "no-pmp-forms",
+        entry: 0x0000000080000000,
+        image: IMAGE_NO_PMP_FORMS,
+        executed_steps: 40,
+        expected_fetches: 79,
+        expected: EXPECTED_NO_PMP_FORMS,
         never_written: &[],
         refusals: &[],
         cross_model: true,

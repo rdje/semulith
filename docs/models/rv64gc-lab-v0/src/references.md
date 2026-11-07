@@ -44,13 +44,15 @@ case's prepared inputs are curated, and nowhere else. The case pins the result a
 other case's configuration moves. The vocabulary is closed (`schema/overlay.sexp`): a
 new knob is a schema change a reviewer sees. The tool refuses an overlay that would
 change nothing: an extension already on, a CLINT or tick rate the override already
-declares. It also refuses one that overlaps a region or names another case. To see
+declares. It also refuses one that overlaps a region or names another case. Since a51-1 an
+overlay can also turn off the override's `wfi_is_nop`, so the reference's own `wfi` waits, which is how
+`rv64gc-priv-forms-v1` compares `wfi` refused under `TW`. To see
 what an overlay does before declaring a case on it:
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
-204 guests
- 175  profile AGREE -> case AGREE
+206 guests
+ 177  profile AGREE -> case AGREE
   13  profile DIVERGE -> case DIVERGE
    ...
 ```
@@ -161,12 +163,12 @@ The effect above compares a case's own configuration with the profile override. 
   (extension_off "Svade"))
 ```
 
-The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, and the three misaligned checks. A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. See what one does across the corpus before declaring a case on it:
+The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, and the three misaligned checks, and how many PMP entries the hart implements (`pmp_count`, a51-4). A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. See what one does across the corpus before declaring a case on it:
 
 ```console
 $ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative
-204 guests
- 174  case AGREE -> alternative AGREE
+206 guests
+ 176  case AGREE -> alternative AGREE
   21  case DIVERGE -> alternative DIVERGE
    6  case REFUSED -> alternative REFUSED
    2  case AGREE -> alternative DIVERGE

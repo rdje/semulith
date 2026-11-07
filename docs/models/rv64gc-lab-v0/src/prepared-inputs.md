@@ -173,7 +173,7 @@ Since a49-1 the registry caps the family at 1101 files, 660 MiB aggregate and 4 
 fifty cases, the peak of `decision_the-window-that-carries-fetch-faults.md` (`decision_evidence-family-two-cases.md`, its tenth re-derivation). A case holds
 at most 13,828,096 bytes: three traces at the collector's 4 MiB bound, six streams and three
 receipts at 64 KiB, ten prepared and metadata slots at 64 KiB; fifty cases and the 4 KiB index hold at
-most 691,408,896 bytes, and the 38 declared today 525,471,744 (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
+most 691,408,896 bytes, and the 40 declared today 553,127,936 (`retention_limits()`). The index also has an 80-line ceiling. Existing family caps,
 the 128 MiB combined artifact-read allowance and 16 MiB snapshot ceiling stay
 unchanged. These payload/retention ceilings do not bound total process RAM.
 
@@ -220,7 +220,7 @@ the tool was accepted: it reproduces the a42af bytes exactly. `--show` prints th
 without writing; `--write` creates the files exclusively and refuses any that already exists, so a
 retained input is never replaced. The probe runs its controls over five declared cases (80 tests in
 each Python mode) and holds the family census to 1101 files / 660 MiB, the fifty-case envelope of
-`decision_evidence-family-two-cases.md` (735 files present at the window's declarations, a49-1; 1057 after their captures, a49-2; 551 after a49-4 retired 23 directories; 607 at the seven's declarations, a50-2; 705 after their captures, a50-3; 753 at the six's declarations, a51-1; 837 after their captures, a51-2); omitting the actual layout census loses six assertions. For a re-capture the tool proves
+`decision_evidence-family-two-cases.md` (735 files present at the window's declarations, a49-1; 1057 after their captures, a49-2; 551 after a49-4 retired 23 directories; 607 at the seven's declarations, a50-2; 705 after their captures, a50-3; 753 at the six's declarations, a51-1; 837 after their captures, a51-2; 853 at the two's declarations, a51-4); omitting the actual layout census loses six assertions. For a re-capture the tool proves
 the prepared inputs case-independent: `--show --case rv64gc-xlen-forms-v2` reported xlen-v1's four
 pins byte for byte, both since [retired](retired-cases.md), because every artifact derives from the canonical program, override and
 expectation, never from the case id. The one thing a case may add is its own reference configuration,
