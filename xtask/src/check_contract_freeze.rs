@@ -6,8 +6,9 @@
 //! rewritten), every record belongs to one version, extensions chain without gaps or cycles, supersessions name
 //! inherited records and own members. The judge is the driver's inline Python over the pinned `record_catalog` and
 //! `sexp`; it runs verbatim through `python3 -`, as the script ran it — from the scratch tree in the controls, where
-//! the script symlinked `scripts/` — and is not ported. The controls take the real contract and its rendered
-//! catalogue and apply the script's `sed` edits as the same replacements; the ancestry probe runs plain and optimized.
+//! the script symlinked `scripts/` — and is not ported. The controls take a FROZEN unit (`scripts/fixtures/contract-freeze/`)
+//! and apply the script's `sed` edits as the same replacements, so a damaged real contract fails the real check by its own
+//! name and not this self-test (`XTASK.13` slice h, ruling 5); the ancestry probe runs plain and optimized.
 //! Each self-test arm is one `tally.arm(` call, the idiom the `DERIVED-COUNTS` arm total counts.
 
 use std::fs;
@@ -16,6 +17,9 @@ use std::path::Path;
 use std::process::{Command, ExitCode, Stdio};
 
 use crate::harness::{combined, scratch};
+
+/// The frozen unit the controls judge, which the real check never reads.
+const FROZEN: &str = "scripts/fixtures/contract-freeze/profiles/u";
 
 /// The judge, verbatim: `python3 - <root>`.
 const JUDGE: &str = r#"import hashlib, re, sys
@@ -100,6 +104,11 @@ for cdoc in sorted(root.glob("profiles/*/contract.sexp")):
                                 f"version's member")
     for oid in sorted(set(obs) - set(owner)):
         findings.append(f"UNVERSIONED RECORD {unit}: {oid} belongs to no version in contract.sexp")
+for part in sorted(root.glob("profiles/*/contract-v*.obligations.sexp")):
+    if not (part.parent / "contract.sexp").is_file():
+        findings.append(f"CONTRACT MISSING {part.parent.name}: {part.name} holds a version's records, and no contract.sexp owns them")
+if units == 0:
+    findings.append("NO VERSIONED UNIT: no profile has a contract.sexp, so nothing here could be judged")
 for f in findings:
     print("  " + f)
 print(f"CONTRACT-FREEZE: {'FAIL' if findings else 'ok'} ({units} versioned unit(s), "
@@ -217,27 +226,22 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         eprintln!("CONTRACT-FREEZE self-test: cannot create a scratch directory under target/doctrine-selftest");
         return false;
     };
+    let frozen = repo.join(FROZEN);
+    for name in ["contract.sexp", "contract-obligations.sexp"] {
+        if !frozen.join(name).is_file() {
+            eprintln!("CONTRACT-FREEZE self-test: the frozen {FROZEN}/{name} is missing");
+            return false;
+        }
+    }
     let u = t.join("profiles/u");
     let fresh = || {
         let _ = fs::remove_dir_all(t.join("profiles"));
         let _ = fs::create_dir_all(&u);
+        let _ = fs::copy(frozen.join("contract.sexp"), u.join("contract.sexp"));
         let _ = fs::copy(
-            repo.join("profiles/rv64gc-lab-v0/contract.sexp"),
-            u.join("contract.sexp"),
+            frozen.join("contract-obligations.sexp"),
+            u.join("contract-obligations.sexp"),
         );
-        let rendered = Command::new("python3")
-            .args([
-                "scripts/record_catalog.py",
-                "profiles/rv64gc-lab-v0/contract-obligations.sexp",
-                "--stdout",
-            ])
-            .current_dir(repo)
-            .stdin(Stdio::null())
-            .stderr(Stdio::inherit())
-            .output()
-            .map(|o| o.stdout)
-            .unwrap_or_default();
-        let _ = fs::write(u.join("contract-obligations.sexp"), rendered);
         let _ = fs::remove_file(t.join("scripts"));
         #[cfg(unix)]
         let _ = std::os::unix::fs::symlink(repo.join("scripts"), t.join("scripts"));
@@ -251,11 +255,30 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     fresh();
     let (rc, out) = judge(&t, &t);
     tally.arm(
-        "GREEN the real contract and its records agree",
+        "GREEN a frozen contract and its records agree",
         rc,
         0,
         captured(&out),
         "0 finding(s)",
+    );
+    fresh();
+    let _ = fs::write(u.join("contract-v0.obligations.sexp"), "");
+    let _ = fs::remove_file(u.join("contract.sexp"));
+    let (rc, out) = judge(&t, &t);
+    tally.arm(
+        "RED a version's records with no contract owning them are refused",
+        rc,
+        1,
+        captured(&out),
+        "CONTRACT MISSING",
+    );
+    let (rc, out) = judge(&t, &t);
+    tally.arm(
+        "RED no versioned unit at all is refused, never a quiet pass",
+        rc,
+        1,
+        captured(&out),
+        "NO VERSIONED UNIT",
     );
     fresh();
     sed_until(

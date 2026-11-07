@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0086 (leaf XTASK.13 slice h) — CONTRACT-FREEZE judges a frozen unit, and a lost contract is named
+
+Measuring first found the self-test was the only thing catching a deleted contract: the judge alone read `ok (0 versioned unit(s))`. The judge now names it, and the controls read a small frozen unit, so a damaged real contract fails by its own name.
+
 ## SEMULITH-P4-0382 (P4-SYSTEM.14 a51-4) — the two with a switch of the last 17 declared
 
 `REQ-D-NO-H` and `REQ-D-NO-PMP` get real cases, rehearsed at 11 of 11 legs: a hart with H differs at `misa`, and a hart with 16 PMP entries at a load at S's privilege. The alternative gains `pmp_count`.

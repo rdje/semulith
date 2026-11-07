@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bounded controls for real contract owners; no reference process or CPU credit."""
+"""Bounded controls for the real contract owners, over a frozen contract (XTASK.13 slice h); no reference process or CPU credit."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ import records_sexp as R
 import sexp as S
 
 ROOT = Path(__file__).resolve().parent.parent
-PROFILE = ROOT / "profiles/rv64gc-lab-v0"
+PROFILE = ROOT / "scripts/fixtures/contract-freeze/profiles/u"
 DEADLINE_SECONDS = 3
 MUTATION = None
 FREEZE_GUARD = '''            if p in ancestry:
