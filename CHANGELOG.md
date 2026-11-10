@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0096 (leaf ARTIFACT-CLEANUP.40) — the thirteenth recurring cleanup
+
+At 61 h, on a clean tree: the orphan act removed 17 directories (576,723,648 B), then 139 candidates planned and 6 captured Cargo incremental outputs (15,766,339 B) removed, residue 0. Outside the plan, 21 scratch clones that landed units had left (524,516 KiB) are gone and the sweep that missed them is fixed; `XTASK.15` will track it.
+
 ## SEMULITH-P4-0395 (leaf P4-SYSTEM.18) — what the director said, and D79 needs no `sudo`
 
 The director's words of 2026-11-07 are on the record: technical questions are the engineer's to settle, and the one push is allowed as an exception. D79's capture of 2026-10-17 is intact, so it needs no `sudo`.

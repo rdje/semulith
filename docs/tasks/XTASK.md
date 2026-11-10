@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`, `XTASK.13`, `XTASK.14`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`, `XTASK.13`, `XTASK.14`, `XTASK.15`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -415,11 +415,16 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Goal: the defect `ARTIFACT-CLEANUP.37` found. `XTASK.8`'s prefetch names its record files with U+001F and U+001E. A gate that dies leaves them under `target/doctrine-selftest/`, and the artifact census rightly refuses a control character, so one killed gate blocks every later cleanup until someone removes them by hand. **This is the second time:** AC0085 hit it on 2026-10-27, and `docs/knowledge/a-name-one-tool-writes-is-a-path-another-tool-refuses.md` named the fix without scheduling it.
   Result: a record key is now each argument percent-encoded, joined by commas, on both sides (`record_key`, `doctrine_prefetch.key`); a new arm holds the two equal through `doctrine_prefetch.py --key`, because a difference would not fail anything: every arm would quietly run live. Not counted in the 5:1, being a defect's fix. **Measured** (red-before.txt, red-after.txt, misses.txt): before, `census refuses: unsafe relative path`; after, the census accepts it; `PROFILE_CONSISTENCY_PREFETCH_MISSES` over a whole self-test wrote nothing: 0 misses, `PROFILE-CONSISTENCY: ok`. Left alone: a dead process's scratch directory stays until a cleanup's hand reaches it, which the census can now read and the recurring record can name.
 
+- ID: `XTASK.15` — **the commit chain and its scratch sweep are tracked**
+  Status: `pending` (found `2026-11-10` by `ARTIFACT-CLEANUP.40`, AC0096)
+  Goal: `target/xtask/xt0002/commit-chain.sh` and `target/xtask/sweep_unit_scratch.sh` run for every unit, yet both are untracked files under `target/`. A fix to either is not versioned, and removing `target/` removes them. AC0096 found the cost: the sweep had left 21 scratch clones of 13 landed units (524,516 KiB), because it looked only inside `red-*`. It is fixed in place, with a control, on this disk only. Move both behind `cargo xtask`, the chain's refusal of an empty message and the sweep's control as tests: a repository one and two levels down removed; a broken `.git`, a symlink and every file kept. One slice, at the next XTASK turn, ahead of `XTASK.13`'s next: it is small, and every unit's commit runs through it.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes next, case by case, after five feature units |
+| 2 | `XTASK.15` | `pending` | the commit chain and its sweep become tracked; it takes the next XTASK turn, ahead of `XTASK.13`'s next slice |
 
 ## Decisions
 
