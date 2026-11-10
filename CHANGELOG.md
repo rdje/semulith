@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P5-0020 (leaf P5-BOARD.13) — a board on the accepted processor needs a processor contract that admits devices
+
+Measured before composing: `rv64gc-lab-v0`'s effective contract has 10 environment assumptions, and `OB-GC-ENV-DATA-ACCESS` admits only main memory, with no MMIO. No board with a device composes version 0. The call: the device-region supersession rides in the next pinned window (`P4-SYSTEM.20`), and the netboard re-bases onto that version rather than a second board. `.13` is blocked on it.
+
 ## SEMULITH-P4-0400 (leaf P4-SYSTEM.19 slice a) — the scalar unit's recorded runs are held to what they cover, and measured again
 
 The CPU-LAB report now reads `rv64i-lab-v0`'s recorded runs from a `gate.sexp`, each held to what it covers by the verifier the CPU-SYSTEM report uses. Portability re-measured on all four legs (`3fbc498e…` over 49 guests, as both hosted hosts gave), the hosted run recorded, and the ACT4 campaign of 2026-09-30, read as stale by name, run again: 51 pass. The netboard re-pinned deliberately; `.20` owns the next pinned window.

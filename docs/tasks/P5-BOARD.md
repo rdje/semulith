@@ -474,15 +474,17 @@ incompatible CPU/environment assumption remains**.
   instrument must match the failure mode.
 
 - ID: `P5-BOARD.13` — **a board composes the accepted processor**
-  Status: `pending` (found `2026-11-10` by `P4-SYSTEM.18` c2b, `SEMULITH-P4-0399`)
+  Status: `blocked` on `P4-SYSTEM.20`, the processor version whose contract admits device regions (found `2026-11-10` by `P4-SYSTEM.18` c2b, `SEMULITH-P4-0399`; design brief `2026-11-10`, `SEMULITH-P5-0020`)
   Goal: `netboard-lab-v0` composes `rv64i-lab-v0` (`board.sexp`), whose release is experimental, while `rv64gc-lab-v0` version 0 is accepted (`decision_release-rv64gc-lab-v0.md`). `ROADMAP.md` P5 asks the board to fulfil "every assumption in the accepted CPU contract". Measure what moving the netboard onto `rv64gc-lab-v0`'s effective contract costs against a second board that composes it, decide, and carry the composition verdict over.
   Acceptance: a board composes an accepted processor, and its composition verdict judges that processor's effective contract. `.5` and `.7` follow on it.
+  Design brief (`2026-11-10`, `SEMULITH-P5-0020`; `decision_a-board-needs-a-contract-that-admits-devices.md`): `rv64gc-lab-v0`'s effective contract has 57 obligations and 10 environment assumptions, against the scalar unit's 36 and 8. `OB-GC-ENV-DATA-ACCESS` admits only main memory, "with no MMIO or side-effecting reads", so no board with a device composes version 0, and `OB-GC-ENV-INTERRUPT-SOURCES-V2` rules out timers and interrupt controllers. **The call:** the netboard re-bases onto the version whose contract admits device regions; no second board. Its devices, map and generated artifacts carry over, and its 36 scalar obligations and three `satisfies` edges re-target.
+  ROUTING EVIDENCE: the contract change is routed to `P4-SYSTEM.20`, because the assumption that forbids devices is the processor's own, in `profiles/rv64gc-lab-v0/contract-obligations.sexp`, and editing it moves that dossier, which only a new processor version may do. Measured: the effective contract's ten assumptions, read by `effective_contract.contract_measure`; two contradict a device board, by their statements quoted in the decision record. Outside the processor family the finding does not reproduce: the netboard's devices and the scalar contract compose today (BOARD-VERDICT green). The routing would be wrong if a board could declare its MMIO regions without the processor's contract naming them, which `BOARD-VERDICT`'s discharge rule forbids: every environment assumption needs a named guarantee.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.13` | `pending` | a board on the accepted processor: `CPU-SYSTEM` reads `passed` for `rv64gc-lab-v0` since 2026-11-10, and the netboard composes `rv64i-lab-v0` |
+| 1 | `P5-BOARD.13` | `blocked` | the netboard re-bases onto `rv64gc-lab-v0` once a version of it admits device regions: version 0's contract forbids MMIO (`P4-SYSTEM.20` carries the supersession) |
 | 2 | `P5-BOARD.5` | `pending` — gated | firmware probes: gated on the CPU's acceptance trajectory (the tree's Blockers) — the probes run against device models on the model route, and the composition can never outrank its processor; the contract-design leaves (`.1`–`.4`, `.6`) are all done, so the tree's remaining work waits on `P4-SYSTEM` |
 
 ## Decisions
