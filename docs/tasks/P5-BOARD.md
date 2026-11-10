@@ -473,11 +473,17 @@ incompatible CPU/environment assumption remains**.
   `docs/knowledge/a-byte-ceiling-applies-to-authored-content.md` (+ INDEX): the
   instrument must match the failure mode.
 
+- ID: `P5-BOARD.13` — **a board composes the accepted processor**
+  Status: `pending` (found `2026-11-10` by `P4-SYSTEM.18` c2b, `SEMULITH-P4-0399`)
+  Goal: `netboard-lab-v0` composes `rv64i-lab-v0` (`board.sexp`), whose release is experimental, while `rv64gc-lab-v0` version 0 is accepted (`decision_release-rv64gc-lab-v0.md`). `ROADMAP.md` P5 asks the board to fulfil "every assumption in the accepted CPU contract". Measure what moving the netboard onto `rv64gc-lab-v0`'s effective contract costs against a second board that composes it, decide, and carry the composition verdict over.
+  Acceptance: a board composes an accepted processor, and its composition verdict judges that processor's effective contract. `.5` and `.7` follow on it.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P5-BOARD.5` | `pending` — gated | firmware probes: gated on the CPU's acceptance trajectory (the tree's Blockers) — the probes run against device models on the model route, and the composition can never outrank its processor; the contract-design leaves (`.1`–`.4`, `.6`) are all done, so the tree's remaining work waits on `P4-SYSTEM` |
+| 1 | `P5-BOARD.13` | `pending` | a board on the accepted processor: `CPU-SYSTEM` reads `passed` for `rv64gc-lab-v0` since 2026-11-10, and the netboard composes `rv64i-lab-v0` |
+| 2 | `P5-BOARD.5` | `pending` — gated | firmware probes: gated on the CPU's acceptance trajectory (the tree's Blockers) — the probes run against device models on the model route, and the composition can never outrank its processor; the contract-design leaves (`.1`–`.4`, `.6`) are all done, so the tree's remaining work waits on `P4-SYSTEM` |
 
 ## Decisions
 
@@ -892,6 +898,8 @@ incompatible CPU/environment assumption remains**.
   the board inherits the CPU's EXPERIMENTAL status and every board claim must read as
   conditional on it. Firmware probes (`.5`) and the `BOARD` gate verdict (`.7`) stay gated on
   the CPU's own acceptance trajectory — the composition can never outrank its processor.
+- `2026-11-10`: `CPU-SYSTEM` reads `passed` for `rv64gc-lab-v0` version 0 (`P4-SYSTEM.18` c2b). The netboard composes
+  `rv64i-lab-v0`, so `.5` and `.7` now wait on `.13`, a board on the accepted processor, not on the CPU gate.
 
 ## Acceptance Checklist (filled per leaf at execution time)
 

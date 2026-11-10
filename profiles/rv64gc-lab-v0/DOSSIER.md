@@ -9,7 +9,7 @@ locator, and the dependency closure is measured against the pinned publication.
 > **Claim scope.** This `generated-definition` unit executes its complete
 > instruction composition: RV64I, M/A/F/D/C, Zicsr, Zicntr and Zifencei, with the
 > declared privileged machinery. The scope is 200 spellings (197 instructions and
-> three counter pseudos); all are exercised by the 167-guest directed corpus.
+> three counter pseudos); all are exercised by the 210-guest directed corpus.
 > F/D use the qualified Rust backend (`P4-SYSTEM.7`); C bound at `.12` slice e2c.
 > This is finite laboratory evidence. The generated [CPU-SYSTEM report](GS-REPORT.md)
 > owns the current acceptance verdict. Instruction composition and realized
@@ -87,11 +87,12 @@ interaction matrix and pinned reference dossier. Registration, the complete cate
 census and the dedicated book are recorded in materials/units.sexp,
 materials/category-needs.sexp and docs/models/rv64gc-lab-v0/. The book distinguishes
 acquired facts, implementation and evidence acceptance. Historical matched results
-remain finite observations; structured experiments and requirement-status derivation
-remain .14 work. CPU-SYSTEM acceptance has not been reached.
+remain finite observations. `.14` turned the experiments into records, and each
+requirement's status is derived from its credited case. The generated report owns the
+verdict, and `docs/decisions/decision_release-rv64gc-lab-v0.md` owns acceptance.
 
 Contract membership and realization are derived in [GS-REPORT.md](GS-REPORT.md).
-The latest v2 is frozen; supersessions preserve earlier frozen text and pins.
+The latest, v3, is frozen; supersessions preserve earlier frozen text and pins.
 The [C chapter](docs/book/src/plan/p4/c.md) records its binding and finite matched
 comparison. The full [verification policy](EVIDENCE_POLICY.md) is prospective after
 implementation: earlier successful runs are not automatically requalified.
@@ -130,14 +131,14 @@ implementation: earlier successful runs are not automatically requalified.
 The canonical census accounts for x/PC/mode, the FP file, 26 CSR owners behind
 33 names, main memory, four TLB entries plus FIFO position, reservation and
 ACTIVE/WAITING state. Time is stored in mcycle; views add no independent storage.
-Requirement statuses remain .14's work. P4.16 provides bounded laboratory JSON
-snapshot/resume and model-aware replay bundles, including all census owners; reduction stays open.
-Two named full-table fault controls exercise the text demo; the complete mutation
-campaign remains .15 work.
+Requirement statuses are derived from credited cases (.14). P4.16 provides bounded
+laboratory JSON snapshot/resume, model-aware replay bundles including all census owners,
+and finite divergence reduction. Two named full-table fault controls exercise the text
+demo, and the complete mutation campaign (.15) detects all 30 designated mutants.
 
 The effective contract and executable registry are complete at the .13 checkpoint;
 [GS-REPORT.md](GS-REPORT.md) derives their current denominator and realization.
-Frozen v0/v1/v2 text, membership and pins remain unchanged. Shared catalog/schema/
+Frozen v0–v3 text, membership and pins remain unchanged. Shared catalog/schema/
 freeze owners judge the same records. V2 supersedes the earlier FP condition,
 definition stages, blanket no-breakpoint wording and v1 STIP comparator assumption.
 STCE-clear software pending and direct S-mode programming/refusal witnesses are

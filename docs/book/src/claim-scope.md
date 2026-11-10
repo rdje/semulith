@@ -7,38 +7,49 @@ gained by overstating it.
 
 ## Claimed today
 
-Still nothing about a *processor product*: no conformance result, no accepted profile, no
-gate reading `passed`.
+**One accepted processor profile: `rv64gc-lab-v0` version 0, since 2026-11-10.** Gate
+`CPU-SYSTEM` reads `passed` over its dossier, and the release decision
+(`decision_release-rv64gc-lab-v0.md`) pins that dossier's digest. The generated report,
+`profiles/rv64gc-lab-v0/GS-REPORT.md` (the unit's own book shows it), verifies the decision at
+every commit, so the claim cannot outlive the bytes it was made about: one changed dossier file
+and the gate reads `incomplete` again.
 
-What exists is a **laboratory with first evidence**. The four-crate workspace executes the
-`rv64i-lab-v0` definition: all 52 declared instructions evaluate directly from the semantics
-data, under the environment contract, with the outcome families the architecture requires.
-Forty-eight assembled guest programs run on it — the four P1 smoke guests, the five
-`P2-SCALAR.1` scope-completion guests, the five `P2-SCALAR.2` boundary guests, the
-eighteen `P2-SCALAR.3` fault guests, the eight `P2-SCALAR.4` interaction guests, and the
-eight `P2-SCALAR.5` directed-sequence guests, plus one guest compiled from C — so every
-one of the 52 declared forms is executed, the shift-amount domains are exhausted, the
-fault, suppression and reserved cases behave as the source classifies them, and the declared
-fault × alias × boundary × event × progress × restart matrix's 21 cells all resolve —
-and their observations agree with two
-independently built reference models (sail-riscv 0.14, spike 1.1.1-dev) on all 642 aligned
-steps (plus one *declared* expected divergence, `it-fencei`, where the references execute
-a word this profile declares reserved), and reproduce byte-identically on re-run. The evidence machinery that makes a number
-checkable lives here too: the records re-validate on two engines on every commit, and the
-guest expectations are specification-derived values the commit gate re-checks offline.
+What the ten axes measured, in one line each:
 
-Every one of those claims is **finite tested evidence, explicitly not universal proof**
-(`EVD-01`): forty-nine programs, two references, one host. Nothing on this page upgrades them.
+| Axis | What stands behind it |
+| --- | --- |
+| scope | RV64I with M, A, F, D, C, Zicsr, Zicntr, Zifencei, Sstc and Svade: 200 spellings, all exercised |
+| state | every hidden-state candidate answered; 4 of 4 state requirements implemented |
+| contract | 114 of 114 environment-contract checks realized; contract version 3 frozen |
+| trace | 42 matched cases, each with a baseline, a byte-identical repeat and a control seen to diverge |
+| obligations | 48 requirements: 46 implemented by current credits, 2 not applicable |
+| interactions | 28 of 28 fault, alias, boundary, event, progress and restart cells resolved |
+| regression | 210 directed guests; the arch-test suites I, M, Zaamo, Zalrsc, Zca, F and D; generated vectors; 30 of 30 mutants caught; 4 compiled C workloads |
+| portability | the tests pass and the 210 guests' digests match, natively on arm64 and x86-64; Miri passes for the host and for big-endian powerpc64 |
+| replay | determinism, replay bundles, snapshots and divergence reduction |
+| release | the named decision, the declared limits, the digest-pinned dossier |
+
+**This is finite tested evidence, not proof** (`EVD-01`). It says the model agrees with one
+pinned reference on the declared observations of the programs the evidence names, within the
+limits the report lists.
+
+The rest of the project's claims are smaller and named as such:
+
+- `rv64i-lab-v0` is an **experimental release** (`decision_release-rv64i-lab-v0.md`): its
+  `CPU-LAB` report reads `incomplete`.
+- `G1`, the laboratory gate, reads `passed` since 2026-09-30.
+- `BREADTH` reads `passed` over a bounded, experimental DSP56300 subset.
 
 ## Not claimed
 
 | Not claimed | Why it matters |
 | --- | --- |
-| A validated CPU profile | P2's `CPU-LAB` gate HAS run and reads `incomplete` (G-CONTRACT/G-OBLIGATIONS open; the decision is the experimental release, `decision_release-rv64i-lab-v0`). The evidence covers the guest corpus, its declared, exercised interaction matrix, the ACT4 RV64I external campaign (51 test files, Sail-derived expectations — one semantics by construction), directed sequences, and mid-execution snapshots — but no privileged-mode tests, and the portability matrix reads `passed` via the Rosetta bridge (the bare-metal CI leg lands at the next push). Executing correctly is a beginning, not a validation. |
-| A conformance result | `G1` reads `passed` since `2026-09-30` (criterion 6 met by the `c-scope` compiled C guest, `P2-SCALAR.5`) — a laboratory gate, not a conformance claim. `G0` ran with verdict `incomplete` (its declared checks are still largely unimplemented), and the `CPU-LAB` report stands at `incomplete` (G-CONTRACT/G-OBLIGATIONS open) — the release decision is the EXPERIMENTAL release of the versioned artifact, not a validation. |
-| An accepted processor profile | `rv64i-lab-v0` is a development profile. Acceptance attaches evidence to an exact versioned profile; none has been accepted. |
-| Reference *independence* beyond the inventory | Both comparators are acquired and matched-profile exercised on the guest corpus; ACT4 ran (51/51 RV64I test files, Sail-derived expectations — one semantics by construction), QEMU is unexamined, and the two models' floating-point cores share source (`EVD-04`'s inventory is the record). Agreement on 642 steps is two implementations agreeing, not three opinions. |
-| Complete in-repository claim tooling | The frozen `examples/` records re-validate in Rust per `RUST-01`, and the guests' expectations re-check offline — but the profile dossier still rides the Python track, and `CLAIM_VERIFICATION.md`'s tag and constant sweep are not mechanized. |
+| A conformance result | Nothing here is certified by RISC-V International, and "supports RV64GC" appears nowhere. `CPU-SYSTEM` is this project's own gate, run on its own evidence. |
+| Anything past the declared limits | The report lists them: one hart; no board, boot, multicore or weak-memory exploration; one reference; `wfi`'s stall and injected suboperation faults uncredited; the ABI as the pinned compiler builds it; and the next pinned window's open list. |
+| Reference *independence* | Every case is matched against one pinned sail-riscv build whose ancestry is unexamined. The arch-test suites and workloads carry Sail-derived expectations, with spike as the control pair: one semantics answering twice, never a second opinion (`EVD-04`). |
+| A board, a boot or Linux | The board on file composes `rv64i-lab-v0`, the experimental unit, so this acceptance does not reach it. Linux is P6. |
+| Acceptance of any other unit | `rv64i-lab-v0` and `dsp56300-lab-v0` stay experimental. |
+| Published evidence beyond this repository | The decision is a local commit until the director approves a push. |
 | The name | *Semulith* is proposed. No crate, repository, domain, or trademark has been reserved or cleared. |
 
 ## The rules that keep it that way
@@ -53,7 +64,7 @@ becoming false:
 - **`AI-03`** — AI review and agreement are criticism and workflow aids, not independent
   conformance evidence.
 
-And one mechanical habit: a gate that reports `incomplete` is never rewritten as `passed`
-because the missing infrastructure is "coming". No *when available* clause turns an incomplete
-message into a pass — and no *we executed it* clause turns a development profile into an
-accepted one.
+And two mechanical habits. A gate that reports `incomplete` is never rewritten as `passed`
+because the missing infrastructure is "coming". And an accepted profile stays accepted only
+while the bytes it was accepted on stay the same: the report re-checks the decision's digest at
+every commit.

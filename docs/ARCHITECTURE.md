@@ -403,7 +403,7 @@ successful exit. Scalar demo JSON remains available. Unknown GC control names
 also refuse2. Replay bundles can record these same named controls, as described
 below. Finite divergence reduction completed P4.16 (see the reduction section
 above). The complete validator mutation campaign
-remains P4.15's work, and CPU-SYSTEM acceptance remains incomplete.
+completed at P4.15, and CPU-SYSTEM reads `passed` since 2026-11-10.
 
 ### Recording a declared control model
 

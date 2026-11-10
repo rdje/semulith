@@ -11,7 +11,7 @@ Requirements, frozen records and acceptance have their own authorities.
 
 ## Where the release stands
 
-All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and one thing remains (`decision_release-before-the-next-window.md`): the named release decision, with its capability limits and versioned artifact. The report can now verify one, as the last section of this page shows.
+Version 0 is accepted since 2026-11-10 (`decision_release-rv64gc-lab-v0.md`). All 48 requirements are settled, all ten axes read green, and the decision pins the dossier's digest, which the report re-checks at every commit. The capability limits the report lists are part of the claim: one hart, one reference, and the next pinned window's open list among them.
 
 The hosted run it needed is recorded. Run 42418631491 ran on commit `12347bc5`, the push the director allowed on 2026-11-07 as an exception:
 
@@ -95,7 +95,7 @@ The report verifies the decision at every commit. A decision does not stand, and
 
 So `accepted` can never exceed the report, and a release is of exact bytes. Once the dossier moves, the decision stops standing until a new one is recorded.
 
-No decision is recorded yet. This is the rehearsal on a clone of the tree, with the real dossier:
+Before the decision was recorded, it was rehearsed on a clone of the tree, with the real dossier:
 
 ```text
 before        : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`.

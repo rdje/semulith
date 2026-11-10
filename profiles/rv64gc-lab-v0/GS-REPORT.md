@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`.
+**Verdict: `passed`.**
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
@@ -19,16 +19,14 @@
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
 | `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 4 of 4 required kinds evidenced | **green** |
-| `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | no release decision recorded; this report is generated from tracked inputs and gated for sync (GATE-REPORT); every other axis green | **incomplete** |
+| `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | the release decision reads `accepted`; this report is generated from tracked inputs and gated for sync (GATE-REPORT); every other axis green | **green** |
 
 Fidelity is reported per axis. No sentence here says the profile is supported: a banner
 is not a claim with a denominator.
 
 ## What stands open, and who owns it
 
-| Axis | Owner | Open item |
-| --- | --- | --- |
-| `G-RELEASE` | `P4-SYSTEM.18` | No release decision is recorded for this unit. |
+Nothing.
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
 
@@ -90,7 +88,7 @@ is not a claim with a denominator.
 | `G-REPLAY` | `snapshot` | `crates/semulith-verify/src/snapshot_rv64gc/tests.rs` `every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches` | yes |
 | `G-REPLAY` | `replay-bundle` | `crates/semulith-verify/src/replay_rv64gc/tests.rs` `every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts` | yes |
 | `G-REPLAY` | `reduction` | `crates/semulith-verify/src/reduce_rv64gc/tests.rs` `both_controls_reduce_and_replay_the_exact_original_paired_difference` | yes |
-| `G-RELEASE` | `decision` | — | **none declared** |
+| `G-RELEASE` | `decision` | `docs/decisions/decision_release-rv64gc-lab-v0.md` | yes |
 
 A test function is verified to exist in a tracked file; this report does not execute tests.
 Test results must come from an applicable recorded run. A record is verified to be tracked
@@ -102,15 +100,27 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 0f1b93f1d19142f0ab2297edbedefbd4a7b2621ac6f00ae4af4f5ac50636eacd`
+  `sha256 5aba9c96aedda21c18a8c1c9af71c82298d4de4bf24bc569389a591dd9f88f04`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision
 
-None is recorded.
+`accepted`, recorded in `docs/decisions/decision_release-rv64gc-lab-v0.md` for version `0` and the dossier digest above.
+This report verifies the decision against the tree and never exceeds it: the decision stops
+standing when the dossier moves, and `accepted` stands only while every other axis is green,
+a native x86-64 host is on record and the capability limits below are declared.
 
 ## Capability limits (explicit)
 
-Every open item above is a limit of what this profile is evidence for today. Until each
-closes, a claim about this processor holds only on the axes that read green, and only
-for the inputs those axes measured.
+Every axis is green over the inputs it measured; finite testing is not proof.
+
+The unit declares:
+
+- Finite evidence on named inputs: the model agrees with the pinned reference on the declared observations of the programs the evidence names, and no more (`EVD-01`). Each credit's own limits stand.
+- One hart. No board, no boot, no multicore and no weak-memory exploration: the profile declares one hart, and multicore is `MC-MULTICORE`'s.
+- One reference. The cases are matched against `sail-riscv` 0.14, whose lineage is unexamined, and the arch-test suites and workloads carry Sail-derived expectations with spike as the control pair: agreement, not independent confirmation (`EVD-04`).
+- Past the reference, and uncredited: `wfi`'s stall and the fetches it withholds, and faults injected at a chosen suboperation. A reader who holds that those must be witnessed reads `REQ-GC-PRIV-INSNS` and `REQ-GC-PARTIAL-PROGRESS` as `partial`.
+- The ABI statement holds for what the pinned compiler builds. The retained assembly guests and the arch-test suites are tagged soft-float on purpose, because they make no calls across the ABI.
+- The next pinned window's list stands open (`decision_csr-write-three-producers.md`): the expectations author's legalization of `medeleg`, `mtvec` and `stvec`, which no retained expectation reaches and which fails safe; the state table's `medeleg` narrowing to `0xb3ff`; the override's `misaligned_amo AccessFault`; a probe holding the author to the engine; and the author's vocabulary, which narrows the named limits on `hstatus` and `pmpcfg0`.
+- The native x86-64 leg is one hosted run, 42418631491, on a commit whose engine, definitions and guests match this dossier's; between pushes, Rosetta translation on an arm64 host carries it.
+- Not a conformance or compatibility claim: nothing here is certified by RISC-V International, and nothing is claimed about any physical implementation.

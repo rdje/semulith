@@ -11,9 +11,10 @@ Registered units:
   processor laboratory and its materials-to-model method.
 - **`rv64gc-lab-v0`** (kind: processor) — `docs/models/rv64gc-lab-v0/`. The
   Linux-oriented profile, registered with its pinned materials and prospective
-  evidence policy. CPU-SYSTEM remains incomplete; registration establishes neither
-  processor acceptance nor a Linux boot result. Read its introduction, policy and
-  generated gate separately.
+  evidence policy. Version 0 is accepted since 2026-11-10: CPU-SYSTEM reads `passed`
+  and the release decision pins the dossier. Registration itself establishes neither,
+  and no Linux boot result exists. Read its introduction, policy and generated gate
+  separately.
 - **`dsp56300-lab-v0`** (kind: processor) — `docs/models/dsp56300-lab-v0/`. The
   bounded EXPERIMENTAL DSP subset, compared against its pinned reference; the unit
   that extended the abstraction beyond scalar CPUs (`P3-BREADTH`).

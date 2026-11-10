@@ -429,11 +429,11 @@ This gate authorises the planned next engineering stage: board implementation.
   same for rv64gc-lab-v0; the Miri job `miri: green`, `cross-endian: green`. The x86-64 leg's permanent home now carries both
   units on real hardware, as `decision_release-route-x86-64-leg.md` requires; the Rosetta bridge stays a local cross-check.
 - ID: `P4-SYSTEM.18` — **the CPU-SYSTEM verdict and the release decision** — `G-RELEASE`
-  Status: `active` (opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
+  Status: `done` (`2026-11-10`, slices a to c2b, `SEMULITH-P4-0393`–`0399`; opened by `.10`'s design brief `2026-10-06`, `SEMULITH-P4-0068`)
   Goal: the report regenerated over the complete profile; the named release decision.
   Acceptance: the decision never exceeds the report — `accepted` only on `passed`; otherwise it
   names what stands open.
-  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b (`2026-11-10`, `SEMULITH-P4-0396`) records the hosted run on this tree, so the report shows the native x86-64 leg. c1 (`2026-11-10`, `SEMULITH-P4-0397`) makes the report hold a release decision to the unit, the dossier and itself. c2 is the act, in two commits: c2a records the terms of every input the release ships or relies on, so the dossier's OQ-1, due at the first release candidate, closes by census; c2b the decision record, its capability limits, and the claim pages.
+  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b (`2026-11-10`, `SEMULITH-P4-0396`) records the hosted run on this tree, so the report shows the native x86-64 leg. c1 (`2026-11-10`, `SEMULITH-P4-0397`) makes the report hold a release decision to the unit, the dossier and itself. c2 is the act, in two commits: c2a records the terms of every input the release ships or relies on, so the dossier's OQ-1, due at the first release candidate, closes by census; c2b the decision record, its capability limits, and the claim pages. c2b (`2026-11-10`, `SEMULITH-P4-0399`): version 0 is accepted, and `CPU-SYSTEM` reads `passed`.
 - ID: `P4-SYSTEM.19` — **the scalar unit's recorded evidence is held to what it covers**
   Status: `pending` (found `2026-11-10` by `.18` slice b, `SEMULITH-P4-0396`)
   Goal: `rv64i-lab-v0`'s report reads `G-PORTABILITY` green from a record of 2026-09-30. That record states the digest `0670a01b…`, and the unit's 49 guests give `3fbc498e…` today, on both hosted hosts. `scripts/gate_report.py` reads that verdict, and the unit's ACT record, with no statement of what either covers. Re-measure the unit's portability, record its hosted run, and hold its recorded rows to what they cover, as `.18` slice a did for `rv64gc-lab-v0`. Its `DOSSIER.md` OQ-4 also still says the specification's terms are open, though `materials/catalog.sexp` records the pinned volumes as CC BY 4.0 (found by `.18` c2a).
@@ -444,8 +444,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.18` | `active` | the verdict and the release decision. Slice a holds recorded evidence to what it covers, and slice b records the hosted run on this tree, so the report shows the native x86-64 leg and reads 1 of 10 axes open. Slice c1 makes the report hold a release decision to the dossier and to itself. Next slice c2, the decision, after the XTASK turn |
-| 2 | `P4-SYSTEM.19` | `pending` | the scalar unit's portability record is stale and its report reads it green; after `.18` slice c |
+| 1 | `P4-SYSTEM.19` | `pending` | the scalar unit's portability record is stale and its report reads it green. `.18` is done: `rv64gc-lab-v0` version 0 accepted, `CPU-SYSTEM` `passed` |
 
 ## Decisions
 
@@ -542,6 +541,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .18 c2b / SEMULITH-P4-0399: rv64gc-lab-v0 version 0 is accepted, and `CPU-SYSTEM` reads `passed` (completed)
+
+Feature 2 of 5 after XTASK-0089. **The act.** `gate.sexp` names `decision_release-rv64gc-lab-v0.md` as `G-RELEASE`'s evidence and declares eight capability limits; the owned `open` form goes. The record states one form, `accepted` for version 0 and the dossier's digest `5aba9c96…`, and the report verifies it: **`passed`**, 10 of 10 axes. Recorded by the workflow, as `decision_a-release-decision-is-held-to-the-report.md` item 4 allows. **Before the digest.** The dossier is what is accepted, so its stale sentences were corrected first: a 167-guest corpus that is 210, contract v2 called latest where v3 is, three leaves' work called open that is done, and `ENVIRONMENT.md`'s "incomplete" verdict. **Control.** One comment appended to `gate.sexp` reads `incomplete`, "the decision is of another dossier", and the restored bytes give the same report. **The claim pages.** README's claim scope, `claim-scope.md` rewritten (stale since P2), `models.md`, `plan/p4.md`, `ARCHITECTURE.md`, the unit book, LIVE_STATUS. **Found.** (1) `profile.sexp` still says `development` and that `CPU-SYSTEM` remains incomplete; 88 evidence files pin it, so both join the next window's list. (2) The netboard composes `rv64i-lab-v0`, so this acceptance does not reach it: `P5-BOARD.13`. Publishing is a push, which stays the director's. Book: `claim-scope.md`, `evidence.md`.
 
 ### .18 c2a / SEMULITH-P4-0398: the terms of what the release ships and relies on are recorded, and OQ-1 closes (completed)
 
@@ -1253,6 +1256,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.18` c2b **ROOT CAUSE** — no decision was recorded: `git show 63758a47:profiles/rv64gc-lab-v0/GS-REPORT.md | grep -c 'None is recorded'` = 1, and `git show 63758a47:profiles/rv64gc-lab-v0/gate.sexp | grep -c '(open (axis G-RELEASE)'` = 1; the dossier to be pinned held stale state, `git show 63758a47:profiles/rv64gc-lab-v0/DOSSIER.md | grep -c '167-guest'` = 1 with `git ls-files 'profiles/rv64gc-lab-v0/guests/*.s' | wc -l` = 210.
+- [x] `.18` c2b **ADDRESSED** — `python3 -B scripts/gate_report.py rv64gc-lab-v0 --gate GS` `rc=0`; `grep -c 'Verdict: .passed' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1; `grep -c 'decision_release-rv64gc-lab-v0.md. | yes' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1; `grep -c '^(limit ' profiles/rv64gc-lab-v0/gate.sexp` = 8. Control: one comment appended to `gate.sexp` gives `grep -c 'the decision is of another dossier' target/p4-system-18/c2/control-dossier-moved.md` = 1 and `Open axes (1 of 10)`; restored, `--stdout | cmp` with the tracked report `rc=0`.
+- [x] `.18` c2b **NO REGRESSION** — `python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/gate.sexp schema/gate.sexp` `rc=0`; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`; `bash scripts/check_exercise_coverage.sh` `rc=0` → `200/200`; `git diff --cached --name-only | grep -c 'profile.sexp\|evidence/'` = 0.
 - [x] `.18` c2a **ROOT CAUSE** — the terms were open at the release: `git show b73e0659:profiles/rv64gc-lab-v0/DOSSIER.md | grep -c 'other terms open'` = 1, and `git show b73e0659:materials/catalog.sexp | grep -c '(licence "unrecorded")'` = 58, three of them this unit's sources (RVI-PSABI-1.0, RISCV-SBI-2.0, SIFIVE-FU540-C000).
 - [x] `.18` c2a **ADDRESSED** — `bash target/p4-system-18/c2/terms_census.sh` `rc=0` → `30 of 30 excerpts named by a retention record`, and every catalogued source of the unit has its licence; `grep -c '(licence "unrecorded")' materials/catalog.sexp` = 55; `grep -c 'OQ-1 — CLOSED' profiles/rv64gc-lab-v0/DOSSIER.md` = 1. Control: a made-up excerpt name gives `grep -l` over the retention records `| wc -l` = 0, so a missing record is printed by name.
 - [x] `.18` c2a **NO REGRESSION** — `python3 -B scripts/materials.py --verify` `rc=0` → `64 verified / 0 unresolved`; `python3 -B scripts/materials.py --self-test` `rc=0` → `20 pass / 0 fail`; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`; the report moves only its digest line (`git diff -- profiles/rv64gc-lab-v0/GS-REPORT.md | grep -c '^[-+] '` = 2) and still reads `Open axes (1 of 10)` (`grep -c` = 1).

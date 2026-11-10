@@ -45,5 +45,6 @@ Both fixes move pinned inputs (`scripts/derive_rv64gc_expectations.py`, `profile
 | The table's `medeleg` narrows to `0xb3ff` | This record |
 | A probe holding the author to the engine, each CSR field by field | This record, so the class stays closed |
 | The author's vocabulary: every SYSTEM word and CSR the profile leaves out, so a case can show them refused | [`decision_the-seventeen-called.md`](decision_the-seventeen-called.md) |
+| `profile.sexp`'s `(status "development")` and its comment that `CPU-SYSTEM` remains incomplete, stale since version 0 was accepted | [`decision_release-rv64gc-lab-v0.md`](decision_release-rv64gc-lab-v0.md) |
 
 Until then, a witness writes values all three producers keep.

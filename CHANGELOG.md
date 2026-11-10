@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0399 (leaf P4-SYSTEM.18 slice c2b) — rv64gc-lab-v0 version 0 is accepted, and CPU-SYSTEM reads passed
+
+The release decision is recorded: `accepted` for version 0, pinned to the dossier's digest, with eight capability limits in `gate.sexp`; the report verifies it and reads `passed`, 10 of 10 axes. The dossier's stale sentences were corrected before the digest was taken. README's claim scope and the book's claim page say what is and is not claimed. The netboard composes the scalar unit, so `P5-BOARD.13` owns a board on the accepted processor.
+
 ## SEMULITH-P4-0398 (leaf P4-SYSTEM.18 slice c2a) — the terms of what the release ships and relies on are recorded, and OQ-1 closes
 
 The dossier said its terms were due at the first release candidate, and three cited sources read `unrecorded`. Read from each document: the psABI and the SBI are CC BY 4.0; the FU540-C000 manual is CC BY-NC-ND 4.0, so it is cited, never redistributed. All 30 retained excerpts are named by a retention record. OQ-1 closes by census.

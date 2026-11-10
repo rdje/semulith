@@ -48,11 +48,10 @@ RECORD-SCHEMA keeps it so (`decision_requirements-bound-to-the-effective-contrac
 a43e-2 each states what that obligation states: contract v3 gave four successors their requirement
 mirrors, so REQ-D-FP-DEFER, REQ-D-ROUTE-FLIP, REQ-D-ECALL-EBREAK and REQ-GC-PRIV-INSNS no longer
 carry a superseded record's words, and REQ-D-ECALL-EBREAK's OQ-5 is rv64i's question and not this
-profile's: here the trap is delivered, so the pc after it is the handler's. Structured matched experiments, controls, producer
-relationships and prospective policy adequacy remain .14 work. Full external,
-workload and validator-mutation regression is .15; host/portable qualification is
-.17; release decision is .18. GC snapshot/replay/reduction completed .16, with
-G-REPLAY green at 4/4; this does not close the other CPU-SYSTEM axes.
+profile's: here the trap is delivered, so the pc after it is the handler's. The rest closed leaf by leaf: matched
+experiments and requirement status at .14, regression at .15, snapshot, replay and
+reduction at .16, portability at .17, and the release decision at .18, which accepted
+version 0 on 2026-11-10 within the limits the report lists.
 
 The GC CLI now supports snapshots, replay bundles and finite divergence reduction;
 the architecture contract gives commands, bounds and refusal cases. The netboard's

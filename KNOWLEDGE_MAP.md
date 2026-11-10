@@ -166,6 +166,7 @@
 - [`decision_reference-config-per-case.md`](docs/decisions/decision_reference-config-per-case.md)
 - [`decision_release-before-the-next-window.md`](docs/decisions/decision_release-before-the-next-window.md)
 - [`decision_release-route-x86-64-leg.md`](docs/decisions/decision_release-route-x86-64-leg.md)
+- [`decision_release-rv64gc-lab-v0.md`](docs/decisions/decision_release-rv64gc-lab-v0.md)
 - [`decision_release-rv64i-lab-v0.md`](docs/decisions/decision_release-rv64i-lab-v0.md)
 - [`decision_req-d-csr-set-credited-implemented.md`](docs/decisions/decision_req-d-csr-set-credited-implemented.md)
 - [`decision_req-d-sstc-credited-implemented.md`](docs/decisions/decision_req-d-sstc-credited-implemented.md)

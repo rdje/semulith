@@ -133,3 +133,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [A docs-only commit answers a check from its last green run (2026-10-27)](decision_docs-only-gate-path.md) | `decision` | When may the commit gate skip a check, and what makes the skip sound? |
 | [The hosted run is a record (2026-11-10)](decision_hosted-run-is-a-record.md) | `decision` | Where is the native x86-64 leg's evidence kept once the hosting service drops a run's logs, and what did recording it find? |
 | [A release decision is held to the report (2026-11-10)](decision_a-release-decision-is-held-to-the-report.md) | `decision` | What makes a recorded release decision stand, when does it stop standing, and who records one? |
+| [rv64gc-lab-v0 version 0 accepted (2026-11-10)](decision_release-rv64gc-lab-v0.md) | `decision` | Is rv64gc-lab-v0 version 0 accepted, on what evidence, within which limits, and what does the acceptance authorize? |

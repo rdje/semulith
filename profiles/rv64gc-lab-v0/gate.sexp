@@ -147,5 +147,16 @@
   (covers (path "crates/semulith-core/src") (sha256 "10aba3782c29c3a63eb1ef156bcbab67e33d2757e0b089653d30b33630b3f359"))
   (covers (path "definitions") (sha256 "bb41ed1e87971950a5a83991981edfd88c7108dba39007f5f330bbbe4892c16a"))
   (statement "P4-SYSTEM.17 slice a, re-measured at P4-SYSTEM.18 slice a: the pinned nightly's Miri over semulith-core, natively and on big-endian powerpc64 (the cross-endian leg); the record is frozen from the run's own logs and digests by scripts/check_portability.sh --profile rv64gc-lab-v0 --record, re-derivable on any host (the legs report that host)."))
-(open (axis G-RELEASE) (owner "P4-SYSTEM.18")
-  (statement "No release decision is recorded for this unit."))
+;; G-RELEASE: the named release decision, held to this unit, this version and this dossier's digest, and `accepted`
+;; to the report (decision_a-release-decision-is-held-to-the-report.md; P4-SYSTEM.18 slice c2b). The limits below are
+;; what version 0 is NOT evidence for; the report lists them.
+(evidence (axis G-RELEASE) (kind decision) (record "docs/decisions/decision_release-rv64gc-lab-v0.md")
+  (statement "The release decision for version 0: accepted, as finite evidence within the declared limits, pinned to the dossier's digest and verified by this report at every commit."))
+(limit (statement "Finite evidence on named inputs: the model agrees with the pinned reference on the declared observations of the programs the evidence names, and no more (`EVD-01`). Each credit's own limits stand."))
+(limit (statement "One hart. No board, no boot, no multicore and no weak-memory exploration: the profile declares one hart, and multicore is `MC-MULTICORE`'s."))
+(limit (statement "One reference. The cases are matched against `sail-riscv` 0.14, whose lineage is unexamined, and the arch-test suites and workloads carry Sail-derived expectations with spike as the control pair: agreement, not independent confirmation (`EVD-04`)."))
+(limit (statement "Past the reference, and uncredited: `wfi`'s stall and the fetches it withholds, and faults injected at a chosen suboperation. A reader who holds that those must be witnessed reads `REQ-GC-PRIV-INSNS` and `REQ-GC-PARTIAL-PROGRESS` as `partial`."))
+(limit (statement "The ABI statement holds for what the pinned compiler builds. The retained assembly guests and the arch-test suites are tagged soft-float on purpose, because they make no calls across the ABI."))
+(limit (statement "The next pinned window's list stands open (`decision_csr-write-three-producers.md`): the expectations author's legalization of `medeleg`, `mtvec` and `stvec`, which no retained expectation reaches and which fails safe; the state table's `medeleg` narrowing to `0xb3ff`; the override's `misaligned_amo AccessFault`; a probe holding the author to the engine; and the author's vocabulary, which narrows the named limits on `hstatus` and `pmpcfg0`."))
+(limit (statement "The native x86-64 leg is one hosted run, 42418631491, on a commit whose engine, definitions and guests match this dossier's; between pushes, Rosetta translation on an arm64 host carries it."))
+(limit (statement "Not a conformance or compatibility claim: nothing here is certified by RISC-V International, and nothing is claimed about any physical implementation."))

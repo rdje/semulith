@@ -303,5 +303,5 @@ that is overlapping coverage with the reservation pair, not new unique cells.
 Pair+loop and mustfail+fault companions add 96 boundaries/192 parcels. The atomics
 chapter gives the worked alias history, 35 actual guard/route controls and finite
 author/reference limits. Registry 116 realizes all 114 effective checks under 57
-obligations; latest v2 has 14 byte-pinned frozen members. Full five-leg CI passed at .13 signoff.
- GS-REPORT owns the current measure and incomplete CPU-SYSTEM verdict.
+obligations; v2 has 14 byte-pinned frozen members, and the latest, v3, has 4. Full five-leg CI
+passed at .13 signoff. GS-REPORT owns the current measure and the CPU-SYSTEM verdict.
