@@ -49,7 +49,7 @@ on the same commit. One commit per completed leaf.
 <!-- ANCHOR: trees -->
 | Tree | Status | Frontier (next leaf) | Owner |
 | --- | --- | --- | --- |
-| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.19` — the scalar unit's recorded evidence held to what it covers: its portability record is stale and its report reads it green. The release decision landed 2026-11-10: `rv64gc-lab-v0` version 0 accepted (`decision_release-rv64gc-lab-v0.md`), CPU-SYSTEM `passed`, 10 of 10 axes, eight declared limits. All 48 requirements are settled: 46 `implemented`, 2 `not-applicable`. 18/19 leaves done | repo-local |
+| [`P4-SYSTEM`](tasks/P4-SYSTEM.md) | `active` | `.20` — the next pinned window: version 1 and its own release decision, a design brief first. The release decision landed 2026-11-10: `rv64gc-lab-v0` version 0 accepted (`decision_release-rv64gc-lab-v0.md`), CPU-SYSTEM `passed`, 10 of 10 axes, eight declared limits; the scalar unit's recorded runs measured again and held to what they cover. 19/20 leaves done | repo-local |
 | [`P5-BOARD`](tasks/P5-BOARD.md) | `active` | `.13` — a board on the accepted processor: the netboard composes `rv64i-lab-v0`, and `rv64gc-lab-v0` is the accepted one; then `.5`, the firmware probes (10/13 leaves done; the platform capability manifest landed, drift-gated by PLATFORM-GEN) | repo-local |
 | [`AG-OS`](tasks/AG-OS.md) | `proposed` | `.1` — inspect the real eADL interfaces (gate `ARCHOGEN-OS`) | repo-local |
 | [`P6-LINUX`](tasks/P6-LINUX.md) | `proposed` | `.1` — pin the system (gate `LINUX`) | repo-local |

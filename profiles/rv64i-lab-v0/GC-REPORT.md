@@ -15,11 +15,24 @@
 | `G-OBLIGATIONS` | 1 unresolved requirement(s) ['REQ-D-ECALL-EBREAK']; 28 still `planned` | **incomplete** |
 | `G-INTERACTIONS` | 21 cells declared, every disposition resolving (74 dispositions) — the INTERACTION-MATRIX gate re-derives the cells | **green** |
 | `G-REGRESSION` | the ACT4 record: 51 tests, 51/0 pass/fail; 49 expectation-documented guests; the validator-mutation suite is commit-gated | **green** |
-| `G-PORTABILITY` | the recorded verdict: passed (the legs and their nuances are the record's — the x86-64 leg's translation-vs-bare-metal shape included) | **green** |
+| `G-PORTABILITY` | the recorded runs, each held to what it covers: 3 of 3 kinds verified | **green** |
 | `G-REPLAY` | replay bundles (P1-LAB.10) + mid-execution snapshots (P2-SCALAR.7): 5 snapshot suites + the cold-reset determinism suite, all commit-gated | **green** |
 
 The phrase "supports RV64I" appears nowhere here, by rule: fidelity is reported per
 axis, and a banner is not a claim with a denominator.
+
+## The recorded runs the unit declares (`gate.sexp`), verified against the tree
+
+| Axis | Kind | Record | Verified |
+| --- | --- | --- | --- |
+| `G-PORTABILITY` | `aarch64` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
+| `G-PORTABILITY` | `miri` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/hosted-matrix.sexp` | yes |
+| `G-REGRESSION` | `external` | `profiles/rv64i-lab-v0/act4.sexp` | yes |
+
+A recorded run stands for the tree only over the paths its row says it covers; once one moves,
+the row is no evidence until the run is repeated.
 
 ## The release decision
 
@@ -31,14 +44,14 @@ for what this artifact IS. This report reads the decision, never exceeds it.
 - profile `rv64i-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64i-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 f025af0b338a820ab7166c3b336752f1e36c1769800887e73b16b8b8ad78171b`
+  `sha256 af08dfd9b5365c7f05f69b2092ba2aa2978ea435f4a5dfbc48d36add0d2f68e2`
 - regenerate: `scripts/gate_report.py rv64i-lab-v0 --gate GC`
 
 ## Capability limits (explicit)
 
-- The portability axis's x86-64 leg ran under Rosetta 2 translation (measured,
-  byte-identical manifest); the bare-metal leg is the CI matrix, landing at the
-  next approved push. Rosetta is the time-bounded bridge (phase-out fall 2027).
+- The native x86-64 leg is a hosted run, recorded in `hosted-matrix.sexp` when the unit
+  declares it; between pushes Rosetta 2 translation carries the leg on an arm64 host.
+  Rosetta is the time-bounded bridge (phase-out fall 2027).
 - The obligations axis is measured open: declared contract checks await their
   fixtures. Until then this profile is an EXPERIMENTAL deliverable — the decision
   record says what that means and does not mean.

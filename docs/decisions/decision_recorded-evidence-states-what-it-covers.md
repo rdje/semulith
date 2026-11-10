@@ -33,3 +33,4 @@ The risk was low, because `crates/semulith-core/src` and `definitions` have no c
 
 - After a re-measure, update its rows with `--covers` in the same commit as the new record.
 - A new recorded row states its covers from its first commit.
+- A record made before the tree moved states what it covered then: `scripts/gate_report.py --covers-at <commit> <path>…`, the commit that recorded it. The row then reads as no evidence, by name, until the run is repeated. Both reports apply this: the CPU-SYSTEM report through `gate.sexp`, and since `P4-SYSTEM.19` the scalar unit's CPU-LAB report through its own `gate.sexp`.

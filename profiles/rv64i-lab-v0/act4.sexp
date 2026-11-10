@@ -4,7 +4,7 @@
          " The inputs are untracked by design: this is a RECORDED experiment — the commit"
          " gate checks shape and internal consistency (RECORD-SCHEMA rule 13), never"
          " re-execution. Re-run: scripts/fetch_act4.sh && python3"
-         " scripts/run_act4_campaign.py --record.")
+         " scripts/run_act4_campaign.py --profile rv64i-lab-v0 --record.")
 (act4-campaign
   (profile "rv64i-lab-v0")
   (suite (origin "https://github.com/riscv/riscv-arch-test") (branch "act4")
@@ -12,7 +12,7 @@
          (sparse_paths "tests/env") (sparse_paths "tests/rv64i/I")
          (sparse_paths "config"))
   (toolchain (compiler "Homebrew clang version 21.1.8") (linker "Homebrew LLD 21.1.8 (compatible with GNU linkers)"))
-  (run (date "2026-09-30") (tests 51)
+  (run (date "2026-11-10") (tests 51)
        (signature_slots 17017)
        (verdicts "51 pass / 0 fail"))
   (evidence_note "External tests with Sail-derived expectations — ACT derives its expected results from a configured Sail model, so agreement with sail-riscv is one semantics answering twice (EVD-04; the shared ancestry is the recorded independence row in references.sexp). spike vs sail is the control pair: the genuine differential. A slot is one RVTEST_SIGUPD result word, read from the store trace's writes into [begin_signature, end_signature).")

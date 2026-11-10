@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0400 (leaf P4-SYSTEM.19 slice a) — the scalar unit's recorded runs are held to what they cover, and measured again
+
+The CPU-LAB report now reads `rv64i-lab-v0`'s recorded runs from a `gate.sexp`, each held to what it covers by the verifier the CPU-SYSTEM report uses. Portability re-measured on all four legs (`3fbc498e…` over 49 guests, as both hosted hosts gave), the hosted run recorded, and the ACT4 campaign of 2026-09-30, read as stale by name, run again: 51 pass. The netboard re-pinned deliberately; `.20` owns the next pinned window.
+
 ## SEMULITH-P4-0399 (leaf P4-SYSTEM.18 slice c2b) — rv64gc-lab-v0 version 0 is accepted, and CPU-SYSTEM reads passed
 
 The release decision is recorded: `accepted` for version 0, pinned to the dossier's digest, with eight capability limits in `gate.sexp`; the report verifies it and reads `passed`, 10 of 10 axes. The dossier's stale sentences were corrected before the digest was taken. README's claim scope and the book's claim page say what is and is not claimed. The netboard composes the scalar unit, so `P5-BOARD.13` owns a board on the accepted processor.

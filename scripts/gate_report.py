@@ -534,8 +534,42 @@ def dossier_digest(d: Path) -> str:
     return h.hexdigest()
 
 
-def build_cpulab(profile: str) -> str:
-    d = ROOT / "profiles" / profile
+# The CPU-LAB axes that rest on a recorded run, and the kinds each needs (P4-SYSTEM.19 slice a). A recorded run stands for
+# the tree only over what it says it was measured on, so the unit's `gate.sexp` names each record with what it covers and
+# `_verify_evidence`, the verifier the CPU-SYSTEM report uses, holds every row to it.
+GC_RECORDED = {"G-REGRESSION": ("external",), "G-PORTABILITY": ("aarch64", "x86-64", "miri")}
+
+
+def _gc_recorded(profile: str, d: Path, tracked: set[str]) -> dict[tuple[str, str], list[tuple[str, str | None]]]:
+    """Each declared recorded row of a CPU-LAB unit, verified: {(axis, kind): [(label, why it is not evidence, or None)]}."""
+    manifest = d / "gate.sexp"
+    if not manifest.is_file():
+        raise SystemExit(f"gate_report: {profile}: the CPU-LAB report reads its recorded rows from gate.sexp, and there is none")
+    wanted = {(axis, kind) for axis, kinds in GC_RECORDED.items() for kind in kinds}
+    rows: dict[tuple[str, str], list[tuple[str, str | None]]] = {}
+    for ev in _forms(manifest, "evidence"):
+        key = (_one(ev, "axis"), _one(ev, "kind"))
+        if key not in wanted:
+            raise SystemExit(f"gate_report: {profile}: gate.sexp declares {key[0]} {key[1]}, which the CPU-LAB report does not read")
+        if _one(ev, "record") is None:
+            raise SystemExit(f"gate_report: {profile}: gate.sexp's {key[0]} {key[1]} row names no record")
+        rows.setdefault(key, []).append(_verify_evidence(ev, tracked, set(), f"profiles/{profile}/gate.sexp"))
+    return rows
+
+
+def _gc_open(rows: dict, axis: str) -> str:
+    """Why a recorded axis is not evidenced ('' when every kind it needs has a verified row)."""
+    reasons = []
+    for kind in GC_RECORDED[axis]:
+        found = rows.get((axis, kind), [])
+        if not any(why is None for _, why in found):
+            reasons.append(f"`{kind}`: " + ("; ".join(f"{label} — {why}" for label, why in found) if found else "no row"))
+    return "; ".join(reasons)
+
+
+def build_cpulab(profile: str, d: Path | None = None, tracked: set[str] | None = None) -> str:
+    """`d`/`tracked` exist for the controls (`_selftest`), as for `build_cpusystem`."""
+    d = d or ROOT / "profiles" / profile
     prof = D.load_profile(d / "profile.sexp")
     obs = R.load(d / "contract-obligations.sexp")
     reqs = R.load(d / "requirements.sexp")
@@ -562,10 +596,9 @@ def build_cpulab(profile: str) -> str:
     m = re.search(r'\(verdicts "([0-9]+) pass / ([0-9]+) fail"\)', act4)
     act4_verdicts = f"{m.group(1)}/{m.group(2)}" if m else "unrecorded"
 
-    # G-PORTABILITY: the recorded instrument verdict.
-    portability = _dossier_text(d / "portability.sexp")
-    pm = re.search(r'\(verdict "([a-z]+)"\)', portability)
-    port_verdict = pm.group(1) if pm else "unrecorded"
+    # G-REGRESSION's campaign and G-PORTABILITY are recorded runs, held to what each covers.
+    recorded = _gc_recorded(profile, d, tracked if tracked is not None else _tracked())
+    regression_open, portability_open = _gc_open(recorded, "G-REGRESSION"), _gc_open(recorded, "G-PORTABILITY")
 
     # G-REPLAY: the suites exist and are commit-gated — measured as the suite census.
     snapshot_suites = _dossier_text(ROOT / "crates/semulith-verify/src/snapshot/tests.rs")\
@@ -596,12 +629,13 @@ def build_cpulab(profile: str) -> str:
         ("G-REGRESSION",
          f"the ACT4 record: {act4_tests} tests, {act4_verdicts} pass/fail; "
          f"{len(guests)} expectation-documented guests; the validator-mutation suite is "
-         f"commit-gated",
-         "green" if act4_tests == 51 and m and m.group(2) == "0" else "incomplete"),
+         f"commit-gated" + (f" — not evidence: {regression_open}" if regression_open else ""),
+         "green" if act4_tests == 51 and m and m.group(2) == "0" and not regression_open else "incomplete"),
         ("G-PORTABILITY",
-         f"the recorded verdict: {port_verdict} (the legs and their nuances are the "
-         f"record's — the x86-64 leg's translation-vs-bare-metal shape included)",
-         "green" if port_verdict == "passed" else "incomplete"),
+         "the recorded runs, each held to what it covers: "
+         + (f"not evidenced — {portability_open}" if portability_open else
+            f"{len(GC_RECORDED['G-PORTABILITY'])} of {len(GC_RECORDED['G-PORTABILITY'])} kinds verified"),
+         "green" if not portability_open else "incomplete"),
         ("G-REPLAY",
          f"replay bundles (P1-LAB.10) + mid-execution snapshots (P2-SCALAR.7): "
          f"{snapshot_suites} snapshot suites + the cold-reset determinism suite, all "
@@ -633,6 +667,17 @@ def build_cpulab(profile: str) -> str:
     A('The phrase "supports RV64I" appears nowhere here, by rule: fidelity is reported per')
     A("axis, and a banner is not a claim with a denominator.")
     A("")
+    A("## The recorded runs the unit declares (`gate.sexp`), verified against the tree")
+    A("")
+    A("| Axis | Kind | Record | Verified |")
+    A("| --- | --- | --- | --- |")
+    for (axis, kind), found in sorted(recorded.items()):
+        for label, why in found:
+            A(f"| `{axis}` | `{kind}` | {label} | {'yes' if why is None else f'**no** — {why}'} |")
+    A("")
+    A("A recorded run stands for the tree only over the paths its row says it covers; once one moves,")
+    A("the row is no evidence until the run is repeated.")
+    A("")
     A("## The release decision")
     A("")
     A("Recorded in `docs/decisions/decision_release-rv64i-lab-v0.md` — the named authority")
@@ -648,9 +693,9 @@ def build_cpulab(profile: str) -> str:
     A("")
     A("## Capability limits (explicit)")
     A("")
-    A("- The portability axis's x86-64 leg ran under Rosetta 2 translation (measured,")
-    A("  byte-identical manifest); the bare-metal leg is the CI matrix, landing at the")
-    A("  next approved push. Rosetta is the time-bounded bridge (phase-out fall 2027).")
+    A("- The native x86-64 leg is a hosted run, recorded in `hosted-matrix.sexp` when the unit")
+    A("  declares it; between pushes Rosetta 2 translation carries the leg on an arm64 host.")
+    A("  Rosetta is the time-bounded bridge (phase-out fall 2027).")
     A("- The obligations axis is measured open: declared contract checks await their")
     A("  fixtures. Until then this profile is an EXPERIMENTAL deliverable — the decision")
     A("  record says what that means and does not mean.")
@@ -725,6 +770,21 @@ def _covered_digest(path: str, tracked: set[str]) -> str | None:
     digest = hashlib.sha256()
     for name in under:
         digest.update(name.encode("utf-8") + b"\0" + hashlib.sha256((ROOT / name).read_bytes()).digest())
+    return digest.hexdigest()
+
+
+def _covered_digest_at(commit: str, path: str) -> str | None:
+    """`_covered_digest` at a past commit, read from git objects: what a record made then covered (P4-SYSTEM.19). A row
+    that states these for an old record reads as no evidence by name once the tree has moved."""
+    def git(*args: str) -> bytes:
+        return subprocess.run(["git", *args], capture_output=True, cwd=ROOT, check=True).stdout
+    names = sorted(n for n in git("ls-tree", "-r", "--name-only", commit, "--", path).decode().splitlines()
+                   if n == path or n.startswith(path.rstrip("/") + "/"))
+    if not names:
+        return None
+    digest = hashlib.sha256()
+    for name in names:
+        digest.update(name.encode("utf-8") + b"\0" + hashlib.sha256(git("show", f"{commit}:{name}")).digest())
     return digest.hexdigest()
 
 
@@ -1750,11 +1810,94 @@ def _selftest() -> int:
         arm("GREEN only the named DSP subset cites axis 1",
             lambda: assert_eq(_breadth_unit_evidence("dsp56300-lab-v0", reports),
                               "axis 1 above (EXPERIMENTAL)"))
+        # ---- the CPU-LAB builder's recorded rows (`P4-SYSTEM.19` slice a), over a scratch copy of the scalar unit ----
+        scalar = ROOT / "profiles" / "rv64i-lab-v0"
+        live_gc = _tracked()
+        engine, guests_src = ("crates/semulith-core/src", "definitions"), "crates/semulith-verify/src/guests.rs"
+        moved_engine = _covered_digest(engine[0], live_gc)
+
+        def covers(*paths):
+            return "".join(f' (covers (path "{p}") (sha256 "{_covered_digest(p, live_gc)}"))' for p in paths)
+
+        def gc_rows(rel, drop=()):
+            rows = {
+                "external": f'(evidence (axis G-REGRESSION) (kind external) (record "{rel}/act4.sexp")'
+                            f'{covers(*engine, "profiles/rv64i-lab-v0/act4")} (statement "s"))',
+                "aarch64": f'(evidence (axis G-PORTABILITY) (kind aarch64) (record "{rel}/portability.sexp")'
+                           f'{covers(*engine, guests_src)} (statement "s"))',
+                "x86-64": f'(evidence (axis G-PORTABILITY) (kind x86-64) (record "{rel}/portability.sexp")'
+                          f'{covers(*engine, guests_src)} (statement "s"))',
+                "miri": f'(evidence (axis G-PORTABILITY) (kind miri) (record "{rel}/portability.sexp")'
+                        f'{covers(*engine)} (statement "s"))',
+            }
+            return [row for kind, row in rows.items() if kind not in drop]
+
+        def passing(text):
+            """Every control starts from a passing record, so none depends on what the real unit's record reads today."""
+            return re.sub(r'\(verdict "[a-z]+"\)', '(verdict "passed")', text, count=1)
+
+        def gc(name, rows=None, verdict=passing, manifest=True):
+            g = tmp / f"gc-{name}"
+            shutil.copytree(scalar, g, ignore=shutil.ignore_patterns("*-REPORT.md", "gate.sexp", "hosted-matrix.sexp"))
+            rel = g.relative_to(ROOT).as_posix()
+            (g / "portability.sexp").write_text(verdict((g / "portability.sexp").read_text(encoding="utf-8")), encoding="utf-8")
+            if manifest:
+                body = "\n".join(rows(rel) if rows else gc_rows(rel))
+                (g / "gate.sexp").write_text(f'(gate (id "CPU-LAB") (profile "rv64i-lab-v0") (statement "s"))\n{body}\n',
+                                             encoding="utf-8")
+            files = {f"{rel}/{f.relative_to(g).as_posix()}" for f in g.rglob("*") if f.is_file()}
+            return build_cpulab("rv64i-lab-v0", d=g, tracked=live_gc | files)
+
+        def gc_refuses(name, needle, **kw):
+            try:
+                gc(name, **kw)
+            except SystemExit as e:
+                assert needle in str(e), f"refused, but for {e}"
+                return
+            raise AssertionError("not refused")
+
+        def gc_row(report, axis):
+            return next(l for l in report.splitlines() if l.startswith(f"| `{axis}` | ") and l.count("|") == 4)
+
+        def covers_at_agrees():
+            """At HEAD, `--covers-at` gives what `--covers` gives, for a path the working tree has not moved."""
+            unmoved = [p for p in ("schema", "definitions", "docs/GLOSSARY.md")
+                       if subprocess.run(["git", "diff", "--quiet", "HEAD", "--", p], cwd=ROOT).returncode == 0]
+            assert unmoved, "every candidate path moved since HEAD"
+            assert_eq(_covered_digest_at("HEAD", unmoved[0]), _covered_digest(unmoved[0], live_gc))
+            assert_eq(_covered_digest_at("HEAD", "no/such/path"), None)
+
+        arm("GREEN --covers-at agrees with --covers at HEAD, and names nothing for an untracked path", covers_at_agrees)
+        arm("GREEN CPU-LAB: every recorded row current and passing evidences both recorded axes",
+            lambda: (lambda r: (has(gc_row(r, "G-PORTABILITY"), "3 of 3 kinds verified", "**green**"),
+                                has(gc_row(r, "G-REGRESSION"), "**green**"),
+                                assert_eq(r.count("` | yes |"), 4)))(gc("green")))
+        arm("RED CPU-LAB: a moved engine opens both recorded axes, each row by name",
+            lambda: (lambda r: (has(gc_row(r, "G-PORTABILITY"), "not evidenced", "**incomplete**",
+                                    "the record covers another `crates/semulith-core/src`"),
+                                has(gc_row(r, "G-REGRESSION"), "not evidence: `external`", "**incomplete**"),
+                                assert_eq(r.count("` | yes |"), 0)))(
+                gc("moved", rows=lambda rel: [row.replace(moved_engine, "0" * 64) for row in gc_rows(rel)])))
+        arm("RED CPU-LAB: a row that states nothing it covers is not evidence",
+            lambda: has(gc_row(gc("no-covers", rows=lambda rel: gc_rows(rel, drop=("miri",)) + [
+                f'(evidence (axis G-PORTABILITY) (kind miri) (record "{rel}/portability.sexp") (statement "s"))']),
+                "G-PORTABILITY"), "`miri`:", "the record states nothing it covers", "**incomplete**"))
+        arm("RED CPU-LAB: a required kind with no row reads open by name",
+            lambda: has(gc_row(gc("no-x86", rows=lambda rel: gc_rows(rel, drop=("x86-64",))), "G-PORTABILITY"),
+                        "`x86-64`: no row", "**incomplete**"))
+        arm("RED CPU-LAB: a current row whose record reads a failure is not evidence",
+            lambda: has(gc_row(gc("failed", verdict=lambda t: re.sub(r'\(verdict "[a-z]+"\)', '(verdict "failed")', t, count=1)),
+                               "G-PORTABILITY"), "the recorded verdict is failed", "**incomplete**"))
+        arm("RED CPU-LAB: a unit with no manifest is refused, never read green",
+            lambda: gc_refuses("no-manifest", "there is none", manifest=False))
+        arm("RED CPU-LAB: a row of a kind the report does not read is refused",
+            lambda: gc_refuses("unread", "which the CPU-LAB report does not read", rows=lambda rel: gc_rows(rel) + [
+                f'(evidence (axis G-REPLAY) (kind determinism) (record "{rel}/portability.sexp") (statement "s"))']))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 43
+    want = 51
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")
@@ -1770,6 +1913,13 @@ def main(argv: list[str]) -> int:
             digest = _covered_digest(path, tracked)
             if digest is None:
                 raise SystemExit(f"gate_report: --covers: nothing tracked at {path}")
+            print(f'(covers (path "{path}") (sha256 "{digest}"))')
+        return 0
+    if argv[1:2] == ["--covers-at"] and len(argv) > 3:
+        for path in argv[3:]:
+            digest = _covered_digest_at(argv[2], path)
+            if digest is None:
+                raise SystemExit(f"gate_report: --covers-at: nothing tracked at {path} in {argv[2]}")
             print(f'(covers (path "{path}") (sha256 "{digest}"))')
         return 0
     gate = "G0"

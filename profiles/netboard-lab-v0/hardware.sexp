@@ -1,6 +1,6 @@
 ;; GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_board.py`; drift between this document and the
 ;; canonical board definition is refused by the BOARD-GEN doctrine (scripts/check_board_gen.sh).
-;; Canonical input: profiles/netboard-lab-v0/board.sexp (sha256 accb4e78fbacdae5e1905c3068f5a0072229707a2982a29443df67f7402ffc03)
+;; Canonical input: profiles/netboard-lab-v0/board.sexp (sha256 2f70006ed71d739372423a8c04f1619b9c69650cc1ad300bab5d16f77aea18cc)
 ;; Generator: scripts/gen_board.py (sha256 4908656d81f5e31392b90ecf963ea2cdd1a4a3f2f1e0bf9966f9d1ba179f14f9)
 
 (hardware

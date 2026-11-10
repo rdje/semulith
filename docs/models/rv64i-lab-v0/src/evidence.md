@@ -63,13 +63,21 @@ re-derivable by the command named beside it.
   offered. Try it: `semulith snapshot <elf> --at N > snap.json && semulith resume snap.json`.
 - **Portability.** The workspace compiles for `wasm32-unknown-unknown` on every commit
   (`PORT-WEB`), and the browser bench runs the same engine headlessly (53 arms: 49 clean
-  guests, 3 trace-level mutants, the census arm). The native matrix (`P2-SCALAR.8`,
-  recorded in `profiles/rv64i-lab-v0/portability.sexp`): aarch64 green (the commit
-  gate's own run + the digest manifest any second host must reproduce byte-identically),
-  Miri green 65/65 interpreted, big-endian powerpc64 green 65/65 under Miri — and the
-  mandatory x86-64 leg measured **unavailable** on the recording host (no Rosetta), so
-  the profile honestly stays experimental: the verdict is `incomplete`, not waived
-  (`bash scripts/check_portability.sh` re-derives it).
+  guests, 3 trace-level mutants, the census arm). The native matrix
+  (`profiles/rv64i-lab-v0/portability.sexp`, re-measured 2026-11-10 at `P4-SYSTEM.19`):
+  aarch64 green (the test suite plus the digest manifest over the 49 guests, `3fbc498e…`),
+  x86-64 green under Rosetta 2 translation with the same manifest, and Miri green for the
+  host and for big-endian powerpc64. The native x86-64 leg is hosted run 42418631491
+  (`hosted-matrix.sexp`): `ubuntu-latest` and `macos-latest` each pass the suite and give
+  the same manifest. Re-derive with
+  `bash scripts/check_portability.sh --profile rv64i-lab-v0 --record`.
+- **Recorded runs are held to what they cover.** The unit's `gate.sexp` names each recorded
+  run with the digests of what it was measured over, and the CPU-LAB report reads a row as
+  no evidence once one moves. Stating what the ACT4 record of 2026-09-30 covered
+  (`scripts/gate_report.py --covers-at 379a9dd2 crates/semulith-core/src definitions
+  profiles/rv64i-lab-v0/act4`) made the report say so on 2026-11-10:
+  `**no** — the record covers another crates/semulith-core/src: it was measured before this one`.
+  The campaign was run again the same day, 51 pass and 17,017 signature slots agreeing.
 - **Performance.** A baseline is recorded as data on one named host
   (`profiles/rv64i-lab-v0/baseline.sexp`), with its noise — and **no thresholds** (RUST-04:
   the noise table exists so a future threshold can be set from it; none is set). One host's
