@@ -125,7 +125,7 @@ answer once ceilings fire.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
+| 1 | `LIVE-CONTAINMENT.4` | `active` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
 | 2 | `LIVE-CONTAINMENT.5` | `pending` | the toolbox family is at its aggregate ceiling, so the next tool row refuses; before the next new tool |
 
 ### .4o / SEMULITH-LC-0054 — the tree's closed rows move to an archive part (complete)

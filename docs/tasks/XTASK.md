@@ -43,7 +43,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 - ID: `XTASK`
   Status: `active`
   Goal: cargo xtask as the front door, incrementally.
-  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`, `XTASK.13`, `XTASK.14`, `XTASK.15`, `XTASK.16`, `XTASK.17`
+  Children: `XTASK.1` … `XTASK.7`, `XTASK.8`, `XTASK.9`, `XTASK.10`, `XTASK.11`, `XTASK.12`, `XTASK.13`, `XTASK.14`, `XTASK.15`, `XTASK.16`, `XTASK.17`, `XTASK.18`
 
 - ID: `XTASK.1` — **the front door, delegation only**
   Status: `done` (`2026-10-23`, `SEMULITH-XTASK-0001`; owned on clean 79644a8; evidence target/xtask/xt0001;
@@ -403,12 +403,17 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Status: `pending` (opened `2026-11-10` by `XTASK.16`)
   Goal: the gate's own controls hold the skip rule to its logic, and the documents data names are derived. One thing they cannot see is a script that starts reading a ledger document. `scripts/probe_ledger_independence.sh` measures exactly that in about 20 minutes, and today it runs by hand. Run it where the push suite runs, on a scratch copy of the tree if the suite's other legs must not see documents vanish, and refuse the push when a skipping check reads the ledger.
 
+- ID: `XTASK.18` — **the chain's message check says what it wants, and accepts what the hook accepts**
+  Status: `pending` (found `2026-11-10` landing `SEMULITH-LC-0056`)
+  Goal: `cargo xtask commit-unit` refused the subject `SEMULITH-LC-0056: …` in one second with `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate`. The commit-msg hook accepts that shape, and the four push records carry it. The check wants a space after the number, as the shell chain's did, and its refusal does not say so. Accept a colon there too, and print the shape it wants. Small: a one-second refusal, and the unit landed with the usual `(leaf …)` subject.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes next, case by case, after five feature units |
 | 2 | `XTASK.17` | `pending` | the ledger probe runs by hand; at the push boundary it would run every time |
+| 3 | `XTASK.18` | `pending` | the chain refuses a subject the hook accepts, and does not say what it wants |
 
 ## Decisions
 
