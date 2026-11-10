@@ -6,9 +6,18 @@ refer to that publication's numbering. Cached PDF pins use HTTP 0 as an explicit
 cache-artifact declaration; it does not mean a successful web acquisition. At
 registration all 24 source artifacts were authenticated against their unchanged
 hashes and byte lengths through the public cache routes. Acquisition grants no
-reuse terms, independence or conformance credit; release-time terms recording
-remains an owned dossier question. One licensed DIV statement has a scoped
-retention decision in `materials/RVI_M_RETENTION.md`; see the
+reuse terms, independence or conformance credit, so the terms were read from each
+document before the first release (the dossier's OQ-1, closed 2026-11-10):
+
+| What | Terms | Redistributed? |
+| --- | --- | --- |
+| the 30 excerpts under `retained/`, from the two pinned RISC-V volumes | CC BY 4.0 | yes, each attributed, each with its retention record in `materials/` |
+| the psABI 1.0 and the SBI 2.0 specification | CC BY 4.0 | no: cited by locator |
+| the SiFive FU540-C000 manual v1p5 | CC BY-NC-ND 4.0 | no: cited by locator, one sentence quoted |
+| Sail; Spike; the arch-test suite at `e2216915` | BSD-2-Clause; BSD-3-Clause; BSD-3-Clause or Apache-2.0 | no: run locally |
+
+The FU540 manual's terms are not the project's, which is why its facts appear in
+the project's own words. How an excerpt is retained is in the
 [capture plan](capture-plan.md#retain-licensed-text-with-its-own-identity).
 
 ## Pinned specifications

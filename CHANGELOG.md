@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0398 (leaf P4-SYSTEM.18 slice c2a) — the terms of what the release ships and relies on are recorded, and OQ-1 closes
+
+The dossier said its terms were due at the first release candidate, and three cited sources read `unrecorded`. Read from each document: the psABI and the SBI are CC BY 4.0; the FU540-C000 manual is CC BY-NC-ND 4.0, so it is cited, never redistributed. All 30 retained excerpts are named by a retention record. OQ-1 closes by census.
+
 ## SEMULITH-LC-0056 (leaf LIVE-CONTAINMENT.4) — the changelog sharded, and the leaf's frontier status corrected
 
 The 17 oldest entries moved verbatim into `docs/changelog/shard-0425.md`: the head went from 64,229 B to under 49,152 B of its 65,536 B ceiling. `LIVE-CONTAINMENT`'s frontier row said `.4` was `pending` where the leaf and the index say `active`. `XTASK.18` opened: the chain refused this unit's first subject, which the hook accepts.

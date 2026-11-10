@@ -121,8 +121,10 @@
     (revision "1.0")
     (release-kind ratified)
     (pages 56)
-    (licence "unrecorded")
-    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (licence "CC-BY-4.0")
+    (licence-evidence "the document's own statement, PDF page 4, read 2026-11-10 (P4-SYSTEM.18 slice c2a): \"It is
+                       licensed under the Creative Commons Attribution 4.0 International License
+                       (CC-BY 4.0).\" Cited by locator; nothing of it is redistributed.")
     (corpus "chipdoc")
     (corpus-path "risc-v/psabi/current/riscv-abi_v1.0_RISC-V_ELF_psABI.pdf")
     (cache-path "riscv/riscv-elf-psabi-1.0.pdf")
@@ -991,8 +993,11 @@
     (revision "2.0")
     (release-kind ratified)
     (pages 74)
-    (licence "unrecorded")
-    (licence-evidence "not yet read from the document — recorded as unrecorded rather than guessed")
+    (licence "CC-BY-4.0")
+    (licence-evidence "the document's own statement, PDF page 6, read 2026-11-10 (P4-SYSTEM.18 slice c2a): \"This RISC-V
+                       SBI specification is © 2022 RISC-V International. It is licensed under the
+                       Creative Commons Attribution 4.0 International License (CC-BY 4.0).\" Cited by
+                       locator; nothing of it is redistributed.")
     (corpus "chipdoc")
     (corpus-path "risc-v/system-ip/sbi/current/riscv-sbi-2.0.pdf")
     (cache-path "riscv/riscv-sbi-2.0.pdf")
@@ -1076,8 +1081,14 @@
     (revision "v1p5")
     (release-kind final)
     (pages 159)
-    (licence "unrecorded")
-    (licence-evidence "not yet read from the document")
+    (licence "CC-BY-NC-ND-4.0")
+    (licence-evidence "the document's own statement, PDF page 2, read 2026-11-10 (P4-SYSTEM.18 slice c2a): \"SiFive
+                       FU540-C000 Manual by SiFive, Inc. is licensed under Attribution-NonCommercialNoDerivatives
+                       4.0 International.\" (its link: creativecommons.org/licenses/by-nc-nd/4.0). Not the
+                       project's MIT OR Apache-2.0 terms, so
+                       nothing of it is redistributed: dossiers cite it by locator and state facts
+                       (addresses, register layouts) in their own words, and one sentence is quoted,
+                       attributed, in profiles/rv64gc-lab-v0/DOSSIER.md (OQ-2).")
     (corpus "chipdoc")
     (corpus-path "sifive/fu540/current/FU540-C000_v1p5_manual.pdf")
     (cache-path "sifive/fu540-c000-v1p5.pdf")

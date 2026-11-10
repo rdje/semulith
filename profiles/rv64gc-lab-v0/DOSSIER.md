@@ -98,11 +98,19 @@ implementation: earlier successful runs are not automatically requalified.
 
 ## Open questions
 
-- **OQ-1 — license/terms recording.** SRC-01 requires the actual applicable terms
-  recorded before relying on or shipping an artifact. One retained DIV statement
-  has a scoped CC-BY 4.0 decision in `materials/RVI_M_RETENTION.md`; the full fetched
-  artifacts remain unredistributed and other terms open. Owned here, due at the first
-  release candidate of this profile (the rv64i-lab-v0 OQ-4 precedent).
+- **OQ-1 — CLOSED (`2026-11-10`, P4-SYSTEM.18 slice c2a): the terms of what this
+  profile ships and relies on are recorded**, as SRC-01 asks before its first release.
+  *Shipped:* the 30 excerpts under `retained/`, each from a pinned page of the two
+  RISC-V volumes under CC BY 4.0, each named by a retention record in `materials/`,
+  each wrapper attributed; `scripts/retain_statements.py` refuses an excerpt whose
+  licence evidence is absent. `retained/sail-identity.sexp` describes a binary; it holds
+  none of it. Everything else here is the project's own, `act4/` included
+  (`MIT OR Apache-2.0`). *Relied on, never redistributed:* the psABI and the SBI
+  specification (CC BY 4.0) and the FU540-C000 manual (CC BY-NC-ND 4.0: cited by
+  locator, one sentence quoted under OQ-2), in `materials/catalog.sexp`; Sail
+  (BSD-2-Clause) and Spike (BSD-3-Clause) in `references.sexp`; the arch-test suite at
+  `e2216915` (code BSD-3-Clause or Apache-2.0, its README); and the compiler named in
+  `act4.sexp` and `workload.sexp`, clang 21.1.8 (Apache-2.0 with LLVM Exceptions).
 - **OQ-2 — CLOSED (`2026-10-03`, P4-SYSTEM.3 slice a, D-SVADE): the profile implements
   Svade.** A translation needing an A or D PTE update raises a page fault instead of
   performing the hardware update. The three evidence legs: (i) the pinned revision
