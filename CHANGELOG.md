@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0396 (leaf P4-SYSTEM.18 slice b) — the hosted run is a record, and the report shows the native x86-64 leg
+
+Run 42418631491 on the pushed tree: x86-64 and arm64 hardware each pass 519 tests and give the same digest over 210 guests, equal to this host's. `scripts/hosted_matrix.py` freezes it into the dossier, tied to the tree. Found on the way: the scalar unit's portability record is stale (`P4-SYSTEM.19`), and the record's "suites" were tests.
+
 ## SEMULITH-AC-0096 (leaf ARTIFACT-CLEANUP.40) — the thirteenth recurring cleanup
 
 At 61 h, on a clean tree: the orphan act removed 17 directories (576,723,648 B), then 139 candidates planned and 6 captured Cargo incremental outputs (15,766,339 B) removed, residue 0. Outside the plan, 21 scratch clones that landed units had left (524,516 KiB) are gone and the sweep that missed them is fixed; `XTASK.15` will track it.

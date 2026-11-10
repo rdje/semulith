@@ -22,11 +22,11 @@ The risk was low, because `crates/semulith-core/src` and `definitions` have no c
 
 1. **Each row with a recorded verdict states what it covers:** `(covers (path …) (sha256 …))`, a file or every tracked file below a directory, as `python3 -B scripts/gate_report.py --covers PATH` prints it. A row that states nothing, or one whose path has moved, is not evidence, and its axis reads `incomplete` by name.
 2. **The covers:** the engine and the definitions for all five rows, plus the ACT pieces, the workload sources or the guest fixture, as each row's run read them. So a later engine change opens these axes until they are re-measured. That is intended: the policy says relevant source changes invalidate dependent evidence.
-3. **Portability is re-measured.** All four legs over the 210 guests: `cargo test --all` 519 suites on arm64 and under Rosetta, manifest `0aaf081f…` byte-identical on both, Miri and big-endian powerpc64 green.
+3. **Portability is re-measured.** All four legs over the 210 guests: `cargo test --all` 519 tests on arm64 and under Rosetta (written "suites" until 2026-11-10; they are tests, in 14 suites), manifest `0aaf081f…` byte-identical on both, Miri and big-endian powerpc64 green.
 
 ## What this does not settle
 
-- **The hosted matrix has not seen these 210 guests.** Its last run was 40713852362 on `b917d1ba`, over 171. [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home and Rosetta the local bridge, so a release decision should have a hosted run on this tree. That needs a push, and a push below the cadence is the director's to approve.
+- **The hosted matrix has not seen these 210 guests.** Its last run was 40713852362 on `b917d1ba`, over 171. [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home and Rosetta the local bridge, so a release decision should have a hosted run on this tree. That needs a push, and a push below the cadence is the director's to approve. **Settled 2026-11-10:** the director allowed the push, and run 42418631491 is recorded ([`decision_hosted-run-is-a-record.md`](decision_hosted-run-is-a-record.md)).
 - Nothing here records a release.
 
 ## How to apply

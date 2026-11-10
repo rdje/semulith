@@ -129,6 +129,7 @@
 - [`decision_fp-backend-qualification.md`](docs/decisions/decision_fp-backend-qualification.md)
 - [`decision_gate-applicability-by-declared-vehicle.md`](docs/decisions/decision_gate-applicability-by-declared-vehicle.md)
 - [`decision_generated-mirror-needs-tracked-input.md`](docs/decisions/decision_generated-mirror-needs-tracked-input.md)
+- [`decision_hosted-run-is-a-record.md`](docs/decisions/decision_hosted-run-is-a-record.md)
 - [`decision_interpreter-before-compiler.md`](docs/decisions/decision_interpreter-before-compiler.md)
 - [`decision_knowledge-family-first-rederivation.md`](docs/decisions/decision_knowledge-family-first-rederivation.md)
 - [`decision_knowledge-family-second-rederivation.md`](docs/decisions/decision_knowledge-family-second-rederivation.md)

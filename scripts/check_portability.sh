@@ -71,7 +71,9 @@ self_test() {
   arm green unknown green green failed "an unknown outcome cannot pass"
   printf 'PORTABILITY --self-test: %d pass / %d fail\n' "$pass" "$fail"
   [ "$fail" -eq 0 ] || return 1
-  python3 "$ROOT/scripts/probe_portability.py"
+  python3 "$ROOT/scripts/probe_portability.py" || return 1
+  # the hosted run's record tool (P4-SYSTEM.18 slice b): its judge, its ties and its fetch, on synthetic runs
+  python3 -B "$ROOT/scripts/hosted_matrix.py" --self-test
 }
 
 if [ "${1:-}" = "--self-test" ]; then self_test; exit $?; fi
@@ -292,7 +294,7 @@ root = pathlib.Path(root); port = root / "target/portability"
 def tool(*cmd):
     try: return subprocess.run(cmd, capture_output=True, text=True, check=True).stdout.strip().splitlines()[0]
     except Exception as e: return f"unavailable ({type(e).__name__})"
-def suites(log):
+def tests(log):  # the tests each log reports, summed over its `test result:` lines (they were called suites until P4-SYSTEM.18 slice b)
     text = (port / log).read_text() if (port / log).is_file() else ""
     ok = sum(int(m) for m in re.findall(r"test result: ok\. (\d+) passed", text))
     failed = sum(int(m) for m in re.findall(r"test result: \w+\. \d+ passed; (\d+) failed", text))
@@ -302,10 +304,10 @@ m = re.search(r"manifest sha256: ([0-9a-f]{64})\s+\((\d+) guests\)", manifest)
 digest, guests = (m.group(1), m.group(2)) if m else ("unrecorded", "0")
 xm = re.search(r"x86-64 manifest ([0-9a-f]{64})", x86)
 def ran(v): return v.startswith("green") or v.startswith("red")
-nok, nfail = suites("native.log") if ran(native) else (0, 0)
-xok, xfail = suites("x86-64.log") if ran(x86) else (0, 0)
-mok, mfail = suites("miri.log") if ran(miri) else (0, 0)
-cok, cfail = suites("cross.log") if ran(cross) else (0, 0)
+nok, nfail = tests("native.log") if ran(native) else (0, 0)
+xok, xfail = tests("x86-64.log") if ran(x86) else (0, 0)
+mok, mfail = tests("miri.log") if ran(miri) else (0, 0)
+cok, cfail = tests("cross.log") if ran(cross) else (0, 0)
 def ev(v, text): return text if ran(v) else f"not run on this host: {v}"
 def q(s): return s.replace('\\', '\\\\').replace('"', '\\"')
 arch = tool('uname', '-m')
@@ -333,19 +335,19 @@ doc = f""";; portability.sexp — the recorded G-PORTABILITY evidence of {unit} 
   (verdict "{verdict}")
   (legs
     (leg (id "native-{arch}") (verdict "{native}")
-         (evidence "cargo test --all — the commit gate's own run: {nok} suites passed, {nfail} failed")
+         (evidence "cargo test --all — the commit gate's own run: {nok} tests passed, {nfail} failed")
          (note "the offline differential against the pinned expectations; runs on every commit"))
     (leg (id "fixture-digest-manifest") (verdict "{'green' if digest != 'unrecorded' else 'red'}")
          (evidence "sha256 {digest} over the {guests} tracked guests' demo outputs")
          (note "the cross-host contract: a second host's run must reproduce this digest BYTE-IDENTICALLY — it is recomputed, never carried"))
     (leg (id "native-x86-64") (verdict "{q(x86)}")
-         (evidence "{q(ev(x86, f'cargo test --all --target x86_64-apple-darwin: {xok} suites passed, {xfail} failed; the x86-64 manifest {xevidence}'))}")
+         (evidence "{q(ev(x86, f'cargo test --all --target x86_64-apple-darwin: {xok} tests passed, {xfail} failed; the x86-64 manifest {xevidence}'))}")
          (note "MANDATORY per docs/EVIDENCE_AND_GATES.md §7 — met VIA TRANSLATION (Rosetta 2) on this host; the bare-metal leg is the CI matrix's"))
     (leg (id "miri") (verdict "{q(miri)}")
-         (evidence "{q(ev(miri, f'cargo +{nightly} miri test -p semulith-core — {mok} suites passed, {mfail} failed, interpreted'))}")
+         (evidence "{q(ev(miri, f'cargo +{nightly} miri test -p semulith-core — {mok} tests passed, {mfail} failed, interpreted'))}")
          (note "the model's safe-Rust core; the one unsafe island (bench.rs's counting allocator) is excluded by name"))
     (leg (id "cross-endian") (verdict "{q(cross)}")
-         (evidence "{q(ev(cross, f'the same suites under Miri on powerpc64-unknown-linux-gnu (big-endian): {cok} passed, {cfail} failed'))}")
+         (evidence "{q(ev(cross, f'the same suites under Miri on powerpc64-unknown-linux-gnu (big-endian): {cok} tests passed, {cfail} failed'))}")
          (note "the little-endian guest semantics hold on a big-endian host"))))
 """
 out = root / "profiles" / unit / "portability.sexp"

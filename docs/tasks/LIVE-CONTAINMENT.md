@@ -43,7 +43,7 @@ answer once ceilings fire.
 - ID: `LIVE-CONTAINMENT`
   Status: `active`
   Goal: true and bounded live surfaces
-  Children: `LIVE-CONTAINMENT.1`, `LIVE-CONTAINMENT.2`, `LIVE-CONTAINMENT.3`, `LIVE-CONTAINMENT.4`
+  Children: `LIVE-CONTAINMENT.1`, `LIVE-CONTAINMENT.2`, `LIVE-CONTAINMENT.3`, `LIVE-CONTAINMENT.4`, `LIVE-CONTAINMENT.5`
 
 - ID: `LIVE-CONTAINMENT.1` — **the closed-tree register: completed trees leave the index**
   Status: `done` (`2026-10-06`, `SEMULITH-LC-0001`)
@@ -115,11 +115,18 @@ answer once ceilings fire.
   Verification: pending
   Commit: pending
 
+- ID: `LIVE-CONTAINMENT.5` — **the toolbox family at its aggregate ceiling: rows state the question and the invocation, and no count**
+  Status: `pending` (found `2026-11-10` by `P4-SYSTEM.18` slice b, `SEMULITH-P4-0396`)
+  Goal: `docs/toolbox/` held 81,897 B of its 81,920 B aggregate ceiling, so one new tool row refused the routes check (`OVER CEILING docs/toolbox/: 82350 aggregate bytes > 81920`). The bound assumed 250 B a row over 76 rows; the family held 204 rows averaging 401 B, and three of its seven files stand within 200 B of the 16,384 B per-part ceiling. Much of the growth is derived detail: self-test counts and port history. Two counts were already wrong (`15 cold controls` where 16 run, `the 27-check focused set` where 29 run). Strip counts and history from every row, since a tool's self-test prints its own counts and the task trees keep the history; then re-derive the family's bounds from the measured rows, with the decision recorded.
+  Acceptance: no row states a count a tool prints; the routes check passes with room for the next ten rows; the re-derivation is in `doctrine/readme_routes.tsv` and a decision record.
+  Until then: slice b made room in `execution.md` by removing two counts and two history clauses, which leaves 39 B.
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `pending` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
+| 2 | `LIVE-CONTAINMENT.5` | `pending` | the toolbox family is at its aggregate ceiling, so the next tool row refuses; before the next new tool |
 
 ### .4o / SEMULITH-LC-0054 — the tree's closed rows move to an archive part (complete)
 

@@ -11,12 +11,60 @@ Requirements, frozen records and acceptance have their own authorities.
 
 ## Where the release stands
 
-All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and two things remain (`decision_release-before-the-next-window.md`):
+All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and one thing remains (`decision_release-before-the-next-window.md`): the named release decision, with its capability limits and versioned artifact.
 
-1. A hosted matrix run on this tree, since the last one covered 171 guests of today's 210. That needs a push, which the director allowed on 2026-11-07 as an exception.
-2. The named release decision, with its capability limits and versioned artifact.
+The hosted run it needed is recorded. Run 42418631491 ran on commit `12347bc5`, the push the director allowed on 2026-11-07 as an exception:
+
+| Host | Architecture | `cargo test --all` | Digest manifest |
+| --- | --- | --- | --- |
+| `ubuntu-latest` | x86_64, native | 519 passed, 0 failed | `0aaf081f…` over 210 guests |
+| `macos-latest` | arm64, native | 519 passed, 0 failed | `0aaf081f…` over 210 guests |
+
+The two manifests are byte-identical, and equal the digest this host recorded. Miri passed 178 tests natively and 178 on big-endian powerpc64. The runners built with rustc 1.99.1 and this host with 1.95.0, and the digest is the same.
 
 The next pinned window follows the release as its own version, because nothing on its list changes a claim any credit makes.
+
+## The hosted run as a record
+
+The gate asks for native x86-64 and AArch64 fixtures that agree. This host is arm64 and reaches x86-64 only through Rosetta's translation, so the native x86-64 leg runs on the hosting service. The service keeps a run's logs for a limited time, so `scripts/hosted_matrix.py` freezes what a run showed into `hosted-matrix.sexp` (`decision_hosted-run-is-a-record.md`):
+
+```sh
+python3 -B scripts/hosted_matrix.py --fetch 42418631491 --out target/hosted-matrix/42418631491
+python3 -B scripts/hosted_matrix.py --verify target/hosted-matrix/42418631491 --profile rv64gc-lab-v0
+python3 -B scripts/hosted_matrix.py --record target/hosted-matrix/42418631491 --profile rv64gc-lab-v0
+```
+
+```text
+hosted_matrix: passed — run 42418631491 on 12347bc57bab: macos-latest (arm64) and ubuntu-latest (x86_64) agree on 0aaf081f941a over 210 guests, 519 tests each; miri 178, cross-endian 178
+```
+
+The tool reads the run's own files and types nothing. It refuses to record when:
+
+- the two hosts' manifests differ, or a manifest's lines do not give the digest it states;
+- neither host is x86_64, or a job or a test failed;
+- the run's commit and this tree differ in the engine, the definitions or the guests;
+- the hosts' digest is not the one this host recorded, over the guests the tree tracks.
+
+Two refusals, on real data:
+
+```text
+hosted_matrix: REFUSED — manifest-ubuntu-latest-rv64gc-lab-v0: the manifest states 0aaf081f941a over 210 guests, and its lines give 7095bf159572 over 210
+hosted_matrix: REFUSED — this host recorded 0670a01b96de over 49 guests; the hosted hosts give 3fbc498e29da over 49
+```
+
+The first is the real run with one guest's digest altered. The second is `rv64i-lab-v0`: its own portability record dates from 2026-09-30, and its guests and the engine have moved since. `P4-SYSTEM.19` owns that repair.
+
+`gate.sexp` names the record as a second `x86-64` row, with what it covers:
+
+```lisp
+(evidence (axis G-PORTABILITY) (kind x86-64) (record "profiles/rv64gc-lab-v0/hosted-matrix.sexp")
+  (covers (path "crates/semulith-core/src") (sha256 "…"))
+  (covers (path "definitions") (sha256 "…"))
+  (covers (path "crates/semulith-verify/src/guests_rv64gc.rs") (sha256 "…"))
+  (statement "…"))
+```
+
+So the report above lists the native leg beside the translated one. The axis itself reads green on either row, because Rosetta carries the leg between pushes. An `accepted` release decision needs the hosted row.
 
 ## What a recorded row covers
 
@@ -33,7 +81,7 @@ A row with a recorded verdict is one past run, so it states what that run was me
 python3 -B scripts/gate_report.py --covers crates/semulith-core/src definitions
 ```
 
-If the engine moves, the row's table entry reads `**no** — the record covers another`, followed by the path, and its axis reads `incomplete` until the run is repeated. Portability was re-measured over the 210 guests on 2026-11-07, locally, with x86-64 under Rosetta. The hosted matrix last ran over 171.
+If the engine moves, the row's table entry reads `**no** — the record covers another`, followed by the path, and its axis reads `incomplete` until the run is repeated. Portability was re-measured over the 210 guests on 2026-11-07, locally, with x86-64 under Rosetta, and the hosted run of the same day covers the same 210.
 
 ## Experiment identities
 

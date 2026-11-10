@@ -34,7 +34,7 @@ Closing the list first would have cost about a day of gated units.
 
 ## What the release decision still needs
 
-1. **A hosted matrix run on this tree.** [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home. Its last run covered 171 guests, and the tree holds 210. **This needs a push below the 300-commit cadence.** The director allowed it on 2026-11-07, as an exception. The act is `scripts/approved_push.sh`, and `docs/push-approvals.md` records it.
+1. **A hosted matrix run on this tree.** [`decision_release-route-x86-64-leg.md`](decision_release-route-x86-64-leg.md) makes it the x86-64 leg's permanent home. Its last run covered 171 guests, and the tree holds 210. **This needs a push below the 300-commit cadence.** The director allowed it on 2026-11-07, as an exception. The act is `scripts/approved_push.sh`, and `docs/push-approvals.md` records it. **Done 2026-11-10:** run 42418631491 is recorded, and `accepted` needs its row verified ([`decision_hosted-run-is-a-record.md`](decision_hosted-run-is-a-record.md)).
 2. **The named decision** (`P4-SYSTEM.18` slice c), recorded in `gate.sexp` as `G-RELEASE`'s evidence, with the versioned artifact digest-pinned. `accepted` only on `passed`, and it never exceeds the report.
 
 ## The capability limits it will name

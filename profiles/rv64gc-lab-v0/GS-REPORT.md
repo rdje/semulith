@@ -83,6 +83,7 @@ is not a claim with a denominator.
 | `G-REGRESSION` | `workload` | `profiles/rv64gc-lab-v0/workload.sexp` | yes |
 | `G-REGRESSION` | `validator-mutation` | `crates/semulith-verify/src/mutate_rv64gc/tests.rs` `every_designated_mutant_is_detected_by_the_corpus` | yes |
 | `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/hosted-matrix.sexp` | yes |
 | `G-PORTABILITY` | `aarch64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
 | `G-PORTABILITY` | `miri` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
 | `G-REPLAY` | `determinism` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_re_executes_identically_from_cold_reset` | yes |
@@ -101,7 +102,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `0`
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 a48f648c475f711ca6eec64ab497a446bfe251c18b5df1787ed3252234e3e5a8`
+  `sha256 5fef1a9c3a05c3d2f54a0379c7e11f7249044a2dbb5b46ca6e87426b1ddfd6a7`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## Capability limits (explicit)

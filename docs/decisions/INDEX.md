@@ -131,3 +131,4 @@ record must be listed below (the MEMORY-ARCH doctrine check enforces it). New re
 | [The caller names the case (2026-10-22)](decision_caller-names-the-case.md) | `decision` | Which case does the evaluation bind when a second case is declared, and why does the retained pointer not live in the binding module? |
 | [A case's reference configuration is the case's own (2026-11-03)](decision_reference-config-per-case.md) | `decision` | Does the pinned reference really lack Zicntr, how does CSR-SET witness all 33 CSRs, and what does it cost? |
 | [A docs-only commit answers a check from its last green run (2026-10-27)](decision_docs-only-gate-path.md) | `decision` | When may the commit gate skip a check, and what makes the skip sound? |
+| [The hosted run is a record (2026-11-10)](decision_hosted-run-is-a-record.md) | `decision` | Where is the native x86-64 leg's evidence kept once the hosting service drops a run's logs, and what did recording it find? |
