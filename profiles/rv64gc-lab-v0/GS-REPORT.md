@@ -105,6 +105,10 @@ claims a test exercises is the reviewer's to judge — that much this report can
   `sha256 5fef1a9c3a05c3d2f54a0379c7e11f7249044a2dbb5b46ca6e87426b1ddfd6a7`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
+## The release decision
+
+None is recorded.
+
 ## Capability limits (explicit)
 
 Every open item above is a limit of what this profile is evidence for today. Until each

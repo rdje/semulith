@@ -49,6 +49,12 @@
   (field (name kind) (type symbol))
   (field (name why) (type string) (min-length 1)))
 
+;; A capability limit the unit declares for its release: what the profile is NOT evidence for, in the reader's words
+;; (docs/EVIDENCE_AND_GATES.md §7, G-RELEASE: explicit capability limits). The report lists each, and an `accepted`
+;; release decision does not stand without at least one (P4-SYSTEM.18 slice c).
+(construct (name limit)
+  (field (name statement) (type string) (min-length 1)))
+
 ;; Something the gate finds open, with the task-tree leaf that owns closing it (defect ownership:
 ;; nothing open without an owner). Informational: the MEASURE decides an axis, never this form.
 (construct (name open)

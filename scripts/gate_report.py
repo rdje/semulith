@@ -769,6 +769,54 @@ def _verify_evidence(ev: list, tracked: set[str], experiments: set[str], where: 
     return label, None
 
 
+RELEASE_OUTCOMES = ("accepted", "experimental")
+
+
+def _release_forms(text: str, where: str) -> list:
+    """Every `(release …)` form a decision record states, read from its fenced `lisp` blocks. A block that does not
+    parse states none, so a malformed form fails closed."""
+    out = []
+    for block in re.findall(r"^```lisp\n(.*?)^```", text, re.S | re.M):
+        try:
+            out += [f for f in S.parse(block, where) if isinstance(f, list) and f and str(f[0]) == "release"]
+        except S.SexpError:
+            continue
+    return out
+
+
+def _native_x86_64(record: str) -> bool:
+    """Whether a tracked record is a hosted run's with an x86_64 host: the native leg §7 asks for, which a
+    translated leg is not (decision_hosted-run-is-a-record.md)."""
+    path = ROOT / record
+    return bool(_forms(path, "hosted-matrix")) and any(_one(h, "arch") == "x86_64" for h in _forms(path, "host"))
+
+
+def _verify_decision(record: str, profile: str, version: str, digest: str, open_axes: list[str], native: bool,
+                     limits: int) -> tuple[str | None, str | None]:
+    """(why the decision does not stand, else None; its outcome). A release decision is of one unit, one version
+    and one dossier, so it stops standing when the dossier moves. `accepted` never exceeds the report (EVD-08):
+    every other axis green, a native x86-64 host on record, and the capability limits declared (§7, G-RELEASE)."""
+    forms = _release_forms((ROOT / record).read_text(encoding="utf-8"), record)
+    if len(forms) != 1:
+        return f"the record states {len(forms) or 'no'} release form{'s' if len(forms) > 1 else ''}", None
+    unit, ver, outcome, pinned = (_one(forms[0], k) for k in ("unit", "version", "outcome", "dossier-sha256"))
+    if (unit, ver) != (profile, version):
+        return f"the decision is of `{unit}` version `{ver}`, not `{profile}` version `{version}`", None
+    if outcome not in RELEASE_OUTCOMES:
+        return f"the decision's outcome `{outcome}` is not one the gate knows ({', '.join(RELEASE_OUTCOMES)})", None
+    if pinned != digest:
+        return "the decision is of another dossier: this one moved since it was recorded", None
+    if outcome == "accepted":
+        if open_axes:
+            return (f"the decision reads `accepted` while {', '.join(f'`{a}`' for a in open_axes)} "
+                    f"{'is' if len(open_axes) == 1 else 'are'} open"), None
+        if not native:
+            return "the decision reads `accepted` with no verified record of a native x86-64 host", None
+        if not limits:
+            return "the decision reads `accepted` with no capability limit declared", None
+    return None, outcome
+
+
 def _gs_verdict(axes: dict[str, tuple[str, bool]]) -> tuple[str, list[str]]:
     """EVD-08's shape: `passed` exactly when all ten axes are present and green."""
     incomplete = [a for a in GS_AXES if a not in axes or not axes[a][1]]
@@ -855,12 +903,15 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
         raise SystemExit(f"gate_report: {rel('credits.sexp')}: {error}")
     experiments = {e["id"] for e in refs.get("experiment", [])} | credited
     found: dict[tuple[str, str], list[tuple[str, str | None]]] = {}
+    checked: list[tuple[list, str, str | None]] = []
     for ev in _forms(manifest, "evidence"):
         axis, kind = _one(ev, "axis"), _one(ev, "kind")
         if kind not in GS_KINDS.get(axis, ()):
             raise SystemExit(f"gate_report: {rel('gate.sexp')}: evidence kind `{kind}` is not one "
                              f"{axis} requires ({', '.join(GS_KINDS.get(axis, ()))})")
-        found.setdefault((axis, kind), []).append(_verify_evidence(ev, tracked, experiments, rel("gate.sexp")))
+        label, why = _verify_evidence(ev, tracked, experiments, rel("gate.sexp"))
+        found.setdefault((axis, kind), []).append((label, why))
+        checked.append((ev, label, why))
     na = {}
     for f in _forms(manifest, "not-applicable"):
         axis, kind = _one(f, "axis"), _one(f, "kind")
@@ -879,9 +930,31 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     unlisted = credited - {_one(ev, "experiment") for ev in _forms(manifest, "evidence") if _one(ev, "axis") == "G-TRACE"}
     if unlisted:
         axes["G-TRACE"] = (axes["G-TRACE"][0] + " — credited, not listed: " + ", ".join(f"`{c}`" for c in sorted(unlisted)), False)
-    others_green = all(g for a, (_, g) in axes.items())
-    decided = any(v is None for _, v in found.get(("G-RELEASE", "decision"), []))
-    axes["G-RELEASE"] = (("a release decision is recorded" if decided else "no release decision recorded")
+    # The release decision (P4-SYSTEM.18 slice c): a tracked record is not enough. It is held to this unit, this version and
+    # this dossier, and `accepted` to the report: the other nine axes, the native x86-64 leg and the declared limits.
+    open_axes = [a for a in GS_AXES if a in axes and not axes[a][1]]
+    others_green = not open_axes
+    native = any(why is None and (_one(ev, "axis"), _one(ev, "kind")) == ("G-PORTABILITY", "x86-64")
+                 and _one(ev, "record") is not None and _native_x86_64(_one(ev, "record")) for ev, _, why in checked)
+    limits = [_one(f, "statement") for f in _forms(manifest, "limit")]
+    version, artifact = str(prof["profile"].get("version", "?")), dossier_digest(d)
+    outcome = decision_label = None
+    decisions = []
+    for ev, label, why in checked:
+        if (_one(ev, "axis"), _one(ev, "kind")) != ("G-RELEASE", "decision"):
+            continue
+        if why is None and _one(ev, "record") is None:
+            why = "a release decision is a record"
+        if why is None:
+            why, read = _verify_decision(_one(ev, "record"), profile, version, artifact, open_axes, native, len(limits))
+            if read is not None and outcome is None:
+                outcome, decision_label = read, label
+        decisions.append((label, why))
+    if decisions:
+        found[("G-RELEASE", "decision")] = decisions
+    decided = outcome is not None
+    axes["G-RELEASE"] = ((f"the release decision reads `{outcome}`" if decided else
+                          "a declared release decision does not stand" if decisions else "no release decision recorded")
                          + "; this report is generated from tracked inputs and gated for sync (GATE-REPORT); "
                          + ("every other axis green" if others_green else "other axes open"),
                          decided and others_green)
@@ -954,8 +1027,20 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     A(f"- profile `{profile}`, version `{prof['profile'].get('version', '?')}`")
     A("- the dossier's content digest (every tracked SOURCE file under")
     A(f"  `profiles/{profile}/` — the generated reports excluded, as derived):")
-    A(f"  `sha256 {dossier_digest(d)}`")
+    A(f"  `sha256 {artifact}`")
     A(f"- regenerate: `scripts/gate_report.py {profile} --gate GS`")
+    A("")
+    A("## The release decision")
+    A("")
+    if decided:
+        A(f"`{outcome}`, recorded in {decision_label} for version `{version}` and the dossier digest above.")
+        A("This report verifies the decision against the tree and never exceeds it: the decision stops")
+        A("standing when the dossier moves, and `accepted` stands only while every other axis is green,")
+        A("a native x86-64 host is on record and the capability limits below are declared.")
+    elif decisions:
+        A("A decision is declared and does not stand. The table above says why.")
+    else:
+        A("None is recorded.")
     A("")
     A("## Capability limits (explicit)")
     A("")
@@ -965,6 +1050,12 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
         A("for the inputs those axes measured.")
     else:
         A("Every axis is green over the inputs it measured; finite testing is not proof.")
+    if limits:
+        A("")
+        A("The unit declares:")
+        A("")
+        for limit in limits:
+            A(f"- {limit}")
     return "\n".join(L) + "\n"
 
 
@@ -1403,12 +1494,23 @@ def _selftest() -> int:
                      if (real / doc).is_file())  # a window retires the credits with their catalogue
         live = _tracked()
 
+        def undecided(s):
+            """The manifest as it stands before any release decision: no decision row, no declared limit, and one owned open
+            item on G-RELEASE. Every control starts here, so none depends on whether the real unit is released."""
+            spans = [(a, b) for f, a, b in S.forms_with_spans(s) if isinstance(f, list) and f and (
+                str(f[0]) == "limit" or (str(f[0]) in ("evidence", "open") and _one(f, "axis") == "G-RELEASE"))]
+            for a, b in reversed(spans):
+                s = s[:a] + s[b:]
+            return s.rstrip("\n") + '\n(open (axis G-RELEASE) (owner "P4-SYSTEM.18")\n  (statement "No release decision is recorded for this unit."))\n'
+
         def gs(name, edits=None, extra_files=None):
             g = tmp / f"gs-{name}"
             g.mkdir()
             for doc in docs:
                 text = (C.text(real / doc) if doc == "contract-obligations.sexp"
                         else (real / doc).read_text(encoding="utf-8"))
+                if doc == "gate.sexp":
+                    text = undecided(text)
                 for target, fn in (edits or {}).items():
                     if target == doc:
                         text = fn(text)
@@ -1533,6 +1635,84 @@ def _selftest() -> int:
         arm("RED an open axis with no declared owner reads unowned",
             lambda: has(gs("unowned", {"gate.sexp": lambda s: s[:s.index('(open (axis G-RELEASE)')]}),
                         "**Unowned open axes: `G-RELEASE`**"))
+        # ---- the release decision (P4-SYSTEM.18 slice c): held to the unit, the version, the dossier and the report ----
+        scratch_digest = hashlib.sha256().hexdigest()  # a scratch unit tracks no file, so its dossier digest is the empty one
+
+        def release(outcome="accepted", unit="rv64gc-lab-v0", version="0", sha=scratch_digest, forms=1):
+            form = f'(release (unit "{unit}") (version "{version}") (outcome "{outcome}") (dossier-sha256 "{sha}"))'
+            return "# A release decision\n\n```lisp\n" + "\n".join([form] * forms) + "\n```\n"
+
+        def without_record(suffix):
+            def edit(s):
+                spans = [(a, b) for f, a, b in S.forms_with_spans(s) if isinstance(f, list) and f and str(f[0]) == "evidence"
+                         and (_one(f, "record") or "").endswith(suffix)]
+                assert spans, f"no evidence row names a record ending {suffix}"
+                for a, b in reversed(spans):
+                    s = s[:a] + s[b:]
+                return s
+            return edit
+
+        def decided(name, record, before=None, limit=True, extra=None):
+            path = (tmp / f"gs-{name}" / "decision.md").relative_to(ROOT).as_posix()
+            rows = (f'(evidence (axis G-RELEASE) (kind decision) (record "{path}") (statement "s"))'
+                    + ('\n(limit (statement "one hart, and no board"))' if limit else ""))
+            return gs(name, {"gate.sexp": lambda s: ev(rows)((before or (lambda x: x))(s))}, {"decision.md": record, **(extra or {})})
+
+        def stale_hosted(s):
+            (a, b), = [(a, b) for f, a, b in S.forms_with_spans(s) if isinstance(f, list) and f and str(f[0]) == "evidence"
+                       and (_one(f, "record") or "").endswith("hosted-matrix.sexp")]
+            return s[:a] + first_covers(s[a:b]) + s[b:]
+
+        def arm64_only(s):
+            rec = (tmp / "gs-arm64-only" / "hosted.sexp").relative_to(ROOT).as_posix()
+            return ev(f'(evidence (axis G-PORTABILITY) (kind x86-64) (record "{rec}") (covers (path "definitions") '
+                      f'(sha256 "{_covered_digest("definitions", live)}")) (statement "s"))')(without_record("hosted-matrix.sexp")(s))
+        no_native = "**no** — the decision reads `accepted` with no verified record of a native x86-64 host"
+        stands = "decision.md` | yes |"
+        no_directed = lambda s: s.replace('(fn "every_guest_matches_its_expectations")', '(fn "no_such_test")')  # noqa: E731
+        arm("GREEN an accepted decision of this dossier, over nine green axes, a native x86-64 host and a declared limit, reads passed",
+            lambda: has(decided("accepted", release()), "**Verdict: `passed`.**", stands, "the release decision reads `accepted`",
+                        "`accepted`, recorded in", "- one hart, and no board"))
+        arm("RED a decision of another dossier does not stand",
+            lambda: has(decided("moved", release(sha="0" * 64)), "**no** — the decision is of another dossier",
+                        "**Verdict: `incomplete`.**", "A decision is declared and does not stand."))
+        arm("RED `accepted` over an open axis does not stand, and names the axis",
+            lambda: has(decided("open-axis", release(), before=no_directed),
+                        "**no** — the decision reads `accepted` while `G-REGRESSION` is open"))
+        arm("RED `accepted` on the translated x86-64 leg alone does not stand, though the axis reads green",
+            lambda: (lambda r: (has(r, no_native), assert_eq(verdict_of(r, "G-PORTABILITY"), "green"),
+                                assert_eq(verdict_of(r, "G-RELEASE"), "incomplete")))(
+                decided("translated", release(), before=without_record("hosted-matrix.sexp"))))
+        arm("RED `accepted` on a hosted record whose inputs moved does not stand",
+            lambda: (lambda r: (has(r, "hosted-matrix.sexp` | **no** — the record covers another", no_native),
+                                assert_eq(verdict_of(r, "G-PORTABILITY"), "green")))(
+                decided("stale-hosted", release(), before=stale_hosted)))
+        arm("RED `accepted` on a hosted record with no x86_64 host does not stand",
+            lambda: has(decided("arm64-only", release(), before=arm64_only, extra={
+                "hosted.sexp": '(hosted-matrix (verdict "passed") (hosts (host (arch "arm64")) (host (arch "aarch64"))))\n'}),
+                "hosted.sexp` | yes |", no_native))
+        arm("RED `accepted` with no declared capability limit does not stand",
+            lambda: has(decided("no-limit", release(), limit=False),
+                        "**no** — the decision reads `accepted` with no capability limit declared"))
+        arm("RED a decision of another unit does not stand",
+            lambda: has(decided("other-unit", release(unit="rv64i-lab-v0")),
+                        "**no** — the decision is of `rv64i-lab-v0` version `0`, not `rv64gc-lab-v0` version `0`"))
+        arm("RED a decision of another version does not stand",
+            lambda: has(decided("other-version", release(version="1")), "**no** — the decision is of `rv64gc-lab-v0` version `1`, not"))
+        arm("RED an outcome the gate does not know does not stand",
+            lambda: has(decided("outcome", release(outcome="validated")),
+                        "**no** — the decision's outcome `validated` is not one the gate knows"))
+        arm("RED a record with no release form, or with two, does not stand",
+            lambda: (has(decided("no-form", "# A decision in prose only\n"), "**no** — the record states no release form"),
+                     has(decided("two-forms", release(forms=2)), "**no** — the record states 2 release forms")))
+        arm("RED a decision row that names a test, not a record, does not stand",
+            lambda: has(gs("test-decision", {"gate.sexp": ev(
+                '(evidence (axis G-RELEASE) (kind decision) (test (file "crates/semulith-verify/src/run_rv64gc/tests.rs") '
+                '(fn "every_guest_matches_its_expectations")) (statement "s"))\n(limit (statement "one hart"))')}),
+                "**no** — a release decision is a record", "**Verdict: `incomplete`.**"))
+        arm("GREEN an experimental decision stands over an open axis, and the verdict stays incomplete",
+            lambda: has(decided("experimental", release(outcome="experimental"), before=no_directed, limit=False),
+                        stands, "the release decision reads `experimental`", "**Verdict: `incomplete`.**"))
         unslotted = lambda s: re.sub(r"\s*\(status partial\)|\s*\(slot \(id [a-z]+\) \(requires \"[^\"]+\"\)\)",  # noqa: E731
                                      "", s)
         slotted = lambda s: unslotted(s).replace('(extensions "riscv/zicsr")',  # noqa: E731
@@ -1574,7 +1754,7 @@ def _selftest() -> int:
         shutil.rmtree(tmp, ignore_errors=True)
     for m in missed:
         print(f"gate_report --self-test MISS: {m}", file=sys.stderr)
-    want = 30
+    want = 43
     if ran != want:
         print(f"gate_report --self-test HARNESS: {ran} arm(s) ran, {want} declared", file=sys.stderr)
     print(f"gate_report --self-test: {passed} pass / {len(missed) + (ran != want)} fail")

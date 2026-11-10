@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0397 (leaf P4-SYSTEM.18 slice c1) — a release decision is held to the unit, the dossier and the report
+
+A decision row used to need only a tracked file. Now the record pins the unit, the version and the dossier's digest, and `accepted` stands only over nine green axes, a native x86-64 record and a declared limit. No decision is recorded yet; on a clone with the real dossier the report reads `passed`.
+
 ## SEMULITH-P4-0396 (leaf P4-SYSTEM.18 slice b) — the hosted run is a record, and the report shows the native x86-64 leg
 
 Run 42418631491 on the pushed tree: x86-64 and arm64 hardware each pass 519 tests and give the same digest over 210 guests, equal to this host's. `scripts/hosted_matrix.py` freezes it into the dossier, tied to the tree. Found on the way: the scalar unit's portability record is stale (`P4-SYSTEM.19`), and the record's "suites" were tests.

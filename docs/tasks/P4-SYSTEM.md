@@ -433,7 +433,7 @@ This gate authorises the planned next engineering stage: board implementation.
   Goal: the report regenerated over the complete profile; the named release decision.
   Acceptance: the decision never exceeds the report — `accepted` only on `passed`; otherwise it
   names what stands open.
-  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b (`2026-11-10`, `SEMULITH-P4-0396`) records the hosted run on this tree, so the report shows the native x86-64 leg. c is the release decision, with its capability limits and versioned artifact: `accepted` only on `passed`, and only with the hosted row verified.
+  Slices: a (`2026-11-07`, `SEMULITH-P4-0393`) holds recorded evidence to what it covers and re-measures portability. b (`2026-11-10`, `SEMULITH-P4-0396`) records the hosted run on this tree, so the report shows the native x86-64 leg. c1 (`2026-11-10`, `SEMULITH-P4-0397`) makes the report hold a release decision to the unit, the dossier and itself. c2 is the act: the decision record, its capability limits, and the claim pages.
 - ID: `P4-SYSTEM.19` — **the scalar unit's recorded evidence is held to what it covers**
   Status: `pending` (found `2026-11-10` by `.18` slice b, `SEMULITH-P4-0396`)
   Goal: `rv64i-lab-v0`'s report reads `G-PORTABILITY` green from a record of 2026-09-30. That record states the digest `0670a01b…`, and the unit's 49 guests give `3fbc498e…` today, on both hosted hosts. `scripts/gate_report.py` reads that verdict, and the unit's ACT record, with no statement of what either covers. Re-measure the unit's portability, record its hosted run, and hold its recorded rows to what they cover, as `.18` slice a did for `rv64gc-lab-v0`.
@@ -444,7 +444,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.18` | `active` | the verdict and the release decision. Slice a holds recorded evidence to what it covers, and slice b records the hosted run on this tree, so the report shows the native x86-64 leg and reads 1 of 10 axes open. Next slice c, the named decision |
+| 1 | `P4-SYSTEM.18` | `active` | the verdict and the release decision. Slice a holds recorded evidence to what it covers, and slice b records the hosted run on this tree, so the report shows the native x86-64 leg and reads 1 of 10 axes open. Slice c1 makes the report hold a release decision to the dossier and to itself. Next slice c2, the decision, after the XTASK turn |
 | 2 | `P4-SYSTEM.19` | `pending` | the scalar unit's portability record is stale and its report reads it green; after `.18` slice c |
 
 ## Decisions
@@ -542,6 +542,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .18 c1 / SEMULITH-P4-0397: a release decision is held to the unit, the dossier and the report (completed)
+
+Feature 5 of 5 after XTASK-0088. **The finding.** A `decision` row needed only a tracked file. With nine axes green, any tracked record turned `G-RELEASE` green, and nothing tied a decision to the bytes it accepted. **The mechanism.** The record states one `release` form: the unit, the version, the outcome and the dossier's digest. `gate_report.py` holds it to all of them, and holds `accepted` to the report: every other axis green, a verified record of a native x86_64 host, and a declared `limit`, which `schema/gate.sexp` now knows. `decision_a-release-decision-is-held-to-the-report.md`. **No decision is recorded.** The act is slice c2. **Rehearsed** on a clone with the real dossier: a decision pinned to another digest does not stand, the dossier's own digest reads `passed`, and one later comment in `gate.sexp` reopens the gate. **Found.** `docs/book/src/claim-scope.md` is stale since P2: it speaks of `rv64i-lab-v0` only and says no gate reads `passed`, though `G1` has since 2026-09-30. Slice c2 rewrites it with the decision. Book: `evidence.md`.
 
 ### .18 b / SEMULITH-P4-0396: the hosted run is a record, and the report shows the native x86-64 leg (completed)
 
@@ -1245,6 +1249,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.18` c1 **ROOT CAUSE** — a tracked file was a decision: `git show baa7d237:scripts/gate_report.py | grep -c 'decided = any(v is None'` = 1 and `git show baa7d237:scripts/gate_report.py | grep -c _verify_decision` = 0, so no digest, unit or axis was read.
+- [x] `.18` c1 **ADDRESSED** — `python3 -B scripts/gate_report.py --self-test` `rc=0` → `43 pass / 0 fail`, 13 of them the decision's controls; each of its 11 guards, omitted alone, is noticed (target/p4-system-18/c/omit.tsv, `wc -l` = 11). On a clone with the real dossier (target/p4-system-18/c/rehearse.txt): `grep -c 'Verdict: .passed' ` = 1, on the pinned step only, and `grep -c 'another dossier'` = 2.
+- [x] `.18` c1 **NO REGRESSION** — `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`; `grep -c 'Open axes (1 of 10)' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1 and `grep -c 'None is recorded' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1, the report's only new lines; `python3 scripts/check_sexp_schema.py profiles/rv64gc-lab-v0/gate.sexp schema/gate.sexp` `rc=0`.
 - [x] `.18` b **ROOT CAUSE** — the native x86-64 leg had no record in the tree: `git show 987ad951:profiles/rv64gc-lab-v0/GS-REPORT.md | grep -c hosted` = 0; the `x86-64` kind read green on a translated leg alone (`grep -c 'Rosetta translation' profiles/rv64gc-lab-v0/portability.sexp` = 1), and §7 asks for native fixtures (`grep -c 'native x86-64 and AArch64' docs/EVIDENCE_AND_GATES.md` = 1).
 - [x] `.18` b **ADDRESSED** — `python3 -B scripts/hosted_matrix.py --verify target/hosted-matrix/42418631491 --profile rv64gc-lab-v0` `rc=0` → `agree on 0aaf081f941a over 210 guests, 519 tests each; miri 178, cross-endian 178`; `grep -c 'hosted-matrix.sexp. | yes' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1; `python3 -B scripts/hosted_matrix.py --self-test` `rc=0` → `40 pass / 0 fail`, and each of its 32 refusals, omitted alone, is noticed (target/p4-system-18/b/omit.tsv, `wc -l` = 32). On the real run, one altered guest digest gives `rc=1` → `its lines give 7095bf159572`, and `--record --profile rv64i-lab-v0` gives `rc=1` → `this host recorded 0670a01b96de over 49 guests`.
 - [x] `.18` b **NO REGRESSION** — `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`; `bash scripts/check_portability.sh --self-test` `rc=0` → `9 pass`, `16 pass`, `40 pass`; `grep -c 'Open axes (1 of 10)' profiles/rv64gc-lab-v0/GS-REPORT.md` = 1. The corrected record writer, run over slice a's retained logs, differs from the tracked record in the date, the kernel version and the four corrected lines only (target/p4-system-18/b/refreeze.diff, `grep -c '^<'` = 6).

@@ -11,7 +11,7 @@ Requirements, frozen records and acceptance have their own authorities.
 
 ## Where the release stands
 
-All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and one thing remains (`decision_release-before-the-next-window.md`): the named release decision, with its capability limits and versioned artifact.
+All 48 requirements are settled and nine of the ten axes read green. `G-RELEASE` stands open, and one thing remains (`decision_release-before-the-next-window.md`): the named release decision, with its capability limits and versioned artifact. The report can now verify one, as the last section of this page shows.
 
 The hosted run it needed is recorded. Run 42418631491 ran on commit `12347bc5`, the push the director allowed on 2026-11-07 as an exception:
 
@@ -65,6 +65,44 @@ The first is the real run with one guest's digest altered. The second is `rv64i-
 ```
 
 So the report above lists the native leg beside the translated one. The axis itself reads green on either row, because Rosetta carries the leg between pushes. An `accepted` release decision needs the hosted row.
+
+## How a release decision is held
+
+`G-RELEASE` asks for a named release decision. A decision is a record in `docs/decisions/` that states one form (`decision_a-release-decision-is-held-to-the-report.md`):
+
+```lisp
+(release (unit "rv64gc-lab-v0") (version "0") (outcome "accepted")
+  (dossier-sha256 "…"))
+```
+
+`gate.sexp` names the record and declares the capability limits, which the report lists:
+
+```lisp
+(evidence (axis G-RELEASE) (kind decision) (record "docs/decisions/decision_release-rv64gc-lab-v0.md")
+  (statement "…"))
+(limit (statement "One hart. No board, no boot and no multicore."))
+```
+
+The report verifies the decision at every commit. A decision does not stand, and the report says why, when it:
+
+| The decision | Why it does not stand |
+| --- | --- |
+| pins another digest than the dossier's | the decision is of another dossier: this one moved since it was recorded |
+| reads `accepted` while an axis is open | the decision reads `accepted` while `G-REGRESSION` is open |
+| reads `accepted` on the translated x86-64 leg alone, or on a hosted record whose inputs moved | the decision reads `accepted` with no verified record of a native x86-64 host |
+| reads `accepted` with no `limit` declared | the decision reads `accepted` with no capability limit declared |
+| names another unit or version | the decision is of `rv64i-lab-v0` version `0`, not `rv64gc-lab-v0` version `0` |
+
+So `accepted` can never exceed the report, and a release is of exact bytes. Once the dossier moves, the decision stops standing until a new one is recorded.
+
+No decision is recorded yet. This is the rehearsal on a clone of the tree, with the real dossier:
+
+```text
+before        : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`.
+unpinned      : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`. | the decision is of another dossier
+pinned        : **Verdict: `passed`.**
+dossier moved : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`. | the decision is of another dossier
+```
 
 ## What a recorded row covers
 
