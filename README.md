@@ -49,6 +49,7 @@ execute and validate them against.
 | `make hooks` | activate the git hooks once per clone (`core.hooksPath=.githooks`) |
 | `cargo xtask <target>` | the same Makefile target through the Rust front door (`XTASK`) |
 | `cargo xtask focused` | the focused check set every unit runs before its gated commit; never commits |
+| `cargo xtask commit-unit <dir>` | land a unit: that set, the gated commit, the message emptied, scratch swept |
 | `cargo xtask build-bench` | build the bench's wasm module (`make bench` runs it through its shim) |
 
 ## How this repository works

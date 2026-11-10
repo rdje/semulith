@@ -30,6 +30,35 @@ cannot supply it. The gate checks presence, not truth; re-run the cited command.
 
 {{#include ../../../TASK_TREE_README.md:code-leaf-evidence}}
 
+## Landing a leaf
+
+One command lands a finished leaf, once its files are staged and `git_message_brief.txt` holds its message:
+
+```sh
+cargo xtask commit-unit target/p4-system-18/c
+```
+
+It runs, in order:
+
+1. **The message is read first.** An empty file, or a first line that is not `SEMULITH-<AREA>-<NNNN> …`, stops here, before any check: `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate`.
+2. **The focused set**, into `<dir>/commit-focused`. One red check stops here: `FOCUSED-RED: not committing`.
+3. **`git commit -F git_message_brief.txt`**, under the hooks. The pre-commit hook runs every doctrine, and its output is kept in `<dir>/commit.log`. A refused commit keeps the message for the retry.
+4. **The message file is emptied**, only when the commit landed.
+5. **The unit's scratch is swept** from the directory. A cargo target directory and a scratch clone go. Every file stays.
+
+```text
+focused: 0 red of 29
+00:14:00 commit begins (pre-commit gate)
+00:31:02 git commit rc=0
+8f8caa23… SEMULITH-P4-0397 (leaf P4-SYSTEM.18 slice c1): a release decision is held to the unit, the dossier and the report
+sweep: removed scratch clone target/p4-system-18/c/tree
+sweep: 1 removed under target/p4-system-18/c
+```
+
+The directory must be below `target/`. The command stages nothing and decides nothing the hooks decide. `cargo xtask sweep-scratch <dir>` runs the sweep alone.
+
+Two things it does that a shell script did not. Its git ignores a hook's `GIT_DIR` and `GIT_INDEX_FILE`, so a test's scratch repository can never write into this one. And `git commit` starts without the variables cargo sets to describe the `xtask` package, so the gate runs as it does from a shell.
+
 ## The pivot rule
 
 Commit the leaf before switching trees. Only its task-tree may remain dirty,

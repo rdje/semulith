@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0089 (leaf XTASK.15) — the commit chain and its sweep are tracked
+
+`cargo xtask commit-unit <dir>` lands a unit: it reads the message first, runs the focused set, commits under the hooks, empties the message and sweeps the unit's scratch. Before, both were untracked shell files under `target/`. Its git ignores a hook's repository variables, shown on a decoy repository.
+
 ## SEMULITH-P4-0397 (leaf P4-SYSTEM.18 slice c1) — a release decision is held to the unit, the dossier and the report
 
 A decision row used to need only a tracked file. Now the record pins the unit, the version and the dossier's digest, and `accepted` stands only over nine green axes, a native x86-64 record and a declared limit. No decision is recorded yet; on a clone with the real dossier the report reads `passed`.

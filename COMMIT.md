@@ -72,6 +72,12 @@ apply to code changes.
    - `git ls-files --error-unmatch git_message_brief.txt` must FAIL (untracked),
    - `wc -c git_message_brief.txt` must be `0`,
    - `git status --short` shows only the expected state.
+**One command for steps 6 to 8.** `cargo xtask commit-unit target/<unit-evidence-dir>` refuses an empty or
+misshapen `git_message_brief.txt` before any check runs, runs the focused set into that directory, commits with
+`git commit -F git_message_brief.txt` under the hooks, empties the message file once the commit lands, and
+sweeps the unit's scratch from the directory: build directories and scratch clones go, every file stays. It
+stages nothing, so step 5 is still yours. Exit 0 means the unit landed (`XTASK.15`).
+
 9. In the completion message, report: the commit ID, the exact commit message, the tracked
    files in the commit, the current `LIVE_STATUS.md` snapshot, and whether it changed.
 

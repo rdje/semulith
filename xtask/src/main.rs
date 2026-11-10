@@ -10,6 +10,10 @@
 //! - `cargo xtask focused [--out DIR]` runs the focused check set every unit runs before its gated
 //!   commit (`XTASK.2`): each check in order, its output kept in `DIR` (default `target/focused`),
 //!   one line per check, a summary and a JSON record, exit 1 if any check is red. It never commits.
+//! - `cargo xtask commit-unit <evidence-dir>` is the commit chain every unit lands through (`XTASK.15`,
+//!   `commit_unit.rs`): it refuses an empty or misshapen `git_message_brief.txt`, runs the focused set, commits
+//!   under the pre-commit gate, empties the message file and sweeps the unit's scratch. `cargo xtask sweep-scratch
+//!   <evidence-dir>` is that sweep alone. Both were untracked shell files under `target/` before.
 //! - `cargo xtask build-bench` builds the browser bench's wasm module and copies it next to the page
 //!   (`XTASK.4` slice `4a`; formerly `scripts/build_bench.sh`, which `make bench` still runs and which is
 //!   now a one-line shim to this subcommand).
@@ -195,6 +199,7 @@ mod check_unit_books;
 mod check_unit_composition;
 mod check_upstream_index;
 mod check_wasm_build;
+mod commit_unit;
 mod composition;
 mod disjoint;
 mod harness;
@@ -258,6 +263,8 @@ const FOCUSED: &[&[&str]] = &[
 /// The subcommands xtask implements itself; every other argument list is the Makefile's.
 const NATIVE: &[&str] = &[
     "focused",
+    "commit-unit",
+    "sweep-scratch",
     "build-bench",
     "check-wasm-build",
     "check-commit-prefix",
@@ -390,6 +397,8 @@ fn main() -> ExitCode {
     if let Some(name) = args.first().filter(|arg| NATIVE.contains(&arg.as_str())) {
         return match name.as_str() {
             "focused" => focused(&root, &args[1..]),
+            "commit-unit" => commit_unit::run_commit(&root, &args[1..]),
+            "sweep-scratch" => commit_unit::run_sweep(&root, &args[1..]),
             "build-bench" => build_bench(&root),
             "check-wasm-build" => check_wasm_build::run(&root, &args[1..]),
             "check-commit-prefix" => check_commit_prefix::run(&root, &args[1..]),
@@ -509,9 +518,22 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    if let Err(error) = fs::create_dir_all(&out) {
-        eprintln!("xtask focused: cannot create {}: {error}", out.display());
-        return ExitCode::from(2);
+    match focused_set(root, &out, None) {
+        Some(0) => ExitCode::SUCCESS,
+        Some(_) => ExitCode::from(1),
+        None => ExitCode::from(2),
+    }
+}
+
+/// Runs the focused set into `out`, one line per check and a summary, and returns how many checks were red,
+/// or `None` when `out` cannot be written. With `tmp`, each check runs with that directory as its `TMPDIR`, as
+/// the commit chain runs them, so their temporary files stay on the repository's volume.
+fn focused_set(root: &Path, out: &Path, tmp: Option<&Path>) -> Option<usize> {
+    for dir in [Some(out), tmp].into_iter().flatten() {
+        if let Err(error) = fs::create_dir_all(dir) {
+            eprintln!("xtask focused: cannot create {}: {error}", dir.display());
+            return None;
+        }
     }
     let mut red = 0;
     let mut record = String::from("[\n");
@@ -519,12 +541,12 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
         let (program, rest) = command
             .split_first()
             .expect("a focused command is never empty");
-        let result = Command::new(program)
-            .args(rest)
-            .current_dir(root)
-            .stdin(Stdio::null())
-            .output();
-        let (code, text) = match result {
+        let mut check = Command::new(program);
+        check.args(rest).current_dir(root).stdin(Stdio::null());
+        if let Some(tmp) = tmp {
+            check.env("TMPDIR", tmp);
+        }
+        let (code, text) = match check.output() {
             Ok(output) => {
                 let mut text = String::from_utf8_lossy(&output.stdout).into_owned();
                 text.push_str(&String::from_utf8_lossy(&output.stderr));
@@ -542,7 +564,7 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
         let log = out.join(format!("{}.log", log_name(command)));
         if let Err(error) = fs::write(&log, &text) {
             eprintln!("xtask focused: cannot write {}: {error}", log.display());
-            return ExitCode::from(2);
+            return None;
         }
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -560,14 +582,10 @@ fn focused(root: &Path, args: &[String]) -> ExitCode {
     record.push_str("]\n");
     if let Err(error) = fs::write(out.join("focused-checks.json"), record) {
         eprintln!("xtask focused: cannot write the record: {error}");
-        return ExitCode::from(2);
+        return None;
     }
     println!("focused: {red} red of {}", FOCUSED.len());
-    if red == 0 {
-        ExitCode::SUCCESS
-    } else {
-        ExitCode::from(1)
-    }
+    Some(red)
 }
 
 /// `cargo xtask build-bench`: builds the bench's wasm module, `semulith-verify`'s cdylib (`LAB-BENCH.1`),

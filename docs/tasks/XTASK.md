@@ -416,15 +416,15 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   Result: a record key is now each argument percent-encoded, joined by commas, on both sides (`record_key`, `doctrine_prefetch.key`); a new arm holds the two equal through `doctrine_prefetch.py --key`, because a difference would not fail anything: every arm would quietly run live. Not counted in the 5:1, being a defect's fix. **Measured** (red-before.txt, red-after.txt, misses.txt): before, `census refuses: unsafe relative path`; after, the census accepts it; `PROFILE_CONSISTENCY_PREFETCH_MISSES` over a whole self-test wrote nothing: 0 misses, `PROFILE-CONSISTENCY: ok`. Left alone: a dead process's scratch directory stays until a cleanup's hand reaches it, which the census can now read and the recurring record can name.
 
 - ID: `XTASK.15` — **the commit chain and its scratch sweep are tracked**
-  Status: `pending` (found `2026-11-10` by `ARTIFACT-CLEANUP.40`, AC0096)
+  Status: `done` (`2026-11-10`, `SEMULITH-XTASK-0089`; found by `ARTIFACT-CLEANUP.40`, AC0096; on clean 8f8caa23; evidence target/xtask/xt0089)
   Goal: `target/xtask/xt0002/commit-chain.sh` and `target/xtask/sweep_unit_scratch.sh` run for every unit, yet both are untracked files under `target/`. A fix to either is not versioned, and removing `target/` removes them. AC0096 found the cost: the sweep had left 21 scratch clones of 13 landed units (524,516 KiB), because it looked only inside `red-*`. It is fixed in place, with a control, on this disk only. Move both behind `cargo xtask`, the chain's refusal of an empty message and the sweep's control as tests: a repository one and two levels down removed; a broken `.git`, a symlink and every file kept. One slice, at the next XTASK turn, ahead of `XTASK.13`'s next: it is small, and every unit's commit runs through it.
+  Result: `cargo xtask commit-unit <evidence-dir>` is the chain and `cargo xtask sweep-scratch <evidence-dir>` the sweep, in `xtask/src/commit_unit.rs`. The 5:1 turn, after `P4-SYSTEM.18` slice c1. **Kept:** the refusal of an empty or misshapen message before any check runs, the focused set into `<dir>/commit-focused`, `git commit -F` under the hooks with its output in `<dir>/commit.log`, the message emptied only when the commit lands, then the sweep. **Measured equal:** on two identical layouts the shell sweep and this one remove the same four directories and leave the same 16 paths (equivalence.txt). **Two hazards closed, each measured.** (1) A hook's `GIT_DIR` and `GIT_INDEX_FILE` would send a scratch repository's git into the committing one. Every git here drops those variables: pointed at a decoy repository, the tests pass and the decoy is untouched, and with the scrub omitted seven of eight fail and the decoy's config is written (decoy.txt). (2) Under `cargo run` the gate would inherit 16 variables that describe the `xtask` package (env-xtask.txt), so `git commit` starts without them. **Controls:** 10 tests on scratch repositories, run by `cargo test` at every commit; each of 17 guards, weakened alone, fails one (mutations.tsv). The shell files stay under `target/` as one-line callers. This unit lands through `cargo xtask commit-unit`.
 
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes next, case by case, after five feature units |
-| 2 | `XTASK.15` | `pending` | the commit chain and its sweep become tracked; it takes the next XTASK turn, ahead of `XTASK.13`'s next slice |
 
 ## Decisions
 
@@ -647,8 +647,17 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 - [x] **NO REGRESSION** — `cargo test -p xtask` → `test result: ok. 17 passed`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `cargo fmt --all -- --check` rc=0; the commit gate green (chain log).
 - [x] **LOCKSTEP** — the tree (XTASK.10 node, Children, changelog line), docs/TASK_TREE.md (9 of 10 leaves done), the knowledge card that counts the set, CHANGELOG.md, MEMORY.md.
 
+## Acceptance Checklist (leaf XTASK.15)
+
+- [x] **ROOT CAUSE (WHY + WHERE)** — the chain and the sweep were untracked: `git ls-files target | wc -l` = 0, while target/xtask/xt0002/commit-chain.sh and target/xtask/sweep_unit_scratch.sh ran for every unit; `git show 8f8caa23:xtask/src/main.rs | grep -c commit-unit` = 0.
+- [x] **FIX** — xtask/src/commit_unit.rs (`commit_unit`, `sweep`), two `NATIVE` names in xtask/src/main.rs, and `focused_set` split from `focused` so the chain runs the set in process; `cargo fmt --all -- --check` rc=0.
+- [x] **ADDRESSED (verified)** — `cargo test -p xtask` → `test result: ok. 27 passed`, 10 of them the chain's and the sweep's; target/xtask/xt0089/mutations.tsv: 17 guards, each noticed (`wc -l` = 17); equivalence.txt: `what is left: 16 and 16 paths; identical: yes`, and `cargo xtask commit-unit` on an empty message `rc=1` → `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate`; decoy.txt: `8 passed` with the scrub, `1 passed; 7 failed` without.
+- [x] **NO REGRESSION** — `cargo clippy -p xtask --all-targets -- -D warnings` rc=0; `bash scripts/check_wasm_build.sh` rc=0 → `PORT-WEB: ok`; `cargo xtask focused` prints the same lines (the body of `focused` is `focused_set`'s, unchanged); the commit gate green (chain log).
+- [x] **LOCKSTEP** — the tree (XTASK.15 node, frontier, changelog line), docs/TASK_TREE.md (14 of 15 leaves done), README.md, COMMIT.md, the book's `working/task-trees.md`, docs/toolbox/execution.md, CHANGELOG.md, MEMORY.md.
+
 ## Changelog
 
+- `2026-11-10`: XTASK.15 done — the commit chain and its sweep are `cargo xtask commit-unit` and `sweep-scratch`; every git drops a hook's repository variables, and the gate starts without the `xtask` package's.
 - `2026-11-05`: XTASK.13 slice b6 done — the rest of GUEST-GEN's self-test judges frozen copies; six damaged states each fail by name at 400 of 400; DEF-GEN's frozen tree gains `profile.sexp`; taken at 4 of 5 features, recorded why.
 - `2026-11-05`: XTASK.13 slice b5 done — the author probes' other corpus reads judge 26 frozen records; the mirror governor already names a damaged live one, so the drafted step was dropped; `scripts/live_reads.py` measures what a probe reads; seven probes' composition reads are b6.
 - `2026-11-04`: XTASK.13 slice b4 done — the author probes judge a frozen owned corpus; GUEST-GEN's real check re-derives the live one; the probes' other corpus reads are b5.
