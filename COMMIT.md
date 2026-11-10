@@ -73,7 +73,8 @@ apply to code changes.
    - `wc -c git_message_brief.txt` must be `0`,
    - `git status --short` shows only the expected state.
 **One command for steps 6 to 8.** `cargo xtask commit-unit target/<unit-evidence-dir>` refuses an empty or
-misshapen `git_message_brief.txt` before any check runs, runs the focused set into that directory, commits with
+misshapen `git_message_brief.txt` before any check runs, runs the focused set into that directory (rustfmt,
+clippy and `cargo test --all` first, so step 2 is done by it), commits with
 `git commit -F git_message_brief.txt` under the hooks, empties the message file once the commit lands, and
 sweeps the unit's scratch from the directory: build directories and scratch clones go, every file stays. It
 stages nothing, so step 5 is still yours. Exit 0 means the unit landed (`XTASK.15`).

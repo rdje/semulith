@@ -46,3 +46,33 @@ unit measured (`grep` census in target/xtask/xt0018), not the whole registry.
   closure (a `scripts/` edit) must run the check and a drifted key must run it even with no staged path inside.
 - Related: [[alternate-port-and-features]] (the tooling slot this lands in), the pooled slot and its cargo lane
   (`XTASK.8` slices a–c), [[two-cargo-runs-of-one-binary-race]].
+
+## Addendum (2026-11-10, `XTASK.16`): the declaration turned round
+
+The rule above let a check skip when nothing staged lay inside the inputs it declared. Its own text names the weakness: "The soundness of the skip rests entirely on the closure being honest." The declarations were not complete, twice.
+
+| What moved | When | What the declarations missed |
+| --- | --- | --- |
+| The six drivers, into `xtask/src/` | 2026-10-27 and 2026-10-28 | No declaration named `xtask/`, so a commit changing only a driver skipped that driver's own check |
+| A credit's facts, into decision records a selection names | 2026-11-07 | `PROFILE-CONSISTENCY` declared no document, and reads four |
+
+**Measured** (`target/xtask/xt0090`). Of 189 commits since 2026-10-27, 11 change `xtask/` and stage nothing inside any declaration, and one of them changed three of the six drivers. With every documentation file absent from the working tree, CONTRACT-FREEZE, DEF-GEN, ARTIFACT-COHORT, RECORD-SCHEMA and GUEST-GEN pass, and PROFILE-CONSISTENCY passes with four files present. All 42 doctrines pass unskipped on the tree, so nothing wrong landed.
+
+**The rule now.** `scripts/doctrine_skip.sh` declares the *ledger*: the short list of documentation that records the work. One of the six checks is answered from its last green run when both hold:
+
+1. every staged path is ledger, and none is a document that tracked data names;
+2. every tracked byte outside the ledger is as it was at the check's last green run.
+
+Anything else runs the check: a driver, the engine, a manifest, a hook, a unit book, a document nobody listed.
+
+**Why this shape.** A list of what a check reads must be complete to be sound, and it goes stale without a sound when an input moves. A list of what may be ignored only has to be short. Leaving a path out of it costs minutes, never soundness.
+
+**What holds it.**
+
+- The gate runs the rule's controls, `scripts/probe_doctrine_skip.sh`, before it may skip anything, and refuses the commit at once when they fail.
+- The documents tracked data names are derived from the index at every commit, so a new selection naming a decision record needs no edit.
+- `scripts/probe_ledger_independence.sh` removes the ledger from the working tree, runs the six checks and restores it. Its control removes the named documents too, and PROFILE-CONSISTENCY must then fail.
+
+**What it does not see.** A script that starts reading a ledger document. Only the probe measures that, and it runs by hand until `XTASK.17`.
+
+**Cost.** A ledger-only commit still takes about two minutes of gate (104 s measured). A commit that touches only `xtask/`, the engine or a unit book now runs the six, about 20 minutes.

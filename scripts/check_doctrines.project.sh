@@ -72,41 +72,37 @@ PROJECT_DOCTRINES=(
 # executed") or the running one is killed. The checks whose script invokes cargo therefore run one
 # after another in a single LANE beside the pool; the lane is detected from the script's text, so a
 # check that starts using cargo joins it without a list to keep in step.
-# XTASK.8 slice d (2026-10-27, docs/decisions/decision_docs-only-gate-path.md): a check that DECLARES its
-# input closure — the tracked path prefixes it reads — may be answered from its last GREEN run on a commit
-# that stages nothing inside the closure while the closure's tracked content (every blob id `git ls-files -s`
-# lists, as the commit will carry it) is byte-identical to that run's. No declaration, no staged set (a run
-# outside a commit), a differing key, or a staged path inside the closure: the check runs. A refusal is never
-# recorded. DOCTRINE_DOCS_ONLY=0 disables the path (the control); DOCTRINE_TIMES records a skip as `skipped`.
-# The closures: id -> the tracked prefixes the check reads, declared only after reading the check and the
-# Python it calls for every path they open (the census in target/xtask/xt0018); a check that reads documents
-# has docs/ here. A case statement, not a quoted-row table: DERIVED-COUNTS counts every `  "ID|` row of this
-# file as a registered doctrine and REGISTRY-MIRROR reads every `"ID|…|….sh"`, so a table would be miscounted.
-closure_of() { # id -> its prefixes, or nothing
-  case "$1" in
-    PROFILE-CONSISTENCY) printf '%s' "scripts/ profiles/ evidence/ schema/";;
-    GUEST-GEN) printf '%s' "scripts/ profiles/ crates/";;
-    RECORD-SCHEMA) printf '%s' "scripts/ schema/ schemas/ examples/ profiles/ materials/ crates/";;
-    ARTIFACT-COHORT) printf '%s' "scripts/";;
-    DEF-GEN) printf '%s' "scripts/ definitions/ profiles/ schema/ crates/";;
-    CONTRACT-FREEZE) printf '%s' "scripts/ profiles/ schema/";;
-    *) return 1;;
-  esac
-}
-staged_touches() { # prefixes… -> 0 when a staged path lies inside one of them
-  local prefix path
-  for prefix in "$@"; do while IFS= read -r path; do case "$path" in "$prefix"*) return 0;; esac; done <<< "$staged"; done
-  return 1
-}
-closure_key() { # prefixes… -> the digest of the closure's tracked content as the index carries it ('' when unavailable)
-  local listing; listing="$(git ls-files -s -- "$@" 2>/dev/null)" || return 0
-  if command -v shasum >/dev/null 2>&1; then printf '%s\n' "$listing" | shasum -a 256 | cut -c1-64
-  elif command -v sha256sum >/dev/null 2>&1; then printf '%s\n' "$listing" | sha256sum | cut -c1-64
-  else printf '%s\n' "$listing" | python3 -c 'import hashlib,sys; print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest())' 2>/dev/null; fi
-}
+# XTASK.8 slice d (2026-10-27, docs/decisions/decision_docs-only-gate-path.md), turned round at XTASK.16 (2026-11-10):
+# a check `scripts/doctrine_skip.sh` declares may be answered from its last GREEN run, but only on a commit whose
+# every staged path is LEDGER documentation — the short list that file keeps, less any document tracked data names —
+# and only while every tracked byte outside the ledger (each blob id `git ls-files -s` lists, as the commit will
+# carry it) is identical to that run's. A staged path anywhere else runs the check: a driver under xtask/, the
+# engine, a manifest, a hook, a unit book, a document nobody listed. No staged set (a run outside a commit), a
+# differing key, or an undeclared check: the check runs. A refusal is never recorded. DOCTRINE_DOCS_ONLY=0 disables
+# the path (the control); DOCTRINE_TIMES records a skip as `skipped`.
+# Until XTASK.16 each check declared the prefixes it READ and skipped when nothing staged lay inside them. Two
+# declarations were incomplete: none named xtask/, where all six drivers live, and PROFILE-CONSISTENCY's named no
+# document, though it reads four. The rule and its controls now live in their own files, read here.
+# shellcheck source=scripts/doctrine_skip.sh
+. "$ROOT/scripts/doctrine_skip.sh" || { echo "PROJECT: cannot read scripts/doctrine_skip.sh" >&2; exit 2; }
 GREEN_DIR="$ROOT/target/doctrine-gate/green"; export GREEN_DIR
 staged=""
 if [ "${DOCTRINE_DOCS_ONLY:-1}" != "0" ]; then staged="$(git diff --cached --name-only --diff-filter=ACMRD 2>/dev/null)"; fi
+# The rule is held to its own controls before it may skip anything, as every doctrine is. If they stop
+# discriminating, the commit is refused at once and by name: nothing is skipped on a broken rule's word, and
+# twenty minutes of checks are not spent before saying so.
+if [ -n "$staged" ] && ! skip_probe="$(bash "$ROOT/scripts/probe_doctrine_skip.sh" 2>&1)"; then
+  echo "PROJECT/SKIP-RULE: scripts/doctrine_skip.sh fails its own controls, so the commit is refused before any check runs:" >&2
+  printf '%s\n' "$skip_probe" | sed 's/^/  /' >&2
+  exit 1
+fi
+# decided once for the commit: whether it is ledger-only, and the key of everything outside the ledger
+ledger_only=0; gate_key="-"
+if [ -n "$staged" ]; then
+  named_documents="$(doctrine_named_documents)"
+  if doctrine_only_ledger "$named_documents"; then ledger_only=1; fi
+  gate_key="$(doctrine_inputs_key "$named_documents")"; [ -n "$gate_key" ] || gate_key="-"
+fi
 fails=0
 jobs="${DOCTRINE_JOBS:-$(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)}"
 case "$jobs" in ''|*[!0-9]*|0) jobs=4;; esac
@@ -122,10 +118,9 @@ for entry in "${PROJECT_DOCTRINES[@]}"; do
     echo "PROJECT/$id: missing or not executable: $path ($proves)" > "$work/$n.out"; echo 127 > "$work/$n.rc"
   else
     key="-"; skip=0
-    if [ -n "$staged" ] && closure="$(closure_of "$id")"; then
-      # shellcheck disable=SC2086 — the closure is a space-separated prefix list by declaration
-      key="$(closure_key $closure)"; [ -n "$key" ] || key="-"
-      if [ "$key" != "-" ] && ! staged_touches $closure && [ -f "$GREEN_DIR/$id" ] && [ "$(cat "$GREEN_DIR/$id")" = "$key" ]; then skip=1; fi
+    if [ -n "$staged" ] && doctrine_skips "$id"; then
+      key="$gate_key"
+      if [ "$key" != "-" ] && [ "$ledger_only" = 1 ] && [ -f "$GREEN_DIR/$id" ] && [ "$(cat "$GREEN_DIR/$id")" = "$key" ]; then skip=1; fi
     fi
     if [ "$skip" = 1 ]; then
       : > "$work/$n.out"; echo 0 > "$work/$n.rc"
@@ -144,7 +139,7 @@ run_doctrine() { # work index id path key
   "$4" > "$1/$2.out" 2>&1; local rc=$?
   printf '%s\n' "$rc" > "$1/$2.rc"
   [ -n "${DOCTRINE_TIMES:-}" ] && printf '%s\t%s\t%s\n' "$3" "$rc" "$(( $(date +%s) - s ))" >> "$DOCTRINE_TIMES"
-  # a GREEN run of a check with a declared closure records the key it ran against — never a refusal
+  # a GREEN run of a check that may skip records the key it ran against — never a refusal
   if [ "$rc" -eq 0 ] && [ "${5:--}" != "-" ]; then mkdir -p "$GREEN_DIR" && printf '%s\n' "$5" > "$GREEN_DIR/$3"; fi
   return 0
 }

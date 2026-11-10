@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0090 (leaf XTASK.16) — a check runs when its driver changes, and the chain runs the tests
+
+The gate could answer six heavy checks from their last green run on a commit that changed only their own drivers, because no declared input named `xtask/`. Now a check skips only when every staged path is ledger documentation. All 42 doctrines pass unskipped on the tree. The focused set runs `cargo test --all`, which nothing ran at a commit before.
+
 ## SEMULITH-XTASK-0089 (leaf XTASK.15) — the commit chain and its sweep are tracked
 
 `cargo xtask commit-unit <dir>` lands a unit: it reads the message first, runs the focused set, commits under the hooks, empties the message and sweeps the unit's scratch. Before, both were untracked shell files under `target/`. Its git ignores a hook's repository variables, shown on a decoy repository.

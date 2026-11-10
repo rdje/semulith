@@ -41,13 +41,13 @@ cargo xtask commit-unit target/p4-system-18/c
 It runs, in order:
 
 1. **The message is read first.** An empty file, or a first line that is not `SEMULITH-<AREA>-<NNNN> …`, stops here, before any check: `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate`.
-2. **The focused set**, into `<dir>/commit-focused`. One red check stops here: `FOCUSED-RED: not committing`.
+2. **The focused set**, into `<dir>/commit-focused`: rustfmt, clippy and the workspace's tests first, then the repository's checks and the book. One red check stops here: `FOCUSED-RED: not committing`.
 3. **`git commit -F git_message_brief.txt`**, under the hooks. The pre-commit hook runs every doctrine, and its output is kept in `<dir>/commit.log`. A refused commit keeps the message for the retry.
 4. **The message file is emptied**, only when the commit landed.
 5. **The unit's scratch is swept** from the directory. A cargo target directory and a scratch clone go. Every file stays.
 
 ```text
-focused: 0 red of 29
+focused: 0 red of 30
 00:14:00 commit begins (pre-commit gate)
 00:31:02 git commit rc=0
 8f8caa23… SEMULITH-P4-0397 (leaf P4-SYSTEM.18 slice c1): a release decision is held to the unit, the dossier and the report

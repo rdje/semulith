@@ -214,7 +214,8 @@ use std::process::{Command, ExitCode, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 /// The focused check set, in the order the commit workflow has run it since 2026-10-22 (API-DOCS since
-/// 2026-10-26, `XTASK.7`; rustfmt and clippy first since 2026-10-28, `XTASK.10`): the
+/// 2026-10-26, `XTASK.7`; rustfmt and clippy first since 2026-10-28, `XTASK.10`; the tests since 2026-11-10,
+/// `XTASK.16`): the
 /// repository-wide documentation, routing, task-tree, history and record checks, then the book.
 /// Before `XTASK.2` this list lived only in per-unit scratch scripts under `target/`.
 const FOCUSED: &[&[&str]] = &[
@@ -230,6 +231,9 @@ const FOCUSED: &[&[&str]] = &[
         "-D",
         "warnings",
     ],
+    // XTASK.16 (2026-11-10): the third step of `make check`. Nothing ran the tests at a commit: the hook runs the
+    // doctrines, and `make check` ran at the push boundary, hundreds of commits apart. Measured at 40 s for 529 tests.
+    &["cargo", "test", "--all"],
     &["bash", "scripts/check_memory_architecture.sh"],
     &["bash", "scripts/check_readme_routes.sh"],
     &["bash", "scripts/check_registry_mirror.sh"],
@@ -715,7 +719,7 @@ mod tests {
                 );
             }
         }
-        assert_eq!(FOCUSED.len(), 29);
+        assert_eq!(FOCUSED.len(), 30);
     }
 
     #[test]
@@ -731,6 +735,7 @@ mod tests {
             "cargo-fmt"
         );
         assert_eq!(log_name(FOCUSED[1]), "cargo-clippy");
+        assert_eq!(log_name(FOCUSED[2]), "cargo-test");
         assert_eq!(
             log_name(&["bash", "scripts/check_docpaths.sh"]),
             "check_docpaths"

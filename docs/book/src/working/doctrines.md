@@ -13,6 +13,51 @@ merely discouraged:
 
 `make gate` is that command. Thirteen checks run today.
 
+## When the gate answers a check from an earlier run
+
+Six of the project's checks take about twenty minutes together. On a commit that only records work, they are answered from their last green run, and the gate takes about two minutes.
+
+The rule is in `scripts/doctrine_skip.sh`. It keeps a short **ledger**: the task trees, the changelogs, the decision records, the knowledge cards and the status files. A check is skipped only when both hold:
+
+1. every staged path is in the ledger;
+2. every tracked byte outside the ledger is as it was when the check last ran green.
+
+Everything else runs the check: a script, the engine, a driver under `xtask/`, a manifest, a hook, a unit book, a document nobody listed.
+
+| The commit stages | The six checks |
+| --- | --- |
+| `docs/tasks/P4-SYSTEM.md`, `CHANGELOG.md`, `MEMORY.md` | answered from their last green run |
+| `xtask/src/check_contract_freeze.rs` | run |
+| `crates/semulith-core/src/lib.rs` | run |
+| `docs/models/rv64gc-lab-v0/src/retired-cases.md` | run: a probe opens this page |
+| `docs/decisions/reference_fp-model-layer-acceptance.md` | run: a selection reads this record |
+
+The last row is not a list anyone keeps. A decision record is ledger unless a tracked dossier file names it, and the gate derives those names at every commit.
+
+Until 2026-11-10 the rule was the other way round. Each check declared the paths it read, and skipped when nothing staged lay inside them. That is sound only while the list is complete. It was not: the checks' own drivers had moved into `xtask/`, which no list named, so a commit changing only a driver skipped that driver's check. Eleven commits could have. Every check passes unskipped on the tree, so nothing wrong landed (`decision_docs-only-gate-path.md`).
+
+Three things hold the rule:
+
+```sh
+bash scripts/probe_doctrine_skip.sh                                   # its 37 controls; the gate runs them first
+bash scripts/probe_ledger_independence.sh                             # removes the ledger, runs the six, restores it
+bash scripts/probe_ledger_independence.sh --no-named --only PROFILE-CONSISTENCY   # the control: must fail
+```
+
+```text
+probe_doctrine_skip: 37 pass / 0 fail
+probe_ledger_independence: 379 ledger file(s) absent; 1 check(s)
+  CONTRACT-FREEZE rc=0 38s :: CONTRACT-FREEZE: ok (1 versioned unit(s), 4 version(s), 0 finding(s))
+probe_ledger_independence: ok (1 check(s) pass without the ledger)
+```
+
+A rule that fails its own controls refuses the commit before any check runs:
+
+```text
+PROJECT/SKIP-RULE: scripts/doctrine_skip.sh fails its own controls, so the commit is refused before any check runs:
+  probe_doctrine_skip MISS: RED an undeclared check never skips (exit 0, want 1)
+```
+
 Local checks and hosted CI are separate evidence. The 2026-10-08 pushed revision failed
 strict Rust lint on 1.99, book provisioning and a cold Miri log path, despite a green
 local pre-push suite on 1.95. CI-RECOVERY.1 repairs the Rust lints with the exact newer
