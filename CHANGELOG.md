@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0091 (leaf XTASK.18) — the chain accepts a colon after the work-unit number, and says what it wants
+
+`cargo xtask commit-unit` refused `SEMULITH-LC-0056: …`, which the commit-msg hook accepts, and its refusal gave no reason. It now accepts a space or a colon after the number, and a refusal prints the shape it wants and the first line it got. The XTASK turn after five feature units.
+
 ## SEMULITH-P4-0401 (leaf P4-SYSTEM.20) — the next pinned window is version 1: what each item lapses, and the label that should not
 
 Measured on a throwaway clone: the expectations author, the state table and `profile.sexp` each lapse 42 of 46 credits; the override and the contract lapse none; the state table also moves the engine. The version label sits in a file every case pins, so the window first moves it out. Eight slices; version 1's hosted run needs a push. A stale goal clause I had written is corrected.

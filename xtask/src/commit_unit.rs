@@ -182,8 +182,12 @@ fn sweep(root: &Path, dir: &str) -> Result<Vec<String>, String> {
     Ok(lines)
 }
 
-/// Whether a first line has the shape of a work-unit subject, `SEMULITH-<AREA>-<NNNN> …` (`COMMIT.md`). The
-/// commit-msg hook judges the subject; this only keeps the gate from running on a message that cannot pass it.
+/// The subject shape the chain asks for, as its refusal prints it.
+const SUBJECT_SHAPE: &str = "SEMULITH-<AREA>-<NNNN> followed by a space or a colon";
+
+/// Whether a first line has the shape of a work-unit subject, `SEMULITH-<AREA>-<NNNN>` and then a space or a colon
+/// (`COMMIT.md`; the push records use the colon). The commit-msg hook judges the subject; this only keeps the gate
+/// from running on a message that cannot pass it (`XTASK.18`).
 fn subject_shaped(line: &str) -> bool {
     let Some((area, rest)) = line
         .strip_prefix("SEMULITH-")
@@ -198,7 +202,18 @@ fn subject_shaped(line: &str) -> bool {
             .all(|b| b.is_ascii_uppercase() || b.is_ascii_digit())
         && number.len() > 4
         && number[..4].iter().all(u8::is_ascii_digit)
-        && number[4] == b' '
+        && matches!(number[4], b' ' | b':')
+}
+
+/// The refusal for a message the chain will not commit: what it wants, and what the first line is.
+fn malformed(first: &str) -> String {
+    let got: String = first.chars().take(80).collect();
+    let got = if got.is_empty() {
+        "an empty first line".to_owned()
+    } else {
+        format!("`{got}`")
+    };
+    format!("EMPTY-OR-MALFORMED {MESSAGE}: not starting the gate; its first line must begin {SUBJECT_SHAPE}, and it is {got}")
 }
 
 /// `HH:MM:SS` in UTC, now.
@@ -214,8 +229,9 @@ fn clock() -> String {
 fn commit_unit(root: &Path, dir: &str, focused: &dyn Fn(&Path) -> bool) -> u8 {
     let message = root.join(MESSAGE);
     let text = fs::read_to_string(&message).unwrap_or_default();
-    if !subject_shaped(text.lines().next().unwrap_or("")) {
-        println!("EMPTY-OR-MALFORMED {MESSAGE}: not starting the gate");
+    let first = text.lines().next().unwrap_or("");
+    if !subject_shaped(first) {
+        println!("{}", malformed(first));
         return 1;
     }
     let out = match evidence_dir(root, dir) {
@@ -573,18 +589,34 @@ mod tests {
     }
 
     #[test]
+    fn a_refusal_says_what_it_wants_and_what_it_got() {
+        let empty = malformed("");
+        assert!(
+            empty.starts_with("EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate"),
+            "{empty}"
+        );
+        assert!(
+            empty.contains(SUBJECT_SHAPE) && empty.ends_with("an empty first line"),
+            "{empty}"
+        );
+        let long = malformed(&"x".repeat(200));
+        assert!(long.ends_with(&format!("`{}`", "x".repeat(80))), "{long}");
+    }
+
+    #[test]
     fn a_subject_has_the_work_unit_shape() {
         for good in [
             "SEMULITH-P4-0396 (leaf P4-SYSTEM.18 slice b): x",
             "SEMULITH-AC-0096 y",
             "SEMULITH-XTASK-0089 z",
+            "SEMULITH-LC-0056: the colon the push records use",
         ] {
             assert!(subject_shaped(good), "{good}");
         }
         for bad in [
             "",
             "SEMULITH-P4-0396",
-            "SEMULITH-P4-0396: no space",
+            "SEMULITH-P4-0396; another mark",
             "SEMULITH-p4-0396 lower",
             "SEMULITH--0396 no area",
             "SEMULITH-P4-039 short",

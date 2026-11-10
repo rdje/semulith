@@ -40,7 +40,7 @@ cargo xtask commit-unit target/p4-system-18/c
 
 It runs, in order:
 
-1. **The message is read first.** An empty file, or a first line that is not `SEMULITH-<AREA>-<NNNN> …`, stops here, before any check: `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate`.
+1. **The message is read first.** An empty file, or a first line that does not begin `SEMULITH-<AREA>-<NNNN>` followed by a space or a colon, stops here, before any check, and the refusal names the shape it wants and the line it got: `EMPTY-OR-MALFORMED git_message_brief.txt: not starting the gate; its first line must begin SEMULITH-<AREA>-<NNNN> followed by a space or a colon, and it is …`.
 2. **The focused set**, into `<dir>/commit-focused`: rustfmt, clippy and the workspace's tests first, then the repository's checks and the book. One red check stops here: `FOCUSED-RED: not committing`.
 3. **`git commit -F git_message_brief.txt`**, under the hooks. The pre-commit hook runs every doctrine, and its output is kept in `<dir>/commit.log`. A refused commit keeps the message for the retry.
 4. **The message file is emptied**, only when the commit landed.
