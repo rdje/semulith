@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0401 (leaf P4-SYSTEM.20) — the next pinned window is version 1: what each item lapses, and the label that should not
+
+Measured on a throwaway clone: the expectations author, the state table and `profile.sexp` each lapse 42 of 46 credits; the override and the contract lapse none; the state table also moves the engine. The version label sits in a file every case pins, so the window first moves it out. Eight slices; version 1's hosted run needs a push. A stale goal clause I had written is corrected.
+
 ## SEMULITH-P5-0020 (leaf P5-BOARD.13) — a board on the accepted processor needs a processor contract that admits devices
 
 Measured before composing: `rv64gc-lab-v0`'s effective contract has 10 environment assumptions, and `OB-GC-ENV-DATA-ACCESS` admits only main memory, with no MMIO. No board with a device composes version 0. The call: the device-region supersession rides in the next pinned window (`P4-SYSTEM.20`), and the netboard re-bases onto that version rather than a second board. `.13` is blocked on it.
