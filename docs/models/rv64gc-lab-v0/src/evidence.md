@@ -91,7 +91,7 @@ The report verifies the decision at every commit. A decision does not stand, and
 | reads `accepted` while an axis is open | the decision reads `accepted` while `G-REGRESSION` is open |
 | reads `accepted` on the translated x86-64 leg alone, or on a hosted record whose inputs moved | the decision reads `accepted` with no verified record of a native x86-64 host |
 | reads `accepted` with no `limit` declared | the decision reads `accepted` with no capability limit declared |
-| names another unit or version | the decision is of `rv64i-lab-v0` version `0`, not `rv64gc-lab-v0` version `0` |
+| names another unit or version | the decision is of `rv64i-lab-v0` version `1`, not `rv64gc-lab-v0` version `1` |
 
 So `accepted` can never exceed the report, and a release is of exact bytes. Once the dossier moves, the decision stops standing until a new one is recorded.
 
@@ -103,6 +103,32 @@ unpinned      : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`. | t
 pinned        : **Verdict: `passed`.**
 dossier moved : **Verdict: `incomplete`.** Open axes (1 of 10): `G-RELEASE`. | the decision is of another dossier
 ```
+
+### The version is in `identity.sexp`, a file no case pins
+
+The version a decision names is the unit's release identity, one form beside its dossier (`schema/identity.sexp`):
+
+```lisp
+(identity (unit "rv64gc-lab-v0") (version "1") (status development))
+```
+
+It used to be two fields of `profile.sexp`, which every matched case pins, so a new version number lapsed every case credit
+even when no behaviour moved (`decision_the-next-window-is-version-1.md`). Since `P4-SYSTEM.20` slice a it lives here. The
+report reads it, refuses one that names another unit, and prints it under "The versioned artifact":
+
+```text
+- profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
+```
+
+`status` is `development` for a unit on the release route and `experimental` for a model that makes no release claim; whether a
+version is accepted is never written there, only in its decision. The dossier digest still covers the file, so moving the
+version stops the previous decision standing, as the live report shows for version 0:
+
+```text
+| `G-RELEASE` | `decision` | `docs/decisions/decision_release-rv64gc-lab-v0.md` | **no** — the decision is of `rv64gc-lab-v0` version `0`, not `rv64gc-lab-v0` version `1` |
+```
+
+Version 0 stays verifiable at commit `194437d6`, where its report reads `passed`.
 
 ## What a recorded row covers
 

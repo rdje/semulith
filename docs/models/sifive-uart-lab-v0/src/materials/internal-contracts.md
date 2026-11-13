@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/sifive-uart-lab-v0/profile.sexp`  `a44a7ddbff330cdec752e2541f95b2288e4bf4c333878c910a7d25be4695f401`
+     `profiles/sifive-uart-lab-v0/profile.sexp`  `8ee37e508222834a9271739b3a3d59abd37a6495a98dc3dbfb0f4e21c12a721c`
      `profiles/sifive-uart-lab-v0/state.sexp`  `60206ed9b8b95accd5102ab303dacfcd2e1e0e90449768ce4a2bc4be1574c071`
      `profiles/sifive-uart-lab-v0/requirements.sexp`  `110876c5e3190c3ff2bdc7526ad05f4e33fcd7f3152d28b90285ce1e29cfb4d3`
      `profiles/sifive-uart-lab-v0/contract-obligations.sexp`  `2042125eee217e78c065f408247ba6cfdd29f0c19ebc8bb85e5492e43222d96f`

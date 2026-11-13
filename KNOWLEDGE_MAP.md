@@ -182,6 +182,7 @@
 - [`decision_rust-sexp-reader.md`](docs/decisions/decision_rust-sexp-reader.md)
 - [`decision_sail-gpr-comparison-method.md`](docs/decisions/decision_sail-gpr-comparison-method.md)
 - [`decision_schema-and-decisions-families-rederivation.md`](docs/decisions/decision_schema-and-decisions-families-rederivation.md)
+- [`decision_schema-family-second-rederivation.md`](docs/decisions/decision_schema-family-second-rederivation.md)
 - [`decision_seven-credited-implemented.md`](docs/decisions/decision_seven-credited-implemented.md)
 - [`decision_seven-with-a-switch.md`](docs/decisions/decision_seven-with-a-switch.md)
 - [`decision_six-defined-credited-implemented.md`](docs/decisions/decision_six-defined-credited-implemented.md)

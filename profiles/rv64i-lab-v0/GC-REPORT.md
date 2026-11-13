@@ -41,10 +41,10 @@ for what this artifact IS. This report reads the decision, never exceeds it.
 
 ## The versioned artifact
 
-- profile `rv64i-lab-v0`, version `0`
+- profile `rv64i-lab-v0`, version `0`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64i-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 af08dfd9b5365c7f05f69b2092ba2aa2978ea435f4a5dfbc48d36add0d2f68e2`
+  `sha256 a0f878a1dcee4b1b701db29deb7e1c58e810929cb65f9900d74dccf37a8d8006`
 - regenerate: `scripts/gate_report.py rv64i-lab-v0 --gate GC`
 
 ## Capability limits (explicit)

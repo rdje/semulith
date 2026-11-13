@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0403 (leaf P4-SYSTEM.20 slice a) — the version label leaves the pinned file, and the 42 credits it lapses are retired
+
+`identity.sexp` in every profile now holds the version and status, which no case pins; `profile.sexp` and its schema lose them, and the report reads the identity. rv64gc is version 1, in development. The 42 case credits the move lapsed are retired (recoverable at a88b01a0) and their requirements read `planned`, so `CPU-SYSTEM` reads `incomplete` with four owned open axes until slice f; version 0 stays verifiable at `194437d6`. The report's decision controls no longer depend on the real unit's credits.
+
 ## SEMULITH-P4-0402 (leaf P4-SYSTEM.20, slice a brief) — a lapsed credit is a gate finding, so the slice that lapses one retires it
 
 Measured on a clone: one comment line in `profile.sexp` makes the requirement-status derivation refuse, 42 drift and 42 findings, on every commit. The window's slices a to f therefore retire what they lapse, as a49-1 did, and slice f re-issues the 46 credits that stand at `194437d6`. The release identity becomes `identity.sexp` in every profile, since three have no `gate.sexp`.

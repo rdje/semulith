@@ -9,7 +9,7 @@
 ;; mirrors were generated from requirements.sexp mechanically, so drift is impossible by
 ;; construction and refused by gate regardless.
 
-(profile (id "lan9118-lab-v0") (version "0") (status "experimental") (chapter_version "LAN9118 datasheet DS00002266B") (spec_revision "DS00002266B")
+(profile (id "lan9118-lab-v0") (chapter_version "LAN9118 datasheet DS00002266B") (spec_revision "DS00002266B")
   (comment "No architecture/base/harts/ilen/ialign: a NIC has no instruction set, no harts and no"
            "fetch width — forcing any of them would record a lie (the P3-BREADTH.5 xlen"
            "precedent, the .2 precedent for devices). chapter_version/spec_revision name the"

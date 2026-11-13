@@ -7,7 +7,7 @@
 ;; Every decision mirrors its requirement's statement EXACTLY (RECORD-SCHEMA rule 4), and
 ;; every obligation mirrors both (rule 9): one fact, three surfaces, one wording.
 
-(profile (id "sifive-uart-lab-v0") (version "0") (status "experimental") (chapter_version "FU540-C000 Manual v1p5") (spec_revision "v1p5")
+(profile (id "sifive-uart-lab-v0") (chapter_version "FU540-C000 Manual v1p5") (spec_revision "v1p5")
   (comment "No architecture/base/harts/ilen/ialign: a UART has no instruction set, no harts and no"
            "fetch width — forcing any of them would record a lie (the P3-BREADTH.5 xlen"
            "precedent). chapter_version/spec_revision name the DOCUMENT's issue, as for"

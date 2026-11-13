@@ -160,3 +160,14 @@
 (limit (statement "The next pinned window's list stands open (`decision_csr-write-three-producers.md`): the expectations author's legalization of `medeleg`, `mtvec` and `stvec`, which no retained expectation reaches and which fails safe; the state table's `medeleg` narrowing to `0xb3ff`; the override's `misaligned_amo AccessFault`; a probe holding the author to the engine; and the author's vocabulary, which narrows the named limits on `hstatus` and `pmpcfg0`."))
 (limit (statement "The native x86-64 leg is one hosted run, 42418631491, on a commit whose engine, definitions and guests match this dossier's; between pushes, Rosetta translation on an arm64 host carries it."))
 (limit (statement "Not a conformance or compatibility claim: nothing here is certified by RISC-V International, and nothing is claimed about any physical implementation."))
+
+;; What version 1's window holds open, each owned (P4-SYSTEM.20 slice a). Version 0 was accepted at commit 194437d6, where
+;; its 46 credits and its decision verify; the release decision above is version 0's, so it does not stand for version 1.
+(open (axis G-STATE) (owner "P4-SYSTEM.20")
+  (statement "The four state requirements read planned: their credits were retired with the 38 others when the version label left profile.sexp, which every case pins. Slice f re-captures the cases and re-issues the credits."))
+(open (axis G-TRACE) (owner "P4-SYSTEM.20")
+  (statement "No matched case is credited while the window moves pinned inputs (slices a to e); slice f captures the 42 cases again and re-issues their credits."))
+(open (axis G-OBLIGATIONS) (owner "P4-SYSTEM.20")
+  (statement "42 requirements read planned until slice f re-issues their credits; the four with nothing to run stand implemented, and two are not applicable."))
+(open (axis G-RELEASE) (owner "P4-SYSTEM.20")
+  (statement "Version 1 has no release decision yet: slice h records it, after slice g re-measures the recorded rows and the hosted run."))

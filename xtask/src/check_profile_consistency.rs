@@ -8144,7 +8144,7 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("claim-values", "3"),
             ("authority-node-bound", "1"),
             ("authority-depth-bound", "1"),
-            ("derived-status", "37"), // 37 while REQ-GC-M is implemented on the real tree; 2 during a lapse (a43b-2, a43e-1)
+            ("derived-status", "2"), // 37 while REQ-GC-M is implemented on the real tree; 2 during a lapse (a43b-2, a43e-1, P4-SYSTEM.20 a to f)
             ("derived-links", "1"),
             ("requirement-meaning", "6"),
             ("obligation-meaning", "4"),

@@ -186,12 +186,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     };
     let unit = t.join("profiles/p");
     let _ = fs::create_dir_all(unit.join("guests"));
-    let profile = || {
-        write(
-            &unit.join("profile.sexp"),
-            "(profile (id \"p\") (version \"0\") (status \"development\"))",
-        )
-    };
+    let profile = || write(&unit.join("profile.sexp"), "(profile (id \"p\"))");
     let guests = || {
         for g in ["g1", "g2"] {
             write(&unit.join(format!("guests/{g}.s")), &format!("# {g}"));
@@ -302,7 +297,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     tally.arm("RED   a unit with no declared matrix", 1, "NO MATRIX");
     write(
         &unit.join("profile.sexp"),
-        "(profile (id \"p\") (version \"0\") (status \"experimental\") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\")))",
+        "(profile (id \"p\") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\")))",
     );
     tally.arm(
         "GREEN device-model route with no matrix is n/a by declaration",
@@ -318,7 +313,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let _ = fs::remove_file(unit.join("interactions.sexp"));
     write(
         &unit.join("profile.sexp"),
-        "(profile (id \"p\") (version \"0\") (status \"development\") (vehicle (route profile-resolution) (authority laboratory) (source \"s\")))",
+        "(profile (id \"p\") (vehicle (route profile-resolution) (authority laboratory) (source \"s\")))",
     );
     tally.arm(
         "GREEN profile-resolution route with no matrix is n/a by declaration",

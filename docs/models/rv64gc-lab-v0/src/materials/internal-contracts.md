@@ -3,10 +3,10 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/rv64gc-lab-v0/profile.sexp`  `f553f32cb1c4c48a2bc541a6680594ca21afb364b28a598aea0832683e622a90`
+     `profiles/rv64gc-lab-v0/profile.sexp`  `305565b8c58231baa6d53416db2e13ae7ec9cb75cec46b90b02fe3bf5192b06a`
      `profiles/rv64gc-lab-v0/state.sexp`  `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`
      `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
-     `profiles/rv64gc-lab-v0/requirements.sexp`  `56563429ebc0fb923b599bbdf9c92bd29cfca2e17949bd020f06204b3c84b605`
+     `profiles/rv64gc-lab-v0/requirements.sexp`  `36949fa0699560a8b487cb4b991ccd445a3030c7902cb9a03b04685d929e4053`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`
      `profiles/rv64gc-lab-v0/interactions.sexp`  `4e07ec00d9e47a145b597920ca7b229041703b4a7acd746ba97eef76e32de164`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->

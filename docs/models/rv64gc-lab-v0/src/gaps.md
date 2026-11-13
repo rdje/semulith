@@ -51,7 +51,10 @@ carry a superseded record's words, and REQ-D-ECALL-EBREAK's OQ-5 is rv64i's ques
 profile's: here the trap is delivered, so the pc after it is the handler's. The rest closed leaf by leaf: matched
 experiments and requirement status at .14, regression at .15, snapshot, replay and
 reduction at .16, portability at .17, and the release decision at .18, which accepted
-version 0 on 2026-11-10 within the limits the report lists.
+version 0 on 2026-11-10 within the limits the report lists. Version 0 stays verifiable at
+commit `194437d6`. Version 1's window (`.20`) retired the 42 case credits its first slice
+lapsed, so the live report reads `incomplete` until slice f re-issues them and slice h
+decides version 1.
 
 The GC CLI now supports snapshots, replay bundles and finite divergence reduction;
 the architecture contract gives commands, bounds and refusal cases. The netboard's

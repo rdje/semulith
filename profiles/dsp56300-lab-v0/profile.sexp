@@ -8,7 +8,7 @@
 ;; this document against schema/profile.sexp. Validate by hand:
 ;;   python3 scripts/check_sexp_schema.py profiles/dsp56300-lab-v0/profile.sexp schema/profile.sexp
 
-(profile (id "dsp56300-lab-v0") (version "0") (status "experimental") (architecture "DSP56300") (base "DSP56300") (chapter_version "DSP56300FM Rev. 5") (spec_revision "Rev. 5") (harts 1) (ilen 24) (ialign 24)
+(profile (id "dsp56300-lab-v0") (architecture "DSP56300") (base "DSP56300") (chapter_version "DSP56300FM Rev. 5") (spec_revision "Rev. 5") (harts 1) (ilen 24) (ialign 24)
   (comment "No xlen: the DSP56300 has no XLEN concept — the data word is 24-bit (FM §3.1)."
            "No privilege modes, no extensions: both lists are empty by the .3 rule," "and the absence is earned by the state census beside this file.")
   (sources "NXP-DSP56300-FAMILY-MANUAL")

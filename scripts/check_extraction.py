@@ -397,7 +397,7 @@ def _selftest() -> int:
             '  (fragment-root "definitions"))\n')
         fam = " ".join(f'"{n.upper()}"' for n in scope)
         (u / "profile.sexp").write_text(
-            f'(profile (id "u") (version "0") (status "development") (architecture "RISC-V")\n'
+            f'(profile (id "u") (architecture "RISC-V")\n'
             f'  (scope (count_base {len(scope)}) (count_total {len(scope)}) (demo {fam}))\n'
             f'  (decision (id "D-X") (authority architecture) (statement "s") (source "S §1")))\n')
         reqs = [{"id": "REQ-D-X", "profile_ids": ["u"], "kind": "instruction", "statement": "s",
@@ -488,7 +488,7 @@ def _selftest() -> int:
         scope = ("add", "sub", "rdpseudo") if scope_extra else ("add", "sub")
         fam = " ".join(f'"{n.upper()}"' for n in scope)
         (u / "profile.sexp").write_text(
-            f'(profile (id "u") (version "0") (status "development") (architecture "RISC-V")\n'
+            f'(profile (id "u") (architecture "RISC-V")\n'
             f'  (scope (count_base {len(scope)}) (count_total {len(scope)}) (demo {fam}))\n'
             f'  (decision (id "D-X") (authority architecture) (statement "s") (source "S §1")))\n')
         reqs = [{"id": "REQ-D-X", "profile_ids": ["u"], "kind": "instruction",

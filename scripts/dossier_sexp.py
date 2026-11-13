@@ -240,7 +240,8 @@ _SCOPE_LISTS = ("base_u_type", "base_jumps", "base_branches", "base_loads", "bas
                 "zicsr_csrs", "system_privileged", "zicntr_counters", "a_atomics",
                 "zifencei_fencei", "f_single", "d_double", "m_muldiv", "c_compressed")
 
-_PROFILE_SPEC = [("id", "str"), ("version", "str"), ("status", "str"), ("architecture", "str"),
+# P4-SYSTEM.20 slice a: version and status left the profile for identity.sexp, a file no case pins.
+_PROFILE_SPEC = [("id", "str"), ("architecture", "str"),
                  ("base", "str"), ("chapter_version", "str"), ("spec_revision", "str"),
                  ("harts", "int"), ("xlen", "int"), ("ilen", "int"), ("ialign", "int"),
                  ("endianness", "sym"),

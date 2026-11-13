@@ -10,8 +10,8 @@ operating systems from its eADL source of truth and needs explicit platform cont
 execute and validate them against.
 
 > **Claim scope.** No conformance result is claimed. One processor profile, `rv64gc-lab-v0`
-> version 0, is accepted by its own gate within declared limits; the other units are
-> experimental. `schemas/` and `examples/` are data-contract starters whose evidence records
+> version 0, was accepted by its own gate within declared limits, verified at `194437d6`;
+> version 1 is in progress. The other units are experimental. `schemas/` and `examples/` are data-contract starters whose evidence records
 > are deliberately `planned`. *Semulith* is a proposed name.
 > See [`LIVE_STATUS.md`](LIVE_STATUS.md) for what is actually built.
 

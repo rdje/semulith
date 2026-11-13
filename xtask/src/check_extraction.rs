@@ -231,7 +231,7 @@ fn unit_docs(dir: &Path) {
     );
     write(
         &dir.join("profile.sexp"),
-        "(profile (id \"p\") (version \"0\") (status \"development\") (architecture \"R\")\n  (scope (count_base 2) (count_total 2) (demo \"ADD\" \"SUB\"))\n  (decision (id \"D-X\") (authority architecture) (statement \"s\") (source \"S §1\")))\n",
+        "(profile (id \"p\") (architecture \"R\")\n  (scope (count_base 2) (count_total 2) (demo \"ADD\" \"SUB\"))\n  (decision (id \"D-X\") (authority architecture) (statement \"s\") (source \"S §1\")))\n",
     );
     write_record(
         &dir.join("requirements.sexp"),
@@ -292,7 +292,7 @@ fn obligation(id: &str, direction: &str, authority: &str, checks: &[&str]) -> Va
 fn device_docs(dir: &Path, reset: &str, checks: &[&str]) {
     write(
         &dir.join("profile.sexp"),
-        "(profile (id \"d\") (version \"0\") (status \"experimental\")\n  (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\"))\n  (scope (count_total 2) (authority platform) (source \"S §1\") (mmio_registers \"UART_RXDATA\" \"UART_TXDATA\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
+        "(profile (id \"d\")\n  (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\"))\n  (scope (count_total 2) (authority platform) (source \"S §1\") (mmio_registers \"UART_RXDATA\" \"UART_TXDATA\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
     );
     write(
         &dir.join("state.sexp"),
@@ -366,7 +366,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let _ = fs::create_dir_all(&sibling);
     write(
         &sibling.join("profile.sexp"),
-        "(profile (id \"s\") (version \"0\") (status \"experimental\") (architecture \"D\")\n  (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source \"s\"))\n  (scope (count_base 2) (count_total 2) (demo \"MOV\" \"NOP\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
+        "(profile (id \"s\") (architecture \"D\")\n  (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source \"s\"))\n  (scope (count_base 2) (count_total 2) (demo \"MOV\" \"NOP\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
     );
     tally.arm(
         "GREEN a declared sibling-crate unit is reported by name",
@@ -418,7 +418,7 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
     let _ = fs::create_dir_all(&resolution);
     write(
         &resolution.join("profile.sexp"),
-        "(profile (id \"r\") (version \"0\") (status \"development\")\n  (vehicle (route profile-resolution) (authority laboratory) (source \"s\"))\n  (scope (count_total 1) (authority architecture) (source \"S §1\") (base_op \"ADD\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
+        "(profile (id \"r\")\n  (vehicle (route profile-resolution) (authority laboratory) (source \"s\"))\n  (scope (count_total 1) (authority architecture) (source \"S §1\") (base_op \"ADD\"))\n  (decision (id \"D-X\") (authority laboratory) (statement \"s\") (source \"S §1\")))\n",
     );
     write_record(
         &resolution.join("contract-obligations.sexp"),

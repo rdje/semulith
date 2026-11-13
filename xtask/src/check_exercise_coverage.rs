@@ -500,9 +500,7 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     let profile = |scope: &str| {
         write(
             &p.join("profile.sexp"),
-            &format!(
-                "(profile (id \"p\") (version \"0\") (status \"development\") (scope {scope}))\n"
-            ),
+            &format!("(profile (id \"p\") (scope {scope}))\n"),
         )
     };
     let encoding = || {
@@ -623,7 +621,7 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     let profile_cp = |scope: &str| {
         write(
             &p.join("profile.sexp"),
-            &format!("(profile (id \"p\") (version \"0\") (status \"experimental\") (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
+            &format!("(profile (id \"p\") (vehicle (route sibling-crate) (comparison checkpoint-end-state) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
         )
     };
     let guest_a56 = |name: &str, lines: &str| {
@@ -681,7 +679,7 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     let profile_dev = |scope: &str| {
         write(
             &p.join("profile.sexp"),
-            &format!("(profile (id \"p\") (version \"0\") (status \"experimental\") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
+            &format!("(profile (id \"p\") (vehicle (route device-model) (comparison register-expectations) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
         )
     };
     let _ = fs::remove_file(p.join("guests/g1.a56"));
@@ -718,7 +716,7 @@ fn self_test(root: &Path, verbose: bool) -> bool {
     let profile_res = |scope: &str| {
         write(
             &p.join("profile.sexp"),
-            &format!("(profile (id \"p\") (version \"0\") (status \"development\") (vehicle (route profile-resolution) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
+            &format!("(profile (id \"p\") (vehicle (route profile-resolution) (authority laboratory) (source \"s\")) (scope {scope}))\n"),
         )
     };
     profile_res("(count_total 1) (authority architecture) (source \"s\") (base_op \"add\")");

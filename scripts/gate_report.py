@@ -517,6 +517,25 @@ def _cells(interactions: str) -> tuple[int, int]:
     return cells, dispositions
 
 
+def release_identity(d: Path, profile: str) -> dict[str, str]:
+    """The unit's release identity: `identity.sexp` beside its dossier (schema/identity.sexp), a file no case pins, so a
+    new version number lapses no evidence about behaviour (P4-SYSTEM.20 slice a, decision_the-next-window-is-version-1.md).
+    Exactly one `identity` form, naming this profile: the report prints no label it cannot vouch for."""
+    path = d / "identity.sexp"
+    where = path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else str(path)
+    if not path.is_file():
+        raise SystemExit(f"gate_report: {where} is missing: a unit's version and status live there (schema/identity.sexp)")
+    forms = [f for f in S.read_file(path) if isinstance(f, list) and f and str(f[0]) == "identity"]
+    if len(forms) != 1:
+        raise SystemExit(f"gate_report: {where} states {len(forms) or 'no'} identity form{'s' if len(forms) != 1 else ''}; it states one")
+    ident = {k: _one(forms[0], k) for k in ("unit", "version", "status")}
+    if ident["unit"] != profile:
+        raise SystemExit(f"gate_report: {where} is the identity of `{ident['unit']}`, not `{profile}`")
+    if None in ident.values():
+        raise SystemExit(f"gate_report: {where} lacks {', '.join(k for k, v in ident.items() if v is None)}")
+    return ident
+
+
 def dossier_digest(d: Path) -> str:
     """The versioned artifact's identity: the dossier's content digest over its SOURCE
     files — the generated reports are excluded: they are derived from this digest's
@@ -571,6 +590,7 @@ def build_cpulab(profile: str, d: Path | None = None, tracked: set[str] | None =
     """`d`/`tracked` exist for the controls (`_selftest`), as for `build_cpusystem`."""
     d = d or ROOT / "profiles" / profile
     prof = D.load_profile(d / "profile.sexp")
+    ident = release_identity(d, profile)
     obs = R.load(d / "contract-obligations.sexp")
     reqs = R.load(d / "requirements.sexp")
     refs = D.load_references(d / "references.sexp")
@@ -685,7 +705,7 @@ def build_cpulab(profile: str, d: Path | None = None, tracked: set[str] | None =
     A("")
     A("## The versioned artifact")
     A("")
-    A(f"- profile `{profile}`, version `{prof['profile'].get('version', '?')}`")
+    A(f"- profile `{profile}`, version `{ident['version']}`, `{ident['status']}` (`identity.sexp`)")
     A(f"- the dossier's content digest (every tracked SOURCE file under")
     A(f"  `profiles/{profile}/` — the generated reports excluded, as derived):")
     A(f"  `sha256 {artifact_digest}`")
@@ -888,6 +908,7 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     copy of a real unit; the report itself always reads the unit's tracked dossier."""
     d = d or ROOT / "profiles" / profile
     prof = D.load_profile(d / "profile.sexp")
+    ident = release_identity(d, profile)
     obs = R.load(d / "contract-obligations.sexp")
     reqs = R.load(d / "requirements.sexp")
     refs = D.load_references(d / "references.sexp")
@@ -997,7 +1018,7 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     native = any(why is None and (_one(ev, "axis"), _one(ev, "kind")) == ("G-PORTABILITY", "x86-64")
                  and _one(ev, "record") is not None and _native_x86_64(_one(ev, "record")) for ev, _, why in checked)
     limits = [_one(f, "statement") for f in _forms(manifest, "limit")]
-    version, artifact = str(prof["profile"].get("version", "?")), dossier_digest(d)
+    version, artifact = ident["version"], dossier_digest(d)
     outcome = decision_label = None
     decisions = []
     for ev, label, why in checked:
@@ -1084,7 +1105,7 @@ def build_cpusystem(profile: str, d: Path | None = None, tracked: set[str] | Non
     A("")
     A("## The versioned artifact")
     A("")
-    A(f"- profile `{profile}`, version `{prof['profile'].get('version', '?')}`")
+    A(f"- profile `{profile}`, version `{ident['version']}`, `{ident['status']}` (`identity.sexp`)")
     A("- the dossier's content digest (every tracked SOURCE file under")
     A(f"  `profiles/{profile}/` — the generated reports excluded, as derived):")
     A(f"  `sha256 {artifact}`")
@@ -1549,8 +1570,9 @@ def _selftest() -> int:
             lambda: refuses(unit("tworeg", lambda s: s + s[s.index("(registry "):]), "at most one registry"))
 
         # ---- the CPU-SYSTEM builder (`P4-SYSTEM.10` slice b) over a scratch copy of the unit ----
-        docs = tuple(doc for doc in ("profile.sexp", "contract-obligations.sexp", "requirements.sexp", "references.sexp",
-                                     "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp", "gate.sexp", "credits.sexp")
+        docs = tuple(doc for doc in ("profile.sexp", "identity.sexp", "contract-obligations.sexp", "requirements.sexp",
+                                     "references.sexp", "encoding.sexp", "state.sexp", "interactions.sexp", "contract.sexp",
+                                     "gate.sexp", "credits.sexp")
                      if (real / doc).is_file())  # a window retires the credits with their catalogue
         live = _tracked()
 
@@ -1698,7 +1720,24 @@ def _selftest() -> int:
         # ---- the release decision (P4-SYSTEM.18 slice c): held to the unit, the version, the dossier and the report ----
         scratch_digest = hashlib.sha256().hexdigest()  # a scratch unit tracks no file, so its dossier digest is the empty one
 
-        def release(outcome="accepted", unit="rv64gc-lab-v0", version="0", sha=scratch_digest, forms=1):
+        # The decision controls judge the decision, not the unit's evidence: they run over a scratch whose other nine axes are
+        # green whatever the real unit's credits read, every listed case stubbed current and every requirement recorded
+        # implemented, at the unit's own version. A window that retires credits leaves them standing (P4-SYSTEM.20 slice a).
+        listed_cases = [_one(f, "experiment") for f in _forms(real / "gate.sexp", "evidence") if _one(f, "axis") == "G-TRACE"]
+        unit_version = release_identity(real, "rv64gc-lab-v0")["version"]
+        next_version = str(int(unit_version) + 1)
+
+        def evidenced(name, edits, extra_files):
+            current = CR.current_credits
+            CR.current_credits = lambda root, unit: [dict(case_id=c, disposition="current") for c in listed_cases]
+            try:
+                return gs(name, {"requirements.sexp": lambda s: s.replace("(implementation_status planned)",
+                                                                          "(implementation_status implemented)"), **edits},
+                          extra_files)
+            finally:
+                CR.current_credits = current
+
+        def release(outcome="accepted", unit="rv64gc-lab-v0", version=unit_version, sha=scratch_digest, forms=1):
             form = f'(release (unit "{unit}") (version "{version}") (outcome "{outcome}") (dossier-sha256 "{sha}"))'
             return "# A release decision\n\n```lisp\n" + "\n".join([form] * forms) + "\n```\n"
 
@@ -1716,7 +1755,8 @@ def _selftest() -> int:
             path = (tmp / f"gs-{name}" / "decision.md").relative_to(ROOT).as_posix()
             rows = (f'(evidence (axis G-RELEASE) (kind decision) (record "{path}") (statement "s"))'
                     + ('\n(limit (statement "one hart, and no board"))' if limit else ""))
-            return gs(name, {"gate.sexp": lambda s: ev(rows)((before or (lambda x: x))(s))}, {"decision.md": record, **(extra or {})})
+            return evidenced(name, {"gate.sexp": lambda s: ev(rows)((before or (lambda x: x))(s))},
+                             {"decision.md": record, **(extra or {})})
 
         def stale_hosted(s):
             (a, b), = [(a, b) for f, a, b in S.forms_with_spans(s) if isinstance(f, list) and f and str(f[0]) == "evidence"
@@ -1756,9 +1796,10 @@ def _selftest() -> int:
                         "**no** — the decision reads `accepted` with no capability limit declared"))
         arm("RED a decision of another unit does not stand",
             lambda: has(decided("other-unit", release(unit="rv64i-lab-v0")),
-                        "**no** — the decision is of `rv64i-lab-v0` version `0`, not `rv64gc-lab-v0` version `0`"))
+                        f"**no** — the decision is of `rv64i-lab-v0` version `{unit_version}`, not `rv64gc-lab-v0` version `{unit_version}`"))
         arm("RED a decision of another version does not stand",
-            lambda: has(decided("other-version", release(version="1")), "**no** — the decision is of `rv64gc-lab-v0` version `1`, not"))
+            lambda: has(decided("other-version", release(version=next_version)),
+                        f"**no** — the decision is of `rv64gc-lab-v0` version `{next_version}`, not"))
         arm("RED an outcome the gate does not know does not stand",
             lambda: has(decided("outcome", release(outcome="validated")),
                         "**no** — the decision's outcome `validated` is not one the gate knows"))

@@ -44,12 +44,13 @@
 ;; device unit has no endianness concept. `(values little)` today; `big` joins the day a
 ;; big-endian profile needs one (the sanctioned `(values …)` edit).
 
+;; The unit's version and status are not fields here: they live in identity.sexp beside this
+;; file (schema/identity.sexp), which no case pins (P4-SYSTEM.20 slice a).
+
 (schema (id "profile"))
 
 (construct (name profile)
   (field (name id) (type string) (min-length 1))
-  (field (name version) (type string) (min-length 1))
-  (field (name status) (type string) (min-length 1))
   (field (name architecture) (type string) (min-length 1) (optional yes))
   (field (name base) (type string) (min-length 1) (optional yes))
   (field (name chapter_version) (type string) (min-length 1))

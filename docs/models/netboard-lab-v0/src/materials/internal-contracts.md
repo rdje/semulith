@@ -3,7 +3,7 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `profiles/netboard-lab-v0/board.sexp`  `2f70006ed71d739372423a8c04f1619b9c69650cc1ad300bab5d16f77aea18cc`
+     `profiles/netboard-lab-v0/board.sexp`  `5d52a91cbfc4a639158922d85a06d95877cb21261a674160d0e719f93406efbc`
      `profiles/netboard-lab-v0/DOSSIER.md`  `c756dc44c4045edefce45cfd465a05ed13bd261183bb7512c4df5e3a6dc03019`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 

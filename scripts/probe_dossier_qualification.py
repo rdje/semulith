@@ -132,8 +132,9 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """The live catalogue credits the 23 of the window that carries fetch faults (P4-SYSTEM.14 a49-3) and the seven with a switch (a50-4): their measured records qualify on the real tree, and
-        their predecessors', which no live record names, do not. The dossier holds no copy of any of them, by the ruling
+        """Version 1's window (P4-SYSTEM.20 slice a) retired the 42 case-backed credits by removal, so on the real tree no live
+        case's measured record qualifies, and neither do their predecessors': no live record names any of them. Slice f
+        re-issues the credits, and this prediction flips back. Version 0's catalogue, which credited them, stands at 194437d6. The dossier holds no copy of any of them, by the ruling
         (decision_dossier-copies-retire-at-the-next-window.md): G-TRACE reads each from evidence/."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
@@ -142,7 +143,7 @@ class DossierQualificationTests(unittest.TestCase):
                           if isinstance(f, list) and f and str(f[0]) == "references")
         self.assertEqual([e for e in S.children(references, "experiment") if S.children(e, "verification")], [])
         for case in (LIVE_CASE, "rv64gc-xlen-forms-v4", "rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-alu-imm-v2", "rv64gc-alu-reg-v2", "rv64gc-lui-auipc-v2", "rv64gc-jalr-lsb-v2", "rv64gc-no-delay-slots-v2", "rv64gc-shamt-v2", "rv64gc-wsuffix-v2", "rv64gc-load-ext-v2", "rv64gc-load-x0-v2", "rv64gc-ecall-ebreak-v2", "rv64gc-csr-access-v2", "rv64gc-counters-v2", "rv64gc-fencei-v2", "rv64gc-ialign-16-v2", "rv64gc-atomics-v1", "rv64gc-c-forms-v1", "rv64gc-f-forms-v1", "rv64gc-d-forms-v1", "rv64gc-svade-v1", "rv64gc-atomic-misalign-v1", "rv64gc-fault-priority-v1", "rv64gc-priv-modes-v1", "rv64gc-sv39-v1", "rv64gc-reservation-v1", "rv64gc-sc-deterministic-v1", "rv64gc-composition-v1", "rv64gc-ext-closure-v1", "rv64gc-priv-revision-v1", "rv64gc-rvwmo-v1", "rv64gc-priv-insns-v1", "rv64gc-priv-forms-v1", "rv64gc-no-h-v1", "rv64gc-no-pmp-v1", "rv64gc-endian-v1", "rv64gc-fence-v1", "rv64gc-walk-implicit-v1", "rv64gc-partial-progress-v1"):
-            self.assertEqual(self.qualification(measured(case), ROOT), [], case)
+            self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case], case)
         for case in ("rv64gc-signed-div-truncation-v2", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 

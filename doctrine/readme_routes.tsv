@@ -201,7 +201,7 @@ definitions/	reader_navigation	partitioned	reusable definition fragments; one fi
 # Re-derivation, SEMULITH-PS-0068 (2026-09-30), when the ACT4 campaign record gained its
 #   family: schema/ 16 -> 17 files / 47,347 B (act4.sexp — one schema per construct family,
 #   the SOT-FORMAT.4 shape). Health 16 -> 18 files; bytes and ceilings unchanged.
-schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint; bounds re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23)	27	262144	32	524288	65536
+schema/	reader_navigation	partitioned	the schema language and per-family construct declarations; schema.sexp is the fixpoint; bounds re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23) and decision_schema-family-second-rederivation.md (2026-11-14)	42	262144	48	524288	65536
 # Re-derivation, SEMILITH-PL-0001 (2026-09-27), when the family hit its file-count ceiling:
 #   docs/changelog/  22 files at the breach — the family carries shards for TWO append heads
 #               (CHANGELOG.md sharded from 2026-09-27, DOC-SHARDING.1), and a working
