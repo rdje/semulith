@@ -15,10 +15,10 @@
 
 - latest_commit: derive on read with `git log -1 --format='%H %s'`.
 - active_work_unit: 5 FEATURES : 1 XTASK (director 2026-10-26, `decision_alternate-port-and-features.md`). **`XTASK.18` took the turn after five features; the next five begin with `.20` slice a.**
-  `ARTIFACT-CLEANUP.41` once due (24 h after 2026-11-09T23:59Z), the orphan act before its four; `.38` (the owned rollover) before any cleanup leaf with a checklist.
+  `ARTIFACT-CLEANUP.42` once due (24 h after 2026-11-13T20:58Z), the orphan act before its four; `.38` (the owned rollover) before any cleanup leaf with a checklist.
 - pnt_status: RUNNING since 2026-11-05 on the director's word ("Go in full PNT mode until all work is exhausted."). 46 credits current; CPU-SYSTEM `passed` since 2026-11-10: `rv64gc-lab-v0` version 0 accepted (`decision_release-rv64gc-lab-v0.md`), not yet published (a push is the director's).
-- last_unit: `SEMULITH-XTASK-0091` (`XTASK.18`: the chain accepts a colon after the number; its refusal names the shape and the line). Before it `SEMULITH-P4-0401` (`.20`'s brief, `decision_the-next-window-is-version-1.md`).
-- next_action: `.20` slice a, feature 1 of 5: the release identity (version, status) out of `profile.sexp` (measure a new file against a `gate.sexp` form, the schema and the readers: `gate_report.py`, `dossier_sexp.py`), and the claim pages name `194437d6` BEFORE any pinned input moves; this slice is the one lapse of 42 credits the window pays. `EVIDENCE_POLICY.md` stays untouched (it lapses all 46). `ARTIFACT-CLEANUP.41` once due (after 2026-11-10T23:59Z). `LIVE-CONTAINMENT.5` before any new tool row (10 B left in docs/toolbox/), and D79's causal analysis (`LIVE-CONTAINMENT.4`).
+- last_unit: `SEMULITH-AC-0097` (`ARTIFACT-CLEANUP.41`, the fourteenth recurring cleanup; no stale scratch clone under `target/`). Before it `SEMULITH-XTASK-0091` (`XTASK.18`: the chain accepts a colon after the number).
+- next_action: `.20` slice a, feature 1 of 5: the release identity (version, status) out of `profile.sexp` (measure a new file against a `gate.sexp` form, the schema and the readers: `gate_report.py`, `dossier_sexp.py`), and the claim pages name `194437d6` BEFORE any pinned input moves; this slice is the one lapse of 42 credits the window pays. `EVIDENCE_POLICY.md` stays untouched (it lapses all 46). `ARTIFACT-CLEANUP.42` once due (after 2026-11-14T20:58Z). `LIVE-CONTAINMENT.5` before any new tool row (10 B left in docs/toolbox/), and D79's causal analysis (`LIVE-CONTAINMENT.4`).
   GS regen after `git add` (`gate_report.py <unit> --gate GS`), model fragments `gen_model_book.py --unit <unit>`; chain: `cargo xtask commit-unit <dir>` (a commit with any path outside `DOCTRINE_LEDGER` in `scripts/doctrine_skip.sh` runs the six heavy checks, ~20 min; a ledger-only one ~8, the tests); prechecks + `cargo fmt --check` + check_requirements, check_materials_bill, check_gate_report, and any moved probe's seams first.
 - in_flight_uncommitted: none after the normal commit workflow. CHANGELOG.md sharded again in LC-0056 (shard-0425).
 - blockers: none. Gate cost ~8–19 min per commit since XTASK.8's pool (2026-10-28 chain logs; longer under
@@ -32,7 +32,7 @@
   `docs/tasks/XTASK.md` XTASK.6 slices 6a–6i (`target/xtask/xt0005` … `xt0010`, `xt0013` … `xt0015`: before/, after/);
   XTASK.4 slice 4a and the inventories (`target/xtask/xt0004`: inventory.md, drivers.md, findings.md);
   `docs/tasks/P4-SYSTEM.md` .14 a42ba, a42ay, a42ax;
-  cleanup act `target/artifact-cleanup/AC0096` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-09T23:59Z`).
+  cleanup act `target/artifact-cleanup/AC0097` (`docs/ARTIFACT_CLEANUP.md` last run `2026-11-13T20:58Z`).
 - continuity: historical plans/ledger bytes, immutable task/history terminals and
   the original capture remain preserved. Read the task tree and `LIVE_STATUS.md`
   for canonical progress.

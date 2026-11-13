@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0097 (leaf ARTIFACT-CLEANUP.41) — the fourteenth recurring cleanup
+
+At 93 h, on a clean tree: the orphan act removed 21 directories (496,149,522 B), then 67 candidates planned and 6 captured Cargo incremental outputs (15,766,338 B) removed, residue 0. The 4 scratch repositories under `target/` are all known keepers: no landed unit left a clone.
+
 ## SEMULITH-XTASK-0091 (leaf XTASK.18) — the chain accepts a colon after the work-unit number, and says what it wants
 
 `cargo xtask commit-unit` refused `SEMULITH-LC-0056: …`, which the commit-msg hook accepts, and its refusal gave no reason. It now accepts a space or a colon after the number, and a refusal prints the shape it wants and the first line it got. The XTASK turn after five feature units.

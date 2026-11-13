@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`, `ARTIFACT-CLEANUP.39`, `ARTIFACT-CLEANUP.40`, `ARTIFACT-CLEANUP.41`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`, `ARTIFACT-CLEANUP.39`, `ARTIFACT-CLEANUP.40`, `ARTIFACT-CLEANUP.41`, `ARTIFACT-CLEANUP.42`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -975,18 +975,31 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   promotion: declined (the structural fix is `XTASK.15`'s).
 
 - ID: `ARTIFACT-CLEANUP.41` — **the next recurring cleanup**
-  Status: `pending`
+  Status: `done` (`2026-11-13` UTC, `SEMULITH-AC-0097`)
   Runs `scripts/artifact_cleanup_orphans.py --plan` and `--delete` in the fresh work directory before the four acts, each redirected to its log and never piped, and reports `orphan` beside `approved` and `unrecorded`.
   Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
   2026-11-09T23:59Z + 24 h), create the fresh work directory (mode 700), repeat the
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0096, and census the scratch repositories under `target/` beside it.
 
+  Result (`2026-11-13T20:58Z`, `SEMULITH-AC-0097`): run at 93 h, no unit having landed since 2026-11-10T12:48Z, after 8bd0c8df with a clean tree and `handoff: OK`, in target/artifact-cleanup/AC0097 (made first, mode 700) with run.log inside it (2026-11-13T20:51Z to 2026-11-13T20:58Z). The orphan act first: 21 orphan directories, 2,928 files, 496,149,522 B, 11 under the Rosetta target `target/x86_64-apple-darwin/debug`, 8 under `target/debug` and one under each Miri target; removed, residue 0. Plan: 67 candidates (500,583,833 B), 28,523 retained files (280,904,384 B). Strict selection: 6 approved (15,766,338 B), 61 unrecorded (484,817,495 B). The act's fresh census returned `handoff: OK`; the guarded core removed exactly the 6, residue 0, journal `complete`/`verified`; `--inspect` confirms plan, selection and journal.
+  The one-entry record is overwritten. Re-census against AC0096 (AC0097/recensus.json): of AC0096's 133 unrecorded, 10 remain and 123 are gone; 51 are new (412,272,873 B), under the same eight roots and no other, so the act stays inside its recorded classes.
+  Scratch repositories under `target/` (AC0097/scratch-repos.tsv, `scratch_repos_census.py`): 4, 230,080 KiB, every one a known keeper: the three reference sources under `target/refs`, clean, and `target/tmp/xt0013-fixture/z`, whose broken `.git` resolves to this repository. None is a landed unit's clone, so `XTASK.15`'s sweep holds. The census's first pass ran a plain `git status` in each reference clone, which rewrote only its `.git/index` stat cache (the worktrees unchanged, `dirty` 0); the census now passes `--no-optional-locks`, and its second pass left all three untouched.
+  promotion: declined (routine recurrence).
+
+- ID: `ARTIFACT-CLEANUP.42` — **the next recurring cleanup**
+  Status: `pending`
+  Runs `scripts/artifact_cleanup_orphans.py --plan` and `--delete` in the fresh work directory before the four acts, each redirected to its log and never piped, and reports `orphan` beside `approved` and `unrecorded`.
+  Goal: when `docs/ARTIFACT_CLEANUP.md` is about 24 h old (after
+  2026-11-13T20:58Z + 24 h), create the fresh work directory (mode 700), repeat the
+  four acts with the log inside it; overwrite the record from the receipt;
+  sync and normal COMMIT. Re-census the unrecorded population against AC0097, and census the scratch repositories under `target/` beside it (`git --no-optional-locks`).
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `ARTIFACT-CLEANUP.41` | `pending` | the next recurring cleanup, due 24 h after `2026-11-09T23:59Z` |
+| 1 | `ARTIFACT-CLEANUP.42` | `pending` | the next recurring cleanup, due 24 h after `2026-11-13T20:58Z` |
 | 2 | `ARTIFACT-CLEANUP.38` | `pending` | the owned rollover, before the next leaf that carries a checklist |
 
 ## Decisions
