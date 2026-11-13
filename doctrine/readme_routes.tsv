@@ -267,7 +267,7 @@ docs/task-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4c; immut
 #   leaf (docs/tasks/ARTIFACT-CLEANUP.md, ARTIFACT-CLEANUP.23): docs/decisions/ stood at
 #   262,242/262,144 B when its record was drafted, so the authority stays in the leaf and the
 #   decisions-family pressure is owned by LIVE-CONTAINMENT.4 slice (k).
-docs/artifact-cleanup-history/	reader_navigation	archive_terminal	ARTIFACT-CLEANUP.19/.23; one generation per owned rollover: immutable plain Markdown predecessors/ledgers plus the generational descriptor and front door; TASK-HISTORY authenticates the chain	6	192801	6	192801	76937
+docs/artifact-cleanup-history/	reader_navigation	archive_terminal	ARTIFACT-CLEANUP.19/.23/.38; one generation per owned rollover: immutable plain Markdown predecessors/ledgers plus the generational descriptor and front door; TASK-HISTORY authenticates the chain	8	311132	8	311132	101717
 # LC0041: standing archive delegation; finite four-record plus book-source capture.
 # Object192354B + descriptor8192B + front door4096B =204642B; no cap increase.
 docs/qualification-history/	reader_navigation	archive_terminal	LIVE-CONTAINMENT.4i2b5b1h; finite immutable capture and navigation; TASK-HISTORY authenticates	3	200000	3	204642	0

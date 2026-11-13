@@ -90,7 +90,8 @@ class RetentionTests(unittest.TestCase):
         for entry, originals in zip(row['generations'], bodies):
             self.assertEqual(originals['predecessor'][entry['suffix_offset']:], originals['retired_suffix'])
         P.first_transition(bodies[-1]['predecessor'], self.live, self.latest)
-        self.assertEqual(A.validate_live(self.live, row, bodies)['nodes'], 23)
+        # The latest predecessor's leaf count, re-pinned by each owned rollover (19, 23, then 42 at .38).
+        self.assertEqual(A.validate_live(self.live, row, bodies)['nodes'], 42)
 
     def test_generation_chain_reproduces_the_superseded_descriptor(self):
         self.assertEqual(A.digest(A.encoding(self.row, self.count - 1)), self.latest['predecessor_pointer'])

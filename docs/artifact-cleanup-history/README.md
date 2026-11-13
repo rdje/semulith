@@ -12,6 +12,9 @@ All originals remain directly readable as Markdown:
 - Generation 2 (`b18971eeea61fdcce6f428693916f4f00b145ba6`, `ARTIFACT-CLEANUP.23`):
   [predecessor](predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) 58,246 bytes / 826 lines;
   [ledger](ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md) 13,433 bytes / 186 lines.
+- Generation 3 (`df8f404379886649f4c62ce1383fc88d5e4d5ffd`, `ARTIFACT-CLEANUP.38`):
+  [predecessor](predecessor-2f81f5afcadd1651711cbbda24ed4fcc9b4f76e12941b8d55eee7febf877d898.md) 101,717 bytes / 1,214 lines;
+  [ledger](ledger-41c3b96507b947a6685700790b685fbe78ad22cc2006e5a5c7830216a8e4224b.md) 15,120 bytes / 176 lines.
 
 Each ledger is a suffix of its predecessor; from the second generation on it begins
 with the previous generation's pointer, so the chain stays navigable. Overlapping
@@ -50,8 +53,8 @@ history. Published generations are immutable. A rollover adds exactly one
 generation through its own owned transition, which the publisher verifies against
 HEAD; nothing else may change the terminal.
 
-Authority: `ARTIFACT-CLEANUP.19` (generation 1) and `ARTIFACT-CLEANUP.23`
-(generation 2), under the project-owned `LIVE_DOCUMENT_SIZE_CONTAINMENT.md`
+Authority: `ARTIFACT-CLEANUP.19` (generation 1), `ARTIFACT-CLEANUP.23`
+(generation 2) and `ARTIFACT-CLEANUP.38` (generation 3), under the project-owned `LIVE_DOCUMENT_SIZE_CONTAINMENT.md`
 task-ledger transition contract. Only completed checklist/log narrative moves;
 goals, nodes, children, decisions, questions, blockers and the selected frontier
 remain in the live tree. New ledger text has independent raw-byte bounds,

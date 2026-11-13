@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0098 (leaf ARTIFACT-CLEANUP.38) — the cleanup tree's completed checklists retire into a third ledger generation
+
+The live narrative stood at 14,616 B, 129 B under the point where ordinary growth stops. Generation 3 retains df8f4043's live tree whole and its exact 15,120 B suffix, the chain re-derives generation 2's descriptor, and the live narrative is 2,814 B. The probe's latest-predecessor leaf count is re-pinned from 23 to 42, as `.23` re-pinned it from 19.
+
 ## SEMULITH-AC-0097 (leaf ARTIFACT-CLEANUP.41) — the fourteenth recurring cleanup
 
 At 93 h, on a clean tree: the orphan act removed 21 directories (496,149,522 B), then 67 candidates planned and 6 captured Cargo incremental outputs (15,766,338 B) removed, residue 0. The 4 scratch repositories under `target/` are all known keepers: no landed unit left a clone.

@@ -945,7 +945,7 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   promotion: declined (routine recurrence).
 
 - ID: `ARTIFACT-CLEANUP.38` — **the owned rollover of the live ledger**
-  Status: `pending`
+  Status: `done` (`2026-11-13` UTC, `SEMULITH-AC-0098`)
   Goal: the live ledger reads 14,616 B against the 14,745 B its rollover percentage allows (`scripts/artifact_task_history.py`), so the next leaf with an acceptance checklist refuses: `.29`'s was cut to fit. Publish a third generation (`scripts/artifact_task_history_preservation.py`), as `.19` and `.23` did, before that leaf.
   Found: 2026-11-05, `CLEANUP-TASK-PRESERVATION: REFUSED — cleanup live narrative requires owned rollover before ordinary growth`, at `.29`'s first draft.
 
@@ -1000,7 +1000,6 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `ARTIFACT-CLEANUP.42` | `pending` | the next recurring cleanup, due 24 h after `2026-11-13T20:58Z` |
-| 2 | `ARTIFACT-CLEANUP.38` | `pending` | the owned rollover, before the next leaf that carries a checklist |
 
 ## Decisions
 
@@ -1036,179 +1035,48 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
 
 - ~~`ARTIFACT-CLEANUP.29`: a ruling between options A, B and C.~~ Ruled 2026-10-28, class C; carried out by `.29` (`SEMULITH-AC-0093`).
 
-<!-- ARTIFACT-CLEANUP-LEDGER: 6776eca32531dcb5bd1e4e8fa030b290c4fcfeb3a8eb8811b0a1dffd5c0d481d -->
-Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-db1260a6fa02df38fe81d6368cb4f7ba544e8cc67ac339dd8dbf4509383f9a63.md).
-The [whole predecessor](../artifact-cleanup-history/predecessor-ec938336682f4bb4443d57838d45d431dc330a1dabd5ad011cd64f7117d04aa4.md) and
+<!-- ARTIFACT-CLEANUP-LEDGER: 6c4c63b00a543d0237b133b633d0507642000e5921c10f0612c7817065ea120d -->
+Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-41c3b96507b947a6685700790b685fbe78ad22cc2006e5a5c7830216a8e4224b.md).
+The [whole predecessor](../artifact-cleanup-history/predecessor-2f81f5afcadd1651711cbbda24ed4fcc9b4f76e12941b8d55eee7febf877d898.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
 
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.29)
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.38)
 
-- [x] **ROOT CAUSE (WHY + WHERE)** — `python3 -B scripts/artifact_cleanup_orphans.py --plan` `rc=0`: 114 directories no build collects.
-- [x] **ADDRESSED (verified)** — `--delete` `rc=0`: removed 114, residue 0 (AC29-act).
-- [x] **NO REGRESSION** — `ARTIFACT-COHORT --self-test: 168 pass / 0 fail`; `git diff --stat` of the strict tools empty.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.33)
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — AC0086-all-nested-targets.txt listed 18 roots as other units' leftovers; `python3` over `artifact_output_provenance.PRODUCERS` names two of them as producer roots; `git grep -n target/refs/dsp56300-build` → `scripts/run_dsp56300_smoke.py:44`.
-- [x] **ADDRESSED (verified)** — AC0088/census.txt: 15 stale roots, each `tag`, `tooling-refs=0` (target/miri's one hit is a comment); removed.tsv `wc -l` = 15, 968,441,856 B; `still present 0`; `live roots untouched: True`.
-- [x] **NO REGRESSION** — `git status --short | wc -l` = 0 after removal (nothing tracked touched); the commit gate green (chain log).
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.32)
-
-- [x] **ROOT CAUSE (WHY + WHERE)** — `gh run view 40713852259 --log-failed`: `MISS: RED … stop-zombie … got rc=0` ×2 and `[] is not true : actual public Cargo must generate observed incremental output` ×2; `RUSTUP_TOOLCHAIN=1.99.1 python3 -B scripts/probe_artifact_cargo.py` → `24 tests / 0 failures`; the old wrapper under an outer `build.incremental = false` → the same assertion (AC0087/old-wrapper-outer-config.txt).
-- [x] **FIX** — scripts/artifact_cargo.py `environment()` binds `CARGO_INCREMENTAL=1`; scripts/probe_artifact_cargo.py: the EPERM-injected leg, the binding asserted, seam `incremental-binding`, the build root listed on failure; xtask/src/check_artifact_cleanup.rs: the new arm.
-- [x] **ADDRESSED (verified)** — AC0087/measure.txt: GREEN `24 tests / 0 failures` plain and `-O`; each of the 12 seams `1 tests / 1 failures`; under the outer config the new wrapper passes, the old fails; `ARTIFACT-COHORT --self-test: 152 pass / 0 fail`.
-- [x] **NO REGRESSION** — `cargo test -p xtask` `test result: ok. 17 passed`; clippy and `cargo fmt --all -- --check` rc=0; `bash scripts/check_artifact_cleanup.sh` rc=0; the commit gate green (chain log).
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.14)
-
-- [x] **REPRODUCE / ISSUE** — grep -c "check_no_background_jobs" scripts/artifact_cleanup_guarded.py
-  at 1ed7cbe = 0: the guarded core had no supported deleting command and nothing
-  bound the host census to a mutation.
-- [x] **ROOT CAUSE (WHY + WHERE)** — bash scripts/check_no_background_jobs.sh --help
-  rc=0 documents exit 0/1/2 and the `handoff: OK` verdict, and
-  scripts/artifact_cleanup_guarded.py exposed only `--dry-run`; the census was a
-  handoff ritual, never a precondition the unlink path could prove it had run.
-- [x] **FIX** — artifact_cleanup_operator.py: bounded fresh census child, green
-  verdict required, then the guarded core; one receipt; inspect; recovery text.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0: ARTIFACT-COHORT --self-test: 146 pass / 0 fail. Operator 10 tests
-  normal/O with 3 omissions, each 1 failures / 0 errors: running work refuses,
-  unavailable/empty/oversized/timed-out/verdict-less censuses refuse, partial
-  and interrupted attempts receipt their stage, a second act on the same
-  directory is stale and names the gone member.
-- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
-  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
-  literal self-test arms 1641 → 1643 re-derived by DERIVED-COUNTS.
-- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
-  tree (activity closed, .24 opened, frontier), index, MEM/DEV/CH; shards.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.16)
-
-- [x] **REPRODUCE / ISSUE** — grep -c "os.unlink" scripts/artifact_cleanup.py
-  scripts/artifact_cleanup_journal.py scripts/artifact_cleanup_selection.py at
-  6740f24 = 0 each: plan, selection and journal existed with no unlink path
-  binding them, and a stale verdict named nothing (D14).
-- [x] **ROOT CAUSE (WHY + WHERE)** — git show 6740f24:scripts/artifact_cleanup_journal.py
-  | grep -c "index == progress.removed" = 1: intents were bound to the whole
-  plan's order, so a selection-restricted attempt could never finish `complete`;
-  git show 6740f24:scripts/artifact_cleanup.py | grep -c '"scoped cohort or
-  authority changed"' = 1: check_plan's stale reason was that constant
-  (actual-selection-quiescent.log).
-- [x] **FIX** — journal v2 begin binds selection digest and approved indices;
-  guarded core re-decides the selection, revalidates per file through the
-  parent descriptor, flushes intent before unlink, requires absence and a
-  plan-minus-approved census; difference() names the first stale member.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0: ARTIFACT-COHORT --self-test: 138 pass / 0 fail. Guarded 12 tests
-  normal/O with 4 omissions, journal 29 with 11, planner 27 with 10, each
-  omission 1 failures / 0 errors; fixture removals leave legacy rows, inputs
-  and logs byte-exact and the journal recorded-complete at verified.
-- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
-  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
-  literal self-test arms 1639 → 1641 re-derived by DERIVED-COUNTS.
-- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
-  tree (frontier .14), index, MEM/DEV/CH; history heads sharded.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.17)
-
-- [x] **REPRODUCE / ISSUE** — target/artifact-cleanup-0078/selection-before.log at
-  b18971e: SELECTION-BEFORE: candidates 19, approved_strict 0, approved_legacy 0;
-  the plan selected a smoke-input fixture by name and no current file matched.
-- [x] **ROOT CAUSE (WHY + WHERE)** — grep -c "^NO-ROW" target/artifact-cleanup-0078/
-  ledger-vs-candidates.log = 13 and grep -c "ctime_ns" = 6: 13 candidates had no
-  row (D12: the hook's failing mutation builds returned early in
-  artifact_cargo.capture while rustc garbage-collected the recorded sessions)
-  and 6 rows differed only in ctime_ns (D13: rustc hard-link seeding, rejected
-  by exact Fact equality in artifact_output_provenance.authorize); candidate()
-  in artifact_cleanup.py never consulted the ledger (P1).
-- [x] **FIX** — capture retires absent rows after a failed build; authorize
-  tolerates ctime alone; artifact_cleanup_selection.py re-censuses a plan and
-  exclusively publishes the strict approved/unrecorded partition beside it.
-- [x] **ADDRESSED (verified)** — bash scripts/check_artifact_cleanup.sh --self-test
-  rc=0: ARTIFACT-COHORT --self-test: 128 pass / 0 fail. Selection 11 tests
-  normal/O with 5 omissions, each 1 failures / 0 errors; Cargo 23 and
-  provenance 42 pass with their reworked controls. Actual run: both producers
-  captured, then --select on the real tree approved 9 latest-session
-  outputs and left 10 unrecorded, the smoke-input fixture among them. Two
-  earlier attempts went stale because a growing run log sat inside the census
-  scope; plan-diff.log named that single member (target/artifact-cleanup/AC0078-c).
-- [x] **NO REGRESSION** — focused 18 checks rc=0, seven fresh books, original
-  native3/41514 bytes; bash scripts/check_task_history.sh --self-test rc=0;
-  literal self-test arms 1637 → 1639 re-derived by DERIVED-COUNTS.
-- [x] **LOCKSTEP** — usage/toolbox/doctrine/book include, LIVE_STATUS arms,
-  tree (frontier .16), index, MEM/DEV/CH; history heads sharded.
-
-## Acceptance Checklist (leaf ARTIFACT-CLEANUP.23)
-
-- [x] **REPRODUCE / ISSUE** — python3 scripts/artifact_task_history.py at b18971e:
-  CLEANUP-TASK-HISTORY: 12947 live narrative bytes; warning: owned rollover due.
-  The .17 checklist alone would cross 90% of 16,384 B, where ordinary growth stops.
-- [x] **ROOT CAUSE (WHY + WHERE)** — grep -n "len(found) < 4\|SOURCE = \|== terminal(previous)"
-  scripts/artifact_task_history.py scripts/artifact_task_history_preservation.py: the
-  reader pinned one four-file generation (one SOURCE, owner .19, one descriptor
-  digest) and the publisher froze that terminal, so no second generation could land.
-- [x] **FIX** — generational descriptor whose retained entries re-derive each
-  superseded descriptor byte-exactly; generation 2 retains the b18971e predecessor
-  and its exact suffix, which begins with the first pointer; the publisher accepts
-  exactly one new generation per transition and freezes every earlier object.
-- [x] **ADDRESSED (verified)** — python3 scripts/artifact_task_history.py:
-  CLEANUP-TASK-HISTORY: 2 generations; 2724 live narrative bytes; within
-  health target. python3 -B scripts/probe_artifact_task_history.py: 45 tests
-  / 0 failures / 0 errors normal/O; 20 omissions each 1 failures / 0 errors.
-- [x] **NO REGRESSION** — bash scripts/check_task_history.sh --self-test rc=0:
-  TASK-HISTORY --self-test: 52 pass / 0 fail; focused checks rc=0; seven books.
-- [x] **LOCKSTEP** — descriptor/front/objects; registry row re-derived under this
-  leaf (6 files / 192,801 B, per-part 76,937); toolbox/doctrine/book, tree/index/
-  MEM/DEV/CH; both history heads within ceilings.
-- **ROUTING EVIDENCE** — a decision record for the row was drafted and withdrawn:
-  bash scripts/check_readme_routes.sh with only its index row added reports
-  OVER CEILING docs/decisions/: 262242 aggregate bytes > 262144 (61 files, health
-  163,840, no registered owner). The pressure reproduces with no cleanup file
-  involved, so LIVE-CONTAINMENT.4 slice (k) owns the family's re-derivation or
-  partition; the routing is wrong only if that family already had an owner.
+- [x] **REPRODUCE / ISSUE** — `python3 scripts/artifact_task_history.py` at df8f4043:
+  `CLEANUP-TASK-HISTORY: … 2 generations; 14616 live narrative bytes; warning: owned rollover due`.
+  90% of 16,384 B is 14,745 B, so any checklist over 129 B would refuse.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -n "rollover_percent'\]" scripts/artifact_task_history.py`
+  → `310:    require(len(ledger) * 100 < row['narrative_health_bytes'] * row['rollover_percent'],`, in
+  `validate_live`. The completed checklists of `.14`, `.16`, `.17`, `.23`, `.29`, `.32` and `.33`, and the logs, sit after the
+  pointer, and only an owned generation moves them.
+- [x] **FIX** — generation 3 (target/artifact-cleanup/AC0098/author_generation3.py, every contract asserted
+  first): df8f4043's live tree whole (101,717 B / 1,214 lines) and its exact suffix from generation 2's
+  pointer at offset 86,597 (15,120 B / 176 lines); `predecessor_pointer` 6776eca3… re-derives generation 2's
+  descriptor; the reader's third capture and pin 6c4c63b0…; the live prefix unchanged except this status
+  and the frontier. The probe pins the latest predecessor's leaf count, which a generation moves by design:
+  its first run failed `AssertionError: 42 != 23`, and `.23` had re-pinned the same line from 19. A regex
+  count of `- ID:` lines gives 42 here and 23 for generation 2; re-pinned to 42.
+- [x] **ADDRESSED (verified)** — `python3 scripts/artifact_task_history.py`: `3 generations; … within
+  health target`; `python3 scripts/artifact_task_history_preservation.py` on the staged tree:
+  `CLEANUP-TASK-PRESERVATION: exact generation transition/source/prefix`.
+- [x] **NO REGRESSION** — `python3 -B scripts/probe_artifact_task_history.py`: `Ran 45 tests` `OK`, plain
+  and `-O`; `bash scripts/check_task_history.sh --self-test`: `TASK-HISTORY --self-test: 52 pass / 0 fail`,
+  as at generation 2; `bash scripts/check_readme_routes.sh` rc=0.
+- [x] **LOCKSTEP** — `doctrine/readme_routes.tsv` row re-derived to the frozen terminal, 8 files /
+  311,132 B, largest 101,717 B (it read `OVER CEILING … 194295 aggregate bytes > 192801` before); the
+  front page names generation 3; tree, MEMORY, CHANGELOG.
 
 ## Verification Log
 
 | Date | Leaf | Checks | Result |
 | --- | --- | --- | --- |
-| `2026-10-26` UTC | `.27` | plan/select/delete/inspect on the real tree; receipt complete/verified; census against AC0083 | 6 of 253 candidates removed (15,766,335 B), residue 0, 247 unrecorded (83 orphan sessions, grown) and 20,071 retained kept |
-| `2026-10-23` UTC | `.26` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,468 B), residue 0, 67 unrecorded and 19,342 retained kept |
-| `2026-10-22` UTC | `.25` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 73 candidates removed (15,766,472 B), residue 0, 67 unrecorded and 18,995 retained kept |
-| `2026-10-20` UTC | `.24` | plan/select/delete/inspect on the real tree; receipt complete/verified | 6 of 19 candidates removed (15,766,463 B), residue 0, 13 unrecorded and 18,724 retained kept |
-| `2026-10-20` UTC | `.14` | operator 10 tests normal/O; 3 omissions; artifact146 | census bound before the core; receipts truthful; activity closed |
-| `2026-10-20` UTC | `.16` | guarded 12 tests normal/O; 4 omissions; journal 29/11; planner 27; artifact138 | fixture unlinks exact, journaled and verified; D14 fixed; dry-run only public |
-| `2026-10-20` UTC | `.17` | selection 11 tests normal/O; 5 omissions; artifact128; actual select | 9 approved / 10 unrecorded on the real tree; D12/D13 fixed; P1 closed |
-| `2026-10-20` UTC | `.23` | 45 tests normal/O; 20 omissions; TASK-HISTORY self-test; focused | generation 2 exact; chain re-derives the superseded descriptor; live narrative 2724 B |
+| `2026-11-13` UTC | `.38` | TASK-HISTORY self-test; the reader; the publisher's transition | generation 3 exact; the chain re-derives the superseded descriptor; live narrative reset |
 
 ## Commit Log
 
-`SEMULITH-AC-0084 (leaf ARTIFACT-CLEANUP.27): the fourth recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded population grew to 83 orphan sessions, the deferral ends, three options for the director.
-
-`SEMULITH-AC-0083 (leaf ARTIFACT-CLEANUP.26): the third recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded residue measured stable at 67.
-
-`SEMULITH-AC-0082 (leaf ARTIFACT-CLEANUP.25): the second recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten; the unrecorded mutation-build residue measured as an open question.
-
-`SEMULITH-AC-0081 (leaf ARTIFACT-CLEANUP.24): the first recurring cleanup through the supported act` — 6 captured outputs removed under a fresh census, journaled and verified; record overwritten.
-
-`SEMULITH-AC-0080 (leaf ARTIFACT-CLEANUP.14): bind the host census into the supported cleanup act` — operator act, receipts, recovery; priority1 activity closed; .24 next when due.
-
-`SEMULITH-AC-0079 (leaf ARTIFACT-CLEANUP.16): unlink only what plan, selection and journal agree on` — guarded core, journal v2, D14; .14 operator act next.
-
-`SEMULITH-AC-0078 (leaf ARTIFACT-CLEANUP.17): select strictly against the published ledger` — selection record beside the plan, D12/D13 fixed, P1 closed; .16 guarded core next.
-
-`SEMULITH-AC-0077 (leaf ARTIFACT-CLEANUP.23): retire the completed-checklist suffix into a second ledger generation` — chain-verified transition; .17 strict selection next.
+`SEMULITH-AC-0098 (leaf ARTIFACT-CLEANUP.38): retire the completed-checklist suffix into a third ledger generation` — chain-verified transition.
 
 ## Changelog
 
-- `2026-10-28` UTC: .33 done; 15 stale nested targets (968 MB) removed; the two producer roots and the dsp56300 build are live and stay.
-- `2026-10-28` UTC: .32 done; the cohort's Cargo controls hold on Linux (EPERM injected; incremental bound, its own RED seam); 152 arms.
-- `2026-10-26` UTC: .27 done; fourth cleanup event through the act, 6 outputs removed, record overwritten; the unrecorded population grew to 83 orphan sessions (770,724,553 B), the open question's deferral ends.
-- `2026-10-23` UTC: .26 done; third cleanup event through the act, 6 outputs removed, record overwritten; the 67 unrecorded sessions are a stable set.
-- `2026-10-22` UTC: .25 done; second cleanup event through the act, 6 outputs removed, record overwritten; 67 unrecorded sessions measured.
-- `2026-10-20` UTC: .24 done; first cleanup event through the act, 6 outputs removed, record overwritten.
-- `2026-10-20` UTC: .14 verified; the supported act binds a fresh host census before the guarded core; activity closed.
-- `2026-10-20` UTC: .16 verified; guarded core and selection-bound journal land, dry-run only; no operator deletion yet.
-- `2026-10-20` UTC: .17 verified; strict selection publishes beside the plan; no deletion authority added.
-- `2026-10-20` UTC: .23 verified; second ledger generation retained, live narrative reset. No cleanup authority changed.
+- `2026-11-13` UTC: .38 verified; third ledger generation retained, live narrative reset. No cleanup authority changed.
