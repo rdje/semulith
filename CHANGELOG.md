@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-AC-0099 (leaf ARTIFACT-CLEANUP.43) — the cleanup tools' usage text, which the book shows, says what is true today
+
+Four usage blocks the book includes said that work finished on 2026-10-20 was pending and copied self-test counts the driver no longer held (100 outcomes where it measures 168); the toolbox and the doctrine row had the same drift. They now state the present and name the driver for the counts. Measured: editing a pinned source leaves selection approving 0 until the next capture, then 6 again.
+
 ## SEMULITH-AC-0098 (leaf ARTIFACT-CLEANUP.38) — the cleanup tree's completed checklists retire into a third ledger generation
 
 The live narrative stood at 14,616 B, 129 B under the point where ordinary growth stops. Generation 3 retains df8f4043's live tree whole and its exact 15,120 B suffix, the chain re-derives generation 2's descriptor, and the live narrative is 2,814 B. The probe's latest-predecessor leaf count is re-pinned from 23 to 42, as `.23` re-pinned it from 19.

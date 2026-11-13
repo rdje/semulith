@@ -42,10 +42,11 @@ python3 -B scripts/probe_artifact_cargo.py
 
 Descriptor checks reject symlink, nested-Git and foreign-volume ancestors before
 launch. Source/manifest bytes are checked again after the child has returned.
-Each captured pipe is bounded to8MiB and the process has a300-second deadline.
-Interruption, timeout or overflow kills and joins the owned process group;
-partial output is not returned as a completed observation. These checks require
-caller quiescence; they do not attest loaded code or exclude filesystem races.
+Each captured pipe is bounded to 8 MiB and the process has a 300-second
+deadline. Interruption, timeout or overflow kills and joins the owned process
+group; partial output is not returned as a completed observation. These checks
+require caller quiescence; they do not attest loaded code or exclude
+filesystem races.
 
 Both producers call `capture`: a bounded `cargo --version`, an anchored census of
 the producer's `debug/incremental` caches before and after the invocation, and
@@ -58,9 +59,10 @@ fails. A changed source, a census boundary or a publication error publishes
 nothing and leaves the previous ledger exact. `run` remains the bare command
 boundary and publishes nothing.
 
-Strict selection is owned by ARTIFACT-CLEANUP.17, guarded deletion by .16 and
-the host-bound operator workflow by .14. Existing plans and receipts retain
-their historical meaning. No cache deletion occurs here.
+What the producers capture, strict selection approves (ARTIFACT-CLEANUP.17),
+and the guarded core (.16) deletes under the host-bound operator act (.14).
+Existing plans and receipts retain their historical meaning. No cache deletion
+occurs here.
 # ANCHOR_END: usage
 """
 

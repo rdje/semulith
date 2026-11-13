@@ -64,8 +64,8 @@ inode, mode, size, mtime, digest and a link count of one stay exact. The guarded
 revalidate files immediately before any later mutation. Root pathname/device/
 inode mapping is checked around reads and before authority returns.
 
-The ledger fits16MiB/65,536 unique sorted outputs, each record32KiB. Source
-snapshots fit1MiB and each observed file fits512MiB. These are input bounds,
+The ledger fits 16 MiB/65,536 unique sorted outputs, each record 32 KiB. Source
+snapshots fit 1 MiB and each observed file fits 512 MiB. These are input bounds,
 not a peak-memory promise. Absent provenance supplies no approved outputs;
 malformed or unsafe provenance refuses rather than silently authorizing files.
 Historical records can still be decoded after a source changes, but stale
@@ -95,9 +95,12 @@ unchanged, and legacy rows stay unbound. The previous ledger is never opened
 for writing: a build, source, census, bound or write failure leaves it exact
 and retains the partial temporary file under its reported name as evidence.
 
-Strict planner selection against the published ledger remains owned by
-ARTIFACT-CLEANUP.17; guarded deletion and the host-bound operator workflow
-follow. No cache is removed here.
+Strict selection (`scripts/artifact_cleanup_selection.py`) reads the published
+ledger with `require_captured=True`; the guarded core and the host-bound
+operator act delete what it approves. No cache is removed here. Because every
+captured record pins this recorder, its producer and both support sources, an
+edit to any of them leaves the ledger approving nothing until the producers
+capture again.
 
 Run the disposable-fixture controls:
 
@@ -105,9 +108,9 @@ Run the disposable-fixture controls:
 python3 -B scripts/probe_artifact_output_provenance.py
 ```
 
-The suite has 42 tests normal/O and twenty-two individually failing guard
-omissions per mode. An optional public Cargo diagnostic preserves three owned
-inputs:
+The suite runs normal/O with individually failing guard omissions per mode;
+the cleanup self-test holds it to its exact count. An optional public Cargo
+diagnostic preserves three owned inputs:
 
 ```sh
 python3 -B scripts/probe_artifact_output_provenance.py --cargo-contract

@@ -42,7 +42,7 @@ cleanup happened and what it removed.
 - ID: `ARTIFACT-CLEANUP`
   Status: `active`
   Goal: bounded, evidenced artifact cleanup on a ~24 h cadence
-  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`, `ARTIFACT-CLEANUP.39`, `ARTIFACT-CLEANUP.40`, `ARTIFACT-CLEANUP.41`, `ARTIFACT-CLEANUP.42`
+  Children: `ARTIFACT-CLEANUP.1`, `ARTIFACT-CLEANUP.2`, `ARTIFACT-CLEANUP.3`, `ARTIFACT-CLEANUP.4`, `ARTIFACT-CLEANUP.5`, `ARTIFACT-CLEANUP.6`, `ARTIFACT-CLEANUP.7`, `ARTIFACT-CLEANUP.8`, `ARTIFACT-CLEANUP.9`, `ARTIFACT-CLEANUP.10`, `ARTIFACT-CLEANUP.11`, `ARTIFACT-CLEANUP.12`, `ARTIFACT-CLEANUP.13`, `ARTIFACT-CLEANUP.14`, `ARTIFACT-CLEANUP.15`, `ARTIFACT-CLEANUP.16`, `ARTIFACT-CLEANUP.17`, `ARTIFACT-CLEANUP.18`, `ARTIFACT-CLEANUP.19`, `ARTIFACT-CLEANUP.20`, `ARTIFACT-CLEANUP.21`, `ARTIFACT-CLEANUP.22`, `ARTIFACT-CLEANUP.23`, `ARTIFACT-CLEANUP.24`, `ARTIFACT-CLEANUP.25`, `ARTIFACT-CLEANUP.26`, `ARTIFACT-CLEANUP.27`, `ARTIFACT-CLEANUP.28`, `ARTIFACT-CLEANUP.29`, `ARTIFACT-CLEANUP.30`, `ARTIFACT-CLEANUP.31`, `ARTIFACT-CLEANUP.32`, `ARTIFACT-CLEANUP.33`, `ARTIFACT-CLEANUP.34`, `ARTIFACT-CLEANUP.35`, `ARTIFACT-CLEANUP.36`, `ARTIFACT-CLEANUP.37`, `ARTIFACT-CLEANUP.38`, `ARTIFACT-CLEANUP.39`, `ARTIFACT-CLEANUP.40`, `ARTIFACT-CLEANUP.41`, `ARTIFACT-CLEANUP.42`, `ARTIFACT-CLEANUP.43`
 
 - ID: `ARTIFACT-CLEANUP.1` — **the first cleanup, the record, and the registry row**
   Status: `done`
@@ -995,6 +995,13 @@ Next P4-SYSTEM.14 a7/0198, canonical reference rows and their generated conseque
   four acts with the log inside it; overwrite the record from the receipt;
   sync and normal COMMIT. Re-census the unrecorded population against AC0097, and census the scratch repositories under `target/` beside it (`git --no-optional-locks`).
 
+- ID: `ARTIFACT-CLEANUP.43` — **the cleanup tools' usage text, which the book shows, says what is true today**
+  Status: `done` (`2026-11-13` UTC, `SEMULITH-AC-0099`; found `2026-11-13` by `.41`, `SEMULITH-AC-0097`)
+  Goal: `docs/book/src/working/task-trees.md` includes the workflow anchor of `docs/toolbox/artifacts.md`, which includes the usage blocks of `scripts/artifact_cleanup.py`, `scripts/artifact_cleanup_journal.py`, `scripts/artifact_output_provenance.py` and `scripts/artifact_cargo.py`. All four say that work `.14`, `.16` and `.17` finished on 2026-10-20 is still pending. Two copy self-test counts the driver no longer holds (the planner 26 for 27, the journal 26 for 29, a gate total of 100), and numbers lost their space where the blocks were first written (`adds26`, `fits16MiB`, 7f732abe). The toolbox page has the same drift: its cohort row reads 146 outcomes where the driver measures 168 and leaves out the orphan act, its Cargo row reads 23 tests and ten omissions for 24 and twelve, and its operator row calls that act the only deleting command, which stopped being true at `.29`. State the present; drop the copied counts, since `xtask/src/check_artifact_cleanup.rs` holds each suite to its exact count and prints the total (the direction `LIVE-CONTAINMENT.5` owns for the whole family); restore the spaces. Two of the four files are supporting sources every captured record pins (`SUPPORTING_OBJECTS`), so measure that the next selection still approves.
+
+  Result (`2026-11-13`, `SEMULITH-AC-0099`): the four blocks state who plans, who selects and the two acts that delete, each under a fresh host census, and name the driver for the counts; Of 21 glued numbers, 14 are re-spaced, each bound read against its constant first, and 7 left with their sentences. The toolbox's cohort and Cargo rows lose their counts and its operator row says what that act deletes; the ARTIFACT-COHORT row of `docs/doctrines/governance.md` had the same drift (`146 overall`, the operator act "the single deleting command", the guarded core "the only unlink path"), now corrected, with the orphan act named. The toolbox family went from 81,910 to 81,628 B, room `LIVE-CONTAINMENT.5` lacked. **Measured, the pins:** a captured record pins its recorder, its producer and both support sources, and this unit edits three of them. With the edits and no new capture, a plan and selection approve 0 of 67 (AC0099/select-before). Restoring only the two support sources still gives 0, since the recorder is pinned too (select-control). Restoring all three gives 6 (select-control-2). After one guest-image capture under the edits it is 6 again (15,766,336 B, select-after-capture), so selection fails safe and recovers at the next gate. Nothing was deleted: plan and select never remove. **Noted, not a defect:** `c-engine-build`'s 6 unrecorded files are the last mutated build of the engine probe's RED arms, which record nothing. They are bounded, replaced at each gate, and outside rule 1 of `decision_orphan-incremental-sessions.md`, which governs the shared target directory. A disposable directory per arm would cost a cold engine build each.
+  promotion: declined (the family-wide count removal is `LIVE-CONTAINMENT.5`'s).
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
@@ -1040,6 +1047,29 @@ Completed checklists/logs: [exact ledger](../artifact-cleanup-history/ledger-41c
 The [whole predecessor](../artifact-cleanup-history/predecessor-2f81f5afcadd1651711cbbda24ed4fcc9b4f76e12941b8d55eee7febf877d898.md) and
 [retention contract](../artifact-cleanup-history/README.md) remain directly readable.
 <!-- /ARTIFACT-CLEANUP-LEDGER -->
+
+## Acceptance Checklist (leaf ARTIFACT-CLEANUP.43)
+
+- [x] **REPRODUCE / ISSUE** — `grep -n 'toolbox/artifacts.md:workflow' docs/book/src/working/task-trees.md` →
+  `67:{{#include ../../../toolbox/artifacts.md:workflow}}`, whose anchor includes four usage blocks;
+  `git show HEAD:scripts/artifact_cleanup.py | grep -c 'pending .ARTIFACT-CLEANUP.14.'` → 1, and line 60 →
+  `Journal coverage adds26 tests`; `bash scripts/check_artifact_cleanup.sh --self-test` →
+  `ARTIFACT-COHORT --self-test: 168 pass / 0 fail` against the toolbox's 146 and the usage text's 100.
+- [x] **ROOT CAUSE (WHY + WHERE)** — `grep -n '"27 tests / 0 failures\|"29 tests / 0 failures\|"24 tests / 0 failures' xtask/src/check_artifact_cleanup.rs`
+  → lines 95, 137, 212: the driver holds the counts, and the usage blocks, the toolbox and the doctrine
+  row kept copies (26, 26, 23) that no gate re-derives (DERIVED-COUNTS reads `hot_live` rows only). The
+  pending sentences were written before `.14`, `.16` and `.17` landed and never revisited; the glued
+  numbers date from 7f732abe (`git log -G'adds ?26'`).
+- [x] **FIX** — the four usage blocks state the present and point to the driver; 14 glued numbers re-spaced, 7 removed with their sentences; the
+  toolbox's cohort, Cargo and operator rows and the doctrine row corrected, counts removed.
+- [x] **ADDRESSED (verified)** — `mdbook build docs/book` rc=0; in `working/task-trees.html`,
+  `grep -c` gives 0 for `adds26`, `fits16MiB`, `gate to100` and `pending <code>ARTIFACT-CLEANUP.14`, and 1
+  for `Two supported acts delete`; selection 0 → 6 approved across select-before, select-control-2 and
+  select-after-capture (AC0099), after `output provenance: recorded 6 of 12 observed outputs`.
+- [x] **NO REGRESSION** — `bash scripts/check_artifact_cleanup.sh --self-test` →
+  `ARTIFACT-COHORT --self-test: 168 pass / 0 fail` after the edits, as before; the four scripts parse;
+  `python3 -B scripts/artifact_cleanup.py --help` prints the new block.
+- [x] **LOCKSTEP** — book, toolbox, doctrine row, tree, MEMORY, CHANGELOG.
 
 ## Acceptance Checklist (leaf ARTIFACT-CLEANUP.38)
 

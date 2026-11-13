@@ -35,10 +35,14 @@ USAGE = """# ANCHOR: usage
 ### Bounded cleanup plans
 
 The tracked instrument lists incremental cache candidates by path/name and
-checks a saved cohort. Regenerable build-output ownership is pending
-`ARTIFACT-CLEANUP.17` before deletion readiness. Supported cache deletion is
-pending `ARTIFACT-CLEANUP.14`; this version never removes a cache. Historical
-cleanup receipts keep their original scope.
+checks a saved cohort; it never removes a cache. Strict selection
+(`scripts/artifact_cleanup_selection.py`) decides which candidates a captured
+build owns. Two supported acts delete, each under a fresh host census: the
+operator act (`scripts/artifact_cleanup_operator.py --delete`) unlinks the
+approved files through the guarded core, and the orphan act
+(`scripts/artifact_cleanup_orphans.py --delete`) removes whole incremental
+directories no build can collect. Historical cleanup receipts keep their
+original scope.
 
 From the repository root, choose a new run directory:
 
@@ -54,13 +58,11 @@ python3 -B scripts/probe_artifact_cleanup.py
 bash scripts/check_artifact_cleanup.sh --self-test
 ```
 
-The gate requires 26 passing tests in normal and optimized Python, plus ten
-targeted guard omissions per mode, each losing one assertion with zero errors.
-Five additional historical-helper tests and a source-pin omission run in both
-modes: 26 planning/history outcomes. Journal coverage adds26 tests and ten
-omissions per mode. Output-provenance31 tests and sixteen omissions per mode
-add34 outcomes. Bound Cargo17 tests and eight omissions per mode bring the
-gate to100 outcomes. No real project cleanup occurs.
+The gate runs every cleanup probe suite in normal and optimized Python, holds
+each to its exact test count, and runs each targeted guard omission, which must
+lose exactly one assertion with zero errors. The counts live in one place, the
+driver `xtask/src/check_artifact_cleanup.rs`, and the self-test prints the
+total. No real project cleanup occurs.
 
 The original AC0067 helper is retained byte-exact as passive input in
 `scripts/fixtures/artifact_cleanup_0067.py.txt`. Its 5,815 bytes retain their
@@ -76,9 +78,11 @@ defect: a cache was also labeled a retained stray, so its removal made the
 post-check fail without a receipt. The replay preserves retained input bytes
 and restores the caller's directory. It mocks only public Git root/inventory
 reads. Those are observations of the old helper; current planning already
-separates candidates and retained strays. Guarded deletion and partial-result
-recovery remain separate pending work. Historical cleanup receipts keep their
-original event and instrument identities.
+separates candidates and retained strays, the guarded core
+(`scripts/artifact_cleanup_guarded.py`) deletes, and the journal
+(`scripts/artifact_cleanup_journal.py`) records what an interrupted attempt
+did, so `--inspect` can read a partial result. Historical
+cleanup receipts keep their original event and instrument identities.
 
 Planning exclusively creates `plan.json`; it refuses to overwrite an old plan.
 Keep run logs in the selected work directory. The reserved

@@ -119,7 +119,7 @@ answer once ceilings fire.
   Status: `pending` (found `2026-11-10` by `P4-SYSTEM.18` slice b, `SEMULITH-P4-0396`)
   Goal: `docs/toolbox/` held 81,897 B of its 81,920 B aggregate ceiling, so one new tool row refused the routes check (`OVER CEILING docs/toolbox/: 82350 aggregate bytes > 81920`). The bound assumed 250 B a row over 76 rows; the family held 204 rows averaging 401 B, and three of its seven files stand within 200 B of the 16,384 B per-part ceiling. Much of the growth is derived detail: self-test counts and port history. Two counts were already wrong (`15 cold controls` where 16 run, `the 27-check focused set` where 29 run). Strip counts and history from every row, since a tool's self-test prints its own counts and the task trees keep the history; then re-derive the family's bounds from the measured rows, with the decision recorded.
   Acceptance: no row states a count a tool prints; the routes check passes with room for the next ten rows; the re-derivation is in `doctrine/readme_routes.tsv` and a decision record.
-  Until then: slice b made room in `execution.md` by removing two counts and two history clauses, which leaves 39 B.
+  Until then: slice b made room in `execution.md` by removing two counts and two history clauses, which leaves 39 B. `ARTIFACT-CLEANUP.43` (2026-11-13, `SEMULITH-AC-0099`) removed the stale counts from three rows of `artifacts.md`: 81,628 B, 292 B left.
 
 ## Current Frontier
 

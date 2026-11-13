@@ -34,8 +34,10 @@ USAGE = """# ANCHOR: usage
 
 The journal module reserves one `attempt.jsonl` beside a published `plan.json`.
 Its writer API records intent and caller-reported unlink returns; it performs
-no cache operation. Guarded deletion and the host-bound operator CLI remain
-pending. A fresh attempt can never overwrite or resume an existing journal.
+no cache operation: the guarded core (`scripts/artifact_cleanup_guarded.py`)
+writes it, under the host-bound operator act
+(`scripts/artifact_cleanup_operator.py --delete`). A fresh attempt can never
+overwrite or resume an existing journal.
 
 Each record is one canonical JSON line. A begin record binds the canonical
 plan digest, candidate count, current recorder and actor source identities.
@@ -46,7 +48,7 @@ begin → intent(0) → removed(0) → intent(1) → removed(1) → finish
 ```
 
 A version-2 begin record also binds the strict selection's digest and the
-sorted plan indices it approved (at most4,096); intents must then follow those
+sorted plan indices it approved (at most 4,096); intents must then follow those
 indices in order and `complete` requires every approved return, so an attempt
 can never record more than its selection. Legacy version-1 records stay
 readable. Only a finish claiming `complete` after all recorded returns and a
@@ -61,15 +63,16 @@ Inspect a saved attempt from the repository root:
 python3 -B scripts/artifact_cleanup_journal.py --workdir target/artifact-cleanup/review
 ```
 
-The metadata writer/reader has26 tests in normal and optimized Python plus ten
-targeted guard omissions per mode,22 journal outcomes in the focused gate:
+The metadata writer/reader's suite runs in normal and optimized Python with its
+targeted guard omissions; `bash scripts/check_artifact_cleanup.sh --self-test`
+holds it to its exact count:
 
 ```sh
 python3 -B scripts/probe_artifact_cleanup_journal.py
 ```
 
-Exit0 means inspection completed, including an incomplete recorded attempt;
-exit2 means the input or read was refused/unavailable. These are recorded
+Exit 0 means inspection completed, including an incomplete recorded attempt;
+exit 2 means the input or read was refused/unavailable. These are recorded
 observations, not evidence of current absence or independent actor attestation.
 Inspection does not invoke Git, execute a producer or touch a cache. It can
 read historical source identities after the current recorder has changed.
@@ -84,9 +87,9 @@ and [Apple's write-order contract](https://developer.apple.com/library/archive/d
 These calls are tested in owned fixtures; hardware power failure is not tested.
 Quiescent ownership remains a caller precondition, not a filesystem transaction.
 
-Journals fit16MiB, frames32KiB and at most two events per candidate plus begin/
-finish; plans retain their separate16MiB bound. Each recorder/actor snapshot
-fits1MiB. Errors fit2KiB UTF-8. Reader memory and hardware durability are not
+Journals fit 16 MiB, frames 32 KiB and at most two events per candidate plus
+begin/finish; plans retain their separate 16 MiB bound. Each recorder/actor
+snapshot fits 1 MiB. Errors fit 2 KiB UTF-8. Reader memory and hardware durability are not
 attested. A failed/partial write poisons that writer; retain its bytes and
 inspect the prefix rather than appending another result to damaged framing.
 # ANCHOR_END: usage
