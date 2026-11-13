@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0404 (leaf P4-SYSTEM.20 slice a2) — a board's processor version is held to the unit's identity
+
+The processor pin is unit, version and dossier digest, and the platform generator checked the unit and the digest but never the version. It now holds the version to the unit's `identity.sexp` and refuses a unit with none; two RED arms prove both. The closed `.15` to `.19` records and rows moved verbatim to archive part 38, which takes the P4 tree from 128,577 to 96,808 B.
+
 ## SEMULITH-P4-0403 (leaf P4-SYSTEM.20 slice a) — the version label leaves the pinned file, and the 42 credits it lapses are retired
 
 `identity.sexp` in every profile now holds the version and status, which no case pins; `profile.sexp` and its schema lose them, and the report reads the identity. rv64gc is version 1, in development. The 42 case credits the move lapsed are retired (recoverable at a88b01a0) and their requirements read `planned`, so `CPU-SYSTEM` reads `incomplete` with four owned open axes until slice f; version 0 stays verifiable at `194437d6`. The report's decision controls no longer depend on the real unit's credits.

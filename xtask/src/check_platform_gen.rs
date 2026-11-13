@@ -23,6 +23,8 @@ use crate::harness::{combined, locale_sorted, scratch};
 const FROZEN_BOARD: &str = "scripts/fixtures/board-verdict";
 /// The frozen processor profile: a board's sibling unit, which `gen_platform.read_processor` prefers to the repository's.
 const FROZEN_PROFILE: &str = "scripts/fixtures/platform-gen/rv64i-lab-v0/profile.sexp";
+/// The frozen unit's release identity (P4-SYSTEM.20 slice a2): the pin's version is held to it.
+const FROZEN_IDENTITY: &str = "scripts/fixtures/platform-gen/rv64i-lab-v0/identity.sexp";
 const EMPTY_DIGEST: &str = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
 /// `python3 scripts/gen_platform.py <args>` from the root, stdout and stderr together as `2>&1` joined them.
@@ -180,6 +182,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         repo.join(FROZEN_PROFILE),
         t.join("rv64i-lab-v0/profile.sexp"),
     );
+    let _ = fs::copy(
+        repo.join(FROZEN_IDENTITY),
+        t.join("rv64i-lab-v0/identity.sexp"),
+    );
     sed_pin(
         &repo.join(FROZEN_BOARD).join("board.sexp"),
         &board.join("board.sexp"),
@@ -312,6 +318,50 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         captured(&out),
         "STALE",
     );
+    // RED: the pin's version is held to the unit's identity (P4-SYSTEM.20 slice a2): a board pinning a version the unit
+    // does not name is refused by name. Only the processor's version line is indented four spaces.
+    copy(&board, &t.join("d5"), &["contract-obligations.sexp"]);
+    sed_literal(
+        &board.join("board.sexp"),
+        &t.join("d5/board.sexp"),
+        "    (version \"0\")",
+        "    (version \"9\")",
+    );
+    let (rc, out) = generator(repo, &["--board-dir", &p("d5"), "--out-dir", &p("d5o")]);
+    tally.arm(
+        "RED a processor version the unit's identity does not name is refused, named",
+        rc,
+        2,
+        captured(&out),
+        "version pin DISAGREES",
+    );
+    // RED: a processor unit with no identity states no version to hold the pin to, and is refused by name.
+    copy(
+        &board,
+        &t.join("d6/units/netboard-lab-v0"),
+        &["board.sexp", "contract-obligations.sexp"],
+    );
+    let _ = fs::create_dir_all(t.join("d6/units/rv64i-lab-v0"));
+    let _ = fs::copy(
+        repo.join(FROZEN_PROFILE),
+        t.join("d6/units/rv64i-lab-v0/profile.sexp"),
+    );
+    let (rc, out) = generator(
+        repo,
+        &[
+            "--board-dir",
+            &p("d6/units/netboard-lab-v0"),
+            "--out-dir",
+            &p("d6o"),
+        ],
+    );
+    tally.arm(
+        "RED a processor unit with no identity.sexp is refused, named",
+        rc,
+        2,
+        captured(&out),
+        "identity.sexp is missing",
+    );
     // RED: a processor profile without endianness is refused by name — the untracked sibling unit hashes zero inputs,
     // so the pin is set to that digest and the arm isolates the endianness refusal from the pin refusal.
     copy(
@@ -320,6 +370,10 @@ fn self_test(repo: &Path, verbose: bool) -> bool {
         &["contract-obligations.sexp"],
     );
     let _ = fs::create_dir_all(t.join("d4/units/rv64i-lab-v0"));
+    let _ = fs::copy(
+        repo.join(FROZEN_IDENTITY),
+        t.join("d4/units/rv64i-lab-v0/identity.sexp"),
+    );
     if let Ok(src) = fs::read_to_string(repo.join(FROZEN_PROFILE)) {
         if src.contains("(endianness little) ") {
             let _ = fs::write(

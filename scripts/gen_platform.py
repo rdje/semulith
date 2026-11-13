@@ -123,7 +123,8 @@ def read_processor(board: dict) -> tuple[Path, dict]:
 
 
 def check_pin(board: dict, unit_dir: Path) -> None:
-    """The dossier-sha256 pin is LOAD-BEARING here: re-derived from the live dossier by
+    """The processor pin is unit id + version + dossier-sha256, and the digest and the version are LOAD-BEARING here. The
+    dossier-sha256 pin is re-derived from the live dossier by
     the ONE computation (gate_report.dossier_digest). A stale pin means the dossier
     changed after the board pinned it — a finding, never a silent upgrade (the
     schema/board.sexp processor comment)."""
@@ -134,6 +135,17 @@ def check_pin(board: dict, unit_dir: Path) -> None:
             f"dossier-sha256 pin is STALE: board.sexp pins {pin}, the live dossier "
             f"derives {live} — re-pin deliberately (the digest covers every tracked "
             f"dossier source file; GATE-REPORT regenerates the unit's GC-REPORT.md)")
+    # P4-SYSTEM.20 slice a2: the version is part of the pin, so it is held to the unit's release identity (identity.sexp,
+    # the one file that states it). A board pinning a version the unit does not name composes another processor than it says.
+    unit = board["processor"]["unit"]
+    try:
+        ident = G.release_identity(unit_dir, unit)
+    except SystemExit as exc:
+        raise GenError(str(exc).removeprefix("gate_report: ")) from None
+    if board["processor"]["version"] != ident["version"]:
+        raise GenError(
+            f"processor version pin DISAGREES: board.sexp pins {unit} version {board['processor']['version']}, the "
+            f"unit's identity.sexp names version {ident['version']} — re-pin deliberately")
 
 
 def read_obligation_params(board: dict) -> dict[str, dict]:

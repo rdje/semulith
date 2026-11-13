@@ -17,6 +17,11 @@ Three properties are worth reading for:
 - **The dossier pin is verified, not displayed.** The generator re-derives the
   processor's dossier digest from the live dossier and refuses a stale pin — the pin was
   display-only until this leaf measured it.
+- **So is the version.** Since `P4-SYSTEM.20` slice a2 the generator holds the pinned
+  version to the unit's `identity.sexp`, the one file that states it, and refuses a board
+  that names another, for example:
+  `processor version pin DISAGREES: board.sexp pins rv64i-lab-v0 version 9, the unit's identity.sexp names version 0`.
+  Before that, nothing read the version half of the pin.
 - **The non-claims are data.** A compatible manifest proves neither OS correctness nor
   manifest-implementation match; test-control capabilities are the platform package's
   declaration, evidenced by the runner's own suites; and no archogen eADL interface

@@ -46,7 +46,8 @@
 
 ;; The processor pin: unit id + version + the dossier content digest the unit's gate
 ;; report records (GATE-REPORT-gated) — the board inherits the processor's status, so a
-;; digest match against a NEWER dossier is a finding, not a silent upgrade.
+;; digest match against a NEWER dossier is a finding, not a silent upgrade. The version is
+;; held to the unit's identity.sexp (scripts/gen_platform.py, P4-SYSTEM.20 slice a2).
 (construct (name processor)
   (field (name unit) (type string) (min-length 1))
   (field (name version) (type string) (min-length 1))
