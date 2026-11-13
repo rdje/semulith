@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0402 (leaf P4-SYSTEM.20, slice a brief) — a lapsed credit is a gate finding, so the slice that lapses one retires it
+
+Measured on a clone: one comment line in `profile.sexp` makes the requirement-status derivation refuse, 42 drift and 42 findings, on every commit. The window's slices a to f therefore retire what they lapse, as a49-1 did, and slice f re-issues the 46 credits that stand at `194437d6`. The release identity becomes `identity.sexp` in every profile, since three have no `gate.sexp`.
+
 ## SEMULITH-AC-0099 (leaf ARTIFACT-CLEANUP.43) — the cleanup tools' usage text, which the book shows, says what is true today
 
 Four usage blocks the book includes said that work finished on 2026-10-20 was pending and copied self-test counts the driver no longer held (100 outcomes where it measures 168); the toolbox and the doctrine row had the same drift. They now state the present and name the driver for the counts. Measured: editing a pinned source leaves selection approving 0 until the next capture, then 6 again.
