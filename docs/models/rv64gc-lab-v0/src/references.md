@@ -745,3 +745,44 @@ ptw[0x0000000080003010] -> 0x00000000200000cf
 | Nothing writes a PTE that was read, from the first walk on | named |
 
 The order and the number of reads may differ, because TLB replacement is not architectural. Measured on the corpus: 23 of the 30 translating guests read in the same order, 3 read nothing in the steps they run, and in the other 7 the reference walks again for a page the engine still holds.
+
+## What a CSR write keeps, on the author and the engine (`P4-SYSTEM.20` slice b1)
+
+The expectations author and the lab engine must keep the same bits of a CSR after a write, or an expectation reads as
+a divergence the engine never made. In 2026-11 a census found that they did not, in two places
+(`decision_csr-write-three-producers.md`): the author stored `medeleg` whole, and took `mtvec`'s and `stvec`'s MODE from
+bit 0 of any value, where the state table says `one-of 0 1` and an illegal value keeps the old one.
+
+Since slice b1 the author writes those three CSRs by the state table's own fields, with the rule the engine applies. The
+table is the one beside the encoding the derivation uses, so a self-test on a frozen copy reads the copy's table:
+
+| A field's rule in `state.sexp` | What a write does |
+| --- | --- |
+| `(discipline wpri)` | keeps the old value |
+| `(legalize (any))` | takes the written bits |
+| `(legalize (read-only N))`, `(legalize (computed))` | keeps the old value |
+| `(legalize (one-of …))` | takes a listed value, and otherwise keeps the old one |
+| bits no field covers | keep the old value |
+
+`scripts/probe_csr_author_engine.py` holds the author to the engine for every CSR the author writes. Each case is a
+short guest that writes one or more values and reads the CSR back; the author derives the read-back spec-side and the
+engine runs the same image. Before the fix it named the census's nine:
+
+```text
+  medeleg <- 0xffffffffffffffff: author 0xffffffffffffffff, engine 0x1cf7ff
+  mtvec <- 0xffffffffffffffff: author 0xfffffffffffffffd, engine 0xfffffffffffffffc
+  mtvec <- 0x1 then 0x2: author 0x0, engine 0x1
+  …
+CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 9 differ
+```
+
+and after it:
+
+```text
+CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 0 differ
+```
+
+The values reach every field: all ones, zero, the two alternating patterns, and for a `one-of` field each legal value
+followed by each illegal one. `PROFILE-CONSISTENCY` runs it on every commit, and its control restores the old tvec rule,
+which the probe must name (6 cases). No tracked guest's derived observations moved: under the old and the new rule, every
+observation line of the 210 derivations is identical, because every value the corpus writes lies inside both.

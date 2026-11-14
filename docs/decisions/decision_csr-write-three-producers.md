@@ -49,3 +49,5 @@ Both fixes move pinned inputs (`scripts/derive_rv64gc_expectations.py`, `profile
 | `OB-GC-ENV-DATA-ACCESS` superseded by a version that admits declared device regions, so a board can compose the processor | [`decision_a-board-needs-a-contract-that-admits-devices.md`](decision_a-board-needs-a-contract-that-admits-devices.md) |
 
 Until then, a witness writes values all three producers keep.
+
+**Carried (2026-11-14, `P4-SYSTEM.20` slice b1, `SEMULITH-P4-0405`):** the author writes `medeleg`, `mtvec` and `stvec` by the state table's fields, with the engine's rule, and `scripts/probe_csr_author_engine.py` holds it to the engine for every CSR it writes (100 cases over 23 CSRs, 0 differ; 9 before), run by `PROFILE-CONSISTENCY` with a control that restores the old tvec rule. The table's `medeleg` narrowing is slice c's, and the vocabulary b2's.

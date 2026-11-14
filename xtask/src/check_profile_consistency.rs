@@ -8827,6 +8827,27 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             tally.score(&format!("RED omitted requirement status {mutation} {mode}"), prober.probe(repo, mutated), 1, "REQUIREMENT-STATUS-PROBE: 1 tests / 1 failures / 0 errors; derivation only, no qualification credit");
         }
     }
+    // P4-SYSTEM.20 slice b1 (decision_csr-write-three-producers.md): the expectations author keeps the bits the engine keeps,
+    // for every CSR it writes, field by field; the GREEN arm is the real author against the real engine. The mutation
+    // restores the author's pre-b1 tvec rule (MODE from bit 0 of any value), which the probe must name.
+    let argv: Vec<String> = vec![
+        "-B".to_owned(),
+        "scripts/probe_csr_author_engine.py".to_owned(),
+    ];
+    tally.score(
+        "GREEN the author keeps what the engine keeps, every CSR it writes",
+        prober.probe(repo, argv.clone()),
+        0,
+        "CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 0 differ",
+    );
+    let mut mutated = argv.clone();
+    mutated.extend(["--mutation".to_owned(), "tvec-mode-bit0".to_owned()]);
+    tally.score(
+        "RED the author's pre-b1 tvec rule is named",
+        prober.probe(repo, mutated),
+        1,
+        "CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 6 differ",
+    );
     // The prefetch's two sides name one file: a difference would cost every arm its record, silently (`XTASK.14`).
     let sample: Vec<String> = ["-B", "scripts/probe x.py", "--mutation", "a,b%c"]
         .iter()

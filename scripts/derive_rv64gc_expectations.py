@@ -44,6 +44,9 @@ import os  # noqa: E402
 # A temporary composition may override the tracked unit for pre-bind authoring.
 ENCODING = Path(os.environ.get("DERIVE_ENCODING",
                                REPO / "profiles/rv64gc-lab-v0/encoding.sexp"))
+# The state table the CSRs below are written by (P4-SYSTEM.20 slice b1): the one beside the encoding in use, since the two
+# describe one unit, so a frozen copy's encoding brings its own table (XTASK.13). DERIVE_STATE overrides it.
+STATE = Path(os.environ.get("DERIVE_STATE", ENCODING.with_name("state.sexp")))
 import spec_c as C  # noqa: E402 — independent spec-side C bit reconstruction
 import specfp as SF  # noqa: E402  — the tracked spec-side IEEE reference (P4-SYSTEM.7 slice c4)
 ENTRY = 0x8000_0000
@@ -125,6 +128,7 @@ class Hart:
     reservation, and Sv39 with Svade and the declared four-slot FIFO cache."""
 
     def __init__(self):
+        self.state = STATE       # the state table CSR writes follow; a derivation sets its encoding's own (slice b1)
         self.x = [0] * 32
         self.f = [0] * 32        # the f-file, FLEN = 64; the laboratory reset 0 (state.sexp)
         self.pc = ENTRY
@@ -535,6 +539,56 @@ def _dirty_fp(h):
     h.csr["mstatus"] |= 0b11 << 13
 
 
+# P4-SYSTEM.20 slice b1 (decision_csr-write-three-producers.md): these CSRs are written by the state table's own fields,
+# by the rule the engine applies (crates/semulith-core/src/privilege.rs): a WPRI field keeps its value; `any` takes the
+# written bits; `read-only` and `computed` keep; `one-of` takes a listed value and otherwise keeps the old one; bits no
+# field covers keep. Before b1 the author stored medeleg whole and took MODE from bit 0 of any value.
+TABLE_WRITTEN = ("medeleg", "mtvec", "stvec")
+_FIELDS: dict[tuple[Path, str], tuple] = {}
+
+
+def state_beside(asm) -> Path:
+    """The state table of the unit whose encoding `asm` was built from; STATE when it has none beside it."""
+    source = getattr(asm, "source", None)
+    if isinstance(source, Path) and source.is_file() and source.with_name("state.sexp").is_file():
+        return source.with_name("state.sexp")
+    return STATE
+
+
+def _table_fields(state, name):
+    key = (state, name)
+    if key not in _FIELDS:
+        try:
+            doc = D.load_state(state)
+        except (OSError, D.DossierError) as exc:
+            raise Refusal(f"csr {name}: the state table {state} cannot be read: {exc}") from None
+        csr = next((c for c in doc.get("csr", []) if c["id"] == name), None)
+        if csr is None or not csr.get("fields"):
+            raise Refusal(f"csr {name}: the state table ({state.name}) declares no fields to write it by")
+        _FIELDS[key] = tuple(csr["fields"])
+    return _FIELDS[key]
+
+
+def table_write_value(state, name, old, v):
+    """`old` written with `v`, field by field, as the state table `state` declares `name`."""
+    new, covered = old, 0
+    for f in _table_fields(state, name):
+        mask = ((1 << (f["bit_hi"] - f["bit_lo"] + 1)) - 1) << f["bit_lo"]
+        covered |= mask
+        incoming, kept = (v & mask) >> f["bit_lo"], (new & mask) >> f["bit_lo"]
+        rule = (f.get("legalize") or {}).get("kind")
+        if f["discipline"] == "wpri" or rule in (None, "read-only", "computed"):
+            legal = kept
+        elif rule == "any":
+            legal = incoming
+        elif rule == "one-of":
+            legal = incoming if incoming in f["legalize"]["values"] else kept
+        else:
+            raise Refusal(f"csr {name}: field {f['id']} has a rule the author does not apply ({rule})")
+        new = (new & ~mask) | (legal << f["bit_lo"])
+    return (new & covered) | (old & ~covered)
+
+
 def csr_write_value(h, name, v):
     """Per-field legalization: WPRI/read-only/computed keep, OneOf judges, views write
     through to the owner under the view's own writable fields."""
@@ -569,8 +623,8 @@ def csr_write_value(h, name, v):
         h.csr["mie"] = (m & ~writable) | (v & writable)
     elif name == "mideleg":
         h.csr["mideleg"] = (old & ~0x222) | (v & 0x222)
-    elif name in ("mtvec", "stvec"):
-        h.csr[name] = (v & ~0b11) | (v & 0b1)           # BASE Any; MODE OneOf(0,1)
+    elif name in TABLE_WRITTEN:
+        h.csr[name] = table_write_value(h.state, name, old, v)  # medeleg; mtvec/stvec's BASE Any, MODE OneOf(0,1)
     elif name in ("mepc", "sepc"):
         h.csr[name] = v & ~1                            # bit 0 read-only 0
     elif name == "fflags":
@@ -668,6 +722,7 @@ def run_guest(path: Path, asm: Assembler) -> tuple[str, int]:
                             # the handler code after it is never a continuation)
         idx += 1
     h = Hart()
+    h.state = state_beside(asm)
     h.refusals = refuse
     steps: list[Step] = []
     for _ in range(10000):
@@ -840,6 +895,7 @@ def _derive_parcel_lines(lines, asm, budget, *, program, annotations=True,
         raise Refusal('assembled units exceed source annotations')
 
     hart = Hart()
+    hart.state = state_beside(asm)
     hart.refusals = refusals
     for offset, byte in enumerate(image):
         hart.mem[ENTRY + offset] = byte

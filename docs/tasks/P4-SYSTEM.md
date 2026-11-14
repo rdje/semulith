@@ -452,7 +452,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a and a2 done (`SEMULITH-P4-0403`, `0404`); b next, the expectations author's legalization of `medeleg`, `mtvec` and `stvec`, its vocabulary, and a probe holding the author to the engine |
+| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2 and b1 done (`SEMULITH-P4-0403` to `0405`); b2 next, the author's vocabulary (every SYSTEM word and CSR the profile leaves out, so a case can show them refused) |
 
 ## Decisions
 
@@ -549,6 +549,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .20 b1 / SEMULITH-P4-0405: the expectations author writes medeleg, mtvec and stvec by the state table, and a probe holds it to the engine (completed)
+
+Feature 3 of 5 after XTASK-0091; slice b split in two, b2 the vocabulary. `scripts/derive_rv64gc_expectations.py` stored `medeleg` whole and took the tvec MODE from bit 0 of any value; it now writes the three by the state table's fields with the engine's rule (`privilege.rs`: WPRI and `read-only` keep, `any` takes, `one-of` takes a listed value or keeps), from the `state.sexp` beside the encoding the derivation uses: `scripts/riscv_asm.py`'s Assembler now records its source, and each hart takes that unit's table (`DERIVE_STATE` overrides the default). **The gate found the first draft wrong:** it read the table at a module-level path, and GUEST-GEN's self-test, which runs the author from scratch roots on frozen encodings, refused at 8 arms (`[Errno 2] … target/p4-system-12/profiles/rv64gc-lab-v0/state.sexp`); threading the table from the assembler in use passes all of them. `scripts/probe_csr_author_engine.py` writes every CSR the author handles with all ones, zero, both alternating patterns and each legal-then-illegal `one-of` pair, on the author and on the engine: 9 of 100 cases differed before (the census's `medeleg`, `mtvec`, `stvec`), 0 after. Its first draft misread a read-back equal to x3's old value as a difference, since the engine prints only changes; x3 is seeded with a sentinel no pattern can produce. PROFILE-CONSISTENCY runs it: GREEN on the real tree, RED with the old tvec rule (6 cases). No guest's observations moved: every observation line of the 210 derivations is identical under both rules (`--check-owned`: 42 byte-identical). Nothing is credited in the window, so nothing lapsed.
 
 ### .20 a2 / SEMULITH-P4-0404: a board's processor version is held to the unit's identity (completed)
 
@@ -1251,6 +1255,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.20` b1 **ROOT CAUSE** — `git show 5773b00e:scripts/derive_rv64gc_expectations.py | grep -n 'medeleg\|(v & ~0b11) | (v & 0b1)'`: `medeleg` only at lines 134, 169 and 1214 (reset, delegation, address map), none inside `csr_write_value`, so a write falls to its `else: h.csr[name] = v` store; line 573 `h.csr[name] = (v & ~0b11) | (v & 0b1)` for the tvecs; `python3 -B scripts/probe_csr_author_engine.py` at that author → `CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 9 differ` (target/p4-system-20/b1/before.log).
+- [x] `.20` b1 **ADDRESSED** — `python3 -B scripts/probe_csr_author_engine.py` → `CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 0 differ`; `--mutation tvec-mode-bit0` → `6 differ`, exit 1.
+- [x] `.20` b1 **NO REGRESSION** — `python3 -B scripts/derive_rv64gc_expectations.py --check-owned` → `42 guest(s) byte-identical`; the 210 guests derived by HEAD's author and by b1's agree on every observation line (`grep -v '^;;'`, derive_all.py); `bash scripts/check_guest_gen.sh` → `GUEST-GEN: ok`, its self-test 0 misses (8 before the threading); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0, `cargo fmt --all -- --check` rc=0.
 - [x] `.20` a2 **ROOT CAUSE** — `git show 0180c0c1:scripts/gen_platform.py | grep -c 'processor\"\]\[\"version\"\] !='` = 0: the pin's version half was printed into the manifest and never compared with anything: `git show 0180c0c1:scripts/gen_platform.py | grep -n '\["version"\]'` → line 276 (the board's own version), 281 and 348 (the processor's), all three f-strings.
 - [x] `.20` a2 **ADDRESSED** — `bash scripts/check_platform_gen.sh --self-test` → `PLATFORM-GEN --self-test: 15 pass / 0 fail`, its two new RED arms refused with `version pin DISAGREES` and `identity.sexp is missing`; `bash scripts/check_platform_gen.sh` → `PLATFORM-GEN: ok (1 board(s) — … the dossier pin verified live)` on the real board, version `0` against `0`.
 - [x] `.20` a2 **NO REGRESSION** — the regenerated `platform.sexp` differs only in its generator digest line (`git diff -U0` shows one `;; Generator:` pair); `cargo fmt --all -- --check` rc=0; `check_sexp_schema: ok` for the board against `schema/board.sexp`; the archive move's every span re-hashed equal (move.log).

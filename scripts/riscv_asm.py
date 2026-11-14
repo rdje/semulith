@@ -455,6 +455,9 @@ class Assembler:
         self.ialign = 32
         self.fregs: dict[str, set[str]] = {}
         self.c_reserved = {}
+        # The definition this assembler was built from, so a caller can find the unit's other documents beside it (the
+        # expectations author takes its state table from here, P4-SYSTEM.20 slice b1).
+        self.source = source
         if source.is_file():
             self.arg_lut, self.insns, self.imm_layout, self.pseudos = \
                 load_canonical_encoding(source, with_pseudos=True)

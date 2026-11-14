@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0405 (leaf P4-SYSTEM.20 slice b1) — the expectations author writes medeleg, mtvec and stvec by the state table, and a probe holds it to the engine
+
+The author stored `medeleg` whole and took the trap-vector MODE from bit 0 of any value. It now writes the three by the state table's fields with the engine's own rule. A new probe writes every CSR the author handles with chosen patterns on both the author and the engine: 9 of 100 cases differed before, none after, and `PROFILE-CONSISTENCY` runs it with a control that restores the old rule. No guest's observations moved.
+
 ## SEMULITH-P4-0404 (leaf P4-SYSTEM.20 slice a2) — a board's processor version is held to the unit's identity
 
 The processor pin is unit, version and dossier digest, and the platform generator checked the unit and the digest but never the version. It now holds the version to the unit's `identity.sexp` and refuses a unit with none; two RED arms prove both. The closed `.15` to `.19` records and rows moved verbatim to archive part 38, which takes the P4 tree from 128,577 to 96,808 B.
