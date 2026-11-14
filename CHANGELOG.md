@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0096 (leaf XTASK.19 slice a) — the four loops Rust 1.100.0's clippy flags iterate their arrays
+
+The DSP crate's three register loops and one test loop now iterate what they index, so the newest clippy passes over the whole workspace, and the same check on the old files still fails with exactly the four errors. Nothing moved: this host's tests pass and the DSP runner prints byte-identical dumps on all six guests. Pinning the toolchain is the next slice.
+
 ## SEMULITH-XTASK-0095 (leaf XTASK.19) — the director's grant of the one push that turns hosted CI green, recorded
 
 The director granted one push, after the toolchain fix lands, to turn hosted CI green, and cautioned that exceptional pushes must stay truly exceptional and never stand in for the 300-commit cadence. Both are recorded in the leaf in their words, so the push carries exactly that reason and nothing else.

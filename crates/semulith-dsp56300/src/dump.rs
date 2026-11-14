@@ -39,14 +39,14 @@ pub fn dump_registers(out: &mut String, m: &Machine) {
     reg_line(out, "b0", (m.b & 0xFF_FFFF) as u32);
     reg_line(out, "b1", ((m.b >> 24) & 0xFF_FFFF) as u32);
     reg_line(out, "b2", ((m.b >> 48) & 0xFF) as u32);
-    for i in 0..8 {
-        reg_line(out, &format!("r{i}"), m.r[i]);
+    for (i, &value) in m.r.iter().enumerate() {
+        reg_line(out, &format!("r{i}"), value);
     }
-    for i in 0..8 {
-        reg_line(out, &format!("n{i}"), m.n[i]);
+    for (i, &value) in m.n.iter().enumerate() {
+        reg_line(out, &format!("n{i}"), value);
     }
-    for i in 0..8 {
-        reg_line(out, &format!("m{i}"), m.m[i]);
+    for (i, &value) in m.m.iter().enumerate() {
+        reg_line(out, &format!("m{i}"), value);
     }
 }
 

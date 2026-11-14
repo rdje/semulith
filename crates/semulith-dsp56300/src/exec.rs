@@ -879,8 +879,8 @@ mod tests {
         assert_eq!(m.pc, 0x116);
         assert_eq!(m.sr, 0xC0_0300, "moves and loop machinery touch no CCR bit");
         assert_eq!(m.r[0], 0x20E, "14 stores from $200");
-        for addr in 0x200..=0x20D {
-            assert_eq!(m.x[addr], 0x550000, "x:{addr:03X}");
+        for (addr, &word) in (0x200..).zip(&m.x[0x200..=0x20D]) {
+            assert_eq!(word, 0x550000, "x:{addr:03X}");
         }
         assert_eq!(m.la, MASK24, "LA restored");
         assert_eq!(
