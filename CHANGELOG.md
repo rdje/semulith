@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0413 (leaf P4-SYSTEM.20, slice f brief) — one batch, and each predecessor leaves in the unit that declares its successor
+
+Rehearsed on two throwaway clones: the 42 cases re-declared under new ids and contract version 4, each captured once, and every trace, output, guest and expectation byte-identical to its predecessor's; with the credits re-issued, the report leaves only slices g and h open. Keeping the old cases until the new credits are current would hold 86 cases and break two bounds; retiring each in the commit that declares its successor holds 45. Slice f runs as three units.
+
 ## SEMULITH-P4-0412 (leaf P4-SYSTEM.20 slice e) — the atomic read crosses as its own kind, and contract version 4 admits device regions
 
 LR and the AMOs now read through a boundary request of their own, answered exactly as a load is, so every guest observes what it did before. Contract version 4 lets a board declare device regions: a region answers loads and stores of its declared widths and refuses atomic reads, SC's permission check, fetches and page-table walks without side effect, and a new CPU guarantee says the hart reads at most once per explicit read. A census over every step of the 210 guests realizes it, and a device fixture shows each refusal becoming the right access fault.

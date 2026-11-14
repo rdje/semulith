@@ -60,7 +60,7 @@ Slice a's brief (2026-11-13, `SEMULITH-P4-0402`) measured two more, on a clone o
 
 ## What this does not settle
 
-- How the 46 credits are re-issued in bulk. Slice f measures the act per batch.
+- How the 46 credits are re-issued in bulk. Slice f measures the act per batch. Measured by slice f's brief (2026-11-14, `SEMULITH-P4-0413`): one batch of 42, each predecessor retired in the unit that declares its successor, so the window peaks at 45 cases and no family bound moves ([`decision_a-predecessor-leaves-when-its-successor-is-declared.md`](decision_a-predecessor-leaves-when-its-successor-is-declared.md)).
 - The push. When slice g needs the hosted run, the director is asked in one plain sentence; nothing here approves it.
 
 ## How to apply

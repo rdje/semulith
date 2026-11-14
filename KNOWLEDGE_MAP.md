@@ -85,6 +85,7 @@
 
 - [`decision_a-board-needs-a-contract-that-admits-devices.md`](docs/decisions/decision_a-board-needs-a-contract-that-admits-devices.md)
 - [`decision_a-credit-with-no-case.md`](docs/decisions/decision_a-credit-with-no-case.md)
+- [`decision_a-predecessor-leaves-when-its-successor-is-declared.md`](docs/decisions/decision_a-predecessor-leaves-when-its-successor-is-declared.md)
 - [`decision_a-release-decision-is-held-to-the-report.md`](docs/decisions/decision_a-release-decision-is-held-to-the-report.md)
 - [`decision_alternate-port-and-features.md`](docs/decisions/decision_alternate-port-and-features.md)
 - [`decision_append-history-predecessors.md`](docs/decisions/decision_append-history-predecessors.md)

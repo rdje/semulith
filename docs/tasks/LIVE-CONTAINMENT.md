@@ -121,12 +121,21 @@ answer once ceilings fire.
   Acceptance: no row states a count a tool prints; the routes check passes with room for the next ten rows; the re-derivation is in `doctrine/readme_routes.tsv` and a decision record.
   Until then: slice b made room in `execution.md` by removing two counts and two history clauses, which leaves 39 B. `ARTIFACT-CLEANUP.43` (2026-11-13, `SEMULITH-AC-0099`) removed the stale counts from three rows of `artifacts.md`: 81,628 B, 292 B left.
 
+- ID: `LIVE-CONTAINMENT.6` — **the decisions index at its part ceiling: an index that lists every record needs more than one part**
+  Status: `pending` (found `2026-11-14` by `P4-SYSTEM.20` slice f's brief, `SEMULITH-P4-0413`)
+  Goal: `docs/decisions/INDEX.md` held 32,519 B of the family's 32,768 B per-part ceiling at `438ca348`, so the brief's one new row refused the routes check (`OVER CEILING docs/decisions/: part docs/decisions/INDEX.md`, 32,817 B). Every record must be listed there (`scripts/check_memory_architecture.sh` reads `INDEX.md` alone), and its 134 rows average about 244 B, so each further record refuses: the brief landed by shortening its own hook to 226 B, which leaves 23 B. Give the index a second part that the check also reads, as the changelog has shards, with every record still listed exactly once; or measure a better split first.
+  Acceptance: the routes check passes with room for the next twenty records; MEMORY-ARCH refuses a record listed in no part and one listed twice; the bound is in `doctrine/readme_routes.tsv` and a decision record.
+  Order: before the next decision record is added. `P4-SYSTEM.20` slice f1 follows `decision_a-predecessor-leaves-when-its-successor-is-declared.md` and adds none.
+  Verification: pending
+  Commit: pending
+
 ## Current Frontier
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `active` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
 | 2 | `LIVE-CONTAINMENT.5` | `pending` | the toolbox family is at its aggregate ceiling, so the next tool row refuses; before the next new tool |
+| 3 | `LIVE-CONTAINMENT.6` | `pending` | the decisions index is at its part ceiling, so the next decision record refuses; before the next record |
 
 ### .4o / SEMULITH-LC-0054 — the tree's closed rows move to an archive part (complete)
 
