@@ -452,7 +452,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a to d done (`SEMULITH-P4-0403` to `0409`); e next, device regions: `OB-GC-ENV-DATA-ACCESS` superseded, and the CPU guarantee that the hart never reads a region more often than the program does |
+| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a to d done (`SEMULITH-P4-0403` to `0409`), e's brief measured (`0410`); e1 next, `AtomicLoad` in the boundary, the engine and every environment |
 
 ## Decisions
 
@@ -549,6 +549,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .20 e brief / SEMULITH-P4-0410: the hart reads once, and an atomic read needs its own boundary kind (completed)
+
+Measured at `0a2574c6` on a throwaway clone (target/p4-system-20/e-brief): every step of the 210 guests, each boundary request counted by kind. No step issued a second data `Load`, and none outside the load class issued one (`guests 210, violations 0`); SC never reads; fetches and page-table reads already cross as their own kinds. **Found:** LR and every AMO read with a plain `Load`, so a device region cannot refuse an atomic access before its side-effecting read, and two AMO steps read and then failed their store. **The call** (`decision_device-regions-need-an-atomic-read-kind.md`): e1 adds `AtomicLoad` to the boundary, the engine and every environment; e2 writes contract version 4 (device regions refuse `AtomicLoad`, fetches and walks without side effect) and the guarantee that the hart reads at most once per explicit read, realized by the census.
 
 ### .20 d / SEMULITH-P4-0409: the profile override selects the misaligned AMO for every case (completed)
 

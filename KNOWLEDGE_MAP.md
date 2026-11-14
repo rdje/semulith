@@ -114,6 +114,7 @@
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_derived-members-of-bounded-families.md`](docs/decisions/decision_derived-members-of-bounded-families.md)
 - [`decision_device-applicability-by-declared-vehicle.md`](docs/decisions/decision_device-applicability-by-declared-vehicle.md)
+- [`decision_device-regions-need-an-atomic-read-kind.md`](docs/decisions/decision_device-regions-need-an-atomic-read-kind.md)
 - [`decision_director-rulings-2026-10-28.md`](docs/decisions/decision_director-rulings-2026-10-28.md)
 - [`decision_docs-only-gate-path.md`](docs/decisions/decision_docs-only-gate-path.md)
 - [`decision_doctrine-controls-refuse-and-freeze.md`](docs/decisions/decision_doctrine-controls-refuse-and-freeze.md)
