@@ -8,8 +8,8 @@ case's configuration is the one `prepare_div_inputs.reference_config` renders, s
 This is a live experiment and not CI: it needs the untracked reference binary. It compares declared GPR changes only, grants no
 credit, and says what a configuration changes across the corpus before a case is declared on it (decision_reference-config-per-case.md).
 
-  python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
-  python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative   # the case's own against what it declares
+  python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v4
+  python3 -B scripts/census_reference_config.py --case rv64gc-svade-v2 --alternative   # the case's own against what it declares
 
 Writes only under --out (default target/reference-config-census/<case>), and reads the tracked guests.
 """

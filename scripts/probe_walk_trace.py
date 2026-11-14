@@ -18,7 +18,7 @@ import unittest
 import measure_walk_trace as M
 
 ROOT = Path(__file__).resolve().parent.parent
-CASE = "rv64gc-csr-set-v3"
+CASE = "rv64gc-csr-set-v4"
 CASE_DIR = ROOT / "evidence" / CASE
 MUTATIONS = {
     "no-walk": ('    if not steps:\n        return False, "the reference\'s trace shows no walk"\n', "    if not steps:\n        return True, \"\"\n"),
@@ -116,11 +116,11 @@ class MeasureTests(unittest.TestCase):
         path.chmod(path.stat().st_mode | stat.S_IXUSR)
         return path
 
-    def reference(self, text=TWO, exit_code=0):
-        return self.script("reference", f"args = sys.argv[1:]\nopen(args[args.index('--trace-output') + 1], 'w').write({text!r})\nsys.exit({exit_code})")
+    def reference(self, text=TWO, exit_code=0, stderr=""):
+        return self.script("reference", f"args = sys.argv[1:]\nopen(args[args.index('--trace-output') + 1], 'w').write({text!r})\nsys.stderr.write({stderr!r})\nsys.exit({exit_code})")
 
-    def engine(self, text=OURS, exit_code=0):
-        return [str(self.script("engine", f"sys.stdout.write({'[0] [M]: 0x80000000' + chr(10) + text!r})\nsys.exit({exit_code})"))]
+    def engine(self, text=OURS, exit_code=0, stderr=""):
+        return [str(self.script("engine", f"sys.stdout.write({'[0] [M]: 0x80000000' + chr(10) + text!r})\nsys.stderr.write({stderr!r})\nsys.exit({exit_code})"))]
 
     def retained(self):
         return [path.exists() for path in M.walk_paths(self.root, CASE)]
@@ -141,15 +141,17 @@ class MeasureTests(unittest.TestCase):
         self.assertIn("refuse reuse", detail)
 
     def test_a_failed_reference_retains_nothing(self):
-        code, detail = M.measure(self.root, CASE, self.reference(exit_code=1), self.engine())
+        code, detail = M.measure(self.root, CASE, self.reference(exit_code=1, stderr="note\nconfig rejected\n"), self.engine())
         self.assertEqual(code, 2)
         self.assertIn("reference process failed", detail)
+        self.assertIn("rc=1; config rejected", detail)
         self.assertEqual(self.retained(), [False, False, False])
 
     def test_a_failed_engine_retains_nothing(self):
-        code, detail = M.measure(self.root, CASE, self.reference(), self.engine(exit_code=1))
+        code, detail = M.measure(self.root, CASE, self.reference(), self.engine(exit_code=101, stderr="error: failed to read root of directory source\n"))
         self.assertEqual(code, 2)
         self.assertIn("engine process failed", detail)
+        self.assertIn("rc=101; error: failed to read root of directory source", detail)
         self.assertEqual(self.retained(), [False, False, False])
 
     def test_an_oversized_trace_retains_nothing(self):

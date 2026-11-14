@@ -16,7 +16,7 @@ first walk on. The order and the number of reads may differ, because TLB replace
 23 of 30 translating guests read in the same order, and in the other 7 the reference walks again for a page the engine still holds.
 Existing names refuse reuse, so this measures exactly once, like a capture.
 
-  python3 -B scripts/measure_walk_trace.py --case rv64gc-walk-implicit-v1
+  python3 -B scripts/measure_walk_trace.py --case rv64gc-walk-implicit-v2
 
 Exit: 0 retained; 1 the comparison does not hold, nothing retained; 2 refused, nothing retained.
 """
@@ -97,6 +97,13 @@ def engine_command(root: Path, guest: Path, instructions: int) -> list[str]:
             f"--steps={instructions}", "--trace-walks"]
 
 
+def last_line(stderr) -> str:
+    """A failed process's last stderr line, bounded, so its refusal says why: cargo refusing to build exits 101 like a panic."""
+    text = stderr.decode("utf-8", "replace") if isinstance(stderr, bytes) else (stderr or "")
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    return lines[-1][:240] if lines else "(no stderr)"
+
+
 def measure(root: Path, case_id: str, binary: Path, engine=None) -> tuple[int, str]:
     """Run once and retain, or refuse with nothing written. The caller supplies the authenticated binary."""
     case_dir = root / "evidence" / case_id
@@ -114,12 +121,12 @@ def measure(root: Path, case_id: str, binary: Path, engine=None) -> tuple[int, s
                                   "--trace-ptw", "--trace-mem", "--trace-output", str(trace), str(guest)],
                                  capture_output=True, text=True, timeout=TIMEOUT_SECONDS, check=False)
         if process.returncode != 0 or not trace.is_file():
-            return 2, f"REFUSED: the reference process failed: rc={process.returncode}"
+            return 2, f"REFUSED: the reference process failed: rc={process.returncode}; {last_line(process.stderr)}"
         reference = trace.read_bytes()
     command = engine or engine_command(root, guest, instructions)
     done = subprocess.run(command, capture_output=True, timeout=TIMEOUT_SECONDS, cwd=root, check=False)
     if done.returncode != 0:
-        return 2, f"REFUSED: the engine process failed: rc={done.returncode}"
+        return 2, f"REFUSED: the engine process failed: rc={done.returncode}; {last_line(done.stderr)}"
     lab = b"".join(line + b"\n" for line in done.stdout.splitlines() if line.startswith(b"ptw["))
     if len(reference) > TRACE_BYTES or len(lab) > TRACE_BYTES:
         return 2, f"REFUSED: a trace is above {TRACE_BYTES} bytes"

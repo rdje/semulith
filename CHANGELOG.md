@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0414 (leaf P4-SYSTEM.20 slice f1) — the 42 declared under new ids, and 40 predecessors leave in the same commit
+
+The 42 cases version 1's window lapsed are declared again under new ids and contract version 4, and 40 of their predecessors leave the tree in the same commit, each listed on the retired-cases page and read back from history on every run. Two stay until their successors are captured, because a tool reads what they captured. A rehearsal captured all 42 with every trace, output, guest and expectation byte-identical to its predecessor's. The walk tool now says why a process failed, and four book pages that showed version 0's numbers as current say so.
+
 ## SEMULITH-P4-0413 (leaf P4-SYSTEM.20, slice f brief) — one batch, and each predecessor leaves in the unit that declares its successor
 
 Rehearsed on two throwaway clones: the 42 cases re-declared under new ids and contract version 4, each captured once, and every trace, output, guest and expectation byte-identical to its predecessor's; with the credits re-issued, the report leaves only slices g and h open. Keeping the old cases until the new credits are current would hold 86 cases and break two bounds; retiring each in the commit that declares its successor holds 45. Slice f runs as three units.

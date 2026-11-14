@@ -1,3 +1,0 @@
-;; rv64gc-fault-priority-v1.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
-;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
-(config_effect (case_id "rv64gc-fault-priority-v1") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "03c7e6057bd749dbe1f34e268fbe07c21364eae9c14d1bfc10355d61fd8d6d33") (case_config_sha256 "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472") (alternative_config_sha256 "d98dc5645ca321e82706e4d37c0bcf14e996008829df050285918ce9eb5a1e99") (instructions 271) (trace_sha256 "143925c3dded74208406f106a7b11489e6d1c09bf7666c1ab1d0289ef76980b8") (trace_bytes 24896))

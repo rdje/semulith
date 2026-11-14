@@ -592,7 +592,7 @@ A case's capture is spent once, so the procedure around it is a tool, `scripts/c
 Read `decision_capture-guard-measured-at-load.md` for why the limit is 32. `--check` runs every hold but the host's and captures nothing, so it's safe at any time. A commit that isn't an ancestor of HEAD is refused before anything else:
 
 ```text
-$ python3 -B scripts/capture_guarded.py --case rv64gc-svade-v1 --declaration-commit 1111111111111111111111111111111111111111 --check
+$ python3 -B scripts/capture_guarded.py --case rv64gc-svade-v2 --declaration-commit 1111111111111111111111111111111111111111 --check
 22:51:41Z refused: 1111111111111111111111111111111111111111 is not an ancestor of HEAD
 ```
 

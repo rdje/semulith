@@ -1,2 +1,0 @@
-using evidence/rv64gc-sstc-v2/control.trace for trace output.
-Unable to locate tohost symbol; disabling HTIF.

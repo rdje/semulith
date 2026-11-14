@@ -1,2 +1,0 @@
-using evidence/rv64gc-fault-priority-v1/baseline.trace for trace output.
-Unable to locate tohost symbol; disabling HTIF.

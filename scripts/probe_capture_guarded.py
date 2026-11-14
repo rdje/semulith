@@ -208,7 +208,7 @@ class GuardTests(unittest.TestCase):
         M.spawn_probe(3)
 
     def test_the_real_manifests_pin_what_the_capture_reads(self):
-        paths = M.frozen_paths(ROOT, ["rv64gc-svade-v1"])
+        paths = M.frozen_paths(ROOT, ["rv64gc-svade-v2"])
         self.assertLessEqual({"scripts/capture_div.py", "scripts/derive_rv64gc_expectations.py", "profiles/rv64gc-lab-v0/state.sexp"}, paths)
         self.assertLessEqual(set(M.AUTHORITY_VIEWS), paths)
         self.assertFalse(any(path == "scripts/capture_guarded.py" for path in paths), "the guard is no input of what it guards")

@@ -3,96 +3,100 @@
      pinned dossier is refused by the MATERIALS-BILL doctrine
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
-     `evidence/rv64gc-alu-imm-v2/case.sexp`  `a4b99e6afb752baf69178c47d1ccb010e964030b49678037abf20e834369038b`
-     `evidence/rv64gc-alu-reg-v2/case.sexp`  `9910a540f4d2bb13c3e8965c5566ed1404a883eff91576ec4895aaa00848913e`
-     `evidence/rv64gc-atomic-misalign-v1/case.sexp`  `2022d5344f02432ef6d01ea0821f2877c877a89778c0296e9de4613e94c413f3`
+     `evidence/rv64gc-alu-imm-v3/case.sexp`  `4e0e9240c017701b0629a69c260c06da6648c1085938652df43be7f4935db79e`
+     `evidence/rv64gc-alu-reg-v3/case.sexp`  `488c5565aed5211dd24444ed59831b3e148f01280e67e4e32deadad0b95cd311`
+     `evidence/rv64gc-atomic-misalign-v2/case.sexp`  `6a1e71af54a3d10aee44dc69ed78c17cfadd03e65e27344b49e645653bcb8249`
      `evidence/rv64gc-csr-set-v3/case.sexp`  `7a1fd28c6f114faaea46eab2b0b21ea841cf26ab7aadca502fd9643c42d36d3b`
-     `evidence/rv64gc-ecall-ebreak-v2/case.sexp`  `f004f6a35575c926a0ddea8f9695d712aee99b1313366ab14d16b3c160d4afe8`
-     `evidence/rv64gc-endian-v1/case.sexp`  `4010e2c7d842b4f81c56dc6de95c742dcc183400154a63dc0822163167b6a681`
-     `evidence/rv64gc-ext-closure-v1/case.sexp`  `0a90e659d4d2c5d1be134c156ad8bedd6e3350f61c011002873fede86d638cee`
-     `evidence/rv64gc-fault-priority-v1/case.sexp`  `d26852e1d8f4d7c9274002e4c11df9b6d548fc0357718a74fe7aa42c3b972760`
-     `evidence/rv64gc-fence-v1/case.sexp`  `006469c5270b62a1fc431cd43116754d8ffec9394a2e07b989c9c035426c0ae6`
-     `evidence/rv64gc-composition-v1/case.sexp`  `9946d00b1a89ae15b4c08b1531e1555bb18f9c211a49d274356a9fe11886aad2`
-     `evidence/rv64gc-ialign-16-v2/case.sexp`  `80745a518ea804f74f1d6589b5ef87e2a2f702ba82ac634f88ce4ae76ee1fa67`
-     `evidence/rv64gc-jalr-lsb-v2/case.sexp`  `eb24c6f7c9acd56c44693c0dcd5f41a26a583a2ac556da508c749a4469f1b1ab`
-     `evidence/rv64gc-load-ext-v2/case.sexp`  `cd0c272fbcfdede63ebca40021baf78f966f312c9efd21b7bf37b0914b84ee97`
-     `evidence/rv64gc-load-x0-v2/case.sexp`  `0ff8361b06d1da6b9275be6b128c7dc0dc7081c7234881760e3188ebb975c20f`
-     `evidence/rv64gc-lui-auipc-v2/case.sexp`  `d334c6738ec2e09112290058945dded89144ce36981c80af22b344ca53e04271`
-     `evidence/rv64gc-no-delay-slots-v2/case.sexp`  `3c50a122924b2e6c9a1c065ffc79f75cf169f2b8e2ce0373cb9aaac3535a8e04`
-     `evidence/rv64gc-no-h-v1/case.sexp`  `4b8e69606325f6f8af87e13627b0fe6b88062e0ef84835c759d48a2a7c7286c1`
-     `evidence/rv64gc-no-pmp-v1/case.sexp`  `6dd972de7e79651b37a14614dc313a3143102369ea2560c74b98fa24982f226b`
-     `evidence/rv64gc-priv-insns-v1/case.sexp`  `06400a25dc8c6f3380149f89b06811e2234c1e2c38b1cf3a48d1224619c4b0a4`
-     `evidence/rv64gc-priv-modes-v1/case.sexp`  `3470a80a364c0da7e20ad71ad45c804dcb7acabb863e367d3fb2f7ace62ffbdd`
-     `evidence/rv64gc-priv-revision-v1/case.sexp`  `06b09caa47a9ca51b1e448aaa7bf0038469588b1fe7bcb3bebe7bab697484d5e`
-     `evidence/rv64gc-reservation-v1/case.sexp`  `8acb4b60337f520db845153b3dd1c4e0f92f6bbad6c9116dc65be4a48cab7fcf`
-     `evidence/rv64gc-rvwmo-v1/case.sexp`  `9496e8db3b08a503ba97eb5f609572a1de34dfd2d789effa6e01721d5744461f`
-     `evidence/rv64gc-sc-deterministic-v1/case.sexp`  `38af19dcf07e53ac6f838f62c5b654e9635d4116bc4fc645b558e52199e8a9d4`
-     `evidence/rv64gc-shamt-v2/case.sexp`  `70a5522615fd915d0c3fa70fe7a0ba994d69448324c08703402d1849e7d769c2`
-     `evidence/rv64gc-sstc-v2/case.sexp`  `824b0469a99d4e21d2ded2614f97f9b394b26bd7e2ac3f8640e73f95bb05f2da`
-     `evidence/rv64gc-sv39-v1/case.sexp`  `d54a36b73e5cb960394226f358a74c02ba66fa8cf0ca9f24da7c6d7b163a5260`
-     `evidence/rv64gc-svade-v1/case.sexp`  `08c2f9f74182572e5b4305d2c78446c8585ba150cee3694eec438cac4a172114`
-     `evidence/rv64gc-walk-implicit-v1/case.sexp`  `bfc170da1e34c3e2ad3ca425e54e5d54017f0eed4f7397d7a774b06ca4129ced`
-     `evidence/rv64gc-wsuffix-v2/case.sexp`  `b3173ce5533cba9285d1f4be08117d636ef5cb28b8a685907c234e231f90a87f`
-     `evidence/rv64gc-xlen-forms-v4/case.sexp`  `e9703d49debc6429e56d5f99cbbd7491f8b13a9ca48a5031503bba7b28c529f7`
-     `evidence/rv64gc-zicntr-v3/case.sexp`  `e109f756175cfa6e2c47cd4ca5571a9a34ef58d908ce1c1d27738484cabae7e2`
-     `evidence/rv64gc-atomics-v1/case.sexp`  `6eb6381818da766616521b50b54515e57d364e899618c05aa1b4667165390f47`
-     `evidence/rv64gc-c-forms-v1/case.sexp`  `a29db3681c31aaac4dae0b903dce48bd3c4ae828d806540254b7a76ab6ba62c6`
-     `evidence/rv64gc-counters-v2/case.sexp`  `9ba862ba08f8a1bd5665a50f625b24f99225229a72a198fbbc91dfb6c5e1f31f`
-     `evidence/rv64gc-csr-access-v2/case.sexp`  `e080c6bf539a8f99bcc995d58af57e0db916ebfa37945ecfe45784fc554895b4`
-     `evidence/rv64gc-d-forms-v1/case.sexp`  `9593235dc5201524892220310da87168dcbb09c7acc7a7a9f7a1f4d7011da504`
-     `evidence/rv64gc-f-forms-v1/case.sexp`  `3c70559e6af2a77ea3dd99fc6612612d8a4fbca27b484635f139141cb8d2f6b4`
-     `evidence/rv64gc-fencei-v2/case.sexp`  `4c16107a99717b64d7ba8460f5c689ffc8fb0c5c8922fac36c9dbfae03241d62`
+     `evidence/rv64gc-csr-set-v4/case.sexp`  `54bd372f15e45ecb6ff4049600999244e83acc74233bfa0aa83e432e32c7279a`
+     `evidence/rv64gc-ecall-ebreak-v3/case.sexp`  `2bad0ad611bde55974caf643ec9443a1120b25551d00208c9ed2657ce21dc402`
+     `evidence/rv64gc-endian-v2/case.sexp`  `1ff8c8fef896409abf6dd8e32219b9282beb235a7bbf4cd056ad7c201944e05b`
+     `evidence/rv64gc-ext-closure-v2/case.sexp`  `768a16876fd8e6f028be4e6af7baf4cad692d9443461ca0b005dd9988489e6d6`
+     `evidence/rv64gc-fault-priority-v2/case.sexp`  `8b74e8e5766a62cf07e06c35680e4066583bd8ed217424585ddec06a99f1ed04`
+     `evidence/rv64gc-fence-v2/case.sexp`  `b65e92be5c6b1f9fccb296c0f6a99cadbda53c1fd8ad5ef425dc3286cc3831c6`
+     `evidence/rv64gc-composition-v2/case.sexp`  `e5f7d8505e2ec4c7812b4f047c62f57c0e673179d0c2879fe7d774d8fd4b4c9f`
+     `evidence/rv64gc-ialign-16-v3/case.sexp`  `844db0d870333eccddb0a84fcf332001e2bb33ec9e51f3c1620e0aeedf25fecd`
+     `evidence/rv64gc-jalr-lsb-v3/case.sexp`  `b6371b436d1b3a180d5ff86f4bd1e54fc94756cd2334c5554e1cecb285d46954`
+     `evidence/rv64gc-load-ext-v3/case.sexp`  `c029cf196a9fe5d7d4ac2dfbbfc89d10d50521804bfd0fcf7ededf8b0b4d5b87`
+     `evidence/rv64gc-load-x0-v3/case.sexp`  `6d08700f4609c53fe39fc5107ab058ea308268b6ffbbfc704ba12cf52ee258ee`
+     `evidence/rv64gc-lui-auipc-v3/case.sexp`  `d66c9fee3b82062ebf0eb21bdad5960361bf04ac14ebdda3719cb0a69b3d8d6b`
+     `evidence/rv64gc-no-delay-slots-v3/case.sexp`  `be5f776c2b4f25430da9a68c718e7355cbd0c63715f27670bfcbfe1a94417258`
+     `evidence/rv64gc-no-h-v2/case.sexp`  `94e4e39ed02b32387a6d5941afe74d2a7ab77799b9c4adf7b49aa1dd7976f4f3`
+     `evidence/rv64gc-no-pmp-v2/case.sexp`  `71560952b556b9b2de397d3d93897482ddeabb2c5179c4575bd7d7006f720450`
+     `evidence/rv64gc-priv-insns-v2/case.sexp`  `a4bb9f7d46047edfc2e44c43def56f4567fdf64f7f0d9e8ec6e910fcadb24271`
+     `evidence/rv64gc-priv-modes-v2/case.sexp`  `f90e5ae77cba60cb4be88c290994eb75f9ad0f37edb1dee0fd2763661dfe15b0`
+     `evidence/rv64gc-priv-revision-v2/case.sexp`  `c8d23f4473d155b7d6cec3d7f386c37a7ea27f84abe9ebfd55cae5d4ddf0192c`
+     `evidence/rv64gc-reservation-v2/case.sexp`  `67b7d8cd485c2758687ce899b0321be9ba034e9f5cae6ae7c63ea9ef3c8bce61`
+     `evidence/rv64gc-rvwmo-v2/case.sexp`  `8e7f7e765ef8ad73a13ef263efed68e39cc37a6931d7db0b9a7aef0ecb3c00ab`
+     `evidence/rv64gc-sc-deterministic-v2/case.sexp`  `fc773178102acec0dc4d7658cf22df34f01bbfc4e34457a92528eda13dd25248`
+     `evidence/rv64gc-shamt-v3/case.sexp`  `f99785db500b4759c5bf12c6d9c07ca0e41c7f2d60379c6cc699d5ff36906cea`
+     `evidence/rv64gc-sstc-v3/case.sexp`  `c7904990676ed52144ea112b971ba557367371ff7f9ced50ee73507faaa892f0`
+     `evidence/rv64gc-sv39-v2/case.sexp`  `63c14e60ff8cdec66ed389b7927bbd811dea989700628d190859ee826dccddd6`
+     `evidence/rv64gc-svade-v2/case.sexp`  `4d429fea6cb633c98078f3856fe2ed47bbc53b5346a052706a6a3430254cb6a8`
+     `evidence/rv64gc-walk-implicit-v2/case.sexp`  `2966b910cd387e64ac1eb842511c9217b7bea94c66b10de84f9bbc8aab968ceb`
+     `evidence/rv64gc-wsuffix-v3/case.sexp`  `8d870cf51d8fac0947e782b87d51a20918ccaa9ac4fe4d0a42597ad59fcd283c`
+     `evidence/rv64gc-xlen-forms-v5/case.sexp`  `194df0645d5db9aebed74ac9c49a14da545cbc7c3e26da5a07516c895c694090`
+     `evidence/rv64gc-zicntr-v4/case.sexp`  `b0c613610b511680473ce6661e9dd89c56c49e844bc748987d1cf3c7ba6a1fd3`
+     `evidence/rv64gc-atomics-v2/case.sexp`  `81c321806b9d34834a4cd62597772d3be49f8e428bf3ad3ff6f366f8e717961b`
+     `evidence/rv64gc-c-forms-v2/case.sexp`  `13f6c417a38767d1a2ce18f4c3725d0fc746e2075f2e9037c51d55c88f3c075a`
+     `evidence/rv64gc-counters-v3/case.sexp`  `839ec7ef52a396cf06a38c0cb58b648437e8facd01b1406764216389eeca28ad`
+     `evidence/rv64gc-csr-access-v3/case.sexp`  `0dae767dacda81d053e0f8f05db92592463d7824e49fe157b0f9f27f0d4fba90`
+     `evidence/rv64gc-d-forms-v2/case.sexp`  `c6948dde45325951ea750fe7304968a313dada4cb4e0178897bb4ee7ef78b737`
+     `evidence/rv64gc-f-forms-v2/case.sexp`  `f3b91f9cd88c0d6ec17548ced5319a08ff1c9428806217aed75972d3b6d3a0ea`
+     `evidence/rv64gc-fencei-v3/case.sexp`  `611e7ef43804c5d676bb2cde3db3ff1b09acb25072d9c8f3a0506f88ced3ee80`
      `evidence/rv64gc-m-forms-v3/case.sexp`  `c1ec1d6555e01108a3cad5139573b4074a83af75f99a501b4b4f27f97cbfb214`
      `evidence/rv64gc-m-forms-v7/case.sexp`  `e517eeb6f09d7a0b8e4750309458918ee6c2e2b41740e2d1e2bc029a527d5c3e`
+     `evidence/rv64gc-m-forms-v8/case.sexp`  `c47271bc492fdc48f0c727933bc00c6e5bbdcdf312cfbf33e65ec95fde3c26a4`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
-     `evidence/rv64gc-partial-progress-v1/case.sexp`  `5729203836f25b49a1de0992416fec093f8096acf24ba873e10655d696659efc`
-     `evidence/rv64gc-priv-forms-v1/case.sexp`  `ab8bcd2c48b6e6e8fba3d162385b1aa9cde14940d142e2a2e2218b71a12e9e75`
+     `evidence/rv64gc-partial-progress-v2/case.sexp`  `66c12c82cbdd9050519a02ea31cb286a8127301da921d2123fabd4a274050170`
+     `evidence/rv64gc-priv-forms-v2/case.sexp`  `0ea8d462836cf185e8857770a38e4ff734a1ab7a89233c066a6f59e432b41a2b`
      `profiles/rv64gc-lab-v0/credits.sexp`  `31418fa08df0652f2ddb79f82b12c27ae07de9390ce5dda00a942a31dcf87a83`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rv64gc-alu-imm-v2` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
-| `rv64gc-alu-reg-v2` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
-| `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-alu-imm-v3` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | declared |
+| `rv64gc-alu-reg-v3` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | declared |
+| `rv64gc-atomic-misalign-v2` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | declared |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
-| `rv64gc-ecall-ebreak-v2` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | captured, credited by nothing |
-| `rv64gc-endian-v1` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | captured, credited by nothing |
-| `rv64gc-ext-closure-v1` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | captured, credited by nothing |
-| `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-fence-v1` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | captured, credited by nothing |
-| `rv64gc-composition-v1` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | captured, credited by nothing |
-| `rv64gc-ialign-16-v2` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | captured, credited by nothing |
-| `rv64gc-jalr-lsb-v2` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | captured, credited by nothing |
-| `rv64gc-load-ext-v2` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | captured, credited by nothing |
-| `rv64gc-load-x0-v2` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | captured, credited by nothing |
-| `rv64gc-lui-auipc-v2` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | captured, credited by nothing |
-| `rv64gc-no-delay-slots-v2` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | captured, credited by nothing |
-| `rv64gc-no-h-v1` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-no-pmp-v1` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-priv-insns-v1` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | captured, credited by nothing |
-| `rv64gc-priv-modes-v1` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-priv-revision-v1` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | captured, credited by nothing |
-| `rv64gc-reservation-v1` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | captured, credited by nothing |
-| `rv64gc-rvwmo-v1` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | captured, credited by nothing |
-| `rv64gc-sc-deterministic-v1` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | captured, credited by nothing |
-| `rv64gc-shamt-v2` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | captured, credited by nothing |
-| `rv64gc-sstc-v2` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | captured, credited by nothing |
-| `rv64gc-sv39-v1` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-svade-v1` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-walk-implicit-v1` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | captured, credited by nothing |
-| `rv64gc-wsuffix-v2` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | captured, credited by nothing |
-| `rv64gc-xlen-forms-v4` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | captured, credited by nothing |
-| `rv64gc-zicntr-v3` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | captured, credited by nothing |
-| `rv64gc-atomics-v1` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | captured, credited by nothing |
-| `rv64gc-c-forms-v1` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | captured, credited by nothing |
-| `rv64gc-counters-v2` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | captured, credited by nothing |
-| `rv64gc-csr-access-v2` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | captured, credited by nothing |
-| `rv64gc-d-forms-v1` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | captured, credited by nothing |
-| `rv64gc-f-forms-v1` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | captured, credited by nothing |
-| `rv64gc-fencei-v2` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | captured, credited by nothing |
+| `rv64gc-csr-set-v4` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | declared |
+| `rv64gc-ecall-ebreak-v3` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | declared |
+| `rv64gc-endian-v2` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | declared |
+| `rv64gc-ext-closure-v2` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | declared |
+| `rv64gc-fault-priority-v2` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | declared |
+| `rv64gc-fence-v2` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | declared |
+| `rv64gc-composition-v2` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | declared |
+| `rv64gc-ialign-16-v3` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | declared |
+| `rv64gc-jalr-lsb-v3` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | declared |
+| `rv64gc-load-ext-v3` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | declared |
+| `rv64gc-load-x0-v3` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | declared |
+| `rv64gc-lui-auipc-v3` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | declared |
+| `rv64gc-no-delay-slots-v3` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | declared |
+| `rv64gc-no-h-v2` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | declared |
+| `rv64gc-no-pmp-v2` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | declared |
+| `rv64gc-priv-insns-v2` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | declared |
+| `rv64gc-priv-modes-v2` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | declared |
+| `rv64gc-priv-revision-v2` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | declared |
+| `rv64gc-reservation-v2` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | declared |
+| `rv64gc-rvwmo-v2` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | declared |
+| `rv64gc-sc-deterministic-v2` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | declared |
+| `rv64gc-shamt-v3` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | declared |
+| `rv64gc-sstc-v3` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | declared |
+| `rv64gc-sv39-v2` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | declared |
+| `rv64gc-svade-v2` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | declared |
+| `rv64gc-walk-implicit-v2` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | declared |
+| `rv64gc-wsuffix-v3` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | declared |
+| `rv64gc-xlen-forms-v5` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | declared |
+| `rv64gc-zicntr-v4` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | declared |
+| `rv64gc-atomics-v2` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | declared |
+| `rv64gc-c-forms-v2` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | declared |
+| `rv64gc-counters-v3` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | declared |
+| `rv64gc-csr-access-v3` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | declared |
+| `rv64gc-d-forms-v2` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | declared |
+| `rv64gc-f-forms-v2` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | declared |
+| `rv64gc-fencei-v3` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | declared |
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
 | `rv64gc-m-forms-v7` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
+| `rv64gc-m-forms-v8` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | declared |
 | `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | captured, credited by nothing |
-| `rv64gc-partial-progress-v1` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | captured, credited by nothing |
-| `rv64gc-priv-forms-v1` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | captured, credited by nothing |
+| `rv64gc-partial-progress-v2` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | declared |
+| `rv64gc-priv-forms-v2` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | declared |

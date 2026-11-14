@@ -1,5 +1,11 @@
 # References and comparison limits
 
+> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
+> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
+> predecessors ([cases retired from the tree](retired-cases.md)), f2 captures each once, and f3 re-issues the credits and
+> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
+> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
+
 The generated [reference table](materials.md#reference-candidates) identifies each
 candidate and its recorded matching scope. `references.sexp` is canonical;
 `reference/sail-rv64gc-lab-v0.override.sexp` declares the public configuration.
@@ -166,10 +172,10 @@ The effect above compares a case's own configuration with the profile override. 
 The vocabulary is closed (`schema/alternative.sexp`): extensions off and on, and the three misaligned checks, and how many PMP entries the hart implements (`pmp_count`, a51-4). A switch that changes nothing refuses. It selects no capture, so the case's own `reference-config.json`, the override and every other case stay exactly as they were; only `scripts/measure_config_effect.py` runs it. See what one does across the corpus before declaring a case on it:
 
 ```console
-$ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v1 --alternative
+$ python3 -B scripts/census_reference_config.py --case rv64gc-svade-v2 --alternative
 210 guests
- 180  case AGREE -> alternative AGREE
-  21  case DIVERGE -> alternative DIVERGE
+ 182  case AGREE -> alternative AGREE
+  19  case DIVERGE -> alternative DIVERGE
    6  case REFUSED -> alternative REFUSED
    2  case AGREE -> alternative DIVERGE
    1  case NOT-COMPARED -> alternative NOT-COMPARED
@@ -731,7 +737,7 @@ GPR values fail. The trace/expectation pair cannot supply its own source proof.
 The matched comparison is of GPRs, so it can't see a page-table read: the policy says "a successful final load alone cannot establish the absence of an extra access". But the pinned binary can print them (`--trace-ptw`, `--trace-mem`), and the engine records each as its own request kind, which `semulith run --trace-walks` prints:
 
 ```console
-$ target/debug/semulith run evidence/rv64gc-svade-v1/guest.elf --profile rv64gc-lab-v0 --steps 137 --trace-walks | grep -m1 '^ptw'
+$ target/debug/semulith run evidence/rv64gc-svade-v2/guest.elf --profile rv64gc-lab-v0 --steps 137 --trace-walks | grep -m1 '^ptw'
 ptw[0x0000000080003010] -> 0x00000000200000cf
 ```
 

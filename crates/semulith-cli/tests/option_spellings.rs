@@ -26,7 +26,7 @@ fn cli(args: &[&str]) -> Output {
 
 #[test]
 fn run_reads_both_spellings_the_same() {
-    let elf = root().join("evidence/rv64gc-svade-v1/guest.elf");
+    let elf = root().join("evidence/rv64gc-svade-v2/guest.elf");
     let elf = elf.to_str().unwrap();
     let spaced = cli(&["run", elf, "--profile", "rv64gc-lab-v0", "--steps", "3"]);
     let joined = cli(&["run", elf, "--profile=rv64gc-lab-v0", "--steps=3"]);
@@ -81,7 +81,7 @@ fn an_unknown_option_stays_its_commands_refusal() {
 
 #[test]
 fn trace_walks_prints_each_page_table_read_on_its_own_line() {
-    let elf = root().join("evidence/rv64gc-svade-v1/guest.elf");
+    let elf = root().join("evidence/rv64gc-svade-v2/guest.elf");
     let elf = elf.to_str().unwrap();
     let plain = cli(&["run", elf, "--profile", "rv64gc-lab-v0", "--steps", "137"]);
     let walks = cli(&[

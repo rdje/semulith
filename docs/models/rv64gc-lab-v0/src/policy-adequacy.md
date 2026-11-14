@@ -1,5 +1,11 @@
 # Policy legs measured
 
+> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
+> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
+> predecessors ([cases retired from the tree](retired-cases.md)), f2 captures each once, and f3 re-issues the credits and
+> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
+> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
+
 The evidence policy names, for a requirement's source-semantic category and risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review

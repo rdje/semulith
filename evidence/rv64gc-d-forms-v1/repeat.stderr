@@ -1,2 +1,0 @@
-using evidence/rv64gc-d-forms-v1/repeat.trace for trace output.
-Unable to locate tohost symbol; disabling HTIF.

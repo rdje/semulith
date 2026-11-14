@@ -43,6 +43,18 @@ Two throwaway clones of `438ca348`; the real tree was only read (`target/p4-syst
    - **f2:** each case captured exactly once through the tracked guard and compared with its predecessor, read from history. The 12 effects and the walk are measured again, and `STALE_SINCE_SLICE_D` retires with the cases it named. **Stop condition:** any trace, stdout, guest image or expectation that differs from its predecessor stops the window as a finding.
    - **f3:** the 42 credits re-issued from their last text, `a88b01a0`. Each keeps its limitations, takes the next id, and pins its new case's records and the policy. Their requirements read implemented, the `G-TRACE` rows name the new cases, and the three open items they close leave the manifest. The two defaults move to `rv64gc-m-forms-v8`, and `rv64gc-m-forms-v7` leaves, listed. The catalogue's header is rewritten to the population it now holds.
 
+## What f1 found (2026-11-14, `SEMULITH-P4-0414`)
+
+1. **A correction to finding 4: two predecessors wait, not one.** `scripts/probe_config_effect.py`'s stand-in reference replays
+   `rv64gc-csr-set-v3`'s `baseline.trace`, a captured file its successor holds only after f2. The brief's census looked for module
+   defaults naming a retiring case, and that read is a fixture's, not a default's. Re-taken over every probe as reads of a
+   captured slot from a real case, it finds that one besides the defaults' case. So f1 retires 40, `rv64gc-csr-set-v3` leaves
+   with `rv64gc-m-forms-v7` in f3, and the window peaks at 46 cases. No bound moves.
+2. **The unit book had drifted since slice a.** `method-adequacy.md`, `policy-adequacy.md`, `requirement-status.md` and
+   `references.md` showed version 0's outputs as current, and a census command printed different counts by then (182 and 19,
+   not 180 and 21). f1 marks each page as version 0's measurement and moves the three commands that run read-only to
+   successors. f3 measures the rest again under the successors.
+
 ## What this does not settle
 
 - The 47th credit (finding 6). The catalogue holds the 46. Before a further requirement is credited, its bound must be re-derived or the catalogue split, by the leaf that declares that requirement. The refusal is loud, so it cannot pass silently.

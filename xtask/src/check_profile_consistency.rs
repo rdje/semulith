@@ -8454,7 +8454,9 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
             ("no-effect", "2", "0"),
             ("profile-config", "3", "0"),
             ("binary-pin", "1", "0"),
-            ("declared-ignored", "5", "0"),
+            // 5 until P4-SYSTEM.20 f1: two were the real tree's retained effects with a declared alternative, which f1 retired
+            // with their cases; f2 measures their successors' effects, and the count moves with them.
+            ("declared-ignored", "3", "0"),
             ("declared-refusal", "0", "1"),
         ] {
             let mut mutated = argv.clone();

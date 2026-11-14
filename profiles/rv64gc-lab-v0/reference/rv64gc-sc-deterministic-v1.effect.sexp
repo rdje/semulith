@@ -1,3 +1,0 @@
-;; rv64gc-sc-deterministic-v1.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
-;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
-(config_effect (case_id "rv64gc-sc-deterministic-v1") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "5c613b81f9e07e632a896fcc13979947d0c1032998c1354432693121a7b9131f") (case_config_sha256 "e9d98b382f1533e1fb954ce009b306f54260c0063130108d3291c4ec1ffb65ee") (alternative_config_sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2") (instructions 159) (trace_sha256 "9be4b6b43a009dc89c80077c77779658fbbef46841342c65f958d92078c9bd82") (trace_bytes 13331))

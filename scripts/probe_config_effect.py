@@ -25,19 +25,13 @@ ROOT = Path(__file__).resolve().parent.parent
 CASE = "rv64gc-csr-set-v3"
 CASE_DIR = ROOT / "evidence" / CASE
 STEP, REGISTER, OBSERVED, EXPECTED = 34, "x20", [], 34
-# Every retained effect and the first difference it must show: case, step, register, observed, expected.
-RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v3", 6, "x5", [], 6), ("rv64gc-sstc-v2", 8, "x5", [], 8),
-            ("rv64gc-svade-v1", 93, "x22", [], 13), ("rv64gc-atomic-misalign-v1", 24, "x30", [("x30", 4)], 5),
-            ("rv64gc-fault-priority-v1", 159, "x22", [("x22", 13)], 4), ("rv64gc-priv-modes-v1", 5, "x5", [("x5", 9223372036855828781)], 9223372036856090925),
-            ("rv64gc-sv39-v1", 17, "x5", [("x5", 10376293541462147075)], 0), ("rv64gc-reservation-v1", 23, "x15", [("x15", 0)], 1),
-            ("rv64gc-sc-deterministic-v1", 21, "x15", [("x15", 0)], 1),
-            ("rv64gc-no-h-v1", 5, "x5", [("x5", 9223372036856091053)], 9223372036856090925), ("rv64gc-no-pmp-v1", 22, "x7", [], 66))
-# P4-SYSTEM.20 slice d moved the profile override (the misaligned AMO), so the ten effects measured against it, or against an
-# alternative over it, compare with a configuration that no longer exists. A retained effect is never re-measured under its
-# name, so in version 1's window this arm predicts them stale; slice f captures the cases again, and this set empties.
-STALE_SINCE_SLICE_D = frozenset({"rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-svade-v1",
-                                 "rv64gc-priv-modes-v1", "rv64gc-sv39-v1", "rv64gc-reservation-v1",
-                                 "rv64gc-sc-deterministic-v1", "rv64gc-no-h-v1", "rv64gc-no-pmp-v1"})
+# Every retained effect and the first difference it must show: case, step, register, observed, expected. Version 1's window
+# (P4-SYSTEM.20 slice f1) retired the other eleven with their cases; f2 measures each again under its successor's name.
+RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED),)
+# P4-SYSTEM.20 slice d moved the profile override (the misaligned AMO), so an effect measured against it, or against an
+# alternative over it, compares with a configuration that no longer exists. A retained effect is never re-measured under its
+# name, so this arm predicts it stale until its case leaves the tree, at slice f3.
+STALE_SINCE_SLICE_D = frozenset({CASE})
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),

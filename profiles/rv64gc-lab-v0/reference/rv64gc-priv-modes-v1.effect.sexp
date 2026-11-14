@@ -1,3 +1,0 @@
-;; rv64gc-priv-modes-v1.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
-;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
-(config_effect (case_id "rv64gc-priv-modes-v1") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "09b0687414532d8e1e5b87065e73bedf2f5f0d951bd54d019796552649155e62") (case_config_sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2") (alternative_config_sha256 "d7a61db8e905eaf964d9c8bf0b63defa947fa4787b301b7e044b04b82b6d05e6") (instructions 109) (trace_sha256 "7fb9123be3e36d04fbba596322fe49f975f68953f9719248fda441f07eba9a13") (trace_bytes 9448))

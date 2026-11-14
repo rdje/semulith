@@ -145,6 +145,11 @@ LAST_SWITCHES = {"rv64gc-no-h-v1": ("REQ-D-NO-H", "OB-NO-H", "low", "its declare
 # The four with no switch of the last 17, credited at a51-10: each row reads a declared disposition in place of an effect.
 NO_SWITCH = {"rv64gc-endian-v1": ("REQ-D-ENDIAN", "OB-ENDIAN", "medium", "DS-ENDIAN", "byte-0"), "rv64gc-fence-v1": ("REQ-D-FENCE", "OB-FENCE", "medium", "DS-FENCE", "fence-fm-reserved"), "rv64gc-walk-implicit-v1": ("REQ-D-WALK-IMPLICIT", "OB-WALK-IMPLICIT", "high", "DS-WALK-IMPLICIT", "walk-three"), "rv64gc-partial-progress-v1": ("REQ-GC-PARTIAL-PROGRESS", "OB-GC-PARTIAL-PROGRESS", "high", "DS-PARTIAL-PROGRESS", "load-rd-kept")}
 READ_AFTER = {"rv64gc-no-delay-slots-v2": ["beq", "bge", "bgeu", "blt", "bltu", "bne"], "rv64gc-load-ext-v2": ["sb", "sd", "sh", "sw"], "rv64gc-load-x0-v2": ["lb", "lbu", "ld", "lh", "lhu", "lw", "lwu"], "rv64gc-ecall-ebreak-v2": ["ebreak", "ecall"], "rv64gc-fencei-v2": ["fence.i"], "rv64gc-c-forms-v1": ["c.beqz", "c.bnez", "c.ebreak", "c.fld", "c.fldsp", "c.fsd", "c.fsdsp", "c.j", "c.jr", "c.nop", "c.sd", "c.sdsp", "c.sw", "c.swsp"], "rv64gc-f-forms-v1": ["fadd.s", "fcvt.s.l", "fcvt.s.lu", "fcvt.s.w", "fcvt.s.wu", "fdiv.s", "flw", "fmadd.s", "fmax.s", "fmin.s", "fmsub.s", "fmul.s", "fmv.w.x", "fnmadd.s", "fnmsub.s", "fsgnj.s", "fsgnjn.s", "fsgnjx.s", "fsqrt.s", "fsub.s", "fsw"], "rv64gc-d-forms-v1": ["fadd.d", "fcvt.d.l", "fcvt.d.lu", "fcvt.d.s", "fcvt.d.w", "fcvt.d.wu", "fcvt.s.d", "fdiv.d", "fld", "fmadd.d", "fmax.d", "fmin.d", "fmsub.d", "fmul.d", "fmv.d.x", "fnmadd.d", "fnmsub.d", "fsd", "fsgnj.d", "fsgnjn.d", "fsgnjx.d", "fsqrt.d", "fsub.d"], "rv64gc-priv-insns-v1": ["mret", "sfence.vma", "sret", "wfi"], "rv64gc-priv-forms-v1": ["mret", "sfence.vma", "sret", "wfi"]}
+# P4-SYSTEM.20 slice f1: version 1's window superseded the captures the real-tree arm judges in detail, by the groups
+# above. Until slice f3 gives their successors rows, the method review retains two: its default case and the
+# configuration-effect probe's fixture, each invalidated by the window's pinned moves. f3 moves the groups to the
+# successors and empties this.
+WINDOW_RETAINED = ("rv64gc-m-forms-v7", CSR_CASE_ID)
 OVERRIDE = "profiles/rv64gc-lab-v0/reference/sail-rv64gc-lab-v0.override.sexp"
 BINARY = "b" * 64
 METHOD = dict(disposition="satisfied", capture_binding="matched", record_disposition="valid",
@@ -835,7 +840,8 @@ class PolicyTests(unittest.TestCase):
         done = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "review_div_policy.py"), "--every-retained", "--json"],
                               capture_output=True, text=True, cwd=str(ROOT))
         tables = json.loads(done.stdout)
-        self.assertEqual([t["case_id"] for t in tables], [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID, *BATCH_I, *SWITCHES, *LAST_DEFINED, *LAST_SWITCHES, *NO_SWITCH])
+        predicted = list(WINDOW_RETAINED) or [self.M.CASE_ID, XLEN_CASE_ID, CSR_CASE_ID, ZICNTR_CASE_ID, SSTC_CASE_ID, *BATCH_I, *SWITCHES, *LAST_DEFINED, *LAST_SWITCHES, *NO_SWITCH]
+        self.assertEqual([t["case_id"] for t in tables], predicted)
         moved = {t["case_id"]: moved_inputs(ROOT, t["case_id"]) for t in tables}
         catalogue = ROOT / "profiles" / "rv64gc-lab-v0" / "credits.sexp"
         forms = self.M.S.parse(catalogue.read_text()) if catalogue.is_file() else []
@@ -866,6 +872,8 @@ class PolicyTests(unittest.TestCase):
                     self.assertIsNone(t["invalidated_by"])
                     self.assertEqual(self.M.summary(t), (0, "DIV-POLICY: satisfied — 11 of 11 legs satisfied; " + (
                         "credited by " + ", ".join(ids) if ids else "no qualification credit")))
+        if WINDOW_RETAINED:
+            return  # the groups' detail judges the successors, once slice f3 retains them
         table, xlen, csr, zicntr, sstc, *batch = tables
         no_switch = batch[-len(NO_SWITCH):]; batch = batch[:-len(NO_SWITCH)]
         for t in no_switch:

@@ -1,3 +1,0 @@
-;; rv64gc-sv39-v1.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
-;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
-(config_effect (case_id "rv64gc-sv39-v1") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "ee1ee892a452ed0dbaf0f4d80446c5876df7e1c7220c61a5e89966b107d8cbf2") (case_config_sha256 "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2") (alternative_config_sha256 "64957d5c309903d50b8b9b73b4f327d8f7361e0d49a5e38e9456a1a32b8964f9") (instructions 135) (trace_sha256 "63511c3c2af28882586cbbcaa48a4953ff25b860cab3c05e36727b2c5563d11c") (trace_bytes 11144))

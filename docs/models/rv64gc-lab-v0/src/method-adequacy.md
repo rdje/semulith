@@ -1,11 +1,17 @@
 # Checking the retained finite method
 
+> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
+> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
+> predecessors ([cases retired from the tree](retired-cases.md)), f2 captures each once, and f3 re-issues the credits and
+> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
+> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
+
 The retained matched cases have a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-It reads every case it holds a reviewed capture for, the 42 current credits on a case since
-a51-10 (2026-11-07): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
-is `rv64gc-xlen-forms-v4`. Earlier versions are history, reviewed by nothing, and most have
+It reads every case it holds a reviewed capture for. In version 0 that was the 42 credited
+cases, since a51-10 (2026-11-07): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
+was `rv64gc-xlen-forms-v4`; in version 1's window it holds two, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`. Earlier versions are history, reviewed by nothing, and most have
 [left the tree](retired-cases.md); v3 from a42ax and the first case,
 `rv64gc-signed-div-truncation-v2`, from a42ao, stay as the tools' fixture. For each the
 method result is `satisfied`, full policy is `pending` as the method sees it (the

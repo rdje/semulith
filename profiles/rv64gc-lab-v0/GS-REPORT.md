@@ -29,7 +29,7 @@ is not a claim with a denominator.
 | Axis | Owner | Open item |
 | --- | --- | --- |
 | `G-STATE` | `P4-SYSTEM.20` | The four state requirements read planned: their credits were retired with the 38 others when the version label left profile.sexp, which every case pins. Slice f re-captures the cases and re-issues the credits. |
-| `G-TRACE` | `P4-SYSTEM.20` | No matched case is credited while the window moves pinned inputs (slices a to e); slice f captures the 42 cases again and re-issues their credits. |
+| `G-TRACE` | `P4-SYSTEM.20` | No matched case is credited while the window moves pinned inputs (slices a to e). Slice f1 declared the 42 successors and retired 40 predecessors with their rows here; f2 captures each once, and f3 re-issues the credits and the rows, under the successors' ids. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.20` | 42 requirements read planned until slice f re-issues their credits; the four with nothing to run stand implemented, and two are not applicable. |
 | `G-REGRESSION` | `P4-SYSTEM.20` | Slice c narrowed the state table's medeleg to 0xb3ff, which regenerates the engine's state and definition mirrors, so the ACT4 and workload records cover another crates/semulith-core/src. Slice g runs both again on the version-1 engine. |
 | `G-PORTABILITY` | `P4-SYSTEM.20` | The portability record and the hosted run cover the engine slice c moved. Slice g measures all four legs again, and the native x86-64 leg needs a hosted run on the new engine: an exceptional push, which is the director's, or the 300-commit cadence. |
@@ -40,47 +40,7 @@ is not a claim with a denominator.
 | Axis | Kind | Evidence | Verified |
 | --- | --- | --- | --- |
 | `G-TRACE` | `experiment` | experiment `rv64gc-m-forms-v7` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-xlen-forms-v4` | **no** — no current credit names the case, and references.sexp holds no such record |
 | `G-TRACE` | `experiment` | experiment `rv64gc-csr-set-v3` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-zicntr-v3` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-sstc-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-alu-imm-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-alu-reg-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-lui-auipc-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-jalr-lsb-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-no-delay-slots-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-shamt-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-wsuffix-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-load-ext-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-load-x0-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-ecall-ebreak-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-csr-access-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-counters-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-fencei-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-ialign-16-v2` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-atomics-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-c-forms-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-f-forms-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-d-forms-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-svade-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-atomic-misalign-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-fault-priority-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-priv-modes-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-sv39-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-reservation-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-sc-deterministic-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-composition-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-ext-closure-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-priv-revision-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-rvwmo-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-priv-insns-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-priv-forms-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-no-h-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-no-pmp-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-endian-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-fence-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-walk-implicit-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-partial-progress-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
 | `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
@@ -107,7 +67,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 18fce520f12c3ff495a48af066fa20602ab2b32c8297e0485f32738ef1879e15`
+  `sha256 6b97dd7061a765e493c6af3cdb8a3e217bd982d0ca469c9a2b245e0323349e36`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision

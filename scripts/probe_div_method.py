@@ -389,53 +389,10 @@ class MethodTests(unittest.TestCase):
         through its own row: finite satisfied while every pin is current; stale, naming the first moved declaration
         and reading nothing beyond it, once a pinned input moved (the policy then measures `invalidated`). The
         expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
-        # The window that carries fetch faults re-issued the 19 and credited Batch II-b (a49-3).
+        # Version 1's window (P4-SYSTEM.20 slice f1) superseded the other 40 captures this table counted; slice f3 adds their
+        # successors, measured, when these two leave.
         authenticated = {"rv64gc-m-forms-v7": (88, 1021565, 40438),
-                         "rv64gc-xlen-forms-v4": (88, 1016551, 35646),
-                         "rv64gc-csr-set-v3": (88, 1146688, 141763),
-                         "rv64gc-zicntr-v3": (88, 1221674, 207186),
-                         "rv64gc-sstc-v2": (88, 1230728, 216358),
-                         "rv64gc-alu-imm-v2": (88, 1010423, 29555),
-                         "rv64gc-alu-reg-v2": (88, 1007087, 27194),
-                         "rv64gc-lui-auipc-v2": (88, 997758, 22161),
-                         "rv64gc-jalr-lsb-v2": (88, 1007901, 27996),
-                         "rv64gc-no-delay-slots-v2": (88, 1011486, 30489),
-                         "rv64gc-shamt-v2": (88, 1011115, 31315),
-                         "rv64gc-wsuffix-v2": (88, 1007400, 28414),
-                         "rv64gc-load-ext-v2": (88, 1015943, 36672),
-                         "rv64gc-load-x0-v2": (88, 1053269, 65957),
-                         "rv64gc-ecall-ebreak-v2": (88, 1085420, 94604),
-                         "rv64gc-csr-access-v2": (88, 1062507, 74103),
-                         "rv64gc-counters-v2": (88, 1053283, 70019),
-                         "rv64gc-fencei-v2": (88, 1000874, 26797),
-                         "rv64gc-ialign-16-v2": (88, 996193, 22252),
-                         "rv64gc-atomics-v1": (88, 1201739, 187645),
-                         "rv64gc-c-forms-v1": (88, 1200228, 188474),
-                         "rv64gc-f-forms-v1": (88, 1278318, 249364),
-                         "rv64gc-d-forms-v1": (88, 1287269, 256669),
-                         # The seven with a switch (a50-4).
-                         "rv64gc-svade-v1": (88, 1102112, 111495),
-                         "rv64gc-atomic-misalign-v1": (88, 1144087, 145177),
-                         "rv64gc-fault-priority-v1": (88, 1213858, 207432),
-                         "rv64gc-priv-modes-v1": (88, 1077570, 90076),
-                         "rv64gc-sv39-v1": (88, 1101982, 111043),
-                         "rv64gc-reservation-v1": (88, 1143985, 145178),
-                         "rv64gc-sc-deterministic-v1": (88, 1121605, 125866),
-                         # The six `defined` of the last 17 (a51-3).
-                         "rv64gc-composition-v1": (88, 1021266, 42118),
-                         "rv64gc-ext-closure-v1": (88, 1038591, 57750),
-                         "rv64gc-priv-revision-v1": (88, 1016245, 38998),
-                         "rv64gc-rvwmo-v1": (88, 1013885, 37035),
-                         "rv64gc-priv-insns-v1": (88, 1010844, 33559),
-                         "rv64gc-priv-forms-v1": (88, 1265459, 252334),
-                         # The two with a switch of the last 17 (a51-6).
-                         "rv64gc-no-h-v1": (88, 1004307, 28573),
-                         "rv64gc-no-pmp-v1": (88, 1017786, 41165),
-                         # The four with no switch of the last 17 (a51-10).
-                         "rv64gc-endian-v1": (88, 1023266, 44359),
-                         "rv64gc-fence-v1": (88, 1023274, 44042),
-                         "rv64gc-walk-implicit-v1": (88, 1065847, 80585),
-                         "rv64gc-partial-progress-v1": (88, 1124683, 131597)}
+                         "rv64gc-csr-set-v3": (88, 1146688, 141763)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

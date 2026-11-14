@@ -1,5 +1,11 @@
 # Requirement status derived
 
+> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
+> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
+> predecessors ([cases retired from the tree](retired-cases.md)), f2 captures each once, and f3 re-issues the credits and
+> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
+> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
+
 The catalogue's `implementation_status` is not carried; it is derived from the
 evidence graph and drift-checked, as the policy's "Status and supersession"
 section requires. `scripts/requirement_status.py` is the one derivation; the
