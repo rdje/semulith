@@ -65,3 +65,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** director 2026-11-14: 'push granted' - the hosted matrix for version 1 (P4-SYSTEM.20 slice g): the native x86-64 leg on the version-1 engine, which slices c and e moved; 32 commits since the last push
 - **Range:** origin/main..1c6424fd029bfe1de4fac96e8b904cc3bbc05fbc — 32 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 1c6424fd029bfe1de4fac96e8b904cc3bbc05fbc before this record was written
+
+## SEMULITH-PUSH-0008 — 2026-11-15T00:56:30+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-11-14: 'Granted "Your call, later: turning hosted CI green needs one more push after XTASK.19 lands. I'll ask then."' - turn hosted CI green (XTASK.19): Rust pinned to 1.95.0 under TOOLCHAIN-PIN, and what 1.100.0 broke fixed (hosted runs 43633628211 rust, 43633628199 portability); 6 commits since the last push
+- **Range:** origin/main..0f20515f02cfbda2b226e26f0d366c7ef9c24a83 — 6 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 0f20515f02cfbda2b226e26f0d366c7ef9c24a83 before this record was written
