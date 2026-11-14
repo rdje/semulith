@@ -41,7 +41,7 @@ MUTATION_TESTS = {
 }
 UNIT = "rv64gc-lab-v0"
 CASE = "rv64gc-m-forms-v3"  # the mirror's case: the frozen credit CR-GC-M-1 names it
-LIVE_CASE = "rv64gc-m-forms-v7"  # the M case the live catalogue credits (CR-GC-M-5, P4-SYSTEM.14 a49-3)
+LIVE_CASE = "rv64gc-m-forms-v8"  # the M case the live catalogue credits (CR-GC-M-6, P4-SYSTEM.20 f3)
 FROZEN_CREDITS = HERE / "fixtures" / "dossier-qualification" / "credits.sexp"
 
 
@@ -132,10 +132,9 @@ class DossierQualificationTests(unittest.TestCase):
         return self.cr.dossier_qualification(root or self.root, (root or self.root) / "profiles" / UNIT, form)
 
     def test_the_real_tree_predicts_the_live_catalogue(self):
-        """Version 1's window (P4-SYSTEM.20 slice a) retired the 42 case-backed credits by removal, so on the real tree no live
-        case's measured record qualifies, and neither do their predecessors': no live record names any of them. Slice f
-        re-issues the credits, and this prediction flips back. Slice f1 retired 40 of those cases; their successors hold no
-        measured record until f2 captures them, so the two predecessors still in the tree are what this reads. Version 0's catalogue, which credited them, stands at 194437d6. The dossier holds no copy of any of them, by the ruling
+        """The live catalogue credits the 42 of version 1's window (P4-SYSTEM.20 f3), each case declared and captured again under a
+        new id (f1, f2): their measured records qualify on the real tree, and the two the tools name, which no live record names, do
+        not. Their predecessors left the tree. The dossier holds no copy of any of them, by the ruling
         (decision_dossier-copies-retire-at-the-next-window.md): G-TRACE reads each from evidence/."""
         def measured(case):
             return [f for f in S.read_file(ROOT / "evidence" / case / "measured-experiment.sexp")
@@ -143,8 +142,8 @@ class DossierQualificationTests(unittest.TestCase):
         references = next(f for f in S.read_file(ROOT / "profiles" / UNIT / "references.sexp")
                           if isinstance(f, list) and f and str(f[0]) == "references")
         self.assertEqual([e for e in S.children(references, "experiment") if S.children(e, "verification")], [])
-        for case in (LIVE_CASE, "rv64gc-csr-set-v3"):
-            self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case], case)
+        for case in (LIVE_CASE, "rv64gc-xlen-forms-v5", "rv64gc-csr-set-v4", "rv64gc-zicntr-v4", "rv64gc-sstc-v3", "rv64gc-alu-imm-v3", "rv64gc-alu-reg-v3", "rv64gc-lui-auipc-v3", "rv64gc-jalr-lsb-v3", "rv64gc-no-delay-slots-v3", "rv64gc-shamt-v3", "rv64gc-wsuffix-v3", "rv64gc-load-ext-v3", "rv64gc-load-x0-v3", "rv64gc-ecall-ebreak-v3", "rv64gc-csr-access-v3", "rv64gc-counters-v3", "rv64gc-fencei-v3", "rv64gc-ialign-16-v3", "rv64gc-atomics-v2", "rv64gc-c-forms-v2", "rv64gc-f-forms-v2", "rv64gc-d-forms-v2", "rv64gc-svade-v2", "rv64gc-atomic-misalign-v2", "rv64gc-fault-priority-v2", "rv64gc-priv-modes-v2", "rv64gc-sv39-v2", "rv64gc-reservation-v2", "rv64gc-sc-deterministic-v2", "rv64gc-composition-v2", "rv64gc-ext-closure-v2", "rv64gc-priv-revision-v2", "rv64gc-rvwmo-v2", "rv64gc-priv-insns-v2", "rv64gc-priv-forms-v2", "rv64gc-no-h-v2", "rv64gc-no-pmp-v2", "rv64gc-endian-v2", "rv64gc-fence-v2", "rv64gc-walk-implicit-v2", "rv64gc-partial-progress-v2"):
+            self.assertEqual(self.qualification(measured(case), ROOT), [], case)
         for case in ("rv64gc-signed-div-truncation-v2", CASE):
             self.assertEqual(self.qualification(measured(case), ROOT), ["no credit record names the case " + case])
 

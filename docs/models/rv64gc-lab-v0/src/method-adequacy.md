@@ -1,17 +1,11 @@
 # Checking the retained finite method
 
-> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
-> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
-> predecessors ([cases retired from the tree](retired-cases.md)), f2 captured each once, and f3 re-issues the credits and
-> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
-> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
-
 The retained matched cases have a read-only method consumer. It composes the
 existing declaration, source review and authenticated evaluation owners, then
 checks the supplied findings against the independently selected finite method.
-It reads every case it holds a reviewed capture for. In version 0 that was the 42 credited
-cases, since a51-10 (2026-11-07): the M case's `rv64gc-m-forms-v7` is the default, and the XLEN case's
-was `rv64gc-xlen-forms-v4`; in version 1's window it holds two, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`. Earlier versions are history, reviewed by nothing, and most have
+It reads every case it holds a reviewed capture for, the 42 current credits on a case: version 1's window captured
+each again under a new id (`P4-SYSTEM.20` f1 to f3, 2026-11-14). The M case's `rv64gc-m-forms-v8` is the default, and the XLEN case's
+is `rv64gc-xlen-forms-v5`. Earlier versions are history, reviewed by nothing, and most have
 [left the tree](retired-cases.md); v3 from a42ax and the first case,
 `rv64gc-signed-div-truncation-v2`, from a42ao, stay as the tools' fixture. For each the
 method result is `satisfied`, full policy is `pending` as the method sees it (the
@@ -34,8 +28,8 @@ The consumer selects each case's measured record by its reviewed identity:
 
 | Case | Measured record | Declared in | Captured in |
 | --- | --- | --- | --- |
-| `rv64gc-m-forms-v7` | 16,943 B, `7527a85c…` | `3b24bd52` (a49-1) | `57544407` (a49-2) |
-| `rv64gc-xlen-forms-v4` | 14,980 B, `0b87cbce…` | `3b24bd52` (a49-1) | `57544407` (a49-2) |
+| `rv64gc-m-forms-v8` | 16,943 B, `beb996a1…` | `8a50b9c5` (`.20` f1) | `5c3d6737` (`.20` f2) |
+| `rv64gc-xlen-forms-v5` | 14,980 B, `440c4d69…` | `8a50b9c5` (`.20` f1) | `5c3d6737` (`.20` f2) |
 
 v3's row was 16,942 B `fb22d5e5…`, declared in `4af5a68b` and retained in `e775705e`. Those labels
 are historical review facts, not a runtime Git check or independent execution attestation. The review
@@ -129,7 +123,7 @@ Run from the repository root:
 ```bash
 PYTHONPATH=scripts python3 -B - <<'PY_METHOD'
 from review_div_method import review_method
-for case in ("rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4"):
+for case in ("rv64gc-m-forms-v8", "rv64gc-xlen-forms-v5"):
     r = review_method(case_id=case)
     print(r.disposition, r.policy_disposition, r.replay_disposition, "|",
           r.record_disposition, r.capture_binding, r.evaluation_disposition, "|",
@@ -138,17 +132,19 @@ for case in ("rv64gc-m-forms-v7", "rv64gc-xlen-forms-v4"):
 PY_METHOD
 ```
 
-The output is `satisfied pending not-checked | valid matched pending | 88 1021565 40438 |
-1088325 134217728 39` for v7, the same with `88 1016551 35646 | 1079426` for the XLEN case, and
-`88 1146688 141763 | 1234271` for `rv64gc-csr-set-v3` and `88 1221674 207186 | 1302893` for `rv64gc-zicntr-v3`, whose 157 and 292 steps make the larger snapshots.
+The output is `satisfied pending not-checked | valid matched pending | 88 1028858 40438 |
+1095618 134217728 39` for v8, the same with `88 1023844 35646 | 1086719` for the XLEN case, and
+`88 1153981 141763 | 1241564` for `rv64gc-csr-set-v4` and `88 1228967 207186 | 1310186` for `rv64gc-zicntr-v4`, whose 157 and 292 steps make the larger snapshots.
+Each authenticates 7,293 B more than its version-0 predecessor, or 7,233 B where the configuration did not move: the five pinned
+inputs version 1's window changed, and slice d's key in the prepared configuration.
 
 ```bash
 python3 -B scripts/review_div_method.py
-python3 -B scripts/review_div_method.py --max-read-bytes 1088325
-python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v4 --max-read-bytes 1079426
+python3 -B scripts/review_div_method.py --max-read-bytes 1095618
+python3 -B scripts/review_div_method.py --case rv64gc-xlen-forms-v5 --max-read-bytes 1086719
 ```
 
-All emit derived JSON within 64 KiB and exit zero. One byte less (1,088,324; 1,079,425)
+All emit derived JSON within 64 KiB and exit zero. One byte less (1,095,617; 1,086,718)
 cannot satisfy the method (`refused files: artifact exceeds snapshot byte limit`,
 exit 1). Exit 2 means unavailable or unsupported; exit 1 means
 another unsatisfied disposition. These commands neither write historical

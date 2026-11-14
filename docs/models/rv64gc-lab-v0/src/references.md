@@ -1,11 +1,5 @@
 # References and comparison limits
 
-> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
-> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
-> predecessors ([cases retired from the tree](retired-cases.md)), f2 captured each once, and f3 re-issues the credits and
-> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
-> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
-
 The generated [reference table](materials.md#reference-candidates) identifies each
 candidate and its recorded matching scope. `references.sexp` is canonical;
 `reference/sail-rv64gc-lab-v0.override.sexp` declares the public configuration.
@@ -37,7 +31,7 @@ overlay beside the profile override, `reference/<case-id>.overlay.sexp`. The
 CSR-SET case's, with its `reason` shortened here:
 
 ```lisp
-(overlay (case_id "rv64gc-csr-set-v3")
+(overlay (case_id "rv64gc-csr-set-v4")
   (reason "The profile selects Zicntr, so ...")
   (extension "Zicntr")                       ; the profile selects it
   (clint (base 0x2000000) (size 0xC000))     ; Sail's only source of time, in its own device region
@@ -52,14 +46,14 @@ new knob is a schema change a reviewer sees. The tool refuses an overlay that wo
 change nothing: an extension already on, a CLINT or tick rate the override already
 declares. It also refuses one that overlaps a region or names another case. Since a51-1 an
 overlay can also turn off the override's `wfi_is_nop`, so the reference's own `wfi` waits, which is how
-`rv64gc-priv-forms-v1` compares `wfi` refused under `TW`. To see
+`rv64gc-priv-forms-v2` compares `wfi` refused under `TW`. To see
 what an overlay does before declaring a case on it:
 
 ```console
-$ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v3
+$ python3 -B scripts/census_reference_config.py --case rv64gc-csr-set-v4
 210 guests
- 181  profile AGREE -> case AGREE
-  13  profile DIVERGE -> case DIVERGE
+ 183  profile AGREE -> case AGREE
+  11  profile DIVERGE -> case DIVERGE
    ...
 ```
 
@@ -83,17 +77,17 @@ The overlay also gives the policy's `implementation-defined` row its observed ef
 The same guest under the profile override traps at its first counter read:
 `DIVERGE step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}`. A
 configuration without an observed effect would be insufficient; this one has one.
-That run is retained beside the overlay, measured exactly once per case (a43b-3f on the first, a49-2 on this one, byte-identical):
+That run is retained beside the overlay, measured exactly once per case (a43b-3f on the first, then a49-2 and `P4-SYSTEM.20` f2 on its re-captures, each byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v3
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-csr-set-v4
 step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}
 
-(config_effect (case_id "rv64gc-csr-set-v3")
+(config_effect (case_id "rv64gc-csr-set-v4")
   (binary_sha256 "16de42a8…")             ; the binary of the case's capture
   (guest_sha256 "a07daaef…")              ; the case's guest image
-  (case_config_sha256 "05746ed6…")        ; the case's configuration
-  (alternative_config_sha256 "666d9373…") ; the profile override, as every case without an overlay renders it
+  (case_config_sha256 "d0896b9a…")        ; the case's configuration
+  (alternative_config_sha256 "795320f7…") ; the profile override, as every case without an overlay renders it
   (instructions 157)
   (trace_sha256 "2a828052…") (trace_bytes 14236))
 ```
@@ -119,18 +113,18 @@ observed effect there. `schema/config-effect.sexp` holds the shape, and
 | U, both gates | `scounteren` clear, IR alone, then `mcounteren.IR` clear | `rdinstret x20` refused though `scounteren.IR` is set |
 | One count, two names | `mcycle`/`cycle`, `minstret`/`instret`, at adjacent boundaries | the difference reads 1 |
 
-All three producers agree on it: the spec-side author, the lab engine, and the reference under `rv64gc-zicntr-v3`'s overlay, whose rendered configuration is byte-identical to CSR-SET's (`05746ed6…`); under the profile override the reference first differs at `rdcycle x5`. The case predeclares 44 witnesses, each value written from the chapters and held to the derivation, with one control: S's refused `rdcycle` at boundary 102 leaves `x20` at its sentinel, copied to `x21` at boundary 109, and the control's expectation holds the count it would have committed, 102 instead of 21. Two things stay out, both named in the limitations:
+All three producers agree on it: the spec-side author, the lab engine, and the reference under `rv64gc-zicntr-v4`'s overlay, whose rendered configuration is byte-identical to CSR-SET's (`d0896b9a…`); under the profile override the reference first differs at `rdcycle x5`. The case predeclares 44 witnesses, each value written from the chapters and held to the derivation, with one control: S's refused `rdcycle` at boundary 102 leaves `x20` at its sentinel, copied to `x21` at boundary 109, and the control's expectation holds the count it would have committed, 102 instead of 21. Two things stay out, both named in the limitations:
 a write through `mcycle` or `minstret`, which the spec-side deriver refuses, and Zihpm's absence, which its 33-CSR vocabulary cannot state. The laboratory's `time` is a view of
 `mcycle` (`state.sexp`), and the reference's comes from its CLINT, so a write would separate them; that is one more reason the deriver's refusal stands until someone models it.
 
-Its observed effect is retained the same way, measured exactly once per case (a43c-4 on the first, a49-2 on this one, byte-identical):
+Its observed effect is retained the same way, measured exactly once per case (a43c-4 on the first, then a49-2 and `P4-SYSTEM.20` f2 on its re-captures, each byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-zicntr-v3
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-zicntr-v4
 step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}
 ```
 
-The record names the case's guest (`41f2cbc2…`), the case's configuration (`05746ed6…`) and the same alternative as CSR-SET's (`666d9373…`, the profile override), and the raw trace (27,617 B, `896814f3…`). The two traces are the same up to line 13, step 6, where the case's reads `x5 <- 0x0000000000000006` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr at all, so the first counter read in the program traps.
+The record names the case's guest (`41f2cbc2…`), the case's configuration (`d0896b9a…`) and the same alternative as CSR-SET's (`795320f7…`, the profile override), and the raw trace (27,617 B, `896814f3…`). The two traces are the same up to line 13, step 6, where the case's reads `x5 <- 0x0000000000000006` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr at all, so the first counter read in the program traps.
 
 `REQ-D-SSTC` is the last on this route, and its design changes what `sstc.s` could say (a43d-1, before a case could carry its own configuration): delivery was named out, because the override had no timer source. Its program, `guests/sstc-timer.s` (a43d-3), 192 instructions and 315 steps, reads:
 
@@ -150,21 +144,21 @@ so the scheduled row's boundary is what both producers do on this configuration,
 
 **Its case needs a window, open since a43e-1.** A delivered interrupt is a boundary with no instruction word, and the case format could not say so. Since `P4-SYSTEM.14` a43e-1 (2026-11-05) it can: `word` and `length` are optional in a `step`, and a boundary may fetch nothing exactly when its record declares an interrupt delivered there, and it then writes nothing. Those tools are pinned by all four credited cases, so the binding retired every credit until each is re-captured (`decision_sstc-delivery-needs-the-pinned-window.md`). A throwaway clone proved the route first (a43e-0): SSTC reaches `DIV-POLICY: satisfied — 10 of 10 legs satisfied`. Its case is declared since a43e-3, on contract v3: 39 witnesses, the control `compare-read-as-signed` at x11 of boundary 172, 67 manifest children and no report or book generator among them. Captured since a43e-4 ([the captures](canonical-division.md#the-windows-five-a43e-4)), `CR-D-SSTC-1` credits it since a43e-5.
 
-Its observed effect is retained the same way as CSR-SET's and ZICNTR's, measured exactly once per case (a43e-4 on the first, a49-2 on this one, byte-identical):
+Its observed effect is retained the same way as CSR-SET's and ZICNTR's, measured exactly once per case (a43e-4 on the first, then a49-2 and `P4-SYSTEM.20` f2 on its re-captures, each byte-identical):
 
 ```text
-$ python3 -B scripts/measure_config_effect.py --case rv64gc-sstc-v2
+$ python3 -B scripts/measure_config_effect.py --case rv64gc-sstc-v3
 step 8 (rdtime x5): Sail {}, expectations {'x5': 8}
 ```
 
-The record names the case's guest (`e4b9a6c8…`), the case's configuration (`05746ed6…`) and the same alternative as the other two (`666d9373…`, the profile override), and the raw trace (25,773 B, `2b673858…`). The two traces are the same up to line 16, step 8, where the case's reads `x5 <- 0x0000000000000008` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr, so the program's first read of `time` traps before any Sstc behaviour is reached. `rv64gc-csr-set-v2` and `rv64gc-zicntr-v2` re-measured theirs on the same terms (step 34, step 6), and each raw trace is byte-identical to its predecessor's (14,236 B, 27,617 B).
+The record names the case's guest (`e4b9a6c8…`), the case's configuration (`d0896b9a…`) and the same alternative as the other two (`795320f7…`, the profile override), and the raw trace (25,773 B, `2b673858…`). The two traces are the same up to line 16, step 8, where the case's reads `x5 <- 0x0000000000000008` and this one `trapping from M to M to handle illegal-instruction`: under the override the reference has no Zicntr, so the program's first read of `time` traps before any Sstc behaviour is reached. `rv64gc-csr-set-v2` and `rv64gc-zicntr-v2` re-measured theirs on the same terms (step 34, step 6), and each raw trace is byte-identical to its predecessor's (14,236 B, 27,617 B).
 
 ## When the override is the selection
 
 The effect above compares a case's own configuration with the profile override. For seven requirements the override already is the selection: `SVADE` says the hart faults instead of updating A and D, and the override says so too, so there is nothing to compare it with. So a case may declare the choice the profile did not make, `reference/<case-id>.alternative.sexp` (`P4-SYSTEM.14` a50-1, `decision_declared-alternative-configuration.md`):
 
 ```lisp
-(alternative (case_id "rv64gc-svade-v1")
+(alternative (case_id "rv64gc-svade-v2")
   (reason "The specification's other A/D scheme: the hart updates the bits itself.")
   (extension_off "Svade"))
 ```

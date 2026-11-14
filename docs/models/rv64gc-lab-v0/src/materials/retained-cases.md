@@ -6,7 +6,6 @@
      `evidence/rv64gc-alu-imm-v3/case.sexp`  `4e0e9240c017701b0629a69c260c06da6648c1085938652df43be7f4935db79e`
      `evidence/rv64gc-alu-reg-v3/case.sexp`  `488c5565aed5211dd24444ed59831b3e148f01280e67e4e32deadad0b95cd311`
      `evidence/rv64gc-atomic-misalign-v2/case.sexp`  `6a1e71af54a3d10aee44dc69ed78c17cfadd03e65e27344b49e645653bcb8249`
-     `evidence/rv64gc-csr-set-v3/case.sexp`  `7a1fd28c6f114faaea46eab2b0b21ea841cf26ab7aadca502fd9643c42d36d3b`
      `evidence/rv64gc-csr-set-v4/case.sexp`  `54bd372f15e45ecb6ff4049600999244e83acc74233bfa0aa83e432e32c7279a`
      `evidence/rv64gc-ecall-ebreak-v3/case.sexp`  `2bad0ad611bde55974caf643ec9443a1120b25551d00208c9ed2657ce21dc402`
      `evidence/rv64gc-endian-v2/case.sexp`  `1ff8c8fef896409abf6dd8e32219b9282beb235a7bbf4cd056ad7c201944e05b`
@@ -44,59 +43,56 @@
      `evidence/rv64gc-f-forms-v2/case.sexp`  `f3b91f9cd88c0d6ec17548ced5319a08ff1c9428806217aed75972d3b6d3a0ea`
      `evidence/rv64gc-fencei-v3/case.sexp`  `611e7ef43804c5d676bb2cde3db3ff1b09acb25072d9c8f3a0506f88ced3ee80`
      `evidence/rv64gc-m-forms-v3/case.sexp`  `c1ec1d6555e01108a3cad5139573b4074a83af75f99a501b4b4f27f97cbfb214`
-     `evidence/rv64gc-m-forms-v7/case.sexp`  `e517eeb6f09d7a0b8e4750309458918ee6c2e2b41740e2d1e2bc029a527d5c3e`
      `evidence/rv64gc-m-forms-v8/case.sexp`  `c47271bc492fdc48f0c727933bc00c6e5bbdcdf312cfbf33e65ec95fde3c26a4`
      `evidence/rv64gc-signed-div-truncation-v2/case.sexp`  `66771e68a7a57ea3f87b1cb593e3aa450e09e2c72c58f1cdf779e92ba2ed3d1f`
      `evidence/rv64gc-partial-progress-v2/case.sexp`  `66c12c82cbdd9050519a02ea31cb286a8127301da921d2123fabd4a274050170`
      `evidence/rv64gc-priv-forms-v2/case.sexp`  `0ea8d462836cf185e8857770a38e4ff734a1ab7a89233c066a6f59e432b41a2b`
-     `profiles/rv64gc-lab-v0/credits.sexp`  `31418fa08df0652f2ddb79f82b12c27ae07de9390ce5dda00a942a31dcf87a83`
+     `profiles/rv64gc-lab-v0/credits.sexp`  `456392712d1b799c69bb2da906addfe4e956b724b031974a934799100ba7ed0f`
      Generator: `scripts/gen_model_book.py` (sha256 `100cb1b47e94428bce6af762e34fa1546e4b3f16690a4195d80d774929f852ed`) -->
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rv64gc-alu-imm-v3` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
-| `rv64gc-alu-reg-v3` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
-| `rv64gc-atomic-misalign-v2` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
-| `rv64gc-csr-set-v4` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
-| `rv64gc-ecall-ebreak-v3` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | captured, credited by nothing |
-| `rv64gc-endian-v2` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | captured, credited by nothing |
-| `rv64gc-ext-closure-v2` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | captured, credited by nothing |
-| `rv64gc-fault-priority-v2` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-fence-v2` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | captured, credited by nothing |
-| `rv64gc-composition-v2` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | captured, credited by nothing |
-| `rv64gc-ialign-16-v3` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | captured, credited by nothing |
-| `rv64gc-jalr-lsb-v3` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | captured, credited by nothing |
-| `rv64gc-load-ext-v3` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | captured, credited by nothing |
-| `rv64gc-load-x0-v3` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | captured, credited by nothing |
-| `rv64gc-lui-auipc-v3` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | captured, credited by nothing |
-| `rv64gc-no-delay-slots-v3` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | captured, credited by nothing |
-| `rv64gc-no-h-v2` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-no-pmp-v2` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-priv-insns-v2` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | captured, credited by nothing |
-| `rv64gc-priv-modes-v2` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-priv-revision-v2` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | captured, credited by nothing |
-| `rv64gc-reservation-v2` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | captured, credited by nothing |
-| `rv64gc-rvwmo-v2` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | captured, credited by nothing |
-| `rv64gc-sc-deterministic-v2` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | captured, credited by nothing |
-| `rv64gc-shamt-v3` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | captured, credited by nothing |
-| `rv64gc-sstc-v3` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | captured, credited by nothing |
-| `rv64gc-sv39-v2` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-svade-v2` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | captured, credited by nothing |
-| `rv64gc-walk-implicit-v2` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | captured, credited by nothing |
-| `rv64gc-wsuffix-v3` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | captured, credited by nothing |
-| `rv64gc-xlen-forms-v5` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | captured, credited by nothing |
-| `rv64gc-zicntr-v4` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | captured, credited by nothing |
-| `rv64gc-atomics-v2` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | captured, credited by nothing |
-| `rv64gc-c-forms-v2` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | captured, credited by nothing |
-| `rv64gc-counters-v3` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | captured, credited by nothing |
-| `rv64gc-csr-access-v3` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | captured, credited by nothing |
-| `rv64gc-d-forms-v2` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | captured, credited by nothing |
-| `rv64gc-f-forms-v2` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | captured, credited by nothing |
-| `rv64gc-fencei-v3` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | captured, credited by nothing |
-| `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
-| `rv64gc-m-forms-v7` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
-| `rv64gc-m-forms-v8` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
-| `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | captured, credited by nothing |
-| `rv64gc-partial-progress-v2` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | captured, credited by nothing |
-| `rv64gc-priv-forms-v2` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | captured, credited by nothing |
+| `rv64gc-alu-imm-v3` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | credited, `CR-D-ALU-IMM-3` |
+| `rv64gc-alu-reg-v3` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | credited, `CR-D-ALU-REG-3` |
+| `rv64gc-atomic-misalign-v2` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | credited, `CR-D-ATOMIC-MISALIGN-2` |
+| `rv64gc-csr-set-v4` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | credited, `CR-D-CSR-SET-4` |
+| `rv64gc-ecall-ebreak-v3` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | credited, `CR-D-ECALL-EBREAK-3` |
+| `rv64gc-endian-v2` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | credited, `CR-D-ENDIAN-2` |
+| `rv64gc-ext-closure-v2` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | credited, `CR-D-EXT-CLOSURE-2` |
+| `rv64gc-fault-priority-v2` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | credited, `CR-D-FAULT-PRIORITY-2` |
+| `rv64gc-fence-v2` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | credited, `CR-D-FENCE-2` |
+| `rv64gc-composition-v2` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | credited, `CR-D-GC-COMPOSITION-2` |
+| `rv64gc-ialign-16-v3` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | credited, `CR-D-IALIGN-16-3` |
+| `rv64gc-jalr-lsb-v3` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | credited, `CR-D-JALR-LSB-3` |
+| `rv64gc-load-ext-v3` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | credited, `CR-D-LOAD-EXT-3` |
+| `rv64gc-load-x0-v3` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | credited, `CR-D-LOAD-X0-3` |
+| `rv64gc-lui-auipc-v3` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | credited, `CR-D-LUI-AUIPC-3` |
+| `rv64gc-no-delay-slots-v3` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | credited, `CR-D-NO-DELAY-SLOTS-3` |
+| `rv64gc-no-h-v2` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | credited, `CR-D-NO-H-2` |
+| `rv64gc-no-pmp-v2` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | credited, `CR-D-NO-PMP-2` |
+| `rv64gc-priv-insns-v2` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | credited, `CR-D-PRIV-INSNS-2` |
+| `rv64gc-priv-modes-v2` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | credited, `CR-D-PRIV-MODES-2` |
+| `rv64gc-priv-revision-v2` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | credited, `CR-D-PRIV-REVISION-2` |
+| `rv64gc-reservation-v2` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | credited, `CR-D-RESERVATION-2` |
+| `rv64gc-rvwmo-v2` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | credited, `CR-D-RVWMO-2` |
+| `rv64gc-sc-deterministic-v2` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | credited, `CR-D-SC-DETERMINISTIC-2` |
+| `rv64gc-shamt-v3` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | credited, `CR-D-SHAMT-3` |
+| `rv64gc-sstc-v3` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | credited, `CR-D-SSTC-3` |
+| `rv64gc-sv39-v2` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | credited, `CR-D-SV39-2` |
+| `rv64gc-svade-v2` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | credited, `CR-D-SVADE-2` |
+| `rv64gc-walk-implicit-v2` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | credited, `CR-D-WALK-IMPLICIT-2` |
+| `rv64gc-wsuffix-v3` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | credited, `CR-D-WSUFFIX-3` |
+| `rv64gc-xlen-forms-v5` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | credited, `CR-D-XLEN-5` |
+| `rv64gc-zicntr-v4` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | credited, `CR-D-ZICNTR-4` |
+| `rv64gc-atomics-v2` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | credited, `CR-GC-ATOMICS-2` |
+| `rv64gc-c-forms-v2` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | credited, `CR-GC-C-2` |
+| `rv64gc-counters-v3` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | credited, `CR-GC-COUNTERS-3` |
+| `rv64gc-csr-access-v3` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | credited, `CR-GC-CSR-ACCESS-3` |
+| `rv64gc-d-forms-v2` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | credited, `CR-GC-D-2` |
+| `rv64gc-f-forms-v2` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | credited, `CR-GC-F-2` |
+| `rv64gc-fencei-v3` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | credited, `CR-GC-FENCEI-3` |
+| `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | history: `rv64gc-m-forms-v8` holds the credit |
+| `rv64gc-m-forms-v8` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | credited, `CR-GC-M-6` |
+| `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | history: `rv64gc-m-forms-v8` holds the credit |
+| `rv64gc-partial-progress-v2` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | credited, `CR-GC-PARTIAL-PROGRESS-2` |
+| `rv64gc-priv-forms-v2` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | credited, `CR-GC-PRIV-INSNS-2` |

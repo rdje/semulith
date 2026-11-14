@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0416 (leaf P4-SYSTEM.20 slice f3) — the 42 credits re-issued, and the last two predecessors leave
+
+Version 1's 42 case-backed credits are back, each against its case captured again under a new id, so every requirement but the two not applicable reads implemented and the live report leaves only the recorded runs and version 1's own decision open. The last two predecessors left the tree, listed. The book's examples were run again on the new cases, and two counts it had stated wrong since version 0 now read what the tools print.
+
 ## SEMULITH-P4-0415 (leaf P4-SYSTEM.20 slice f2) — the 42 captured exactly once each, and no behaviour moved
 
 Each of the 42 re-declared cases was captured once through the capture guard: every trace, output, guest and expectation is byte-identical to its predecessor's, and so are the twelve configuration effects and the page-table comparison measured again under the new names. Nothing is credited yet; the next unit re-issues the credits. The task file's closed records for slices a to d moved to an archive part.

@@ -2,7 +2,7 @@
 
 - **Type:** `decision`
 - **Date:** `2026-11-14`
-- **Status:** `active`
+- **Status:** `closed` 2026-11-14 at f3, `SEMULITH-P4-0416`: carried out by f1 (`0414`), f2 (`0415`) and f3
 - **Owner / source:** `P4-SYSTEM.20` slice f's brief, `SEMULITH-P4-0413`; the open item "how the 46 credits are re-issued in bulk; slice f measures the act per batch" of [`decision_the-next-window-is-version-1.md`](decision_the-next-window-is-version-1.md). The engineer's call under [`decision_findings-are-the-engineers-to-call.md`](decision_findings-are-the-engineers-to-call.md).
 answers: How does slice f capture the 42 cases again and re-issue their credits, in what order, under which ids and contract, and what does the order cost?
 
@@ -55,9 +55,21 @@ Two throwaway clones of `438ca348`; the real tree was only read (`target/p4-syst
    not 180 and 21). f1 marks each page as version 0's measurement and moves the three commands that run read-only to
    successors. f3 measures the rest again under the successors.
 
+## What f3 found (2026-11-14, `SEMULITH-P4-0416`)
+
+1. **The order held.** The 42 credits re-issued from their last text are all current, every requirement but the two not
+   applicable reads implemented, and the report reads 3 of 10 open: `G-REGRESSION`, `G-PORTABILITY` and `G-RELEASE`. The
+   window peaked at 46 cases, and no family bound moved.
+2. **Every byte the method review reads more is accounted for.** Each successor authenticates the same 88 files and the same
+   snapshot as its predecessor, and 7,233 B more: the five pinned inputs slices a to d moved (`profile.sexp` +179,
+   `state.sexp` +955, the expectations author +5,411, `dossier_sexp.py` +453, `riscv_asm.py` +235). In 40 cases it reads
+   60 B more again, slice d's key in the prepared configuration.
+3. **The book had two counts wrong since version 0.** The policy review prints 42 lines and the report 42 `G-TRACE`
+   rows, one per case-backed credit, where the pages said 46. Both now say 42, measured.
+
 ## What this does not settle
 
-- The 47th credit (finding 6). The catalogue holds the 46. Before a further requirement is credited, its bound must be re-derived or the catalogue split, by the leaf that declares that requirement. The refusal is loud, so it cannot pass silently.
+- The 47th credit (finding 6). The catalogue holds the 46 in 64,011 of 65,536 B. Before a further requirement is credited, its bound must be re-derived or the catalogue split, by the leaf that declares that requirement. The refusal is loud, so it cannot pass silently.
 - The hosted run of slice g. A push stays the director's.
 
 ## How to apply

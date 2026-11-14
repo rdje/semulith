@@ -389,10 +389,55 @@ class MethodTests(unittest.TestCase):
         through its own row: finite satisfied while every pin is current; stale, naming the first moved declaration
         and reading nothing beyond it, once a pinned input moved (the policy then measures `invalidated`). The
         expectation comes from each manifest, not the tree. Retained history without a row reads nothing."""
-        # Version 1's window (P4-SYSTEM.20 slice f1) superseded the other 40 captures this table counted; slice f3 adds their
-        # successors, measured, when these two leave.
-        authenticated = {"rv64gc-m-forms-v7": (88, 1021565, 40438),
-                         "rv64gc-csr-set-v3": (88, 1146688, 141763)}
+        # Version 1's window re-captured all 42 under new ids (P4-SYSTEM.20 f1, f2) and re-issued their credits (f3). Each count
+        # is its predecessor's but for the authenticated bytes: +7,233 B, the five pinned inputs slices a to d moved, and +60 B in 40
+        # cases, slice d's key in the prepared configuration. The groups below are their predecessors'.
+        authenticated = {"rv64gc-m-forms-v8": (88, 1028858, 40438),
+                         "rv64gc-xlen-forms-v5": (88, 1023844, 35646),
+                         "rv64gc-csr-set-v4": (88, 1153981, 141763),
+                         "rv64gc-zicntr-v4": (88, 1228967, 207186),
+                         "rv64gc-sstc-v3": (88, 1238021, 216358),
+                         "rv64gc-alu-imm-v3": (88, 1017716, 29555),
+                         "rv64gc-alu-reg-v3": (88, 1014380, 27194),
+                         "rv64gc-lui-auipc-v3": (88, 1005051, 22161),
+                         "rv64gc-jalr-lsb-v3": (88, 1015194, 27996),
+                         "rv64gc-no-delay-slots-v3": (88, 1018779, 30489),
+                         "rv64gc-shamt-v3": (88, 1018408, 31315),
+                         "rv64gc-wsuffix-v3": (88, 1014693, 28414),
+                         "rv64gc-load-ext-v3": (88, 1023236, 36672),
+                         "rv64gc-load-x0-v3": (88, 1060562, 65957),
+                         "rv64gc-ecall-ebreak-v3": (88, 1092713, 94604),
+                         "rv64gc-csr-access-v3": (88, 1069800, 74103),
+                         "rv64gc-counters-v3": (88, 1060576, 70019),
+                         "rv64gc-fencei-v3": (88, 1008167, 26797),
+                         "rv64gc-ialign-16-v3": (88, 1003486, 22252),
+                         "rv64gc-atomics-v2": (88, 1209032, 187645),
+                         "rv64gc-c-forms-v2": (88, 1207521, 188474),
+                         "rv64gc-f-forms-v2": (88, 1285611, 249364),
+                         "rv64gc-d-forms-v2": (88, 1294562, 256669),
+                         # The seven with a switch (a50-4).
+                         "rv64gc-svade-v2": (88, 1109405, 111495),
+                         "rv64gc-atomic-misalign-v2": (88, 1151320, 145177),
+                         "rv64gc-fault-priority-v2": (88, 1221091, 207432),
+                         "rv64gc-priv-modes-v2": (88, 1084863, 90076),
+                         "rv64gc-sv39-v2": (88, 1109275, 111043),
+                         "rv64gc-reservation-v2": (88, 1151278, 145178),
+                         "rv64gc-sc-deterministic-v2": (88, 1128898, 125866),
+                         # The six `defined` of the last 17 (a51-3).
+                         "rv64gc-composition-v2": (88, 1028559, 42118),
+                         "rv64gc-ext-closure-v2": (88, 1045884, 57750),
+                         "rv64gc-priv-revision-v2": (88, 1023538, 38998),
+                         "rv64gc-rvwmo-v2": (88, 1021178, 37035),
+                         "rv64gc-priv-insns-v2": (88, 1018137, 33559),
+                         "rv64gc-priv-forms-v2": (88, 1272752, 252334),
+                         # The two with a switch of the last 17 (a51-6).
+                         "rv64gc-no-h-v2": (88, 1011600, 28573),
+                         "rv64gc-no-pmp-v2": (88, 1025079, 41165),
+                         # The four with no switch of the last 17 (a51-10).
+                         "rv64gc-endian-v2": (88, 1030559, 44359),
+                         "rv64gc-fence-v2": (88, 1030567, 44042),
+                         "rv64gc-walk-implicit-v2": (88, 1073140, 80585),
+                         "rv64gc-partial-progress-v2": (88, 1131976, 131597)}
         self.assertEqual(list(M.RETAINED_CAPTURES), list(authenticated))
         for case_id, counts in authenticated.items():
             with self.subTest(case=case_id):

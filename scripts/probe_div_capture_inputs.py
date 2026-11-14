@@ -51,11 +51,9 @@ LAST_DEFINED = ("rv64gc-composition-v2", "rv64gc-ext-closure-v2", "rv64gc-priv-r
 LAST_SWITCHES = ("rv64gc-no-h-v2", "rv64gc-no-pmp-v2")
 # The four with no switch of the last 17 (P4-SYSTEM.14 a51-8).
 NO_SWITCH = ("rv64gc-endian-v2", "rv64gc-fence-v2", "rv64gc-walk-implicit-v2", "rv64gc-partial-progress-v2")
-# Version 1's window (P4-SYSTEM.20 slice f1): the groups name the 42 successors, declared; these two predecessors stay until
-# theirs are captured, since a tool reads what they captured (the review tools' default; the effect probe's replayed trace).
-KEPT = ("rv64gc-m-forms-v7", "rv64gc-csr-set-v3")
-CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED, *SWITCHES, *LAST_DEFINED, *LAST_SWITCHES, *NO_SWITCH, *KEPT)  # the superseded directories left at P4-SYSTEM.14 a49-4 and P4-SYSTEM.20 f1
-OWN_CONFIGURATION = (CSR_SET, ZICNTR, SSTC, "rv64gc-counters-v3", "rv64gc-atomic-misalign-v2", "rv64gc-fault-priority-v2", "rv64gc-reservation-v2", "rv64gc-sc-deterministic-v2", "rv64gc-composition-v2", "rv64gc-priv-insns-v2", "rv64gc-priv-forms-v2", "rv64gc-csr-set-v3")
+# Version 1's window (P4-SYSTEM.20 f1 to f3): the groups name the 42 successors; their predecessors left the tree.
+CASES = (P.CASE_ID, P.M_FORMS_CASE_ID, *BATCH_II_B, *RENEWED, *SWITCHES, *LAST_DEFINED, *LAST_SWITCHES, *NO_SWITCH)  # the superseded directories left at P4-SYSTEM.14 a49-4 and P4-SYSTEM.20 f1 and f3
+OWN_CONFIGURATION = (CSR_SET, ZICNTR, SSTC, "rv64gc-counters-v3", "rv64gc-atomic-misalign-v2", "rv64gc-fault-priority-v2", "rv64gc-reservation-v2", "rv64gc-sc-deterministic-v2", "rv64gc-composition-v2", "rv64gc-priv-insns-v2", "rv64gc-priv-forms-v2")
 # The pins this probe states on its own; a test holds them equal to the capture command's table.
 PREPARED = {
     P.CASE_ID: {
@@ -79,16 +77,6 @@ PREPARED = {
                                   "ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0"),
     },
 }
-PREPARED["rv64gc-m-forms-v7"] = {
-    "guest.elf": ("guest-image", 4440,
-        "208865142e1569636925a5cea6abff6fc4495f317d5d8e79a06e48d3b0f061b1"),
-    "reference-config.json": ("reference-config", 7609,
-        "666d937305f503aa2754784186945f033ade43601f9c9d0073a9ffeefeb43ed2"),
-    "baseline.expected.sexp": ("expectation", 7937,
-        "561b5da3cf87ea4825fca4e1a001a9c7d26321e491d86515c571f47b0019f44f"),
-    "control.expected.sexp": ("expectation", 7440,
-        "ba99e4eca2e784d8389859e35cf04590c180162807311361eef70add589f4ba0"),
-}
 PREPARED["rv64gc-m-forms-v8"] = {
     "guest.elf": ("guest-image", 4440,
         "208865142e1569636925a5cea6abff6fc4495f317d5d8e79a06e48d3b0f061b1"),
@@ -108,16 +96,6 @@ PREPARED["rv64gc-xlen-forms-v5"] = {
         "5322f07f9df97863452a72f4dfb88bba17c3853c781fca6735235aa5947d5ffd"),
     "control.expected.sexp": ("expectation", 6100,
         "010b17f6a1b7bca1633c65d44a5b3c8f1ad8a9fb7d36cd1caa5e778507603510"),
-}
-PREPARED["rv64gc-csr-set-v3"] = {
-    "guest.elf": ("guest-image", 4856,
-        "a07daaefb204f47559c60adf8f2942515b6c56e8fdb757aad786c26042d1c7d4"),
-    "reference-config.json": ("reference-config", 8748,
-        "05746ed66c5f2805afe16c09b072edd373c284b73566a2252b4404f86fd59cea"),
-    "baseline.expected.sexp": ("expectation", 34930,
-        "92b53fad0ae9903d2a3a8f41941d5c46ab32083183b556bb34d24ef3553cb212"),
-    "control.expected.sexp": ("expectation", 33688,
-        "a8fb15bdc41fc8cb4d7e0bf4d5650df00a6bedf41d5286e6ab116571e6a01825"),
 }
 PREPARED["rv64gc-csr-set-v4"] = {
     "guest.elf": ("guest-image", 4856,
@@ -519,12 +497,12 @@ PREPARED["rv64gc-partial-progress-v2"] = {
     "control.expected.sexp": ("expectation", 30022,
         "1ee8f98ec2c7bd5a774030b3ee02dfed9b3af7fb429e53cf6f55661f367e4167"),
 }
-TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, "rv64gc-m-forms-v7": 27426, "rv64gc-m-forms-v8": 27486, "rv64gc-xlen-forms-v5": 24725, "rv64gc-csr-set-v3": 82222, "rv64gc-csr-set-v4": 82282, "rv64gc-zicntr-v4": 112484, "rv64gc-sstc-v3": 119190, "rv64gc-alu-imm-v3": 21610, "rv64gc-alu-reg-v3": 20184, "rv64gc-lui-auipc-v3": 17629, "rv64gc-jalr-lsb-v3": 20367, "rv64gc-no-delay-slots-v3": 21389, "rv64gc-shamt-v3": 22599, "rv64gc-wsuffix-v3": 21095, "rv64gc-load-ext-v3": 25214, "rv64gc-load-x0-v3": 41461, "rv64gc-ecall-ebreak-v3": 56030, "rv64gc-csr-access-v3": 44385, "rv64gc-counters-v3": 42786, "rv64gc-fencei-v3": 20045, "rv64gc-ialign-16-v3": 17440, "rv64gc-atomics-v2": 103059, "rv64gc-c-forms-v2": 104476, "rv64gc-f-forms-v2": 135006, "rv64gc-d-forms-v2": 138884,
+TOTALS = {P.CASE_ID: 23315, P.M_FORMS_CASE_ID: 27426, "rv64gc-m-forms-v8": 27486, "rv64gc-xlen-forms-v5": 24725, "rv64gc-csr-set-v4": 82282, "rv64gc-zicntr-v4": 112484, "rv64gc-sstc-v3": 119190, "rv64gc-alu-imm-v3": 21610, "rv64gc-alu-reg-v3": 20184, "rv64gc-lui-auipc-v3": 17629, "rv64gc-jalr-lsb-v3": 20367, "rv64gc-no-delay-slots-v3": 21389, "rv64gc-shamt-v3": 22599, "rv64gc-wsuffix-v3": 21095, "rv64gc-load-ext-v3": 25214, "rv64gc-load-x0-v3": 41461, "rv64gc-ecall-ebreak-v3": 56030, "rv64gc-csr-access-v3": 44385, "rv64gc-counters-v3": 42786, "rv64gc-fencei-v3": 20045, "rv64gc-ialign-16-v3": 17440, "rv64gc-atomics-v2": 103059, "rv64gc-c-forms-v2": 104476, "rv64gc-f-forms-v2": 135006, "rv64gc-d-forms-v2": 138884,
           "rv64gc-svade-v2": 63836, "rv64gc-atomic-misalign-v2": 80918, "rv64gc-fault-priority-v2": 113311, "rv64gc-priv-modes-v2": 52351, "rv64gc-sv39-v2": 63745, "rv64gc-reservation-v2": 80197, "rv64gc-sc-deterministic-v2": 70740,
           "rv64gc-composition-v2": 28683, "rv64gc-ext-closure-v2": 35733, "rv64gc-priv-revision-v2": 25654, "rv64gc-rvwmo-v2": 25020, "rv64gc-priv-insns-v2": 22829, "rv64gc-priv-forms-v2": 134505,
           "rv64gc-no-h-v2": 20577, "rv64gc-no-pmp-v2": 27118,
           "rv64gc-endian-v2": 28957, "rv64gc-fence-v2": 29019, "rv64gc-walk-implicit-v2": 47437, "rv64gc-partial-progress-v2": 73930}
-BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), "rv64gc-m-forms-v7": (33, 66), "rv64gc-m-forms-v8": (33, 66), "rv64gc-xlen-forms-v5": (25, 50), "rv64gc-csr-set-v3": (157, 314), "rv64gc-csr-set-v4": (157, 314), "rv64gc-zicntr-v4": (292, 584), "rv64gc-sstc-v3": (315, 622), "rv64gc-alu-imm-v3": (19, 38), "rv64gc-alu-reg-v3": (18, 36), "rv64gc-lui-auipc-v3": (10, 20), "rv64gc-jalr-lsb-v3": (16, 32), "rv64gc-no-delay-slots-v3": (21, 42), "rv64gc-shamt-v3": (21, 42), "rv64gc-wsuffix-v3": (17, 34), "rv64gc-load-ext-v3": (32, 64), "rv64gc-load-x0-v3": (68, 136), "rv64gc-ecall-ebreak-v3": (116, 232), "rv64gc-csr-access-v3": (81, 162), "rv64gc-counters-v3": (84, 168), "rv64gc-fencei-v3": (18, 36), "rv64gc-ialign-16-v3": (11, 20), "rv64gc-atomics-v2": (246, 492), "rv64gc-c-forms-v2": (251, 424), "rv64gc-f-forms-v2": (338, 676), "rv64gc-d-forms-v2": (350, 700),
+BUDGETS = {P.CASE_ID: (27, 54), P.M_FORMS_CASE_ID: (33, 66), "rv64gc-m-forms-v8": (33, 66), "rv64gc-xlen-forms-v5": (25, 50), "rv64gc-csr-set-v4": (157, 314), "rv64gc-zicntr-v4": (292, 584), "rv64gc-sstc-v3": (315, 622), "rv64gc-alu-imm-v3": (19, 38), "rv64gc-alu-reg-v3": (18, 36), "rv64gc-lui-auipc-v3": (10, 20), "rv64gc-jalr-lsb-v3": (16, 32), "rv64gc-no-delay-slots-v3": (21, 42), "rv64gc-shamt-v3": (21, 42), "rv64gc-wsuffix-v3": (17, 34), "rv64gc-load-ext-v3": (32, 64), "rv64gc-load-x0-v3": (68, 136), "rv64gc-ecall-ebreak-v3": (116, 232), "rv64gc-csr-access-v3": (81, 162), "rv64gc-counters-v3": (84, 168), "rv64gc-fencei-v3": (18, 36), "rv64gc-ialign-16-v3": (11, 20), "rv64gc-atomics-v2": (246, 492), "rv64gc-c-forms-v2": (251, 424), "rv64gc-f-forms-v2": (338, 676), "rv64gc-d-forms-v2": (350, 700),
            "rv64gc-svade-v2": (137, 271), "rv64gc-atomic-misalign-v2": (180, 359), "rv64gc-fault-priority-v2": (271, 535), "rv64gc-priv-modes-v2": (109, 217), "rv64gc-sv39-v2": (135, 269), "rv64gc-reservation-v2": (190, 379), "rv64gc-sc-deterministic-v2": (159, 317),
            "rv64gc-composition-v2": (41, 80), "rv64gc-ext-closure-v2": (64, 123), "rv64gc-priv-revision-v2": (36, 71), "rv64gc-rvwmo-v2": (33, 65), "rv64gc-priv-insns-v2": (30, 59), "rv64gc-priv-forms-v2": (345, 689),
            "rv64gc-no-h-v2": (21, 41), "rv64gc-no-pmp-v2": (40, 79),
@@ -631,8 +609,9 @@ def check_retention_layout(root):
     return tuple(path.relative_to(directory).as_posix() for path in members), total
 
 
-# The cases whose retained configuration predates slice d: the two the tools name, and the two kept until f3.
-PREPARED_BEFORE_SLICE_D = frozenset({P.CASE_ID, P.M_FORMS_CASE_ID, *KEPT})
+# The cases whose retained configuration predates slice d: the two the tools name, which stay until a window moves
+# scripts/matched_gpr_property.py.
+PREPARED_BEFORE_SLICE_D = frozenset({P.CASE_ID, P.M_FORMS_CASE_ID})
 
 
 def before_slice_d(config: dict) -> dict:
@@ -876,7 +855,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 46 * 22)  # the 42 successors captured at P4-SYSTEM.20 f2, the two the tools name, and the two kept until f3
+        self.assertEqual(len(members), 1 + 44 * 22)  # the 42 successors captured at P4-SYSTEM.20 f2 and the two the tools name
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_every_retired_case_reads_back_from_history(self):
@@ -888,7 +867,7 @@ class FamilyTests(unittest.TestCase):
             self.skipTest("no full history to read back from")
         page = (ROOT / "docs/models/rv64gc-lab-v0/src/retired-cases.md").read_text()
         cases = re.findall(r"^\| `(rv64gc-[a-z0-9-]+)` \| `REQ-[A-Z0-9-]+` \| `(rv64gc-[a-z0-9-]+)` \| ([0-9,]+) \| `([0-9a-f]{8})` \| `([0-9a-f]{40})` \| `([0-9a-f]{64})` \|$", page, re.M)
-        self.assertEqual(len(cases), 65)
+        self.assertEqual(len(cases), 67)
         for case, holder, size, commit, tree, measured in cases:
             with self.subTest(case=case):
                 self.assertFalse((ROOT / "evidence" / case).exists())
@@ -898,7 +877,7 @@ class FamilyTests(unittest.TestCase):
                 self.assertEqual((len(listing), sum(int(line.split()[3]) for line in listing)), (22, int(size.replace(",", ""))))
                 self.assertEqual(hashlib.sha256(git("show", f"{commit}:evidence/{case}/measured-experiment.sexp")).hexdigest(), measured)
         files = re.findall(r"^\| `(profiles/[^`]+)` \| ([0-9,]+) \| `([0-9a-f]{8})` \| `([0-9a-f]{64})` \|$", page, re.M)
-        self.assertEqual(len(files), 56)
+        self.assertEqual(len(files), 59)
         for path, size, commit, digest in files:
             with self.subTest(path=path):
                 self.assertFalse((ROOT / path).exists())

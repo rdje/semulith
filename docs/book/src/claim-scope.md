@@ -16,10 +16,10 @@ and the gate reads `incomplete` again.
 
 **The live tree is version 1's window, and it says so.** `P4-SYSTEM.20` moved the version label
 out of `profile.sexp`, which every matched case pins, into `identity.sexp`, which none does, and
-retired the 42 case credits that move lapsed. The window's slices c and e then moved the engine,
-so the regression and portability records no longer cover it. The live report therefore reads
-`incomplete`, with `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY` and
-`G-RELEASE` open and each owned by that leaf, and it says of the decision above: "the decision is
+retired the 42 case credits that move lapsed; slice f captured every case again under a new id,
+each trace byte-identical, and re-issued all 42 (2026-11-14). The window's slices c and e moved the
+engine, so the regression and portability records no longer cover it. The live report therefore
+reads `incomplete`, with `G-REGRESSION`, `G-PORTABILITY` and `G-RELEASE` open and each owned by that leaf, and it says of the decision above: "the decision is
 of `rv64gc-lab-v0` version `0`, not `rv64gc-lab-v0` version `1`". To check version 0's claim, check
 out `194437d6` and read its `GS-REPORT.md`. Version 1 is accepted only by its own decision, after
 its cases are captured and credited again and those records are measured again.

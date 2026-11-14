@@ -78,7 +78,7 @@ import sexp as S  # noqa: E402
 import statement_trace as ST  # noqa: E402
 
 FORMAT = "div-policy-review-v1"
-CASE_ID = "rv64gc-m-forms-v7"  # the default retained case (a42ax: v3; a44-5: v4; a43b-2e: v5; a43e-5: v6; a49-3: v7); a consumer constant no case pins
+CASE_ID = "rv64gc-m-forms-v8"  # the default retained case (a42ax: v3; a44-5: v4; a43b-2e: v5; a43e-5: v6; a49-3: v7; P4-SYSTEM.20 f2: v8); a consumer constant no case pins
 DOCUMENT_BYTES = 65536
 # An expectation step whose source cites a chapter table row (M's Table 1) or carries a `(boundary: …)` tag (the XLEN
 # guest's ten, a43a-2d) is a directed boundary fixture. The tag occurs in no M expectation, so M's rows do not move.

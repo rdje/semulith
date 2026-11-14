@@ -1,6 +1,6 @@
 # Cases retired from the tree
 
-A superseded case credits nothing. The credit moved to its re-capture, no tool reads the old directory, and each one cost a pass of every doctrine that walks `evidence/`. So when the window that carries fetch faults closed, `P4-SYSTEM.14` a49-4 (2026-11-06) took 23 of them out of the tree, with the 16 overlay and effect files named for them: 3,700,566 B and 118,103 B. Two more had left at a49-1, when their guests changed in place. In version 1's window, `P4-SYSTEM.20` slice f1 (2026-11-14) took 40 more out, with the 40 configuration, effect and walk files named for them, 7,214,757 B and 193,715 B, in the commit that declared their successors. Two leave once their successors are captured, since a tool reads what they captured: `rv64gc-m-forms-v7`, the review tools' default case, and `rv64gc-csr-set-v3`, whose trace the configuration-effect probe replays.
+A superseded case credits nothing. The credit moved to its re-capture, no tool reads the old directory, and each one cost a pass of every doctrine that walks `evidence/`. So when the window that carries fetch faults closed, `P4-SYSTEM.14` a49-4 (2026-11-06) took 23 of them out of the tree, with the 16 overlay and effect files named for them: 3,700,566 B and 118,103 B. Two more had left at a49-1, when their guests changed in place. In version 1's window, `P4-SYSTEM.20` slice f1 (2026-11-14) took 40 more out, with the 40 configuration, effect and walk files named for them, 7,214,757 B and 193,715 B, in the commit that declared their successors. The other two, `rv64gc-m-forms-v7`, the review tools' default case, and `rv64gc-csr-set-v3`, whose trace the configuration-effect probe replayed, left at slice f3, once their successors were captured and credited, with the 3 files named for `rv64gc-csr-set-v3`.
 
 Nothing was lost. Every byte stays in this repository's history, and `scripts/probe_div_capture_inputs.py` reads each row below back from it on every run: the directory's Git tree, which covers all 22 files, and the measured record's digest. The first 25 left once the new credits were current (`decision_superseded-cases-retired.md`). Since version 1's window a case leaves in the commit that declares its successor, and its history holds it just the same (`decision_a-predecessor-leaves-when-its-successor-is-declared.md`).
 
@@ -25,7 +25,7 @@ $ git show 178f9c6c:evidence/rv64gc-sstc-v1/measured-experiment.sexp | shasum -a
 
 ## The cases
 
-"Holds it now" is the case that answers the same requirement now: its credit, or, until slice f3 re-issues the credits of version 1's window, its declaration.
+"Holds it now" is the case whose current credit answers the same requirement.
 
 | Case | Requirement | Holds it now | Bytes | Last commit | Git tree | `measured-experiment.sexp` sha256 |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -94,6 +94,8 @@ $ git show 178f9c6c:evidence/rv64gc-sstc-v1/measured-experiment.sexp | shasum -a
 | `rv64gc-zicntr-v3` | `REQ-D-ZICNTR` | `rv64gc-zicntr-v4` | 330,470 | `228c9d76` | `83c77ffae845b3cd3d7471d7ea6a6257103c64f4` | `88b6adfb8b78c0bbba0ffafc8709784242fd24415bb36e411434733501f90a6a` |
 | `rv64gc-xlen-forms-v4` | `REQ-D-XLEN` | `rv64gc-xlen-forms-v5` | 118,928 | `228c9d76` | `f68afa630d2b708ff930a58eb28c33871ac99f5f` | `0b87cbce6ce388e25523a05262ab432d77625a3242c201b51a72504a98cd5342` |
 | `rv64gc-wsuffix-v2` | `REQ-D-WSUFFIX` | `rv64gc-wsuffix-v3` | 106,748 | `228c9d76` | `8c4a44659bf9ebda2351736e1a74c6423de0f253` | `e036103d04a959701f571058d2a566da09db0123d75218cdf34cd8eb488a9475` |
+| `rv64gc-m-forms-v7` | `REQ-GC-M` | `rv64gc-m-forms-v8` | 129,889 | `5c3d6737` | `36eca3957a60d1d05d983c8e6e5ad920c538c47d` | `7527a85c33acaae90d929a70f008adaa892dd3af7a67664d1db51e275176748e` |
+| `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `rv64gc-csr-set-v4` | 260,138 | `5c3d6737` | `690219451bc0b241569ba59e3a6f10d0788e06d6` | `bf24e2583a868fc5d1f90aabf3989830afeaf4c1b9e3c6c314ef35905d2d5cde` |
 
 ## Their configurations and effects
 
@@ -157,3 +159,6 @@ These sat beside the profile override, named for their cases. The re-captures ca
 | `profiles/rv64gc-lab-v0/reference/rv64gc-zicntr-v3.effect.sexp` | 760 | `228c9d76` | `f88c7702baa48e9d363eb2283f4e88eba559fb00e95b9d17e334ce0402436b05` |
 | `profiles/rv64gc-lab-v0/reference/rv64gc-zicntr-v3.effect.trace` | 27,617 | `228c9d76` | `896814f3f54e1a2bf9af3de7a61e4dac6f831921e7e946c67c28c39362913570` |
 | `profiles/rv64gc-lab-v0/reference/rv64gc-zicntr-v3.overlay.sexp` | 786 | `228c9d76` | `166549fa4649e49f271e51d97f04ed508c7ded578fa4f18aa10de010752042d1` |
+| `profiles/rv64gc-lab-v0/reference/rv64gc-csr-set-v3.effect.sexp` | 762 | `5c3d6737` | `a8a3857752a455bbffa45cb4dee175dcbc1cf9dd1ec63ac6339c51d43ed28d5a` |
+| `profiles/rv64gc-lab-v0/reference/rv64gc-csr-set-v3.effect.trace` | 14,236 | `5c3d6737` | `2a82805291293290c84cdd0e70ed95e0a29e7596610c0f6d5928849902dcb798` |
+| `profiles/rv64gc-lab-v0/reference/rv64gc-csr-set-v3.overlay.sexp` | 928 | `5c3d6737` | `f65bce6d8d900cf892603f51fcd0d02b6dea57e6eb4a4b5c5f04888194647c57` |

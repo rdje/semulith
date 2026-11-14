@@ -1,16 +1,10 @@
 # Policy legs measured
 
-> **Version 1's window.** The outputs on this page were measured on version 0, which stays verifiable at commit
-> `194437d6`. `P4-SYSTEM.20` captures the cases again: slice f1 (2026-11-14) declared the 42 successors and retired 40
-> predecessors ([cases retired from the tree](retired-cases.md)), f2 captured each once, and f3 re-issues the credits and
-> measures these examples again under the successors. Until then a command naming a retired case refuses, and the two
-> predecessors still in the tree, `rv64gc-m-forms-v7` and `rv64gc-csr-set-v3`, read stale.
-
 The evidence policy names, for a requirement's source-semantic category and risk, what a
 credited disposition needs. `scripts/review_div_policy.py` reads those requirements as ten
 legs and measures each one against the retained bytes of every case the finite method review
 holds a reviewed capture for — since a43e-5 (2026-11-05) `rv64gc-m-forms-v6`, `rv64gc-xlen-forms-v3`, `rv64gc-csr-set-v2`,
-`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five, each re-issued at a49-3 with Batch II-b's four and read by eleven legs; every earlier case is history below, and most have [left the tree](retired-cases.md) — on top of the finite method review. It opens only
+`rv64gc-zicntr-v2` and `rv64gc-sstc-v1`, since a46-4 (2026-11-06) Batch I's nine and since a47-3 Batch II-a's five, each re-issued at a49-3 with Batch II-b's four and read by eleven legs, and all 42 captured and credited again under new ids in version 1's window (`P4-SYSTEM.20` f1 to f3, 2026-11-14); every earlier case is history below, and most have [left the tree](retired-cases.md) — on top of the finite method review. It opens only
 bounded tracked files, launches no process and grants no credit: `credited` reports a separately
 owned record in `credits.sexp`, never the measurement. Both cases measured every leg satisfied and were
 credited — the M case by `CR-GC-M-2`, the XLEN case by `CR-D-XLEN-1` (a43a-3) — until the planned lapse that
@@ -160,17 +154,17 @@ A record without its trace, or a malformed one, refuses (exit 2): that pair cann
 
 ```text
 $ python3 -B scripts/review_div_policy.py --every-retained
-rv64gc-m-forms-v7: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-GC-M-5
-rv64gc-xlen-forms-v4: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-XLEN-4
-rv64gc-csr-set-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-CSR-SET-3
-rv64gc-zicntr-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ZICNTR-3
-rv64gc-sstc-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-SSTC-2
-rv64gc-alu-imm-v2: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ALU-IMM-2
+rv64gc-m-forms-v8: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-GC-M-6
+rv64gc-xlen-forms-v5: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-XLEN-5
+rv64gc-csr-set-v4: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-CSR-SET-4
+rv64gc-zicntr-v4: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ZICNTR-4
+rv64gc-sstc-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-SSTC-3
+rv64gc-alu-imm-v3: DIV-POLICY: satisfied — 11 of 11 legs satisfied; credited by CR-D-ALU-IMM-3
 ```
 
-That is six of the 46 lines; the other forty read the same, each with its own credit.
+That is six of the 42 lines, one per retained capture; the other 36 read the same, each with its own credit.
 
-Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, until a49-3 named their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
+Inside this window (a49-1, a49-2) the predecessors' lines read `DIV-POLICY: invalidated — 9 of 11 legs satisfied; missing matched-reference-comparison, currentness`, as version 1's did from slice a to f1, until a49-3 named their successors. Inside the window before it (a43e-1 … a43e-4) the retired cases' lines read `DIV-POLICY: invalidated — 8 of 10 legs satisfied; missing matched-reference-comparison, currentness`. The CSR-SET case was measured at a43b-3g with `no qualification credit`; a record has credited it since a43b-3h
 (`decision_req-d-csr-set-credited-implemented.md`).
 
 `rv64gc-zicntr-v1` is the second case through that branch, and the review needed no change for it (a43c-5). Its feature disposition is the

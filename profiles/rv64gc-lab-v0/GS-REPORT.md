@@ -4,17 +4,17 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (6 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (3 of 10): `G-REGRESSION`, `G-PORTABILITY`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
 | Axis | Required (§7) | Measured state | Verdict |
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
-| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
+| `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 4 of 4 `state` requirements implemented | **green** |
 | `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 116 of 116 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v4` frozen | **green** |
-| `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
-| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 4 `implemented`, 2 `not-applicable`, 42 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
+| `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 1 of 1 required kinds evidenced | **green** |
+| `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 46 `implemented`, 2 `not-applicable`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **green** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
 | `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 3 of 5 required kinds evidenced — open: `external`, `workload` | **incomplete** |
 | `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
@@ -28,9 +28,6 @@ is not a claim with a denominator.
 
 | Axis | Owner | Open item |
 | --- | --- | --- |
-| `G-STATE` | `P4-SYSTEM.20` | The four state requirements read planned: their credits were retired with the 38 others when the version label left profile.sexp, which every case pins. Slice f re-captures the cases and re-issues the credits. |
-| `G-TRACE` | `P4-SYSTEM.20` | No matched case is credited while the window moves pinned inputs (slices a to e). Slice f1 declared the 42 successors and retired 40 predecessors with their rows here; f2 captures each once, and f3 re-issues the credits and the rows, under the successors' ids. |
-| `G-OBLIGATIONS` | `P4-SYSTEM.20` | 42 requirements read planned until slice f re-issues their credits; the four with nothing to run stand implemented, and two are not applicable. |
 | `G-REGRESSION` | `P4-SYSTEM.20` | Slice c narrowed the state table's medeleg to 0xb3ff, which regenerates the engine's state and definition mirrors, so the ACT4 and workload records cover another crates/semulith-core/src. Slice g runs both again on the version-1 engine. |
 | `G-PORTABILITY` | `P4-SYSTEM.20` | The portability record and the hosted run cover the engine slice c moved. Slice g measures all four legs again, and the native x86-64 leg needs a hosted run on the new engine: an exceptional push, which is the director's, or the 300-commit cadence. |
 | `G-RELEASE` | `P4-SYSTEM.20` | Version 1 has no release decision yet: slice h records it, after slice g re-measures the recorded rows and the hosted run. |
@@ -39,8 +36,48 @@ is not a claim with a denominator.
 
 | Axis | Kind | Evidence | Verified |
 | --- | --- | --- | --- |
-| `G-TRACE` | `experiment` | experiment `rv64gc-m-forms-v7` | **no** — no current credit names the case, and references.sexp holds no such record |
-| `G-TRACE` | `experiment` | experiment `rv64gc-csr-set-v3` | **no** — no current credit names the case, and references.sexp holds no such record |
+| `G-TRACE` | `experiment` | experiment `rv64gc-m-forms-v8` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-xlen-forms-v5` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-csr-set-v4` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-zicntr-v4` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-sstc-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-alu-imm-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-alu-reg-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-lui-auipc-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-jalr-lsb-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-no-delay-slots-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-shamt-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-wsuffix-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-load-ext-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-load-x0-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-ecall-ebreak-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-csr-access-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-counters-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-fencei-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-ialign-16-v3` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-atomics-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-c-forms-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-f-forms-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-d-forms-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-svade-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-atomic-misalign-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-fault-priority-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-priv-modes-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-sv39-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-reservation-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-sc-deterministic-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-composition-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-ext-closure-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-priv-revision-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-rvwmo-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-priv-insns-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-priv-forms-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-no-h-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-no-pmp-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-endian-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-fence-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-walk-implicit-v2` | yes |
+| `G-TRACE` | `experiment` | experiment `rv64gc-partial-progress-v2` | yes |
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
 | `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
@@ -67,7 +104,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 b72f99688d320908798fa2acc830e5d9ad308aaebea06a03cfebf090789705c9`
+  `sha256 9787811a5fd8189ae765142e01595c6fbc04aad5b5246d4114148dd7ede43302`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision
