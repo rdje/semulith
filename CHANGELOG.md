@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0094 (leaf XTASK.19 opened) — the toolchain floats, so a Rust release turned hosted CI red
+
+The approved push went out, and the hosted Rust check failed though the full local suite had passed twice: every workflow installs that day's stable Rust, and 1.100.0, released five days ago, flags four loops in the DSP crate that this host's 1.95.0 accepts. Reproduced exactly here, on an on-volume toolchain. The leaf fixes the loops and pins one toolchain for local and hosted builds; the push that turns CI green is the director's.
+
 ## SEMULITH-XTASK-0093 (leaf XTASK.13 slice l) — the retained Sail identity probe judges a frozen copy
 
 The probe that checks the published Sail descriptor now reads a frozen copy of the descriptor, its parent dossier and their schema, so damage to a live file no longer breaks the probe; the live files stay held by the real check, where the method review refuses a damaged descriptor and the policy review fails on every case. Measuring that showed the policy line does not say which file, which the next slice fixes.
