@@ -58,3 +58,10 @@ Entry shape (one `## SEMULITH-PUSH-NNNN — <timestamp>` block per act):
 - **Reason:** director 2026-11-07: 'You can do the push if you deem it necessary, but that shall stay exceptional.' - hosted matrix for the CPU-SYSTEM release decision: 106 commits, last hosted run covered 171 of 210 guests
 - **Range:** origin/main..21097de83d6bc3882fed422acd3b3775017a49ba — 106 commit(s) since the last push, plus this record commit
 - **Suite:** `make ci` green at 21097de83d6bc3882fed422acd3b3775017a49ba before this record was written
+
+## SEMULITH-PUSH-0007 — 2026-11-14T20:04:05+0100
+
+- **Approved by:** the director
+- **Reason:** director 2026-11-14: 'push granted' - the hosted matrix for version 1 (P4-SYSTEM.20 slice g): the native x86-64 leg on the version-1 engine, which slices c and e moved; 32 commits since the last push
+- **Range:** origin/main..1c6424fd029bfe1de4fac96e8b904cc3bbc05fbc — 32 commit(s) since the last push, plus this record commit
+- **Suite:** `make ci` green at 1c6424fd029bfe1de4fac96e8b904cc3bbc05fbc before this record was written
