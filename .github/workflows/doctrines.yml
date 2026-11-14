@@ -19,10 +19,10 @@ jobs:
           mkdir -p .app-data/cargo-home .app-data/rustup target/ci-tmp
           echo "CARGO_HOME=$GITHUB_WORKSPACE/.app-data/cargo-home" >> "$GITHUB_ENV"
           echo "RUSTUP_HOME=$GITHUB_WORKSPACE/.app-data/rustup" >> "$GITHUB_ENV"
-          echo "RUSTUP_TOOLCHAIN=stable" >> "$GITHUB_ENV"
+          echo "RUSTUP_TOOLCHAIN=1.95.0" >> "$GITHUB_ENV"
           echo "TMPDIR=$GITHUB_WORKSPACE/target/ci-tmp" >> "$GITHUB_ENV"
-      - name: Provision stable Rust and the browser target in the local tool store
-        run: rustup toolchain install stable --profile minimal --component rustfmt,clippy --target wasm32-unknown-unknown --no-self-update
+      - name: Provision the pinned Rust (rust-toolchain.toml) and the browser target in the local tool store
+        run: rustup toolchain install 1.95.0 --profile minimal --component rustfmt,clippy --target wasm32-unknown-unknown --no-self-update
       - name: Install the pinned book tool (UNIT-BOOKS builds every registered book)
         run: |
           bash scripts/install_ci_mdbook.sh

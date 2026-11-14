@@ -1,3 +1,6 @@
+# One exact release, the same one every workflow installs (XTASK.19, decision_the-toolchain-is-pinned.md):
+# a channel name took each hosted run to that day's release and turned CI red twice with no code change.
+# A newer release is a unit of its own; TOOLCHAIN-PIN refuses a channel here or a different release in a workflow.
 [toolchain]
-channel = "stable"
+channel = "1.95.0"
 components = ["rustfmt", "clippy"]

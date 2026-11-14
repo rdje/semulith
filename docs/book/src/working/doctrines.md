@@ -68,6 +68,31 @@ CI-RECOVERY.3 repairs cold output/provisioning paths and truthful portability ve
 Its native and big-endian interpreted core runs each pass all 153 tests; full local CI
 also passes on Rust 1.99. Hosted green requires a successful run on a permitted push. A local green result alone cannot close that obligation.
 
+The toolchain no longer floats. Every workflow used to install that day's stable Rust, so a
+new release could turn hosted CI red with no code change, and it did twice: 1.99 on
+2026-10-08, then 1.100.0 on 2026-11-14, whose clippy flagged four loops and whose cargo moved
+test executables away from where ten tests looked for the binary (`XTASK.19`). Now
+`rust-toolchain.toml` names one exact release, 1.95.0, the build behind every local gate and
+the recorded portability rows, and every workflow installs that same release. `TOOLCHAIN-PIN`
+holds both on every commit; moving to a newer release is a unit of its own
+(`decision_the-toolchain-is-pinned.md`):
+
+```sh
+bash scripts/check_toolchain_pin.sh
+```
+
+```text
+TOOLCHAIN-PIN: ok (rust-toolchain.toml pins 1.95.0; 6 workflow step(s) in 3 workflow(s) name it, 2 take the Miri nightly from scripts/check_portability.sh)
+```
+
+On the files as they were before the pin, the same check names every floating site:
+
+```text
+TOOLCHAIN-PIN: the Rust toolchain floats, or a workflow names another release.
+  FLOATING CHANNEL: rust-toolchain.toml names `stable`, which moves when Rust releases; name one exact release (MAJOR.MINOR.PATCH)
+  FLOATING TOOLCHAIN: .github/workflows/doctrines.yml:22 selects `stable`, which moves when Rust releases; name the pinned release
+```
+
 The director approved the pushes needed for this CI recovery without asking
 again (`decision_ci-recovery-push-approval`). Each used `scripts/approved_push.sh`:
 full local CI, a committed approval record, then the guarded push. All three
@@ -156,6 +181,7 @@ These ship with the discipline spine and are project-neutral:
 | `SHARD-FREEZE` | authenticate live/sealed history and predecessor rows; preserve full old live entry bytes/order through published sharding in index/working views; judge the complete staged partition too. Refuse failed Git reads, changed descriptors, unsafe/corrupt data and duplicate headings/paths. |
 | `TASK-HISTORY` | finite P4/qualification captures; original 46 controls, 43 ordinary publishing tests and 32 qualification reader/publishing tests normal/O. Atomic source-authenticated qualification publication; both views freeze against HEAD;50 arms on commit/CI |
 | `ARTIFACT-COHORT` | plans, journals, provenance |
+| `TOOLCHAIN-PIN` | one exact Rust release in `rust-toolchain.toml`, and the same release in every workflow step that installs or selects Rust |
 | `PORT-WEB` | the crate skeleton builds for the browser target — the workspace compiles for `wasm32-unknown-unknown`, so a host-only API cannot slip into the engine unnoticed |
 | `API-DOCS` | the API reference is rustdoc, and its intra-doc links and HTML are sound — a broken or private link or an unclosed tag in any doc comment is refused, naming file, line and lint; the undocumented public items per crate may only fall |
 | `STATE-GEN` | the generated state module is still what the state descriptor generates — drift is refused, and the generator refuses shapes it cannot emit rather than silently guessing |

@@ -58,6 +58,7 @@ PROJECT_DOCTRINES=(
   "M-VECTORS|the M extension's instruction vectors (run through the engine) are still the byte-exact output of the spec-side exact-integer reference, and that reference still obeys the chapter's own stated identities (dividend = divisor × quotient + remainder, the remainder's magnitude and sign, Table 1's zero-divisor and overflow rows, the 2·XLEN product split, the word forms' sign extension) — an expected value edited by hand is DRIFT|scripts/check_m_vectors.sh"
   "TASK-HISTORY|finite P4 and qualification captures authenticate originals without Git or extraction; publishing guards preserve bytes/modes in both views and authenticate the qualification source at first publication; failed reads refuse|scripts/check_task_history.sh"
   "ARTIFACT-COHORT|bounded planning/history/journal/provenance checks protect inputs, source identity, retained populations and exclusive output; ordered attempt records preserve unresolved progress; normal/O owned-fixture guard omissions discriminate; no project cleanup|scripts/check_artifact_cleanup.sh"
+  "TOOLCHAIN-PIN|the compiler is chosen, not floated — rust-toolchain.toml names one exact Rust release and every workflow step that installs or selects Rust names the same one, so a Rust release can no longer turn hosted CI red with no code change|scripts/check_toolchain_pin.sh"
 )
 
 # XTASK.8 (2026-10-26): the checks run through a bounded pool and are REPORTED in registry order, so the

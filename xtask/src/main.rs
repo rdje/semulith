@@ -93,6 +93,9 @@
 //! - `cargo xtask check-artifact-cleanup [--self-test]` is the `ARTIFACT-COHORT` doctrine's driver (`XTASK.6` slice
 //!   `6af`, `check_artifact_cleanup.rs`): the cleanup instrument's probe suites and mutations run as the driver ran
 //!   them, the instruments' tracking checked; `scripts/check_artifact_cleanup.sh` is its shim.
+//! - `cargo xtask check-toolchain-pin [--self-test]` is the `TOOLCHAIN-PIN` doctrine (`XTASK.19` slice b,
+//!   `check_toolchain_pin.rs`): `rust-toolchain.toml` names one exact release and every workflow names the same;
+//!   born here, with `scripts/check_toolchain_pin.sh` as the shim the doctrine slot registers.
 //! - `cargo xtask check-source-format [--self-test]` is the `SOURCE-FORMAT` doctrine (`XTASK.6` slice `6ag`,
 //!   `check_source_format.rs`): every source of truth under the four families judged an S-expression the harness's own
 //!   reader parses; `scripts/check_source_format.sh` is its shim.
@@ -194,6 +197,7 @@ mod check_semantics_corpus;
 mod check_source_format;
 mod check_state_gen;
 mod check_task_history;
+mod check_toolchain_pin;
 mod check_tree_claims;
 mod check_unit_books;
 mod check_unit_composition;
@@ -316,12 +320,14 @@ const NATIVE: &[&str] = &[
     "check-profile-consistency",
     "check-readme-routes",
     "check-seam-integrity",
+    "check-toolchain-pin",
 ];
 
 /// The scripts ported to a native subcommand, each kept as a shim that runs only that subcommand. Read by
 /// the shim test only: dispatch needs the native names alone.
 #[cfg(test)]
 const PORTED: &[(&str, &str)] = &[
+    ("check-toolchain-pin", "scripts/check_toolchain_pin.sh"),
     ("check-seam-integrity", "scripts/check_seam_integrity.sh"),
     ("check-readme-routes", "scripts/check_readme_routes.sh"),
     (
@@ -436,6 +442,7 @@ fn main() -> ExitCode {
             "check-changelog-shards" => check_changelog_shards::run(&root, &args[1..]),
             "check-derived-counts" => check_derived_counts::run(&root, &args[1..]),
             "check-artifact-cleanup" => check_artifact_cleanup::run(&root, &args[1..]),
+            "check-toolchain-pin" => check_toolchain_pin::run(&root, &args[1..]),
             "check-source-format" => check_source_format::run(&root, &args[1..]),
             "check-semantics-corpus" => check_semantics_corpus::run(&root, &args[1..]),
             "check-upstream-index" => check_upstream_index::run(&root, &args[1..]),

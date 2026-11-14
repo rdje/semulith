@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0098 (leaf XTASK.19 slice b) — the Rust toolchain is pinned to 1.95.0, locally and in every workflow
+
+Hosted CI no longer installs whatever Rust released that day: the toolchain file and all three workflows name 1.95.0, the exact build every local check already used, and a new check, `TOOLCHAIN-PIN`, refuses a commit that floats again or lets a workflow name another release. Moving to a newer Rust is now a unit of its own. The push that turns hosted CI green is next.
+
 ## SEMULITH-LC-0057 (leaf LIVE-CONTAINMENT.6) — the decisions index continues in parts, and every record is listed exactly once
 
 The decisions index had 23 bytes left, so the next record could not be listed. It now continues in parts under `docs/decisions/index/`, which `INDEX.md` names; the second part holds the later half of the rows and every new one, with room for about seventy. The memory check reads every part and now also fails a record listed twice or a part nobody is sent to. The changelog was sharded to make room for this entry.

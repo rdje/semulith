@@ -207,6 +207,7 @@
 - [`decision_the-four-with-nothing-to-run-credited-implemented.md`](docs/decisions/decision_the-four-with-nothing-to-run-credited-implemented.md)
 - [`decision_the-next-window-is-version-1.md`](docs/decisions/decision_the-next-window-is-version-1.md)
 - [`decision_the-seventeen-called.md`](docs/decisions/decision_the-seventeen-called.md)
+- [`decision_the-toolchain-is-pinned.md`](docs/decisions/decision_the-toolchain-is-pinned.md)
 - [`decision_the-two-with-a-switch-credited-implemented.md`](docs/decisions/decision_the-two-with-a-switch-credited-implemented.md)
 - [`decision_the-window-that-carries-fetch-faults.md`](docs/decisions/decision_the-window-that-carries-fetch-faults.md)
 - [`decision_universal-registry-checks-stay-bash.md`](docs/decisions/decision_universal-registry-checks-stay-bash.md)
