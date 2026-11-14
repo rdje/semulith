@@ -1,0 +1,3 @@
+;; rv64gc-zicntr-v4.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
+;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
+(config_effect (case_id "rv64gc-zicntr-v4") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "41f2cbc25ecdd0c5b5dbf8296f1957802a0cecb7e5c7da1d16567f1a04a04090") (case_config_sha256 "d0896b9a4fad56e1f2e019605786443b53dadc9868f7666115302c1852a08492") (alternative_config_sha256 "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472") (instructions 292) (trace_sha256 "896814f3f54e1a2bf9af3de7a61e4dac6f831921e7e946c67c28c39362913570") (trace_bytes 27617))

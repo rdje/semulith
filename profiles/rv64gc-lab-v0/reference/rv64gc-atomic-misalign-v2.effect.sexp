@@ -1,0 +1,3 @@
+;; rv64gc-atomic-misalign-v2.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
+;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
+(config_effect (case_id "rv64gc-atomic-misalign-v2") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "c3e59e94c95f17cd8cc7b7deb40f79ea1708e83501aebceddde0f57f98ef2ee2") (case_config_sha256 "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472") (alternative_config_sha256 "b6f22e9987fe8ca05b0784b195da57d274376d0c16f95d462bd732202c6a1d2d") (instructions 180) (trace_sha256 "85b509da3bc0c171a208755c36c27e65785dec2d29cecb0ef311792475c6bee5") (trace_bytes 16635))

@@ -67,7 +67,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 6b97dd7061a765e493c6af3cdb8a3e217bd982d0ca469c9a2b245e0323349e36`
+  `sha256 b72f99688d320908798fa2acc830e5d9ad308aaebea06a03cfebf090789705c9`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision

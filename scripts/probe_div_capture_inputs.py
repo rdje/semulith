@@ -876,7 +876,7 @@ class FamilyTests(unittest.TestCase):
         self.assertLessEqual(max(Collector.TRACE_BYTES, Collector.STREAM_BYTES,
                                  F.DOCUMENT_BYTES, INPUT_BYTES), 4 * 1024 * 1024)
         members, total = check_retention_layout(ROOT)
-        self.assertEqual(len(members), 1 + 4 * 22 + 42 * 8)  # captured: the two the tools name and the two kept; declared: the 42 successors (P4-SYSTEM.20 f1)
+        self.assertEqual(len(members), 1 + 46 * 22)  # the 42 successors captured at P4-SYSTEM.20 f2, the two the tools name, and the two kept until f3
         self.assertEqual(set(P.reviewed_case_ids()), set(CASES))
 
     def test_every_retired_case_reads_back_from_history(self):

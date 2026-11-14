@@ -1,0 +1,3 @@
+;; rv64gc-walk-implicit-v2.walk.sexp — what ran to compare this case's page-table reads (schema/config-effect.sexp).
+;; Written by scripts/measure_walk_trace.py beside its raw traces; it carries no verdict, the policy review re-derives it.
+(walk_trace (case_id "rv64gc-walk-implicit-v2") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "f3d5dcdca7523ec3098c45a19715a669326df0a28e03ba5fcc35bd409d2d1676") (case_config_sha256 "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472") (instructions 95) (reference_trace_sha256 "a7ff24bfe57587c8dd938c6e4afbf714a9128f14b25d164e4a6fffeabedc64ec") (engine_trace_sha256 "9d81e28145455324bf7819eb658b63f47993775593d27eda02e514de8f939178"))

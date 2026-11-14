@@ -97,7 +97,7 @@ $ git show 178f9c6c:evidence/rv64gc-sstc-v1/measured-experiment.sexp | shasum -a
 
 ## Their configurations and effects
 
-These sat beside the profile override, named for their cases. The re-captures carry their own. Each of the first 16 effects was byte-identical to its predecessor's; version 1's window measures its effects and its walk again at slice f2.
+These sat beside the profile override, named for their cases. The re-captures carry their own. Each of the first 16 effects was byte-identical to its predecessor's; version 1's window measured its 12 effects and its walk again at slice f2, each byte-identical to its predecessor's.
 
 | Path | Bytes | Last commit | sha256 |
 | --- | --- | --- | --- |

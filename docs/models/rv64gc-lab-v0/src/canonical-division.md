@@ -449,3 +449,54 @@ Four cases, each captured exactly once on 2026-11-07 from the declaration commit
 The pinned reference offers nothing to select otherwise for these, so each has a declared disposition and no effect. `rv64gc-walk-implicit-v1` also retains a comparison of its page-table reads: 6 distinct PTEs read on both with the same values, in a different order, which TLB replacement allows; each read 8 bytes, at most 3 per walk, and no PTE written from the first walk on.
 
 **What moved, measured.** All 42 files compared are byte-identical to the rehearsal, ten for each case and the walk record's two traces. All four were credited at a51-10.
+
+## Version 1's window (`P4-SYSTEM.20` f2)
+
+42 cases, each captured exactly once on 2026-11-14 from the declaration commit `8a50b9c5`, through `scripts/capture_guarded.py`, in 106 s. Each baseline and repeat `AGREE`, and each control `DIVERGE` at its predeclared witness. Each is the re-declaration of the case beside it, which version 1's window lapsed when it moved the version label, the expectations author, the state table and the profile override (`decision_the-next-window-is-version-1.md`).
+
+| Case | Supersedes | Steps | Witnesses | Control's divergence | Measured record | Each trace |
+| --- | --- | --- | --- | --- | --- | --- |
+| `rv64gc-alu-imm-v3` | `rv64gc-alu-imm-v2` | 19 | 13 | 12: `sltiu x16, x15, -1` | 13,251 B, `55902876…` | 1,628 B |
+| `rv64gc-alu-reg-v3` | `rv64gc-alu-reg-v2` | 18 | 10 | 11: `sltu x15, x6, x5` | 12,154 B, `2f301777…` | 1,512 B |
+| `rv64gc-c-forms-v2` | `rv64gc-c-forms-v1` | 251 | 52 | 108: `c.jalr x1` | 23,555 B, `76f8ecf4…` | 21,088 B |
+| `rv64gc-atomic-misalign-v2` | `rv64gc-atomic-misalign-v1` | 180 | 26 | 24: `csrrs x30, mcause, x0` | 17,750 B, `e4c36de6…` | 16,572 B |
+| `rv64gc-composition-v2` | `rv64gc-composition-v1` | 41 | 12 | 5: `csrrs x5, misa, x0` | 12,769 B, `233bc676…` | 3,207 B |
+| `rv64gc-atomics-v2` | `rv64gc-atomics-v1` | 246 | 64 | 21: `amoadd.w x5, x6, (x1` | 27,721 B, `92cef478…` | 20,411 B |
+| `rv64gc-csr-set-v4` | `rv64gc-csr-set-v3` | 157 | 53 | 130: `csrrs x28, mscratch, ` | 27,347 B, `dc628b5f…` | 13,833 B |
+| `rv64gc-counters-v3` | `rv64gc-counters-v2` | 84 | 8 | 23: `addi x21, x20, 0` | 12,150 B, `7c6e1a08…` | 7,198 B |
+| `rv64gc-csr-access-v3` | `rv64gc-csr-access-v2` | 81 | 25 | 15: `csrrs x15, mscratch, ` | 17,178 B, `7c1b02bf…` | 7,518 B |
+| `rv64gc-d-forms-v2` | `rv64gc-d-forms-v1` | 350 | 93 | 131: `fmv.x.d x6, f8` | 34,607 B, `9f880c54…` | 28,949 B |
+| `rv64gc-ext-closure-v2` | `rv64gc-ext-closure-v1` | 64 | 12 | 60: `c.ld x11, x8, 8` | 12,981 B, `9f71e6d6…` | 4,986 B |
+| `rv64gc-ecall-ebreak-v3` | `rv64gc-ecall-ebreak-v2` | 116 | 25 | 50: `csrrs x10, mcause, x0` | 17,655 B, `22c4e1d9…` | 10,386 B |
+| `rv64gc-endian-v2` | `rv64gc-endian-v1` | 42 | 8 | 19: `lbu x6, x1, 0` | 11,568 B, `51303f30…` | 3,367 B |
+| `rv64gc-f-forms-v2` | `rv64gc-f-forms-v1` | 338 | 90 | 127: `fmv.x.w x6, f8` | 33,297 B, `1c87177f…` | 28,316 B |
+| `rv64gc-fencei-v3` | `rv64gc-fencei-v2` | 18 | 4 | 9: `.word 0x00700113` | 11,052 B, `cbbd3362…` | 1,349 B |
+| `rv64gc-fence-v2` | `rv64gc-fence-v1` | 41 | 10 | 29: `ld x6, x1, 0` | 12,448 B, `c939dd61…` | 3,093 B |
+| `rv64gc-fault-priority-v2` | `rv64gc-fault-priority-v1` | 271 | 37 | 159: `csrrs x22, scause, x0` | 21,562 B, `aecae108…` | 24,888 B |
+| `rv64gc-ialign-16-v3` | `rv64gc-ialign-16-v2` | 11 | 6 | 3: `auipc x3, 0` | 11,405 B, `bd763254…` | 854 B |
+| `rv64gc-load-x0-v3` | `rv64gc-load-x0-v2` | 68 | 16 | 10: `csrrs x30, mcause, x0` | 14,719 B, `8b822ef6…` | 6,520 B |
+| `rv64gc-load-ext-v3` | `rv64gc-load-ext-v2` | 32 | 12 | 16: `lw x12, x1, 4` | 12,832 B, `ffe3412c…` | 2,507 B |
+| `rv64gc-jalr-lsb-v3` | `rv64gc-jalr-lsb-v2` | 16 | 10 | 3: `auipc x7, 0` | 12,476 B, `148d046c…` | 1,347 B |
+| `rv64gc-lui-auipc-v3` | `rv64gc-lui-auipc-v2` | 10 | 9 | 8: `auipc x11, 0x80000` | 12,201 B, `fa260ba3…` | 827 B |
+| `rv64gc-m-forms-v8` | `rv64gc-m-forms-v7` | 33 | 25 | 12: `div x15, x5, x6` | 16,943 B, `beb996a1…` | 2,794 B |
+| `rv64gc-no-delay-slots-v3` | `rv64gc-no-delay-slots-v2` | 21 | 11 | 3: `addi x10, x20, 10` | 13,753 B, `78d9bad1…` | 1,596 B |
+| `rv64gc-no-h-v2` | `rv64gc-no-h-v1` | 21 | 5 | 5: `csrrs x5, misa, x0` | 10,785 B, `7202b4c3…` | 1,631 B |
+| `rv64gc-partial-progress-v2` | `rv64gc-partial-progress-v1` | 163 | 20 | 103: `add x18, x6, x0` | 15,978 B, `5feed268…` | 14,070 B |
+| `rv64gc-priv-forms-v2` | `rv64gc-priv-forms-v1` | 345 | 24 | 130: `csrrs x30, mcause, x0` | 16,584 B, `608138ee…` | 29,936 B |
+| `rv64gc-no-pmp-v2` | `rv64gc-no-pmp-v1` | 40 | 4 | 22: `ld x7, x1, 0` | 10,960 B, `8dd1e14a…` | 3,048 B |
+| `rv64gc-priv-insns-v2` | `rv64gc-priv-insns-v1` | 30 | 4 | 13: `addi x6, x0, 1` | 10,682 B, `bc087b47…` | 2,256 B |
+| `rv64gc-reservation-v2` | `rv64gc-reservation-v1` | 190 | 24 | 23: `sc.w x15, x6, (x3` | 17,095 B, `c9dbddc6…` | 15,676 B |
+| `rv64gc-priv-revision-v2` | `rv64gc-priv-revision-v1` | 36 | 5 | 16: `csrrs x8, menvcfg, x0` | 11,259 B, `5f570088…` | 2,774 B |
+| `rv64gc-priv-modes-v2` | `rv64gc-priv-modes-v1` | 109 | 15 | 5: `csrrs x5, misa, x0` | 13,782 B, `15124b42…` | 9,529 B |
+| `rv64gc-rvwmo-v2` | `rv64gc-rvwmo-v1` | 33 | 11 | 11: `ld x6, x1, 0` | 12,483 B, `378f005f…` | 2,610 B |
+| `rv64gc-shamt-v3` | `rv64gc-shamt-v2` | 21 | 15 | 6: `sll x11, x5, x10` | 13,497 B, `709d9237…` | 1,800 B |
+| `rv64gc-sc-deterministic-v2` | `rv64gc-sc-deterministic-v1` | 159 | 21 | 21: `sc.w x15, x6, (x3` | 16,274 B, `d6c76615…` | 13,331 B |
+| `rv64gc-walk-implicit-v2` | `rv64gc-walk-implicit-v1` | 95 | 6 | 74: `ld x6, x13, 0` | 11,507 B, `329500f5…` | 7,727 B |
+| `rv64gc-svade-v2` | `rv64gc-svade-v1` | 137 | 15 | 129: `ld x6, x8, 0` | 13,822 B, `f91c7653…` | 11,519 B |
+| `rv64gc-sv39-v2` | `rv64gc-sv39-v1` | 135 | 11 | 17: `csrrs x5, satp, x0` | 12,765 B, `3c5af9c7…` | 11,144 B |
+| `rv64gc-sstc-v3` | `rv64gc-sstc-v2` | 315 | 39 | 172: `csrrs x11, sip, x0` | 22,241 B, `612ffa26…` | 26,417 B |
+| `rv64gc-zicntr-v4` | `rv64gc-zicntr-v3` | 292 | 44 | 109: `addi x21, x20, 0` | 24,163 B, `b9cc6cfe…` | 26,277 B |
+| `rv64gc-xlen-forms-v5` | `rv64gc-xlen-forms-v4` | 25 | 17 | 24: `csrrs x31, mtval, x0` | 14,980 B, `440c4d69…` | 2,260 B |
+| `rv64gc-wsuffix-v3` | `rv64gc-wsuffix-v2` | 17 | 12 | 11: `addw x16, x7, x8` | 12,951 B, `ccaec0dd…` | 1,446 B |
+
+**What moved, measured.** Against the predecessors, read back from `228c9d76`: 506 of the 924 files are byte-identical, every trace, stdout, guest image and expectation, and each stderr once its trace path, which names the case, is renamed. The 418 that differ name the new id (the case file, the three declarations, the three receipts and the two results), and 40 reference configurations carry slice d's key; the two that already selected it are identical. The tools moved and the behaviour did not. The 12 configuration effects measured again under the successors' names, and `rv64gc-walk-implicit-v2`'s two page-table traces, are byte-identical to their predecessors'. The credits are re-issued at f3.

@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0415 (leaf P4-SYSTEM.20 slice f2) — the 42 captured exactly once each, and no behaviour moved
+
+Each of the 42 re-declared cases was captured once through the capture guard: every trace, output, guest and expectation is byte-identical to its predecessor's, and so are the twelve configuration effects and the page-table comparison measured again under the new names. Nothing is credited yet; the next unit re-issues the credits. The task file's closed records for slices a to d moved to an archive part.
+
 ## SEMULITH-P4-0414 (leaf P4-SYSTEM.20 slice f1) — the 42 declared under new ids, and 40 predecessors leave in the same commit
 
 The 42 cases version 1's window lapsed are declared again under new ids and contract version 4, and 40 of their predecessors leave the tree in the same commit, each listed on the retired-cases page and read back from history on every run. Two stay until their successors are captured, because a tool reads what they captured. A rehearsal captured all 42 with every trace, output, guest and expectation byte-identical to its predecessor's. The walk tool now says why a process failed, and four book pages that showed version 0's numbers as current say so.

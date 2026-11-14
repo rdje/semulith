@@ -1,0 +1,3 @@
+;; rv64gc-reservation-v2.effect.sexp — what ran to observe this case's reference configuration (schema/config-effect.sexp).
+;; Written by scripts/measure_config_effect.py beside its raw trace; it carries no verdict, the policy review re-derives it.
+(config_effect (case_id "rv64gc-reservation-v2") (binary_sha256 "16de42a86e4ea7a300385092632cd95d153cb3f6c119d31eaa9384953990b7bf") (guest_sha256 "e6f5de4e3ea9e00d4c2aa6ddd1127944f6870d526e7041beb359f0496b161a4a") (case_config_sha256 "cd519ac8b76b26666444531a21a02aee08280a3c7f0b8e3aad92c8d7126161e5") (alternative_config_sha256 "795320f7a2c79910683818942c0ce6d0422f04a5f7550dd136db5800fe951472") (instructions 190) (trace_sha256 "2cd31190af0b199ea576e6d0f4f998c1904b8b0ca0adf72e2edc229d79a640d3") (trace_bytes 15676))

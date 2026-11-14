@@ -54,49 +54,49 @@
 
 | Case | Requirement | Program | Steps | Witnesses | Configuration | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `rv64gc-alu-imm-v3` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | declared |
-| `rv64gc-alu-reg-v3` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | declared |
-| `rv64gc-atomic-misalign-v2` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | declared |
+| `rv64gc-alu-imm-v3` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
+| `rv64gc-alu-reg-v3` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
+| `rv64gc-atomic-misalign-v2` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | captured, credited by nothing |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
-| `rv64gc-csr-set-v4` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | declared |
-| `rv64gc-ecall-ebreak-v3` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | declared |
-| `rv64gc-endian-v2` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | declared |
-| `rv64gc-ext-closure-v2` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | declared |
-| `rv64gc-fault-priority-v2` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | declared |
-| `rv64gc-fence-v2` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | declared |
-| `rv64gc-composition-v2` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | declared |
-| `rv64gc-ialign-16-v3` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | declared |
-| `rv64gc-jalr-lsb-v3` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | declared |
-| `rv64gc-load-ext-v3` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | declared |
-| `rv64gc-load-x0-v3` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | declared |
-| `rv64gc-lui-auipc-v3` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | declared |
-| `rv64gc-no-delay-slots-v3` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | declared |
-| `rv64gc-no-h-v2` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | declared |
-| `rv64gc-no-pmp-v2` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | declared |
-| `rv64gc-priv-insns-v2` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | declared |
-| `rv64gc-priv-modes-v2` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | declared |
-| `rv64gc-priv-revision-v2` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | declared |
-| `rv64gc-reservation-v2` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | declared |
-| `rv64gc-rvwmo-v2` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | declared |
-| `rv64gc-sc-deterministic-v2` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | declared |
-| `rv64gc-shamt-v3` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | declared |
-| `rv64gc-sstc-v3` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | declared |
-| `rv64gc-sv39-v2` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | declared |
-| `rv64gc-svade-v2` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | declared |
-| `rv64gc-walk-implicit-v2` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | declared |
-| `rv64gc-wsuffix-v3` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | declared |
-| `rv64gc-xlen-forms-v5` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | declared |
-| `rv64gc-zicntr-v4` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | declared |
-| `rv64gc-atomics-v2` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | declared |
-| `rv64gc-c-forms-v2` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | declared |
-| `rv64gc-counters-v3` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | declared |
-| `rv64gc-csr-access-v3` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | declared |
-| `rv64gc-d-forms-v2` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | declared |
-| `rv64gc-f-forms-v2` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | declared |
-| `rv64gc-fencei-v3` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | declared |
+| `rv64gc-csr-set-v4` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
+| `rv64gc-ecall-ebreak-v3` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | captured, credited by nothing |
+| `rv64gc-endian-v2` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | captured, credited by nothing |
+| `rv64gc-ext-closure-v2` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | captured, credited by nothing |
+| `rv64gc-fault-priority-v2` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-fence-v2` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | captured, credited by nothing |
+| `rv64gc-composition-v2` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | captured, credited by nothing |
+| `rv64gc-ialign-16-v3` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | captured, credited by nothing |
+| `rv64gc-jalr-lsb-v3` | `REQ-D-JALR-LSB` | `jalr-lsb.s` | 16 | 10 | the override | captured, credited by nothing |
+| `rv64gc-load-ext-v3` | `REQ-D-LOAD-EXT` | `load-ext-forms.s` | 32 | 12 | the override | captured, credited by nothing |
+| `rv64gc-load-x0-v3` | `REQ-D-LOAD-X0` | `load-x0.s` | 68 | 16 | the override | captured, credited by nothing |
+| `rv64gc-lui-auipc-v3` | `REQ-D-LUI-AUIPC` | `lui-auipc-forms.s` | 10 | 9 | the override | captured, credited by nothing |
+| `rv64gc-no-delay-slots-v3` | `REQ-D-NO-DELAY-SLOTS` | `no-delay-slots.s` | 21 | 11 | the override | captured, credited by nothing |
+| `rv64gc-no-h-v2` | `REQ-D-NO-H` | `no-h-forms.s` | 21 | 5 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-no-pmp-v2` | `REQ-D-NO-PMP` | `no-pmp-forms.s` | 40 | 4 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-priv-insns-v2` | `REQ-D-PRIV-INSNS` | `priv-insns-forms.s` | 30 | 4 | its own | captured, credited by nothing |
+| `rv64gc-priv-modes-v2` | `REQ-D-PRIV-MODES` | `priv-modes.s` | 109 | 15 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-priv-revision-v2` | `REQ-D-PRIV-REVISION` | `priv-revision-forms.s` | 36 | 5 | the override | captured, credited by nothing |
+| `rv64gc-reservation-v2` | `REQ-D-RESERVATION` | `reservation-forms.s` | 190 | 24 | its own | captured, credited by nothing |
+| `rv64gc-rvwmo-v2` | `REQ-D-RVWMO` | `rvwmo-forms.s` | 33 | 11 | the override | captured, credited by nothing |
+| `rv64gc-sc-deterministic-v2` | `REQ-D-SC-DETERMINISTIC` | `sc-deterministic.s` | 159 | 21 | its own | captured, credited by nothing |
+| `rv64gc-shamt-v3` | `REQ-D-SHAMT` | `shamt-forms.s` | 21 | 15 | the override | captured, credited by nothing |
+| `rv64gc-sstc-v3` | `REQ-D-SSTC` | `sstc-timer.s` | 315 | 39 | its own | captured, credited by nothing |
+| `rv64gc-sv39-v2` | `REQ-D-SV39` | `sv39-modes.s` | 135 | 11 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-svade-v2` | `REQ-D-SVADE` | `svade-forms.s` | 137 | 15 | the override, with a declared alternative | captured, credited by nothing |
+| `rv64gc-walk-implicit-v2` | `REQ-D-WALK-IMPLICIT` | `walk-implicit-forms.s` | 95 | 6 | the override | captured, credited by nothing |
+| `rv64gc-wsuffix-v3` | `REQ-D-WSUFFIX` | `wsuffix-forms.s` | 17 | 12 | the override | captured, credited by nothing |
+| `rv64gc-xlen-forms-v5` | `REQ-D-XLEN` | `xlen-forms.s` | 25 | 17 | the override | captured, credited by nothing |
+| `rv64gc-zicntr-v4` | `REQ-D-ZICNTR` | `zicntr.s` | 292 | 44 | its own | captured, credited by nothing |
+| `rv64gc-atomics-v2` | `REQ-GC-ATOMICS` | `atomics-forms.s` | 246 | 64 | the override | captured, credited by nothing |
+| `rv64gc-c-forms-v2` | `REQ-GC-C` | `c-forms.s` | 251 | 52 | the override | captured, credited by nothing |
+| `rv64gc-counters-v3` | `REQ-GC-COUNTERS` | `counters-reads.s` | 84 | 8 | its own | captured, credited by nothing |
+| `rv64gc-csr-access-v3` | `REQ-GC-CSR-ACCESS` | `csr-access.s` | 81 | 25 | the override | captured, credited by nothing |
+| `rv64gc-d-forms-v2` | `REQ-GC-D` | `d-forms.s` | 350 | 93 | the override | captured, credited by nothing |
+| `rv64gc-f-forms-v2` | `REQ-GC-F` | `f-forms.s` | 338 | 90 | the override | captured, credited by nothing |
+| `rv64gc-fencei-v3` | `REQ-GC-FENCEI` | `fencei-forms.s` | 18 | 4 | the override | captured, credited by nothing |
 | `rv64gc-m-forms-v3` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
 | `rv64gc-m-forms-v7` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
-| `rv64gc-m-forms-v8` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | declared |
+| `rv64gc-m-forms-v8` | `REQ-GC-M` | `m-forms.s` | 33 | 25 | the override | captured, credited by nothing |
 | `rv64gc-signed-div-truncation-v2` | `REQ-GC-M` | `m-div.s` | 27 | 1 | the override | captured, credited by nothing |
-| `rv64gc-partial-progress-v2` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | declared |
-| `rv64gc-priv-forms-v2` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | declared |
+| `rv64gc-partial-progress-v2` | `REQ-GC-PARTIAL-PROGRESS` | `partial-progress-forms.s` | 163 | 20 | the override | captured, credited by nothing |
+| `rv64gc-priv-forms-v2` | `REQ-GC-PRIV-INSNS` | `priv-forms.s` | 345 | 24 | its own | captured, credited by nothing |
