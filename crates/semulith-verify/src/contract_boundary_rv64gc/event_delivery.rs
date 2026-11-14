@@ -168,7 +168,8 @@ fn forbidden(at: Request, word: u32, guard: bool) -> Result<(), String> {
     Ok(())
 }
 
-const ATTEMPTS: [(Request, u32); 6] = [
+// One attempt per request kind; `kind_index` below makes a new kind a compile error here.
+const ATTEMPTS: [(Request, u32); 7] = [
     (Request::Fetch { addr: ENTRY }, 0x0010_0313),
     (Request::FetchParcel { addr: ENTRY }, 0x0010_0313),
     (
@@ -177,6 +178,14 @@ const ATTEMPTS: [(Request, u32); 6] = [
             addr: DATA,
         },
         0x0002_c303,
+    ),
+    // LR.W x6,(x5): an atomic read, its own kind since `rv64gc-lab-env-v4`.
+    (
+        Request::AtomicLoad {
+            width: AccessWidth::W,
+            addr: DATA,
+        },
+        0x1002_a32f,
     ),
     (
         Request::Store {
@@ -203,8 +212,30 @@ pub(super) fn negative() -> Result<(), String> {
     Ok(())
 }
 
+/// Each request kind's position in `ATTEMPTS`. Exhaustive by construction: a kind the
+/// boundary gains fails to compile here until the negative attempts delivery during it.
+#[cfg(test)]
+const fn kind_index(request: Request) -> usize {
+    match request {
+        Request::Fetch { .. } => 0,
+        Request::FetchParcel { .. } => 1,
+        Request::Load { .. } => 2,
+        Request::AtomicLoad { .. } => 3,
+        Request::Store { .. } => 4,
+        Request::WalkAccess { .. } => 5,
+        Request::StorePermission { .. } => 6,
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn the_negative_attempts_delivery_during_every_request_kind_once() {
+        for (i, (request, _)) in super::ATTEMPTS.iter().enumerate() {
+            assert_eq!(super::kind_index(*request), i, "{request:?}");
+        }
+    }
+
     #[test]
     fn disabling_the_location_guard_is_detected_for_every_request_kind() {
         for (request, word) in super::ATTEMPTS {

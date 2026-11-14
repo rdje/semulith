@@ -465,6 +465,9 @@ pub struct Census {
     pub fetches: u64,
     /// Load requests.
     pub loads: u64,
+    /// Atomic read requests — LR's read and an AMO's (`rv64gc-lab-env-v4`; always zero on
+    /// the rv64i bench, which has no A extension).
+    pub atomic_loads: u64,
     /// Store requests.
     pub stores: u64,
     /// Side-effect-free physical store-permission requests (zero on the rv64i bench).
@@ -488,6 +491,7 @@ impl<E: Environment> Environment for Counting<'_, E> {
         match request {
             Request::Fetch { .. } | Request::FetchParcel { .. } => self.census.fetches += 1,
             Request::Load { .. } => self.census.loads += 1,
+            Request::AtomicLoad { .. } => self.census.atomic_loads += 1,
             Request::Store { .. } => self.census.stores += 1,
             Request::StorePermission { .. } => self.census.store_permissions += 1,
             Request::WalkAccess { .. } => self.census.walks += 1,

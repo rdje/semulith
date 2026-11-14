@@ -134,6 +134,13 @@ class AuthorityTests(unittest.TestCase):
         return next(form for form in population if isinstance(form, list) and form[0] == head
                     and field(form, "id")[1] == identity)
 
+    def latest_contract(self, forms):
+        """The live contract's newest version, as (id, version): a fixture's next version extends it, so a real
+        new version can never collide with the fixture's (P4-SYSTEM.20 e: version 4 did, as version 3 had)."""
+        contracts = [form for form in forms if isinstance(form, list) and form[0] == "contract"]
+        latest = max(contracts, key=lambda form: int(field(form, "version")[1]))
+        return field(latest, "id")[1], int(field(latest, "version")[1])
+
     def refuses(self, expected="refused", needle=None, mode="audit"):
         result = self.inspect(mode)
         self.assertEqual(result["status"], expected, result)
@@ -328,14 +335,17 @@ class AuthorityTests(unittest.TestCase):
         self.refuses(needle="CONTRACT CYCLE")
         path.write_bytes(original)
         path, forms = self.load("contract")
-        forms += A.S.parse('''(contract (id "rv64gc-lab-env-v4") (version "4")
-          (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v3") (status open)
+        latest, version = self.latest_contract(forms)
+        following = f"rv64gc-lab-env-v{version + 1}"
+        forms += A.S.parse(f'''(contract (id "{following}") (version "{version + 1}")
+          (profile_ids "rv64gc-lab-v0") (extends "{latest}") (status open)
           (statement "owned supersession fixture") (member (id "OB-AI-REPLACEMENT"))
           (supersede (record "OB-GC-M") (by "OB-AI-REPLACEMENT") (why "owned fixture")))''')
         self.save(path, forms)
         obligations, records = self.load("contract-obligations")
         replacement = deepcopy(self.record(records, "obligation", "OB-GC-M"))
-        for name, value in (("id", "OB-AI-REPLACEMENT"), ("contract_id", "rv64gc-lab-env-v4"), ("contract_version", "4")):
+        for name, value in (("id", "OB-AI-REPLACEMENT"), ("contract_id", following),
+                            ("contract_version", str(version + 1))):
             field(replacement, name)[1] = value
         records.append(replacement)
         self.save(obligations, records)

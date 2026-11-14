@@ -18,6 +18,7 @@ use semulith_core::state_rv64gc::{
 use crate::fixtures::{FlatMemory, ScriptedEnv};
 
 mod data_access;
+mod device_regions;
 mod event_delivery;
 mod interrupt_sources;
 mod ordering;
@@ -55,9 +56,11 @@ pub enum BoundaryCheck {
     AddressUnitsPositive,
     /// Wrong units, narrowed addresses and untranslated addresses are violations.
     AddressUnitsNegative,
-    /// Exact B/H/W/D values, low-width stores and whole-region access behavior.
+    /// Exact B/H/W/D values, atomic reads, low-width stores, whole-region access behavior,
+    /// and a declared device region's answers and refusals.
     DataAccessPositive,
-    /// Malformed success shapes and a reversed-byte provider are typed violations.
+    /// Malformed success shapes, a reversed-byte provider and a device that does not refuse
+    /// cleanly are typed violations.
     DataAccessNegative,
     /// Pending evaluation and timer wake occur between instructions.
     EventDeliveryPositive,

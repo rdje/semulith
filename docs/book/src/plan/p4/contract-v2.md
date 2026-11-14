@@ -1,13 +1,13 @@
 # P4.13 — Completing the environment contract
 
-**Status:** All 114 effective checks are bound and exercised. Version 2 has 14 byte-pinned members; full CI passes and P4.13 is closed.
+**Status:** All 116 effective checks are bound and exercised. Version 2 has 14 byte-pinned members and P4.13 is closed; version 4 ([below](#version-4-device-regions-and-the-atomic-read)) admits declared device regions.
 
 The complete instruction set now runs, including multiply/divide and compressed
 instructions. Its contract includes declarations inherited from earlier
 stages. This work checked every effective obligation, filled the remaining boundary
 assumptions, and realized each declared check before freezing version 2.
 
-The effective contract contains 57 obligations and 114 checks. The
+The effective contract contains 58 obligations and 116 checks (57 and 114 until version 4). The
 [runtime witness summary](#runtime-guarantee-witnesses) gives the current realized
 count, derived from the canonical catalog and executable registry by the GS report.
 Instruction guarantees require executable observations. Scope choices require
@@ -305,7 +305,10 @@ violations, and actual GC/scalar/translation paths.
 ## Data widths and physical memory attributes
 
 `OB-GC-ENV-DATA-ACCESS` now supplies the data-width and memory-attribute assumption
-with its own positive and negative registry fixtures. The physical map is
+with its own positive and negative registry fixtures. Version 4 supersedes it with
+`OB-GC-ENV-DATA-ACCESS-V4`, which admits declared device regions and the atomic read
+([below](#version-4-device-regions-and-the-atomic-read)); every fixture in this section
+still runs, under the successor's check ids. The physical map is
 executable little-endian main memory without MMIO. Reads have no memory side
 effects; a store writes its low requested bytes and preserves every other byte.
 Each request completes as a whole or fails as a whole. The selected CPU alignment
@@ -386,7 +389,8 @@ step wakes and delivers, with mepc at WFI's successor, mcycle=4 and minstret=1.
 The only two parcel requests are WFI's original fetch.
 
 The negative pair attempts delivery while answering each of Fetch, FetchParcel,
-Load, Store, StorePermission and WalkAccess. Every real-engine path returns the exact typed
+Load, AtomicLoad (since version 4, as `OB-GC-ENV-EVENT-DELIVERY-V4`), Store,
+StorePermission and WalkAccess; a test fails to compile if a request kind has no attempt. Every real-engine path returns the exact typed
 location violation, preserving PC, mode, destination, trap state, counters and
 memory. Fetch uses the public legacy table seam over the same GC evaluator.
 Disabling the location guard lets every bad schedule escape and makes each
@@ -568,6 +572,110 @@ passes: strict Rust checks, all doctrines, wasm bench, headless smoke and six
 books. P4.14 follows with the owned provenance corrections, structured evidence
 and derived requirement status. This contract milestone grants no reference independence,
 CPU acceptance, board authorization or Linux-boot claim.
+
+## Version 4: device regions and the atomic read
+
+Version 4 (`P4-SYSTEM.20` slice e) is the precondition of any board. Version 2's data-access
+assumption said the map holds main memory and nothing else, "with no MMIO or side-effecting
+reads", and a board's UART or network controller contradicts that. A device region is safe
+only if two things hold: the environment can refuse what a device must never see, and the
+hart reads it exactly as often as the program does.
+
+**Measured first.** A census of every step of the 210 tracked guests, each boundary request
+counted by kind, found the hart already reads once. It also found the gap: LR and every AMO
+read with a plain `Load`, so an environment could not tell an atomic access from a load
+before reading. Two AMO steps read, and then had their store refused. On a device, that read
+would already have happened.
+
+**The boundary gains `AtomicLoad`.** LR, and the read half of each AMO, cross as
+`Request::AtomicLoad { width, addr }`. Main memory answers it exactly as it answers a load,
+with `Response::Load(raw)` under the same raw-width rule, so nothing a guest observes moves:
+all 210 guests compare as before. Only the request kind changed:
+
+```text
+AMOADD.W x10, x11, (x5)      before version 4                version 4
+  read                       Load { W, 0x1040 }        ->    AtomicLoad { W, 0x1040 }
+  write                      Store { W, 0x1040, new }        Store { W, 0x1040, new }
+```
+
+**What a device region does.** `OB-GC-ENV-DATA-ACCESS-V4` keeps every main-memory rule of
+version 2 and adds the region:
+
+| Request touching a device region | The region's answer | What the hart delivers |
+| --- | --- | --- |
+| `Load` / `Store` of a declared width, aligned, wholly inside | the device's value / the write, with its side effect | the load's value; the store retires |
+| `AtomicLoad` (LR, an AMO) | access fault, no side effect | cause 5 for LR, 7 for an AMO |
+| `StorePermission` (an SC with no matching reservation) | access fault, no side effect | cause 7 |
+| `Fetch` / `FetchParcel` | access fault, no side effect | cause 1 |
+| `WalkAccess` (a page table in the region) | access fault, no side effect | the original access's fault: 1, 5 or 7 |
+| a width or extent the region does not declare | access fault, no side effect | the access's fault |
+
+So no instruction is fetched from a device, no page table lives in one, and no atomic
+touches one. That includes SC: its permission check is refused too, because a device can
+hold no reservation (LR to it is refused first). The laboratory itself still declares no
+device region. The fixture plays the board.
+
+**The fixture.** One page-aligned 4 KiB region at `0x4000_0000`, whose register returns
+`0x10`, `0x11`, … and advances on every read, a FIFO's shape. A second read therefore shows
+in the value as well as in the count. With x5 pointing at it:
+
+| Instruction | Outcome | Device after |
+| --- | --- | --- |
+| `LW x6, 0(x5)`, twice | x6 = `0x10`, then `0x11` | 2 reads |
+| `SW x6, 0(x5)` | retires | 1 write of `0x1234` |
+| `LR.W x6, (x5)` | cause 5, mtval `0x4000_0000`, x6 unchanged, no reservation | untouched |
+| `AMOADD.W x6, x7, (x5)` | cause 7, x6 unchanged, nothing stored | untouched |
+| `SC.W x6, x7, (x5)` | cause 7, x6 unchanged | untouched |
+| `LB x6, 0(x5)` (undeclared width) | cause 5 | untouched |
+| pc in the region | cause 1, mtval `0x4000_0000` | untouched |
+| S-mode, satp's root in the region | cause 1 at the fetch's VA | untouched |
+
+The engine as it stood before version 4 fails that table on its first refused row: its LR
+completes with x6 = `0x10` and the device has been read once. That run was made, against
+the tracked fixture.
+
+The negative is a fixture-only auditor. Its witness is the region map, and it names a
+device that answers, or takes a side effect for, a request it had to refuse, as
+`ContractViolation::DeviceRefusalBroken { request }`. Four non-conforming devices are caught:
+one that answers LR's, an AMO's and SC's request, and one that refuses LR only after reading.
+In each case the hart is left as it was. With the auditor disabled, the first of them lets an
+LR read the device.
+
+**The read-once guarantee.** A new CPU guarantee, `OB-GC-READ-ONCE`: the hart issues at most
+one data read per explicit read instruction, and none for any other. A load issues at most
+one `Load`. LR and each AMO issue at most one `AtomicLoad`, never a plain `Load`, and an AMO
+stores only after its read. SC, every other instruction and an unfetched step issue no data
+read, and an access that faults first issues none. Its realized check is the census above,
+kept as a tracked test over every guest. Each step is classified from its own fetched bits
+by the pinned opcode map, not by the engine's decoder:
+
+| Step's instruction | Steps | Steps that read |
+| --- | --- | --- |
+| load (integer, FP, compressed) | 335 | 287, one `Load` each |
+| LR | 58 | 50, one `AtomicLoad` each |
+| AMO | 76 | 61, one `AtomicLoad` each (59 then stored; 2 had the store refused) |
+| SC | 67 | 0 |
+| any other | 9,516 | 0 |
+| no instruction fetched | 39 | 0 |
+
+The negative cannot rebuild the engine. It models each defect as the boundary sees it, with
+an adapter on the engine's side of the recorder, and predicts the count from the clean
+census before running. Repeating every data read must be named on all 398 reading steps,
+and it is. Sending an atomic read as a plain `Load`, as the engine did before, must be named
+on all 111 LR and AMO steps that read, and it is. Reverting only the engine's AMO arm makes
+the positive fail on exactly 61 steps.
+
+**The counts.** Three members: `OB-GC-ENV-DATA-ACCESS-V4`, `OB-GC-ENV-EVENT-DELIVERY-V4` (the
+same rule, with `AtomicLoad` in the list of requests no event may interrupt) and
+`OB-GC-READ-ONCE`. Two supersessions, so 58 effective obligations and 116 realized checks.
+The two superseded records' checks moved to their successors with their evidence, as
+version 3's did.
+
+**What version 4 does not do.** It supplies no interrupt source: MTIP and MEIP still read
+zero (`OB-GC-ENV-INTERRUPT-SOURCES-V2`). Which timer and interrupt controller a board needs is
+the firmware's question, and `P6-LINUX` has not selected one, so those sources wait for a
+later version. The census is finite: the corpus's guests and the forms they reach, not every
+program. A device's own behaviour is its model's contract (`P5-BOARD`), not the CPU's.
 
 ## Historical verification receipts
 

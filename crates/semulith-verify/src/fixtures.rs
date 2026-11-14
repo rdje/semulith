@@ -146,6 +146,7 @@ impl Environment for FlatMemory {
             Request::Fetch { addr } => (addr, AccessWidth::W),
             Request::FetchParcel { addr } => (addr, AccessWidth::H),
             Request::Load { width, addr }
+            | Request::AtomicLoad { width, addr }
             | Request::Store { width, addr, .. }
             | Request::StorePermission { width, addr } => (addr, width),
             Request::WalkAccess { addr } => (addr, AccessWidth::D),
@@ -176,7 +177,11 @@ impl Environment for FlatMemory {
                 self.fetch_count += 1;
                 Ok(Response::FetchParcel(self.read(addr, AccessWidth::H) as u16))
             }
-            Request::Load { .. } => Ok(Response::Load(self.read(addr, width))),
+            // Main memory has no read side effect, so an atomic read is answered exactly
+            // as a load is (`rv64gc-lab-env-v4`: only a device region tells them apart).
+            Request::Load { .. } | Request::AtomicLoad { .. } => {
+                Ok(Response::Load(self.read(addr, width)))
+            }
             Request::Store { data, .. } => {
                 self.write(addr, width, data);
                 Ok(Response::StoreDone)

@@ -253,7 +253,7 @@ fn aligned(bytes: u32, ordering: u32, context: Context, rd: u32) -> Result<(), S
             fixture
                 .expected
                 .requests
-                .push(Request::Load { width, addr: DATA });
+                .push(Request::AtomicLoad { width, addr: DATA });
             fixture.expected.reservation.establish(DATA, bytes as u8);
             if rd != 0 {
                 fixture.expected.x[rd as usize] = if bytes == 4 {

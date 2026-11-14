@@ -12,6 +12,7 @@ mod fence_i;
 mod floating;
 mod jalr;
 mod load_x0;
+mod read_once;
 mod walk;
 mod xlen;
 
@@ -54,6 +55,10 @@ pub enum ExecutionCheck {
     CountersPositive,
     /// Closed counter gates preserve destination/state and retire no instruction.
     CountersNegative,
+    /// Every step of the tracked corpus reads at most once per explicit read, as its kind.
+    ReadOncePositive,
+    /// A repeated read and an atomic read sent as a load are each named on every step.
+    ReadOnceNegative,
     /// All 22 atomic forms with literal data, aliases and exact boundary effects.
     AtomicsPositive,
     /// Failed conditional stores and translated/physical AMO faults.
@@ -131,6 +136,10 @@ impl ExecutionCheck {
             }
             Self::CountersPositive => &["mm-counters"],
             Self::CountersNegative => &["mm-counters", "mm-csr-ro-counters"],
+            // The census runs every guest; these companions read through each class,
+            // and the negative's fault before their read, so they issue none.
+            Self::ReadOncePositive => &["scope-mem", "a-lrsc-pair", "a-amo-arith-d"],
+            Self::ReadOnceNegative => &["fault-ld-x0-fault", "a-lrsc-fault"],
             Self::AtomicsPositive => &[
                 "a-amo-arith-w",
                 "a-amo-arith-d",
@@ -173,6 +182,8 @@ impl ExecutionCheck {
             Self::CsrAccessNegative => csr_access::negative(),
             Self::CountersPositive => counters::positive(),
             Self::CountersNegative => counters::negative(),
+            Self::ReadOncePositive => read_once::positive(),
+            Self::ReadOnceNegative => read_once::negative(),
             Self::AtomicsPositive => atomics::positive(),
             Self::AtomicsNegative => atomics::negative(),
             Self::FenceIPositive => fence_i::positive(),

@@ -32,6 +32,11 @@
 //! check without a data access. Failed SC must pass it before retirement; successful
 //! SC uses Store's existing permission check. Its only success is StorePermitted.
 //!
+//! V4 additionally offers [`Request::AtomicLoad`], the read of LR and of an AMO, so a
+//! declared device region can refuse an atomic access before any side-effecting read
+//! (`rv64gc-lab-env-v4`'s `OB-GC-ENV-DATA-ACCESS-V4`). Main memory answers it exactly as
+//! it answers [`Request::Load`], with [`Response::Load`] under the same raw-width rule.
+//!
 //! Little-endian throughout (REQ-D-ENDIAN, an execution-environment choice this profile
 //! pins).
 
@@ -96,6 +101,18 @@ pub enum Request {
         /// Byte address; must be aligned to `width`.
         addr: u64,
     },
+    /// The explicit read of an atomic instruction — LR, or the read half of an AMO — of
+    /// `width` bits at `addr`. A kind of its own, never a plain [`Request::Load`], so an
+    /// environment can tell an atomic access from a load before it reads: a declared
+    /// device region refuses it with an access fault and no side effect. Main memory
+    /// answers it as it answers `Load`, with [`Response::Load`]. `rv64gc-lab-env-v4` owns
+    /// this additive boundary operation (`P4-SYSTEM.20` slice e).
+    AtomicLoad {
+        /// Width of the access: `W` or `D`, the A extension's two.
+        width: AccessWidth,
+        /// Physical byte address; must be aligned to `width`.
+        addr: u64,
+    },
     /// An explicit write of the low `width` bits of `data` at `addr`.
     Store {
         /// Width of the access.
@@ -136,9 +153,9 @@ pub enum Response {
     Fetch(u32),
     /// Exactly one 16-bit instruction parcel, without sign extension.
     FetchParcel(u16),
-    /// The read value: exactly `width` raw bits, little-endian assembled, **not**
-    /// extended — sign/zero extension into XLEN is the instruction layer's rule
-    /// (REQ-D-LOAD-EXT), not the boundary's.
+    /// The read value of a [`Request::Load`] or a [`Request::AtomicLoad`]: exactly `width`
+    /// raw bits, little-endian assembled, **not** extended — sign/zero extension into XLEN
+    /// is the instruction layer's rule (REQ-D-LOAD-EXT), not the boundary's.
     Load(u64),
     /// The store completed.
     StoreDone,
@@ -153,9 +170,11 @@ pub enum Response {
 /// outcomes. Never model errors (SEM-01).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Failure {
-    /// The access touches no declared region (OB-ADDRESS-SPACE). Every declared region is
-    /// main memory (OB-MAIN-VS-IO), so access-fault is never substituted for a
-    /// side-effecting region's behavior.
+    /// The access touches no declared region (OB-ADDRESS-SPACE). Every region the
+    /// laboratory declares is main memory (OB-MAIN-VS-IO), so access-fault is never
+    /// substituted for a side-effecting region's behavior. Under `rv64gc-lab-env-v4` a
+    /// declared device region also answers an `AtomicLoad`, a fetch or a walk read with
+    /// it, before any side effect.
     AccessFault,
     /// The access is not aligned to its width (OB-MISALIGN-DATA — raised, not handled
     /// invisibly, in this profile).
@@ -205,6 +224,15 @@ pub enum ContractViolation {
         /// The provider's unmodified response.
         arrived: Response,
     },
+    /// A fixture auditor saw a declared device region answer a request it must refuse — an
+    /// atomic read, a store-permission check, a fetch, a page-table read, or an access of a
+    /// width or extent the region does not declare — or take a side effect while refusing
+    /// one (`rv64gc-lab-env-v4`'s `OB-GC-ENV-DATA-ACCESS-V4`). The CPU cannot infer this
+    /// from the answer's shape: the region map is the auditor's witness.
+    DeviceRefusalBroken {
+        /// The request the region had to refuse without a side effect.
+        request: Request,
+    },
     /// A scripted environment was asked something its script does not say: the scripted
     /// request and the request that arrived differ. `scripted` is what the fixture was
     /// told to expect, `arrived` is what crossed the boundary.
@@ -252,8 +280,8 @@ pub trait Environment {
 /// Cross the CPU boundary and validate its success answer in one place.
 ///
 /// Target-facing failures and already typed violations pass through unchanged.
-/// Wrong answer kinds and over-wide raw loads are provider contract violations;
-/// they must not become target exceptions or silently truncated usable data.
+/// Wrong answer kinds and over-wide raw loads — plain or atomic — are provider contract
+/// violations; they must not become target exceptions or silently truncated usable data.
 pub fn request_checked<E: Environment + ?Sized>(
     env: &mut E,
     request: Request,
@@ -262,7 +290,9 @@ pub fn request_checked<E: Environment + ?Sized>(
     let kind_matches = match request {
         Request::Fetch { .. } => matches!(response, Response::Fetch(_)),
         Request::FetchParcel { .. } => matches!(response, Response::FetchParcel(_)),
-        Request::Load { .. } => matches!(response, Response::Load(_)),
+        Request::Load { .. } | Request::AtomicLoad { .. } => {
+            matches!(response, Response::Load(_))
+        }
         Request::Store { .. } => matches!(response, Response::StoreDone),
         Request::StorePermission { .. } => matches!(response, Response::StorePermitted),
         Request::WalkAccess { .. } => matches!(response, Response::WalkAccess(_)),
@@ -270,7 +300,11 @@ pub fn request_checked<E: Environment + ?Sized>(
     if !kind_matches {
         return Err(ContractViolation::WrongResponseKind { request, response }.into());
     }
-    if let (Request::Load { width, .. }, Response::Load(value)) = (request, response) {
+    if let (
+        Request::Load { width, .. } | Request::AtomicLoad { width, .. },
+        Response::Load(value),
+    ) = (request, response)
+    {
         if width.bits() < 64 && value >> width.bits() != 0 {
             return Err(ContractViolation::LoadValueOutOfWidth { width, value }.into());
         }

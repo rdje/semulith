@@ -49,9 +49,9 @@ impl<E: Environment> Environment for CountFetches<'_, E> {
 /// a declared refusal names and whose bytes intersect its region is answered with an access
 /// fault — the environment refusing, never a hook inside an instruction. Everything else
 /// forwards untouched.
-struct Refusing<'a> {
-    inner: &'a mut FlatMemory,
-    refusals: &'a [Refusal],
+pub(crate) struct Refusing<'a> {
+    pub(crate) inner: &'a mut FlatMemory,
+    pub(crate) refusals: &'a [Refusal],
 }
 
 /// The bytes a request touches, and the refusal kind it answers to.
@@ -59,7 +59,11 @@ fn request_span(request: &Request) -> (RefusalKind, u64, u64) {
     match *request {
         Request::Fetch { addr } => (RefusalKind::Fetch, addr, 4),
         Request::FetchParcel { addr } => (RefusalKind::Fetch, addr, 2),
-        Request::Load { width, addr } => (RefusalKind::Load, addr, width.bytes()),
+        // An atomic read is an explicit read, so a `load` refusal answers it too — the
+        // generated vocabulary's own reading of the kind, as `store` covers StorePermission.
+        Request::Load { width, addr } | Request::AtomicLoad { width, addr } => {
+            (RefusalKind::Load, addr, width.bytes())
+        }
         Request::Store { width, addr, .. } | Request::StorePermission { width, addr } => {
             (RefusalKind::Store, addr, width.bytes())
         }

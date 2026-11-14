@@ -155,11 +155,14 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     // and c8–c12's privilege-mode/Sv39/Svade/alignment/counter witnesses.
     // v3 restated four guarantees for their requirements: each check moved to its successor with its
     // evidence (P4-SYSTEM.14 a43e-2), so the four superseded records declare what nothing runs any more.
-    const RESTATED: [&str; 4] = [
+    // v4 superseded two assumptions for device regions and the atomic read the same way (P4-SYSTEM.20 e).
+    const RESTATED: [&str; 6] = [
         "OB-GC-FP-QUALIFIED-V2",
         "OB-GC-DEFINITION-V2",
         "OB-GC-ECALL-EBREAK-V1",
         "OB-GC-PRIV-INSNS-V1",
+        "OB-GC-ENV-DATA-ACCESS",
+        "OB-GC-ENV-EVENT-DELIVERY",
     ];
     let declared = declared_checks(|l| {
         if RESTATED
@@ -210,7 +213,7 @@ fn every_check_bound_through_the_scope_slice_is_realized() {
     });
     assert_eq!(
         declared.len(),
-        116,
+        118,
         "every declared POS/NEG check of the completed slices is selected"
     );
     for (ob, chk) in declared {

@@ -55,6 +55,9 @@ impl Environment for Memory {
             Request::StorePermission { .. } => {
                 panic!("C-only instruction probe must not issue an SC permission check")
             }
+            Request::AtomicLoad { .. } => {
+                panic!("C-only instruction probe must not issue an atomic read")
+            }
             Request::WalkAccess { addr } => Ok(Response::WalkAccess(self.read(addr, 8)?)),
         }
     }

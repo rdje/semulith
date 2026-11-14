@@ -569,7 +569,7 @@ fn ordinary(
     f.expected = Observation::capture(&mut f.hart, &f.observer, true);
     f.fetch();
     if function == 2 {
-        f.expected.requests.push(Request::Load {
+        f.expected.requests.push(Request::AtomicLoad {
             width: width(n),
             addr: DATA,
         });
@@ -599,7 +599,7 @@ fn ordinary(
             .iter()
             .position(|v| *v == function)
             .expect("closed nine");
-        f.expected.requests.push(Request::Load {
+        f.expected.requests.push(Request::AtomicLoad {
             width: width(n),
             addr: DATA,
         });
@@ -627,7 +627,8 @@ fn translated(function: u32, n: u32, order: u32, leaf_flags: u64, fail: u8) -> F
             .memory
             .load_image((address - ENTRY) as usize, &data.to_le_bytes());
     }
-    let load = Request::Load {
+    // An AMO reads as an atomic read, its own boundary kind (`rv64gc-lab-env-v4`).
+    let read = Request::AtomicLoad {
         width: width(n),
         addr: PA,
     };
@@ -642,7 +643,7 @@ fn translated(function: u32, n: u32, order: u32, leaf_flags: u64, fail: u8) -> F
         data: new,
     };
     f.observer.fail = match fail {
-        1 => Some(load),
+        1 => Some(read),
         2 => Some(store),
         _ => None,
     };
@@ -670,7 +671,7 @@ fn translated(function: u32, n: u32, order: u32, leaf_flags: u64, fail: u8) -> F
             d: true,
             level: 0,
         });
-        f.expected.requests.push(load);
+        f.expected.requests.push(read);
         if fail == 1 {
             f.trap(7, VA);
         } else if fail == 2 {

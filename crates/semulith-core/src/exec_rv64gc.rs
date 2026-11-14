@@ -787,7 +787,11 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                match crate::env::request_checked(self.env, Request::Load { width, addr: pa }) {
+                // LR reads as an ATOMIC read, a boundary kind of its own, so a device
+                // region can refuse it before any side-effecting read
+                // (`rv64gc-lab-env-v4`, `P4-SYSTEM.20` slice e)
+                match crate::env::request_checked(self.env, Request::AtomicLoad { width, addr: pa })
+                {
                     Ok(Response::Load(v)) => {
                         // a COMPLETED LR registers the reservation — any LR replaces
                         // (decision 4); the faulting paths above establish nothing
@@ -796,7 +800,8 @@ impl Frame<'_> {
                     }
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
-                            what: "environment answered a Load with a non-load response",
+                            what:
+                                "environment answered an LR's atomic read with a non-load response",
                         });
                         (0, 64)
                     }
@@ -946,17 +951,20 @@ impl Frame<'_> {
                         return (0, 64);
                     }
                 };
-                // The boundary pair (decision 5): a load followed by a store to the
-                // same address — the nine operations are the model's, never the
-                // environment's (a Request::Atomic variant would push them there).
+                // The boundary pair (decision 5): an atomic read followed by a store to
+                // the same address — the nine operations are the model's, never the
+                // environment's (a Request::Atomic variant would push them there). The
+                // read is an `AtomicLoad`, not a plain `Load`, so a device region refuses
+                // the AMO before it reads anything (`rv64gc-lab-env-v4`).
                 let old = match crate::env::request_checked(
                     self.env,
-                    Request::Load { width, addr: pa },
+                    Request::AtomicLoad { width, addr: pa },
                 ) {
                     Ok(Response::Load(v)) => v,
                     Ok(_) => {
                         self.failed = Some(ModelError::InvalidDescription {
-                            what: "environment answered an AMO's load with a non-load response",
+                            what:
+                                "environment answered an AMO's atomic read with a non-load response",
                         });
                         return (0, 64);
                     }

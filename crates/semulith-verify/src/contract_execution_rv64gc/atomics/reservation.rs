@@ -125,7 +125,7 @@ impl Plan {
                 if let Some(va) = walk {
                     mapped(expected, va, pa);
                 }
-                expected.requests.push(Request::Load {
+                expected.requests.push(Request::AtomicLoad {
                     width: width(n),
                     addr: pa,
                 });
@@ -195,7 +195,7 @@ impl Plan {
             2 => store(expected, DATA, 8, expected.f[15]),
             3 => {
                 let old = memory_value(expected, DATA, n);
-                expected.requests.push(Request::Load {
+                expected.requests.push(Request::AtomicLoad {
                     width: width(n),
                     addr: DATA,
                 });
@@ -234,7 +234,12 @@ impl Plan {
             data: last
                 .requests
                 .iter()
-                .filter(|r| matches!(r, Request::Load { .. } | Request::Store { .. }))
+                .filter(|r| {
+                    matches!(
+                        r,
+                        Request::Load { .. } | Request::AtomicLoad { .. } | Request::Store { .. }
+                    )
+                })
                 .count(),
             permissions: last
                 .requests
@@ -434,7 +439,7 @@ fn bare_faults_over(table: &[InsnDef]) -> Result<(), String> {
                                         .establish(address, n as u8);
                                 }
                                 let request = if function == 2 {
-                                    Request::Load {
+                                    Request::AtomicLoad {
                                         width: width(n),
                                         addr: address,
                                     }
@@ -553,7 +558,7 @@ fn translated_faults_over(table: &[InsnDef]) -> Result<(), String> {
                             plan.fixture.expected.reservation.establish(PA, n as u8);
                         }
                         let request = if function == 2 {
-                            Request::Load {
+                            Request::AtomicLoad {
                                 width: width(n),
                                 addr: PA,
                             }

@@ -73,6 +73,21 @@ impl Environment for OneAnswer {
     }
 }
 
+/// The success kind each request kind accepts, by index into the response list below.
+/// Exhaustive by construction: a new request kind fails to compile here until its
+/// answer is chosen.
+fn answer_index(request: Request) -> usize {
+    match request {
+        Request::Fetch { .. } => 0,
+        Request::FetchParcel { .. } => 1,
+        // An atomic read is answered as a load is (`rv64gc-lab-env-v4`).
+        Request::Load { .. } | Request::AtomicLoad { .. } => 2,
+        Request::Store { .. } => 3,
+        Request::WalkAccess { .. } => 4,
+        Request::StorePermission { .. } => 5,
+    }
+}
+
 #[test]
 fn every_response_kind_is_paired_with_only_its_request_kind() {
     let requests = [
@@ -81,6 +96,10 @@ fn every_response_kind_is_paired_with_only_its_request_kind() {
         Request::Load {
             width: AccessWidth::B,
             addr: 0x2003,
+        },
+        Request::AtomicLoad {
+            width: AccessWidth::W,
+            addr: 0x2004,
         },
         Request::Store {
             width: AccessWidth::D,
@@ -101,13 +120,13 @@ fn every_response_kind_is_paired_with_only_its_request_kind() {
         Response::WalkAccess(u64::MAX),
         Response::StorePermitted,
     ];
-    for (i, request) in requests.into_iter().enumerate() {
+    for request in requests {
         for (j, response) in responses.into_iter().enumerate() {
             let mut env = OneAnswer {
                 answer: Ok(response),
                 seen: vec![],
             };
-            let expected = if i == j {
+            let expected = if answer_index(request) == j {
                 Ok(response)
             } else {
                 Err(BoundaryError::Violation(
@@ -129,6 +148,25 @@ fn every_response_kind_is_paired_with_only_its_request_kind() {
 }
 
 #[test]
+fn an_atomic_read_is_a_kind_of_its_own_answered_as_a_load() {
+    // The point of the kind: an environment can tell an atomic read from a load before it
+    // reads. The two never compare equal, at any width or address.
+    for width in [AccessWidth::W, AccessWidth::D] {
+        let atomic = Request::AtomicLoad {
+            width,
+            addr: 0x2000,
+        };
+        assert_ne!(
+            atomic,
+            Request::Load {
+                width,
+                addr: 0x2000
+            }
+        );
+    }
+}
+
+#[test]
 fn raw_load_width_edges_are_checked_without_truncating_or_rejecting_full_width() {
     for (width, maximum, first_invalid) in [
         (AccessWidth::B, 0xff, Some(0x100)),
@@ -136,33 +174,46 @@ fn raw_load_width_edges_are_checked_without_truncating_or_rejecting_full_width()
         (AccessWidth::W, 0xffff_ffff, Some(0x1_0000_0000)),
         (AccessWidth::D, u64::MAX, None),
     ] {
-        let request = Request::Load {
-            width,
-            addr: 0x4000,
+        for request in [
+            Request::Load {
+                width,
+                addr: 0x4000,
+            },
+            Request::AtomicLoad {
+                width,
+                addr: 0x4000,
+            },
+        ] {
+            raw_width_edges(request, width, maximum, first_invalid);
+        }
+    }
+}
+
+/// One request kind's raw-width edges: the widest valid value passes untruncated, the
+/// first over-wide value is a violation. Plain and atomic reads share the rule.
+fn raw_width_edges(request: Request, width: AccessWidth, maximum: u64, first_invalid: Option<u64>) {
+    for value in [0, maximum] {
+        let mut env = OneAnswer {
+            answer: Ok(Response::Load(value)),
+            seen: vec![],
         };
-        for value in [0, maximum] {
+        assert_eq!(
+            request_checked(&mut env, request),
+            Ok(Response::Load(value))
+        );
+    }
+    if let Some(first) = first_invalid {
+        for value in [first, u64::MAX] {
             let mut env = OneAnswer {
                 answer: Ok(Response::Load(value)),
                 seen: vec![],
             };
             assert_eq!(
                 request_checked(&mut env, request),
-                Ok(Response::Load(value))
+                Err(BoundaryError::Violation(
+                    ContractViolation::LoadValueOutOfWidth { width, value }
+                ))
             );
-        }
-        if let Some(first) = first_invalid {
-            for value in [first, u64::MAX] {
-                let mut env = OneAnswer {
-                    answer: Ok(Response::Load(value)),
-                    seen: vec![],
-                };
-                assert_eq!(
-                    request_checked(&mut env, request),
-                    Err(BoundaryError::Violation(
-                        ContractViolation::LoadValueOutOfWidth { width, value }
-                    ))
-                );
-            }
         }
     }
 }

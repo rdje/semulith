@@ -1,7 +1,8 @@
 # `rv64gc-lab-env` — the environment contract for `rv64gc-lab-v0`
 
 Contract ids: `rv64gc-lab-env-v0`, `rv64gc-lab-env-v1` (extends v0), `rv64gc-lab-env-v2`
-(extends v1), and `rv64gc-lab-env-v3` (frozen, extends v2).
+(extends v1), `rv64gc-lab-env-v3` (frozen, extends v2), and `rv64gc-lab-env-v4` (frozen, extends
+v3: declared device regions, the atomic read, and the read-once guarantee).
 The records live one per line in [`contract-obligations.sexp`](contract-obligations.sexp)
 and its explicitly included [v0](contract-v0.obligations.sexp) and
 [v1](contract-v1.obligations.sexp) parts; which
@@ -90,6 +91,8 @@ negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
 | v0 | frozen | 46 | everything `P4-SYSTEM.1`–`.8` declared — every one a CPU guarantee, the 13 rv64i base mirrors among them |
 | v1 | frozen at `.9`'s close | 6 (+ v0's, minus 2 superseded) | the four environment assumptions below, and two corrections |
 | v2 | frozen at `.13` c36 | 14 pinned members; inherits v1 with seven supersessions | M, C, parcel supply, qualified FP, current route, fault priority, byte addresses, data access, events, ordering, cold reset, STCE sources, qualified reservations and SC |
+| v3 | frozen at `.14` a43e-2 | 4 pinned members; four supersessions | no new guarantee: four successors state what their requirements state |
+| v4 | frozen at `.20` slice e | 3 pinned members; two supersessions | declared device regions and `AtomicLoad` (`OB-GC-ENV-DATA-ACCESS-V4`), the atomic read in the event rule (`OB-GC-ENV-EVENT-DELIVERY-V4`), and the read-once CPU guarantee (`OB-GC-READ-ONCE`) |
 
 ## The boundary inventory, dispositioned (`docs/CPU_ENVIRONMENT.md` §2)
 
@@ -103,8 +106,9 @@ negative controls and platform limits: `docs/book/src/plan/p4/c.md`.
 | Partial progress | **in scope** | `OB-GC-PARTIAL-PROGRESS` (v0, `.8`): every instruction completes or faults as a unit |
 | Fetch | **in scope — 16-bit parcels** | `OB-GC-ENV-FETCH-SUPPLY` (v2): exact requested executable bytes or a declared access failure; no extraneous fetch or side effect |
 | Address units | **in scope — physical 8-bit bytes** | `OB-GC-ENV-ADDRESS-UNITS` (v2): full unsigned 64-bit addresses; translated instruction/data accesses and physical PTE reads; direct typed pair |
-| Data widths/attributes | **in scope — B/H/W/D, little-endian main memory** | `OB-GC-ENV-DATA-ACCESS` (v2): whole responses, low-width stores, executable bytes, no MMIO; direct typed pair |
-| Event delivery | **in scope — between steps** | `OB-GC-ENV-EVENT-DELIVERY` (v2): pending/wake before fetch; typed guard rejects in-request attempts; no external source added |
+| Data widths/attributes | **in scope — B/H/W/D, little-endian main memory; declared device regions admitted** | `OB-GC-ENV-DATA-ACCESS-V4` (v4): whole responses, low-width stores, executable main memory; an atomic read is its own kind, answered as a load; a device region answers declared-width loads and stores and refuses atomic reads, store-permission checks, fetches and walks without side effect; the laboratory declares none; direct typed pair with a device fixture and auditor |
+| Event delivery | **in scope — between steps** | `OB-GC-ENV-EVENT-DELIVERY-V4` (v4): pending/wake before fetch; typed guard rejects in-request attempts during every request kind, `AtomicLoad` included; no external source added |
+| Data reads | **in scope — once per explicit read** | `OB-GC-READ-ONCE` (v4): at most one `Load` per load, one `AtomicLoad` per LR or AMO, none for anything else; realized by a census over every step of the tracked corpus |
 | Ordering | **in scope — synchronous one-hart realization** | `OB-GC-ENV-ORDERING` (v2): latest preceding stores, consecutive AMO suboperations, coherent parcels; direct typed pair, no exhaustive weak-outcome claim |
 | Reset | **in scope — full cold state** | `OB-GC-ENV-RESET` (v2): complete owner/view and image witnesses before fetch; no warm reset |
 
@@ -136,8 +140,8 @@ The registry realizes `CHK-GC-C-POS` / `-NEG` over all 28 new C guests and
 `CHK-GC-ENV-FETCH-SUPPLY-POS` / `-NEG` over page-end/link and straddle/fetch-fault
 fixtures. Across the full registry, [GS-REPORT.md](GS-REPORT.md) derives the
 effective realization census from the canonical catalog and registered checks.
-All 114 effective checks are realized; G-CONTRACT is green with frozen v3.
-Frozen v0, v1 and v2 text and pins are unchanged. The GS report names CPU-SYSTEM's open axes.
+All 116 effective checks are realized; G-CONTRACT is green with frozen v4.
+Frozen v0 to v3 text and pins are unchanged. The GS report names CPU-SYSTEM's open axes.
 
 ## Supersessions (v1 corrects v0 without rewriting it)
 
@@ -162,6 +166,25 @@ requirement now states, and the check keeps its evidence under the new id:
 
 RECORD-SCHEMA allows a frozen record to differ from its requirement only through an authenticated
 route to an effective record that names the same requirement and states the same fact.
+
+## Device regions and the atomic read (v4)
+
+A board's devices contradict v2's map of main memory alone, and an atomic read that crossed as a
+plain `Load` could not be refused before it read: measured at `0a2574c6`, LR and every AMO issued
+`Load`, and two AMO steps read before their store was refused (`P4-SYSTEM.20` slice e's brief,
+`docs/decisions/decision_device-regions-need-an-atomic-read-kind.md`).
+Version 4 supersedes two assumptions and adds one guarantee:
+
+| v2 record (frozen) | Superseded by | Why |
+| --- | --- | --- |
+| `OB-GC-ENV-DATA-ACCESS` | `OB-GC-ENV-DATA-ACCESS-V4` | the map may hold declared device regions, which refuse `AtomicLoad`, `StorePermission`, `Fetch`, `FetchParcel` and `WalkAccess` with an access fault and no side effect |
+| `OB-GC-ENV-EVENT-DELIVERY` | `OB-GC-ENV-EVENT-DELIVERY-V4` | the list of requests an event may never interrupt gains `AtomicLoad` |
+
+`OB-GC-READ-ONCE` is new: the hart reads a side-effecting region exactly as often as the program
+does. Its census and the device fixture are described, with worked values, in
+the contract chapter (`docs/book/src/plan/p4/contract-v2.md`, "Version 4: device regions and the atomic read").
+MTIP and MEIP sources are not in v4: `P6-LINUX` has not selected the firmware whose needs would
+name them.
 
 ## Positive and negative fixtures
 
@@ -194,7 +217,8 @@ pairs, including v2's direct interrupt-source check.
 ## What is deliberately not here
 
 - **Interrupt sources a platform supplies** (a CLINT's MTIP/MSIP, a PLIC's MEIP): a later contract
-  version, the board's (`P5-BOARD`) — v1's environment supplies none.
+  version, the board's (`P5-BOARD`) — v1's environment supplies none, and v4 admits device regions
+  without adding a source, since `P6-LINUX`'s firmware, which would name the sources, is unselected.
 - **External reservation invalidation** (another hart, a device): `MC-MULTICORE`, as "a new
   contract version; the single-core contract is not edited in place".
 - **The G-CONTRACT verdict**: `P4-SYSTEM.10`'s gate report.

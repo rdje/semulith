@@ -1,4 +1,5 @@
-//! Hand-selected memory witnesses for OB-GC-ENV-DATA-ACCESS.
+//! Hand-selected memory witnesses for `OB-GC-ENV-DATA-ACCESS-V4`: main memory, the atomic
+//! read it answers as a load, and (in `device_regions`) a declared device region.
 
 use semulith_core::env::{
     request_checked, AccessWidth, BoundaryError, ContractViolation, Environment, Request, Response,
@@ -53,6 +54,16 @@ pub(super) fn positive() -> Result<(), String> {
                     "{width:?}: raw value differs from the byte witness"
                 ));
             }
+        }
+        // Main memory answers an atomic read exactly as it answers a load, with no effect.
+        if matches!(width, AccessWidth::W | AccessWidth::D)
+            && (request_checked(&mut memory, Request::AtomicLoad { width, addr: DATA })
+                != Ok(Response::Load(raw))
+                || memory.bytes() != before)
+        {
+            return Err(format!(
+                "{width:?}: an atomic read differs from the load's raw value"
+            ));
         }
         let fetches = memory.fetch_count();
         if request_checked(&mut memory, Request::StorePermission { width, addr: DATA })
@@ -157,7 +168,7 @@ pub(super) fn positive() -> Result<(), String> {
             "content auditor rejected its valid byte witness: {outcome:?}"
         ));
     }
-    Ok(())
+    super::device_regions::positive()
 }
 
 fn memory_for_fault(word: u32, bytes: usize) -> FlatMemory {
@@ -173,9 +184,10 @@ struct AnswerProvider {
 impl Environment for AnswerProvider {
     fn request(&mut self, request: Request) -> Result<Response, BoundaryError> {
         match request {
-            Request::Load { .. } | Request::Store { .. } | Request::StorePermission { .. } => {
-                Ok(self.answer)
-            }
+            Request::Load { .. }
+            | Request::AtomicLoad { .. }
+            | Request::Store { .. }
+            | Request::StorePermission { .. } => Ok(self.answer),
             _ => self.memory.request(request),
         }
     }
@@ -263,7 +275,27 @@ pub(super) fn negative() -> Result<(), String> {
             )?;
         }
     }
-    endian_violation(true)
+    // An atomic read is held to the load's answer rules: LR.W and LR.D x6,(x5).
+    for (word, width) in [(0x1002_a32f, AccessWidth::W), (0x1002_b32f, AccessWidth::D)] {
+        require_violation(
+            word,
+            Response::StoreDone,
+            ContractViolation::WrongResponseKind {
+                request: Request::AtomicLoad { width, addr: DATA },
+                response: Response::StoreDone,
+            },
+        )?;
+    }
+    require_violation(
+        0x1002_a32f,
+        Response::Load(0x1_0000_0000),
+        ContractViolation::LoadValueOutOfWidth {
+            width: AccessWidth::W,
+            value: 0x1_0000_0000,
+        },
+    )?;
+    endian_violation(true)?;
+    super::device_regions::negative()
 }
 
 /// The independent witness is needed for valid-width but incorrect content.

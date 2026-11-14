@@ -599,7 +599,8 @@ mod tests {
                     }
                     Ok(Response::FetchParcel(self.read(addr, 2) as u16))
                 }
-                Request::Load { width, addr } => {
+                // main memory answers an atomic read as it answers a load
+                Request::Load { width, addr } | Request::AtomicLoad { width, addr } => {
                     if addr % width.bytes() != 0 {
                         return Err(Failure::Misaligned.into());
                     }

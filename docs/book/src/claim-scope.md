@@ -16,11 +16,20 @@ and the gate reads `incomplete` again.
 
 **The live tree is version 1's window, and it says so.** `P4-SYSTEM.20` moved the version label
 out of `profile.sexp`, which every matched case pins, into `identity.sexp`, which none does, and
-retired the 42 case credits that move lapsed. The live report therefore reads `incomplete`, with
-`G-STATE`, `G-TRACE`, `G-OBLIGATIONS` and `G-RELEASE` open and each owned by that leaf, and it
-says of the decision above: "the decision is of `rv64gc-lab-v0` version `0`, not `rv64gc-lab-v0`
-version `1`". To check version 0's claim, check out `194437d6` and read its `GS-REPORT.md`.
-Version 1 is accepted only by its own decision, after its cases are captured and credited again.
+retired the 42 case credits that move lapsed. The window's slices c and e then moved the engine,
+so the regression and portability records no longer cover it. The live report therefore reads
+`incomplete`, with `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY` and
+`G-RELEASE` open and each owned by that leaf, and it says of the decision above: "the decision is
+of `rv64gc-lab-v0` version `0`, not `rv64gc-lab-v0` version `1`". To check version 0's claim, check
+out `194437d6` and read its `GS-REPORT.md`. Version 1 is accepted only by its own decision, after
+its cases are captured and credited again and those records are measured again.
+
+**Version 1's environment contract admits devices.** Slice e froze contract version 4. The
+boundary gained an atomic read kind, so a declared device region can refuse LR and the AMOs, as
+well as fetches, page-table walks and SC's permission check, before any side-effecting read. A new
+CPU guarantee says the hart reads at most once per explicit read instruction. The laboratory
+declares no device region yet, so this is the precondition of a board, not a board
+([the contract chapter](plan/p4/contract-v2.md#version-4-device-regions-and-the-atomic-read)).
 
 What the ten axes measured at `194437d6`, in one line each:
 

@@ -12,7 +12,7 @@
 | --- | --- | --- | --- |
 | `G-SCOPE` | exact profile, source revisions, observation contract, complete dependency closure | the encoding composes `riscv/rv64i` + 9 extensions; status `complete`; unfilled slots: none | **green** |
 | `G-STATE` | state, aliases, arithmetic, effects, reset and pending state: reviewed requirements and evidence | the hidden-state census: 12 of 12 candidates answered; 0 of 4 `state` requirements implemented | **incomplete** |
-| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 114 of 114 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v3` frozen | **green** |
+| `G-CONTRACT` | enumerable CPU/environment assumptions and guarantees; validated mappings | 116 of 116 checks of the effective contract realized by the unit's registry; latest version `rv64gc-lab-env-v4` frozen | **green** |
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
 | `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 4 `implemented`, 2 `not-applicable`, 42 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
@@ -107,7 +107,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 cacd31d93d347712676f0c0398b7d47a9f2af480ee9dca8d91c65e3103721331`
+  `sha256 18fce520f12c3ff495a48af066fa20602ab2b32c8297e0485f32738ef1879e15`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision

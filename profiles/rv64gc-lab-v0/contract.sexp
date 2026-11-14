@@ -99,5 +99,13 @@
   (supersede (record "OB-GC-ECALL-EBREAK-V1") (by "OB-GC-ECALL-EBREAK-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited"))
   (supersede (record "OB-GC-PRIV-INSNS-V1") (by "OB-GC-PRIV-INSNS-V3") (why "the record's successor states the same guarantee as the requirement's own mirror, so the requirement can be restated and credited")))
 
+(contract (id "rv64gc-lab-env-v4") (version "4") (profile_ids "rv64gc-lab-v0") (extends "rv64gc-lab-env-v3") (status frozen)
+  (statement "Version 4 (P4-SYSTEM.20 slice e, 2026-11-14): the contract admits declared device regions, the precondition of any board. The boundary gains AtomicLoad, the read of LR and of an AMO, so a device region refuses an atomic access before any side-effecting read; it refuses store-permission checks, fetches and page-table walks too, and the CPU delivers each refusal as the original access's access fault. A CPU guarantee joins it: the hart reads at most once per explicit read instruction and never for any other, realized by a census over the tracked corpus. The laboratory still declares no device region and supplies no interrupt source: MTIP and MEIP sources wait for the firmware P6 has not selected. 58 effective obligations and 116 realized checks.")
+  (member (id "OB-GC-ENV-DATA-ACCESS-V4") (sha256 "a365fe5a57f6d52ce52922848aa4ad475ac549a4b1fd0e8ae27cd2f9c3abbdf2"))
+  (member (id "OB-GC-ENV-EVENT-DELIVERY-V4") (sha256 "227e69aaedd99d32ac6f21c263ba16ec9aff415352fec400c126659556800ac3"))
+  (member (id "OB-GC-READ-ONCE") (sha256 "7326864cc509efef9ecbf10e5207fe8f96a14468e3ee961b83df0ac1d0e41d02"))
+  (supersede (record "OB-GC-ENV-DATA-ACCESS") (by "OB-GC-ENV-DATA-ACCESS-V4") (why "v2 stated a map of main memory alone, with no MMIO or side-effecting read; a board's devices contradict it, and an atomic read crossing as a plain Load could not be refused before it read"))
+  (supersede (record "OB-GC-ENV-EVENT-DELIVERY") (by "OB-GC-ENV-EVENT-DELIVERY-V4") (why "v2 enumerates the request kinds an event may never interrupt; the boundary gained AtomicLoad, so the list and the fixture that attempts delivery during every kind gain it too")))
+
 (registry (path "crates/semulith-verify/src/contract_checks_rv64gc.rs")
   (statement "The checks this unit's contract declares, realized: each entry binds one check id, under its obligation, to tracked guests, a named typed-boundary fixture or a scope predicate. The registry tests run every guest under the corpus comparison rule, every direct fixture with its typed violation controls, and every scope check through its tracked predicate/violating copies (P4-SYSTEM.13 b2); scope evidence validates declarations, never instruction execution."))

@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0412 (leaf P4-SYSTEM.20 slice e) — the atomic read crosses as its own kind, and contract version 4 admits device regions
+
+LR and the AMOs now read through a boundary request of their own, answered exactly as a load is, so every guest observes what it did before. Contract version 4 lets a board declare device regions: a region answers loads and stores of its declared widths and refuses atomic reads, SC's permission check, fetches and page-table walks without side effect, and a new CPU guarantee says the hart reads at most once per explicit read. A census over every step of the 210 guests realizes it, and a device fixture shows each refusal becoming the right access fault.
+
+## SEMULITH-P4-0411 (leaf P4-SYSTEM.20 slice e brief, correction) — AtomicLoad and contract version 4 land as one unit
+
+The event-delivery rule lists the boundary's request kinds and the atomics checks assert load sequences, so the new kind could not enter without contract version 4 in the same commit; the brief's two-step split was withdrawn before the work began.
+
 ## SEMULITH-P4-0410 (leaf P4-SYSTEM.20, slice e brief) — the hart reads once, and an atomic read needs its own boundary kind
 
 Measured over every step of the 210 guests: the hart issues a data read only for an explicit read instruction, at most once, and never for SC. But LR and AMOs read with an ordinary load request, so a device could not refuse an atomic access before its side-effecting read. The boundary gains an atomic read kind (e1), and contract version 4 admits device regions with the read-once guarantee (e2).

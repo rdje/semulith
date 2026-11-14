@@ -167,7 +167,8 @@ fn reservation(table: &[InsnDef], fence: u32) -> Result<(), String> {
         fixture.fetch(ENTRY + 4 * i);
         match i {
             0 => {
-                fixture.expected.requests.push(Request::Load {
+                // LR.D reads as an atomic read; the LD at step 3 is a plain load
+                fixture.expected.requests.push(Request::AtomicLoad {
                     width: AccessWidth::D,
                     addr: DATA,
                 });

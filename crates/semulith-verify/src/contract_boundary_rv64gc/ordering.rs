@@ -135,9 +135,10 @@ fn data_order(
             },
             Response::Load(0x1122_aa44),
         )],
+        // The AMO's read is an atomic read, its own boundary kind (`rv64gc-lab-env-v4`).
         vec![
             (
-                Request::Load {
+                Request::AtomicLoad {
                     width: AccessWidth::W,
                     addr: DATA,
                 },

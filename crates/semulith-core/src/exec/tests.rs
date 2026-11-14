@@ -108,6 +108,9 @@ impl Environment for TestEnv {
             Request::StorePermission { .. } => {
                 panic!("store permission request crossed the RV64I-only test boundary");
             }
+            Request::AtomicLoad { .. } => {
+                panic!("an atomic read crossed the RV64I-only test boundary — the base profile has no A extension");
+            }
             Request::WalkAccess { .. } => {
                 panic!(
                     "a walk access crossed rv64i's boundary — the base profile has no \

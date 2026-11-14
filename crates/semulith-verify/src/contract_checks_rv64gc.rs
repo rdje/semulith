@@ -33,7 +33,8 @@ pub struct ContractCheck {
 /// fixtures), and v2's guarantees as each binds — M at `.11`, C and exact parcel fetch at `.12` e2c.
 /// `.13` adds eleven selection pairs, three current guarantees, five typed boundary pairs
 /// and the existing privilege-mode, Sv39, Svade, halfword-alignment and counter witnesses;
-/// remaining records stay uncredited.
+/// remaining records stay uncredited. v4 (`P4-SYSTEM.20` slice e) moves the data-access and
+/// event-delivery pairs to their device-region successors and adds the read-once census.
 pub static CHECKS: &[ContractCheck] = &[
     ContractCheck {
         id: "CHK-SC-DETERMINISTIC-POS",
@@ -441,31 +442,45 @@ pub static CHECKS: &[ContractCheck] = &[
         ),
     },
     ContractCheck {
-        id: "CHK-GC-ENV-EVENT-DELIVERY-POS",
-        obligation: "OB-GC-ENV-EVENT-DELIVERY",
+        id: "CHK-GC-ENV-EVENT-DELIVERY-V4-POS",
+        obligation: "OB-GC-ENV-EVENT-DELIVERY-V4",
         evidence: Evidence::Boundary(
             crate::contract_boundary_rv64gc::BoundaryCheck::EventDeliveryPositive,
         ),
     },
     ContractCheck {
-        id: "CHK-GC-ENV-EVENT-DELIVERY-NEG",
-        obligation: "OB-GC-ENV-EVENT-DELIVERY",
+        id: "CHK-GC-ENV-EVENT-DELIVERY-V4-NEG",
+        obligation: "OB-GC-ENV-EVENT-DELIVERY-V4",
         evidence: Evidence::Boundary(
             crate::contract_boundary_rv64gc::BoundaryCheck::EventDeliveryNegative,
         ),
     },
     ContractCheck {
-        id: "CHK-GC-ENV-DATA-ACCESS-POS",
-        obligation: "OB-GC-ENV-DATA-ACCESS",
+        id: "CHK-GC-ENV-DATA-ACCESS-V4-POS",
+        obligation: "OB-GC-ENV-DATA-ACCESS-V4",
         evidence: Evidence::Boundary(
             crate::contract_boundary_rv64gc::BoundaryCheck::DataAccessPositive,
         ),
     },
     ContractCheck {
-        id: "CHK-GC-ENV-DATA-ACCESS-NEG",
-        obligation: "OB-GC-ENV-DATA-ACCESS",
+        id: "CHK-GC-ENV-DATA-ACCESS-V4-NEG",
+        obligation: "OB-GC-ENV-DATA-ACCESS-V4",
         evidence: Evidence::Boundary(
             crate::contract_boundary_rv64gc::BoundaryCheck::DataAccessNegative,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-GC-READ-ONCE-POS",
+        obligation: "OB-GC-READ-ONCE",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::ReadOncePositive,
+        ),
+    },
+    ContractCheck {
+        id: "CHK-GC-READ-ONCE-NEG",
+        obligation: "OB-GC-READ-ONCE",
+        evidence: Evidence::Execution(
+            crate::contract_execution_rv64gc::ExecutionCheck::ReadOnceNegative,
         ),
     },
     ContractCheck {
