@@ -91,13 +91,26 @@ python3 scripts/qualify_book_index.py --working-code --require-clean --output ta
 
 ### Decision navigation and the record it opens
 
+The index lists every record exactly once, and it comes in parts: `INDEX.md` holds the
+first rows and names each part under `docs/decisions/index/`, where the rows continue and a
+new record's row goes at the end of the last part. One file listing every record outgrew the
+family's 32,768-byte per-part ceiling (`LIVE-CONTAINMENT.6`). `MEMORY-ARCH` reads all of
+them: a record listed in no part, a record listed twice, and a part that `INDEX.md` does not
+name each fail by name (two of the controls' synthetic fixtures):
+
+```text
+MEMORY-ARCH: decision record decision_c.md is listed 2 times across docs/decisions/INDEX.md and its parts — list it once
+MEMORY-ARCH: decision index part part-2.md is not named by docs/decisions/INDEX.md
+```
+
 Indexes route questions; records retain receipts/corrections. D55 fixes UART:
 147+13 becomes 151+9, total 160 unchanged. D51 separates files from active work.
 Authorized pooled 107 files; 108 breaches. Health 64 is advisory; byte/part caps stay
 fixed. Full classifications/derivations remain in the records:
 
 ```sh
-cat docs/decisions/INDEX.md
+cat docs/decisions/INDEX.md docs/decisions/index/*.md
+cat docs/decisions/decision_decisions-index-in-parts.md
 cat docs/decisions/decision_task-tree-family-count-rederivation.md
 cat docs/decisions/decision_profiles-family-five-units.md
 cat docs/decisions/decision_profiles-family-corpus-second-rederivation.md

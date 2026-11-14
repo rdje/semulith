@@ -372,7 +372,14 @@ docs/tasks/	author_overflow	partitioned	one file per tree; closed records move v
 #   health just above the 62 / 265,307 B measurement. PER-PART STAYS 16,384 — the index
 #   (13,234 B / 59 rows) is the member that bites next, by its own partition. Reviewed decision:
 #               docs/decisions/decision_decisions-family-second-rederivation.md.
-docs/decisions/	author_overflow	partitioned	one record per file; INDEX.md row required by MEMORY-ARCH; per-part and health re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23), the aggregate doubled by decision_decisions-family-third-rederivation.md (2026-11-06)	136	917504	160	1048576	32768
+# Index parts, LIVE-CONTAINMENT.6 / SEMULITH-LC-0057 (2026-11-14), when the per-part axis bit the INDEX
+#   itself: docs/decisions/INDEX.md 134 rows / 32,745 B of 32,768 at 34fe03a0 (rows ~242 B), so every
+#   further record refused. The per-part ceiling STAYS 32,768 and bounds each index part as a family
+#   member: INDEX.md keeps rows 1-67 (17,996 B), docs/decisions/index/part-2.md rows 68-134 plus new
+#   rows (~70 more); a part nearing the ceiling is followed by the next, named in INDEX.md. No axis
+#   moved; the file count bites next (138 of 160 after this unit). Reviewed decision:
+#               docs/decisions/decision_decisions-index-in-parts.md.
+docs/decisions/	author_overflow	partitioned	one record per file; exactly one row in INDEX.md or a part under index/ that INDEX.md names, required by MEMORY-ARCH (decision_decisions-index-in-parts.md, 2026-11-14); per-part and health re-derived by decision_schema-and-decisions-families-rederivation.md (2026-10-23), the aggregate doubled by decision_decisions-family-third-rederivation.md (2026-11-06)	136	917504	160	1048576	32768
 docs/knowledge/	author_overflow	partitioned	one card per question; INDEX.md row required by LESSON-PROMOTION; bounds re-derived by decision_knowledge-family-second-rederivation.md (2026-10-27)	48	157696	56	180224	16384
 # Director ruling, LIVE-CONTAINMENT.4 slice (m) / SEMULITH-LC-0052 (2026-10-21), at 524,247 of
 #   524,288 B: the book is the review surface and carries NO size containment on any axis — "it is

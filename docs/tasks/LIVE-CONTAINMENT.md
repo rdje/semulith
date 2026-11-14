@@ -43,7 +43,7 @@ answer once ceilings fire.
 - ID: `LIVE-CONTAINMENT`
   Status: `active`
   Goal: true and bounded live surfaces
-  Children: `LIVE-CONTAINMENT.1`, `LIVE-CONTAINMENT.2`, `LIVE-CONTAINMENT.3`, `LIVE-CONTAINMENT.4`, `LIVE-CONTAINMENT.5`
+  Children: `LIVE-CONTAINMENT.1`, `LIVE-CONTAINMENT.2`, `LIVE-CONTAINMENT.3`, `LIVE-CONTAINMENT.4`, `LIVE-CONTAINMENT.5`, `LIVE-CONTAINMENT.6`
 
 - ID: `LIVE-CONTAINMENT.1` — **the closed-tree register: completed trees leave the index**
   Status: `done` (`2026-10-06`, `SEMULITH-LC-0001`)
@@ -122,12 +122,14 @@ answer once ceilings fire.
   Until then: slice b made room in `execution.md` by removing two counts and two history clauses, which leaves 39 B. `ARTIFACT-CLEANUP.43` (2026-11-13, `SEMULITH-AC-0099`) removed the stale counts from three rows of `artifacts.md`: 81,628 B, 292 B left.
 
 - ID: `LIVE-CONTAINMENT.6` — **the decisions index at its part ceiling: an index that lists every record needs more than one part**
-  Status: `pending` (found `2026-11-14` by `P4-SYSTEM.20` slice f's brief, `SEMULITH-P4-0413`)
+  Status: `done` (`2026-11-14`, `SEMULITH-LC-0057`; found `2026-11-14` by `P4-SYSTEM.20` slice f's brief, `SEMULITH-P4-0413`; taken before `XTASK.19` slice b, whose decision record needs the room)
   Goal: `docs/decisions/INDEX.md` held 32,519 B of the family's 32,768 B per-part ceiling at `438ca348`, so the brief's one new row refused the routes check (`OVER CEILING docs/decisions/: part docs/decisions/INDEX.md`, 32,817 B). Every record must be listed there (`scripts/check_memory_architecture.sh` reads `INDEX.md` alone), and its 134 rows average about 244 B, so each further record refuses: the brief landed by shortening its own hook to 226 B, which leaves 23 B. Give the index a second part that the check also reads, as the changelog has shards, with every record still listed exactly once; or measure a better split first.
   Acceptance: the routes check passes with room for the next twenty records; MEMORY-ARCH refuses a record listed in no part and one listed twice; the bound is in `doctrine/readme_routes.tsv` and a decision record.
   Order: before the next decision record is added. `P4-SYSTEM.20` slice f1 follows `decision_a-predecessor-leaves-when-its-successor-is-declared.md` and adds none.
-  Verification: pending
-  Commit: pending
+  Result (evidence target/live-containment/lc0057): the index is `INDEX.md` and its parts under `docs/decisions/index/`, which `INDEX.md` names. `INDEX.md` keeps rows 1 to 67 (17,996 B); `index/part-2.md` holds rows 68 to 134, each byte-identical but for its link gaining `../` (`split.log`: both spans' digests, the read-back asserted), and this unit's record row: 15,751 B, room for about 70 rows. A subdirectory, because MEMORY-ARCH's record census and the Knowledge Map read `docs/decisions/*.md` as the records. `scripts/check_memory_architecture.sh` reads every part: a record listed in no part fails as before, a record listed twice now fails, a part `INDEX.md` does not name fails, a part that is a symbolic link is refused. Its loops count rather than expand an empty array, which bash 3.2 calls unbound under `set -u`. The bound: the per-part ceiling stays 32,768 B and bounds each part; the routes row names the parts and the derivation is above it (`decision_decisions-index-in-parts.md`). The family stands at 138 of its 160 files, so 22 more records fit before the count axis needs its own measurement.
+  Verification: `2026-11-14` — the acceptance rows below.
+  Commit: `SEMULITH-LC-0057`
+  `promotion: declined (the decision record carries the rule and its why; no lesson beyond it).`
 
 ## Current Frontier
 
@@ -135,7 +137,6 @@ answer once ceilings fire.
 | --- | --- | --- | --- |
 | 1 | `LIVE-CONTAINMENT.4` | `active` | D79 packets captured; causal analysis/adoption scheduled alongside CPU delivery; D80 closed (LC0055) |
 | 2 | `LIVE-CONTAINMENT.5` | `pending` | the toolbox family is at its aggregate ceiling, so the next tool row refuses; before the next new tool |
-| 3 | `LIVE-CONTAINMENT.6` | `pending` | the decisions index is at its part ceiling, so the next decision record refuses; before the next record |
 
 ### .4o / SEMULITH-LC-0054 — the tree's closed rows move to an archive part (complete)
 
@@ -1155,6 +1156,15 @@ Closed rows: [retained verbatim](archive/LIVE-CONTAINMENT-rows.md#acceptance-lc0
 
 Closed rows: [retained verbatim](archive/LIVE-CONTAINMENT-rows.md#acceptance-rows).
 
+Leaf `LIVE-CONTAINMENT.6` (`SEMULITH-LC-0057`, evidence target/live-containment/lc0057):
+
+- [x] **REPRODUCE / ISSUE** — `wc -c docs/decisions/INDEX.md` = 32745 at `34fe03a0` against the family's per-part 32,768 (`doctrine/readme_routes.tsv`); the brief's row had refused at 32,817 B (`OVER CEILING docs/decisions/: part docs/decisions/INDEX.md`).
+- [x] **ROOT CAUSE (WHY + WHERE)** — MEMORY-ARCH requires one row per record and read `INDEX.md` alone (`git show 34fe03a0:scripts/check_memory_architecture.sh | grep -c 'python3 - docs/decisions/INDEX.md'` = 1), so the index grows with the family past any per-part bound.
+- [x] **FIX** — `scripts/check_memory_architecture.sh` reads `INDEX.md` and `docs/decisions/index/*.md`, counts each record's rows across them, and requires every part named; `split_index.py` moved rows 68 to 134 into `index/part-2.md`; `INDEX.md`'s introduction names the part and the rule; the decision record and its row; the routes row and derivation; the book's decision-navigation section.
+- [x] **ADDRESSED (verified)** — `bash scripts/check_memory_architecture.sh` `rc=0` on the split tree, where HEAD's script gives `rc=1` with 68 records not listed (`grep -c 'is not listed' head-on-split.out` = 68); `controls.sh`: 10 pass / 0 miss on bash 5 and on `/bin/bash` 3.2.57 (green split and single file; RED unlisted, twice across files, twice in a part, twice in one file, unnamed part, wrong link depth, fenced row; REFUSED symbolic link), HEAD's script 4 pass / 6 miss (`controls-head.txt`).
+- [x] **NO REGRESSION** — `python3 scripts/probe_handoff_census.py` 26 tests / 0 failures; the orientation qualifier's mutation target occurs once (`grep -cF 'grep -Eq -- "$pattern" "$index"' scripts/check_memory_architecture.sh` = 1); the chain's focused set and the gate.
+- [x] **LOCKSTEP** — the tree (leaf, children, frontier, changelog), docs/TASK_TREE.md, the decision record and index parts, `doctrine/readme_routes.tsv`, the book's `working/task-trees.md`, CHANGELOG (sharded first), MEMORY.
+
 ## Verification Log
 
 Closed rows: [retained verbatim](archive/LIVE-CONTAINMENT-rows.md#verification-log).
@@ -1165,6 +1175,7 @@ Closed rows: [retained verbatim](archive/LIVE-CONTAINMENT-rows.md#commit-log).
 
 ## Changelog
 
+- `2026-11-14`: `.6` done (`SEMULITH-LC-0057`) — the decisions index continues in parts under `docs/decisions/index/`, named by `INDEX.md`; MEMORY-ARCH lists every record exactly once across them.
 - `2026-10-06`: `.3` done (`SEMULITH-LC-0003`) — TOOLBOX and DOCTRINE_ENFORCEMENT partitioned
   into family files behind bounded indexes; REGISTRY-MIRROR judges the doctrine families' union.
 - `2026-10-06`: `.2` done (`SEMULITH-LC-0002`) — the orientation map names the real crates and

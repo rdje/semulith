@@ -111,6 +111,7 @@
 - [`decision_decisions-family-aggregate-rederivation.md`](docs/decisions/decision_decisions-family-aggregate-rederivation.md)
 - [`decision_decisions-family-second-rederivation.md`](docs/decisions/decision_decisions-family-second-rederivation.md)
 - [`decision_decisions-family-third-rederivation.md`](docs/decisions/decision_decisions-family-third-rederivation.md)
+- [`decision_decisions-index-in-parts.md`](docs/decisions/decision_decisions-index-in-parts.md)
 - [`decision_declared-alternative-configuration.md`](docs/decisions/decision_declared-alternative-configuration.md)
 - [`decision_delivery-provenance-is-frozen.md`](docs/decisions/decision_delivery-provenance-is-frozen.md)
 - [`decision_derived-members-of-bounded-families.md`](docs/decisions/decision_derived-members-of-bounded-families.md)

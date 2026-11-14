@@ -39,49 +39,78 @@ fi
 # Layer C — decision records live one-per-file under docs/decisions/ with an INDEX.
 [ -d docs/decisions ] || fail "docs/decisions/ (layer-C decision records) is missing"
 [ -f docs/decisions/INDEX.md ] || fail "docs/decisions/INDEX.md is missing"
-# Every decision record (excluding INDEX/TEMPLATE) must be listed in the index.
+# Every decision record (excluding INDEX/TEMPLATE) must be listed exactly once in the index. The index is
+# INDEX.md and its parts, docs/decisions/index/*.md (LIVE-CONTAINMENT.6, decision_decisions-index-in-parts.md):
+# one file listing every record outgrew the family's per-part ceiling, so the rows continue in parts, each
+# named by INDEX.md. INDEX.md lists a record as `| [title](<file>) |`, a part as `| [title](../<file>) |`.
 if [ -d docs/decisions ] && [ -f docs/decisions/INDEX.md ]; then
   mkdir -p "$ROOT/target/tmp" || refuse 'scratch directory unavailable'
   tmp="$(mktemp -d "$ROOT/target/tmp/memory-index.XXXXXX")" || refuse 'scratch allocation failed'
   trap 'rm -rf -- "$tmp"' EXIT
   index="$tmp/index"
+  shopt -s nullglob
+  parts=(docs/decisions/index/*.md)
+  readable=(docs/decisions/INDEX.md "$index")
+  # Counted loops, not "${parts[@]}": bash 3.2 calls an empty array unbound under `set -u`.
+  count=${#parts[@]}
+  i=0
+  while [ "$i" -lt "$count" ]; do
+    [ -f "${parts[$i]}" ] && [ ! -L "${parts[$i]}" ] || refuse "decision index part is not a regular file: ${parts[$i]}"
+    readable+=("${parts[$i]}" "$tmp/part-$i")
+    i=$((i + 1))
+  done
   # Ignore comments and fenced examples: only an actual table link lists a record.
-  python3 - docs/decisions/INDEX.md "$index" <<'INDEX_READER' || refuse 'decision index read failed'
+  python3 - "${readable[@]}" <<'INDEX_READER' || refuse 'decision index read failed'
 from pathlib import Path
 import re
 import sys
 
 try:
-    text = Path(sys.argv[1]).read_text(encoding='utf-8')
-    output, fence, comment = [], None, False
-    for line in text.splitlines(keepends=True):
-        marker = re.match(r' {0,3}(`{3,}|~{3,})(.*)$', line)
-        if fence is not None:
-            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
-                fence = None
-            continue
-        if not comment and marker:
-            fence = marker[1]
-            continue
-        while line:
-            if comment:
-                end = line.find('-->')
-                if end < 0:
-                    break
-                line, comment = line[end + 3:], False
-            else:
-                start = line.find('<!--')
-                if start < 0:
-                    output.append(line)
-                    break
-                output.append(line[:start])
-                line, comment = line[start + 4:], True
-    Path(sys.argv[2]).write_text(''.join(output), encoding='utf-8')
-except (OSError, UnicodeError) as exc:
+    pairs = sys.argv[1:]
+    if not pairs or len(pairs) % 2:
+        raise ValueError('expected source and destination pairs')
+    for source, destination in zip(pairs[0::2], pairs[1::2]):
+        text = Path(source).read_text(encoding='utf-8')
+        output, fence, comment = [], None, False
+        for line in text.splitlines(keepends=True):
+            marker = re.match(r' {0,3}(`{3,}|~{3,})(.*)$', line)
+            if fence is not None:
+                if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                    fence = None
+                continue
+            if not comment and marker:
+                fence = marker[1]
+                continue
+            while line:
+                if comment:
+                    end = line.find('-->')
+                    if end < 0:
+                        break
+                    line, comment = line[end + 3:], False
+                else:
+                    start = line.find('<!--')
+                    if start < 0:
+                        output.append(line)
+                        break
+                    output.append(line[:start])
+                    line, comment = line[start + 4:], True
+        Path(destination).write_text(''.join(output), encoding='utf-8')
+except (OSError, UnicodeError, ValueError) as exc:
     print('MEMORY-ARCH: REFUSED — decision index normalization: ' + str(exc), file=sys.stderr)
     raise SystemExit(2)
 INDEX_READER
-  shopt -s nullglob
+  # Every part is named by INDEX.md: a part no reader is sent to is a second, hidden index.
+  i=0
+  while [ "$i" -lt "$count" ]; do
+    name="${parts[$i]##*/}"
+    grep -Fq -- "](index/$name)" "$index"
+    case "$?" in
+      0) ;;
+      1) fail "decision index part $name is not named by docs/decisions/INDEX.md";;
+      *) refuse "decision index part link unavailable: $name";;
+    esac
+    i=$((i + 1))
+  done
   for f in docs/decisions/*.md; do
     b="${f##*/}"
     case "$b" in INDEX.md|TEMPLATE.md) continue;; esac
@@ -94,10 +123,26 @@ INDEX_READER
     grep -Eq -- "$pattern" "$index"
     rc=$?
     case "$rc" in
-      0) ;;
-      1) fail "decision record $b is not listed in docs/decisions/INDEX.md";;
+      0) listed=1;;
+      1) listed=0;;
       *) refuse "decision index match unavailable: $b";;
     esac
+    # Rows across INDEX.md and every part: a record listed twice has two hooks that can disagree.
+    rows=$(grep -Ec -- "$pattern" "$index")
+    [ "$?" -le 1 ] || refuse "decision index count unavailable: $b"
+    i=0
+    while [ "$i" -lt "$count" ]; do
+      n=$(grep -Ec -- "^\| \[[^]]+\]\(\.\./$escaped\) \|" "$tmp/part-$i")
+      [ "$?" -le 1 ] || refuse "decision index part count unavailable: $b"
+      [ "$n" -eq 0 ] || listed=1
+      rows=$((rows + n))
+      i=$((i + 1))
+    done
+    if [ "$listed" -eq 0 ]; then
+      fail "decision record $b is not listed in docs/decisions/INDEX.md or any part under docs/decisions/index/"
+    elif [ "$rows" -gt 1 ]; then
+      fail "decision record $b is listed $rows times across docs/decisions/INDEX.md and its parts — list it once"
+    fi
   done
 fi
 
