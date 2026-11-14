@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0095 (leaf XTASK.19) — the director's grant of the one push that turns hosted CI green, recorded
+
+The director granted one push, after the toolchain fix lands, to turn hosted CI green, and cautioned that exceptional pushes must stay truly exceptional and never stand in for the 300-commit cadence. Both are recorded in the leaf in their words, so the push carries exactly that reason and nothing else.
+
 ## SEMULITH-XTASK-0094 (leaf XTASK.19 opened) — the toolchain floats, so a Rust release turned hosted CI red
 
 The approved push went out, and the hosted Rust check failed though the full local suite had passed twice: every workflow installs that day's stable Rust, and 1.100.0, released five days ago, flags four loops in the DSP crate that this host's 1.95.0 accepts. Reproduced exactly here, on an on-volume toolchain. The leaf fixes the loops and pins one toolchain for local and hosted builds; the push that turns CI green is the director's.
