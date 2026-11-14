@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0097 (leaf XTASK.19 slice a2) — the CLI's tests run the binary Cargo names for them
+
+The hosted portability run failed too: Rust 1.100.0's cargo moved test executables, and ten CLI tests looked for the binary two directories above their own. They now run the path Cargo gives them, so all 539 tests pass on 1.100.0, as before on this host's 1.95.0. Closed checklists moved to an archive part to make room.
+
 ## SEMULITH-XTASK-0096 (leaf XTASK.19 slice a) — the four loops Rust 1.100.0's clippy flags iterate their arrays
 
 The DSP crate's three register loops and one test loop now iterate what they index, so the newest clippy passes over the whole workspace, and the same check on the old files still fails with exactly the four errors. Nothing moved: this host's tests pass and the DSP runner prints byte-identical dumps on all six guests. Pinning the toolchain is the next slice.

@@ -1,14 +1,12 @@
 use std::process::{Command, Output};
 
+/// Runs the CLI binary Cargo built for these tests. Cargo names its path; where Cargo puts test executables is
+/// not an interface (1.100 moved them, and a path climbed from this test's own executable found nothing).
 fn cli(args: &[&str]) -> Output {
-    let executable = std::env::current_exe().unwrap();
-    let binary = executable
-        .parent()
+    Command::new(env!("CARGO_BIN_EXE_semulith"))
+        .args(args)
+        .output()
         .unwrap()
-        .parent()
-        .unwrap()
-        .join(format!("semulith{}", std::env::consts::EXE_SUFFIX));
-    Command::new(binary).args(args).output().unwrap()
 }
 
 #[test]
