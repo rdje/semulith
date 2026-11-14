@@ -16,6 +16,11 @@ import matched_gpr_identity as I
 import sexp as S
 
 ROOT = Path(__file__).resolve().parent.parent
+# XTASK.13 slice l: the published descriptor, its parent dossier and their schema, frozen from 96b97664 in their own layout.
+# The live files are the real check's: every case's planned experiment pins the descriptor by digest and the credit
+# derivation authenticates those pins at every commit, and PROFILE-CONSISTENCY judges the dossier itself. So a damaged live
+# file fails there, by name, and this probe tests the identity owner on bytes that cannot move under it.
+FIXTURE = Path(__file__).resolve().parent / "fixtures/profile-consistency/retained-sail-identity"
 PARENT = "profiles/rv64gc-lab-v0/references.sexp"
 IDENTITY = "profiles/rv64gc-lab-v0/retained/sail-identity.sexp"
 SCHEMA = "schema/references.sexp"
@@ -71,9 +76,15 @@ def identity_input(path=IDENTITY, digest=IDENTITY_SHA256):
 
 class RetainedIdentityTests(unittest.TestCase):
     def setUp(self):
-        self.candidate = selected_parent(ROOT)
+        # The owner reads its schema from its own root: point it at the frozen tree, and drop the cached live one.
+        I._schema.cache_clear()
+        frozen = patch.object(I, "ROOT", FIXTURE)
+        frozen.start()
+        self.addCleanup(I._schema.cache_clear)
+        self.addCleanup(frozen.stop)
+        self.candidate = selected_parent(FIXTURE)
         self.context = I.bind_reference_identity(self.candidate)
-        self.payload = bounded_bytes(ROOT / IDENTITY)
+        self.payload = bounded_bytes(FIXTURE / IDENTITY)
         base = ROOT / "target/retained-sail-identity-controls"
         base.mkdir(parents=True, exist_ok=True)
         temporary = TemporaryDirectory(dir=base)
@@ -93,7 +104,7 @@ class RetainedIdentityTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(self.payload).hexdigest(), IDENTITY_SHA256)
         self.assertEqual(I.encode_reference_identity(self.context, **publication_metadata()),
                          self.payload)
-        result = I.read_reference_identity(ROOT, identity_input(), self.candidate)
+        result = I.read_reference_identity(FIXTURE, identity_input(), self.candidate)
         self.assertEqual((result.disposition, result.pin.disposition), ("matched", "matched"))
         self.assertEqual(result.execution_identity, self.context.fields)
         document = D.references_to_doc(S.parse(self.payload.decode(), IDENTITY)[0])
@@ -115,12 +126,12 @@ class RetainedIdentityTests(unittest.TestCase):
                    dict(asset="changed.zip"), dict(asset_sha256="0" * 64)]
         for change in changes:
             with self.subTest(change=change):
-                result = I.read_reference_identity(ROOT, identity_input(),
+                result = I.read_reference_identity(FIXTURE, identity_input(),
                                                    dict(self.candidate, **change))
                 self.assertEqual((result.disposition, result.pin.disposition), ("stale", "matched"))
         absent = dict(self.candidate)
         del absent["release"]
-        self.assertEqual(I.read_reference_identity(ROOT, identity_input(), absent).disposition, "stale")
+        self.assertEqual(I.read_reference_identity(FIXTURE, identity_input(), absent).disposition, "stale")
 
     def test_parent_descriptive_prose_is_excluded(self):
         changed = deepcopy(self.candidate)
@@ -142,7 +153,7 @@ class RetainedIdentityTests(unittest.TestCase):
         for relative in (PARENT, IDENTITY, SCHEMA):
             path = self.temporary / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(bounded_bytes(ROOT / relative))
+            path.write_bytes(bounded_bytes(FIXTURE / relative))
         self.assertFalse((self.temporary / ".materials").exists())
         self.assertFalse((self.temporary / self.candidate["binary"]).exists())
         self.assertEqual(len(list(self.temporary.rglob("*.sexp"))), 3)
@@ -180,7 +191,7 @@ class RetainedIdentityTests(unittest.TestCase):
         with patch.object(D, "references_to_doc", side_effect=AssertionError("mapper reached")):
             for payload in (b"(references (unexpected true))", b"x" * (I.IDENTITY_BYTES + 1)):
                 with self.subTest(size=len(payload)), self.assertRaises(ValueError):
-                    selected_parent(ROOT, payload)
+                    selected_parent(FIXTURE, payload)
 
     def test_emit_and_byte_check_do_not_access_artifacts_or_processes(self):
         with patch.object(I.A, "read_snapshot", side_effect=AssertionError("artifact opened")), \
