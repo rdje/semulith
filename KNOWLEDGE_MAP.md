@@ -199,6 +199,7 @@
 - [`decision_task-tree-family-count-rederivation.md`](docs/decisions/decision_task-tree-family-count-rederivation.md)
 - [`decision_task-tree-per-part-growth.md`](docs/decisions/decision_task-tree-per-part-growth.md)
 - [`decision_ten-legs-satisfied-credit-separate.md`](docs/decisions/decision_ten-legs-satisfied-credit-separate.md)
+- [`decision_the-author-derives-what-the-profile-leaves-out.md`](docs/decisions/decision_the-author-derives-what-the-profile-leaves-out.md)
 - [`decision_the-four-with-no-switch-credited-implemented.md`](docs/decisions/decision_the-four-with-no-switch-credited-implemented.md)
 - [`decision_the-four-with-nothing-to-run-credited-implemented.md`](docs/decisions/decision_the-four-with-nothing-to-run-credited-implemented.md)
 - [`decision_the-next-window-is-version-1.md`](docs/decisions/decision_the-next-window-is-version-1.md)

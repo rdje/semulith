@@ -452,7 +452,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2 and b1 done (`SEMULITH-P4-0403` to `0405`); b2 next, the author's vocabulary (every SYSTEM word and CSR the profile leaves out, so a case can show them refused) |
+| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2 and b1 done (`SEMULITH-P4-0403` to `0405`), b2's brief measured (`0406`); b2 next: the author derives the reserved trap for a CSR the table does not declare and a SYSTEM word the encoding does not decode |
 
 ## Decisions
 
@@ -549,6 +549,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .20 b2 brief / SEMULITH-P4-0406: what the author derives outside the profile, and what it keeps refusing (completed)
+
+Measured at `202a7943` (target/p4-system-20/b2-brief): 12 CSR addresses outside the state table and 8 SYSTEM words the encoding does not decode, each read in M with a handler. The engine and the reference deliver illegal-instruction for all 20; `mtval` is the word on the engine and on the reference, except 0 on the reference for `mcountinhibit`, `tselect`, `senvcfg` and `mconfigptr`; the author refuses all 20. **Corrected while writing:** the chapter does not say such an access traps, it says it is reserved (RVP-CSR §1.1.1); the trap is the laboratory's `D-RESERVED-DECODE`, which the corpus already cites. **The call** (`decision_the-author-derives-what-the-profile-leaves-out.md`): a CSR the table does not declare and a SYSTEM word the encoding does not decode are reserved, so the author derives the trap; what the profile has and the author cannot derive (a `mcycle` write) still refuses, and GUEST-GEN's `mvendorid` control moves to it.
 
 ### .20 b1 / SEMULITH-P4-0405: the expectations author writes medeleg, mtvec and stvec by the state table, and a probe holds it to the engine (completed)
 

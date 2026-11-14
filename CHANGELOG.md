@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0406 (leaf P4-SYSTEM.20, slice b2 brief) — what the author derives outside the profile, and what it keeps refusing
+
+Measured: for 12 CSRs outside the state table and 8 SYSTEM words outside the encoding, the engine and the reference both trap, and the author refused all 20. The chapter calls such an access reserved, and the laboratory's `D-RESERVED-DECODE` makes a reserved instruction trap; so the author will derive that trap, while still refusing what the profile has and it cannot derive.
+
 ## SEMULITH-P4-0405 (leaf P4-SYSTEM.20 slice b1) — the expectations author writes medeleg, mtvec and stvec by the state table, and a probe holds it to the engine
 
 The author stored `medeleg` whole and took the trap-vector MODE from bit 0 of any value. It now writes the three by the state table's fields with the engine's own rule. A new probe writes every CSR the author handles with chosen patterns on both the author and the engine: 9 of 100 cases differed before, none after, and `PROFILE-CONSISTENCY` runs it with a control that restores the old rule. No guest's observations moved.
