@@ -452,7 +452,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2 and b1 done (`SEMULITH-P4-0403` to `0405`), b2's brief measured (`0406`); b2 next: the author derives the reserved trap for a CSR the table does not declare and a SYSTEM word the encoding does not decode |
+| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2, b1 and b2 done (`SEMULITH-P4-0403` to `0407`); c next, the state table's `medeleg` narrowed to `0xb3ff`, which moves the engine (feature 5 of 5, then the XTASK turn) |
 
 ## Decisions
 
@@ -549,6 +549,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .20 b2 / SEMULITH-P4-0407: the author derives the reserved trap for what the profile leaves out (completed)
+
+Feature 4 of 5 after XTASK-0091, as the brief decided. The CSR access path traps (cause 2, `xtval` the word) for an address the hart's state table does not declare, and the SYSTEM path for a word no row of the encoding in use decodes; both read the derivation's own assembler, as b1 does. What the profile has and the author cannot derive still refuses: GUEST-GEN's two controls (`probe_gc_parcel_guest.py`, `probe_gc_author.py`) move from `mvendorid` to a `mcycle` write, and `probe_gc_author.py` now also checks that `mvendorid` traps with the word. The probe's second family runs 146 reserved accesses on both producers (the brief's twenty and every `funct7 << 25 | 0x73` the encoding does not decode, chosen by the encoding, never by the author under test): 0 differ, and 146 with the refusal restored, a new PROFILE-CONSISTENCY arm. The 210 guests' observations are unchanged and the same 68 refuse. **Found by GUEST-GEN, fixed:** a hart outside any derivation took its state table from a path computed at import, and `probe_gc_author.py`'s control copies repoint `ENCODING` after import, so 8 arms refused on a missing table; the default is now `default_state()`, read when needed.
 
 ### .20 b2 brief / SEMULITH-P4-0406: what the author derives outside the profile, and what it keeps refusing (completed)
 
@@ -1259,6 +1263,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.20` b2 **ROOT CAUSE** — `python3 -B target/p4-system-20/b2-brief/measure_excluded.py` at 4cb01380, then `grep -c 'author=REFUSED' target/p4-system-20/b2-brief/measure.log` = 20 and `grep -c "engine=('0x0000000000000002'" target/p4-system-20/b2-brief/measure.log` = 20: the author refused every access the engine traps.
+- [x] `.20` b2 **ADDRESSED** — the same tool after the change: `author=('0x2', <the word>)` for all 20 (measure-after.log); `python3 -B scripts/probe_csr_author_engine.py` → `CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 0 differ`; `--mutation reserved-refuses` → `146 differ`, `--mutation tvec-mode-bit0` → `6 differ`.
+- [x] `.20` b2 **NO REGRESSION** — `--check-owned` → `42 guest(s) byte-identical`; the 210 derivations by HEAD's author and b2's agree on every observation line, 68 refusals each; `python3 -B scripts/probe_gc_parcel_guest.py` passes and `--mutation unknown-valid` still reports `unknown valid vocabulary became an illegal trap`; `python3 -B scripts/probe_gc_author.py` passes; `bash scripts/check_guest_gen.sh` → `GUEST-GEN --self-test: 416 pass / 0 fail` (8 misses before `default_state()`); `bash scripts/check_profile_consistency.sh` → `PROFILE-CONSISTENCY: ok`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0.
 - [x] `.20` b1 **ROOT CAUSE** — `git show 5773b00e:scripts/derive_rv64gc_expectations.py | grep -n 'medeleg\|(v & ~0b11) | (v & 0b1)'`: `medeleg` only at lines 134, 169 and 1214 (reset, delegation, address map), none inside `csr_write_value`, so a write falls to its `else: h.csr[name] = v` store; line 573 `h.csr[name] = (v & ~0b11) | (v & 0b1)` for the tvecs; `python3 -B scripts/probe_csr_author_engine.py` at that author → `CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 9 differ` (target/p4-system-20/b1/before.log).
 - [x] `.20` b1 **ADDRESSED** — `python3 -B scripts/probe_csr_author_engine.py` → `CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 0 differ`; `--mutation tvec-mode-bit0` → `6 differ`, exit 1.
 - [x] `.20` b1 **NO REGRESSION** — `python3 -B scripts/derive_rv64gc_expectations.py --check-owned` → `42 guest(s) byte-identical`; the 210 guests derived by HEAD's author and by b1's agree on every observation line (`grep -v '^;;'`, derive_all.py); `bash scripts/check_guest_gen.sh` → `GUEST-GEN: ok`, its self-test 0 misses (8 before the threading); `cargo clippy -p xtask --all-targets -- -D warnings` rc=0, `cargo fmt --all -- --check` rc=0.

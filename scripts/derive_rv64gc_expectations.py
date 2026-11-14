@@ -44,9 +44,14 @@ import os  # noqa: E402
 # A temporary composition may override the tracked unit for pre-bind authoring.
 ENCODING = Path(os.environ.get("DERIVE_ENCODING",
                                REPO / "profiles/rv64gc-lab-v0/encoding.sexp"))
-# The state table the CSRs below are written by (P4-SYSTEM.20 slice b1): the one beside the encoding in use, since the two
-# describe one unit, so a frozen copy's encoding brings its own table (XTASK.13). DERIVE_STATE overrides it.
-STATE = Path(os.environ.get("DERIVE_STATE", ENCODING.with_name("state.sexp")))
+
+
+def default_state() -> Path:
+    """The state table a hart follows when no derivation named one (P4-SYSTEM.20 slices b1, b2): the one beside ENCODING,
+    since the two describe one unit, read when needed so a caller that repoints ENCODING after import (a probe's frozen
+    or mutated copy, XTASK.13) repoints this too. DERIVE_STATE overrides it."""
+    override = os.environ.get("DERIVE_STATE")
+    return Path(override) if override else ENCODING.with_name("state.sexp")
 import spec_c as C  # noqa: E402 — independent spec-side C bit reconstruction
 import specfp as SF  # noqa: E402  — the tracked spec-side IEEE reference (P4-SYSTEM.7 slice c4)
 ENTRY = 0x8000_0000
@@ -128,7 +133,8 @@ class Hart:
     reservation, and Sv39 with Svade and the declared four-slot FIFO cache."""
 
     def __init__(self):
-        self.state = STATE       # the state table CSR writes follow; a derivation sets its encoding's own (slice b1)
+        self.state = None        # the state table CSR writes follow: a derivation sets its encoding's own (slice b1)
+        self.decodes = None      # the encoding's decode predicate; a derivation sets it (slice b2)
         self.x = [0] * 32
         self.f = [0] * 32        # the f-file, FLEN = 64; the laboratory reset 0 (state.sexp)
         self.pc = ENTRY
@@ -548,11 +554,34 @@ _FIELDS: dict[tuple[Path, str], tuple] = {}
 
 
 def state_beside(asm) -> Path:
-    """The state table of the unit whose encoding `asm` was built from; STATE when it has none beside it."""
+    """The state table of the unit whose encoding `asm` was built from; the default when it has none beside it."""
     source = getattr(asm, "source", None)
     if isinstance(source, Path) and source.is_file() and source.with_name("state.sexp").is_file():
         return source.with_name("state.sexp")
-    return STATE
+    return default_state()
+
+
+_DECLARED: dict[Path, frozenset] = {}
+
+
+def declared_csrs(state) -> frozenset:
+    """The CSR addresses the state table declares: the profile's closed CSR set (D-CSR-SET). P4-SYSTEM.20 slice b2."""
+    if state not in _DECLARED:
+        try:
+            doc = D.load_state(state)
+        except (OSError, D.DossierError) as exc:
+            raise Refusal(f"the state table {state} cannot be read: {exc}") from None
+        _DECLARED[state] = frozenset(c["address"] for c in doc.get("csr", []))
+    return _DECLARED[state]
+
+
+def decodes_with(asm):
+    """Does the encoding `asm` was built from decode this 32-bit word? None when it carries no table (slice b2)."""
+    rows = [i.fixed for i in getattr(asm, "insns", {}).values() if (1, 0, 3) in i.fixed]
+    if not rows:
+        return None
+    return lambda word: any(all(((word >> lo) & ((1 << (hi - lo + 1)) - 1)) == v for hi, lo, v in fixed)
+                            for fixed in rows)
 
 
 def _table_fields(state, name):
@@ -624,7 +653,7 @@ def csr_write_value(h, name, v):
     elif name == "mideleg":
         h.csr["mideleg"] = (old & ~0x222) | (v & 0x222)
     elif name in TABLE_WRITTEN:
-        h.csr[name] = table_write_value(h.state, name, old, v)  # medeleg; mtvec/stvec's BASE Any, MODE OneOf(0,1)
+        h.csr[name] = table_write_value(h.state or default_state(), name, old, v)  # medeleg; mtvec/stvec's BASE Any, MODE OneOf(0,1)
     elif name in ("mepc", "sepc"):
         h.csr[name] = v & ~1                            # bit 0 read-only 0
     elif name == "fflags":
@@ -722,7 +751,7 @@ def run_guest(path: Path, asm: Assembler) -> tuple[str, int]:
                             # the handler code after it is never a continuation)
         idx += 1
     h = Hart()
-    h.state = state_beside(asm)
+    h.state, h.decodes = state_beside(asm), decodes_with(asm)
     h.refusals = refuse
     steps: list[Step] = []
     for _ in range(10000):
@@ -895,7 +924,7 @@ def _derive_parcel_lines(lines, asm, budget, *, program, annotations=True,
         raise Refusal('assembled units exceed source annotations')
 
     hart = Hart()
-    hart.state = state_beside(asm)
+    hart.state, hart.decodes = state_beside(asm), decodes_with(asm)
     hart.refusals = refusals
     for offset, byte in enumerate(image):
         hart.mem[ENTRY + offset] = byte
@@ -1277,6 +1306,13 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
                 0x001: "fflags", 0x002: "frm", 0x003: "fcsr", 0xF14: "mhartid"}.get(csr)
         if f3 in (1, 2, 3, 5, 6, 7):  # csrrw / csrrs / csrrc and the immediate forms (P4-SYSTEM.8 a)
             if name is None:
+                if csr not in declared_csrs(h.state or default_state()):
+                    # P4-SYSTEM.20 slice b2 (decision_the-author-derives-what-the-profile-leaves-out.md): the state table
+                    # is the profile's closed CSR set, so this CSR does not exist; the access is reserved, and the
+                    # laboratory traps a reserved instruction. A CSR the table declares and the author cannot model refuses.
+                    h.deliver(2, raw)
+                    return h.pc, {"deriv": f"CSR {csr:#x} is not in the profile's state table, so the access is reserved: illegal-instruction, xtval the word, no register or CSR effect.",
+                                  "source": "RVP-CSR §1.1.1; D-RESERVED-DECODE"}
                 raise Refusal(f"csr {csr:#x} outside the corpus's vocabulary")
             if (csr >> 8) & 0b11 > h.mode:
                 origin = h.mode
@@ -1393,6 +1429,11 @@ def execute(h: Hart, word: int, *, length=4, raw=None) -> tuple[int, dict]:
             h.invalidate_translation(None if rs1 == 0 else x[rs1],
                                      None if rs2 == 0 else x[rs2])
             return next_pc, stock("sfence.vma")
+        if h.decodes is not None and not h.decodes(word):
+            # P4-SYSTEM.20 slice b2: no row of the profile's encoding decodes the word, so it is reserved and traps.
+            h.deliver(2, raw)
+            return h.pc, {"deriv": f"SYSTEM word {word:#010x}: no row of the profile's encoding decodes it, so it is reserved: illegal-instruction, xtval the word.",
+                          "source": "D-RESERVED-DECODE"}
         raise Refusal(f"SYSTEM word {word:#x} outside the corpus")
     if op == 0b0001111:
         if f3 != 0:

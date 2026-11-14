@@ -134,13 +134,14 @@ c.nop
     assert [st.fetch for st in run.steps] == [2, 0, 0] and run.hart.waiting
     assert [st.insn for st in run.steps] == ['wfi', '<halted>', '<halted>']
     assert (run.hart.time, run.hart.instret, run.hart.pc) == (3, 1, Q.ENTRY + 4)
-    # mvendorid (0xf11) is real but outside this unit's declared CSR vocabulary.
-    # Use its explicit spec-side address; resolving that name would need an external table.
-    unknown = guest('unknown', 'csrrs x1, 0xf11, x0\n')
+    # Semantics the author does not model still refuse (P4-SYSTEM.20 slice b2): writing mcycle is in the profile, and
+    # rebasing a counter is outside this bounded author. A CSR the profile leaves out (mvendorid, 0xf11) is reserved and
+    # traps instead (decision_the-author-derives-what-the-profile-leaves-out.md), so it is no longer this control.
+    unknown = guest('unknown', 'csrrw x0, mcycle, x1\n')
     try:
         author.derive_parcel_guest(unknown, asm, 1)
     except author.Refusal as exc:
-        assert 'csr 0xf11' in str(exc)
+        assert 'csr mcycle write' in str(exc), exc
     else:
         raise AssertionError('unknown valid vocabulary became an illegal trap')
     # Derive every requested source before writing the first one.

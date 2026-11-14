@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0407 (leaf P4-SYSTEM.20 slice b2) — the author derives the reserved trap for what the profile leaves out
+
+A CSR the state table does not declare, and a SYSTEM word the encoding does not decode, are reserved, and the laboratory traps a reserved instruction; the author now derives that trap instead of refusing, while still refusing what the profile has and it cannot derive. The probe compares 146 such accesses on both producers, none differing, with a control that restores the refusal. No guest's observations moved.
+
 ## SEMULITH-P4-0406 (leaf P4-SYSTEM.20, slice b2 brief) — what the author derives outside the profile, and what it keeps refusing
 
 Measured: for 12 CSRs outside the state table and 8 SYSTEM words outside the encoding, the engine and the reference both trap, and the author refused all 20. The chapter calls such an access reserved, and the laboratory's `D-RESERVED-DECODE` makes a reserved instruction trap; so the author will derive that trap, while still refusing what the profile has and it cannot derive.

@@ -68,11 +68,15 @@ def check(author):
         assert (hart.pc, hart.x, hart.csr, hart.mem) == before, 'refusal changed the hart'
     hart = author.Hart()
     try:
-        author.execute(hart, 0xF1102273)  # CSRRS x4,mvendorid,x0: real, unmodeled CSR
+        author.execute(hart, 0xB0009073)  # CSRRW x0,mcycle,x1: a CSR the profile has, a write the author does not model
     except author.Refusal as exc:
-        assert 'csr 0xf11' in str(exc), str(exc)
+        assert 'csr mcycle write' in str(exc), str(exc)
     else:
-        raise AssertionError('unmodeled CSR did not refuse by name')
+        raise AssertionError('unmodeled CSR write did not refuse by name')
+    # P4-SYSTEM.20 slice b2: a CSR the state table does not declare is reserved, so the access traps with the word.
+    hart = author.Hart()
+    author.execute(hart, 0xF1102273)  # CSRRS x4,mvendorid,x0
+    assert (hart.csr['mcause'], hart.csr['mtval'], hart.x[4]) == (2, 0xF1102273, 0), 'undeclared CSR did not trap'
     # A 1-GiB leaf keeps this permission fixture independent of the instruction engine.
     hart = author.Hart()
     hart.mode = author.S

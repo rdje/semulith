@@ -786,3 +786,32 @@ The values reach every field: all ones, zero, the two alternating patterns, and 
 followed by each illegal one. `PROFILE-CONSISTENCY` runs it on every commit, and its control restores the old tvec rule,
 which the probe must name (6 cases). No tracked guest's derived observations moved: under the old and the new rule, every
 observation line of the 210 derivations is identical, because every value the corpus writes lies inside both.
+
+### What the profile leaves out (`P4-SYSTEM.20` slice b2)
+
+Until slice b2 the author refused any CSR outside its own list and any SYSTEM word it did not handle, so no case could
+witness the hart refusing one. Measured on one guest each (`decision_the-author-derives-what-the-profile-leaves-out.md`):
+for twelve CSRs outside the state table (`hstatus`, `pmpcfg0`, `tselect`, …) and eight SYSTEM words outside the encoding
+(`hfence.vvma`, `sinval.vma`, `dret`, `wrs.nto`, …), the engine and the reference both trap with cause 2, and the author
+refused all twenty.
+
+The chapter does not say such an access traps: "Instructions that access a non-existent CSR are reserved" (RVP-CSR §1.1.1),
+and a reserved instruction's behaviour is unspecified. The laboratory's `D-RESERVED-DECODE` convention traps it, with
+`xtval` the word, as the engine does. Since b2 the author derives that trap where the profile's own data says the access
+is reserved:
+
+| The access | The author |
+| --- | --- |
+| a CSR address `state.sexp` does not declare (the closed set of 33, `D-CSR-SET`) | illegal-instruction, `xtval` the word, no register or CSR effect |
+| a SYSTEM-opcode word no row of the encoding decodes | the same |
+| an instruction the profile has whose semantics the author does not model, such as a write to `mcycle` | refuses, as before |
+
+The probe's second family holds this: each of the twenty, and every `funct7 << 25 | 0x73` the encoding does not decode,
+run under a handler on both producers (146 accesses), with a control that restores the refusal:
+
+```text
+CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 0 differ
+```
+
+The reference writes `mtval` 0, not the word, for four of the CSRs (`mcountinhibit`, `tselect`, `senvcfg`, `mconfigptr`),
+so a case that witnesses one of them must select it. No tracked guest's observations moved.

@@ -8,10 +8,16 @@ agrees when both read back the same value. The values are chosen to reach every 
 patterns, and for a CSR with a `one-of` field each legal value followed by each illegal one, so a field that must keep its
 old value is seen keeping it.
 
+A second family (P4-SYSTEM.20 slice b2) is what the profile leaves out: a CSR the state table does not declare, read with
+`csrrs`, and a SYSTEM word the encoding does not decode, each under a handler that records mcause and mtval. Both
+producers must deliver the same trap (decision_the-author-derives-what-the-profile-leaves-out.md).
+
 Usage, from the repository root:
     python3 -B scripts/probe_csr_author_engine.py              # every case; exit 0 when all agree
     python3 -B scripts/probe_csr_author_engine.py --mutation tvec-mode-bit0
                                                                # the author's pre-b1 tvec rule; exit 1, its cases named
+    python3 -B scripts/probe_csr_author_engine.py --mutation reserved-refuses
+                                                               # the author's pre-b2 refusal; exit 1, every trap case named
 The engine is built once (`cargo build -q --offline -p semulith-cli`). Nothing is written outside target/."""
 from __future__ import annotations
 
@@ -74,6 +80,57 @@ def cases() -> list[tuple[str, tuple[int, ...]]]:
     return out
 
 
+# The reserved family: CSRs outside the state table (the measured twelve) and SYSTEM words outside the encoding.
+RESERVED_CSRS = {"hstatus": 0x600, "hedeleg": 0x602, "hgatp": 0x680, "vsstatus": 0x200, "pmpcfg0": 0x3A0,
+                 "pmpaddr0": 0x3B0, "mcountinhibit": 0x320, "tselect": 0x7A0, "mseccfg": 0x747, "senvcfg": 0x10A,
+                 "mconfigptr": 0xF15, "unnamed-0x7c0": 0x7C0}
+NAMED_WORDS = {"hfence.vvma": 0x22000073, "hfence.gvma": 0x62000073, "hlv.b": 0x60004073, "sinval.vma": 0x16000073,
+               "sfence.w.inval": 0x18000073, "dret": 0x7B200073, "wrs.nto": 0x00D00073, "mnret": 0x70200073}
+# Bound at import, before any mutation: which words are reserved is the encoding's answer, never the mutated author's.
+ENCODING_DECODES = Author.decodes_with
+HANDLER = ["auipc x1, 0", "addi x1, x1, 16", "csrrw x0, mtvec, x1", "jal x0, 16",
+           "csrrs x30, mcause, x0", "csrrs x29, mtval, x0", "jalr x0, x27, 0",
+           "auipc x27, 0", "addi x27, x27, 12"]
+
+
+def reserved_cases(asm: Assembler) -> list[tuple[str, int]]:
+    """(label, word): each CSR above read into x3, each named word, and every `funct7 << 25 | 0x73` the encoding does not
+    decode (rs2, rs1 and rd zero), so a new SYSTEM row in the encoding leaves this family by itself."""
+    decodes = ENCODING_DECODES(asm)
+    out = [(f"csrrs {name}", (addr << 20) | (2 << 12) | (3 << 7) | 0x73) for name, addr in RESERVED_CSRS.items()]
+    out += [(name, word) for name, word in NAMED_WORDS.items()]
+    out += [(f"funct7 {f7:#04x}", (f7 << 25) | 0x73) for f7 in range(128) if not decodes((f7 << 25) | 0x73)]
+    for label, word in out:
+        if decodes(word) and not label.startswith("csrrs"):
+            raise SystemExit(f"probe_csr_author_engine: {label} {word:#010x} decodes in the encoding; it is not reserved")
+    return out
+
+
+def reserved_text(word: int) -> str:
+    return "\n".join(HANDLER + [f".word {word:#x}", "addi x5, x0, 1"]) + "\n"
+
+
+def author_trap(text: str):
+    try:
+        # 11 boundaries: nine of setup and handler, the access, the return past it
+        snap = Author.derive_snapshot(text.encode(), program="probe.s", instructions=11)
+    except Exception as exc:  # noqa: BLE001 — a refusal is a result
+        return f"REFUSED {type(exc).__name__}"
+    writes = {}
+    for st in snap.steps:
+        writes.update(dict(st.writes))
+    return (writes.get(30, "none"), writes.get(29, "none"))
+
+
+def engine_trap(text: str, asm: Assembler, scratch: Path):
+    elf = scratch / "reserved.elf"
+    write_elf64(elf, Author.ENTRY, asm.assemble_image(text.splitlines(), base=Author.ENTRY), asm.ialign)
+    p = subprocess.run([str(ENGINE), "run", str(elf), "--profile=rv64gc-lab-v0", "--steps=11"],
+                       capture_output=True, text=True, timeout=60, check=False)
+    last = lambda r: (lambda f: int(f[-1], 16) if f else "none")(re.findall(rf"x{r} <- (0x[0-9a-f]+)", p.stdout))  # noqa: E731
+    return (last(30), last(29))
+
+
 def guest(csr: str, values: tuple[int, ...]) -> str:
     lines = ["lui x2, 6", "csrrs x0, mstatus, x2"] if csr in FP else []   # FS = Dirty, so the FP CSRs are reachable
     for v in values:
@@ -106,6 +163,10 @@ def engine_reads(text: str, asm: Assembler, scratch: Path) -> int | str:
 
 def mutate(name: str) -> None:
     """Restore a defect the probe exists to catch, in this process's author only."""
+    if name == "reserved-refuses":
+        Author.declared_csrs = lambda state: range(4096)    # every address declared: an undeclared CSR refuses again
+        Author.decodes_with = lambda asm: None              # no decode predicate: an undecoded SYSTEM word refuses again
+        return
     if name != "tvec-mode-bit0":
         raise SystemExit(f"probe_csr_author_engine: unknown mutation {name}")
     write = Author.csr_write_value
@@ -141,9 +202,17 @@ def main(argv: list[str]) -> int:
                 fa = hex(a) if isinstance(a, int) else a
                 fe = hex(e) if isinstance(e, int) else e
                 differ.append(f"  {csr} <- {' then '.join(hex(v) for v in values)}: author {fa}, engine {fe}")
+        reserved = reserved_cases(asm)
+        for label, word in reserved:
+            text = reserved_text(word)
+            a, e = author_trap(text), engine_trap(text, asm, Path(tmp))
+            if a != e or e[0] != 2:
+                show = lambda r: tuple(hex(v) if isinstance(v, int) else v for v in r) if isinstance(r, tuple) else r  # noqa: E731
+                differ.append(f"  {label} ({word:#010x}): author {show(a)}, engine {show(e)}")
     for line in differ:
         print(line)
-    print(f"CSR-AUTHOR-ENGINE: {len(all_cases)} cases over {len(CSRS)} CSRs, {len(differ)} differ")
+    print(f"CSR-AUTHOR-ENGINE: {len(all_cases)} write cases over {len(CSRS)} CSRs and {len(reserved)} reserved accesses, "
+          f"{len(differ)} differ")
     return 1 if differ else 0
 
 

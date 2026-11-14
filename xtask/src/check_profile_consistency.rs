@@ -8835,10 +8835,10 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         "scripts/probe_csr_author_engine.py".to_owned(),
     ];
     tally.score(
-        "GREEN the author keeps what the engine keeps, every CSR it writes",
+        "GREEN the author keeps what the engine keeps, every CSR it writes, and traps what the profile leaves out",
         prober.probe(repo, argv.clone()),
         0,
-        "CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 0 differ",
+        "CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 0 differ",
     );
     let mut mutated = argv.clone();
     mutated.extend(["--mutation".to_owned(), "tvec-mode-bit0".to_owned()]);
@@ -8846,7 +8846,16 @@ fn self_test(repo: &Path, report: &mut Report, prober: &mut Prober) -> bool {
         "RED the author's pre-b1 tvec rule is named",
         prober.probe(repo, mutated),
         1,
-        "CSR-AUTHOR-ENGINE: 100 cases over 23 CSRs, 6 differ",
+        "CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 6 differ",
+    );
+    // P4-SYSTEM.20 slice b2: the author's pre-b2 refusal of what the profile leaves out, which every reserved case names.
+    let mut mutated = argv.clone();
+    mutated.extend(["--mutation".to_owned(), "reserved-refuses".to_owned()]);
+    tally.score(
+        "RED the author's pre-b2 refusal of a reserved access is named",
+        prober.probe(repo, mutated),
+        1,
+        "CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 146 differ",
     );
     // The prefetch's two sides name one file: a difference would cost every arm its record, silently (`XTASK.14`).
     let sample: Vec<String> = ["-B", "scripts/probe x.py", "--mutation", "a,b%c"]
