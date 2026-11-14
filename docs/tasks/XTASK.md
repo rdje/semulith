@@ -343,6 +343,16 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
   feature units (5:1).
   Slices 13a–13b3: [retained verbatim](archive/XTASK-7.md#slice-paragraphs-13a-to-13b3).
   Slices 13b4–13c: [retained verbatim](archive/XTASK-8.md#slice-paragraphs-13b4-to-13c).
+  Slice k (`2026-11-14`, `SEMULITH-XTASK-0092`; on clean 1fa19741; evidence target/xtask/xt0092): the first of PROFILE-CONSISTENCY's probes, `probe_experiment_graph.py`, judges a frozen subset. The 5:1 turn, after `P4-SYSTEM.20` a to c. **What measuring found.** Of the 14 probes the classification named (target/xtask/xt0068/classification.md), two hold deliberate real-tree predictions and stay, named: `probe_requirement_status.py` and `probe_dossier_qualification.py` (both re-predicted at `P4-SYSTEM.20` slice a). This one ran three scope arms over the live rv64gc dossier through `load_scope`, which also reads the contract's registry under `crates/`. **The change.** Those arms read `scripts/fixtures/profile-consistency/experiment-graph/`: `REQ-D-FP-DEFER` and `REQ-D-ABI`, its one dependency, the three FP obligations and their four-version supersession chain, copied from 1fa19741 (8,407 B). Same arms, same counts. **The chain's focused set caught the first draft:** RECORD-SCHEMA validates every `requirements.sexp` in the tree, and `REQ-D-FP-DEFER` alone named a dependency the file did not hold (`DANGLING DEP … 'REQ-D-ABI'`); the fixture carries the dependency closure, and RECORD-SCHEMA reads 42 record files.
+
+  | Damaged live state | Before | After |
+  | --- | --- | --- |
+  | none | `rc=0`, `74 pass / 0 fail` | `rc=0`, `74 pass / 0 fail` |
+  | `contract.sexp` deleted | `rc=1`, `73 pass / 1 fail` | `rc=0`, `74 pass / 0 fail` |
+  | `references.sexp` deleted | `rc=1`, `FileNotFoundError` | `rc=0`, `74 pass / 0 fail` |
+  | `requirements.sexp` garbled | `rc=1`, `SexpError` | `rc=0`, `74 pass / 0 fail` |
+
+  The three mutations still fail (70/4, 73/1, 71/3), as the driver expects. No path a case pins moved. Next at the 5:1 turn: the next of the ten, `probe_retained_sail_identity.py` (two live reads), then `probe_div_capture_retention.py` (one).
   Slice j (`2026-11-07`, `SEMULITH-XTASK-0088`; on clean ee6829b7; evidence target/xtask/xt0088): `UNIT-BOOKS`' probes judge a fixture of their own. The 5:1 turn, after a51-14. **What measuring found.** The doctrine's arms and `probe_unit_books.py` already read synthetic trees. The real reads were in `probe_book_navigation.py`'s command-line tests, which ran the real tool, so its root was the real tree: `lan9118-lab-v0` and `netboard-lab-v0`, the real registry and the real `docs/tasks/P4-SYSTEM.md`. **The change.** Those tests run a copy of the tool inside the fixture, so its root is where it stands, and nothing it reads is the real tree's. The tool gains no knob for this.
 
   | Damaged state | Before | After |
@@ -412,7 +422,7 @@ moves behind it one shimmed, measured leaf at a time; nothing breaks on the way.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes next, case by case, after five feature units |
+| 1 | `XTASK.13` | `active` | ruling 5's rule for the eleven fragile doctrines, one slice each, between feature units: slices a (DEF-GEN), b1 (GUEST-GEN's census and surgical arms), b2 (its mirror and parcel-count arms) b3 (its parcel author probe), b4 (the author probes' owned corpus, and the real-run step) and b5 (their other corpus reads), b6 (the rest of its self-test: GUEST-GEN whole), c (BOOK-INDEX), d (BOARD-GEN), e (PLATFORM-GEN), f (MATERIALS-BILL), g (EXERCISE-COVERAGE), h (CONTRACT-FREEZE), i (RECORD-SCHEMA) and j (UNIT-BOOKS) done; PROFILE-CONSISTENCY's probes: k (`probe_experiment_graph.py`) done 2026-11-14, `probe_retained_sail_identity.py` next, case by case, after five feature units |
 | 2 | `XTASK.17` | `pending` | the ledger probe runs by hand; at the push boundary it would run every time |
 
 ## Decisions
@@ -493,6 +503,9 @@ Rows 6aq–6av: [retained verbatim](archive/XTASK-5.md#acceptance-rows-6aq-to-6a
 
 ## Acceptance Checklist (leaf XTASK.13)
 
+- [x] slice k **ROOT CAUSE** — `git show 1fa19741:scripts/probe_experiment_graph.py | grep -n 'profiles/rv64gc-lab-v0'` → line 199, the scope arms' directory: the live dossier; damaged in a copy, `grep -c 'before	rc=1' target/xtask/xt0092/red.txt` = 3.
+- [x] slice k **ADDRESSED** — `grep -c 'after	rc=0	EXPERIMENT-GRAPH: 74 pass / 0 fail' target/xtask/xt0092/red.txt` = 4: undamaged and in each damaged state.
+- [x] slice k **NO REGRESSION** — `bash scripts/check_requirements.sh` → `RECORD-SCHEMA: ok (42 record file(s) …)`; `python3 -B scripts/probe_experiment_graph.py` → `EXPERIMENT-GRAPH: 74 pass / 0 fail`, plain and `-O`; `--mutation ignore-witness-budget` → `70 pass / 4 fail`, `ignore-witness-kind` → `73 pass / 1 fail`, `ignore-control-baseline` → `71 pass / 3 fail`, the four strings `grep -n 'EXPERIMENT-GRAPH' xtask/src/check_profile_consistency.rs` expects.
 - [x] slice j **ROOT CAUSE** — the navigation probe's command line ran the real tool over the real tree: `grep -c 'unit-row-removed before rc=2' target/xtask/xt0088/red-states.txt` = 1, and `git show ee6829b7:scripts/probe_book_navigation.py | grep -c "N.ROOT / 'docs/models/lan9118-lab-v0'"` = 1.
 - [x] slice j **ADDRESSED** — `grep -c 'unit-row-removed after rc=1' target/xtask/xt0088/red-states.txt` = 1, naming it: `grep -c 'MODEL-CATALOGUE unregistered lan9118-lab-v0' target/xtask/xt0088/red-unit-row-removed-after.txt` = 1; `grep -c 'task-file-moved after rc=1' target/xtask/xt0088/red-states.txt` = 1; the controls still discriminate: `grep -c 'tool-damaged after rc=2' target/xtask/xt0088/red-states.txt` = 1.
 - [x] slice j **NO REGRESSION** — `grep -c 'green-control after rc=0' target/xtask/xt0088/red-states.txt` = 1; `git diff --cached --name-only | grep -c evidence/` = 0; `python3 -B scripts/credit_records.py --profile rv64gc-lab-v0` `rc=0` → `46 credit(s), 46 current, 0 lapsed`.

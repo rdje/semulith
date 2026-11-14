@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-XTASK-0092 (leaf XTASK.13 slice k) — the experiment-graph probe judges a frozen copy, not the live dossier
+
+The first of PROFILE-CONSISTENCY's fragile probes: its three scope arms read a 8.4 KB frozen subset of the rv64gc dossier instead of the live one, so a damaged dossier no longer breaks the doctrine's self-test. Measured in copies: before, a deleted or garbled dossier file failed the probe; after, it reads 74/0 in every state, with the same counts and mutations. The XTASK turn after five feature units.
+
 ## SEMULITH-P4-0408 (leaf P4-SYSTEM.20 slice c) — the state table's medeleg narrows to 0xb3ff, and the engine moves
 
 `medeleg` keeps a delegation bit only for causes the hart can deliver, as every retained configuration already said; the engine's state and definition mirrors regenerate, its tests pass, and the author and the engine still agree on every CSR. The recorded test runs that cover the engine now cover another, in both units, so `G-REGRESSION` and `G-PORTABILITY` read open until slice g runs them again. The report's own self-test no longer depends on the real unit's runs being current.

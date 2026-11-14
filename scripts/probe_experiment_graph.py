@@ -196,9 +196,11 @@ def run_controls() -> int:
     raw[:] = [c for c in raw if not isinstance(c, list) or c[0] != "verification"]
     judge("legacy experiment unchanged", V.check_experiment(raw, SCOPE))
 
-    directory = Path(__file__).resolve().parent.parent / "profiles/rv64gc-lab-v0"
-    references = D.load_references(directory / "references.sexp")
-    current = V.load_scope(directory, "rv64gc-lab-v0", {c["id"] for c in references["candidate"]})
+    # XTASK.13 slice k: the scope arms judge a frozen subset of the real dossier (one requirement, the FP obligations and
+    # their four-version supersession chain, copied from 1fa19741), so a damaged live dossier fails PROFILE-CONSISTENCY's
+    # real check by name instead of refusing this self-test.
+    directory = Path(__file__).resolve().parent / "fixtures/profile-consistency/experiment-graph"
+    current = V.load_scope(directory, "rv64gc-lab-v0", {"c1"})
     judge("canonical scope is nonempty", [] if current.requirement_ids and current.obligation_ids else ["empty scope"])
     judge("canonical scope selects effective FP successor",
           [] if "OB-FP-DEFER" not in current.obligation_ids
