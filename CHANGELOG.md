@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0409 (leaf P4-SYSTEM.20 slice d) — the profile override selects the misaligned AMO for every case
+
+The profile judges a misaligned AMO before translation, under the access fault; two cases selected that in overlays of their own, and every other case ran on the reference's default. The override now selects it, the two overlays are gone, and over the 44 cases the two configurations are byte-identical while the other 42 change by that one setting. No credit lapses; ten retained configuration effects that compared against the old override are now predicted stale until their cases are captured again.
+
 ## SEMULITH-XTASK-0092 (leaf XTASK.13 slice k) — the experiment-graph probe judges a frozen copy, not the live dossier
 
 The first of PROFILE-CONSISTENCY's fragile probes: its three scope arms read a 8.4 KB frozen subset of the rv64gc dossier instead of the live one, so a damaged dossier no longer breaks the doctrine's self-test. Measured in copies: before, a deleted or garbled dossier file failed the probe; after, it reads 74/0 in every state, with the same counts and mutations. The XTASK turn after five feature units.

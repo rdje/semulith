@@ -815,3 +815,23 @@ CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 0 dif
 
 The reference writes `mtval` 0, not the word, for four of the CSRs (`mcountinhibit`, `tselect`, `senvcfg`, `mconfigptr`),
 so a case that witnesses one of them must select it. No tracked guest's observations moved.
+
+### The misaligned AMO is the override's (`P4-SYSTEM.20` slice d)
+
+The profile judges a misaligned AMO high, before translation, under the access fault (`D-ATOMIC-MISALIGN`,
+`D-FAULT-PRIORITY`); the pinned binary's default judges it after. Until slice d the profile override left that choice
+to the binary, and the two cases that reach it, `rv64gc-atomic-misalign-v1` and `rv64gc-fault-priority-v1`, each
+selected it in an overlay. Now the override selects it for every case:
+
+```lisp
+(memory (misaligned (exceptions (load_store (some (value "AlignmentException")))
+                                (amo (some (value "AccessFault"))))) …)
+```
+
+and the two overlays are gone, since an overlay that repeats the override is refused ("overlay selects a misaligned AMO
+the profile override already declares"). Measured over the 44 cases' prepared configurations: the two cases' are
+byte-identical before and after, and the other 42 differ by that one key and nothing else. A retained case keeps the
+configuration it was captured with, so no credit lapses; the next capture of each case uses the new one. Ten of the
+twelve retained configuration effects compared their case with the override, or with an alternative over it, so they
+now name a configuration that no longer exists; a retained effect is never measured again under its name, so they
+stay, and the probe predicts them stale until slice f captures their cases again.

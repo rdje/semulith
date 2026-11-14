@@ -54,12 +54,12 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | `rv64gc-alu-imm-v2` | `REQ-D-ALU-IMM` | `alu-imm-forms.s` | 19 | 13 | the override | captured, credited by nothing |
 | `rv64gc-alu-reg-v2` | `REQ-D-ALU-REG` | `alu-reg-forms.s` | 18 | 10 | the override | captured, credited by nothing |
-| `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | its own, with a declared alternative | captured, credited by nothing |
+| `rv64gc-atomic-misalign-v1` | `REQ-D-ATOMIC-MISALIGN` | `atomic-misalign.s` | 180 | 26 | the override, with a declared alternative | captured, credited by nothing |
 | `rv64gc-csr-set-v3` | `REQ-D-CSR-SET` | `csr-set.s` | 157 | 53 | its own | captured, credited by nothing |
 | `rv64gc-ecall-ebreak-v2` | `REQ-D-ECALL-EBREAK` | `ecall-ebreak.s` | 116 | 25 | the override | captured, credited by nothing |
 | `rv64gc-endian-v1` | `REQ-D-ENDIAN` | `endian-forms.s` | 42 | 8 | the override | captured, credited by nothing |
 | `rv64gc-ext-closure-v1` | `REQ-D-EXT-CLOSURE` | `ext-closure-forms.s` | 64 | 12 | the override | captured, credited by nothing |
-| `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | its own, with a declared alternative | captured, credited by nothing |
+| `rv64gc-fault-priority-v1` | `REQ-D-FAULT-PRIORITY` | `fault-priority.s` | 271 | 37 | the override, with a declared alternative | captured, credited by nothing |
 | `rv64gc-fence-v1` | `REQ-D-FENCE` | `fence-forms.s` | 41 | 10 | the override | captured, credited by nothing |
 | `rv64gc-composition-v1` | `REQ-D-GC-COMPOSITION` | `composition-forms.s` | 41 | 12 | its own | captured, credited by nothing |
 | `rv64gc-ialign-16-v2` | `REQ-D-IALIGN-16` | `ialign-16.s` | 11 | 6 | the override | captured, credited by nothing |

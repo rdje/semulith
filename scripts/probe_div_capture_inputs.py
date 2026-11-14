@@ -608,6 +608,19 @@ def check_retention_layout(root):
     return tuple(path.relative_to(directory).as_posix() for path in members), total
 
 
+def before_slice_d(config: dict) -> dict:
+    """P4-SYSTEM.20 slice d added the misaligned AMO to the profile override; the retained cases were prepared before it, so
+    in version 1's window a retained configuration is today's materialization without that one key, byte for byte. Slice f
+    prepares the cases again, and this goes."""
+    out = deepcopy(config)
+    out["memory"]["misaligned"]["exceptions"].pop("amo")
+    return out
+
+
+def before_slice_d_bytes(payload: bytes) -> bytes:
+    return (json.dumps(before_slice_d(json.loads(payload)), indent=2) + "\n").encode("utf-8")
+
+
 class CaseInputTests(unittest.TestCase):
     """One reviewed case's four prepared inputs; subclassed once per case."""
 
@@ -710,6 +723,7 @@ class CaseInputTests(unittest.TestCase):
             overlay = mapped(bounded_bytes(ROOT / Prep.overlay_path(self.CASE_ID)), "overlay", Prep.overlay_to_doc)
             canonical = Prep.apply_overlay(canonical, overlay)
         payload = self.payloads["reference-config.json"]
+        canonical = before_slice_d(canonical)
         self.assertEqual(payload, (json.dumps(canonical, indent=2) + "\n").encode("utf-8"))
         self.assertEqual(json.loads(payload), canonical)
         changed = deepcopy(canonical)
@@ -720,9 +734,12 @@ class CaseInputTests(unittest.TestCase):
         items = Prep.curate(ROOT, self.case)
         self.assertEqual([item.name for item in items], list(PREPARED[self.CASE_ID]))
         for item in items:
-            self.assertEqual(item.payload, self.payloads[item.name], item.name)
-            self.assertEqual((item.role, item.byte_size, item.sha256), PREPARED[self.CASE_ID][item.name])
-        self.assertEqual([row["retained"] for row in Prep.verify(ROOT, self.case)], ["equal"] * 4)
+            payload = before_slice_d_bytes(item.payload) if item.name == "reference-config.json" else item.payload
+            self.assertEqual(payload, self.payloads[item.name], item.name)
+            self.assertEqual((item.role, len(payload), hashlib.sha256(payload).hexdigest()), PREPARED[self.CASE_ID][item.name])
+        # In version 1's window the tool rightly reports the retained configuration as differing from today's (slice d's key).
+        self.assertEqual([("differs" if item.name == "reference-config.json" else "equal") for item in items],
+                         [row["retained"] for row in Prep.verify(ROOT, self.case)])
 
     def test_changed_artifacts_are_not_accepted_under_the_original_pins(self):
         for name, payload in self.payloads.items():

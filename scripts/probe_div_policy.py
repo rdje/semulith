@@ -120,6 +120,17 @@ MUTATION_TESTS = {
     "effect-at-witness": "test_a_retained_effect_differing_at_no_declared_step_is_pending",
 }
 XLEN_CASE_ID = "rv64gc-xlen-forms-v4"  # the XLEN case's reviewed capture: xlen-v1 (a43a-2f), xlen-v2 (a43b-2e), xlen-v3 (a43e-5), xlen-v4 (a49-3)
+from probe_config_effect import STALE_SINCE_SLICE_D  # noqa: E402 — the one list of effects slice d left stale
+
+
+def effect_text(case_id: str, named: str, first: str) -> str:
+    """The matched-comparison leg's word on a case's retained effect: what it observed, or, for an effect P4-SYSTEM.20 slice d
+    left comparing against a configuration that no longer exists, that it does not pin it (until slice f)."""
+    if case_id in STALE_SINCE_SLICE_D:
+        return f"selection recorded; the retained effect does not pin {named}"
+    return f"selection recorded; observed effect under {named}: {first}"
+
+
 CSR_CASE_ID = "rv64gc-csr-set-v3"  # the first implementation-defined case (a43b-3g), re-captured as v2 (a43e-5) and v3 (a49-3)
 ZICNTR_CASE_ID = "rv64gc-zicntr-v3"  # the second, on the same configuration (a43c-5), re-captured as v2 (a43e-5) and v3 (a49-3)
 SSTC_CASE_ID = "rv64gc-sstc-v2"  # the third, and the first with a delivered interrupt (a43e-5), re-captured as v2 (a49-3)
@@ -872,7 +883,7 @@ class PolicyTests(unittest.TestCase):
         for t in switches:
             requirement, obligation, risk, named, first = {**SWITCHES, **LAST_SWITCHES}[t["case_id"]]
             self.assertEqual((t["requirement_id"], t["obligation_ids"][0], t["risk"], t["category"]), (requirement, obligation, risk, "implementation-defined"), t["case_id"])
-            self.assertIn(f"selection recorded; observed effect under {named}: {first}", self.legs_text(t, "matched-reference-comparison"), t["case_id"])
+            self.assertIn(effect_text(t["case_id"], named, first), self.legs_text(t, "matched-reference-comparison"), t["case_id"])
             declared = {str(self.M._one(p, "id")) for p in self.M.S.children(self.M.S.children(self.M._one_form(
                 ROOT / "evidence" / t["case_id"] / "planned-experiment.sexp", "experiment"), "verification")[0], "property")}
             named_ids = {word.strip() for group in re.findall(r"\(([^()]*)\)", self.M.FEATURE_DISPOSITIONS[obligation])
@@ -905,8 +916,8 @@ class PolicyTests(unittest.TestCase):
                          ("REQ-D-XLEN", ["OB-XLEN"], "defined", "low"))
         self.assertEqual((csr["requirement_id"], csr["obligation_ids"], csr["category"], csr["risk"]),
                          ("REQ-D-CSR-SET", ["OB-CSR-SET"], "implementation-defined", "high"))
-        self.assertIn("selection recorded; observed effect under the profile override: step 34 (csrrs x20, mcycle, x0): Sail {}, "
-                      "expectations {'x20': 34}", self.legs_text(csr, "matched-reference-comparison"))
+        self.assertIn(effect_text(CSR_CASE_ID, "the profile override", "step 34 (csrrs x20, mcycle, x0): Sail {}, expectations {'x20': 34}"),
+                      self.legs_text(csr, "matched-reference-comparison"))
         self.assertIn("coverage is vacuous, its 53 predeclared witnesses", self.legs_text(csr, "form-coverage"))
         self.assertIn("independent-exact-expectation", self.legs_text(csr, "risk-method"))
         self.assertIn("step 130 registers ['x28']", self.legs_text(csr, "discriminating-control"))
@@ -919,8 +930,8 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(cited - declared, set())
         self.assertEqual((zicntr["requirement_id"], zicntr["obligation_ids"], zicntr["category"], zicntr["risk"]),
                          ("REQ-D-ZICNTR", ["OB-ZICNTR"], "implementation-defined", "high"))
-        self.assertIn("selection recorded; observed effect under the profile override: step 6 (rdcycle x5): Sail {}, "
-                      "expectations {'x5': 6}", self.legs_text(zicntr, "matched-reference-comparison"))
+        self.assertIn(effect_text(ZICNTR_CASE_ID, "the profile override", "step 6 (rdcycle x5): Sail {}, expectations {'x5': 6}"),
+                      self.legs_text(zicntr, "matched-reference-comparison"))
         self.assertIn("coverage is vacuous, its 44 predeclared witnesses", self.legs_text(zicntr, "form-coverage"))
         self.assertIn("independent-exact-expectation", self.legs_text(zicntr, "risk-method"))
         self.assertIn("step 109 registers ['x21']", self.legs_text(zicntr, "discriminating-control"))
@@ -932,8 +943,8 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(cited - declared, set())
         self.assertEqual((sstc["requirement_id"], sstc["obligation_ids"], sstc["category"], sstc["risk"]),
                          ("REQ-D-SSTC", ["OB-SSTC"], "implementation-defined", "high"))
-        self.assertIn("selection recorded; observed effect under the profile override: step 8 (rdtime x5): Sail {}, "
-                      "expectations {'x5': 8}", self.legs_text(sstc, "matched-reference-comparison"))
+        self.assertIn(effect_text(SSTC_CASE_ID, "the profile override", "step 8 (rdtime x5): Sail {}, expectations {'x5': 8}"),
+                      self.legs_text(sstc, "matched-reference-comparison"))
         self.assertIn("coverage is vacuous, its 39 predeclared witnesses", self.legs_text(sstc, "form-coverage"))
         self.assertIn("independent-exact-expectation", self.legs_text(sstc, "risk-method"))
         self.assertIn("step 172 registers ['x11']", self.legs_text(sstc, "discriminating-control"))

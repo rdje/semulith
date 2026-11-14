@@ -92,12 +92,12 @@ class OverlayTests(unittest.TestCase):
 
     def test_each_switch_changes_its_own_place_and_nothing_else_moves(self):
         root = self.declared(' (extension_off "S") (extension_off "Sstc") (extension_on "Sv48") (misaligned_load_store None) (misaligned_lrsc AlignmentException)'
-                             ' (misaligned_amo AccessFault)')
+                             ' (misaligned_amo AlignmentException)')  # the override selects AccessFault since P4-SYSTEM.20 slice d
         expected = self.canonical(root)
         expected["extensions"]["S"]["supported"] = False
         expected["extensions"]["Sstc"]["supported"] = False
         expected["extensions"]["Sv48"]["supported"] = True
-        expected["memory"]["misaligned"]["exceptions"] = {"load_store": {"None": None}, "lrsc": {"Some": "AlignmentException"}, "amo": {"Some": "AccessFault"}}
+        expected["memory"]["misaligned"]["exceptions"] = {"load_store": {"None": None}, "lrsc": {"Some": "AlignmentException"}, "amo": {"Some": "AlignmentException"}}
         self.assertEqual(Prep.alternative_config(root, CASE), expected)
         self.assertEqual(json.loads(json.dumps(expected)), expected, "the configuration renders to JSON unchanged")
 
@@ -121,10 +121,18 @@ class OverlayTests(unittest.TestCase):
             with self.subTest(switches=switches), self.assertRaisesRegex(Prep.CurationRefused, needle):
                 Prep.alternative_config(self.declared(switches), CASE)
 
+    def test_an_overlay_repeating_the_overrides_misaligned_amo_refuses(self):
+        # P4-SYSTEM.20 slice d: the profile override selects AccessFault for a misaligned AMO, so an overlay saying so again
+        # changes nothing and is refused, as the two cases' overlays would have been.
+        root = self.temporary_root('(overlay (case_id "%s") (reason "A selection.") (misaligned_amo AccessFault))' % CASE)
+        self.assertEqual(self.canonical(root)["memory"]["misaligned"]["exceptions"]["amo"], {"Some": "AccessFault"})
+        with self.assertRaisesRegex(Prep.CurationRefused, "already declares"):
+            Prep.reference_config(root, CASE)
+
     def test_an_overlay_may_name_no_device_and_moves_only_what_it_names(self):
-        root = self.temporary_root('(overlay (case_id "%s") (reason "A selection.") (misaligned_amo AccessFault) (require_exact_reservation_addr true))' % CASE)
+        # Since P4-SYSTEM.20 slice d the override itself selects the misaligned AMO, so the overlay names one knob.
+        root = self.temporary_root('(overlay (case_id "%s") (reason "A selection.") (require_exact_reservation_addr true))' % CASE)
         expected = self.canonical(root)
-        expected["memory"]["misaligned"]["exceptions"]["amo"] = {"Some": "AccessFault"}
         expected["platform"]["reservation"] = {"require_exact_reservation_addr": True}
         self.assertEqual(Prep.reference_config(root, CASE), expected)
         self.assertEqual(expected["platform"]["clint"], {"supported": False})

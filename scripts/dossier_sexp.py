@@ -977,7 +977,9 @@ def override_to_form(doc: dict) -> list:
               [S.Symbol("misaligned"),
                [S.Symbol("exceptions"),
                 [S.Symbol("load_store"),
-                 _some_none_to_form(mem["misaligned"]["exceptions"]["load_store"])]]],
+                 _some_none_to_form(mem["misaligned"]["exceptions"]["load_store"])],
+                *([[S.Symbol("amo"), _some_none_to_form(mem["misaligned"]["exceptions"]["amo"])]]
+                  if "amo" in mem["misaligned"]["exceptions"] else [])]],
               [S.Symbol("regions"), *region_forms]]
     if "pmp" in mem:
         p = mem["pmp"]
@@ -1054,6 +1056,8 @@ def override_to_doc(form) -> dict:
     memory = {"misaligned": {"exceptions": {"load_store": _some_none_to_doc(
                   _nested_in(exceptions, "load_store", "exceptions"))}},
               "regions": regions}
+    if _opt_child(exceptions, "amo") is not None:   # P4-SYSTEM.20 slice d: the misaligned AMO's exception
+        memory["misaligned"]["exceptions"]["amo"] = _some_none_to_doc(_nested_in(exceptions, "amo", "exceptions"))
     pmp_f = _opt_child(mf, "pmp")
     if pmp_f is not None:
         memory["pmp"] = {"grain": _req(pmp_f, "grain", "pmp"),

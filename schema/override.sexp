@@ -91,7 +91,11 @@
   (field (name exceptions) (type form) (head exceptions)))
 
 (construct (name exceptions)
-  (field (name load_store) (type form) (head some) (head none)))
+  (field (name load_store) (type form) (head some) (head none))
+  ;; P4-SYSTEM.20 slice d: a misaligned AMO's exception. The profile judges it high, before translation, under the
+  ;; access fault (D-ATOMIC-MISALIGN, D-FAULT-PRIORITY), so the profile override selects it for every case; until then
+  ;; two cases selected it in an overlay (decision_seven-with-a-switch.md).
+  (field (name amo) (type form) (head some) (head none) (optional yes)))
 
 (construct (name some)
   (field (name value) (type string) (min-length 1)))

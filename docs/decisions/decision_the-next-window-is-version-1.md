@@ -56,6 +56,8 @@ Slice a's brief (2026-11-13, `SEMULITH-P4-0402`) measured two more, on a clone o
 6. **Slice a retires the 42 credits it lapses, by removal, and records their requirements `planned`, in the same commit.** Version 0's 46 credits stand at `194437d6` and stay recoverable there; slice f re-issues them against the new captures. Rejected: re-capturing in every slice that moves a pin (all 42 cases in each of slices a, b and c), a disposition that tolerates a lapse (it removes the teeth the credit record was given), and one commit for slices a to f.
 7. **`identity.sexp` in every profile directory, `(identity (unit …) (version …) (status …))` under `schema/identity.sexp`,** with `status` one of `development` and `experimental`. `profile.sexp` and its spec lose both fields; the report reads the identity and refuses one whose unit is not the profile. `rv64gc-lab-v0`'s identity is version `1`, `development`: the live dossier is version 1's window, and version 0 is the dossier at `194437d6`. The manifest declares the four open axes, each owned by this leaf.
 
+8. **Slice d found what the override's move lapses (2026-11-14, `SEMULITH-P4-0409`):** no credit, as measured, but 10 of the 12 retained configuration effects, whose comparison side is the override or an alternative over it. A retained effect is never re-measured under its name, so they stay, predicted stale until slice f captures their cases again; likewise the five retained cases whose prepared configuration a probe compares with today's, which now differ by exactly that key.
+
 ## What this does not settle
 
 - How the 46 credits are re-issued in bulk. Slice f measures the act per batch.

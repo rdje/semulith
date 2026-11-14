@@ -32,6 +32,12 @@ RETAINED = ((CASE, STEP, REGISTER, OBSERVED, EXPECTED), ("rv64gc-zicntr-v3", 6, 
             ("rv64gc-sv39-v1", 17, "x5", [("x5", 10376293541462147075)], 0), ("rv64gc-reservation-v1", 23, "x15", [("x15", 0)], 1),
             ("rv64gc-sc-deterministic-v1", 21, "x15", [("x15", 0)], 1),
             ("rv64gc-no-h-v1", 5, "x5", [("x5", 9223372036856091053)], 9223372036856090925), ("rv64gc-no-pmp-v1", 22, "x7", [], 66))
+# P4-SYSTEM.20 slice d moved the profile override (the misaligned AMO), so the ten effects measured against it, or against an
+# alternative over it, compare with a configuration that no longer exists. A retained effect is never re-measured under its
+# name, so in version 1's window this arm predicts them stale; slice f captures the cases again, and this set empties.
+STALE_SINCE_SLICE_D = frozenset({"rv64gc-csr-set-v3", "rv64gc-zicntr-v3", "rv64gc-sstc-v2", "rv64gc-svade-v1",
+                                 "rv64gc-priv-modes-v1", "rv64gc-sv39-v1", "rv64gc-reservation-v1",
+                                 "rv64gc-sc-deterministic-v1", "rv64gc-no-h-v1", "rv64gc-no-pmp-v1"})
 MUTATIONS = {
     "reuse": ("if record_path.exists() or trace_path.exists():", "if False:"),
     "record-reuse": ("if record_path.exists() or trace_path.exists():", "if trace_path.exists():"),
@@ -215,7 +221,11 @@ class EffectTests(unittest.TestCase):
                 self.assertEqual((fields["case_id"], fields["trace_sha256"], fields["trace_bytes"]), (case, sha(data), len(data)))
                 self.assertEqual(fields["guest_sha256"], sha((case_dir / "guest.elf").read_bytes()))
                 self.assertEqual(fields["case_config_sha256"], sha((case_dir / "reference-config.json").read_bytes()))
-                self.assertEqual(fields["alternative_config_sha256"], sha(M.alternative_config(ROOT, case)[0]))
+                live = sha(M.alternative_config(ROOT, case)[0])
+                if case in STALE_SINCE_SLICE_D:
+                    self.assertNotEqual(fields["alternative_config_sha256"], live, "a stale effect now pins the live configuration")
+                else:
+                    self.assertEqual(fields["alternative_config_sha256"], live)
                 self.assertNotEqual(fields["alternative_config_sha256"], fields["case_config_sha256"])
                 expected = M.D.load_expectations(case_dir / "baseline.expected.sexp")
                 result = M.Sail.compare_observations(expected, data.decode("utf-8"))

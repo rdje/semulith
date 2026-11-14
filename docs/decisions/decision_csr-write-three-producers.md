@@ -55,3 +55,5 @@ Until then, a witness writes values all three producers keep.
 **Carried (2026-11-14, slice b2, `SEMULITH-P4-0407`):** the author's vocabulary, as [`decision_the-author-derives-what-the-profile-leaves-out.md`](decision_the-author-derives-what-the-profile-leaves-out.md) decides: a CSR the state table does not declare and a SYSTEM word the encoding does not decode are reserved, and the author derives the trap.
 
 **Carried (2026-11-14, slice c, `SEMULITH-P4-0408`):** the table's `medeleg` narrows to `0xb3ff`; the engine moved, and the recorded rows that cover it lapse until slice g.
+
+**Carried (2026-11-14, slice d, `SEMULITH-P4-0409`):** the override selects `misaligned_amo AccessFault` for every case, and the two overlays that selected it are gone.
