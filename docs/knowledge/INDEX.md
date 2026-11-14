@@ -9,6 +9,7 @@ One card per file. Name the file after the subject, put the question in the H1.
 
 | Card | Answers |
 | --- | --- |
+| [`an-author-input-follows-the-encoding-in-use.md`](an-author-input-follows-the-encoding-in-use.md) | the expectations author reads a new file and the self-tests break — where should its path come from? (from the encoding in use, found when needed) |
 | [`a-producer-generalized-from-its-first-case-keeps-its-literals.md`](a-producer-generalized-from-its-first-case-keeps-its-literals.md) | my second case's retained record says "wrong quotient" — where did the first case's words come from? (a producer generalized from its first case keeps the literals it emits; audit them against the new case at its declaration commit, before a capture freezes them) |
 | [`a-producer-refusal-hides-staleness-detected-by-regeneration.md`](a-producer-refusal-hides-staleness-detected-by-regeneration.md) | I made the producer refuse a case, and a retained capture reads `refused` instead of `stale` — why? (a consumer that detects staleness by regenerating loses it when the producer refuses; measure the moved pin directly, through authenticated reads) |
 | [`an-xtask-binary-judges-the-tree-it-was-built-in.md`](an-xtask-binary-judges-the-tree-it-was-built-in.md) | I measured a doctrine's binary before my change on the same tree as after — why did the before binary fail everything? (`cargo xtask` fixes its repository root at build time; run each binary on the tree it was built in) |

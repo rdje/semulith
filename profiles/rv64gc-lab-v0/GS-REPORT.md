@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS (the dossier and its gate.sexp). -->
 
-**Verdict: `incomplete`.** Open axes (4 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-RELEASE`.
+**Verdict: `incomplete`.** Open axes (6 of 10): `G-STATE`, `G-TRACE`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`, `G-RELEASE`.
 
 ## The processor gate, per axis (`SCP-05` — never rolled up)
 
@@ -16,8 +16,8 @@
 | `G-TRACE` | graph integrity, actual artifacts, matched inputs, current evidence, justified comparison rules | 0 of 1 required kinds evidenced — open: `experiment` | **incomplete** |
 | `G-OBLIGATIONS` | every included requirement meets its predeclared verification policy | 48 requirements: 4 `implemented`, 2 `not-applicable`, 42 `planned`; 0 not resolved; policy document (`EVIDENCE_POLICY.md`): present | **incomplete** |
 | `G-INTERACTIONS` | the declared fault/alias/boundary/event/progress/restart matrix exercised | 28 cells declared, 28 with a resolving disposition (a guest, a mechanism or a degenerate argument) | **green** |
-| `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 5 of 5 required kinds evidenced | **green** |
-| `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 3 of 3 required kinds evidenced | **green** |
+| `G-REGRESSION` | full applicable directed, external, generated, workload, validator-mutation suites pass | 3 of 5 required kinds evidenced — open: `external`, `workload` | **incomplete** |
+| `G-PORTABILITY` | native x86-64 and AArch64 fixtures agree; the pinned Miri/cross-endian plan passes | 0 of 3 required kinds evidenced — open: `x86-64`, `aarch64`, `miri` | **incomplete** |
 | `G-REPLAY` | reports and relevant successes/failures reproduce from recorded inputs and event choices | 4 of 4 required kinds evidenced | **green** |
 | `G-RELEASE` | reproducible report, explicit capability limits, named release decision, versioned artifact | a declared release decision does not stand; this report is generated from tracked inputs and gated for sync (GATE-REPORT); other axes open | **incomplete** |
 
@@ -31,6 +31,8 @@ is not a claim with a denominator.
 | `G-STATE` | `P4-SYSTEM.20` | The four state requirements read planned: their credits were retired with the 38 others when the version label left profile.sexp, which every case pins. Slice f re-captures the cases and re-issues the credits. |
 | `G-TRACE` | `P4-SYSTEM.20` | No matched case is credited while the window moves pinned inputs (slices a to e); slice f captures the 42 cases again and re-issues their credits. |
 | `G-OBLIGATIONS` | `P4-SYSTEM.20` | 42 requirements read planned until slice f re-issues their credits; the four with nothing to run stand implemented, and two are not applicable. |
+| `G-REGRESSION` | `P4-SYSTEM.20` | Slice c narrowed the state table's medeleg to 0xb3ff, which regenerates the engine's state and definition mirrors, so the ACT4 and workload records cover another crates/semulith-core/src. Slice g runs both again on the version-1 engine. |
+| `G-PORTABILITY` | `P4-SYSTEM.20` | The portability record and the hosted run cover the engine slice c moved. Slice g measures all four legs again, and the native x86-64 leg needs a hosted run on the new engine: an exceptional push, which is the director's, or the 300-commit cadence. |
 | `G-RELEASE` | `P4-SYSTEM.20` | Version 1 has no release decision yet: slice h records it, after slice g re-measures the recorded rows and the hosted run. |
 
 ## The evidence the unit declares (`gate.sexp`), verified against the tree
@@ -80,15 +82,15 @@ is not a claim with a denominator.
 | `G-TRACE` | `experiment` | experiment `rv64gc-walk-implicit-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
 | `G-TRACE` | `experiment` | experiment `rv64gc-partial-progress-v1` | **no** — no current credit names the case, and references.sexp holds no such record |
 | `G-REGRESSION` | `directed` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_matches_its_expectations` | yes |
-| `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | yes |
+| `G-REGRESSION` | `external` | `profiles/rv64gc-lab-v0/act4.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 | `G-REGRESSION` | `generated` | `crates/semulith-core/src/fp/tests.rs` `every_spec_side_fixture_holds` | yes |
 | `G-REGRESSION` | `generated` | `crates/semulith-verify/src/m_vectors/tests.rs` `every_generated_vector_holds_through_the_engine` | yes |
-| `G-REGRESSION` | `workload` | `profiles/rv64gc-lab-v0/workload.sexp` | yes |
+| `G-REGRESSION` | `workload` | `profiles/rv64gc-lab-v0/workload.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 | `G-REGRESSION` | `validator-mutation` | `crates/semulith-verify/src/mutate_rv64gc/tests.rs` `every_designated_mutant_is_detected_by_the_corpus` | yes |
-| `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
-| `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/hosted-matrix.sexp` | yes |
-| `G-PORTABILITY` | `aarch64` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
-| `G-PORTABILITY` | `miri` | `profiles/rv64gc-lab-v0/portability.sexp` | yes |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64gc-lab-v0/hosted-matrix.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `aarch64` | `profiles/rv64gc-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `miri` | `profiles/rv64gc-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 | `G-REPLAY` | `determinism` | `crates/semulith-verify/src/run_rv64gc/tests.rs` `every_guest_re_executes_identically_from_cold_reset` | yes |
 | `G-REPLAY` | `snapshot` | `crates/semulith-verify/src/snapshot_rv64gc/tests.rs` `every_gc_guest_resumes_through_json_with_identical_steps_state_memory_and_fetches` | yes |
 | `G-REPLAY` | `replay-bundle` | `crates/semulith-verify/src/replay_rv64gc/tests.rs` `every_gc_guest_bundle_roundtrips_and_replays_all_recorded_receipts` | yes |
@@ -105,7 +107,7 @@ claims a test exercises is the reviewer's to judge — that much this report can
 - profile `rv64gc-lab-v0`, version `1`, `development` (`identity.sexp`)
 - the dossier's content digest (every tracked SOURCE file under
   `profiles/rv64gc-lab-v0/` — the generated reports excluded, as derived):
-  `sha256 2c16d36078f2d1dfffe65a59e706ac91c9f99127ce2505d7288dcb8d70f92a25`
+  `sha256 abf77b01de89e00315a2541278486006926b2c4e895142797a19fdd3a5762560`
 - regenerate: `scripts/gate_report.py rv64gc-lab-v0 --gate GS`
 
 ## The release decision

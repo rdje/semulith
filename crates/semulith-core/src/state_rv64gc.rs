@@ -1,7 +1,7 @@
 //! GENERATED — do not edit (OWN-03). Regenerate with `python3 scripts/gen_state.py`;
 //! drift between this module and the descriptor it derives from is refused by the
 //! STATE-GEN doctrine (`scripts/check_state_gen.sh`).
-//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`).
+//! Source: `profiles/rv64gc-lab-v0/state.sexp` (sha256 `9e679b9f3cc652a3a3361628734d6c768baeb62804bbd6a8369fc18344c1fbca`).
 //!
 //! Architectural state of `rv64gc-lab-v0`: 32 × 64-bit integer registers (x0
 //! hardwired), the program counter, the current privilege mode, the 32 × 64-bit
@@ -451,7 +451,7 @@ pub const CSR_ELEMENTS: [CsrMeta; 33] = [
 /// The per-field tables of the 33 CSRs, in descriptor order — the
 /// legalization rules as DATA (`crate::privilege::FieldMeta`); the engine applies
 /// them at lowering, this table never adjudicates.
-pub const CSR_FIELDS: [FieldMeta; 136] = [
+pub const CSR_FIELDS: [FieldMeta; 139] = [
     FieldMeta {
         csr: "mhartid",
         name: "hart_id",
@@ -760,11 +760,20 @@ pub const CSR_FIELDS: [FieldMeta; 136] = [
     },
     FieldMeta {
         csr: "medeleg",
-        name: "cause_0_to_10",
-        bit_hi: 10,
+        name: "cause_0_to_9",
+        bit_hi: 9,
         bit_lo: 0,
         discipline: FieldDiscipline::Warl,
         legalize: Some(Legalize::Any),
+        reset: 0,
+    },
+    FieldMeta {
+        csr: "medeleg",
+        name: "cause_10",
+        bit_hi: 10,
+        bit_lo: 10,
+        discipline: FieldDiscipline::Warl,
+        legalize: Some(Legalize::ReadOnly(0)),
         reset: 0,
     },
     FieldMeta {
@@ -778,9 +787,27 @@ pub const CSR_FIELDS: [FieldMeta; 136] = [
     },
     FieldMeta {
         csr: "medeleg",
-        name: "cause_12_to_15",
-        bit_hi: 15,
+        name: "cause_12_to_13",
+        bit_hi: 13,
         bit_lo: 12,
+        discipline: FieldDiscipline::Warl,
+        legalize: Some(Legalize::Any),
+        reset: 0,
+    },
+    FieldMeta {
+        csr: "medeleg",
+        name: "cause_14",
+        bit_hi: 14,
+        bit_lo: 14,
+        discipline: FieldDiscipline::Warl,
+        legalize: Some(Legalize::ReadOnly(0)),
+        reset: 0,
+    },
+    FieldMeta {
+        csr: "medeleg",
+        name: "cause_15",
+        bit_hi: 15,
+        bit_lo: 15,
         discipline: FieldDiscipline::Warl,
         legalize: Some(Legalize::Any),
         reset: 0,
@@ -809,7 +836,7 @@ pub const CSR_FIELDS: [FieldMeta; 136] = [
         bit_hi: 20,
         bit_lo: 18,
         discipline: FieldDiscipline::Warl,
-        legalize: Some(Legalize::Any),
+        legalize: Some(Legalize::ReadOnly(0)),
         reset: 0,
     },
     FieldMeta {

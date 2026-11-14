@@ -171,3 +171,7 @@
   (statement "42 requirements read planned until slice f re-issues their credits; the four with nothing to run stand implemented, and two are not applicable."))
 (open (axis G-RELEASE) (owner "P4-SYSTEM.20")
   (statement "Version 1 has no release decision yet: slice h records it, after slice g re-measures the recorded rows and the hosted run."))
+(open (axis G-REGRESSION) (owner "P4-SYSTEM.20")
+  (statement "Slice c narrowed the state table's medeleg to 0xb3ff, which regenerates the engine's state and definition mirrors, so the ACT4 and workload records cover another crates/semulith-core/src. Slice g runs both again on the version-1 engine."))
+(open (axis G-PORTABILITY) (owner "P4-SYSTEM.20")
+  (statement "The portability record and the hosted run cover the engine slice c moved. Slice g measures all four legs again, and the native x86-64 leg needs a hosted run on the new engine: an exceptional push, which is the director's, or the 300-commit cadence."))

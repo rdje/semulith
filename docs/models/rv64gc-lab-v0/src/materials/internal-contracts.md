@@ -4,7 +4,7 @@
      (`scripts/check_materials_bill.sh`). -->
 <!-- Canonical inputs (sha256):
      `profiles/rv64gc-lab-v0/profile.sexp`  `305565b8c58231baa6d53416db2e13ae7ec9cb75cec46b90b02fe3bf5192b06a`
-     `profiles/rv64gc-lab-v0/state.sexp`  `0974ac40ec2915c2867f02c14f15fd8ab92bd028b790de1dca0f3785e32216e8`
+     `profiles/rv64gc-lab-v0/state.sexp`  `9e679b9f3cc652a3a3361628734d6c768baeb62804bbd6a8369fc18344c1fbca`
      `profiles/rv64gc-lab-v0/encoding.sexp`  `8b77378df968f9687c370f0f9128c31531853b11bccc9a68abdbe8b91e3df5a0`
      `profiles/rv64gc-lab-v0/requirements.sexp`  `36949fa0699560a8b487cb4b991ccd445a3030c7902cb9a03b04685d929e4053`
      `profiles/rv64gc-lab-v0/contract-obligations.sexp`  `32b1218504eacf1a9e1aa154ca855c1290ce5a487ff226fdc39fb860bc0f5ee7`

@@ -1585,6 +1585,13 @@ def _selftest() -> int:
                 s = s[:a] + s[b:]
             return s.rstrip("\n") + '\n(open (axis G-RELEASE) (owner "P4-SYSTEM.18")\n  (statement "No release decision is recorded for this unit."))\n'
 
+        def current_covers(s):
+            """Every recorded row re-pinned to what its paths read now. The controls judge how the report reads a row, not
+            whether the real unit's recorded runs are current: a window that moves the engine lapses them (P4-SYSTEM.20
+            slice c), and the controls that move a row's covers still do so after this."""
+            return re.sub(r'\(covers \(path "([^"]+)"\) \(sha256 "[0-9a-f]{64}"\)\)',
+                          lambda m: f'(covers (path "{m.group(1)}") (sha256 "{_covered_digest(m.group(1), live)}"))', s)
+
         def gs(name, edits=None, extra_files=None):
             g = tmp / f"gs-{name}"
             g.mkdir()
@@ -1592,7 +1599,7 @@ def _selftest() -> int:
                 text = (C.text(real / doc) if doc == "contract-obligations.sexp"
                         else (real / doc).read_text(encoding="utf-8"))
                 if doc == "gate.sexp":
-                    text = undecided(text)
+                    text = current_covers(undecided(text))
                 for target, fn in (edits or {}).items():
                     if target == doc:
                         text = fn(text)

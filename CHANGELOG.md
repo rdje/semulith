@@ -1,5 +1,9 @@
 # CHANGELOG.md
 
+## SEMULITH-P4-0408 (leaf P4-SYSTEM.20 slice c) — the state table's medeleg narrows to 0xb3ff, and the engine moves
+
+`medeleg` keeps a delegation bit only for causes the hart can deliver, as every retained configuration already said; the engine's state and definition mirrors regenerate, its tests pass, and the author and the engine still agree on every CSR. The recorded test runs that cover the engine now cover another, in both units, so `G-REGRESSION` and `G-PORTABILITY` read open until slice g runs them again. The report's own self-test no longer depends on the real unit's runs being current.
+
 ## SEMULITH-P4-0407 (leaf P4-SYSTEM.20 slice b2) — the author derives the reserved trap for what the profile leaves out
 
 A CSR the state table does not declare, and a SYSTEM word the encoding does not decode, are reserved, and the laboratory traps a reserved instruction; the author now derives that trap instead of refusing, while still refusing what the profile has and it cannot derive. The probe compares 146 such accesses on both producers, none differing, with a control that restores the refusal. No guest's observations moved.

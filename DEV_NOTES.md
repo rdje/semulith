@@ -1,5 +1,9 @@
 # DEV_NOTES.md
 
+## _(2026-11-14 UTC)_ — an input the expectations author reads must follow the encoding the caller uses, read when needed (P4-SYSTEM.20 b1, b2)
+
+The self-tests run `scripts/derive_rv64gc_expectations.py` from copies: a frozen encoding through `DERIVE_ENCODING`, a scratch root under `target/p4-system-12`, or a mutated module whose `ENCODING` a probe repoints after import. Twice a new input broke them. At b1 the state table came from a module-level `REPO` path, and GUEST-GEN refused at 8 arms on a missing file; the table now comes from the assembler the derivation uses. At b2 a hart outside any derivation took its default at import, before `probe_gc_author.py` repointed `ENCODING`, and 8 arms refused again; the default is now `default_state()`, read when needed. The rule: anything the author reads beside the encoding is found from the encoding in use, at the moment it is needed. Promoted: `docs/knowledge/an-author-input-follows-the-encoding-in-use.md`.
+
 ## _(2026-10-22 UTC)_ — a probe fixture built to the code's expectation tests the assumption twice (P4-SYSTEM.14 a42au)
 
 `scripts/requirement_status.py` read a case's `property` forms at the experiment root. Every

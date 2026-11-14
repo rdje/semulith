@@ -4,7 +4,7 @@
      the `GATE-REPORT` doctrine fails the commit if this file and its inputs
      disagree. Edit the INPUTS. -->
 
-**Verdict: `incomplete`.** Open axes: `G-CONTRACT`, `G-OBLIGATIONS`.
+**Verdict: `incomplete`.** Open axes: `G-CONTRACT`, `G-OBLIGATIONS`, `G-REGRESSION`, `G-PORTABILITY`.
 
 ## The processor-gate series, per axis (`SCP-05` — never rolled up)
 
@@ -14,8 +14,8 @@
 | `G-TRACE` | the graph invariants and record cross-checks are commit-gated (RECORD-SCHEMA, the Rust re-validation of the frozen examples) — measured at every commit | **green** |
 | `G-OBLIGATIONS` | 1 unresolved requirement(s) ['REQ-D-ECALL-EBREAK']; 28 still `planned` | **incomplete** |
 | `G-INTERACTIONS` | 21 cells declared, every disposition resolving (74 dispositions) — the INTERACTION-MATRIX gate re-derives the cells | **green** |
-| `G-REGRESSION` | the ACT4 record: 51 tests, 51/0 pass/fail; 49 expectation-documented guests; the validator-mutation suite is commit-gated | **green** |
-| `G-PORTABILITY` | the recorded runs, each held to what it covers: 3 of 3 kinds verified | **green** |
+| `G-REGRESSION` | the ACT4 record: 51 tests, 51/0 pass/fail; 49 expectation-documented guests; the validator-mutation suite is commit-gated — not evidence: `external`: `profiles/rv64i-lab-v0/act4.sexp` — the record covers another `crates/semulith-core/src`: it was measured before this one | **incomplete** |
+| `G-PORTABILITY` | the recorded runs, each held to what it covers: not evidenced — `aarch64`: `profiles/rv64i-lab-v0/portability.sexp` — the record covers another `crates/semulith-core/src`: it was measured before this one; `x86-64`: `profiles/rv64i-lab-v0/portability.sexp` — the record covers another `crates/semulith-core/src`: it was measured before this one; `profiles/rv64i-lab-v0/hosted-matrix.sexp` — the record covers another `crates/semulith-core/src`: it was measured before this one; `miri`: `profiles/rv64i-lab-v0/portability.sexp` — the record covers another `crates/semulith-core/src`: it was measured before this one | **incomplete** |
 | `G-REPLAY` | replay bundles (P1-LAB.10) + mid-execution snapshots (P2-SCALAR.7): 5 snapshot suites + the cold-reset determinism suite, all commit-gated | **green** |
 
 The phrase "supports RV64I" appears nowhere here, by rule: fidelity is reported per
@@ -25,11 +25,11 @@ axis, and a banner is not a claim with a denominator.
 
 | Axis | Kind | Record | Verified |
 | --- | --- | --- | --- |
-| `G-PORTABILITY` | `aarch64` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
-| `G-PORTABILITY` | `miri` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
-| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/portability.sexp` | yes |
-| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/hosted-matrix.sexp` | yes |
-| `G-REGRESSION` | `external` | `profiles/rv64i-lab-v0/act4.sexp` | yes |
+| `G-PORTABILITY` | `aarch64` | `profiles/rv64i-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `miri` | `profiles/rv64i-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/portability.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-PORTABILITY` | `x86-64` | `profiles/rv64i-lab-v0/hosted-matrix.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
+| `G-REGRESSION` | `external` | `profiles/rv64i-lab-v0/act4.sexp` | **no** — the record covers another `crates/semulith-core/src`: it was measured before this one |
 
 A recorded run stands for the tree only over the paths its row says it covers; once one moves,
 the row is no evidence until the run is repeated.

@@ -452,7 +452,7 @@ This gate authorises the planned next engineering stage: board implementation.
 
 | Order | Leaf | Status | Why next |
 | --- | --- | --- | --- |
-| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a, a2, b1 and b2 done (`SEMULITH-P4-0403` to `0407`); c next, the state table's `medeleg` narrowed to `0xb3ff`, which moves the engine (feature 5 of 5, then the XTASK turn) |
+| 1 | `P4-SYSTEM.20` | `active` | the next pinned window, version 1: slices a to c done (`SEMULITH-P4-0403` to `0408`); the XTASK turn first (5:1), then d, the override's `misaligned_amo AccessFault` |
 
 ## Decisions
 
@@ -549,6 +549,10 @@ Existing byte/property/collection APIs do not qualify experiments. Source0192–
 ### .14 a45-1 / SEMULITH-P4-0350: eight requirements that no credit could ever close, rebound to the effective contract — and a rule so none strands again (completed)
 
 [Record](archive/P4-SYSTEM-31.md#a45-1).
+
+### .20 c / SEMULITH-P4-0408: the state table's medeleg narrows to 0xb3ff, and the engine moves (completed)
+
+Feature 5 of 5 after XTASK-0091, item 4 of `decision_csr-write-three-producers.md`. `state.sexp` splits `cause_0_to_10` and `cause_12_to_15` and makes causes 10, 14 and 18 to 20 read-only 0, the causes this hart cannot deliver, so the writable mask is `0xb3ff`, which every retained configuration names. `state_rv64gc.rs` and `definition_rv64gc.rs` regenerate (136 → 139 fields). Measured on a clone first (target/p4-system-20/c): the engine's tests pass, the probe still reads 0 differ (the author follows the table since b1), and every recorded row covering `crates/semulith-core/src` lapses in both units, rv64gc's ACT4, workload, portability and hosted rows and rv64i's ACT4, portability and hosted rows, so `G-REGRESSION` and `G-PORTABILITY` open in both reports; G1 stays `passed`. rv64gc's two new open axes are owned by this leaf (slice g re-measures; its x86-64 leg needs a hosted run). **Found by the clone's full gate:** the report's self-test read the real unit's recorded rows, so 9 arms missed once the engine moved; its scratch manifest now re-pins every row's covers to what the tree holds, and the controls that move a row still lapse it (51 pass / 0 fail on both engines).
 
 ### .20 b2 / SEMULITH-P4-0407: the author derives the reserved trap for what the profile leaves out (completed)
 
@@ -1263,6 +1267,9 @@ Rows a44-2b–a43a-2f: [retained verbatim](archive/P4-SYSTEM-24.md#acceptance-ro
 Rows a43a-3–a43b-2c: [retained verbatim](archive/P4-SYSTEM-25.md#acceptance-rows-a43a-3-to-a43b-2c).
 Rows a43b-2d–a43b-2e: [retained verbatim](archive/P4-SYSTEM-26.md#acceptance-rows-a43b-2d-to-a43b-2e).
 Rows a45-1–a45-1: [retained verbatim](archive/P4-SYSTEM-31.md#acceptance-rows-a45-1-to-a45-1).
+- [x] `.20` c **ROOT CAUSE** — `git show 7a067e4c:crates/semulith-core/src/state_rv64gc.rs | grep -c 'cause_18_to_20'` = 1 with `legalize: Some(Legalize::Any)`: the table kept bits 10, 14 and 18 to 20 writable, where the reference reads back `0xb3ff` (`grep -c '0xb3ff' target/p4-system-14/a50-3/csr-write/census.txt` = 1) and every retained configuration names that mask.
+- [x] `.20` c **ADDRESSED** — `python3 -B scripts/gen_state.py --state profiles/rv64gc-lab-v0/state.sexp …` and `gen_definition.py` regenerate (`CSR_FIELDS: [FieldMeta; 139]`); `cargo test --offline -p semulith-core -p semulith-verify` → `test result: ok. 173 passed` and `test result: ok. 293 passed`; `python3 -B scripts/probe_csr_author_engine.py` → `0 differ`; GS-REPORT `Open axes (6 of 10)`, none unowned.
+- [x] `.20` c **NO REGRESSION** — `python3 -B scripts/gate_report.py --self-test` → `gate_report --self-test: 51 pass / 0 fail` (42 / 9 on the clone before the scratch re-pin); G1-REPORT `**Verdict: `passed`.**` unchanged; `check_sexp_schema: ok` for `state.sexp` and `gate.sexp`.
 - [x] `.20` b2 **ROOT CAUSE** — `python3 -B target/p4-system-20/b2-brief/measure_excluded.py` at 4cb01380, then `grep -c 'author=REFUSED' target/p4-system-20/b2-brief/measure.log` = 20 and `grep -c "engine=('0x0000000000000002'" target/p4-system-20/b2-brief/measure.log` = 20: the author refused every access the engine traps.
 - [x] `.20` b2 **ADDRESSED** — the same tool after the change: `author=('0x2', <the word>)` for all 20 (measure-after.log); `python3 -B scripts/probe_csr_author_engine.py` → `CSR-AUTHOR-ENGINE: 100 write cases over 23 CSRs and 146 reserved accesses, 0 differ`; `--mutation reserved-refuses` → `146 differ`, `--mutation tvec-mode-bit0` → `6 differ`.
 - [x] `.20` b2 **NO REGRESSION** — `--check-owned` → `42 guest(s) byte-identical`; the 210 derivations by HEAD's author and b2's agree on every observation line, 68 refusals each; `python3 -B scripts/probe_gc_parcel_guest.py` passes and `--mutation unknown-valid` still reports `unknown valid vocabulary became an illegal trap`; `python3 -B scripts/probe_gc_author.py` passes; `bash scripts/check_guest_gen.sh` → `GUEST-GEN --self-test: 416 pass / 0 fail` (8 misses before `default_state()`); `bash scripts/check_profile_consistency.sh` → `PROFILE-CONSISTENCY: ok`; `cargo clippy -p xtask --all-targets -- -D warnings` rc=0.
